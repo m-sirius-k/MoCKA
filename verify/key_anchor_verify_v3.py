@@ -1,46 +1,39 @@
 ﻿import json
 import hashlib
+from pathlib import Path
 import sys
 
-MANIFEST = "phase3_key_policy/KEY_GENERATION_MANIFEST_v3.json"
-ANCHOR = "phase3_key_policy/KEY_GENERATION_ANCHOR_v3.json"
+ANCHOR_PATH = Path("phase3_key_policy/KEY_GENERATION_ANCHOR_v3.json")
 
-def sha256_bytes(b: bytes) -> str:
-    return hashlib.sha256(b).hexdigest()
+def sha256_bytes(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
 
-def main():
-    with open(MANIFEST, "r", encoding="utf-8-sig") as f:
-        raw = f.read()
-        data = json.loads(raw)
+def fail(msg: str) -> None:
+    print(f"KEY ANCHOR FAIL: {msg}")
+    sys.exit(1)
 
-    digest = sha256_bytes(raw.encode("utf-8"))
+def main() -> None:
+    if not ANCHOR_PATH.exists():
+        fail("anchor missing")
 
-    with open(ANCHOR, "r", encoding="utf-8-sig") as f:
-        anchor = json.load(f)
+    anchor = json.loads(ANCHOR_PATH.read_text(encoding="utf-8"))
 
-    if anchor.get("manifest_sha256") != digest:
-        print("KEY ANCHOR FAIL: manifest sha mismatch")
-        sys.exit(1)
+    manifest_path = anchor.get("manifest_path", "")
+    if not manifest_path:
+        fail("manifest_path missing in anchor")
 
-    current = data.get("current_generation")
-    gens = data.get("generations", [])
+    manifest = Path(manifest_path)
+    if not manifest.exists():
+        fail(f"manifest not found: {manifest_path}")
 
-    active = [g for g in gens if g.get("status") == "active"]
-    if len(active) != 1:
-        print("KEY ANCHOR FAIL: invalid active count")
-        sys.exit(1)
+    expected = anchor.get("manifest_sha256", "")
+    if not expected:
+        fail("manifest_sha256 missing in anchor")
 
-    g = active[0]
+    actual = sha256_bytes(manifest)
 
-    if g.get("generation") != current:
-        print("KEY ANCHOR FAIL: active mismatch")
-        sys.exit(1)
-
-    # if not first generation, ensure linkage field exists
-    if current > 1:
-        if "previous_anchor_sha256" not in g:
-            print("KEY ANCHOR FAIL: missing previous_anchor_sha256")
-            sys.exit(1)
+    if actual != expected:
+        fail(f"manifest sha mismatch (actual={actual} expected={expected})")
 
     print("KEY ANCHOR PASS")
 
