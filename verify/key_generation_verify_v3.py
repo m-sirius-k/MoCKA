@@ -5,7 +5,7 @@ MANIFEST = "phase3_key_policy/KEY_GENERATION_MANIFEST_v3.json"
 
 def main():
     try:
-        with open(MANIFEST, "r", encoding="utf-8") as f:
+        with open(MANIFEST, "r", encoding="utf-8-sig") as f:
             data = json.load(f)
     except Exception as e:
         print("KEY MANIFEST LOAD FAIL:", e)
@@ -27,7 +27,7 @@ def main():
         print("KEY MANIFEST FAIL: multiple or zero active generations")
         sys.exit(1)
 
-    if active[0]["generation"] != current:
+    if active[0].get("generation") != current:
         print("KEY MANIFEST FAIL: active generation mismatch")
         sys.exit(1)
 
