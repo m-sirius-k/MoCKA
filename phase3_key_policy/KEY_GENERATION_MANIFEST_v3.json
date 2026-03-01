@@ -1,6 +1,6 @@
 {
   "key_generation_version": "v3",
-  "current_generation": 2,
+  "current_generation": 3,
   "created_at": "2026-03-01",
   "policy": {
     "rotation_interval_days": 90,
@@ -16,10 +16,17 @@
     },
     {
       "generation": 2,
-      "status": "active",
+      "status": "retired",
       "activated_at": "2026-03-01",
       "previous_generation": 1,
       "previous_anchor_sha256": "62643e28d43f93ee6ce4ba58fcbaccd01acd005eb9419499769f6bd45e96c979"
+    },
+    {
+      "generation": 3,
+      "status": "active",
+      "activated_at": "2026-03-01",
+      "previous_generation": 2,
+      "previous_anchor_sha256": "7cc482fafd6fd72fbfbe42f2ee3f622bae9dea801605a0a8e2359663159b9857"
     }
   ]
 }
