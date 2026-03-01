@@ -1,10 +1,15 @@
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
+﻿Write-Host "== Sample05 verify =="
 
-cd "C:\Users\sirok\MoCKA\transparency\sample05"
+openssl ts -verify `
+  -data ./transparency/transparency_v2_manifest.json `
+  -in ./transparency/sample05/manifest_v2.tsr `
+  -CAfile ./transparency/sample05/tsa_cert.pem `
+  -untrusted ./transparency/sample05/tsa_cert.pem
 
-if(-not (Test-Path ".\time_target.txt")) { throw "missing time_target.txt" }
-if(-not (Test-Path ".\response.tsr")) { throw "missing response.tsr" }
-if(-not (Test-Path ".\tsa_cert.pem")) { throw "missing tsa_cert.pem" }
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Sample05 FAIL"
+    exit 1
+}
 
-openssl ts -verify -data time_target.txt -in response.tsr -CAfile tsa_cert.pem -untrusted tsa_cert.pem
+Write-Host "Sample05 PASS"
+exit 0
