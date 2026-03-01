@@ -19,14 +19,14 @@ if ($ci -ne "true") {
     powershell ./transparency/sample03/verify_sample03.ps1
     if ($LASTEXITCODE -ne 0) { exit 1 }
 
-} else {
-    Write-Host "CI mode: runtime samples skipped"
-}
+    Write-Host ""
+    Write-Host "== Sample04 verify =="
+    powershell ./transparency/sample04/verify_sample04.ps1
+    if ($LASTEXITCODE -ne 0) { exit 1 }
 
-Write-Host ""
-Write-Host "== Sample04 verify =="
-powershell ./transparency/sample04/verify_sample04.ps1
-if ($LASTEXITCODE -ne 0) { exit 1 }
+} else {
+    Write-Host "CI mode: runtime samples skipped (Sample01-04)"
+}
 
 Write-Host ""
 Write-Host "== Sample05 verify =="
