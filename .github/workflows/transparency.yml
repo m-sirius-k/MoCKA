@@ -1,0 +1,33 @@
+﻿name: Transparency Audit
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  transparency-check:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install cryptography
+
+      - name: Install OpenSSL
+        run: |
+          choco install openssl.light -y
+
+      - name: Run Transparency Verify
+        shell: pwsh
+        run: |
+          powershell ./verify_transparency_v2.ps1
