@@ -31,6 +31,10 @@ jobs:
         run: |
           python ./verify/key_generation_verify_v3.py
 
+      - name: Key Anchor Verify
+        run: |
+          python ./verify/key_anchor_verify_v3.py
+
       - name: Run Transparency Verify
         shell: pwsh
         run: |
