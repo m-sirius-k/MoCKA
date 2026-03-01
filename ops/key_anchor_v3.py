@@ -6,7 +6,7 @@ from pathlib import Path
 MANIFEST_PATH = Path("phase3_key_policy/KEY_GENERATION_MANIFEST_v3.json")
 ANCHOR_PATH = Path("phase3_key_policy/KEY_GENERATION_ANCHOR_v3.json")
 
-def sha256_hex(p: Path) -> str:
+def sha256_bytes(p: Path) -> str:
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 def utc_z() -> str:
@@ -16,7 +16,7 @@ def main() -> None:
     if not MANIFEST_PATH.exists():
         raise SystemExit(f"MANIFEST NOT FOUND: {MANIFEST_PATH}")
 
-    manifest_sha = sha256_hex(MANIFEST_PATH)
+    manifest_sha = sha256_bytes(MANIFEST_PATH)
 
     anchor = {
         "anchor_version": "v3",
