@@ -23,9 +23,9 @@ jobs:
         run: |
           pip install cryptography
 
-      - name: Install OpenSSL
+      - name: CI Minimal Chain Test
         run: |
-          choco install openssl.light -y
+          python ./verify/ci_minimal_chain_test.py
 
       - name: Run Transparency Verify
         shell: pwsh
