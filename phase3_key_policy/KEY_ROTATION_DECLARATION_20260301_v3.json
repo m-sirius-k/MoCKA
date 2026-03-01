@@ -1,0 +1,20 @@
+{
+  "schema_version": "v1.0",
+  "event_type": "key_rotation_declaration",
+
+  "declaration": {
+    "declared_at_utc": "2026-03-01T00:00:00Z",
+    "declared_by": "MoCKA_Transparency_System",
+    "policy_reference": "KEY_MANAGEMENT_POLICY_v1.md#rotation"
+  },
+
+  "revoked_generation": {
+    "generation_id": 2
+  },
+
+  "successor_generation": {
+    "generation_id": 3
+  },
+
+  "irreversibility_statement": "This rotation is permanent and append-only."
+}
