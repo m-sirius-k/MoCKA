@@ -11,22 +11,36 @@ def sha256_bytes(b: bytes) -> str:
 def main():
     with open(MANIFEST, "r", encoding="utf-8-sig") as f:
         raw = f.read()
+        data = json.loads(raw)
 
     digest = sha256_bytes(raw.encode("utf-8"))
 
-    try:
-        with open(ANCHOR, "r", encoding="utf-8-sig") as f:
-            a = json.load(f)
-    except Exception as e:
-        print("KEY ANCHOR LOAD FAIL:", e)
+    with open(ANCHOR, "r", encoding="utf-8-sig") as f:
+        anchor = json.load(f)
+
+    if anchor.get("manifest_sha256") != digest:
+        print("KEY ANCHOR FAIL: manifest sha mismatch")
         sys.exit(1)
 
-    expected = a.get("manifest_sha256")
-    if expected != digest:
-        print("KEY ANCHOR FAIL: manifest sha256 mismatch")
-        print("expected:", expected)
-        print("actual  :", digest)
+    current = data.get("current_generation")
+    gens = data.get("generations", [])
+
+    active = [g for g in gens if g.get("status") == "active"]
+    if len(active) != 1:
+        print("KEY ANCHOR FAIL: invalid active count")
         sys.exit(1)
+
+    g = active[0]
+
+    if g.get("generation") != current:
+        print("KEY ANCHOR FAIL: active mismatch")
+        sys.exit(1)
+
+    # if not first generation, ensure linkage field exists
+    if current > 1:
+        if "previous_anchor_sha256" not in g:
+            print("KEY ANCHOR FAIL: missing previous_anchor_sha256")
+            sys.exit(1)
 
     print("KEY ANCHOR PASS")
 
