@@ -27,6 +27,10 @@ jobs:
         run: |
           python ./verify/ci_minimal_chain_test.py
 
+      - name: Key Generation Structure Verify
+        run: |
+          python ./verify/key_generation_verify_v3.py
+
       - name: Run Transparency Verify
         shell: pwsh
         run: |
