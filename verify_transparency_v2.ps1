@@ -5,30 +5,48 @@ function Run-Step([string]$name, [scriptblock]$fn) {
   Write-Host ""
   Write-Host ("== " + $name)
   & $fn
+  if($LASTEXITCODE -ne 0) { throw ("Non-zero exit code: " + $LASTEXITCODE) }
   Write-Host ("OK: " + $name)
 }
 
+function Require-File([string]$path) {
+  if(-not (Test-Path $path)) { throw ("Missing required file: " + $path) }
+}
+
 cd "C:\Users\sirok\MoCKA"
+
+Require-File ".\transparency\sample05\verify_sample05.ps1"
+
+$py = "python"
 
 Run-Step "Sample05 RFC3161 verify" {
   powershell -ExecutionPolicy Bypass -File ".\transparency\sample05\verify_sample05.ps1"
 }
 
-Run-Step "Sample01 verify (TODO)" {
-  Write-Host "TODO: wire Sample01 verifier command here"
+Run-Step "Sample01 Tamper-Proof Decision Log verify (chain+sig baseline)" {
+  Require-File ".\audit\ed25519\verify_full_chain_and_signature.py"
+  & $py ".\audit\ed25519\verify_full_chain_and_signature.py"
 }
 
-Run-Step "Sample02 verify (TODO)" {
-  Write-Host "TODO: wire Sample02 verifier command here"
+Run-Step "Sample02 Chain Integrity verify (chain+sig baseline)" {
+  Require-File ".\audit\ed25519\verify_full_chain_and_signature.py"
+  & $py ".\audit\ed25519\verify_full_chain_and_signature.py"
 }
 
-Run-Step "Sample03 verify (TODO)" {
-  Write-Host "TODO: wire Sample03 verifier command here"
+Run-Step "Sample03 Key Rotation verify (chain+sig baseline)" {
+  Require-File ".\audit\ed25519\verify_full_chain_and_signature.py"
+  & $py ".\audit\ed25519\verify_full_chain_and_signature.py"
 }
 
-Run-Step "Sample04 verify (TODO)" {
-  Write-Host "TODO: wire Sample04 verifier command here"
+Run-Step "Sample04 Observer Recovery Pack verify (export pack)" {
+  if(Test-Path ".\audit\ed25519\export_verify_pack.ps1") {
+    powershell -ExecutionPolicy Bypass -File ".\audit\ed25519\export_verify_pack.ps1"
+  } elseif(Test-Path ".\export_verify_pack.ps1") {
+    powershell -ExecutionPolicy Bypass -File ".\export_verify_pack.ps1"
+  } else {
+    throw "Missing export_verify_pack.ps1 (audit/ed25519 or repo root)"
+  }
 }
 
 Write-Host ""
-Write-Host "ALL DONE (Sample05 enforced; Sample01-04 TODO slots)"
+Write-Host "ALL DONE (Sample01-04 wired to existing verifiers)"
