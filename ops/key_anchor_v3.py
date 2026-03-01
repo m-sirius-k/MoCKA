@@ -1,34 +1,35 @@
 ﻿import json
 import hashlib
-import sys
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 
-MANIFEST = "phase3_key_policy/KEY_GENERATION_MANIFEST_v3.json"
-OUT = "phase3_key_policy/KEY_GENERATION_ANCHOR_v3.json"
+MANIFEST_PATH = Path("phase3_key_policy/KEY_GENERATION_MANIFEST_v3.json")
+ANCHOR_PATH = Path("phase3_key_policy/KEY_GENERATION_ANCHOR_v3.json")
 
-def sha256_bytes(b: bytes) -> str:
-    return hashlib.sha256(b).hexdigest()
+def sha256_hex(p: Path) -> str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
 
-def main():
-    with open(MANIFEST, "r", encoding="utf-8-sig") as f:
-        raw = f.read()
-        data = json.loads(raw)
+def utc_z() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    digest = sha256_bytes(raw.encode("utf-8"))
+def main() -> None:
+    if not MANIFEST_PATH.exists():
+        raise SystemExit(f"MANIFEST NOT FOUND: {MANIFEST_PATH}")
+
+    manifest_sha = sha256_hex(MANIFEST_PATH)
 
     anchor = {
         "anchor_version": "v3",
-        "manifest_path": MANIFEST,
-        "manifest_sha256": digest,
-        "anchored_at_utc": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "current_generation": data.get("current_generation"),
+        "manifest_path": str(MANIFEST_PATH).replace("\\", "/"),
+        "manifest_sha256": manifest_sha,
+        "anchored_at_utc": utc_z()
     }
 
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump(anchor, f, indent=2)
+    ANCHOR_PATH.parent.mkdir(parents=True, exist_ok=True)
+    ANCHOR_PATH.write_text(json.dumps(anchor, indent=2) + "\n", encoding="utf-8")
 
-    print("KEY ANCHOR WRITTEN:", OUT)
-    print("MANIFEST_SHA256:", digest)
+    print(f"KEY ANCHOR WRITTEN: {ANCHOR_PATH.as_posix()}")
+    print(f"MANIFEST_SHA256: {manifest_sha}")
 
 if __name__ == "__main__":
     main()
