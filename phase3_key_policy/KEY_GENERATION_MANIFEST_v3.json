@@ -1,6 +1,6 @@
-﻿{
+{
   "key_generation_version": "v3",
-  "current_generation": 1,
+  "current_generation": 2,
   "created_at": "2026-03-01",
   "policy": {
     "rotation_interval_days": 90,
@@ -10,9 +10,15 @@
   "generations": [
     {
       "generation": 1,
-      "status": "active",
+      "status": "retired",
       "activated_at": "2026-03-01",
       "previous_generation": null
+    },
+    {
+      "generation": 2,
+      "status": "active",
+      "activated_at": "2026-03-01",
+      "previous_generation": 1
     }
   ]
 }
