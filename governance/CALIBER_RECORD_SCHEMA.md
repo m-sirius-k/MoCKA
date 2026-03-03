@@ -1,7 +1,7 @@
 ﻿# CALIBER_RECORD_SCHEMA (Frozen Contract)
 
 Status: FROZEN
-schema_version: 0.1.0
+schema_version: 0.2.0
 
 Caliber record is a derived artifact from a Shadow report.
 It must not depend on raw stdout/stderr text.
@@ -30,6 +30,11 @@ fail_kinds (array of string)
 mutation_detected (bool)
 stdout_sha256 (string hex)
 stderr_sha256 (string hex)
+summary (string)
+
+Rules:
+- summary must be derived only from ok + fail_kinds + mutation_detected.
+- summary must not contain raw stdout/stderr text.
 
 ## evidence (required)
 
@@ -48,15 +53,3 @@ Rules:
 - newline at EOF
 - stable ordering
 - schema_version bump required for structure change
-
-## Operational Standard (Windows PowerShell)
-
-# NOTE: produce Shadow report as UTF-8 without BOM
-$j=(python shadow\verify_all_shadow.py --primary verify_pack_v4_sample/verify_all_v4.py)
-[System.IO.File]::WriteAllText((Resolve-Path .\outbox\shadow_last.json),$j,(New-Object System.Text.UTF8Encoding($false)))
-
-# NOTE: extract Caliber record
-python caliber\extract_caliber_record.py --shadow-report outbox\shadow_last.json --out outbox\caliber_last.json
-
-# NOTE: parse with utf-8
-python -c "import json; r=json.load(open(r'outbox\caliber_last.json','r',encoding='utf-8')); print('CALIBER', r['schema_version'], r['signals']['ok'], r['signals']['fail_kinds'])"
