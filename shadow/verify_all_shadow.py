@@ -6,9 +6,13 @@
 #
 # Hard safety:
 # - Detects working-tree mutation during run and fails if any is observed.
+#
+# Diagnostic evolution:
+# - Classifies failure lines into FAIL_KIND vocabulary (no auto-fix).
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -66,6 +70,27 @@ def git_porcelain(primary_root: Path) -> str:
     return r["stdout"]
 
 
+def classify_fail_kind(line: str) -> str:
+    u = line.upper()
+
+    if "INSUFFICIENT SIGNATURE" in u:
+        return "insufficient_signatures"
+    if "DUPLICATE SIGNER" in u:
+        return "duplicate_signer"
+    if "INVALID SIGNATURE" in u:
+        return "invalid_signature"
+    if "EXPECTED_FAIL_BUT_PASSED" in u:
+        return "unexpected_pass"
+    if "CANONICAL" in u and ("TAMPER" in u or "DETERMIN" in u):
+        return "canonical_violation"
+    if "REVOK" in u and ("USED" in u or "ENFORC" in u or "REVOKED" in u):
+        return "revocation_related"
+    if "REGISTRY" in u and "FAIL" in u:
+        return "registry_failure"
+
+    return "unknown"
+
+
 def extract_v4_diagnostics(stdout: str, stderr: str) -> dict:
     lines_out = [ln.rstrip("\r\n") for ln in stdout.splitlines()]
     lines_err = [ln.rstrip("\r\n") for ln in stderr.splitlines()]
@@ -86,6 +111,21 @@ def extract_v4_diagnostics(stdout: str, stderr: str) -> dict:
 
     err_nonempty = [ln for ln in lines_err if ln.strip()]
 
+    fail_kinds = []
+    fail_kind_counts = {}
+
+    for ln in fails:
+        k = classify_fail_kind(ln)
+        fail_kinds.append({"kind": k, "line": ln})
+        fail_kind_counts[k] = fail_kind_counts.get(k, 0) + 1
+
+    unexpected_pass_count = fail_kind_counts.get("unexpected_pass", 0)
+
+    # Heuristic: identify whether fails are expected
+    # If output contains "(expected)" on fail lines, treat as expected tests unless unexpected_pass appears.
+    expected_fail_lines = [ln for ln in fails if "(expected" in ln.lower()]
+    expected_fail_count = len(expected_fail_lines)
+
     return {
         "stdout_lines": len(lines_out),
         "stderr_lines": len(lines_err),
@@ -93,6 +133,10 @@ def extract_v4_diagnostics(stdout: str, stderr: str) -> dict:
         "fail_markers": fails[:50],
         "info_head": infos[:50],
         "stderr_head": err_nonempty[:50],
+        "fail_kinds": fail_kinds[:100],
+        "fail_kind_counts": fail_kind_counts,
+        "expected_fail_count": expected_fail_count,
+        "unexpected_pass_count": unexpected_pass_count,
     }
 
 
@@ -124,6 +168,10 @@ def main() -> int:
     post_porcelain = git_porcelain(primary_root).strip()
     mutation_detected = (pre_porcelain != post_porcelain)
 
+    # Overall status logic:
+    # - FAIL if verifier returncode != 0
+    # - FAIL if mutation detected
+    # - PASS otherwise
     overall_status = "PASS"
     if v4_status != "PASS":
         overall_status = "FAIL"
@@ -159,13 +207,14 @@ def main() -> int:
             "status": overall_status,
             "v4_status": v4_status,
             "mutation_detected": mutation_detected,
-            "fail_count_markers": len(diag.get("fail_markers", [])),
-            "pass_count_markers": len(diag.get("pass_markers", [])),
+            "fail_kind_counts": diag.get("fail_kind_counts", {}),
+            "expected_fail_count": diag.get("expected_fail_count", 0),
+            "unexpected_pass_count": diag.get("unexpected_pass_count", 0),
             "notes": [
                 "Shadow executes Primary verifier read-only and records diagnostics only.",
                 "Shadow performs no mutation and no repair.",
                 "If working tree changes during run, Shadow fails (immutability breach).",
-                "Diagnostics parsing is best-effort; treat as hints, not truth.",
+                "FAIL_KIND is a diagnostic vocabulary, not an enforcement mechanism.",
             ],
         },
     }
