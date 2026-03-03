@@ -1,0 +1,35 @@
+﻿MoCKA v4 released.
+
+A reproducible 2-of-3 multi-signature responsibility layer for AI governance.
+
+- Threshold authorization
+- Append-only key registry
+- Revocation enforcement
+- Canonical JSON determinism
+- Explicit PASS / FAIL verification tests
+
+Release:
+https://github.com/nsjpkimura-del/MoCKA/releases/tag/v4-sample-1.0
+
+This is not just signature logic.
+It is a cryptographic responsibility structure.
+
+
+---
+
+MoCKA v4 を公開しました。
+
+AIガバナンスのための
+2-of-3 マルチシグ責任レイヤーの再現可能実装です。
+
+・閾値署名
+・追記専用キー台帳
+・失効強制
+・Canonical JSON
+・PASS / FAIL 制度検証
+
+Release:
+https://github.com/nsjpkimura-del/MoCKA/releases/tag/v4-sample-1.0
+
+これは署名コードではなく、
+責任構造の暗号実装です。
