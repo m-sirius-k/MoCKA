@@ -10,12 +10,11 @@ import sys
 import time
 from datetime import datetime, timezone
 
-SCHEMA_VERSION = "1.2.0"
+SCHEMA_VERSION = "1.3.0"
 TOOL_NAME = "verify_all_shadow"
-TOOL_VERSION = "1.3.0"
+TOOL_VERSION = "1.4.0"
 
 HEAD_TAIL_LINES = 5  # NOTE: stdout trim window size
-
 GOV_SCHEMA_PATH = os.path.join("governance", "SHADOW_REPORT_SCHEMA.md")
 
 FAIL_KIND_VOCAB = [
@@ -25,6 +24,7 @@ FAIL_KIND_VOCAB = [
     "PRIMARY_STDOUT_PATTERN",
     "EXPECTED_FAIL_BUT_PASSED",
     "SCHEMA_MISMATCH",
+    "VOCAB_MISMATCH",
     "TOOL_ERROR",
     "GIT_UNAVAILABLE",
     "UNKNOWN",
@@ -101,20 +101,40 @@ def trim_stdout(lines, evidence_line_numbers):
 
     return kept, True, total
 
+def read_text(path):
+    return open(path, "r", encoding="utf-8", errors="replace").read()
+
 def extract_gov_schema_version(repo_root):
     p = os.path.join(repo_root, GOV_SCHEMA_PATH)
     if not os.path.isfile(p):
         return ""
-
-    try:
-        s = open(p, "r", encoding="utf-8", errors="replace").read()
-    except Exception:
-        return ""
-
+    s = read_text(p)
     m = re.search(r"(?m)^schema_version:\s*([0-9]+\.[0-9]+\.[0-9]+)\s*$", s)
+    return m.group(1).strip() if m else ""
+
+def extract_gov_vocab(repo_root):
+    p = os.path.join(repo_root, GOV_SCHEMA_PATH)
+    if not os.path.isfile(p):
+        return []
+
+    s = read_text(p)
+    # find block starting at header, take subsequent non-empty non-header lines until next '## ' heading
+    m = re.search(r"(?ms)^##\s+FAIL_KIND vocabulary.*?\n(.*?)(^\#\#\s|\Z)", s)
     if not m:
-        return ""
-    return m.group(1).strip()
+        return []
+
+    block = m.group(1)
+    vocab = []
+    for line in block.splitlines():
+        t = line.strip()
+        if not t:
+            continue
+        if t.startswith("#"):
+            continue
+        # accept only UPPERCASE + digits + underscore tokens
+        if re.fullmatch(r"[A-Z0-9_]+", t):
+            vocab.append(t)
+    return vocab
 
 def parse_args(argv):
     ap = argparse.ArgumentParser()
@@ -138,18 +158,27 @@ def main(argv):
     fails = []
     tool_error = ""
 
-    # Phase 3-1: governance closure check (schema version alignment)
+    # Phase 3 closure checks: schema_version + vocabulary alignment
     gov_ver = extract_gov_schema_version(repo_root)
-    if gov_ver and gov_ver != SCHEMA_VERSION:
-        fails.append({
-            "kind": "SCHEMA_MISMATCH",
-            "message": f"governance schema_version mismatch: governance={gov_ver} code={SCHEMA_VERSION}",
-        })
-    elif not gov_ver:
-        fails.append({
-            "kind": "SCHEMA_MISMATCH",
-            "message": "governance schema_version not found",
-        })
+    if not gov_ver:
+        fails.append({"kind": "SCHEMA_MISMATCH", "message": "governance schema_version not found"})
+    elif gov_ver != SCHEMA_VERSION:
+        fails.append({"kind": "SCHEMA_MISMATCH", "message": f"governance schema_version mismatch: governance={gov_ver} code={SCHEMA_VERSION}"})
+
+    gov_vocab = extract_gov_vocab(repo_root)
+    if not gov_vocab:
+        fails.append({"kind": "VOCAB_MISMATCH", "message": "governance FAIL_KIND vocabulary block not found or empty"})
+    else:
+        code_vocab = list(FAIL_KIND_VOCAB)
+        if gov_vocab != code_vocab:
+            fails.append({
+                "kind": "VOCAB_MISMATCH",
+                "message": "FAIL_KIND vocabulary mismatch (order-sensitive)",
+                "evidence": {
+                    "governance_sha256": sha256_text("\n".join(gov_vocab) + "\n"),
+                    "code_sha256": sha256_text("\n".join(code_vocab) + "\n"),
+                },
+            })
 
     primary_rel = pick_primary(repo_root, args.primary.strip())
 
