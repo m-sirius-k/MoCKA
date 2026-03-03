@@ -1,35 +1,41 @@
-﻿# SHADOW_REPORT_SCHEMA (Frozen Contract)
-
+SHADOW_REPORT_SCHEMA
+Frozen Contract
 Status: FROZEN
 schema_version: 1.3.0
 
+Purpose
 Shadow report is diagnostic-only.
-Primary is read-only.
-Shadow never repairs or grants exceptions.
+Primary verifier is read-only.
+Shadow never mutates state, repairs artifacts, or grants exceptions.
+Shadow produces structured, deterministic evidence about Primary execution.
 
-## Top-level required keys
-
+Top-Level Required Keys
 schema_version (string)
 report_id (string)
-generated_at_utc (string RFC3339)
+generated_at_utc (string RFC3339 UTC)
 tool (object)
 primary_run (object)
 working_tree (object)
 io (object)
 result (object)
 
-## io.stdout (v1.2.0)
+io.stdout Structure (since v1.2.0)
+lines (array of objects)
+  n (int)
+  text (string)
+sha256 (string lowercase hex, 64 characters)
+trimmed (boolean)
+total_lines (integer)
 
-lines (array of {n:int, text:string})
-sha256 (string hex)
-trimmed (bool)
-total_lines (int)
+Trimming Contract
+If trimmed = true:
+  lines MUST contain:
+    - first N lines (head)
+    - last N lines (tail)
+    - any lines referenced by evidence
+Evidence-hit lines MUST be preserved even when trimming is active.
 
-Rules:
-- If trimmed=true, lines contains head N + tail N plus any evidence-hit lines.
-- Evidence-hit lines must be preserved even when trimming.
-
-## FAIL_KIND vocabulary (v1.3.0)
+FAIL_KIND Vocabulary (authoritative list, v1.3.0)
 PRIMARY_FAILED
 MUTATION_DETECTED
 PRIMARY_STDERR
@@ -41,24 +47,51 @@ TOOL_ERROR
 GIT_UNAVAILABLE
 UNKNOWN
 
-## Determinism rules
+Vocabulary Rules
+All FAIL_KIND values:
+  - uppercase
+  - characters: A-Z 0-9 underscore
+  - no spaces
+  - must appear in this list
+Adding or removing a FAIL_KIND requires schema_version bump.
 
-- UTF-8
-- sorted keys
-- newline at EOF
-- stable ordering
-- schema_version bump required for structure change
+Determinism Rules
+Encoding: UTF-8
+Key ordering: sorted
+JSON formatting: deterministic
+Newline: single newline at EOF
+Hash values: lowercase hex
+Schema structure changes require schema_version increment.
 
-## Meaning notes
+Meaning Notes
 
-EXPECTED_FAIL_BUT_PASSED:
-A sample that was expected to fail but passed verification.
-Diagnostic integrity breach signal for sample packs.
+EXPECTED_FAIL_BUT_PASSED
+A test case marked as expected failure was verified as success.
+Indicates sample integrity breach.
+This is a diagnostic integrity signal, not a repair action.
 
-## Operational Standard (Windows PowerShell)
+PRIMARY_FAILED
+Primary verifier returned non-zero exit code.
 
-# NOTE: write Shadow report as UTF-8 without BOM for machine parsing stability
-$j=(python shadow\verify_all_shadow.py --primary verify_pack_v4_sample/verify_all_v4.py); [System.IO.File]::WriteAllText((Resolve-Path .\outbox\shadow_last.json),$j,(New-Object System.Text.UTF8Encoding($false)))
+MUTATION_DETECTED
+Working tree mutation detected before or after primary run.
 
-# NOTE: parse with utf-8
+SCHEMA_MISMATCH
+Governance schema_version does not match tool implementation.
+
+VOCAB_MISMATCH
+FAIL_KIND value not listed in governance vocabulary.
+
+TOOL_ERROR
+Internal Shadow tool failure.
+
+Operational Standard (Windows PowerShell)
+
+Write Shadow report as UTF-8 without BOM:
+
+$j=(python shadow\verify_all_shadow.py --primary verify_pack_v4_sample/verify_all_v4.py)
+[System.IO.File]::WriteAllText((Resolve-Path .\outbox\shadow_last.json),$j,(New-Object System.Text.UTF8Encoding($false)))
+
+Parse with UTF-8:
+
 python -c "import json; r=json.load(open(r'outbox\shadow_last.json','r',encoding='utf-8')); print('OK', r['schema_version'], r['result']['ok'], r['io']['stdout']['trimmed'], r['io']['stdout']['total_lines'])"
