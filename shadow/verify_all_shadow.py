@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 SCHEMA_VERSION = "1.0.0"
 TOOL_NAME = "verify_all_shadow"
-TOOL_VERSION = "1.0.1"
+TOOL_VERSION = "1.0.2"
 
 FAIL_KIND_VOCAB = [
     "PRIMARY_FAILED",
@@ -175,7 +175,9 @@ def main(argv):
         norm.append(item)
 
     distinct_kinds = sorted({x["kind"] for x in norm}, key=lambda k: kind_rank.get(k, 999))
-    ok = (rc == 0) and (mutation is False) and (tool_error == "")
+
+    # NOTE: ok must imply "no failures" for audit automation.
+    ok = (rc == 0) and (mutation is False) and (tool_error == "") and (len(norm) == 0)
 
     report["primary_run"] = {
         "verifier": primary_rel if primary_rel else "",
