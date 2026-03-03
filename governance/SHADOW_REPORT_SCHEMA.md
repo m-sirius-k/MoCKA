@@ -1,7 +1,7 @@
 ﻿# SHADOW_REPORT_SCHEMA (Frozen Contract)
 
 Status: FROZEN
-schema_version: 1.1.0
+schema_version: 1.2.0
 
 Shadow report is diagnostic-only.
 Primary is read-only.
@@ -13,13 +13,23 @@ schema_version (string)
 report_id (string)
 generated_at_utc (string RFC3339)
 tool (object)
-repo (object)
 primary_run (object)
 working_tree (object)
 io (object)
 result (object)
 
-## FAIL_KIND vocabulary (v1.1.0)
+## io.stdout (v1.2.0)
+
+lines (array of {n:int, text:string})
+sha256 (string hex)
+trimmed (bool)
+total_lines (int)
+
+Rules:
+- If trimmed=true, lines contains head N + tail N plus any evidence-hit lines.
+- Evidence-hit lines must be preserved even when trimming.
+
+## FAIL_KIND vocabulary (v1.2.0)
 
 PRIMARY_FAILED
 MUTATION_DETECTED
@@ -36,13 +46,13 @@ UNKNOWN
 - sorted keys
 - newline at EOF
 - stable ordering
-- version bump required for structure change
+- schema_version bump required for structure change
 
 ## Meaning notes
 
 EXPECTED_FAIL_BUT_PASSED:
 A sample that was expected to fail but passed verification.
-This is a diagnostic integrity breach signal for sample packs.
+Diagnostic integrity breach signal for sample packs.
 
 ## Operational Standard (Windows PowerShell)
 
@@ -50,4 +60,4 @@ This is a diagnostic integrity breach signal for sample packs.
 $j=(python shadow\verify_all_shadow.py --primary verify_pack_v4_sample/verify_all_v4.py); [System.IO.File]::WriteAllText((Resolve-Path .\outbox\shadow_last.json),$j,(New-Object System.Text.UTF8Encoding($false)))
 
 # NOTE: parse with utf-8
-python -c "import json; r=json.load(open(r'outbox\shadow_last.json','r',encoding='utf-8')); print('OK', r['schema_version'], r['result']['ok'])"
+python -c "import json; r=json.load(open(r'outbox\shadow_last.json','r',encoding='utf-8')); print('OK', r['schema_version'], r['result']['ok'], r['io']['stdout']['trimmed'], r['io']['stdout']['total_lines'])"
