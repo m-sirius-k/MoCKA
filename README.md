@@ -1,4 +1,13 @@
-﻿# MoCKA v4
+MoCKA is a verifiable AI governance and automation architecture focused on deterministic artifacts, cryptographic provenance, and audit-friendly operation.
+It treats reasoning traces and institutional boundaries as first-class, reproducible outputs rather than ephemeral logs.
+
+Shadow is a dual-layer subsystem:
+shadow_pj is immutable and byte-stable (descriptive only, sealed by SHA256 and signed commits),
+while shadow_runtime is an evolution-safe sandbox for experiments and tooling that remains uncoupled from core execution and CI.
+
+If you care about non-interference, reproducibility, and provable integrity in AI-assisted systems, start with SHADOW_OVERVIEW.md and shadow_pj/.
+
+# MoCKA v4
 Trust & Identity Layer — 2-of-3 Multi-Signature Responsibility Model
 
 ---
