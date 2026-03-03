@@ -3,6 +3,7 @@
 # Output: Caliber record JSON (schema v0.2.0) - minimal, stable, machine-friendly.
 #
 # Phase 4-7: Remove hardcoded FAIL_KIND vocabulary. Treat governance/SHADOW_REPORT_SCHEMA.md as the sole authority.
+# This implementation is tolerant to minor documentation formatting variations.
 
 import argparse
 import hashlib
@@ -17,6 +18,7 @@ GOV_SCHEMA_PATH = os.path.join("governance", "CALIBER_RECORD_SCHEMA.md")
 GOV_SHADOW_SCHEMA_PATH = os.path.join("governance", "SHADOW_REPORT_SCHEMA.md")
 
 HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
+FAIL_KIND_TOKEN_RE = re.compile(r"^[A-Z0-9_]+$")
 
 def sha256_text(t: str) -> str:
     h = hashlib.sha256()
@@ -44,6 +46,21 @@ def extract_gov_schema_version(repo_root: str, rel_path: str) -> str:
     m = re.search(r"(?m)^schema_version:\s*([0-9]+\.[0-9]+\.[0-9]+)\s*$", s)
     return m.group(1).strip() if m else ""
 
+def _scan_vocab_lines(block: str):
+    vocab = []
+    for line in block.splitlines():
+        t = line.strip()
+        if not t:
+            continue
+
+        # allow bullets like "- PRIMARY_FAILED" or "* PRIMARY_FAILED"
+        if t.startswith(("-", "*")):
+            t = t[1:].strip()
+
+        if FAIL_KIND_TOKEN_RE.fullmatch(t):
+            vocab.append(t)
+    return vocab
+
 def extract_shadow_fail_kind_vocab(repo_root: str):
     p = os.path.join(repo_root, GOV_SHADOW_SCHEMA_PATH)
     if not os.path.isfile(p):
@@ -51,24 +68,21 @@ def extract_shadow_fail_kind_vocab(repo_root: str):
 
     s = read_text(p)
 
-    # Expect a section like:
-    # ## FAIL_KIND vocabulary
-    # PRIMARY_FAILED
-    # ...
+    # Pattern A: exact heading "## FAIL_KIND vocabulary"
     m = re.search(r"(?ms)^##\s+FAIL_KIND vocabulary\s*\n(.*?)(^\#\#\s|\Z)", s)
-    if not m:
-        return []
+    if m:
+        v = _scan_vocab_lines(m.group(1))
+        if v:
+            return v
 
-    block = m.group(1)
-    vocab = []
-    for line in block.splitlines():
-        t = line.strip()
-        if not t:
-            continue
-        if re.fullmatch(r"[A-Z0-9_]+", t):
-            vocab.append(t)
+    # Pattern B: any heading containing "FAIL_KIND" (case-sensitive) then consume until next heading
+    m = re.search(r"(?ms)^##\s+.*FAIL_KIND.*\n(.*?)(^\#\#\s|\Z)", s)
+    if m:
+        v = _scan_vocab_lines(m.group(1))
+        if v:
+            return v
 
-    return vocab
+    return []
 
 def build_summary(ok: bool, mutation: bool, kinds):
     if mutation:
