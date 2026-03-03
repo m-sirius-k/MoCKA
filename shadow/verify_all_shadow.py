@@ -3,6 +3,9 @@
 # - Read-only: never modify Primary artifacts.
 # - No pass-through: outputs diagnostics only.
 # - No repair actions.
+#
+# Hard safety:
+# - Detects working-tree mutation during run and fails if any is observed.
 
 import argparse
 import json
@@ -29,18 +32,20 @@ def safe_write_report(out_path: Path, report_obj: dict) -> None:
     )
 
 
-def run_python(script_path: Path, cwd: Path, extra_args: list[str]) -> dict:
-    cmd = [sys.executable, str(script_path)] + extra_args
+def run_cmd(cmd: list[str], cwd: Path) -> dict:
     p = subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True)
-    stdout = (p.stdout or "")
-    stderr = (p.stderr or "")
     return {
         "cmd": cmd,
         "cwd": str(cwd),
         "returncode": p.returncode,
-        "stdout": stdout,
-        "stderr": stderr,
+        "stdout": (p.stdout or ""),
+        "stderr": (p.stderr or ""),
     }
+
+
+def run_python(script_path: Path, cwd: Path, extra_args: list[str]) -> dict:
+    cmd = [sys.executable, str(script_path)] + extra_args
+    return run_cmd(cmd, cwd)
 
 
 def resolve_script(primary_root: Path, p: str) -> Path:
@@ -54,8 +59,14 @@ def resolve_script(primary_root: Path, p: str) -> Path:
     return sp
 
 
+def git_porcelain(primary_root: Path) -> str:
+    r = run_cmd(["git", "status", "--porcelain"], primary_root)
+    if r["returncode"] != 0:
+        fail("GIT_STATUS_FAILED")
+    return r["stdout"]
+
+
 def extract_v4_diagnostics(stdout: str, stderr: str) -> dict:
-    # Best-effort parsing. No assumptions about v4 output format.
     lines_out = [ln.rstrip("\r\n") for ln in stdout.splitlines()]
     lines_err = [ln.rstrip("\r\n") for ln in stderr.splitlines()]
 
@@ -104,10 +115,20 @@ def main() -> int:
 
     verify_all_v4 = resolve_script(primary_root, args.verify_all_v4)
 
+    pre_porcelain = git_porcelain(primary_root).strip()
+
     v4_run = run_python(verify_all_v4, cwd=primary_root, extra_args=[])
     diag = extract_v4_diagnostics(v4_run["stdout"], v4_run["stderr"])
+    v4_status = "PASS" if v4_run["returncode"] == 0 else "FAIL"
 
-    status = "PASS" if v4_run["returncode"] == 0 else "FAIL"
+    post_porcelain = git_porcelain(primary_root).strip()
+    mutation_detected = (pre_porcelain != post_porcelain)
+
+    overall_status = "PASS"
+    if v4_status != "PASS":
+        overall_status = "FAIL"
+    if mutation_detected:
+        overall_status = "FAIL"
 
     report = {
         "shadow_verifier": "verify_all_shadow.py",
@@ -115,6 +136,13 @@ def main() -> int:
         "generated_at_utc": utc_now_iso(),
         "primary_root": str(primary_root),
         "checks": [
+            {
+                "name": "working_tree_immutability_check",
+                "type": "git_status_porcelain",
+                "pre": pre_porcelain,
+                "post": post_porcelain,
+                "mutation_detected": mutation_detected,
+            },
             {
                 "name": "primary_verify_all_v4",
                 "type": "subprocess",
@@ -125,15 +153,18 @@ def main() -> int:
                     "returncode": v4_run["returncode"],
                 },
                 "diagnostics": diag,
-            }
+            },
         ],
         "summary": {
-            "status": status,
+            "status": overall_status,
+            "v4_status": v4_status,
+            "mutation_detected": mutation_detected,
             "fail_count_markers": len(diag.get("fail_markers", [])),
             "pass_count_markers": len(diag.get("pass_markers", [])),
             "notes": [
                 "Shadow executes Primary verifier read-only and records diagnostics only.",
                 "Shadow performs no mutation and no repair.",
+                "If working tree changes during run, Shadow fails (immutability breach).",
                 "Diagnostics parsing is best-effort; treat as hints, not truth.",
             ],
         },
@@ -141,8 +172,9 @@ def main() -> int:
 
     safe_write_report(out_path, report)
     print(f"SHADOW_REPORT_WRITTEN: {out_path}")
-    print(f"SHADOW_SUMMARY_STATUS: {status}")
-    return 0 if status == "PASS" else 2
+    print(f"SHADOW_SUMMARY_STATUS: {overall_status}")
+    print(f"SHADOW_MUTATION_DETECTED: {mutation_detected}")
+    return 0 if overall_status == "PASS" else 2
 
 
 if __name__ == "__main__":
