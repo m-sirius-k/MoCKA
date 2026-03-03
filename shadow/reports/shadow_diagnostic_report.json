@@ -1,0 +1,30 @@
+{
+  "shadow_verifier": "verify_all_shadow.py",
+  "mode": "diagnostic_only",
+  "generated_at_utc": "2026-03-03T02:39:40Z",
+  "primary_root": "C:\\Users\\sirok\\MoCKA",
+  "checks": [
+    {
+      "name": "primary_verify_all_v4",
+      "type": "subprocess",
+      "script": "C:\\Users\\sirok\\MoCKA\\verify_pack_v4_sample\\verify_all_v4.py",
+      "result": {
+        "cmd": [
+          "C:\\Users\\sirok\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\python.exe",
+          "C:\\Users\\sirok\\MoCKA\\verify_pack_v4_sample\\verify_all_v4.py"
+        ],
+        "cwd": "C:\\Users\\sirok\\MoCKA",
+        "returncode": 0,
+        "stdout": "== REGISTRY VERIFY ==\nOK: registry structure valid\nActive keys: 3\nRevoked keys: 0\n\n== SAMPLE VERIFY ==\n\n-- valid_2_of_3.json\nOK: signature verify PASS (2/2)\nPASS (expected)\n\n-- insufficient_signature.json\nFAIL (expected): Insufficient signatures: 1 < 2\n\n-- duplicate_signer.json\nFAIL (expected): Duplicate signer: authority_b_v1\n\n-- revoked_key_used.json\nOK: signature verify PASS (2/2)\nFAIL (expected): EXPECTED_FAIL_BUT_PASSED\n\n-- canonical_tamper.json\nFAIL (expected): Invalid signature for key_id: authority_b_v1\n\nOK: verify_all_v4 complete",
+        "stderr": ""
+      }
+    }
+  ],
+  "summary": {
+    "status": "PASS",
+    "notes": [
+      "Shadow runs Primary verifiers in read-only mode and records diagnostics.",
+      "Shadow does not repair or modify Primary artifacts."
+    ]
+  }
+}
