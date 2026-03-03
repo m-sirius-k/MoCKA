@@ -2,8 +2,8 @@
 # Input: Shadow report JSON (schema v1.x)
 # Output: Caliber record JSON (schema v0.2.0) - minimal, stable, machine-friendly.
 #
-# Phase 4-7: Remove hardcoded FAIL_KIND vocabulary. Treat governance/SHADOW_REPORT_SCHEMA.md as the sole authority.
-# This implementation is tolerant to documentation formatting variations.
+# Phase 4-7: FAIL_KIND vocabulary is derived from governance/SHADOW_REPORT_SCHEMA.md (sole authority).
+# Fix3: tolerate missing/changed headings by scanning whole document as fallback.
 
 import argparse
 import hashlib
@@ -18,8 +18,9 @@ GOV_SCHEMA_PATH = os.path.join("governance", "CALIBER_RECORD_SCHEMA.md")
 GOV_SHADOW_SCHEMA_PATH = os.path.join("governance", "SHADOW_REPORT_SCHEMA.md")
 
 HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
-FAIL_KIND_TOKEN_ANYWHERE_RE = re.compile(r"[A-Z][A-Z0-9_]{2,}")
+TOKEN_RE = re.compile(r"[A-Z][A-Z0-9_]{2,}")
 BACKTICK_TOKEN_RE = re.compile(r"`([A-Z][A-Z0-9_]{2,})`")
+CANON_TOKEN_RE = re.compile(r"^[A-Z0-9_]+$")
 
 def sha256_text(t: str) -> str:
     h = hashlib.sha256()
@@ -52,17 +53,14 @@ def _extract_token_from_line(line: str):
     if not t:
         return ""
 
-    # bullets
     if t.startswith(("-", "*")):
         t = t[1:].strip()
 
-    # prefer backticked token if present: `PRIMARY_FAILED`
     m = BACKTICK_TOKEN_RE.search(t)
     if m:
         return m.group(1)
 
-    # otherwise take the first ALLCAPS-ish token in the line
-    m = FAIL_KIND_TOKEN_ANYWHERE_RE.search(t)
+    m = TOKEN_RE.search(t)
     if m:
         return m.group(0)
 
@@ -75,13 +73,43 @@ def _scan_vocab_lines(block: str):
         tok = _extract_token_from_line(line)
         if not tok:
             continue
-        # accept only canonical FAIL_KIND tokens: uppercase + digits + underscore
-        if not re.fullmatch(r"[A-Z0-9_]+", tok):
+        if not CANON_TOKEN_RE.fullmatch(tok):
             continue
         if tok in seen:
             continue
         seen.add(tok)
         vocab.append(tok)
+    return vocab
+
+def _scan_entire_doc_for_fail_kinds(doc: str):
+    # Fallback: collect tokens that look like FAIL_KIND candidates anywhere in doc,
+    # but bias toward lines that mention FAIL_KIND to reduce false positives.
+    vocab = []
+    seen = set()
+
+    lines = doc.splitlines()
+    for line in lines:
+        if "FAIL_KIND" not in line and "fail_kind" not in line and "FailKind" not in line:
+            continue
+        tok = _extract_token_from_line(line)
+        if tok and CANON_TOKEN_RE.fullmatch(tok) and tok not in seen:
+            seen.add(tok)
+            vocab.append(tok)
+
+    # If still empty, as a last resort, harvest backticked or bare tokens from the whole doc.
+    if not vocab:
+        for m in BACKTICK_TOKEN_RE.finditer(doc):
+            tok = m.group(1)
+            if CANON_TOKEN_RE.fullmatch(tok) and tok not in seen:
+                seen.add(tok)
+                vocab.append(tok)
+        if not vocab:
+            for m in TOKEN_RE.finditer(doc):
+                tok = m.group(0)
+                if CANON_TOKEN_RE.fullmatch(tok) and tok not in seen:
+                    seen.add(tok)
+                    vocab.append(tok)
+
     return vocab
 
 def extract_shadow_fail_kind_vocab(repo_root: str):
@@ -98,14 +126,23 @@ def extract_shadow_fail_kind_vocab(repo_root: str):
         if v:
             return v
 
-    # Pattern B: any heading containing "FAIL_KIND"
+    # Pattern B: any heading containing "FAIL_KIND" (## only)
     m = re.search(r"(?ms)^##\s+.*FAIL_KIND.*\n(.*?)(^\#\#\s|\Z)", s)
     if m:
         v = _scan_vocab_lines(m.group(1))
         if v:
             return v
 
-    return []
+    # Pattern C: tolerate different heading levels (# / ###) containing FAIL_KIND
+    m = re.search(r"(?ms)^(#{1,6})\s+.*FAIL_KIND.*\n(.*?)(^\#\#|\Z)", s)
+    if m:
+        v = _scan_vocab_lines(m.group(2))
+        if v:
+            return v
+
+    # Fallback: scan entire doc
+    v = _scan_entire_doc_for_fail_kinds(s)
+    return v
 
 def build_summary(ok: bool, mutation: bool, kinds):
     if mutation:
