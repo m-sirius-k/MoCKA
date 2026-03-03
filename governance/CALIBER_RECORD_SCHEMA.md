@@ -28,11 +28,12 @@ primary_exit_code (int or null)
 ok (bool)
 fail_kinds (array of string)
 mutation_detected (bool)
-stdout_sha256 (string hex)
-stderr_sha256 (string hex)
+stdout_sha256 (string hex, non-empty)
+stderr_sha256 (string hex, non-empty)
 summary (string)
 
 Rules:
+- stdout_sha256 and stderr_sha256 must be non-empty 64-hex strings.
 - summary must be derived only from ok + fail_kinds + mutation_detected.
 - summary must not contain raw stdout/stderr text.
 

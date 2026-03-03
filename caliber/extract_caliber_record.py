@@ -27,6 +27,8 @@ ALLOWED_FAIL_KINDS = [
     "UNKNOWN",
 ]
 
+HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
+
 def sha256_text(t: str) -> str:
     h = hashlib.sha256()
     h.update(t.encode("utf-8"))
@@ -57,12 +59,10 @@ def extract_shadow_fail_kind_vocab(repo_root: str):
     p = os.path.join(repo_root, GOV_SHADOW_SCHEMA_PATH)
     if not os.path.isfile(p):
         return []
-
     s = read_text(p)
     m = re.search(r"(?ms)^##\s+FAIL_KIND vocabulary.*?\n(.*?)(^\#\#\s|\Z)", s)
     if not m:
         return []
-
     block = m.group(1)
     vocab = []
     for line in block.splitlines():
@@ -83,6 +83,12 @@ def build_summary(ok: bool, mutation: bool, kinds):
     if len(kinds) == 1:
         return f"{kinds[0]} detected"
     return f"{kinds[0]} +{len(kinds)-1} more"
+
+def must_hex64(name: str, v: str):
+    if not isinstance(v, str) or not v:
+        raise SystemExit(f"TOOL_ERROR: missing required {name}")
+    if not HEX64_RE.fullmatch(v):
+        raise SystemExit(f"TOOL_ERROR: invalid {name} (must be 64 hex)")
 
 def parse_args(argv):
     ap = argparse.ArgumentParser()
@@ -117,6 +123,11 @@ def main(argv):
     if bad:
         raise SystemExit("TOOL_ERROR: invalid fail_kinds detected (not in allowed Shadow vocabulary): " + ",".join(bad))
 
+    stdout_sha = r.get("io", {}).get("stdout", {}).get("sha256", "")
+    stderr_sha = r.get("io", {}).get("stderr", {}).get("sha256", "")
+    must_hex64("signals.stdout_sha256", stdout_sha)
+    must_hex64("signals.stderr_sha256", stderr_sha)
+
     summary = build_summary(ok, mutation, fail_kinds)
 
     record = {
@@ -133,8 +144,8 @@ def main(argv):
             "ok": ok,
             "fail_kinds": fail_kinds,
             "mutation_detected": mutation,
-            "stdout_sha256": r.get("io", {}).get("stdout", {}).get("sha256", ""),
-            "stderr_sha256": r.get("io", {}).get("stderr", {}).get("sha256", ""),
+            "stdout_sha256": stdout_sha,
+            "stderr_sha256": stderr_sha,
             "summary": summary,
         },
         "evidence": [],
