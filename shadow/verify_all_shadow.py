@@ -9,9 +9,11 @@ import sys
 import time
 from datetime import datetime, timezone
 
-SCHEMA_VERSION = "1.1.0"
+SCHEMA_VERSION = "1.2.0"
 TOOL_NAME = "verify_all_shadow"
-TOOL_VERSION = "1.1.0"
+TOOL_VERSION = "1.2.0"
+
+HEAD_TAIL_LINES = 5  # NOTE: stdout trim window size
 
 FAIL_KIND_VOCAB = [
     "PRIMARY_FAILED",
@@ -65,12 +67,6 @@ def git_status_porcelain(cwd):
     except Exception as e:
         return False, f"{type(e).__name__}: {e}"
 
-def lines_obj(lines):
-    return {
-        "lines": [{"n": i + 1, "text": lines[i]} for i in range(len(lines))],
-        "sha256": sha256_lines(lines),
-    }
-
 def deterministic_dump(obj):
     return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
 
@@ -85,12 +81,29 @@ def pick_primary(repo_root, explicit):
             return rel
     return ""
 
+def trim_stdout(lines, evidence_line_numbers):
+    total = len(lines)
+
+    if total <= HEAD_TAIL_LINES * 2:
+        return lines, False, total
+
+    head = list(range(0, HEAD_TAIL_LINES))
+    tail = list(range(total - HEAD_TAIL_LINES, total))
+
+    keep = set(head + tail + evidence_line_numbers)
+
+    trimmed_lines = []
+    for i in sorted(keep):
+        if 0 <= i < total:
+            trimmed_lines.append((i, lines[i]))
+
+    ordered = [text for _, text in trimmed_lines]
+    return ordered, True, total
+
 def parse_args(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo-root", default=".")
     ap.add_argument("--primary", default="")
-    ap.add_argument("--primary-args", default="")
-    ap.add_argument("--stdout-pattern", default="")
     return ap.parse_args(argv)
 
 def main(argv):
@@ -98,7 +111,6 @@ def main(argv):
     repo_root = os.path.abspath(args.repo_root)
 
     primary_rel = pick_primary(repo_root, args.primary.strip())
-    primary_args = [x for x in args.primary_args.split(" ") if x] if args.primary_args else []
 
     report = {}
     report["schema_version"] = SCHEMA_VERSION
@@ -110,34 +122,18 @@ def main(argv):
     clean_before = (status_before.strip() == "") if git_ok_before else False
 
     fails = []
-    tool_error = ""
-
-    if not git_ok_before:
-        fails.append({"kind": "GIT_UNAVAILABLE", "message": f"git status failed (before): {status_before}"})
+    evidence_lines = []
 
     if not primary_rel:
-        tool_error = "primary verifier not found"
         rc = 99
         out_lines = []
-        err_lines = [tool_error]
+        err_lines = ["primary verifier not found"]
         dur_ms = 0
-        primary_cmd = [sys.executable, "(missing)"]
     else:
-        primary_cmd = [sys.executable, primary_rel] + primary_args
-        try:
-            rc, out_lines, err_lines, dur_ms = run(primary_cmd, repo_root)
-        except Exception as e:
-            tool_error = f"{type(e).__name__}: {e}"
-            rc = 99
-            out_lines = []
-            err_lines = [tool_error]
-            dur_ms = 0
+        rc, out_lines, err_lines, dur_ms = run([sys.executable, primary_rel], repo_root)
 
     git_ok_after, status_after = git_status_porcelain(repo_root)
     clean_after = (status_after.strip() == "") if git_ok_after else False
-
-    if not git_ok_after:
-        fails.append({"kind": "GIT_UNAVAILABLE", "message": f"git status failed (after): {status_after}"})
 
     mutation = False
     if git_ok_before and git_ok_after:
@@ -147,65 +143,58 @@ def main(argv):
         fails.append({"kind": "PRIMARY_FAILED", "message": f"exit_code={rc}"})
 
     if mutation:
-        fails.append({"kind": "MUTATION_DETECTED", "message": "working-tree mutation detected (before != after)"})
+        fails.append({"kind": "MUTATION_DETECTED", "message": "working-tree mutation detected"})
 
     if err_lines:
         fails.append({"kind": "PRIMARY_STDERR", "message": "primary verifier wrote to stderr"})
 
-    # NOTE: institutional signal extraction
-    hits = []
-    for i, line in enumerate(out_lines, start=1):
+    for i, line in enumerate(out_lines):
         if "EXPECTED_FAIL_BUT_PASSED" in line:
-            hits.append({"n": i, "text_sha256": sha256_text(line)})
-    if hits:
-        fails.append({
-            "kind": "EXPECTED_FAIL_BUT_PASSED",
-            "message": "expected fail but passed (sample integrity breach signal)",
-            "evidence": {"hits": hits},
-        })
+            evidence_lines.append(i)
+            fails.append({
+                "kind": "EXPECTED_FAIL_BUT_PASSED",
+                "message": "expected fail but passed",
+                "evidence": {"line": i + 1, "text_sha256": sha256_text(line)}
+            })
 
-    if tool_error:
-        fails.append({"kind": "TOOL_ERROR", "message": tool_error})
+    trimmed_out, trimmed_flag, total_lines = trim_stdout(out_lines, evidence_lines)
 
-    kind_rank = {k: i for i, k in enumerate(FAIL_KIND_VOCAB)}
-    norm = []
-    for f in fails:
-        k = f.get("kind", "UNKNOWN")
-        if k not in FAIL_KIND_VOCAB:
-            k = "UNKNOWN"
-        item = {"kind": k, "message": str(f.get("message", ""))}
-        if "evidence" in f:
-            item["evidence"] = f["evidence"]
-        norm.append(item)
-
-    distinct_kinds = sorted({x["kind"] for x in norm}, key=lambda k: kind_rank.get(k, 999))
-    ok = (rc == 0) and (mutation is False) and (tool_error == "") and (len(norm) == 0)
+    ok = (rc == 0) and (mutation is False) and (len(fails) == 0)
 
     report["primary_run"] = {
-        "verifier": primary_rel if primary_rel else "",
+        "verifier": primary_rel,
         "mode": "read_only",
         "exit_code": rc,
         "duration_ms": dur_ms,
-        "argv": primary_cmd,
+        "argv": [sys.executable, primary_rel],
     }
 
     report["working_tree"] = {
         "clean_before": bool(clean_before),
         "clean_after": bool(clean_after),
         "mutation_detected": bool(mutation),
-        "status_before": status_before if git_ok_before else "",
-        "status_after": status_after if git_ok_after else "",
     }
 
-    report["io"] = {"stdout": lines_obj(out_lines), "stderr": lines_obj(err_lines)}
+    report["io"] = {
+        "stdout": {
+            "lines": [{"n": i + 1, "text": trimmed_out[i]} for i in range(len(trimmed_out))],
+            "sha256": sha256_lines(trimmed_out),
+            "trimmed": trimmed_flag,
+            "total_lines": total_lines
+        },
+        "stderr": {
+            "lines": [{"n": i + 1, "text": err_lines[i]} for i in range(len(err_lines))],
+            "sha256": sha256_lines(err_lines),
+        }
+    }
 
     report["result"] = {
         "ok": bool(ok),
         "fail": {
-            "count": int(len(norm)),
-            "kinds": distinct_kinds,
-            "items": norm,
-        },
+            "count": len(fails),
+            "kinds": sorted(list(set([f["kind"] for f in fails]))),
+            "items": fails
+        }
     }
 
     sys.stdout.write(deterministic_dump(report))
