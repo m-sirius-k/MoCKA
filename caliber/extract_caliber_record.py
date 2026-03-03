@@ -1,14 +1,17 @@
 ﻿# NOTE: Caliber extractor is derived artifact generation. It must not modify Primary or Shadow.
-# Input: Shadow report JSON (schema v1.3.0)
+# Input: Shadow report JSON (schema v1.x)
 # Output: Caliber record JSON (schema v0.1.0) - minimal, stable, machine-friendly.
 
 import argparse
 import hashlib
 import json
+import os
+import re
 import sys
 from datetime import datetime, timezone
 
 CALIBER_SCHEMA_VERSION = "0.1.0"
+GOV_SCHEMA_PATH = os.path.join("governance", "CALIBER_RECORD_SCHEMA.md")
 
 def sha256_text(t: str) -> str:
     h = hashlib.sha256()
@@ -18,24 +21,43 @@ def sha256_text(t: str) -> str:
 def utc_now_rfc3339() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
+def deterministic_dump(obj: dict) -> str:
+    return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+
 def load_json(path: str) -> dict:
     with open(path, "r", encoding="utf-8", errors="strict") as f:
         return json.load(f)
 
-def deterministic_dump(obj: dict) -> str:
-    return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n"
+def read_text(path: str) -> str:
+    return open(path, "r", encoding="utf-8", errors="replace").read()
+
+def extract_gov_schema_version(repo_root: str) -> str:
+    p = os.path.join(repo_root, GOV_SCHEMA_PATH)
+    if not os.path.isfile(p):
+        return ""
+    s = read_text(p)
+    m = re.search(r"(?m)^schema_version:\s*([0-9]+\.[0-9]+\.[0-9]+)\s*$", s)
+    return m.group(1).strip() if m else ""
 
 def parse_args(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("--shadow-report", required=True)
     ap.add_argument("--out", default="")
+    ap.add_argument("--repo-root", default=".")
     return ap.parse_args(argv)
 
 def main(argv):
     a = parse_args(argv)
+    repo_root = os.path.abspath(a.repo_root)
+
+    gov_ver = extract_gov_schema_version(repo_root)
+    if not gov_ver:
+        raise SystemExit("TOOL_ERROR: governance schema_version not found for CALIBER_RECORD_SCHEMA.md")
+    if gov_ver != CALIBER_SCHEMA_VERSION:
+        raise SystemExit(f"TOOL_ERROR: governance schema_version mismatch: governance={gov_ver} code={CALIBER_SCHEMA_VERSION}")
+
     r = load_json(a.shadow_report)
 
-    # Minimal stable fields
     record = {
         "schema_version": CALIBER_SCHEMA_VERSION,
         "generated_at_utc": utc_now_rfc3339(),
@@ -56,12 +78,10 @@ def main(argv):
         "evidence": [],
     }
 
-    # Evidence normalization: keep kind + evidence payload hashes only (no raw text)
     items = r.get("result", {}).get("fail", {}).get("items", [])
     for it in items:
         kind = str(it.get("kind", ""))
         ev = it.get("evidence", {})
-        # stable representation of evidence
         ev_json = json.dumps(ev, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
         record["evidence"].append({
             "kind": kind,
