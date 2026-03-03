@@ -43,3 +43,9 @@ $j=(python shadow\verify_all_shadow.py --primary verify_pack_v4_sample/verify_al
 
 # NOTE: parse with utf-8
 python -c "import json; r=json.load(open(r'outbox\shadow_last.json','r',encoding='utf-8')); print('OK', r['schema_version'], r['result']['ok'])"
+## Phase 2 Signal Upgrade (Frozen Meaning Addendum)
+
+# NOTE: EXPECTED_FAIL_BUT_PASSED indicates a sample that should fail but passed verification.
+# This is a diagnostic integrity breach signal for sample packs.
+Recommended FAIL_KIND extension for schema v1.1.0:
+- EXPECTED_FAIL_BUT_PASSED
