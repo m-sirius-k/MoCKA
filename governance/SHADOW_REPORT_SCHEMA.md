@@ -1,7 +1,7 @@
 ﻿# SHADOW_REPORT_SCHEMA (Frozen Contract)
 
 Status: FROZEN
-schema_version: 1.2.0
+schema_version: 1.3.0
 
 Shadow report is diagnostic-only.
 Primary is read-only.
@@ -29,13 +29,14 @@ Rules:
 - If trimmed=true, lines contains head N + tail N plus any evidence-hit lines.
 - Evidence-hit lines must be preserved even when trimming.
 
-## FAIL_KIND vocabulary (v1.2.0)
-
+## FAIL_KIND vocabulary (v1.3.0)
 PRIMARY_FAILED
 MUTATION_DETECTED
 PRIMARY_STDERR
 PRIMARY_STDOUT_PATTERN
 EXPECTED_FAIL_BUT_PASSED
+SCHEMA_MISMATCH
+VOCAB_MISMATCH
 TOOL_ERROR
 GIT_UNAVAILABLE
 UNKNOWN
