@@ -1,7 +1,7 @@
 ﻿# SHADOW_REPORT_SCHEMA (Frozen Contract)
 
 Status: FROZEN
-schema_version: 1.0.0
+schema_version: 1.1.0
 
 Shadow report is diagnostic-only.
 Primary is read-only.
@@ -19,12 +19,13 @@ working_tree (object)
 io (object)
 result (object)
 
-## FAIL_KIND vocabulary (v1)
+## FAIL_KIND vocabulary (v1.1.0)
 
 PRIMARY_FAILED
 MUTATION_DETECTED
 PRIMARY_STDERR
 PRIMARY_STDOUT_PATTERN
+EXPECTED_FAIL_BUT_PASSED
 TOOL_ERROR
 GIT_UNAVAILABLE
 UNKNOWN
@@ -36,6 +37,13 @@ UNKNOWN
 - newline at EOF
 - stable ordering
 - version bump required for structure change
+
+## Meaning notes
+
+EXPECTED_FAIL_BUT_PASSED:
+A sample that was expected to fail but passed verification.
+This is a diagnostic integrity breach signal for sample packs.
+
 ## Operational Standard (Windows PowerShell)
 
 # NOTE: write Shadow report as UTF-8 without BOM for machine parsing stability
@@ -43,9 +51,3 @@ $j=(python shadow\verify_all_shadow.py --primary verify_pack_v4_sample/verify_al
 
 # NOTE: parse with utf-8
 python -c "import json; r=json.load(open(r'outbox\shadow_last.json','r',encoding='utf-8')); print('OK', r['schema_version'], r['result']['ok'])"
-## Phase 2 Signal Upgrade (Frozen Meaning Addendum)
-
-# NOTE: EXPECTED_FAIL_BUT_PASSED indicates a sample that should fail but passed verification.
-# This is a diagnostic integrity breach signal for sample packs.
-Recommended FAIL_KIND extension for schema v1.1.0:
-- EXPECTED_FAIL_BUT_PASSED
