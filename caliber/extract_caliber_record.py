@@ -1,6 +1,6 @@
 ﻿# NOTE: Caliber extractor is derived artifact generation. It must not modify Primary or Shadow.
 # Input: Shadow report JSON (schema v1.x)
-# Output: Caliber record JSON (schema v0.1.0) - minimal, stable, machine-friendly.
+# Output: Caliber record JSON (schema v0.2.0) - minimal, stable, machine-friendly.
 
 import argparse
 import hashlib
@@ -10,12 +10,10 @@ import re
 import sys
 from datetime import datetime, timezone
 
-CALIBER_SCHEMA_VERSION = "0.1.0"
+CALIBER_SCHEMA_VERSION = "0.2.0"
 GOV_SCHEMA_PATH = os.path.join("governance", "CALIBER_RECORD_SCHEMA.md")
 GOV_SHADOW_SCHEMA_PATH = os.path.join("governance", "SHADOW_REPORT_SCHEMA.md")
 
-# NOTE: Caliber fail_kinds must be a subset of Shadow FAIL_KIND vocabulary.
-# This is closure: derived artifacts must not invent new failure kinds.
 ALLOWED_FAIL_KINDS = [
     "PRIMARY_FAILED",
     "MUTATION_DETECTED",
@@ -75,6 +73,17 @@ def extract_shadow_fail_kind_vocab(repo_root: str):
             vocab.append(t)
     return vocab
 
+def build_summary(ok: bool, mutation: bool, kinds):
+    if mutation:
+        return "working-tree mutation detected"
+    if ok:
+        return "ok"
+    if not kinds:
+        return "failed (no kinds)"
+    if len(kinds) == 1:
+        return f"{kinds[0]} detected"
+    return f"{kinds[0]} +{len(kinds)-1} more"
+
 def parse_args(argv):
     ap = argparse.ArgumentParser()
     ap.add_argument("--shadow-report", required=True)
@@ -92,23 +101,23 @@ def main(argv):
     if gov_ver != CALIBER_SCHEMA_VERSION:
         raise SystemExit(f"TOOL_ERROR: governance schema_version mismatch: governance={gov_ver} code={CALIBER_SCHEMA_VERSION}")
 
-    # Phase 4-4 closure: ensure our ALLOWED_FAIL_KINDS matches governance Shadow FAIL_KIND vocabulary (subset rule baseline).
     shadow_vocab = extract_shadow_fail_kind_vocab(repo_root)
-    if shadow_vocab:
-        # We require ALLOWED_FAIL_KINDS == shadow_vocab for now to avoid silent divergence.
-        if shadow_vocab != list(ALLOWED_FAIL_KINDS):
-            raise SystemExit(
-                "TOOL_ERROR: ALLOWED_FAIL_KINDS mismatch vs governance SHADOW_REPORT_SCHEMA.md FAIL_KIND vocabulary"
-            )
-    else:
+    if not shadow_vocab:
         raise SystemExit("TOOL_ERROR: cannot read Shadow FAIL_KIND vocabulary from governance/SHADOW_REPORT_SCHEMA.md")
+    if shadow_vocab != list(ALLOWED_FAIL_KINDS):
+        raise SystemExit("TOOL_ERROR: ALLOWED_FAIL_KINDS mismatch vs governance SHADOW_REPORT_SCHEMA.md FAIL_KIND vocabulary")
 
     r = load_json(a.shadow_report)
 
+    ok = bool(r.get("result", {}).get("ok", False))
+    mutation = bool(r.get("working_tree", {}).get("mutation_detected", False))
     fail_kinds = list(r.get("result", {}).get("fail", {}).get("kinds", []))
+
     bad = [k for k in fail_kinds if k not in ALLOWED_FAIL_KINDS]
     if bad:
         raise SystemExit("TOOL_ERROR: invalid fail_kinds detected (not in allowed Shadow vocabulary): " + ",".join(bad))
+
+    summary = build_summary(ok, mutation, fail_kinds)
 
     record = {
         "schema_version": CALIBER_SCHEMA_VERSION,
@@ -121,11 +130,12 @@ def main(argv):
             "primary_exit_code": r.get("primary_run", {}).get("exit_code", None),
         },
         "signals": {
-            "ok": bool(r.get("result", {}).get("ok", False)),
+            "ok": ok,
             "fail_kinds": fail_kinds,
-            "mutation_detected": bool(r.get("working_tree", {}).get("mutation_detected", False)),
+            "mutation_detected": mutation,
             "stdout_sha256": r.get("io", {}).get("stdout", {}).get("sha256", ""),
             "stderr_sha256": r.get("io", {}).get("stderr", {}).get("sha256", ""),
+            "summary": summary,
         },
         "evidence": [],
     }
