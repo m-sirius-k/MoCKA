@@ -1,64 +1,83 @@
-﻿[Whitepaper v0.1](https://github.com/nsjpkimura-del/mocka-civilization/blob/main/WHITEPAPER_v0.1.md)
-
-Minimal deterministic governance core.
-
-## Documentation
-
-- [Architecture Overview](ARCHITECTURE.md)
-- [Threat Model](AI_ORCHESTRATION_THREAT_MODEL.md)
-- [Programs Reference](PROGRAMS.md)
-- [Security Policy](SECURITY.md)
-- [Contributing Guidelines](CONTRIBUTING.md)
+﻿# MoCKA v4
+Trust & Identity Layer — 2-of-3 Multi-Signature Responsibility Model
 
 ---
 
-## ドキュメント一覧（日本語）
+## Overview
 
-- [アーキテクチャ概要](ARCHITECTURE.md)
-- [脅威モデル](AI_ORCHESTRATION_THREAT_MODEL.md)
-- [プログラム一覧](PROGRAMS.md)
-- [セキュリティポリシー](SECURITY.md)
-- [貢献ガイドライン](CONTRIBUTING.md)
+MoCKA v4 introduces a threshold-based responsibility layer (2-of-3 multi-signature model) designed for verifiable AI governance and decision accountability.
 
----# mocka-transparency
+This release demonstrates:
 
-Public verification layer for the MoCKA architecture.
+- Threshold authorization (2-of-3)
+- Append-only key registry with revocation enforcement
+- Canonical JSON determinism
+- Independent verification scripts
+- Explicit PASS / FAIL policy tests
 
-This repository contains reproducible proof artifacts for:
+Release artifact:
+verify_pack_v4_sample.zip
 
-- Deterministic SHA256 audit chains  
-- Ed25519 signature validation  
-- RFC3161 timestamp anchoring  
-- Multi-observer integrity model  
+SHA256:
+d5995d34e3cb651dbd00ba9d5acae52aaafbc67cdf27ba502de7893830221fea
+
+Verify (Windows):
+certutil -hashfile verify_pack_v4_sample.zip SHA256
+
+Run:
+python verify_all_v4.py
+
+Expected:
+1 PASS
+4 FAIL (by design)
+
+---
+
+## Why It Matters
+
+MoCKA v4 prevents:
+
+- Single-actor authority abuse
+- Silent key substitution
+- Undetected revocation bypass
+- Canonical tampering
+
+It converts responsibility from policy text into cryptographic structure.
+
+---
+
+## 日本語概要
+
+MoCKA v4 は、
+2-of-3 マルチシグ方式による責任分散レイヤーを実装した
+検証可能なAIガバナンス構造です。
+
+主な特徴：
+
+- 閾値署名（2-of-3）
+- 追記専用キー台帳と失効管理
+- Canonical JSON による決定論的整合性
+- 独立検証スクリプト
+- PASS / FAIL を明示した制度テスト
+
+これは単なる署名実装ではなく、
+責任を暗号構造へ変換する設計です。
+
+---
 
 ## Verification
 
-Clone and validate:
+Download the release:
+https://github.com/nsjpkimura-del/MoCKA/releases/tag/v4-sample-1.0
 
-```bash
-git clone https://github.com/nsjpkimura-del/mocka-transparency
-python verify_chain.py observer_audit_chain.csv
-```
-
-Independent cryptographic scrutiny is encouraged.
+Compute hash and run verification script.
 
 ---
 
-# mocka-transparency（日本語）
+## Status
 
-MoCKA アーキテクチャの公開検証レイヤーです。
-
-本リポジトリには以下の再現可能な検証資産が含まれます：
-
-- SHA256 決定論的監査連鎖  
-- Ed25519 署名検証  
-- RFC3161 外部タイムスタンプ固定  
-- マルチ観測者整合モデル  
-
-独立した暗号学的検証を歓迎します。
-
----
-Part of the MoCKA Deterministic Governance Architecture.
-See Civilization layer for full structural doctrine.
-
+v4-sample-1.0 — Public Release  
+Reproducible  
+Threshold Verified  
+Revocation Enforced
 
