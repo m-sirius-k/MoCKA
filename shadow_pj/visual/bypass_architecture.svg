@@ -1,0 +1,36 @@
+<svg width="1000" height="600" xmlns="http://www.w3.org/2000/svg">
+
+  <text x="500" y="40" text-anchor="middle" font-size="20">
+    VAR-001: Shadow Bypass Architecture
+  </text>
+
+  <!-- Primary -->
+  <rect x="150" y="180" width="300" height="120" fill="#d0e6ff" stroke="#000"/>
+  <text x="300" y="225" text-anchor="middle" font-size="16">Primary Heart</text>
+  <text x="300" y="250" text-anchor="middle" font-size="12">Full 100% Operation</text>
+
+  <!-- Shadow -->
+  <rect x="550" y="180" width="300" height="120" fill="#ffe0e0" stroke="#000"/>
+  <text x="700" y="225" text-anchor="middle" font-size="16">Shadow Heart</text>
+  <text x="700" y="250" text-anchor="middle" font-size="12">75% Bypass Mode</text>
+
+  <!-- Flow -->
+  <line x1="450" y1="240" x2="550" y2="240" stroke="#000" stroke-width="2"/>
+  <line x1="550" y1="240" x2="520" y2="220" stroke="#000" stroke-width="2"/>
+  <line x1="550" y1="240" x2="520" y2="260" stroke="#000" stroke-width="2"/>
+
+  <!-- Signal -->
+  <rect x="300" y="360" width="400" height="80" fill="#f0f0f0" stroke="#000"/>
+  <text x="500" y="395" text-anchor="middle" font-size="14">
+    Signal + Ledger Monitoring Layer
+  </text>
+  <text x="500" y="420" text-anchor="middle" font-size="11">
+    Every switch and state change is logged
+  </text>
+
+  <!-- Rule -->
+  <text x="500" y="540" text-anchor="middle" font-size="11">
+    Principle: Primary may fail. Shadow must not stop core flow.
+  </text>
+
+</svg>
