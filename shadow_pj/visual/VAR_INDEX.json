@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "artifacts": [
+    {
+      "path": "shadow_pj/STRUCTURE.md",
+      "sha256": "fa5e3fa091c6f7ccd1e2e13bbc551eac6a37324b063623e88358e942599f424c",
+      "byte_stable": true,
+      "role": "boundary_declaration"
+    },
+    {
+      "path": "shadow_pj/GOVERNANCE.md",
+      "sha256": "c039828aca3712fd53069a75fc4be19a790d0c0b7888e0ef74a411b2769f8984",
+      "byte_stable": true,
+      "role": "non_interference_rules"
+    }
+  ]
+}

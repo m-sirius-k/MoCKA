@@ -1,0 +1,31 @@
+<svg width="900" height="520" xmlns="http://www.w3.org/2000/svg">
+  <text x="450" y="40" text-anchor="middle" font-size="18">VAR-003: 75% Operational Mode</text>
+
+  <rect x="80" y="90" width="220" height="90" fill="#e8f4ff" stroke="#000"/>
+  <text x="190" y="130" text-anchor="middle" font-size="16">READ</text>
+  <text x="190" y="155" text-anchor="middle" font-size="12">Allowed</text>
+
+  <rect x="340" y="90" width="220" height="90" fill="#fff3cd" stroke="#000"/>
+  <text x="450" y="130" text-anchor="middle" font-size="16">WRITE</text>
+  <text x="450" y="155" text-anchor="middle" font-size="12">Restricted</text>
+
+  <rect x="600" y="90" width="220" height="90" fill="#f8d7da" stroke="#000"/>
+  <text x="710" y="130" text-anchor="middle" font-size="16">QUEUE</text>
+  <text x="710" y="155" text-anchor="middle" font-size="12">Isolation</text>
+
+  <line x1="300" y1="135" x2="340" y2="135" stroke="#000"/>
+  <line x1="560" y1="135" x2="600" y2="135" stroke="#000"/>
+
+  <text x="450" y="220" text-anchor="middle" font-size="14">Rules</text>
+
+  <text x="120" y="255" font-size="12">1. Read continues</text>
+  <text x="120" y="280" font-size="12">2. Writes blocked by default</text>
+  <text x="120" y="305" font-size="12">3. Allowlist writes only</text>
+  <text x="120" y="330" font-size="12">4. Blocked writes go to Queue</text>
+  <text x="120" y="355" font-size="12">5. Emit Signal + Append Ledger</text>
+
+  <rect x="80" y="390" width="740" height="90" fill="#f0f0f0" stroke="#000"/>
+  <text x="450" y="425" text-anchor="middle" font-size="14">Transition</text>
+  <text x="140" y="455" font-size="12">Primary Normal -> Shadow Bypass: integrity failure / manual switch</text>
+  <text x="140" y="475" font-size="12">Shadow Bypass -> Primary Normal: recovery verified + manual approval</text>
+</svg>

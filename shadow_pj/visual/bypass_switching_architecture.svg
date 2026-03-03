@@ -1,0 +1,57 @@
+<svg width="1040" height="640" xmlns="http://www.w3.org/2000/svg">
+
+  <text x="520" y="42" text-anchor="middle" font-size="20">
+    VAR-006: Bypass Switching Architecture
+  </text>
+
+  <!-- Front Door -->
+  <rect x="410" y="90" width="260" height="70" fill="#e8f4ff" stroke="#000"/>
+  <text x="540" y="130" text-anchor="middle" font-size="15">Front Door</text>
+  <text x="540" y="150" text-anchor="middle" font-size="11">Gateway / Router / Dispatcher</text>
+
+  <!-- Switch Controller -->
+  <rect x="410" y="190" width="260" height="70" fill="#fff3cd" stroke="#000"/>
+  <text x="540" y="230" text-anchor="middle" font-size="15">Switch Controller</text>
+  <text x="540" y="250" text-anchor="middle" font-size="11">Decides Primary vs Shadow</text>
+
+  <!-- Primary Lane -->
+  <rect x="140" y="320" width="300" height="90" fill="#d0e6ff" stroke="#000"/>
+  <text x="290" y="360" text-anchor="middle" font-size="16">Primary Lane</text>
+  <text x="290" y="385" text-anchor="middle" font-size="12">Full Operation</text>
+
+  <!-- Shadow Lane -->
+  <rect x="600" y="320" width="300" height="90" fill="#ffe0e0" stroke="#000"/>
+  <text x="750" y="360" text-anchor="middle" font-size="16">Shadow Lane</text>
+  <text x="750" y="385" text-anchor="middle" font-size="12">75% Bypass Mode</text>
+
+  <!-- Signal -->
+  <rect x="140" y="460" width="220" height="70" fill="#f0f0f0" stroke="#000"/>
+  <text x="250" y="500" text-anchor="middle" font-size="14">Signal</text>
+  <text x="250" y="520" text-anchor="middle" font-size="11">Alert / Status</text>
+
+  <!-- Ledger -->
+  <rect x="410" y="460" width="220" height="70" fill="#f0f0f0" stroke="#000"/>
+  <text x="520" y="500" text-anchor="middle" font-size="14">Ledger</text>
+  <text x="520" y="520" text-anchor="middle" font-size="11">Immutable Record</text>
+
+  <!-- Repair Proposal -->
+  <rect x="680" y="460" width="220" height="70" fill="#f0f0f0" stroke="#000"/>
+  <text x="790" y="500" text-anchor="middle" font-size="14">Repair Proposal</text>
+  <text x="790" y="520" text-anchor="middle" font-size="11">Manual Approval</text>
+
+  <!-- Arrows -->
+  <line x1="540" y1="160" x2="540" y2="190" stroke="#000"/>
+  <line x1="540" y1="260" x2="290" y2="320" stroke="#000"/>
+  <line x1="540" y1="260" x2="750" y2="320" stroke="#000"/>
+
+  <line x1="290" y1="410" x2="250" y2="460" stroke="#000"/>
+  <line x1="290" y1="410" x2="520" y2="460" stroke="#000"/>
+  <line x1="750" y1="410" x2="520" y2="460" stroke="#000"/>
+  <line x1="750" y1="410" x2="790" y2="460" stroke="#000"/>
+
+  <!-- Rule -->
+  <text x="520" y="610" text-anchor="middle" font-size="11">
+    Rule: Switching is explicit, logged, reversible. Ambiguity defaults to Shadow (fail-safe).
+  </text>
+
+</svg>
