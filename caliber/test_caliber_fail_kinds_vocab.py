@@ -1,6 +1,4 @@
-﻿# NOTE: Caliber-only self-test. Ensures invalid fail_kinds are rejected.
-# It creates a temporary shadow report JSON with an invented fail kind and asserts TOOL_ERROR.
-
+﻿# NOTE: Caliber-only self-test. Ensures invalid fail_kinds are rejected using governance vocabulary.
 import json
 import os
 import subprocess
@@ -18,14 +16,16 @@ def main():
     if not os.path.isfile(extractor):
         raise SystemExit("missing caliber/extract_caliber_record.py")
 
-    # build minimal shadow-like report that contains an invented fail kind
     fake = {
         "schema_version": "1.3.0",
         "report_id": "TEST_FAKE",
         "tool": {"name": "verify_all_shadow", "version": "X"},
         "primary_run": {"verifier": "X", "exit_code": 0},
         "working_tree": {"mutation_detected": False},
-        "io": {"stdout": {"sha256": "x"}, "stderr": {"sha256": "y"}},
+        "io": {
+            "stdout": {"sha256": "0"*64},
+            "stderr": {"sha256": "1"*64},
+        },
         "result": {"ok": False, "fail": {"kinds": ["INVENTED_KIND"], "items": []}},
     }
 
@@ -44,7 +44,7 @@ def main():
         if "TOOL_ERROR:" not in combined:
             raise SystemExit("expected TOOL_ERROR in output")
 
-        print("OK: caliber fail_kinds vocab self-test PASS")
+        print("OK: caliber fail_kinds governance-vocab self-test PASS")
         return 0
 
 if __name__ == "__main__":

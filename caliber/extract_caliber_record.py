@@ -1,6 +1,8 @@
 ﻿# NOTE: Caliber extractor is derived artifact generation. It must not modify Primary or Shadow.
 # Input: Shadow report JSON (schema v1.x)
 # Output: Caliber record JSON (schema v0.2.0) - minimal, stable, machine-friendly.
+#
+# Phase 4-7: Remove hardcoded FAIL_KIND vocabulary. Treat governance/SHADOW_REPORT_SCHEMA.md as the sole authority.
 
 import argparse
 import hashlib
@@ -13,19 +15,6 @@ from datetime import datetime, timezone
 CALIBER_SCHEMA_VERSION = "0.2.0"
 GOV_SCHEMA_PATH = os.path.join("governance", "CALIBER_RECORD_SCHEMA.md")
 GOV_SHADOW_SCHEMA_PATH = os.path.join("governance", "SHADOW_REPORT_SCHEMA.md")
-
-ALLOWED_FAIL_KINDS = [
-    "PRIMARY_FAILED",
-    "MUTATION_DETECTED",
-    "PRIMARY_STDERR",
-    "PRIMARY_STDOUT_PATTERN",
-    "EXPECTED_FAIL_BUT_PASSED",
-    "SCHEMA_MISMATCH",
-    "VOCAB_MISMATCH",
-    "TOOL_ERROR",
-    "GIT_UNAVAILABLE",
-    "UNKNOWN",
-]
 
 HEX64_RE = re.compile(r"^[0-9a-f]{64}$")
 
@@ -59,10 +48,17 @@ def extract_shadow_fail_kind_vocab(repo_root: str):
     p = os.path.join(repo_root, GOV_SHADOW_SCHEMA_PATH)
     if not os.path.isfile(p):
         return []
+
     s = read_text(p)
-    m = re.search(r"(?ms)^##\s+FAIL_KIND vocabulary.*?\n(.*?)(^\#\#\s|\Z)", s)
+
+    # Expect a section like:
+    # ## FAIL_KIND vocabulary
+    # PRIMARY_FAILED
+    # ...
+    m = re.search(r"(?ms)^##\s+FAIL_KIND vocabulary\s*\n(.*?)(^\#\#\s|\Z)", s)
     if not m:
         return []
+
     block = m.group(1)
     vocab = []
     for line in block.splitlines():
@@ -71,6 +67,7 @@ def extract_shadow_fail_kind_vocab(repo_root: str):
             continue
         if re.fullmatch(r"[A-Z0-9_]+", t):
             vocab.append(t)
+
     return vocab
 
 def build_summary(ok: bool, mutation: bool, kinds):
@@ -107,11 +104,9 @@ def main(argv):
     if gov_ver != CALIBER_SCHEMA_VERSION:
         raise SystemExit(f"TOOL_ERROR: governance schema_version mismatch: governance={gov_ver} code={CALIBER_SCHEMA_VERSION}")
 
-    shadow_vocab = extract_shadow_fail_kind_vocab(repo_root)
-    if not shadow_vocab:
-        raise SystemExit("TOOL_ERROR: cannot read Shadow FAIL_KIND vocabulary from governance/SHADOW_REPORT_SCHEMA.md")
-    if shadow_vocab != list(ALLOWED_FAIL_KINDS):
-        raise SystemExit("TOOL_ERROR: ALLOWED_FAIL_KINDS mismatch vs governance SHADOW_REPORT_SCHEMA.md FAIL_KIND vocabulary")
+    allowed_fail_kinds = extract_shadow_fail_kind_vocab(repo_root)
+    if not allowed_fail_kinds:
+        raise SystemExit("TOOL_ERROR: cannot read FAIL_KIND vocabulary from governance/SHADOW_REPORT_SCHEMA.md")
 
     r = load_json(a.shadow_report)
 
@@ -119,9 +114,9 @@ def main(argv):
     mutation = bool(r.get("working_tree", {}).get("mutation_detected", False))
     fail_kinds = list(r.get("result", {}).get("fail", {}).get("kinds", []))
 
-    bad = [k for k in fail_kinds if k not in ALLOWED_FAIL_KINDS]
+    bad = [k for k in fail_kinds if k not in allowed_fail_kinds]
     if bad:
-        raise SystemExit("TOOL_ERROR: invalid fail_kinds detected (not in allowed Shadow vocabulary): " + ",".join(bad))
+        raise SystemExit("TOOL_ERROR: invalid fail_kinds detected (not in governance vocabulary): " + ",".join(bad))
 
     stdout_sha = r.get("io", {}).get("stdout", {}).get("sha256", "")
     stderr_sha = r.get("io", {}).get("stderr", {}).get("sha256", "")
