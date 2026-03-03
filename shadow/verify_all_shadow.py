@@ -9,15 +9,16 @@ import sys
 import time
 from datetime import datetime, timezone
 
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
 TOOL_NAME = "verify_all_shadow"
-TOOL_VERSION = "1.0.2"
+TOOL_VERSION = "1.1.0"
 
 FAIL_KIND_VOCAB = [
     "PRIMARY_FAILED",
     "MUTATION_DETECTED",
     "PRIMARY_STDERR",
     "PRIMARY_STDOUT_PATTERN",
+    "EXPECTED_FAIL_BUT_PASSED",
     "TOOL_ERROR",
     "GIT_UNAVAILABLE",
     "UNKNOWN",
@@ -98,7 +99,6 @@ def main(argv):
 
     primary_rel = pick_primary(repo_root, args.primary.strip())
     primary_args = [x for x in args.primary_args.split(" ") if x] if args.primary_args else []
-    stdout_pattern = args.stdout_pattern if args.stdout_pattern else ""
 
     report = {}
     report["schema_version"] = SCHEMA_VERSION
@@ -152,13 +152,17 @@ def main(argv):
     if err_lines:
         fails.append({"kind": "PRIMARY_STDERR", "message": "primary verifier wrote to stderr"})
 
-    if stdout_pattern:
-        hits = []
-        for i, line in enumerate(out_lines, start=1):
-            if stdout_pattern in line:
-                hits.append({"n": i, "text_sha256": sha256_text(line)})
-        if hits:
-            fails.append({"kind": "PRIMARY_STDOUT_PATTERN", "message": f"stdout pattern matched: {stdout_pattern}", "evidence": {"hits": hits}})
+    # NOTE: institutional signal extraction
+    hits = []
+    for i, line in enumerate(out_lines, start=1):
+        if "EXPECTED_FAIL_BUT_PASSED" in line:
+            hits.append({"n": i, "text_sha256": sha256_text(line)})
+    if hits:
+        fails.append({
+            "kind": "EXPECTED_FAIL_BUT_PASSED",
+            "message": "expected fail but passed (sample integrity breach signal)",
+            "evidence": {"hits": hits},
+        })
 
     if tool_error:
         fails.append({"kind": "TOOL_ERROR", "message": tool_error})
@@ -175,8 +179,6 @@ def main(argv):
         norm.append(item)
 
     distinct_kinds = sorted({x["kind"] for x in norm}, key=lambda k: kind_rank.get(k, 999))
-
-    # NOTE: ok must imply "no failures" for audit automation.
     ok = (rc == 0) and (mutation is False) and (tool_error == "") and (len(norm) == 0)
 
     report["primary_run"] = {
