@@ -107,3 +107,7 @@ MOCKA_REPOSITORY_MAP.md
 VERIFICATION_QUICKSTART.md
 ## Role
 Primary Role: Boundary
+
+## Research Map
+See: RESEARCH_MAP.md
+
