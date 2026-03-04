@@ -1,5 +1,36 @@
 ﻿
 ------------------------------------------------
+Repository Structure
+------------------------------------------------
+
+ENGLISH
+
+Key directories of the MoCKA repository.
+
+MoCKA
+├ docs                system documentation
+├ tools               verification scripts
+├ experiments         structural experiment scripts
+├ canon               canonical research references
+├ artifacts           generated verification artifacts
+
+
+------------------------------------------------
+リポジトリ構造
+------------------------------------------------
+
+日本語
+
+MoCKA リポジトリの主要ディレクトリ。
+
+MoCKA
+├ docs                システム文書
+├ tools               検証スクリプト
+├ experiments         構造実験スクリプト
+├ canon               研究マップなどの正本
+├ artifacts           検証アーティファクト
+
+------------------------------------------------
 Quick Start
 ------------------------------------------------
 
@@ -276,6 +307,7 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
 
 
