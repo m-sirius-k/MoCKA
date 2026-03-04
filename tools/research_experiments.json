@@ -84,6 +84,16 @@
                             "id":  "readme_research_entry_presence",
                             "repo":  "MoCKA",
                             "kind":  "ps1"
-                        }
+                        },
+                        "ecosystem_structure_scan",
+                        "repo_git_clean_check",
+                        "repo_license_presence",
+                        "canon_directory_integrity",
+                        "artifact_directory_integrity",
+                        "research_registry_schema",
+                        "doctor_script_presence",
+                        "doctor_artifact_schema",
+                        "canon_notes_integrity",
+                        "research_runner_selfcheck"
                     ]
 }
