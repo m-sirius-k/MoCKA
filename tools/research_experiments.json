@@ -1,71 +1,80 @@
 ﻿{
-  "root": "C:\\Users\\sirok\\mocka-ecosystem",
-  "experiments": [
-    {
-      "id": "ecosystem_doctor_integrity",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor.ps1",
-      "expect_contains": [
-        "DIRTY GIT REPOS: NONE",
-        "MERMAID ISSUES: NONE",
-        "BROKEN LINKS: NONE",
-        "MISSING REPOS: NONE"
-      ]
-    },
-    {
-      "id": "repo_entrypoints_present",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_repo_entrypoints_check.ps1",
-      "expect_contains": [
-        "ENTRYPOINTS_CHECK: OK"
-      ]
-    },
-    {
-      "id": "experiments_minimum_coverage",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_experiments_minimum_coverage.ps1",
-      "expect_contains": [
-        "EXPERIMENTS_MINIMUM_COVERAGE: OK"
-      ]
-    },
-    {
-      "id": "gpg_signing_config_present",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_gpg_signing_config_check.ps1",
-      "expect_contains": [
-        "GPG_SIGNING_CONFIG_CHECK: OK"
-      ]
-    },
-    {
-      "id": "readme_role_vocab_integrity",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_role_vocab_check.ps1",
-      "expect_contains": [
-        "README_ROLE_VOCAB_CHECK: OK"
-      ]
-    },
-    {
-      "id": "doctor_emit_json_artifact",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor_emit_json.ps1",
-      "expect_contains": [
-        "DOCTOR_EMIT_JSON: OK"
-      ]
-    },
-    {
-      "id": "doctor_sha_note_upsert",
-      "repo": "MoCKA",
-      "kind": "ps1",
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\emit_doctor_sha_note.ps1",
-      "expect_contains": [
-        "DOCTOR_SHA_NOTE: OK"
-      ]
-    }
-  ]
+    "root":  "C:\\Users\\sirok\\mocka-ecosystem",
+    "experiments":  [
+                        {
+                            "id":  "ecosystem_doctor_integrity",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor.ps1",
+                            "expect_contains":  [
+                                                    "DIRTY GIT REPOS: NONE",
+                                                    "MERMAID ISSUES: NONE",
+                                                    "BROKEN LINKS: NONE",
+                                                    "MISSING REPOS: NONE"
+                                                ]
+                        },
+                        {
+                            "id":  "repo_entrypoints_present",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_repo_entrypoints_check.ps1",
+                            "expect_contains":  [
+                                                    "ENTRYPOINTS_CHECK: OK"
+                                                ]
+                        },
+                        {
+                            "id":  "experiments_minimum_coverage",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_experiments_minimum_coverage.ps1",
+                            "expect_contains":  [
+                                                    "EXPERIMENTS_MINIMUM_COVERAGE: OK"
+                                                ]
+                        },
+                        {
+                            "id":  "gpg_signing_config_present",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_gpg_signing_config_check.ps1",
+                            "expect_contains":  [
+                                                    "GPG_SIGNING_CONFIG_CHECK: OK"
+                                                ]
+                        },
+                        {
+                            "id":  "readme_role_vocab_integrity",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_role_vocab_check.ps1",
+                            "expect_contains":  [
+                                                    "README_ROLE_VOCAB_CHECK: OK"
+                                                ]
+                        },
+                        {
+                            "id":  "doctor_emit_json_artifact",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor_emit_json.ps1",
+                            "expect_contains":  [
+                                                    "DOCTOR_EMIT_JSON: OK"
+                                                ]
+                        },
+                        {
+                            "id":  "doctor_sha_note_upsert",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1",
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\emit_doctor_sha_note.ps1",
+                            "expect_contains":  [
+                                                    "DOCTOR_SHA_NOTE: OK"
+                                                ]
+                        },
+                        {
+                            "expect_contains":  [
+                                                    "RESEARCH_MAP_REGISTRY_CHECK: OK"
+                                                ],
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_research_map_registry_check.ps1",
+                            "id":  "research_map_registry_integrity",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1"
+                        }
+                    ]
 }
