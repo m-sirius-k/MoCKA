@@ -1,4 +1,48 @@
-﻿Ecosystem Navigation
+﻿
+------------------------------------------------
+Research Entry
+------------------------------------------------
+
+ENGLISH
+
+If you want to understand how MoCKA verifies its ecosystem architecture, start here.
+
+Research Entry Guide  
+README_RESEARCH_ENTRY.md
+
+This document explains:
+
+Research Gate  
+Doctor verification system  
+Canonical Research Map  
+Research Ledger structure  
+Reproducible verification execution
+
+It is designed for external engineers who want to evaluate the structure of the system.
+
+
+------------------------------------------------
+研究入口
+------------------------------------------------
+
+日本語
+
+MoCKA がどのようにエコシステム構造を検証しているかを理解するには
+次のドキュメントから始めてください。
+
+Research Entry Guide  
+README_RESEARCH_ENTRY.md
+
+この文書では次を説明しています。
+
+Research Gate  
+Doctor 検証システム  
+Canonical Research Map  
+Research Ledger 構造  
+再現可能な検証実行
+
+外部エンジニアがシステム構造を評価できるよう設計されています。
+Ecosystem Navigation
 
 MoCKA https://github.com/nsjpkimura-del/MoCKA
 MoCKA Knowledge Gate https://github.com/nsjpkimura-del/MoCKA-KNOWLEDGE-GATE
@@ -110,4 +154,5 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
