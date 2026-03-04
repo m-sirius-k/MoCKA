@@ -39,6 +39,15 @@
       "expect_contains": [
         "GPG_SIGNING_CONFIG_CHECK: OK"
       ]
+    },
+    {
+      "id": "readme_role_vocab_integrity",
+      "repo": "MoCKA",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_role_vocab_check.ps1",
+      "expect_contains": [
+        "README_ROLE_VOCAB_CHECK: OK"
+      ]
     }
   ]
 }
