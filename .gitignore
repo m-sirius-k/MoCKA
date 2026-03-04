@@ -103,3 +103,6 @@ infield/ai_save/phase2/manifest.*
 !infield/ai_save/phase2/outbox.manifest.chain.csv
 !infield/ai_save/phase2/outbox.manifest.csv
 .backup/
+
+artifacts/
+

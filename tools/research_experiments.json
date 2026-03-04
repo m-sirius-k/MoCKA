@@ -48,6 +48,15 @@
       "expect_contains": [
         "README_ROLE_VOCAB_CHECK: OK"
       ]
+    },
+    {
+      "id": "doctor_emit_json_artifact",
+      "repo": "MoCKA",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor_emit_json.ps1",
+      "expect_contains": [
+        "DOCTOR_EMIT_JSON: OK"
+      ]
     }
   ]
 }
