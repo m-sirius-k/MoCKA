@@ -1,4 +1,22 @@
 ﻿
+MoCKA Ecosystem Overview
+
+ENGLISH
+
+This diagram shows the structural relationship between the main MoCKA repositories.
+
+`mermaid
+flowchart LR
+  A[MoCKA Core] --> B[Knowledge Gate]
+  A --> C[Civilization Layer]
+  A --> D[Transparency Layer]
+  A --> E[External Brain]
+  A --> F[Core Private]
+
+日本語
+
+この図は MoCKA エコシステムの主要リポジトリの関係を示します。
+
 ------------------------------------------------
 Verification Sample
 ------------------------------------------------
@@ -216,6 +234,7 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
 
 
