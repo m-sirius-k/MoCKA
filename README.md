@@ -247,3 +247,19 @@ MoCKA アーキテクチャ論文は以下にある
 _canon/docs/MOCKA_ARCHITECTURE_PAPER.md
 
 ---
+
+---
+
+EN Whitepaper
+
+MoCKA Whitepaper
+
+_canon/docs/MOCKA_WHITEPAPER.md
+
+JP ホワイトペーパー
+
+MoCKA ホワイトペーパー
+
+_canon/docs/MOCKA_WHITEPAPER.md
+
+---
