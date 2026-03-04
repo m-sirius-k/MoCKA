@@ -1,48 +1,51 @@
-﻿# Contributing to MoCKA
+﻿# Contributing
 
-MoCKA is an open research experiment in deterministic multi-agent audit systems.
+## EN
 
-## How to Contribute
+Thanks for your interest in MoCKA.
 
-You may contribute by:
+MoCKA is built around verifiability and reproducibility.
+Contributions are welcome if they preserve:
 
-- Proposing architectural improvements  
-- Stress-testing the audit chain  
-- Suggesting threat model refinements  
-- Improving documentation clarity  
-- Benchmarking performance  
+- Determinism (no hidden state, no nondeterministic side effects)
+- Auditability (clear artifacts, traceable changes)
+- Governance boundaries (infield/outfield separation where applicable)
+- Public-safe publishing (no secrets, no private keys, no sensitive paths)
 
-## Pull Request Guidelines
+### Workflow
 
-1. Keep changes minimal and isolated.  
-2. Provide rationale and threat assumptions.  
-3. Preserve deterministic reproducibility.  
-4. Avoid introducing SaaS lock-in.  
+1. Create a branch from main.
+2. Keep commits small and explain intent.
+3. Prefer documentation and tests for behavioral changes.
+4. Use signed commits when possible.
 
-Critical review is collaboration.
+### What to avoid
 
----
+- Adding secrets or credentials
+- Changing canonical formats without clear migration
+- Introducing network calls in verification paths unless explicitly isolated
 
-# MoCKA への貢献（日本語）
+## JP
 
-MoCKA は決定論的マルチエージェント監査構造に関する公開研究実験です。
+MoCKA への関心に感謝します。
 
-## 貢献方法
+MoCKA は「検証可能性」と「再現性」を中心に設計されています。
+貢献は歓迎しますが、次を必ず維持してください。
 
-以下の形で参加できます：
+- 決定性（隠れ状態や非決定的副作用を持ち込まない）
+- 監査可能性（成果物が明確で変更が追跡できる）
+- 統治境界（infield/outfield 分離が前提）
+- 公開安全（秘密情報、鍵、機密パスを含めない）
 
-- アーキテクチャ改善提案  
-- 監査鎖のストレステスト  
-- 脅威モデルの精緻化  
-- ドキュメント改善  
-- パフォーマンス評価  
+### 進め方
 
-## プルリクエスト指針
+1. main からブランチを作成
+2. 小さく分かるコミット
+3. 挙動変更にはドキュメントとテストを優先
+4. 可能なら署名コミットを使用
 
-1. 変更は最小限かつ独立させる  
-2. 理由と前提を明示する  
-3. 再現性を損なわない  
-4. SaaS依存を増やさない  
+### 避けること
 
-批判的検証は敵意ではない。  
-共同研究である。
+- 秘密情報の追加
+- 正本フォーマット変更を無移行で実施
+- 検証経路に外部ネットワーク依存を混入
