@@ -3,7 +3,6 @@
   "experiments": [
     {
       "id": "ecosystem_doctor_integrity",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor.ps1",
       "expect_contains": [
@@ -15,7 +14,6 @@
     },
     {
       "id": "repo_entrypoints_present",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_repo_entrypoints_check.ps1",
       "expect_contains": [
@@ -24,7 +22,6 @@
     },
     {
       "id": "experiments_minimum_coverage",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_experiments_minimum_coverage.ps1",
       "expect_contains": [
@@ -33,7 +30,6 @@
     },
     {
       "id": "gpg_signing_config_present",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_gpg_signing_config_check.ps1",
       "expect_contains": [
@@ -42,7 +38,6 @@
     },
     {
       "id": "readme_role_vocab_integrity",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_role_vocab_check.ps1",
       "expect_contains": [
@@ -51,7 +46,6 @@
     },
     {
       "id": "doctor_emit_json_artifact",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor_emit_json.ps1",
       "expect_contains": [
@@ -60,7 +54,6 @@
     },
     {
       "id": "doctor_sha_note_upsert",
-      "repo": "MoCKA",
       "kind": "ps1",
       "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\emit_doctor_sha_note.ps1",
       "expect_contains": [
@@ -68,33 +61,75 @@
       ]
     },
     {
+      "id": "research_map_registry_integrity",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_research_map_registry_check.ps1",
       "expect_contains": [
         "RESEARCH_MAP_REGISTRY_CHECK: OK"
-      ],
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_research_map_registry_check.ps1",
-      "id": "research_map_registry_integrity",
-      "repo": "MoCKA",
-      "kind": "ps1"
+      ]
     },
     {
+      "id": "readme_research_entry_presence",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_research_entry_check.ps1",
       "expect_contains": [
         "README_RESEARCH_ENTRY_CHECK: OK"
-      ],
-      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_research_entry_check.ps1",
-      "id": "readme_research_entry_presence",
-      "repo": "MoCKA",
-      "kind": "ps1"
+      ]
     },
-    "ecosystem_structure_scan",
-    "repo_git_clean_check",
-    "repo_license_presence",
-    "canon_directory_integrity",
-    "artifact_directory_integrity",
-    "research_registry_schema",
-    "doctor_script_presence",
-    "doctor_artifact_schema",
-    "canon_notes_integrity",
-    "research_runner_selfcheck",
-    "docs_link_audit"
+    {
+      "id": "ecosystem_structure_scan",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_ecosystem_structure_scan.ps1"
+    },
+    {
+      "id": "repo_git_clean_check",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_repo_git_clean_check.ps1"
+    },
+    {
+      "id": "repo_license_presence",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_repo_license_presence.ps1"
+    },
+    {
+      "id": "canon_directory_integrity",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_canon_directory_integrity.ps1"
+    },
+    {
+      "id": "artifact_directory_integrity",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_artifact_directory_integrity.ps1"
+    },
+    {
+      "id": "research_registry_schema",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_research_registry_schema.ps1"
+    },
+    {
+      "id": "doctor_script_presence",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_doctor_script_presence.ps1"
+    },
+    {
+      "id": "doctor_artifact_schema",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_doctor_artifact_schema.ps1"
+    },
+    {
+      "id": "canon_notes_integrity",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_canon_notes_integrity.ps1"
+    },
+    {
+      "id": "research_runner_selfcheck",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_research_runner_selfcheck.ps1"
+    },
+    {
+      "id": "docs_link_audit",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\experiments\\exp_docs_link_audit.ps1"
+    }
   ]
 }
