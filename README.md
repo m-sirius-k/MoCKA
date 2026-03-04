@@ -1,113 +1,90 @@
-﻿# MoCKA
+﻿# MoCKA Ecosystem
 
-MoCKA is a deterministic governance and verifiable orchestration architecture for AI operations.
-It treats memory, decisions, and evidence as first-class artifacts and preserves them as reproducible, cryptographically-verifiable records.
+## EN — Overview
 
-This repository is part of the MoCKA Ecosystem and represents the execution and orchestration layer.
+MoCKA is a verifiable AI governance architecture designed for deterministic decision systems.
 
-## Architecture Overview
+The ecosystem separates operational domains into **Infield** and **Outfield** to ensure:
 
-MoCKA is designed around a strict separation between canonical local state (infield) and publishable/replicable state (outfield).
-The architecture below shows the ecosystem-level components and how MoCKA connects to verification, transparency, and external brain layers.
+• deterministic orchestration  
+• cryptographic auditability  
+• institutional memory preservation  
+• public transparency and verification  
 
-![MoCKA Architecture Overview](docs/architecture/mocka_architecture_overview.png)
+Every artifact inside the ecosystem is designed to be **reproducible, verifiable, and auditable**.
 
-## Security Model
+Architecture Overview
 
-MoCKA assumes that AI outputs may be incorrect, incomplete, or adversarially influenced.
-Security is achieved by making state transitions explicit and verifiable.
+![Architecture Overview](docs/architecture/mocka_architecture_overview.png)
 
-Threats considered:
 
-- Silent state drift (implicit changes without an auditable trace)
-- Tampered artifacts (modified files without detection)
-- Non-deterministic execution (unreproducible decisions)
-- Loss of provenance (missing origin and decision context)
+## JP — 概要
 
-Controls:
+MoCKA は、決定論的 AI システムのための  
+**検証可能な統治アーキテクチャ**です。
 
-- Canonicalization: LF-first normalization and strict repository hygiene
-- Cryptographic integrity: SHA-256 chaining for deterministic evidence trails
-- Authenticity: Ed25519 signatures for governance-grade commitments
-- Time anchoring: RFC3161 timestamping for externally verifiable time proofs (where applicable)
-- Multi-observer structure: separation of roles and redundancy in verification
+システムは **Infield / Outfield** の領域分離によって
 
-## Repository Responsibility
+・決定論的オーケストレーション  
+・暗号学的監査可能性  
+・制度的記憶の保存  
+・公開検証による透明性  
 
-MoCKA (this repository) focuses on:
+を実現します。
 
-- Orchestrating deterministic phases and producing structured artifacts
-- Generating evidence packs suitable for review and reproduction
-- Providing a stable execution surface for the ecosystem layers
+本エコシステム内の成果物はすべて
 
-## Verification and Transparency
+**再現可能・検証可能・監査可能**
 
-MoCKA is designed to work with ecosystem repositories:
+であることを前提として設計されています。
 
-- Transparency layer: public-facing proofs and logs
-- Knowledge gate: institutional memory and trace preservation
-- Civilization layer: governance definitions and doctrine
+Architecture Overview
 
-## How to Navigate
+![Architecture Overview](docs/architecture/mocka_architecture_overview.png)
 
-- docs/architecture/ : ecosystem overview diagrams and references
-- infield/ : canonical local evidence and governance artifacts (when applicable)
-- outfield/ : publishable outputs and transparency-ready exports (when applicable)
 
 ---
 
-# MoCKA（日本語）
+## Repository Position
 
-MoCKA は、AI運用を「決定可能」で「検証可能」にするための統治・オーケストレーション設計です。
-記憶、判断、根拠を一次成果物として扱い、再現可能かつ暗号学的に検証できる記録として保存します。
+EN  
+This repository represents one component of the MoCKA ecosystem.
 
-本リポジトリは MoCKA Ecosystem の一部であり、実行およびオーケストレーション層を担当します。
+JP  
+このリポジトリは MoCKA エコシステムの構成要素の一つです。
 
-## Architecture Overview（全体図）
 
-MoCKA は、正本のローカル状態（infield）と、公開・複製可能な状態（outfield）を厳密に分離します。
-下図はエコシステム全体の構成と、MoCKA が検証・透明性・外部脳レイヤへ接続する関係を示します。
+---
 
-![MoCKA Architecture Overview](docs/architecture/mocka_architecture_overview.png)
+## MoCKA Ecosystem
 
-## Security Model（脅威と対策）
+| Repository | Role |
+|---|---|
+| MoCKA | Deterministic orchestration core |
+| MoCKA-KNOWLEDGE-GATE | Institutional memory layer |
+| mocka-civilization | Governance doctrine |
+| mocka-transparency | Public verification layer |
+| mocka-external-brain | External interoperability |
+| mocka-core-private | Sovereign canonical domain |
 
-MoCKA は、AI出力が誤り・欠落・誘導を含み得ることを前提にします。
-安全性は「状態遷移を明示し、検証できる形で残す」ことで成立させます。
 
-想定する脅威：
+---
 
-- 監査痕跡のない状態変化（サイレントなドリフト）
-- 成果物の改ざん（検知不能な編集）
-- 非決定的な実行（再現不能な判断）
-- 来歴の喪失（生成元や判断理由が失われる）
+## Security Model
 
-対策：
+EN  
+MoCKA enforces deterministic behavior and verifiable state transitions using:
 
-- 正本化：LF 正規化とリポジトリ衛生の厳格化
-- 完全性：SHA-256 連鎖による証拠トレイル
-- 真正性：Ed25519 署名による統治級コミット
-- 時刻固定：RFC3161 タイムスタンプ（適用可能な場合）
-- 多重観測：役割分離と冗長な検証構造
+• cryptographic signatures  
+• hash chains  
+• reproducible artifacts  
+• governance constraints  
 
-## 本リポジトリの責務
+JP  
+MoCKA は以下により決定論的挙動と検証可能状態遷移を保証します。
 
-MoCKA（本リポジトリ）は次を担当します。
+・暗号署名  
+・ハッシュ連鎖  
+・再現可能アーティファクト  
+・統治制約
 
-- 決定可能なフェーズ実行と構造化成果物の生成
-- 再現とレビューに耐える証拠パックの出力
-- エコシステム各層が依存できる安定した実行面の提供
-
-## 検証と透明性の接続
-
-MoCKA は、次のエコシステム repo と連携します。
-
-- transparency：公開検証（proof/log）
-- knowledge-gate：制度的記憶（trace保存）
-- civilization：統治定義（思想と規範）
-
-## ナビゲーション
-
-- docs/architecture/ : 全体図と参照
-- infield/ : 正本・根拠・統治（適用時）
-- outfield/ : 公開可能な出力（適用時）
