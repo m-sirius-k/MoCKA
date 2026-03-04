@@ -219,3 +219,15 @@ JP Docs 入口
 ドキュメント入口は docs/INDEX.md を参照。
 
 ---
+
+---
+
+EN Document Standard
+
+See _canon/docs/MOCKA_DOCUMENT_STANDARD.md for the official documentation format.
+
+JP 文書規格
+
+公式文書フォーマットは _canon/docs/MOCKA_DOCUMENT_STANDARD.md を参照。
+
+---
