@@ -1,0 +1,13 @@
+﻿cff-version: 1.2.0
+message: "If you use MoCKA in research, please cite it."
+title: "MoCKA Ecosystem"
+type: software
+authors:
+  - name: "nsjp_kimura"
+repository-code: "https://github.com/nsjpkimura-del/MoCKA"
+keywords:
+  - verifiable-ai
+  - ai-governance
+  - deterministic-systems
+  - cryptographic-audit
+license: MIT

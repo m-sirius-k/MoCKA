@@ -1,71 +1,41 @@
-﻿# SECURITY POLICY
+﻿# Security Policy
 
-## Reporting a Vulnerability
+## EN
 
-MoCKA is an experimental cryptographic audit framework.
+MoCKA treats security as a verifiability problem.
+If you discover a vulnerability or a risky misconfiguration, please report it responsibly.
 
-If you discover a security issue, please open a GitHub Issue including:
+### Reporting
 
-- Clear reproduction steps  
-- Affected component  
-- Expected vs actual behavior  
-- Potential impact assessment  
+- Do not open public issues for exploitable vulnerabilities.
+- Provide a minimal reproduction and impact assessment.
+- If the issue concerns secret leakage, rotate secrets immediately.
 
-For sensitive disclosures, contact via GitHub direct message before public disclosure.
+### Scope
 
-## Supported Scope
+Examples in scope:
 
-In scope:
-- Hash chain tampering  
-- Key rotation bypass  
-- Signature forgery  
-- Observer compromise assumptions  
-- Timestamp anchoring weaknesses  
+- Secret exposure (keys, tokens, credentials)
+- Integrity bypass (tampering that avoids detection)
+- Verification path compromise
+- Supply-chain risks that affect reproducibility
 
-Out of scope:
-- General dependency vulnerabilities  
-- Local environment misconfiguration  
+## JP
 
-## Philosophy
+MoCKA はセキュリティを「検証可能性」の問題として扱います。
+脆弱性または危険な設定を見つけた場合は、責任ある方法で報告してください。
 
-Security is not assumed.  
-It is continuously tested.  
+### 報告方法
 
-Independent adversarial review is explicitly welcome.
+- 悪用可能な脆弱性を公開 Issue に投稿しない
+- 最小再現と影響評価を添付
+- 秘密情報漏洩なら先にローテーションを実施
 
----
+### 対象範囲
 
-# セキュリティポリシー（日本語）
+例：
 
-## 脆弱性の報告方法
-
-MoCKA は実験的な暗号監査フレームワークです。
-
-脆弱性を発見した場合は、GitHub Issue に以下を記載してください：
-
-- 再現手順  
-- 影響を受けるコンポーネント  
-- 期待される動作と実際の動作  
-- 想定される影響範囲  
-
-機密性の高い内容については、公開前にGitHub経由でご連絡ください。
-
-## 対象範囲
-
-対象：
-- ハッシュ連鎖の改ざん  
-- 鍵ローテーション回避  
-- 署名偽造  
-- 観測者前提の破綻  
-- タイムスタンプ固定の弱点  
-
-対象外：
-- 一般的な依存ライブラリ脆弱性  
-- ローカル環境の設定不備  
-
-## 基本理念
-
-セキュリティは前提ではない。  
-検証され続けるものである。  
-
-独立した批判的検証を歓迎する。
+- 秘密情報の露出（鍵、トークン、認証情報）
+- 完全性検証の迂回（改ざんが検知されない）
+- 検証経路の侵害
+- 再現性に影響するサプライチェーンリスク
