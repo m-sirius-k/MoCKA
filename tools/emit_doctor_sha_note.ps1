@@ -19,7 +19,6 @@ if(-not $latestSha){
 
 $sha = Get-Content -LiteralPath $latestSha.FullName -Raw -Encoding UTF8
 
-# infer json file name from sha file
 $jsonLeaf = ($latestSha.Name -replace "\.sha256\.txt$",".json")
 $ts = (Get-Date $latestSha.LastWriteTime).ToString("yyyy-MM-dd HH:mm:ss")
 
@@ -44,3 +43,4 @@ if(-not (Test-Path -LiteralPath $noteTool)){
 
 & $noteTool -Title $noteTitle -Mode upsert -Body $body
 Write-Host "NOTE_UPSERT_OK:" $noteTitle
+Write-Host "DOCTOR_SHA_NOTE: OK"

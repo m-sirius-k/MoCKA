@@ -57,6 +57,15 @@
       "expect_contains": [
         "DOCTOR_EMIT_JSON: OK"
       ]
+    },
+    {
+      "id": "doctor_sha_note_upsert",
+      "repo": "MoCKA",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\emit_doctor_sha_note.ps1",
+      "expect_contains": [
+        "DOCTOR_SHA_NOTE: OK"
+      ]
     }
   ]
 }
