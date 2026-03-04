@@ -9,7 +9,6 @@ if(-not (Test-Path -LiteralPath $doctor)){
   throw "DOCTOR_NOT_FOUND: $doctor"
 }
 
-# capture doctor output
 $out = & powershell -NoProfile -ExecutionPolicy Bypass -File $doctor 2>&1 | Out-String
 
 function PickText {
@@ -23,8 +22,16 @@ function PickText {
   return $null
 }
 
+$ts = Get-Date
+$tsId = $ts.ToString("yyyyMMdd_HHmmss")
+$tsLocal = $ts.ToString("yyyy-MM-ddTHH:mm:ssK")
+
+$dir = "C:\Users\sirok\mocka-ecosystem\MoCKA\artifacts\doctor_runs"
+New-Item -ItemType Directory -Force -Path $dir | Out-Null
+
 $record = [ordered]@{
-  ts_local = (Get-Date).ToString("yyyy-MM-ddTHH:mm:ssK")
+  ts_id = $tsId
+  ts_local = $tsLocal
   root = $Root
   summary = [ordered]@{
     missing_repos   = PickText -Name "MISSING REPOS"   -Text $out
@@ -35,11 +42,21 @@ $record = [ordered]@{
   raw = $out
 }
 
-$dir = "C:\Users\sirok\mocka-ecosystem\MoCKA\artifacts\doctor_runs"
-New-Item -ItemType Directory -Force -Path $dir | Out-Null
+$pathStamped = Join-Path $dir ("doctor_run_" + $tsId + ".json")
+$pathLatest  = Join-Path $dir "doctor_run_latest.json"
 
-$pathLatest = Join-Path $dir "doctor_run_latest.json"
-$record | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $pathLatest -Encoding UTF8
+$json = ($record | ConvertTo-Json -Depth 6)
 
-Write-Host "DOCTOR_JSON_SAVED:" $pathLatest
+# write stamped + latest
+$json | Set-Content -LiteralPath $pathStamped -Encoding UTF8
+$json | Set-Content -LiteralPath $pathLatest  -Encoding UTF8
+
+# sha256 for stamped json
+$hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $pathStamped).Hash.ToLower()
+$shaPath = Join-Path $dir ("doctor_run_" + $tsId + ".sha256.txt")
+($hash + "  " + (Split-Path -Leaf $pathStamped) + "`n") | Set-Content -LiteralPath $shaPath -Encoding UTF8
+
+Write-Host "DOCTOR_JSON_SAVED_LATEST:" $pathLatest
+Write-Host "DOCTOR_JSON_SAVED_STAMPED:" $pathStamped
+Write-Host "DOCTOR_JSON_SHA256:" $shaPath
 Write-Host "DOCTOR_EMIT_JSON: OK"
