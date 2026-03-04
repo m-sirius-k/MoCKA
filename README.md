@@ -1,4 +1,23 @@
 ﻿
+------------------------------------------------
+Quick Start
+------------------------------------------------
+
+ENGLISH
+
+Run the ecosystem verification.
+
+cd C:\Users\sirok\mocka-ecosystem
+powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
+
+
+日本語
+
+エコシステム検証を実行します。
+
+cd C:\Users\sirok\mocka-ecosystem
+powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
+
 MoCKA Ecosystem Overview
 
 ENGLISH
@@ -234,6 +253,7 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
 
 
