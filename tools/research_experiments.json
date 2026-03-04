@@ -75,6 +75,15 @@
                             "id":  "research_map_registry_integrity",
                             "repo":  "MoCKA",
                             "kind":  "ps1"
+                        },
+                        {
+                            "expect_contains":  [
+                                                    "README_RESEARCH_ENTRY_CHECK: OK"
+                                                ],
+                            "script":  "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_readme_research_entry_check.ps1",
+                            "id":  "readme_research_entry_presence",
+                            "repo":  "MoCKA",
+                            "kind":  "ps1"
                         }
                     ]
 }
