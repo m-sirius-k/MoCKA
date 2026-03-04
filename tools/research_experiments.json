@@ -12,6 +12,15 @@
         "BROKEN LINKS: NONE",
         "MISSING REPOS: NONE"
       ]
+    },
+    {
+      "id": "repo_entrypoints_present",
+      "repo": "MoCKA",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_repo_entrypoints_check.ps1",
+      "expect_contains": [
+        "ENTRYPOINTS_CHECK: OK"
+      ]
     }
   ]
 }
