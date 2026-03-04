@@ -1,4 +1,20 @@
 ﻿
+Architecture Diagram
+
+ENGLISH
+
+System structure diagram
+
+docs/ARCHITECTURE_DIAGRAM.md
+
+アーキテクチャ図
+
+日本語
+
+システム構造図はこちら
+
+docs/ARCHITECTURE_DIAGRAM.md
+
 ------------------------------------------------
 Ecosystem Map
 ------------------------------------------------
@@ -179,6 +195,7 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
 
 
