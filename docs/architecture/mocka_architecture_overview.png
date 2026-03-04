@@ -1,0 +1,14 @@
+$canon = "C:\Users\sirok\mocka-ecosystem\_canon"
+$targets = @(
+  "README_MoCKA.md",
+  "README_MoCKA-KNOWLEDGE-GATE.md",
+  "README_mocka-civilization.md",
+  "README_mocka-transparency.md",
+  "README_mocka-external-brain.md",
+  "README_mocka-core-private.md"
+)
+foreach($t in $targets){
+  $p = Join-Path "$canon\readme" $t
+  if(-not (Test-Path $p)){ "" | Set-Content -Encoding UTF8 $p }
+  notepad $p
+}
