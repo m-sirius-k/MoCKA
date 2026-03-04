@@ -1,0 +1,17 @@
+﻿{
+  "root": "C:\\Users\\sirok\\mocka-ecosystem",
+  "experiments": [
+    {
+      "id": "ecosystem_doctor_integrity",
+      "repo": "MoCKA",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_doctor.ps1",
+      "expect_contains": [
+        "DIRTY GIT REPOS: NONE",
+        "MERMAID ISSUES: NONE",
+        "BROKEN LINKS: NONE",
+        "MISSING REPOS: NONE"
+      ]
+    }
+  ]
+}
