@@ -231,3 +231,19 @@ JP 文書規格
 公式文書フォーマットは _canon/docs/MOCKA_DOCUMENT_STANDARD.md を参照。
 
 ---
+
+---
+
+EN Architecture Paper
+
+The MoCKA architecture paper is available in
+
+_canon/docs/MOCKA_ARCHITECTURE_PAPER.md
+
+JP アーキテクチャ論文
+
+MoCKA アーキテクチャ論文は以下にある
+
+_canon/docs/MOCKA_ARCHITECTURE_PAPER.md
+
+---
