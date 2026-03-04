@@ -263,3 +263,14 @@ MoCKA ホワイトペーパー
 _canon/docs/MOCKA_WHITEPAPER.md
 
 ---
+
+---
+
+## Architecture Overview
+
+See architecture diagram
+
+docs/ARCHITECTURE.md
+
+---
+
