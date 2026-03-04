@@ -94,6 +94,7 @@
                         "doctor_script_presence",
                         "doctor_artifact_schema",
                         "canon_notes_integrity",
-                        "research_runner_selfcheck"
+                        "research_runner_selfcheck",
+                        "docs_link_audit"
                     ]
 }

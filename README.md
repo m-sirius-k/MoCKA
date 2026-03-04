@@ -245,10 +245,10 @@ See
 
 Important Documents
 
-MOCKA_ARCHITECTURE_DIAGRAM.md
-MOCKA_ECOSYSTEM_DIAGRAM.md
-MOCKA_REPOSITORY_MAP.md
-VERIFICATION_QUICKSTART.md
+docs/ARCHITECTURE_DIAGRAM.md
+docs/ECOSYSTEM_MAP.md
+docs/ECOSYSTEM_MAP.md
+docs/VERIFICATION_SAMPLE.md
 
 
 System Philosophy
@@ -298,10 +298,10 @@ mocka-core-private
 
 主要ドキュメント
 
-MOCKA_ARCHITECTURE_DIAGRAM.md
-MOCKA_ECOSYSTEM_DIAGRAM.md
-MOCKA_REPOSITORY_MAP.md
-VERIFICATION_QUICKSTART.md
+docs/ARCHITECTURE_DIAGRAM.md
+docs/ECOSYSTEM_MAP.md
+docs/ECOSYSTEM_MAP.md
+docs/VERIFICATION_SAMPLE.md
 ## Role
 Primary Role: Boundary
 
@@ -345,4 +345,5 @@ MoCKA エコシステムの現在の状態。
 実験フレームワーク: 運用中  
 
 MoCKA は自己検証型研究エコシステムとして動作しています。
+
 
