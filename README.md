@@ -1,4 +1,25 @@
 ﻿
+------------------------------------------------
+Verification Sample
+------------------------------------------------
+
+ENGLISH
+
+Minimal example showing how the MoCKA verification system runs.
+
+docs/VERIFICATION_SAMPLE.md
+
+
+------------------------------------------------
+検証サンプル
+------------------------------------------------
+
+日本語
+
+MoCKA 検証システムの最小実行例はこちら
+
+docs/VERIFICATION_SAMPLE.md
+
 Architecture Diagram
 
 ENGLISH
@@ -195,6 +216,7 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
 
 
