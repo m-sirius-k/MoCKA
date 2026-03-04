@@ -16,3 +16,7 @@ Canonical list derived from MoCKA/tools/research_experiments.json
 ## Notes
 This document is canonical and must include every experiment id in the registry.
 
+
+- ecosystem_structure_scan
+  - Purpose: verify ecosystem repository structure and required directories
+  - Script: MoCKA/experiments/exp_ecosystem_structure_scan.ps1
