@@ -1,5 +1,30 @@
 ﻿
 ------------------------------------------------
+Ecosystem Map
+------------------------------------------------
+
+ENGLISH
+
+The MoCKA ecosystem is composed of multiple repositories forming a verifiable AI architecture.
+
+See the ecosystem structure:
+
+docs/ECOSYSTEM_MAP.md
+
+
+------------------------------------------------
+エコシステム構造
+------------------------------------------------
+
+日本語
+
+MoCKA は複数のリポジトリで構成されるエコシステムです。
+
+全体構造はこちら。
+
+docs/ECOSYSTEM_MAP.md
+
+------------------------------------------------
 Research Entry
 ------------------------------------------------
 
@@ -154,5 +179,6 @@ Primary Role: Boundary
 
 ## Research Map
 See: RESEARCH_MAP.md
+
 
 
