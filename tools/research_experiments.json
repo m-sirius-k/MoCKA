@@ -21,6 +21,15 @@
       "expect_contains": [
         "ENTRYPOINTS_CHECK: OK"
       ]
+    },
+    {
+      "id": "experiments_minimum_coverage",
+      "repo": "MoCKA",
+      "kind": "ps1",
+      "script": "C:\\Users\\sirok\\mocka-ecosystem\\MoCKA\\tools\\run_experiments_minimum_coverage.ps1",
+      "expect_contains": [
+        "EXPERIMENTS_MINIMUM_COVERAGE: OK"
+      ]
     }
   ]
 }
