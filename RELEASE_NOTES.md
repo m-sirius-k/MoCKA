@@ -8,7 +8,7 @@ It is optimized for auditability: short entries, clear scope, and reproducible i
 Release 2026-03-04
 
 Scope
-Ecosystem-wide documentation and hygiene hardening.
+Insight System-wide documentation and hygiene hardening.
 
 Highlights
 - Canonical README redesign across repositories

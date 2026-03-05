@@ -4,7 +4,7 @@ ENGLISH VERSION
 Diagram
 
 MoCKA is the execution and verification core.
-Doctor scans ecosystem integrity.
+Doctor scans Insight System integrity.
 Research Gate executes structural experiments.
 
 “ú–{Œê”Å

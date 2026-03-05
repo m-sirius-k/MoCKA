@@ -8,13 +8,13 @@ This document shows a minimal example of how the MoCKA verification system runs.
 
 Research Gate execution
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 Expected output example
 
-RUN_EXPERIMENT: ecosystem_structure_scan
-OK_EXPERIMENT: ecosystem_structure_scan
+RUN_EXPERIMENT: Insight System_structure_scan
+OK_EXPERIMENT: Insight System_structure_scan
 
 RUN_EXPERIMENT: repo_git_clean_check
 OK_EXPERIMENT: repo_git_clean_check
@@ -24,7 +24,7 @@ RESEARCH_RUN: OK
 Meaning
 
 All structural experiments passed.
-The ecosystem integrity is verified.
+The Insight System integrity is verified.
 
 Doctor artifact example
 
@@ -48,13 +48,13 @@ These files prove that the integrity scan was executed.
 
 Research Gate é¿çs
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 èoóÕó·
 
-RUN_EXPERIMENT: ecosystem_structure_scan
-OK_EXPERIMENT: ecosystem_structure_scan
+RUN_EXPERIMENT: Insight System_structure_scan
+OK_EXPERIMENT: Insight System_structure_scan
 
 RUN_EXPERIMENT: repo_git_clean_check
 OK_EXPERIMENT: repo_git_clean_check

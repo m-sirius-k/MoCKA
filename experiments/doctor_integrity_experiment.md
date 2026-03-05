@@ -1,4 +1,4 @@
-# Experiment: Ecosystem Integrity Check
+# Experiment: Insight System Integrity Check
 
 ## Purpose
 Verify that the MoCKA Insight System repositories remain structurally consistent.
@@ -7,11 +7,11 @@ Verify that the MoCKA Insight System repositories remain structurally consistent
 Windows PowerShell
 
 ## Inputs
-mocka-ecosystem root directory
+mocka-Insight System root directory
 
 ## Procedure
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\mocka_doctor.ps1
 
 ## Expected Result

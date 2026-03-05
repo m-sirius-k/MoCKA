@@ -3,7 +3,7 @@
 ## Experiments Registry
 Canonical list derived from MoCKA/tools/research_experiments.json
 
-- ecosystem_doctor_integrity
+- Insight System_doctor_integrity
 - repo_entrypoints_present
 - experiments_minimum_coverage
 - gpg_signing_config_present
@@ -17,12 +17,12 @@ Canonical list derived from MoCKA/tools/research_experiments.json
 This document is canonical and must include every experiment id in the registry.
 
 
-- ecosystem_structure_scan
-  - Purpose: verify ecosystem repository structure and required directories
-  - Script: MoCKA/experiments/exp_ecosystem_structure_scan.ps1
+- Insight System_structure_scan
+  - Purpose: verify Insight System repository structure and required directories
+  - Script: MoCKA/experiments/exp_Insight System_structure_scan.ps1
 
 - repo_git_clean_check
-  - Purpose: ensure each ecosystem repository has a clean git working tree
+  - Purpose: ensure each Insight System repository has a clean git working tree
   - Script: MoCKA/experiments/exp_repo_git_clean_check.ps1
 
 

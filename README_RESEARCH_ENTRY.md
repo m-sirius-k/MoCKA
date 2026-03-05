@@ -6,7 +6,7 @@ ENGLISH VERSION
 
 ## Overview
 
-MoCKA is a verifiable AI architecture designed to demonstrate structural transparency, reproducible reasoning, and ecosystem-level validation.
+MoCKA is a verifiable AI architecture designed to demonstrate structural transparency, reproducible reasoning, and Insight System-level validation.
 
 Unlike conventional repositories that only host source code, MoCKA exposes verification mechanisms that validate the structure of the system itself.
 
@@ -28,7 +28,7 @@ System integrity must be reproducible
 
 ---
 
-## Ecosystem Structure
+## Insight System Structure
 
 The MoCKA Insight System consists of several repositories that represent different layers of the system architecture.
 
@@ -54,11 +54,11 @@ Private operational layer.
 
 ## Verification System
 
-MoCKA includes built-in verification mechanisms that continuously validate ecosystem integrity.
+MoCKA includes built-in verification mechanisms that continuously validate Insight System integrity.
 
 ### Doctor
 
-The Doctor system performs ecosystem integrity checks.
+The Doctor system performs Insight System integrity checks.
 
 Examples:
 
@@ -89,10 +89,10 @@ MoCKA/tools/mocka_research_run.ps1
 
 Example execution:
 
-cd C:\Users\sirok\mocka-ecosystem  
+cd C:\Users\sirok\mocka-Insight System  
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
-The system executes multiple structural experiments validating ecosystem integrity.
+The system executes multiple structural experiments validating Insight System integrity.
 
 ---
 
@@ -130,10 +130,10 @@ The ledger ensures that research activity can be externally audited.
 
 External engineers can reproduce the verification process by executing the Research Gate runner.
 
-cd C:\Users\sirok\mocka-ecosystem  
+cd C:\Users\sirok\mocka-Insight System  
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
-Successful execution confirms ecosystem structural integrity.
+Successful execution confirms Insight System structural integrity.
 
 ---
 
@@ -254,7 +254,7 @@ MoCKA/tools/mocka_research_run.ps1
 
 実行例
 
-cd C:\Users\sirok\mocka-ecosystem  
+cd C:\Users\sirok\mocka-Insight System  
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 複数の構造検証実験が実行されます。
@@ -295,7 +295,7 @@ MoCKA/research_ledger
 
 外部エンジニアは Research Gate を実行することで検証プロセスを再現できます。
 
-cd C:\Users\sirok\mocka-ecosystem  
+cd C:\Users\sirok\mocka-Insight System  
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 正常終了すればエコシステムの整合性が確認されます。
