@@ -1,0 +1,36 @@
+﻿name: Research Gate Demo (Interactive)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "demo mode"
+        required: true
+        default: "verify"
+        type: choice
+        options:
+          - verify
+
+permissions:
+  contents: read
+
+jobs:
+  research_gate_demo:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run Research Gate Verification
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          Write-Host "RUN: .\tools\mocka_research_run.ps1"
+          pwsh -ExecutionPolicy Bypass -File .\tools\mocka_research_run.ps1
+
+      - name: Demo Summary
+        shell: pwsh
+        run: |
+          Write-Host ""
+          Write-Host "DEMO_COMPLETE"
+          Write-Host "Expected: RESEARCH_RUN: OK (see logs above)"
