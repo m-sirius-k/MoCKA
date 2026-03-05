@@ -1,4 +1,4 @@
-﻿Week3 Ed25519 daily signature minimal drop.
+Week3 Ed25519 daily signature minimal drop.
 
 1) Install:
    pip install cryptography
