@@ -39,21 +39,18 @@ MoCKA
 ├ experiments
 ├ canon
 └ artifacts
-
 Quick Verification Demo
 
 Run the MoCKA research verification.
 
 cd C:\Users\sirok\mocka-ecosystem
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
-
 日本語
 
 MoCKA 検証システムを実行します。
 
 cd C:\Users\sirok\mocka-ecosystem
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
-
 Demo Observation Points
 
 Key aspects demonstrated in this environment.
