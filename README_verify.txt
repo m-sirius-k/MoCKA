@@ -1,4 +1,4 @@
-﻿MoCKA Phase12 Verify Pack
+MoCKA Phase12 Verify Pack
 
 Purpose
 - Third-party verification of Proof-Grade Audit (chain + signature).
