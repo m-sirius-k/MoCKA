@@ -25,30 +25,47 @@
  ## Ecosystem Architecture (Source)
 
  ```text
- ++ mermaid
- ++ flowchart LR
- ++   A[MoCKA Core] --> B[Knowledge Gate]
- ++   A --> C[Civilization Layer]
- ++   A --> D[Transparency Layer]
- ++   A --> E[External Brain]
- ++   A --> F[Core Private]
- ++   B --> G[Institutional Memory]
- ++   D --> H[Audit Evidence]
- ++   E --> I[External Knowledge]
- ++   C --> J[Governance Philosophy]
+ mermaid
+ flowchart LR
+   A[MoCKA Core] --> B[Knowledge Gate]
+   A --> C[Civilization Layer]
+   A --> D[Transparency Layer]
+   A --> E[External Brain]
+   A --> F[Core Private]
+   B --> G[Institutional Memory]
+   D --> H[Audit Evidence]
+   E --> I[External Knowledge]
+   C --> J[Governance Philosophy]
  ```
 
  ---
 
- ## Research Workflow
+ ## Research Workflow (Source)
 
- (TBD)
+ ```text
+ mermaid
+ flowchart LR
+   A[Experiment] --> B[Experiment Registry]
+   B --> C[Research Gate Verification]
+   C --> D[Artifact Generation]
+   D --> E[Knowledge Gate Archival]
+   E --> F[Institutional Memory]
+ ```
 
  ---
 
- ## Verification Architecture
+ ## Verification Architecture (Source)
 
- (TBD)
+ ```text
+ mermaid
+ flowchart TD
+   A[System Integrity Verification] --> R[Research Run]
+   B[Research Process Verification] --> R
+   C[Documentation Verification] --> R
+   D[Audit and Evidence Verification] --> R
+   R --> E[Emit Artifacts]
+   E --> F[Traceable Evidence]
+ ```
 
  ---
 
