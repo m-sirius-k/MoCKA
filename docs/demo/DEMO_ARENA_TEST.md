@@ -41,6 +41,20 @@
 
  This structure forms a continuous knowledge cycle.
 
+ ```mermaid
+ flowchart LR
+
+   A[AI Execution]
+
+   A --> V[Verification]
+   V --> R[Record Artifacts]
+   R --> M[Institutional Memory]
+   M --> K[Verified Knowledge Base]
+
+   K --> A
+
+ ```
+
  AI generates hypotheses or answers.
  Verification confirms their validity.
  Recording preserves artifacts and reasoning traces.
@@ -60,11 +74,37 @@
  - JSON outputs
  - verification traces
 
+ ```mermaid
+ flowchart TD
+
+   A[Experiment Execution]
+
+   A --> B[Logs]
+   A --> C[JSON Artifacts]
+   A --> D[Verification Traces]
+
+   B --> E[Recorded Evidence]
+   C --> E
+   D --> E
+
+   E --> F[Institutional Memory]
+
+ ```
+
  Because these artifacts are preserved, knowledge is not fragile.
 
  If an error occurs, the system can return to a previously verified state.
 
- In other words:
+ ```mermaid
+ flowchart LR
+
+   A[Current State]
+   A --> B[Problem Detected]
+   B --> C[Rollback]
+   C --> D[Last Verified Record]
+   D --> E[Stable Knowledge Base]
+
+ ```
 
  MoCKA does not only generate answers.
 
@@ -105,31 +145,9 @@
 
  ```
 
- Architecture layers
-
- MoCKA Core
- Research execution engine
-
- Knowledge Gate
- Institutional memory layer
-
- Civilization Layer
- Governance philosophy and long-term system structure
-
- Transparency Layer
- Public audit and verification surface
-
- External Brain
- External knowledge synchronization
-
- Core Private
- Protected internal execution environment
-
  ------------------------------------------------------------
 
  ## Research Workflow
-
- Every research process follows a structured lifecycle.
 
  ```mermaid
  flowchart LR
@@ -144,31 +162,38 @@
 
  ```
 
- Research lifecycle
+ ------------------------------------------------------------
 
- Experiment
- A research hypothesis or operation is executed.
+ ## MoCKA Civilization Loop
 
- Experiment Registry
- Experiments are registered for reproducibility.
+ MoCKA is not only a research system.
+ It forms a continuous civilization loop for knowledge creation.
 
- Research Gate Verification
- Validation procedures confirm the experiment structure.
+ ```mermaid
+ flowchart LR
 
- Artifact Generation
- Structured outputs such as logs and JSON artifacts are produced.
+   R[Research Exploration]
+   V[Verification System]
+   M[Institutional Memory]
+   G[Governance Layer]
 
- Knowledge Gate Archival
- Results are preserved in institutional memory.
+   R --> V
+   V --> M
+   M --> G
+   G --> R
 
- Institutional Memory
- Knowledge accumulates across research iterations.
+ ```
+
+ Research generates new hypotheses.
+ Verification validates their structure and results.
+ Institutional memory preserves verified knowledge.
+ Governance ensures transparency and reproducibility.
+
+ This cycle continuously strengthens the research ecosystem.
 
  ------------------------------------------------------------
 
  ## Verification Architecture
-
- MoCKA verification ensures system integrity and research validity.
 
  ```mermaid
  flowchart TD
@@ -187,20 +212,6 @@
    E --> F[Traceable Evidence]
 
  ```
-
- Verification categories
-
- System Integrity Verification
- Repository structure and runtime environment checks
-
- Research Process Verification
- Validation of experiment definitions and execution pipeline
-
- Documentation Verification
- README and documentation consistency checks
-
- Audit and Evidence Verification
- Artifact generation and traceable verification outputs
 
  ------------------------------------------------------------
 
@@ -224,8 +235,6 @@
  ------------------------------------------------------------
 
  ## Quick Verification Demo
-
- Run a verification experiment locally.
 
  ```text
  cd C:\Users\sirok\mocka-ecosystem
@@ -251,6 +260,7 @@
  - システム構造
  - 研究ワークフロー
  - 検証アーキテクチャ
+ - 知識循環構造
 
  を図とともに説明しています。
 
