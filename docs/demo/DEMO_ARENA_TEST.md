@@ -234,22 +234,6 @@
 
  ------------------------------------------------------------
 
- ## Quick Verification Demo
-
- ```text
- cd C:\Users\sirok\mocka-ecosystem
- powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
- ```
-
- ------------------------------------------------------------
-
- ## System Status
-
- Research Infrastructure : operational
- Verification System : active
- Experiment Framework : running
-
- ------------------------------------------------------------
 
  ## 日本語版
 
