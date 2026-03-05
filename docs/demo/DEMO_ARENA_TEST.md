@@ -33,8 +33,7 @@
  The MoCKA ecosystem is composed of several interconnected layers.
  Each layer contributes a specific responsibility to the system.
 
- ```text
- mermaid
+ ```mermaid
  flowchart LR
 
    A[MoCKA Core]
@@ -49,26 +48,27 @@
    D --> H[Audit Evidence]
    E --> I[External Knowledge]
    C --> J[Governance Philosophy]
+
  ```
 
  Layer overview
 
- - **MoCKA Core**
+ - MoCKA Core
    Execution engine for research verification.
 
- - **Knowledge Gate**
+ - Knowledge Gate
    Institutional memory layer storing reasoning artifacts and research outcomes.
 
- - **Civilization Layer**
+ - Civilization Layer
    Governance philosophy and long-term structural design of the ecosystem.
 
- - **Transparency Layer**
+ - Transparency Layer
    Public audit trail and verification outputs.
 
- - **External Brain**
+ - External Brain
    External knowledge synchronization and extended research context.
 
- - **Core Private**
+ - Core Private
    Internal secure execution environment.
 
  ---
@@ -78,8 +78,7 @@
  The research workflow represents the lifecycle of a MoCKA experiment.
  Each experiment produces verifiable artifacts and institutional knowledge.
 
- ```text
- mermaid
+ ```mermaid
  flowchart LR
 
    A[Experiment]
@@ -94,22 +93,22 @@
 
  Workflow description
 
- 1. **Experiment**
+ 1. Experiment
     A hypothesis or research action is executed.
 
- 2. **Experiment Registry**
+ 2. Experiment Registry
     The experiment is registered for reproducibility.
 
- 3. **Research Gate Verification**
+ 3. Research Gate Verification
     Verification procedures confirm experiment validity.
 
- 4. **Artifact Generation**
+ 4. Artifact Generation
     Structured artifacts such as JSON outputs and logs are produced.
 
- 5. **Knowledge Gate Archival**
+ 5. Knowledge Gate Archival
     Artifacts are archived into the institutional memory layer.
 
- 6. **Institutional Memory**
+ 6. Institutional Memory
     Results become part of the long-term research knowledge base.
 
  ---
@@ -119,8 +118,7 @@
  MoCKA verification combines several categories of checks.
  Together they guarantee the integrity of research operations.
 
- ```text
- mermaid
+ ```mermaid
  flowchart TD
 
    A[System Integrity Verification]
@@ -140,23 +138,21 @@
 
  Verification categories
 
- - **System Integrity Verification**
+ - System Integrity Verification
    Repository structure, execution environment, and integrity checks.
 
- - **Research Process Verification**
+ - Research Process Verification
    Experiment registration and research workflow validation.
 
- - **Documentation Verification**
+ - Documentation Verification
    README and documentation consistency checks.
 
- - **Audit and Evidence Verification**
+ - Audit and Evidence Verification
    Artifact generation and traceable evidence production.
 
  ---
 
  ## Repository Structure
-
- The core repository structure of MoCKA.
 
  ```text
  MoCKA
@@ -176,8 +172,6 @@
 
  ## Quick Verification Demo
 
- Run a verification experiment locally.
-
  ```text
  cd C:\Users\sirok\mocka-ecosystem
  powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
@@ -186,8 +180,6 @@
  ---
 
  ## Demo Observation Checklist
-
- When executing the demonstration, confirm the following points.
 
  - Mermaid diagrams render without errors
  - Repository structure formatting remains aligned
@@ -198,13 +190,9 @@
 
  ## Artifact Outputs
 
- MoCKA verification produces observable artifacts.
-
  - JSON artifacts
  - Execution logs
  - Trace notes
-
- These artifacts provide traceable evidence for research execution.
 
  ---
 
@@ -230,3 +218,90 @@
  ---
 
  MoCKA Demo Arena demonstrates the self-verifying architecture of the ecosystem.
+
+ ============================================================
+ 日本語版
+ ============================================================
+
+ # MoCKA Demo Arena
+
+ MoCKA エコシステムの構造と検証フローを観測できるデモページです。
+ このページでは研究実行・検証・制度的記憶の流れを可視化しています。
+
+ ---
+
+ ## 検証デモ環境
+
+ MoCKA Demo Arena は MoCKA の検証実行環境を説明するデモページです。
+ 実験、検証、記録という研究プロセスがどのように連携しているかを示します。
+
+ ---
+
+ ## エコシステム構造
+
+ ```mermaid
+ flowchart LR
+
+   A[MoCKA Core]
+
+   A --> B[Knowledge Gate]
+   A --> C[Civilization Layer]
+   A --> D[Transparency Layer]
+   A --> E[External Brain]
+   A --> F[Core Private]
+
+   B --> G[Institutional Memory]
+   D --> H[Audit Evidence]
+   E --> I[External Knowledge]
+   C --> J[Governance Philosophy]
+
+ ```
+
+ ---
+
+ ## 研究ワークフロー
+
+ ```mermaid
+ flowchart LR
+
+   A[実験]
+
+   A --> B[実験レジストリ]
+   B --> C[研究ゲート検証]
+   C --> D[成果物生成]
+   D --> E[Knowledge Gate 保存]
+   E --> F[制度的記憶]
+
+ ```
+
+ ---
+
+ ## 検証アーキテクチャ
+
+ ```mermaid
+ flowchart TD
+
+   A[システム整合性検証]
+   B[研究プロセス検証]
+   C[ドキュメント検証]
+   D[監査証跡検証]
+
+   A --> R[研究実行]
+   B --> R
+   C --> R
+   D --> R
+
+   R --> E[成果物生成]
+   E --> F[検証可能証跡]
+
+ ```
+
+ ---
+
+ ## システム状態
+
+ - 研究インフラ : 稼働中
+ - 検証システム : 稼働中
+ - 実験フレームワーク : 稼働中
+
+ MoCKA Demo Arena は自己検証型研究アーキテクチャのデモです。
