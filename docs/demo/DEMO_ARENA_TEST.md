@@ -9,30 +9,66 @@
 
  ## What is MoCKA
 
- MoCKA is a verifiable AI research ecosystem.
+ MoCKA is a verifiable AI research ecosystem designed to transform how knowledge is produced, validated, and preserved.
 
- It integrates several principles normally separated in AI projects:
+ Traditional AI systems generate answers.
+ MoCKA builds a continuously improving knowledge system.
+
+ Instead of producing isolated results, MoCKA treats every experiment as part of a verifiable research process.
+
+ The ecosystem integrates several capabilities normally separated in conventional AI systems.
 
  - AI orchestration
  - verification pipelines
  - institutional memory
  - governance architecture
 
- Instead of producing isolated results, MoCKA builds a continuous research system where experiments, verification, and archival knowledge form a closed loop.
+ Together, these components create a research environment where knowledge is not only generated, but continuously validated and accumulated.
 
- MoCKA は AI の研究実行、検証、記録を一体化した研究エコシステムです。
+ ------------------------------------------------------------
 
- 通常の AI プロジェクトでは
+ ## The MoCKA Knowledge Cycle
 
- AI → 結果
+ Most AI workflows follow a simple pattern.
 
- で終わります。
+ AI → Result
 
- しかし MoCKA では
+ A result appears, but the reasoning behind it may not be verifiable, reproducible, or preserved.
 
- AI → 検証 → 記録 → 制度的記憶
+ MoCKA introduces a fundamentally different structure.
 
- という循環構造を形成します。
+ AI → Verification → Record → Institutional Memory
+
+ This structure forms a continuous knowledge cycle.
+
+ AI generates hypotheses or answers.
+ Verification confirms their validity.
+ Recording preserves artifacts and reasoning traces.
+ Institutional memory accumulates verified knowledge.
+
+ Over time this produces a growing body of reliable knowledge.
+
+ ------------------------------------------------------------
+
+ ## Recoverable Knowledge
+
+ A critical property of MoCKA is that every step is recorded.
+
+ Every experiment produces traceable artifacts.
+
+ - logs
+ - JSON outputs
+ - verification traces
+
+ Because these artifacts are preserved, knowledge is not fragile.
+
+ If an error occurs, the system can return to a previously verified state.
+
+ In other words:
+
+ MoCKA does not only generate answers.
+
+ It builds **recoverable facts**.
 
  ------------------------------------------------------------
 
@@ -40,10 +76,10 @@
 
  MoCKA is designed around four structural pillars.
 
- 1. Verifiable AI execution
- 2. Institutional memory
- 3. Research orchestration
- 4. Transparent verification
+ 1 Verifiable AI execution
+ 2 Institutional memory
+ 3 Research orchestration
+ 4 Transparent verification
 
  These elements allow research processes to remain inspectable and reproducible.
 
@@ -185,26 +221,6 @@
 
  ```
 
- Directory overview
-
- docs
- Documentation and explanation of the ecosystem
-
- docs/demo
- Demonstration environments such as Demo Arena
-
- tools
- Operational scripts used for research execution
-
- experiments
- Experiment definitions and research units
-
- canon
- Canonical institutional references
-
- artifacts
- Generated logs and research outputs
-
  ------------------------------------------------------------
 
  ## Quick Verification Demo
@@ -215,29 +231,6 @@
  cd C:\Users\sirok\mocka-ecosystem
  powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
  ```
-
- ------------------------------------------------------------
-
- ## Observation Checklist
-
- When executing the demonstration, confirm the following.
-
- - Architecture diagrams render correctly
- - Repository structure remains aligned
- - Verification command produces artifacts
- - Links are navigable
-
- ------------------------------------------------------------
-
- ## Artifact Outputs
-
- MoCKA verification produces structured outputs.
-
- - JSON artifacts
- - Execution logs
- - Trace notes
-
- These outputs provide traceable research evidence.
 
  ------------------------------------------------------------
 
@@ -258,17 +251,27 @@
  - システム構造
  - 研究ワークフロー
  - 検証アーキテクチャ
- - リポジトリ構造
 
  を図とともに説明しています。
 
- MoCKA は AI 研究を
+ MoCKA の最も重要な特徴は
 
- 実行
- 検証
- 記録
+ **AI → 検証 → 記録 → 制度的記憶**
 
- の循環構造として運用する研究基盤です。
+ という知識循環です。
+
+ AI の結果は検証され、
+ 記録され、
+ 制度的記憶として蓄積されます。
+
+ 検索すればするほど
+
+ 正しい知識が増え
+ 回答精度が向上します。
+
+ さらにすべての処理が記録されるため、
+
+ **誤りがあっても過去の正しい状態へ戻ることができます。**
 
  ------------------------------------------------------------
 
