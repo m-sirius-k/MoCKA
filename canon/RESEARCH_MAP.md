@@ -1,4 +1,4 @@
-# MoCKA Ecosystem Research Map
+# MoCKA Insight System Research Map
 
 ## Experiments Registry
 Canonical list derived from MoCKA/tools/research_experiments.json
@@ -72,37 +72,37 @@ ENGLISH VERSION
 日本語版
 
 - artifact_directory_integrity
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_artifact_directory_integrity.ps1
 
 - canon_directory_integrity
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_canon_directory_integrity.ps1
 
 - canon_notes_integrity
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_canon_notes_integrity.ps1
 
 - docs_link_audit
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_docs_link_audit.ps1
 
 - doctor_artifact_schema
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_doctor_artifact_schema.ps1
 
 - doctor_script_presence
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_doctor_script_presence.ps1
 
 - repo_license_presence
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_repo_license_presence.ps1
 
 - research_registry_schema
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_research_registry_schema.ps1
 
 - research_runner_selfcheck
-  - 目的: registry との同期で自動追記
+  - 目皁E registry との同期で自動追訁E
   - Script: MoCKA/experiments/exp_research_runner_selfcheck.ps1

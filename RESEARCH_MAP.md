@@ -1,4 +1,4 @@
-﻿# Research Map
+# Research Map
 
 ## Primary Role
 Boundary

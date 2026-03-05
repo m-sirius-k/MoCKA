@@ -1,4 +1,4 @@
-﻿# STRUCTURE_INVENTORY_20260223_181903
+# STRUCTURE_INVENTORY_20260223_181903
 
 ## main_loop.py
 C:\Users\sirok\MoCKA\main_loop.py

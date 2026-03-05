@@ -1,4 +1,4 @@
-﻿NOTE: Phase2 Public Verification
+NOTE: Phase2 Public Verification
 
 Verify tag
 - git tag -v public-safe-phase2-d410dd8

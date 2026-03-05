@@ -1,4 +1,4 @@
-﻿6. # 
+6. # 
 7. 
 8. Operational Seal (Phase13-B Close)
    seal\_status: SEALED

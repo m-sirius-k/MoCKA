@@ -1,4 +1,4 @@
-﻿# PHASE2_SYNC_SPEC_v0.1
+# PHASE2_SYNC_SPEC_v0.1
 
 NOTE: Purpose
 - Extract append-only diffs from infield/ai_save/index.csv

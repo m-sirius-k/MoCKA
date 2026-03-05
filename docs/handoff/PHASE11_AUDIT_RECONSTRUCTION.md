@@ -1,4 +1,4 @@
-﻿# Phase11 Audit Reconstruction Log
+# Phase11 Audit Reconstruction Log
 
 ## 1. Summary
 

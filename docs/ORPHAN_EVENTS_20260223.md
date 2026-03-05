@@ -1,4 +1,4 @@
-﻿# ORPHAN_EVENTS_20260223
+# ORPHAN_EVENTS_20260223
 
 These events are not reachable from current TIP:
 

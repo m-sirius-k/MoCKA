@@ -1,4 +1,4 @@
-﻿NOTE: Phase2 Public Verify (Public Layer)
+NOTE: Phase2 Public Verify (Public Layer)
 
 Purpose
 - The public repository publishes the "container" only.

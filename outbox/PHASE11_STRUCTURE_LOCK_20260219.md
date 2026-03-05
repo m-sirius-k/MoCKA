@@ -2,7 +2,7 @@
 
 Date: 2026-02-19
 
-Scope: Phase11.8 – Phase11.9.5
+Scope: Phase11.8  EPhase11.9.5
 
 
 
@@ -10,7 +10,7 @@ Scope: Phase11.8 – Phase11.9.5
 
 
 
-\## 1. Phase11.8 – Operational Resilience Integration
+\## 1. Phase11.8  EOperational Resilience Integration
 
 
 
@@ -56,7 +56,7 @@ MoCKA became reversible.
 
 
 
-\## 2. Phase11.9 – Physical History Search
+\## 2. Phase11.9  EPhysical History Search
 
 
 
@@ -92,7 +92,7 @@ MoCKA can search past file states.
 
 
 
-\## 3. Phase11.9.5 – Semantic Audit Search
+\## 3. Phase11.9.5  ESemantic Audit Search
 
 
 

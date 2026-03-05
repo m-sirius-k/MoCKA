@@ -1,4 +1,4 @@
-﻿# Decision Record Spec v1.0
+# Decision Record Spec v1.0
 
 ## 1. Definition
 Long-term memory is an externalized, auditable record of important decisions extracted from conversations.
