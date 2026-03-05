@@ -26,7 +26,9 @@ flowchart LR
     B --> G[Institutional Memory]
     D --> H[Audit Evidence]
     E --> I[External Knowledge]
-    C --> J[Governance Philosophy]
+    C --> J[Governance Philosophy] 
+	
+	
 Research Workflow
 Verification Architecture
 Repository Structure
