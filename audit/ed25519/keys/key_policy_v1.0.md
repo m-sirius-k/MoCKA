@@ -1,4 +1,4 @@
-﻿MoCKA Key Management Policy v1.0
+MoCKA Key Management Policy v1.0
 
 Key ID: ed25519_20260220_01
 Algorithm: Ed25519

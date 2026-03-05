@@ -1,4 +1,4 @@
-﻿# STRUCTURE_LOCK_20260223
+# STRUCTURE_LOCK_20260223
 
 canonical_entry: C:\Users\sirok\MoCKA\main_loop.py
 delete_policy: phase14_only

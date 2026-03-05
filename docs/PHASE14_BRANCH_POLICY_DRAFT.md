@@ -1,4 +1,4 @@
-﻿# 
+# 
 
 # MoCKA Phase14 Branch \& Orphan Policy (Draft)
 

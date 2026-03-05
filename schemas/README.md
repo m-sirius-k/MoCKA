@@ -1,1 +1,1 @@
-﻿# Schemas define structured data exchanged across boundary.
+# Schemas define structured data exchanged across boundary.

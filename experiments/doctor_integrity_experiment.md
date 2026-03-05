@@ -1,7 +1,7 @@
-﻿# Experiment: Ecosystem Integrity Check
+# Experiment: Ecosystem Integrity Check
 
 ## Purpose
-Verify that the MoCKA ecosystem repositories remain structurally consistent.
+Verify that the MoCKA Insight System repositories remain structurally consistent.
 
 ## Environment
 Windows PowerShell

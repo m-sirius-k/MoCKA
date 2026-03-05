@@ -1,4 +1,4 @@
-﻿---
+---
 event_id: "{event_id}"
 date: "{date}"
 event_type: "{event_type}"

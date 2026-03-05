@@ -1,1 +1,1 @@
-﻿# Contracts define the Public/Private boundary.
+# Contracts define the Public/Private boundary.

@@ -1,4 +1,4 @@
-﻿# MoCKA Architecture Overview
+# MoCKA Architecture Overview
 
 ## High-Level Architecture
 

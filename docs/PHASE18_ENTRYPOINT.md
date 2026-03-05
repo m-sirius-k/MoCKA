@@ -1,4 +1,4 @@
-﻿# PHASE18 ENTRYPOINT
+# PHASE18 ENTRYPOINT
 
 ## 0. Current Stable Anchor
 - stable tag: phase17-stable

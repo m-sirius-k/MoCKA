@@ -1,4 +1,4 @@
-﻿# phase24_a_audit_note
+# phase24_a_audit_note
 created_at_utc: 2026-02-27T01:40:00Z
 author: sirok
 

@@ -1,4 +1,4 @@
-﻿# Summary Hash Specification v1.0
+# Summary Hash Specification v1.0
 
 ## Scope
 This document defines the normative algorithm for computing the MoCKA sealed_summary_hash.
