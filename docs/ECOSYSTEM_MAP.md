@@ -10,7 +10,7 @@ The MoCKA Insight System is composed of multiple repositories that together form
 
 Each repository represents a structural layer of the system.
 
-The ecosystem is designed so that architecture, documentation, and verification systems remain observable and reproducible.
+The Insight System is designed so that architecture, documentation, and verification systems remain observable and reproducible.
 
 ---
 
@@ -69,9 +69,9 @@ Contains internal tools and operational infrastructure not intended for public e
 
 ---
 
-## Ecosystem Verification
+## Insight System Verification
 
-The ecosystem integrity is verified by two main systems.
+The Insight System integrity is verified by two main systems.
 
 Doctor
 
@@ -101,7 +101,7 @@ Integrity confirmed
 
 ## Purpose
 
-The purpose of the ecosystem is to demonstrate that complex AI architectures can maintain transparency and structural verification at scale.
+The purpose of the Insight System is to demonstrate that complex AI architectures can maintain transparency and structural verification at scale.
 
 
 

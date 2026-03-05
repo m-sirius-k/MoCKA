@@ -9,14 +9,14 @@
 
  ## What is MoCKA
 
- MoCKA is a verifiable AI research ecosystem designed to transform how knowledge is produced, validated, and preserved.
+ MoCKA is a verifiable AI research Insight System designed to transform how knowledge is produced, validated, and preserved.
 
  Traditional AI systems generate answers.
  MoCKA builds a continuously improving knowledge system.
 
  Instead of producing isolated results, MoCKA treats every experiment as part of a verifiable research process.
 
- The ecosystem integrates several capabilities normally separated in conventional AI systems.
+ The Insight System integrates several capabilities normally separated in conventional AI systems.
 
  - AI orchestration
  - verification pipelines
@@ -125,7 +125,7 @@
 
  ------------------------------------------------------------
 
- ## Ecosystem Architecture
+ ## Insight System Architecture
 
  ```mermaid
  flowchart LR
@@ -189,7 +189,7 @@
  Institutional memory preserves verified knowledge.
  Governance ensures transparency and reproducibility.
 
- This cycle continuously strengthens the research ecosystem.
+ This cycle continuously strengthens the research Insight System.
 
  ------------------------------------------------------------
 
@@ -269,4 +269,4 @@
 
  ------------------------------------------------------------
 
- MoCKA Demo Arena demonstrates the self-verifying architecture of the ecosystem.
+ MoCKA Demo Arena demonstrates the self-verifying architecture of the Insight System.

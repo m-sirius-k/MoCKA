@@ -36,9 +36,9 @@ Quick Start
 
 ENGLISH
 
-Run the ecosystem verification.
+Run the Insight System verification.
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 
@@ -50,7 +50,7 @@ powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 エコシステム検証を実行します。
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 ------------------------------------------------
@@ -59,9 +59,9 @@ Quick Start
 
 ENGLISH
 
-Run the ecosystem verification.
+Run the Insight System verification.
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 
@@ -69,7 +69,7 @@ powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 エコシステム検証を実行します。
 
-cd C:\Users\sirok\mocka-ecosystem
+cd C:\Users\sirok\mocka-Insight System
 powershell -ExecutionPolicy Bypass -File .\MoCKA\tools\mocka_research_run.ps1
 
 MoCKA Insight System Overview
@@ -128,16 +128,16 @@ docs/ARCHITECTURE_DIAGRAM.md
 docs/ARCHITECTURE_DIAGRAM.md
 
 ------------------------------------------------
-Ecosystem Map
+Insight System Map
 ------------------------------------------------
 
 ENGLISH
 
 The MoCKA Insight System is composed of multiple repositories forming a verifiable AI architecture.
 
-See the ecosystem structure:
+See the Insight System structure:
 
-docs/ECOSYSTEM_MAP.md
+docs/Insight System_MAP.md
 
 
 ------------------------------------------------
@@ -150,7 +150,7 @@ MoCKA は複数のリポジトリで構成されるエコシステムです。
 
 全体構造はこちら。
 
-docs/ECOSYSTEM_MAP.md
+docs/Insight System_MAP.md
 
 ------------------------------------------------
 Research Entry
@@ -158,7 +158,7 @@ Research Entry
 
 ENGLISH
 
-If you want to understand how MoCKA verifies its ecosystem architecture, start here.
+If you want to understand how MoCKA verifies its Insight System architecture, start here.
 
 Research Entry Guide  
 README_RESEARCH_ENTRY.md
@@ -195,7 +195,7 @@ Research Ledger 構造
 再現可能な検証実行
 
 外部エンジニアがシステム構造を評価できるよう設計されています。
-Ecosystem Navigation
+Insight System Navigation
 
 MoCKA https://github.com/nsjpkimura-del/MoCKA
 MoCKA Knowledge Gate https://github.com/nsjpkimura-del/MoCKA-KNOWLEDGE-GATE
@@ -222,9 +222,9 @@ This repository contains the core architecture of the MoCKA system.
 
 MoCKA Insight System
 
-MoCKA operates as part of a multi-repository ecosystem.
+MoCKA operates as part of a multi-repository Insight System.
 
-Repositories included in the ecosystem
+Repositories included in the Insight System
 
 MoCKA
 MoCKA-KNOWLEDGE-GATE
@@ -236,7 +236,7 @@ mocka-core-private
 
 Architecture Documentation
 
-Canonical documentation is stored in the ecosystem documentation directory.
+Canonical documentation is stored in the Insight System documentation directory.
 
 See
 
@@ -246,8 +246,8 @@ See
 Important Documents
 
 docs/ARCHITECTURE_DIAGRAM.md
-docs/ECOSYSTEM_MAP.md
-docs/ECOSYSTEM_MAP.md
+docs/Insight System_MAP.md
+docs/Insight System_MAP.md
 docs/VERIFICATION_SAMPLE.md
 
 
@@ -299,8 +299,8 @@ mocka-core-private
 主要ドキュメント
 
 docs/ARCHITECTURE_DIAGRAM.md
-docs/ECOSYSTEM_MAP.md
-docs/ECOSYSTEM_MAP.md
+docs/Insight System_MAP.md
+docs/Insight System_MAP.md
 docs/VERIFICATION_SAMPLE.md
 ## Role
 Primary Role: Boundary
@@ -329,7 +329,7 @@ Research Infrastructure: complete
 Verification System: operational  
 Experiment Framework: active  
 
-MoCKA now functions as a self-verifying research ecosystem.
+MoCKA now functions as a self-verifying research Insight System.
 
 
 ------------------------------------------------
