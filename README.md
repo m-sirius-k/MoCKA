@@ -23,6 +23,10 @@
  - institutional memory
  - governance architecture
 
+<a href="docs/images/mocka_civilization_system_map.jpg">
+<img src="docs/images/mocka_civilization_system_map.jpg" width="400">
+</a>
+
  Together these components form the **MoCKA Insight System**.
 
  ------------------------------------------------------------
