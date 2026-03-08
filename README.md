@@ -24,7 +24,7 @@
  - governance architecture
 
 <a href="docs/images/mocka_civilization_system_map.jpg">
-<img src="docs/images/mocka_civilization_system_map.jpg" width="400">
+<img src="docs/images/mocka_civilization_system_map.jpg" width="100%">
 </a>
 
  Together these components form the **MoCKA Insight System**.
@@ -283,6 +283,7 @@
 Shadow Movement ? the fail-safe philosophy of MoCKA.
 
 See: docs/SHADOW_MOVEMENT_PRINCIPLE.md
+
 
 
 
