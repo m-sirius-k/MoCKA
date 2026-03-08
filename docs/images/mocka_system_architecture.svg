@@ -1,0 +1,28 @@
+﻿<svg viewBox="0 0 900 420" width="900" height="420" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="420" fill="#ffffff"/>
+  <text x="450" y="40" text-anchor="middle" font-family="Segoe UI, Arial" font-size="20" fill="#222222">MoCKA システムアーキテクチャ</text>
+  <rect x="350" y="70" width="200" height="70" fill="#1e6bff" rx="10"/>
+  <text x="450" y="100" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#ffffff">MoCKA Core</text>
+  <text x="450" y="120" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#e6f0ff">研究実行</text>
+  <rect x="80" y="190" width="220" height="80" fill="#19b37c" rx="10"/>
+  <text x="190" y="220" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#ffffff">Knowledge Gate</text>
+  <text x="190" y="240" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#e9fff6">制度的記憶</text>
+  <rect x="340" y="190" width="220" height="80" fill="#ff8c1a" rx="10"/>
+  <text x="450" y="220" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#ffffff">Transparency</text>
+  <text x="450" y="240" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#fff4e6">監査・証跡</text>
+  <rect x="600" y="190" width="220" height="80" fill="#7b5cff" rx="10"/>
+  <text x="710" y="220" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#ffffff">External Brain</text>
+  <text x="710" y="240" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#f3efff">知識統合</text>
+  <rect x="250" y="320" width="400" height="60" fill="#c62828" rx="10"/>
+  <text x="450" y="350" text-anchor="middle" font-family="Segoe UI, Arial" font-size="18" fill="#ffffff">Civilization Layer</text>
+  <text x="450" y="368" text-anchor="middle" font-family="Segoe UI, Arial" font-size="13" fill="#ffecec">文明思想・制度設計</text>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#555555"/>
+    </marker>
+  </defs>
+  <line x1="450" y1="140" x2="450" y2="190" stroke="#555555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="190" y1="270" x2="450" y2="320" stroke="#555555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="450" y1="270" x2="450" y2="320" stroke="#555555" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="710" y1="270" x2="450" y2="320" stroke="#555555" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
