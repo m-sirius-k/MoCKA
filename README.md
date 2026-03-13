@@ -76,3 +76,6 @@ MoCKA studies AI civilization systems including governance, consensus and instit
 
 MoCKAはAI文明システムを研究するプロジェクトです。
 
+## MoCKA Ecosystem Architecture
+
+![MoCKA Ecosystem](docs/architecture/mocka_ecosystem_map.svg)
