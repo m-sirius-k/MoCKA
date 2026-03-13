@@ -1,7 +1,7 @@
-﻿import subprocess
+import subprocess
 import sys
 
-EXPECTED = "git@github.com:nsjpkimura-del/MoCKA.git"
+EXPECTED = "git@github.com:m-sirius-k/MoCKA.git"
 
 def run(cmd):
     return subprocess.check_output(cmd, shell=True).decode().strip()
@@ -18,3 +18,4 @@ if status != "":
     sys.exit(1)
 
 print("origin and working tree OK")
+
