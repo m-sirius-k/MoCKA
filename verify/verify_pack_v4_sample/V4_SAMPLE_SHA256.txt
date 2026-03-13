@@ -1,0 +1,24 @@
+MoCKA Governance Model v4
+Trust and Identity Layer
+2-of-3 Multi-Signature Responsibility Model
+
+Artifact
+verify_pack_v4_sample.zip
+
+SHA256
+d5995d34e3cb651dbd00ba9d5acae52aaafbc67cdf27ba502de7893830221fea
+
+Computation Command (Windows)
+certutil -hashfile verify_pack_v4_sample.zip SHA256
+
+Verification Rule
+The SHA256 value above is the cryptographic anchor of this artifact.
+If a single byte inside verify_pack_v4_sample.zip changes,
+the computed SHA256 will differ and the artifact must be rejected.
+
+Reproducibility
+This hash was computed in directory:
+C:\Users\sirok\MoCKA
+
+Any redistribution must preserve the exact byte sequence
+of verify_pack_v4_sample.zip.
