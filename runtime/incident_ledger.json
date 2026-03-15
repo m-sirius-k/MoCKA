@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": 1773536495,
+    "first_seen": 1773536495,
+    "last_seen": 1773536688,
+    "repeat_count": 13,
+    "event_type": "incident",
+    "actor": "system",
+    "title": "Python Runtime Error",
+    "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+    "source": "error_capture_engine",
+    "impact": "major",
+    "focus_point": "runtime failure",
+    "incident_candidate": true
+  }
+]
