@@ -16,8 +16,8 @@
   {
     "timestamp": 1773536897,
     "first_seen": 1773536897,
-    "last_seen": 1773537118,
-    "repeat_count": 30,
+    "last_seen": 1773537168,
+    "repeat_count": 39,
     "incident_hash": "5e5d0e681ef7519fac3efff4b63626dfad614779b39df1be6d5cc1b27638723c",
     "event_type": "incident",
     "actor": "system",
@@ -27,5 +27,20 @@
     "impact": "major",
     "focus_point": "runtime failure",
     "incident_candidate": true
+  },
+  {
+    "timestamp": 1773541293,
+    "first_seen": 1773541293,
+    "last_seen": 1773541293,
+    "repeat_count": 1,
+    "incident_hash": "63b6d6742ea4c4d581b2bbe04acc3b7e53c57f07da27e2fb9b51e17155a13f42",
+    "event_type": "system_event",
+    "actor": "system",
+    "title": "Civilization Loop Success",
+    "content": "MoCKA civilization evolution loop start\n",
+    "source": "error_capture_engine",
+    "impact": "none",
+    "focus_point": "normal operation",
+    "incident_candidate": false
   }
 ]
