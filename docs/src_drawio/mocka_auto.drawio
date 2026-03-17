@@ -1,0 +1,76 @@
+﻿<mxfile host="app.diagrams.net">
+  <diagram name="MoCKA Auto Generated">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1"
+      tooltips="1" connect="1" arrows="1" fold="1" page="1"
+      pageScale="1" pageWidth="1100" pageHeight="850"
+      background="#0d1117">
+
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Runtime -->
+        <mxCell id="runtime" value="Runtime Engine"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#161b22;strokeColor=#58a6ff;fontColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="420" y="60" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Observatory -->
+        <mxCell id="observatory" value="Observatory Engine"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#161b22;strokeColor=#58a6ff;fontColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="120" y="260" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Knowledge -->
+        <mxCell id="knowledge" value="Knowledge Core Engine"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#161b22;strokeColor=#58a6ff;fontColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="420" y="260" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Storage -->
+        <mxCell id="storage" value="Storage Engine"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#161b22;strokeColor=#58a6ff;fontColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="720" y="260" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Audit -->
+        <mxCell id="audit" value="Audit Engine"
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#161b22;strokeColor=#58a6ff;fontColor=#ffffff;"
+          vertex="1" parent="1">
+          <mxGeometry x="420" y="460" width="200" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" style="endArrow=block;strokeColor=#f78166;strokeWidth=2;"
+          edge="1" parent="1" source="runtime" target="observatory">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e2" style="endArrow=block;strokeColor=#f78166;strokeWidth=2;"
+          edge="1" parent="1" source="observatory" target="knowledge">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e3" style="endArrow=block;strokeColor=#f78166;strokeWidth=2;"
+          edge="1" parent="1" source="knowledge" target="storage">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e4" style="endArrow=block;strokeColor=#f78166;strokeWidth=2;"
+          edge="1" parent="1" source="storage" target="audit">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e5" style="endArrow=block;strokeColor=#f78166;strokeWidth=2;"
+          edge="1" parent="1" source="audit" target="runtime">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
