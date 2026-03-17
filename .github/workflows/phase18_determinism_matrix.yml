@@ -29,15 +29,21 @@ jobs:
 
     - name: Debug Workspace
       run: |
-        echo "PWD:"
+        echo "=== PWD ==="
         pwd
-        echo "LIST ROOT:"
+        echo "=== ROOT LIST ==="
         ls -R
 
     - name: Show Environment
       run: |
+        echo "=== PYTHON ==="
         python --version
+        echo "=== PLATFORM ==="
         python -c "import platform; print(platform.platform())"
 
     - name: Verify Determinism (Canonical)
-      run: python verify_chain.py
+      run: |
+        echo "=== START VERIFY ==="
+        python verify_chain.py
+        echo "=== EXIT CODE: $? ==="
+        echo "=== END VERIFY ==="
