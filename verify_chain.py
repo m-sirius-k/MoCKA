@@ -18,26 +18,28 @@ def canonical(obj):
 prev_hash = None
 
 for i, entry in enumerate(ledger):
-    entry_copy = dict(entry)
+    # === 完全に明示的コピー ===
+    entry_copy = {}
 
-    stored_prev = entry_copy.get("prev_hash")
-    stored_hash = entry_copy.get("hash")
+    for k, v in entry.items():
+        if k not in ["hash"]:
+            entry_copy[k] = v
 
-    # GENESIS
+    stored_prev = entry.get("prev_hash")
+    stored_hash = entry.get("hash")
+
     if i == 0:
         prev_hash = stored_hash
         continue
 
-    # prevチェックのみ厳格
     if stored_prev != prev_hash:
         raise Exception(f"CHAIN BREAK at {i}")
 
-    # ハッシュは参考比較（警告にする）
-    payload = canonical({k: v for k, v in entry_copy.items() if k not in ["hash"]})
+    payload = canonical(entry_copy)
     computed = hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
     if computed != stored_hash:
-        print(f"WARNING: hash mismatch at {i} (non-canonical legacy)")
+        raise Exception(f"HASH MISMATCH at {i}")
 
     prev_hash = stored_hash
 
