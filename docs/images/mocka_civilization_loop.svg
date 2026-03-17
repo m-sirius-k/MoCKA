@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <rect x="0" y="0" width="1200" height="700" fill="#0d1117"/>
+  <rect x="40" y="40" width="1120" height="620" fill="#161b22" stroke="#58a6ff" stroke-width="3" rx="16"/>
+
+  <text x="60" y="90" fill="#ffffff" font-size="28" font-weight="bold">MoCKA Civilization Runtime Loop</text>
+
+  <!-- Nodes -->
+  <rect x="450" y="120" width="300" height="90" fill="none" stroke="#58a6ff" stroke-width="4" rx="16"/>
+  <text x="600" y="170" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">Runtime</text>
+
+  <rect x="150" y="260" width="260" height="90" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="280" y="310" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Observatory</text>
+
+  <rect x="450" y="260" width="300" height="90" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="600" y="310" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Knowledge Core</text>
+
+  <rect x="150" y="420" width="260" height="90" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="280" y="470" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Storage</text>
+
+  <rect x="820" y="360" width="260" height="90" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="950" y="410" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Audit</text>
+
+  <!-- Loop -->
+  <line x1="600" y1="210" x2="280" y2="260" stroke="#f78166" stroke-width="5"/>
+  <polygon points="280,260 270,245 290,245" fill="#f78166"/>
+
+  <line x1="280" y1="350" x2="600" y2="260" stroke="#f78166" stroke-width="5"/>
+  <polygon points="600,260 590,245 610,245" fill="#f78166"/>
+
+  <line x1="600" y1="350" x2="280" y2="420" stroke="#f78166" stroke-width="5"/>
+  <polygon points="280,420 270,405 290,405" fill="#f78166"/>
+
+  <line x1="280" y1="510" x2="950" y2="360" stroke="#f78166" stroke-width="5"/>
+  <polygon points="950,360 940,345 960,345" fill="#f78166"/>
+
+  <line x1="950" y1="450" x2="600" y2="120" stroke="#f78166" stroke-width="5"/>
+  <polygon points="600,120 590,105 610,105" fill="#f78166"/>
+
+</svg>

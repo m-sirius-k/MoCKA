@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <rect x="0" y="0" width="1200" height="700" fill="#0d1117"/>
+  <rect x="40" y="40" width="1120" height="620" fill="#161b22" stroke="#58a6ff" stroke-width="3" rx="16"/>
+
+  <text x="60" y="90" fill="#ffffff" font-size="28" font-weight="bold">
+    MoCKA Runtime Architecture
+  </text>
+
+  <!-- Runtime -->
+  <rect x="450" y="120" width="300" height="100" fill="none" stroke="#58a6ff" stroke-width="4" rx="16"/>
+  <text x="600" y="175" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">
+    Runtime Engine
+  </text>
+
+  <!-- Observatory -->
+  <rect x="150" y="280" width="250" height="100" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="275" y="330" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">
+    Observatory Engine
+  </text>
+
+  <!-- Knowledge -->
+  <rect x="450" y="300" width="300" height="100" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="600" y="350" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">
+    Knowledge Core
+  </text>
+
+  <!-- Storage -->
+  <rect x="150" y="460" width="250" height="100" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="275" y="510" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">
+    Storage Engine
+  </text>
+
+  <!-- Audit -->
+  <rect x="800" y="380" width="250" height="100" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="925" y="430" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">
+    Audit Engine
+  </text>
+
+  <!-- Flow -->
+  <line x1="600" y1="220" x2="275" y2="280" stroke="#f78166" stroke-width="5"/>
+  <polygon points="275,280 265,265 285,265" fill="#f78166"/>
+
+  <line x1="275" y1="380" x2="600" y2="300" stroke="#f78166" stroke-width="5"/>
+  <polygon points="600,300 590,285 610,285" fill="#f78166"/>
+
+  <line x1="600" y1="400" x2="275" y2="460" stroke="#f78166" stroke-width="5"/>
+  <polygon points="275,460 265,445 285,445" fill="#f78166"/>
+
+  <line x1="275" y1="560" x2="925" y2="380" stroke="#f78166" stroke-width="5"/>
+  <polygon points="925,380 915,365 935,365" fill="#f78166"/>
+
+</svg>

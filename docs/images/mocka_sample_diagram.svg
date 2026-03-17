@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <rect x="0" y="0" width="1200" height="700" fill="#0d1117"/>
+  <rect x="40" y="40" width="1120" height="620" fill="#161b22" stroke="#58a6ff" stroke-width="3" rx="16"/>
+  <text x="60" y="90" fill="#ffffff" font-size="28" font-weight="bold">MoCKA Diagram Title</text>
+
+  <rect x="450" y="180" width="300" height="120" fill="none" stroke="#58a6ff" stroke-width="4" rx="16"/>
+  <text x="600" y="245" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">Central Concept</text>
+
+  <rect x="120" y="340" width="280" height="110" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="260" y="390" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">Component A</text>
+
+  <rect x="800" y="340" width="280" height="110" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="940" y="390" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">Component B</text>
+
+  <line x1="450" y1="240" x2="400" y2="340" stroke="#f78166" stroke-width="5"/>
+  <polygon points="400,340 390,325 410,325" fill="#f78166"/>
+
+  <line x1="750" y1="240" x2="800" y2="340" stroke="#f78166" stroke-width="5"/>
+  <polygon points="800,340 790,325 810,325" fill="#f78166"/>
+</svg>

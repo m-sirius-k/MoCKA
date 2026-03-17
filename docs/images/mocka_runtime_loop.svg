@@ -1,0 +1,50 @@
+﻿<svg width="960" height="560" viewBox="0 0 960 560" xmlns="http://www.w3.org/2000/svg">
+  <!-- Conforms to MoCKA SVG Standard Dark v1.0 -->
+  <rect width="960" height="560" fill="#0d1117"/>
+  <defs>
+    <marker id="arrow" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">
+      <path d="M 0 0 L 12 6 L 0 12 z" fill="#f78166"/>
+    </marker>
+    <style>
+      .title { font-family: Arial, Helvetica, sans-serif; font-size: 28px; font-weight: 700; fill: #ffffff; }
+      .desc  { font-family: Arial, Helvetica, sans-serif; font-size: 14px; fill: #8b949e; }
+      .box   { fill: #161b22; stroke: #58a6ff; stroke-width: 3; }
+      .label { font-family: Arial, Helvetica, sans-serif; font-size: 18px; font-weight: 700; fill: #ffffff; }
+      .sub   { font-family: Arial, Helvetica, sans-serif; font-size: 13px; fill: #8b949e; }
+      .arrow { fill: none; stroke: #f78166; stroke-width: 5; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect x="370" y="100" width="220" height="70" rx="14" ry="14" class="box"/>
+  <rect x="680" y="220" width="220" height="70" rx="14" ry="14" class="box"/>
+  <rect x="370" y="390" width="220" height="70" rx="14" ry="14" class="box"/>
+  <rect x="60"  y="220" width="220" height="70" rx="14" ry="14" class="box"/>
+  <rect x="370" y="220" width="220" height="70" rx="14" ry="14" class="box"/>
+
+  <text x="480" y="42" text-anchor="middle" class="title">MoCKA Civilization Runtime Loop</text>
+  <text x="480" y="68" text-anchor="middle" class="desc">Five-engine cyclic structure for continuous knowledge evolution</text>
+
+  <text x="480" y="130" text-anchor="middle" class="label">Runtime Engine</text>
+  <text x="480" y="150" text-anchor="middle" class="sub">Execution and cycle control</text>
+
+  <text x="790" y="250" text-anchor="middle" class="label">Observatory Engine</text>
+  <text x="790" y="270" text-anchor="middle" class="sub">State observation and summarization</text>
+
+  <text x="480" y="420" text-anchor="middle" class="label">Knowledge Core</text>
+  <text x="480" y="440" text-anchor="middle" class="sub">Research, theory, culture, institution</text>
+
+  <text x="170" y="250" text-anchor="middle" class="label">Storage Engine</text>
+  <text x="170" y="270" text-anchor="middle" class="sub">Snapshot persistence and recovery</text>
+
+  <text x="480" y="250" text-anchor="middle" class="label">Audit Engine</text>
+  <text x="480" y="270" text-anchor="middle" class="sub">Integrity verification and reporting</text>
+
+  <path d="M 590 135 C 650 150, 700 185, 740 220" class="arrow"/>
+  <path d="M 760 290 C 710 345, 640 385, 560 405" class="arrow"/>
+  <path d="M 370 425 C 300 410, 235 365, 190 290" class="arrow"/>
+  <path d="M 280 255 C 315 255, 340 255, 370 255" class="arrow"/>
+  <path d="M 480 220 C 480 205, 480 190, 480 170" class="arrow"/>
+
+  <text x="480" y="515" text-anchor="middle" class="desc">Cycle output returns to Runtime Engine and begins the next iteration</text>
+</svg>
+

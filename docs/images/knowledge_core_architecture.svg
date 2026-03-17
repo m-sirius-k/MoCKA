@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+
+  <rect x="0" y="0" width="1200" height="700" fill="#0d1117"/>
+  <rect x="40" y="40" width="1120" height="620" fill="#161b22" stroke="#58a6ff" stroke-width="3" rx="16"/>
+
+  <text x="60" y="90" fill="#ffffff" font-size="28" font-weight="bold">
+    Knowledge Core Engine Architecture
+  </text>
+
+  <!-- Core -->
+  <rect x="450" y="160" width="300" height="120" fill="none" stroke="#58a6ff" stroke-width="4" rx="16"/>
+  <text x="600" y="225" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">
+    Knowledge Core Engine
+  </text>
+
+  <!-- Inputs -->
+  <rect x="120" y="360" width="280" height="110" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="260" y="400" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">
+    Observations
+  </text>
+  <text x="260" y="430" fill="#8b949e" font-size="14" text-anchor="middle">
+    signals / structured input
+  </text>
+
+  <!-- Outputs -->
+  <rect x="800" y="360" width="280" height="110" fill="none" stroke="#58a6ff" stroke-width="3" rx="14"/>
+  <text x="940" y="400" fill="#ffffff" font-size="18" font-weight="bold" text-anchor="middle">
+    Knowledge Output
+  </text>
+  <text x="940" y="430" fill="#8b949e" font-size="14" text-anchor="middle">
+    theories / models / insights
+  </text>
+
+  <!-- Internal Structure -->
+  <rect x="420" y="500" width="360" height="90" fill="none" stroke="#58a6ff" stroke-width="2" rx="12"/>
+  <text x="600" y="535" fill="#ffffff" font-size="14" text-anchor="middle">
+    Research · Theory · Philosophy Layer
+  </text>
+
+  <!-- Flow -->
+  <line x1="400" y1="360" x2="450" y2="260" stroke="#f78166" stroke-width="5"/>
+  <polygon points="450,260 440,245 460,245" fill="#f78166"/>
+
+  <line x1="750" y1="260" x2="800" y2="360" stroke="#f78166" stroke-width="5"/>
+  <polygon points="800,360 790,345 810,345" fill="#f78166"/>
+
+</svg>
