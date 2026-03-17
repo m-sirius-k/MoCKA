@@ -1,26 +1,44 @@
 ﻿import json
-import os
-from hash_utils import compute_hash
+import hashlib
+from pathlib import Path
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ledger_path = os.path.join(BASE_DIR, "runtime", "main", "ledger.json")
+# === CANONICAL PATH ===
+LEDGER_PATH = Path(__file__).parent / "runtime" / "main" / "ledger.json"
 
-with open(ledger_path, "r", encoding="utf-8") as f:
+if not LEDGER_PATH.exists():
+    raise FileNotFoundError(f"Ledger not found: {LEDGER_PATH}")
+
+# === LOAD ===
+with open(LEDGER_PATH, "r", encoding="utf-8") as f:
     ledger = json.load(f)
 
+# === CANONICAL JSON FUNCTION ===
+def canonical(obj):
+    return json.dumps(
+        obj,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":")
+    )
+
+# === HASH CHAIN VERIFY ===
 prev_hash = "GENESIS"
 
-for i, event in enumerate(ledger):
-    if event["prev_hash"] != prev_hash:
-        print("CHAIN BROKEN AT", i)
-        exit(1)
+for i, entry in enumerate(ledger):
+    entry_copy = dict(entry)
 
-    expected_hash = compute_hash(event)
+    expected_prev = entry_copy.pop("prev_hash", None)
+    stored_hash = entry_copy.pop("hash", None)
 
-    if event["event_hash"] != expected_hash:
-        print("HASH INVALID AT", i)
-        exit(1)
+    if expected_prev != prev_hash:
+        raise Exception(f"CHAIN BREAK at {i}: prev mismatch")
 
-    prev_hash = event["event_hash"]
+    payload = canonical(entry_copy)
+    computed_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
-print("CHAIN VERIFIED", len(ledger), "events")
+    if computed_hash != stored_hash:
+        raise Exception(f"HASH MISMATCH at {i}")
+
+    prev_hash = computed_hash
+
+print(f"CHAIN VERIFIED {len(ledger)} events")
