@@ -1,4 +1,7 @@
-﻿name: phase18-determinism-matrix
+﻿cd C:\Users\sirok\MoCKA\.github\workflows
+
+@'
+name: phase18-determinism-matrix
 
 on:
   push:
@@ -29,5 +32,6 @@ jobs:
         python --version
         python -c "import platform; print(platform.platform())"
 
-    - name: Verify Determinism (Phase17 Guarantee)
-      run: python tools/phase17_determinism_check.py
+    - name: Verify Determinism (Canonical)
+      run: python verify_chain.py
+'@ | Set-Content -Encoding UTF8 phase18_determinism_matrix.yml
