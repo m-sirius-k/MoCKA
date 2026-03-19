@@ -1,11 +1,53 @@
-﻿.wsl_ots_venv/
-archive/
-*.bak
+﻿# ========================
+# System Ignore (MoCKA)
+# ========================
+
+# Virtual / temp
+.wsl_ots_venv/
 __pycache__/
 *.pyc
+
+# Archive / backup
+archive/
+*.bak
+
+# Secrets (絶対禁止)
 keys/
+secrets/
 *.pem
 *.key
-runtime/*
-!runtime/security_gate.py
+
+# Runtime state (非公開データ)
+runtime/main/*.json
+runtime/main/*.log
+
+# Memory state
+memory/
+infield/
+outbox/
+
+# Dist internal forbidden
 dist/public.key
+
+# ========================
+# Runtime Core (許可)
+# ========================
+
+!runtime/
+!runtime/*.py
+
+# ========================
+# Docs / Public
+# ========================
+
+!docs/
+!docs/images/
+!dist/
+
+# ========================
+# Default
+# ========================
+
+# OS
+desktop.ini
+.DS_Store
