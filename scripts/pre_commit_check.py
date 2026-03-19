@@ -1,24 +1,11 @@
-﻿import subprocess
-import sys
-import os
+﻿#!/usr/bin/env python
+import subprocess, sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
-SECURITY_GATE = os.path.join(BASE_DIR, "runtime", "security_gate.py")
+def run(cmd):
+    return subprocess.call(cmd,shell=True)
 
+if run("python runtime/security_gate.py") != 0:
+    print("BLOCK: security violation")
+    sys.exit(1)
 
-def main():
-    result = subprocess.run(
-        ["python", SECURITY_GATE],
-        cwd=BASE_DIR
-    )
-
-    if result.returncode != 0:
-        print("Commit blocked by Security Gate")
-        sys.exit(1)
-
-    print("Commit allowed")
-    sys.exit(0)
-
-
-if __name__ == "__main__":
-    main()
+print("PRE-COMMIT OK")
