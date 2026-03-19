@@ -1,0 +1,1 @@
+﻿print("civilization api active")

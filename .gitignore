@@ -1,53 +1,51 @@
-﻿# ========================
-# System Ignore (MoCKA)
-# ========================
+﻿# =========================
+# MoCKA Governance Ignore
+# =========================
 
-# Virtual / temp
-.wsl_ots_venv/
+# OS / Cache
 __pycache__/
 *.pyc
-
-# Archive / backup
-archive/
 *.bak
 
-# Secrets (絶対禁止)
+# Secrets
 keys/
-secrets/
 *.pem
 *.key
 
-# Runtime state (非公開データ)
-runtime/main/*.json
-runtime/main/*.log
+# Virtual env
+.wsl_ots_venv/
 
-# Memory state
-memory/
-infield/
-outbox/
+# Archive
+archive/
 
-# Dist internal forbidden
+# =========================
+# Runtime policy
+# =========================
+
+# 全runtimeを一度除外
+runtime/*
+
+# Coreのみ許可
+!runtime/*engine.py
+!runtime/*api.py
+!runtime/*policy*.py
+!runtime/*ledger*.py
+!runtime/security_gate.py
+!runtime/distributed_ledger.py
+!runtime/main_loop.py
+
+# JSON stateは除外（文明ログ）
+runtime/**/*.json
+
+# 分岐・スナップショット完全除外
+runtime/branches/
+runtime/snapshots/
+runtime/outbox/
+runtime/shadow/
+
+# dist
+dist/
+!dist/README.md
+
+# Block keys
 dist/public.key
-
-# ========================
-# Runtime Core (許可)
-# ========================
-
-!runtime/
-!runtime/*.py
-
-# ========================
-# Docs / Public
-# ========================
-
-!docs/
-!docs/images/
-!dist/
-
-# ========================
-# Default
-# ========================
-
-# OS
-desktop.ini
-.DS_Store
