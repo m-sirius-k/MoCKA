@@ -342,3 +342,23 @@ mocka-outfield
 文明コア（非公開）  
 mocka-core-private
 
+## Governance Pipeline
+
+MoCKA operates through an integrated pipeline:
+
+Security Gate → Memory → Ledger → Build → Commit → Push
+
+### Security
+All commits are scanned and blocked on violation.
+
+### Memory
+Runtime state is continuously recorded.
+
+### Ledger
+All security events are logged immutably.
+
+### Public Verification
+External users can verify via:
+
+http://localhost:8000/verify
+
