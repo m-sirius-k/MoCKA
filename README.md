@@ -4,7 +4,11 @@ Model of Cybernetic Knowledge Architecture
 
 ## Architecture
 
-![MoCKA Overview](docs/images/mocka_overview.svg)
+<p align="center">
+  <a href="docs/images/mocka_overview.svg">
+    <img src="docs/images/mocka_overview.svg" width="800">
+  </a>
+</p>
 
 ### Governance Layer
 
