@@ -1,0 +1,21 @@
+KEY AUDIT LOG
+
+date_utc=2026-03-01
+operation=generate_revocation_certificate
+key_role=Outfield
+fingerprint=FFA3AD2322B094AFEC12CA886BA095C48E3315F2
+artifact=revocation_outfield_FFA3.asc
+offline_backup_path=F:\MoCKA_Observer_Node
+online_cleanup=deleted
+operator=NSJP_kimura
+result=success
+
+date_utc=2026-03-01
+operation=generate_revocation_certificate
+key_role=Verifier
+fingerprint=0BF207F43CD6BF24FA4D177CD01AC75AC18C182E
+artifact=revocation_verifier.asc
+offline_backup_path=F:\MoCKA_Observer_Node
+online_cleanup=deleted
+operator=NSJP_kimura
+result=success

@@ -1,46 +1,29 @@
 ﻿import json
-import hashlib
-from pathlib import Path
+from runtime.hash_utils import compute_hash
+from runtime.auth_guard import enforce_rebuild_permission
+from runtime.rebuild_logger import record_rebuild
 
-LEDGER_PATH = Path(__file__).parent / "runtime" / "main" / "ledger.json"
+enforce_rebuild_permission()
 
-def canonical(obj):
-    return json.dumps(
-        obj,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":")
-    )
+ledger_path = "runtime/main/ledger.json"
 
-# 仮のデータ読み込み（既存をベースにする）
-if LEDGER_PATH.exists():
-    with open(LEDGER_PATH, "r", encoding="utf-8") as f:
-        ledger = json.load(f)
-else:
-    ledger = []
+with open(ledger_path, "r", encoding="utf-8") as f:
+    ledger = json.load(f)
 
+prev = "0"
 new_ledger = []
-prev_hash = None
 
-for i, entry in enumerate(ledger):
-    entry_copy = {k: v for k, v in entry.items() if k not in ["hash", "prev_hash"]}
+for event in ledger:
+    e = dict(event)
+    e["prev_hash"] = prev
+    e["hash"] = compute_hash(e)
+    prev = e["hash"]
+    new_ledger.append(e)
 
-    if i == 0:
-        entry_copy["prev_hash"] = None
-    else:
-        entry_copy["prev_hash"] = prev_hash
-
-    payload = canonical(entry_copy)
-    new_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-    entry_copy["hash"] = new_hash
-
-    new_ledger.append(entry_copy)
-    prev_hash = new_hash
-
-# 保存
-LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
-with open(LEDGER_PATH, "w", encoding="utf-8") as f:
+with open(ledger_path, "w", encoding="utf-8") as f:
     json.dump(new_ledger, f, ensure_ascii=False, indent=2)
 
-print(f"LEDGER REBUILT: {len(new_ledger)}")
+# ←ここが核心
+record_rebuild()
+
+print(f"LEDGER REBUILT {len(new_ledger)}")

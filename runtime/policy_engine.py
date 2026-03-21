@@ -1,33 +1,27 @@
-﻿import json
+﻿# FILE: runtime\policy_engine.py
+
+import csv
 import os
 
-BASE_DIR = os.path.dirname(__file__)
+CSV_PATH = os.path.join("runtime", "index", "event_timeline.csv")
 
-REPAIR_PATH = os.path.join(BASE_DIR,"repair_proposals.json")
-DECISION_PATH = os.path.join(BASE_DIR,"repair_decision.json")
+def load_active_incidents():
+    data = []
+    with open(CSV_PATH, encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row["type"] == "incident" and row["status"] == "active":
+                data.append(row)
+    return data
 
-def decide():
+def decide(action_name):
+    incidents = load_active_incidents()
 
-    if not os.path.exists(REPAIR_PATH):
-        print("NO_REPAIR_PROPOSALS")
-        return
+    if incidents:
+        print("POLICY: CAUTION (incident exists)")
+        return "caution"
 
-    with open(REPAIR_PATH,"r",encoding="utf-8") as f:
-        proposals = json.load(f)
-
-    if not proposals:
-        print("NO_PROPOSALS")
-        return
-
-    decision = {
-        "selected_repair": proposals[0],
-        "status": "pending_human_approval"
-    }
-
-    with open(DECISION_PATH,"w",encoding="utf-8") as f:
-        json.dump(decision,f,indent=2)
-
-    print("REPAIR_DECISION_CREATED")
+    return "normal"
 
 if __name__ == "__main__":
-    decide()
+    print(decide("test"))

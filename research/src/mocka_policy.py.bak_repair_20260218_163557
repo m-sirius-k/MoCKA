@@ -1,0 +1,74 @@
+﻿from __future__ import annotations
+
+import os
+from typing import Any, Dict, List, Optional
+
+
+def decide(env: Dict[str, Any], allowed: Dict[str, Any], prev: Optional[Dict[str, Any]], stats: Dict[str, Any]) -> Dict[str, Any]:
+    notes: List[str] = []
+    decision = "normal"
+    sleep_ms = 0
+
+    # Test hook: force cooldown sleep for validation
+    force = os.environ.get("MOCKA_POLICY_FORCE_COOLDOWN_MS", "").strip()
+    if force:
+        try:
+            v = int(force)
+        except Exception:
+            v = 0
+        if v > 0:
+            notes.append("force_cooldown")
+            if not bool(allowed.get("ai")):
+                notes.append("ai_locked")
+            return {
+                "schema": "mocka.policy.v1",
+                "decision": "cooldown",
+                "sleep_ms": int(v),
+                "notes": notes,
+            }
+
+    # Rule 0: no history yet -> do not penalize
+    n = stats.get("n", 0)
+    try:
+        n_i = int(n)
+    except Exception:
+        n_i = 0
+
+    if n_i == 0:
+        notes.append("no_history")
+        if not bool(allowed.get("ai")):
+            notes.append("ai_locked")
+        return {
+            "schema": "mocka.policy.v1",
+            "decision": decision,
+            "sleep_ms": int(sleep_ms),
+            "notes": notes,
+        }
+
+    # Rule 1: previous exception -> cooldown
+    if prev and str(prev.get("summary")) == "exception":
+        decision = "cooldown"
+        sleep_ms = max(sleep_ms, 500)
+        notes.append("prev_exception")
+
+    # Rule 2: low ok_rate -> cooldown
+    ok_rate = stats.get("ok_rate", 1.0)
+    try:
+        ok_rate_f = float(ok_rate)
+    except Exception:
+        ok_rate_f = 1.0
+
+    if ok_rate_f < 0.5:
+        decision = "cooldown"
+        sleep_ms = max(sleep_ms, 500)
+        notes.append("low_ok_rate")
+
+    if not bool(allowed.get("ai")):
+        notes.append("ai_locked")
+
+    return {
+        "schema": "mocka.policy.v1",
+        "decision": decision,
+        "sleep_ms": int(sleep_ms),
+        "notes": notes,
+    }

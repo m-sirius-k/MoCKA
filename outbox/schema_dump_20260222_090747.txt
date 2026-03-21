@@ -1,0 +1,38 @@
+=== DB PATH ===
+audit\ed25519\audit.db
+
+=== PRAGMA user_version ===
+(0,)
+
+=== TABLE LIST ===
+audit_ledger_event
+schema_versions
+
+=== FULL SCHEMA ===
+
+-- index idx_audit_ledger_event_created_at
+CREATE INDEX idx_audit_ledger_event_created_at ON audit_ledger_event(created_at)
+
+-- index sqlite_autoindex_audit_ledger_event_1
+(sql is null)
+
+-- index sqlite_autoindex_schema_versions_1
+(sql is null)
+
+-- table audit_ledger_event
+CREATE TABLE audit_ledger_event (
+            event_id TEXT PRIMARY KEY,
+            chain_hash TEXT NOT NULL,
+            previous_event_id TEXT NOT NULL DEFAULT 'GENESIS',
+            event_content TEXT NOT NULL,
+            contract_version TEXT NOT NULL DEFAULT 'mocka.audit.v1',
+            created_at TEXT NOT NULL
+        )
+
+-- table schema_versions
+CREATE TABLE schema_versions (
+            schema_name TEXT PRIMARY KEY,
+            version INTEGER NOT NULL,
+            applied_at TEXT NOT NULL,
+            note TEXT NOT NULL
+        )

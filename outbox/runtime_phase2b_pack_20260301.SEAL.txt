@@ -1,0 +1,15 @@
+seal_title=runtime_phase2b_pack_20260301
+ts_utc=2026-03-01T03:13:12
+
+zip_file=C:\Users\sirok\MoCKA\outbox\runtime_phase2b_pack_20260301.zip
+zip_sha256=c805863c97cb7fa20c2f04e6a437df976f24f07d56809ebfd530aaca4d6a5686
+
+payload_manifest_file=C:\Users\sirok\MoCKA\outbox\runtime_phase2b_pack_20260301\payload_manifest.sha256.txt
+payload_manifest_sha256=c0836d7ec75519ca8eef83fed631c4bcb13c1f6770ad48d8bcf8e60521709854
+
+policy:
+- append_only=true
+- receiver_signature_required=true
+- latest_accept_wins=true
+- hash_mismatch_halt=true
+- match_flag_false_halt=true

@@ -1,0 +1,30 @@
+KEY INCIDENT DECLARATION TEMPLATE v1.0
+
+ts_utc=
+incident_type=suspected_compromise|confirmed_compromise|lost_media|unauthorized_signing
+reported_by=
+operator=
+
+affected_key_role=outfield|verifier|policy_authority
+affected_key_fingerprint=
+
+immediate_actions=
+- stop_signing=true|false
+- revoke_certificate_retrieved=true|false
+- revoke_imported_and_published=true|false
+- key_rotated=true|false
+
+affected_artifacts=
+- 
+
+public_notice_location=
+- outbox/
+- repository/
+- other=
+
+verification_instructions=
+- verify revoked key status
+- verify new key fingerprint
+- verify re-signed artifacts list
+
+notes=

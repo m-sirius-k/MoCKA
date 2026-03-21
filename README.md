@@ -1,364 +1,61 @@
-﻿ # MoCKA Demo Arena
+﻿# MoCKA Runtime  
+Model of Cybernetic Knowledge Architecture
 
- A demonstration environment for the MoCKA Insight System.
- This page reveals how MoCKA organizes AI research, verification, and institutional memory into a reproducible system.
+## Overview
+MoCKA is not a conventional AI system.
 
- MoCKA Demo Arena は、MoCKA Insight System の実行・検証・記録の流れを観測できるデモページです。
+It models the institutional mechanisms of a knowledge-generating civilization.
 
- ------------------------------------------------------------
+Lifecycle:
+Observation → Record → Incident → Recurrence → Prevention → Decision → Action → Audit → Learning
 
- ## What is MoCKA
+## Architecture
+Governance:
+- execution_order_engine
+- dispatcher
+- meta_audit_engine
+- preventive_rule_engine
 
- MoCKA is a verifiable AI research system designed to transform how knowledge is produced, validated, and preserved.
+Record:
+- csv_record_engine
+- recurrence_engine
+- improvement_loop
 
- Traditional AI systems generate answers.
- MoCKA builds a continuously improving knowledge system.
+Core:
+- main_loop
 
- Instead of producing isolated results, MoCKA treats every experiment as part of a verifiable research process.
+## Run
+python -m runtime.main_loop
 
- The system integrates several capabilities normally separated in conventional AI systems.
+## Version
+v1.0.0
 
- - AI orchestration
- - verification pipelines
- - institutional memory
- - governance architecture
+---
 
-<a href="docs/images/mocka_civilization_system_map.jpg">
-<img src="docs/images/mocka_civilization_system_map.jpg" width="100%">
-</a>
-
- Together these components form the **MoCKA Insight System**.
-
- ------------------------------------------------------------
-
- ## Architecture Overview
-
- The MoCKA Insight System is built around two complementary layers.
-
- Movement
- The trusted core of the system responsible for verification, governance, and institutional memory.
-
- Exterior
- The evolving research surface where experiments and AI orchestration expand continuously.
-
-  Click the architecture preview below to explore the full architecture.
-
- ![MoCKA Insight Architecture](docs/images/mocka_system_architecture.svg)
-
-[Open full architecture](docs/architecture/mocka_insight_architecture.md)
-
- ------------------------------------------------------------
-
- ## The MoCKA Knowledge Cycle
-
- Most AI workflows follow a simple pattern.
-
- AI → Result
-
- A result appears, but the reasoning behind it may not be verifiable, reproducible, or preserved.
-
- MoCKA introduces a fundamentally different structure.
-
- AI → Verification → Record → Institutional Memory
-
- This structure forms a continuous knowledge cycle.
-
- ```mermaid
- flowchart LR
-
-   A[AI Execution]
-
-   A --> V[Verification]
-   V --> R[Record Artifacts]
-   R --> M[Institutional Memory]
-   M --> K[Verified Knowledge Base]
-
-   K --> A
-
- ```
-
- AI generates hypotheses or answers.
- Verification confirms their validity.
- Recording preserves artifacts and reasoning traces.
- Institutional memory accumulates verified knowledge.
-
- Over time this produces a growing body of reliable knowledge.
-
- ------------------------------------------------------------
-
- ## Recoverable Knowledge
-
- A critical property of MoCKA is that every step is recorded.
-
- Every experiment produces traceable artifacts.
-
- - logs
- - JSON outputs
- - verification traces
-
- ```mermaid
- flowchart TD
-
-   A[Experiment Execution]
-
-   A --> B[Logs]
-   A --> C[JSON Artifacts]
-   A --> D[Verification Traces]
-
-   B --> E[Recorded Evidence]
-   C --> E
-   D --> E
-
-   E --> F[Institutional Memory]
-
- ```
-
- Because these artifacts are preserved, knowledge is not fragile.
-
- If an error occurs, the system can return to a previously verified state.
-
- ```mermaid
- flowchart LR
-
-   A[Current State]
-   A --> B[Problem Detected]
-   B --> C[Rollback]
-   C --> D[Last Verified Record]
-   D --> E[Stable Knowledge Base]
-
- ```
-
- MoCKA does not only generate answers.
-
- It builds **recoverable facts**.
-
- ------------------------------------------------------------
-
- ## Core Concepts
-
- MoCKA is designed around four structural pillars.
-
- 1 Verifiable AI execution
- 2 Institutional memory
- 3 Research orchestration
- 4 Transparent verification
-
- These elements allow research processes to remain inspectable and reproducible.
-
- ------------------------------------------------------------
-
- ## Insight Architecture
-
- ```mermaid
- flowchart LR
-
-   A[MoCKA Movement]
-
-   B[Verification Engine]
-   C[Governance Logic]
-   D[Institutional Memory]
-
-   E[MoCKA Exterior]
-
-   F[Experiments]
-   G[AI Orchestration]
-   H[Research Expansion]
-
-   A --> B
-   A --> C
-   A --> D
-
-   E --> F
-   E --> G
-   E --> H
-
-   F --> B
-   G --> B
-
- ```
-
- Movement ensures reliability.
- Exterior enables continuous evolution.
-
- Most components of the Exterior are still expanding.
-
- ------------------------------------------------------------
-
- ## Research Workflow
-
- ```mermaid
- flowchart LR
-
-   A[Experiment]
-
-   A --> B[Experiment Registry]
-   B --> C[Research Gate Verification]
-   C --> D[Artifact Generation]
-   D --> E[Knowledge Gate Archival]
-   E --> F[Institutional Memory]
-
- ```
-
- ------------------------------------------------------------
-
- ## Verification Architecture
-
- ```mermaid
- flowchart TD
-
-   A[System Integrity Verification]
-   B[Research Process Verification]
-   C[Documentation Verification]
-   D[Audit and Evidence Verification]
-
-   A --> R[Research Run]
-   B --> R
-   C --> R
-   D --> R
-
-   R --> E[Emit Artifacts]
-   E --> F[Traceable Evidence]
-
- ```
-
- ------------------------------------------------------------
-
- ## Repository Structure
-
- ```mermaid
- flowchart TB
-
-   A[MoCKA Repository]
-
-   A --> B[docs]
-   B --> B1[demo]
-
-   A --> C[tools]
-   A --> D[experiments]
-   A --> E[canon]
-   A --> F[artifacts]
-
- ```
-
- ------------------------------------------------------------
-
- ## 日本語版
-
- MoCKA Demo Arena は MoCKA Insight System のデモページです。
-
- このページでは
-
- - システム構造
- - 研究ワークフロー
- - 検証アーキテクチャ
- - 知識循環構造
-
- を図とともに説明しています。
-
- MoCKA の最も重要な特徴は
-
- **AI → 検証 → 記録 → 制度的記憶**
-
- という知識循環です。
-
- AI の結果は検証され、
- 記録され、
- 制度的記憶として蓄積されます。
-
- 検索すればするほど
-
- 正しい知識が増え
- 回答精度が向上します。
-
- さらにすべての処理が記録されるため、
-
- **誤りがあっても過去の正しい状態へ戻ることができます。**
-
- ------------------------------------------------------------
-
- MoCKA Demo Arena demonstrates the self-verifying architecture of the MoCKA Insight System.
-
-## Core Architecture Principle
-
-Shadow Movement ? the fail-safe philosophy of MoCKA.
-
-See: docs/SHADOW_MOVEMENT_PRINCIPLE.md
-
-
-
-
-
-
-
-# MoCKA Ecosystem
-
-This repository is part of the **MoCKA Civilization Research Ecosystem**.
-
-MoCKA studies AI civilization systems including governance, consensus and institutional memory.
-
-## Ecosystem Structure
-
-Research Core  
-MoCKA
-
-Civilization Theory  
-mocka-civilization
-
-Knowledge System  
-mocka-knowledge-gate
-
-Transparency Layer  
-mocka-transparency
-
-Network Layer  
-mocka-outfield
-
-Civilization Core (private)  
-mocka-core-private
+# 日本語版
 
 ## 概要
+MoCKAはAIではない。
 
-このリポジトリは **MoCKA AI文明研究エコシステム** の一部です。
+知識が生成・検証・安定化される文明構造である。
 
-MoCKAはAI文明の制度、合意形成、知識継承を研究するプロジェクトです。
+## 構造
+ガバナンス：
+- execution_order_engine
+- dispatcher
+- meta_audit_engine
+- preventive_rule_engine
 
-## 文明構造
+記録：
+- csv_record_engine
+- recurrence_engine
+- improvement_loop
 
-研究コア  
-MoCKA
+実行：
+- main_loop
 
-文明理論  
-mocka-civilization
+## 実行
+python -m runtime.main_loop
 
-知識システム  
-mocka-knowledge-gate
-
-透明性  
-mocka-transparency
-
-ネットワーク  
-mocka-outfield
-
-文明コア（非公開）  
-mocka-core-private
-
-## Governance Pipeline
-
-MoCKA operates through an integrated pipeline:
-
-Security Gate → Memory → Ledger → Build → Commit → Push
-
-### Security
-All commits are scanned and blocked on violation.
-
-### Memory
-Runtime state is continuously recorded.
-
-### Ledger
-All security events are logged immutably.
-
-### Public Verification
-External users can verify via:
-
-http://localhost:8000/verify
-
+## バージョン
+v1.0.0

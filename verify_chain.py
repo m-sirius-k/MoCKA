@@ -1,46 +1,30 @@
 ﻿import json
-import hashlib
-from pathlib import Path
+from runtime.hash_utils import compute_hash
+from runtime.schema_validator import validate_event
+from runtime.env_guard import enforce_env
 
-LEDGER_PATH = Path(__file__).parent / "runtime" / "main" / "ledger.json"
+enforce_env("verify")
 
-with open(LEDGER_PATH, "r", encoding="utf-8") as f:
+ledger_path = "runtime/main/ledger.json"
+
+with open(ledger_path, "r", encoding="utf-8") as f:
     ledger = json.load(f)
 
-def canonical(obj):
-    return json.dumps(
-        obj,
-        ensure_ascii=False,
-        sort_keys=True,
-        separators=(",", ":")
-    )
+prev = "0"
 
-prev_hash = None
+for i, event in enumerate(ledger):
+    validate_event(event)
 
-for i, entry in enumerate(ledger):
-    # === 完全に明示的コピー ===
-    entry_copy = {}
+    h = compute_hash(event)
 
-    for k, v in entry.items():
-        if k not in ["hash"]:
-            entry_copy[k] = v
+    if h != event["hash"]:
+        print(f"HASH INVALID AT {i}")
+        exit(1)
 
-    stored_prev = entry.get("prev_hash")
-    stored_hash = entry.get("hash")
+    if event["prev_hash"] != prev:
+        print(f"CHAIN INVALID AT {i}")
+        exit(1)
 
-    if i == 0:
-        prev_hash = stored_hash
-        continue
-
-    if stored_prev != prev_hash:
-        raise Exception(f"CHAIN BREAK at {i}")
-
-    payload = canonical(entry_copy)
-    computed = hashlib.sha256(payload.encode("utf-8")).hexdigest()
-
-    if computed != stored_hash:
-        raise Exception(f"HASH MISMATCH at {i}")
-
-    prev_hash = stored_hash
+    prev = h
 
 print(f"CHAIN VERIFIED {len(ledger)} events")

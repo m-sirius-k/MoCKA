@@ -1,0 +1,28 @@
+KEY TRANSITION STATEMENT TEMPLATE v1.0
+
+ts_utc=
+operator=
+
+transition_type=scheduled_rotation|incident_rotation
+key_role=outfield|verifier|policy_authority
+
+old_key_fingerprint=
+new_key_fingerprint=
+
+statement=
+I attest that the key for the specified role has transitioned from the old fingerprint to the new fingerprint.
+All signatures produced after ts_utc MUST use the new key.
+Any artifact signed after ts_utc by the old key MUST be treated as invalid unless explicitly listed as an exception.
+
+exceptions_allowed=
+- none
+
+artifacts_resigned_or_reissued=
+-
+
+verification_steps=
+- verify old key fingerprint matches historical records
+- verify new key fingerprint matches updated policy records
+- verify this statement is signed by both old and new keys when available
+
+notes=
