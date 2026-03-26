@@ -5,7 +5,7 @@
 # OS / Cache
 __pycache__/
 *.pyc
-*.bak
+*.bak*
 
 # Secrets
 keys/
