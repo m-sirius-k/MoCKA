@@ -27,7 +27,9 @@ def load_json(p: Path) -> Dict[str, Any]:
     except Exception as e:
         raise RuntimeError(f"json read failed: {p} err={e}")
 
-def is_registry_json(obj: Dict[str, Any]) -> bool:
+def is_registry_json(obj) -> bool:
+    if not isinstance(obj, dict):
+        return False
     schema = obj.get("schema")
     return isinstance(schema, str) and schema.startswith("mocka.keys.ed25519.registry.v")
 
@@ -135,3 +137,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
