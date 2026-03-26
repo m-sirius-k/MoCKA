@@ -1,5 +1,6 @@
 ﻿import json
 import os
+import sys
 from intent_logger import append_intent
 from intent_to_goal import apply_intent_to_goal
 from goal_to_plan import update_plan_from_goal
@@ -9,6 +10,7 @@ from state_to_graph import update_causal_graph
 from result_evaluator import evaluate_result
 from eval_to_history import update_evaluation_history
 from eval_selector import choose_best_action
+from civilization_bridge import push_to_civilization, pull_from_civilization, run_civilization_step
 
 PLAN_PATH = "plan.json"
 INPUT_PATH = "input.json"
@@ -35,10 +37,7 @@ def main():
         update_plan_from_goal()
 
     print("=== DECISION MODE ===")
-
     steps = load_plan()
-
-    # 評価に基づいて並び替え
     steps = choose_best_action(steps)
 
     for step in steps:
@@ -47,6 +46,17 @@ def main():
         update_state_from_result()
         evaluate_result()
         update_evaluation_history()
+
+        # civilization_*との接続
+        push_to_civilization(step)
+
+    # civilization_loopを1ステップ実行
+    print("=== CIVILIZATION STEP ===")
+    run_civilization_step()
+
+    # civilizationの進捗を取得
+    progress = pull_from_civilization()
+    print(f"CIVILIZATION PROGRESS: {progress.get('civilization_progress', 0):.3f}")
 
     update_causal_graph()
 
