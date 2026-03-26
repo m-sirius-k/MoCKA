@@ -26,7 +26,8 @@ def main() -> int:
 
     # calc_summary_hash の結果と一致することを強制
     import subprocess
-    sh = subprocess.check_output([sys.executable, str(ROOT / "governance" / "calc_summary_hash.py")]).decode().strip()
+    raw = subprocess.check_output([sys.executable, str(ROOT / "governance" / "calc_summary_hash.py")]).decode().strip()
+    sh = [l.split(": ",1)[1] for l in raw.splitlines() if l.startswith("sealed_summary_hash:")][0]
     if sh != sealed:
         print("FAIL: anchor_record sealed_summary_hash mismatch")
         print("anchor:", sealed)
@@ -38,3 +39,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
