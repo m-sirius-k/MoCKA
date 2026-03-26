@@ -21,7 +21,7 @@ class GoogleProvider(BaseProvider):
         prompt = str(request["prompt"])
 
         res = self.client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-1.5-flash",
             contents=prompt
         )
 
@@ -35,7 +35,7 @@ class GoogleProvider(BaseProvider):
 
         return {
             "provider": "google",
-            "model": "gemini-2.0-flash",
+            "model": "gemini-1.5-flash",
             "status": "success",
             "output": text
         }
