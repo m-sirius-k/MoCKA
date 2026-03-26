@@ -4,7 +4,6 @@ anchor_update.py
 使い方: python anchor_update.py "コミットメッセージ"
 """
 import subprocess
-import hashlib
 import json
 import sys
 from datetime import datetime, timezone
@@ -18,15 +17,14 @@ ANCHOR_PATHS = [
 CALC_SCRIPT = ROOT / "governance" / "calc_summary_hash.py"
 
 def run(cmd):
-    r = subprocess.run(cmd, capture_output=True, text=True)
+    r = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
     return r.stdout.strip(), r.returncode
 
 def get_summary_hash(commit):
-    # anchor_recordを一時的に新コミットで更新してハッシュ計算
     for p in ANCHOR_PATHS:
         ar = json.loads(p.read_text(encoding="utf-8"))
         ar["external_ref"] = f"https://github.com/m-sirius-k/MoCKA/commit/{commit}"
-        ar["sealed_summary_hash"] = "0" * 64  # 仮値
+        ar["sealed_summary_hash"] = "0" * 64
         p.write_text(json.dumps(ar, indent=2, ensure_ascii=False), encoding="utf-8")
 
     out, _ = run([sys.executable, str(CALC_SCRIPT)])
@@ -40,7 +38,9 @@ def main():
 
     # 1. 変更をコミット
     run(["git", "add", "-A"])
-    run(["git", "commit", "-m", msg])
+    out, code = run(["git", "commit", "-m", msg])
+    print(out if out else "nothing to commit")
+
     commit, _ = run(["git", "log", "--format=%H", "-1"])
     print(f"COMMIT: {commit}")
 
