@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* 博士が調整を重ねたオリジナル・デザインの再現 */
+        body {
+            width: 800px; 
+            background-color: #000;
+            color: #fff;
+            font-family: 'Consolas', 'Courier New', monospace;
+            margin: 0;
+            padding: 10px;
+            overflow: hidden;
+        }
+        /* ACTIONボックス: 鮮やかな緑の境界線 */
+        .action-box {
+            border: 2px solid #00ff00;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .action-label {
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .button-row {
+            margin-top: 35px; /* ACTIONの文字を避けるためのマージン */
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            background-color: #000;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 5px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover { background-color: #222; }
+
+        /* SELECTボックス: 落ち着いた赤の境界線とログ領域 */
+        .select-box {
+            border: 1px solid #400000;
+            background-color: #110000;
+            padding: 10px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        .select-label {
+            position: absolute;
+            right: 15px;
+            color: #555;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+        #log-output {
+            color: #cc0000;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="action-box">
+        <div class="action-label">ACTION</div>
+        <div class="button-row">
+            <button id="saveBtn">A:保存</button>
+            <button id="injectBtn">B:共有</button>
+        </div>
+    </div>
+    <div class="select-box">
+        <div id="log-output">READY</div>
+        <div class="select-label">SELECT</div>
+    </div>
+    <script src="popup.js"></script>
+</body>
+</html>

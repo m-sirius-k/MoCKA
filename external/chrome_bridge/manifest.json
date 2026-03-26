@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "MoCKA Bridge",
+  "version": "1.3",
+  "permissions": ["tabs", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://gemini.google.com/*",
+    "https://claude.ai/*",
+    "https://chat.openai.com/*",
+    "https://www.perplexity.ai/*",
+    "https://copilot.microsoft.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "MoCKA Scan"
+  }
+}

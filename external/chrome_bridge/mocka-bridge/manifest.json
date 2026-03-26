@@ -1,0 +1,21 @@
+﻿{
+  "manifest_version": 3,
+  "name": "MoCKA Bridge",
+  "version": "1.3.1",
+  "description": "MoCKA Civilization OS -> AI Interface Connector",
+  "permissions": ["activeTab", "scripting", "clipboardRead"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://www.perplexity.ai/*"
+      ],
+      "js": ["content_script.js"]
+    }
+  ]
+}

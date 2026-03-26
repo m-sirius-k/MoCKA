@@ -1,45 +1,47 @@
 ﻿import json
-import random
-from datetime import datetime
 
-HISTORY_PATH = "runtime/intent_history.json"
+STATE_PATH = "runtime/state/state.json"
+OUTPUT_PATH = "runtime/state/mutations.json"
 
-MUTATIONS = [
-    "optimize_execution",
-    "explore_strategy",
-    "reduce_latency",
-    "improve_accuracy",
-    "stabilize_system"
-]
+def load_state():
+    with open(STATE_PATH, "r", encoding="utf-8") as f:
+        return json.load(f)
 
-def load():
-    try:
-        with open(HISTORY_PATH, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except:
-        return []
+def generate_mutations(state):
+    priorities = state.get("action_priority", [])
 
-def save(data):
-    with open(HISTORY_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2)
+    mutations = []
 
-def main():
-    history = load()
+    for item in priorities:
+        key = item[0]
+        score = item[1]
 
-    new_goal = random.choice(MUTATIONS)
+        if score <= 0:
+            continue
 
-    new_item = {
-        "goal": new_goal,
-        "score": 0,
-        "ts": datetime.now().isoformat(),
-        "result": "pending",
-        "mutation": True
-    }
+        action, context = key.split("::")
 
-    history.append(new_item)
-    save(history)
+        # 段階進化
+        if "_OPT" in action:
+            new_action = action + "2"
+        else:
+            new_action = action + "_OPT"
 
-    print("MUTATION ADDED:", new_goal)
+        mutations.append({
+            "base_action": action,
+            "new_action": new_action,
+            "context": context,
+            "score": score
+        })
+
+    return mutations
+
+def save(mutations):
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(mutations, f, indent=2)
 
 if __name__ == "__main__":
-    main()
+    state = load_state()
+    muts = generate_mutations(state)
+    save(muts)
+    print("CHAIN MUTATIONS GENERATED")

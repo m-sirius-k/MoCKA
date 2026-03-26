@@ -1,0 +1,7 @@
+"event_id","when","who_actor","what_type","where_component","where_path","why_purpose","how_trigger","channel_type","lifecycle_phase","risk_level","category_ab","target_class","title","short_summary","before_state","after_state","change_type","impact_scope","impact_result","related_event_id","trace_id","free_note"
+E20260326_001,2026-03-26T11:08:25,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,infield,保存: infield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
+E20260326_002,2026-03-26T11:08:28,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,infield,保存: infield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
+E20260326_003,2026-03-26T11:08:28,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,outfield,保存: outfield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
+E20260326_004,2026-03-26T11:08:29,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,infield,保存: infield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
+E20260326_005,2026-03-26T11:08:29,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,outfield,保存: outfield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
+E20260326_006,2026-03-26T11:08:29,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,公文書,保存: 公文書,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A

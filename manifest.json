@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "MoCKA Bridge",
+  "version": "1.0.2",
+  "description": "MoCKA System Bridge Stable Build",
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "https://chat.openai.com/*",
+    "https://copilot.microsoft.com/*",
+    "https://www.perplexity.ai/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "MoCKA Bridge"
+  }
+}
