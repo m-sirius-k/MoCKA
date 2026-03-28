@@ -1,0 +1,338 @@
+﻿import json, os
+
+# 旧ファイル削除
+for f in ["MOCKA_ECOSYSTEM_MAP.json", "make_ecosystem_map.py"]:
+    if os.path.exists(f):
+        os.remove(f)
+        print(f"REMOVED: {f}")
+
+data = {
+    "meta": {
+        "generated": "2026-03-28",
+        "generator": "Claude Sonnet - session investigation",
+        "purpose": "次回セッション開始時にこれ1つを貼れば即作業開始できる完全マスターファイル",
+        "version": "3.0",
+        "classification": "mocka_Movement",
+        "how_to_use": "新しいチャットでこのJSONをそのまま貼り付けてください"
+    },
+    "owner": {
+        "name": "nsjp_kimura",
+        "github_primary": "m-sirius-k",
+        "github_legacy": "nsjpkimura-del",
+        "note": "nsjpkimura-delはGoogle初期ログイン由来。m-sirius-kに統一予定"
+    },
+    "constitution": {
+        "source": "mocka-joints/mocka-infield/identity/mocka_constitution.md",
+        "principles": [
+            "Event ledger is append only",
+            "All decisions preserve 5W1H",
+            "Infield is internal memory",
+            "Outfield is collaborative interface",
+            "Event history is the single source of truth"
+        ]
+    },
+    "ai_roster": {
+        "source": "mocka-joints/mocka-infield/identity/ai_roster.json",
+        "members": ["ChatGPT", "Perplexity", "Gemini", "Claude"]
+    },
+    "repository_dependency_map": {
+        "description": "MoCKA -> KG, CIV, TR, EB, CP / KG -> TR / TR -> CIV / EB -> KG",
+        "edges": [
+            ["MoCKA", "mocka-knowledge-gate"],
+            ["MoCKA", "mocka-civilization"],
+            ["MoCKA", "mocka-transparency"],
+            ["MoCKA", "mocka-external-brain"],
+            ["MoCKA", "mocka-core-private"],
+            ["mocka-knowledge-gate", "mocka-transparency"],
+            ["mocka-transparency", "mocka-civilization"],
+            ["mocka-external-brain", "mocka-knowledge-gate"]
+        ]
+    },
+    "mocka_Movement": {
+        "heart": {
+            "name": "MoCKA",
+            "path": "C:/Users/sirok/MoCKA",
+            "remote": "git@github.com:m-sirius-k/MoCKA.git",
+            "account": "m-sirius-k",
+            "visibility": "public",
+            "role_jp": "心臓部・制度核",
+            "files": 1770,
+            "last_commit": "890f934 refactor: organize all root scripts",
+            "language": "Python 90.2% / PowerShell 7.6%",
+            "status": "active_main",
+            "gitignore_excludes": [
+                "keys/ *.pem *.key",
+                "runtime/* (except engines/api/policy/ledger/main_loop)",
+                "runtime/**/*.json",
+                "archive/ .wsl_ots_venv/ *.bak*"
+            ],
+            "key_components": {
+                "ledger_canonical": "runtime/main/ledger.json",
+                "schema": "schema/schema.py",
+                "verify": "scripts/ledger/ledger_verify.py / verify_all.py",
+                "router": "interface/router.py - Gemini API接続済み",
+                "providers": {
+                    "google": "interface/providers/google_provider.py - 動作確認済み",
+                    "azure": "interface/providers/azure_provider.py - ダミー実装"
+                },
+                "main_loop": "runtime/main_loop.py - 完全ループ動作確認済み",
+                "civilization_engines": "runtime/civilization_*.py - 60本以上",
+                "bridge": "runtime/civilization_bridge.py - 3世界統合",
+                "anchor": "scripts/ledger/anchor_update.py - 自動封印",
+                "observer": "observer_logger.py - テストパック使用記録"
+            },
+            "governance": {
+                "anchor_record": "governance/anchor_record.json",
+                "registry": "governance/registry.json - ed25519 v2",
+                "root_key": "governance/keys/root_key_v2.ed25519.public.b64u",
+                "role_policy": "governance/keys/role_policy.json",
+                "approval_flow": "governance/approval_flow.json"
+            },
+            "powershell_shortcuts": {
+                "mocka-check": "ledger_verify + verify_all",
+                "mocka-seal": "scripts/ledger/anchor_update.py MESSAGE",
+                "mocka-loop": "cd runtime && python main_loop.py",
+                "mocka-ingest": "python runtime/infield_ingestor.py"
+            },
+            "confirmed_working_2026_03_28": [
+                "ledger_verify.py -> LEDGER OK",
+                "verify_all.py -> ALL CHECKS PASSED",
+                "python runtime/main_loop.py -> full loop",
+                "python schema/schema.py -> VERIFY True",
+                "mocka-seal -> auto seal + ALL CHECKS PASSED"
+            ]
+        },
+        "blueprint": {
+            "name": "mocka-civilization",
+            "path": "C:/Users/sirok/mocka-civilization",
+            "remote": "https://github.com/nsjpkimura-del/mocka-civilization.git",
+            "account": "nsjpkimura-del",
+            "visibility": "public",
+            "role_jp": "設計思想・青写真層",
+            "files": 132,
+            "gitignore_excludes": [
+                ".env *.key *.pem *.secret *.token",
+                "keys/ secrets/ runtime/ ledger/ logs/ outbox/ inbox/",
+                ".venv/ node_modules/"
+            ],
+            "phases": [
+                "phase9","phase10","phase11","phase12","phase13","phase14",
+                "phase15","phase16","phase17","phase18","phase19","phase20",
+                "phase21","phase22","phase23","phase24","phase25","phase26",
+                "phase27","phase28","phase29"
+            ]
+        },
+        "transparency": {
+            "name": "mocka-transparency",
+            "path": "C:/Users/sirok/mocka-transparency",
+            "remote": "https://github.com/nsjpkimura-del/mocka-transparency.git",
+            "account": "nsjpkimura-del",
+            "visibility": "public",
+            "role_jp": "改ざん検知・署名検証デモ層",
+            "files": 51,
+            "gitignore_excludes": [
+                "keys/*_private.pem (秘密鍵のみ除外)",
+                "sample04/observer_pack/"
+            ],
+            "key_components": {
+                "public_keys": "public_keys/ - git管理対象",
+                "private_keys": "keys/ - gitignore対象",
+                "scripts": "verify_one.ps1, tamper_demo.ps1"
+            }
+        },
+        "orchestrator_bus": {
+            "name": "mocka-external-brain",
+            "path": "C:/Users/sirok/mocka-external-brain",
+            "remote": "https://github.com/nsjpkimura-del/mocka-external-brain.git",
+            "account": "nsjpkimura-del",
+            "visibility": "public",
+            "role_jp": "AIオーケストラ神経系・合議バス",
+            "files": 5,
+            "gitignore_excludes": [
+                ".env *.key *.pem runtime/ ledger/ logs/ outbox/ inbox/"
+            ],
+            "protocol": {
+                "share": "orchestrator_coreが全AIに共有",
+                "ask": "意見募集",
+                "reply": "parent_event_idで木構造",
+                "decide": "evidence_refで採用根拠明示"
+            },
+            "event_schema_fields": "event_id, timestamp, round_id, motion, actor, agent_name, kpa_id, content, status, parent_event_id, evidence_ref, hash",
+            "importance": "router.pyと接続することが次の本質的ステップ"
+        },
+        "experimental_core": {
+            "name": "mocka-core-private",
+            "path": "C:/Users/sirok/mocka-core-private",
+            "remote": "https://github.com/nsjpkimura-del/mocka-core-private.git",
+            "account": "nsjpkimura-del",
+            "visibility": "private",
+            "role_jp": "実装実験・検証環境（凍結中）",
+            "files": 1002,
+            "execution_policy": "FORBIDDEN: Use MoCKA/run_with_audit.py",
+            "gitignore_excludes": ["secrets/ state/ logs/ outbox/ .env"],
+            "key_engines": {
+                "ai_gateway.py": "ai_providers.jsonからprovider読込、ask_all()で全AI呼び出し",
+                "auto_loop.py": "executor->self_bridge->simple_bridge->policy_engine の無限ループ",
+                "civilization_engine.py": "civilization_nodes.jsonからノード読込、council()でブロードキャスト",
+                "share_ai.py": "outboxの最新ファイルをstate.jsonのlast_shareに保存",
+                "vote_engine.py": "run_ai()でAI投票、explore/cycle/repairで多数決",
+                "ledger_engine.py": "signal+policy+feedbackをハッシュチェーンでledger.jsonに記録"
+            }
+        },
+        "public_docs": {
+            "name": "mocka-public",
+            "path": "C:/Users/sirok/mocka-public",
+            "remote": "https://github.com/m-sirius-k/mocka-public.git",
+            "account": "m-sirius-k",
+            "visibility": "public",
+            "role_jp": "公開ドキュメント・証明層",
+            "files": 31,
+            "key_docs": [
+                "PROOF.md","SEAL.md","SECURITY.md",
+                "SHADOW_MOVEMENT_PRINCIPLE.md",
+                "PHASE13B_FREEZE.md","PHASE17_STABLE_DECLARATION.md"
+            ]
+        },
+        "institutional_memory": {
+            "name": "mocka-knowledge-gate",
+            "path": "C:/Users/sirok/mocka-knowledge-gate",
+            "remote": "https://github.com/nsjpkimura-del/MoCKA-KNOWLEDGE-GATE.git",
+            "account": "nsjpkimura-del",
+            "visibility": "public",
+            "role_jp": "制度的記憶層",
+            "files": 334,
+            "language": "JavaScript / TypeScript / Firebase / Docker",
+            "note": "他がPythonなのに対し完全別スタック",
+            "connection_protocol": {
+                "rest_endpoint": "/api/v1/share",
+                "auth": ["JWT token", "invite-code", "rod-number"],
+                "mandatory_fields": ["ISSUE-ID", "rod-number", "TRUST_SCORE"],
+                "external_integration": "Felo AI Search (bidirectional sync)"
+            }
+        },
+        "public_network": {
+            "name": "mocka-outfield",
+            "path": "C:/Users/sirok/mocka-outfield",
+            "remote": "https://github.com/m-sirius-k/mocka-outfield.git",
+            "account": "m-sirius-k",
+            "visibility": "public",
+            "role_jp": "外野・公開ネットワーク層",
+            "files": 14
+        },
+        "docs_only": {
+            "name": "mocka-runtime",
+            "path": "C:/Users/sirok/mocka-runtime",
+            "remote": "https://github.com/m-sirius-k/mocka-runtime.git",
+            "account": "m-sirius-k",
+            "visibility": "public",
+            "role_jp": "ドキュメントのみ（実装なし）",
+            "files": 3
+        }
+    },
+    "joints": {
+        "python_bridge": {
+            "name": "mocka-pythonbridge",
+            "path": "C:/Users/sirok/mocka-joints/mocka-pythonbridge",
+            "role_jp": "Python橋渡し・ブラウザ操作・AI呼び出し層",
+            "files": 20495,
+            "key_files": {
+                "field_player.py": "cv2/pyautogui/pytesseract使用。OS操作・OCR",
+                "bridge_ai.py": "Gemini(gemini-2.0-flash) + OpenAI(gpt-4o-mini) + Copilot(PS経由)",
+                "bridge_watcher.py": "archive/*.receipt.txt監視→ledger+registry自動追記→replan起動",
+                "mocka.ps1": "event/ai/link/patch/weekly/auditコマンド統合インターフェース"
+            }
+        },
+        "infield_memory": {
+            "name": "mocka-infield",
+            "path": "C:/Users/sirok/mocka-joints/mocka-infield",
+            "role_jp": "内部記憶・イベント管理・状態DB",
+            "files": 35,
+            "key_files": {
+                "master_index.csv": "全ドキュメントのインデックス",
+                "events/events_infield.csv": "イベント台帳",
+                "identity/mocka_constitution.md": "MoCKA憲法",
+                "identity/ai_roster.json": "AIメンバー: ChatGPT/Perplexity/Gemini/Claude",
+                "state/mocka_state.db": "SQLite状態DB"
+            }
+        },
+        "movement_manager": {
+            "name": "mocka-ecosystem-tools",
+            "path": "C:/Users/sirok/mocka-joints/mocka-ecosystem",
+            "role_jp": "全リポジトリ横断管理ツール",
+            "files": 1435,
+            "key_tools": {
+                "ecosystem_integrity_check.ps1": "git/docs/links/mermaid/repo整合性確認",
+                "mocka_doctor.ps1": "システム健全性診断",
+                "apply_docs.ps1": "ドキュメント一括適用"
+            },
+            "canon_docs_path": "_canon/docs/"
+        }
+    },
+    "infield_outfield": {
+        "infield": {
+            "description": "内部記憶・推論の主権領域",
+            "path": "mocka-joints/mocka-infield",
+            "rule": "外部への直接パブリッシュ禁止"
+        },
+        "outfield": {
+            "description": "公開クロスエージェント同期レイヤー",
+            "path": "mocka-outfield",
+            "rule": "必ずサニタイズされた表面のみ公開"
+        }
+    },
+    "shadow_movement": {
+        "description": "部分障害時も知識循環を止めない二重経路構造",
+        "primary": "mocka_Movement（通常運用）",
+        "shadow": "shadow_Movement（縮退運用・約75%機能維持）",
+        "source": "mocka-public/SHADOW_MOVEMENT_PRINCIPLE.md"
+    },
+    "archive": {
+        "path": "C:/Users/sirok/mocka-archive",
+        "contents": [
+            "MoCKA_phase22_anchored","MoCKA_phase22_iso",
+            "MoCKA_clean_test__FROZEN","mocka_verify_tmp",
+            "_mocka_phase22_checkout","phase2c_verify",
+            "verify_test","MoCKA_node2","mocka-node2",
+            "mocka-organized","ops_mocka","tools_backup_20260215"
+        ]
+    },
+    "external_hardware": {
+        "observer_node": {
+            "path_F": "F:/MoCKA_Observer_Node",
+            "path_J": "J:/MoCKA_Observer_Node",
+            "description": "テストパック・外部検証用",
+            "schema": "mocka.audit.event.v1",
+            "integrity": "PGP署名 + SHA256",
+            "phase2b_status": "JOINT_INTEGRITY_OK"
+        }
+    },
+    "data_flow": {
+        "infield_to_main": "mocka-infield/events/* -> infield_ingestor.py -> runtime/input.json",
+        "main_loop": "input.json -> intent -> goal -> plan -> action -> router.py -> Gemini",
+        "civilization": "action -> civilization_bridge.py -> civilization_loop_engine.py",
+        "ledger": "全アクション -> runtime/main/ledger.json (SHA256チェーン)",
+        "governance": "ledger -> verify_all.py -> governance/anchor_record.json",
+        "orchestrator_bus": "share/ask/reply/decide -> mocka-external-brain/logs/bus/events.csv",
+        "knowledge_gate": "REST POST /api/v1/share (ISSUE-ID + rod-number + TRUST_SCORE)",
+        "pythonbridge": "OCR/screenshot -> bridge_ai.py -> Gemini/OpenAI -> replan -> field_player"
+    },
+    "next_actions": {
+        "immediate": [
+            "git push origin main",
+            "router.pyをmocka-external-brain events.csvプロトコルと接続"
+        ],
+        "short_term": [
+            "Gemini APIクォータ回復後にrouter.py実動作確認",
+            "azure_provider.pyにGPT API接続実装",
+            "USB認証システムの実装"
+        ],
+        "medium_term": [
+            "nsjpkimura-del -> m-sirius-k GitHub統合",
+            "mocka-knowledge-gate（JS）とMoCKA（Python）の接続"
+        ]
+    }
+}
+
+with open("MOCKA_MOVEMENT_MAP.json", "w", encoding="utf-8") as f:
+    json.dump(data, f, indent=2, ensure_ascii=False)
+print("SAVED: MOCKA_MOVEMENT_MAP.json")
