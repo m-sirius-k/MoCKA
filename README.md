@@ -13,6 +13,10 @@
 
 ## What is MoCKA?
 
+<p align="center">
+  <img src="docs/images/mocka_problem_v2.svg" width="720">
+</p>
+
 Most AI systems generate answers.  
 MoCKA builds a structure where knowledge becomes **trustworthy over time**.
 
@@ -31,6 +35,10 @@ This is institutional memory for AI.
 
 ## Why It Matters
 
+<p align="center">
+  <img src="docs/images/mocka_hero_v2.svg" width="720">
+</p>
+
 | Traditional AI | MoCKA |
 |---|---|
 | Generates answers | Builds trustworthy knowledge |
@@ -46,6 +54,10 @@ Every incident is recorded, analyzed, and converted into a stronger system.
 
 ## How It Works — The Civilization Loop
 
+<p align="center">
+  <img src="docs/images/mocka_loop_v2.svg" width="720">
+</p>
+
 MoCKA operates as a closed-loop governance mechanism:
 ```
 Observation → Record → Incident → Recurrence → Prevention → Decision → Action → Audit
@@ -60,6 +72,10 @@ a reduced but stable mode that maintains approximately 75% operational capabilit
 ---
 
 ## Architecture
+
+<p align="center">
+  <img src="docs/images/mocka_architecture_v2.svg" width="720">
+</p>
 
 <p align="center">
   <a href="docs/images/mocka_governance_layer_perpetual_mechanism.svg">
@@ -138,6 +154,10 @@ The system never assumes correctness.
 ---
 
 ## Quick Start
+
+<p align="center">
+  <img src="docs/images/mocka_quickstart_v2.svg" width="720">
+</p>
 ```bash
 python -m runtime.main_loop
 python verify_chain.py
@@ -181,6 +201,10 @@ All 20 governance checks passing.
 
 ## MoCKAとは何か？
 
+<p align="center">
+  <img src="docs/images/mocka_problem_v2.svg" width="720">
+</p>
+
 多くのAIシステムは「答えを生成」します。  
 MoCKAは「**時間とともに信頼できる知識を構築する**」構造を作ります。
 
@@ -198,6 +222,10 @@ AIのための制度的記憶です。
 
 ## なぜ重要か？
 
+<p align="center">
+  <img src="docs/images/mocka_hero_v2.svg" width="720">
+</p>
+
 | 従来のAI | MoCKA |
 |---|---|
 | 答えを生成する | 信頼できる知識を構築する |
@@ -212,6 +240,10 @@ AIのための制度的記憶です。
 ---
 
 ## 仕組み — 文明ループ
+
+<p align="center">
+  <img src="docs/images/mocka_loop_v2.svg" width="720">
+</p>
 ```
 観測 → 記録 → インシデント → 再発 → 予防 → 決定 → 行動 → 監査
  ↑                                                          ↓
@@ -225,6 +257,10 @@ AIのための制度的記憶です。
 ---
 
 ## アーキテクチャ
+
+<p align="center">
+  <img src="docs/images/mocka_architecture_v2.svg" width="720">
+</p>
 
 <p align="center">
   <a href="docs/images/mocka_governance_layer_perpetual_mechanism.svg">
@@ -289,7 +325,7 @@ AIのための制度的記憶です。
    - `gpg_signing_config_present`
    - `doctor_script_presence`
    - `doctor_artifact_schema`
-   - `doctor_emit_json_audit`
+   - `doctor_emit_json_artifact`
    - `doctor_sha_note_upsert`
    - `canon_notes_integrity`
 
@@ -298,6 +334,10 @@ AIのための制度的記憶です。
 ---
 
 ## クイックスタート
+
+<p align="center">
+  <img src="docs/images/mocka_quickstart_v2.svg" width="720">
+</p>
 ```bash
 python -m runtime.main_loop
 python verify_chain.py
