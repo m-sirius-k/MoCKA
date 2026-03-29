@@ -97,6 +97,15 @@ MoCKA runs on a dual-path architecture:
 
 - **mocka_Movement** — primary governance loop (normal operations)
 - **shadow_Movement** — independent verification path (fallback operations)
+- **shadow_Movement** ensures:
+  - Knowledge circulation **never stops** — even under partial failure
+  - Every primary output receives **independent verification**
+  - System maintains **75% operational capability** in degraded mode
+  - Feedback loops **cannot create irreversible deadlocks**
+
+> shadow_Movement is not a backup. It is a second heartbeat.
+> When the primary path fails, shadow_Movement absorbs the failure,
+> preserves the evidence, and keeps the civilization loop running.
 
 Every primary process is paired with a shadow verification path.  
 The system never assumes correctness.
