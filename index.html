@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8"><title>MoCKA Command Center</title>
@@ -27,7 +27,7 @@
     </div>
 
     <div id="opt-A" class="opt-group">
-        <h3>TARGET: STORAGE (保存先選択)</h3>
+        <h3>TARGET: STORAGE（保存先選択）</h3>
         <button class="s-btn" onclick="toggleT('infield', this)">infield</button>
         <button class="s-btn" onclick="toggleT('outfield', this)">outfield</button>
         <button class="s-btn" onclick="toggleT('公文書', this)">公文書</button>
@@ -36,8 +36,8 @@
     </div>
 
     <div id="opt-B" class="opt-group">
-        <h3>TARGET: AI AGENTS (共有先選択)</h3>
-        <button onclick="toggleAll(this)" style="border-color: yellow; color: yellow;">⚡ 全員一斉選択</button>
+        <h3>TARGET: AI AGENTS（共有先選択）</h3>
+        <button onclick="toggleAll(this)" style="border-color: yellow; color: yellow;">★ 全員一括選択</button>
         <div style="margin-top:10px;">
             <button class="s-btn" onclick="toggleT('ChatGPT', this)">ChatGPT</button>
             <button class="s-btn" onclick="toggleT('Gemini', this)">Gemini</button>
@@ -52,8 +52,10 @@
     <div class="block">
         <h3>MISSION LOG (HISTORY)</h3>
         <div class="history-container">
-            <table><thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead>
-            <tbody id="history-body"></tbody></table>
+            <table>
+                <thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead>
+                <tbody id="history-body"></tbody>
+            </table>
         </div>
     </div>
 
@@ -103,7 +105,6 @@
         async function fire() {
             if(!state.c || state.targets.length === 0) return;
             const btn = document.getElementById('exec');
-            const originalText = btn.innerText;
             btn.innerText = "DISPATCHING...";
             for(const t of state.targets) {
                 await fetch('/ask', {
@@ -113,7 +114,7 @@
                 });
             }
             btn.innerText = "MISSION COMPLETE";
-            updateHistory();
+            await updateHistory();
             setTimeout(() => { updateBtn(); }, 2000);
         }
 
@@ -123,9 +124,9 @@
                 const data = await res.json();
                 const body = document.getElementById('history-body');
                 body.innerHTML = "";
-                data.reverse().forEach(row => {
+                data.reverse().slice(0, 50).forEach(row => {
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${row.日付}</td><td>${row.名称}</td><td>${row.簡単な内容}</td>`;
+                    tr.innerHTML = `<td>${row.when || ''}</td><td>${row.target_class || ''}</td><td>${row.short_summary || ''}</td>`;
                     body.appendChild(tr);
                 });
             } catch(e) { console.error("History failed", e); }
