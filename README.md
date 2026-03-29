@@ -110,6 +110,22 @@ MoCKA runs on a dual-path architecture:
 Every primary process is paired with a shadow verification path.  
 The system never assumes correctness.
 
+
+### acceptor:infield / acceptor:outfield
+
+Once mocka_Receptor receives a stimulus, it routes to one of two paths:
+
+| Path | Name | Role |
+|------|------|------|
+| Internal | `acceptor:infield` | Stores as internal memory · accumulates · feeds the loop |
+| External | `acceptor:outfield` | Shares · publishes · proves to the outside world |
+
+> infield = what the civilization remembers
+> outfield = what the civilization shows
+
+These are not storage locations. They are **roles**.
+The same event can flow through both — stored internally AND published externally.
+
 ### Governance Layer
 
 - `execution_order_engine` — controls execution sequencing
