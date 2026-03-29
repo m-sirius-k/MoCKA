@@ -8,6 +8,14 @@
 
 > **MoCKA is not a system. It is a civilization model.**  
 > Every action is recorded. Every decision is verified. Every failure becomes an asset.
+>
+> MoCKA transforms every AI decision from a one-time response into cryptographically sealed,
+> reproducible institutional memory — so knowledge accumulates, failures become assets,
+> and every decision remains auditable forever.
+>
+> This is not a logging tool. Not a framework. Not a wrapper.
+> It is a deterministic governance architecture with a second heartbeat:
+> even under failure, **shadow_Movement** ensures knowledge circulation never stops.
 
 ---
 
