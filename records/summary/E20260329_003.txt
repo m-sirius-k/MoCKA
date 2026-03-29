@@ -1,0 +1,2 @@
+E20260329_003: 蜈ｱ譛・ Claude / 【check　test】
+Select-String -Path "C:\Users\sirok\MoCKA\index.html" -Pattern "AI_URLS" category=B, target=Claude

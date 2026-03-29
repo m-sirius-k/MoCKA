@@ -253,3 +253,12 @@ caliber候補として正式登録すべき
 役割：連続試験・破壊テスト・耐久検証
 技術：Playwright + Python
 目的：MoCKAの整合性・証明精度の実証"
+E20260329_003,2026-03-29T17:04:12,human_nsjsiro,broadcast,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,B,Claude,蜈ｱ譛・ Claude,"【check　test】
+Select-String -Path ""C:\Users\sirok\MoCKA\index.html"" -Pattern ""AI_URLS""",N/A,N/A,N/A,local,N/A,N/A,N/A,"【check　test】
+Select-String -Path ""C:\Users\sirok\MoCKA\index.html"" -Pattern ""AI_URLS"""
+E20260329_004,2026-03-29T17:10:18,human_nsjsiro,broadcast,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,B,Gemini,蜈ｱ譛・ Gemini,"【test】
+ボタンの下にリンクが出れば成功です。",N/A,N/A,N/A,local,N/A,N/A,N/A,"【test】
+ボタンの下にリンクが出れば成功です。"
+E20260329_005,2026-03-29T17:14:36,human_nsjsiro,broadcast,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,B,Claude,蜈ｱ譛・ Claude,"【test3】
+今度は2箇所確認できました。ブラウザをリロードして再テストしてください。",N/A,N/A,N/A,local,N/A,N/A,N/A,"【test3】
+今度は2箇所確認できました。ブラウザをリロードして再テストしてください。"

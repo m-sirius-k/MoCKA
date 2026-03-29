@@ -104,6 +104,10 @@
     </div>
 
     <div class="status-bar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
+    <div id="launch-links" style="display:none; margin-bottom:16px; padding:12px; background:#0d1117; border:1px solid #a855f7; border-radius:6px;">
+        <div style="font-size:11px; color:#a855f7; letter-spacing:2px; margin-bottom:10px;">OPEN EACH AI TAB</div>
+        <div id="link-list" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    </div>
     <button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
 
     <div class="block">
@@ -119,7 +123,15 @@
     <script>
         let state = {c:null, targets:[]};
         window.onload = () => { updateHistory(); };
-            document.getElementById('doc-date').value = new Date().toLocaleString('ja-JP');
+        document.getElementById('doc-date').value = new Date().toLocaleString('ja-JP');
+
+        const AI_URLS = {
+            ChatGPT:    "https://chatgpt.com/",
+            Gemini:     "https://gemini.google.com/app",
+            Claude:     "https://claude.ai/new",
+            Perplexity: "https://www.perplexity.ai/",
+            Copilot:    "https://copilot.microsoft.com/"
+        };
 
         function setCat(c, el) {
             state.c = c; state.targets = [];
@@ -167,25 +179,49 @@
 
         async function fire() {
             if(!state.c || state.targets.length===0) return;
-            const btn = document.getElementById('exec');
-            const title = document.getElementById('title').value.trim();
-            const memo = (title ? '【' + title + '】\n' : '') + document.getElementById('memo').value.trim();
+            const btn = document.getElementById("exec");
+            const titleVal = document.getElementById("title").value.trim();
+            const memoVal = document.getElementById("memo").value.trim();
+            const prompt = (titleVal ? "【" + titleVal + "】\n" : "") + memoVal;
+
+            try { await navigator.clipboard.writeText(prompt); } catch(e) {}
+
             btn.innerText = "⟳ DISPATCHING...";
-            btn.classList.remove('ready');
+            btn.classList.remove("ready");
+
             for(const t of state.targets) {
-                await fetch('/ask', {
-                    method:'POST',
-                    headers:{'Content-Type':'application/json'},
-                    body:JSON.stringify({c:state.c, o:t, memo:memo})
+                await fetch("/ask", {
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({c:state.c, o:t, memo:prompt})
                 });
             }
+
+            if(state.c === "B") {
+                document.getElementById("status-bar").style.color = "#a855f7";
+                document.getElementById("status-bar").innerText = "PROMPT COPIED — OPEN EACH AI BELOW";
+                const linkList = document.getElementById("link-list");
+                linkList.innerHTML = "";
+                for(const t of state.targets) {
+                    if(AI_URLS[t]) {
+                        const a = document.createElement("a");
+                        a.href = AI_URLS[t];
+                        a.target = "_blank";
+                        a.innerText = "▶ " + t;
+                        a.style.cssText = "display:inline-block;padding:10px 18px;border:1px solid #a855f7;color:#a855f7;text-decoration:none;font-family:monospace;font-size:13px;border-radius:4px;transition:0.2s;";
+                        a.onmouseover = () => a.style.background = "#1a0a2e";
+                        a.onmouseout = () => a.style.background = "transparent";
+                        linkList.appendChild(a);
+                    }
+                }
+                document.getElementById("launch-links").style.display = "block";
+            }
+
             btn.innerText = "✓ MISSION COMPLETE";
-            document.getElementById('status-bar').style.color = '#22c55e';
-            document.getElementById('status-bar').innerText = 'SEALED INTO LEDGER';
             await updateHistory();
             setTimeout(() => {
                 updateBtn();
-                document.getElementById('memo').value = '';
+                document.getElementById("memo").value = "";
             }, 2500);
         }
 
@@ -202,6 +238,6 @@
                 });
             } catch(e) { console.error(e); }
         }
-    </script>
+</script>
 </body>
 </html>
