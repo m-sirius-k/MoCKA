@@ -232,6 +232,24 @@ Step 3 — Confirm the record is sealed
 > - A governance anchor in `governance/anchor_record.json`
 > - A reproducible, verifiable record — forever.
 
+### A single event — end to end
+
+```
+Human clicks "SAVE → infield" on the control panel
+      ↓
+mocka_Receptor receives the stimulus
+      ↓
+acceptor:infield stores it as a structured 5W1H event
+      ↓
+ledger.json seals it with SHA256 chain
+      ↓
+mocka-seal anchors it to governance/anchor_record.json
+      ↓
+verify_all confirms: ALL CHECKS PASSED
+      ↓
+The event is now part of institutional memory — forever.
+```
+
 ### Full runtime commands
 
 ```powershell
