@@ -1,4 +1,4 @@
-import csv
+﻿import csv
 import os
 import json
 from datetime import datetime
@@ -17,8 +17,7 @@ OLD_DIR = os.path.join(BASE_DIR, "OLD_FILES")
 DOCS_DIR = os.path.join(BASE_DIR, "docs")
 
 # =========================
-# 22列フルメタ・スキーマ
-# =========================
+# 22蛻励ヵ繝ｫ繝｡繧ｿ繝ｻ繧ｹ繧ｭ繝ｼ繝・# =========================
 FIELDNAMES = [
     "event_id",
     "when",
@@ -102,7 +101,7 @@ def next_event_id():
 def create_summary_and_context_templates(eid, name, summary, category, target):
     summary_path = os.path.join(RECORDS_DIR, "summary", f"{eid}.txt")
     if not os.path.exists(summary_path):
-        line = f"{eid}: {name} / {summary}（カテゴリ={category}, ターゲット={target}）"
+        line = f"{eid}: {name} / {summary} category={category}, target={target}"
         with open(summary_path, "w", encoding="utf-8") as f:
             f.write(line)
 
@@ -110,28 +109,21 @@ def create_summary_and_context_templates(eid, name, summary, category, target):
     if not os.path.exists(context_path):
         md = f"""# {eid} {name}
 
-## 背景
-ここに「なぜこのイベントが必要だったか」を書く。
-
-## 問題
-ここに「解決しようとした問題・リスク」を書く。
-
-## 判断
+## 閭梧勹
+縺薙％縺ｫ縲後↑縺懊％縺ｮ繧､繝吶Φ繝医′蠢・ｦ√□縺｣縺溘°縲阪ｒ譖ｸ縺上・
+## 蝠城｡・縺薙％縺ｫ縲瑚ｧ｣豎ｺ縺励ｈ縺・→縺励◆蝠城｡後・繝ｪ繧ｹ繧ｯ縲阪ｒ譖ｸ縺上・
+## 蛻､譁ｭ
 {summary}
 
-## 結果
-ここに「現時点の結果・影響」を書く。
-"""
+## 邨先棡
+縺薙％縺ｫ縲檎樟譎らせ縺ｮ邨先棡繝ｻ蠖ｱ髻ｿ縲阪ｒ譖ｸ縺上・"""
         with open(context_path, "w", encoding="utf-8") as f:
             f.write(md)
 
 
 def append_event(meta: dict):
     """
-    22列フルメタ events.csv に1行追記する。
-    - 未指定列はすべて "N/A" で初期化
-    - event_id / when は自動補完
-    """
+    22蛻励ヵ繝ｫ繝｡繧ｿ events.csv 縺ｫ1陦瑚ｿｽ險倥☆繧九・    - 譛ｪ謖・ｮ壼・縺ｯ縺吶∋縺ｦ "N/A" 縺ｧ蛻晄悄蛹・    - event_id / when 縺ｯ閾ｪ蜍戊｣懷ｮ・    """
     ensure_events_csv()
 
     row = {key: "N/A" for key in FIELDNAMES}
@@ -183,8 +175,7 @@ def load_history(limit=None):
 
 
 # =========================
-# Flask ルート
-# =========================
+# Flask 繝ｫ繝ｼ繝・# =========================
 
 @app.route("/")
 def index():
@@ -200,11 +191,12 @@ def get_history():
 @app.route("/ask", methods=["POST"])
 def ask():
     """
-    index.html からの POST: {c: 'A'|'B', o: 'infield'|...}
-    ここから 22列メタにマッピングして append_event に渡す。
-    """
+    index.html 縺九ｉ縺ｮ POST: {c: 'A'|'B', o: 'infield'|...}
+    縺薙％縺九ｉ 22蛻励Γ繧ｿ縺ｫ繝槭ャ繝斐Φ繧ｰ縺励※ append_event 縺ｫ貂｡縺吶・    """
     payload = request.get_json(force=True, silent=True) or {}
     c = payload.get("c")
+    o = payload.get("o")
+    memo = payload.get("memo", "").strip()
     o = payload.get("o")
 
     if c not in ("A", "B") or not o:
@@ -212,11 +204,11 @@ def ask():
 
     if c == "A":
         what_type = "storage"
-        title = f"保存: {o}"
+        title = f"菫晏ｭ・ {o}"
         short_summary = "Storage mission dispatched"
     else:
         what_type = "broadcast"
-        title = f"共有: {o}"
+        title = f"蜈ｱ譛・ {o}"
         short_summary = "Broadcast mission dispatched"
 
     meta = {
@@ -224,7 +216,7 @@ def ask():
         "category_ab": c,
         "target_class": o,
         "title": title,
-        "short_summary": short_summary,
+        "short_summary": memo if memo else short_summary,
 
         "who_actor": "human_nsjsiro",
         "where_component": "panel_ui",
@@ -242,7 +234,7 @@ def ask():
         "impact_result": "N/A",
         "related_event_id": "N/A",
         "trace_id": "N/A",
-        "free_note": "N/A",
+        "free_note": memo if memo else "N/A",
     }
 
     append_event(meta)

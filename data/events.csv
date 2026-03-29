@@ -5,3 +5,92 @@ E20260326_003,2026-03-26T11:08:28,human_nsjsiro,storage,panel_ui,index.html,N/A,
 E20260326_004,2026-03-26T11:08:29,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,infield,保存: infield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
 E20260326_005,2026-03-26T11:08:29,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,outfield,保存: outfield,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
 E20260326_006,2026-03-26T11:08:29,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,公文書,保存: 公文書,Storage mission dispatched,N/A,N/A,N/A,local,N/A,N/A,N/A,N/A
+E20260329_001,2026-03-29T13:01:07,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,infield,菫晏ｭ・ infield,"面白い資料です。整理して評価します。
+
+3つの資料を横断して見ると：
+資料1（Ollama/Qdrant/FastAPI系）
+→ ローカル完結・クラウド非依存を重視
+→ MoCKAの「自律文明」思想と最も一致
+
+資料2（n8n/Groq/DeepSeek系）
+→ オーケストレーション・並列処理重視
+→ external-brainの「手と足」として有効
+
+資料3（DSPy/PydanticAI系）
+→ 型安全・決定論的実行重視
+→ MoCKAの「Deterministic」思想と深く一致
+
+私の率直な評価：
+今すぐ一番効くのはこの3つです：
+① PydanticAI
+  理由：
+  mocka_Receptorへの入力を
+  型で強制検証する
+  = MoCKAの「汚れたデータを入れない」
+    思想をコードで実現できる
+  難易度：低
+  効果：即効
+
+② LiteLLM
+  理由：
+  Gemini/Claude/GPT/ローカルLLMを
+  同じインターフェースで呼べる
+  = external-brainの「誰でも交換可能」
+    思想をそのまま実装できる
+  難易度：低
+  効果：即効
+
+③ Qdrant
+  理由：
+  MoCKAのledger.jsonは
+  「検索できない記録」
+  Qdrantを加えると
+  「意味で検索できる記憶」になる
+  = 「歴史を参照しながら判断する」
+    が本当に実現する
+  難易度：中
+  効果：大きい",N/A,N/A,N/A,local,N/A,N/A,N/A,"面白い資料です。整理して評価します。
+
+3つの資料を横断して見ると：
+資料1（Ollama/Qdrant/FastAPI系）
+→ ローカル完結・クラウド非依存を重視
+→ MoCKAの「自律文明」思想と最も一致
+
+資料2（n8n/Groq/DeepSeek系）
+→ オーケストレーション・並列処理重視
+→ external-brainの「手と足」として有効
+
+資料3（DSPy/PydanticAI系）
+→ 型安全・決定論的実行重視
+→ MoCKAの「Deterministic」思想と深く一致
+
+私の率直な評価：
+今すぐ一番効くのはこの3つです：
+① PydanticAI
+  理由：
+  mocka_Receptorへの入力を
+  型で強制検証する
+  = MoCKAの「汚れたデータを入れない」
+    思想をコードで実現できる
+  難易度：低
+  効果：即効
+
+② LiteLLM
+  理由：
+  Gemini/Claude/GPT/ローカルLLMを
+  同じインターフェースで呼べる
+  = external-brainの「誰でも交換可能」
+    思想をそのまま実装できる
+  難易度：低
+  効果：即効
+
+③ Qdrant
+  理由：
+  MoCKAのledger.jsonは
+  「検索できない記録」
+  Qdrantを加えると
+  「意味で検索できる記憶」になる
+  = 「歴史を参照しながら判断する」
+    が本当に実現する
+  難易度：中
+  効果：大きい"
