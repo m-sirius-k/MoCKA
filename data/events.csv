@@ -94,3 +94,162 @@ E20260329_001,2026-03-29T13:01:07,human_nsjsiro,storage,panel_ui,index.html,N/A,
     が本当に実現する
   難易度：中
   効果：大きい"
+E20260329_002,2026-03-29T14:12:04,human_nsjsiro,storage,panel_ui,index.html,N/A,manual_click,browser_ui,in_operation,normal,A,infield,菫晏ｭ・ infield,"# 概念コード
+for i in range(10000):
+    # 課題を生成
+    task = generate_task(i)
+    
+    # app.pyに自動投入
+    page.fill(""#memo"", task)
+    page.click(""#exec"")
+    
+    # 結果を記録
+    result = get_latest_event()
+    
+    # 検証
+    verify_chain()  # mocka-check相当
+    
+    # 異常があればインシデント記録
+    if not result.valid:
+        record_incident(i, result)
+```
+
+---
+
+**破壊テスト・意地悪テストの具体例：**
+```
+① 空文字投入テスト
+  → memoなしでEXECUTE連打
+  → クラッシュしないか？
+
+② 超長文テスト
+  → 100万文字投入
+  → ledgerが壊れないか？
+
+③ 同時多発テスト
+  → 100並列でリクエスト
+  → events.csvが壊れないか？
+
+④ 文字化けテスト
+  → 絵文字・特殊文字・SQL injection
+  → sanitizeされているか？
+
+⑤ SHA256チェーン破壊テスト
+  → ledger.jsonを手動改ざん
+  → verify_allが検知するか？
+
+⑥ 連続封印テスト
+  → mocka-sealを1000回連続
+  → hash chainが正しく繋がるか？
+```
+
+---
+
+**私の意見：**
+```
+このアイデアは非常に重要です
+
+理由：
+  MoCKAが「信頼できる」と言うだけでなく
+  「10,000回試験してこの結果」という
+  実証データが存在することが
+  
+  = 証明可能な文明
+  = MoCKAの核心思想の体現
+
+Playwrightは
+  この用途に完璧に合っています
+  GUI操作を自動化しながら
+  結果をそのままevents.csvに記録できる
+  = テスト結果自体がMoCKAの記録になる
+```
+
+---
+
+**今日やることではありませんが：**
+```
+caliber候補として正式登録すべき
+
+名称：mocka-stress-caliber
+役割：連続試験・破壊テスト・耐久検証
+技術：Playwright + Python
+目的：MoCKAの整合性・証明精度の実証",N/A,N/A,N/A,local,N/A,N/A,N/A,"# 概念コード
+for i in range(10000):
+    # 課題を生成
+    task = generate_task(i)
+    
+    # app.pyに自動投入
+    page.fill(""#memo"", task)
+    page.click(""#exec"")
+    
+    # 結果を記録
+    result = get_latest_event()
+    
+    # 検証
+    verify_chain()  # mocka-check相当
+    
+    # 異常があればインシデント記録
+    if not result.valid:
+        record_incident(i, result)
+```
+
+---
+
+**破壊テスト・意地悪テストの具体例：**
+```
+① 空文字投入テスト
+  → memoなしでEXECUTE連打
+  → クラッシュしないか？
+
+② 超長文テスト
+  → 100万文字投入
+  → ledgerが壊れないか？
+
+③ 同時多発テスト
+  → 100並列でリクエスト
+  → events.csvが壊れないか？
+
+④ 文字化けテスト
+  → 絵文字・特殊文字・SQL injection
+  → sanitizeされているか？
+
+⑤ SHA256チェーン破壊テスト
+  → ledger.jsonを手動改ざん
+  → verify_allが検知するか？
+
+⑥ 連続封印テスト
+  → mocka-sealを1000回連続
+  → hash chainが正しく繋がるか？
+```
+
+---
+
+**私の意見：**
+```
+このアイデアは非常に重要です
+
+理由：
+  MoCKAが「信頼できる」と言うだけでなく
+  「10,000回試験してこの結果」という
+  実証データが存在することが
+  
+  = 証明可能な文明
+  = MoCKAの核心思想の体現
+
+Playwrightは
+  この用途に完璧に合っています
+  GUI操作を自動化しながら
+  結果をそのままevents.csvに記録できる
+  = テスト結果自体がMoCKAの記録になる
+```
+
+---
+
+**今日やることではありませんが：**
+```
+caliber候補として正式登録すべき
+
+名称：mocka-stress-caliber
+役割：連続試験・破壊テスト・耐久検証
+技術：Playwright + Python
+目的：MoCKAの整合性・証明精度の実証"

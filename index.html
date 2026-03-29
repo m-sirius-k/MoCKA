@@ -77,6 +77,7 @@
             <button class="s-btn" onclick="toggleT('公文書', this)">公文書</button>
             <button class="s-btn" onclick="toggleT('インシデント', this)">インシデント</button>
             <button class="s-btn" onclick="toggleT('クレーム', this)">クレーム</button>
+            <button class="s-btn" onclick="toggleT('議事録', this)">議事録</button>
         </div>
     </div>
 
@@ -94,6 +95,10 @@
 
     <div class="block">
         <h3>2. Input — What to Record</h3>
+        <div style="display:grid;grid-template-columns:1fr 160px;gap:8px;margin-bottom:8px;">
+            <input id="title" type="text" placeholder="タイトル（例：Playwright調査レポート）" style="background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;" onfocus="this.style.borderColor='#60a5fa'" onblur="this.style.borderColor='#374151'">
+            <input id="doc-date" type="text" style="background:#020617;color:#6b7280;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:12px;outline:none;" readonly>
+        </div>
         <textarea id="memo" placeholder="記録内容を入力してください...&#10;Why（目的）· What（内容）· How（方法）"></textarea>
         <div class="input-hint">5W1H で記録すると検索性が上がります</div>
     </div>
@@ -114,6 +119,7 @@
     <script>
         let state = {c:null, targets:[]};
         window.onload = () => { updateHistory(); };
+            document.getElementById('doc-date').value = new Date().toLocaleString('ja-JP');
 
         function setCat(c, el) {
             state.c = c; state.targets = [];
@@ -162,7 +168,8 @@
         async function fire() {
             if(!state.c || state.targets.length===0) return;
             const btn = document.getElementById('exec');
-            const memo = document.getElementById('memo').value.trim();
+            const title = document.getElementById('title').value.trim();
+            const memo = (title ? '【' + title + '】\n' : '') + document.getElementById('memo').value.trim();
             btn.innerText = "⟳ DISPATCHING...";
             btn.classList.remove('ready');
             for(const t of state.targets) {
