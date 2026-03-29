@@ -182,27 +182,49 @@ mocka_insight_system    ← mocka_Movement + shadow_Movement
 
 ---
 
-## Quick Start
+## Quick Start — 1 minute to your first civilization loop
 
-<p align="center">
-  <img src="docs/images/mocka_quickstart_v2.svg" width="720">
-</p>
-```bash
-python -m runtime.main_loop
-python verify_chain.py
-python verify_all.py
-python rebuild_state.py
+### What happens in 60 seconds
+
+```
+Step 1 — Verify the system is intact
+  $ mocka-check
+  → LEDGER OK + ALL CHECKS PASSED
+
+Step 2 — Run one loop cycle
+  $ mocka-loop
+  → Observation → Record → Incident → ... → Audit
+  → 1 event sealed into ledger.json (SHA256 chain)
+
+Step 3 — Confirm the record is sealed
+  $ mocka-seal "my first event"
+  → ANCHOR UPDATED AND COMMITTED
+  → ALL CHECKS PASSED
 ```
 
----
+> After these 3 steps, you have produced:
+> - A cryptographically sealed event in `runtime/main/ledger.json`
+> - A governance anchor in `governance/anchor_record.json`
+> - A reproducible, verifiable record — forever.
 
-## Vision
+### Full runtime commands
 
-- **Recorded.** Every action leaves a permanent, tamper-evident trace.
-- **Verified.** Every state can be independently confirmed by third parties.
-- **Remembered.** Knowledge accumulates and compounds over time.
-- **Inherited.** The system can be fully reconstructed from its history alone.
+```powershell
+# Health check — verify ledger + all governance checks
+mocka-check
 
+# Run one civilization loop cycle
+mocka-loop
+
+# Seal a decision into the ledger
+mocka-seal "your message here"
+
+# Verify the hash chain only
+python verify_chain.py
+
+# Run all governance checks
+python verify_all.py
+```
 ---
 
 ## Status
