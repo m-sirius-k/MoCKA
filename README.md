@@ -161,6 +161,27 @@ The system never assumes correctness.
 
 ---
 
+## Entry Point — mocka_Receptor
+
+Every interaction with MoCKA begins at a single point: **mocka_Receptor**.
+
+The Receptor does not assume what the input is.
+It receives any stimulus — human intent, AI output, event signal — and transforms it based on context.
+Not 0 or 1. Not predetermined. It becomes what the system needs it to be.
+
+```
+External world
+      ↓
+mocka_Receptor          ← single entry point
+      ↓              ↓
+acceptor:infield   acceptor:outfield
+(store · memory)   (share · publish)
+      ↓
+mocka_insight_system    ← mocka_Movement + shadow_Movement
+```
+
+---
+
 ## Quick Start
 
 <p align="center">
