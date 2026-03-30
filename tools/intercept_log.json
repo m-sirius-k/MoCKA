@@ -1,0 +1,38 @@
+[
+  {
+    "timestamp": "2026-03-30T18:09:41.893640",
+    "url": "https://chatgpt.com/backend-api/conversation/init",
+    "status": 200,
+    "body": "{\"type\":\"conversation_detail_metadata\",\"banner_info\":null,\"blocked_features\":[],\"model_limits\":[],\"limits_progress\":[{\"feature_name\":\"deep_research\",\"remaining\":25,\"reset_after\":\"2026-04-29T09:09:38.728154+00:00\"},{\"feature_name\":\"odyssey\",\"remaining\":40,\"reset_after\":\"2026-04-29T09:09:38.728200+00:00\"},{\"feature_name\":\"file_upload\",\"remaining\":80,\"reset_after\":\"2026-03-30T12:09:38.728225+00:00\"},{\"feature_name\":\"paste_text_to_file\",\"remaining\":80,\"reset_after\":\"2026-03-30T12:09:38.728247+00:00\""
+  },
+  {
+    "timestamp": "2026-03-30T18:09:41.895811",
+    "url": "https://chatgpt.com/backend-api/conversations?offset=0&limit=28&order=updated&is_archived=false&is_starred=false",
+    "status": 200,
+    "body": "{\"items\":[{\"id\":\"69ca3d94-ab48-83a5-9f40-05544a44a1a0\",\"title\":\"MoCKA傍受テスト\",\"create_time\":\"2026-03-30T09:08:37.886229Z\",\"update_time\":\"2026-03-30T09:08:38.724532Z\",\"pinned_time\":null,\"mapping\":null,\"current_node\":null,\"conversation_template_id\":null,\"gizmo_id\":null,\"is_archived\":false,\"is_starred\":null,\"is_temporary_chat\":false,\"is_do_not_remember\":false,\"memory_scope\":\"global_enabled\",\"context_scopes\":null,\"context_scopes_v2\":{\"context_scopes\":[{\"is_siloed\":false,\"scope_namespace\":\"global\",\"sub"
+  },
+  {
+    "timestamp": "2026-03-30T18:10:06.989672",
+    "url": "https://chatgpt.com/backend-api/conversations?offset=0&limit=28&order=updated&is_archived=false&is_starred=false",
+    "status": 200,
+    "body": ""
+  },
+  {
+    "timestamp": "2026-03-30T18:10:06.989938",
+    "url": "https://chatgpt.com/backend-api/conversation/69ca3dd4-7200-83a3-af1e-9b4399f40d5d/stream_status",
+    "status": 200,
+    "body": ""
+  },
+  {
+    "timestamp": "2026-03-30T18:10:06.990107",
+    "url": "https://chatgpt.com/backend-api/conversation/69ca3dd4-7200-83a3-af1e-9b4399f40d5d/textdocs",
+    "status": 200,
+    "body": ""
+  },
+  {
+    "timestamp": "2026-03-30T18:10:06.990233",
+    "url": "https://chatgpt.com/backend-api/conversations?offset=0&limit=28&order=updated&is_archived=false&is_starred=false",
+    "status": 200,
+    "body": ""
+  }
+]
