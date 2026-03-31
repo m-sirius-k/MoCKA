@@ -5,8 +5,10 @@ import subprocess
 import sys
 from datetime import datetime
 from flask import Flask, send_from_directory, jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")

@@ -1,0 +1,1 @@
+﻿{"manifest_version":3,"name":"MoCKA Save","version":"1.0","description":"選択テキストをMoCKAに保存・共有・協議","permissions":["contextMenus","activeTab","scripting"],"background":{"service_worker":"background.js"}}
