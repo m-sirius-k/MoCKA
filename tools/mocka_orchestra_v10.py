@@ -117,6 +117,11 @@ async def run_perplexity(context):
             await page.goto("https://www.perplexity.ai/", wait_until="domcontentloaded", timeout=60000)
             await asyncio.sleep(3)
 
+    # orchestraモードは新規スレッドで文脈混在を防ぐ
+    if MODE == "orchestra":
+        await page.goto("https://www.perplexity.ai/", wait_until="domcontentloaded", timeout=60000)
+        await asyncio.sleep(3)
+
     box = page.get_by_role("textbox").first
     await box.click()
     await box.fill(PROMPT)
@@ -215,4 +220,5 @@ async def main():
             print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
 
 asyncio.run(main())
+
 
