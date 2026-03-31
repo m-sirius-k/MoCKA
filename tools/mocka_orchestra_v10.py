@@ -134,6 +134,11 @@ async def run_perplexity(context):
 
 async def run_gemini(context):
     page, status = await get_or_resume_page(context, "Gemini", "gemini.google.com", "https://gemini.google.com/app")
+    # トップページに戻っていたらチャット画面に強制遷移
+    if "app?" in page.url or page.url.endswith("/app") is False and "/app/" not in page.url:
+        print(f"[Gemini] トップ検出 → チャット画面に遷移")
+        await page.goto("https://gemini.google.com/app", wait_until="domcontentloaded", timeout=60000)
+        await asyncio.sleep(5)
     box = page.get_by_role("textbox").first
     await box.click()
     await box.fill(PROMPT)
@@ -210,3 +215,4 @@ async def main():
             print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
 
 asyncio.run(main())
+
