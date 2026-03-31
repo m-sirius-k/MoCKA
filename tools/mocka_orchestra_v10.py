@@ -34,28 +34,46 @@ def clean(ans):
         ans = ans.replace("Copilot の発言","").strip()
         lines = [l.strip() for l in ans.split("\n") if l.strip() and "MoCKA並列" not in l and "受理" not in l]
         ans = "\n".join(lines[:5]) if lines else ""
-    return ans.strip()[:500]
+    return ans.strip()[:2000]
+
+async def wait_for_completion(get_text_func, ai_name, timeout=120, stable_sec=3, interval=2):
+    """テキストが安定したら完了とみなす"""
+    print(f"[{ai_name}] 回答待機中...")
+    prev = ""
+    stable_count = 0
+    needed = stable_sec // interval
+    elapsed = 0
+    while elapsed < timeout:
+        await asyncio.sleep(interval)
+        elapsed += interval
+        try:
+            curr = await get_text_func()
+        except:
+            curr = prev
+        if curr and curr == prev and len(curr) > 10:
+            stable_count += 1
+            if stable_count >= needed:
+                print(f"[{ai_name}] 回答確定 ({elapsed}秒)")
+                return curr
+        else:
+            stable_count = 0
+        prev = curr
+    print(f"[{ai_name}] タイムアウト ({timeout}秒)")
+    return prev
 
 async def get_or_resume_page(context, ai_name, domain, new_url):
-    """保存済みchat URLに戻る、なければ新規作成"""
     chat_urls = load_chat_urls()
     saved_url = chat_urls.get(ai_name)
-
-    # 既存タブを探す
     for pg in context.pages:
         if domain in pg.url:
             print(f"[既存タブ] {ai_name}: {pg.url[:60]}")
             return pg, "existing"
-
-    # 保存済みURLがあれば復元
     if saved_url:
         print(f"[復元] {ai_name}: {saved_url[:60]}")
         page = await context.new_page()
         await page.goto(saved_url, wait_until="domcontentloaded", timeout=60000)
         await asyncio.sleep(3)
         return page, "resumed"
-
-    # 新規作成
     print(f"[新規] {ai_name}")
     page = await context.new_page()
     await page.goto(new_url, wait_until="domcontentloaded", timeout=60000)
@@ -68,26 +86,26 @@ async def run_chatgpt(context):
     await page.fill("#prompt-textarea", PROMPT)
     await asyncio.sleep(1)
     await page.keyboard.press("Enter")
-    await asyncio.sleep(25)
-    # chat URLを保存
+    await asyncio.sleep(3)
+
+    async def get_text():
+        els = await page.query_selector_all("[data-turn='assistant']")
+        return await els[-1].inner_text() if els else ""
+
+    result = await wait_for_completion(get_text, "ChatGPT")
     save_chat_url("ChatGPT", page.url)
-    els = await page.query_selector_all("[data-turn='assistant']")
-    result = await els[-1].inner_text() if els else "取得失敗"
     print(f"[ChatGPT] 完了 ({status})")
     return "ChatGPT", result
 
 async def run_perplexity(context):
     chat_urls = load_chat_urls()
     saved_url = chat_urls.get("Perplexity")
-
-    # 既存タブで保存済みURLのものを探す
     page = None
     for pg in context.pages:
         if "perplexity.ai" in pg.url and saved_url and saved_url in pg.url:
             page = pg
             print(f"[既存タブ] Perplexity: {pg.url[:60]}")
             break
-
     if not page:
         page = await context.new_page()
         if saved_url:
@@ -99,17 +117,18 @@ async def run_perplexity(context):
             await page.goto("https://www.perplexity.ai/", wait_until="domcontentloaded", timeout=60000)
             await asyncio.sleep(3)
 
-    # 入力欄にpromptを入力
     box = page.get_by_role("textbox").first
     await box.click()
     await box.fill(PROMPT)
     await page.keyboard.press("Enter")
-    await asyncio.sleep(15)
+    await asyncio.sleep(3)
 
-    # chat URLを保存
+    async def get_text():
+        els = await page.query_selector_all("[data-renderer='lm']")
+        return await els[-1].inner_text() if els else ""
+
+    result = await wait_for_completion(get_text, "Perplexity")
     save_chat_url("Perplexity", page.url)
-    els = await page.query_selector_all("[data-renderer='lm']")
-    result = await els[-1].inner_text() if els else "取得失敗"
     print(f"[Perplexity] 完了")
     return "Perplexity", result
 
@@ -120,10 +139,14 @@ async def run_gemini(context):
     await box.fill(PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
-    await asyncio.sleep(25)
+    await asyncio.sleep(3)
+
+    async def get_text():
+        els = await page.query_selector_all("model-response")
+        return await els[-1].inner_text() if els else ""
+
+    result = await wait_for_completion(get_text, "Gemini")
     save_chat_url("Gemini", page.url)
-    els = await page.query_selector_all("model-response")
-    result = await els[-1].inner_text() if els else "取得失敗"
     print(f"[Gemini] 完了 ({status})")
     return "Gemini", result
 
@@ -134,11 +157,15 @@ async def run_copilot(context):
     await box.fill(PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
-    await asyncio.sleep(25)
+    await asyncio.sleep(3)
+
+    async def get_text():
+        text = await page.evaluate("() => document.body.innerText")
+        idx = text.rfind("Copilot の発言")
+        return text[idx:idx+2000] if idx > 0 else text[-2000:]
+
+    result = await wait_for_completion(get_text, "Copilot")
     save_chat_url("Copilot", page.url)
-    text = await page.evaluate("() => document.body.innerText")
-    idx = text.rfind("Copilot の発言")
-    result = text[idx:idx+800] if idx > 0 else text[:800]
     print(f"[Copilot] 完了 ({status})")
     return "Copilot", result
 
