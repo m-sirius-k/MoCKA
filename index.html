@@ -198,6 +198,13 @@
             }
 
             if(state.c === "B") {
+                // オーケストラ起動（1回だけ）
+                const orchPrompt = (titleVal ? titleVal + "\n" : "") + memoVal;
+                await fetch("/orchestra", {
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify({prompt: orchPrompt})
+                });
                 document.getElementById("status-bar").style.color = "#a855f7";
                 document.getElementById("status-bar").innerText = "PROMPT COPIED — OPEN EACH AI BELOW";
                 const linkList = document.getElementById("link-list");

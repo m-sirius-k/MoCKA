@@ -3,7 +3,8 @@ from playwright.async_api import async_playwright
 import urllib.parse
 import time
 
-PROMPT = """PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"""
+import sys
+PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
 
 def clean(ans):
     ans = ans.replace("ChatGPT:\n","").replace("ChatGPT:","")
