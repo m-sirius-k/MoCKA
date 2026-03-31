@@ -3,9 +3,25 @@ from playwright.async_api import async_playwright
 import urllib.parse
 import time
 import sys
+import json
+import os
 
 MODE = sys.argv[2] if len(sys.argv) > 2 else "orchestra"
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
+
+CHAT_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chat_urls.json")
+
+def load_chat_urls():
+    if os.path.exists(CHAT_URLS_FILE):
+        with open(CHAT_URLS_FILE, encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+def save_chat_url(ai_name, url):
+    urls = load_chat_urls()
+    urls[ai_name] = url
+    with open(CHAT_URLS_FILE, "w", encoding="utf-8") as f:
+        json.dump(urls, f, ensure_ascii=False, indent=2)
 
 def clean(ans):
     ans = ans.replace("ChatGPT:\n","").replace("ChatGPT:","")
@@ -20,76 +36,110 @@ def clean(ans):
         ans = "\n".join(lines[:5]) if lines else ""
     return ans.strip()[:500]
 
-async def get_or_create_page(context, domain, new_url):
-    """既存タブを再利用、なければ新規作成（空タブは除外）"""
+async def get_or_resume_page(context, ai_name, domain, new_url):
+    """保存済みchat URLに戻る、なければ新規作成"""
+    chat_urls = load_chat_urls()
+    saved_url = chat_urls.get(ai_name)
+
+    # 既存タブを探す
     for pg in context.pages:
-        url = pg.url
-        if domain in url and url not in ("about:blank", "", new_url.split("?")[0]):
-            print(f"[再利用] {domain}: {url[:50]}")
-            return pg, False  # 既存タブ
+        if domain in pg.url:
+            print(f"[既存タブ] {ai_name}: {pg.url[:60]}")
+            return pg, "existing"
+
+    # 保存済みURLがあれば復元
+    if saved_url:
+        print(f"[復元] {ai_name}: {saved_url[:60]}")
+        page = await context.new_page()
+        await page.goto(saved_url, wait_until="domcontentloaded", timeout=60000)
+        await asyncio.sleep(3)
+        return page, "resumed"
+
+    # 新規作成
+    print(f"[新規] {ai_name}")
     page = await context.new_page()
-    await page.goto(new_url)
-    return page, True  # 新規タブ
+    await page.goto(new_url, wait_until="domcontentloaded", timeout=60000)
+    await asyncio.sleep(5)
+    return page, "new"
 
 async def run_chatgpt(context):
-    page, is_new = await get_or_create_page(context, "chatgpt.com", "https://chatgpt.com/")
-    if is_new:
-        await asyncio.sleep(5)
-    # 入力欄にpromptを入力
-    try:
-        await page.click("#prompt-textarea", timeout=5000)
-        await page.fill("#prompt-textarea", PROMPT)
-    except:
-        await page.keyboard.press("End")
-        await asyncio.sleep(1)
-        await page.fill("#prompt-textarea", PROMPT)
+    page, status = await get_or_resume_page(context, "ChatGPT", "chatgpt.com", "https://chatgpt.com/")
+    await page.click("#prompt-textarea", timeout=5000)
+    await page.fill("#prompt-textarea", PROMPT)
     await asyncio.sleep(1)
     await page.keyboard.press("Enter")
     await asyncio.sleep(25)
+    # chat URLを保存
+    save_chat_url("ChatGPT", page.url)
     els = await page.query_selector_all("[data-turn='assistant']")
     result = await els[-1].inner_text() if els else "取得失敗"
-    print(f"[ChatGPT] 完了")
+    print(f"[ChatGPT] 完了 ({status})")
     return "ChatGPT", result
 
 async def run_perplexity(context):
-    # Perplexityは毎回新規タブ（Comet専用ブラウザのため再利用不可）
-    page = await context.new_page()
-    await page.goto("https://www.perplexity.ai/search?q=" + urllib.parse.quote(PROMPT), wait_until="commit", timeout=60000)
+    chat_urls = load_chat_urls()
+    saved_url = chat_urls.get("Perplexity")
+
+    # 既存タブで保存済みURLのものを探す
+    page = None
+    for pg in context.pages:
+        if "perplexity.ai" in pg.url and saved_url and saved_url in pg.url:
+            page = pg
+            print(f"[既存タブ] Perplexity: {pg.url[:60]}")
+            break
+
+    if not page:
+        page = await context.new_page()
+        if saved_url:
+            print(f"[復元] Perplexity: {saved_url[:60]}")
+            await page.goto(saved_url, wait_until="domcontentloaded", timeout=60000)
+            await asyncio.sleep(3)
+        else:
+            print(f"[新規] Perplexity")
+            await page.goto("https://www.perplexity.ai/", wait_until="domcontentloaded", timeout=60000)
+            await asyncio.sleep(3)
+
+    # 入力欄にpromptを入力
+    box = page.get_by_role("textbox").first
+    await box.click()
+    await box.fill(PROMPT)
+    await page.keyboard.press("Enter")
     await asyncio.sleep(15)
+
+    # chat URLを保存
+    save_chat_url("Perplexity", page.url)
     els = await page.query_selector_all("[data-renderer='lm']")
     result = await els[-1].inner_text() if els else "取得失敗"
     print(f"[Perplexity] 完了")
     return "Perplexity", result
 
 async def run_gemini(context):
-    page, is_new = await get_or_create_page(context, "gemini.google.com", "https://gemini.google.com/app")
-    if is_new:
-        await asyncio.sleep(5)
+    page, status = await get_or_resume_page(context, "Gemini", "gemini.google.com", "https://gemini.google.com/app")
     box = page.get_by_role("textbox").first
     await box.click()
     await box.fill(PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
     await asyncio.sleep(25)
+    save_chat_url("Gemini", page.url)
     els = await page.query_selector_all("model-response")
     result = await els[-1].inner_text() if els else "取得失敗"
-    print(f"[Gemini] 完了")
+    print(f"[Gemini] 完了 ({status})")
     return "Gemini", result
 
 async def run_copilot(context):
-    page, is_new = await get_or_create_page(context, "copilot.microsoft.com", "https://copilot.microsoft.com/")
-    if is_new:
-        await asyncio.sleep(5)
+    page, status = await get_or_resume_page(context, "Copilot", "copilot.microsoft.com", "https://copilot.microsoft.com/")
     box = page.locator("textarea").first
     await box.click()
     await box.fill(PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
     await asyncio.sleep(25)
+    save_chat_url("Copilot", page.url)
     text = await page.evaluate("() => document.body.innerText")
     idx = text.rfind("Copilot の発言")
     result = text[idx:idx+800] if idx > 0 else text[:800]
-    print(f"[Copilot] 完了")
+    print(f"[Copilot] 完了 ({status})")
     return "Copilot", result
 
 async def main():
@@ -98,7 +148,6 @@ async def main():
         browser = await p.chromium.connect_over_cdp("http://localhost:9222")
         context = browser.contexts[0]
 
-        # orchestraモードのみClaudeタブを確保
         claude_page = None
         if MODE == "orchestra":
             print("[Claude] 既存タブ検索中...")
@@ -112,7 +161,6 @@ async def main():
                 await claude_page.goto("https://claude.ai/new")
                 await asyncio.sleep(5)
 
-        # 4AI並列実行
         tasks = [
             run_chatgpt(context),
             run_perplexity(context),
