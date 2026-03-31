@@ -34,6 +34,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 
   if (info.menuItemId === "mocka-share") {
+    // ledger記録
     const targets = ["ChatGPT","Gemini","Claude","Perplexity","Copilot"];
     targets.forEach(t => {
       fetch("http://localhost:5000/ask", {
@@ -42,9 +43,16 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
         body: JSON.stringify({c:"B", o:t, memo:text})
       });
     });
-    chrome.scripting.executeScript({
-      target: {tabId: tab.id},
-      func: () => alert("MoCKAで共有しました")
+    // Playwright起動（共有モード）
+    fetch("http://localhost:5000/orchestra", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({prompt: text, mode: "share"})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert("MoCKAで共有しました")
+      });
     });
   }
 
@@ -61,3 +69,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     });
   }
 });
+
+
+
+

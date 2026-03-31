@@ -2,8 +2,9 @@
 from playwright.async_api import async_playwright
 import urllib.parse
 import time
-
 import sys
+
+MODE = sys.argv[2] if len(sys.argv) > 2 else "orchestra"
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
 
 def clean(ans):
@@ -76,18 +77,19 @@ async def main():
         browser = await p.chromium.connect_over_cdp("http://localhost:9222")
         context = browser.contexts[0]
 
-        # Claude1のchat欄を先に確保
-        print("[Claude] 既存タブ検索中...")
+        # orchestraモードのみClaudeタブを確保
         claude_page = None
-        for pg in context.pages:
-            if "claude.ai" in pg.url:
-                claude_page = pg
-                print(f"[Claude] 発見: {pg.url[:60]}")
-                break
-        if not claude_page:
-            claude_page = await context.new_page()
-            await claude_page.goto("https://claude.ai/new")
-            await asyncio.sleep(5)
+        if MODE == "orchestra":
+            print("[Claude] 既存タブ検索中...")
+            for pg in context.pages:
+                if "claude.ai" in pg.url:
+                    claude_page = pg
+                    print(f"[Claude] 発見: {pg.url[:60]}")
+                    break
+            if not claude_page:
+                claude_page = await context.new_page()
+                await claude_page.goto("https://claude.ai/new")
+                await asyncio.sleep(5)
 
         # 4AI並列実行
         tasks = [
@@ -99,15 +101,17 @@ async def main():
         results = await asyncio.gather(*tasks)
         elapsed = time.time() - start
 
-        # 回答をClaude1のchat欄に配置（Enterなし）
-        prompt = f"以下は「{PROMPT[:50]}...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n"
-        for name, ans in results:
-            prompt += f"【{name}】\n{clean(ans)}\n\n"
-
-        await claude_page.bring_to_front()
-        box = claude_page.get_by_role("textbox").first
-        await box.click()
-        await box.fill(prompt)
-        print(f"\n[完了] {elapsed:.1f}秒 — Claude1のchat欄に配置済み。確認後にEnterを押してください。")
+        if MODE == "orchestra" and claude_page:
+            # 回答をClaude1のchat欄に配置（Enterなし）
+            integrate_prompt = f"以下は「{PROMPT[:50]}...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n"
+            for name, ans in results:
+                integrate_prompt += f"【{name}】\n{clean(ans)}\n\n"
+            await claude_page.bring_to_front()
+            box = claude_page.get_by_role("textbox").first
+            await box.click()
+            await box.fill(integrate_prompt)
+            print(f"\n[完了] {elapsed:.1f}秒 — Claude1のchat欄に配置済み。確認後にEnterを押してください。")
+        else:
+            print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
 
 asyncio.run(main())

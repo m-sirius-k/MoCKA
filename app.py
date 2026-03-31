@@ -8,7 +8,7 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="*", supports_credentials=True)
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
@@ -138,7 +138,8 @@ def get_history():
 def orchestra():
     payload = request.get_json(force=True, silent=True) or {}
     prompt = payload.get("prompt", "MoCKA Broadcast")
-    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt],
+    mode = payload.get("mode", "orchestra")
+    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode],
                     cwd=ROOT_DIR)
     return jsonify({"status": "ok"})
 
