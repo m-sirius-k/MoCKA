@@ -220,6 +220,21 @@ mocka_insight_system    ← mocka_Movement + shadow_Movement
 
 ### Collaborate — collect all responses, synthesize in Claude
 ![Collaboration](docs/collaboration.gif)
+## Prerequisites
+
+- **Python 3.10+** — [Download](https://www.python.org/downloads/)
+- **Git** — [Download](https://git-scm.com/)
+- **Playwright** — Browser automation (Chromium)
+- **Flask** — Local control panel
+- **Windows** (PowerShell) / Mac / Linux
+
+## Installation
+```bash
+git clone https://github.com/m-sirius-k/MoCKA.git
+cd MoCKA
+pip install -r requirements.txt
+playwright install chromium
+```
 ## Quick Start — 1 minute to your first civilization loop
 
 ### What happens in 60 seconds
@@ -468,4 +483,5 @@ python rebuild_state.py
 **v1.0.0 — アクティブ開発中**  
 文明ループ動作確認済み。  
 ガバナンス20項目すべて通過。
+
 
