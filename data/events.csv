@@ -435,3 +435,7 @@ E20260401_004,2026-04-01T07:52:14,mocka_router,share,router,interface/router.py,
 [復元] Gemini: https://gemini.google.com/app/8989e3019901961d?hl=ja
 [復元] Copilot: https://copilot.microsoft.com/chats/kqws86Ue5aW",N/A,share_complete,generation,local,share,N/A,N/A,(node:5300) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er
 E20260401_005,2026-04-01T07:57:43,mocka_router,save,router,interface/router.py,保存: infield,cli,internal,in_operation,normal,A,outfield,[save] 保存: infield,app.py router?????,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
+E20260401_006,2026-04-01T08:02:49,mocka_router,collaboration,router,interface/router.py,MoCKAの入口統合が完成した意義は何か？,cli,internal,in_operation,normal,A,outfield,[collaboration] MoCKAの入口統合が完成した意義は何か？,"[Claude] 既存タブ検索中...
+[Claude] 発見: https://claude.ai/chat/1156422c-6a83-4ae2-abdf-94bda37e0d2f
+[既存タブ] ChatGPT: https://chatgpt.com/c/69cb55a6-c624-83a9-a65e-0ffef44bc05f
+[既存タブ] Perplexity: https://www.p",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:1908) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er
