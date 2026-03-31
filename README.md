@@ -207,6 +207,19 @@ mocka_insight_system    ← mocka_Movement + shadow_Movement
 
 ---
 
+
+---
+
+## Getting Started — The simplest entry point
+
+> This is not MoCKA. This is the door.
+> MoCKA is what happens after you walk through it.
+
+### Share — broadcast to all AIs instantly
+![Sharing](docs/Sharing.gif)
+
+### Collaborate — collect all responses, synthesize in Claude
+![Collaboration](docs/collaboration.gif)
 ## Quick Start — 1 minute to your first civilization loop
 
 ### What happens in 60 seconds
@@ -455,3 +468,4 @@ python rebuild_state.py
 **v1.0.0 — アクティブ開発中**  
 文明ループ動作確認済み。  
 ガバナンス20項目すべて通過。
+
