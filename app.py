@@ -139,8 +139,18 @@ def orchestra():
     payload = request.get_json(force=True, silent=True) or {}
     prompt = payload.get("prompt", "MoCKA Broadcast")
     mode = payload.get("mode", "orchestra")
-    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode],
-                    cwd=ROOT_DIR)
+    # router.py経由で統一
+    sys.path.insert(0, os.path.join(ROOT_DIR, "interface"))
+    from router import MoCKARouter
+    router = MoCKARouter()
+    if mode == "orchestra":
+        subprocess.Popen([sys.executable, "-c",
+            f"import sys; sys.path.insert(0, r'{os.path.join(ROOT_DIR, 'interface')}'); from router import MoCKARouter; MoCKARouter().collaborate({repr(prompt)})"],
+            cwd=ROOT_DIR)
+    else:
+        subprocess.Popen([sys.executable, "-c",
+            f"import sys; sys.path.insert(0, r'{os.path.join(ROOT_DIR, 'interface')}'); from router import MoCKARouter; MoCKARouter().share({repr(prompt)})"],
+            cwd=ROOT_DIR)
     return jsonify({"status": "ok"})
 
 
@@ -154,40 +164,16 @@ def ask():
     if c not in ("A", "B") or not o:
         return jsonify({"status": "error", "message": "invalid payload"}), 400
 
+    # router.py経由で統一
+    sys.path.insert(0, os.path.join(ROOT_DIR, "interface"))
+    from router import MoCKARouter
+    router = MoCKARouter()
+
     if c == "A":
-        what_type = "storage"
-        title = f"保存: {o}"
-        short_summary = "Storage mission dispatched"
+        router.save(f"保存: {o}", memo if memo else "Storage mission dispatched")
     else:
-        what_type = "broadcast"
-        title = f"共有: {o}"
-        short_summary = "Broadcast mission dispatched"
+        router.save(f"共有: {o}", memo if memo else "Broadcast mission dispatched")
 
-    meta = {
-        "what_type": what_type,
-        "category_ab": c,
-        "target_class": o,
-        "title": title,
-        "short_summary": memo if memo else short_summary,
-        "who_actor": "human_nsjsiro",
-        "where_component": "panel_ui",
-        "where_path": "index.html",
-        "why_purpose": "N/A",
-        "how_trigger": "manual_click",
-        "channel_type": "browser_ui",
-        "lifecycle_phase": "in_operation",
-        "risk_level": "normal",
-        "before_state": "N/A",
-        "after_state": "N/A",
-        "change_type": "N/A",
-        "impact_scope": "local",
-        "impact_result": "N/A",
-        "related_event_id": "N/A",
-        "trace_id": "N/A",
-        "free_note": memo if memo else "N/A",
-    }
-
-    append_event(meta)
     return jsonify({"status": "ok"})
 
 

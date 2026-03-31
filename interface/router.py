@@ -1,70 +1,118 @@
 ﻿import json
 import os
 import sys
+import csv
+import datetime
+import subprocess
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from providers.google_provider import GoogleProvider
-from providers.azure_provider import AzureProvider
+EVENTS_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "events.csv")
+ORCHESTRA_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools", "mocka_orchestra_v10.py")
+
+def get_next_event_id():
+    today = datetime.datetime.now().strftime("%Y%m%d")
+    prefix = f"E{today}_"
+    max_num = 0
+    if os.path.exists(EVENTS_CSV):
+        with open(EVENTS_CSV, encoding="utf-8") as f:
+            for row in csv.reader(f):
+                if row and row[0].startswith(prefix):
+                    try:
+                        num = int(row[0].replace(prefix, ""))
+                        max_num = max(max_num, num)
+                    except:
+                        pass
+    return f"{prefix}{str(max_num + 1).zfill(3)}"
+
+def record_to_events_csv(event_id, mode, content, result="", note=""):
+    row = {
+        "event_id": event_id,
+        "when": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "who_actor": "mocka_router",
+        "what_type": mode,
+        "where_component": "router",
+        "where_path": "interface/router.py",
+        "why_purpose": content[:100],
+        "how_trigger": "cli",
+        "channel_type": "internal",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "category_ab": "A",
+        "target_class": "outfield",
+        "title": f"[{mode}] {content[:50]}",
+        "short_summary": result[:200],
+        "before_state": "N/A",
+        "after_state": f"{mode}_complete",
+        "change_type": "generation",
+        "impact_scope": "local",
+        "impact_result": mode,
+        "related_event_id": "N/A",
+        "trace_id": "N/A",
+        "free_note": note[:200]
+    }
+    with open(EVENTS_CSV, "a", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(row.keys()))
+        writer.writerow(row)
+    print(f"[events.csv] 記録完了: {event_id} [{mode}]")
+
+def run_orchestra(prompt, mode):
+    result = subprocess.run(
+        [sys.executable, ORCHESTRA_SCRIPT, prompt, mode],
+        capture_output=True,
+        text=True,
+        timeout=300
+    )
+    return result.stdout.strip(), result.stderr.strip()
 
 class MoCKARouter:
-    def __init__(self):
-        self.providers = {
-            "Gemini": GoogleProvider(),
-            "Azure":  AzureProvider(),
-        }
-        self.members = ["Gemini", "ChatGPT", "Claude", "Copilot", "Perplexity"]
 
-    def _call(self, provider_name, prompt):
-        provider = self.providers.get(provider_name)
-        if provider and provider.is_available():
-            try:
-                result = provider.generate({"prompt": prompt})
-                return result["output"]
-            except Exception as e:
-                return f"[{provider_name}] ERROR: {e}"
-        return f"[{provider_name}] unavailable"
+    def share(self, content):
+        """4AIに送信・返答待たない"""
+        print(f"[MoCKARouter] share: {content[:50]}...")
+        stdout, stderr = run_orchestra(content, "share")
+        print(stdout)
+        event_id = get_next_event_id()
+        record_to_events_csv(event_id, "share", content, stdout, stderr[:100])
+        return {"event_id": event_id, "mode": "share"}
 
-    def collaborate(self, problem, mode="full"):
-        debate_history = []
+    def save(self, title, content):
+        """events.csvに記録のみ"""
+        print(f"[MoCKARouter] save: {title}...")
+        event_id = get_next_event_id()
+        record_to_events_csv(event_id, "save", title, content, "manual_save")
+        return {"event_id": event_id, "mode": "save"}
 
-        # 1. 初案（Gemini）
-        print("[1/3] Gemini: 初案作成中...")
-        current_answer = self._call("Gemini", problem)
-        debate_history.append({"role": "Gemini", "content": current_answer})
-
-        # 2. 差分検証（Claude視点でdiffのみ）
-        diff_prompt = f"""以下の問いと初案を読み、問題点・改善点のみを簡潔に指摘してください。
-
-問い: {problem}
-初案: {current_answer}
-
-修正提案のみを返してください。"""
-
-        print("[2/3] Claude: 差分検証中...")
-        diff = self._call("Gemini", diff_prompt)
-        debate_history.append({"role": "Claude(diff)", "content": diff})
-
-        # 3. 統合（最終回答）
-        final_prompt = f"""以下の初案と修正提案を統合し、最終回答を作成してください。
-
-初案: {current_answer}
-修正提案: {diff}"""
-
-        print("[3/3] 統合中...")
-        final = self._call("Gemini", final_prompt)
-        debate_history.append({"role": "Conductor", "content": final})
-
-        return {
-            "final_answer": final,
-            "process": debate_history
-        }
+    def collaborate(self, problem):
+        """4AI回収→Claude統合分析"""
+        print(f"[MoCKARouter] collaborate: {problem[:50]}...")
+        stdout, stderr = run_orchestra(problem, "orchestra")
+        print(stdout)
+        event_id = get_next_event_id()
+        record_to_events_csv(event_id, "collaboration", problem, stdout, stderr[:100])
+        return {"event_id": event_id, "mode": "orchestra", "final_answer": stdout}
 
 if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        print("使用方法:")
+        print("  python router.py share      '内容'")
+        print("  python router.py save       'タイトル' '内容'")
+        print("  python router.py collaborate '問い'")
+        sys.exit(1)
+
     router = MoCKARouter()
-    result = router.collaborate("MoCKAシステムの最大の課題は何か？")
-    print("\n=== 最終回答 ===")
-    print(result["final_answer"])
-    print("\n=== 議事録 ===")
-    for d in result["process"]:
-        print(f"[{d['role']}] {d['content'][:100]}...")
+    mode = sys.argv[1]
+
+    if mode == "share":
+        result = router.share(sys.argv[2])
+    elif mode == "save":
+        title = sys.argv[2]
+        content = sys.argv[3] if len(sys.argv) > 3 else ""
+        result = router.save(title, content)
+    elif mode == "collaborate":
+        result = router.collaborate(sys.argv[2])
+    else:
+        print(f"不明なモード: {mode}")
+        sys.exit(1)
+
+    print(f"\n=== 完了: {result['event_id']} [{result['mode']}] ===")
