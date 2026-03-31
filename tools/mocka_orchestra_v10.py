@@ -21,10 +21,11 @@ def clean(ans):
     return ans.strip()[:500]
 
 async def get_or_create_page(context, domain, new_url):
-    """既存タブを再利用、なければ新規作成"""
+    """既存タブを再利用、なければ新規作成（空タブは除外）"""
     for pg in context.pages:
-        if domain in pg.url:
-            print(f"[再利用] {domain}")
+        url = pg.url
+        if domain in url and url not in ("about:blank", "", new_url.split("?")[0]):
+            print(f"[再利用] {domain}: {url[:50]}")
             return pg, False  # 既存タブ
     page = await context.new_page()
     await page.goto(new_url)
@@ -51,10 +52,9 @@ async def run_chatgpt(context):
     return "ChatGPT", result
 
 async def run_perplexity(context):
-    page, is_new = await get_or_create_page(context, "perplexity.ai", "https://www.perplexity.ai/")
-    # SPA対応: JS経由で強制遷移
-    target = "https://www.perplexity.ai/search?q=" + urllib.parse.quote(PROMPT)
-    await page.evaluate(f"window.location.href = '{target}'")
+    # Perplexityは毎回新規タブ（Comet専用ブラウザのため再利用不可）
+    page = await context.new_page()
+    await page.goto("https://www.perplexity.ai/search?q=" + urllib.parse.quote(PROMPT), wait_until="commit", timeout=60000)
     await asyncio.sleep(15)
     els = await page.query_selector_all("[data-renderer='lm']")
     result = await els[-1].inner_text() if els else "取得失敗"
