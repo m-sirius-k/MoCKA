@@ -20,10 +20,29 @@ def clean(ans):
         ans = "\n".join(lines[:5]) if lines else ""
     return ans.strip()[:500]
 
-async def run_chatgpt(context):
+async def get_or_create_page(context, domain, new_url):
+    """既存タブを再利用、なければ新規作成"""
+    for pg in context.pages:
+        if domain in pg.url:
+            print(f"[再利用] {domain}")
+            return pg, False  # 既存タブ
     page = await context.new_page()
-    await page.goto("https://chatgpt.com/?q=" + urllib.parse.quote(PROMPT))
-    await asyncio.sleep(5)
+    await page.goto(new_url)
+    return page, True  # 新規タブ
+
+async def run_chatgpt(context):
+    page, is_new = await get_or_create_page(context, "chatgpt.com", "https://chatgpt.com/")
+    if is_new:
+        await asyncio.sleep(5)
+    # 入力欄にpromptを入力
+    try:
+        await page.click("#prompt-textarea", timeout=5000)
+        await page.fill("#prompt-textarea", PROMPT)
+    except:
+        await page.keyboard.press("End")
+        await asyncio.sleep(1)
+        await page.fill("#prompt-textarea", PROMPT)
+    await asyncio.sleep(1)
     await page.keyboard.press("Enter")
     await asyncio.sleep(25)
     els = await page.query_selector_all("[data-turn='assistant']")
@@ -32,8 +51,10 @@ async def run_chatgpt(context):
     return "ChatGPT", result
 
 async def run_perplexity(context):
-    page = await context.new_page()
-    await page.goto("https://www.perplexity.ai/search?q=" + urllib.parse.quote(PROMPT))
+    page, is_new = await get_or_create_page(context, "perplexity.ai", "https://www.perplexity.ai/")
+    # SPA対応: JS経由で強制遷移
+    target = "https://www.perplexity.ai/search?q=" + urllib.parse.quote(PROMPT)
+    await page.evaluate(f"window.location.href = '{target}'")
     await asyncio.sleep(15)
     els = await page.query_selector_all("[data-renderer='lm']")
     result = await els[-1].inner_text() if els else "取得失敗"
@@ -41,9 +62,9 @@ async def run_perplexity(context):
     return "Perplexity", result
 
 async def run_gemini(context):
-    page = await context.new_page()
-    await page.goto("https://gemini.google.com/app")
-    await asyncio.sleep(5)
+    page, is_new = await get_or_create_page(context, "gemini.google.com", "https://gemini.google.com/app")
+    if is_new:
+        await asyncio.sleep(5)
     box = page.get_by_role("textbox").first
     await box.click()
     await box.fill(PROMPT)
@@ -56,9 +77,9 @@ async def run_gemini(context):
     return "Gemini", result
 
 async def run_copilot(context):
-    page = await context.new_page()
-    await page.goto("https://copilot.microsoft.com/")
-    await asyncio.sleep(5)
+    page, is_new = await get_or_create_page(context, "copilot.microsoft.com", "https://copilot.microsoft.com/")
+    if is_new:
+        await asyncio.sleep(5)
     box = page.locator("textarea").first
     await box.click()
     await box.fill(PROMPT)
@@ -102,7 +123,6 @@ async def main():
         elapsed = time.time() - start
 
         if MODE == "orchestra" and claude_page:
-            # 回答をClaude1のchat欄に配置（Enterなし）
             integrate_prompt = f"以下は「{PROMPT[:50]}...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n"
             for name, ans in results:
                 integrate_prompt += f"【{name}】\n{clean(ans)}\n\n"
