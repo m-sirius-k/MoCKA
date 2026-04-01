@@ -1,118 +1,81 @@
-﻿import json
+﻿import csv
 import os
-import sys
-import csv
-import datetime
-import subprocess
+import time
+from datetime import datetime
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+EVENTS_PATH = r"C:\Users\sirok\MoCKA\data\events.csv"
 
-EVENTS_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "events.csv")
-ORCHESTRA_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tools", "mocka_orchestra_v10.py")
+def read_recent(n=10):
+    if not os.path.exists(EVENTS_PATH):
+        return []
+    with open(EVENTS_PATH, encoding="utf-8-sig") as f:
+        rows = list(csv.reader(f))
+    return rows[-n:]
 
-def get_next_event_id():
-    today = datetime.datetime.now().strftime("%Y%m%d")
-    prefix = f"E{today}_"
-    max_num = 0
-    if os.path.exists(EVENTS_CSV):
-        with open(EVENTS_CSV, encoding="utf-8") as f:
-            for row in csv.reader(f):
-                if row and row[0].startswith(prefix):
-                    try:
-                        num = int(row[0].replace(prefix, ""))
-                        max_num = max(max_num, num)
-                    except:
-                        pass
-    return f"{prefix}{str(max_num + 1).zfill(3)}"
+def calc_error_rate():
+    rows = read_recent()
+    if not rows:
+        return 0.0
+    err = sum(1 for r in rows if "ERROR" in str(r))
+    return round(err / max(len(rows), 1), 2)
 
-def record_to_events_csv(event_id, mode, content, result="", note=""):
-    row = {
-        "event_id": event_id,
-        "when": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-        "who_actor": "mocka_router",
-        "what_type": mode,
-        "where_component": "router",
-        "where_path": "interface/router.py",
-        "why_purpose": content[:100],
-        "how_trigger": "cli",
-        "channel_type": "internal",
-        "lifecycle_phase": "in_operation",
-        "risk_level": "normal",
-        "category_ab": "A",
-        "target_class": "outfield",
-        "title": f"[{mode}] {content[:50]}",
-        "short_summary": result[:200],
-        "before_state": "N/A",
-        "after_state": f"{mode}_complete",
-        "change_type": "generation",
-        "impact_scope": "local",
-        "impact_result": mode,
-        "related_event_id": "N/A",
-        "trace_id": "N/A",
-        "free_note": note[:200]
-    }
-    with open(EVENTS_CSV, "a", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(row.keys()))
+def get_router_mode():
+    rows = read_recent()
+    err = sum(1 for r in rows if "ERROR" in str(r))
+    score = err * 0.5
+
+    if score < 1.0:
+        return "full_orchestra"
+    if score < 2.0:
+        return "share_only"
+    if score < 3.0:
+        return "save_only"
+    return "audit_mode"
+
+def record(event_type, note):
+    os.makedirs(os.path.dirname(EVENTS_PATH), exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    event_id = f"E{timestamp}"
+
+    error_rate = calc_error_rate()
+    mode = get_router_mode()
+
+    free_note = f"{note} | error_rate={error_rate} | router_mode={mode}"
+
+    row = [event_id, event_type, free_note]
+
+    with open(EVENTS_PATH, "a", encoding="utf-8-sig", newline="") as f:
+        writer = csv.writer(f)
         writer.writerow(row)
-    print(f"[events.csv] 記録完了: {event_id} [{mode}]")
 
-def run_orchestra(prompt, mode):
-    result = subprocess.run(
-        [sys.executable, ORCHESTRA_SCRIPT, prompt, mode],
-        capture_output=True,
-        text=True,
-        timeout=300
-    )
-    return result.stdout.strip(), result.stderr.strip()
+    print(f"[saved] {event_id} {free_note}")
 
-class MoCKARouter:
+def save(title, note):
+    record("save", note)
 
-    def share(self, content):
-        """4AIに送信・返答待たない"""
-        print(f"[MoCKARouter] share: {content[:50]}...")
-        stdout, stderr = run_orchestra(content, "share")
-        print(stdout)
-        event_id = get_next_event_id()
-        record_to_events_csv(event_id, "share", content, stdout, stderr[:100])
-        return {"event_id": event_id, "mode": "share"}
+def collaborate(query):
+    start = time.time()
 
-    def save(self, title, content):
-        """events.csvに記録のみ"""
-        print(f"[MoCKARouter] save: {title}...")
-        event_id = get_next_event_id()
-        record_to_events_csv(event_id, "save", title, content, "manual_save")
-        return {"event_id": event_id, "mode": "save"}
+    mode = get_router_mode()
+    print(f"[RouterMode] {mode}")
 
-    def collaborate(self, problem):
-        """4AI回収→Claude統合分析"""
-        print(f"[MoCKARouter] collaborate: {problem[:50]}...")
-        stdout, stderr = run_orchestra(problem, "orchestra")
-        print(stdout)
-        event_id = get_next_event_id()
-        record_to_events_csv(event_id, "collaboration", problem, stdout, stderr[:100])
-        return {"event_id": event_id, "mode": "orchestra", "final_answer": stdout}
+    # 疑似処理
+    time.sleep(1)
+
+    end = time.time()
+    response_time = round(end - start, 2)
+
+    note = f"{query} | response_time={response_time}s"
+    record("collaborate", note)
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("使用方法:")
-        print("  python router.py share      '内容'")
-        print("  python router.py save       'タイトル' '内容'")
-        print("  python router.py collaborate '問い'")
-        sys.exit(1)
+    import sys
 
-    router = MoCKARouter()
-    mode = sys.argv[1]
+    if len(sys.argv) >= 2:
+        cmd = sys.argv[1]
 
-    if mode == "share":
-        result = router.share(sys.argv[2])
-    elif mode == "save":
-        title = sys.argv[2]
-        content = sys.argv[3] if len(sys.argv) > 3 else ""
-        result = router.save(title, content)
-    elif mode == "collaborate":
-        result = router.collaborate(sys.argv[2])
-    else:
-        print(f"不明なモード: {mode}")
-        sys.exit(1)
-
-    print(f"\n=== 完了: {result['event_id']} [{result['mode']}] ===")
+        if cmd == "save":
+            save(sys.argv[2], sys.argv[3])
+        elif cmd == "collaborate":
+            collaborate(sys.argv[2])
