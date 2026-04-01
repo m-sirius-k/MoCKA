@@ -154,6 +154,10 @@ def update_events_risk():
     if incidents_generated:
         os.system(f"python {RESTRICTIONS}")
         print("[GPT_RESTRICTIONS] 自動更新完了")
+        # 5W1H自動分析
+        w5h1_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mocka_5w1h.py")
+        os.system(f"python {w5h1_script}")
+        print("[5W1H] 自動分析完了")
 
 if __name__ == "__main__":
     print("=" * 50)
@@ -162,3 +166,4 @@ if __name__ == "__main__":
     print("=" * 50)
     update_events_risk()
     print("=" * 50)
+
