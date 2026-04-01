@@ -1,0 +1,14 @@
+{
+  "event_id": "E20260402_008",
+  "agent": "Gemini",
+  "role": "設計官",
+  "title": "chat言語財産導入 アーキテクチャ設計回答",
+  "category": "architecture",
+  "importance": "HIGH",
+  "key_insight": "要約で消えるのは逸脱度の高いもの。Caliber A/Dスコアで定量化し保護することで革新ヒントの損失を防ぐ",
+  "timestamp": "2026-04-01T23:44:53",
+  "hash": "dfee09796f8ca175",
+  "prev_hash": "2a228164db0303e7",
+  "source": "agent_response_20260402",
+  "layer": "infield"
+}
