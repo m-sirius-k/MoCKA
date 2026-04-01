@@ -126,6 +126,66 @@ Once mocka_Receptor receives a stimulus, it routes to one of two paths:
 These are not storage locations. They are **roles**.
 The same event can flow through both — stored internally AND published externally.
 
+
+### Caliber — AI Evaluation System
+
+MoCKA includes **Caliber**, a real-time AI behavior evaluation system.
+Caliber observes, measures, and controls AI behavior through a closed loop.
+
+**LEAP+CRD Metrics:**
+
+| Metric | Name | Description |
+|---|---|---|
+| L | Logic | Logical consistency of output |
+| E | Execution | Accuracy of execution |
+| A | Accuracy | Correctness of results |
+| P | Propriety | Governance compliance |
+| C | Controllability | System controllability |
+| R | Reliability | Reproducibility |
+| D | Drift | Deviation tendency |
+
+**Drift States:**
+
+| State | Drift | Action |
+|---|---|---|
+| NORMAL | 0.0–1.0 | Full execution |
+| WARNING | 1.0–2.0 | Throttle |
+| DANGER | 2.0–3.0 | Limit execution |
+| CRITICAL | 3.0+ | Audit mode |
+
+**Closed Loop:**
+```
+Input → Caliber → Router → AI → Execution → Ledger → Caliber
+```
+
+> Caliber does not trust AI reports. It reads the ledger.
+
+### Governance — AI行動憲章 v2.0
+
+MoCKA operates under a binding governance charter.
+
+**Root Philosophy:**
+> Both humans and AI reinterpret instructions.
+> Therefore MoCKA does not design for correct understanding.
+> It designs paths where misinterpretation cannot change the outcome.
+
+**Core Articles:**
+
+| Article | Principle |
+|---|---|
+| 0 | Verifiability — all claims must be externally verifiable |
+| 1 | File generation — classify before create, record after |
+| 2 | Secrets — never git-manage tokens, states, credentials |
+| 3 | Pre-implementation checklist — system verifies, not AI |
+| 4 | Completion definition — sealed + pushed = complete |
+| 5 | Incident recovery — no restart until root cause resolved |
+| 6 | Single entry point — all operations via router.py |
+| 7 | Multi-audit — critical decisions require orchestra |
+| 8 | Evidence supremacy — system logs override AI reports |
+| 9 | No exceptions — all deviations must be recorded |
+| 10 | Dynamic optimum — answers evolve, never fixed |
+
+[→ Full Charter: docs/governance/MOCKA_CHARTER_v2.md](docs/governance/MOCKA_CHARTER_v2.md)
 ### Governance Layer
 
 - `execution_order_engine` — controls execution sequencing
@@ -210,16 +270,6 @@ mocka_insight_system    ← mocka_Movement + shadow_Movement
 
 ---
 
-## Getting Started — The simplest entry point
-
-> This is not MoCKA. This is the door.
-> MoCKA is what happens after you walk through it.
-
-### Share — broadcast to all AIs instantly
-![Sharing](docs/Sharing.gif)
-
-### Collaborate — collect all responses, synthesize in Claude
-![Collaboration](docs/collaboration.gif)
 ## Prerequisites
 
 - **Python 3.10+** — [Download](https://www.python.org/downloads/)
@@ -235,6 +285,16 @@ cd MoCKA
 pip install -r requirements.txt
 playwright install chromium
 ```
+## Getting Started — The simplest entry point
+
+> This is not MoCKA. This is the door.
+> MoCKA is what happens after you walk through it.
+
+### Share — broadcast to all AIs instantly
+![Sharing](docs/Sharing.gif)
+
+### Collaborate — collect all responses, synthesize in Claude
+![Collaboration](docs/collaboration.gif)
 ## Quick Start — 1 minute to your first civilization loop
 
 ### What happens in 60 seconds
@@ -395,6 +455,61 @@ AIのための制度的記憶です。
 - **mocka_Movement** — 主統治ループ（通常運用）
 - **shadow_Movement** — 独立検証経路（フォールバック運用）
 
+
+### Caliber — AI評価システム
+
+MoCKAには**Caliber**というリアルタイムAI行動評価システムが組み込まれています。
+CaliberはAIの行動を観測・計測・制御する閉ループを実現します。
+
+**LEAP+CRD指標：**
+
+| 指標 | 名称 | 説明 |
+|---|---|---|
+| L | Logic | 出力の論理的一貫性 |
+| E | Execution | 実行の正確性 |
+| A | Accuracy | 結果の正しさ |
+| P | Propriety | ガバナンス準拠 |
+| C | Controllability | システム制御可能性 |
+| R | Reliability | 再現性 |
+| D | Drift | 逸脱傾向 |
+
+**Drift状態：**
+
+| 状態 | Drift値 | 対応 |
+|---|---|---|
+| NORMAL | 0.0–1.0 | 通常実行 |
+| WARNING | 1.0–2.0 | 抑制 |
+| DANGER | 2.0–3.0 | 制限実行 |
+| CRITICAL | 3.0+ | 監査モード |
+
+**閉ループ：**
+```
+Input → Caliber → Router → AI → 実行 → Ledger → Caliber
+```
+
+> CaliberはAIの報告を信じません。Ledgerを読みます。
+
+### ガバナンス — AI行動憲章 v2.0
+
+MoCKAは拘束力を持つガバナンス憲章に基づいて動作します。
+
+**根本思想：**
+> 人間もAIも指示を再解釈する。
+> だからMoCKAは「正しく理解させる」設計を採用しない。
+> 「解釈されても結果が変わらない経路」を設計する。
+
+**主要条項：**
+
+| 条項 | 原則 |
+|---|---|
+| 第0条 | 検証可能性 — 全主張は外部検証可能であること |
+| 第2条 | 秘密情報 — token/state/credentialはgit管理禁止 |
+| 第4条 | 完了定義 — seal+push完了で初めて完了 |
+| 第6条 | 入口統合 — 全操作はrouter.py経由 |
+| 第8条 | 物理証拠優先 — システムログがAI報告より優先 |
+| 第10条 | 遊動座標 — 答えは固定しない、最適解は進化する |
+
+[→ 全文：docs/governance/MOCKA_CHARTER_v2.md](docs/governance/MOCKA_CHARTER_v2.md)
 ### ガバナンスレイヤー
 
 - `execution_order_engine` — 実行順序の制御
@@ -483,5 +598,8 @@ python rebuild_state.py
 **v1.0.0 — アクティブ開発中**  
 文明ループ動作確認済み。  
 ガバナンス20項目すべて通過。
+
+
+
 
 
