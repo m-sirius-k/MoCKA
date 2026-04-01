@@ -1,30 +1,21 @@
 ﻿# =========================
 # MoCKA Governance Ignore
-# =========================
 
 # OS / Cache
 __pycache__/
 *.pyc
 *.bak*
-
 # Secrets
 keys/
 *.pem
 *.key
-
 # Virtual env
 .wsl_ots_venv/
-
 # Archive
 archive/
-
-# =========================
 # Runtime policy
-# =========================
-
 # 全runtimeを一度除外
 runtime/*
-
 # Coreのみ許可
 !runtime/*engine.py
 !runtime/*api.py
@@ -33,32 +24,20 @@ runtime/*
 !runtime/security_gate.py
 !runtime/distributed_ledger.py
 !runtime/main_loop.py
-
 # JSON stateは除外（文明ログ）
 runtime/**/*.json
-
 # 分岐・スナップショット完全除外
 runtime/branches/
 runtime/snapshots/
 runtime/outbox/
 runtime/shadow/
-
 # dist
 dist/
 !dist/README.md
-
 # Block keys
 dist/public.key
-
 tools/chat_urls.json
-
 tools/gemini_state.json
-
-secrets/
-*_state.json
-*token*.json
-*credential*.json
-
 secrets/
 *_state.json
 *token*.json
