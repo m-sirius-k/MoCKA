@@ -53,3 +53,13 @@ dist/public.key
 tools/chat_urls.json
 
 tools/gemini_state.json
+
+secrets/
+*_state.json
+*token*.json
+*credential*.json
+
+secrets/
+*_state.json
+*token*.json
+*credential*.json
