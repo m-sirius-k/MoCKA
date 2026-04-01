@@ -36,6 +36,99 @@ def calc_error_rate():
     err = sum(1 for r in recent if "ERROR" in str(r))
     return round(err / max(len(recent), 1), 2)
 
+def calc_drift_v3():
+    """AEGIS: Drift v3多指標"""
+    if not os.path.exists(EVENTS_CSV):
+        return 0.0
+    with open(EVENTS_CSV, encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    recent = rows[-20:] if len(rows) > 20 else rows
+    error_rate = sum(1 for r in recent if "ERROR" in str(r)) / max(len(recent), 1)
+    violation = sum(1 for r in recent if "blocked" in str(r)) / max(len(recent), 1)
+    return round(0.45 * error_rate + 0.30 * violation, 2)
+
+def classify_anomaly():
+    """AEGIS: 異常タイプ分類"""
+    error_rate = calc_error_rate()
+    drift = calc_drift_v3()
+    if error_rate > 0.5: return "FAST_WRONG"
+    if drift > 1.5:      return "SLOW_DRIFT"
+    if error_rate > 0.3: return "FORMAT_COLLAPSE"
+    if drift > 2.5:      return "DEPENDENCY_BREAK"
+    return "NORMAL"
+
+def get_aegis_action(anomaly):
+    """AEGIS: 制御アクション"""
+    return {
+        "FAST_WRONG":       "RETRY_WITH_THINK",
+        "SLOW_DRIFT":       "RESET_CONTEXT",
+        "FORMAT_COLLAPSE":  "FORCE_FORMAT",
+        "DEPENDENCY_BREAK": "FULL_REWRITE",
+        "NORMAL":           "NONE"
+    }.get(anomaly, "NONE")
+
+def calc_drift_v3():
+    """AEGIS: Drift v3多指標"""
+    if not os.path.exists(EVENTS_CSV):
+        return 0.0
+    with open(EVENTS_CSV, encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    recent = rows[-20:] if len(rows) > 20 else rows
+    error_rate = sum(1 for r in recent if "ERROR" in str(r)) / max(len(recent), 1)
+    violation = sum(1 for r in recent if "blocked" in str(r)) / max(len(recent), 1)
+    return round(0.45 * error_rate + 0.30 * violation, 2)
+
+def classify_anomaly():
+    """AEGIS: 異常タイプ分類"""
+    error_rate = calc_error_rate()
+    drift = calc_drift_v3()
+    if error_rate > 0.5: return "FAST_WRONG"
+    if drift > 1.5:      return "SLOW_DRIFT"
+    if error_rate > 0.3: return "FORMAT_COLLAPSE"
+    if drift > 2.5:      return "DEPENDENCY_BREAK"
+    return "NORMAL"
+
+def get_aegis_action(anomaly):
+    """AEGIS: 制御アクション"""
+    return {
+        "FAST_WRONG":       "RETRY_WITH_THINK",
+        "SLOW_DRIFT":       "RESET_CONTEXT",
+        "FORMAT_COLLAPSE":  "FORCE_FORMAT",
+        "DEPENDENCY_BREAK": "FULL_REWRITE",
+        "NORMAL":           "NONE"
+    }.get(anomaly, "NONE")
+
+def calc_drift_v3():
+    """AEGIS: Drift v3多指標"""
+    if not os.path.exists(EVENTS_CSV):
+        return 0.0
+    with open(EVENTS_CSV, encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    recent = rows[-20:] if len(rows) > 20 else rows
+    error_rate = sum(1 for r in recent if "ERROR" in str(r)) / max(len(recent), 1)
+    violation = sum(1 for r in recent if "blocked" in str(r)) / max(len(recent), 1)
+    return round(0.45 * error_rate + 0.30 * violation, 2)
+
+def classify_anomaly():
+    """AEGIS: 異常タイプ分類"""
+    error_rate = calc_error_rate()
+    drift = calc_drift_v3()
+    if error_rate > 0.5: return "FAST_WRONG"
+    if drift > 1.5:      return "SLOW_DRIFT"
+    if error_rate > 0.3: return "FORMAT_COLLAPSE"
+    if drift > 2.5:      return "DEPENDENCY_BREAK"
+    return "NORMAL"
+
+def get_aegis_action(anomaly):
+    """AEGIS: 制御アクション"""
+    return {
+        "FAST_WRONG":       "RETRY_WITH_THINK",
+        "SLOW_DRIFT":       "RESET_CONTEXT",
+        "FORMAT_COLLAPSE":  "FORCE_FORMAT",
+        "DEPENDENCY_BREAK": "FULL_REWRITE",
+        "NORMAL":           "NONE"
+    }.get(anomaly, "NONE")
+
 def get_router_mode():
     """B4: Drift値に応じたモード決定"""
     error_rate = calc_error_rate()
@@ -51,7 +144,9 @@ def get_router_mode():
 def record_to_events_csv(event_id, mode, content, result="", note="", response_time=None):
     error_rate = calc_error_rate()
     router_mode = get_router_mode()
-    caliber_note = f"error_rate={error_rate} | router_mode={router_mode}"
+    anomaly = classify_anomaly()
+    action = get_aegis_action(anomaly)
+    caliber_note = f"error_rate={error_rate} | router_mode={router_mode} | anomaly={anomaly} | action={action}"
     if response_time is not None:
         caliber_note += f" | response_time={response_time}s"
     full_note = f"{note} | {caliber_note}" if note else caliber_note
@@ -168,4 +263,8 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"\n=== 完了: {result['event_id']} [{result['mode']}] ===")
+
+
+
+
 
