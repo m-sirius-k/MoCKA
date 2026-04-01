@@ -85,6 +85,12 @@ def record_to_events_csv(event_id, mode, content, result="", note="", response_t
         writer = csv.DictWriter(f, fieldnames=list(row.keys()))
         writer.writerow(row)
     print(f"[events.csv] 記録完了: {event_id} [{mode}] {caliber_note}")
+    # 記録後に自動リスク判定
+    import subprocess as _sp
+    _sp.Popen([sys.executable, 
+               os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+               "..", "tools", "mocka_risk_engine.py")],
+               stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
 
 def run_orchestra(prompt, mode):
     result = subprocess.run(
@@ -162,3 +168,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"\n=== 完了: {result['event_id']} [{result['mode']}] ===")
+
