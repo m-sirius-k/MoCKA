@@ -439,3 +439,10 @@ E20260401_006,2026-04-01T08:02:49,mocka_router,collaboration,router,interface/ro
 [Claude] 発見: https://claude.ai/chat/1156422c-6a83-4ae2-abdf-94bda37e0d2f
 [既存タブ] ChatGPT: https://chatgpt.com/c/69cb55a6-c624-83a9-a65e-0ffef44bc05f
 [既存タブ] Perplexity: https://www.p",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:1908) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er
+E20260401_007,2026-04-01T09:08:00,mocka_router,save,router,interface/router.py,重大インシデント: gemini_state.json OAuthトークン漏洩未遂,cli,internal,in_operation,normal,A,outfield,[save] 重大インシデント: gemini_state.json OAuthトークン漏洩未遂,【経緯】storage_stateでGeminiセッション保存→git add .でcommit→GitHub push時にSecret Scanning検知→push拒否。【原因】storage_state.jsonにGoogle OAuthリフレッシュトークンが含まれることを認識せず.gitignore未設定のままcommitした。【対処】git filter-branchで履歴から完全削除→,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
+E20260401_008,2026-04-01T09:19:39,mocka_router,collaboration,router,interface/router.py,MoCKA AI行動憲章v1.0案：第1条ファイル生成原則・第2条秘密情報原則・第3条実装前チェックリスト・第4条工程完了定義・第5条業務再開条件。この憲章案の問題点・改善点・追加すべき条項を指摘せよ,cli,internal,in_operation,normal,A,outfield,[collaboration] MoCKA AI行動憲章v1.0案：第1条ファイル生成原則・第2条秘密情報原則・第3条実装前チェック,"[Claude] 既存タブ検索中...
+[Claude] 発見: https://claude.ai/chat/1156422c-6a83-4ae2-abdf-94bda37e0d2f
+[既存タブ] ChatGPT: https://chatgpt.com/c/69cb55a6-c624-83a9-a65e-0ffef44bc05f
+[既存タブ] Perplexity: https://www.p",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:1352) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er
+E20260401_009,2026-04-01T10:50:06,mocka_router,save,router,interface/router.py,Caliber Phase1-3完了認定・Phase4移行承認,cli,internal,in_operation,normal,A,outfield,[save] Caliber Phase1-3完了認定・Phase4移行承認,Claude審査完了。条件：Caliber自身の監視機構・sandbox優先,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
+E20260401_010,2026-04-01T11:33:18,mocka_router,save,router,interface/router.py,Phase5全項目認定PASSED,cli,internal,in_operation,normal,A,outfield,[save] Phase5全項目認定PASSED,11/11 PASS確認。MoCKA文明基盤として成立を認定。2026-04-01 Claude Sonnet 4.6,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
