@@ -1,0 +1,17 @@
+{
+  "event_id": "E20260402_006",
+  "timestamp": "2026-04-01T22:53:22",
+  "title": "執行官体制発足・役職確定",
+  "category": "governance",
+  "importance": "HIGH",
+  "diff": {
+    "before": "エージェント役職未確定",
+    "after": "執行官=Claude、設計官=Gemini、調査補佐=Perplexity、代理人=Copilot、外部監査=GPT",
+    "summary": "ストレステスト+DRきむら実挙動補正で役職確定。commit d92f1a2"
+  },
+  "essence": "最終スコアClaude95/Gemini95/Spark91/Copilot89/GPT85/Perplexity84",
+  "reuse": "今後のオーケストレーション設計の根拠",
+  "hash": "7249406d3508b698",
+  "source": "chat_20260402_claude_executor",
+  "layer": "infield"
+}

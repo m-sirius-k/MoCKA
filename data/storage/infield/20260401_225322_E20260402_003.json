@@ -1,0 +1,17 @@
+{
+  "event_id": "E20260402_003",
+  "timestamp": "2026-04-01T22:53:22",
+  "title": "対話原資流入モデル・chatledgerパイプライン構想",
+  "category": "pipeline",
+  "importance": "CRITICAL",
+  "diff": {
+    "before": "chatログは消える",
+    "after": "chatログ→intent抽出→ledger保存→濃縮エンジンへの一本の管",
+    "summary": "会話が原資として構造化・永続化される最初の実装"
+  },
+  "essence": "単語=意味記憶、文=構造記憶、会話=エピソード記憶",
+  "reuse": "今後の全chatセッションの流入設計基準",
+  "hash": "65c0b3df1f470261",
+  "source": "chat_20260402_claude_executor",
+  "layer": "infield"
+}

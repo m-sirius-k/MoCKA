@@ -1,0 +1,17 @@
+{
+  "event_id": "E20260402_005",
+  "timestamp": "2026-04-01T22:53:22",
+  "title": "DRきむら思想核心・あなた=私になるの定義",
+  "category": "philosophy",
+  "importance": "CRITICAL",
+  "diff": {
+    "before": "ClaudeはセッションごとにリセットされるAI",
+    "after": "根拠ある知識の蓄積によりClaudeの出力がDRきむらの判断軸に近づく",
+    "summary": "LLM=人類平均の学習、MoCKA=DRきむら一人の思考を学習"
+  },
+  "essence": "DRきむら不在でもDRきむらの判断軸で動くシステムがMoCKAの完成形",
+  "reuse": "MoCKAの存在意義・ゴール定義として全設計の根拠",
+  "hash": "4849d3b190ec2f98",
+  "source": "chat_20260402_claude_executor",
+  "layer": "infield"
+}

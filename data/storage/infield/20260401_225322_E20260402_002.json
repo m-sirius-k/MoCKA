@@ -1,0 +1,17 @@
+{
+  "event_id": "E20260402_002",
+  "timestamp": "2026-04-01T22:53:22",
+  "title": "MoCKA濃縮型運動モデル定義",
+  "category": "architecture",
+  "importance": "HIGH",
+  "diff": {
+    "before": "常時循環型・Flow維持モデル",
+    "after": "必要時起動型・収束志向モデル",
+    "summary": "目的がまわすことから削ぎ落として本質を残すことに転換"
+  },
+  "essence": "10000の入力を10に濃縮し遊動座標付近の本質を残す装置",
+  "reuse": "caliber設計・pipeline設計の根拠",
+  "hash": "2ae826b8710d248e",
+  "source": "chat_20260402_claude_executor",
+  "layer": "infield"
+}

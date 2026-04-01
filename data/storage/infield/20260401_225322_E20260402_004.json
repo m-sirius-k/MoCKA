@@ -1,0 +1,17 @@
+{
+  "event_id": "E20260402_004",
+  "timestamp": "2026-04-01T22:53:22",
+  "title": "MoCKA忘却抑制型文明・三層構造確定",
+  "category": "architecture",
+  "importance": "HIGH",
+  "diff": {
+    "before": "三層が概念的に存在",
+    "after": "Core=Movement不可侵、Shadow=探索層、Caliber=評価統合層として確定",
+    "summary": "三層の境界と役割が明文化。削除禁止・階層移動型メモリ管理が核心"
+  },
+  "essence": "忘れさせない構造であり必要なときに蘇らせる文明",
+  "reuse": "外部基幹システムへのMoCKA採用時の設計根拠",
+  "hash": "303bdd520d4f6c3f",
+  "source": "chat_20260402_claude_executor",
+  "layer": "infield"
+}
