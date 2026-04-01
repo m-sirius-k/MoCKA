@@ -570,6 +570,33 @@ MoCKAは拘束力を持つガバナンス憲章に基づいて動作します。
 
 ---
 
+
+## 前提条件
+
+- **Python 3.10+** — [ダウンロード](https://www.python.org/downloads/)
+- **Git** — [ダウンロード](https://git-scm.com/)
+- **Playwright** — ブラウザ自動化（Chromium）
+- **Flask** — ローカルコントロールパネル
+- **Windows** (PowerShell) / Mac / Linux
+
+## インストール
+```bash
+git clone https://github.com/m-sirius-k/MoCKA.git
+cd MoCKA
+pip install -r requirements.txt
+playwright install chromium
+```
+
+## はじめに — 最も簡単な入口
+
+> これはMoCKAではありません。これは扉です。
+> MoCKAとは、この扉をくぐった後に起こる出来事のことです。
+
+### 共有 — すべてのAIに即座に配信
+![Sharing](docs/images/Sharing.gif)
+
+### 協業 — すべての回答を収集し、Claudeで統合する
+![Collaboration](docs/images/collaboration.gif)
 ## クイックスタート
 
 <p align="center">
@@ -598,6 +625,7 @@ python rebuild_state.py
 **v1.0.0 — アクティブ開発中**  
 文明ループ動作確認済み。  
 ガバナンス20項目すべて通過。
+
 
 
 
