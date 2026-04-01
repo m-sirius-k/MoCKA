@@ -1,7 +1,7 @@
 ﻿import os
 from datetime import datetime
 
-LOG_PATH = r"C:\Users\sirok\MoCKA\runtime\record\event_log.csv"
+LOG_PATH = r"C:\Users\sirok\MoCKA\data\events.csv"
 
 def parse_log():
     if not os.path.exists(LOG_PATH):
@@ -53,3 +53,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

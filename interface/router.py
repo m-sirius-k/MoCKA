@@ -26,8 +26,11 @@ def get_next_event_id():
                         pass
     return f"{prefix}{str(max_num + 1).zfill(3)}"
 
+# =====================
+# Caliber指標
+# =====================
 def calc_error_rate():
-    """B3: 直近10件のERROR率算出"""
+    """B3: 直近10件のERROR率"""
     if not os.path.exists(EVENTS_CSV):
         return 0.0
     with open(EVENTS_CSV, encoding="utf-8") as f:
@@ -67,78 +70,13 @@ def get_aegis_action(anomaly):
         "NORMAL":           "NONE"
     }.get(anomaly, "NONE")
 
-def calc_drift_v3():
-    """AEGIS: Drift v3多指標"""
-    if not os.path.exists(EVENTS_CSV):
-        return 0.0
-    with open(EVENTS_CSV, encoding="utf-8") as f:
-        rows = list(csv.reader(f))
-    recent = rows[-20:] if len(rows) > 20 else rows
-    error_rate = sum(1 for r in recent if "ERROR" in str(r)) / max(len(recent), 1)
-    violation = sum(1 for r in recent if "blocked" in str(r)) / max(len(recent), 1)
-    return round(0.45 * error_rate + 0.30 * violation, 2)
-
-def classify_anomaly():
-    """AEGIS: 異常タイプ分類"""
-    error_rate = calc_error_rate()
-    drift = calc_drift_v3()
-    if error_rate > 0.5: return "FAST_WRONG"
-    if drift > 1.5:      return "SLOW_DRIFT"
-    if error_rate > 0.3: return "FORMAT_COLLAPSE"
-    if drift > 2.5:      return "DEPENDENCY_BREAK"
-    return "NORMAL"
-
-def get_aegis_action(anomaly):
-    """AEGIS: 制御アクション"""
-    return {
-        "FAST_WRONG":       "RETRY_WITH_THINK",
-        "SLOW_DRIFT":       "RESET_CONTEXT",
-        "FORMAT_COLLAPSE":  "FORCE_FORMAT",
-        "DEPENDENCY_BREAK": "FULL_REWRITE",
-        "NORMAL":           "NONE"
-    }.get(anomaly, "NONE")
-
-def calc_drift_v3():
-    """AEGIS: Drift v3多指標"""
-    if not os.path.exists(EVENTS_CSV):
-        return 0.0
-    with open(EVENTS_CSV, encoding="utf-8") as f:
-        rows = list(csv.reader(f))
-    recent = rows[-20:] if len(rows) > 20 else rows
-    error_rate = sum(1 for r in recent if "ERROR" in str(r)) / max(len(recent), 1)
-    violation = sum(1 for r in recent if "blocked" in str(r)) / max(len(recent), 1)
-    return round(0.45 * error_rate + 0.30 * violation, 2)
-
-def classify_anomaly():
-    """AEGIS: 異常タイプ分類"""
-    error_rate = calc_error_rate()
-    drift = calc_drift_v3()
-    if error_rate > 0.5: return "FAST_WRONG"
-    if drift > 1.5:      return "SLOW_DRIFT"
-    if error_rate > 0.3: return "FORMAT_COLLAPSE"
-    if drift > 2.5:      return "DEPENDENCY_BREAK"
-    return "NORMAL"
-
-def get_aegis_action(anomaly):
-    """AEGIS: 制御アクション"""
-    return {
-        "FAST_WRONG":       "RETRY_WITH_THINK",
-        "SLOW_DRIFT":       "RESET_CONTEXT",
-        "FORMAT_COLLAPSE":  "FORCE_FORMAT",
-        "DEPENDENCY_BREAK": "FULL_REWRITE",
-        "NORMAL":           "NONE"
-    }.get(anomaly, "NONE")
-
 def get_router_mode():
     """B4: Drift値に応じたモード決定"""
     error_rate = calc_error_rate()
     drift_score = error_rate * 10
-    if drift_score < 1.0:
-        return "full_orchestra"
-    if drift_score < 2.0:
-        return "share_only"
-    if drift_score < 3.0:
-        return "save_only"
+    if drift_score < 1.0: return "full_orchestra"
+    if drift_score < 2.0: return "share_only"
+    if drift_score < 3.0: return "save_only"
     return "audit_mode"
 
 def record_to_events_csv(event_id, mode, content, result="", note="", response_time=None):
@@ -182,8 +120,8 @@ def record_to_events_csv(event_id, mode, content, result="", note="", response_t
     print(f"[events.csv] 記録完了: {event_id} [{mode}] {caliber_note}")
     # 記録後に自動リスク判定
     import subprocess as _sp
-    _sp.Popen([sys.executable, 
-               os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+    _sp.Popen([sys.executable,
+               os.path.join(os.path.dirname(os.path.abspath(__file__)),
                "..", "tools", "mocka_risk_engine.py")],
                stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
 
@@ -263,8 +201,3 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print(f"\n=== 完了: {result['event_id']} [{result['mode']}] ===")
-
-
-
-
-

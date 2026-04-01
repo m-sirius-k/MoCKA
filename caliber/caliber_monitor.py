@@ -3,7 +3,7 @@ import json
 import os
 from datetime import datetime
 
-LOG_PATH = r"C:\Users\sirok\MoCKA\runtime\record\event_log.csv"
+LOG_PATH = r"C:\Users\sirok\MoCKA\data\events.csv"
 
 def run_caliber():
     result = subprocess.run(
@@ -56,3 +56,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
