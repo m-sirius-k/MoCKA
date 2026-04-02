@@ -177,6 +177,43 @@ def ask():
     return jsonify({"status": "ok"})
 
 
+
+
+@app.route('/collect', methods=['POST'])
+def collect():
+    import re as _re, csv as _csv, hashlib as _hs, json as _json
+    from datetime import datetime, timezone
+    from pathlib import Path as P
+    d       = request.get_json()
+    source  = d.get('source','unknown')
+    text    = d.get('text','')
+    url     = d.get('url','')
+    mode    = d.get('mode','full')
+    text    = _re.sub(r'[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}','[EMAIL]',text)
+    text    = _re.sub(r'sk-[A-Za-z0-9]{20,}','[APIKEY]',text)
+    text    = _re.sub(r'(?i)password\s*[:=]\s*\S+','password=[MASKED]',text)
+    if not text: return jsonify({'status':'empty'}),400
+    INFIELD = P(r'C:/Users/sirok/MoCKA/data/storage/infield/RAW')
+    EVENTS  = P(r'C:/Users/sirok/MoCKA/data/events.csv')
+    INFIELD.mkdir(parents=True,exist_ok=True)
+    ts      = datetime.now(timezone.utc)
+    ts_str  = ts.strftime('%Y-%m-%dT%H:%M:%S')
+    ts_f    = ts.strftime('%Y%m%d_%H%M%S')
+    rows    = list(_csv.reader(open(EVENTS,encoding='utf-8-sig'))) if EVENTS.exists() else []
+    prev    = _hs.sha256(','.join(rows[-1]).encode()).hexdigest()[:16] if rows else 'GENESIS'
+    eid     = f'ECOL_{ts_f}_{source[:4].upper()}'
+    h       = _hs.sha256(f'{eid}{ts_str}{text[:100]}{prev}'.encode()).hexdigest()[:16]
+    rec     = {'event_id':eid,'source':source,'layer':'RAW','url':url,'mode':mode,
+               'text':text,'timestamp':ts_str,'hash':h,'prev_hash':prev,'status':'RAW'}
+    _json.dump(rec,open(INFIELD/f'{ts_f}_{eid}.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
+    with open(EVENTS,'a',encoding='utf-8',newline='') as f:
+        _csv.writer(f).writerow([eid,ts_str,source,'collect','chat_import','mocka_bridge_v2',
+            url[:80],'extension','external','in_operation','normal','A','infield/RAW',
+            text[:100],prev,'ingest_complete','RAW','local','chat_pipeline','N/A','N/A',
+            f'hash={h}|source={source}|mode={mode}'])
+    print(f'[COLLECT] {eid} from {source} ({len(text)} chars)')
+    return jsonify({'status':'ok','event_id':eid,'hash':h})
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")

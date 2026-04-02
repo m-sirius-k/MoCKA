@@ -1,6 +1,17 @@
-﻿{
-  "manifest_version": 3, "name": "MoCKA Bridge", "version": "1.0",
-  "permissions": ["tabs", "scripting"],
-  "host_permissions": ["http://127.0.0.1/*", "https://*.openai.com/*", "https://gemini.google.com/*", "https://*.perplexity.ai/*", "https://claude.ai/*", "https://*.microsoft.com/*"],
+{
+  "manifest_version": 3,
+  "name": "MoCKA Bridge",
+  "version": "2.0",
+  "permissions": ["tabs", "scripting", "contextMenus", "notifications"],
+  "host_permissions": [
+    "http://127.0.0.1/*",
+    "https://*.openai.com/*",
+    "https://chatgpt.com/*",
+    "https://gemini.google.com/*",
+    "https://*.perplexity.ai/*",
+    "https://claude.ai/*",
+    "https://*.microsoft.com/*",
+    "https://genspark.ai/*"
+  ],
   "background": { "service_worker": "background.js" }
 }
