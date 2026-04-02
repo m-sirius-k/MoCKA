@@ -1,0 +1,15 @@
+{
+  "event_id": "EN8N_20260402_104836_CLAU",
+  "source": "claude",
+  "origin_file": "20260402_095350_ECOL_20260402_095350_CLAU.json",
+  "origin_event": "ECOL_20260402_095350_CLAU",
+  "timestamp": "20260402_104836",
+  "total_chars": 32140,
+  "sampled_chunks": 3,
+  "restore_rate": 0.65,
+  "threshold": 0.8,
+  "extraction": "Here are the 3 most important structural insights from the provided text, presented as bullet points:\n\n*   **Focus on Concise Implementation:** The instructions emphasize simplicity and avoiding lengthy explanations (point 1).\n*   **Local Execution & Single-Box Processes:** The user is directed to execute code directly from the current directory (point 2) and aim for single-step processing within a single \"box\" or environment.\n*   **Sequential Code Steps:** The workflow suggests a linear approach to code execution, with clear steps (point 3) like \"1st, 2nd\" indicating a structured sequence.\nHere are 3 key structural insights extracted from the provided text:\n\n*   **Directory Structure:** The data is organized into several directories within `C:\\Users\\sirok\\MoCKA\\data\\storage`, including `infield`, `outfield`, `incidents`, and `claims`.\n*   **File Types:** The directory `infield` contains various file types such as `.txt` files and JSON files with specific timestamps and names (e.g., `20260401_225322_E20260402_002.json`).\n*   **Specific File:** The file `RE_REDUCED: 20260402_073756_ERRD_20260402_073756_CLAU.json` is a central element, identified as `RE_REDUCED` and associated with a timestamp.\nHere are the 3 most important structural insights from the provided conversation, presented as bullet points:\n\n*   **Automated Pipeline Triggered by Script:** The `write_app_autopils.py` script initiates a chain of events, including collecting data and copying the outbox/PILS automatically.\n*   **Dependency on `mocka_chat_capture.py`:** The user is attempting to use a script (`mocka_chat_capture.py`) to capture chat data, but the script is failing due to incorrect argument usage.\n*   **Manual Intervention Required for Initial Setup:** The assistant highlights the need for manual login via `python scripts/mocka_chat_capture.py --login --source claude` before the capture process can begin, indicating an initial setup step.",
+  "hash": "4d58e5f4b1bd52dc",
+  "status": "REDUCING",
+  "pipeline": "caliber_server_v02"
+}

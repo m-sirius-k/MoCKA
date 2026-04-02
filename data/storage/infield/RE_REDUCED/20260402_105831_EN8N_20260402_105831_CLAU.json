@@ -1,0 +1,15 @@
+{
+  "event_id": "EN8N_20260402_105831_CLAU",
+  "source": "claude",
+  "origin_file": "20260402_095350_ECOL_20260402_095350_CLAU.json",
+  "origin_event": "ECOL_20260402_095350_CLAU",
+  "timestamp": "20260402_105831",
+  "total_chars": 32140,
+  "sampled_chunks": 3,
+  "restore_rate": 0.85,
+  "threshold": 0.8,
+  "extraction": "Here are the 3 most important structural insights from the provided text, presented as bullet points:\n\n*   **Focus on Concise Execution:** The instructions emphasize simplicity and single-step execution within a defined \"box\" (likely a specific environment or workflow).\n*   **Local Scripting and Modification:**  The user is actively working directly within the project directory (`C:\\Users\\sirok\\MoCKA`) and modifying scripts using commands like `cd` and file copying.\n*   **Troubleshooting via Code Execution:** The user is attempting to diagnose and fix syntax errors by directly executing Python code snippets, highlighting a hands-on, iterative approach to debugging.\nHere are 3 key structural insights extracted from the provided text:\n\n*   **Directory Structure:** The data is organized within a `C:\\Users\\sirok\\MoCKA\\data\\storage` directory, containing subdirectories like `infield`, `outfield`, `インシデント`, `クレーム`, and `公文書`.\n*   **File Types:** The `infield` directory contains various file types including `.txt` files and JSON files with specific timestamps and naming conventions (e.g., `20260401_225322_E20260402_002.json`).\n*   **Specific File:** The file `RE_REDUCED: 20260402_073756_ERRD_20260402_073756_CLAU.json` is a key component, indicated by its presence and usage in the context of \"re rate: 92%\".\nHere are the 3 most important structural insights from the conversation, presented as bullet points:\n\n*   **Automation Pipeline:** The system is designed to automate the process of collecting chat data (likely from Claude AI) and processing it, with steps including copying outbox/PILS data and running a chat pipeline script.\n*   **Modular Components:** The system utilizes several distinct components – `mocka-seal`, `caliber` server status checks, and a `mocka_chat_capture.py` script – each with a specific role in the overall workflow.\n*   **User Interaction Required:** The process isn’t fully automated.  The user needs to manually send chat conversations to the system (via right-click and \"Send to chatMOCKA\") and explicitly log in before the `mocka_chat_capture.py` script can function correctly. \n\nWould you like me to elaborate on any of these points?",
+  "hash": "6395b10e9e694bfe",
+  "status": "RE_REDUCED",
+  "pipeline": "caliber_server_v02"
+}

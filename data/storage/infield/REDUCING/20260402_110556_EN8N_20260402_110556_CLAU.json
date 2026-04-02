@@ -1,0 +1,15 @@
+{
+  "event_id": "EN8N_20260402_110556_CLAU",
+  "source": "claude",
+  "origin_file": "20260402_095350_ECOL_20260402_095350_CLAU.json",
+  "origin_event": "ECOL_20260402_095350_CLAU",
+  "timestamp": "20260402_110556",
+  "total_chars": 32140,
+  "sampled_chunks": 3,
+  "restore_rate": 0.65,
+  "threshold": 0.8,
+  "extraction": "Here are the 3 most important structural insights extracted from the user's notes and instructions, presented as bullet points:\n\n*   **Minimize Pre-processing & Simplify Instructions:** The user emphasizes keeping explanations concise and focusing on direct execution rather than detailed theoretical explanations.\n*   **Execute Directly from the Project Directory:**  The user repeatedly instructs on running code directly from the project's root directory (using `cd`) to avoid pathing issues.\n*   **Single-Step Processing within a Single Box:** The core principle is to consolidate operations into single, self-contained steps, likely referring to a workflow or process designed for efficiency.\nHere are 3 key structural insights extracted from the provided text:\n\n*   **Directory Structure:** The data is organized within a `C:\\Users\\sirok\\MoCKA\\data\\storage` directory, containing subdirectories like `infield`, `outfield`, `インシデント`, and `クレーム`.\n*   **File Types & Names:** Various file types exist including `.json` files (e.g., `RE_REDUCED`, `20260401_225322_E...`) and text files (`.txt`).\n*   **Specific File:** The `RE_REDUCED` file (20260402_073756_CLAU.json) is a central element within the `infield` directory, alongside related files like `RAW`, `REDUCED`, and `REDUCING`.\nHere are the 3 most important structural insights extracted from the conversation, presented as bullet points:\n\n*   **Automated Capture Requires Script Execution:** The core functionality (capturing chat data) relies on running a specific Python script (`mocka_chat_capture.py`). Simply sending a chat link isn't sufficient; the script needs to be invoked.\n*   **Login Step is Crucial:** The system requires a manual login step (`python scripts/mocka_chat_capture.py --login --source claude`) before the capture script will function correctly, particularly when using a specific source like \"claude.\"\n*   **Manual Chat Sending is the Initial Step:** The user needs to first manually send the chat conversation to the chatMOCKA interface (right-click and \"Send to chatMOCKA\") *before* the capture script can process it.\n\nDo you want me to elaborate on any of these points, or perhaps summarize the overall workflow?",
+  "hash": "57279177f7c45aba",
+  "status": "REDUCING",
+  "pipeline": "caliber_server_v02"
+}
