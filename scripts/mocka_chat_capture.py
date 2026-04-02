@@ -92,7 +92,7 @@ async def login_and_save(source):
     }
     state_file = STATES / f'{source}_state.json'
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch(headless=False, args=["--disable-blink-features=AutomationControlled"])
         context = await browser.new_context()
         page    = await context.new_page()
         await page.goto(urls.get(source, 'https://chatgpt.com'))
@@ -115,8 +115,8 @@ async def capture(url, source):
 
     sel = SELECTORS.get(source, SELECTORS['default'])
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
-        context = await browser.new_context(storage_state=str(state_file))
+        browser = await p.chromium.launch(headless=False, args=["--disable-blink-features=AutomationControlled"])
+        context = await browser.new_context(storage_state=str(state_file), user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
         page    = await context.new_page()
 
         print(f'[INFO] ページ読み込み: {url}')

@@ -120,7 +120,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           chatgpt:    '[data-message-author-role]',
           claude:     '[data-testid*="message"], .font-claude-message',
           gemini:     'message-content, model-response, user-query',
-          perplexity: '[class*="Message"]',
+          perplexity: 'p',
           copilot:    '[class*="message"]',
         };
         const sel = SEL[source] || '[class*="message"], p';
