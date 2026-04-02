@@ -251,6 +251,63 @@ def collect():
     return jsonify({"status":"ok","event_id":eid,"hash":h})
 
 
+@app.route("/caliber/queue")
+def caliber_queue():
+    import json as _json
+    from datetime import datetime
+    layers = ["RAW","REDUCED","RE_REDUCED","REDUCING","CORE","ESSENCE","RAW_DONE"]
+    counts = {layer: count_layer(layer) for layer in layers}
+    outbox = os.path.join(DATA_DIR, "storage", "outbox", "PILS")
+    pils_files = []
+    if os.path.exists(outbox):
+        for f in sorted(os.listdir(outbox)):
+            if f.endswith(".json"):
+                fpath = os.path.join(outbox, f)
+                size = os.path.getsize(fpath)
+                pils_files.append({"name": f, "size": size})
+    re_reduced_dir = os.path.join(DATA_DIR, "storage", "infield", "RE_REDUCED")
+    recent_results = []
+    if os.path.exists(re_reduced_dir):
+        files = sorted(os.listdir(re_reduced_dir), reverse=True)[:5]
+        for f in files:
+            try:
+                d = _json.load(open(os.path.join(re_reduced_dir, f), encoding="utf-8"))
+                recent_results.append({
+                    "file": f,
+                    "source": d.get("source",""),
+                    "restore_rate": d.get("restore_rate", 0),
+                    "timestamp": d.get("timestamp",""),
+                    "status": d.get("status",""),
+                    "preview": d.get("extraction","")[:100]
+                })
+            except: pass
+    reducing_dir = os.path.join(DATA_DIR, "storage", "infield", "REDUCING")
+    reducing_results = []
+    if os.path.exists(reducing_dir):
+        files = sorted(os.listdir(reducing_dir), reverse=True)[:3]
+        for f in files:
+            try:
+                d = _json.load(open(os.path.join(reducing_dir, f), encoding="utf-8"))
+                reducing_results.append({
+                    "file": f,
+                    "restore_rate": d.get("restore_rate", 0),
+                    "timestamp": d.get("timestamp","")
+                })
+            except: pass
+    try:
+        r = __import__('requests').get("http://localhost:5679/health", timeout=2)
+        server = "online"
+    except:
+        server = "offline"
+    return __import__('flask').jsonify({
+        "layers": counts,
+        "caliber_server": server,
+        "queue": pils_files,
+        "recent_results": recent_results,
+        "reducing": reducing_results,
+        "timestamp": datetime.now().strftime("%H:%M:%S")
+    })
+
 @app.route("/get_intent/<ai_name>", methods=["GET"])
 def get_intent(ai_name):
     return jsonify(None), 204
