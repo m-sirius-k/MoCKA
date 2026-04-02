@@ -1,59 +1,48 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8"><title>MoCKA Command Center</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background:#111827; color:#e5e7eb; font-family:monospace; padding:24px; }
-
         h1 { font-size:18px; font-weight:700; color:#ffffff; margin-bottom:4px; letter-spacing:2px; }
         .subtitle { font-size:11px; color:#6b7280; margin-bottom:24px; letter-spacing:1px; }
-
         .block { border:1px solid #1f2937; padding:16px; margin-bottom:16px; background:#0d1117; border-radius:6px; }
         h3 { color:#9ca3af; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #1f2937; padding-bottom:8px; }
-
         button { background:transparent; color:#e5e7eb; border:1px solid #4b5563; padding:10px 18px; cursor:pointer; margin:4px; font-family:monospace; font-size:13px; border-radius:4px; transition:0.2s; }
         button:hover { border-color:#60a5fa; color:#60a5fa; }
-
         .active-a { background:#005700 !important; border-color:#008a00 !important; color:#ffffff !important; box-shadow:0 0 8px #008a00; }
         .active-b { background:#1e3a5f !important; border-color:#60a5fa !important; color:#ffffff !important; box-shadow:0 0 8px #60a5fa; }
         .active-t { background:#1f2937 !important; border-color:#a855f7 !important; color:#a855f7 !important; }
-
-        textarea {
-            width:100%; height:120px;
-            background:#020617; color:#e5e7eb;
-            border:1px solid #374151; border-radius:4px;
-            font-family:monospace; font-size:13px;
-            padding:12px; resize:vertical; outline:none;
-            transition:0.2s;
-        }
+        textarea { width:100%; height:120px; background:#020617; color:#e5e7eb; border:1px solid #374151; border-radius:4px; font-family:monospace; font-size:13px; padding:12px; resize:vertical; outline:none; transition:0.2s; }
         textarea:focus { border-color:#60a5fa; box-shadow:0 0 6px rgba(96,165,250,0.3); }
         .input-hint { font-size:11px; color:#4b5563; margin-top:6px; }
-
-        #exec {
-            width:100%; padding:18px;
-            border:2px solid #374151; color:#4b5563;
-            background:#0d1117; font-size:16px; font-weight:700;
-            letter-spacing:2px; border-radius:6px;
-            transition:0.3s; cursor:not-allowed; margin-bottom:16px;
-        }
-        #exec.ready {
-            border-color:#FF8000; background:#1a0f00; color:#FF8000;
-            cursor:pointer; box-shadow:0 0 16px rgba(255,128,0,0.4);
-        }
+        #exec { width:100%; padding:18px; border:2px solid #374151; color:#4b5563; background:#0d1117; font-size:16px; font-weight:700; letter-spacing:2px; border-radius:6px; transition:0.3s; cursor:not-allowed; margin-bottom:16px; }
+        #exec.ready { border-color:#FF8000; background:#1a0f00; color:#FF8000; cursor:pointer; box-shadow:0 0 16px rgba(255,128,0,0.4); }
         #exec.ready:hover { box-shadow:0 0 24px rgba(255,128,0,0.6); }
-
         .history-container { max-height:280px; overflow-y:auto; }
         table { width:100%; border-collapse:collapse; font-size:12px; }
         th { background:#1f2937; color:#9ca3af; padding:10px 12px; text-align:left; font-weight:700; letter-spacing:1px; font-size:11px; position:sticky; top:0; }
         td { border-bottom:1px solid #1f2937; padding:8px 12px; color:#d1d5db; }
         td:first-child { color:#6b7280; font-size:11px; }
         tr:hover td { background:#1f2937; }
-
         .opt-group { display:none; margin-top:12px; padding:12px; border:1px dashed #374151; border-radius:4px; }
         .tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
         .status-bar { font-size:11px; color:#6b7280; text-align:center; margin-bottom:8px; letter-spacing:1px; }
-
+        .layer-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
+        .layer-card { background:#020617; border:1px solid #1f2937; border-radius:4px; padding:10px; text-align:center; }
+        .layer-card .num { font-size:24px; font-weight:700; color:#60a5fa; }
+        .layer-card .lbl { font-size:10px; color:#6b7280; margin-top:4px; letter-spacing:1px; }
+        .layer-card.re_reduced .num { color:#34d399; }
+        .layer-card.reducing .num { color:#f59e0b; }
+        .layer-card.outbox .num { color:#a855f7; }
+        .server-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
+        .server-online { background:#34d399; box-shadow:0 0 6px #34d399; }
+        .server-offline { background:#6b7280; }
+        .server-error { background:#f87171; }
+        .process-btn { background:#0f2a1a !important; border-color:#34d399 !important; color:#34d399 !important; width:100%; padding:14px !important; font-size:14px !important; letter-spacing:2px; }
+        .process-btn:hover { box-shadow:0 0 12px rgba(52,211,153,0.4) !important; }
+        .process-result { margin-top:10px; padding:10px; background:#020617; border:1px solid #1f2937; border-radius:4px; font-size:12px; color:#9ca3af; min-height:40px; }
         ::-webkit-scrollbar { width:4px; }
         ::-webkit-scrollbar-track { background:#0d1117; }
         ::-webkit-scrollbar-thumb { background:#374151; border-radius:2px; }
@@ -61,8 +50,31 @@
 </head>
 <body>
     <h1>MoCKA COMMAND CENTER</h1>
-    <p class="subtitle">Model of Cybernetic Knowledge Architecture — v1.0.0</p>
+    <p class="subtitle">Model of Cybernetic Knowledge Architecture — v2.0.0</p>
 
+    <!-- CALIBER PANEL -->
+    <div class="block">
+        <h3>Caliber Pipeline — Status</h3>
+        <div class="layer-grid">
+            <div class="layer-card"><div class="num" id="cnt-RAW">-</div><div class="lbl">RAW</div></div>
+            <div class="layer-card"><div class="num" id="cnt-REDUCED">-</div><div class="lbl">REDUCED</div></div>
+            <div class="layer-card re_reduced"><div class="num" id="cnt-RE_REDUCED">-</div><div class="lbl">RE_REDUCED</div></div>
+            <div class="layer-card reducing"><div class="num" id="cnt-REDUCING">-</div><div class="lbl">REDUCING</div></div>
+            <div class="layer-card"><div class="num" id="cnt-CORE">-</div><div class="lbl">CORE</div></div>
+            <div class="layer-card"><div class="num" id="cnt-ESSENCE">-</div><div class="lbl">ESSENCE</div></div>
+            <div class="layer-card"><div class="num" id="cnt-RAW_DONE">-</div><div class="lbl">RAW_DONE</div></div>
+            <div class="layer-card outbox"><div class="num" id="cnt-outbox">-</div><div class="lbl">OUTBOX/PILS</div></div>
+        </div>
+        <div style="display:flex;align-items:center;margin-bottom:12px;font-size:12px;">
+            <span class="server-dot" id="server-dot"></span>
+            <span id="server-status">Caliber Server: checking...</span>
+            <button onclick="refreshStatus()" style="margin-left:auto;padding:4px 10px;font-size:11px;">↻ Refresh</button>
+        </div>
+        <button class="process-btn" onclick="processNow()">▶ PROCESS NOW — outbox/PILS → Caliber</button>
+        <div class="process-result" id="process-result">— 待機中 —</div>
+    </div>
+
+    <!-- MISSION PANEL -->
     <div class="block">
         <h3>1. Select Category</h3>
         <button id="btnA" onclick="setCat('A', this)">A: 保存 (Storage)</button>
@@ -96,7 +108,7 @@
     <div class="block">
         <h3>2. Input — What to Record</h3>
         <div style="display:grid;grid-template-columns:1fr 160px;gap:8px;margin-bottom:8px;">
-            <input id="title" type="text" placeholder="タイトル（例：Playwright調査レポート）" style="background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;" onfocus="this.style.borderColor='#60a5fa'" onblur="this.style.borderColor='#374151'">
+            <input id="title" type="text" placeholder="タイトル" style="background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;" onfocus="this.style.borderColor='#60a5fa'" onblur="this.style.borderColor='#374151'">
             <input id="doc-date" type="text" style="background:#020617;color:#6b7280;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:12px;outline:none;" readonly>
         </div>
         <textarea id="memo" placeholder="記録内容を入力してください...&#10;Why（目的）· What（内容）· How（方法）"></textarea>
@@ -122,16 +134,65 @@
 
     <script>
         let state = {c:null, targets:[]};
-        window.onload = () => { updateHistory(); };
+        window.onload = () => { updateHistory(); refreshStatus(); setInterval(refreshStatus, 30000); };
         document.getElementById('doc-date').value = new Date().toLocaleString('ja-JP');
 
         const AI_URLS = {
-            ChatGPT:    "https://chatgpt.com/",
-            Gemini:     "https://gemini.google.com/app",
-            Claude:     "https://claude.ai/new",
-            Perplexity: "https://www.perplexity.ai/",
-            Copilot:    "https://copilot.microsoft.com/"
+            ChatGPT:"https://chatgpt.com/",Gemini:"https://gemini.google.com/app",
+            Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",
+            Copilot:"https://copilot.microsoft.com/"
         };
+
+        async function refreshStatus() {
+            try {
+                const r = await fetch('/caliber/status');
+                const d = await r.json();
+                const layers = d.layers || {};
+                ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE','RAW_DONE'].forEach(k => {
+                    const el = document.getElementById('cnt-'+k);
+                    if(el) el.innerText = layers[k] ?? '-';
+                });
+                const outEl = document.getElementById('cnt-outbox');
+                if(outEl) outEl.innerText = layers['outbox_PILS'] ?? '-';
+                const dot = document.getElementById('server-dot');
+                const txt = document.getElementById('server-status');
+                if(d.caliber_server === 'online') {
+                    dot.className = 'server-dot server-online';
+                    txt.innerText = 'Caliber Server: ONLINE (port 5679)';
+                } else if(d.caliber_server === 'offline') {
+                    dot.className = 'server-dot server-offline';
+                    txt.innerText = 'Caliber Server: OFFLINE';
+                } else {
+                    dot.className = 'server-dot server-error';
+                    txt.innerText = 'Caliber Server: ERROR';
+                }
+            } catch(e) { console.error(e); }
+        }
+
+        async function processNow() {
+            const btn = document.querySelector('.process-btn');
+            const result = document.getElementById('process-result');
+            btn.innerText = '⟳ PROCESSING...';
+            result.innerText = 'Caliber Serverに処理を要求中...';
+            try {
+                const r = await fetch('/caliber/process', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
+                const d = await r.json();
+                if(d.status === 'empty') {
+                    result.innerText = '[INFO] outbox/PILSにファイルなし';
+                } else if(d.status === 'error') {
+                    result.style.color = '#f87171';
+                    result.innerText = '[ERROR] ' + (d.message || 'unknown error');
+                } else {
+                    result.style.color = '#34d399';
+                    result.innerText = '[OK] ' + d.status + ' | 復元率: ' + d.restore_rate + ' | ' + (d.extraction_preview || '').slice(0,100);
+                }
+                await refreshStatus();
+            } catch(e) {
+                result.style.color = '#f87171';
+                result.innerText = '[ERROR] Caliber Server offline? ' + e.message;
+            }
+            btn.innerText = '▶ PROCESS NOW — outbox/PILS → Caliber';
+        }
 
         function setCat(c, el) {
             state.c = c; state.targets = [];
@@ -183,28 +244,15 @@
             const titleVal = document.getElementById("title").value.trim();
             const memoVal = document.getElementById("memo").value.trim();
             const prompt = (titleVal ? "【" + titleVal + "】\n" : "") + memoVal;
-
             try { await navigator.clipboard.writeText(prompt); } catch(e) {}
-
             btn.innerText = "⟳ DISPATCHING...";
             btn.classList.remove("ready");
-
             for(const t of state.targets) {
-                await fetch("/ask", {
-                    method:"POST",
-                    headers:{"Content-Type":"application/json"},
-                    body:JSON.stringify({c:state.c, o:t, memo:prompt})
-                });
+                await fetch("/ask", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({c:state.c,o:t,memo:prompt})});
             }
-
             if(state.c === "B") {
-                // オーケストラ起動（1回だけ）
                 const orchPrompt = (titleVal ? titleVal + "\n" : "") + memoVal;
-                await fetch("/orchestra", {
-                    method:"POST",
-                    headers:{"Content-Type":"application/json"},
-                    body:JSON.stringify({prompt: orchPrompt})
-                });
+                await fetch("/orchestra", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:orchPrompt})});
                 document.getElementById("status-bar").style.color = "#a855f7";
                 document.getElementById("status-bar").innerText = "PROMPT COPIED — OPEN EACH AI BELOW";
                 const linkList = document.getElementById("link-list");
@@ -212,9 +260,7 @@
                 for(const t of state.targets) {
                     if(AI_URLS[t]) {
                         const a = document.createElement("a");
-                        a.href = AI_URLS[t];
-                        a.target = "_blank";
-                        a.innerText = "▶ " + t;
+                        a.href = AI_URLS[t]; a.target = "_blank"; a.innerText = "▶ " + t;
                         a.style.cssText = "display:inline-block;padding:10px 18px;border:1px solid #a855f7;color:#a855f7;text-decoration:none;font-family:monospace;font-size:13px;border-radius:4px;transition:0.2s;";
                         a.onmouseover = () => a.style.background = "#1a0a2e";
                         a.onmouseout = () => a.style.background = "transparent";
@@ -223,13 +269,9 @@
                 }
                 document.getElementById("launch-links").style.display = "block";
             }
-
             btn.innerText = "✓ MISSION COMPLETE";
             await updateHistory();
-            setTimeout(() => {
-                updateBtn();
-                document.getElementById("memo").value = "";
-            }, 2500);
+            setTimeout(() => { updateBtn(); document.getElementById("memo").value = ""; }, 2500);
         }
 
         async function updateHistory() {
@@ -245,6 +287,6 @@
                 });
             } catch(e) { console.error(e); }
         }
-</script>
+    </script>
 </body>
 </html>
