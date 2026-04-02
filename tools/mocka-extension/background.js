@@ -12,6 +12,7 @@ async function poll() {
     try {
       const res = await fetch(`http://127.0.0.1:5000/get_intent/${name}`).catch(() => null);
       if (!res || !res.ok) continue;
+      if (res.status === 204) continue;
       const data = await res.json();
       if (!data) continue;
       const tabs = await chrome.tabs.query({});
