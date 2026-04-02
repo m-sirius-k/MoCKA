@@ -319,14 +319,18 @@ ECOL_20260402_012905_GEMI,2026-04-02T01:29:05,gemini,collect,chat_import,mocka_b
 
 TRDPに基づき、実行役と監査役のAIを物理的に分離し、単一AIによる独断を防止する。
 
-この制度　mockaの初期に設定しましたよね　gptが最終判断者だった気が",0f5f04dbf2d6b82a,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=81584fe29a263d26|source=gemini|mode=full_scroll
+この制度　mockaの初期に設定しましたよね　gptが最終判断者だった気が",0f5f04dbf2d6b82a,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=81584fe29a263d26|source=gemini|mode=full_scroll,
 ECOL_20260402_013007_COPI,2026-04-02T01:30:07,copilot,collect,chat_import,mocka_bridge_v2,https://copilot.microsoft.com/chats/AfMkS8JwjE5vLQ6FJFGjj,extension,external,in_operation,normal,A,infield/RAW,"[user] あなたの発言
 公文書
 MoCKA 3.0 文明配置統一方針 意見書
 
 文書番号：MOCKA-OPINION-20260215-01
 発行主体：MoCKA 監査体系 AO-001
-対象：M",cb8d6ec888f508ba,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=2b56ae4ec85094b3|source=copilot|mode=full_scroll
+対象：M",cb8d6ec888f508ba,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=2b56ae4ec85094b3|source=copilot|mode=full_scroll,
 ECOL_20260402_014343_CLAU,2026-04-02T01:43:43,claude,collect,chat_import,mocka_bridge_v2,https://claude.ai/chat/676135d5-e979-483a-8c7b-82bbb2ddd3ac,extension,external,in_operation,normal,A,infield/RAW,"[user] こたえて
 
-[assistant] 🗺️ MoCKA オーケストラ実装ロードマップ (Phase 36-40)Phase 36: 憲法制定と環境整備 (Foundation)[Actio",ac514a1c35b318c7,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=705f5f8a80985694|source=claude|mode=full_scroll
+[assistant] 🗺️ MoCKA オーケストラ実装ロードマップ (Phase 36-40)Phase 36: 憲法制定と環境整備 (Foundation)[Actio",ac514a1c35b318c7,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=705f5f8a80985694|source=claude|mode=full_scroll,
+E20260402_011,2026-04-02T11:31:27,mocka_router,collaboration,router,interface/router.py,================================================================ 質疑 / 濃縮装置設計 - 抽出方式の検討依頼 発行: MoCKA文明,cli,internal,in_operation,normal,A,outfield,[collaboration] ==================================================,"[Claude] 既存タブ検索中...
+[Claude] 発見: https://claude.ai/chat/79a4f971-8657-49ea-8902-c8025e71dd9e
+[既存タブ] ChatGPT: https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21
+[既存タブ] Gemini: https://gemini.go",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:18208) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to e | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=87.8s
