@@ -7,7 +7,6 @@ const AI_DOMAINS = {
   'Genspark':   'genspark.ai'
 };
 
-// 既存: MoCKA→AI送信
 async function poll() {
   for (const [name, domain] of Object.entries(AI_DOMAINS)) {
     try {
@@ -40,29 +39,55 @@ async function poll() {
 }
 setInterval(poll, 1500);
 
-// 追加: AI→MoCKA収集（右クリックメニュー）
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({ id:'mocka_collect', title:'MoCKAに収集', contexts:['page'] });
   chrome.contextMenus.create({ id:'mocka_collect_selected', title:'選択範囲をMoCKAに収集', contexts:['selection'] });
-  chrome.contextMenus.create({ id:'mocka_collect_full', title:'このchat全文をMoCKAに収集', contexts:['page'] });
+  chrome.contextMenus.create({ id:'mocka_collect_full', title:'このchat全文をMoCKAに収集（自動スクロール）', contexts:['page'] });
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const source = detectSource(tab.url);
-
   if (info.menuItemId === 'mocka_collect_selected') {
-    // 選択テキストをそのまま送信
     await sendToMocka(source, info.selectionText, tab.url, 'selected');
-
-  } else if (info.menuItemId === 'mocka_collect' || info.menuItemId === 'mocka_collect_full') {
-    // 各AI対応のDOM収集スクリプトを実行
+  } else if (info.menuItemId === 'mocka_collect_full') {
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
-      func: collectChat,
+      func: async function(source) {
+        let last = null;
+        for (let i = 0; i < 30; i++) {
+          window.scrollTo(0, 0);
+          await new Promise(r => setTimeout(r, 1200));
+          const h = document.body.scrollHeight;
+          if (h === last) break;
+          last = h;
+        }
+        await new Promise(r => setTimeout(r, 2000));
+        const SEL = {
+          chatgpt:    '[data-message-author-role]',
+          claude:     '[data-testid*="message"], .font-claude-message',
+          gemini:     'message-content, model-response, user-query',
+          perplexity: '[class*="Message"]',
+          copilot:    '[class*="message"]',
+        };
+        const sel = SEL[source] || '[class*="message"], p';
+        const nodes = document.querySelectorAll(sel);
+        let lines = [];
+        nodes.forEach((n, i) => {
+          const role = n.getAttribute('data-message-author-role') || (i%2===0 ? 'user' : 'assistant');
+          const text = n.innerText.trim();
+          if (text) lines.push(`[${role}] ${text}`);
+        });
+        if (!lines.length) {
+          document.execCommand('selectAll');
+          const t = window.getSelection().toString().trim();
+          window.getSelection().removeAllRanges();
+          if (t) lines.push(t);
+        }
+        return lines.join('\n\n');
+      },
       args: [source]
     });
     if (results && results[0] && results[0].result) {
-      await sendToMocka(source, results[0].result, tab.url, 'full');
+      await sendToMocka(source, results[0].result, tab.url, 'full_scroll');
     }
   }
 });
@@ -74,31 +99,7 @@ function detectSource(url) {
   if (url.includes('perplexity.ai'))     return 'perplexity';
   if (url.includes('claude.ai'))         return 'claude';
   if (url.includes('microsoft.com'))     return 'copilot';
-  if (url.includes('genspark.ai'))       return 'genspark';
   return 'unknown';
-}
-
-// DOM収集関数（各AIページで実行）
-function collectChat(source) {
-  const SELECTORS = {
-    chatgpt:    { msg: '[data-message-author-role]', role: 'data-message-author-role', text: '.markdown, .text-base' },
-    gemini:     { msg: 'message-content, .conversation-turn', role: null, text: '.markdown, p' },
-    perplexity: { msg: '.message, [class*="Message"]', role: null, text: 'p, .prose' },
-    claude:     { msg: '[data-testid*="message"], .font-claude-message', role: null, text: 'p, .prose' },
-    copilot:    { msg: '[class*="message"], .cib-message', role: null, text: 'p, span' },
-    default:    { msg: 'p, .message, .chat-message', role: null, text: 'p' }
-  };
-  const sel = SELECTORS[source] || SELECTORS.default;
-  const msgs = document.querySelectorAll(sel.msg);
-  if (!msgs.length) return document.body.innerText.slice(0, 50000);
-  const lines = [];
-  msgs.forEach(m => {
-    const role = sel.role ? (m.getAttribute(sel.role) || 'unknown') : 'message';
-    const textEl = m.querySelector(sel.text) || m;
-    const text = textEl.innerText.trim();
-    if (text) lines.push(`[${role}] ${text}`);
-  });
-  return lines.join('\n\n');
 }
 
 async function sendToMocka(source, text, url, mode) {
