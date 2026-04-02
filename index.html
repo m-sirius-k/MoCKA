@@ -4,68 +4,79 @@
     <meta charset="UTF-8"><title>MoCKA Command Center</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background:#111827; color:#e5e7eb; font-family:monospace; padding:20px; }
-        h1 { font-size:18px; font-weight:700; color:#fff; margin-bottom:2px; letter-spacing:2px; }
-        .subtitle { font-size:11px; color:#6b7280; margin-bottom:20px; letter-spacing:1px; }
-        .block { border:1px solid #1f2937; padding:14px; margin-bottom:14px; background:#0d1117; border-radius:6px; }
-        h3 { color:#9ca3af; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; border-bottom:1px solid #1f2937; padding-bottom:6px; display:flex; align-items:center; gap:8px; }
-        button { background:transparent; color:#e5e7eb; border:1px solid #4b5563; padding:8px 16px; cursor:pointer; margin:3px; font-family:monospace; font-size:12px; border-radius:4px; transition:0.2s; }
+        body { background:#0a0f1a; color:#e5e7eb; font-family:monospace; padding:20px; }
+        h1 { font-size:20px; font-weight:700; color:#fff; margin-bottom:2px; letter-spacing:3px; }
+        .subtitle { font-size:12px; color:#9ca3af; margin-bottom:20px; letter-spacing:1px; }
+        .block { border:1px solid #2d3748; padding:16px; margin-bottom:14px; background:#111827; border-radius:8px; }
+        h3 { color:#d1d5db; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #2d3748; padding-bottom:8px; display:flex; align-items:center; gap:8px; }
+        button { background:transparent; color:#d1d5db; border:1px solid #4b5563; padding:8px 16px; cursor:pointer; margin:3px; font-family:monospace; font-size:13px; border-radius:4px; transition:0.2s; }
         button:hover { border-color:#60a5fa; color:#60a5fa; }
-        .active-a { background:#005700!important; border-color:#008a00!important; color:#fff!important; box-shadow:0 0 8px #008a00; }
+        .active-a { background:#005700!important; border-color:#00cc00!important; color:#fff!important; box-shadow:0 0 8px #008a00; }
         .active-b { background:#1e3a5f!important; border-color:#60a5fa!important; color:#fff!important; box-shadow:0 0 8px #60a5fa; }
-        .active-t { background:#1f2937!important; border-color:#a855f7!important; color:#a855f7!important; }
-        textarea { width:100%; height:100px; background:#020617; color:#e5e7eb; border:1px solid #374151; border-radius:4px; font-family:monospace; font-size:12px; padding:10px; resize:vertical; outline:none; }
+        .active-t { background:#2d1f4a!important; border-color:#c084fc!important; color:#e9d5ff!important; }
+        textarea { width:100%; height:100px; background:#0d1626; color:#e5e7eb; border:1px solid #374151; border-radius:4px; font-family:monospace; font-size:13px; padding:10px; resize:vertical; outline:none; }
         textarea:focus { border-color:#60a5fa; }
-        #exec { width:100%; padding:16px; border:2px solid #374151; color:#4b5563; background:#0d1117; font-size:15px; font-weight:700; letter-spacing:2px; border-radius:6px; transition:0.3s; cursor:not-allowed; margin-bottom:14px; }
+        #exec { width:100%; padding:16px; border:2px solid #374151; color:#6b7280; background:#111827; font-size:15px; font-weight:700; letter-spacing:2px; border-radius:6px; transition:0.3s; cursor:not-allowed; margin-bottom:14px; }
         #exec.ready { border-color:#FF8000; background:#1a0f00; color:#FF8000; cursor:pointer; box-shadow:0 0 16px rgba(255,128,0,0.4); }
         .opt-group { display:none; margin-top:10px; padding:10px; border:1px dashed #374151; border-radius:4px; }
         .tag-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-        .status-bar { font-size:11px; color:#6b7280; text-align:center; margin-bottom:8px; }
+        .status-bar { font-size:12px; color:#9ca3af; text-align:center; margin-bottom:8px; }
 
-        /* 3ゾーン */
-        .pipeline-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
-        .zone { border:1px solid #1f2937; border-radius:6px; padding:12px; background:#020617; min-height:120px; }
-        .zone-title { font-size:10px; font-weight:700; letter-spacing:2px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #1f2937; }
-        .zone-incoming .zone-title { color:#a855f7; }
-        .zone-processing .zone-title { color:#f59e0b; }
-        .zone-result .zone-title { color:#34d399; }
+        /* layer chips */
+        .layer-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+        .layer-chip { background:#1a2235; border:1px solid #2d3748; border-radius:5px; padding:8px 12px; text-align:center; min-width:80px; }
+        .layer-chip .num { font-size:22px; font-weight:700; color:#60a5fa; line-height:1.2; }
+        .layer-chip.green .num { color:#4ade80; }
+        .layer-chip.amber .num { color:#fbbf24; }
+        .layer-chip.purple .num { color:#c084fc; }
+        .layer-chip .lbl { font-size:10px; color:#9ca3af; margin-top:3px; letter-spacing:1px; }
 
-        .queue-item { font-size:11px; padding:5px 8px; margin-bottom:4px; border-radius:3px; background:#0d1117; border-left:2px solid #a855f7; }
-        .queue-item .fname { color:#e5e7eb; word-break:break-all; }
-        .queue-item .fsize { color:#6b7280; font-size:10px; }
-
-        .processing-item { font-size:11px; padding:5px 8px; margin-bottom:4px; border-radius:3px; background:#0d1117; border-left:2px solid #f59e0b; }
-        .processing-anim { display:inline-block; animation:pulse 1s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-        .result-item { font-size:11px; padding:5px 8px; margin-bottom:4px; border-radius:3px; background:#0d1117; }
-        .result-item.ok { border-left:2px solid #34d399; }
-        .result-item.ng { border-left:2px solid #f59e0b; }
-        .result-rate { font-weight:700; }
-        .result-rate.ok { color:#34d399; }
-        .result-rate.ng { color:#f59e0b; }
-        .result-preview { color:#6b7280; font-size:10px; margin-top:2px; word-break:break-all; }
-
-        .layer-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-        .layer-chip { background:#0d1117; border:1px solid #1f2937; border-radius:3px; padding:4px 8px; font-size:11px; text-align:center; min-width:70px; }
-        .layer-chip .num { font-size:16px; font-weight:700; color:#60a5fa; }
-        .layer-chip.green .num { color:#34d399; }
-        .layer-chip.amber .num { color:#f59e0b; }
-        .layer-chip.purple .num { color:#a855f7; }
-        .layer-chip .lbl { font-size:9px; color:#6b7280; }
-
-        .server-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; }
-        .online { background:#34d399; box-shadow:0 0 5px #34d399; }
+        /* server */
+        .server-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; flex-shrink:0; }
+        .online { background:#4ade80; box-shadow:0 0 6px #4ade80; }
         .offline { background:#6b7280; }
 
-        .process-btn { background:#0f2a1a!important; border-color:#34d399!important; color:#34d399!important; width:100%; padding:12px!important; font-size:13px!important; letter-spacing:2px; margin-bottom:8px; }
-        .timestamp { font-size:10px; color:#374151; text-align:right; }
+        /* 3zones */
+        .pipeline-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px; }
+        .zone { border-radius:6px; padding:12px; min-height:130px; }
+        .zone-incoming  { background:#1a1030; border:1px solid #6d28d9; }
+        .zone-processing{ background:#1a1500; border:1px solid #92400e; }
+        .zone-result    { background:#0a1f15; border:1px solid #065f46; }
+        .zone-title { font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.1); }
+        .zone-incoming  .zone-title { color:#c084fc; }
+        .zone-processing .zone-title { color:#fbbf24; }
+        .zone-result    .zone-title { color:#4ade80; }
+
+        .queue-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); border-left:3px solid #a855f7; }
+        .queue-item .fname { color:#e5e7eb; word-break:break-all; }
+        .queue-item .fsize { color:#9ca3af; font-size:11px; }
+
+        .processing-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b; color:#fde68a; }
+        .processing-anim { display:inline-block; animation:spin 1s linear infinite; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+
+        .result-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); }
+        .result-item.ok { border-left:3px solid #4ade80; }
+        .result-item.ng { border-left:3px solid #fbbf24; }
+        .result-rate { font-size:15px; font-weight:700; }
+        .result-rate.ok { color:#4ade80; }
+        .result-rate.ng { color:#fbbf24; }
+        .result-meta { color:#9ca3af; font-size:11px; margin-left:6px; }
+        .result-preview { color:#9ca3af; font-size:11px; margin-top:3px; word-break:break-all; }
+
+        .empty-msg { color:#4b5563; font-size:12px; }
+
+        .process-btn { background:#0a2015!important; border:1px solid #4ade80!important; color:#4ade80!important; width:100%; padding:14px!important; font-size:14px!important; letter-spacing:2px; margin-bottom:8px; border-radius:6px; }
+        .process-btn:hover { box-shadow:0 0 14px rgba(74,222,128,0.3)!important; }
+        .proc-msg { font-size:12px; color:#9ca3af; min-height:20px; }
+
+        .timestamp { font-size:10px; color:#374151; }
 
         .history-container { max-height:200px; overflow-y:auto; }
-        table { width:100%; border-collapse:collapse; font-size:11px; }
-        th { background:#1f2937; color:#9ca3af; padding:8px 10px; text-align:left; font-weight:700; letter-spacing:1px; font-size:10px; position:sticky; top:0; }
-        td { border-bottom:1px solid #1f2937; padding:6px 10px; color:#d1d5db; }
-        td:first-child { color:#6b7280; font-size:10px; }
+        table { width:100%; border-collapse:collapse; font-size:12px; }
+        th { background:#1f2937; color:#d1d5db; padding:8px 10px; text-align:left; font-weight:700; letter-spacing:1px; font-size:11px; position:sticky; top:0; }
+        td { border-bottom:1px solid #1f2937; padding:7px 10px; color:#d1d5db; }
+        td:first-child { color:#9ca3af; font-size:11px; }
         tr:hover td { background:#1f2937; }
         ::-webkit-scrollbar { width:3px; }
         ::-webkit-scrollbar-thumb { background:#374151; }
@@ -75,17 +86,14 @@
     <h1>MoCKA COMMAND CENTER</h1>
     <p class="subtitle">Model of Cybernetic Knowledge Architecture — v2.1.0</p>
 
-    <!-- CALIBER PIPELINE -->
     <div class="block">
         <h3>
             <span class="server-dot" id="sdot"></span>
-            CALIBER PIPELINE
-            <span id="sstat" style="font-weight:normal;color:#6b7280;">checking...</span>
-            <button onclick="refreshQueue()" style="margin-left:auto;padding:3px 8px;font-size:10px;">↻</button>
+            <span id="sstat" style="font-size:13px;">CALIBER PIPELINE — checking...</span>
+            <button onclick="refreshQueue()" style="margin-left:auto;padding:3px 10px;font-size:11px;">↻ Refresh</button>
             <span class="timestamp" id="ts"></span>
         </h3>
 
-        <!-- 層カウント -->
         <div class="layer-row">
             <div class="layer-chip"><div class="num" id="c-RAW">-</div><div class="lbl">RAW</div></div>
             <div class="layer-chip"><div class="num" id="c-REDUCED">-</div><div class="lbl">REDUCED</div></div>
@@ -93,34 +101,32 @@
             <div class="layer-chip amber"><div class="num" id="c-REDUCING">-</div><div class="lbl">REDUCING</div></div>
             <div class="layer-chip"><div class="num" id="c-CORE">-</div><div class="lbl">CORE</div></div>
             <div class="layer-chip"><div class="num" id="c-ESSENCE">-</div><div class="lbl">ESSENCE</div></div>
-            <div class="layer-chip purple"><div class="num" id="c-outbox">-</div><div class="lbl">OUTBOX</div></div>
+            <div class="layer-chip purple"><div class="num" id="c-outbox">-</div><div class="lbl">OUTBOX/PILS</div></div>
         </div>
 
-        <!-- 3ゾーン -->
         <div class="pipeline-grid">
             <div class="zone zone-incoming">
                 <div class="zone-title">① INCOMING — 受信キュー</div>
-                <div id="zone-queue"><span style="color:#4b5563;font-size:11px;">— 待機中 —</span></div>
+                <div id="zone-queue"><span class="empty-msg">— 待機中 —</span></div>
             </div>
             <div class="zone zone-processing">
                 <div class="zone-title">② PROCESSING — 処理中</div>
-                <div id="zone-processing"><span style="color:#4b5563;font-size:11px;">— スタンバイ —</span></div>
+                <div id="zone-processing"><span class="empty-msg">— スタンバイ —</span></div>
             </div>
             <div class="zone zone-result">
                 <div class="zone-title">③ RESULT — 処理結果</div>
-                <div id="zone-result"><span style="color:#4b5563;font-size:11px;">— 結果なし —</span></div>
+                <div id="zone-result"><span class="empty-msg">— 結果なし —</span></div>
             </div>
         </div>
 
-        <button class="process-btn" onclick="processNow()">▶ PROCESS NOW</button>
-        <div id="proc-msg" style="font-size:11px;color:#6b7280;min-height:18px;">— 待機中 —</div>
+        <button class="process-btn" onclick="processNow()">▶ PROCESS NOW — outbox/PILS → Caliber</button>
+        <div class="proc-msg" id="proc-msg">— 待機中 —</div>
     </div>
 
-    <!-- MISSION -->
     <div class="block">
         <h3>MISSION</h3>
-        <button id="btnA" onclick="setCat('A',this)">A: 保存</button>
-        <button id="btnB" onclick="setCat('B',this)">B: 共有</button>
+        <button id="btnA" onclick="setCat('A',this)">A: 保存 (Storage)</button>
+        <button id="btnB" onclick="setCat('B',this)">B: 共有 (Broadcast)</button>
         <div id="opt-A" class="opt-group">
             <div class="tag-row">
                 <button class="s-btn" onclick="toggleT('infield',this)">infield</button>
@@ -132,7 +138,7 @@
         </div>
         <div id="opt-B" class="opt-group">
             <div class="tag-row">
-                <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員</button>
+                <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員一括</button>
                 <button class="s-btn" onclick="toggleT('ChatGPT',this)">ChatGPT</button>
                 <button class="s-btn" onclick="toggleT('Gemini',this)">Gemini</button>
                 <button class="s-btn" onclick="toggleT('Claude',this)">Claude</button>
@@ -140,21 +146,21 @@
                 <button class="s-btn" onclick="toggleT('Copilot',this)">Copilot</button>
             </div>
         </div>
-        <div style="margin-top:10px;">
-            <input id="title" type="text" placeholder="タイトル" style="width:100%;background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:7px 10px;font-family:monospace;font-size:12px;outline:none;margin-bottom:6px;">
-            <textarea id="memo" placeholder="記録内容... Why · What · How"></textarea>
+        <div style="margin-top:12px;">
+            <input id="title" type="text" placeholder="タイトル" style="width:100%;background:#0d1626;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;margin-bottom:8px;">
+            <textarea id="memo" placeholder="記録内容を入力... Why（目的）· What（内容）· How（方法）"></textarea>
         </div>
     </div>
 
     <div class="status-bar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
-    <div id="launch-links" style="display:none;margin-bottom:12px;padding:10px;background:#0d1117;border:1px solid #a855f7;border-radius:6px;">
-        <div style="font-size:10px;color:#a855f7;letter-spacing:2px;margin-bottom:8px;">OPEN EACH AI TAB</div>
+    <div id="launch-links" style="display:none;margin-bottom:12px;padding:12px;background:#111827;border:1px solid #a855f7;border-radius:6px;">
+        <div style="font-size:11px;color:#c084fc;letter-spacing:2px;margin-bottom:8px;">OPEN EACH AI TAB</div>
         <div id="link-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
     </div>
     <button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
 
     <div class="block">
-        <h3>MISSION LOG</h3>
+        <h3>MISSION LOG — HISTORY</h3>
         <div class="history-container">
             <table>
                 <thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead>
@@ -171,78 +177,58 @@
             Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",
             Copilot:"https://copilot.microsoft.com/"
         };
-
-        window.onload = () => {
-            updateHistory();
-            refreshQueue();
-            setInterval(refreshQueue, 10000);
-        };
+        window.onload = () => { updateHistory(); refreshQueue(); setInterval(refreshQueue, 10000); };
 
         async function refreshQueue() {
             try {
                 const r = await fetch('/caliber/queue');
                 const d = await r.json();
-
-                // 層カウント
                 const layers = d.layers || {};
                 ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k => {
                     const el = document.getElementById('c-'+k);
                     if(el) el.innerText = layers[k] ?? '-';
                 });
-                document.getElementById('c-outbox').innerText = layers['outbox_PILS'] ?? d.queue?.length ?? '-';
+                document.getElementById('c-outbox').innerText = d.queue?.length ?? '-';
                 document.getElementById('ts').innerText = d.timestamp || '';
-
-                // サーバー状態
                 const dot = document.getElementById('sdot');
                 const stat = document.getElementById('sstat');
                 if(d.caliber_server === 'online') {
                     dot.className = 'server-dot online';
-                    stat.innerText = 'ONLINE :5679';
-                    stat.style.color = '#34d399';
+                    stat.innerText = 'CALIBER PIPELINE — ONLINE :5679';
+                    stat.style.color = '#4ade80';
                 } else {
                     dot.className = 'server-dot offline';
-                    stat.innerText = 'OFFLINE';
-                    stat.style.color = '#6b7280';
+                    stat.innerText = 'CALIBER PIPELINE — OFFLINE';
+                    stat.style.color = '#9ca3af';
                 }
-
-                // ゾーン1: キュー
                 const qEl = document.getElementById('zone-queue');
                 if(d.queue && d.queue.length > 0) {
                     qEl.innerHTML = d.queue.map(f =>
                         `<div class="queue-item">
                             <div class="fname">${f.name}</div>
-                            <div class="fsize">${(f.size/1024).toFixed(1)} KB</div>
-                        </div>`
-                    ).join('');
+                            <div class="fsize">${(f.size/1024).toFixed(1)} KB — 処理待ち</div>
+                        </div>`).join('');
                 } else {
-                    qEl.innerHTML = '<span style="color:#4b5563;font-size:11px;">— 待機中 —</span>';
+                    qEl.innerHTML = '<span class="empty-msg">— 待機中 —</span>';
                 }
-
-                // ゾーン2: 処理中
-                const pEl = document.getElementById('zone-processing');
-                if(processing) {
-                    pEl.innerHTML = '<div class="processing-item"><span class="processing-anim">⟳</span> 処理中...</div>';
-                } else {
-                    pEl.innerHTML = '<span style="color:#4b5563;font-size:11px;">— スタンバイ —</span>';
+                if(!processing) {
+                    document.getElementById('zone-processing').innerHTML = '<span class="empty-msg">— スタンバイ —</span>';
                 }
-
-                // ゾーン3: 結果
-                const rEl = document.getElementById('zone-result');
                 const results = [...(d.recent_results||[]), ...(d.reducing||[]).map(r=>({...r,status:'REDUCING'}))];
                 results.sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||''));
+                const rEl = document.getElementById('zone-result');
                 if(results.length > 0) {
                     rEl.innerHTML = results.slice(0,5).map(r => {
                         const rate = Math.round((r.restore_rate||0)*100);
                         const ok = r.status === 'RE_REDUCED';
                         return `<div class="result-item ${ok?'ok':'ng'}">
                             <span class="result-rate ${ok?'ok':'ng'}">${rate}%</span>
-                            <span style="color:#6b7280;font-size:10px;margin-left:6px;">${r.status||''}</span>
-                            <span style="color:#4b5563;font-size:10px;margin-left:6px;">${(r.timestamp||'').slice(0,16)}</span>
-                            ${r.preview ? '<div class="result-preview">'+r.preview.slice(0,80)+'</div>' : ''}
+                            <span class="result-meta">${r.status||''} | ${(r.timestamp||'').slice(0,16)}</span>
+                            ${r.preview?'<div class="result-preview">'+r.preview.slice(0,80)+'</div>':''}
                         </div>`;
                     }).join('');
                 } else {
-                    rEl.innerHTML = '<span style="color:#4b5563;font-size:11px;">— 結果なし —</span>';
+                    rEl.innerHTML = '<span class="empty-msg">— 結果なし —</span>';
                 }
             } catch(e) { console.error(e); }
         }
@@ -251,33 +237,23 @@
             if(processing) return;
             processing = true;
             const msg = document.getElementById('proc-msg');
-            msg.style.color = '#f59e0b';
-            msg.innerText = '⟳ Caliber Serverに処理要求中...';
+            msg.style.color = '#fbbf24';
+            msg.innerText = '⟳ 処理要求中...';
             document.getElementById('zone-processing').innerHTML =
-                '<div class="processing-item"><span class="processing-anim">⟳</span> 処理中... しばらくお待ちください</div>';
+                '<div class="processing-item"><span class="processing-anim">↻</span>　処理中... しばらくお待ちください</div>';
             try {
-                const r = await fetch('/caliber/process', {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+                const r = await fetch('/caliber/process',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
                 const d = await r.json();
-                if(d.status === 'empty') {
-                    msg.style.color = '#6b7280';
-                    msg.innerText = '[INFO] outbox/PILSにファイルなし';
-                } else if(d.status === 'error') {
-                    msg.style.color = '#f87171';
-                    msg.innerText = '[ERROR] ' + (d.message||'unknown');
-                } else {
-                    msg.style.color = '#34d399';
-                    msg.innerText = '[OK] ' + d.status + ' | 復元率: ' + d.restore_rate + ' | chars: ' + d.total_chars;
-                }
-            } catch(e) {
-                msg.style.color = '#f87171';
-                msg.innerText = '[ERROR] ' + e.message;
-            }
+                if(d.status==='empty') { msg.style.color='#9ca3af'; msg.innerText='[INFO] outbox/PILSにファイルなし'; }
+                else if(d.status==='error') { msg.style.color='#f87171'; msg.innerText='[ERROR] '+(d.message||'unknown'); }
+                else { msg.style.color='#4ade80'; msg.innerText='[OK] '+d.status+' | 復元率: '+d.restore_rate+' | '+d.total_chars+'文字'; }
+            } catch(e) { msg.style.color='#f87171'; msg.innerText='[ERROR] '+e.message; }
             processing = false;
             await refreshQueue();
         }
 
-        function setCat(c, el) {
-            state.c = c; state.targets = [];
+        function setCat(c,el) {
+            state.c=c; state.targets=[];
             document.querySelectorAll('#btnA,#btnB').forEach(b=>b.classList.remove('active-a','active-b'));
             document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active-t'));
             el.classList.add(c==='A'?'active-a':'active-b');
@@ -303,15 +279,11 @@
             const b=document.getElementById('exec');
             const sb=document.getElementById('status-bar');
             if(state.targets.length>0) {
-                b.classList.add('ready');
-                b.innerText='▶ LAUNCH: '+state.targets.join(' · ');
-                sb.style.color='#FF8000';
-                sb.innerText=`READY — ${state.c} → ${state.targets.join(', ')}`;
+                b.classList.add('ready'); b.innerText='▶ LAUNCH: '+state.targets.join(' · ');
+                sb.style.color='#FF8000'; sb.innerText='READY — '+state.c+' → '+state.targets.join(', ');
             } else {
-                b.classList.remove('ready');
-                b.innerText='SELECT MISSION TARGETS';
-                sb.style.color='#6b7280';
-                sb.innerText='— SELECT CATEGORY AND TARGET —';
+                b.classList.remove('ready'); b.innerText='SELECT MISSION TARGETS';
+                sb.style.color='#9ca3af'; sb.innerText='— SELECT CATEGORY AND TARGET —';
             }
         }
         async function fire() {
@@ -327,13 +299,13 @@
             }
             if(state.c==='B') {
                 await fetch('/orchestra',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:(titleVal?titleVal+'\n':'')+memoVal})});
-                document.getElementById('status-bar').style.color='#a855f7';
+                document.getElementById('status-bar').style.color='#c084fc';
                 document.getElementById('status-bar').innerText='PROMPT COPIED — OPEN EACH AI BELOW';
                 const ll=document.getElementById('link-list'); ll.innerHTML='';
                 for(const t of state.targets) {
                     if(AI_URLS[t]) {
                         const a=document.createElement('a'); a.href=AI_URLS[t]; a.target='_blank'; a.innerText='▶ '+t;
-                        a.style.cssText='display:inline-block;padding:8px 14px;border:1px solid #a855f7;color:#a855f7;text-decoration:none;font-family:monospace;font-size:12px;border-radius:4px;';
+                        a.style.cssText='display:inline-block;padding:8px 14px;border:1px solid #a855f7;color:#c084fc;text-decoration:none;font-family:monospace;font-size:13px;border-radius:4px;';
                         ll.appendChild(a);
                     }
                 }
@@ -351,7 +323,7 @@
                 body.innerHTML='';
                 data.reverse().slice(0,30).forEach(row=>{
                     const tr=document.createElement('tr');
-                    tr.innerHTML=`<td>${row.when||''}</td><td>${row.target_class||''}</td><td>${row.short_summary||row.free_note||''}</td>`;
+                    tr.innerHTML='<td>'+(row.when||'')+'</td><td>'+(row.target_class||'')+'</td><td>'+(row.short_summary||row.free_note||'')+'</td>';
                     body.appendChild(tr);
                 });
             } catch(e){console.error(e);}
