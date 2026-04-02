@@ -1,7 +1,6 @@
 """
-mocka_caliber_server.py
-n8nからのWebhookを受けてCaliberパイプラインを実行するFlaskサーバー
-起動: python caliber/chat_pipeline/mocka_caliber_server.py
+mocka_caliber_server.py v2
+バッチ処理対応: 大容量ファイルをサンプリング処理
 PORT: 5679
 """
 import csv, hashlib, json, os, re, subprocess, time
@@ -21,13 +20,16 @@ EVENTS     = ROOT / "data" / "events.csv"
 MODEL      = "gemma3:4b"
 UTC        = timezone.utc
 THRESHOLD  = 0.80
+CHUNK_SIZE = 2000
+MAX_CHUNKS = 3
+TIMEOUT    = 300
 
 for d in [OUTBOX, PILS_DONE, RE_REDUCED, REDUCING]:
     d.mkdir(parents=True, exist_ok=True)
 
 def ask(prompt):
     r = subprocess.run([str(OLLAMA),"run",MODEL,prompt],
-        capture_output=True,text=True,encoding="utf-8",timeout=120)
+        capture_output=True,text=True,encoding="utf-8",timeout=TIMEOUT)
     return r.stdout.strip()
 
 def get_prev():
@@ -36,11 +38,23 @@ def get_prev():
 
 def parse_rate(s):
     m = re.search(r"\d+", s)
-    return int(m.group()) / 100.0 if m else 0.0
+    return int(m.group()) / 100.0 if m else 0.5
+
+def sample_text(text, chunk_size=CHUNK_SIZE, max_chunks=MAX_CHUNKS):
+    total = len(text)
+    if total <= chunk_size * max_chunks:
+        return [text[i:i+chunk_size] for i in range(0, total, chunk_size)]
+    chunks = []
+    chunks.append(text[:chunk_size])
+    if max_chunks >= 3:
+        mid = total // 2
+        chunks.append(text[mid:mid+chunk_size])
+    chunks.append(text[-chunk_size:])
+    return chunks[:max_chunks]
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok", "model": MODEL})
+    return jsonify({"status": "ok", "model": MODEL, "version": "v2"})
 
 @app.route("/scan", methods=["GET"])
 def scan():
@@ -58,42 +72,41 @@ def process():
         if not files:
             return jsonify({"status": "empty", "message": "no files in outbox/PILS"})
         fpath = files[0]
-
     if not fpath.exists():
         return jsonify({"status": "error", "message": str(fpath) + " not found"}), 404
-
     raw = json.load(open(fpath, encoding="utf-8"))
     text = raw.get("text", raw.get("content", raw.get("summary", "")))
     source = raw.get("source", "unknown")
     event_id = raw.get("event_id", fpath.stem)
-
     if not text:
         return jsonify({"status": "error", "message": "no text field"}), 400
-
-    print("[CALIBER] extract:", fpath.name)
-    extract = ask("Extract the 3 most important structural insights as bullet points:\n\n" + text[:3000])
-
+    total_chars = len(text)
+    chunks = sample_text(text)
+    print(f"[CALIBER] {fpath.name} | {total_chars} chars | {len(chunks)} chunks (sampled)")
+    all_extracts = []
+    for i, chunk in enumerate(chunks):
+        print(f"[CALIBER] extract chunk {i+1}/{len(chunks)}...")
+        result = ask("Extract the 3 most important structural insights as bullet points:\n\n" + chunk)
+        all_extracts.append(result)
+    extract = chr(10).join(all_extracts)
     print("[CALIBER] shadow eval...")
     rate_raw = ask("Estimate what percentage (0-100) of the original meaning is preserved in this summary. Reply ONLY with a number.\n\nSummary: " + extract[:2000])
     rate = parse_rate(rate_raw)
-
     ts  = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     eid = "EN8N_" + ts + "_" + source[:4].upper()
     h   = hashlib.sha256((eid + ts + extract[:100]).encode()).hexdigest()[:16]
     status = "RE_REDUCED" if rate >= THRESHOLD else "REDUCING"
-
     result = {
         "event_id": eid, "source": source,
         "origin_file": fpath.name, "origin_event": event_id,
-        "timestamp": ts, "restore_rate": rate,
+        "timestamp": ts, "total_chars": total_chars,
+        "sampled_chunks": len(chunks), "restore_rate": rate,
         "threshold": THRESHOLD, "extraction": extract,
-        "hash": h, "status": status, "pipeline": "caliber_server_v01"
+        "hash": h, "status": status, "pipeline": "caliber_server_v02"
     }
-
     dst_dir = RE_REDUCED if rate >= THRESHOLD else REDUCING
     out = dst_dir / (ts + "_" + eid + ".json")
     json.dump(result, open(out,"w",encoding="utf-8"), ensure_ascii=False, indent=2)
-
     prev = get_prev()
     with open(EVENTS,"a",encoding="utf-8",newline="") as f:
         csv.writer(f).writerow([eid,ts,"caliber_server","process","caliber_pipeline",
@@ -101,32 +114,19 @@ def process():
             "in_operation","normal","A","infield/"+status,
             extract[:100],prev,"caliber_complete",status,
             "local","caliber_pipeline","N/A","N/A",
-            "hash="+h+" rate="+str(int(rate*100))+"pct source="+source])
-
+            "hash="+h+" rate="+str(int(rate*100))+"pct chars="+str(total_chars)+" chunks="+str(len(chunks))])
     fpath.rename(PILS_DONE / fpath.name)
     print("[OK]", status, out.name)
-
     return jsonify({
-        "status": status,
-        "event_id": eid,
+        "status": status, "event_id": eid,
         "restore_rate": str(int(rate*100)) + "%",
-        "saved": str(out),
-        "extraction_preview": extract[:200]
+        "total_chars": total_chars, "sampled_chunks": len(chunks),
+        "saved": str(out), "extraction_preview": extract[:200]
     })
 
-@app.route("/process_all", methods=["POST"])
-def process_all():
-    files = sorted(OUTBOX.glob("*.json"), key=lambda x: x.stat().st_mtime)
-    if not files:
-        return jsonify({"status": "empty", "processed": 0})
-    results = []
-    for f in files:
-        r = process.__wrapped__({"file": f.name}) if hasattr(process, "__wrapped__") else None
-        results.append(f.name)
-    return jsonify({"status": "ok", "queued": len(results), "files": results})
-
 if __name__ == "__main__":
-    print("[MoCKA Caliber Server] starting on port 5679...")
-    print("[INFO] Ollama:", OLLAMA)
-    print("[INFO] Outbox:", OUTBOX)
+    print("[MoCKA Caliber Server v2] starting on port 5679...")
+    print(f"[INFO] Ollama: {OLLAMA}")
+    print(f"[INFO] Outbox: {OUTBOX}")
+    print(f"[INFO] Chunk: {CHUNK_SIZE} chars x max {MAX_CHUNKS} (sampling)")
     app.run(host="0.0.0.0", port=5679, debug=False)
