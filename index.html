@@ -4,126 +4,157 @@
     <meta charset="UTF-8"><title>MoCKA Command Center</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background:#111827; color:#e5e7eb; font-family:monospace; padding:24px; }
-        h1 { font-size:18px; font-weight:700; color:#ffffff; margin-bottom:4px; letter-spacing:2px; }
-        .subtitle { font-size:11px; color:#6b7280; margin-bottom:24px; letter-spacing:1px; }
-        .block { border:1px solid #1f2937; padding:16px; margin-bottom:16px; background:#0d1117; border-radius:6px; }
-        h3 { color:#9ca3af; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #1f2937; padding-bottom:8px; }
-        button { background:transparent; color:#e5e7eb; border:1px solid #4b5563; padding:10px 18px; cursor:pointer; margin:4px; font-family:monospace; font-size:13px; border-radius:4px; transition:0.2s; }
+        body { background:#111827; color:#e5e7eb; font-family:monospace; padding:20px; }
+        h1 { font-size:18px; font-weight:700; color:#fff; margin-bottom:2px; letter-spacing:2px; }
+        .subtitle { font-size:11px; color:#6b7280; margin-bottom:20px; letter-spacing:1px; }
+        .block { border:1px solid #1f2937; padding:14px; margin-bottom:14px; background:#0d1117; border-radius:6px; }
+        h3 { color:#9ca3af; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:10px; border-bottom:1px solid #1f2937; padding-bottom:6px; display:flex; align-items:center; gap:8px; }
+        button { background:transparent; color:#e5e7eb; border:1px solid #4b5563; padding:8px 16px; cursor:pointer; margin:3px; font-family:monospace; font-size:12px; border-radius:4px; transition:0.2s; }
         button:hover { border-color:#60a5fa; color:#60a5fa; }
-        .active-a { background:#005700 !important; border-color:#008a00 !important; color:#ffffff !important; box-shadow:0 0 8px #008a00; }
-        .active-b { background:#1e3a5f !important; border-color:#60a5fa !important; color:#ffffff !important; box-shadow:0 0 8px #60a5fa; }
-        .active-t { background:#1f2937 !important; border-color:#a855f7 !important; color:#a855f7 !important; }
-        textarea { width:100%; height:120px; background:#020617; color:#e5e7eb; border:1px solid #374151; border-radius:4px; font-family:monospace; font-size:13px; padding:12px; resize:vertical; outline:none; transition:0.2s; }
-        textarea:focus { border-color:#60a5fa; box-shadow:0 0 6px rgba(96,165,250,0.3); }
-        .input-hint { font-size:11px; color:#4b5563; margin-top:6px; }
-        #exec { width:100%; padding:18px; border:2px solid #374151; color:#4b5563; background:#0d1117; font-size:16px; font-weight:700; letter-spacing:2px; border-radius:6px; transition:0.3s; cursor:not-allowed; margin-bottom:16px; }
+        .active-a { background:#005700!important; border-color:#008a00!important; color:#fff!important; box-shadow:0 0 8px #008a00; }
+        .active-b { background:#1e3a5f!important; border-color:#60a5fa!important; color:#fff!important; box-shadow:0 0 8px #60a5fa; }
+        .active-t { background:#1f2937!important; border-color:#a855f7!important; color:#a855f7!important; }
+        textarea { width:100%; height:100px; background:#020617; color:#e5e7eb; border:1px solid #374151; border-radius:4px; font-family:monospace; font-size:12px; padding:10px; resize:vertical; outline:none; }
+        textarea:focus { border-color:#60a5fa; }
+        #exec { width:100%; padding:16px; border:2px solid #374151; color:#4b5563; background:#0d1117; font-size:15px; font-weight:700; letter-spacing:2px; border-radius:6px; transition:0.3s; cursor:not-allowed; margin-bottom:14px; }
         #exec.ready { border-color:#FF8000; background:#1a0f00; color:#FF8000; cursor:pointer; box-shadow:0 0 16px rgba(255,128,0,0.4); }
-        #exec.ready:hover { box-shadow:0 0 24px rgba(255,128,0,0.6); }
-        .history-container { max-height:280px; overflow-y:auto; }
-        table { width:100%; border-collapse:collapse; font-size:12px; }
-        th { background:#1f2937; color:#9ca3af; padding:10px 12px; text-align:left; font-weight:700; letter-spacing:1px; font-size:11px; position:sticky; top:0; }
-        td { border-bottom:1px solid #1f2937; padding:8px 12px; color:#d1d5db; }
-        td:first-child { color:#6b7280; font-size:11px; }
+        .opt-group { display:none; margin-top:10px; padding:10px; border:1px dashed #374151; border-radius:4px; }
+        .tag-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
+        .status-bar { font-size:11px; color:#6b7280; text-align:center; margin-bottom:8px; }
+
+        /* 3ゾーン */
+        .pipeline-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:10px; }
+        .zone { border:1px solid #1f2937; border-radius:6px; padding:12px; background:#020617; min-height:120px; }
+        .zone-title { font-size:10px; font-weight:700; letter-spacing:2px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid #1f2937; }
+        .zone-incoming .zone-title { color:#a855f7; }
+        .zone-processing .zone-title { color:#f59e0b; }
+        .zone-result .zone-title { color:#34d399; }
+
+        .queue-item { font-size:11px; padding:5px 8px; margin-bottom:4px; border-radius:3px; background:#0d1117; border-left:2px solid #a855f7; }
+        .queue-item .fname { color:#e5e7eb; word-break:break-all; }
+        .queue-item .fsize { color:#6b7280; font-size:10px; }
+
+        .processing-item { font-size:11px; padding:5px 8px; margin-bottom:4px; border-radius:3px; background:#0d1117; border-left:2px solid #f59e0b; }
+        .processing-anim { display:inline-block; animation:pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .result-item { font-size:11px; padding:5px 8px; margin-bottom:4px; border-radius:3px; background:#0d1117; }
+        .result-item.ok { border-left:2px solid #34d399; }
+        .result-item.ng { border-left:2px solid #f59e0b; }
+        .result-rate { font-weight:700; }
+        .result-rate.ok { color:#34d399; }
+        .result-rate.ng { color:#f59e0b; }
+        .result-preview { color:#6b7280; font-size:10px; margin-top:2px; word-break:break-all; }
+
+        .layer-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+        .layer-chip { background:#0d1117; border:1px solid #1f2937; border-radius:3px; padding:4px 8px; font-size:11px; text-align:center; min-width:70px; }
+        .layer-chip .num { font-size:16px; font-weight:700; color:#60a5fa; }
+        .layer-chip.green .num { color:#34d399; }
+        .layer-chip.amber .num { color:#f59e0b; }
+        .layer-chip.purple .num { color:#a855f7; }
+        .layer-chip .lbl { font-size:9px; color:#6b7280; }
+
+        .server-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:5px; }
+        .online { background:#34d399; box-shadow:0 0 5px #34d399; }
+        .offline { background:#6b7280; }
+
+        .process-btn { background:#0f2a1a!important; border-color:#34d399!important; color:#34d399!important; width:100%; padding:12px!important; font-size:13px!important; letter-spacing:2px; margin-bottom:8px; }
+        .timestamp { font-size:10px; color:#374151; text-align:right; }
+
+        .history-container { max-height:200px; overflow-y:auto; }
+        table { width:100%; border-collapse:collapse; font-size:11px; }
+        th { background:#1f2937; color:#9ca3af; padding:8px 10px; text-align:left; font-weight:700; letter-spacing:1px; font-size:10px; position:sticky; top:0; }
+        td { border-bottom:1px solid #1f2937; padding:6px 10px; color:#d1d5db; }
+        td:first-child { color:#6b7280; font-size:10px; }
         tr:hover td { background:#1f2937; }
-        .opt-group { display:none; margin-top:12px; padding:12px; border:1px dashed #374151; border-radius:4px; }
-        .tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
-        .status-bar { font-size:11px; color:#6b7280; text-align:center; margin-bottom:8px; letter-spacing:1px; }
-        .layer-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:12px; }
-        .layer-card { background:#020617; border:1px solid #1f2937; border-radius:4px; padding:10px; text-align:center; }
-        .layer-card .num { font-size:24px; font-weight:700; color:#60a5fa; }
-        .layer-card .lbl { font-size:10px; color:#6b7280; margin-top:4px; letter-spacing:1px; }
-        .layer-card.re_reduced .num { color:#34d399; }
-        .layer-card.reducing .num { color:#f59e0b; }
-        .layer-card.outbox .num { color:#a855f7; }
-        .server-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; }
-        .server-online { background:#34d399; box-shadow:0 0 6px #34d399; }
-        .server-offline { background:#6b7280; }
-        .server-error { background:#f87171; }
-        .process-btn { background:#0f2a1a !important; border-color:#34d399 !important; color:#34d399 !important; width:100%; padding:14px !important; font-size:14px !important; letter-spacing:2px; }
-        .process-btn:hover { box-shadow:0 0 12px rgba(52,211,153,0.4) !important; }
-        .process-result { margin-top:10px; padding:10px; background:#020617; border:1px solid #1f2937; border-radius:4px; font-size:12px; color:#9ca3af; min-height:40px; }
-        ::-webkit-scrollbar { width:4px; }
-        ::-webkit-scrollbar-track { background:#0d1117; }
-        ::-webkit-scrollbar-thumb { background:#374151; border-radius:2px; }
+        ::-webkit-scrollbar { width:3px; }
+        ::-webkit-scrollbar-thumb { background:#374151; }
     </style>
 </head>
 <body>
     <h1>MoCKA COMMAND CENTER</h1>
-    <p class="subtitle">Model of Cybernetic Knowledge Architecture — v2.0.0</p>
+    <p class="subtitle">Model of Cybernetic Knowledge Architecture — v2.1.0</p>
 
-    <!-- CALIBER PANEL -->
+    <!-- CALIBER PIPELINE -->
     <div class="block">
-        <h3>Caliber Pipeline — Status</h3>
-        <div class="layer-grid">
-            <div class="layer-card"><div class="num" id="cnt-RAW">-</div><div class="lbl">RAW</div></div>
-            <div class="layer-card"><div class="num" id="cnt-REDUCED">-</div><div class="lbl">REDUCED</div></div>
-            <div class="layer-card re_reduced"><div class="num" id="cnt-RE_REDUCED">-</div><div class="lbl">RE_REDUCED</div></div>
-            <div class="layer-card reducing"><div class="num" id="cnt-REDUCING">-</div><div class="lbl">REDUCING</div></div>
-            <div class="layer-card"><div class="num" id="cnt-CORE">-</div><div class="lbl">CORE</div></div>
-            <div class="layer-card"><div class="num" id="cnt-ESSENCE">-</div><div class="lbl">ESSENCE</div></div>
-            <div class="layer-card"><div class="num" id="cnt-RAW_DONE">-</div><div class="lbl">RAW_DONE</div></div>
-            <div class="layer-card outbox"><div class="num" id="cnt-outbox">-</div><div class="lbl">OUTBOX/PILS</div></div>
+        <h3>
+            <span class="server-dot" id="sdot"></span>
+            CALIBER PIPELINE
+            <span id="sstat" style="font-weight:normal;color:#6b7280;">checking...</span>
+            <button onclick="refreshQueue()" style="margin-left:auto;padding:3px 8px;font-size:10px;">↻</button>
+            <span class="timestamp" id="ts"></span>
+        </h3>
+
+        <!-- 層カウント -->
+        <div class="layer-row">
+            <div class="layer-chip"><div class="num" id="c-RAW">-</div><div class="lbl">RAW</div></div>
+            <div class="layer-chip"><div class="num" id="c-REDUCED">-</div><div class="lbl">REDUCED</div></div>
+            <div class="layer-chip green"><div class="num" id="c-RE_REDUCED">-</div><div class="lbl">RE_REDUCED</div></div>
+            <div class="layer-chip amber"><div class="num" id="c-REDUCING">-</div><div class="lbl">REDUCING</div></div>
+            <div class="layer-chip"><div class="num" id="c-CORE">-</div><div class="lbl">CORE</div></div>
+            <div class="layer-chip"><div class="num" id="c-ESSENCE">-</div><div class="lbl">ESSENCE</div></div>
+            <div class="layer-chip purple"><div class="num" id="c-outbox">-</div><div class="lbl">OUTBOX</div></div>
         </div>
-        <div style="display:flex;align-items:center;margin-bottom:12px;font-size:12px;">
-            <span class="server-dot" id="server-dot"></span>
-            <span id="server-status">Caliber Server: checking...</span>
-            <button onclick="refreshStatus()" style="margin-left:auto;padding:4px 10px;font-size:11px;">↻ Refresh</button>
+
+        <!-- 3ゾーン -->
+        <div class="pipeline-grid">
+            <div class="zone zone-incoming">
+                <div class="zone-title">① INCOMING — 受信キュー</div>
+                <div id="zone-queue"><span style="color:#4b5563;font-size:11px;">— 待機中 —</span></div>
+            </div>
+            <div class="zone zone-processing">
+                <div class="zone-title">② PROCESSING — 処理中</div>
+                <div id="zone-processing"><span style="color:#4b5563;font-size:11px;">— スタンバイ —</span></div>
+            </div>
+            <div class="zone zone-result">
+                <div class="zone-title">③ RESULT — 処理結果</div>
+                <div id="zone-result"><span style="color:#4b5563;font-size:11px;">— 結果なし —</span></div>
+            </div>
         </div>
-        <button class="process-btn" onclick="processNow()">▶ PROCESS NOW — outbox/PILS → Caliber</button>
-        <div class="process-result" id="process-result">— 待機中 —</div>
+
+        <button class="process-btn" onclick="processNow()">▶ PROCESS NOW</button>
+        <div id="proc-msg" style="font-size:11px;color:#6b7280;min-height:18px;">— 待機中 —</div>
     </div>
 
-    <!-- MISSION PANEL -->
+    <!-- MISSION -->
     <div class="block">
-        <h3>1. Select Category</h3>
-        <button id="btnA" onclick="setCat('A', this)">A: 保存 (Storage)</button>
-        <button id="btnB" onclick="setCat('B', this)">B: 共有 (Broadcast)</button>
-    </div>
-
-    <div id="opt-A" class="opt-group">
-        <h3>Target: Storage</h3>
-        <div class="tag-row">
-            <button class="s-btn" onclick="toggleT('infield', this)">infield</button>
-            <button class="s-btn" onclick="toggleT('outfield', this)">outfield</button>
-            <button class="s-btn" onclick="toggleT('公文書', this)">公文書</button>
-            <button class="s-btn" onclick="toggleT('インシデント', this)">インシデント</button>
-            <button class="s-btn" onclick="toggleT('クレーム', this)">クレーム</button>
-            <button class="s-btn" onclick="toggleT('議事録', this)">議事録</button>
+        <h3>MISSION</h3>
+        <button id="btnA" onclick="setCat('A',this)">A: 保存</button>
+        <button id="btnB" onclick="setCat('B',this)">B: 共有</button>
+        <div id="opt-A" class="opt-group">
+            <div class="tag-row">
+                <button class="s-btn" onclick="toggleT('infield',this)">infield</button>
+                <button class="s-btn" onclick="toggleT('outfield',this)">outfield</button>
+                <button class="s-btn" onclick="toggleT('公文書',this)">公文書</button>
+                <button class="s-btn" onclick="toggleT('インシデント',this)">インシデント</button>
+                <button class="s-btn" onclick="toggleT('クレーム',this)">クレーム</button>
+            </div>
         </div>
-    </div>
-
-    <div id="opt-B" class="opt-group">
-        <h3>Target: AI Agents</h3>
-        <div class="tag-row">
-            <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員一括</button>
-            <button class="s-btn" onclick="toggleT('ChatGPT', this)">ChatGPT</button>
-            <button class="s-btn" onclick="toggleT('Gemini', this)">Gemini</button>
-            <button class="s-btn" onclick="toggleT('Claude', this)">Claude</button>
-            <button class="s-btn" onclick="toggleT('Perplexity', this)">Perplexity</button>
-            <button class="s-btn" onclick="toggleT('Copilot', this)">Copilot</button>
+        <div id="opt-B" class="opt-group">
+            <div class="tag-row">
+                <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員</button>
+                <button class="s-btn" onclick="toggleT('ChatGPT',this)">ChatGPT</button>
+                <button class="s-btn" onclick="toggleT('Gemini',this)">Gemini</button>
+                <button class="s-btn" onclick="toggleT('Claude',this)">Claude</button>
+                <button class="s-btn" onclick="toggleT('Perplexity',this)">Perplexity</button>
+                <button class="s-btn" onclick="toggleT('Copilot',this)">Copilot</button>
+            </div>
         </div>
-    </div>
-
-    <div class="block">
-        <h3>2. Input — What to Record</h3>
-        <div style="display:grid;grid-template-columns:1fr 160px;gap:8px;margin-bottom:8px;">
-            <input id="title" type="text" placeholder="タイトル" style="background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;" onfocus="this.style.borderColor='#60a5fa'" onblur="this.style.borderColor='#374151'">
-            <input id="doc-date" type="text" style="background:#020617;color:#6b7280;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:12px;outline:none;" readonly>
+        <div style="margin-top:10px;">
+            <input id="title" type="text" placeholder="タイトル" style="width:100%;background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:7px 10px;font-family:monospace;font-size:12px;outline:none;margin-bottom:6px;">
+            <textarea id="memo" placeholder="記録内容... Why · What · How"></textarea>
         </div>
-        <textarea id="memo" placeholder="記録内容を入力してください...&#10;Why（目的）· What（内容）· How（方法）"></textarea>
-        <div class="input-hint">5W1H で記録すると検索性が上がります</div>
     </div>
 
     <div class="status-bar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
-    <div id="launch-links" style="display:none; margin-bottom:16px; padding:12px; background:#0d1117; border:1px solid #a855f7; border-radius:6px;">
-        <div style="font-size:11px; color:#a855f7; letter-spacing:2px; margin-bottom:10px;">OPEN EACH AI TAB</div>
-        <div id="link-list" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+    <div id="launch-links" style="display:none;margin-bottom:12px;padding:10px;background:#0d1117;border:1px solid #a855f7;border-radius:6px;">
+        <div style="font-size:10px;color:#a855f7;letter-spacing:2px;margin-bottom:8px;">OPEN EACH AI TAB</div>
+        <div id="link-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
     </div>
     <button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
 
     <div class="block">
-        <h3>Mission Log — History</h3>
+        <h3>MISSION LOG</h3>
         <div class="history-container">
             <table>
                 <thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead>
@@ -134,158 +165,196 @@
 
     <script>
         let state = {c:null, targets:[]};
-        window.onload = () => { updateHistory(); refreshStatus(); setInterval(refreshStatus, 30000); };
-        document.getElementById('doc-date').value = new Date().toLocaleString('ja-JP');
-
+        let processing = false;
         const AI_URLS = {
             ChatGPT:"https://chatgpt.com/",Gemini:"https://gemini.google.com/app",
             Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",
             Copilot:"https://copilot.microsoft.com/"
         };
 
-        async function refreshStatus() {
+        window.onload = () => {
+            updateHistory();
+            refreshQueue();
+            setInterval(refreshQueue, 10000);
+        };
+
+        async function refreshQueue() {
             try {
-                const r = await fetch('/caliber/status');
+                const r = await fetch('/caliber/queue');
                 const d = await r.json();
+
+                // 層カウント
                 const layers = d.layers || {};
-                ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE','RAW_DONE'].forEach(k => {
-                    const el = document.getElementById('cnt-'+k);
+                ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k => {
+                    const el = document.getElementById('c-'+k);
                     if(el) el.innerText = layers[k] ?? '-';
                 });
-                const outEl = document.getElementById('cnt-outbox');
-                if(outEl) outEl.innerText = layers['outbox_PILS'] ?? '-';
-                const dot = document.getElementById('server-dot');
-                const txt = document.getElementById('server-status');
+                document.getElementById('c-outbox').innerText = layers['outbox_PILS'] ?? d.queue?.length ?? '-';
+                document.getElementById('ts').innerText = d.timestamp || '';
+
+                // サーバー状態
+                const dot = document.getElementById('sdot');
+                const stat = document.getElementById('sstat');
                 if(d.caliber_server === 'online') {
-                    dot.className = 'server-dot server-online';
-                    txt.innerText = 'Caliber Server: ONLINE (port 5679)';
-                } else if(d.caliber_server === 'offline') {
-                    dot.className = 'server-dot server-offline';
-                    txt.innerText = 'Caliber Server: OFFLINE';
+                    dot.className = 'server-dot online';
+                    stat.innerText = 'ONLINE :5679';
+                    stat.style.color = '#34d399';
                 } else {
-                    dot.className = 'server-dot server-error';
-                    txt.innerText = 'Caliber Server: ERROR';
+                    dot.className = 'server-dot offline';
+                    stat.innerText = 'OFFLINE';
+                    stat.style.color = '#6b7280';
+                }
+
+                // ゾーン1: キュー
+                const qEl = document.getElementById('zone-queue');
+                if(d.queue && d.queue.length > 0) {
+                    qEl.innerHTML = d.queue.map(f =>
+                        `<div class="queue-item">
+                            <div class="fname">${f.name}</div>
+                            <div class="fsize">${(f.size/1024).toFixed(1)} KB</div>
+                        </div>`
+                    ).join('');
+                } else {
+                    qEl.innerHTML = '<span style="color:#4b5563;font-size:11px;">— 待機中 —</span>';
+                }
+
+                // ゾーン2: 処理中
+                const pEl = document.getElementById('zone-processing');
+                if(processing) {
+                    pEl.innerHTML = '<div class="processing-item"><span class="processing-anim">⟳</span> 処理中...</div>';
+                } else {
+                    pEl.innerHTML = '<span style="color:#4b5563;font-size:11px;">— スタンバイ —</span>';
+                }
+
+                // ゾーン3: 結果
+                const rEl = document.getElementById('zone-result');
+                const results = [...(d.recent_results||[]), ...(d.reducing||[]).map(r=>({...r,status:'REDUCING'}))];
+                results.sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||''));
+                if(results.length > 0) {
+                    rEl.innerHTML = results.slice(0,5).map(r => {
+                        const rate = Math.round((r.restore_rate||0)*100);
+                        const ok = r.status === 'RE_REDUCED';
+                        return `<div class="result-item ${ok?'ok':'ng'}">
+                            <span class="result-rate ${ok?'ok':'ng'}">${rate}%</span>
+                            <span style="color:#6b7280;font-size:10px;margin-left:6px;">${r.status||''}</span>
+                            <span style="color:#4b5563;font-size:10px;margin-left:6px;">${(r.timestamp||'').slice(0,16)}</span>
+                            ${r.preview ? '<div class="result-preview">'+r.preview.slice(0,80)+'</div>' : ''}
+                        </div>`;
+                    }).join('');
+                } else {
+                    rEl.innerHTML = '<span style="color:#4b5563;font-size:11px;">— 結果なし —</span>';
                 }
             } catch(e) { console.error(e); }
         }
 
         async function processNow() {
-            const btn = document.querySelector('.process-btn');
-            const result = document.getElementById('process-result');
-            btn.innerText = '⟳ PROCESSING...';
-            result.innerText = 'Caliber Serverに処理を要求中...';
+            if(processing) return;
+            processing = true;
+            const msg = document.getElementById('proc-msg');
+            msg.style.color = '#f59e0b';
+            msg.innerText = '⟳ Caliber Serverに処理要求中...';
+            document.getElementById('zone-processing').innerHTML =
+                '<div class="processing-item"><span class="processing-anim">⟳</span> 処理中... しばらくお待ちください</div>';
             try {
-                const r = await fetch('/caliber/process', {method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'});
+                const r = await fetch('/caliber/process', {method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
                 const d = await r.json();
                 if(d.status === 'empty') {
-                    result.innerText = '[INFO] outbox/PILSにファイルなし';
+                    msg.style.color = '#6b7280';
+                    msg.innerText = '[INFO] outbox/PILSにファイルなし';
                 } else if(d.status === 'error') {
-                    result.style.color = '#f87171';
-                    result.innerText = '[ERROR] ' + (d.message || 'unknown error');
+                    msg.style.color = '#f87171';
+                    msg.innerText = '[ERROR] ' + (d.message||'unknown');
                 } else {
-                    result.style.color = '#34d399';
-                    result.innerText = '[OK] ' + d.status + ' | 復元率: ' + d.restore_rate + ' | ' + (d.extraction_preview || '').slice(0,100);
+                    msg.style.color = '#34d399';
+                    msg.innerText = '[OK] ' + d.status + ' | 復元率: ' + d.restore_rate + ' | chars: ' + d.total_chars;
                 }
-                await refreshStatus();
             } catch(e) {
-                result.style.color = '#f87171';
-                result.innerText = '[ERROR] Caliber Server offline? ' + e.message;
+                msg.style.color = '#f87171';
+                msg.innerText = '[ERROR] ' + e.message;
             }
-            btn.innerText = '▶ PROCESS NOW — outbox/PILS → Caliber';
+            processing = false;
+            await refreshQueue();
         }
 
         function setCat(c, el) {
             state.c = c; state.targets = [];
-            document.querySelectorAll('#btnA,#btnB').forEach(b => b.classList.remove('active-a','active-b'));
-            document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active-t'));
+            document.querySelectorAll('#btnA,#btnB').forEach(b=>b.classList.remove('active-a','active-b'));
+            document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active-t'));
             el.classList.add(c==='A'?'active-a':'active-b');
-            document.getElementById('opt-A').style.display = (c==='A')?'block':'none';
-            document.getElementById('opt-B').style.display = (c==='B')?'block':'none';
+            document.getElementById('opt-A').style.display=(c==='A')?'block':'none';
+            document.getElementById('opt-B').style.display=(c==='B')?'block':'none';
             updateBtn();
         }
-
-        function toggleT(t, el) {
+        function toggleT(t,el) {
             el.classList.toggle('active-t');
-            if(state.targets.includes(t)) state.targets = state.targets.filter(x=>x!==t);
+            if(state.targets.includes(t)) state.targets=state.targets.filter(x=>x!==t);
             else state.targets.push(t);
             updateBtn();
         }
-
         function toggleAll(el) {
             el.classList.toggle('active-t');
-            const ais = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
-            const on = el.classList.contains('active-t');
-            state.targets = on ? [...ais] : [];
-            document.querySelectorAll('#opt-B .s-btn').forEach(b => {
-                if(on) b.classList.add('active-t'); else b.classList.remove('active-t');
-            });
+            const ais=['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
+            const on=el.classList.contains('active-t');
+            state.targets=on?[...ais]:[];
+            document.querySelectorAll('#opt-B .s-btn').forEach(b=>{if(on)b.classList.add('active-t');else b.classList.remove('active-t');});
             updateBtn();
         }
-
         function updateBtn() {
-            const b = document.getElementById('exec');
-            const sb = document.getElementById('status-bar');
-            if(state.targets.length > 0) {
+            const b=document.getElementById('exec');
+            const sb=document.getElementById('status-bar');
+            if(state.targets.length>0) {
                 b.classList.add('ready');
-                b.innerText = "▶ LAUNCH: " + state.targets.join(' · ');
-                sb.style.color = '#FF8000';
-                sb.innerText = `READY — ${state.c} → ${state.targets.join(', ')}`;
+                b.innerText='▶ LAUNCH: '+state.targets.join(' · ');
+                sb.style.color='#FF8000';
+                sb.innerText=`READY — ${state.c} → ${state.targets.join(', ')}`;
             } else {
                 b.classList.remove('ready');
-                b.innerText = "SELECT MISSION TARGETS";
-                sb.style.color = '#6b7280';
-                sb.innerText = '— SELECT CATEGORY AND TARGET —';
+                b.innerText='SELECT MISSION TARGETS';
+                sb.style.color='#6b7280';
+                sb.innerText='— SELECT CATEGORY AND TARGET —';
             }
         }
-
         async function fire() {
-            if(!state.c || state.targets.length===0) return;
-            const btn = document.getElementById("exec");
-            const titleVal = document.getElementById("title").value.trim();
-            const memoVal = document.getElementById("memo").value.trim();
-            const prompt = (titleVal ? "【" + titleVal + "】\n" : "") + memoVal;
-            try { await navigator.clipboard.writeText(prompt); } catch(e) {}
-            btn.innerText = "⟳ DISPATCHING...";
-            btn.classList.remove("ready");
+            if(!state.c||state.targets.length===0) return;
+            const btn=document.getElementById('exec');
+            const titleVal=document.getElementById('title').value.trim();
+            const memoVal=document.getElementById('memo').value.trim();
+            const prompt=(titleVal?'【'+titleVal+'】\n':'')+memoVal;
+            try{await navigator.clipboard.writeText(prompt);}catch(e){}
+            btn.innerText='⟳ DISPATCHING...'; btn.classList.remove('ready');
             for(const t of state.targets) {
-                await fetch("/ask", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({c:state.c,o:t,memo:prompt})});
+                await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:state.c,o:t,memo:prompt})});
             }
-            if(state.c === "B") {
-                const orchPrompt = (titleVal ? titleVal + "\n" : "") + memoVal;
-                await fetch("/orchestra", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({prompt:orchPrompt})});
-                document.getElementById("status-bar").style.color = "#a855f7";
-                document.getElementById("status-bar").innerText = "PROMPT COPIED — OPEN EACH AI BELOW";
-                const linkList = document.getElementById("link-list");
-                linkList.innerHTML = "";
+            if(state.c==='B') {
+                await fetch('/orchestra',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:(titleVal?titleVal+'\n':'')+memoVal})});
+                document.getElementById('status-bar').style.color='#a855f7';
+                document.getElementById('status-bar').innerText='PROMPT COPIED — OPEN EACH AI BELOW';
+                const ll=document.getElementById('link-list'); ll.innerHTML='';
                 for(const t of state.targets) {
                     if(AI_URLS[t]) {
-                        const a = document.createElement("a");
-                        a.href = AI_URLS[t]; a.target = "_blank"; a.innerText = "▶ " + t;
-                        a.style.cssText = "display:inline-block;padding:10px 18px;border:1px solid #a855f7;color:#a855f7;text-decoration:none;font-family:monospace;font-size:13px;border-radius:4px;transition:0.2s;";
-                        a.onmouseover = () => a.style.background = "#1a0a2e";
-                        a.onmouseout = () => a.style.background = "transparent";
-                        linkList.appendChild(a);
+                        const a=document.createElement('a'); a.href=AI_URLS[t]; a.target='_blank'; a.innerText='▶ '+t;
+                        a.style.cssText='display:inline-block;padding:8px 14px;border:1px solid #a855f7;color:#a855f7;text-decoration:none;font-family:monospace;font-size:12px;border-radius:4px;';
+                        ll.appendChild(a);
                     }
                 }
-                document.getElementById("launch-links").style.display = "block";
+                document.getElementById('launch-links').style.display='block';
             }
-            btn.innerText = "✓ MISSION COMPLETE";
+            btn.innerText='✓ MISSION COMPLETE';
             await updateHistory();
-            setTimeout(() => { updateBtn(); document.getElementById("memo").value = ""; }, 2500);
+            setTimeout(()=>{updateBtn();document.getElementById('memo').value='';},2500);
         }
-
         async function updateHistory() {
             try {
-                const res = await fetch('/get_history');
-                const data = await res.json();
-                const body = document.getElementById('history-body');
-                body.innerHTML = "";
-                data.reverse().slice(0,50).forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `<td>${row.when||''}</td><td>${row.target_class||''}</td><td>${row.short_summary||row.free_note||''}</td>`;
+                const res=await fetch('/get_history');
+                const data=await res.json();
+                const body=document.getElementById('history-body');
+                body.innerHTML='';
+                data.reverse().slice(0,30).forEach(row=>{
+                    const tr=document.createElement('tr');
+                    tr.innerHTML=`<td>${row.when||''}</td><td>${row.target_class||''}</td><td>${row.short_summary||row.free_note||''}</td>`;
                     body.appendChild(tr);
                 });
-            } catch(e) { console.error(e); }
+            } catch(e){console.error(e);}
         }
     </script>
 </body>
