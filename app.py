@@ -1,4 +1,5 @@
 import csv
+import shutil
 import os
 import json
 import subprocess
@@ -235,7 +236,12 @@ def collect():
     h       = _hs.sha256(f"{eid}{ts_str}{text[:100]}{prev}".encode()).hexdigest()[:16]
     rec     = {"event_id":eid,"source":source,"layer":"RAW","url":url,"mode":mode,
                "text":text,"timestamp":ts_str,"hash":h,"prev_hash":prev,"status":"RAW"}
-    _json.dump(rec,open(INFIELD/f"{ts_f}_{eid}.json","w",encoding="utf-8"),ensure_ascii=False,indent=2)
+    fname = INFIELD/f"{ts_f}_{eid}.json"
+    _json.dump(rec,open(fname,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
+    PILS = P(r"C:/Users/sirok/MoCKA/data/storage/outbox/PILS")
+    PILS.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(fname, PILS/fname.name)
+    print(f"[AUTO-PILS] copied to outbox/PILS")
     with open(EVENTS,"a",encoding="utf-8",newline="") as f:
         _csv.writer(f).writerow([eid,ts_str,source,"collect","chat_import","mocka_bridge_v2",
             url[:80],"extension","external","in_operation","normal","A","infield/RAW",
