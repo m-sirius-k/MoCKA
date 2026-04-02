@@ -214,6 +214,11 @@ def collect():
     print(f'[COLLECT] {eid} from {source} ({len(text)} chars)')
     return jsonify({'status':'ok','event_id':eid,'hash':h})
 
+
+@app.route('/get_intent/<ai_name>', methods=['GET'])
+def get_intent(ai_name):
+    return jsonify(None), 204
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")

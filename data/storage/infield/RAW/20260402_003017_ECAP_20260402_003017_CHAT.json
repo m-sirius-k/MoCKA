@@ -1,0 +1,20 @@
+{
+  "event_id": "ECAP_20260402_003017_CHAT",
+  "source": "chatgpt",
+  "layer": "RAW",
+  "url": "https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21",
+  "mode": "playwright_capture",
+  "message_count": 1,
+  "messages": [
+    {
+      "index": 0,
+      "role": "full_page",
+      "content": ""
+    }
+  ],
+  "text_preview": "[full_page] ",
+  "timestamp": "2026-04-02T00:30:17",
+  "hash": "b1b75fcde31b53d6",
+  "prev_hash": "335ec1fa6cd9c112",
+  "status": "RAW"
+}
