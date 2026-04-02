@@ -1,0 +1,13 @@
+{
+  "event_id": "EN8N_20260402_091022_CLAU",
+  "source": "claude",
+  "origin_file": "20260402_085640_test.json",
+  "origin_event": "EPILS_20260402_085640",
+  "timestamp": "20260402_091022",
+  "restore_rate": 0.85,
+  "threshold": 0.8,
+  "extraction": "Here are the 3 most important structural insights from the text, presented as bullet points:\n\n*   **Three-Layered Structure:** MoCKA utilizes a core separation, shadow evaluation, and caliber圏 (圏) structure – a three-tiered system.\n*   **Core Separation:** A fundamental design element involving distinct separation of components.\n*   **Shadow Evaluation:** A system for evaluating and assessing components (likely related to risk or potential).\n\n**Note:** \"Caliber 圏\" is a Japanese term that translates roughly to \"Category Theory,\" which is a highly abstract branch of mathematics. It's a key element of MoCKA's architecture, representing a formal system for reasoning and knowledge representation.",
+  "hash": "1ffd358fa6fcf11b",
+  "status": "RE_REDUCED",
+  "pipeline": "caliber_server_v01"
+}

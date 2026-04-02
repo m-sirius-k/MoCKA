@@ -335,3 +335,6 @@ E20260402_011,2026-04-02T11:31:27,mocka_router,collaboration,router,interface/ro
 [既存タブ] ChatGPT: https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21
 [既存タブ] Gemini: https://gemini.go",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:18208) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to e | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=87.8s
 ERRD_20260402_073756_CLAU,20260402_073756,condense_worker,pass2,chat_condense,mocka_condense_worker.py,20260402_031919_REDUCED_CLAU.json,worker,internal,in_operation,normal,A,infield/RE_REDUCED,"The critical insight is that MoCKA’s architecture, with its protocol-based integration and layered a",ad987b2100077296,pass2_complete,RE_REDUCED,local,condense_pipeline,N/A,N/A,hash=ea93c629ca5077b0 rate=92pct source=claude
+EN8N_20260402_091022_CLAU,20260402_091022,caliber_server,process,caliber_pipeline,mocka_caliber_server.py,20260402_085640_test.json,server,internal,in_operation,normal,A,infield/RE_REDUCED,"Here are the 3 most important structural insights from the text, presented as bullet points:
+
+*   **",acd618e57d3f98a2,caliber_complete,RE_REDUCED,local,caliber_pipeline,N/A,N/A,hash=1ffd358fa6fcf11b rate=85pct source=claude
