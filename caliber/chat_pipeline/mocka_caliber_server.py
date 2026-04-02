@@ -115,7 +115,10 @@ def process():
             extract[:100],prev,"caliber_complete",status,
             "local","caliber_pipeline","N/A","N/A",
             "hash="+h+" rate="+str(int(rate*100))+"pct chars="+str(total_chars)+" chunks="+str(len(chunks))])
-    fpath.rename(PILS_DONE / fpath.name)
+    done_name = fpath.stem + "_" + datetime.now(UTC).strftime("%H%M%S") + fpath.suffix
+    done_path = PILS_DONE / done_name
+    if done_path.exists(): done_path = PILS_DONE / (fpath.stem + "_" + str(int(datetime.now(UTC).timestamp())) + fpath.suffix)
+    fpath.rename(done_path)
     print("[OK]", status, out.name)
     return jsonify({
         "status": status, "event_id": eid,
