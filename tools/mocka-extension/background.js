@@ -7,6 +7,7 @@ const AI_DOMAINS = {
   'Genspark':   'genspark.ai'
 };
 
+// MoCKA→AI送信（既存機能）
 async function poll() {
   for (const [name, domain] of Object.entries(AI_DOMAINS)) {
     try {
@@ -39,16 +40,70 @@ async function poll() {
 }
 setInterval(poll, 1500);
 
+// 右クリックメニュー登録
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({ id:'mocka_collect_selected', title:'選択範囲をMoCKAに収集', contexts:['selection'] });
-  chrome.contextMenus.create({ id:'mocka_collect_full', title:'このchat全文をMoCKAに収集（自動スクロール）', contexts:['page'] });
+  chrome.contextMenus.create({ id:'mocka-save',     title:'MoCKAに保存',   contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-share',    title:'MoCKAで共有',   contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-orchestra',title:'MoCKAで協議',   contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-collect',  title:'このchat全文をMoCKAに収集', contexts:['page'] });
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  const text   = info.selectionText || '';
   const source = detectSource(tab.url);
-  if (info.menuItemId === 'mocka_collect_selected') {
-    await sendToMocka(source, info.selectionText, tab.url, 'selected');
-  } else if (info.menuItemId === 'mocka_collect_full') {
+
+  // 保存
+  if (info.menuItemId === 'mocka-save') {
+    fetch('http://localhost:5000/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({c:'A', o:'infield', memo:'【保存】' + text})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKAに保存しました')
+      });
+    });
+  }
+
+  // 共有
+  if (info.menuItemId === 'mocka-share') {
+    const targets = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
+    targets.forEach(t => {
+      fetch('http://localhost:5000/ask', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({c:'B', o:t, memo:text})
+      });
+    });
+    fetch('http://localhost:5000/orchestra', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: text, mode: 'share'})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKAで共有しました')
+      });
+    });
+  }
+
+  // 協議
+  if (info.menuItemId === 'mocka-orchestra') {
+    fetch('http://localhost:5000/orchestra', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: text})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKAオーケストラを起動しました')
+      });
+    });
+  }
+
+  // chat全文収集（自動スクロール）
+  if (info.menuItemId === 'mocka-collect') {
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: async function(source) {
@@ -87,7 +142,15 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       args: [source]
     });
     if (results && results[0] && results[0].result) {
-      await sendToMocka(source, results[0].result, tab.url, 'full_scroll');
+      await fetch('http://127.0.0.1:5000/collect', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ source, text: results[0].result, url: tab.url, mode: 'full_scroll', timestamp: new Date().toISOString() })
+      });
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKAに全文収集しました')
+      });
     }
   }
 });
@@ -100,22 +163,4 @@ function detectSource(url) {
   if (url.includes('claude.ai'))         return 'claude';
   if (url.includes('microsoft.com'))     return 'copilot';
   return 'unknown';
-}
-
-async function sendToMocka(source, text, url, mode) {
-  if (!text) return;
-  try {
-    const res = await fetch('http://127.0.0.1:5000/collect', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source, text, url, mode, timestamp: new Date().toISOString() })
-    });
-    if (res.ok) {
-      chrome.notifications.create({
-        type: 'basic', iconUrl: 'icon.png',
-        title: 'MoCKA収集完了',
-        message: `${source} から収集しました`
-      });
-    }
-  } catch(e) { console.error('MoCKA send error:', e); }
 }
