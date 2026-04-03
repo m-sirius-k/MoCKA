@@ -45,12 +45,11 @@ def sample_text(text, chunk_size=CHUNK_SIZE, max_chunks=MAX_CHUNKS):
     if total <= chunk_size * max_chunks:
         return [text[i:i+chunk_size] for i in range(0, total, chunk_size)]
     chunks = []
-    chunks.append(text[:chunk_size])
-    if max_chunks >= 3:
-        mid = total // 2
-        chunks.append(text[mid:mid+chunk_size])
-    chunks.append(text[-chunk_size:])
-    return chunks[:max_chunks]
+    step = total // max_chunks
+    for i in range(max_chunks):
+        start = step * i
+        chunks.append(text[start:start+chunk_size])
+    return chunks
 
 @app.route("/health", methods=["GET"])
 def health():
