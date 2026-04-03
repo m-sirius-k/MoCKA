@@ -1,0 +1,15 @@
+{
+  "event_id": "EN8N_20260403_015822_CLAU",
+  "source": "claude",
+  "origin_file": "test_rerun.json",
+  "origin_event": "ECOL_20260402_095350_CLAU",
+  "timestamp": "20260403_015822",
+  "total_chars": 32140,
+  "sampled_chunks": 3,
+  "restore_rate": 0.65,
+  "threshold": 0.8,
+  "extraction": "Here are the 3 most important structural insights from the provided information, presented as bullet points:\n\n*   **Focus on Concise Execution:** The emphasis is on simplifying explanations and executing tasks within a single \"box\" (presumably a container or process) for efficiency.\n*   **Direct Script Execution from the Working Directory:** Scripts need to be executed directly from the current directory (using `cd`) to avoid pathing issues.\n*   **Step-by-Step Coding:** The process requires a clear, sequential approach to coding, outlining specific steps (e.g., “1st,” “2nd”) to guide execution.\nHere are the 3 most important structural insights extracted from the provided text:\n\n*   **Directory Structure:** The data is organized within a `C:\\Users\\sirok\\MoCKA\\data\\storage` directory, containing subdirectories like `infield`, `outfield`, `インシデント`, and `クレーム`.\n*   **File Types:** Several file types exist, including directories (d---), text files (a---), and JSON files (.json).\n*   **Key File Names:** Specific file names like `RE_REDUCED` (20260402_073756_CLAU.json) and the various `.txt` files within the `infield` directory are central to the project.\nHere are the 3 most important structural insights from the provided conversation, presented as bullet points:\n\n*   **Automated Capture Workflow:** The system is designed to automatically capture conversations from a chat interface (like Claude.ai) and process them through a pipeline.  This is achieved through scripts like `mocka_chat_capture.py`.\n*   **Dependency on `mocka_chat_capture.py`:** The core functionality relies heavily on this script for initiating the capture process, including specifying the chat source and potentially requiring manual login steps.\n*   **Manual Intervention Required:** The system isn't entirely automated; the user needs to initiate the capture process using the script and may need to manually log in before the capture can begin.  There is a need for user action to get the pipeline working.",
+  "hash": "4e63fe91adf94ebd",
+  "status": "REDUCING",
+  "pipeline": "caliber_server_v02"
+}
