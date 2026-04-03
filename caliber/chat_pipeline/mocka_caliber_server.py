@@ -86,11 +86,11 @@ def process():
     all_extracts = []
     for i, chunk in enumerate(chunks):
         print(f"[CALIBER] extract chunk {i+1}/{len(chunks)}...")
-        result = ask("Extract the 3 most important structural insights as bullet points:\n\n" + chunk)
+        result = ask("以下のテキストから最も重要な構造的洞察を3つ、箇条書きで日本語で抽出してください:\n\n" + chunk)
         all_extracts.append(result)
     extract = chr(10).join(all_extracts)
     print("[CALIBER] shadow eval...")
-    rate_raw = ask("Estimate what percentage (0-100) of the original meaning is preserved in this summary. Reply ONLY with a number.\n\nSummary: " + extract[:2000])
+    rate_raw = ask("以下の要約が元の文章の意味をどの程度保持しているか、0から100の数字のみで回答してください。\n\n要約: " + extract[:2000])
     rate = parse_rate(rate_raw)
     ts  = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
     eid = "EN8N_" + ts + "_" + source[:4].upper()
