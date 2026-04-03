@@ -21,7 +21,7 @@ MODEL      = "gemma3:4b"
 UTC        = timezone.utc
 THRESHOLD  = 0.80
 CHUNK_SIZE = 2000
-MAX_CHUNKS = 3
+MAX_CHUNKS = 5
 TIMEOUT    = 300
 
 for d in [OUTBOX, PILS_DONE, RE_REDUCED, REDUCING]:
