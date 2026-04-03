@@ -1,0 +1,15 @@
+{
+  "event_id": "EN8N_20260402_231918_CLAU",
+  "source": "claude",
+  "origin_file": "20260402_095350_ECOL_20260402_095350_CLAU.json",
+  "origin_event": "ECOL_20260402_095350_CLAU",
+  "timestamp": "20260402_231918",
+  "total_chars": 32140,
+  "sampled_chunks": 3,
+  "restore_rate": 0.75,
+  "threshold": 0.8,
+  "extraction": "Here are the 3 most important structural insights extracted from the provided text, presented as bullet points:\n\n*   **Focus on Concise Implementation:** The instructions emphasize simplicity in explanations (\"前置/理論説明は簡素に\") and aiming for single-step execution within a single \"box\" (1ボックスで一工程を一撃で).\n*   **Local Execution and File Management:** The troubleshooting process highlights direct execution of Python scripts from the current directory (cdから書く) and careful file copying/placement to ensure proper execution paths.\n*   **Step-by-Step Code Development:** There's a clear preference for a sequential approach to coding, outlining a \"1つめ 2つめ\" structure for defining and executing code steps.\nHere are 3 key structural insights extracted from the provided text:\n\n*   **Directory Structure:** The data is organized within a `C:\\Users\\sirok\\MoCKA\\data\\storage` directory, which contains subdirectories like `infield`, `outfield`, `インシデント`, `クレーム`, and `公文書`.\n*   **File Types:** The `infield` directory contains various file types including `.txt` files and JSON files with specific naming conventions (e.g., `20260401_225322_E20260402_00[number].json`).\n*   **Key Files:**  The file `RE_REDUCED: 20260402_073756_ERRD_20260402_073756_CLAU.json` and the `REDUCED` directory appear to be central to the process, possibly representing a reduced dataset.\nHere are the 3 most important structural insights extracted from the conversation, presented as bullet points:\n\n*   **Automated Capture Requires a Specific Script:** The core workflow involves running the `mocka_chat_capture.py` script to collect chat data, but it requires explicit invocation (e.g., `python scripts/mocka_chat_capture.py --source claude`).\n*   **Session Management is Critical:** The system relies on a `claude_state.json` file to store session information, and its absence triggers a warning and requires manual login via a separate script (`python scripts/mocka_chat_capture.py --login --source claude`).\n*   **User Interaction is Needed for Initial Setup:** The initial flow relies on the user manually copying chat content (like the Claude conversation) to the `C:\\Users\\sirok\\MoCKA` directory for processing.\n\nWould you like me to elaborate on any of these points or analyze the conversation further?",
+  "hash": "7183de585751fc54",
+  "status": "REDUCING",
+  "pipeline": "caliber_server_v02"
+}
