@@ -1,9 +1,9 @@
 {
   "schema": "mocka.governance.anchor_record.v1",
   "anchor_type": "manual_external_post",
-  "sealed_summary_hash": "1f3741a211298351574f99815980e7753b10febc24b3b53a9517dfcee1f28d88",
-  "sealed_at_utc": "2026-04-03T01:20:10Z",
-  "external_ref": "https://github.com/m-sirius-k/MoCKA/commit/5d9e2a5394d4e78130b850c3de5e69c504fcea2f",
+  "sealed_summary_hash": "348af434393109cf3b5c91f94249462e3f7b4f551dd199ddc3d8e487097fc8dc",
+  "sealed_at_utc": "2026-04-03T01:47:42Z",
+  "external_ref": "https://github.com/m-sirius-k/MoCKA/commit/8ad1813467209a358b11f3b3910dd4f9f7802458",
   "external_ref_semantics": "sealing_commit_reference",
   "summary_hash_spec_version": "1.0",
   "note": "Re-anchored after governance files restoration 2026-03-26"
