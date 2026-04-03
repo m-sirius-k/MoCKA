@@ -16,7 +16,7 @@ def get_next_event_id():
     prefix = f"E{today}_"
     max_num = 0
     if os.path.exists(EVENTS_CSV):
-        with open(EVENTS_CSV, encoding="utf-8") as f:
+        with open(EVENTS_CSV, encoding="utf-8-sig") as f:
             for row in csv.reader(f):
                 if row and row[0].startswith(prefix):
                     try:
@@ -33,7 +33,7 @@ def calc_error_rate():
     """B3: 直近10件のERROR率"""
     if not os.path.exists(EVENTS_CSV):
         return 0.0
-    with open(EVENTS_CSV, encoding="utf-8") as f:
+    with open(EVENTS_CSV, encoding="utf-8-sig") as f:
         rows = list(csv.reader(f))
     recent = rows[-10:] if len(rows) > 10 else rows
     err = sum(1 for r in recent if "ERROR" in str(r))
@@ -43,7 +43,7 @@ def calc_drift_v3():
     """AEGIS: Drift v3多指標"""
     if not os.path.exists(EVENTS_CSV):
         return 0.0
-    with open(EVENTS_CSV, encoding="utf-8") as f:
+    with open(EVENTS_CSV, encoding="utf-8-sig") as f:
         rows = list(csv.reader(f))
     recent = rows[-20:] if len(rows) > 20 else rows
     error_rate = sum(1 for r in recent if "ERROR" in str(r)) / max(len(recent), 1)
