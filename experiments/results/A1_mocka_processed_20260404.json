@@ -1,0 +1,64 @@
+{
+  "experiment_id": "A1_mocka_processed",
+  "file": "C:\\Users\\sirok\\MoCKA\\data\\storage\\infield\\RE_REDUCED\\20260403_030108_EN8N_20260403_030108_CLAU.json",
+  "size": 2162,
+  "stage_results": {
+    "Observation": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": true,
+      "count": 1,
+      "depth": 1,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 5,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 3,
+      "depth": 3,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": true,
+      "count": 1,
+      "depth": 1,
+      "weight": 1.5
+    }
+  },
+  "recovery_rate": 50.0,
+  "weighted_recovery_rate": 50.0,
+  "missing_stages": [
+    "Observation",
+    "Recurrence",
+    "Prevention",
+    "Decision"
+  ],
+  "timestamp": "2026-04-04T11:40:51.934957"
+}
