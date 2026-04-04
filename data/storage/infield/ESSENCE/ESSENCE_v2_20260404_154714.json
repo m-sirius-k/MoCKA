@@ -1,0 +1,59 @@
+{
+  "event_id": "ESSENCE_v2_20260404_154714",
+  "timestamp": "2026-04-04T15:47:14.702574",
+  "pipeline": "mocka_essence_v2",
+  "summary": {
+    "total_cores": 11,
+    "avg_core_rr": 68.2,
+    "strongest_stage": {
+      "stage": "Recurrence",
+      "coverage": 81.8
+    },
+    "weakest_stage": {
+      "stage": "Decision",
+      "coverage": 54.5
+    }
+  },
+  "stage_coverage": {
+    "Observation": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11
+    },
+    "Record": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11
+    },
+    "Incident": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11
+    },
+    "Recurrence": {
+      "coverage_pct": 81.8,
+      "found_in": 9,
+      "total_cores": 11
+    },
+    "Prevention": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11
+    },
+    "Decision": {
+      "coverage_pct": 54.5,
+      "found_in": 6,
+      "total_cores": 11
+    },
+    "Action": {
+      "coverage_pct": 81.8,
+      "found_in": 9,
+      "total_cores": 11
+    },
+    "Audit": {
+      "coverage_pct": 81.8,
+      "found_in": 9,
+      "total_cores": 11
+    }
+  }
+}

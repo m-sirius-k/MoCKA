@@ -2,8 +2,7 @@
   "event_id": "20260402_091022_CORE_20260402_091022_CLAU",
   "source_re_reduced": "20260402_091022_EN8N_20260402_091022_CLAU.json",
   "source": "claude",
-  "origin_file": "20260402_085640_test.json",
-  "timestamp": "2026-04-04T15:40:15.073000",
+  "timestamp": "2026-04-04T15:47:14.608170",
   "stage_classification": {
     "Observation": {
       "found": false,
@@ -60,5 +59,5 @@
   "core_rr": 0.0,
   "source_restore_rate": 0.85,
   "hash": "1a19c0a2dc3ecf67",
-  "pipeline": "mocka_core_v1_local"
+  "pipeline": "mocka_core_v2_recurrence_enhanced"
 }

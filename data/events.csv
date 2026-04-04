@@ -681,3 +681,19 @@ EN8N_20260404_060845_CHAT,20260404_060845,caliber_server,process,caliber_pipelin
 
 *   **モジュール間の明確な依存関係と役割分担:** `mocka_infield.ps1` が `mai[4D[K
 `main_l",897eb8f43c257f68,caliber_complete,RE_REDUCED,local,caliber_pipeline,N/A,N/A,hash=f6e13c430fea96e0 rate=85pct chars=174466 chunks=5
+ECOL_20260404_071320_CLAU,2026-04-04T07:13:20,claude,collect,chat_import,mocka_bridge_v2,https://claude.ai/chat/af4d8f37-52e6-41d1-a40e-d7e109d78778,extension,external,in_operation,normal,A,infield/RAW,"[user] Q: 今日のセッションで進めたいのはどれですか？
+A: Related Work追加（論文第2章補強）
+
+[assistant] https://github.com/m-sirius-",d4f9cd9ae7d6ea85,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=fd6678bd49d0d9b8|source=claude|mode=full_scroll
+EN8N_20260404_072052_CLAU,20260404_072052,caliber_server,process,caliber_pipeline,mocka_caliber_server.py,20260404_071320_ECOL_20260404_071320_CLAU.json,server,internal,in_operation,normal,A,infield/RE_REDUCED,"以下に、テキストから抽出した最も重要な構造的洞察を3つ、箇条書きで日本語で示[K
+します。
+
+*   **MoCKAの構造的な説明の優先順位:**  セッションの主要なタスクは、MoCKAの[K
+",1bdbe26a9f66a226,caliber_complete,RE_REDUCED,local,caliber_pipeline,N/A,N/A,hash=b4d57f8d168858c9 rate=85pct chars=98534 chunks=5
+ECOL_20260404_072131_CLAU,2026-04-04T07:21:31,claude,collect,chat_import,mocka_bridge_v2,https://claude.ai/chat/676135d5-e979-483a-8c7b-82bbb2ddd3ac,extension,external,in_operation,normal,A,infield/RAW,"[user] こたえて
+
+[assistant] 🗺️ MoCKA オーケストラ実装ロードマップ (Phase 36-40)Phase 36: 憲法制定と環境整備 (Foundation)[Actio",be684754e6119b31,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,hash=5cf03074847cb459|source=claude|mode=full_scroll
+EN8N_20260404_073246_CLAU,20260404_073246,caliber_server,process,caliber_pipeline,mocka_caliber_server.py,20260404_072131_ECOL_20260404_072131_CLAU.json,server,internal,in_operation,normal,A,infield/RE_REDUCED,"このテキストから、MoCKAオーケストラ実装ロードマップにおける最も重要な構造的[K
+洞察を3つ抽出します。
+
+*   **階層的な合意形成プロセス：** 「Main Responder」「検証者」",a298834bea6c5764,caliber_complete,RE_REDUCED,local,caliber_pipeline,N/A,N/A,hash=a9ce7b1300a17c39 rate=85pct chars=182831 chunks=5
