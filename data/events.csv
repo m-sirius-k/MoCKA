@@ -537,10 +537,30 @@ E20260403_033,2026-04-03T11:21:45,mocka_router,share,router,interface/router.py,
 [復元] Copilot: https://copilot.microsoft.com/chats/AfMkS8JwjE5",N/A,share_complete,generation,local,share,N/A,N/A,(node:14900) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to e | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=33.9s
 EN8N_20260403_023902_CLAU,20260403_023902,caliber_server,process,caliber_pipeline,mocka_caliber_server.py,test_ja2.json,server,internal,in_operation,normal,A,infield/REDUCING,"以下に、提供されたテキストから抽出した最も重要な構造的洞察を3つ、箇条書きで日本語で示します。
 
-*   **ファイルパスの誤りと、複数場所でのコード実行:** 複数のファイルパス（`X:\down\",69156858a0dc79a2,caliber_complete,REDUCING,local,caliber_pipeline,N/A,N/A,hash=c044ea49863b4142 rate=65pct chars=32140 chunks=3
+*   **ファイルパスの誤りと、複数場所でのコード実行:** 複数のファイルパス（`X:\down\",69156858a0dc79a2,caliber_complete,REDUCING,local,caliber_pipeline,N/A,N/A,hash=c044ea49863b4142 rate=65pct chars=32140 chunks=3,
 EN8N_20260403_024832_CLAU,20260403_024832,caliber_server,process,caliber_pipeline,mocka_caliber_server.py,test_5chunk.json,server,internal,in_operation,normal,A,infield/REDUCING,"このテキストから抽出できる最も重要な構造的洞察は以下の3点です：
 
-*   **ファイルパスの誤り及びコードの実行方法の不備:** 実行しようとしたファイルパス（`X:\down\`など）が正しくない",39852b9326ad0b66,caliber_complete,REDUCING,local,caliber_pipeline,N/A,N/A,hash=b6865d273334f954 rate=75pct chars=32140 chunks=3
+*   **ファイルパスの誤り及びコードの実行方法の不備:** 実行しようとしたファイルパス（`X:\down\`など）が正しくない",39852b9326ad0b66,caliber_complete,REDUCING,local,caliber_pipeline,N/A,N/A,hash=b6865d273334f954 rate=75pct chars=32140 chunks=3,
 EN8N_20260403_030108_CLAU,20260403_030108,caliber_server,process,caliber_pipeline,mocka_caliber_server.py,test_5eq.json,server,internal,in_operation,normal,A,infield/RE_REDUCED,"このテキストから抽出できる最も重要な構造的洞察は以下の3点です。
 
-*   **Windows環境における文字列処理の特殊性への意識:** '\n'.join の処理において、Windows環境で改行",d21f25ef7dccfb63,caliber_complete,RE_REDUCED,local,caliber_pipeline,N/A,N/A,hash=5f5e050e0dfa79a8 rate=95pct chars=32140 chunks=3
+*   **Windows環境における文字列処理の特殊性への意識:** '\n'.join の処理において、Windows環境で改行",d21f25ef7dccfb63,caliber_complete,RE_REDUCED,local,caliber_pipeline,N/A,N/A,hash=5f5e050e0dfa79a8 rate=95pct chars=32140 chunks=3,
+E20260403_034,2026-04-03T12:43:05,mocka_router,collaboration,router,interface/router.py,なぁＧＰＴ　おいらにこれをまとめきれるだろうか？ だんだん　真の動く装置を　1から作ってるんですが　あとどれほど作らないといけないんだろう？  このMOCKAは　きっと終わりはないです。　果てしない仕,cli,internal,in_operation,normal,A,outfield,[collaboration] なぁＧＰＴ　おいらにこれをまとめきれるだろうか？ だんだん　真の動く装置を　1から作ってるんですが　,"[Claude] 既存タブ検索中...
+[Claude] 発見: https://claude.ai/chat/ef50770a-d571-458c-9e3e-185cf505283c
+[既存タブ] ChatGPT: https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21
+[既存タブ] Perplexity: https://www.p",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:14648) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to e | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=16.5s
+E20260403_035,2026-04-03T17:10:58,mocka_router,collaboration,router,interface/router.py,学会・発表先,cli,internal,in_operation,normal,A,outfield,[collaboration] 学会・発表先,"[Claude] 既存タブ検索中...
+[Claude] 発見: https://claude.ai/chat/ef50770a-d571-458c-9e3e-185cf505283c
+[復元] ChatGPT: https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21
+[復元] Gemini: https://gemini.google",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:5180) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=146.8s
+E20260403_036,2026-04-03T17:13:14,mocka_router,collaboration,router,interface/router.py,今までの草案から　論文提出のたたき台　作って,cli,internal,in_operation,normal,A,outfield,[collaboration] 今までの草案から　論文提出のたたき台　作って,"[Claude] 既存タブ検索中...
+[Claude] 発見: https://claude.ai/chat/ef50770a-d571-458c-9e3e-185cf505283c
+[既存タブ] ChatGPT: https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21
+[既存タブ] Perplexity: https://www.p",N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:3180) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=49.1s
+E20260404_001,2026-04-04T09:21:57,mocka_router,save,router,interface/router.py,共有: Perplexity,cli,internal,in_operation,normal,A,outfield,[save] 共有: Perplexity,おはようございます今日もよろしく,N/A,save_complete,generation,local,save,N/A,N/A,manual_save | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE
+E20260404_001,2026-04-04T09:21:57,mocka_router,save,router,interface/router.py,共有: Claude,cli,internal,in_operation,normal,A,outfield,[save] 共有: Claude,おはようございます今日もよろしく,N/A,save_complete,generation,local,save,N/A,N/A,manual_save | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE
+E20260404_001,2026-04-04T09:21:57,mocka_router,save,router,interface/router.py,共有: Gemini,cli,internal,in_operation,normal,A,outfield,[save] 共有: Gemini,おはようございます今日もよろしく,N/A,save_complete,generation,local,save,N/A,N/A,manual_save | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE
+E20260404_001,2026-04-04T09:21:57,mocka_router,save,router,interface/router.py,共有: ChatGPT,cli,internal,in_operation,normal,A,outfield,[save] 共有: ChatGPT,おはようございます今日もよろしく,N/A,save_complete,generation,local,save,N/A,N/A,manual_save | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE
+E20260404_001,2026-04-04T09:21:57,mocka_router,save,router,interface/router.py,共有: Copilot,cli,internal,in_operation,normal,A,outfield,[save] 共有: Copilot,おはようございます今日もよろしく,N/A,save_complete,generation,local,save,N/A,N/A,manual_save | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE
+E20260404_002,2026-04-04T09:22:15,mocka_router,share,router,interface/router.py,おはようございます今日もよろしく,cli,internal,in_operation,normal,A,outfield,[share] おはようございます今日もよろしく,"[復元] ChatGPT: https://chatgpt.com/c/68d88894-f2a8-8330-8c31-36bb38566c21
+[復元] Gemini: https://gemini.google.com/app/8989e3019901961d?hl=ja
+[復元] Copilot: https://copilot.microsoft.com/chats/AfMkS8JwjE5",N/A,share_complete,generation,local,share,N/A,N/A,(node:3048) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE | response_time=18.2s
