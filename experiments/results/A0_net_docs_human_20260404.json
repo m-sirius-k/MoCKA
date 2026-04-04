@@ -1,0 +1,68 @@
+{
+  "experiment_id": "A0_net_docs_human",
+  "file": "net_docs_combined.txt",
+  "size": 7468,
+  "stage_results": {
+    "Observation": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.5
+    }
+  },
+  "recovery_rate": 0.0,
+  "weighted_recovery_rate": 0.0,
+  "missing_stages": [
+    "Observation",
+    "Record",
+    "Incident",
+    "Recurrence",
+    "Prevention",
+    "Decision",
+    "Action",
+    "Audit"
+  ],
+  "timestamp": "2026-04-04T12:14:42.466493"
+}

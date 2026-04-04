@@ -1,0 +1,108 @@
+{
+  "experiment": "A1_per_session",
+  "sessions": [
+    {
+      "file": "20260402_002608_ECAP_20260402_002608_CHAT.json",
+      "source": "CHAT",
+      "size": 465,
+      "wrr": 0.0,
+      "missing": [
+        "Observation",
+        "Record",
+        "Incident",
+        "Recurrence",
+        "Prevention",
+        "Decision",
+        "Action",
+        "Audit"
+      ]
+    },
+    {
+      "file": "20260402_002832_ECAP_20260402_002832_CHAT.json",
+      "source": "CHAT",
+      "size": 465,
+      "wrr": 0.0,
+      "missing": [
+        "Observation",
+        "Record",
+        "Incident",
+        "Recurrence",
+        "Prevention",
+        "Decision",
+        "Action",
+        "Audit"
+      ]
+    },
+    {
+      "file": "20260402_003017_ECAP_20260402_003017_CHAT.json",
+      "source": "CHAT",
+      "size": 465,
+      "wrr": 0.0,
+      "missing": [
+        "Observation",
+        "Record",
+        "Incident",
+        "Recurrence",
+        "Prevention",
+        "Decision",
+        "Action",
+        "Audit"
+      ]
+    },
+    {
+      "file": "20260402_010849_ECOL_20260402_010849_CHAT.json",
+      "source": "CHAT",
+      "size": 14813,
+      "wrr": 72.7,
+      "missing": [
+        "Incident",
+        "Recurrence"
+      ]
+    },
+    {
+      "file": "20260402_012123_ECOL_20260402_012123_GEMI.json",
+      "source": "GEMI",
+      "size": 88231,
+      "wrr": 100.0,
+      "missing": []
+    },
+    {
+      "file": "20260402_012905_ECOL_20260402_012905_GEMI.json",
+      "source": "GEMI",
+      "size": 88231,
+      "wrr": 100.0,
+      "missing": []
+    },
+    {
+      "file": "20260402_013007_ECOL_20260402_013007_COPI.json",
+      "source": "COPI",
+      "size": 157241,
+      "wrr": 100.0,
+      "missing": []
+    },
+    {
+      "file": "20260402_014343_ECOL_20260402_014343_CLAU.json",
+      "source": "CLAU",
+      "size": 188836,
+      "wrr": 100.0,
+      "missing": []
+    },
+    {
+      "file": "20260402_095350_ECOL_20260402_095350_CLAU.json",
+      "source": "CLAU",
+      "size": 33943,
+      "wrr": 100.0,
+      "missing": []
+    },
+    {
+      "file": "20260404_023347_ECOL_20260404_023347_COPI.json",
+      "source": "COPI",
+      "size": 36334,
+      "wrr": 90.9,
+      "missing": [
+        "Recurrence"
+      ]
+    }
+  ],
+  "avg_wrr": 66.4
+}

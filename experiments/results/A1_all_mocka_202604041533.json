@@ -1,0 +1,168 @@
+{
+  "experiment": "A1_all_mocka",
+  "count": 23,
+  "avg_rr_pct": 78.8,
+  "results": [
+    {
+      "id": "A1-M1",
+      "file": "20260402_073756_ERRD_20260402_073756_CLAU.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.92,
+      "origin": "N/A"
+    },
+    {
+      "id": "A1-M2",
+      "file": "20260402_091022_EN8N_20260402_091022_CLAU.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260402_085640_test.json"
+    },
+    {
+      "id": "A1-M3",
+      "file": "20260402_105831_EN8N_20260402_105831_CLAU.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260402_095350_ECOL_20260402_095350_CLAU.json"
+    },
+    {
+      "id": "A1-M4",
+      "file": "20260403_030108_EN8N_20260403_030108_CLAU.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.95,
+      "origin": "test_5eq.json"
+    },
+    {
+      "id": "A1-M5",
+      "file": "20260404_042759_EN8N_20260404_042759_CHAT.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260404_035958_ECOL_20260404_035958_CHAT.json"
+    },
+    {
+      "id": "A1-M6",
+      "file": "20260404_050244_EN8N_20260404_050244_CHAT.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260404_040014_ECOL_20260404_040014_CHAT.json"
+    },
+    {
+      "id": "A1-M7",
+      "file": "20260404_050936_EN8N_20260404_050936_CHAT.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260404_040050_ECOL_20260404_040050_CHAT.json"
+    },
+    {
+      "id": "A1-M8",
+      "file": "20260404_052421_EN8N_20260404_052421_CLAU.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.95,
+      "origin": "20260404_052306_ECOL_20260404_052306_CLAU.json"
+    },
+    {
+      "id": "A1-M9",
+      "file": "20260404_052543_EN8N_20260404_052543_CLAU.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.95,
+      "origin": "20260404_052317_ECOL_20260404_052317_CLAU.json"
+    },
+    {
+      "id": "A1-M10",
+      "file": "20260404_053752_EN8N_20260404_053752_CHAT.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260404_052355_ECOL_20260404_052355_CHAT.json"
+    },
+    {
+      "id": "A1-M11",
+      "file": "20260404_054952_EN8N_20260404_054952_COPI.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260404_052943_ECOL_20260404_052943_COPI.json"
+    },
+    {
+      "id": "A1-M12",
+      "file": "20260404_060845_EN8N_20260404_060845_CHAT.json",
+      "folder": "RE_REDUCED",
+      "restore_rate": 0.85,
+      "origin": "20260404_053422_ECOL_20260404_053422_CHAT.json"
+    },
+    {
+      "id": "A1-M13",
+      "file": "20260402_104836_EN8N_20260402_104836_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.65,
+      "origin": "20260402_095350_ECOL_20260402_095350_CLAU.json"
+    },
+    {
+      "id": "A1-M14",
+      "file": "20260402_110556_EN8N_20260402_110556_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.65,
+      "origin": "20260402_095350_ECOL_20260402_095350_CLAU.json"
+    },
+    {
+      "id": "A1-M15",
+      "file": "20260402_231918_EN8N_20260402_231918_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.75,
+      "origin": "20260402_095350_ECOL_20260402_095350_CLAU.json"
+    },
+    {
+      "id": "A1-M16",
+      "file": "20260403_015822_EN8N_20260403_015822_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.65,
+      "origin": "test_rerun.json"
+    },
+    {
+      "id": "A1-M17",
+      "file": "20260403_023902_EN8N_20260403_023902_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.65,
+      "origin": "test_ja2.json"
+    },
+    {
+      "id": "A1-M18",
+      "file": "20260403_024832_EN8N_20260403_024832_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.75,
+      "origin": "test_5chunk.json"
+    },
+    {
+      "id": "A1-M19",
+      "file": "20260404_041829_EN8N_20260404_041829_COPI.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.75,
+      "origin": "20260404_023347_ECOL_20260404_023347_COPI.json"
+    },
+    {
+      "id": "A1-M20",
+      "file": "20260404_051926_EN8N_20260404_051926_GEMI.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.75,
+      "origin": "20260404_040229_ECOL_20260404_040229_GEMI.json"
+    },
+    {
+      "id": "A1-M21",
+      "file": "20260404_055635_EN8N_20260404_055635_CLAU.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.65,
+      "origin": "20260404_053202_ECOL_20260404_053202_CLAU.json"
+    },
+    {
+      "id": "A1-M22",
+      "file": "20260404_060243_EN8N_20260404_060243_CHAT.json",
+      "folder": "REDUCING",
+      "restore_rate": 0.65,
+      "origin": "20260404_053356_ECOL_20260404_053356_CHAT.json"
+    },
+    {
+      "id": "A1-M23",
+      "file": "test_ja_moved.json",
+      "folder": "PILS_DONE",
+      "restore_rate": 0.65,
+      "origin": "test_rerun.json"
+    }
+  ]
+}

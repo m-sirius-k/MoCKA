@@ -1,0 +1,65 @@
+{
+  "event_id": "20260404_054952_CORE_20260404_054952_COPI",
+  "source_re_reduced": "20260404_054952_EN8N_20260404_054952_COPI.json",
+  "source": "copilot",
+  "origin_file": "20260404_052943_ECOL_20260404_052943_COPI.json",
+  "timestamp": "2026-04-04T15:40:15.085322",
+  "stage_classification": {
+    "Observation": {
+      "found": true,
+      "count": 2,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": false,
+      "count": 0,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 1,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": false,
+      "count": 0,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": true,
+      "count": 6,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 2,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": true,
+      "count": 4,
+      "weight": 1.5
+    }
+  },
+  "covered_stages": [
+    "Observation",
+    "Incident",
+    "Decision",
+    "Action",
+    "Audit"
+  ],
+  "missing_stages": [
+    "Record",
+    "Recurrence",
+    "Prevention"
+  ],
+  "core_rr": 63.6,
+  "source_restore_rate": 0.85,
+  "hash": "3953bfbce69f8d89",
+  "pipeline": "mocka_core_v1_local"
+}

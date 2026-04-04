@@ -1,0 +1,66 @@
+{
+  "experiment_id": "A0_plant_real",
+  "file": "plant_doc_A.txt",
+  "size": 8295,
+  "stage_results": {
+    "Observation": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 5,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": true,
+      "count": 6,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.5
+    }
+  },
+  "recovery_rate": 25.0,
+  "weighted_recovery_rate": 36.4,
+  "missing_stages": [
+    "Observation",
+    "Record",
+    "Recurrence",
+    "Decision",
+    "Action",
+    "Audit"
+  ],
+  "timestamp": "2026-04-04T11:59:23.395305"
+}

@@ -1,0 +1,20 @@
+{
+  "event_id": "OUTBOX_20260404_154230",
+  "timestamp": "2026-04-04T15:42:30.572977",
+  "type": "essence_summary",
+  "avg_core_rr": 56.6,
+  "total_cores": 11,
+  "strongest_stage": "Action",
+  "weakest_stage": "Recurrence",
+  "stage_coverage": {
+    "Observation": 54.5,
+    "Record": 63.6,
+    "Incident": 63.6,
+    "Recurrence": 0.0,
+    "Prevention": 63.6,
+    "Decision": 45.5,
+    "Action": 72.7,
+    "Audit": 72.7
+  },
+  "essence_ref": "C:\\Users\\sirok\\MoCKA\\data\\storage\\infield\\ESSENCE\\ESSENCE_20260404_154230.json"
+}

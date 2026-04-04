@@ -1,0 +1,65 @@
+{
+  "event_id": "20260404_050244_CORE_20260404_050244_CHAT",
+  "source_re_reduced": "20260404_050244_EN8N_20260404_050244_CHAT.json",
+  "source": "chatgpt",
+  "origin_file": "20260404_040014_ECOL_20260404_040014_CHAT.json",
+  "timestamp": "2026-04-04T15:40:15.079521",
+  "stage_classification": {
+    "Observation": {
+      "found": true,
+      "count": 2,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": true,
+      "count": 9,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 5,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": true,
+      "count": 1,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": true,
+      "count": 1,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 6,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": true,
+      "count": 16,
+      "weight": 1.5
+    }
+  },
+  "covered_stages": [
+    "Observation",
+    "Record",
+    "Incident",
+    "Prevention",
+    "Decision",
+    "Action",
+    "Audit"
+  ],
+  "missing_stages": [
+    "Recurrence"
+  ],
+  "core_rr": 90.9,
+  "source_restore_rate": 0.85,
+  "hash": "343fd05105e12532",
+  "pipeline": "mocka_core_v1_local"
+}

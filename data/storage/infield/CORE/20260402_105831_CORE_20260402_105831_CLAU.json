@@ -1,0 +1,65 @@
+{
+  "event_id": "20260402_105831_CORE_20260402_105831_CLAU",
+  "source_re_reduced": "20260402_105831_EN8N_20260402_105831_CLAU.json",
+  "source": "claude",
+  "origin_file": "20260402_095350_ECOL_20260402_095350_CLAU.json",
+  "timestamp": "2026-04-04T15:40:15.074199",
+  "stage_classification": {
+    "Observation": {
+      "found": false,
+      "count": 0,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": true,
+      "count": 1,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 2,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": false,
+      "count": 0,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": false,
+      "count": 0,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 2,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": false,
+      "count": 0,
+      "weight": 1.5
+    }
+  },
+  "covered_stages": [
+    "Record",
+    "Incident",
+    "Action"
+  ],
+  "missing_stages": [
+    "Observation",
+    "Recurrence",
+    "Prevention",
+    "Decision",
+    "Audit"
+  ],
+  "core_rr": 36.4,
+  "source_restore_rate": 0.85,
+  "hash": "9daf907709eac155",
+  "pipeline": "mocka_core_v1_local"
+}

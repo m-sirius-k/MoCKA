@@ -1,4 +1,4 @@
-import csv
+﻿import csv
 import shutil
 import os
 import json
@@ -11,6 +11,43 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
+
+# ===== 自動連続処理 =====
+import threading
+import time
+
+PILS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "storage", "outbox", "PILS")
+
+def auto_process_loop():
+    """PILSキューを自動的に連続処理するバックグラウンドスレッド"""
+    time.sleep(5)  # 起動待ち
+    while True:
+        try:
+            files = [f for f in os.listdir(PILS_DIR) if f.endswith(".json")]
+            if files:
+                print("[AUTO] PILSキュー: {}件 → 処理開始".format(len(files)))
+                r = requests.post(
+                    CALIBER_SERVER + "/process",
+                    json={},
+                    headers={"Content-Type": "application/json"},
+                    timeout=1800
+                )
+                if r.status_code == 200:
+                    result = r.json()
+                    rate = result.get("restore_rate", "?")
+                    print("[AUTO] 完了 restore_rate={}".format(rate))
+                else:
+                    print("[AUTO] エラー({}): {}".format(r.status_code, r.text[:80]))
+            time.sleep(10)
+        except Exception as e:
+            print("[AUTO] 例外: {}".format(str(e)[:80]))
+            time.sleep(30)
+
+# バックグラウンドで起動
+_auto_thread = threading.Thread(target=auto_process_loop, daemon=True)
+_auto_thread.start()
+# ===== 自動連続処理ここまで =====
+
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
@@ -158,7 +195,7 @@ def caliber_status():
 def caliber_process():
     try:
         r = requests.post(CALIBER_SERVER + "/process",
-            json={}, headers={"Content-Type": "application/json"}, timeout=180)
+            json={}, headers={"Content-Type": "application/json"}, timeout=1800)
         return jsonify(r.json())
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -204,9 +241,9 @@ def ask():
     from router import MoCKARouter
     router = MoCKARouter()
     if c == "A":
-        router.save(f"保存: {o}", memo if memo else "Storage mission dispatched")
+        router.save(f"菫晏ｭ・ {o}", memo if memo else "Storage mission dispatched")
     else:
-        router.save(f"共有: {o}", memo if memo else "Broadcast mission dispatched")
+        router.save(f"蜈ｱ譛・ {o}", memo if memo else "Broadcast mission dispatched")
     return jsonify({"status": "ok"})
 
 
@@ -319,3 +356,5 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
+
+

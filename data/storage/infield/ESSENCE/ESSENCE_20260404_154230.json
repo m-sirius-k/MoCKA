@@ -1,0 +1,81 @@
+{
+  "event_id": "ESSENCE_20260404_154230",
+  "timestamp": "2026-04-04T15:42:30.572165",
+  "pipeline": "mocka_essence_v1_local",
+  "summary": {
+    "total_cores": 11,
+    "avg_core_rr": 56.6,
+    "strongest_stage": {
+      "stage": "Action",
+      "coverage": 72.7
+    },
+    "weakest_stage": {
+      "stage": "Recurrence",
+      "coverage": 0.0
+    }
+  },
+  "stage_coverage": {
+    "Observation": {
+      "coverage_pct": 54.5,
+      "found_in": 6,
+      "total_cores": 11,
+      "total_mentions": 15
+    },
+    "Record": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11,
+      "total_mentions": 25
+    },
+    "Incident": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11,
+      "total_mentions": 23
+    },
+    "Recurrence": {
+      "coverage_pct": 0.0,
+      "found_in": 0,
+      "total_cores": 11,
+      "total_mentions": 0
+    },
+    "Prevention": {
+      "coverage_pct": 63.6,
+      "found_in": 7,
+      "total_cores": 11,
+      "total_mentions": 11
+    },
+    "Decision": {
+      "coverage_pct": 45.5,
+      "found_in": 5,
+      "total_cores": 11,
+      "total_mentions": 22
+    },
+    "Action": {
+      "coverage_pct": 72.7,
+      "found_in": 8,
+      "total_cores": 11,
+      "total_mentions": 35
+    },
+    "Audit": {
+      "coverage_pct": 72.7,
+      "found_in": 8,
+      "total_cores": 11,
+      "total_mentions": 51
+    }
+  },
+  "core_files": [
+    "20260402_091022_CORE_20260402_091022_CLAU",
+    "20260402_105831_CORE_20260402_105831_CLAU",
+    "20260403_030108_CORE_20260403_030108_CLAU",
+    "20260404_042759_CORE_20260404_042759_CHAT",
+    "20260404_050244_CORE_20260404_050244_CHAT",
+    "20260404_050936_CORE_20260404_050936_CHAT",
+    "20260404_052421_CORE_20260404_052421_CLAU",
+    "20260404_052543_CORE_20260404_052543_CLAU",
+    "20260404_053752_CORE_20260404_053752_CHAT",
+    "20260404_054952_CORE_20260404_054952_COPI",
+    "20260404_060845_CORE_20260404_060845_CHAT"
+  ],
+  "hash": "0525aeb711568b94"
+}
