@@ -1,84 +1,74 @@
-
-import csv
+﻿import csv
 import os
-import random
 from datetime import datetime
-from collections import defaultdict
 
-class MoCKARouter:
+EVENTS_CSV = r"C:\Users\sirok\MoCKA\data\events.csv"
 
-    def __init__(self):
-        self.log_path = "runtime/record/event_log.csv"
-        os.makedirs("runtime/record", exist_ok=True)
+FIELDNAMES = [
+    "event_id","when","who_actor","what_type","where_component","where_path",
+    "why_purpose","how_trigger","channel_type","lifecycle_phase","risk_level",
+    "category_ab","target_class","title","short_summary",
+    "before_state","after_state","change_type",
+    "impact_scope","impact_result","related_event_id","trace_id","free_note"
+]
 
-        self.providers = ["anthropic_claude", "gpt_audit", "gemini"]
+def safe_value(v):
+    if v is None:
+        return ""
+    v = str(v).replace("\n"," ").replace("\r"," ")
+    return v[:500]
 
-        self.goal = "maximize_score"
-        self.incident_threshold = 1
+def next_event_id():
+    today = datetime.now().strftime("%Y%m%d")
+    prefix = f"E{today}_"
+    n = 1
+    if os.path.exists(EVENTS_CSV):
+        with open(EVENTS_CSV, encoding="utf-8", newline="") as f:
+            for row in csv.DictReader(f):
+                eid = row.get("event_id","")
+                if eid.startswith(prefix):
+                    try:
+                        num = int(eid.split("_")[1])
+                        if num >= n:
+                            n = num + 1
+                    except:
+                        pass
+    return f"{prefix}{n:03d}"
 
-    def route(self, task: str):
+def write_safe_csv(row):
+    os.makedirs(os.path.dirname(EVENTS_CSV), exist_ok=True)
 
-        history = self._load_history()
+    base = {k:"" for k in FIELDNAMES}
+    base.update(row)
+    base = {k: safe_value(v) for k,v in base.items()}
 
-        avg_scores = {}
-        for p in self.providers:
-            scores = history[p]
-            avg_scores[p] = sum(scores)/len(scores) if scores else 1
+    if not base["event_id"]:
+        base["event_id"] = next_event_id()
 
-        safe_providers = [
-            p for p in self.providers
-            if avg_scores[p] >= self.incident_threshold
-        ]
+    if not base["when"]:
+        base["when"] = datetime.now().isoformat(timespec="seconds")
 
-        if not safe_providers:
-            safe_providers = self.providers
+    write_header = not os.path.exists(EVENTS_CSV)
 
-        selected = max(safe_providers, key=lambda p: avg_scores[p])
+    with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
+        if write_header:
+            writer.writeheader()
+        writer.writerow(base)
 
-        score = random.randint(1, 5)
-        incident = score <= self.incident_threshold
-
-        result = {
-            "final_answer": f"[{selected}] executed {task}",
-            "score": score,
-            "selected": selected,
-            "avg_scores": avg_scores,
-            "goal": self.goal,
-            "incident": incident,
-            "threshold": self.incident_threshold
-        }
-
-        self._log(task, selected, score, incident)
-
-        return result
-
-    def _load_history(self):
-        history = defaultdict(list)
-
-        if not os.path.exists(self.log_path):
-            return history
-
-        with open(self.log_path, "r", encoding="utf-8") as f:
-            reader = csv.reader(f)
-            for row in reader:
-                try:
-                    selected = row[4]
-                    score = int(row[5])
-                    history[selected].append(score)
-                except:
-                    continue
-
-        return history
-
-    def _log(self, task, selected, score, incident):
-        with open(self.log_path, "a", newline="", encoding="utf-8") as f:
-            writer = csv.writer(f)
-            writer.writerow([
-                datetime.now().isoformat(),
-                "router",
-                "route",
-                task,
-                selected,
-                score,
-                incident
-            ])
+def save(title, summary=""):
+    row = {
+        "event_id": "",
+        "when": "",
+        "who_actor": "mocka_router",
+        "what_type": "save",
+        "where_component": "router",
+        "where_path": "interface/router.py",
+        "title": title,
+        "short_summary": summary,
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "channel_type": "internal"
+    }
+    write_safe_csv(row)
+    print("[OK]", title)
