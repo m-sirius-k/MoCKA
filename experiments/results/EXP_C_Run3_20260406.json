@@ -1,0 +1,59 @@
+{
+  "experiment_id": "EXP_C_Run3",
+  "file": "C:\\Users\\sirok\\MoCKA\\experiments\\combined_raw_all.txt",
+  "size": 607638,
+  "stage_results": {
+    "Observation": {
+      "found": true,
+      "count": 157,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": true,
+      "count": 874,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 373,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": true,
+      "count": 18,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": true,
+      "count": 70,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": true,
+      "count": 287,
+      "depth": 5,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 1236,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": true,
+      "count": 1018,
+      "depth": 5,
+      "weight": 1.5
+    }
+  },
+  "recovery_rate": 100.0,
+  "weighted_recovery_rate": 100.0,
+  "missing_stages": [],
+  "timestamp": "2026-04-06T07:45:55.921881"
+}

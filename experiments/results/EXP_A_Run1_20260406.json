@@ -1,0 +1,59 @@
+{
+  "experiment_id": "EXP_A_Run1",
+  "file": "C:\\Users\\sirok\\MoCKA\\data\\events.csv",
+  "size": 148871,
+  "stage_results": {
+    "Observation": {
+      "found": true,
+      "count": 57,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": true,
+      "count": 433,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": true,
+      "count": 154,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": true,
+      "count": 24,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": true,
+      "count": 27,
+      "depth": 5,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": true,
+      "count": 30,
+      "depth": 5,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 169,
+      "depth": 5,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": true,
+      "count": 33,
+      "depth": 5,
+      "weight": 1.5
+    }
+  },
+  "recovery_rate": 100.0,
+  "weighted_recovery_rate": 100.0,
+  "missing_stages": [],
+  "timestamp": "2026-04-06T07:45:54.972646"
+}
