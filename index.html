@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8"><title>MoCKA Command Center</title>
@@ -90,7 +90,7 @@
         <h3>
             <span class="server-dot" id="sdot"></span>
             <span id="sstat" style="font-size:13px;">CALIBER PIPELINE — checking...</span>
-            <button onclick="refreshQueue()" style="margin-left:auto;padding:3px 10px;font-size:11px;">↻ Refresh</button>
+            <button onclick="refreshQueue()" style="margin-left:auto;padding:3px 10px;font-size:11px;">↻ Refresh</button><span id="ss-caliber" style="margin-left:12px;font-size:11px;font-family:monospace;color:#555;">● CAL:5001</span><span id="ss-mcp" style="margin-left:8px;font-size:11px;font-family:monospace;color:#555;">● MCP:5002</span>
             <span class="timestamp" id="ts"></span>
         </h3>
 
@@ -329,5 +329,32 @@
             } catch(e){console.error(e);}
         }
     </script>
-</body>
+    <div id="server-status" style="position:fixed;bottom:12px;right:12px;background:#0a0a0a;border:1px solid #333;padding:12px 16px;font-family:monospace;font-size:12px;z-index:9999;min-width:220px;">
+      <div style="color:#666;margin-bottom:8px;">SERVER STATUS</div>
+      <div id="ss-caliber" style="color:#555;">● CALIBER :5001 ...</div>
+      <div id="ss-mcp"     style="color:#555;">● MCP     :5002 ...</div>
+    </div>
+    <script>
+    async function updateServerStatus(){
+      try{
+        const r=await fetch('/servers/status');
+        const d=await r.json();
+        const c=d.caliber||{};
+        const m=d.mcp||{};
+        document.getElementById('ss-caliber').innerHTML=
+          (c.status==='online'?'<span style="color:#00ff88">●</span>':'<span style="color:#ff4444">●</span>')+
+          ' CALIBER :5001 '+c.status.toUpperCase();
+        document.getElementById('ss-mcp').innerHTML=
+          (m.status==='online'?'<span style="color:#00ff88">●</span>':'<span style="color:#ff4444">●</span>')+
+          ' MCP     :5002 '+(m.status||'offline').toUpperCase()+
+          (m.status==='online'?' <span style="color:#555">'+m.tools.length+'tools</span>':'');
+      }catch(e){
+        document.getElementById('ss-caliber').innerHTML='<span style="color:#ff4444">●</span> CALIBER :5001 ERROR';
+        document.getElementById('ss-mcp').innerHTML='<span style="color:#ff4444">●</span> MCP     :5002 ERROR';
+      }
+    }
+    updateServerStatus();
+    setInterval(updateServerStatus,10000);
+    </script></body>
 </html>
+

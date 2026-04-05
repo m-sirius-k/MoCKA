@@ -20,7 +20,7 @@ PILS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "sto
 
 def auto_process_loop():
     """PILSキューを自動的に連続処理するバックグラウンドスレッド"""
-    time.sleep(5)  # 起動待ち
+    time.sleep(5)
     while True:
         try:
             files = [f for f in os.listdir(PILS_DIR) if f.endswith(".json")]
@@ -43,7 +43,6 @@ def auto_process_loop():
             print("[AUTO] 例外: {}".format(str(e)[:80]))
             time.sleep(30)
 
-# バックグラウンドで起動
 _auto_thread = threading.Thread(target=auto_process_loop, daemon=True)
 _auto_thread.start()
 # ===== 自動連続処理ここまで =====
@@ -345,9 +344,24 @@ def caliber_queue():
         "timestamp": datetime.now().strftime("%H:%M:%S")
     })
 
+
 @app.route("/get_intent/<ai_name>", methods=["GET"])
 def get_intent(ai_name):
     return jsonify(None), 204
+
+
+@app.route("/servers/status")
+def servers_status():
+    result = {}
+    for name, port in [("caliber", 5679), ("mcp", 5002)]:
+        try:
+            r = requests.get(f"http://localhost:{port}/health", timeout=2)
+            d = r.json()
+            d["status"] = "online"
+            result[name] = d
+        except:
+            result[name] = {"status": "offline", "port": port}
+    return jsonify(result)
 
 
 if __name__ == "__main__":
@@ -356,5 +370,3 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
-
-

@@ -1,0 +1,65 @@
+{
+  "experiment_id": "A_NOMOCKA_005",
+  "file": "human_doc_005.txt",
+  "size": 275,
+  "stage_results": {
+    "Observation": {
+      "found": true,
+      "count": 1,
+      "depth": 1,
+      "weight": 1.0
+    },
+    "Record": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Incident": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 2.0
+    },
+    "Recurrence": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.0
+    },
+    "Prevention": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 2.0
+    },
+    "Decision": {
+      "found": true,
+      "count": 1,
+      "depth": 1,
+      "weight": 1.5
+    },
+    "Action": {
+      "found": true,
+      "count": 1,
+      "depth": 1,
+      "weight": 1.0
+    },
+    "Audit": {
+      "found": false,
+      "count": 0,
+      "depth": 0,
+      "weight": 1.5
+    }
+  },
+  "recovery_rate": 37.5,
+  "weighted_recovery_rate": 31.8,
+  "missing_stages": [
+    "Record",
+    "Incident",
+    "Recurrence",
+    "Prevention",
+    "Audit"
+  ],
+  "timestamp": "2026-04-04T17:32:15.745454"
+}
