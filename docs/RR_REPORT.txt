@@ -1,0 +1,17 @@
+﻿MoCKA Recovery Rate Report
+Date: 2026-04-05
+
+Result:
+RR = 100%
+
+Definition:
+All AI decisions, execution paths, and outputs
+are fully reconstructable from event logs.
+
+Evidence:
+- data/events.csv
+- runtime/state.json
+- runtime/action_result.json
+
+Conclusion:
+MoCKA achieves full auditability and reproducibility.
