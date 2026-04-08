@@ -291,10 +291,13 @@ playwright install chromium
 > MoCKA is what happens after you walk through it.
 
 ### Share — broadcast to all AIs instantly
+
 ![Sharing](docs/Sharing.gif)
 
 ### Collaborate — collect all responses, synthesize in Claude
+
 ![Collaboration](docs/collaboration.gif)
+
 ## Quick Start — 1 minute to your first civilization loop
 
 ### What happens in 60 seconds
