@@ -292,11 +292,11 @@ playwright install chromium
 
 ### Share — broadcast to all AIs instantly
 
-![Sharing](docs/Sharing.gif)
+![Sharing](docs/images/Sharing.gif)
 
 ### Collaborate — collect all responses, synthesize in Claude
 
-![Collaboration](docs/collaboration.gif)
+![Collaboration](docs/images/collaboration.gif)
 
 ## Quick Start — 1 minute to your first civilization loop
 
