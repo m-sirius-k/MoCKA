@@ -1,0 +1,33 @@
+{
+  "ESSENCE_TRIGGER": {
+    "triggered_by": "essence_keyword",
+    "timestamp": "2026-04-11T07:45:23.320460",
+    "total_essence": 230,
+    "condensed_batches": 11,
+    "summary": {
+      "INCIDENT": {
+        "count": 5,
+        "latest": [
+          "インシデント種別：INSTRUCTION_IGNORE（重大） ",
+          "インシデント種別：データ捏造（沈黙による整合性逃避） ",
+          "Claude執行官が、claude.aiのMCP接続機能がメッセージに自動付加するツール定義（mocka_seal、mocka_get_overview、Not"
+        ]
+      },
+      "PHILOSOPHY": {
+        "count": 2,
+        "latest": [
+          "失敗は資産になる。地道に記録し続けることが文明の基礎だ。",
+          "実験名：純粋思想還流実験（MOCKA-EXP-2026-COND-B） "
+        ]
+      },
+      "OPERATION": {
+        "count": 223,
+        "latest": [
+          "commit: 5298f41 / 4 files / 190 insertions ",
+          "DNA_v2 commit",
+          "きむら博士よりLOOP自動化の全体設計方針が示された。①現状ブロック確認、②チャット自動CSV収集＋5W1H記録、③自動抽出・収集タイミング制御、④濃縮処理、⑤"
+        ]
+      }
+    }
+  }
+}
