@@ -1,5 +1,8 @@
 @'
 @echo off
+python C:\Users\sirok\MoCKA\interface\ping_generator.py
+timeout /t 2 /nobreak > nul
+
 echo [MoCKA] Starting...
 start "" "C:\Users\sirok\AppData\Local\Perplexity\Comet\Application\comet.exe" --remote-debugging-port=9222
 timeout /t 3 /nobreak > nul
