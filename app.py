@@ -266,7 +266,10 @@ def collect():
     ts      = datetime.now(timezone.utc)
     ts_str  = ts.strftime("%Y-%m-%dT%H:%M:%S")
     ts_f    = ts.strftime("%Y%m%d_%H%M%S")
-    rows    = list(_csv.reader(open(EVENTS,encoding="utf-8-sig"))) if EVENTS.exists() else []
+    rows    = []
+    if EVENTS.exists():
+        with open(EVENTS, encoding="utf-8", errors="replace") as _f:
+            rows = list(_csv.reader(_f))
     prev    = _hs.sha256(",".join(rows[-1]).encode()).hexdigest()[:16] if rows else "GENESIS"
     eid     = f"ECOL_{ts_f}_{source[:4].upper()}"
     h       = _hs.sha256(f"{eid}{ts_str}{text[:100]}{prev}".encode()).hexdigest()[:16]
@@ -281,7 +284,7 @@ def collect():
     with open(EVENTS,"a",encoding="utf-8",newline="") as f:
         _csv.writer(f).writerow([eid,ts_str,source,"collect","chat_import","mocka_bridge_v2",
             url[:80],"extension","external","in_operation","normal","A","infield/RAW",
-            text[:100],prev,"ingest_complete","RAW","local","chat_pipeline","N/A","N/A",
+            text[:100].encode("utf-8","replace").decode("utf-8"),prev,"ingest_complete","RAW","local","chat_pipeline","N/A","N/A",
             f"hash={h}|source={source}|mode={mode}"])
     print(f"[COLLECT] {eid} from {source} ({len(text)} chars)")
     return jsonify({"status":"ok","event_id":eid,"hash":h})
@@ -363,6 +366,63 @@ def servers_status():
             result[name] = {"status": "offline", "port": port}
     return jsonify(result)
 
+
+
+# ── LOOP STATUS ──────────────────────────────────────────
+@app.route("/loop/status")
+def loop_status():
+    import json, datetime
+    from pathlib import Path
+    ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
+    INJECT_FLAG  = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
+    PING_PATH    = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\PACKET\ping_latest.json")
+    RAW_DIR      = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW")
+
+    inject_mode = "ON"
+    if INJECT_FLAG.exists():
+        v = INJECT_FLAG.read_text(encoding="utf-8").strip().upper()
+        inject_mode = v if v in ["ON","OFF"] else "ON"
+
+    essence_count = 0
+    if ESSENCE_PATH.exists():
+        try:
+            data = json.loads(ESSENCE_PATH.read_text(encoding="utf-8"))
+            essence_count = len(data.get("essence", []))
+        except:
+            pass
+
+    ping_data = {}
+    ping_age = None
+    if PING_PATH.exists():
+        try:
+            text = PING_PATH.read_text(encoding="utf-8")
+            ping_data = json.loads(text)
+            age = datetime.datetime.now().timestamp() - PING_PATH.stat().st_mtime
+            ping_age = f"{int(age//3600)}h {int((age%3600)//60)}m ago"
+        except:
+            pass
+
+    raw_count = len(list(RAW_DIR.glob("*.json"))) if RAW_DIR.exists() else 0
+
+    return jsonify({
+        "inject_mode":   inject_mode,
+        "essence_count": essence_count,
+        "raw_count":     raw_count,
+        "ping_latest":   ping_data,
+        "ping_age":      ping_age,
+    })
+
+app.route("/loop/inject_toggle", methods=["POST"])
+def inject_toggle():
+    from pathlib import Path
+    INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
+    current = "ON"
+    if INJECT_FLAG.exists():
+        v = INJECT_FLAG.read_text(encoding="utf-8").strip().upper()
+        current = v if v in ["ON","OFF"] else "ON"
+    new_mode = "OFF" if current == "ON" else "ON"
+    INJECT_FLAG.write_text(new_mode, encoding="utf-8")
+    return jsonify({"inject_mode": new_mode})
 
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
