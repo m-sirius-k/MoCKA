@@ -3,8 +3,6 @@
         chrome.scripting.executeScript({
             target: { tabId: tabId },
             files: ['content.js']
-        }).then(() => {
-            console.log("[MOCKA] content.js 物理注入完了");
         }).catch(err => console.error("[MOCKA] 注入失敗:", err));
     }
 });
@@ -34,18 +32,8 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         if (data.status !== 'OK') return;
         const p = data.ping;
 
-        // ESSENCE_SUMMARY構築
-        const es = p.ESSENCE_SUMMARY || {};
-        const inc  = es.INCIDENT   || 'none';
-        const phi  = es.PHILOSOPHY || 'none';
-        const ope  = es.OPERATION  || 'none';
-
-        // DNA注入テキスト（ヘッダー＋ESSENCE）
-        const text = '[MOCKA]{"H":"' + p.H + '","G":' + p.G + ',"C":"' + p.C + '","P":"' + p.P + '"}\n'
-          + '[ESSENCE]\n'
-          + 'INCIDENT:'   + inc + '\n'
-          + 'PHILOSOPHY:' + phi + '\n'
-          + 'OPERATION:'  + ope;
+        // 最小注入：H/G/C/Pのみ（chat欄汚染なし）
+        const text = '[MOCKA]{"H":"' + p.H + '","G":' + p.G + ',"C":"' + p.C + '","P":"' + p.P + '"}';
 
         const observer = new MutationObserver(() => {
           const input = document.querySelector('div[contenteditable="true"]');
@@ -55,7 +43,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           input.innerText = text;
           input.dispatchEvent(new InputEvent('input', { bubbles: true }));
           sessionStorage.setItem('MOCKA_DNA_SET', '1');
-          console.log('[MOCKA] ESSENCE注入完了');
+          console.log('[MOCKA] DNA最小注入完了');
         });
         observer.observe(document.body, { childList: true, subtree: true });
         setTimeout(() => observer.disconnect(), 15000);
