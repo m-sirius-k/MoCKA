@@ -1,8 +1,5 @@
 ﻿chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete' && tab.url && tab.url.includes('claude.ai/new')) {
-        console.log("[MOCKA] DNA注入開始: " + tab.url);
-        
-        // メッセージ送信ではなく、直接スクリプトを実行してステータスバーを強制描画
         chrome.scripting.executeScript({
             target: { tabId: tabId },
             files: ['content.js']
@@ -12,18 +9,16 @@
     }
 });
 
-// fetch要求を受け取るリスナー
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === "GET_SYSTEM_STATUS") {
         fetch('http://127.0.0.1:5000/get_latest_dna')
             .then(response => response.json())
             .then(data => sendResponse({ status: 'OK', dna: data }))
             .catch(err => sendResponse({ status: 'ERROR', error: err.message }));
-        return true; // 非同期応答を維持
+        return true;
     }
 });
 
-// ── 新規chat時DNA注入（入力欄にセット・送信しない） ──
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status !== 'complete') return;
   if (!tab.url) return;
@@ -38,7 +33,20 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         const data = await res.json();
         if (data.status !== 'OK') return;
         const p = data.ping;
-        const text = '[MOCKA]{"H":"' + p.H + '","G":' + p.G + ',"C":"' + p.C + '","P":"' + p.P + '"}';
+
+        // ESSENCE_SUMMARY構築
+        const es = p.ESSENCE_SUMMARY || {};
+        const inc  = es.INCIDENT   || 'none';
+        const phi  = es.PHILOSOPHY || 'none';
+        const ope  = es.OPERATION  || 'none';
+
+        // DNA注入テキスト（ヘッダー＋ESSENCE）
+        const text = '[MOCKA]{"H":"' + p.H + '","G":' + p.G + ',"C":"' + p.C + '","P":"' + p.P + '"}\n'
+          + '[ESSENCE]\n'
+          + 'INCIDENT:'   + inc + '\n'
+          + 'PHILOSOPHY:' + phi + '\n'
+          + 'OPERATION:'  + ope;
+
         const observer = new MutationObserver(() => {
           const input = document.querySelector('div[contenteditable="true"]');
           if (!input) return;
@@ -47,6 +55,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           input.innerText = text;
           input.dispatchEvent(new InputEvent('input', { bubbles: true }));
           sessionStorage.setItem('MOCKA_DNA_SET', '1');
+          console.log('[MOCKA] ESSENCE注入完了');
         });
         observer.observe(document.body, { childList: true, subtree: true });
         setTimeout(() => observer.disconnect(), 15000);
