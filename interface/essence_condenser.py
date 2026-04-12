@@ -29,7 +29,7 @@ def condense_batch(entries: list, batch_no: int) -> dict:
     for e in entries:
         t = e.get("type", "OPERATION") if isinstance(e, dict) else "OPERATION"
         text = e.get("text", e) if isinstance(e, dict) else str(e)
-        by_type[t].append(text[:60])
+        by_type[t].append(text[:200])
 
     # 各タイプのキーワードを抽出（先頭20文字×件数）
     summary = {}
@@ -77,3 +77,4 @@ def run_condensation():
 
 if __name__ == "__main__":
     run_condensation()
+

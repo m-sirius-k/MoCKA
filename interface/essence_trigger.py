@@ -16,7 +16,7 @@ def load_essence_summary() -> dict:
     for e in entries:
         t = e.get("type", "OPERATION") if isinstance(e, dict) else "OPERATION"
         text = e.get("text", "") if isinstance(e, dict) else str(e)
-        by_type[t].append(text[:80])
+        by_type[t].append(text[:200])
 
     # 各タイプから最新3件を代表として抽出
     summary = {}
@@ -68,3 +68,4 @@ def trigger_essence():
 
 if __name__ == "__main__":
     trigger_essence()
+

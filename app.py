@@ -10,6 +10,8 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
+from flask_cors import CORS
+CORS(app)
 CORS(app, origins="*", supports_credentials=True)
 
 # ===== 自動連続処理 =====
@@ -412,6 +414,26 @@ def loop_status():
         "ping_age":      ping_age,
     })
 
+@app.route("/get_latest_dna")
+def get_latest_dna():
+    import json
+    from pathlib import Path
+    PING_PATH = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\PACKET\ping_latest.json")
+    INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
+    inject_mode = "ON"
+    if INJECT_FLAG.exists():
+        v = INJECT_FLAG.read_text(encoding="utf-8").strip().upper()
+        inject_mode = v if v in ["ON","OFF"] else "ON"
+    if inject_mode == "OFF":
+        return jsonify({"status": "OFF"}), 200
+    if not PING_PATH.exists():
+        return jsonify({"status": "NO_PING"}), 404
+    try:
+        ping = json.loads(PING_PATH.read_text(encoding="utf-8"))
+        return jsonify({"status": "OK", "ping": ping}), 200
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
+
 app.route("/loop/inject_toggle", methods=["POST"])
 def inject_toggle():
     from pathlib import Path
@@ -430,3 +452,5 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
+
+
