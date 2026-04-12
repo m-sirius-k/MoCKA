@@ -84,6 +84,7 @@ def auto_log(tool_name, args, result_summary):
 
 TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_todo","description":"MOCKA_TODO.json を返す。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_update_todo","description":"TODO_IDのstatusを更新する","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string"},"note":{"type":"string"}},"required":["id","status"]}},
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
@@ -100,6 +101,11 @@ def execute_tool(name, args):
             result = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8-sig"))
             auto_log(name, args, "overview loaded")
             return json.dumps(result, ensure_ascii=False, indent=2)
+        elif name == "mocka_get_essence":
+            import urllib.request
+            res = urllib.request.urlopen("http://127.0.0.1:5000/get_latest_dna")
+            data = json.loads(res.read())
+            return json.dumps(data.get("ping", {}).get("ESSENCE_SUMMARY", {}), ensure_ascii=False, indent=2)
         elif name == "mocka_get_todo":
             if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
             result = json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
