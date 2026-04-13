@@ -10,8 +10,6 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
-from flask_cors import CORS
-CORS(app)
 CORS(app, origins="*", supports_credentials=True)
 
 # ===== 自動連続処理 =====
@@ -21,7 +19,6 @@ import time
 PILS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "storage", "outbox", "PILS")
 
 def auto_process_loop():
-    """PILSキューを自動的に連続処理するバックグラウンドスレッド"""
     time.sleep(5)
     while True:
         try:
@@ -216,17 +213,10 @@ def orchestra():
     payload = request.get_json(force=True, silent=True) or {}
     prompt = payload.get("prompt", "MoCKA Broadcast")
     mode = payload.get("mode", "orchestra")
-    sys.path.insert(0, os.path.join(ROOT_DIR, "interface"))
-    from router import MoCKARouter
-    router = MoCKARouter()
-    if mode == "orchestra":
-        subprocess.Popen([sys.executable, "-c",
-            f"import sys; sys.path.insert(0, r'{os.path.join(ROOT_DIR, chr(105)+chr(110)+chr(116)+chr(101)+chr(114)+chr(102)+chr(97)+chr(99)+chr(101))}'); from router import MoCKARouter; MoCKARouter().collaborate({repr(prompt)})"],
-            cwd=ROOT_DIR)
-    else:
-        subprocess.Popen([sys.executable, "-c",
-            f"import sys; sys.path.insert(0, r'{os.path.join(ROOT_DIR, chr(105)+chr(110)+chr(116)+chr(101)+chr(114)+chr(102)+chr(97)+chr(99)+chr(101))}'); from router import MoCKARouter; MoCKARouter().share({repr(prompt)})"],
-            cwd=ROOT_DIR)
+    subprocess.Popen(
+        [sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode],
+        cwd=ROOT_DIR
+    )
     return jsonify({"status": "ok"})
 
 
@@ -238,13 +228,38 @@ def ask():
     memo = payload.get("memo", "").strip()
     if c not in ("A", "B") or not o:
         return jsonify({"status": "error", "message": "invalid payload"}), 400
-    sys.path.insert(0, os.path.join(ROOT_DIR, "interface"))
-    from router import MoCKARouter
-    router = MoCKARouter()
     if c == "A":
-        router.save(f"菫晏ｭ・ {o}", memo if memo else "Storage mission dispatched")
+        what_type = "storage"
+        title = f"保存: {o}"
+        short_summary = "Storage mission dispatched"
     else:
-        router.save(f"蜈ｱ譛・ {o}", memo if memo else "Broadcast mission dispatched")
+        what_type = "broadcast"
+        title = f"共有: {o}"
+        short_summary = "Broadcast mission dispatched"
+    meta = {
+        "what_type": what_type,
+        "category_ab": c,
+        "target_class": o,
+        "title": title,
+        "short_summary": memo if memo else short_summary,
+        "who_actor": "human_nsjsiro",
+        "where_component": "chrome_extension",
+        "where_path": "mocka-extension/background.js",
+        "why_purpose": "右クリックメニューからの保存・共有操作",
+        "how_trigger": "context_menu_click",
+        "channel_type": "browser_extension",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "before_state": "N/A",
+        "after_state": "N/A",
+        "change_type": "N/A",
+        "impact_scope": "local",
+        "impact_result": "N/A",
+        "related_event_id": "N/A",
+        "trace_id": "N/A",
+        "free_note": memo if memo else "N/A",
+    }
+    append_event(meta)
     return jsonify({"status": "ok"})
 
 
@@ -350,11 +365,6 @@ def caliber_queue():
     })
 
 
-@app.route("/get_intent/<ai_name>", methods=["GET"])
-def get_intent(ai_name):
-    return jsonify(None), 204
-
-
 @app.route("/servers/status")
 def servers_status():
     result = {}
@@ -369,8 +379,6 @@ def servers_status():
     return jsonify(result)
 
 
-
-# ── LOOP STATUS ──────────────────────────────────────────
 @app.route("/loop/status")
 def loop_status():
     import json, datetime
@@ -379,12 +387,10 @@ def loop_status():
     INJECT_FLAG  = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
     PING_PATH    = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\PACKET\ping_latest.json")
     RAW_DIR      = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW")
-
     inject_mode = "ON"
     if INJECT_FLAG.exists():
         v = INJECT_FLAG.read_text(encoding="utf-8").strip().upper()
         inject_mode = v if v in ["ON","OFF"] else "ON"
-
     essence_count = 0
     if ESSENCE_PATH.exists():
         try:
@@ -392,7 +398,6 @@ def loop_status():
             essence_count = len(data.get("essence", []))
         except:
             pass
-
     ping_data = {}
     ping_age = None
     if PING_PATH.exists():
@@ -403,9 +408,7 @@ def loop_status():
             ping_age = f"{int(age//3600)}h {int((age%3600)//60)}m ago"
         except:
             pass
-
     raw_count = len(list(RAW_DIR.glob("*.json"))) if RAW_DIR.exists() else 0
-
     return jsonify({
         "inject_mode":   inject_mode,
         "essence_count": essence_count,
@@ -413,6 +416,20 @@ def loop_status():
         "ping_latest":   ping_data,
         "ping_age":      ping_age,
     })
+
+
+@app.route("/loop/inject_toggle", methods=["POST"])
+def inject_toggle():
+    from pathlib import Path
+    INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
+    current = "ON"
+    if INJECT_FLAG.exists():
+        v = INJECT_FLAG.read_text(encoding="utf-8").strip().upper()
+        current = v if v in ["ON","OFF"] else "ON"
+    new_mode = "OFF" if current == "ON" else "ON"
+    INJECT_FLAG.write_text(new_mode, encoding="utf-8")
+    return jsonify({"inject_mode": new_mode})
+
 
 @app.route("/get_latest_dna")
 def get_latest_dna():
@@ -434,17 +451,6 @@ def get_latest_dna():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
-app.route("/loop/inject_toggle", methods=["POST"])
-def inject_toggle():
-    from pathlib import Path
-    INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
-    current = "ON"
-    if INJECT_FLAG.exists():
-        v = INJECT_FLAG.read_text(encoding="utf-8").strip().upper()
-        current = v if v in ["ON","OFF"] else "ON"
-    new_mode = "OFF" if current == "ON" else "ON"
-    INJECT_FLAG.write_text(new_mode, encoding="utf-8")
-    return jsonify({"inject_mode": new_mode})
 
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
@@ -452,5 +458,3 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
-
-

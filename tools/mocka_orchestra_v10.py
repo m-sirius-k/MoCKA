@@ -185,7 +185,7 @@ async def run_copilot(context):
 async def main():
     start = time.time()
     async with async_playwright() as p:
-        browser = await p.chromium.connect_over_cdp("http://localhost:9222")
+        browser = await p.chromium.connect_over_cdp("http://127.0.0.1:9222")
         context = browser.contexts[0]
 
         claude_page = None
@@ -223,6 +223,8 @@ async def main():
             print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
 
 asyncio.run(main())
+
+
 
 
 
