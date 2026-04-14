@@ -385,7 +385,7 @@ def loop_status():
     from pathlib import Path
     ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     INJECT_FLAG  = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
-    PING_PATH    = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")  # 修正済み
+    PING_PATH    = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
     RAW_DIR      = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW")
     inject_mode = "ON"
     if INJECT_FLAG.exists():
@@ -435,7 +435,7 @@ def inject_toggle():
 def get_latest_dna():
     import json
     from pathlib import Path
-    PING_PATH = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")  # 修正済み
+    PING_PATH = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
     INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
     inject_mode = "ON"
     if INJECT_FLAG.exists():
@@ -452,11 +452,25 @@ def get_latest_dna():
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
 
+@app.route('/ngrok/status')
+def ngrok_status():
+    import requests as req
+    try:
+        r = req.get('http://127.0.0.1:4040/api/tunnels', timeout=2)
+        d = r.json()
+        t = d['tunnels'][0] if d.get('tunnels') else None
+        return json.dumps({
+            'status': 'online' if t else 'offline',
+            'public_url': t['public_url'] if t else '',
+            'addr': t['config']['addr'] if t else ''
+        }), 200, {'Content-Type': 'application/json'}
+    except:
+        return json.dumps({'status': 'offline', 'public_url': '', 'addr': ''}), 200, {'Content-Type': 'application/json'}
+
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
-
-
