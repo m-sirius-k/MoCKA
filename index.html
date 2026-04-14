@@ -8,7 +8,7 @@
         h1 { font-size:20px; font-weight:700; color:#fff; margin-bottom:2px; letter-spacing:3px; }
         .subtitle { font-size:12px; color:#9ca3af; margin-bottom:20px; letter-spacing:1px; }
         .block { border:1px solid #2d3748; padding:16px; margin-bottom:14px; background:#111827; border-radius:8px; }
-        h3 { color:#d1d5db; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #2d3748; padding-bottom:8px; display:flex; align-items:center; gap:8px; }
+        h3 { color:#d1d5db; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #2d3748; padding-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
         button { background:transparent; color:#d1d5db; border:1px solid #4b5563; padding:8px 16px; cursor:pointer; margin:3px; font-family:monospace; font-size:13px; border-radius:4px; transition:0.2s; }
         button:hover { border-color:#60a5fa; color:#60a5fa; }
         .active-a { background:#005700!important; border-color:#00cc00!important; color:#fff!important; box-shadow:0 0 8px #008a00; }
@@ -21,8 +21,6 @@
         .opt-group { display:none; margin-top:10px; padding:10px; border:1px dashed #374151; border-radius:4px; }
         .tag-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
         .status-bar { font-size:12px; color:#9ca3af; text-align:center; margin-bottom:8px; }
-
-        /* layer chips */
         .layer-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
         .layer-chip { background:#1a2235; border:1px solid #2d3748; border-radius:5px; padding:8px 12px; text-align:center; min-width:80px; }
         .layer-chip .num { font-size:22px; font-weight:700; color:#60a5fa; line-height:1.2; }
@@ -30,13 +28,9 @@
         .layer-chip.amber .num { color:#fbbf24; }
         .layer-chip.purple .num { color:#c084fc; }
         .layer-chip .lbl { font-size:10px; color:#9ca3af; margin-top:3px; letter-spacing:1px; }
-
-        /* server */
         .server-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; flex-shrink:0; }
         .online { background:#4ade80; box-shadow:0 0 6px #4ade80; }
         .offline { background:#6b7280; }
-
-        /* 3zones */
         .pipeline-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px; }
         .zone { border-radius:6px; padding:12px; min-height:130px; }
         .zone-incoming  { background:#1a1030; border:1px solid #6d28d9; }
@@ -46,15 +40,12 @@
         .zone-incoming  .zone-title { color:#c084fc; }
         .zone-processing .zone-title { color:#fbbf24; }
         .zone-result    .zone-title { color:#4ade80; }
-
         .queue-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); border-left:3px solid #a855f7; }
         .queue-item .fname { color:#e5e7eb; word-break:break-all; }
         .queue-item .fsize { color:#9ca3af; font-size:11px; }
-
         .processing-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b; color:#fde68a; }
         .processing-anim { display:inline-block; animation:spin 1s linear infinite; }
         @keyframes spin { to { transform:rotate(360deg); } }
-
         .result-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); }
         .result-item.ok { border-left:3px solid #4ade80; }
         .result-item.ng { border-left:3px solid #fbbf24; }
@@ -63,15 +54,11 @@
         .result-rate.ng { color:#fbbf24; }
         .result-meta { color:#9ca3af; font-size:11px; margin-left:6px; }
         .result-preview { color:#9ca3af; font-size:11px; margin-top:3px; word-break:break-all; }
-
         .empty-msg { color:#4b5563; font-size:12px; }
-
         .process-btn { background:#0a2015!important; border:1px solid #4ade80!important; color:#4ade80!important; width:100%; padding:14px!important; font-size:14px!important; letter-spacing:2px; margin-bottom:8px; border-radius:6px; }
         .process-btn:hover { box-shadow:0 0 14px rgba(74,222,128,0.3)!important; }
         .proc-msg { font-size:12px; color:#9ca3af; min-height:20px; }
-
         .timestamp { font-size:10px; color:#374151; }
-
         .history-container { max-height:200px; overflow-y:auto; }
         table { width:100%; border-collapse:collapse; font-size:12px; }
         th { background:#1f2937; color:#d1d5db; padding:8px 10px; text-align:left; font-weight:700; letter-spacing:1px; font-size:11px; position:sticky; top:0; }
@@ -80,20 +67,87 @@
         tr:hover td { background:#1f2937; }
         ::-webkit-scrollbar { width:3px; }
         ::-webkit-scrollbar-thumb { background:#374151; }
+        .loop-stage { font-size:10px; padding:4px 8px; border-radius:4px; background:#0f2a1a; border:1px solid #1a4a2a; color:#4ade80; letter-spacing:0.5px; }
+        .loop-stage.active { background:#004400; border-color:#00cc00; color:#fff; box-shadow:0 0 6px #00aa00; }
+        .loop-arrow { font-size:10px; color:#374151; align-self:center; }
+        .srv-bar { display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:wrap; }
+        .srv-item { display:flex; align-items:center; gap:3px; font-size:11px; white-space:nowrap; position:relative; }
+        .srv-d { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+        .srv-d.on  { background:#4ade80; box-shadow:0 0 4px #4ade80; }
+        .srv-d.off { background:#ff4444; }
+        .srv-lbl { color:#6b7280; }
+        .srv-val.on  { color:#4ade80; }
+        .srv-val.off { color:#ff4444; }
+        .mcp-wrap { position:relative; cursor:default; }
+        .mcp-badge { background:#0a2015; border:1px solid #4ade80; border-radius:8px; padding:0 6px; font-size:10px; color:#4ade80; margin-left:2px; }
+        .mcp-popup { display:none; position:absolute; top:22px; right:0; background:#0d1117; border:1px solid #2d3748; border-radius:6px; padding:10px 14px; z-index:999; min-width:190px; font-size:11px; line-height:2; box-shadow:0 4px 12px rgba(0,0,0,0.6); }
+        .mcp-wrap:hover .mcp-popup { display:block; }
     </style>
 </head>
 <body>
     <h1>MoCKA COMMAND CENTER</h1>
     <p class="subtitle">Model of Cybernetic Knowledge Architecture — v2.1.0</p>
 
+    <div class="block" id="loop-block">
+        <h3>
+            <span id="loop-inject-dot" class="server-dot online"></span>
+            <span id="loop-inject-label" style="font-size:13px;color:#4ade80;letter-spacing:2px;">ESSENCE INJECT — ON</span>
+            <button id="loop-toggle-btn" onclick="toggleInject()" style="margin-left:auto;padding:4px 14px;font-size:12px;border-color:#4ade80;color:#4ade80;">⬛ STOP INJECT</button>
+            <button onclick="refreshLoop()" style="padding:3px 10px;font-size:11px;">↻</button>
+        </h3>
+        <div class="layer-row" style="margin-bottom:10px;">
+            <div class="layer-chip green"><div class="num" id="loop-essence-count">-</div><div class="lbl">ESSENCE</div></div>
+            <div class="layer-chip"><div class="num" id="loop-raw-count">-</div><div class="lbl">RAW</div></div>
+            <div class="layer-chip amber"><div class="num" id="loop-ping-age" style="font-size:13px;margin-top:4px;">-</div><div class="lbl">PING AGE</div></div>
+        </div>
+        <div style="background:#0a1a0f;border:1px solid #1a4a2a;border-radius:6px;padding:10px;font-size:11px;font-family:monospace;color:#4ade80;min-height:48px;">
+            <div style="color:#6b7280;font-size:10px;letter-spacing:1px;margin-bottom:4px;">PING_LATEST.JSON — DNA v2.0 PACKET</div>
+            <div id="loop-ping-preview">— loading —</div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;">
+            <span style="font-size:10px;color:#9ca3af;letter-spacing:1px;width:100%;margin-bottom:4px;">CIVILIZATION LOOP</span>
+            <span class="loop-stage" id="ls-1">① Observe</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-2">② Record</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-3">③ Incident</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-4">④ Recurrence</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-5">⑤ Prevention</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-6">⑥ Decision</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-7">⑦ Action</span><span class="loop-arrow">→</span>
+            <span class="loop-stage" id="ls-8">⑧ Audit</span>
+        </div>
+    </div>
+
     <div class="block">
         <h3>
             <span class="server-dot" id="sdot"></span>
             <span id="sstat" style="font-size:13px;">CALIBER PIPELINE — checking...</span>
-            <button onclick="refreshQueue()" style="margin-left:auto;padding:3px 10px;font-size:11px;">↻ Refresh</button><span id="ss-caliber" style="margin-left:12px;font-size:11px;font-family:monospace;color:#555;">● CAL:5001</span><span id="ss-mcp" style="margin-left:8px;font-size:11px;font-family:monospace;color:#555;">● MCP:5002</span>
+            <button onclick="refreshQueue()" style="padding:3px 10px;font-size:11px;">↻ Refresh</button>
+            <div class="srv-bar">
+                <div class="srv-item">
+                    <span class="srv-d off" id="d-app"></span>
+                    <span class="srv-lbl">APP</span>
+                    <span class="srv-val off" id="v-app">:5000</span>
+                </div>
+                <div class="srv-item">
+                    <span class="srv-d off" id="d-cal"></span>
+                    <span class="srv-lbl">CAL</span>
+                    <span class="srv-val off" id="v-cal">:5679</span>
+                </div>
+                <div class="srv-item mcp-wrap">
+                    <span class="srv-d off" id="d-mcp"></span>
+                    <span class="srv-lbl">MCP</span>
+                    <span class="srv-val off" id="v-mcp">:5002</span>
+                    <span class="mcp-badge" id="mcp-badge" style="display:none;">9</span>
+                    <div class="mcp-popup" id="mcp-popup">— loading —</div>
+                </div>
+                <div class="srv-item">
+                    <span class="srv-d off" id="d-ngrok"></span>
+                    <span class="srv-lbl">NGROK</span>
+                    <span class="srv-val off" id="v-ngrok">→5002</span>
+                </div>
+            </div>
             <span class="timestamp" id="ts"></span>
         </h3>
-
         <div class="layer-row">
             <div class="layer-chip"><div class="num" id="c-RAW">-</div><div class="lbl">RAW</div></div>
             <div class="layer-chip"><div class="num" id="c-REDUCED">-</div><div class="lbl">REDUCED</div></div>
@@ -103,7 +157,6 @@
             <div class="layer-chip"><div class="num" id="c-ESSENCE">-</div><div class="lbl">ESSENCE</div></div>
             <div class="layer-chip purple"><div class="num" id="c-outbox">-</div><div class="lbl">OUTBOX/PILS</div></div>
         </div>
-
         <div class="pipeline-grid">
             <div class="zone zone-incoming">
                 <div class="zone-title">① INCOMING — 受信キュー</div>
@@ -118,7 +171,6 @@
                 <div id="zone-result"><span class="empty-msg">— 結果なし —</span></div>
             </div>
         </div>
-
         <button class="process-btn" onclick="processNow()">▶ PROCESS NOW — outbox/PILS → Caliber</button>
         <div class="proc-msg" id="proc-msg">— 待機中 —</div>
     </div>
@@ -177,82 +229,129 @@
             Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",
             Copilot:"https://copilot.microsoft.com/"
         };
-        window.onload = () => { updateHistory(); refreshQueue(); setInterval(refreshQueue, 10000); };
-
+        function srvSet(dotId, valId, on, text) {
+            const d = document.getElementById(dotId);
+            const v = document.getElementById(valId);
+            if(d) { d.className = 'srv-d ' + (on ? 'on' : 'off'); }
+            if(v) { v.className = 'srv-val ' + (on ? 'on' : 'off'); v.textContent = text; }
+        }
+        async function updateServerStatus() {
+            try {
+                const r = await fetch('/servers/status');
+                const d = await r.json();
+                const cal = d.caliber || {};
+                const mcp = d.mcp || {};
+                const calOn = cal.status === 'online';
+                const mcpOn = mcp.status === 'online';
+                srvSet('d-cal', 'v-cal', calOn, ':5679' + (calOn ? ' ✓' : ' ✗'));
+                srvSet('d-mcp', 'v-mcp', mcpOn, ':5002' + (mcpOn ? ' ✓' : ' ✗'));
+                if(mcpOn && mcp.tools) {
+                    const badge = document.getElementById('mcp-badge');
+                    badge.style.display = 'inline';
+                    badge.textContent = mcp.tools.length + ' tools';
+                    document.getElementById('mcp-popup').innerHTML =
+                        mcp.tools.map(t => '<span style="color:#4ade80">●</span> ' + t).join('<br>');
+                }
+            } catch(e) {
+                srvSet('d-cal','v-cal',false,':5679 ✗');
+                srvSet('d-mcp','v-mcp',false,':5002 ✗');
+            }
+            try {
+                await fetch('http://localhost:5000/');
+                srvSet('d-app','v-app',true,':5000 ✓');
+            } catch(e) { srvSet('d-app','v-app',false,':5000 ✗'); }
+            try {
+                const r = await fetch('/ngrok/status');
+                const d = await r.json();
+                const on = d.status === 'online';
+                const addr = d.addr ? d.addr.replace('http://localhost:','') : '5002';
+                srvSet('d-ngrok','v-ngrok', on, '→'+addr+(on?' ✓':' ✗'));
+            } catch(e) { srvSet('d-ngrok','v-ngrok',false,'→5002 ✗'); }
+        }
+        async function refreshLoop() {
+            try {
+                const r = await fetch('/loop/status');
+                const d = await r.json();
+                const on = d.inject_mode === 'ON';
+                document.getElementById('loop-inject-dot').className = 'server-dot ' + (on?'online':'offline');
+                document.getElementById('loop-inject-label').innerText = 'ESSENCE INJECT — ' + d.inject_mode;
+                document.getElementById('loop-inject-label').style.color = on?'#4ade80':'#6b7280';
+                const btn = document.getElementById('loop-toggle-btn');
+                btn.innerText = on?'⬛ STOP INJECT':'▶ START INJECT';
+                btn.style.borderColor = on?'#4ade80':'#fbbf24';
+                btn.style.color = on?'#4ade80':'#fbbf24';
+                document.getElementById('loop-essence-count').innerText = d.essence_count??'-';
+                document.getElementById('loop-raw-count').innerText = d.raw_count??'-';
+                document.getElementById('loop-ping-age').innerText = d.ping_age??'-';
+                const ping = d.ping_latest||{};
+                const preview = Object.entries(ping).slice(0,6)
+                    .map(([k,v])=>`<span style="color:#9ca3af">${k}</span>: <span style="color:#4ade80">${JSON.stringify(v).slice(0,40)}</span>`).join('  ');
+                document.getElementById('loop-ping-preview').innerHTML = preview||'— no packet —';
+                const active = Math.floor(Date.now()/1500)%8+1;
+                [1,2,3,4,5,6,7,8].forEach(i=>{
+                    const el=document.getElementById('ls-'+i);
+                    if(el) el.className='loop-stage'+(i===active?' active':'');
+                });
+            } catch(e){}
+        }
+        async function toggleInject() {
+            try{ await fetch('/loop/inject_toggle',{method:'POST'}); await refreshLoop(); }catch(e){}
+        }
+        window.onload = () => {
+            updateHistory(); refreshQueue(); refreshLoop(); updateServerStatus();
+            setInterval(refreshQueue,10000);
+            setInterval(refreshLoop,3000);
+            setInterval(updateServerStatus,10000);
+        };
         async function refreshQueue() {
             try {
                 const r = await fetch('/caliber/queue');
                 const d = await r.json();
-                const layers = d.layers || {};
-                ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k => {
-                    const el = document.getElementById('c-'+k);
-                    if(el) el.innerText = layers[k] ?? '-';
+                const layers = d.layers||{};
+                ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k=>{
+                    const el=document.getElementById('c-'+k); if(el) el.innerText=layers[k]??'-';
                 });
-                document.getElementById('c-outbox').innerText = d.queue?.length ?? '-';
-                document.getElementById('ts').innerText = d.timestamp || '';
-                const dot = document.getElementById('sdot');
-                const stat = document.getElementById('sstat');
-                if(d.caliber_server === 'online') {
-                    dot.className = 'server-dot online';
-                    stat.innerText = 'CALIBER PIPELINE — ONLINE :5679';
-                    stat.style.color = '#4ade80';
+                document.getElementById('c-outbox').innerText = d.queue?.length??'-';
+                document.getElementById('ts').innerText = d.timestamp||'';
+                const dot=document.getElementById('sdot'), stat=document.getElementById('sstat');
+                if(d.caliber_server==='online'){
+                    dot.className='server-dot online'; stat.innerText='CALIBER PIPELINE — ONLINE :5679'; stat.style.color='#4ade80';
                 } else {
-                    dot.className = 'server-dot offline';
-                    stat.innerText = 'CALIBER PIPELINE — OFFLINE';
-                    stat.style.color = '#9ca3af';
+                    dot.className='server-dot offline'; stat.innerText='CALIBER PIPELINE — OFFLINE :5679'; stat.style.color='#9ca3af';
                 }
-                const qEl = document.getElementById('zone-queue');
-                if(d.queue && d.queue.length > 0) {
-                    qEl.innerHTML = d.queue.map(f =>
-                        `<div class="queue-item">
-                            <div class="fname">${f.name}</div>
-                            <div class="fsize">${(f.size/1024).toFixed(1)} KB — 処理待ち</div>
-                        </div>`).join('');
-                } else {
-                    qEl.innerHTML = '<span class="empty-msg">— 待機中 —</span>';
-                }
-                if(!processing) {
-                    document.getElementById('zone-processing').innerHTML = '<span class="empty-msg">— スタンバイ —</span>';
-                }
-                const results = [...(d.recent_results||[]), ...(d.reducing||[]).map(r=>({...r,status:'REDUCING'}))];
+                const qEl=document.getElementById('zone-queue');
+                if(d.queue&&d.queue.length>0){
+                    qEl.innerHTML=d.queue.map(f=>`<div class="queue-item"><div class="fname">${f.name}</div><div class="fsize">${(f.size/1024).toFixed(1)} KB — 処理待ち</div></div>`).join('');
+                } else { qEl.innerHTML='<span class="empty-msg">— 待機中 —</span>'; }
+                if(!processing) document.getElementById('zone-processing').innerHTML='<span class="empty-msg">— スタンバイ —</span>';
+                const results=[...(d.recent_results||[]),...(d.reducing||[]).map(r=>({...r,status:'REDUCING'}))];
                 results.sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||''));
-                const rEl = document.getElementById('zone-result');
-                if(results.length > 0) {
-                    rEl.innerHTML = results.slice(0,5).map(r => {
-                        const rate = Math.round((r.restore_rate||0)*100);
-                        const ok = r.status === 'RE_REDUCED';
-                        return `<div class="result-item ${ok?'ok':'ng'}">
-                            <span class="result-rate ${ok?'ok':'ng'}">${rate}%</span>
-                            <span class="result-meta">${r.status||''} | ${(r.timestamp||'').slice(0,16)}</span>
-                            ${r.preview?'<div class="result-preview">'+r.preview.slice(0,80)+'</div>':''}
-                        </div>`;
+                const rEl=document.getElementById('zone-result');
+                if(results.length>0){
+                    rEl.innerHTML=results.slice(0,5).map(r=>{
+                        const rate=Math.round((r.restore_rate||0)*100), ok=r.status==='RE_REDUCED';
+                        return `<div class="result-item ${ok?'ok':'ng'}"><span class="result-rate ${ok?'ok':'ng'}">${rate}%</span><span class="result-meta">${r.status||''} | ${(r.timestamp||'').slice(0,16)}</span>${r.preview?'<div class="result-preview">'+r.preview.slice(0,80)+'</div>':''}</div>`;
                     }).join('');
-                } else {
-                    rEl.innerHTML = '<span class="empty-msg">— 結果なし —</span>';
-                }
-            } catch(e) { console.error(e); }
+                } else { rEl.innerHTML='<span class="empty-msg">— 結果なし —</span>'; }
+            } catch(e){ console.error(e); }
         }
-
         async function processNow() {
             if(processing) return;
-            processing = true;
-            const msg = document.getElementById('proc-msg');
-            msg.style.color = '#fbbf24';
-            msg.innerText = '⟳ 処理要求中...';
-            document.getElementById('zone-processing').innerHTML =
-                '<div class="processing-item"><span class="processing-anim">↻</span>　処理中... しばらくお待ちください</div>';
+            processing=true;
+            const msg=document.getElementById('proc-msg');
+            msg.style.color='#fbbf24'; msg.innerText='⟳ 処理要求中...';
+            document.getElementById('zone-processing').innerHTML='<div class="processing-item"><span class="processing-anim">↻</span>　処理中...</div>';
             try {
-                const r = await fetch('/caliber/process',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-                const d = await r.json();
-                if(d.status==='empty') { msg.style.color='#9ca3af'; msg.innerText='[INFO] outbox/PILSにファイルなし'; }
-                else if(d.status==='error') { msg.style.color='#f87171'; msg.innerText='[ERROR] '+(d.message||'unknown'); }
-                else { msg.style.color='#4ade80'; msg.innerText='[OK] '+d.status+' | 復元率: '+d.restore_rate+' | '+d.total_chars+'文字'; }
-            } catch(e) { msg.style.color='#f87171'; msg.innerText='[ERROR] '+e.message; }
-            processing = false;
+                const r=await fetch('/caliber/process',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
+                const d=await r.json();
+                if(d.status==='empty'){msg.style.color='#9ca3af';msg.innerText='[INFO] outbox/PILSにファイルなし';}
+                else if(d.status==='error'){msg.style.color='#f87171';msg.innerText='[ERROR] '+(d.message||'unknown');}
+                else{msg.style.color='#4ade80';msg.innerText='[OK] '+d.status+' | 復元率: '+d.restore_rate+' | '+d.total_chars+'文字';}
+            } catch(e){msg.style.color='#f87171';msg.innerText='[ERROR] '+e.message;}
+            processing=false;
             await refreshQueue();
         }
-
-        function setCat(c,el) {
+        function setCat(c,el){
             state.c=c; state.targets=[];
             document.querySelectorAll('#btnA,#btnB').forEach(b=>b.classList.remove('active-a','active-b'));
             document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active-t'));
@@ -261,13 +360,13 @@
             document.getElementById('opt-B').style.display=(c==='B')?'block':'none';
             updateBtn();
         }
-        function toggleT(t,el) {
+        function toggleT(t,el){
             el.classList.toggle('active-t');
             if(state.targets.includes(t)) state.targets=state.targets.filter(x=>x!==t);
             else state.targets.push(t);
             updateBtn();
         }
-        function toggleAll(el) {
+        function toggleAll(el){
             el.classList.toggle('active-t');
             const ais=['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
             const on=el.classList.contains('active-t');
@@ -275,10 +374,9 @@
             document.querySelectorAll('#opt-B .s-btn').forEach(b=>{if(on)b.classList.add('active-t');else b.classList.remove('active-t');});
             updateBtn();
         }
-        function updateBtn() {
-            const b=document.getElementById('exec');
-            const sb=document.getElementById('status-bar');
-            if(state.targets.length>0) {
+        function updateBtn(){
+            const b=document.getElementById('exec'), sb=document.getElementById('status-bar');
+            if(state.targets.length>0){
                 b.classList.add('ready'); b.innerText='▶ LAUNCH: '+state.targets.join(' · ');
                 sb.style.color='#FF8000'; sb.innerText='READY — '+state.c+' → '+state.targets.join(', ');
             } else {
@@ -286,7 +384,7 @@
                 sb.style.color='#9ca3af'; sb.innerText='— SELECT CATEGORY AND TARGET —';
             }
         }
-        async function fire() {
+        async function fire(){
             if(!state.c||state.targets.length===0) return;
             const btn=document.getElementById('exec');
             const titleVal=document.getElementById('title').value.trim();
@@ -294,16 +392,16 @@
             const prompt=(titleVal?'【'+titleVal+'】\n':'')+memoVal;
             try{await navigator.clipboard.writeText(prompt);}catch(e){}
             btn.innerText='⟳ DISPATCHING...'; btn.classList.remove('ready');
-            for(const t of state.targets) {
+            for(const t of state.targets){
                 await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:state.c,o:t,memo:prompt})});
             }
-            if(state.c==='B') {
+            if(state.c==='B'){
                 await fetch('/orchestra',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:(titleVal?titleVal+'\n':'')+memoVal})});
                 document.getElementById('status-bar').style.color='#c084fc';
                 document.getElementById('status-bar').innerText='PROMPT COPIED — OPEN EACH AI BELOW';
                 const ll=document.getElementById('link-list'); ll.innerHTML='';
-                for(const t of state.targets) {
-                    if(AI_URLS[t]) {
+                for(const t of state.targets){
+                    if(AI_URLS[t]){
                         const a=document.createElement('a'); a.href=AI_URLS[t]; a.target='_blank'; a.innerText='▶ '+t;
                         a.style.cssText='display:inline-block;padding:8px 14px;border:1px solid #a855f7;color:#c084fc;text-decoration:none;font-family:monospace;font-size:13px;border-radius:4px;';
                         ll.appendChild(a);
@@ -315,8 +413,8 @@
             await updateHistory();
             setTimeout(()=>{updateBtn();document.getElementById('memo').value='';},2500);
         }
-        async function updateHistory() {
-            try {
+        async function updateHistory(){
+            try{
                 const res=await fetch('/get_history');
                 const data=await res.json();
                 const body=document.getElementById('history-body');
@@ -326,35 +424,87 @@
                     tr.innerHTML='<td>'+(row.when||'')+'</td><td>'+(row.target_class||'')+'</td><td>'+(row.short_summary||row.free_note||'')+'</td>';
                     body.appendChild(tr);
                 });
-            } catch(e){console.error(e);}
+            }catch(e){console.error(e);}
         }
     </script>
-    <div id="server-status" style="position:fixed;bottom:12px;right:12px;background:#0a0a0a;border:1px solid #333;padding:12px 16px;font-family:monospace;font-size:12px;z-index:9999;min-width:220px;">
-      <div style="color:#666;margin-bottom:8px;">SERVER STATUS</div>
-      <div id="ss-caliber" style="color:#555;">● CALIBER :5001 ...</div>
-      <div id="ss-mcp"     style="color:#555;">● MCP     :5002 ...</div>
-    </div>
-    <script>
-    async function updateServerStatus(){
-      try{
-        const r=await fetch('/servers/status');
-        const d=await r.json();
-        const c=d.caliber||{};
-        const m=d.mcp||{};
-        document.getElementById('ss-caliber').innerHTML=
-          (c.status==='online'?'<span style="color:#00ff88">●</span>':'<span style="color:#ff4444">●</span>')+
-          ' CALIBER :5001 '+c.status.toUpperCase();
-        document.getElementById('ss-mcp').innerHTML=
-          (m.status==='online'?'<span style="color:#00ff88">●</span>':'<span style="color:#ff4444">●</span>')+
-          ' MCP     :5002 '+(m.status||'offline').toUpperCase()+
-          (m.status==='online'?' <span style="color:#555">'+m.tools.length+'tools</span>':'');
-      }catch(e){
-        document.getElementById('ss-caliber').innerHTML='<span style="color:#ff4444">●</span> CALIBER :5001 ERROR';
-        document.getElementById('ss-mcp').innerHTML='<span style="color:#ff4444">●</span> MCP     :5002 ERROR';
-      }
-    }
-    updateServerStatus();
-    setInterval(updateServerStatus,10000);
-    </script></body>
-</html>
 
+    <div class="block">
+        <h3><span class="server-dot online"></span>④ EVENTS STREAM — 最新イベント</h3>
+        <div id="events-stream" style="max-height:200px;overflow-y:auto;"></div>
+    </div>
+    <div class="block">
+        <h3><span class="server-dot online"></span>⑤ TODO OBSERVER — 未着手・進行中</h3>
+        <div id="todo-stream" style="display:flex;flex-wrap:wrap;gap:6px;min-height:60px;"></div>
+    </div>
+    <div class="block">
+        <h3><span class="server-dot online"></span>⑥ SYSTEM HEALTH</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <div class="layer-chip"><div class="num" id="h-events">-</div><div class="lbl">EVENTS</div></div>
+            <div class="layer-chip green"><div class="num" id="h-done">-</div><div class="lbl">TODO完了</div></div>
+            <div class="layer-chip amber"><div class="num" id="h-todo">-</div><div class="lbl">TODO残</div></div>
+            <div class="layer-chip purple"><div class="num" id="h-phase">M1</div><div class="lbl">PHASE</div></div>
+        </div>
+        <div id="hash-display" style="font-size:10px;color:#4b5563;word-break:break-all;"></div>
+    </div>
+
+    <script>
+    async function mcpCall(tool, args){
+        try{
+            const r=await fetch("http://localhost:5002/mcp",{
+                method:"POST", headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/call",params:{name:tool,arguments:args||{}}})
+            });
+            const d=await r.json();
+            return JSON.parse(d.result.content[0].text);
+        }catch(e){return null;}
+    }
+    async function updateEventsStream(){
+        const d=await mcpCall("mocka_list_events",{n:10});
+        if(!d) return;
+        const el=document.getElementById("events-stream");
+        el.innerHTML="";
+        document.getElementById("h-events").textContent=d.count||"-";
+        const evs=[...(d.events||[])].reverse();
+        evs.forEach(e=>{
+            const div=document.createElement("div");
+            div.style.cssText="font-size:11px;padding:4px 8px;margin-bottom:3px;border-left:3px solid #6d28d9;background:rgba(0,0,0,0.3);border-radius:2px;display:flex;gap:8px;align-items:center;";
+            const when=(e.when||e.timestamp||"").substring(0,16);
+            const actor=(e.who_actor||e.author||"").substring(0,8);
+            const title=(e.title||e.short_summary||"").substring(0,55);
+            div.innerHTML=`<span style="color:#6d28d9;min-width:125px;flex-shrink:0;">${when}</span><span style="color:#9ca3af;min-width:55px;flex-shrink:0;">${actor}</span><span style="color:#e5e7eb;">${title}</span>`;
+            el.appendChild(div);
+        });
+    }
+    async function updateTodoObserver(){
+        const d=await mcpCall("mocka_get_todo");
+        if(!d||!d.todos) return;
+        const el=document.getElementById("todo-stream");
+        el.innerHTML="";
+        const todos=d.todos||[], completed=d.completed||[];
+        document.getElementById("h-todo").textContent=todos.filter(t=>t.status!=="完了").length;
+        document.getElementById("h-done").textContent=completed.length;
+        todos.filter(t=>t.status!=="完了").forEach(t=>{
+            const div=document.createElement("div");
+            const c=t.priority==="高"?"#ef4444":t.priority==="中"?"#f59e0b":"#6b7280";
+            const sc=t.status==="進行中"?"#fbbf24":"#6b7280";
+            div.style.cssText=`background:#111827;border:1px solid ${c};border-radius:4px;padding:6px 10px;font-size:11px;max-width:190px;cursor:default;`;
+            div.title=t.description||"";
+            div.innerHTML=`<div style="color:${c};font-weight:700;font-size:10px;">${t.id||""}</div><div style="color:#e5e7eb;margin-top:2px;">${(t.title||"").substring(0,28)}</div><div style="color:${sc};margin-top:2px;font-size:10px;">${t.status} | ${(t.assigned_to||"").substring(0,10)}</div>`;
+            el.appendChild(div);
+        });
+    }
+    async function updateHealth(){
+        try{
+            const r=await fetch("http://localhost:5002/health");
+            const d=await r.json();
+            document.getElementById("hash-display").textContent="MCP v"+(d.version||"?")+" | "+new Date().toLocaleTimeString("ja-JP");
+        }catch(e){
+            document.getElementById("hash-display").textContent="MCP :5002 offline";
+        }
+    }
+    async function updateObservers(){ await Promise.all([updateEventsStream(),updateTodoObserver(),updateHealth()]); }
+    updateObservers();
+    setInterval(updateObservers,15000);
+    </script>
+</body>
+</html>
