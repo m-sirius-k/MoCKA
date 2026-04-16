@@ -1,4 +1,4 @@
-﻿{
+{
   "context": "error_recovery",
   "edges": [
     {"from": "FIX", "to": "FIX_OPT", "weight": 1},
