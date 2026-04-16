@@ -1,4 +1,4 @@
-﻿data/
+data/
 *.csv
 .env
 *.key
@@ -14,4 +14,4 @@ best_score.json
 rr_result.txt
 
 keys/
-*.json
+
