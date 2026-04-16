@@ -1,0 +1,12 @@
+﻿RUN_WITH_AUDIT_TRY=1
+[main_loop] cycle=0 outbox=.\outbox\1771648993416_d513e6dfd7ed4ea3adaa5b12ba1d61c4_cycle_0.json
+[PHASE4] EXEC Private: C:\Users\sirok\mocka-core-private\main_loop.py
+[PHASE4] PYTHONPATH: C:\Users\sirok\mocka-core-private;C:\Users\sirok\MoCKA
+RUN_WITH_AUDIT_TRY=2
+[main_loop] cycle=0 outbox=.\outbox\1771648999426_80e3c0a7216d40058a1cc762034e8d40_cycle_0.json
+[PHASE4] EXEC Private: C:\Users\sirok\mocka-core-private\main_loop.py
+[PHASE4] PYTHONPATH: C:\Users\sirok\mocka-core-private;C:\Users\sirok\MoCKA
+RUN_WITH_AUDIT_TRY=3
+[main_loop] cycle=0 outbox=.\outbox\1771649001852_ddaee3bf28584277aaeddb7767fda2a6_cycle_0.json
+[PHASE4] EXEC Private: C:\Users\sirok\mocka-core-private\main_loop.py
+[PHASE4] PYTHONPATH: C:\Users\sirok\mocka-core-private;C:\Users\sirok\MoCKA

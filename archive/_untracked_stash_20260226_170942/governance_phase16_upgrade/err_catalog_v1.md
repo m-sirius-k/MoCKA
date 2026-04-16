@@ -1,0 +1,56 @@
+\# NOTE: ERR Catalog v1 (Phase16.1 baseline)
+
+\# NOTE: All exceptions MUST map to one ERR code. Unmapped exceptions SHALL be FAIL.
+
+\# NOTE: STRUCT errors integrate Phase14.6 governance actions via state machine.
+
+
+
+\# ERR Catalog v1
+
+
+
+\## Structural Errors
+
+ERR-STRUCT-001: GENESIS\_DUPLICATE
+
+ERR-STRUCT-002: TIP\_UNREACHABLE
+
+ERR-STRUCT-003: BRANCH\_CLASSIFICATION\_INVALID
+
+ERR-STRUCT-004: QUARANTINE\_CONFLICT
+
+
+
+\## Crypto Errors
+
+ERR-CRYPTO-001: SIGNATURE\_INVALID
+
+ERR-CRYPTO-002: CANONICALIZATION\_MISMATCH
+
+ERR-CRYPTO-003: KEY\_NOT\_FOUND
+
+
+
+\## Operational Errors
+
+ERR-OPS-001: STATE\_NOT\_TERMINAL
+
+ERR-OPS-002: RETRY\_LIMIT\_EXCEEDED
+
+ERR-OPS-003: UNMAPPED\_EXCEPTION
+
+
+
+\## Artifact Errors
+
+ERR-ARTIFACT-001: MANIFEST\_MISSING\_FILE
+
+ERR-ARTIFACT-002: HASH\_MISMATCH
+
+
+
+\## Reproducibility Errors
+
+ERR-REPRO-001: ENVIRONMENT\_VARIANCE\_DETECTED
+

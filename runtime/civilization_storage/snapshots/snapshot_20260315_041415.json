@@ -1,0 +1,47 @@
+{
+  "civilization_snapshot": {
+    "time": "20260315_041415",
+    "data": {
+      "civilization_progress.json": {
+        "civilization_progress": 0.203,
+        "stability": 0.25,
+        "avg_fitness": 0.125
+      },
+      "civilization_governor.json": null,
+      "civilization_theory.json": {
+        "dominant_strategy": "R705",
+        "confidence": 1.0
+      },
+      "civilization_philosophy.json": {
+        "timestamp": 1773543264,
+        "dominant_strategy": "R705",
+        "confidence": 1.0,
+        "civilization_principle": "exploit_successful_strategy"
+      },
+      "civilization_culture.json": {
+        "civilization_culture": [
+          {
+            "strategy": "R705",
+            "type": "successful_research",
+            "knowledge_nodes": [
+              {
+                "id": "R003",
+                "type": "strategy",
+                "attempts": 4,
+                "success": 1
+              },
+              {
+                "id": "R705",
+                "type": "strategy",
+                "attempts": 0,
+                "success": 0
+              }
+            ],
+            "timestamp": "2026-03-15T03:27:22.308510"
+          }
+        ],
+        "last_update": "2026-03-15T03:27:22.308672"
+      }
+    }
+  }
+}

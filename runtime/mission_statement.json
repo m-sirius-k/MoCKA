@@ -1,0 +1,21 @@
+﻿{
+  "mission": "MoCKA AI Orchestra",
+  "version": "1.0.1",
+  "phases": {
+    "36": "Foundation: Unified Constitution",
+    "37": "Vision: Free-Route Observation",
+    "38": "Consensus: Hybrid Delta-Consensus",
+    "39": "Traceability: Debate Log Isolation",
+    "40": "Evolution: Quota-Aware Resource Manager"
+  },
+  "philosophy": [
+    "Process over Result",
+    "Resource over Waste",
+    "Verification over Efficiency"
+  ],
+  "constraints": {
+    "core_isolation": "External providers must never modify the Core Ledger directly",
+    "api_frugality": "Prefer Cache > OCR > Lightweight API > High-end API",
+    "transparency": "Every decision path must be auditable in Debate Logs"
+  }
+}

@@ -1,0 +1,6 @@
+
+5. Distribution Seal
+- verify_pack_v3.zip sha256:
+  ca91337750f8e24e050aacc98b2679d4229d95a213f914bda688cf052ebe843e
+  6305956aa864c07e8c4e4110767381cfc5562eda424d31040ac7f79a300a93ed
+

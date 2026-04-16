@@ -1,0 +1,75 @@
+{
+  "started_utc": "2026-02-25T02:56:37.595891Z",
+  "overall_status": "PASS",
+  "checks": {
+    "struct_check": {
+      "status": "PASS"
+    },
+    "dict_check": {
+      "status": "PASS",
+      "source": "C:\\Users\\sirok\\MoCKA\\governance_phase16_upgrade\\final_check_dict_driven_v1.py",
+      "report_path": "C:\\Users\\sirok\\MoCKA\\outbox\\verify_report_final_check_v1.json",
+      "report": {
+        "report_version": "v1",
+        "utc_now": "2026-02-25T02:56:37.780635Z",
+        "verifier": {
+          "name": "final_check_dict_driven",
+          "version": "v1"
+        },
+        "inputs": {
+          "base": "C:\\Users\\sirok\\MoCKA\\governance_phase16_upgrade"
+        },
+        "results": {
+          "overall": "PASS",
+          "checks": [
+            {
+              "status": "PASS",
+              "name": "INV_CATALOG",
+              "message": "Required invariants present",
+              "details": {},
+              "err_code": ""
+            },
+            {
+              "status": "PASS",
+              "name": "ERR_CATALOG",
+              "message": "Required ERR codes present",
+              "details": {},
+              "err_code": ""
+            },
+            {
+              "status": "PASS",
+              "name": "STATE_MACHINE",
+              "message": "terminal_states includes OK and QUARANTINED",
+              "details": {},
+              "err_code": ""
+            },
+            {
+              "status": "PASS",
+              "name": "STATE_MACHINE",
+              "message": "states include RUNNING and GOVERNANCE_ACTION_REQUIRED",
+              "details": {},
+              "err_code": ""
+            },
+            {
+              "status": "PASS",
+              "name": "RUN_STRUCT_VERIFY",
+              "message": "Executed struct_verify_v1.py",
+              "details": {
+                "stdout": "Wrote report: C:\\Users\\sirok\\MoCKA\\outbox\\verify_report_struct_v1.json\nOverall: PASS\n",
+                "stderr": ""
+              },
+              "err_code": ""
+            },
+            {
+              "status": "PASS",
+              "name": "STRUCT_REPORT",
+              "message": "struct report PASS",
+              "details": {},
+              "err_code": ""
+            }
+          ]
+        }
+      }
+    }
+  }
+}

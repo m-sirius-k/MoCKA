@@ -1,0 +1,11 @@
+DB ledger purge report
+db_path: C:\Users\sirok\MoCKA\audit\ed25519\audit.db
+table: audit_ledger_event
+tip: cc009711c19a8a9358bd282446f3cbcd3b834200ac5e7630e720bb820954b121
+reachable_count_from_files: 14
+db_rows_before: 16
+db_rows_after: 14
+deleted_count: 2
+deleted_event_ids:
+  - 11962df0e8a819b75a44a249db3d772c6fc1ec90a6bb7773da34e1bdf11aa133
+  - 2bd8ea0523b57ff6ec6aa136224e425f3d0bddfe570898b9f8467fc9d654fbe9

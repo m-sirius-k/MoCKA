@@ -1,0 +1,1 @@
+def run_one_cycle(): print("[MOCK] field_player OK"); return "success"

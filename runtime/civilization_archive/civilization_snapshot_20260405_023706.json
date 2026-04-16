@@ -1,0 +1,268 @@
+{
+  "civilization_memory": {
+    "culture": {
+      "civilization_culture": [
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-03-15T03:27:22.308510"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-03-26T09:17:36.015386"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-03-26T09:18:14.823961"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-04-05T02:34:43.911239"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-04-05T02:35:39.320746"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-04-05T02:36:11.207037"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-04-05T02:36:36.896955"
+        },
+        {
+          "strategy": "R705",
+          "type": "successful_research",
+          "knowledge_nodes": [
+            {
+              "id": "R003",
+              "type": "strategy",
+              "attempts": 4,
+              "success": 1
+            },
+            {
+              "id": "R705",
+              "type": "strategy",
+              "attempts": 0,
+              "success": 0
+            }
+          ],
+          "timestamp": "2026-04-05T02:37:06.354869"
+        }
+      ],
+      "last_update": "2026-04-05T02:37:06.354878"
+    },
+    "institutions": {
+      "institutions": [
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363516"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363522"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363526"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363528"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363530"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363532"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363534"
+        },
+        {
+          "strategy": "R705",
+          "rule": "prefer_successful_strategy",
+          "source": "culture",
+          "created": "2026-04-05T02:37:06.363536"
+        }
+      ],
+      "created": "2026-04-05T02:37:06.363506"
+    },
+    "economy": {
+      "economic_priority": [
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372408"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372414"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372417"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372420"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372422"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372424"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372426"
+        },
+        {
+          "strategy": "R705",
+          "priority": 1.0,
+          "allocation": "repair_focus",
+          "timestamp": "2026-04-05T02:37:06.372428"
+        }
+      ],
+      "created": "2026-04-05T02:37:06.372397"
+    }
+  },
+  "memory_created": "2026-04-05T02:37:06.389727"
+}

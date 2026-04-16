@@ -1,0 +1,209 @@
+{
+  "actions": [
+    "FIX",
+    "EXPLORE",
+    "OPTIMIZE"
+  ],
+  "weights": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "last_actions": [
+    "EXPLORE"
+  ],
+  "history": [
+    {
+      "action": "FIX",
+      "status": "success",
+      "output": "Executed FIX",
+      "timestamp": "2026-03-24T08:37:26.813897+00:00"
+    },
+    {
+      "action": "ANALYZE",
+      "status": "success",
+      "output": "Executed ANALYZE",
+      "timestamp": "2026-03-24T08:37:26.830766+00:00"
+    },
+    {
+      "action": "FIX",
+      "status": "success",
+      "output": "Executed FIX",
+      "timestamp": "2026-03-24T08:39:03.516808+00:00"
+    },
+    {
+      "action": "ANALYZE",
+      "status": "success",
+      "output": "Executed ANALYZE",
+      "timestamp": "2026-03-24T08:39:03.527020+00:00"
+    },
+    {
+      "action": "FIX",
+      "status": "success",
+      "output": "Executed FIX",
+      "timestamp": "2026-03-24T08:39:36.792206+00:00"
+    },
+    {
+      "action": "ANALYZE",
+      "status": "success",
+      "output": "Executed ANALYZE",
+      "timestamp": "2026-03-24T08:39:36.805142+00:00"
+    },
+    {
+      "action": "FIX",
+      "status": "success",
+      "output": "Executed FIX",
+      "timestamp": "2026-03-24T08:41:03.129596+00:00"
+    },
+    {
+      "action": "ANALYZE",
+      "status": "success",
+      "output": "Executed ANALYZE",
+      "timestamp": "2026-03-24T08:41:03.142536+00:00"
+    },
+    {
+      "action": "FIX",
+      "status": "success",
+      "output": "Executed FIX",
+      "timestamp": "2026-03-26T07:42:29.025047+00:00"
+    },
+    {
+      "action": "ANALYZE",
+      "status": "success",
+      "output": "Executed ANALYZE",
+      "timestamp": "2026-03-26T07:42:29.048160+00:00"
+    },
+    {
+      "action": "FIX",
+      "status": "success",
+      "output": "[local] Executed FIX",
+      "timestamp": "2026-03-26T08:13:17.496772+00:00"
+    },
+    {
+      "action": "ANALYZE",
+      "status": "success",
+      "output": "[local] Executed ANALYZE",
+      "timestamp": "2026-03-26T08:13:18.891265+00:00"
+    },
+    {
+      "action": "SAVE",
+      "status": "success",
+      "output": "[local] Executed SAVE",
+      "timestamp": "2026-03-26T08:17:49.477121+00:00"
+    },
+    {
+      "action": "EXPORT",
+      "status": "success",
+      "output": "[local] Executed EXPORT",
+      "timestamp": "2026-03-26T08:17:50.718890+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[local] Executed EXECUTE",
+      "timestamp": "2026-03-26T08:23:41.022075+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[local] Executed EXECUTE",
+      "timestamp": "2026-03-26T09:18:14.627308+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] cannot import name 'MoCKARouter' from 'interface.router' (C:\\Users\\sirok\\MoCKA\\interface\\router.py)",
+      "timestamp": "2026-04-05T02:34:43.704827+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] 'MoCKARouter' object has no attribute 'providers'",
+      "timestamp": "2026-04-05T02:35:39.191046+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] list indices must be integers or slices, not str",
+      "timestamp": "2026-04-05T02:36:11.095128+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] 'Gemini'",
+      "timestamp": "2026-04-05T02:36:36.784198+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] 'str' object has no attribute 'is_available'",
+      "timestamp": "2026-04-05T02:37:06.202754+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] 'MoCKARouter' object has no attribute 'collaborate'",
+      "timestamp": "2026-04-05T02:37:36.121100+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] string indices must be integers, not 'str'",
+      "timestamp": "2026-04-05T02:38:07.433430+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[local_rule_engine] executed EXECUTE | [google_gemini] executed EXECUTE | [openai_gpt] executed EXECUTE | [anthropic_claude] executed EXECUTE | [perplexity_ai] executed EXECUTE",
+      "timestamp": "2026-04-05T02:39:55.363596+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] expected ':' (router.py, line 48)",
+      "timestamp": "2026-04-05T02:56:47.164383+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[local_rule_engine] executed EXECUTE | [google_gemini] executed EXECUTE | [openai_gpt] executed EXECUTE | [anthropic_claude] executed EXECUTE | [perplexity_ai] executed EXECUTE",
+      "timestamp": "2026-04-05T02:57:51.418175+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[local_rule_engine] executed EXECUTE | [google_gemini] executed EXECUTE | [openai_gpt] executed EXECUTE | [anthropic_claude] executed EXECUTE | [perplexity_ai] executed EXECUTE",
+      "timestamp": "2026-04-05T02:58:39.604928+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[router fallback] 'MoCKARouter' object has no attribute 'collaborate'",
+      "timestamp": "2026-04-05T03:02:08.746538+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[anthropic_claude] executed EXECUTE",
+      "timestamp": "2026-04-05T03:03:00.349669+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[anthropic_claude] executed EXECUTE",
+      "timestamp": "2026-04-05T03:21:14.824447+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[anthropic_claude] executed EXECUTE",
+      "timestamp": "2026-04-05T03:21:55.875141+00:00"
+    },
+    {
+      "action": "EXECUTE",
+      "status": "success",
+      "output": "[anthropic_claude] executed EXECUTE",
+      "timestamp": "2026-04-05T03:22:01.740340+00:00"
+    }
+  ]
+}

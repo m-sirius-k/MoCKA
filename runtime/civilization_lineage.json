@@ -1,0 +1,2257 @@
+[
+  {
+    "timestamp": 1773482350,
+    "branch": "branch_1773480740170",
+    "fitness": 99.20000000000002,
+    "state": {
+      "economy": 194,
+      "population": 75,
+      "technology": 49,
+      "energy": 0,
+      "conflict": 27
+    }
+  },
+  {
+    "timestamp": 1773482372,
+    "branch": "branch_1773480740156",
+    "fitness": 102.1,
+    "state": {
+      "economy": 206,
+      "population": 70,
+      "technology": 52,
+      "energy": 0,
+      "conflict": 33
+    }
+  },
+  {
+    "timestamp": 1773482378,
+    "branch": "branch_1773480740156",
+    "fitness": 106.1,
+    "state": {
+      "economy": 216,
+      "population": 70,
+      "technology": 52,
+      "energy": 0,
+      "conflict": 33
+    }
+  },
+  {
+    "timestamp": 1773482384,
+    "branch": "branch_1773480740156",
+    "fitness": 104.0,
+    "state": {
+      "economy": 216,
+      "population": 67,
+      "technology": 52,
+      "energy": 0,
+      "conflict": 38
+    }
+  },
+  {
+    "timestamp": 1773482390,
+    "branch": "branch_1773480740170",
+    "fitness": 104.2,
+    "state": {
+      "economy": 211,
+      "population": 75,
+      "technology": 49,
+      "energy": 0,
+      "conflict": 33
+    }
+  },
+  {
+    "timestamp": 1773482521,
+    "branch": "branch_1773480602136",
+    "fitness": 107.1,
+    "state": {
+      "economy": 195,
+      "population": 60,
+      "technology": 92,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482527,
+    "branch": "branch_1773480740184",
+    "fitness": 108.7,
+    "state": {
+      "economy": 213,
+      "population": 80,
+      "technology": 60,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482533,
+    "branch": "branch_1773480740184",
+    "fitness": 112.7,
+    "state": {
+      "economy": 223,
+      "population": 80,
+      "technology": 60,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482574,
+    "branch": "branch_1773480740184",
+    "fitness": 114.36,
+    "state": {
+      "economy": 225.0,
+      "population": 84.3,
+      "technology": 60,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482580,
+    "branch": "branch_1773480740184",
+    "fitness": 116.02000000000001,
+    "state": {
+      "economy": 227.0,
+      "population": 88.6,
+      "technology": 60,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482586,
+    "branch": "branch_1773480740184",
+    "fitness": 119.88,
+    "state": {
+      "economy": 237.0,
+      "population": 87.89999999999999,
+      "technology": 60,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482593,
+    "branch": "branch_1773480740184",
+    "fitness": 121.54000000000002,
+    "state": {
+      "economy": 239.0,
+      "population": 92.19999999999999,
+      "technology": 60,
+      "energy": 0,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482730,
+    "branch": "branch_1773480740184",
+    "fitness": 121.14000000000001,
+    "state": {
+      "economy": 236.0,
+      "population": 92.19999999999999,
+      "technology": 60,
+      "energy": 8,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482736,
+    "branch": "branch_1773480740184",
+    "fitness": 120.73999999999998,
+    "state": {
+      "economy": 233.0,
+      "population": 92.19999999999999,
+      "technology": 60,
+      "energy": 16,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482743,
+    "branch": "branch_1773480740184",
+    "fitness": 120.34,
+    "state": {
+      "economy": 230.0,
+      "population": 92.19999999999999,
+      "technology": 60,
+      "energy": 24,
+      "conflict": 35
+    }
+  },
+  {
+    "timestamp": 1773482749,
+    "branch": "branch_1773480740170",
+    "fitness": 121.40799999999997,
+    "state": {
+      "economy": 255.99999999999994,
+      "population": 72.54000000000002,
+      "technology": 49,
+      "energy": 15,
+      "conflict": 39
+    }
+  },
+  {
+    "timestamp": 1773482781,
+    "branch": "branch_1773480740170",
+    "fitness": 125.74919999999999,
+    "state": {
+      "economy": 267.46999999999997,
+      "population": 71.84600000000002,
+      "technology": 49,
+      "energy": 13.92,
+      "conflict": 39
+    }
+  },
+  {
+    "timestamp": 1773482787,
+    "branch": "branch_1773480740170",
+    "fitness": 128.42960000000002,
+    "state": {
+      "economy": 270.94,
+      "population": 76.34800000000001,
+      "technology": 49,
+      "energy": 17.84,
+      "conflict": 39
+    }
+  },
+  {
+    "timestamp": 1773482794,
+    "branch": "branch_1773480740170",
+    "fitness": 130.84160000000003,
+    "state": {
+      "economy": 272.41,
+      "population": 76.00800000000001,
+      "technology": 49,
+      "energy": 21.759999999999998,
+      "conflict": 34
+    }
+  },
+  {
+    "timestamp": 1773482800,
+    "branch": "branch_1773480740170",
+    "fitness": 135.25360000000003,
+    "state": {
+      "economy": 283.88000000000005,
+      "population": 75.668,
+      "technology": 49,
+      "energy": 20.68,
+      "conflict": 34
+    }
+  },
+  {
+    "timestamp": 1773482957,
+    "branch": "branch_1773480740170",
+    "fitness": 137.36560000000003,
+    "state": {
+      "economy": 283.3500000000001,
+      "population": 77.328,
+      "technology": 49,
+      "energy": 40.6,
+      "conflict": 34,
+      "tech_tree": {
+        "agriculture": 1,
+        "industry": 0,
+        "energy_tech": 0,
+        "military": 0,
+        "science": 0
+      }
+    }
+  },
+  {
+    "timestamp": 1773482964,
+    "branch": "branch_1773480740170",
+    "fitness": 134.95960000000002,
+    "state": {
+      "economy": 284.8200000000001,
+      "population": 73.898,
+      "technology": 49,
+      "energy": 44.52,
+      "conflict": 43,
+      "tech_tree": {
+        "agriculture": 1,
+        "industry": 0,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 0
+      }
+    }
+  },
+  {
+    "timestamp": 1773482970,
+    "branch": "branch_1773480740184",
+    "fitness": 137.408,
+    "state": {
+      "economy": 259.05,
+      "population": 89.53999999999998,
+      "technology": 65,
+      "energy": 74.8,
+      "conflict": 37,
+      "tech_tree": {
+        "agriculture": 1,
+        "industry": 0,
+        "energy_tech": 2,
+        "military": 0,
+        "science": 0
+      }
+    }
+  },
+  {
+    "timestamp": 1773483101,
+    "branch": "branch_1773480740170",
+    "fitness": 144.02700000000004,
+    "state": {
+      "economy": 305.1103000000001,
+      "population": 71.138,
+      "technology": 48,
+      "energy": 47.552800000000005,
+      "conflict": 38,
+      "tech_tree": {
+        "agriculture": 2,
+        "industry": 1,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 0
+      }
+    }
+  },
+  {
+    "timestamp": 1773483108,
+    "branch": "branch_1773480740170",
+    "fitness": 150.23851280000005,
+    "state": {
+      "economy": 319.2027000000001,
+      "population": 69.75800000000001,
+      "technology": 51,
+      "energy": 47.058328,
+      "conflict": 38,
+      "tech_tree": {
+        "agriculture": 2,
+        "industry": 1,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 1
+      }
+    }
+  },
+  {
+    "timestamp": 1773483115,
+    "branch": "branch_1773480740170",
+    "fitness": 156.71726072800004,
+    "state": {
+      "economy": 333.4044240000001,
+      "population": 69.37800000000001,
+      "technology": 54,
+      "energy": 46.798911280000006,
+      "conflict": 38,
+      "tech_tree": {
+        "agriculture": 2,
+        "industry": 1,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 2
+      }
+    }
+  },
+  {
+    "timestamp": 1773483121,
+    "branch": "branch_1773480740170",
+    "fitness": 163.22126072800003,
+    "state": {
+      "economy": 350.0244240000001,
+      "population": 68.99800000000002,
+      "technology": 54,
+      "energy": 46.118911280000006,
+      "conflict": 38,
+      "tech_tree": {
+        "agriculture": 2,
+        "industry": 2,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 2
+      }
+    }
+  },
+  {
+    "timestamp": 1773483268,
+    "branch": "branch_1773480740170",
+    "fitness": 169.64279213636004,
+    "state": {
+      "economy": 364.5654552427001,
+      "population": 70.61800000000002,
+      "technology": 55,
+      "energy": 45.93010039280001,
+      "conflict": 38,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 2,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 2
+      },
+      "resources": {
+        "food": 964.501,
+        "minerals": 927.41690895146,
+        "energy_source": 987.54096988216
+      }
+    }
+  },
+  {
+    "timestamp": 1773483274,
+    "branch": "branch_1773480740170",
+    "fitness": 172.21692937699285,
+    "state": {
+      "economy": 366.1859730933001,
+      "population": 72.23800000000003,
+      "technology": 56,
+      "energy": 58.94940139672801,
+      "conflict": 38,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 0,
+        "military": 1,
+        "science": 2
+      },
+      "resources": {
+        "food": 928.192,
+        "minerals": 854.5157143327999,
+        "energy_source": 971.2001494631415
+      }
+    }
+  },
+  {
+    "timestamp": 1773483281,
+    "branch": "branch_1773480740170",
+    "fitness": 172.9469293769929,
+    "state": {
+      "economy": 369.8659730933001,
+      "population": 76.78800000000003,
+      "technology": 56,
+      "energy": 63.42940139672801,
+      "conflict": 45,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 0,
+        "military": 2,
+        "science": 2
+      },
+      "resources": {
+        "food": 889.573,
+        "minerals": 780.8785197141399,
+        "energy_source": 953.5153290441232
+      }
+    }
+  },
+  {
+    "timestamp": 1773483582,
+    "branch": "branch_1773480740170",
+    "fitness": 176.13303092410217,
+    "state": {
+      "economy": 374.4976534575816,
+      "population": 76.35800000000002,
+      "technology": 57,
+      "energy": 68.62369541069529,
+      "conflict": 43,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 0,
+        "military": 3,
+        "science": 2
+      },
+      "resources": {
+        "food": 851.179,
+        "minerals": 706.3209890226235,
+        "energy_source": 934.2962204209146
+      }
+    }
+  },
+  {
+    "timestamp": 1773483589,
+    "branch": "branch_1773480602136",
+    "fitness": 181.2048069254307,
+    "state": {
+      "economy": 323.60152744927143,
+      "population": 64.42,
+      "technology": 105,
+      "energy": 163.80195945722133,
+      "conflict": 30,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 0,
+        "energy_tech": 2,
+        "military": 3,
+        "science": 4
+      },
+      "resources": {
+        "food": 849.95,
+        "minerals": 696.265473588285,
+        "energy_source": 798.2690622452337
+      }
+    }
+  },
+  {
+    "timestamp": 1773483596,
+    "branch": "branch_1773480602136",
+    "fitness": 186.62149475263755,
+    "state": {
+      "economy": 329.75381464859277,
+      "population": 64.17,
+      "technology": 105,
+      "energy": 178.8596889320045,
+      "conflict": 25,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 0,
+        "energy_tech": 3,
+        "military": 3,
+        "science": 4
+      },
+      "resources": {
+        "food": 817.74,
+        "minerals": 630.9447106585665,
+        "energy_source": 747.1311555656324
+      }
+    }
+  },
+  {
+    "timestamp": 1773483840,
+    "branch": "branch_1773480602136",
+    "fitness": 197.0994384700954,
+    "state": {
+      "economy": 351.01402471990735,
+      "population": 63.97,
+      "technology": 105,
+      "energy": 183.99828582132454,
+      "conflict": 20,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 1,
+        "energy_tech": 3,
+        "military": 3,
+        "science": 4
+      },
+      "resources": {
+        "food": 785.655,
+        "minerals": 561.371905714585,
+        "energy_source": 694.451669819235
+      }
+    }
+  },
+  {
+    "timestamp": 1773483847,
+    "branch": "branch_1773480602136",
+    "fitness": 201.2152416247278,
+    "state": {
+      "economy": 357.33353689193507,
+      "population": 63.79,
+      "technology": 105,
+      "energy": 194.23826867953778,
+      "conflict": 18,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 1,
+        "energy_tech": 3,
+        "military": 4,
+        "science": 4
+      },
+      "resources": {
+        "food": 753.67,
+        "minerals": 490.53519833619794,
+        "energy_source": 638.7001892153737
+      }
+    }
+  },
+  {
+    "timestamp": 1773483854,
+    "branch": "branch_1773480602136",
+    "fitness": 204.57736281090655,
+    "state": {
+      "economy": 363.7332441856831,
+      "population": 59.63,
+      "technology": 105,
+      "energy": 204.58065136633317,
+      "conflict": 16,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 1,
+        "energy_tech": 3,
+        "military": 5,
+        "science": 4
+      },
+      "resources": {
+        "food": 723.775,
+        "minerals": 418.4185494990613,
+        "energy_source": 579.8459938054738
+      }
+    }
+  },
+  {
+    "timestamp": 1773483950,
+    "branch": "branch_1773480602136",
+    "fitness": 219.1483561799945,
+    "state": {
+      "economy": 391.99407597998703,
+      "population": 59.440000000000005,
+      "technology": 115.26,
+      "energy": 215.8472578799965,
+      "conflict": 19,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 1,
+        "energy_tech": 3,
+        "military": 6,
+        "science": 4
+      },
+      "resources": {
+        "food": 728.6579999999999,
+        "minerals": 344.4116397885876,
+        "energy_source": 517.8580564414748
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773483957,
+    "branch": "branch_1773480602136",
+    "fitness": 237.1351228258618,
+    "state": {
+      "economy": 434.00928841958614,
+      "population": 59.25000000000001,
+      "technology": 117.5652,
+      "energy": 221.11847458027296,
+      "conflict": 19,
+      "tech_tree": {
+        "agriculture": 3,
+        "industry": 2,
+        "energy_tech": 3,
+        "military": 6,
+        "science": 4
+      },
+      "resources": {
+        "food": 733.8848999999999,
+        "minerals": 262.41500504199973,
+        "energy_source": 454.3440788673929
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773483964,
+    "branch": "branch_1773480602136",
+    "fitness": 245.34565732071707,
+    "state": {
+      "economy": 444.60037102470864,
+      "population": 61.06000000000001,
+      "technology": 125.5652,
+      "energy": 233.23948910833627,
+      "conflict": 19,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 3,
+        "military": 6,
+        "science": 4
+      },
+      "resources": {
+        "food": 738.4228949999999,
+        "minerals": 174.24832203705802,
+        "energy_source": 387.385796934892
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484040,
+    "branch": "branch_1773480602136",
+    "fitness": 252.00585364506475,
+    "state": {
+      "economy": 454.21145911280684,
+      "population": 65.87,
+      "technology": 127.5652,
+      "energy": 245.77709999941965,
+      "conflict": 19,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 3,
+        "military": 6,
+        "science": 5
+      },
+      "resources": {
+        "food": 740.66253975,
+        "minerals": 84.17142141449665,
+        "energy_source": 316.71423173506616
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484047,
+    "branch": "branch_1773480602136",
+    "fitness": 247.90837941178413,
+    "state": {
+      "economy": 440.7016760249611,
+      "population": 70.65,
+      "technology": 127.5652,
+      "energy": 258.28149001799653,
+      "conflict": 22,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 5
+      },
+      "resources": {
+        "food": 740.4889167375001,
+        "minerals": -7.802203853916225,
+        "energy_source": 242.29134952966723
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484054,
+    "branch": "branch_1773480602136",
+    "fitness": 255.8501416242968,
+    "state": {
+      "economy": 448.5806274424791,
+      "population": 75.47,
+      "technology": 132.156504,
+      "energy": 270.7693944730514,
+      "conflict": 18,
+      "tech_tree": {
+        "agriculture": 4,
+        "industry": 2,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 6
+      },
+      "resources": {
+        "food": 737.7971125743751,
+        "minerals": -96.94825544739575,
+        "energy_source": 164.23228728375182
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484061,
+    "branch": "branch_1773480602136",
+    "fitness": 261.05249270245434,
+    "state": {
+      "economy": 453.4981648962729,
+      "population": 82.28999999999999,
+      "technology": 134.79963408,
+      "energy": 281.55336519945143,
+      "conflict": 18,
+      "tech_tree": {
+        "agriculture": 5,
+        "industry": 2,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 6
+      },
+      "resources": {
+        "food": 731.3902182030938,
+        "minerals": -187.06438093589156,
+        "energy_source": 83.0014689418364
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484069,
+    "branch": "branch_1773480602136",
+    "fitness": 269.60670487727003,
+    "state": {
+      "economy": 471.45178828688023,
+      "population": 82.10999999999999,
+      "technology": 137.4956267616,
+      "energy": 287.55301534037943,
+      "conflict": 18,
+      "tech_tree": {
+        "agriculture": 5,
+        "industry": 3,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 6
+      },
+      "resources": {
+        "food": 724.7574791132486,
+        "minerals": -280.76401391514617,
+        "energy_source": 0.035459382000965434
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484076,
+    "branch": "branch_1773480602136",
+    "fitness": 269.1666074820857,
+    "state": {
+      "economy": 479.46802499506805,
+      "population": 78.86999999999999,
+      "technology": 140.245539296832,
+      "energy": 267.3173569500881,
+      "conflict": 24,
+      "tech_tree": {
+        "agriculture": 5,
+        "industry": 4,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 6
+      },
+      "resources": {
+        "food": 719.4626030689111,
+        "minerals": -376.0543715725222,
+        "energy_source": -85.33044522011286
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484083,
+    "branch": "branch_1773480602136",
+    "fitness": 263.5294342655888,
+    "state": {
+      "economy": 464.7369905343158,
+      "population": 83.63,
+      "technology": 142.245539296832,
+      "energy": 254.3497626281288,
+      "conflict": 24,
+      "tech_tree": {
+        "agriculture": 5,
+        "industry": 4,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 7
+      },
+      "resources": {
+        "food": 711.4039832223567,
+        "minerals": -472.99534512102974,
+        "energy_source": -166.32048504824027
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484090,
+    "branch": "branch_1773480602136",
+    "fitness": 260.0498728900573,
+    "state": {
+      "economy": 451.9961025490518,
+      "population": 85.39,
+      "technology": 150.245539296832,
+      "energy": 242.99770081387007,
+      "conflict": 24,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 4,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 7
+      },
+      "resources": {
+        "food": 702.0184323834746,
+        "minerals": -567.2035001463238,
+        "energy_source": -243.31317093828144
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484098,
+    "branch": "branch_1773480602136",
+    "fitness": 252.83335192681426,
+    "state": {
+      "economy": 433.27821882030645,
+      "population": 85.15,
+      "technology": 152.245539296832,
+      "energy": 240.1840260964206,
+      "conflict": 24,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 4,
+        "energy_tech": 3,
+        "military": 7,
+        "science": 8
+      },
+      "resources": {
+        "food": 692.2896040026484,
+        "minerals": -657.458416491882,
+        "energy_source": -319.3146319225061
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484105,
+    "branch": "branch_1773480602136",
+    "fitness": 247.76701116339308,
+    "state": {
+      "economy": 419.6984942984543,
+      "population": 89.91000000000001,
+      "technology": 152.245539296832,
+      "energy": 234.31951654961756,
+      "conflict": 24,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 4,
+        "energy_tech": 4,
+        "military": 7,
+        "science": 8
+      },
+      "resources": {
+        "food": 679.5753342027808,
+        "minerals": -744.8544434644186,
+        "energy_source": -393.3612563911298
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484123,
+    "branch": "branch_1773480602136",
+    "fitness": 239.03605725024482,
+    "state": {
+      "economy": 405.27429594133645,
+      "population": 86.61000000000001,
+      "technology": 152.245539296832,
+      "energy": 229.30677084660636,
+      "conflict": 30,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 4,
+        "energy_tech": 5,
+        "military": 7,
+        "science": 8
+      },
+      "resources": {
+        "food": 667.9263509129198,
+        "minerals": -829.2137970986148,
+        "energy_source": -465.7369656254164
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      }
+    }
+  },
+  {
+    "timestamp": 1773484131,
+    "branch": "branch_1773480602136",
+    "fitness": 234.59209905804283,
+    "state": {
+      "economy": 402.12315894605996,
+      "population": 83.26800000000001,
+      "technology": 152.245539296832,
+      "energy": 216.7557369056923,
+      "conflict": 34.199999999999996,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 5,
+        "energy_tech": 5,
+        "military": 7,
+        "science": 8
+      },
+      "resources": {
+        "food": 657.4274184585657,
+        "minerals": -911.2686562868821,
+        "energy_source": -533.9289968793984
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484138,
+    "branch": "branch_1773480602136",
+    "fitness": 230.1374182103802,
+    "state": {
+      "economy": 387.79775222033624,
+      "population": 82.97600000000001,
+      "technology": 154.245539296832,
+      "energy": 209.0945553319605,
+      "conflict": 29.199999999999996,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 5,
+        "energy_tech": 5,
+        "military": 7,
+        "science": 9
+      },
+      "resources": {
+        "food": 646.583089381494,
+        "minerals": -991.936105979815,
+        "energy_source": -599.513967608803
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484214,
+    "branch": "branch_1773480602136",
+    "fitness": 238.68897832511786,
+    "state": {
+      "economy": 377.1518159396979,
+      "population": 87.68400000000001,
+      "technology": 179.68237019135677,
+      "energy": 251.46740891831644,
+      "conflict": 29.199999999999996,
+      "tech_tree": {
+        "agriculture": 6,
+        "industry": 5,
+        "energy_tech": 5,
+        "military": 7,
+        "science": 10
+      },
+      "resources": {
+        "food": 632.7248438505686,
+        "minerals": -870.2016522606482,
+        "energy_source": -362.7387194229384
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484221,
+    "branch": "branch_1773480602136",
+    "fitness": 240.45728912210956,
+    "state": {
+      "economy": 373.9975807513079,
+      "population": 89.4351,
+      "technology": 187.68237019135677,
+      "energy": 241.33525764179336,
+      "conflict": 24.889999999999993,
+      "tech_tree": {
+        "agriculture": 7,
+        "industry": 5,
+        "energy_tech": 5,
+        "military": 7,
+        "science": 10
+      },
+      "resources": {
+        "food": 617.276986043097,
+        "minerals": -946.2320154485877,
+        "energy_source": -438.1789420984333
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484229,
+    "branch": "branch_1773480602136",
+    "fitness": 236.49696870102116,
+    "state": {
+      "economy": 364.3671129492407,
+      "population": 89.1862,
+      "technology": 187.68237019135677,
+      "energy": 240.75172463917812,
+      "conflict": 24.889999999999993,
+      "tech_tree": {
+        "agriculture": 7,
+        "industry": 6,
+        "energy_tech": 5,
+        "military": 7,
+        "science": 10
+      },
+      "resources": {
+        "food": 601.187407845252,
+        "minerals": -1021.7555189945878,
+        "energy_source": -513.4246537730564
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484326,
+    "branch": "branch_1773480602136",
+    "fitness": 252.77888641509114,
+    "state": {
+      "economy": 368.3500653444717,
+      "population": 88.9073,
+      "technology": 220.15142023446148,
+      "energy": 299.78974206963966,
+      "conflict": 27.889999999999993,
+      "tech_tree": {
+        "agriculture": 7,
+        "industry": 6,
+        "energy_tech": 5,
+        "military": 8,
+        "science": 10
+      },
+      "resources": {
+        "food": 584.4240232375146,
+        "minerals": -894.2859496186354,
+        "energy_source": -288.67202135995853
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484333,
+    "branch": "branch_1773480602136",
+    "fitness": 248.84223579458765,
+    "state": {
+      "economy": 365.10609502283734,
+      "population": 87.585345,
+      "technology": 220.15142023446148,
+      "energy": 288.959527151143,
+      "conflict": 32.195499999999996,
+      "tech_tree": {
+        "agriculture": 8,
+        "industry": 6,
+        "energy_tech": 5,
+        "military": 8,
+        "science": 10
+      },
+      "resources": {
+        "food": 567.4938918993903,
+        "minerals": -968.2800780842296,
+        "energy_source": -379.12115920408723
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484341,
+    "branch": "branch_1773480602136",
+    "fitness": 245.7457705619734,
+    "state": {
+      "economy": 354.80590030054555,
+      "population": 90.31339,
+      "technology": 220.15142023446148,
+      "energy": 278.739563714167,
+      "conflict": 27.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 6,
+        "energy_tech": 5,
+        "military": 8,
+        "science": 10
+      },
+      "resources": {
+        "food": 548.3112803693599,
+        "minerals": -1041.5856270723373,
+        "energy_source": -466.16364256922395
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484419,
+    "branch": "branch_1773480602136",
+    "fitness": 251.834887995047,
+    "state": {
+      "economy": 351.87874828930404,
+      "population": 95.04143499999999,
+      "technology": 231.15899124618457,
+      "energy": 308.8605430547005,
+      "conflict": 27.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 7,
+        "energy_tech": 5,
+        "military": 8,
+        "science": 10
+      },
+      "resources": {
+        "food": 525.6873146378279,
+        "minerals": -714.2054120306359,
+        "energy_source": -250.3282291648777
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484427,
+    "branch": "branch_1773480602136",
+    "fitness": 277.8708578759694,
+    "state": {
+      "economy": 348.7216848815724,
+      "population": 94.81948,
+      "technology": 279.12448192976785,
+      "energy": 423.39593344410116,
+      "conflict": 22.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 8,
+        "energy_tech": 5,
+        "military": 8,
+        "science": 10
+      },
+      "resources": {
+        "food": 502.0749269947193,
+        "minerals": -185.85761211983151,
+        "energy_source": 256.6709650635931
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony",
+        "orbital_solar"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484435,
+    "branch": "branch_1773480602136",
+    "fitness": 271.69036662214234,
+    "state": {
+      "economy": 335.7931195024438,
+      "population": 91.507525,
+      "technology": 279.12448192976785,
+      "energy": 446.92919242234456,
+      "conflict": 31.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 8,
+        "energy_tech": 5,
+        "military": 9,
+        "science": 10
+      },
+      "resources": {
+        "food": 478.9734463444553,
+        "minerals": -254.7880089713159,
+        "energy_source": 129.29119490320414
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony",
+        "orbital_solar"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484443,
+    "branch": "branch_1773480602136",
+    "fitness": 306.0829384982318,
+    "state": {
+      "economy": 338.6871978852274,
+      "population": 91.19557,
+      "technology": 339.4578119301947,
+      "energy": 598.9025176508239,
+      "conflict": 31.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 8,
+        "energy_tech": 5,
+        "military": 9,
+        "science": 11
+      },
+      "resources": {
+        "food": 454.88066803667806,
+        "minerals": 276.05336712819536,
+        "energy_source": 596.7124371765008
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony",
+        "orbital_solar",
+        "asteroid_mining"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484539,
+    "branch": "branch_1773480602136",
+    "fitness": 311.4014929931088,
+    "state": {
+      "economy": 349.80674708404064,
+      "population": 87.823615,
+      "technology": 339.4578119301947,
+      "energy": 632.3537758043415,
+      "conflict": 37.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 8,
+        "energy_tech": 6,
+        "military": 9,
+        "science": 11
+      },
+      "resources": {
+        "food": 431.322027188512,
+        "minerals": 208.12876458296842,
+        "energy_source": 415.15329192152296
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony",
+        "orbital_solar",
+        "asteroid_mining"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484547,
+    "branch": "branch_1773480602136",
+    "fitness": 312.3906585588914,
+    "state": {
+      "economy": 360.8105153290435,
+      "population": 63.18575625,
+      "technology": 339.4578119301947,
+      "energy": 665.5060759821561,
+      "conflict": 43.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 8,
+        "energy_tech": 7,
+        "military": 9,
+        "science": 11
+      },
+      "resources": {
+        "food": 408.35573067293757,
+        "minerals": 138.00340838874087,
+        "energy_source": 223.64845661320084
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony",
+        "orbital_solar",
+        "asteroid_mining"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484555,
+    "branch": "branch_1773480602136",
+    "fitness": 322.7204925496264,
+    "state": {
+      "economy": 373.41846893973246,
+      "population": 62.80380125,
+      "technology": 339.4578119301947,
+      "energy": 704.1365114467496,
+      "conflict": 38.195499999999996,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 8,
+        "energy_tech": 8,
+        "military": 9,
+        "science": 11
+      },
+      "resources": {
+        "food": 395.60099517533445,
+        "minerals": 65.35646147237554,
+        "energy_source": 20.554490665500595
+      },
+      "geography": {
+        "region": "river",
+        "distance_bias": 1.3091057639378068
+      },
+      "alliances": [
+        "branch_1773480740184",
+        "branch_1773480740170",
+        "branch_1773480740156"
+      ],
+      "space": [
+        "mars_colony",
+        "orbital_solar",
+        "asteroid_mining"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773484564,
+    "branch": "branch_1773480602133",
+    "fitness": 363.10900510124253,
+    "state": {
+      "economy": 282.2764508979543,
+      "population": 35.16635276441336,
+      "technology": 451.6345787994882,
+      "energy": 1121.4332154712954,
+      "conflict": 14.895136659326313,
+      "tech_tree": {
+        "agriculture": 7,
+        "industry": 8,
+        "energy_tech": 12,
+        "military": 9,
+        "science": 10
+      },
+      "resources": {
+        "food": 378.5249834749947,
+        "minerals": 717.8638943260943,
+        "energy_source": 728.9923496534966
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536022,
+    "branch": "branch_1773480602133",
+    "fitness": 395.60306439923556,
+    "state": {
+      "economy": 288.20124386877103,
+      "population": 34.99634896614976,
+      "technology": 482.6163077394627,
+      "energy": 1336.385186845664,
+      "conflict": 17.000379826359996,
+      "tech_tree": {
+        "agriculture": 7,
+        "industry": 8,
+        "energy_tech": 12,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 360.94180709278805,
+        "minerals": 1060.2380512447075,
+        "energy_source": 690.4421195074513
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170"
+      ],
+      "space": [
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536030,
+    "branch": "branch_1773480602133",
+    "fitness": 460.2642278023633,
+    "state": {
+      "economy": 293.1793561090973,
+      "population": 36.88234535779934,
+      "technology": 555.0087539003821,
+      "energy": 1725.3349836756254,
+      "conflict": 11.400360835041996,
+      "tech_tree": {
+        "agriculture": 8,
+        "industry": 8,
+        "energy_tech": 12,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 342.4436326097132,
+        "minerals": 1202.0213999832158,
+        "energy_source": 587.0178915001884
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170"
+      ],
+      "space": [
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536038,
+    "branch": "branch_1773480602133",
+    "fitness": 512.6652025883346,
+    "state": {
+      "economy": 322.39717437297924,
+      "population": 33.725307101263084,
+      "technology": 594.4143754273093,
+      "energy": 2033.4810648678515,
+      "conflict": 15.703825653625398,
+      "tech_tree": {
+        "agriculture": 8,
+        "industry": 9,
+        "energy_tech": 12,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 325.50245993081353,
+        "minerals": 1542.153152283543,
+        "energy_source": 368.9497398044492
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536046,
+    "branch": "branch_1773480602133",
+    "fitness": 483.70015937820295,
+    "state": {
+      "economy": 334.006275579732,
+      "population": 35.576120757553646,
+      "technology": 594.4143754273093,
+      "energy": 1691.3370267788978,
+      "conflict": 14.918634370944128,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 9,
+        "energy_tech": 12,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 307.639806380182,
+        "minerals": 1475.5902376905087,
+        "energy_source": -239.8591034343334
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536054,
+    "branch": "branch_1773480602133",
+    "fitness": 484.9553518815033,
+    "state": {
+      "economy": 336.4504905247482,
+      "population": 32.37739373102968,
+      "technology": 624.1350941986748,
+      "energy": 1626.2095946151476,
+      "conflict": 19.872702652396917,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 9,
+        "energy_tech": 13,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 291.35174600140516,
+        "minerals": 1808.700461332869,
+        "energy_source": -447.5173279365084
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536063,
+    "branch": "branch_1773480602133",
+    "fitness": 476.5070429699537,
+    "state": {
+      "economy": 363.3758465026315,
+      "population": 32.188603055831905,
+      "technology": 644.7777960826483,
+      "energy": 1369.4936518887346,
+      "conflict": 18.87906751977707,
+      "tech_tree": {
+        "agriculture": 9,
+        "industry": 10,
+        "energy_tech": 13,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 275.16304913589033,
+        "minerals": 1739.7215114340918,
+        "energy_source": -935.6326717150724
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536071,
+    "branch": "branch_1773480602133",
+    "fitness": 488.7591739739702,
+    "state": {
+      "economy": 374.7252972583605,
+      "population": 39.01821947146592,
+      "technology": 677.0166858867807,
+      "energy": 1330.7191294127817,
+      "conflict": 17.038358436598806,
+      "tech_tree": {
+        "agriculture": 10,
+        "industry": 10,
+        "energy_tech": 13,
+        "military": 10,
+        "science": 10
+      },
+      "resources": {
+        "food": 255.5687476079744,
+        "minerals": 2066.5708826040077,
+        "energy_source": -1046.7623962051978
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536080,
+    "branch": "branch_1773480602133",
+    "fitness": 472.01863350564605,
+    "state": {
+      "economy": 376.6994104434364,
+      "population": 38.90385506631823,
+      "technology": 679.0166858867807,
+      "energy": 1132.840247034043,
+      "conflict": 11.436440514768865,
+      "tech_tree": {
+        "agriculture": 10,
+        "industry": 10,
+        "energy_tech": 13,
+        "military": 10,
+        "science": 11
+      },
+      "resources": {
+        "food": 236.05963787224144,
+        "minerals": 1991.554270000464,
+        "energy_source": -1446.2138451544943
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536088,
+    "branch": "branch_1773480602133",
+    "fitness": 513.246784129894,
+    "state": {
+      "economy": 391.75098222056835,
+      "population": 29.040745114848367,
+      "technology": 780.8691887697977,
+      "energy": 1205.9187113446678,
+      "conflict": 13.714618489030421,
+      "tech_tree": {
+        "agriculture": 10,
+        "industry": 10,
+        "energy_tech": 13,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 216.60771033908233,
+        "minerals": 2114.0121844094165,
+        "energy_source": -1485.013601078371
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536097,
+    "branch": "branch_1773480602133",
+    "fitness": 511.27026883495574,
+    "state": {
+      "economy": 417.7397052854037,
+      "population": 21.650269960490487,
+      "technology": 796.4865725451937,
+      "energy": 1048.070272345117,
+      "conflict": 13.0288875645789,
+      "tech_tree": {
+        "agriculture": 10,
+        "industry": 11,
+        "energy_tech": 13,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 202.08733778165814,
+        "minerals": 2035.0457466933167,
+        "energy_source": -1849.5881738715198
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536106,
+    "branch": "branch_1773480602133",
+    "fitness": 560.1537957664151,
+    "state": {
+      "economy": 426.66562601718937,
+      "population": 24.526495528626988,
+      "technology": 915.9595584269726,
+      "energy": 1135.076116816272,
+      "conflict": 12.377443186349955,
+      "tech_tree": {
+        "agriculture": 11,
+        "industry": 11,
+        "energy_tech": 13,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 189.76220280141288,
+        "minerals": 2151.006412111342,
+        "energy_source": -1864.1953893210348
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536116,
+    "branch": "branch_1773480602133",
+    "fitness": 582.061720932022,
+    "state": {
+      "economy": 445.78800986359295,
+      "population": 18.283165221713435,
+      "technology": 961.7575363483213,
+      "energy": 1149.1381578045007,
+      "conflict": 11.170642475680834,
+      "tech_tree": {
+        "agriculture": 11,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 177.4989550370994,
+        "minerals": 2464.951657978598,
+        "energy_source": -1909.508611509967
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536125,
+    "branch": "branch_1773480602133",
+    "fitness": 574.4698218798626,
+    "state": {
+      "economy": 455.4413354608629,
+      "population": 20.177044118194466,
+      "technology": 969.7575363483213,
+      "energy": 1005.1425107295114,
+      "conflict": 10.612110351896792,
+      "tech_tree": {
+        "agriculture": 12,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 167.35737242624268,
+        "minerals": 2375.1940560058797,
+        "energy_source": -2253.0500588513173
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536135,
+    "branch": "branch_1773480602133",
+    "fitness": 596.7878087571322,
+    "state": {
+      "economy": 473.775105552759,
+      "population": 16.531968040302832,
+      "technology": 1018.2454131657374,
+      "energy": 1015.2220042853742,
+      "conflict": 10.081504834301953,
+      "tech_tree": {
+        "agriculture": 13,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 156.26885036714543,
+        "minerals": 2681.8829521831876,
+        "energy_source": -2253.7786808262335
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536145,
+    "branch": "branch_1773480602133",
+    "fitness": 595.4407191717177,
+    "state": {
+      "economy": 499.77640635027416,
+      "population": 13.80799044909755,
+      "technology": 1018.2454131657374,
+      "energy": 900.2450202595452,
+      "conflict": 9.098558112957512,
+      "tech_tree": {
+        "agriculture": 14,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 11,
+        "science": 11
+      },
+      "resources": {
+        "food": 147.002866346994,
+        "minerals": 2585.0348522956124,
+        "energy_source": -2557.032527939673
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601",
+        "branch_1773536133990"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536156,
+    "branch": "branch_1773480602133",
+    "fitness": 605.0509877504571,
+    "state": {
+      "economy": 532.101027065952,
+      "population": 13.991056534750069,
+      "technology": 1038.6103214290522,
+      "energy": 812.7735825060361,
+      "conflict": 11.493630207309636,
+      "tech_tree": {
+        "agriculture": 14,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 12,
+        "science": 11
+      },
+      "resources": {
+        "food": 137.59887112244525,
+        "minerals": 2484.5952097045183,
+        "energy_source": -2827.286141566233
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601",
+        "branch_1773536133990"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536168,
+    "branch": "branch_1773480602133",
+    "fitness": 621.2990464923757,
+    "state": {
+      "economy": 574.7632613616518,
+      "population": 10.38410291409311,
+      "technology": 1061.4225278576332,
+      "energy": 741.6584761668973,
+      "conflict": 10.918948696944154,
+      "tech_tree": {
+        "agriculture": 14,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 12,
+        "science": 12
+      },
+      "resources": {
+        "food": 130.60334285507022,
+        "minerals": 2375.7389519549597,
+        "energy_source": -3070.524909691524
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601",
+        "branch_1773536133990"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony",
+        "mars_colony"
+      ]
+    }
+  },
+  {
+    "timestamp": 1773536181,
+    "branch": "branch_1773480602133",
+    "fitness": 649.489195915129,
+    "state": {
+      "economy": 600.585957837769,
+      "population": 5.412458673579911,
+      "technology": 1114.493654250515,
+      "energy": 775.927801298486,
+      "conflict": 12.561851198992098,
+      "tech_tree": {
+        "agriculture": 14,
+        "industry": 11,
+        "energy_tech": 14,
+        "military": 13,
+        "science": 12
+      },
+      "resources": {
+        "food": 126.91129139802366,
+        "minerals": 2658.6798914368474,
+        "energy_source": -2991.7063296459346
+      },
+      "geography": {
+        "region": "mountain",
+        "distance_bias": 0.5136547651628479
+      },
+      "alliances": [
+        "branch_1773480740156",
+        "branch_1773480740170",
+        "branch_1773480740184",
+        "branch_1773484554893",
+        "branch_1773536105601",
+        "branch_1773536133990",
+        "branch_1773536154892"
+      ],
+      "space": [
+        "mars_colony",
+        "mars_colony",
+        "asteroid_mining",
+        "mars_colony",
+        "mars_colony",
+        "mars_colony",
+        "orbital_solar"
+      ]
+    }
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "civilization_monitor": {
+    "time": "2026-04-05T03:22:01.850531",
+    "files": [
+      {
+        "file": "civilization_progress.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_theory.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_philosophy.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_culture.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_institutions.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_economy.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_memory.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_timeline.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_identity.json",
+        "exists": true
+      },
+      {
+        "file": "civilization_signal.json",
+        "exists": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+# NOTE: Phase16 state machine v1
+# NOTE: Structural anomalies MUST route to governance action (Phase14.6 linkage).
+# NOTE: Quarantine is terminal and MUST NOT be TIP-selectable (INV-STRUCT-004).
+
+version: v1
+initial_state: PENDING
+
+terminal_states:
+  - OK
+  - QUARANTINED
+
+states:
+  PENDING:
+    next:
+      - RUNNING
+
+  RUNNING:
+    next:
+      - OK
+      - FAIL_CRYPTO
+      - FAIL_STRUCTURAL
+      - FAIL_OPS
+
+  FAIL_CRYPTO:
+    next:
+      - RETRY
+      - QUARANTINED
+
+  FAIL_STRUCTURAL:
+    next:
+      - GOVERNANCE_ACTION_REQUIRED
+
+  FAIL_OPS:
+    next:
+      - RETRY
+      - QUARANTINED
+
+  GOVERNANCE_ACTION_REQUIRED:
+    next:
+      - RESOLVED
+
+  RESOLVED:
+    next:
+      - OK
+
+  RETRY:
+    next:
+      - RUNNING
+
+  QUARANTINED:
+    next: []

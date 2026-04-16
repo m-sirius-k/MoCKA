@@ -1,0 +1,146 @@
+[
+  {
+    "ts": "2026-04-05T11:58:39.603852",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "collaboration",
+      "short_summary": "[local_rule_engine] executed EXECUTE | [google_gemini] executed EXECUTE | [openai_gpt] executed EXECUTE | [anthropic_claude] executed EXECUTE | [perplexity_ai] executed EXECUTE",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "GENESIS",
+    "hash": "7171628847732ce3d95b3a9eb791d70fcf4737c14038e705a3be121ef989012e"
+  },
+  {
+    "ts": "2026-04-05T12:37:40.631147",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "7171628847732ce3d95b3a9eb791d70fcf4737c14038e705a3be121ef989012e",
+    "hash": "982bbe49159d6c72de27359b321b1aaa12b20124f62270dc9099bf2f3e818ae5"
+  },
+  {
+    "ts": "2026-04-05T12:38:20.830869",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "982bbe49159d6c72de27359b321b1aaa12b20124f62270dc9099bf2f3e818ae5",
+    "hash": "ca339896b42d3b6de634bd4944e9316a9877f57245446d55771d046f3eb903ae"
+  },
+  {
+    "ts": "2026-04-05T12:38:25.960102",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "ANALYZE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "ca339896b42d3b6de634bd4944e9316a9877f57245446d55771d046f3eb903ae",
+    "hash": "f94acb71bb58b8edf1ceb1fae182706734e4df66e8eebd1b14378bbfb8f576b2"
+  },
+  {
+    "ts": "2026-04-05T12:38:31.025898",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "OPTIMIZE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "f94acb71bb58b8edf1ceb1fae182706734e4df66e8eebd1b14378bbfb8f576b2",
+    "hash": "efd9d6568d3c0b7855c9938e1be987a0775073b1d709a1b144fd7eb42067095b"
+  },
+  {
+    "ts": "2026-04-05T12:38:36.084858",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "VERIFY -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "efd9d6568d3c0b7855c9938e1be987a0775073b1d709a1b144fd7eb42067095b",
+    "hash": "f21dc47044524b6b20ab6246b5acebb56522a24cb7e7832b19c11f397b2e6123"
+  },
+  {
+    "ts": "2026-04-05T12:38:41.147187",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "f21dc47044524b6b20ab6246b5acebb56522a24cb7e7832b19c11f397b2e6123",
+    "hash": "ec7ca295f16bf3c6d10a741225d3dcf2f181218142026db8a4dec29372faaeb9"
+  },
+  {
+    "ts": "2026-04-05T12:38:46.222067",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "ANALYZE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "ec7ca295f16bf3c6d10a741225d3dcf2f181218142026db8a4dec29372faaeb9",
+    "hash": "e2a67b1b776a764749fc2baf8a6fdc31dbf20fd98521b351b34959a502c98b05"
+  }
+]

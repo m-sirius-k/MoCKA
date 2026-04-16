@@ -1,0 +1,24 @@
+﻿    @property
+    def ok(self) -> bool:
+        """
+        Backward-compat flag for older callers expecting `.ok`.
+
+        Priority:
+        - if the instance already has a real `ok` field, use it
+        - else infer from common fields
+        - else infer from absence of error
+        """
+        # If the dataclass/instance already has an 'ok' attribute stored,
+        # prefer it (this line avoids recursion by reading __dict__ directly).
+        if "ok" in getattr(self, "__dict__", {}):
+            return bool(self.__dict__["ok"])
+
+        if hasattr(self, "success"):
+            return bool(getattr(self, "success"))
+        if hasattr(self, "is_ok"):
+            return bool(getattr(self, "is_ok"))
+        if hasattr(self, "status"):
+            return str(getattr(self, "status")).lower() in ("ok", "success", "passed")
+
+        err = getattr(self, "error", None)
+        return err in (None, "", {})

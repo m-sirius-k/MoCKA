@@ -1,0 +1,18 @@
+{
+  "started_utc": "2026-02-25T03:05:23.604061Z",
+  "overall_status": "PASS",
+  "checks": {
+    "struct_check": {
+      "status": "PASS"
+    },
+    "dict_check": {
+      "status": "PASS"
+    },
+    "signature_check": {
+      "status": "PASS"
+    },
+    "authoritative_check": {
+      "status": "PASS"
+    }
+  }
+}

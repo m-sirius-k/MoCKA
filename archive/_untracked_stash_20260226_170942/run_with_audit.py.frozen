@@ -1,0 +1,179 @@
+﻿import sys
+import json
+import hashlib
+from pathlib import Path
+from datetime import datetime, timezone
+
+ROOT = Path(__file__).resolve().parent
+INVENTORY_DIR = ROOT / "inventory"
+
+SOT_LOCK = ROOT / "src" / "source_of_truth.lock.json"
+EXEC_LOCK = ROOT / "execution.lock.json"
+
+SOT_SIG = SOT_LOCK.with_suffix(SOT_LOCK.suffix + ".sig")
+EXEC_SIG = EXEC_LOCK.with_suffix(EXEC_LOCK.suffix + ".sig")
+
+PUBKEY_CANDIDATES = [
+    ROOT / "audit" / "ed25519" / "verify_pack" / "ed25519_public.key",
+    ROOT / "audit" / "ed25519" / "keys" / "ed25519_public.key",
+]
+
+def utc_stamp() -> str:
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S.%f%z")
+
+def sha256_hex(data: bytes) -> str:
+    h = hashlib.sha256()
+    h.update(data)
+    return h.hexdigest()
+
+def read_bytes(p: Path) -> bytes:
+    return p.read_bytes()
+
+def load_json_bytes(p: Path) -> tuple[dict, bytes]:
+    b = read_bytes(p)
+    try:
+        # BOM を許容
+        obj = json.loads(b.decode("utf-8-sig"))
+    except Exception as e:
+        raise RuntimeError(f"Invalid JSON: {p} ({e})")
+    if not isinstance(obj, dict):
+        raise RuntimeError(f"Invalid JSON root (must be object): {p}")
+    return obj, b
+
+def parse_iso_dt(s: str) -> datetime:
+    t = s.strip()
+    if t.endswith("Z"):
+        t = t[:-1] + "+00:00"
+    return datetime.fromisoformat(t)
+
+def ensure(cond: bool, msg: str):
+    if not cond:
+        raise RuntimeError(msg)
+
+def find_public_key() -> Path:
+    for p in PUBKEY_CANDIDATES:
+        if p.exists():
+            return p
+    raise RuntimeError("Public key not found (verify_pack or keys)")
+
+def verify_ed25519(pubkey_bytes: bytes, sig_bytes: bytes, msg_bytes: bytes):
+    from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
+    pk = Ed25519PublicKey.from_public_bytes(pubkey_bytes)
+    pk.verify(sig_bytes, msg_bytes)
+
+def build_snapshot(sot_obj: dict, sot_bytes: bytes, exec_obj: dict, exec_bytes: bytes) -> dict:
+    return {
+        "ts_utc": datetime.now(timezone.utc).isoformat(),
+        "python_executable": str(Path(sys.executable).resolve()),
+        "lockfiles": {
+            "source_of_truth.lock.json": {
+                "path": str(SOT_LOCK),
+                "sha256": sha256_hex(sot_bytes),
+                "sig_path": str(SOT_SIG),
+                "sig_present": SOT_SIG.exists(),
+            },
+            "execution.lock.json": {
+                "path": str(EXEC_LOCK),
+                "sha256": sha256_hex(exec_bytes),
+                "sig_path": str(EXEC_SIG),
+                "sig_present": EXEC_SIG.exists(),
+            },
+        },
+        "lock_fields": {
+            "source_of_truth.lock.json": {
+                "locked_at": sot_obj.get("locked_at"),
+                "sha256_field": sot_obj.get("sha256"),
+            },
+            "execution.lock.json": {
+                "fixed_at": exec_obj.get("fixed_at"),
+                "sha256_field": exec_obj.get("sha256"),
+            },
+        },
+    }
+
+def write_inventory(dir_path: Path, snapshot: dict, extra: dict | None = None):
+    dir_path.mkdir(parents=True, exist_ok=True)
+    (dir_path / "snapshot.json").write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
+    if extra is not None:
+        (dir_path / "extra.json").write_text(json.dumps(extra, ensure_ascii=False, indent=2), encoding="utf-8")
+
+def phase8_block(reason: str, snapshot: dict | None = None):
+    ts = utc_stamp()
+    d = INVENTORY_DIR / f"phase8_block_{ts}"
+    extra = {"reason": reason}
+    if snapshot is None:
+        snapshot = {
+            "ts_utc": datetime.now(timezone.utc).isoformat(),
+            "python_executable": str(Path(sys.executable).resolve()),
+        }
+    write_inventory(d, snapshot, extra)
+    print("PHASE8_BLOCK:", reason)
+    raise SystemExit(1)
+
+def main_guard_and_run() -> int:
+    exe_path = Path(sys.executable).resolve()
+    if ".venv" not in str(exe_path):
+        phase8_block(f"Invalid Python interpreter (venv required): {exe_path}")
+
+    try:
+        ensure(SOT_LOCK.exists(), f"Missing lockfile: {SOT_LOCK}")
+        ensure(EXEC_LOCK.exists(), f"Missing lockfile: {EXEC_LOCK}")
+
+        sot_obj, sot_bytes = load_json_bytes(SOT_LOCK)
+        exec_obj, exec_bytes = load_json_bytes(EXEC_LOCK)
+        snapshot = build_snapshot(sot_obj, sot_bytes, exec_obj, exec_bytes)
+
+        sot_sha_field = sot_obj.get("sha256")
+        if isinstance(sot_sha_field, str) and sot_sha_field.strip():
+            ensure(sot_sha_field.strip().lower() == snapshot["lockfiles"]["source_of_truth.lock.json"]["sha256"],
+                   "SHA256 mismatch in source_of_truth.lock.json (field vs actual)")
+        exec_sha_field = exec_obj.get("sha256")
+        if isinstance(exec_sha_field, str) and exec_sha_field.strip():
+            ensure(exec_sha_field.strip().lower() == snapshot["lockfiles"]["execution.lock.json"]["sha256"],
+                   "SHA256 mismatch in execution.lock.json (field vs actual)")
+
+        locked_at = sot_obj.get("locked_at")
+        fixed_at = exec_obj.get("fixed_at")
+        ensure(isinstance(locked_at, str) and locked_at.strip(), "Missing locked_at in source_of_truth.lock.json")
+        ensure(isinstance(fixed_at, str) and fixed_at.strip(), "Missing fixed_at in execution.lock.json")
+        locked_dt = parse_iso_dt(locked_at)
+        fixed_dt = parse_iso_dt(fixed_at)
+        ensure(locked_dt <= fixed_dt, "Time order violation: locked_at must be <= fixed_at")
+
+        ensure(SOT_SIG.exists(), f"Missing signature: {SOT_SIG}")
+        ensure(EXEC_SIG.exists(), f"Missing signature: {EXEC_SIG}")
+
+        pubkey_path = find_public_key()
+        pubkey = read_bytes(pubkey_path)
+        ensure(len(pubkey) == 32, f"Invalid public key length (expected 32 bytes): {pubkey_path}")
+
+        sot_sig = read_bytes(SOT_SIG)
+        exec_sig = read_bytes(EXEC_SIG)
+        ensure(len(sot_sig) == 64, f"Invalid signature length (expected 64 bytes): {SOT_SIG}")
+        ensure(len(exec_sig) == 64, f"Invalid signature length (expected 64 bytes): {EXEC_SIG}")
+
+        verify_ed25519(pubkey, sot_sig, sot_bytes)
+        verify_ed25519(pubkey, exec_sig, exec_bytes)
+        snapshot["signature"] = {"public_key_path": str(pubkey_path), "verified": True}
+
+        ts = utc_stamp()
+        audit_dir = INVENTORY_DIR / f"phase8_guard_{ts}"
+        write_inventory(audit_dir, snapshot, {"status": "OK"})
+        print(f"[PHASE8] AUDIT_DIR: {audit_dir}")
+        print(f"[PHASE8] Interpreter OK: {exe_path}")
+
+        from main_loop import main as main_entry
+        return int(main_entry())
+
+    except SystemExit:
+        raise
+    except Exception as e:
+        if "snapshot" not in locals():
+            snapshot = {
+                "ts_utc": datetime.now(timezone.utc).isoformat(),
+                "python_executable": str(Path(sys.executable).resolve()),
+            }
+        phase8_block(str(e), snapshot=snapshot)
+
+if __name__ == "__main__":
+    raise SystemExit(main_guard_and_run())

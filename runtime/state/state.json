@@ -1,0 +1,175 @@
+{
+  "action_priority": [
+    [
+      "FIX::error_recovery",
+      4.0
+    ],
+    [
+      "FIX_OPT2::error_recovery",
+      4.0
+    ],
+    [
+      "FIX_OPT::error_recovery",
+      3.0
+    ],
+    [
+      "ANALYZE::error_recovery",
+      -1.0
+    ]
+  ],
+  "evaluations": [
+    {
+      "action": "FIX",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:07:22.266991"
+    },
+    {
+      "action": "FIX",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:08:05.612009"
+    },
+    {
+      "action": "ANALYZE",
+      "score": 0,
+      "feedback": "bad",
+      "success": false,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:08:39.803313"
+    },
+    {
+      "action": "FIX_OPT",
+      "score": 1,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:13:58.840007"
+    },
+    {
+      "action": "FIX_OPT",
+      "score": 1,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:14:06.513438"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:17:09.515479"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:17:59.535091"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:18:01.479512"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:18:03.391901"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:43.951467"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:45.779226"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:47.659687"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:49.606177"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:51.855113"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:54.222749"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:56.627465"
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 2,
+      "feedback": "good",
+      "success": true,
+      "context": "error_recovery",
+      "source": "human",
+      "timestamp": "2026-03-24T00:28:59.044586"
+    }
+  ]
+}

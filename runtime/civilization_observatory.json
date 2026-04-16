@@ -1,0 +1,27 @@
+{
+  "civilization_observatory": {
+    "time": "2026-03-15T04:17:15.802740",
+    "state": [
+      {
+        "file": "civilization_progress.json",
+        "status": "ok"
+      },
+      {
+        "file": "civilization_governor.json",
+        "status": "missing"
+      },
+      {
+        "file": "civilization_theory.json",
+        "status": "ok"
+      },
+      {
+        "file": "civilization_philosophy.json",
+        "status": "ok"
+      },
+      {
+        "file": "civilization_culture.json",
+        "status": "ok"
+      }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "civilization_loop": {
+    "time": "2026-04-05T03:22:01.849384",
+    "engines": [
+      {
+        "engine": "civilization_heartbeat_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_monitor_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_status_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_culture_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_institution_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_economy_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_memory_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_archive_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_timeline_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_identity_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_signal_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_observer_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_guardian_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_council_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_decision_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_action_engine",
+        "status": "error",
+        "error": "No module named 'civilization_action_engine'"
+      },
+      {
+        "engine": "civilization_feedback_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_learning_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_evolution_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_meta_engine",
+        "status": "ok"
+      },
+      {
+        "engine": "civilization_registry_engine",
+        "status": "ok"
+      }
+    ]
+  }
+}

@@ -1,0 +1,201 @@
+﻿const AI_DOMAINS = {
+  'ChatGPT':    'chatgpt.com',
+  'Gemini':     'gemini.google.com',
+  'Perplexity': 'perplexity.ai',
+  'Claude':     'claude.ai',
+  'Copilot':    'copilot.microsoft.com',
+  'Genspark':   'genspark.ai'
+};
+
+async function poll() {
+  for (const [name, domain] of Object.entries(AI_DOMAINS)) {
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/get_intent/${name}`).catch(() => null);
+      if (!res || !res.ok) continue;
+      if (res.status === 204) continue;
+      const data = await res.json();
+      if (!data) continue;
+      const tabs = await chrome.tabs.query({});
+      const targetTab = tabs.find(t => t.url && t.url.includes(domain));
+      if (targetTab) {
+        await chrome.tabs.update(targetTab.id, { active: true });
+        await chrome.windows.update(targetTab.windowId, { focused: true });
+        chrome.scripting.executeScript({
+          target: { tabId: targetTab.id },
+          func: (text) => {
+            const el = document.querySelector('textarea, [contenteditable="true"], input');
+            if (el) {
+              if (el.tagName === 'DIV') el.innerText = text; else el.value = text;
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+              el.focus();
+            }
+          },
+          args: [data.payload]
+        });
+      } else {
+        chrome.tabs.create({ url: 'https://' + domain });
+      }
+    } catch(e) { console.error(e); }
+  }
+}
+setInterval(poll, 1500);
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({ id:'mocka-save',      title:'MoCKAに保存',            contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-share',     title:'MoCKAで共有',            contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-orchestra', title:'MoCKAで協議',            contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-collect',   title:'このchat全文をMoCKAに収集', contexts:['page'] });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  const text   = info.selectionText || '';
+  const source = detectSource(tab.url);
+
+  if (info.menuItemId === 'mocka-save') {
+    fetch('http://localhost:5000/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({c:'A', o:'infield', memo:'[save] ' + text})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKA: saved')
+      });
+    });
+  }
+
+  if (info.menuItemId === 'mocka-share') {
+    const targets = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
+    targets.forEach(t => {
+      fetch('http://localhost:5000/ask', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({c:'B', o:t, memo:text})
+      });
+    });
+    fetch('http://localhost:5000/orchestra', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: text, mode: 'share'})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKA: shared')
+      });
+    });
+  }
+
+  if (info.menuItemId === 'mocka-orchestra') {
+    fetch('http://localhost:5000/orchestra', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: text})
+    }).then(() => {
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKA: orchestra started')
+      });
+    });
+  }
+
+  if (info.menuItemId === 'mocka-collect') {
+    // まずexecuteScriptを試みる（ポリシーでブロックされる場合はクリップボード方式にフォールバック）
+    let collected = false;
+    try {
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: async function(source) {
+          let last = null;
+          for (let i = 0; i < 30; i++) {
+            window.scrollTo(0, 0);
+            await new Promise(r => setTimeout(r, 1200));
+            const h = document.body.scrollHeight;
+            if (h === last) break;
+            last = h;
+          }
+          await new Promise(r => setTimeout(r, 2000));
+          const SEL = {
+            chatgpt:    '[data-message-author-role]',
+            claude:     '[data-testid*="message"], .font-claude-message',
+            gemini:     'message-content, model-response, user-query',
+            perplexity: '.prose, [class*="answer"], .break-words',
+            copilot:    '[class*="message"]',
+          };
+          const sel = SEL[source] || 'p';
+          const nodes = document.querySelectorAll(sel);
+          let lines = [];
+          nodes.forEach((n, i) => {
+            const role = n.getAttribute('data-message-author-role') || (i%2===0 ? 'user' : 'assistant');
+            const text = n.innerText.trim();
+            if (text) lines.push('[' + role + '] ' + text);
+          });
+          if (!lines.length) {
+            document.execCommand('selectAll');
+            const t = window.getSelection().toString().trim();
+            window.getSelection().removeAllRanges();
+            if (t) lines.push(t);
+          }
+          return lines.join('\n\n');
+        },
+        args: [source]
+      });
+      if (results && results[0] && results[0].result) {
+        await fetch('http://127.0.0.1:5000/collect', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            source: source,
+            text: results[0].result,
+            url: tab.url,
+            mode: 'full_scroll',
+            timestamp: new Date().toISOString()
+          })
+        });
+        chrome.scripting.executeScript({
+          target: {tabId: tab.id},
+          func: () => alert('MoCKA: collected')
+        });
+        collected = true;
+      }
+    } catch(e) {
+      console.warn('[MoCKA] executeScript blocked by policy, trying clipboard fallback:', e.message);
+    }
+
+    // フォールバック: クリップボード経由（Perplexity等のポリシー制限ページ用）
+    if (!collected) {
+      try {
+        const clipText = await navigator.clipboard.readText();
+        if (clipText && clipText.length > 50) {
+          await fetch('http://127.0.0.1:5000/collect', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              source: source,
+              text: clipText,
+              url: tab.url,
+              mode: 'clipboard_fallback',
+              timestamp: new Date().toISOString()
+            })
+          });
+          collected = true;
+          alert('MoCKA: collected (clipboard mode)\n※Perplexityはクリップボード経由で収集しました');
+        } else {
+          alert('MoCKA: collection failed\n手順: Ctrl+A → Ctrl+C でページを選択コピー後に再実行してください');
+        }
+      } catch(e2) {
+        alert('MoCKA: collection failed\nポリシー制限によりスクリプト実行不可\n手順: Ctrl+A → Ctrl+C後に再実行');
+        console.error('[MoCKA] clipboard fallback also failed:', e2);
+      }
+    }
+  }
+});
+
+function detectSource(url) {
+  if (!url) return 'unknown';
+  if (url.includes('chatgpt.com'))       return 'chatgpt';
+  if (url.includes('gemini.google.com')) return 'gemini';
+  if (url.includes('perplexity.ai'))     return 'perplexity';
+  if (url.includes('claude.ai'))         return 'claude';
+  if (url.includes('microsoft.com'))     return 'copilot';
+  return 'unknown';
+}

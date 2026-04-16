@@ -30,11 +30,9 @@ def main() -> int:
     reg = regs[0]
     tampered = TMP / "registry_tampered.json"
     shutil.copy2(reg, tampered)
-    tampered.write_text(tampered.read_text() + "\n ", encoding="utf-8")
-
+    tampered.write_text(tampered.read_text(encoding="utf-8") + "\n ", encoding="utf-8")
     if sha256_file(reg) == sha256_file(tampered):
         fail("registry tamper not detected (hash identical)")
-
     print("PASS: registry tamper detectable")
 
     # governance_event hash mismatch テスト

@@ -1,53 +1,196 @@
-﻿chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete' && tab.url && tab.url.includes('claude.ai/new')) {
+﻿const AI_DOMAINS = {
+  ChatGPT:    'chatgpt.com',
+  Gemini:     'gemini.google.com',
+  Perplexity: 'perplexity.ai',
+  Claude:     'claude.ai',
+  Copilot:    'copilot.microsoft.com',
+  Genspark:   'genspark.ai'
+};
+
+async function poll() {
+  for (const [name, domain] of Object.entries(AI_DOMAINS)) {
+    try {
+      const res = await fetch(`http://127.0.0.1:5000/get_intent/${name}`).catch(() => null);
+      if (!res || !res.ok) continue;
+      if (res.status === 204) continue;
+      const data = await res.json();
+      if (!data) continue;
+      const tabs = await chrome.tabs.query({});
+      const targetTab = tabs.find(t => t.url && t.url.includes(domain));
+      if (targetTab) {
+        await chrome.tabs.update(targetTab.id, { active: true });
+        await chrome.windows.update(targetTab.windowId, { focused: true });
         chrome.scripting.executeScript({
-            target: { tabId: tabId },
-            files: ['content.js']
-        }).catch(err => console.error("[MOCKA] 注入失敗:", err));
-    }
-});
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.type === "GET_SYSTEM_STATUS") {
-        fetch('http://127.0.0.1:5000/get_latest_dna')
-            .then(response => response.json())
-            .then(data => sendResponse({ status: 'OK', dna: data }))
-            .catch(err => sendResponse({ status: 'ERROR', error: err.message }));
-        return true;
-    }
-});
-
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status !== 'complete') return;
-  if (!tab.url) return;
-  if (!tab.url.includes('claude.ai/new') && !tab.url.includes('claude.ai/chat/new')) return;
-  chrome.scripting.executeScript({
-    target: { tabId: tabId },
-    func: async function() {
-      if (sessionStorage.getItem('MOCKA_DNA_SET')) return;
-      try {
-        const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data.status !== 'OK') return;
-        const p = data.ping;
-
-        // 最小注入：H/G/C/Pのみ（chat欄汚染なし）
-        const text = '[MOCKA]{"H":"' + p.H + '","G":' + p.G + ',"C":"' + p.C + '","P":"' + p.P + '"}';
-
-        const observer = new MutationObserver(() => {
-          const input = document.querySelector('div[contenteditable="true"]');
-          if (!input) return;
-          observer.disconnect();
-          input.focus();
-          input.innerText = text;
-          input.dispatchEvent(new InputEvent('input', { bubbles: true }));
-          sessionStorage.setItem('MOCKA_DNA_SET', '1');
-          console.log('[MOCKA] DNA最小注入完了');
+          target: { tabId: targetTab.id },
+          func: (text) => {
+            const el = document.querySelector('textarea, [contenteditable="true"], input');
+            if (el) {
+              if (el.tagName === 'DIV') el.innerText = text; else el.value = text;
+              el.dispatchEvent(new Event('input', { bubbles: true }));
+              el.focus();
+            }
+          },
+          args: [data.payload]
         });
-        observer.observe(document.body, { childList: true, subtree: true });
-        setTimeout(() => observer.disconnect(), 15000);
-      } catch(e) { console.log('[MOCKA] fetch error:', e); }
-    }
-  });
+      } else {
+        chrome.tabs.create({ url: 'https://' + domain });
+      }
+    } catch(e) { console.error(e); }
+  }
+}
+setInterval(poll, 1500);
+
+const injectedTabs = new Set();
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete' && tab.url && tab.url.includes('claude.ai')) {
+    if (injectedTabs.has(tabId)) return;
+    injectedTabs.add(tabId);
+    chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      files: ['content.js']
+    }).catch(() => {});
+  }
 });
+chrome.tabs.onRemoved.addListener((tabId) => { injectedTabs.delete(tabId); });
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.url) injectedTabs.delete(tabId);
+});
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({ id:'mocka-save',      title:'MoCKAに保存',              contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-share',     title:'MoCKAで共有',              contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-orchestra', title:'MoCKAで協議',              contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-collect',   title:'このchat全文をMoCKAに収集', contexts:['page'] });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  const text   = info.selectionText || '';
+  const source = detectSource(tab.url);
+
+  if (info.menuItemId === 'mocka-save') {
+    fetch('http://localhost:5000/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({c:'A', o:'infield', memo:'[save] ' + text})
+    }).then(() => {
+      chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: saved') });
+    });
+  }
+
+  if (info.menuItemId === 'mocka-share') {
+    const targets = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
+    targets.forEach(t => {
+      fetch('http://localhost:5000/ask', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({c:'B', o:t, memo:text})
+      });
+    });
+    fetch('http://localhost:5000/orchestra', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: text, mode: 'share'})
+    }).then(() => {
+      chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: shared') });
+    });
+  }
+
+  if (info.menuItemId === 'mocka-orchestra') {
+    fetch('http://localhost:5000/orchestra', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({prompt: text})
+    }).then(() => {
+      chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: orchestra started') });
+    });
+  }
+
+  if (info.menuItemId === 'mocka-collect') {
+    let collected = false;
+    try {
+      const results = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: async function(source) {
+          let last = null;
+          for (let i = 0; i < 30; i++) {
+            window.scrollTo(0, 0);
+            await new Promise(r => setTimeout(r, 1200));
+            const h = document.body.scrollHeight;
+            if (h === last) break;
+            last = h;
+          }
+          await new Promise(r => setTimeout(r, 2000));
+          const SEL = {
+            chatgpt:    '[data-message-author-role]',
+            claude:     '[data-testid*="message"], .font-claude-message',
+            gemini:     'message-content, model-response, user-query',
+            perplexity: '.prose, [class*="answer"], .break-words',
+            copilot:    '[class*="message"]',
+          };
+          const sel = SEL[source] || 'p';
+          const nodes = document.querySelectorAll(sel);
+          let lines = [];
+          nodes.forEach((n, i) => {
+            const role = n.getAttribute('data-message-author-role') || (i%2===0 ? 'user' : 'assistant');
+            const text = n.innerText.trim();
+            if (text) lines.push('[' + role + '] ' + text);
+          });
+          if (!lines.length) {
+            document.execCommand('selectAll');
+            const t = window.getSelection().toString().trim();
+            window.getSelection().removeAllRanges();
+            if (t) lines.push(t);
+          }
+          return lines.join('\n\n');
+        },
+        args: [source]
+      });
+      if (results && results[0] && results[0].result) {
+        await fetch('http://127.0.0.1:5000/collect', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            source: source, text: results[0].result,
+            url: tab.url, mode: 'full_scroll',
+            timestamp: new Date().toISOString()
+          })
+        });
+        chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: collected') });
+        collected = true;
+      }
+    } catch(e) { console.warn('[MoCKA] executeScript blocked:', e.message); }
+
+    if (!collected) {
+      try {
+        const clipText = await navigator.clipboard.readText();
+        if (clipText && clipText.length > 50) {
+          await fetch('http://127.0.0.1:5000/collect', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              source: source, text: clipText, url: tab.url,
+              mode: 'clipboard_fallback', timestamp: new Date().toISOString()
+            })
+          });
+          collected = true;
+          alert('MoCKA: collected (clipboard mode)');
+        } else {
+          alert('MoCKA: collection failed\nCtrl+A → Ctrl+C 後に再実行してください');
+        }
+      } catch(e2) {
+        alert('MoCKA: collection failed');
+        console.error('[MoCKA] clipboard fallback failed:', e2);
+      }
+    }
+  }
+});
+
+function detectSource(url) {
+  if (!url) return 'unknown';
+  if (url.includes('chatgpt.com'))       return 'chatgpt';
+  if (url.includes('gemini.google.com')) return 'gemini';
+  if (url.includes('perplexity.ai'))     return 'perplexity';
+  if (url.includes('claude.ai'))         return 'claude';
+  if (url.includes('microsoft.com'))     return 'copilot';
+  return 'unknown';
+}

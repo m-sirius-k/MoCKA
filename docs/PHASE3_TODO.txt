@@ -1,0 +1,35 @@
+﻿MoCKA Phase3 Completion TODO
+Date: 2026-04-05
+
+[Phase2 完成確認]
+- [x] Router.save 実装
+- [x] collaborate 実装
+- [x] Provider抽象化
+- [x] events.csv 保存確認
+- [x] verify_chain OK
+- [x] RR=100%達成
+
+[Phase3 未完タスク]
+
+1. seal自動化
+- [ ] save → hash → chain 自動接続
+- [ ] mocka_seal 統合
+
+2. Router拡張
+- [ ] route と collaborate の統合
+- [ ] Caliber連動（AI選択最適化）
+
+3. MCP統合
+- [ ] mocka_write_event → Router接続
+- [ ] Claude経由完全操作
+
+4. Orchestration強化
+- [ ] 4AI動的選択
+- [ ] 再試行ロジック
+- [ ] fallback最適化
+
+5. 検証
+- [ ] RR再測定（Phase3）
+- [ ] chain破損テスト
+- [ ] 負荷テスト
+

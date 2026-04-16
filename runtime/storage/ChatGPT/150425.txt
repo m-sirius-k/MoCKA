@@ -1,0 +1,165 @@
+【MoCKA 共有指令件名: Gemini】
+以下の内容を確認し、最適なアドバイスをお願いします。
+
+---
+【MoCKA 共有指令件名: Perplexity】
+以下の内容について、最新情報を踏まえてリサーチしてください。
+
+---
+【MoCKA 共有指令件名: Copilot】
+以下の内容を確認し、最適なアドバイスをお願いします。
+
+---
+【MoCKA 共有指令件名: Claude】
+以下の内容を深く分析し、構造化してまとめてください。
+
+---
+【MoCKA 共有指令件名: Gemini】
+以下の内容を確認し、最適なアドバイスをお願いします。
+
+---
+【MoCKA 共有指令件名: Copilot】
+以下の内容を確認し、最適なアドバイスをお願いします。
+
+---
+cd C:\Users\sirok\MoCKA
+
+$index_html = @"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MoCKA Console</title>
+    <style>
+        body { background:#000; color:#fff; font-family:monospace; padding:20px; user-select:none; }
+        .block { border:1px solid #0f0; padding:15px; margin-bottom:15px; }
+        button { background:transparent; color:#fff; border:1px solid #fff; padding:10px; cursor:pointer; min-width:80px; margin:5px; }
+        .active { background-color: #fff !important; color: #000 !important; font-weight: bold; }
+        #exec { width:100%; padding:20px; border:2px solid #500; color:#555; background:#200; font-weight:bold; cursor:not-allowed; }
+        #exec.ready { border-color:#0f0; background:#040; color:#fff; cursor:pointer; box-shadow: 0 0 20px #0f0; }
+        .opt-group, .sub-group { display:none; margin-top:15px; border-top:1px solid #333; padding-top:10px; }
+        .sub-group { border-top: 1px dotted #555; margin-left: 20px; background: #111; padding: 10px; }
+        #log { height:60px; background:#111; padding:10px; margin-top:5px; font-size:14px; color:#0f0; border-left:3px solid #0f0; white-space: pre-wrap; }
+        table { width:100%; border-collapse:collapse; font-size:11px; margin-top:10px; }
+        th { color:#0f0; text-align:left; border-bottom:1px solid #0f0; padding:5px; }
+        td { padding:5px; border-bottom:1px solid #222; }
+    </style>
+</head>
+<body>
+    <div class="block">
+        <h3>ACTION</h3>
+        <div id="c-btns">
+            <button class="cat-btn" onclick="clickCat('A', this)">A:保存</button>
+            <button class="cat-btn" onclick="clickCat('B', this)">B:共有</button>
+            <button class="cat-btn" onclick="clickCat('C', this)">C:協業</button>
+        </div>
+
+        <div id="opt-B" class="opt-group">
+            <button class="o-btn" id="btn-all" onclick="toggleAllAI(this)">全員</button>
+            <button class="o-btn" id="btn-sub-trigger" onclick="showSub('B-sub', this)">選択者別</button>
+        </div>
+        
+        <div id="B-sub" class="sub-group">
+            <button class="s-btn" data-ai="Copilot" onclick="toggleOpt('Copilot', this)">Copilot</button>
+            <button class="s-btn" data-ai="Perplexity" onclick="toggleOpt('Perplexity', this)">Perplexity</button>
+            <button class="s-btn" data-ai="Gemini" onclick="toggleOpt('Gemini', this)">Gemini</button>
+            <button class="s-btn" data-ai="ChatGPT" onclick="toggleOpt('ChatGPT', this)">ChatGPT</button>
+            <button class="s-btn" data-ai="Claude" onclick="toggleOpt('Claude', this)">Claude</button>
+            <button class="s-btn" data-ai="Genspark" onclick="toggleOpt('Genspark', this)">Genspark</button>
+        </div>
+
+        <div id="opt-A" class="opt-group"><button class="o-btn" onclick="toggleOpt('infield', this)">infield</button></div>
+        <div id="opt-C" class="opt-group"><button class="o-btn" onclick="toggleOpt('1回ループ', this)">1回ループ</button></div>
+    </div>
+
+    <button id="exec" onclick="fire()">SELECT TARGETS</button>
+    <div id="log">> Standby.</div>
+
+    <div class="block"><h3>RECENT 50 EVENTS</h3><div id="history">Loading...</div></div>
+
+    <script>
+        let state = {c:null, targets:[]};
+        const allAIs = ['Copilot', 'Perplexity', 'Gemini', 'ChatGPT', 'Claude', 'Genspark'];
+        const urlMap = {
+            'ChatGPT': 'https://chat.openai.com/', 'Claude': 'https://claude.ai/',
+            'Gemini': 'https://gemini.google.com/app', 'Perplexity': 'https://www.perplexity.ai/',
+            'Copilot': 'https://copilot.microsoft.com/', 'Genspark': 'https://www.genspark.ai/'
+        };
+
+        function clickCat(c, el) {
+            state.c = c; state.targets = [];
+            document.querySelectorAll('button').forEach(b => { if(b.id !== 'exec') b.classList.remove('active'); });
+            el.classList.add('active');
+            document.querySelectorAll('.opt-group, .sub-group').forEach(g => g.style.display = 'none');
+            const tg = document.getElementById('opt-' + c);
+            if(tg) tg.style.display = 'block';
+            checkReady();
+        }
+
+        function showSub(id, el) {
+            el.classList.toggle('active');
+            document.getElementById(id).style.display = (document.getElementById(id).style.display === 'block') ? 'none' : 'block';
+        }
+
+        // 「全員」ボタン：下の AI 全てを反転させる
+        function toggleAllAI(el) {
+            el.classList.toggle('active');
+            const sub = document.getElementById('B-sub');
+            sub.style.display = 'block'; // 強制展開
+            document.getElementById('btn-sub-trigger').classList.add('active');
+
+            if (el.classList.contains('active')) {
+                state.targets = [...allAIs];
+                document.querySelectorAll('.s-btn').forEach(b => b.classList.add('active'));
+            } else {
+                state.targets = [];
+                document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active'));
+            }
+            checkReady();
+        }
+
+        function toggleOpt(o, el) {
+            el.classList.toggle('active');
+            if (state.targets.includes(o)) state.targets = state.targets.filter(t => t !== o);
+            else state.targets.push(o);
+            
+            // 全員選ばれたら「全員」ボタンも白くする（連動）
+            const allBtn = document.getElementById('btn-all');
+            if (state.targets.length === allAIs.length) allBtn.classList.add('active');
+            else allBtn.classList.remove('active');
+            
+            checkReady();
+        }
+
+        function checkReady() {
+            const btn = document.getElementById('exec');
+            if (state.c && state.targets.length > 0) {
+                btn.classList.add('ready');
+                btn.innerText = "LAUNCH MISSION TO " + state.targets.length + " AIs";
+            } else { btn.classList.remove('ready'); btn.innerText = "SELECT TARGETS"; }
+        }
+
+        async function fire() {
+            if(!state.c || state.targets.length === 0) return;
+            state.targets.forEach(t => { window.open(urlMap[t], t); });
+            for (const t of state.targets) {
+                await fetch('/ask', { method:'POST', headers:{'Content-Type':'application/json'}, 
+                    body:JSON.stringify({c: state.c, o: t})
+                });
+            }
+            document.getElementById('log').innerHTML = "> 配送指令完了。各タブを巡回してください。";
+        }
+
+        setInterval(async () => {
+            const r = await fetch('/get_history');
+            const d = await r.json();
+            if(!d.length) return;
+            let h = '<table><tr><th>Date</th><th>Action</th><th>Text</th></tr>';
+            d.reverse().forEach(row => h += '<tr><td>'+row.日付+'</td><td>'+row.名称+'</td><td>'+row.簡単な内容+'</td></tr>');
+            document.getElementById('history').innerHTML = h + '</table>';
+        }, 5000);
+    </script>
+</body>
+</html>
+"@
+$index_html | Out-File -FilePath index.html -Encoding utf8

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MoCKA Event Envelope v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scheme_version",
+    "event_id",
+    "chain_hash",
+    "timestamp_utc",
+    "payload_hash_sha256",
+    "key_id",
+    "signature_ed25519"
+  ],
+  "properties": {
+    "scheme_version": {
+      "type": "string",
+      "const": "v2"
+    },
+    "event_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "chain_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "timestamp_utc": {
+      "type": "string"
+    },
+    "payload_hash_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "key_id": {
+      "type": "string"
+    },
+    "signature_ed25519": {
+      "type": "string"
+    },
+    "signature_format": {
+      "type": "string",
+      "enum": [
+        "base64"
+      ]
+    }
+  }
+}

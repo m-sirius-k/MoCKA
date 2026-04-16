@@ -1,0 +1,9 @@
+﻿diff --git "a/C:\\Users\\sirok\\MoCKA\\inventory\\phase7_sot_update_20260221T0627040594122+0000\\source_of_truth.lock.before" "b/C:\\Users\\sirok\\MoCKA\\src\\source_of_truth.lock"
+index 6365036..873c3e3 100644
+--- "a/C:\\Users\\sirok\\MoCKA\\inventory\\phase7_sot_update_20260221T0627040594122+0000\\source_of_truth.lock.before"
++++ "b/C:\\Users\\sirok\\MoCKA\\src\\source_of_truth.lock"
+@@ -5,3 +5,4 @@ source_of_truth_dep: mocka_outbox.py@MoCKA/src SHA256=08FE2B279B89ACB76EDAEA8E41
+ source_of_truth_dep: mocka_policy.py@MoCKA/src SHA256=C908739009E99E0DD4ECA7B40C415838A20D07F94A413A0B3F0CC7DAFD46A7A4
+ source_of_truth_dep: __init__.py@MoCKA/src SHA256=E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855
+ sot_updated_at=20260221T0625153888666+0000
++sot_updated_at=20260221T0627040594122+0000

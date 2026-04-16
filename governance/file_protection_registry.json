@@ -1,0 +1,34 @@
+{
+  "meta": {
+    "purpose": "編集禁止ファイルのハッシュ台帳。AIはこれらのファイルをきむら博士の明示的承認なしに変更してはならない",
+    "created": "2026-04-05T15:37:39.035976",
+    "protocol": "mocka-check実行時にハッシュを検証し、不一致があれば即座に報告する"
+  },
+  "files": {
+    "C:\\Users\\sirok\\MoCKA\\interface\\router.py": {
+      "sha256": "c7318301ede969e8b62af980e9e434702eac6d8ec1904a921bed90aa0478daeb",
+      "registered": "2026-04-05T15:37:39.036205",
+      "editable_by": "きむら博士のみ"
+    },
+    "C:\\Users\\sirok\\MoCKA\\mocka_mcp_server.py": {
+      "sha256": "2770ccc07e6f8be829d1ab6f27629ca46fc8dbd0503a2849b753fb999ebb6617",
+      "registered": "2026-04-05T15:37:39.036508",
+      "editable_by": "きむら博士のみ"
+    },
+    "C:\\Users\\sirok\\MoCKA\\app.py": {
+      "sha256": "c1b4e191d5e68b61d588b0920e5c03101e64bb368075e6a2c971e421748a1b9f",
+      "registered": "2026-04-05T15:37:39.036824",
+      "editable_by": "きむら博士のみ"
+    },
+    "C:\\Users\\sirok\\MoCKA\\index.html": {
+      "sha256": "ca97cfd714050a5f75888da980218a5bade3f9e0133d3f1bb7c39820a0f92dfd",
+      "registered": "2026-04-05T15:37:39.037111",
+      "editable_by": "きむら博士のみ"
+    },
+    "C:\\Users\\sirok\\MoCKA\\tools\\mocka_orchestra_v10.py": {
+      "sha256": "b966fe2113e9f0435ca0b5063fb5e0b4a99afb98dafb66462bae85ba5a274118",
+      "registered": "2026-04-05T15:37:39.037337",
+      "editable_by": "きむら博士のみ"
+    }
+  }
+}

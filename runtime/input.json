@@ -1,0 +1,15 @@
+{
+  "intent": {
+    "intent_id": "45ad3f68-79df-4379-9a4e-354a4ced08e1",
+    "session_id": "infield_session",
+    "type": "command",
+    "goal": "Direct",
+    "action": "Direct",
+    "context": "Direct",
+    "constraints": "",
+    "source": "infield",
+    "timestamp": "2026-03-26T08:20:37.370124+00:00",
+    "confidence": 0.8,
+    "priority": 1
+  }
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "goal": "improve_accuracy",
+    "score": 2,
+    "ts": "2026-03-20T13:51:13.129610",
+    "result": "success",
+    "mutation": true
+  },
+  {
+    "goal": "improve_accuracy",
+    "score": 3,
+    "ts": "2026-03-20T13:52:19.066752",
+    "result": "success"
+  },
+  {
+    "goal": "explore_strategy",
+    "score": 0,
+    "ts": "2026-03-20T13:53:02.737984",
+    "result": "pending",
+    "mutation": true
+  },
+  {
+    "goal": "improve_accuracy",
+    "score": 1,
+    "ts": "2026-03-20T13:53:09.259927",
+    "result": "fail"
+  },
+  {
+    "goal": "optimize_execution",
+    "score": 0,
+    "ts": "2026-03-20T13:53:19.103387",
+    "result": "pending",
+    "mutation": true
+  },
+  {
+    "goal": "improve_accuracy",
+    "score": 4,
+    "ts": "2026-03-20T13:53:19.661888",
+    "result": "success"
+  },
+  {
+    "goal": "reduce_latency",
+    "score": 0,
+    "ts": "2026-03-20T13:53:20.228716",
+    "result": "pending",
+    "mutation": true
+  },
+  {
+    "goal": "improve_accuracy",
+    "score": 2,
+    "ts": "2026-03-20T13:53:20.774782",
+    "result": "fail"
+  }
+]

@@ -1,0 +1,29 @@
+{
+  "nodes": [
+    {
+      "id": "R003",
+      "type": "strategy",
+      "attempts": 4,
+      "success": 1
+    },
+    {
+      "id": "R705",
+      "type": "strategy",
+      "attempts": 0,
+      "success": 0
+    }
+  ],
+  "edges": [
+    {
+      "from": "R003",
+      "to": "R705",
+      "relation": "mutation"
+    },
+    {
+      "from": "R705",
+      "to": "lab",
+      "relation": "experiment",
+      "success": true
+    }
+  ]
+}

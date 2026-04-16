@@ -1,0 +1,9 @@
+digraph MoCKA {
+rankdir=LR;
+node [shape=box];
+"branch_auto_1773478168" [label="branch_auto_1773478168\nscore=1"];
+"branch_auto_1773478180" [label="branch_auto_1773478180\nscore=1"];
+"branch_auto_1773478199" [label="branch_auto_1773478199\nscore=1"];
+"branch_auto_1773478211" [label="branch_auto_1773478211\nscore=1"];
+"branch_auto_1773478519" [label="branch_auto_1773478519\nscore=2"];
+}

@@ -1,0 +1,22 @@
+{
+  "report_version": "v1",
+  "utc_now": "",
+  "hostname": "",
+  "os_version": "",
+  "python_version": "",
+  "package_versions": {},
+  "repo_commit": "",
+  "verifier": {
+    "name": "",
+    "version": ""
+  },
+  "inputs": {
+    "db_paths": [],
+    "artifact_paths": [],
+    "tip_paths": []
+  },
+  "results": {
+    "overall": "PASS",
+    "checks": []
+  }
+}

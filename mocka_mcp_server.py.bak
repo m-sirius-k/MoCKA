@@ -1,0 +1,356 @@
+"""
+mocka_mcp_server.py
+MoCKA Memory Caliber — MCP Server (Phase 1)
+
+起動: python mocka_mcp_server.py
+接続: claude.ai の Settings > Integrations > MCP
+URL:  http://localhost:5001/sse
+
+Tools:
+  mocka_get_overview   MOCKA_OVERVIEW.json を返す
+  mocka_list_events    events.csv の最新N件を返す
+  mocka_read_event     指定IDのイベントを返す
+  mocka_search         events.csv + knowledge-gate を全文検索
+  mocka_write_event    events.csv に新規イベントを追記
+  mocka_seal           mocka-seal 相当のハッシュ計算
+"""
+
+import json
+import csv
+import os
+import hashlib
+import datetime
+import re
+from pathlib import Path
+from flask import Flask, Response, request, stream_with_context
+from flask_cors import CORS
+
+# ─── パス設定 ───────────────────────────────────────────────
+BASE = Path(r"C:\Users\sirok\MoCKA")
+OVERVIEW_PATH   = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
+KNOWLEDGE_GATE  = BASE / "knowledge-gate"
+EVENTS_CSV      = BASE / "knowledge-gate" / "events.csv"
+
+# フォールバック（events.csv が別の場所にある場合も探す）
+FALLBACK_EVENTS = [
+    BASE / "events.csv",
+    BASE / "runtime" / "events.csv",
+]
+
+app = Flask(__name__)
+CORS(app, origins="*")
+
+# ─── ユーティリティ ─────────────────────────────────────────
+
+def find_events_csv() -> Path | None:
+    if EVENTS_CSV.exists():
+        return EVENTS_CSV
+    for p in FALLBACK_EVENTS:
+        if p.exists():
+            return p
+    return None
+
+
+def read_events(n: int = 20) -> list[dict]:
+    path = find_events_csv()
+    if not path:
+        return []
+    rows = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            rows.append(dict(row))
+    return rows[-n:]
+
+
+def search_events(query: str) -> list[dict]:
+    path = find_events_csv()
+    if not path:
+        return []
+    q = query.lower()
+    results = []
+    with open(path, encoding="utf-8", newline="") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if any(q in str(v).lower() for v in row.values()):
+                results.append(dict(row))
+    return results
+
+
+def search_knowledge_gate(query: str) -> list[dict]:
+    q = query.lower()
+    results = []
+    if not KNOWLEDGE_GATE.exists():
+        return results
+    for md in KNOWLEDGE_GATE.rglob("*.md"):
+        try:
+            text = md.read_text(encoding="utf-8")
+            if q in text.lower():
+                # 最初にマッチした行を抜粋
+                for i, line in enumerate(text.splitlines()):
+                    if q in line.lower():
+                        snippet = "\n".join(text.splitlines()[max(0,i-1):i+3])
+                        results.append({
+                            "file": str(md.relative_to(BASE)),
+                            "snippet": snippet.strip()
+                        })
+                        break
+        except Exception:
+            pass
+    return results
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def next_event_id() -> str:
+    today = datetime.date.today().strftime("%Y%m%d")
+    events = read_events(9999)
+    pattern = re.compile(rf"E{today}_(\d+)")
+    nums = [int(m.group(1)) for e in events
+            for m in [pattern.search(e.get("id",""))] if m]
+    n = max(nums) + 1 if nums else 1
+    return f"E{today}_{n:03d}"
+
+
+# ─── MCP ツール定義 ─────────────────────────────────────────
+
+TOOLS = [
+    {
+        "name": "mocka_get_overview",
+        "description": "MOCKA_OVERVIEW.json を読み込んでプロジェクト全体のコンテキストを返す。セッション開始時に必ず呼ぶ。",
+        "inputSchema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
+    },
+    {
+        "name": "mocka_list_events",
+        "description": "events.csv から最新N件のイベントを返す。デフォルト20件。",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "n": {"type": "integer", "description": "取得件数（デフォルト20）", "default": 20}
+            },
+            "required": []
+        }
+    },
+    {
+        "name": "mocka_read_event",
+        "description": "指定IDのイベントを events.csv から返す。例: E20260329_001",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "id": {"type": "string", "description": "イベントID（例: E20260329_001）"}
+            },
+            "required": ["id"]
+        }
+    },
+    {
+        "name": "mocka_search",
+        "description": "events.csv と knowledge-gate の .md ファイルをクエリで全文検索する。",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string", "description": "検索キーワード"}
+            },
+            "required": ["query"]
+        }
+    },
+    {
+        "name": "mocka_write_event",
+        "description": "events.csv に新規イベントを追記する。IDは自動採番。",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "title":       {"type": "string", "description": "イベントタイトル"},
+                "description": {"type": "string", "description": "詳細説明"},
+                "tags":        {"type": "string", "description": "カンマ区切りタグ（例: design,decision）"},
+                "author":      {"type": "string", "description": "記録者（デフォルト: Claude）", "default": "Claude"}
+            },
+            "required": ["title", "description"]
+        }
+    },
+    {
+        "name": "mocka_seal",
+        "description": "events.csv の SHA-256 ハッシュを計算して返す。mocka-seal 前の検証に使う。",
+        "inputSchema": {
+            "type": "object",
+            "properties": {},
+            "required": []
+        }
+    }
+]
+
+
+# ─── ツール実行 ─────────────────────────────────────────────
+
+def execute_tool(name: str, args: dict) -> str:
+    try:
+        if name == "mocka_get_overview":
+            if not OVERVIEW_PATH.exists():
+                return json.dumps({"error": f"MOCKA_OVERVIEW.json not found at {OVERVIEW_PATH}"}, ensure_ascii=False)
+            data = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8"))
+            return json.dumps(data, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_list_events":
+            n = int(args.get("n", 20))
+            events = read_events(n)
+            if not events:
+                return json.dumps({"message": "events.csv が見つからないか空です", "searched": str(find_events_csv())}, ensure_ascii=False)
+            return json.dumps({"count": len(events), "events": events}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_read_event":
+            eid = args.get("id", "")
+            events = read_events(9999)
+            found = [e for e in events if e.get("id") == eid]
+            if not found:
+                return json.dumps({"error": f"Event {eid} not found"}, ensure_ascii=False)
+            return json.dumps(found[0], ensure_ascii=False, indent=2)
+
+        elif name == "mocka_search":
+            query = args.get("query", "")
+            ev = search_events(query)
+            kg = search_knowledge_gate(query)
+            return json.dumps({
+                "query": query,
+                "events_hits": ev,
+                "knowledge_gate_hits": kg,
+                "total": len(ev) + len(kg)
+            }, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_write_event":
+            path = find_events_csv()
+            if not path:
+                path = EVENTS_CSV
+                path.parent.mkdir(parents=True, exist_ok=True)
+            eid = next_event_id()
+            ts  = datetime.datetime.now().isoformat()
+            row = {
+                "id":          eid,
+                "timestamp":   ts,
+                "title":       args.get("title", ""),
+                "description": args.get("description", ""),
+                "tags":        args.get("tags", ""),
+                "author":      args.get("author", "Claude")
+            }
+            file_exists = path.exists()
+            with open(path, "a", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=row.keys())
+                if not file_exists:
+                    writer.writeheader()
+                writer.writerow(row)
+            return json.dumps({"status": "ok", "id": eid, "timestamp": ts}, ensure_ascii=False)
+
+        elif name == "mocka_seal":
+            path = find_events_csv()
+            if not path:
+                return json.dumps({"error": "events.csv not found"}, ensure_ascii=False)
+            h = sha256_file(path)
+            ts = datetime.datetime.now().isoformat()
+            return json.dumps({"sha256": h, "file": str(path), "timestamp": ts}, ensure_ascii=False)
+
+        else:
+            return json.dumps({"error": f"Unknown tool: {name}"}, ensure_ascii=False)
+
+    except Exception as e:
+        return json.dumps({"error": str(e)}, ensure_ascii=False)
+
+
+# ─── MCP SSE エンドポイント ─────────────────────────────────
+
+def sse_message(data: dict) -> str:
+    return f"data: {json.dumps(data)}\n\n"
+
+
+@app.route("/sse")
+def sse():
+    def stream():
+        # 1. サーバー情報
+        yield sse_message({
+            "jsonrpc": "2.0",
+            "method": "notifications/initialized",
+            "params": {}
+        })
+
+        # 2. クライアントからのリクエストを待つ（実際の実装はリクエストボディで処理）
+        while True:
+            import time
+            time.sleep(30)
+            yield ": keepalive\n\n"
+
+    return Response(stream_with_context(stream()), mimetype="text/event-stream",
+                    headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+
+@app.route("/mcp", methods=["POST"])
+def mcp_endpoint():
+    body = request.get_json()
+    method  = body.get("method", "")
+    req_id  = body.get("id")
+    params  = body.get("params", {})
+
+    if method == "initialize":
+        result = {
+            "protocolVersion": "2024-11-05",
+            "capabilities": {"tools": {}},
+            "serverInfo": {"name": "mocka-memory-caliber", "version": "1.0.0"}
+        }
+
+    elif method == "tools/list":
+        result = {"tools": TOOLS}
+
+    elif method == "tools/call":
+        tool_name = params.get("name", "")
+        tool_args = params.get("arguments", {})
+        content   = execute_tool(tool_name, tool_args)
+        result = {
+            "content": [{"type": "text", "text": content}],
+            "isError": False
+        }
+
+    else:
+        return json.dumps({
+            "jsonrpc": "2.0",
+            "id": req_id,
+            "error": {"code": -32601, "message": f"Method not found: {method}"}
+        }), 404, {"Content-Type": "application/json"}
+
+    return json.dumps({
+        "jsonrpc": "2.0",
+        "id": req_id,
+        "result": result
+    }, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+
+@app.route("/health")
+def health():
+    events_path = find_events_csv()
+    return json.dumps({
+        "status": "ok",
+        "overview_exists": OVERVIEW_PATH.exists(),
+        "events_csv": str(events_path) if events_path else None,
+        "knowledge_gate": str(KNOWLEDGE_GATE) if KNOWLEDGE_GATE.exists() else None,
+        "tools": [t["name"] for t in TOOLS]
+    }, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+
+# ─── 起動 ───────────────────────────────────────────────────
+
+if __name__ == "__main__":
+    print("=" * 55)
+    print("  MoCKA Memory Caliber — MCP Server")
+    print("=" * 55)
+    print(f"  Overview : {OVERVIEW_PATH}")
+    print(f"  Events   : {find_events_csv()}")
+    print(f"  KG       : {KNOWLEDGE_GATE}")
+    print(f"  Health   : http://localhost:5001/health")
+    print(f"  MCP URL  : http://localhost:5001/mcp")
+    print("=" * 55)
+    app.run(host="0.0.0.0", port=5001, debug=False)

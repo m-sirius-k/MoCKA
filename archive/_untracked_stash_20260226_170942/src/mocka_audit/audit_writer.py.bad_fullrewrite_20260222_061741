@@ -1,0 +1,58 @@
+def write_event(self, event: Dict[str, Any], note: str = "", commit: bool = True) -> None:
+    """
+    Write one audit event into the audit ledger table.
+
+    DB constraints (current):
+      - audit_ledger_event.event_id NOT NULL
+      - audit_ledger_event.chain_hash NOT NULL
+      - audit_ledger_event.event_content NOT NULL
+      - audit_ledger_event.payload_json NOT NULL (typical)
+    This method guarantees event_content is always populated.
+
+    Input contract:
+      - event is a dict
+      - event["event_id"] is required (non-empty)
+      - event["chain_hash"] is required (non-empty)
+      - event.get("prev_event_id") may be empty/None
+      - event.get("event_content") is optional; if missing, payload_json is used
+    """
+    if not isinstance(event, dict):
+        raise TypeError("event must be a dict")
+
+    event_id = str(event.get("event_id", "")).strip()
+    if not event_id:
+        raise ValueError("event.event_id is required")
+
+    created_at = str(event.get("created_at", "")).strip() or _utc_now_iso()
+
+    prev_event_id_raw = event.get("prev_event_id", "")
+    prev_event_id = str(prev_event_id_raw).strip() if prev_event_id_raw is not None else ""
+    prev_event_id = prev_event_id or None
+
+    chain_hash = str(event.get("chain_hash", "")).strip()
+    if not chain_hash:
+        raise ValueError("event.chain_hash is required")
+
+    # Persist full payload as canonical JSON
+    payload_json = json.dumps(event, ensure_ascii=True, separators=(",", ":"))
+
+    # event_content is required by DB NOT NULL; fallback to payload_json
+    event_content = str(event.get("event_content", "")).strip() or payload_json
+
+    candidate = {
+        "event_id": event_id,
+        "created_at": created_at,
+        "prev_event_id": prev_event_id,
+        "chain_hash": chain_hash,
+        "event_content": event_content,
+        "payload_json": payload_json,
+        "note": note,
+    }
+
+    conn = self.open()
+    try:
+        _insert_flexible(conn, LEDGER_TABLE, candidate)
+        if commit:
+            conn.commit()
+    finally:
+        conn.close()

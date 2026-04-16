@@ -1,0 +1,11 @@
+﻿# Phase22 Round1 Fixed
+
+A1: registry update requires governance_event
+A2: root_key / operational_key separation enforced by schema
+A3: revoke handled as event (reason + approvers mandatory)
+
+SEAL:
+sealed_summary_hash = 09ca5de59170003597de878c5c87688d40a5403727ff5c5ad3cccb6122468f9c
+registry_sha256     = c002f44f69b64d11986903312c6aa1153f16fbd1528e3cbb66f46c120a23e5f2
+
+This note marks Phase22 governance layer activation.

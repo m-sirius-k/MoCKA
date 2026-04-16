@@ -1,0 +1,76 @@
+{
+  "civilization_registry": {
+    "time": "2026-04-05T03:22:01.954660",
+    "engine_count": 17,
+    "engines": [
+      {
+        "engine": "civilization_culture_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_institution_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_economy_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_memory_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_archive_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_timeline_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_identity_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_signal_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_observer_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_guardian_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_council_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_decision_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_action_engine.py",
+        "exists": false
+      },
+      {
+        "engine": "civilization_feedback_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_learning_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_evolution_engine.py",
+        "exists": true
+      },
+      {
+        "engine": "civilization_meta_engine.py",
+        "exists": true
+      }
+    ]
+  }
+}

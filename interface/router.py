@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# MoCKA Essence Injected: E20260401_008,2026-04-01T11:33:18,mocka_router,save,router,interface/router.py,Phase5ASSED,cli,internal,in_operation,normal,A,outfield,[save] Phase5ASSED,11/11 PASS墓慣つ晢oCKA壹晢憺屮会滄晏擅つ晢026-04-01 Claude Sonnet 4.6,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
+# Policy: MoCKA Encoding Policy v1.01
 ﻿import csv, os
 from datetime import datetime
 

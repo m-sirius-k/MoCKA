@@ -1,0 +1,13 @@
+{
+  "rules": [
+    {
+      "experiment": "0a3983bb",
+      "pattern": [
+        "RUN_SAFE",
+        "FIX_SAFE",
+        "RUN_FAST"
+      ],
+      "score": 64
+    }
+  ]
+}

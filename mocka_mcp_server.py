@@ -21,6 +21,11 @@ EVENTS_FIELDS = ["event_id","when","who_actor","what_type","where_component","wh
 app = Flask(__name__)
 CORS(app, origins="*")
 
+@app.after_request
+def add_ngrok_header(response):
+    response.headers["ngrok-skip-browser-warning"] = "true"
+    return response
+
 def find_events_csv():
     if EVENTS_CSV.exists(): return EVENTS_CSV
     for p in FALLBACK_EVENTS:
@@ -224,3 +229,5 @@ if __name__ == "__main__":
     print("MoCKA MCP Server v1.2.0 -- http://localhost:5002/mcp")
     print(f"Tools: {len(TOOLS)}")
     app.run(host="0.0.0.0", port=5002, debug=False)
+
+

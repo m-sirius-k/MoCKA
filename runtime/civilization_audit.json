@@ -1,0 +1,32 @@
+{
+  "civilization_audit": {
+    "time": "2026-03-15T04:17:15.814198",
+    "checks": [
+      {
+        "file": "civilization_progress.json",
+        "exists": true,
+        "hash": "b4462506912d54ddc7775ec7246f5c9dd936c97591bc20c52fb3f3100b3a5fc4"
+      },
+      {
+        "file": "civilization_governor.json",
+        "exists": false,
+        "hash": null
+      },
+      {
+        "file": "civilization_theory.json",
+        "exists": true,
+        "hash": "a902762fb7cb19ff912fd6ccc118903e8f0a96fb0a2588d6737602a52e47c45a"
+      },
+      {
+        "file": "civilization_philosophy.json",
+        "exists": true,
+        "hash": "9d6d36008bc7a74322f9ce7aeb29bddb1f7c500c76d42c43fee6917852f2aa94"
+      },
+      {
+        "file": "civilization_culture.json",
+        "exists": true,
+        "hash": "540a12749e4dfa3906251b7b8677c967d07d4eaabac77eaad896241a9c9dfa87"
+      }
+    ]
+  }
+}

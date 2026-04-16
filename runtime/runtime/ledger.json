@@ -1,0 +1,74 @@
+[
+  {
+    "ts": "2026-04-05T12:03:00.348608",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "GENESIS",
+    "hash": "b4376f68e29425993243951da6f2d0b41dc98b872206cda9d60b7bf491f78ea4"
+  },
+  {
+    "ts": "2026-04-05T12:21:14.823396",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "b4376f68e29425993243951da6f2d0b41dc98b872206cda9d60b7bf491f78ea4",
+    "hash": "33e5dafb30a78ad8d7a4fb5e04da57bddc5a6142ae787a4d0a402fbf1fce42c0"
+  },
+  {
+    "ts": "2026-04-05T12:21:55.874117",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "33e5dafb30a78ad8d7a4fb5e04da57bddc5a6142ae787a4d0a402fbf1fce42c0",
+    "hash": "81a050dd587b731a502f61a6884ca091a7ce369f4fac2544c762ab2dd8f448c0"
+  },
+  {
+    "ts": "2026-04-05T12:22:01.739163",
+    "event": {
+      "event_id": "",
+      "when": "",
+      "who_actor": "mocka_router",
+      "what_type": "save",
+      "where_component": "router",
+      "where_path": "interface/router.py",
+      "title": "route_decision",
+      "short_summary": "EXECUTE -> anthropic_claude (score=5)",
+      "lifecycle_phase": "in_operation",
+      "risk_level": "normal",
+      "channel_type": "internal"
+    },
+    "prev_hash": "81a050dd587b731a502f61a6884ca091a7ce369f4fac2544c762ab2dd8f448c0",
+    "hash": "55402c712fdef41004a320d7757defbf5ee3e18984c37ae37e471b1f5089c994"
+  }
+]

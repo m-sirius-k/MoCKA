@@ -1,0 +1,28 @@
+{
+  "ts_utc": "2026-02-21T07:22:08.892996+00:00",
+  "python_executable": "C:\\Users\\sirok\\MoCKA\\.venv\\Scripts\\python.exe",
+  "lockfiles": {
+    "source_of_truth.lock.json": {
+      "path": "C:\\Users\\sirok\\MoCKA\\src\\source_of_truth.lock.json",
+      "sha256": "7b75f4c06bc6cb956a31ed22b4a11fdc4c334ae4e40e9672ea034dd871a020d8",
+      "sig_path": "C:\\Users\\sirok\\MoCKA\\src\\source_of_truth.lock.json.sig",
+      "sig_present": true
+    },
+    "execution.lock.json": {
+      "path": "C:\\Users\\sirok\\MoCKA\\execution.lock.json",
+      "sha256": "4e3b39f7941bf8b8ae3b1008479c844c722402d1cac49bbac386e07e30bedcd7",
+      "sig_path": "C:\\Users\\sirok\\MoCKA\\execution.lock.json.sig",
+      "sig_present": true
+    }
+  },
+  "lock_fields": {
+    "source_of_truth.lock.json": {
+      "locked_at": "2026-02-21T07:22:07.8741595Z",
+      "sha256_field": null
+    },
+    "execution.lock.json": {
+      "fixed_at": "2026-02-21T07:22:07.8741595Z",
+      "sha256_field": null
+    }
+  }
+}

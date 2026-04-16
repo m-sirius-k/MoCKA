@@ -1,0 +1,1 @@
+def call_ai(*args,**kwargs): print("[MOCK] mocka_ai OK"); return {"result":"mock"}

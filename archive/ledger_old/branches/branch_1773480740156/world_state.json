@@ -1,0 +1,33 @@
+{
+  "economy": 42.1223774435339,
+  "population": 8.149952831353808,
+  "technology": 151.83034832114956,
+  "energy": 50.95921520303257,
+  "conflict": 1.9260551887211814,
+  "tech_tree": {
+    "agriculture": 7,
+    "industry": 11,
+    "energy_tech": 12,
+    "military": 14,
+    "science": 21
+  },
+  "resources": {
+    "food": -94.43644293736682,
+    "minerals": -933.1220095089578,
+    "energy_source": -1268.6422360840268
+  },
+  "geography": {
+    "region": "mountain",
+    "distance_bias": 1.3491930766497018
+  },
+  "alliances": [
+    "branch_1773480602133",
+    "branch_1773480602136",
+    "branch_1773480740170",
+    "branch_1773536053590",
+    "branch_1773536096733",
+    "branch_1773536124287",
+    "branch_1773536133912",
+    "branch_1773536070720"
+  ]
+}

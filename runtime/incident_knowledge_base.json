@@ -1,0 +1,170 @@
+[
+  {
+    "timestamp": "2026-03-15T01:32:41.056273",
+    "incident": [
+      {
+        "timestamp": 1773536495,
+        "first_seen": 1773536495,
+        "last_seen": 1773536858,
+        "repeat_count": 32,
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      },
+      {
+        "timestamp": 1773536897,
+        "first_seen": 1773536897,
+        "last_seen": 1773537168,
+        "repeat_count": 39,
+        "incident_hash": "5e5d0e681ef7519fac3efff4b63626dfad614779b39df1be6d5cc1b27638723c",
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      }
+    ],
+    "repair": {
+      "repair_id": "R003",
+      "status": "simulated_fix",
+      "action": "inspect_stacktrace"
+    },
+    "verification": {
+      "verification": "runtime_error"
+    }
+  },
+  {
+    "timestamp": "2026-03-15T01:34:43.048999",
+    "incident": [
+      {
+        "timestamp": 1773536495,
+        "first_seen": 1773536495,
+        "last_seen": 1773536858,
+        "repeat_count": 32,
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      },
+      {
+        "timestamp": 1773536897,
+        "first_seen": 1773536897,
+        "last_seen": 1773537168,
+        "repeat_count": 39,
+        "incident_hash": "5e5d0e681ef7519fac3efff4b63626dfad614779b39df1be6d5cc1b27638723c",
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      }
+    ],
+    "repair": {
+      "repair_id": "R003",
+      "status": "simulated_fix",
+      "action": "inspect_stacktrace"
+    },
+    "verification": {
+      "verification": "runtime_error"
+    }
+  },
+  {
+    "timestamp": "2026-03-15T01:35:37.996578",
+    "incident": [
+      {
+        "timestamp": 1773536495,
+        "first_seen": 1773536495,
+        "last_seen": 1773536858,
+        "repeat_count": 32,
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      },
+      {
+        "timestamp": 1773536897,
+        "first_seen": 1773536897,
+        "last_seen": 1773537168,
+        "repeat_count": 39,
+        "incident_hash": "5e5d0e681ef7519fac3efff4b63626dfad614779b39df1be6d5cc1b27638723c",
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      }
+    ],
+    "repair": {
+      "repair_id": "R003",
+      "status": "simulated_fix",
+      "action": "inspect_stacktrace"
+    },
+    "verification": {
+      "verification": "runtime_error"
+    }
+  },
+  {
+    "timestamp": "2026-03-15T01:47:21.918354",
+    "incident": [
+      {
+        "timestamp": 1773536495,
+        "first_seen": 1773536495,
+        "last_seen": 1773536858,
+        "repeat_count": 32,
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      },
+      {
+        "timestamp": 1773536897,
+        "first_seen": 1773536897,
+        "last_seen": 1773537168,
+        "repeat_count": 39,
+        "incident_hash": "5e5d0e681ef7519fac3efff4b63626dfad614779b39df1be6d5cc1b27638723c",
+        "event_type": "incident",
+        "actor": "system",
+        "title": "Python Runtime Error",
+        "content": "Traceback (most recent call last):\n  File \"C:\\Users\\sirok\\MoCKA\\civilization_evolution_loop.py\", line 3, in <module>\n    raise Exception(\"TEST INCIDENT FROM CIVILIZATION LOOP\")\nException: TEST INCIDENT FROM CIVILIZATION LOOP\n",
+        "source": "error_capture_engine",
+        "impact": "major",
+        "focus_point": "runtime failure",
+        "incident_candidate": true
+      }
+    ],
+    "repair": {
+      "repair_id": "R003",
+      "status": "simulated_fix",
+      "action": "inspect_stacktrace"
+    },
+    "verification": {
+      "verification": "runtime_ok"
+    }
+  }
+]

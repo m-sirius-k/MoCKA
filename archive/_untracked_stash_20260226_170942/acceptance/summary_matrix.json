@@ -1,0 +1,17 @@
+{
+  "manifest_errors": [],
+  "phase": "Phase17-Pre-Stable",
+  "row_count": 1,
+  "rows": {
+    "pack:8bb0ce42885e31a8214100acda6d8719ebf94816901edf8689086b0e44b65c38": {
+      "key_id": "93ee18e0f3f5f9d893846de82399794b7719d6cbb51245e02ca9569df6e03f0d",
+      "pack_sha256": "8bb0ce42885e31a8214100acda6d8719ebf94816901edf8689086b0e44b65c38",
+      "payload_hash": "9cf2b45bd0875414a0d772611b96c1da6f6da2f6d4595a92956c61fe2a02633f",
+      "row_id": "pack:8bb0ce42885e31a8214100acda6d8719ebf94816901edf8689086b0e44b65c38",
+      "row_sig": "9b7355fc92a8b94501548bea03579ec984e5d402d3b721e854f8a460a1ee7d00197775dde5e6332e219ba3387dfe30d11277b0f777d3cd5462de5b4e9c51eb07",
+      "row_sig_alg": "ed25519",
+      "source_path": "acceptance/phase18_multipack_pack1_copy.json"
+    }
+  },
+  "summary_hash": "9dbbb30258dbb97d4ff72963c0fb837c1439ca9f5f1abef9dc865ee5880add9f"
+}

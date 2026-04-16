@@ -1,0 +1,1887 @@
+{
+  "nodes": {
+    "external": {
+      "count": 818
+    },
+    "knowledge": {
+      "count": 818
+    },
+    "ai": {
+      "count": 818
+    },
+    "output": {
+      "count": 818
+    },
+    "good": {
+      "count": 1636
+    },
+    "action": {
+      "count": 1636
+    },
+    "bad": {
+      "count": 1636
+    },
+    "idea": {
+      "count": 818
+    },
+    "decision": {
+      "count": 818
+    },
+    "neutral": {
+      "count": 818
+    },
+    "google": {
+      "count": 228
+    },
+    "news": {
+      "count": 228
+    },
+    "middle": {
+      "count": 228
+    },
+    "east": {
+      "count": 228
+    },
+    "crisis": {
+      "count": 228
+    },
+    "live:": {
+      "count": 228
+    },
+    "iran": {
+      "count": 228
+    },
+    "will": {
+      "count": 456
+    },
+    "completely": {
+      "count": 228
+    },
+    "close": {
+      "count": 228
+    },
+    "strait": {
+      "count": 228
+    },
+    "of": {
+      "count": 456
+    },
+    "hormuz": {
+      "count": 228
+    },
+    "if": {
+      "count": 228
+    },
+    "trump": {
+      "count": 456
+    },
+    "acts": {
+      "count": 228
+    },
+    "on": {
+      "count": 228
+    },
+    "infrastructure": {
+      "count": 228
+    },
+    "threats,": {
+      "count": 228
+    },
+    "says": {
+      "count": 456
+    },
+    "irg": {
+      "count": 228
+    },
+    "-": {
+      "count": 912
+    },
+    "the": {
+      "count": 228
+    },
+    "guardian": {
+      "count": 228
+    },
+    "ice": {
+      "count": 228
+    },
+    "agents": {
+      "count": 228
+    },
+    "assist": {
+      "count": 228
+    },
+    "airport": {
+      "count": 228
+    },
+    "security": {
+      "count": 228
+    },
+    "as": {
+      "count": 228
+    },
+    "dhs": {
+      "count": 228
+    },
+    "shutdown": {
+      "count": 228
+    },
+    "continues": {
+      "count": 228
+    },
+    "bbc": {
+      "count": 228
+    },
+    "travelers": {
+      "count": 228
+    },
+    "flying": {
+      "count": 228
+    },
+    "out": {
+      "count": 228
+    },
+    "nyc": {
+      "count": 228
+    },
+    "area": {
+      "count": 228
+    },
+    "airports:": {
+      "count": 228
+    },
+    "be": {
+      "count": 228
+    },
+    "prepared": {
+      "count": 228
+    },
+    "to": {
+      "count": 228
+    },
+    "wait": {
+      "count": 228
+    },
+    "gothamist": {
+      "count": 228
+    },
+    "le": {
+      "count": 228
+    },
+    "pen's": {
+      "count": 228
+    },
+    "far": {
+      "count": 228
+    },
+    "right": {
+      "count": 228
+    },
+    "suffers": {
+      "count": 228
+    },
+    "setbacks": {
+      "count": 228
+    },
+    "in": {
+      "count": 228
+    },
+    "french": {
+      "count": 228
+    },
+    "mayoral": {
+      "count": 228
+    },
+    "elections,": {
+      "count": 228
+    },
+    "ex-pm": {
+      "count": 228
+    },
+    "philippe": {
+      "count": 228
+    },
+    "wins": {
+      "count": 228
+    },
+    "key": {
+      "count": 228
+    },
+    "race": {
+      "count": 228
+    },
+    "france": {
+      "count": 228
+    },
+    "24": {
+      "count": 228
+    }
+  },
+  "edges": {
+    "external|knowledge": {
+      "weight": 818
+    },
+    "ai|output": {
+      "weight": 818
+    },
+    "good|action": {
+      "weight": 818
+    },
+    "bad|action": {
+      "weight": 818
+    },
+    "good|idea": {
+      "weight": 818
+    },
+    "bad|decision": {
+      "weight": 818
+    },
+    "google|news": {
+      "weight": 228
+    },
+    "middle|east": {
+      "weight": 228
+    },
+    "middle|crisis": {
+      "weight": 228
+    },
+    "middle|live:": {
+      "weight": 228
+    },
+    "middle|iran": {
+      "weight": 228
+    },
+    "middle|will": {
+      "weight": 228
+    },
+    "middle|completely": {
+      "weight": 228
+    },
+    "middle|close": {
+      "weight": 228
+    },
+    "middle|strait": {
+      "weight": 228
+    },
+    "middle|of": {
+      "weight": 228
+    },
+    "middle|hormuz": {
+      "weight": 228
+    },
+    "middle|if": {
+      "weight": 228
+    },
+    "middle|trump": {
+      "weight": 228
+    },
+    "middle|acts": {
+      "weight": 228
+    },
+    "middle|on": {
+      "weight": 228
+    },
+    "middle|infrastructure": {
+      "weight": 228
+    },
+    "middle|threats,": {
+      "weight": 228
+    },
+    "middle|says": {
+      "weight": 228
+    },
+    "middle|irg": {
+      "weight": 228
+    },
+    "middle|-": {
+      "weight": 228
+    },
+    "middle|the": {
+      "weight": 228
+    },
+    "middle|guardian": {
+      "weight": 228
+    },
+    "east|crisis": {
+      "weight": 228
+    },
+    "east|live:": {
+      "weight": 228
+    },
+    "east|iran": {
+      "weight": 228
+    },
+    "east|will": {
+      "weight": 228
+    },
+    "east|completely": {
+      "weight": 228
+    },
+    "east|close": {
+      "weight": 228
+    },
+    "east|strait": {
+      "weight": 228
+    },
+    "east|of": {
+      "weight": 228
+    },
+    "east|hormuz": {
+      "weight": 228
+    },
+    "east|if": {
+      "weight": 228
+    },
+    "east|trump": {
+      "weight": 228
+    },
+    "east|acts": {
+      "weight": 228
+    },
+    "east|on": {
+      "weight": 228
+    },
+    "east|infrastructure": {
+      "weight": 228
+    },
+    "east|threats,": {
+      "weight": 228
+    },
+    "east|says": {
+      "weight": 228
+    },
+    "east|irg": {
+      "weight": 228
+    },
+    "east|-": {
+      "weight": 228
+    },
+    "east|the": {
+      "weight": 228
+    },
+    "east|guardian": {
+      "weight": 228
+    },
+    "crisis|live:": {
+      "weight": 228
+    },
+    "crisis|iran": {
+      "weight": 228
+    },
+    "crisis|will": {
+      "weight": 228
+    },
+    "crisis|completely": {
+      "weight": 228
+    },
+    "crisis|close": {
+      "weight": 228
+    },
+    "crisis|strait": {
+      "weight": 228
+    },
+    "crisis|of": {
+      "weight": 228
+    },
+    "crisis|hormuz": {
+      "weight": 228
+    },
+    "crisis|if": {
+      "weight": 228
+    },
+    "crisis|trump": {
+      "weight": 228
+    },
+    "crisis|acts": {
+      "weight": 228
+    },
+    "crisis|on": {
+      "weight": 228
+    },
+    "crisis|infrastructure": {
+      "weight": 228
+    },
+    "crisis|threats,": {
+      "weight": 228
+    },
+    "crisis|says": {
+      "weight": 228
+    },
+    "crisis|irg": {
+      "weight": 228
+    },
+    "crisis|-": {
+      "weight": 228
+    },
+    "crisis|the": {
+      "weight": 228
+    },
+    "crisis|guardian": {
+      "weight": 228
+    },
+    "live:|iran": {
+      "weight": 228
+    },
+    "live:|will": {
+      "weight": 228
+    },
+    "live:|completely": {
+      "weight": 228
+    },
+    "live:|close": {
+      "weight": 228
+    },
+    "live:|strait": {
+      "weight": 228
+    },
+    "live:|of": {
+      "weight": 228
+    },
+    "live:|hormuz": {
+      "weight": 228
+    },
+    "live:|if": {
+      "weight": 228
+    },
+    "live:|trump": {
+      "weight": 228
+    },
+    "live:|acts": {
+      "weight": 228
+    },
+    "live:|on": {
+      "weight": 228
+    },
+    "live:|infrastructure": {
+      "weight": 228
+    },
+    "live:|threats,": {
+      "weight": 228
+    },
+    "live:|says": {
+      "weight": 228
+    },
+    "live:|irg": {
+      "weight": 228
+    },
+    "live:|-": {
+      "weight": 228
+    },
+    "live:|the": {
+      "weight": 228
+    },
+    "live:|guardian": {
+      "weight": 228
+    },
+    "iran|will": {
+      "weight": 228
+    },
+    "iran|completely": {
+      "weight": 228
+    },
+    "iran|close": {
+      "weight": 228
+    },
+    "iran|strait": {
+      "weight": 228
+    },
+    "iran|of": {
+      "weight": 228
+    },
+    "iran|hormuz": {
+      "weight": 228
+    },
+    "iran|if": {
+      "weight": 228
+    },
+    "iran|trump": {
+      "weight": 228
+    },
+    "iran|acts": {
+      "weight": 228
+    },
+    "iran|on": {
+      "weight": 228
+    },
+    "iran|infrastructure": {
+      "weight": 228
+    },
+    "iran|threats,": {
+      "weight": 228
+    },
+    "iran|says": {
+      "weight": 228
+    },
+    "iran|irg": {
+      "weight": 228
+    },
+    "iran|-": {
+      "weight": 228
+    },
+    "iran|the": {
+      "weight": 228
+    },
+    "iran|guardian": {
+      "weight": 228
+    },
+    "will|completely": {
+      "weight": 228
+    },
+    "will|close": {
+      "weight": 228
+    },
+    "will|strait": {
+      "weight": 228
+    },
+    "will|of": {
+      "weight": 228
+    },
+    "will|hormuz": {
+      "weight": 228
+    },
+    "will|if": {
+      "weight": 228
+    },
+    "will|trump": {
+      "weight": 228
+    },
+    "will|acts": {
+      "weight": 228
+    },
+    "will|on": {
+      "weight": 228
+    },
+    "will|infrastructure": {
+      "weight": 228
+    },
+    "will|threats,": {
+      "weight": 228
+    },
+    "will|says": {
+      "weight": 228
+    },
+    "will|irg": {
+      "weight": 228
+    },
+    "will|-": {
+      "weight": 456
+    },
+    "will|the": {
+      "weight": 228
+    },
+    "will|guardian": {
+      "weight": 228
+    },
+    "completely|close": {
+      "weight": 228
+    },
+    "completely|strait": {
+      "weight": 228
+    },
+    "completely|of": {
+      "weight": 228
+    },
+    "completely|hormuz": {
+      "weight": 228
+    },
+    "completely|if": {
+      "weight": 228
+    },
+    "completely|trump": {
+      "weight": 228
+    },
+    "completely|acts": {
+      "weight": 228
+    },
+    "completely|on": {
+      "weight": 228
+    },
+    "completely|infrastructure": {
+      "weight": 228
+    },
+    "completely|threats,": {
+      "weight": 228
+    },
+    "completely|says": {
+      "weight": 228
+    },
+    "completely|irg": {
+      "weight": 228
+    },
+    "completely|-": {
+      "weight": 228
+    },
+    "completely|the": {
+      "weight": 228
+    },
+    "completely|guardian": {
+      "weight": 228
+    },
+    "close|strait": {
+      "weight": 228
+    },
+    "close|of": {
+      "weight": 228
+    },
+    "close|hormuz": {
+      "weight": 228
+    },
+    "close|if": {
+      "weight": 228
+    },
+    "close|trump": {
+      "weight": 228
+    },
+    "close|acts": {
+      "weight": 228
+    },
+    "close|on": {
+      "weight": 228
+    },
+    "close|infrastructure": {
+      "weight": 228
+    },
+    "close|threats,": {
+      "weight": 228
+    },
+    "close|says": {
+      "weight": 228
+    },
+    "close|irg": {
+      "weight": 228
+    },
+    "close|-": {
+      "weight": 228
+    },
+    "close|the": {
+      "weight": 228
+    },
+    "close|guardian": {
+      "weight": 228
+    },
+    "strait|of": {
+      "weight": 228
+    },
+    "strait|hormuz": {
+      "weight": 228
+    },
+    "strait|if": {
+      "weight": 228
+    },
+    "strait|trump": {
+      "weight": 228
+    },
+    "strait|acts": {
+      "weight": 228
+    },
+    "strait|on": {
+      "weight": 228
+    },
+    "strait|infrastructure": {
+      "weight": 228
+    },
+    "strait|threats,": {
+      "weight": 228
+    },
+    "strait|says": {
+      "weight": 228
+    },
+    "strait|irg": {
+      "weight": 228
+    },
+    "strait|-": {
+      "weight": 228
+    },
+    "strait|the": {
+      "weight": 228
+    },
+    "strait|guardian": {
+      "weight": 228
+    },
+    "of|hormuz": {
+      "weight": 228
+    },
+    "of|if": {
+      "weight": 228
+    },
+    "of|trump": {
+      "weight": 228
+    },
+    "of|acts": {
+      "weight": 228
+    },
+    "of|on": {
+      "weight": 228
+    },
+    "of|infrastructure": {
+      "weight": 228
+    },
+    "of|threats,": {
+      "weight": 228
+    },
+    "of|says": {
+      "weight": 228
+    },
+    "of|irg": {
+      "weight": 228
+    },
+    "of|-": {
+      "weight": 456
+    },
+    "of|the": {
+      "weight": 228
+    },
+    "of|guardian": {
+      "weight": 228
+    },
+    "hormuz|if": {
+      "weight": 228
+    },
+    "hormuz|trump": {
+      "weight": 228
+    },
+    "hormuz|acts": {
+      "weight": 228
+    },
+    "hormuz|on": {
+      "weight": 228
+    },
+    "hormuz|infrastructure": {
+      "weight": 228
+    },
+    "hormuz|threats,": {
+      "weight": 228
+    },
+    "hormuz|says": {
+      "weight": 228
+    },
+    "hormuz|irg": {
+      "weight": 228
+    },
+    "hormuz|-": {
+      "weight": 228
+    },
+    "hormuz|the": {
+      "weight": 228
+    },
+    "hormuz|guardian": {
+      "weight": 228
+    },
+    "if|trump": {
+      "weight": 228
+    },
+    "if|acts": {
+      "weight": 228
+    },
+    "if|on": {
+      "weight": 228
+    },
+    "if|infrastructure": {
+      "weight": 228
+    },
+    "if|threats,": {
+      "weight": 228
+    },
+    "if|says": {
+      "weight": 228
+    },
+    "if|irg": {
+      "weight": 228
+    },
+    "if|-": {
+      "weight": 228
+    },
+    "if|the": {
+      "weight": 228
+    },
+    "if|guardian": {
+      "weight": 228
+    },
+    "trump|acts": {
+      "weight": 228
+    },
+    "trump|on": {
+      "weight": 228
+    },
+    "trump|infrastructure": {
+      "weight": 228
+    },
+    "trump|threats,": {
+      "weight": 228
+    },
+    "trump|says": {
+      "weight": 456
+    },
+    "trump|irg": {
+      "weight": 228
+    },
+    "trump|-": {
+      "weight": 456
+    },
+    "trump|the": {
+      "weight": 228
+    },
+    "trump|guardian": {
+      "weight": 228
+    },
+    "acts|on": {
+      "weight": 228
+    },
+    "acts|infrastructure": {
+      "weight": 228
+    },
+    "acts|threats,": {
+      "weight": 228
+    },
+    "acts|says": {
+      "weight": 228
+    },
+    "acts|irg": {
+      "weight": 228
+    },
+    "acts|-": {
+      "weight": 228
+    },
+    "acts|the": {
+      "weight": 228
+    },
+    "acts|guardian": {
+      "weight": 228
+    },
+    "on|infrastructure": {
+      "weight": 228
+    },
+    "on|threats,": {
+      "weight": 228
+    },
+    "on|says": {
+      "weight": 228
+    },
+    "on|irg": {
+      "weight": 228
+    },
+    "on|-": {
+      "weight": 228
+    },
+    "on|the": {
+      "weight": 228
+    },
+    "on|guardian": {
+      "weight": 228
+    },
+    "infrastructure|threats,": {
+      "weight": 228
+    },
+    "infrastructure|says": {
+      "weight": 228
+    },
+    "infrastructure|irg": {
+      "weight": 228
+    },
+    "infrastructure|-": {
+      "weight": 228
+    },
+    "infrastructure|the": {
+      "weight": 228
+    },
+    "infrastructure|guardian": {
+      "weight": 228
+    },
+    "threats,|says": {
+      "weight": 228
+    },
+    "threats,|irg": {
+      "weight": 228
+    },
+    "threats,|-": {
+      "weight": 228
+    },
+    "threats,|the": {
+      "weight": 228
+    },
+    "threats,|guardian": {
+      "weight": 228
+    },
+    "says|irg": {
+      "weight": 228
+    },
+    "says|-": {
+      "weight": 456
+    },
+    "says|the": {
+      "weight": 228
+    },
+    "says|guardian": {
+      "weight": 228
+    },
+    "irg|-": {
+      "weight": 228
+    },
+    "irg|the": {
+      "weight": 228
+    },
+    "irg|guardian": {
+      "weight": 228
+    },
+    "-|the": {
+      "weight": 228
+    },
+    "-|guardian": {
+      "weight": 228
+    },
+    "the|guardian": {
+      "weight": 228
+    },
+    "trump|ice": {
+      "weight": 228
+    },
+    "trump|agents": {
+      "weight": 228
+    },
+    "trump|will": {
+      "weight": 228
+    },
+    "trump|assist": {
+      "weight": 228
+    },
+    "trump|airport": {
+      "weight": 228
+    },
+    "trump|security": {
+      "weight": 228
+    },
+    "trump|as": {
+      "weight": 228
+    },
+    "trump|dhs": {
+      "weight": 228
+    },
+    "trump|shutdown": {
+      "weight": 228
+    },
+    "trump|continues": {
+      "weight": 228
+    },
+    "trump|bbc": {
+      "weight": 228
+    },
+    "says|ice": {
+      "weight": 228
+    },
+    "says|agents": {
+      "weight": 228
+    },
+    "says|will": {
+      "weight": 228
+    },
+    "says|assist": {
+      "weight": 228
+    },
+    "says|airport": {
+      "weight": 228
+    },
+    "says|security": {
+      "weight": 228
+    },
+    "says|as": {
+      "weight": 228
+    },
+    "says|dhs": {
+      "weight": 228
+    },
+    "says|shutdown": {
+      "weight": 228
+    },
+    "says|continues": {
+      "weight": 228
+    },
+    "says|bbc": {
+      "weight": 228
+    },
+    "ice|agents": {
+      "weight": 228
+    },
+    "ice|will": {
+      "weight": 228
+    },
+    "ice|assist": {
+      "weight": 228
+    },
+    "ice|airport": {
+      "weight": 228
+    },
+    "ice|security": {
+      "weight": 228
+    },
+    "ice|as": {
+      "weight": 228
+    },
+    "ice|dhs": {
+      "weight": 228
+    },
+    "ice|shutdown": {
+      "weight": 228
+    },
+    "ice|continues": {
+      "weight": 228
+    },
+    "ice|-": {
+      "weight": 228
+    },
+    "ice|bbc": {
+      "weight": 228
+    },
+    "agents|will": {
+      "weight": 228
+    },
+    "agents|assist": {
+      "weight": 228
+    },
+    "agents|airport": {
+      "weight": 228
+    },
+    "agents|security": {
+      "weight": 228
+    },
+    "agents|as": {
+      "weight": 228
+    },
+    "agents|dhs": {
+      "weight": 228
+    },
+    "agents|shutdown": {
+      "weight": 228
+    },
+    "agents|continues": {
+      "weight": 228
+    },
+    "agents|-": {
+      "weight": 228
+    },
+    "agents|bbc": {
+      "weight": 228
+    },
+    "will|assist": {
+      "weight": 228
+    },
+    "will|airport": {
+      "weight": 228
+    },
+    "will|security": {
+      "weight": 228
+    },
+    "will|as": {
+      "weight": 228
+    },
+    "will|dhs": {
+      "weight": 228
+    },
+    "will|shutdown": {
+      "weight": 228
+    },
+    "will|continues": {
+      "weight": 228
+    },
+    "will|bbc": {
+      "weight": 228
+    },
+    "assist|airport": {
+      "weight": 228
+    },
+    "assist|security": {
+      "weight": 228
+    },
+    "assist|as": {
+      "weight": 228
+    },
+    "assist|dhs": {
+      "weight": 228
+    },
+    "assist|shutdown": {
+      "weight": 228
+    },
+    "assist|continues": {
+      "weight": 228
+    },
+    "assist|-": {
+      "weight": 228
+    },
+    "assist|bbc": {
+      "weight": 228
+    },
+    "airport|security": {
+      "weight": 228
+    },
+    "airport|as": {
+      "weight": 228
+    },
+    "airport|dhs": {
+      "weight": 228
+    },
+    "airport|shutdown": {
+      "weight": 228
+    },
+    "airport|continues": {
+      "weight": 228
+    },
+    "airport|-": {
+      "weight": 228
+    },
+    "airport|bbc": {
+      "weight": 228
+    },
+    "security|as": {
+      "weight": 228
+    },
+    "security|dhs": {
+      "weight": 228
+    },
+    "security|shutdown": {
+      "weight": 228
+    },
+    "security|continues": {
+      "weight": 228
+    },
+    "security|-": {
+      "weight": 228
+    },
+    "security|bbc": {
+      "weight": 228
+    },
+    "as|dhs": {
+      "weight": 228
+    },
+    "as|shutdown": {
+      "weight": 228
+    },
+    "as|continues": {
+      "weight": 228
+    },
+    "as|-": {
+      "weight": 228
+    },
+    "as|bbc": {
+      "weight": 228
+    },
+    "dhs|shutdown": {
+      "weight": 228
+    },
+    "dhs|continues": {
+      "weight": 228
+    },
+    "dhs|-": {
+      "weight": 228
+    },
+    "dhs|bbc": {
+      "weight": 228
+    },
+    "shutdown|continues": {
+      "weight": 228
+    },
+    "shutdown|-": {
+      "weight": 228
+    },
+    "shutdown|bbc": {
+      "weight": 228
+    },
+    "continues|-": {
+      "weight": 228
+    },
+    "continues|bbc": {
+      "weight": 228
+    },
+    "-|bbc": {
+      "weight": 228
+    },
+    "travelers|flying": {
+      "weight": 228
+    },
+    "travelers|out": {
+      "weight": 228
+    },
+    "travelers|of": {
+      "weight": 228
+    },
+    "travelers|nyc": {
+      "weight": 228
+    },
+    "travelers|area": {
+      "weight": 228
+    },
+    "travelers|airports:": {
+      "weight": 228
+    },
+    "travelers|be": {
+      "weight": 228
+    },
+    "travelers|prepared": {
+      "weight": 228
+    },
+    "travelers|to": {
+      "weight": 228
+    },
+    "travelers|wait": {
+      "weight": 228
+    },
+    "travelers|-": {
+      "weight": 228
+    },
+    "travelers|gothamist": {
+      "weight": 228
+    },
+    "flying|out": {
+      "weight": 228
+    },
+    "flying|of": {
+      "weight": 228
+    },
+    "flying|nyc": {
+      "weight": 228
+    },
+    "flying|area": {
+      "weight": 228
+    },
+    "flying|airports:": {
+      "weight": 228
+    },
+    "flying|be": {
+      "weight": 228
+    },
+    "flying|prepared": {
+      "weight": 228
+    },
+    "flying|to": {
+      "weight": 228
+    },
+    "flying|wait": {
+      "weight": 228
+    },
+    "flying|-": {
+      "weight": 228
+    },
+    "flying|gothamist": {
+      "weight": 228
+    },
+    "out|of": {
+      "weight": 228
+    },
+    "out|nyc": {
+      "weight": 228
+    },
+    "out|area": {
+      "weight": 228
+    },
+    "out|airports:": {
+      "weight": 228
+    },
+    "out|be": {
+      "weight": 228
+    },
+    "out|prepared": {
+      "weight": 228
+    },
+    "out|to": {
+      "weight": 228
+    },
+    "out|wait": {
+      "weight": 228
+    },
+    "out|-": {
+      "weight": 228
+    },
+    "out|gothamist": {
+      "weight": 228
+    },
+    "of|nyc": {
+      "weight": 228
+    },
+    "of|area": {
+      "weight": 228
+    },
+    "of|airports:": {
+      "weight": 228
+    },
+    "of|be": {
+      "weight": 228
+    },
+    "of|prepared": {
+      "weight": 228
+    },
+    "of|to": {
+      "weight": 228
+    },
+    "of|wait": {
+      "weight": 228
+    },
+    "of|gothamist": {
+      "weight": 228
+    },
+    "nyc|area": {
+      "weight": 228
+    },
+    "nyc|airports:": {
+      "weight": 228
+    },
+    "nyc|be": {
+      "weight": 228
+    },
+    "nyc|prepared": {
+      "weight": 228
+    },
+    "nyc|to": {
+      "weight": 228
+    },
+    "nyc|wait": {
+      "weight": 228
+    },
+    "nyc|-": {
+      "weight": 228
+    },
+    "nyc|gothamist": {
+      "weight": 228
+    },
+    "area|airports:": {
+      "weight": 228
+    },
+    "area|be": {
+      "weight": 228
+    },
+    "area|prepared": {
+      "weight": 228
+    },
+    "area|to": {
+      "weight": 228
+    },
+    "area|wait": {
+      "weight": 228
+    },
+    "area|-": {
+      "weight": 228
+    },
+    "area|gothamist": {
+      "weight": 228
+    },
+    "airports:|be": {
+      "weight": 228
+    },
+    "airports:|prepared": {
+      "weight": 228
+    },
+    "airports:|to": {
+      "weight": 228
+    },
+    "airports:|wait": {
+      "weight": 228
+    },
+    "airports:|-": {
+      "weight": 228
+    },
+    "airports:|gothamist": {
+      "weight": 228
+    },
+    "be|prepared": {
+      "weight": 228
+    },
+    "be|to": {
+      "weight": 228
+    },
+    "be|wait": {
+      "weight": 228
+    },
+    "be|-": {
+      "weight": 228
+    },
+    "be|gothamist": {
+      "weight": 228
+    },
+    "prepared|to": {
+      "weight": 228
+    },
+    "prepared|wait": {
+      "weight": 228
+    },
+    "prepared|-": {
+      "weight": 228
+    },
+    "prepared|gothamist": {
+      "weight": 228
+    },
+    "to|wait": {
+      "weight": 228
+    },
+    "to|-": {
+      "weight": 228
+    },
+    "to|gothamist": {
+      "weight": 228
+    },
+    "wait|-": {
+      "weight": 228
+    },
+    "wait|gothamist": {
+      "weight": 228
+    },
+    "-|gothamist": {
+      "weight": 228
+    },
+    "le|pen's": {
+      "weight": 228
+    },
+    "le|far": {
+      "weight": 228
+    },
+    "le|right": {
+      "weight": 228
+    },
+    "le|suffers": {
+      "weight": 228
+    },
+    "le|setbacks": {
+      "weight": 228
+    },
+    "le|in": {
+      "weight": 228
+    },
+    "le|french": {
+      "weight": 228
+    },
+    "le|mayoral": {
+      "weight": 228
+    },
+    "le|elections,": {
+      "weight": 228
+    },
+    "le|ex-pm": {
+      "weight": 228
+    },
+    "le|philippe": {
+      "weight": 228
+    },
+    "le|wins": {
+      "weight": 228
+    },
+    "le|key": {
+      "weight": 228
+    },
+    "le|race": {
+      "weight": 228
+    },
+    "le|-": {
+      "weight": 228
+    },
+    "le|france": {
+      "weight": 228
+    },
+    "le|24": {
+      "weight": 228
+    },
+    "pen's|far": {
+      "weight": 228
+    },
+    "pen's|right": {
+      "weight": 228
+    },
+    "pen's|suffers": {
+      "weight": 228
+    },
+    "pen's|setbacks": {
+      "weight": 228
+    },
+    "pen's|in": {
+      "weight": 228
+    },
+    "pen's|french": {
+      "weight": 228
+    },
+    "pen's|mayoral": {
+      "weight": 228
+    },
+    "pen's|elections,": {
+      "weight": 228
+    },
+    "pen's|ex-pm": {
+      "weight": 228
+    },
+    "pen's|philippe": {
+      "weight": 228
+    },
+    "pen's|wins": {
+      "weight": 228
+    },
+    "pen's|key": {
+      "weight": 228
+    },
+    "pen's|race": {
+      "weight": 228
+    },
+    "pen's|-": {
+      "weight": 228
+    },
+    "pen's|france": {
+      "weight": 228
+    },
+    "pen's|24": {
+      "weight": 228
+    },
+    "far|right": {
+      "weight": 228
+    },
+    "far|suffers": {
+      "weight": 228
+    },
+    "far|setbacks": {
+      "weight": 228
+    },
+    "far|in": {
+      "weight": 228
+    },
+    "far|french": {
+      "weight": 228
+    },
+    "far|mayoral": {
+      "weight": 228
+    },
+    "far|elections,": {
+      "weight": 228
+    },
+    "far|ex-pm": {
+      "weight": 228
+    },
+    "far|philippe": {
+      "weight": 228
+    },
+    "far|wins": {
+      "weight": 228
+    },
+    "far|key": {
+      "weight": 228
+    },
+    "far|race": {
+      "weight": 228
+    },
+    "far|-": {
+      "weight": 228
+    },
+    "far|france": {
+      "weight": 228
+    },
+    "far|24": {
+      "weight": 228
+    },
+    "right|suffers": {
+      "weight": 228
+    },
+    "right|setbacks": {
+      "weight": 228
+    },
+    "right|in": {
+      "weight": 228
+    },
+    "right|french": {
+      "weight": 228
+    },
+    "right|mayoral": {
+      "weight": 228
+    },
+    "right|elections,": {
+      "weight": 228
+    },
+    "right|ex-pm": {
+      "weight": 228
+    },
+    "right|philippe": {
+      "weight": 228
+    },
+    "right|wins": {
+      "weight": 228
+    },
+    "right|key": {
+      "weight": 228
+    },
+    "right|race": {
+      "weight": 228
+    },
+    "right|-": {
+      "weight": 228
+    },
+    "right|france": {
+      "weight": 228
+    },
+    "right|24": {
+      "weight": 228
+    },
+    "suffers|setbacks": {
+      "weight": 228
+    },
+    "suffers|in": {
+      "weight": 228
+    },
+    "suffers|french": {
+      "weight": 228
+    },
+    "suffers|mayoral": {
+      "weight": 228
+    },
+    "suffers|elections,": {
+      "weight": 228
+    },
+    "suffers|ex-pm": {
+      "weight": 228
+    },
+    "suffers|philippe": {
+      "weight": 228
+    },
+    "suffers|wins": {
+      "weight": 228
+    },
+    "suffers|key": {
+      "weight": 228
+    },
+    "suffers|race": {
+      "weight": 228
+    },
+    "suffers|-": {
+      "weight": 228
+    },
+    "suffers|france": {
+      "weight": 228
+    },
+    "suffers|24": {
+      "weight": 228
+    },
+    "setbacks|in": {
+      "weight": 228
+    },
+    "setbacks|french": {
+      "weight": 228
+    },
+    "setbacks|mayoral": {
+      "weight": 228
+    },
+    "setbacks|elections,": {
+      "weight": 228
+    },
+    "setbacks|ex-pm": {
+      "weight": 228
+    },
+    "setbacks|philippe": {
+      "weight": 228
+    },
+    "setbacks|wins": {
+      "weight": 228
+    },
+    "setbacks|key": {
+      "weight": 228
+    },
+    "setbacks|race": {
+      "weight": 228
+    },
+    "setbacks|-": {
+      "weight": 228
+    },
+    "setbacks|france": {
+      "weight": 228
+    },
+    "setbacks|24": {
+      "weight": 228
+    },
+    "in|french": {
+      "weight": 228
+    },
+    "in|mayoral": {
+      "weight": 228
+    },
+    "in|elections,": {
+      "weight": 228
+    },
+    "in|ex-pm": {
+      "weight": 228
+    },
+    "in|philippe": {
+      "weight": 228
+    },
+    "in|wins": {
+      "weight": 228
+    },
+    "in|key": {
+      "weight": 228
+    },
+    "in|race": {
+      "weight": 228
+    },
+    "in|-": {
+      "weight": 228
+    },
+    "in|france": {
+      "weight": 228
+    },
+    "in|24": {
+      "weight": 228
+    },
+    "french|mayoral": {
+      "weight": 228
+    },
+    "french|elections,": {
+      "weight": 228
+    },
+    "french|ex-pm": {
+      "weight": 228
+    },
+    "french|philippe": {
+      "weight": 228
+    },
+    "french|wins": {
+      "weight": 228
+    },
+    "french|key": {
+      "weight": 228
+    },
+    "french|race": {
+      "weight": 228
+    },
+    "french|-": {
+      "weight": 228
+    },
+    "french|france": {
+      "weight": 228
+    },
+    "french|24": {
+      "weight": 228
+    },
+    "mayoral|elections,": {
+      "weight": 228
+    },
+    "mayoral|ex-pm": {
+      "weight": 228
+    },
+    "mayoral|philippe": {
+      "weight": 228
+    },
+    "mayoral|wins": {
+      "weight": 228
+    },
+    "mayoral|key": {
+      "weight": 228
+    },
+    "mayoral|race": {
+      "weight": 228
+    },
+    "mayoral|-": {
+      "weight": 228
+    },
+    "mayoral|france": {
+      "weight": 228
+    },
+    "mayoral|24": {
+      "weight": 228
+    },
+    "elections,|ex-pm": {
+      "weight": 228
+    },
+    "elections,|philippe": {
+      "weight": 228
+    },
+    "elections,|wins": {
+      "weight": 228
+    },
+    "elections,|key": {
+      "weight": 228
+    },
+    "elections,|race": {
+      "weight": 228
+    },
+    "elections,|-": {
+      "weight": 228
+    },
+    "elections,|france": {
+      "weight": 228
+    },
+    "elections,|24": {
+      "weight": 228
+    },
+    "ex-pm|philippe": {
+      "weight": 228
+    },
+    "ex-pm|wins": {
+      "weight": 228
+    },
+    "ex-pm|key": {
+      "weight": 228
+    },
+    "ex-pm|race": {
+      "weight": 228
+    },
+    "ex-pm|-": {
+      "weight": 228
+    },
+    "ex-pm|france": {
+      "weight": 228
+    },
+    "ex-pm|24": {
+      "weight": 228
+    },
+    "philippe|wins": {
+      "weight": 228
+    },
+    "philippe|key": {
+      "weight": 228
+    },
+    "philippe|race": {
+      "weight": 228
+    },
+    "philippe|-": {
+      "weight": 228
+    },
+    "philippe|france": {
+      "weight": 228
+    },
+    "philippe|24": {
+      "weight": 228
+    },
+    "wins|key": {
+      "weight": 228
+    },
+    "wins|race": {
+      "weight": 228
+    },
+    "wins|-": {
+      "weight": 228
+    },
+    "wins|france": {
+      "weight": 228
+    },
+    "wins|24": {
+      "weight": 228
+    },
+    "key|race": {
+      "weight": 228
+    },
+    "key|-": {
+      "weight": 228
+    },
+    "key|france": {
+      "weight": 228
+    },
+    "key|24": {
+      "weight": 228
+    },
+    "race|-": {
+      "weight": 228
+    },
+    "race|france": {
+      "weight": 228
+    },
+    "race|24": {
+      "weight": 228
+    },
+    "-|france": {
+      "weight": 228
+    },
+    "-|24": {
+      "weight": 228
+    },
+    "france|24": {
+      "weight": 228
+    }
+  }
+}

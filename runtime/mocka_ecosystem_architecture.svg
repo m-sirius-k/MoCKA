@@ -1,0 +1,52 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="800">
+
+<style>
+.box { fill:#f4f6f8; stroke:#333; stroke-width:2; }
+.core { fill:#e3f2fd; stroke:#1565c0; stroke-width:3; }
+.text { font-size:16px; font-family:Arial; }
+.title { font-size:20px; font-family:Arial; font-weight:bold; }
+.line { stroke:#333; stroke-width:2; }
+</style>
+
+<text x="330" y="40" class="title">MoCKA Civilization Ecosystem Architecture</text>
+
+<!-- Core -->
+<rect x="430" y="330" width="240" height="120" class="core"/>
+<text x="470" y="380" class="text">mocka-runtime</text>
+<text x="455" y="405" class="text">Civilization Kernel</text>
+
+<!-- MoCKA -->
+<rect x="430" y="170" width="240" height="90" class="box"/>
+<text x="505" y="215" class="text">MoCKA</text>
+
+<!-- Knowledge Gate -->
+<rect x="120" y="330" width="240" height="90" class="box"/>
+<text x="155" y="380" class="text">MoCKA-KNOWLEDGE-GATE</text>
+
+<!-- Civilization -->
+<rect x="800" y="330" width="240" height="90" class="box"/>
+<text x="860" y="380" class="text">mocka-civilization</text>
+
+<!-- Transparency -->
+<rect x="430" y="560" width="240" height="90" class="box"/>
+<text x="480" y="610" class="text">mocka-transparency</text>
+
+<!-- External Brain -->
+<rect x="120" y="560" width="240" height="90" class="box"/>
+<text x="165" y="610" class="text">mocka-external-brain</text>
+
+<!-- Core Private -->
+<rect x="800" y="560" width="240" height="90" class="box"/>
+<text x="860" y="610" class="text">mocka-core-private</text>
+
+<!-- Lines -->
+<line x1="550" y1="260" x2="550" y2="330" class="line"/>
+<line x1="360" y1="375" x2="430" y2="375" class="line"/>
+<line x1="670" y1="375" x2="800" y2="375" class="line"/>
+<line x1="550" y1="450" x2="550" y2="560" class="line"/>
+<line x1="360" y1="610" x2="430" y2="450" class="line"/>
+<line x1="670" y1="450" x2="800" y2="610" class="line"/>
+
+</svg>
+
+

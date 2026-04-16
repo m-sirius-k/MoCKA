@@ -1,0 +1,14 @@
+digraph mocka_time_tree {
+rankdir=LR;
+
+main [shape=box];
+
+main -> branch_1773477049;
+main -> branch_1773477168;
+main -> branch_1773477780;
+
+branch_1773477049 [shape=ellipse];
+branch_1773477168 [shape=ellipse];
+branch_1773477780 [shape=ellipse];
+
+}

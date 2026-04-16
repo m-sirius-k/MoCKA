@@ -1,0 +1,2 @@
+﻿cd C:\Users\sirok\MoCKA
+.\tools\kpa_update_sot_auto.ps1 -TargetPath "src\mocka_policy.py"

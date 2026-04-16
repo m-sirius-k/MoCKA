@@ -1,0 +1,22 @@
+﻿{
+  "node1": {
+    "role": "central_brain",
+    "functions": [
+      "decision",
+      "learning",
+      "knowledge",
+      "planning",
+      "goal_generation",
+      "external_input",
+      "llm_reasoning"
+    ]
+  },
+  "node2": {
+    "role": "external_agent",
+    "functions": [
+      "execution",
+      "signal_generation",
+      "communication"
+    ]
+  }
+}

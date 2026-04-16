@@ -1,0 +1,40 @@
+{
+  "history": [
+    {
+      "goal": "prevent_incident",
+      "ts": "2026-03-20T13:08:24.820470"
+    },
+    {
+      "goal": "prevent_incident",
+      "ts": "2026-03-20T13:09:10.573178"
+    },
+    {
+      "goal": "prevent_incident",
+      "ts": "2026-03-20T13:09:10.944964",
+      "score": 1
+    },
+    {
+      "goal": "prevent_incident",
+      "ts": "2026-03-20T13:10:57.271986",
+      "mutation": true,
+      "score": 1
+    },
+    {
+      "goal": "optimize_execution",
+      "ts": "2026-03-20T13:14:21.374279",
+      "mutation": true,
+      "score": 1
+    },
+    {
+      "goal": "optimize_execution",
+      "ts": "2026-03-20T13:14:46.275004",
+      "mutation": true,
+      "score": -2
+    },
+    {
+      "goal": "prevent_incident",
+      "ts": "2026-03-20T13:23:24.206410",
+      "score": 1
+    }
+  ]
+}

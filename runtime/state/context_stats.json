@@ -1,0 +1,24 @@
+{
+  "error_recovery": [
+    {
+      "action": "FIX_OPT2",
+      "count": 12,
+      "ratio": 0.706
+    },
+    {
+      "action": "FIX",
+      "count": 2,
+      "ratio": 0.118
+    },
+    {
+      "action": "FIX_OPT",
+      "count": 2,
+      "ratio": 0.118
+    },
+    {
+      "action": "ANALYZE",
+      "count": 1,
+      "ratio": 0.059
+    }
+  ]
+}

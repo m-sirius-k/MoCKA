@@ -1,0 +1,34 @@
+【MoCKA 共有指令件名: Perplexity】
+以下の内容について、最新情報を踏まえてリサーチしてください。
+
+---
+【MoCKA 共有指令件名: Copilot】
+以下の内容を確認し、最適なアドバイスをお願いします。
+
+---
+# manifest.json を権限強化版で上書き
+@"
+{
+  "manifest_version": 3,
+  "name": "MoCKA Bridge",
+  "version": "1.3.1",
+  "description": "MoCKA Civilization OS -> AI Interface Connector",
+  "permissions": ["activeTab", "scripting", "clipboardRead"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "https://www.perplexity.ai/*"
+      ],
+      "js": ["content_script.js"]
+    }
+  ]
+}
+"@ | Out-File -FilePath "manifest.json" -Encoding utf8 -Force
+
+Write-Host "[SUCCESS] manifest.json updated (v1.3.1)." -ForegroundColor Green

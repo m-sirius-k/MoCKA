@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"><title>MoCKA Command Center</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background:#111827; color:#e5e7eb; font-family:monospace; padding:24px; }
+
+        h1 { font-size:18px; font-weight:700; color:#ffffff; margin-bottom:4px; letter-spacing:2px; }
+        .subtitle { font-size:11px; color:#6b7280; margin-bottom:24px; letter-spacing:1px; }
+
+        .block { border:1px solid #1f2937; padding:16px; margin-bottom:16px; background:#0d1117; border-radius:6px; }
+        h3 { color:#9ca3af; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #1f2937; padding-bottom:8px; }
+
+        button { background:transparent; color:#e5e7eb; border:1px solid #4b5563; padding:10px 18px; cursor:pointer; margin:4px; font-family:monospace; font-size:13px; border-radius:4px; transition:0.2s; }
+        button:hover { border-color:#60a5fa; color:#60a5fa; }
+
+        .active-a { background:#005700 !important; border-color:#008a00 !important; color:#ffffff !important; box-shadow:0 0 8px #008a00; }
+        .active-b { background:#1e3a5f !important; border-color:#60a5fa !important; color:#ffffff !important; box-shadow:0 0 8px #60a5fa; }
+        .active-t { background:#1f2937 !important; border-color:#a855f7 !important; color:#a855f7 !important; }
+
+        textarea {
+            width:100%; height:120px;
+            background:#020617; color:#e5e7eb;
+            border:1px solid #374151; border-radius:4px;
+            font-family:monospace; font-size:13px;
+            padding:12px; resize:vertical; outline:none;
+            transition:0.2s;
+        }
+        textarea:focus { border-color:#60a5fa; box-shadow:0 0 6px rgba(96,165,250,0.3); }
+        .input-hint { font-size:11px; color:#4b5563; margin-top:6px; }
+
+        #exec {
+            width:100%; padding:18px;
+            border:2px solid #374151; color:#4b5563;
+            background:#0d1117; font-size:16px; font-weight:700;
+            letter-spacing:2px; border-radius:6px;
+            transition:0.3s; cursor:not-allowed; margin-bottom:16px;
+        }
+        #exec.ready {
+            border-color:#FF8000; background:#1a0f00; color:#FF8000;
+            cursor:pointer; box-shadow:0 0 16px rgba(255,128,0,0.4);
+        }
+        #exec.ready:hover { box-shadow:0 0 24px rgba(255,128,0,0.6); }
+
+        .history-container { max-height:280px; overflow-y:auto; }
+        table { width:100%; border-collapse:collapse; font-size:12px; }
+        th { background:#1f2937; color:#9ca3af; padding:10px 12px; text-align:left; font-weight:700; letter-spacing:1px; font-size:11px; position:sticky; top:0; }
+        td { border-bottom:1px solid #1f2937; padding:8px 12px; color:#d1d5db; }
+        td:first-child { color:#6b7280; font-size:11px; }
+        tr:hover td { background:#1f2937; }
+
+        .opt-group { display:none; margin-top:12px; padding:12px; border:1px dashed #374151; border-radius:4px; }
+        .tag-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+        .status-bar { font-size:11px; color:#6b7280; text-align:center; margin-bottom:8px; letter-spacing:1px; }
+
+        ::-webkit-scrollbar { width:4px; }
+        ::-webkit-scrollbar-track { background:#0d1117; }
+        ::-webkit-scrollbar-thumb { background:#374151; border-radius:2px; }
+    </style>
+</head>
+<body>
+    <h1>MoCKA COMMAND CENTER</h1>
+    <p class="subtitle">Model of Cybernetic Knowledge Architecture — v1.0.0</p>
+
+    <div class="block">
+        <h3>1. Select Category</h3>
+        <button id="btnA" onclick="setCat('A', this)">A: 保存 (Storage)</button>
+        <button id="btnB" onclick="setCat('B', this)">B: 共有 (Broadcast)</button>
+    </div>
+
+    <div id="opt-A" class="opt-group">
+        <h3>Target: Storage</h3>
+        <div class="tag-row">
+            <button class="s-btn" onclick="toggleT('infield', this)">infield</button>
+            <button class="s-btn" onclick="toggleT('outfield', this)">outfield</button>
+            <button class="s-btn" onclick="toggleT('公文書', this)">公文書</button>
+            <button class="s-btn" onclick="toggleT('インシデント', this)">インシデント</button>
+            <button class="s-btn" onclick="toggleT('クレーム', this)">クレーム</button>
+            <button class="s-btn" onclick="toggleT('議事録', this)">議事録</button>
+        </div>
+    </div>
+
+    <div id="opt-B" class="opt-group">
+        <h3>Target: AI Agents</h3>
+        <div class="tag-row">
+            <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員一括</button>
+            <button class="s-btn" onclick="toggleT('ChatGPT', this)">ChatGPT</button>
+            <button class="s-btn" onclick="toggleT('Gemini', this)">Gemini</button>
+            <button class="s-btn" onclick="toggleT('Claude', this)">Claude</button>
+            <button class="s-btn" onclick="toggleT('Perplexity', this)">Perplexity</button>
+            <button class="s-btn" onclick="toggleT('Copilot', this)">Copilot</button>
+        </div>
+    </div>
+
+    <div class="block">
+        <h3>2. Input — What to Record</h3>
+        <div style="display:grid;grid-template-columns:1fr 160px;gap:8px;margin-bottom:8px;">
+            <input id="title" type="text" placeholder="タイトル（例：Playwright調査レポート）" style="background:#020617;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;" onfocus="this.style.borderColor='#60a5fa'" onblur="this.style.borderColor='#374151'">
+            <input id="doc-date" type="text" style="background:#020617;color:#6b7280;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:12px;outline:none;" readonly>
+        </div>
+        <textarea id="memo" placeholder="記録内容を入力してください...&#10;Why（目的）· What（内容）· How（方法）"></textarea>
+        <div class="input-hint">5W1H で記録すると検索性が上がります</div>
+    </div>
+
+    <div class="status-bar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
+    <button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
+
+    <div class="block">
+        <h3>Mission Log — History</h3>
+        <div class="history-container">
+            <table>
+                <thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead>
+                <tbody id="history-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let state = {c:null, targets:[]};
+        window.onload = () => { updateHistory(); };
+            document.getElementById('doc-date').value = new Date().toLocaleString('ja-JP');
+
+        function setCat(c, el) {
+            state.c = c; state.targets = [];
+            document.querySelectorAll('#btnA,#btnB').forEach(b => b.classList.remove('active-a','active-b'));
+            document.querySelectorAll('.s-btn').forEach(b => b.classList.remove('active-t'));
+            el.classList.add(c==='A'?'active-a':'active-b');
+            document.getElementById('opt-A').style.display = (c==='A')?'block':'none';
+            document.getElementById('opt-B').style.display = (c==='B')?'block':'none';
+            updateBtn();
+        }
+
+        function toggleT(t, el) {
+            el.classList.toggle('active-t');
+            if(state.targets.includes(t)) state.targets = state.targets.filter(x=>x!==t);
+            else state.targets.push(t);
+            updateBtn();
+        }
+
+        function toggleAll(el) {
+            el.classList.toggle('active-t');
+            const ais = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
+            const on = el.classList.contains('active-t');
+            state.targets = on ? [...ais] : [];
+            document.querySelectorAll('#opt-B .s-btn').forEach(b => {
+                if(on) b.classList.add('active-t'); else b.classList.remove('active-t');
+            });
+            updateBtn();
+        }
+
+        function updateBtn() {
+            const b = document.getElementById('exec');
+            const sb = document.getElementById('status-bar');
+            if(state.targets.length > 0) {
+                b.classList.add('ready');
+                b.innerText = "▶ LAUNCH: " + state.targets.join(' · ');
+                sb.style.color = '#FF8000';
+                sb.innerText = `READY — ${state.c} → ${state.targets.join(', ')}`;
+            } else {
+                b.classList.remove('ready');
+                b.innerText = "SELECT MISSION TARGETS";
+                sb.style.color = '#6b7280';
+                sb.innerText = '— SELECT CATEGORY AND TARGET —';
+            }
+        }
+
+        async function fire() {
+            if(!state.c || state.targets.length===0) return;
+            const btn = document.getElementById('exec');
+            const title = document.getElementById('title').value.trim();
+            const memo = (title ? '【' + title + '】\n' : '') + document.getElementById('memo').value.trim();
+            btn.innerText = "⟳ DISPATCHING...";
+            btn.classList.remove('ready');
+            for(const t of state.targets) {
+                await fetch('/ask', {
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({c:state.c, o:t, memo:memo})
+                });
+            }
+            btn.innerText = "✓ MISSION COMPLETE";
+            document.getElementById('status-bar').style.color = '#22c55e';
+            document.getElementById('status-bar').innerText = 'SEALED INTO LEDGER';
+            await updateHistory();
+            setTimeout(() => {
+                updateBtn();
+                document.getElementById('memo').value = '';
+            }, 2500);
+        }
+
+        async function updateHistory() {
+            try {
+                const res = await fetch('/get_history');
+                const data = await res.json();
+                const body = document.getElementById('history-body');
+                body.innerHTML = "";
+                data.reverse().slice(0,50).forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${row.when||''}</td><td>${row.target_class||''}</td><td>${row.short_summary||row.free_note||''}</td>`;
+                    body.appendChild(tr);
+                });
+            } catch(e) { console.error(e); }
+        }
+    </script>
+</body>
+</html>
+

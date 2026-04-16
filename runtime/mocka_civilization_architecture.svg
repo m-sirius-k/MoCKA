@@ -1,0 +1,50 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700">
+
+<style>
+.box { fill:#f4f6f8; stroke:#333; stroke-width:2; }
+.title { font-size:18px; font-family:Arial; font-weight:bold; }
+.text { font-size:14px; font-family:Arial; }
+.arrow { stroke:#333; stroke-width:2; marker-end:url(#arrow); }
+</style>
+
+<defs>
+<marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+<path d="M0,0 L8,3 L0,6 Z" fill="#333"/>
+</marker>
+</defs>
+
+<text x="280" y="40" class="title">MoCKA Civilization Runtime Architecture</text>
+
+<!-- Runtime -->
+<rect x="350" y="70" width="200" height="60" class="box"/>
+<text x="385" y="105" class="text">Runtime Engine</text>
+
+<!-- Observatory -->
+<rect x="350" y="160" width="200" height="60" class="box"/>
+<text x="375" y="195" class="text">Observatory Engine</text>
+
+<!-- Knowledge Core -->
+<rect x="330" y="260" width="240" height="100" class="box"/>
+<text x="375" y="285" class="text">Knowledge Core</text>
+<text x="350" y="305" class="text">Research</text>
+<text x="350" y="325" class="text">Knowledge Graph</text>
+<text x="350" y="345" class="text">Theory / Philosophy</text>
+<text x="350" y="365" class="text">Culture / Institution</text>
+
+<!-- Storage -->
+<rect x="350" y="410" width="200" height="60" class="box"/>
+<text x="395" y="445" class="text">Storage Engine</text>
+
+<!-- Audit -->
+<rect x="350" y="500" width="200" height="60" class="box"/>
+<text x="405" y="535" class="text">Audit Engine</text>
+
+<!-- Arrows -->
+<line x1="450" y1="130" x2="450" y2="160" class="arrow"/>
+<line x1="450" y1="220" x2="450" y2="260" class="arrow"/>
+<line x1="450" y1="360" x2="450" y2="410" class="arrow"/>
+<line x1="450" y1="470" x2="450" y2="500" class="arrow"/>
+
+</svg>
+
+

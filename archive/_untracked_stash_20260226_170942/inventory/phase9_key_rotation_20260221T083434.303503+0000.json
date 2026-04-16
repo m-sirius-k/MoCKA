@@ -1,0 +1,17 @@
+{
+  "status": "OK",
+  "event_summary": {
+    "event_type": "key_rotation",
+    "schema_version": "v1",
+    "event_id": "48fa14e4a4e2f54ee995a8781c5b4f5c05669ce6e40426bcc9ee6c84c5bc8c5d",
+    "prev_chain_hash": "e0630325c98603503ac6f2fee954f150afc55b42294f8b15a2130bae62f6f511",
+    "chain_hash": "08afc59c8e975fbcad69af161c2057eab41f48a0444b0bc6aa4acf97e0895813"
+  },
+  "event_content_minimal": {
+    "old_key_id": "key_20260221T073430Z",
+    "new_key_id": "key_20260221T073528Z",
+    "rotation_chain_hash": "bc027b50ae4b193d2f175ef23d46f9931ef740c691052c8040b0db846fa30a2c",
+    "activated_at": "2026-02-21T07:35:28Z"
+  },
+  "created_at_utc": "2026-02-21T08:34:34Z"
+}

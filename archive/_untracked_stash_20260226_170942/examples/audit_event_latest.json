@@ -1,0 +1,17 @@
+{
+  "run_id": "20260220_093554",
+  "ts_utc": "2026-02-20T09:35:54.351926Z",
+  "actor": "private-core",
+  "decision": "emit_audit_event",
+  "policy": {
+    "version": "phase3-minimal",
+    "result": "allow"
+  },
+  "artifacts": [
+    {
+      "kind": "text",
+      "path": "outbox/artifacts/hello_20260220_093554.txt",
+      "sha256": "fc04a2766820c85707e7411f48993a40a4de5e3b836da31cd042a955dc507ec8"
+    }
+  ]
+}

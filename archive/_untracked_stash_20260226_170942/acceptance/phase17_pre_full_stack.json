@@ -1,0 +1,22 @@
+{
+  "started_utc": "2026-02-25T07:23:42.839490Z",
+  "overall_status": "PASS",
+  "checks": {
+    "struct_check": {
+      "status": "PASS"
+    },
+    "dict_check": {
+      "status": "PASS"
+    },
+    "signature_check": {
+      "status": "PASS",
+      "signed_bytes_sha256": "5ebb5b87dcc8707491653ea0f84e537726b8e068aeb91f8375a768e847cb9540",
+      "signature_sha256": "40bbf90a56e339ab7677b7ad6ee1fadfd94053bebeb44ab84d4c5ed013c2a624"
+    },
+    "authoritative_check": {
+      "status": "PASS",
+      "pack_zip": "C:\\Users\\sirok\\MoCKA\\outbox\\mocka_phase16_authoritative_pack.zip",
+      "items_checked": 7
+    }
+  }
+}

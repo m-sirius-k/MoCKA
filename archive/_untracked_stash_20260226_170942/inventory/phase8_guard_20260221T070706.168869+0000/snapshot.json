@@ -1,0 +1,32 @@
+{
+  "ts_utc": "2026-02-21T07:07:06.136305+00:00",
+  "python_executable": "C:\\Users\\sirok\\MoCKA\\.venv\\Scripts\\python.exe",
+  "lockfiles": {
+    "source_of_truth.lock.json": {
+      "path": "C:\\Users\\sirok\\MoCKA\\src\\source_of_truth.lock.json",
+      "sha256": "76ccacac60e3843edb1db2cbba153aa36fefd80cefd9f6afcd5c5879585550b1",
+      "sig_path": "C:\\Users\\sirok\\MoCKA\\src\\source_of_truth.lock.json.sig",
+      "sig_present": true
+    },
+    "execution.lock.json": {
+      "path": "C:\\Users\\sirok\\MoCKA\\execution.lock.json",
+      "sha256": "5f8a9ac56818c3054182fed62f9f5e2e017acba936e37ae77e42adcaab08dd63",
+      "sig_path": "C:\\Users\\sirok\\MoCKA\\execution.lock.json.sig",
+      "sig_present": true
+    }
+  },
+  "lock_fields": {
+    "source_of_truth.lock.json": {
+      "locked_at": "2026-02-21T06:41:58.0566968Z",
+      "sha256_field": null
+    },
+    "execution.lock.json": {
+      "fixed_at": "2026-02-21T06:41:58.0566968Z",
+      "sha256_field": null
+    }
+  },
+  "signature": {
+    "public_key_path": "C:\\Users\\sirok\\MoCKA\\audit\\ed25519\\verify_pack\\ed25519_public.key",
+    "verified": true
+  }
+}

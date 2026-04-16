@@ -1,0 +1,24 @@
+{
+  "civilization_culture": [
+    {
+      "strategy": "R705",
+      "type": "successful_research",
+      "knowledge_nodes": [
+        {
+          "id": "R003",
+          "type": "strategy",
+          "attempts": 4,
+          "success": 1
+        },
+        {
+          "id": "R705",
+          "type": "strategy",
+          "attempts": 0,
+          "success": 0
+        }
+      ],
+      "timestamp": "2026-03-15T03:27:22.308510"
+    }
+  ],
+  "last_update": "2026-03-15T03:27:22.308672"
+}

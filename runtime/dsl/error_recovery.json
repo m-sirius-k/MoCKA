@@ -1,0 +1,7 @@
+﻿{
+  "context": "error_recovery",
+  "edges": [
+    {"from": "FIX", "to": "FIX_OPT", "weight": 1},
+    {"from": "FIX", "to": "FIX_SAFE", "weight": 10}
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "error_recovery": [
+    {
+      "action": "FIX",
+      "score": 4.0
+    },
+    {
+      "action": "FIX_OPT2",
+      "score": 4.0
+    },
+    {
+      "action": "FIX_OPT",
+      "score": 3.0
+    },
+    {
+      "action": "ANALYZE",
+      "score": -1.0
+    }
+  ]
+}

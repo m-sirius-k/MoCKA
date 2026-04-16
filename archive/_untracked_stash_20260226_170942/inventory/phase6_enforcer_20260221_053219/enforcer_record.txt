@@ -1,0 +1,8 @@
+﻿ts_utc=20260221_053219
+target=C:\Users\sirok\MoCKA\inventory\phase6_testfiles\dummy_target.txt
+new_content=C:\Users\sirok\MoCKA\inventory\phase6_testfiles\dummy_new.txt
+before_sha256=D335237D9F231218FEC5AC2C9B6809724941BB9E243667B50D4538ED81390AAE
+after_sha256=D1888DC2EBBBADCFAD34F814772B8BE0E7159DCE742EF3853CA7AF7DCF912731
+before_bytes=10
+after_bytes=15
+diff=C:\Users\sirok\MoCKA\inventory\phase6_enforcer_20260221_053219\diff.patch

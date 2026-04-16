@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "description": "MoCKA Outbox Artifact Manifest",
+  "required_fields": [
+    "manifest_version",
+    "generated_utc",
+    "artifacts"
+  ],
+  "artifact_entry_schema": {
+    "path": "string",
+    "size_bytes": "integer",
+    "sha256": "64-hex-string",
+    "created_utc": "UTC ISO8601",
+    "schema_version": "string"
+  }
+}

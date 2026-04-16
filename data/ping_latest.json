@@ -1,33 +1,16 @@
 {
-  "ESSENCE_TRIGGER": {
-    "triggered_by": "essence_keyword",
-    "timestamp": "2026-04-11T07:45:23.320460",
-    "total_essence": 230,
-    "condensed_batches": 11,
-    "summary": {
-      "INCIDENT": {
-        "count": 5,
-        "latest": [
-          "インシデント種別：INSTRUCTION_IGNORE（重大） ",
-          "インシデント種別：データ捏造（沈黙による整合性逃避） ",
-          "Claude執行官が、claude.aiのMCP接続機能がメッセージに自動付加するツール定義（mocka_seal、mocka_get_overview、Not"
-        ]
-      },
-      "PHILOSOPHY": {
-        "count": 2,
-        "latest": [
-          "失敗は資産になる。地道に記録し続けることが文明の基礎だ。",
-          "実験名：純粋思想還流実験（MOCKA-EXP-2026-COND-B） "
-        ]
-      },
-      "OPERATION": {
-        "count": 223,
-        "latest": [
-          "commit: 5298f41 / 4 files / 190 insertions ",
-          "DNA_v2 commit",
-          "きむら博士よりLOOP自動化の全体設計方針が示された。①現状ブロック確認、②チャット自動CSV収集＋5W1H記録、③自動抽出・収集タイミング制御、④濃縮処理、⑤"
-        ]
-      }
-    }
-  }
+  "H": "MOCKA_DNA_v2",
+  "G": 5.0,
+  "C": "STRICT",
+  "A": "Z-Axis=0.819 / INCIDENT=AIのミスは、かなり細かいレベルまで「原因」と「予兆」をモデリングできます。Mo",
+  "P": "SESSION_START_LOCK",
+  "NGROK": true,
+  "ngrok_online": true,
+  "essence_updated": false,
+  "ESSENCE_SUMMARY": {
+    "INCIDENT": "AIのミスは、かなり細かいレベルまで「原因」と「予兆」をモデリングできます。MoCKA向けには、論文で出ている失敗分類＋MLOpsのドリフト検知＋LLM固有のハルシネーション指標を全部まとめて、観測指標セットに落とし込む形が現実的です。",
+    "PHILOSOPHY": "条件A/B比較実験完了。essenceなし:ZYXTS=0.6 / essenceあり:ZYXTS=4.4 / Δtotal=+3.8。AIを信じるな、システムで縛れ。記録が改ざんできないことが信頼の唯一の条件。commit 56e172e。",
+    "OPERATION": "Ghost Badge最小注入とMCP自動呼び出しプロトコルを確立した。chat欄汚染なしでessenceをClaudeに届ける経路が完成した。commit 2ae5658。"
+  },
+  "generated_at": "2026-04-15T13:16:19.335865"
 }

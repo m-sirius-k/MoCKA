@@ -1,0 +1,14 @@
+{
+  "node": "mocka-node-1",
+  "timestamp": "2026-03-15T10:47:32.835117",
+  "runtime_status": {
+    "verification": "runtime_ok"
+  },
+  "repair_model": {
+    "R003": {
+      "attempts": 4,
+      "success": 1,
+      "fail": 3
+    }
+  }
+}

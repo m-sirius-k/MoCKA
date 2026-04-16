@@ -1,0 +1,14 @@
+[
+  {
+    "base_action": "FIX",
+    "new_action": "FIX_OPT",
+    "context": "error_recovery",
+    "score": 4.0
+  },
+  {
+    "base_action": "FIX_OPT",
+    "new_action": "FIX_OPT2",
+    "context": "error_recovery",
+    "score": 3.0
+  }
+]

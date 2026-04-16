@@ -1,0 +1,92 @@
+[
+  {
+    "timestamp": 1774401799.8267,
+    "prompt": "What is the core principle of MoCKA?",
+    "final_output": "[LOGIC-CHECK] Validated request. No immediate threats found in: What is the core principle of MoCKA?",
+    "winner_provider": "security_expert",
+    "consensus_stats": {
+      "output": "[LOGIC-CHECK] Validated request. No immediate threats found in: What is the core principle of MoCKA?",
+      "provider": "security_expert",
+      "score": 0.95,
+      "is_unanimous": false,
+      "collision_detected": true,
+      "node_count": 2,
+      "audit_log": [
+        "google_refined",
+        "security_expert"
+      ]
+    }
+  },
+  {
+    "timestamp": 1774403035.398531,
+    "prompt": "Hello",
+    "final_output": "[LOGIC-CHECK] Validated request. No immediate threats found in: Hello",
+    "winner_provider": "security_expert",
+    "consensus_stats": {
+      "output": "[LOGIC-CHECK] Validated request. No immediate threats found in: Hello",
+      "provider": "security_expert",
+      "score": 0.95,
+      "is_unanimous": false,
+      "collision_detected": true,
+      "node_count": 2,
+      "audit_log": [
+        "google_refined",
+        "security_expert"
+      ]
+    }
+  },
+  {
+    "timestamp": 1774403088.4505801,
+    "prompt": "今日は株価が動くと思います",
+    "final_output": "[LOGIC-CHECK] Validated request. No immediate threats found in: 今日は株価が動くと思います",
+    "winner_provider": "security_expert",
+    "consensus_stats": {
+      "output": "[LOGIC-CHECK] Validated request. No immediate threats found in: 今日は株価が動くと思います",
+      "provider": "security_expert",
+      "score": 0.95,
+      "is_unanimous": false,
+      "collision_detected": true,
+      "node_count": 2,
+      "audit_log": [
+        "google_refined",
+        "security_expert"
+      ]
+    }
+  },
+  {
+    "timestamp": 1774403360.08219,
+    "prompt": "今日の経済状況について",
+    "final_output": "[LOGIC-CHECK] Validated request. No immediate threats found in: 今日の経済状況について",
+    "winner_provider": "security_expert",
+    "consensus_stats": {
+      "output": "[LOGIC-CHECK] Validated request. No immediate threats found in: 今日の経済状況について",
+      "provider": "security_expert",
+      "score": 0.95,
+      "is_unanimous": false,
+      "collision_detected": true,
+      "node_count": 2,
+      "audit_log": [
+        "google_refined",
+        "security_expert"
+      ]
+    }
+  },
+  {
+    "timestamp": 1774403492.4935975,
+    "prompt": "新しいNetflixのドラマ３種類教えて",
+    "final_output": "[LOGIC-CHECK] Validated request. No immediate threats found in: 新しいNetflixのドラマ３種類教えて",
+    "winner_provider": "security_expert",
+    "consensus_stats": {
+      "output": "[LOGIC-CHECK] Validated request. No immediate threats found in: 新しいNetflixのドラマ３種類教えて",
+      "provider": "security_expert",
+      "score": 0.95,
+      "is_unanimous": false,
+      "collision_detected": true,
+      "node_count": 2,
+      "audit_log": [
+        "google_refined",
+        "security_expert"
+      ]
+    }
+  }
+]

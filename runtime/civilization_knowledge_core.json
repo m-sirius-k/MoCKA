@@ -1,0 +1,88 @@
+{
+  "civilization_knowledge_core": {
+    "time": "2026-03-15T04:17:15.805321",
+    "modules": {
+      "civilization_research_lab_log.json": [
+        {
+          "timestamp": 1773542927,
+          "base_strategy": "R705",
+          "success": true
+        }
+      ],
+      "civilization_knowledge_graph.json": {
+        "nodes": [
+          {
+            "id": "R003",
+            "type": "strategy",
+            "attempts": 4,
+            "success": 1
+          },
+          {
+            "id": "R705",
+            "type": "strategy",
+            "attempts": 0,
+            "success": 0
+          }
+        ],
+        "edges": [
+          {
+            "from": "R003",
+            "to": "R705",
+            "relation": "mutation"
+          },
+          {
+            "from": "R705",
+            "to": "lab",
+            "relation": "experiment",
+            "success": true
+          }
+        ]
+      },
+      "civilization_theory.json": {
+        "dominant_strategy": "R705",
+        "confidence": 1.0
+      },
+      "civilization_philosophy.json": {
+        "timestamp": 1773543264,
+        "dominant_strategy": "R705",
+        "confidence": 1.0,
+        "civilization_principle": "exploit_successful_strategy"
+      },
+      "civilization_culture.json": {
+        "civilization_culture": [
+          {
+            "strategy": "R705",
+            "type": "successful_research",
+            "knowledge_nodes": [
+              {
+                "id": "R003",
+                "type": "strategy",
+                "attempts": 4,
+                "success": 1
+              },
+              {
+                "id": "R705",
+                "type": "strategy",
+                "attempts": 0,
+                "success": 0
+              }
+            ],
+            "timestamp": "2026-03-15T03:27:22.308510"
+          }
+        ],
+        "last_update": "2026-03-15T03:27:22.308672"
+      },
+      "civilization_institutions.json": {
+        "institutions": [
+          {
+            "strategy": "R705",
+            "rule": "prefer_successful_strategy",
+            "source": "culture",
+            "created": "2026-03-15T03:28:41.273529"
+          }
+        ],
+        "created": "2026-03-15T03:28:41.273383"
+      }
+    }
+  }
+}

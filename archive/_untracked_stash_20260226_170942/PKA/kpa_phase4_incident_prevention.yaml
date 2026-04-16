@@ -1,0 +1,105 @@
+﻿---
+kpa_id: KPA-PHASE4-INCIDENT-PREVENTION
+version: "1.1"
+date: "2026-02-21"
+owner: NSJP_Kimura
+status: active
+
+scope:
+  applies_to:
+    - "all ai assistants"
+    - "all structure changes"
+    - "all command proposals"
+  systems:
+    - "MoCKA"
+    - "mocka-core-private"
+    - "ops_mocka"
+    - "ops"
+    - "docs"
+
+incident_record:
+  title: "phase4 structure drift incident"
+  classification: "major"
+  cause:
+    - "insufficient observation"
+    - "hypothesis-first operation"
+    - "duplicate files and path ambiguity"
+  impact:
+    - "phase4 delay"
+    - "trust degradation"
+  principle:
+    - "reproducibility is mandatory"
+
+mandatory_protocol:
+  P0_no_mixed_text:
+    rule: "never mix explanations with executable commands"
+    enforce: "only code blocks; no prompts; no error logs"
+  P1_observe_first:
+    rule: "observe before proposing changes"
+    required_commands:
+      - "cd <target>"
+      - "pwd"
+      - "Get-ChildItem -Recurse -Filter *.py"
+      - "Get-ChildItem -Recurse -Filter *.ps1"
+  P2_inventory_then_diff:
+    rule: "write inventory outputs to docs before any edits"
+    required_artifacts:
+      - "docs/inventory_YYYYMMDD_HHMMSS/00_paths.txt"
+      - "docs/inventory_YYYYMMDD_HHMMSS/01_exists.txt"
+      - "docs/inventory_YYYYMMDD_HHMMSS/02_duplicates.txt"
+  P3_backup_before_edit:
+    rule: "backup before any file edit"
+    required_pattern:
+      - "Copy-Item <file> <file>.bak_YYYYMMDD_HHMMSS -Force"
+  P4_quarantine_for_new_work:
+    rule: "new or risky changes must run in quarantine first"
+    required_path_pattern:
+      - "test/YYYYMMDD_HHMMSS/"
+      - "quarantine/YYYYMMDD_HHMMSS/"
+  P5_integrity_audit_log:
+    rule: "create integrity log before/after structure or path changes"
+    required_artifacts:
+      - "docs/integrity_YYYYMMDD_HHMMSS/00_paths.txt"
+      - "docs/integrity_YYYYMMDD_HHMMSS/01_exists.txt"
+      - "docs/integrity_YYYYMMDD_HHMMSS/02_imports.txt"
+      - "docs/integrity_YYYYMMDD_HHMMSS/03_hashes.txt"
+      - "docs/integrity_YYYYMMDD_HHMMSS/04_before_snapshot/"
+  P6_success_definition:
+    rule: "success requires reproducibility and rollback"
+    success_criteria:
+      - "same command re-runs with same outputs"
+      - "artifacts can be listed and verified"
+      - "rollback to .bak works within 1 minute"
+
+enforcement:
+  on_violation:
+    - "declare: KPA-VIOLATION-PHASE4"
+    - "stop work immediately"
+    - "rollback using latest .bak"
+    - "write incident note to PKA/incidents/INCIDENT_YYYYMMDD_HHMMSS.md"
+  authority:
+    - "NSJP_Kimura has final approval for structure and source-of-truth decisions"
+  default_policy:
+    - "no source-of-truth migration without explicit approval"
+
+checklist:
+  - id: C1
+    item: "pwd confirmed"
+  - id: C2
+    item: "inventory created under docs/"
+  - id: C3
+    item: "duplicates reviewed"
+  - id: C4
+    item: "backup created (.bak)"
+  - id: C5
+    item: "quarantine test executed (if applicable)"
+  - id: C6
+    item: "integrity log created"
+  - id: C7
+    item: "rerun reproducibility confirmed"
+  - id: C8
+    item: "rollback test confirmed"
+
+notes:
+  - "this KPA exists to prevent path ambiguity and duplicate-file drift"
+  - "reproducibility overrides speed"

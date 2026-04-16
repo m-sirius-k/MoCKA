@@ -1,0 +1,18 @@
+﻿{
+  "run_id": "REPLACE_ME",
+  "submitted_utc": "REPLACE_ME_UTC",
+  "environment": {
+    "os": "REPLACE_ME",
+    "python": "REPLACE_ME",
+    "machine": "REPLACE_ME"
+  },
+  "pack": {
+    "zip_name": "mocka_phase17pre_verify_pack_20260225_032005.zip",
+    "sha256": "A0221149435F18D7EEC1B63BB4E6059927DBF8F356FA8A1E17DF29CFAE115B78"
+  },
+  "result": {
+    "overall_status": "PASS",
+    "started_utc": "REPLACE_ME_UTC"
+  },
+  "notes": "REPLACE_ME"
+}

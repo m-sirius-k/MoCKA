@@ -1,0 +1,50 @@
+{
+  "economy": 0.6087468121229744,
+  "population": 0.023318868600000008,
+  "technology": 602.0539323362054,
+  "energy": 534.343168418275,
+  "conflict": 28.342496971693734,
+  "tech_tree": {
+    "agriculture": 10,
+    "industry": 8,
+    "energy_tech": 9,
+    "military": 12,
+    "science": 12
+  },
+  "resources": {
+    "food": 703.0174150909318,
+    "minerals": 4474.399743136187,
+    "energy_source": 2831.89463060646
+  },
+  "geography": {
+    "region": "river",
+    "distance_bias": 1.3091057639378068
+  },
+  "alliances": [
+    "branch_1773480740184",
+    "branch_1773480740170",
+    "branch_1773480740156",
+    "branch_1773536037380",
+    "branch_1773536029304",
+    "branch_1773536053581",
+    "branch_1773480740184",
+    "branch_1773536062101",
+    "branch_1773536114578"
+  ],
+  "space": [
+    "mars_colony",
+    "orbital_solar",
+    "asteroid_mining",
+    "asteroid_mining",
+    "mars_colony",
+    "orbital_solar",
+    "orbital_solar",
+    "mars_colony",
+    "asteroid_mining",
+    "orbital_solar",
+    "asteroid_mining",
+    "mars_colony",
+    "orbital_solar"
+  ],
+  "origin": "branch_1773536124294"
+}

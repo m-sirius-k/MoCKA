@@ -1,0 +1,41 @@
+{
+  "economy": 27.444089379901545,
+  "population": 1.815046569678023,
+  "technology": 1147.9847320380588,
+  "energy": 985.0503834627987,
+  "conflict": 7.040290826542494,
+  "tech_tree": {
+    "agriculture": 10,
+    "industry": 11,
+    "energy_tech": 13,
+    "military": 11,
+    "science": 11
+  },
+  "resources": {
+    "food": 202.08733778165814,
+    "minerals": 3435.0457466933167,
+    "energy_source": -349.58817387151976
+  },
+  "geography": {
+    "region": "mountain",
+    "distance_bias": 0.5136547651628479
+  },
+  "alliances": [
+    "branch_1773480740156",
+    "branch_1773480740170",
+    "branch_1773480740184",
+    "branch_1773484554893",
+    "branch_1773536045388",
+    "branch_1773536053566",
+    "branch_1773536179551"
+  ],
+  "space": [
+    "mars_colony",
+    "mars_colony",
+    "asteroid_mining",
+    "mars_colony",
+    "asteroid_mining",
+    "asteroid_mining"
+  ],
+  "origin": "branch_1773536096660"
+}
