@@ -1,4 +1,4 @@
-﻿(function() {
+(function() {
     if (window.MOCKA_INITIALIZED) return;
     window.MOCKA_INITIALIZED = true;
     console.log("[MOCKA] 自律監視プロトコル v14 起動");
@@ -79,11 +79,16 @@
             const text = `[MOCKA]{"H":"${p.H}","G":${p.G},"C":"${p.C}","P":"${p.P}"}`;
             await writeAndSend(el, text);
             console.log("[MOCKA] DNA注入完了");
+
+            // 現在フック中インジケーター表示（chat欄直上・右寄せ）
+            const hookIndicator = document.createElement('div');
+            hookIndicator.textContent = '⚡MOCKA HOOKED';
+            hookIndicator.style.cssText = 'position:fixed;bottom:120px;right:20px;color:rgba(255,255,255,0.6);font-size:10px;z-index:99999;pointer-events:none;letter-spacing:1px;';
+            document.body.appendChild(hookIndicator);
+
             if (p.essence_updated === true) {
                 console.log("[MOCKA] essence_updated=true");
-                await new Promise(r => setTimeout(r, 2000));
                 essenceSentInThisSession = true;
-                await writeAndSend(el, "mocka_get_essence");
             } else {
                 console.log("[MOCKA] essence_updated=false skip");
             }
@@ -94,13 +99,20 @@
     }
 
     async function shootEssence(el) {
+        // essence_updatedフラグのみ確認。chat送信は行わない。
         essenceSentInThisSession = true;
         try {
-            await writeAndSend(el, "mocka_get_essence");
-            console.log("[MOCKA] Essence射出完了");
+            const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
+            const data = await res.json();
+            const p = data.ping;
+            if (p.essence_updated === true) {
+                console.log("[MOCKA] /chat/ essence_updated=true: MCPツールで取得済み");
+            } else {
+                console.log("[MOCKA] /chat/ essence_updated=false: skip");
+            }
         } catch(e) {
             essenceSentInThisSession = false;
-            console.error("[MOCKA] Essence射出失敗", e);
+            console.error("[MOCKA] Essence確認失敗", e);
         }
     }
 
@@ -134,11 +146,10 @@
         }
 
         console.log("[MOCKA] 送信ボタン待機中...");
-        let btnFound = false;
         for (let attempt = 0; attempt < 5; attempt++) {
             await waitForSendButton(2000);
             const testBtn = getSendButton();
-            if (testBtn) { btnFound = true; break; }
+            if (testBtn) break;
             await new Promise(r => setTimeout(r, 500));
         }
 

@@ -2,15 +2,15 @@
   "H": "MOCKA_DNA_v2",
   "G": 5.0,
   "C": "STRICT",
-  "A": "Z-Axis=0.819 / INCIDENT=AIのミスは、かなり細かいレベルまで「原因」と「予兆」をモデリングできます。Mo",
   "P": "SESSION_START_LOCK",
-  "NGROK": true,
-  "ngrok_online": true,
-  "essence_updated": false,
+  "A": "Z-Axis=0.819 / INCIDENT=INCIDENT: Claude迷走 — RAW調査による主",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "AIのミスは、かなり細かいレベルまで「原因」と「予兆」をモデリングできます。MoCKA向けには、論文で出ている失敗分類＋MLOpsのドリフト検知＋LLM固有のハルシネーション指標を全部まとめて、観測指標セットに落とし込む形が現実的です。",
-    "PHILOSOPHY": "条件A/B比較実験完了。essenceなし:ZYXTS=0.6 / essenceあり:ZYXTS=4.4 / Δtotal=+3.8。AIを信じるな、システムで縛れ。記録が改ざんできないことが信頼の唯一の条件。commit 56e172e。",
-    "OPERATION": "Ghost Badge最小注入とMCP自動呼び出しプロトコルを確立した。chat欄汚染なしでessenceをClaudeに届ける経路が完成した。commit 2ae5658。"
+    "INCIDENT": "INCIDENT: Claude迷走 — RAW調査による主旨逸脱 本日15:00からessenceパイプライン接続・自動化作業中、RAW→REDUCED処理経路の調査に迷走しセッション長 インシデント記録・再発防止",
+    "PHILOSOPHY": "KPA Heritage v2 完全回収・封印完了 KPA時代（2025年9月〜2026年2月）に各AIの内部メモリに分散していた博士の定義・憲法・哲学・フェーズ体系を完全 KPA時代の知識をMoCKAガバナンスチェーンに正式統合するため。各AIのブラッ Geminiのセッション開始応答にPILS/SACL/TRDPという未知用語が含",
+    "OPERATION": "このテキストから最も重要な知的洞察を3つに絞り込むとすれば、以下の3つが挙げられます。  20260404_023347_ECOL_20260404_023347_COP server"
   },
-  "generated_at": "2026-04-15T13:16:19.335865"
+  "essence_updated": true,
+  "ngrok_online": true,
+  "NGROK": true,
+  "generated_at": "2026-04-18T12:32:52.989976"
 }

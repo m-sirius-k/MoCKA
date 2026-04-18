@@ -1,48 +1,42 @@
-﻿import json
-import urllib.request
+import json, sys
 from pathlib import Path
 from datetime import datetime
 
-# パスの定義
-ESSENCE_PATH  = Path("C:/Users/sirok/planningcaliber/workshop/needle_eye_project/experiments/lever_essence.json")
-PACKET_PATH   = Path("C:/Users/sirok/MoCKA/data/ping_latest.json")
+ESSENCE_PATH = Path("C:/Users/sirok/planningcaliber/workshop/needle_eye_project/experiments/lever_essence.json")
+PACKET_PATH  = Path("C:/Users/sirok/MoCKA/data/ping_latest.json")
 OVERVIEW_PATH = Path("C:/Users/sirok/MOCKA_OVERVIEW.json")
 
-# 固定ドメインの監視先
+import urllib.request
 NGROK_URL = "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp"
 
 def check_ngrok_status():
-    """ngrokトンネルが生きているか、実際に通信して確認する"""
     try:
-        headers = {
-            "ngrok-skip-browser-warning": "69420",
-            "User-Agent": "MoCKA-Monitor/2.0"
-        }
-        req = urllib.request.Request(NGROK_URL, headers=headers)
-        with urllib.request.urlopen(req, timeout=5) as response:
-            return response.getcode() == 200
-    except Exception as e:
-        print(f"[MONITOR ERROR] {e}")
+        req = urllib.request.Request(NGROK_URL, headers={"ngrok-skip-browser-warning":"69420","User-Agent":"MoCKA-Monitor/2.0"})
+        with urllib.request.urlopen(req, timeout=5) as r:
+            return r.getcode() == 200
+    except:
         return False
 
 def generate_ping():
-    # 各種ファイルの存在確認と読み込み
-    if not ESSENCE_PATH.exists():
-        print(f"[ERROR] ESSENCE_PATH not found: {ESSENCE_PATH}")
-        return None
-
     data    = json.loads(ESSENCE_PATH.read_text(encoding="utf-8"))
-    entries = data.get("essence", [])
+    entries = [e for e in data.get("essence", []) if isinstance(e, dict)]
+    today   = datetime.now().strftime("%Y-%m-%d")
 
-    incident   = next((e for e in reversed(entries) if isinstance(e, dict) and e.get("type") == "INCIDENT"),   None)
-    philosophy = next((e for e in reversed(entries) if isinstance(e, dict) and e.get("type") == "PHILOSOPHY"), None)
-    operation  = next((e for e in reversed(entries) if isinstance(e, dict) and e.get("type") == "OPERATION"),  None)
+    def latest(etype):
+        # 当日のbatch処理前（〜19:00）を優先
+        hits = [e for e in entries if e.get("type")==etype and e.get("timestamp","").startswith(today) and e.get("timestamp","")[11:16] < "19:00"]
+        if not hits:
+            hits = [e for e in entries if e.get("type")==etype and e.get("timestamp","").startswith(today)]
+        if not hits:
+            hits = [e for e in entries if e.get("type")==etype]
+        return max(hits, key=lambda e: e.get("timestamp","")) if hits else None
 
-    # OVERVIEWの読み込み
+    incident   = latest("INCIDENT")
+    philosophy = latest("PHILOSOPHY")
+    operation  = latest("OPERATION")
+
     overview = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8"))
     z_after  = overview.get("fluid_coordinate_theory", {}).get("current_values", {}).get("Z", 0.819)
-
-    # ngrokの死活監視を実行
     ngrok_online = check_ngrok_status()
 
     new_incident   = incident["text"]   if incident   else "none"
@@ -62,24 +56,22 @@ def generate_ping():
         "H": "MOCKA_DNA_v2",
         "G": 5.0,
         "C": "STRICT",
-        "A": f"Z-Axis={z_after} / INCIDENT={new_incident[:40]}",
         "P": "SESSION_START_LOCK",
-        "NGROK": ngrok_online,        # GUIの点灯スイッチ（本命）
-        "ngrok_online": ngrok_online, # 互換用
-        "essence_updated": essence_updated,
+        "A": "Z-Axis=" + str(z_after) + " / INCIDENT=" + new_incident[:30],
         "ESSENCE_SUMMARY": {
             "INCIDENT":   new_incident,
             "PHILOSOPHY": new_philosophy,
             "OPERATION":  new_operation,
         },
+        "essence_updated": essence_updated,
+        "ngrok_online": ngrok_online,
+        "NGROK": ngrok_online,
         "generated_at": datetime.now().isoformat()
     }
 
     PACKET_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(PACKET_PATH, "w", encoding="utf-8", newline="\n") as f:
-        json.dump(packet, f, ensure_ascii=False, indent=2)
-
-    print(f"[PING GENERATED] NGROK_STATUS={ngrok_online} | essence_updated={essence_updated}")
+    PACKET_PATH.write_text(json.dumps(packet, ensure_ascii=False, indent=2), encoding="utf-8")
+    print("[PING GENERATED] NGROK_STATUS=" + str(ngrok_online) + " | essence_updated=" + str(essence_updated))
     return packet
 
 if __name__ == "__main__":

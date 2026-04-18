@@ -1,6 +1,7 @@
-﻿"""
-mocka_mcp_server.py v1.2.0
+"""
+mocka_mcp_server.py v1.3.0
 MoCKA Memory Caliber -- MCP Server
+変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
 import json, csv, hashlib, datetime, re
@@ -87,10 +88,19 @@ def auto_log(tool_name, args, result_summary):
             w.writerow(row)
     except: pass
 
+def load_todo():
+    return json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
+
+def save_todo(data):
+    data["meta"]["updated"] = datetime.date.today().isoformat()
+    data["meta"]["updated_by"] = "Claude"
+    TODO_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
 TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_todo","description":"MOCKA_TODO.json を返す。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
     {"name":"mocka_update_todo","description":"TODO_IDのstatusを更新する","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string"},"note":{"type":"string"}},"required":["id","status"]}},
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
@@ -106,22 +116,53 @@ def execute_tool(name, args):
             result = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8-sig"))
             auto_log(name, args, "overview loaded")
             return json.dumps(result, ensure_ascii=False, indent=2)
+
         elif name == "mocka_get_essence":
             import urllib.request
             res = urllib.request.urlopen("http://127.0.0.1:5000/get_latest_dna")
             data = json.loads(res.read())
             return json.dumps(data.get("ping", {}).get("ESSENCE_SUMMARY", {}), ensure_ascii=False, indent=2)
+
         elif name == "mocka_get_todo":
             if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
-            result = json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
-            auto_log(name, args, f"todo loaded")
+            result = load_todo()
+            auto_log(name, args, "todo loaded")
             return json.dumps(result, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_add_todo":
+            if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
+            todo_id = args.get("id", "").strip()
+            title   = args.get("title", "").strip()
+            if not todo_id or not title:
+                return json.dumps({"error": "id and title are required"})
+            data = load_todo()
+            all_ids = [t.get("id") for t in data.get("todos", [])] + [t.get("id") for t in data.get("completed", [])]
+            if todo_id in all_ids:
+                return json.dumps({"error": f"{todo_id} already exists"})
+            new_todo = {
+                "id":              todo_id,
+                "title":           title,
+                "status":          args.get("status", "未着手"),
+                "priority":        args.get("priority", "中"),
+                "category":        args.get("category", ""),
+                "description":     args.get("description", ""),
+                "assigned_to":     args.get("assigned_to", "Claude"),
+                "note":            args.get("note", ""),
+                "reference_event": args.get("reference_event", ""),
+                "created_at":      datetime.datetime.now().isoformat()
+            }
+            data["todos"].append(new_todo)
+            save_todo(data)
+            auto_log(name, args, f"added {todo_id}")
+            print(f"[MCP] mocka_add_todo: {todo_id} added")
+            return json.dumps({"status": "ok", "id": todo_id, "action": "added"}, ensure_ascii=False)
+
         elif name == "mocka_update_todo":
             if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
-            todo_id = args.get("id","")
-            new_status = args.get("status","")
-            note = args.get("note","")
-            data = json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
+            todo_id    = args.get("id", "")
+            new_status = args.get("status", "")
+            note       = args.get("note", "")
+            data = load_todo()
             updated = False
             for item in data.get("todos", []):
                 if item.get("id") == todo_id:
@@ -135,99 +176,104 @@ def execute_tool(name, args):
                     updated = True
                     break
             if not updated: return json.dumps({"error": f"{todo_id} not found"})
-            data["meta"]["updated"] = datetime.date.today().isoformat()
-            data["meta"]["updated_by"] = "Claude"
-            TODO_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+            save_todo(data)
             auto_log(name, args, f"updated {todo_id} -> {new_status}")
-            return json.dumps({"status":"ok","id":todo_id,"new_status":new_status}, ensure_ascii=False)
+            return json.dumps({"status": "ok", "id": todo_id, "new_status": new_status}, ensure_ascii=False)
+
         elif name == "mocka_list_events":
             events = read_events(int(args.get("n", 20)))
             auto_log(name, args, f"{len(events)} events")
             return json.dumps({"count": len(events), "events": events}, ensure_ascii=False, indent=2)
+
         elif name == "mocka_read_event":
-            eid = args.get("id","")
+            eid = args.get("id", "")
             found = [e for e in read_events(9999) if e.get("event_id") == eid]
             auto_log(name, args, "found" if found else "not found")
             return json.dumps(found[0] if found else {"error": "not found"}, ensure_ascii=False, indent=2)
+
         elif name == "mocka_search":
-            q = args.get("query","")
+            q  = args.get("query", "")
             ev = search_events(q)
             kg = search_knowledge_gate(q)
             auto_log(name, args, f"events:{len(ev)} kg:{len(kg)}")
-            return json.dumps({"query":q,"events_hits":ev,"knowledge_gate_hits":kg}, ensure_ascii=False, indent=2)
+            return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
+
         elif name == "mocka_write_event":
             path = find_events_csv() or EVENTS_CSV
             path.parent.mkdir(parents=True, exist_ok=True)
             eid = next_event_id()
-            ts = datetime.datetime.now().isoformat()
+            ts  = datetime.datetime.now().isoformat()
             row = {f: "" for f in EVENTS_FIELDS}
-            row["event_id"]       = eid
-            row["when"]           = ts
-            row["who_actor"]      = args.get("author", "Claude")
-            row["what_type"]      = "claude_mcp"
-            row["where_component"]= "mcp_caliber"
-            row["where_path"]     = "mocka_mcp_server.py"
-            row["why_purpose"]    = args.get("why_purpose", "")
-            row["how_trigger"]    = args.get("how_trigger", "")
-            row["title"]          = args.get("title", "")
-            row["short_summary"]  = args.get("description", "")
-            row["free_note"]      = args.get("tags", "")
-            row["lifecycle_phase"]= "in_operation"
-            row["risk_level"]     = "normal"
-            row["channel_type"]   = "mcp"
+            row["event_id"]        = eid
+            row["when"]            = ts
+            row["who_actor"]       = args.get("author", "Claude")
+            row["what_type"]       = "claude_mcp"
+            row["where_component"] = "mcp_caliber"
+            row["where_path"]      = "mocka_mcp_server.py"
+            row["why_purpose"]     = args.get("why_purpose", "")
+            row["how_trigger"]     = args.get("how_trigger", "")
+            row["title"]           = args.get("title", "")
+            row["short_summary"]   = args.get("description", "")
+            row["free_note"]       = args.get("tags", "")
+            row["lifecycle_phase"] = "in_operation"
+            row["risk_level"]      = "normal"
+            row["channel_type"]    = "mcp"
             with open(path, "a", encoding="utf-8", newline="") as f:
                 w = csv.DictWriter(f, fieldnames=EVENTS_FIELDS)
                 w.writerow(row)
             auto_log(name, args, f"written {eid}")
-            return json.dumps({"status":"ok","event_id":eid,"when":ts}, ensure_ascii=False)
+            return json.dumps({"status": "ok", "event_id": eid, "when": ts}, ensure_ascii=False)
+
         elif name == "mocka_seal":
             path = find_events_csv()
-            if not path: return json.dumps({"error":"events.csv not found"})
+            if not path: return json.dumps({"error": "events.csv not found"})
             h = sha256_file(path)
-            result = {"sha256":h,"file":str(path),"timestamp":datetime.datetime.now().isoformat()}
+            result = {"sha256": h, "file": str(path), "timestamp": datetime.datetime.now().isoformat()}
             auto_log(name, args, h[:16])
             return json.dumps(result, ensure_ascii=False)
-        return json.dumps({"error":f"unknown tool: {name}"})
+
+        return json.dumps({"error": f"unknown tool: {name}"})
+
     except Exception as e:
         return json.dumps({"error": str(e)})
 
-@app.route("/mcp", methods=["GET","POST"])
+@app.route("/mcp", methods=["GET", "POST"])
 def mcp_endpoint():
     if request.method == "GET":
-        return json.dumps({"name":"mocka-memory-caliber","version":"1.2.0"}), 200, {"Content-Type":"application/json"}
-    body = request.get_json()
-    method, req_id, params = body.get("method",""), body.get("id"), body.get("params",{})
+        return json.dumps({"name": "mocka-memory-caliber", "version": "1.3.0"}), 200, {"Content-Type": "application/json"}
+    body   = request.get_json()
+    method = body.get("method", "")
+    req_id = body.get("id")
+    params = body.get("params", {})
     if method == "initialize":
-        result = {"protocolVersion":"2024-11-05","capabilities":{"tools":{}},"serverInfo":{"name":"mocka-memory-caliber","version":"1.2.0"}}
+        result = {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-caliber", "version": "1.3.0"}}
     elif method == "tools/list":
         result = {"tools": TOOLS}
     elif method == "tools/call":
-        result = {"content":[{"type":"text","text":execute_tool(params.get("name",""),params.get("arguments",{}))}],"isError":False}
+        result = {"content": [{"type": "text", "text": execute_tool(params.get("name", ""), params.get("arguments", {}))}], "isError": False}
     else:
-        return json.dumps({"jsonrpc":"2.0","id":req_id,"error":{"code":-32601,"message":f"unknown: {method}"}}), 200, {"Content-Type":"application/json"}
-    return json.dumps({"jsonrpc":"2.0","id":req_id,"result":result}, ensure_ascii=False), 200, {"Content-Type":"application/json"}
+        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+    return json.dumps({"jsonrpc": "2.0", "id": req_id, "result": result}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
-@app.route("/.well-known/oauth-protected-resource", defaults={"subpath":""})
+@app.route("/.well-known/oauth-protected-resource", defaults={"subpath": ""})
 @app.route("/.well-known/oauth-protected-resource/<path:subpath>")
 def oauth_resource(subpath):
-    return json.dumps({"resource":"https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev","authorization_servers":[]}), 200, {"Content-Type":"application/json"}
+    return json.dumps({"resource": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev", "authorization_servers": []}), 200, {"Content-Type": "application/json"}
 
 @app.route("/.well-known/oauth-authorization-server")
 def oauth_server():
-    return json.dumps({}), 200, {"Content-Type":"application/json"}
+    return json.dumps({}), 200, {"Content-Type": "application/json"}
 
 @app.route("/register", methods=["POST"])
 def register():
-    return json.dumps({"client_id":"mocka-mcp","client_secret":"none"}), 200, {"Content-Type":"application/json"}
+    return json.dumps({"client_id": "mocka-mcp", "client_secret": "none"}), 200, {"Content-Type": "application/json"}
 
 @app.route("/health")
 def health():
     ep = find_events_csv()
-    return json.dumps({"status":"ok","version":"1.2.0","port":5002,"overview_exists":OVERVIEW_PATH.exists(),"todo_exists":TODO_PATH.exists(),"events_csv":str(ep) if ep else None,"tools":[t["name"] for t in TOOLS]}, ensure_ascii=False), 200, {"Content-Type":"application/json"}
+    return json.dumps({"status": "ok", "version": "1.3.0", "port": 5002, "overview_exists": OVERVIEW_PATH.exists(), "todo_exists": TODO_PATH.exists(), "events_csv": str(ep) if ep else None, "tools": [t["name"] for t in TOOLS]}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 if __name__ == "__main__":
-    print("MoCKA MCP Server v1.2.0 -- http://localhost:5002/mcp")
+    print("MoCKA MCP Server v1.3.0 -- http://localhost:5002/mcp")
     print(f"Tools: {len(TOOLS)}")
     app.run(host="0.0.0.0", port=5002, debug=False)
-
-

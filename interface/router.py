@@ -1,3 +1,4 @@
+import sqlite3
 # -*- coding: utf-8 -*-
 # MoCKA Essence Injected: E20260401_008,2026-04-01T11:33:18,mocka_router,save,router,interface/router.py,Phase5ASSED,cli,internal,in_operation,normal,A,outfield,[save] Phase5ASSED,11/11 PASS墓慣つ晢oCKA壹晢憺屮会滄晏擅つ晢026-04-01 Claude Sonnet 4.6,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
 # Policy: MoCKA Encoding Policy v1.01
@@ -104,7 +105,27 @@ def validate_input_integrity(data: dict) -> dict:
 
     return {"ok": True}
 
-def write_safe_csv(row):
+
+DB_PATH = Path("C:/Users/sirok/MoCKA/data/events.db")
+
+def write_sqlite(row: list):
+    """UTF-8固定・BOMなし・SQLite直接書き込み"""
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT OR IGNORE INTO events VALUES (
+                ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?
+            )
+        """, row[:23] + [""] * max(0, 23 - len(row)))
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"[SQLITE ERROR] {e}")
+        return False
+
+def write_safe_csv(row); write_sqlite(row):
     # 整合性検証 — 不整合は沈黙せず必ず警告・停止
     result = validate_input_integrity(row)
     if not result["ok"]:
