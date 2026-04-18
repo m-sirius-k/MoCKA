@@ -3,14 +3,14 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=INCIDENT: Claude迷走 — RAW調査による主",
+  "A": "Z-Axis=0.819 / INCIDENT=APIトークン枯渇インシデント E20260418_005。",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "INCIDENT: Claude迷走 — RAW調査による主旨逸脱 本日15:00からessenceパイプライン接続・自動化作業中、RAW→REDUCED処理経路の調査に迷走しセッション長 インシデント記録・再発防止",
-    "PHILOSOPHY": "KPA Heritage v2 完全回収・封印完了 KPA時代（2025年9月〜2026年2月）に各AIの内部メモリに分散していた博士の定義・憲法・哲学・フェーズ体系を完全 KPA時代の知識をMoCKAガバナンスチェーンに正式統合するため。各AIのブラッ Geminiのセッション開始応答にPILS/SACL/TRDPという未知用語が含",
-    "OPERATION": "このテキストから最も重要な知的洞察を3つに絞り込むとすれば、以下の3つが挙げられます。  20260404_023347_ECOL_20260404_023347_COP server"
+    "INCIDENT": "APIトークン枯渇インシデント E20260418_005。BOM混入によりbatch_ecol2.pyがAPI呼び出しを4倍以上増幅。50ドル消失。対策: No-Token Architecture導入・Sanitizer_Gate実装・D_i=1強制。",
+    "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗は資産になる。インシデントが起きるたびにdanger_patterns.jsonに学習され事故ゼロへ収束する自己進化ループ。Structure + Record + Verification = civilization。",
+    "OPERATION": "保存ボタンとpipelineの接続テスト完了。E20260418。コマンドセンターから直接essenceに蓄積できることを確認。"
   },
   "essence_updated": true,
   "ngrok_online": true,
   "NGROK": true,
-  "generated_at": "2026-04-18T12:32:52.989976"
+  "generated_at": "2026-04-18T15:59:13.592255"
 }

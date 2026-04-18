@@ -1,510 +1,408 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8"><title>MoCKA Command Center</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background:#0a0f1a; color:#e5e7eb; font-family:monospace; padding:20px; }
-        h1 { font-size:20px; font-weight:700; color:#fff; margin-bottom:2px; letter-spacing:3px; }
-        .subtitle { font-size:12px; color:#9ca3af; margin-bottom:20px; letter-spacing:1px; }
-        .block { border:1px solid #2d3748; padding:16px; margin-bottom:14px; background:#111827; border-radius:8px; }
-        h3 { color:#d1d5db; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:2px; margin-bottom:12px; border-bottom:1px solid #2d3748; padding-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-        button { background:transparent; color:#d1d5db; border:1px solid #4b5563; padding:8px 16px; cursor:pointer; margin:3px; font-family:monospace; font-size:13px; border-radius:4px; transition:0.2s; }
-        button:hover { border-color:#60a5fa; color:#60a5fa; }
-        .active-a { background:#005700!important; border-color:#00cc00!important; color:#fff!important; box-shadow:0 0 8px #008a00; }
-        .active-b { background:#1e3a5f!important; border-color:#60a5fa!important; color:#fff!important; box-shadow:0 0 8px #60a5fa; }
-        .active-t { background:#2d1f4a!important; border-color:#c084fc!important; color:#e9d5ff!important; }
-        textarea { width:100%; height:100px; background:#0d1626; color:#e5e7eb; border:1px solid #374151; border-radius:4px; font-family:monospace; font-size:13px; padding:10px; resize:vertical; outline:none; }
-        textarea:focus { border-color:#60a5fa; }
-        #exec { width:100%; padding:16px; border:2px solid #374151; color:#6b7280; background:#111827; font-size:15px; font-weight:700; letter-spacing:2px; border-radius:6px; transition:0.3s; cursor:not-allowed; margin-bottom:14px; }
-        #exec.ready { border-color:#FF8000; background:#1a0f00; color:#FF8000; cursor:pointer; box-shadow:0 0 16px rgba(255,128,0,0.4); }
-        .opt-group { display:none; margin-top:10px; padding:10px; border:1px dashed #374151; border-radius:4px; }
-        .tag-row { display:flex; flex-wrap:wrap; gap:5px; margin-top:6px; }
-        .status-bar { font-size:12px; color:#9ca3af; text-align:center; margin-bottom:8px; }
-        .layer-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-        .layer-chip { background:#1a2235; border:1px solid #2d3748; border-radius:5px; padding:8px 12px; text-align:center; min-width:80px; }
-        .layer-chip .num { font-size:22px; font-weight:700; color:#60a5fa; line-height:1.2; }
-        .layer-chip.green .num { color:#4ade80; }
-        .layer-chip.amber .num { color:#fbbf24; }
-        .layer-chip.purple .num { color:#c084fc; }
-        .layer-chip .lbl { font-size:10px; color:#9ca3af; margin-top:3px; letter-spacing:1px; }
-        .server-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px; flex-shrink:0; }
-        .online { background:#4ade80; box-shadow:0 0 6px #4ade80; }
-        .offline { background:#6b7280; }
-        .pipeline-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px; }
-        .zone { border-radius:6px; padding:12px; min-height:130px; }
-        .zone-incoming  { background:#1a1030; border:1px solid #6d28d9; }
-        .zone-processing{ background:#1a1500; border:1px solid #92400e; }
-        .zone-result    { background:#0a1f15; border:1px solid #065f46; }
-        .zone-title { font-size:12px; font-weight:700; letter-spacing:1px; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.1); }
-        .zone-incoming  .zone-title { color:#c084fc; }
-        .zone-processing .zone-title { color:#fbbf24; }
-        .zone-result    .zone-title { color:#4ade80; }
-        .queue-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); border-left:3px solid #a855f7; }
-        .queue-item .fname { color:#e5e7eb; word-break:break-all; }
-        .queue-item .fsize { color:#9ca3af; font-size:11px; }
-        .processing-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b; color:#fde68a; }
-        .processing-anim { display:inline-block; animation:spin 1s linear infinite; }
-        @keyframes spin { to { transform:rotate(360deg); } }
-        .result-item { font-size:12px; padding:6px 8px; margin-bottom:4px; border-radius:3px; background:rgba(0,0,0,0.3); }
-        .result-item.ok { border-left:3px solid #4ade80; }
-        .result-item.ng { border-left:3px solid #fbbf24; }
-        .result-rate { font-size:15px; font-weight:700; }
-        .result-rate.ok { color:#4ade80; }
-        .result-rate.ng { color:#fbbf24; }
-        .result-meta { color:#9ca3af; font-size:11px; margin-left:6px; }
-        .result-preview { color:#9ca3af; font-size:11px; margin-top:3px; word-break:break-all; }
-        .empty-msg { color:#4b5563; font-size:12px; }
-        .process-btn { background:#0a2015!important; border:1px solid #4ade80!important; color:#4ade80!important; width:100%; padding:14px!important; font-size:14px!important; letter-spacing:2px; margin-bottom:8px; border-radius:6px; }
-        .process-btn:hover { box-shadow:0 0 14px rgba(74,222,128,0.3)!important; }
-        .proc-msg { font-size:12px; color:#9ca3af; min-height:20px; }
-        .timestamp { font-size:10px; color:#374151; }
-        .history-container { max-height:200px; overflow-y:auto; }
-        table { width:100%; border-collapse:collapse; font-size:12px; }
-        th { background:#1f2937; color:#d1d5db; padding:8px 10px; text-align:left; font-weight:700; letter-spacing:1px; font-size:11px; position:sticky; top:0; }
-        td { border-bottom:1px solid #1f2937; padding:7px 10px; color:#d1d5db; }
-        td:first-child { color:#9ca3af; font-size:11px; }
-        tr:hover td { background:#1f2937; }
-        ::-webkit-scrollbar { width:3px; }
-        ::-webkit-scrollbar-thumb { background:#374151; }
-        .loop-stage { font-size:10px; padding:4px 8px; border-radius:4px; background:#0f2a1a; border:1px solid #1a4a2a; color:#4ade80; letter-spacing:0.5px; }
-        .loop-stage.active { background:#004400; border-color:#00cc00; color:#fff; box-shadow:0 0 6px #00aa00; }
-        .loop-arrow { font-size:10px; color:#374151; align-self:center; }
-        .srv-bar { display:flex; align-items:center; gap:10px; margin-left:auto; flex-wrap:wrap; }
-        .srv-item { display:flex; align-items:center; gap:3px; font-size:11px; white-space:nowrap; position:relative; }
-        .srv-d { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-        .srv-d.on  { background:#4ade80; box-shadow:0 0 4px #4ade80; }
-        .srv-d.off { background:#ff4444; }
-        .srv-lbl { color:#6b7280; }
-        .srv-val.on  { color:#4ade80; }
-        .srv-val.off { color:#ff4444; }
-        .mcp-wrap { position:relative; cursor:default; }
-        .mcp-badge { background:#0a2015; border:1px solid #4ade80; border-radius:8px; padding:0 6px; font-size:10px; color:#4ade80; margin-left:2px; }
-        .mcp-popup { display:none; position:absolute; top:22px; right:0; background:#0d1117; border:1px solid #2d3748; border-radius:6px; padding:10px 14px; z-index:999; min-width:190px; font-size:11px; line-height:2; box-shadow:0 4px 12px rgba(0,0,0,0.6); }
-        .mcp-wrap:hover .mcp-popup { display:block; }
-    </style>
+<meta charset="UTF-8"><title>MoCKA CC v3.0</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0f1a;color:#e5e7eb;font-family:monospace;padding:12px;font-size:12px;}
+h1{font-size:18px;font-weight:700;color:#fff;letter-spacing:3px;}
+.sub{font-size:10px;color:#6b7280;margin-bottom:10px;letter-spacing:1px;}
+.blk{border:1px solid #2d3748;padding:10px;margin-bottom:8px;background:#111827;border-radius:6px;}
+.hdr{color:#9ca3af;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;border-bottom:1px solid #2d3748;padding-bottom:5px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+btn,button{background:transparent;color:#d1d5db;border:1px solid #4b5563;padding:4px 10px;cursor:pointer;font-family:monospace;font-size:11px;border-radius:3px;}
+button:hover{border-color:#60a5fa;color:#60a5fa;}
+/* チップ */
+.cr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.ch{background:#1a2235;border:1px solid #2d3748;border-radius:4px;padding:4px 8px;text-align:center;min-width:64px;}
+.ch .n{font-size:18px;font-weight:700;color:#60a5fa;line-height:1.2;}
+.ch.g .n{color:#4ade80;}.ch.a .n{color:#fbbf24;}.ch.p .n{color:#c084fc;}.ch.r .n{color:#f87171;}
+.ch .l{font-size:9px;color:#6b7280;margin-top:1px;}
+/* サーバー */
+.sb{display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;}
+.si{display:flex;align-items:center;gap:2px;font-size:10px;white-space:nowrap;}
+.sd{width:6px;height:6px;border-radius:50%;}
+.sd.on{background:#4ade80;box-shadow:0 0 3px #4ade80;}.sd.off{background:#ff4444;}
+.sv.on{color:#4ade80;}.sv.off{color:#ff4444;}.sl{color:#6b7280;}
+/* ESSENCE 3軸 */
+.ax{border:1px solid #2d3748;border-radius:4px;padding:7px;margin-bottom:5px;display:grid;grid-template-columns:80px 1fr auto;gap:6px;align-items:start;}
+.ax.ok{border-color:#1a4a2a;}.ax.ng{border-color:#4a1a1a;opacity:0.6;}
+.ab{font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;letter-spacing:1px;text-align:center;}
+.ai{background:#4a1a1a;color:#f87171;}.ap{background:#1a2a4a;color:#60a5fa;}.ao{background:#1a3a2a;color:#4ade80;}
+.at{font-size:11px;color:#d1d5db;line-height:1.5;word-break:break-all;}
+.au{font-size:9px;color:#6b7280;white-space:nowrap;}
+/* INPUT グリッド */
+.ig{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+.ir{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:3px;border:1px solid #1a1a3a;background:#1a1a2a;font-size:10px;}
+.ir.on{background:#0a1a0f;border-color:#1a4a2a;}
+.id{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.id.on{background:#4ade80;box-shadow:0 0 4px #4ade80;}.id.off{background:#6b7280;}
+.il{color:#d1d5db;flex:1;}.iv{color:#9ca3af;font-size:10px;}
+/* パイプラインフロー */
+.pf{display:flex;align-items:center;gap:3px;flex-wrap:nowrap;overflow-x:auto;margin-bottom:8px;padding-bottom:3px;}
+.pn{background:#1a2235;border:1px solid #2d3748;border-radius:3px;padding:3px 6px;text-align:center;min-width:56px;flex-shrink:0;}
+.pn .pv{font-size:14px;font-weight:700;color:#60a5fa;}.pn.g .pv{color:#4ade80;}.pn.a .pv{color:#fbbf24;}
+.pn .pl{font-size:8px;color:#9ca3af;}
+.pa{color:#374151;font-size:12px;flex-shrink:0;}
+/* ゾーン */
+.pg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px;}
+.zn{border-radius:4px;padding:8px;min-height:80px;}
+.zi{background:#1a1030;border:1px solid #6d28d9;}
+.zp{background:#1a1500;border:1px solid #92400e;}
+.zr{background:#0a1f15;border:1px solid #065f46;}
+.zt{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.1);}
+.zi .zt{color:#c084fc;}.zp .zt{color:#fbbf24;}.zr .zt{color:#4ade80;}
+.qi{font-size:10px;padding:3px 5px;margin-bottom:2px;border-radius:2px;background:rgba(0,0,0,0.3);border-left:2px solid #a855f7;}
+.ri{font-size:10px;padding:3px 5px;margin-bottom:2px;border-radius:2px;background:rgba(0,0,0,0.3);}
+.ri.ok{border-left:2px solid #4ade80;}.ri.ng{border-left:2px solid #fbbf24;}
+.em{color:#4b5563;font-size:10px;}
+.pb{background:#0a2015!important;border:1px solid #4ade80!important;color:#4ade80!important;width:100%;padding:8px!important;font-size:12px!important;letter-spacing:2px;border-radius:4px;margin-bottom:5px;}
+/* DANGER */
+.dg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:7px;}
+.dt{background:#1a1a1a;border-radius:3px;padding:6px;text-align:center;}
+.dt .dn{font-size:16px;font-weight:700;}
+.t1 .dn{color:#f87171;}.t2 .dn{color:#fbbf24;}.t3 .dn{color:#60a5fa;}.te .dn{color:#c084fc;}.ts .dn{color:#9ca3af;}.tg .dn{color:#4ade80;}
+.dt .dl{font-size:8px;color:#6b7280;margin-top:1px;}
+.lb{display:flex;align-items:center;gap:10px;padding:5px 8px;background:#0a1a0f;border:1px solid #1a4a2a;border-radius:3px;font-size:10px;}
+/* PING */
+.pg2{background:#0a1a0f;border:1px solid #1a4a2a;border-radius:4px;padding:6px;font-size:10px;color:#4ade80;margin-top:6px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+/* ループ */
+.ls{font-size:9px;padding:2px 5px;border-radius:3px;background:#0f2a1a;border:1px solid #1a4a2a;color:#4ade80;}
+.la{font-size:9px;color:#374151;}
+/* MISSION */
+.og{display:none;margin-top:6px;padding:6px;border:1px dashed #374151;border-radius:3px;}
+.tr{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px;}
+#exec{width:100%;padding:10px;border:2px solid #374151;color:#6b7280;background:#111827;font-size:13px;font-weight:700;letter-spacing:2px;border-radius:4px;cursor:not-allowed;margin-bottom:8px;}
+#exec.rdy{border-color:#FF8000;background:#1a0f00;color:#FF8000;cursor:pointer;}
+.sbar{font-size:11px;color:#9ca3af;text-align:center;margin-bottom:6px;}
+/* TABLE */
+.hc{max-height:150px;overflow-y:auto;}
+table{width:100%;border-collapse:collapse;font-size:10px;}
+th{background:#1f2937;color:#d1d5db;padding:5px 7px;text-align:left;font-weight:700;font-size:9px;letter-spacing:1px;position:sticky;top:0;}
+td{border-bottom:1px solid #1f2937;padding:4px 7px;color:#d1d5db;}
+td:first-child{color:#9ca3af;font-size:10px;}
+tr:hover td{background:#1f2937;}
+::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:#374151;}
+.aa{background:#005700!important;border-color:#00cc00!important;color:#fff!important;}
+.ab2{background:#1e3a5f!important;border-color:#60a5fa!important;color:#fff!important;}
+.at2{background:#2d1f4a!important;border-color:#c084fc!important;color:#e9d5ff!important;}
+textarea{width:100%;height:70px;background:#0d1626;color:#e5e7eb;border:1px solid #374151;border-radius:3px;font-family:monospace;font-size:11px;padding:6px;resize:vertical;outline:none;}
+.mw{position:relative;cursor:default;}
+.mb{background:#0a2015;border:1px solid #4ade80;border-radius:8px;padding:0 5px;font-size:9px;color:#4ade80;margin-left:2px;}
+.mp{display:none;position:absolute;top:18px;right:0;background:#0d1117;border:1px solid #2d3748;border-radius:4px;padding:6px 10px;z-index:999;min-width:160px;font-size:10px;line-height:1.8;box-shadow:0 4px 12px rgba(0,0,0,0.6);}
+.mw:hover .mp{display:block;}
+</style>
 </head>
 <body>
-    <h1>MoCKA COMMAND CENTER</h1>
-    <p class="subtitle">Model of Cybernetic Knowledge Architecture — v2.1.0</p>
+<h1>MoCKA COMMAND CENTER</h1>
+<p class="sub">v3.0 | CSV → 抽出 → 濃縮 → essence | <span id="loop-inject-label" style="color:#4ade80;">INJECT:ON</span> <button onclick="toggleInject()" style="padding:2px 8px;font-size:10px;border-color:#4ade80;color:#4ade80;">⬛</button> <button onclick="refreshAll()" style="padding:2px 8px;font-size:10px;">↻</button> <span style="color:#6b7280;font-size:10px;" id="loop-ping-age"></span></p>
 
-    <div class="block" id="loop-block">
-        <h3>
-            <span id="loop-inject-dot" class="server-dot online"></span>
-            <span id="loop-inject-label" style="font-size:13px;color:#4ade80;letter-spacing:2px;">ESSENCE INJECT — ON</span>
-            <button id="loop-toggle-btn" onclick="toggleInject()" style="margin-left:auto;padding:4px 14px;font-size:12px;border-color:#4ade80;color:#4ade80;">⬛ STOP INJECT</button>
-            <button onclick="refreshLoop()" style="padding:3px 10px;font-size:11px;">↻</button>
-        </h3>
-        <div class="layer-row" style="margin-bottom:10px;">
-            <div class="layer-chip green"><div class="num" id="loop-essence-count">-</div><div class="lbl">ESSENCE</div></div>
-            <div class="layer-chip"><div class="num" id="loop-raw-count">-</div><div class="lbl">RAW</div></div>
-            <div class="layer-chip amber"><div class="num" id="loop-ping-age" style="font-size:13px;margin-top:4px;">-</div><div class="lbl">PING AGE</div></div>
-        </div>
-        <div style="background:#0a1a0f;border:1px solid #1a4a2a;border-radius:6px;padding:10px;font-size:11px;font-family:monospace;color:#4ade80;min-height:48px;">
-            <div style="color:#6b7280;font-size:10px;letter-spacing:1px;margin-bottom:4px;">PING_LATEST.JSON — DNA v2.0 PACKET</div>
-            <div id="loop-ping-preview">— loading —</div>
-        </div>
-        <div style="margin-top:10px;display:flex;gap:4px;flex-wrap:wrap;">
-            <span style="font-size:10px;color:#9ca3af;letter-spacing:1px;width:100%;margin-bottom:4px;">CIVILIZATION LOOP</span>
-            <span class="loop-stage" id="ls-1">① Observe</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-2">② Record</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-3">③ Incident</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-4">④ Recurrence</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-5">⑤ Prevention</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-6">⑥ Decision</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-7">⑦ Action</span><span class="loop-arrow">→</span>
-            <span class="loop-stage" id="ls-8">⑧ Audit</span>
-        </div>
-    </div>
+<div class="blk">
+  <div class="cr">
+    <div class="ch g"><div class="n" id="loop-essence-count">-</div><div class="l">ESSENCE軸</div></div>
+    <div class="ch"><div class="n" id="loop-raw-count">-</div><div class="l">RAW</div></div>
+    <div class="ch a"><div class="n" id="raw-done-count">-</div><div class="l">RAW_DONE</div></div>
+    <div class="ch p"><div class="n" id="danger-total">-</div><div class="l">危険語彙</div></div>
+    <div class="ch r"><div class="n" id="learned-today">-</div><div class="l">本日学習</div></div>
+  </div>
+  <div id="ax-INCIDENT" class="ax ng">
+    <span class="ab ai">INCIDENT</span>
+    <span class="at" id="txt-INCIDENT">— loading —</span>
+    <span class="au" id="upd-INCIDENT"></span>
+  </div>
+  <div id="ax-PHILOSOPHY" class="ax ng">
+    <span class="ab ap">PHILOSOPHY</span>
+    <span class="at" id="txt-PHILOSOPHY">— loading —</span>
+    <span class="au" id="upd-PHILOSOPHY"></span>
+  </div>
+  <div id="ax-OPERATION" class="ax ng">
+    <span class="ab ao">OPERATION</span>
+    <span class="at" id="txt-OPERATION">— loading —</span>
+    <span class="au" id="upd-OPERATION"></span>
+  </div>
+  <div class="pg2"><span style="color:#6b7280;font-size:9px;">PING: </span><span id="loop-ping-preview">—</span></div>
+  <div style="margin-top:6px;display:flex;gap:3px;flex-wrap:wrap;align-items:center;">
+    <span style="font-size:9px;color:#6b7280;">LOOP:</span>
+    <span class="ls">① Obs</span><span class="la">→</span><span class="ls">② Rec</span><span class="la">→</span><span class="ls">③ Inc</span><span class="la">→</span><span class="ls">④ Rec</span><span class="la">→</span><span class="ls">⑤ Prev</span><span class="la">→</span><span class="ls">⑥ Dec</span><span class="la">→</span><span class="ls">⑦ Act</span><span class="la">→</span><span class="ls">⑧ Aud</span>
+  </div>
+</div>
+<div class="blk">
+  <div class="hdr">② INPUT — 情報の入口
+  </div>
+  <div class="ig">
+    <div class="ir" id="irow-chrome"><div class="id off" id="idot-chrome"></div><span class="il">Chrome拡張(ECOL)</span><span class="iv" id="ival-chrome">—</span></div>
+    <div class="ir on" id="irow-watchdog"><div class="id on" id="idot-watchdog"></div><span class="il">watchdog_v2</span><span class="iv" id="ival-watchdog">—</span></div>
+    <div class="ir" id="irow-pipeline"><div class="id off" id="idot-pipeline"></div><span class="il">mocka_pipeline.py</span><span class="iv" id="ival-pipeline">—</span></div>
+    <div class="ir" id="irow-manual"><div class="id off" id="idot-manual"></div><span class="il">::I::タグ手動入力</span><span class="iv" id="ival-manual">—</span></div>
+  </div>
+</div>
 
-    <div class="block">
-        <h3>
-            <span class="server-dot" id="sdot"></span>
-            <span id="sstat" style="font-size:13px;">CALIBER PIPELINE — checking...</span>
-            <button onclick="refreshQueue()" style="padding:3px 10px;font-size:11px;">↻ Refresh</button>
-            <div class="srv-bar">
-                <div class="srv-item">
-                    <span class="srv-d off" id="d-app"></span>
-                    <span class="srv-lbl">APP</span>
-                    <span class="srv-val off" id="v-app">:5000</span>
-                </div>
-                <div class="srv-item">
-                    <span class="srv-d off" id="d-cal"></span>
-                    <span class="srv-lbl">CAL</span>
-                    <span class="srv-val off" id="v-cal">:5679</span>
-                </div>
-                <div class="srv-item mcp-wrap">
-                    <span class="srv-d off" id="d-mcp"></span>
-                    <span class="srv-lbl">MCP</span>
-                    <span class="srv-val off" id="v-mcp">:5002</span>
-                    <span class="mcp-badge" id="mcp-badge" style="display:none;">9</span>
-                    <div class="mcp-popup" id="mcp-popup">— loading —</div>
-                </div>
-                <div class="srv-item">
-                    <span class="srv-d off" id="d-ngrok"></span>
-                    <span class="srv-lbl">NGROK</span>
-                    <span class="srv-val off" id="v-ngrok">→5002</span>
-                </div>
-            </div>
-            <span class="timestamp" id="ts"></span>
-        </h3>
-        <div class="layer-row">
-            <div class="layer-chip"><div class="num" id="c-RAW">-</div><div class="lbl">RAW</div></div>
-            <div class="layer-chip"><div class="num" id="c-REDUCED">-</div><div class="lbl">REDUCED</div></div>
-            <div class="layer-chip green"><div class="num" id="c-RE_REDUCED">-</div><div class="lbl">RE_REDUCED</div></div>
-            <div class="layer-chip amber"><div class="num" id="c-REDUCING">-</div><div class="lbl">REDUCING</div></div>
-            <div class="layer-chip"><div class="num" id="c-CORE">-</div><div class="lbl">CORE</div></div>
-            <div class="layer-chip"><div class="num" id="c-ESSENCE">-</div><div class="lbl">ESSENCE</div></div>
-            <div class="layer-chip purple"><div class="num" id="c-outbox">-</div><div class="lbl">OUTBOX/PILS</div></div>
-        </div>
-        <div class="pipeline-grid">
-            <div class="zone zone-incoming">
-                <div class="zone-title">① INCOMING — 受信キュー</div>
-                <div id="zone-queue"><span class="empty-msg">— 待機中 —</span></div>
-            </div>
-            <div class="zone zone-processing">
-                <div class="zone-title">② PROCESSING — 処理中</div>
-                <div id="zone-processing"><span class="empty-msg">— スタンバイ —</span></div>
-            </div>
-            <div class="zone zone-result">
-                <div class="zone-title">③ RESULT — 処理結果</div>
-                <div id="zone-result"><span class="empty-msg">— 結果なし —</span></div>
-            </div>
-        </div>
-        <button class="process-btn" onclick="processNow()">▶ PROCESS NOW — outbox/PILS → Caliber</button>
-        <div class="proc-msg" id="proc-msg">— 待機中 —</div>
+<div class="blk">
+  <div class="hdr">
+    <span class="sd off" id="sdot"></span>
+    <span id="sstat" style="font-size:10px;">③ KNOWLEDGE PIPELINE</span>
+    <button onclick="refreshQueue()" style="padding:2px 7px;font-size:10px;">↻</button>
+    <div class="sb">
+      <div class="si"><span class="sd off" id="d-app"></span><span class="sl">APP</span><span class="sv off" id="v-app">:5000</span></div>
+      <div class="si"><span class="sd off" id="d-cal"></span><span class="sl">CAL</span><span class="sv off" id="v-cal">:5679</span></div>
+      <div class="si mw"><span class="sd off" id="d-mcp"></span><span class="sl">MCP</span><span class="sv off" id="v-mcp">:5002</span><span class="mb" id="mcp-badge" style="display:none;">-</span><div class="mp" id="mcp-popup">—</div></div>
+      <div class="si"><span class="sd off" id="d-ngrok"></span><span class="sl">NGROK</span><span class="sv off" id="v-ngrok">→5002</span></div>
     </div>
+    <span style="font-size:9px;color:#374151;" id="ts"></span>
+  </div>
+  <div class="pf">
+    <div class="pn"><div class="pv" id="p-RAW">-</div><div class="pl">RAW</div></div><span class="pa">→</span>
+    <div class="pn a"><div class="pv" id="p-DONE">-</div><div class="pl">RAW_DONE</div></div><span class="pa">→</span>
+    <div class="pn"><div class="pv" id="p-REDUCED">-</div><div class="pl">REDUCED</div></div><span class="pa">→</span>
+    <div class="pn g"><div class="pv" id="p-RE_REDUCED">-</div><div class="pl">RE_REDUCED</div></div><span class="pa">→</span>
+    <div class="pn a"><div class="pv" id="p-REDUCING">-</div><div class="pl">REDUCING</div></div><span class="pa">→</span>
+    <div class="pn"><div class="pv" id="p-CORE">-</div><div class="pl">CORE</div></div><span class="pa">→</span>
+    <div class="pn g"><div class="pv" id="p-ESSENCE">-</div><div class="pl">ESSENCE</div></div><span class="pa">→</span>
+    <div class="pn" style="border-color:#c084fc;"><div class="pv" style="color:#c084fc;" id="p-PILS">-</div><div class="pl">PILS</div></div>
+  </div>
+  <div class="pg">
+    <div class="zn zi"><div class="zt">① INCOMING</div><div id="zone-queue"><span class="em">— 待機中 —</span></div></div>
+    <div class="zn zp"><div class="zt">② PROCESSING</div><div id="zone-processing"><span class="em">— スタンバイ —</span></div></div>
+    <div class="zn zr"><div class="zt">③ RESULT</div><div id="zone-result"><span class="em">— 結果なし —</span></div></div>
+  </div>
+  <button class="pb" onclick="processNow()">▶ PROCESS NOW — PILS → Caliber</button>
+  <div style="font-size:10px;color:#9ca3af;min-height:16px;" id="proc-msg">— 待機中 —</div>
+</div>
 
-    <div class="block">
-        <h3>MISSION</h3>
-        <button id="btnA" onclick="setCat('A',this)">A: 保存 (Storage)</button>
-        <button id="btnB" onclick="setCat('B',this)">B: 共有 (Broadcast)</button>
-        <div id="opt-A" class="opt-group">
-            <div class="tag-row">
-                <button class="s-btn" onclick="toggleT('infield',this)">infield</button>
-                <button class="s-btn" onclick="toggleT('outfield',this)">outfield</button>
-                <button class="s-btn" onclick="toggleT('公文書',this)">公文書</button>
-                <button class="s-btn" onclick="toggleT('インシデント',this)">インシデント</button>
-                <button class="s-btn" onclick="toggleT('クレーム',this)">クレーム</button>
-            </div>
-        </div>
-        <div id="opt-B" class="opt-group">
-            <div class="tag-row">
-                <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員一括</button>
-                <button class="s-btn" onclick="toggleT('ChatGPT',this)">ChatGPT</button>
-                <button class="s-btn" onclick="toggleT('Gemini',this)">Gemini</button>
-                <button class="s-btn" onclick="toggleT('Claude',this)">Claude</button>
-                <button class="s-btn" onclick="toggleT('Perplexity',this)">Perplexity</button>
-                <button class="s-btn" onclick="toggleT('Copilot',this)">Copilot</button>
-            </div>
-        </div>
-        <div style="margin-top:12px;">
-            <input id="title" type="text" placeholder="タイトル" style="width:100%;background:#0d1626;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:8px 12px;font-family:monospace;font-size:13px;outline:none;margin-bottom:8px;">
-            <textarea id="memo" placeholder="記録内容を入力... Why（目的）· What（内容）· How（方法）"></textarea>
-        </div>
-    </div>
+<div class="blk">
+  <div class="hdr"><span class="sd on" style="background:#f87171;box-shadow:0 0 3px #f87171;"></span>④ DANGER MONITOR — Language Algorithm v1.0</div>
+  <div class="dg">
+    <div class="dt t1"><div class="dn" id="dt1">-</div><div class="dl">Tier1即検知</div></div>
+    <div class="dt t2"><div class="dn" id="dt2">-</div><div class="dl">Tier2高優先</div></div>
+    <div class="dt t3"><div class="dn" id="dt3">-</div><div class="dl">Tier3補助</div></div>
+    <div class="dt te"><div class="dn" id="dte">-</div><div class="dl">Escalation</div></div>
+    <div class="dt ts"><div class="dn" id="dts">-</div><div class="dl">Silent</div></div>
+    <div class="dt tg"><div class="dn" id="dtotal">-</div><div class="dl">総語彙数</div></div>
+  </div>
+  <div class="lb">
+    <span style="color:#4ade80;">🧠 自己学習</span>
+    <span>本日: <strong id="lb-today" style="color:#fbbf24;">-</strong>件追加</span>
+    <span style="margin-left:auto;color:#6b7280;">直近CRITICAL: <span id="lb-last" style="color:#f87171;">—</span></span>
+  </div>
+</div>
 
-    <div class="status-bar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
-    <div id="launch-links" style="display:none;margin-bottom:12px;padding:12px;background:#111827;border:1px solid #a855f7;border-radius:6px;">
-        <div style="font-size:11px;color:#c084fc;letter-spacing:2px;margin-bottom:8px;">OPEN EACH AI TAB</div>
-        <div id="link-list" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
-    </div>
-    <button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
+<div class="blk">
+  <div class="hdr">⑤ MISSION</div>
+  <button id="btnA" onclick="setCat('A',this)">A: 保存</button>
+  <button id="btnB" onclick="setCat('B',this)">B: 共有</button>
+  <div id="opt-A" class="og"><div class="tr">
+    <button class="s-btn" onclick="toggleT('infield',this)">infield</button>
+    <button class="s-btn" onclick="toggleT('outfield',this)">outfield</button>
+    <button class="s-btn" onclick="toggleT('公文書',this)">公文書</button>
+    <button class="s-btn" onclick="toggleT('インシデント',this)">インシデント</button>
+    <button class="s-btn" onclick="toggleT('クレーム',this)">クレーム</button>
+  </div></div>
+  <div id="opt-B" class="og"><div class="tr">
+    <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★全員</button>
+    <button class="s-btn" onclick="toggleT('ChatGPT',this)">ChatGPT</button>
+    <button class="s-btn" onclick="toggleT('Gemini',this)">Gemini</button>
+    <button class="s-btn" onclick="toggleT('Claude',this)">Claude</button>
+    <button class="s-btn" onclick="toggleT('Perplexity',this)">Perplexity</button>
+    <button class="s-btn" onclick="toggleT('Copilot',this)">Copilot</button>
+  </div></div>
+  <div style="margin-top:8px;">
+    <input id="title" type="text" placeholder="タイトル" style="width:100%;background:#0d1626;color:#e5e7eb;border:1px solid #374151;border-radius:3px;padding:5px 8px;font-family:monospace;font-size:11px;outline:none;margin-bottom:5px;">
+    <textarea id="memo" placeholder="Why・What・How"></textarea>
+  </div>
+</div>
+<div class="sbar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
+<div id="launch-links" style="display:none;margin-bottom:8px;padding:8px;background:#111827;border:1px solid #a855f7;border-radius:4px;">
+  <div style="font-size:9px;color:#c084fc;letter-spacing:2px;margin-bottom:5px;">OPEN EACH AI TAB</div>
+  <div id="link-list" style="display:flex;flex-wrap:wrap;gap:4px;"></div>
+</div>
+<button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
 
-    <div class="block">
-        <h3>MISSION LOG — HISTORY</h3>
-        <div class="history-container">
-            <table>
-                <thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead>
-                <tbody id="history-body"></tbody>
-            </table>
-        </div>
-    </div>
+<div class="blk">
+  <div class="hdr">⑥ MISSION LOG</div>
+  <div class="hc"><table><thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead><tbody id="history-body"></tbody></table></div>
+</div>
+<div class="blk">
+  <div class="hdr"><span class="sd on"></span>⑦ EVENTS STREAM</div>
+  <div id="events-stream" style="max-height:150px;overflow-y:auto;"></div>
+</div>
+<div class="blk">
+  <div class="hdr"><span class="sd on"></span>⑧ TODO OBSERVER</div>
+  <div id="todo-stream" style="display:flex;flex-wrap:wrap;gap:4px;min-height:40px;"></div>
+</div>
+<div class="blk">
+  <div class="hdr"><span class="sd on"></span>⑨ SYSTEM HEALTH</div>
+  <div class="cr">
+    <div class="ch"><div class="n" id="h-events">-</div><div class="l">EVENTS</div></div>
+    <div class="ch g"><div class="n" id="h-done">-</div><div class="l">TODO完了</div></div>
+    <div class="ch a"><div class="n" id="h-todo">-</div><div class="l">TODO残</div></div>
+    <div class="ch p"><div class="n" id="h-phase">M1</div><div class="l">PHASE</div></div>
+  </div>
+  <div id="hash-display" style="font-size:9px;color:#4b5563;margin-top:4px;"></div>
+</div>
+<script>
+let state={c:null,targets:[]};
+const AI_URLS={ChatGPT:"https://chatgpt.com/",Gemini:"https://gemini.google.com/app",Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",Copilot:"https://copilot.microsoft.com/"};
 
-    <script>
-        let state = {c:null, targets:[]};
-        let processing = false;
-        const AI_URLS = {
-            ChatGPT:"https://chatgpt.com/",Gemini:"https://gemini.google.com/app",
-            Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",
-            Copilot:"https://copilot.microsoft.com/"
-        };
-        function srvSet(dotId, valId, on, text) {
-            const d = document.getElementById(dotId);
-            const v = document.getElementById(valId);
-            if(d) { d.className = 'srv-d ' + (on ? 'on' : 'off'); }
-            if(v) { v.className = 'srv-val ' + (on ? 'on' : 'off'); v.textContent = text; }
-        }
-        async function updateServerStatus() {
-            try {
-                const r = await fetch('/servers/status');
-                const d = await r.json();
-                const cal = d.caliber || {};
-                const mcp = d.mcp || {};
-                const calOn = cal.status === 'online';
-                const mcpOn = mcp.status === 'online';
-                srvSet('d-cal', 'v-cal', calOn, ':5679' + (calOn ? ' ✓' : ' ✗'));
-                srvSet('d-mcp', 'v-mcp', mcpOn, ':5002' + (mcpOn ? ' ✓' : ' ✗'));
-                if(mcpOn && mcp.tools) {
-                    const badge = document.getElementById('mcp-badge');
-                    badge.style.display = 'inline';
-                    badge.textContent = mcp.tools.length + ' tools';
-                    document.getElementById('mcp-popup').innerHTML =
-                        mcp.tools.map(t => '<span style="color:#4ade80">●</span> ' + t).join('<br>');
-                }
-            } catch(e) {
-                srvSet('d-cal','v-cal',false,':5679 ✗');
-                srvSet('d-mcp','v-mcp',false,':5002 ✗');
-            }
-            try {
-                await fetch('http://localhost:5000/');
-                srvSet('d-app','v-app',true,':5000 ✓');
-            } catch(e) { srvSet('d-app','v-app',false,':5000 ✗'); }
-            try {
-                const r = await fetch('/ngrok/status');
-                const d = await r.json();
-                const on = d.status === 'online';
-                const addr = d.addr ? d.addr.replace('http://localhost:','') : '5002';
-                srvSet('d-ngrok','v-ngrok', on, '→'+addr+(on?' ✓':' ✗'));
-            } catch(e) { srvSet('d-ngrok','v-ngrok',false,'→5002 ✗'); }
-        }
-        async function refreshLoop() {
-            try {
-                const r = await fetch('/loop/status');
-                const d = await r.json();
-                const on = d.inject_mode === 'ON';
-                document.getElementById('loop-inject-dot').className = 'server-dot ' + (on?'online':'offline');
-                document.getElementById('loop-inject-label').innerText = 'ESSENCE INJECT — ' + d.inject_mode;
-                document.getElementById('loop-inject-label').style.color = on?'#4ade80':'#6b7280';
-                const btn = document.getElementById('loop-toggle-btn');
-                btn.innerText = on?'⬛ STOP INJECT':'▶ START INJECT';
-                btn.style.borderColor = on?'#4ade80':'#fbbf24';
-                btn.style.color = on?'#4ade80':'#fbbf24';
-                document.getElementById('loop-essence-count').innerText = d.essence_count??'-';
-                document.getElementById('loop-raw-count').innerText = d.raw_count??'-';
-                document.getElementById('loop-ping-age').innerText = d.ping_age??'-';
-                const ping = d.ping_latest||{};
-                const preview = Object.entries(ping).slice(0,6)
-                    .map(([k,v])=>`<span style="color:#9ca3af">${k}</span>: <span style="color:#4ade80">${JSON.stringify(v).slice(0,40)}</span>`).join('  ');
-                document.getElementById('loop-ping-preview').innerHTML = preview||'— no packet —';
-                const active = Math.floor(Date.now()/1500)%8+1;
-                [1,2,3,4,5,6,7,8].forEach(i=>{
-                    const el=document.getElementById('ls-'+i);
-                    if(el) el.className='loop-stage'+(i===active?' active':'');
-                });
-            } catch(e){}
-        }
-        async function toggleInject() {
-            try{ await fetch('/loop/inject_toggle',{method:'POST'}); await refreshLoop(); }catch(e){}
-        }
-        window.onload = () => {
-            updateHistory(); refreshQueue(); refreshLoop(); updateServerStatus();
-            setInterval(refreshQueue,10000);
-            setInterval(refreshLoop,3000);
-            setInterval(updateServerStatus,10000);
-        };
-        async function refreshQueue() {
-            try {
-                const r = await fetch('/caliber/queue');
-                const d = await r.json();
-                const layers = d.layers||{};
-                ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k=>{
-                    const el=document.getElementById('c-'+k); if(el) el.innerText=layers[k]??'-';
-                });
-                document.getElementById('c-outbox').innerText = d.queue?.length??'-';
-                document.getElementById('ts').innerText = d.timestamp||'';
-                const dot=document.getElementById('sdot'), stat=document.getElementById('sstat');
-                if(d.caliber_server==='online'){
-                    dot.className='server-dot online'; stat.innerText='CALIBER PIPELINE — ONLINE :5679'; stat.style.color='#4ade80';
-                } else {
-                    dot.className='server-dot offline'; stat.innerText='CALIBER PIPELINE — OFFLINE :5679'; stat.style.color='#9ca3af';
-                }
-                const qEl=document.getElementById('zone-queue');
-                if(d.queue&&d.queue.length>0){
-                    qEl.innerHTML=d.queue.map(f=>`<div class="queue-item"><div class="fname">${f.name}</div><div class="fsize">${(f.size/1024).toFixed(1)} KB — 処理待ち</div></div>`).join('');
-                } else { qEl.innerHTML='<span class="empty-msg">— 待機中 —</span>'; }
-                if(!processing) document.getElementById('zone-processing').innerHTML='<span class="empty-msg">— スタンバイ —</span>';
-                const results=[...(d.recent_results||[]),...(d.reducing||[]).map(r=>({...r,status:'REDUCING'}))];
-                results.sort((a,b)=>(b.timestamp||'').localeCompare(a.timestamp||''));
-                const rEl=document.getElementById('zone-result');
-                if(results.length>0){
-                    rEl.innerHTML=results.slice(0,5).map(r=>{
-                        const rate=Math.round((r.restore_rate||0)*100), ok=r.status==='RE_REDUCED';
-                        return `<div class="result-item ${ok?'ok':'ng'}"><span class="result-rate ${ok?'ok':'ng'}">${rate}%</span><span class="result-meta">${r.status||''} | ${(r.timestamp||'').slice(0,16)}</span>${r.preview?'<div class="result-preview">'+r.preview.slice(0,80)+'</div>':''}</div>`;
-                    }).join('');
-                } else { rEl.innerHTML='<span class="empty-msg">— 結果なし —</span>'; }
-            } catch(e){ console.error(e); }
-        }
-        async function processNow() {
-            if(processing) return;
-            processing=true;
-            const msg=document.getElementById('proc-msg');
-            msg.style.color='#fbbf24'; msg.innerText='⟳ 処理要求中...';
-            document.getElementById('zone-processing').innerHTML='<div class="processing-item"><span class="processing-anim">↻</span>　処理中...</div>';
-            try {
-                const r=await fetch('/caliber/process',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-                const d=await r.json();
-                if(d.status==='empty'){msg.style.color='#9ca3af';msg.innerText='[INFO] outbox/PILSにファイルなし';}
-                else if(d.status==='error'){msg.style.color='#f87171';msg.innerText='[ERROR] '+(d.message||'unknown');}
-                else{msg.style.color='#4ade80';msg.innerText='[OK] '+d.status+' | 復元率: '+d.restore_rate+' | '+d.total_chars+'文字';}
-            } catch(e){msg.style.color='#f87171';msg.innerText='[ERROR] '+e.message;}
-            processing=false;
-            await refreshQueue();
-        }
-        function setCat(c,el){
-            state.c=c; state.targets=[];
-            document.querySelectorAll('#btnA,#btnB').forEach(b=>b.classList.remove('active-a','active-b'));
-            document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active-t'));
-            el.classList.add(c==='A'?'active-a':'active-b');
-            document.getElementById('opt-A').style.display=(c==='A')?'block':'none';
-            document.getElementById('opt-B').style.display=(c==='B')?'block':'none';
-            updateBtn();
-        }
-        function toggleT(t,el){
-            el.classList.toggle('active-t');
-            if(state.targets.includes(t)) state.targets=state.targets.filter(x=>x!==t);
-            else state.targets.push(t);
-            updateBtn();
-        }
-        function toggleAll(el){
-            el.classList.toggle('active-t');
-            const ais=['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
-            const on=el.classList.contains('active-t');
-            state.targets=on?[...ais]:[];
-            document.querySelectorAll('#opt-B .s-btn').forEach(b=>{if(on)b.classList.add('active-t');else b.classList.remove('active-t');});
-            updateBtn();
-        }
-        function updateBtn(){
-            const b=document.getElementById('exec'), sb=document.getElementById('status-bar');
-            if(state.targets.length>0){
-                b.classList.add('ready'); b.innerText='▶ LAUNCH: '+state.targets.join(' · ');
-                sb.style.color='#FF8000'; sb.innerText='READY — '+state.c+' → '+state.targets.join(', ');
-            } else {
-                b.classList.remove('ready'); b.innerText='SELECT MISSION TARGETS';
-                sb.style.color='#9ca3af'; sb.innerText='— SELECT CATEGORY AND TARGET —';
-            }
-        }
-        async function fire(){
-            if(!state.c||state.targets.length===0) return;
-            const btn=document.getElementById('exec');
-            const titleVal=document.getElementById('title').value.trim();
-            const memoVal=document.getElementById('memo').value.trim();
-            const prompt=(titleVal?'【'+titleVal+'】\n':'')+memoVal;
-            try{await navigator.clipboard.writeText(prompt);}catch(e){}
-            btn.innerText='⟳ DISPATCHING...'; btn.classList.remove('ready');
-            for(const t of state.targets){
-                await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:state.c,o:t,memo:prompt})});
-            }
-            if(state.c==='B'){
-                await fetch('/orchestra',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:(titleVal?titleVal+'\n':'')+memoVal})});
-                document.getElementById('status-bar').style.color='#c084fc';
-                document.getElementById('status-bar').innerText='PROMPT COPIED — OPEN EACH AI BELOW';
-                const ll=document.getElementById('link-list'); ll.innerHTML='';
-                for(const t of state.targets){
-                    if(AI_URLS[t]){
-                        const a=document.createElement('a'); a.href=AI_URLS[t]; a.target='_blank'; a.innerText='▶ '+t;
-                        a.style.cssText='display:inline-block;padding:8px 14px;border:1px solid #a855f7;color:#c084fc;text-decoration:none;font-family:monospace;font-size:13px;border-radius:4px;';
-                        ll.appendChild(a);
-                    }
-                }
-                document.getElementById('launch-links').style.display='block';
-            }
-            btn.innerText='✓ MISSION COMPLETE';
-            await updateHistory();
-            setTimeout(()=>{updateBtn();document.getElementById('memo').value='';},2500);
-        }
-        async function updateHistory(){
-            try{
-                const res=await fetch('/get_history');
-                const data=await res.json();
-                const body=document.getElementById('history-body');
-                body.innerHTML='';
-                data.reverse().slice(0,30).forEach(row=>{
-                    const tr=document.createElement('tr');
-                    tr.innerHTML='<td>'+(row.when||'')+'</td><td>'+(row.target_class||'')+'</td><td>'+(row.short_summary||row.free_note||'')+'</td>';
-                    body.appendChild(tr);
-                });
-            }catch(e){console.error(e);}
-        }
-    </script>
+async function refreshLoop(){
+  try{
+    const r=await fetch('/loop/status'),d=await r.json();
+    document.getElementById('loop-inject-label').innerText='INJECT:'+(d.inject_mode||'?');
+    document.getElementById('loop-essence-count').innerText=d.essence_count??'-';
+    document.getElementById('loop-raw-count').innerText=d.raw_count??'-';
+    document.getElementById('loop-ping-age').innerText=d.ping_age?'PING:'+d.ping_age:'';
+    const ping=d.ping_latest||{};
+    const parts=Object.entries(ping).filter(([k])=>!k.includes('generated')&&!k.includes('ngrok_online')&&!k.includes('ESSENCE')).map(([k,v])=>k+':"'+String(v).substring(0,25)+'"');
+    document.getElementById('loop-ping-preview').innerText=parts.join(' | ')||'— no data —';
+  }catch(e){}
+}
 
-    <div class="block">
-        <h3><span class="server-dot online"></span>④ EVENTS STREAM — 最新イベント</h3>
-        <div id="events-stream" style="max-height:200px;overflow-y:auto;"></div>
-    </div>
-    <div class="block">
-        <h3><span class="server-dot online"></span>⑤ TODO OBSERVER — 未着手・進行中</h3>
-        <div id="todo-stream" style="display:flex;flex-wrap:wrap;gap:6px;min-height:60px;"></div>
-    </div>
-    <div class="block">
-        <h3><span class="server-dot online"></span>⑥ SYSTEM HEALTH</h3>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-            <div class="layer-chip"><div class="num" id="h-events">-</div><div class="lbl">EVENTS</div></div>
-            <div class="layer-chip green"><div class="num" id="h-done">-</div><div class="lbl">TODO完了</div></div>
-            <div class="layer-chip amber"><div class="num" id="h-todo">-</div><div class="lbl">TODO残</div></div>
-            <div class="layer-chip purple"><div class="num" id="h-phase">M1</div><div class="lbl">PHASE</div></div>
-        </div>
-        <div id="hash-display" style="font-size:10px;color:#4b5563;word-break:break-all;"></div>
-    </div>
-
-    <script>
-    async function mcpCall(tool, args){
-        try{
-            const r=await fetch("http://localhost:5002/mcp",{
-                method:"POST", headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/call",params:{name:tool,arguments:args||{}}})
-            });
-            const d=await r.json();
-            return JSON.parse(d.result.content[0].text);
-        }catch(e){return null;}
+async function refreshPipeline(){
+  try{
+    const r=await fetch('/pipeline/status'),d=await r.json();
+    const L=d.layers||{};
+    document.getElementById('raw-done-count').innerText=L.RAW_DONE??'-';
+    document.getElementById('loop-raw-count').innerText=L.RAW??'-';
+    ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k=>{const e=document.getElementById('p-'+k);if(e)e.innerText=L[k]??'-';});
+    const pd=document.getElementById('p-DONE');if(pd)pd.innerText=L.RAW_DONE??'-';
+    const pp=document.getElementById('p-PILS');if(pp)pp.innerText=L.PILS??'-';
+    const dg=d.danger||{};
+    ['dt1','dt2','dt3','dte','dts','dtotal','danger-total','lb-today','learned-today'].forEach(id=>{
+      const map={dt1:'tier1',dt2:'tier2',dt3:'tier3',dte:'escalation',dts:'silent_danger',dtotal:'total','danger-total':'total','lb-today':'learned_today','learned-today':'learned_today'};
+      const el=document.getElementById(id);if(el)el.innerText=dg[map[id]]??'-';
+    });
+    document.getElementById('lb-last').innerText=dg.last_critical||'—';
+    const es=d.essence||{};
+    for(const ax of['INCIDENT','PHILOSOPHY','OPERATION']){
+      const info=es[ax]||{};
+      const axEl=document.getElementById('ax-'+ax);
+      if(axEl)axEl.className='ax '+(info.filled?'ok':'ng');
+      const tx=document.getElementById('txt-'+ax);if(tx)tx.innerText=info.filled?(info.text||'—'):'— 未充填 —';
+      const up=document.getElementById('upd-'+ax);if(up)up.innerText=(info.updated||'').substring(0,10);
     }
-    async function updateEventsStream(){
-        const d=await mcpCall("mocka_list_events",{n:10});
-        if(!d) return;
-        const el=document.getElementById("events-stream");
-        el.innerHTML="";
-        document.getElementById("h-events").textContent=d.count||"-";
-        const evs=[...(d.events||[])].reverse();
-        evs.forEach(e=>{
-            const div=document.createElement("div");
-            div.style.cssText="font-size:11px;padding:4px 8px;margin-bottom:3px;border-left:3px solid #6d28d9;background:rgba(0,0,0,0.3);border-radius:2px;display:flex;gap:8px;align-items:center;";
-            const when=(e.when||e.timestamp||"").substring(0,16);
-            const actor=(e.who_actor||e.author||"").substring(0,8);
-            const title=(e.title||e.short_summary||"").substring(0,55);
-            div.innerHTML=`<span style="color:#6d28d9;min-width:125px;flex-shrink:0;">${when}</span><span style="color:#9ca3af;min-width:55px;flex-shrink:0;">${actor}</span><span style="color:#e5e7eb;">${title}</span>`;
-            el.appendChild(div);
-        });
+    const inp=d.input||{},wd=inp.watchdog||{},pl=inp.pipeline||{};
+    if(wd.running){document.getElementById('idot-watchdog').className='id on';document.getElementById('ival-watchdog').innerText='済:'+(wd.processed_count||0)+'件';document.getElementById('irow-watchdog').className='ir on';}
+    if(pl.last){document.getElementById('idot-pipeline').className='id on';document.getElementById('ival-pipeline').innerText=pl.last;document.getElementById('irow-pipeline').className='ir on';}
+    if((L.RAW||0)>0){document.getElementById('idot-chrome').className='id on';document.getElementById('ival-chrome').innerText=L.RAW+'件待機';document.getElementById('irow-chrome').className='ir on';}
+  }catch(e){console.error(e);}
+}
+
+function sS(di,vi,on,tx){const d=document.getElementById(di),v=document.getElementById(vi);if(d)d.className='sd '+(on?'on':'off');if(v){v.className='sv '+(on?'on':'off');v.textContent=tx;}}
+async function updateServerStatus(){
+  try{
+    sS('d-app','v-app',true,':5000✓');
+    const r=await fetch('/servers/status'),d=await r.json();
+    const ca=d.caliber||{},mc=d.mcp||{};
+    const co=ca.status==='online',mo=mc.status==='online';
+    sS('d-cal','v-cal',co,':5679'+(co?'✓':'✗'));
+    sS('d-mcp','v-mcp',mo,':5002'+(mo?'✓':'✗'));
+    document.getElementById('sdot').className='sd '+(co?'on':'off');
+    document.getElementById('sstat').innerText='③ PIPELINE — '+(co?'ONLINE':'OFFLINE')+' :5679';
+    if(mo&&mc.tools){const b=document.getElementById('mcp-badge');b.style.display='inline';b.innerText=mc.tools.length||'?';document.getElementById('mcp-popup').innerHTML=mc.tools.map(t=>'<div>'+t+'</div>').join('');}
+  }catch(e){sS('d-cal','v-cal',false,':5679✗');}
+  try{const r=await fetch('/ngrok/status'),d=await r.json();sS('d-ngrok','v-ngrok',d.status==='online','→5002'+(d.status==='online'?'✓':'✗'));}catch(e){sS('d-ngrok','v-ngrok',false,'→✗');}
+  document.getElementById('ts').innerText=new Date().toLocaleTimeString('ja-JP');
+}
+
+async function refreshQueue(){
+  try{
+    const r=await fetch('/caliber/queue'),d=await r.json();
+    const L=d.layers||{};
+    ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k=>{const e=document.getElementById('p-'+k);if(e)e.innerText=L[k]??'-';});
+    const pp=document.getElementById('p-PILS');if(pp)pp.innerText=L.outbox_PILS??d.queue?.length??'-';
+    const qi=document.getElementById('zone-queue');qi.innerHTML='';
+    if(!d.queue?.length){qi.innerHTML='<span class="em">— 待機中 —</span>';}
+    else{d.queue.slice(0,6).forEach(f=>{const div=document.createElement('div');div.className='qi';div.innerHTML='<div style="color:#e5e7eb;word-break:break-all;">'+f.name+'</div><div style="color:#9ca3af;font-size:9px;">'+(f.size/1024).toFixed(1)+'KB</div>';qi.appendChild(div);});if(d.queue.length>6){const m=document.createElement('div');m.className='qi';m.innerHTML='<div style="color:#6b7280;">...他'+(d.queue.length-6)+'件</div>';qi.appendChild(m);}}
+    const zp=document.getElementById('zone-processing');zp.innerHTML='';
+    if(!d.reducing?.length){zp.innerHTML='<span class="em">— スタンバイ —</span>';}
+    else{d.reducing.forEach(r=>{const div=document.createElement('div');div.className='qi';div.innerHTML=Math.round((r.restore_rate||0)*100)+'% '+((r.file||'').substring(0,18));zp.appendChild(div);});}
+    const zr=document.getElementById('zone-result');zr.innerHTML='';
+    if(!d.recent_results?.length){zr.innerHTML='<span class="em">— 結果なし —</span>';}
+    else{d.recent_results.forEach(r=>{const rate=Math.round((r.restore_rate||0)*100),ok=rate>=80;const div=document.createElement('div');div.className='ri '+(ok?'ok':'ng');div.innerHTML='<span style="font-size:12px;font-weight:700;color:'+(ok?'#4ade80':'#fbbf24')+'">'+rate+'%</span><span style="color:#9ca3af;font-size:9px;margin-left:4px;">'+(r.status||'')+'</span><div style="color:#6b7280;font-size:9px;">'+(r.preview||'').substring(0,50)+'</div>';zr.appendChild(div);});}
+  }catch(e){console.error(e);}
+}
+
+async function processNow(){
+  document.getElementById('proc-msg').innerText='⏳ 処理中...';
+  try{const r=await fetch('/caliber/process',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});const d=await r.json();document.getElementById('proc-msg').innerText='✅ '+d.status+' rate='+(d.restore_rate||'?');setTimeout(refreshQueue,2000);}
+  catch(e){document.getElementById('proc-msg').innerText='❌ '+e.message;}
+}
+
+async function toggleInject(){
+  try{const r=await fetch('/loop/inject_toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});const d=await r.json();document.getElementById('loop-inject-label').innerText='INJECT:'+d.inject_mode;}catch(e){}
+}
+
+function setCat(c,btn){
+  state.c=c;state.targets=[];
+  document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('at2'));
+  document.getElementById('btnA').classList.toggle('aa',c==='A');
+  document.getElementById('btnB').classList.toggle('ab2',c==='B');
+  document.getElementById('opt-A').style.display=c==='A'?'block':'none';
+  document.getElementById('opt-B').style.display=c==='B'?'block':'none';
+  document.getElementById('launch-links').style.display='none';
+  updateBtn();
+}
+function toggleT(t,btn){const i=state.targets.indexOf(t);if(i<0){state.targets.push(t);btn.classList.add('at2');}else{state.targets.splice(i,1);btn.classList.remove('at2');}updateBtn();}
+function toggleAll(btn){const all=['ChatGPT','Gemini','Claude','Perplexity','Copilot'];if(state.targets.length===all.length){state.targets=[];document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('at2'));}else{state.targets=[...all];document.querySelectorAll('.s-btn').forEach(b=>b.classList.add('at2'));}updateBtn();}
+function updateBtn(){const btn=document.getElementById('exec');const ok=state.c&&state.targets.length>0;btn.classList.toggle('rdy',ok);btn.innerText=ok?'▶ EXECUTE ['+state.c+'→'+state.targets.join('+')+']':'SELECT MISSION TARGETS';btn.disabled=!ok;}
+async function fire(){
+  if(!state.c||!state.targets.length)return;
+  const btn=document.getElementById('exec');btn.disabled=true;
+  const memo=document.getElementById('memo').value.trim(),title=document.getElementById('title').value.trim();
+  try{
+    await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({c:state.c,o:state.targets.join(','),memo:memo?'['+title+'] '+memo:title})});
+    if(state.c==='B'){
+      document.getElementById('status-bar').style.color='#c084fc';
+      document.getElementById('status-bar').innerText='OPEN EACH AI TAB';
+      const ll=document.getElementById('link-list');ll.innerHTML='';
+      for(const t of state.targets){if(AI_URLS[t]){const a=document.createElement('a');a.href=AI_URLS[t];a.target='_blank';a.innerText='▶ '+t;a.style.cssText='display:inline-block;padding:4px 10px;border:1px solid #a855f7;color:#c084fc;text-decoration:none;font-family:monospace;font-size:11px;border-radius:3px;';ll.appendChild(a);}}
+      document.getElementById('launch-links').style.display='block';
     }
-    async function updateTodoObserver(){
-        const d=await mcpCall("mocka_get_todo");
-        if(!d||!d.todos) return;
-        const el=document.getElementById("todo-stream");
-        el.innerHTML="";
-        const todos=d.todos||[], completed=d.completed||[];
-        document.getElementById("h-todo").textContent=todos.filter(t=>t.status!=="完了").length;
-        document.getElementById("h-done").textContent=completed.length;
-        todos.filter(t=>t.status!=="完了").forEach(t=>{
-            const div=document.createElement("div");
-            const c=t.priority==="高"?"#ef4444":t.priority==="中"?"#f59e0b":"#6b7280";
-            const sc=t.status==="進行中"?"#fbbf24":"#6b7280";
-            div.style.cssText=`background:#111827;border:1px solid ${c};border-radius:4px;padding:6px 10px;font-size:11px;max-width:190px;cursor:default;`;
-            div.title=t.description||"";
-            div.innerHTML=`<div style="color:${c};font-weight:700;font-size:10px;">${t.id||""}</div><div style="color:#e5e7eb;margin-top:2px;">${(t.title||"").substring(0,28)}</div><div style="color:${sc};margin-top:2px;font-size:10px;">${t.status} | ${(t.assigned_to||"").substring(0,10)}</div>`;
-            el.appendChild(div);
-        });
-    }
-    async function updateHealth(){
-        try{
-            const r=await fetch("http://localhost:5002/health");
-            const d=await r.json();
-            document.getElementById("hash-display").textContent="MCP v"+(d.version||"?")+" | "+new Date().toLocaleTimeString("ja-JP");
-        }catch(e){
-            document.getElementById("hash-display").textContent="MCP :5002 offline";
-        }
-    }
-    async function updateObservers(){ await Promise.all([updateEventsStream(),updateTodoObserver(),updateHealth()]); }
-    updateObservers();
-    setInterval(updateObservers,15000);
-    </script>
+    btn.innerText='✓ DONE';await updateHistory();setTimeout(()=>{updateBtn();document.getElementById('memo').value='';},2000);
+  }catch(e){btn.innerText='ERR';}
+}
+async function updateHistory(){
+  try{const res=await fetch('/get_history');const data=await res.json();const body=document.getElementById('history-body');body.innerHTML='';data.reverse().slice(0,20).forEach(row=>{const tr=document.createElement('tr');tr.innerHTML='<td>'+(row.when||'')+'</td><td>'+(row.target_class||'')+'</td><td>'+(row.short_summary||row.free_note||'')+'</td>';body.appendChild(tr);});}catch(e){}
+}
+
+async function mcpCall(tool,args){
+  try{const r=await fetch("http://localhost:5002/mcp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/call",params:{name:tool,arguments:args||{}}})});const d=await r.json();return JSON.parse(d.result.content[0].text);}catch(e){return null;}
+}
+async function updateEventsStream(){
+  const d=await mcpCall("mocka_list_events",{n:10});if(!d)return;
+  document.getElementById("h-events").textContent=d.count||"-";
+  const el=document.getElementById("events-stream");el.innerHTML="";
+  [...(d.events||[])].reverse().forEach(e=>{
+    const div=document.createElement("div");
+    div.style.cssText="font-size:10px;padding:3px 6px;margin-bottom:2px;border-left:2px solid #6d28d9;background:rgba(0,0,0,0.3);border-radius:2px;display:flex;gap:6px;";
+    const when=(e.when||"").substring(0,16),actor=(e.who_actor||"").substring(0,8),title=(e.title||e.short_summary||"").substring(0,55);
+    div.innerHTML='<span style="color:#6d28d9;min-width:105px;flex-shrink:0;">'+when+'</span><span style="color:#9ca3af;min-width:45px;flex-shrink:0;">'+actor+'</span><span style="color:#e5e7eb;">'+title+'</span>';
+    el.appendChild(div);
+  });
+}
+async function updateTodoObserver(){
+  const d=await mcpCall("mocka_get_todo");if(!d||!d.todos)return;
+  const el=document.getElementById("todo-stream");el.innerHTML="";
+  const todos=d.todos||[],completed=d.completed||[];
+  document.getElementById("h-todo").textContent=todos.filter(t=>t.status!=="完了").length;
+  document.getElementById("h-done").textContent=completed.length;
+  todos.filter(t=>t.status!=="完了").forEach(t=>{
+    const div=document.createElement("div");
+    const c=t.priority==="高"?"#ef4444":t.priority==="中"?"#f59e0b":"#6b7280";
+    div.style.cssText='background:#111827;border:1px solid '+c+';border-radius:3px;padding:4px 7px;font-size:10px;max-width:160px;cursor:default;';
+    div.title=t.description||"";
+    div.innerHTML='<div style="color:'+c+';font-weight:700;font-size:9px;">'+(t.id||"")+'</div><div style="color:#e5e7eb;margin-top:1px;">'+(t.title||"").substring(0,24)+'</div><div style="color:#6b7280;margin-top:1px;font-size:9px;">'+(t.status||"")+' | '+(t.assigned_to||"").substring(0,8)+'</div>';
+    el.appendChild(div);
+  });
+}
+async function updateHealth(){
+  try{const r=await fetch("http://localhost:5002/health");const d=await r.json();document.getElementById("hash-display").textContent="MCP v"+(d.version||"?")+" | "+new Date().toLocaleTimeString("ja-JP");}
+  catch(e){document.getElementById("hash-display").textContent="MCP offline";}
+}
+
+async function refreshAll(){
+  await Promise.all([refreshLoop(),refreshPipeline(),refreshQueue(),updateServerStatus(),updateEventsStream(),updateTodoObserver(),updateHealth(),updateHistory()]);
+}
+refreshAll();
+setInterval(refreshAll,15000);
+</script>
 </body>
 </html>

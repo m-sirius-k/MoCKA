@@ -18,6 +18,12 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent))
 from Sanitizer_Gate import SanitizerGate
 from Essence_Direct_Parser import EssenceDirectParser
+from language_detector import LanguageDetector
+try:
+    from essence_condenser import EssenceCondenser
+    _has_condenser = True
+except Exception:
+    _has_condenser = False
 
 
 # ============================================================
@@ -34,9 +40,11 @@ POLL_INTERVAL = 10  # 秒
 class WatchdogMoCKA:
 
     def __init__(self):
-        self.gate   = SanitizerGate(verbose=True)
-        self.parser = EssenceDirectParser(essence_path=ESSENCE_PATH, verbose=True)
-        self.seen   = self._load_processed()
+        self.gate      = SanitizerGate(verbose=True)
+        self.parser    = EssenceDirectParser(essence_path=ESSENCE_PATH, verbose=True)
+        self.detector  = LanguageDetector()
+        self.condenser = EssenceCondenser(essence_path=ESSENCE_PATH) if _has_condenser else None
+        self.seen      = self._load_processed()
         self._ensure_dirs()
 
     def _log(self, msg: str):
@@ -66,13 +74,13 @@ class WatchdogMoCKA:
         """ファイル内容のSHA-256ハッシュ（変更検知用）"""
         return hashlib.sha256(path.read_bytes()).hexdigest()
 
-    def _append_events_log(self, file_path: Path, result: str):
+    def _append_events_log(self, file_path: Path, result: str, level: str = "INFO", score: float = 0):
         """
-        events.csvに処理ログを追記する。
-        events.csvは「読み取り専用ログ」として機能する（マスターデータではない）。
+        events.csvに処理ログを追記。
+        danger_levelとscoreも記録。
         """
         ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        line = f'{ts},watchdog,{file_path.name},{result},E20260418_007,no_api\n'
+        line = f'{ts},watchdog,{file_path.name},{result},E20260418_007,no_api,danger_level={level},score={score:.1f}\n'
         try:
             with open(EVENTS_CSV, "a", encoding="utf-8") as f:
                 f.write(line)
@@ -82,8 +90,7 @@ class WatchdogMoCKA:
     def process_file(self, path: Path):
         """
         1ファイルの処理フロー:
-        [Sanitizer_Gate] -> [Essence_Direct_Parser] -> [lever_essence.json]
-        batch_ecol2.py は呼ばない。APIは呼ばない。
+        [Sanitizer_Gate] -> [LanguageDetector] -> [Essence_Direct_Parser] -> [lever_essence.json]
         """
         self._log(f"検知: {path.name}")
 
@@ -91,14 +98,32 @@ class WatchdogMoCKA:
         ok = self.gate.sanitize_file(path)
         if not ok:
             self._log(f"BLOCKED: {path.name}")
-            self._append_events_log(path, "BLOCKED")
+            self._append_events_log(path, "BLOCKED", "INFO", 0)
             return
 
-        # Phase 2: タグ抽出 -> essence更新
+        # Phase 2: 言語危険度解析
+        detection = self.detector.analyze_file(path)
+        level = detection.get("level", "INFO")
+        score = detection.get("score", 0)
+        matched = detection.get("matched_words", [])
+
+        if matched:
+            self._log(f"[{level}] スコア={score} 検知語={matched[:5]}")
+
+        # Phase 3: タグ抽出（::I:: ::P:: ::O::）
         updated = self.parser.process(path)
+
+        # Phase 4: 濃縮 → essence更新（condenser経由）
+        if self.condenser:
+            try:
+                text = path.read_text(encoding="utf-8", errors="replace")
+                self.condenser.condense_from_text(text, source="watchdog")
+            except Exception as e:
+                self._log(f"CONDENSER ERROR: {e}")
+
         result = "UPDATED" if updated else "NO_CHANGE"
         self._log(f"{result}: {path.name}")
-        self._append_events_log(path, result)
+        self._append_events_log(path, result, level, score)
 
         # 処理済みとして記録
         self.seen[str(path)] = self._file_hash(path)

@@ -14,7 +14,7 @@ app = Flask(__name__)
 
 CORS(app, origins="*", supports_credentials=True)
 
-# ===== 鬮｢・ｾ繝ｻ・ｪ髯ｷ閧ｴ蝮ｩ・つ繝ｻ・｣鬩搾ｽｯ陞｢・ｼ郢晢ｽｻ鬨ｾ繝ｻ繝ｻ=====
+# ===== 髢ｾ・ｪ陷肴坩ﾂ・｣驍ｯ螢ｼ繝ｻ騾・・=====
 import threading
 import time
 
@@ -26,7 +26,7 @@ def auto_process_loop():
         try:
             files = [f for f in os.listdir(PILS_DIR) if f.endswith(".json")]
             if files:
-                print("[AUTO] PILS queue: {} -> processing".format(len(files)))
+                print("[AUTO] PILSqueue: {} -> processing".format(len(files)))
                 r = requests.post(
                     CALIBER_SERVER + "/process",
                     json={},
@@ -36,17 +36,17 @@ def auto_process_loop():
                 if r.status_code == 200:
                     result = r.json()
                     rate = result.get("restore_rate", "?")
-                    print("[AUTO] 髯橸ｽｳ陟包ｽ｡繝ｻ・ｺ郢晢ｽｻrestore_rate={}".format(rate))
+                    print("[AUTO] 陞ｳ蠕｡・ｺ繝ｻrestore_rate={}".format(rate))
                 else:
-                    print("[AUTO] 驛｢・ｧ繝ｻ・ｨ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｼ({}): {}".format(r.status_code, r.text[:80]))
+                    print("[AUTO] 郢ｧ・ｨ郢晢ｽｩ郢晢ｽｼ({}): {}".format(r.status_code, r.text[:80]))
             time.sleep(10)
         except Exception as e:
-            print("[AUTO] 髣懃§蜚ｱ繝ｻ・､郢晢ｽｻ {}".format(str(e)[:80]))
+            print("[AUTO] 關灘唱・､繝ｻ {}".format(str(e)[:80]))
             time.sleep(30)
 
 _auto_thread = threading.Thread(target=auto_process_loop, daemon=True)
 _auto_thread.start()
-# ===== 鬮｢・ｾ繝ｻ・ｪ髯ｷ閧ｴ蝮ｩ・つ繝ｻ・｣鬩搾ｽｯ陞｢・ｼ郢晢ｽｻ鬨ｾ繝ｻ繝ｻ繝ｻ繝ｻ・ｸ・ｺ髦ｮ蜷ｮ遨宣し・ｺ繝ｻ・ｧ =====
+# ===== 髢ｾ・ｪ陷肴坩ﾂ・｣驍ｯ螢ｼ繝ｻ騾・・・・ｸｺ阮吮穐邵ｺ・ｧ =====
 
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -232,11 +232,11 @@ def ask():
         return jsonify({"status": "error", "message": "invalid payload"}), 400
     if c == "A":
         what_type = "storage"
-        title = f"髣厄ｽｫ隴取得・ｽ・ｭ郢晢ｽｻ {o}"
+        title = f"闖ｫ譎擾ｽｭ繝ｻ {o}"
         short_summary = "Storage mission dispatched"
     else:
         what_type = "broadcast"
-        title = f"髯ｷ闌ｨ・ｽ・ｱ髫ｴ蟶吶・ {o}"
+        title = f"陷茨ｽｱ隴帙・ {o}"
         short_summary = "Broadcast mission dispatched"
     meta = {
         "what_type": what_type,
@@ -247,7 +247,7 @@ def ask():
         "who_actor": "human_nsjsiro",
         "where_component": "chrome_extension",
         "where_path": "mocka-extension/background.js",
-        "why_purpose": "save/broadcast from command center",
+        "why_purpose": "陷ｿ・ｳ郢ｧ・ｯ郢晢ｽｪ郢昴・縺醍ｹ晢ｽ｡郢昜ｹ斟礼ｹ晢ｽｼ邵ｺ荵晢ｽ臥ｸｺ・ｮ闖ｫ譎擾ｽｭ蛟･繝ｻ陷茨ｽｱ隴帷判譯・抄繝ｻ,
         "how_trigger": "context_menu_click",
         "channel_type": "browser_extension",
         "lifecycle_phase": "in_operation",
@@ -262,13 +262,12 @@ def ask():
         "free_note": memo if memo else "N/A",
     }
     append_event(meta)
-    # 保存(A)の場合はpipelineでessence化
-    if c == "A" and memo:
+    # 菫晏ｭ・A)縺ｮ蝣ｴ蜷医・pipeline縺ｧessence蛹厄ｼ・eturn繧医ｊ蜑阪↓螳溯｡鯉ｼ・    if c == "A" and memo:
         try:
             _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
             _tx = memo.strip()
             subprocess.Popen([sys.executable, _pl, "--text", _tx, "--no-ping"], cwd=ROOT_DIR)
-            print(f"[ASK] pipeline隘搾ｽｷ陷阪・ {_tx[:50]}")
+            print(f"[ASK] pipeline襍ｷ蜍・ {_tx[:50]}")
         except Exception as _e:
             print(f"[ASK] pipeline error: {_e}")
     return jsonify({"status": "ok"})
@@ -315,13 +314,6 @@ def collect():
             text[:100].encode("utf-8","replace").decode("utf-8"),prev,"ingest_complete","RAW","local","chat_pipeline","N/A","N/A",
             f"hash={h}|source={source}|mode={mode}"])
     print(f"[COLLECT] {eid} from {source} ({len(text)} chars)")
-    # 蜿ｳ繧ｯ繝ｪ繝・け菫晏ｭ倥ｂpipeline縺ｧessence蛹・
-    try:
-        _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
-        subprocess.Popen([sys.executable, _pl, '--text', text[:500], '--no-ping'], cwd=ROOT_DIR)
-        print('[COLLECT] pipeline襍ｷ蜍・ ' + eid)
-    except Exception as _e:
-        print('[COLLECT] pipeline error: ' + str(_e))
     return jsonify({"status":"ok","event_id":eid,"hash":h})
 
 
@@ -413,7 +405,7 @@ def loop_status():
         v = INJECT_FLAG.read_text(encoding="utf-8-sig").strip().upper()
         inject_mode = v if v in ["ON","OFF"] else "ON"
 
-    # ESSENCE COUNT 驕ｯ・ｶ郢晢ｽｻINCIDENT/PHILOSOPHY/OPERATION驍ｵ・ｺ繝ｻ・ｮ髯ｷ蛹ｻ繝ｻ繝ｻ・｡繝ｻ・ｫ髮九ｇ迴ｾ遶擾ｽｩ鬮ｴ繝ｻ・ｽ・ｸ髫ｰ・ｨ繝ｻ・ｰ(髫ｴ蟠｢ﾂ髯樊ｻゑｽｽ・ｧ3)
+    # ESSENCE COUNT 遯ｶ繝ｻINCIDENT/PHILOSOPHY/OPERATION邵ｺ・ｮ陷医・・｡・ｫ雋ょ現竏ｩ髴・ｽｸ隰ｨ・ｰ(隴崢陞滂ｽｧ3)
     essence_count = 0
     essence_axes  = {"INCIDENT": False, "PHILOSOPHY": False, "OPERATION": False}
     essence_updated = None
@@ -424,14 +416,14 @@ def loop_status():
                 if data.get(axis) and str(data[axis]).strip():
                     essence_axes[axis] = True
             essence_count = sum(essence_axes.values())
-            # 髫ｴ蟠｢ﾂ髫ｴ繝ｻ・ｽ・ｰ驍ｵ・ｺ繝ｻ・ｮ髫ｴ蜴・ｽｽ・ｴ髫ｴ繝ｻ・ｽ・ｰ髫ｴ魃会ｽｽ・･髫ｴ蠑ｱ・・・螳壽╂鬮｢ﾂ繝ｻ・ｾ郢晢ｽｻ
+            # 隴崢隴・ｽｰ邵ｺ・ｮ隴厄ｽｴ隴・ｽｰ隴鯉ｽ･隴弱ｅ・定愾髢・ｾ繝ｻ
             dates = [data.get(f"{k}_updated") for k in essence_axes if data.get(f"{k}_updated")]
             if dates:
                 essence_updated = max(dates)
         except:
             pass
 
-    # RAW / RAW_DONE 驛｢・ｧ繝ｻ・ｫ驛｢・ｧ繝ｻ・ｦ驛｢譎｢・ｽ・ｳ驛｢譏ｴ繝ｻ
+    # RAW / RAW_DONE 郢ｧ・ｫ郢ｧ・ｦ郢晢ｽｳ郢昴・
     raw_count      = len(list(RAW_DIR.glob("*.json")))      if RAW_DIR.exists()      else 0
     raw_done_count = len(list(RAW_DONE_DIR.glob("*.json"))) if RAW_DONE_DIR.exists() else 0
 
@@ -449,11 +441,11 @@ def loop_status():
 
     return jsonify({
         "inject_mode":     inject_mode,
-        "essence_count":   essence_count,       # 0-3: 髯ｷ蛹ｻ繝ｻ繝ｻ・｡繝ｻ・ｫ髮九ｇ迴ｾ遶擾ｽｩ鬮ｴ繝ｻ・ｽ・ｸ髫ｰ・ｨ繝ｻ・ｰ
+        "essence_count":   essence_count,       # 0-3: 陷医・・｡・ｫ雋ょ現竏ｩ髴・ｽｸ隰ｨ・ｰ
         "essence_axes":    essence_axes,         # {INCIDENT:bool, PHILOSOPHY:bool, OPERATION:bool}
-        "essence_updated": essence_updated,      # 髫ｴ蟠｢ﾂ鬩搾ｽｨ郢ｧ莠･・ｳ・ｩ髫ｴ繝ｻ・ｽ・ｰ髫ｴ魃会ｽｽ・･髫ｴ蠑ｱ繝ｻ
-        "raw_count":       raw_count,            # 髫ｴ蟷｢・ｽ・ｪ髯ｷ繝ｻ・ｽ・ｦ鬨ｾ繝ｻ繝ｻAW髣比ｼ夲ｽｽ・ｶ髫ｰ・ｨ繝ｻ・ｰ
-        "raw_done_count":  raw_done_count,       # 髯ｷ繝ｻ・ｽ・ｦ鬨ｾ繝ｻ繝ｻ繝ｻ・ｸ陋ｹ・ｻ遶擾ｽｩRAW髣比ｼ夲ｽｽ・ｶ髫ｰ・ｨ繝ｻ・ｰ
+        "essence_updated": essence_updated,      # 隴崢驍ｨ繧亥ｳｩ隴・ｽｰ隴鯉ｽ･隴弱・
+        "raw_count":       raw_count,            # 隴幢ｽｪ陷・ｽｦ騾・・AW闔会ｽｶ隰ｨ・ｰ
+        "raw_done_count":  raw_done_count,       # 陷・ｽｦ騾・・・ｸ蛹ｻ竏ｩRAW闔会ｽｶ隰ｨ・ｰ
         "ping_latest":     ping_data,
         "ping_age":        ping_age,
     })
