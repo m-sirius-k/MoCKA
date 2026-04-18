@@ -273,6 +273,27 @@ def health():
     ep = find_events_csv()
     return json.dumps({"status": "ok", "version": "1.3.0", "port": 5002, "overview_exists": OVERVIEW_PATH.exists(), "todo_exists": TODO_PATH.exists(), "events_csv": str(ep) if ep else None, "tools": [t["name"] for t in TOOLS]}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
+
+# ========================================
+# Agent REST API -- 全AI向け解放エンドポイント
+# ========================================
+@app.route("/agent/tools", methods=["GET"])
+def agent_tools():
+    """利用可能ツール一覧"""
+    return json.dumps({"tools": [t["name"] for t in TOOLS], "usage": "POST /agent/<tool_name>"}), 200, {"Content-Type": "application/json"}
+
+@app.route("/agent/<tool_name>", methods=["POST", "GET"])
+def agent_call(tool_name):
+    """全AI向け汎用ツール呼び出し
+    POST: {"args": {...}}
+    GET:  引数なし（get_overview等）
+    """
+    args = {}
+    if request.method == "POST":
+        body = request.get_json(silent=True) or {}
+        args = body.get("args", body)
+    result = execute_tool(tool_name, args)
+    return result, 200, {"Content-Type": "application/json; charset=utf-8"}
 if __name__ == "__main__":
     print("MoCKA MCP Server v1.3.0 -- http://localhost:5002/mcp")
     print(f"Tools: {len(TOOLS)}")
