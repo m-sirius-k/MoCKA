@@ -606,6 +606,165 @@ def danger_status():
         return jsonify({"status":"OK","summary":summary,"meta":p.get("_meta",{})})
     except Exception as e:
         return jsonify({"status":"ERROR","message":str(e)})
+
+# ============================================================
+# MoCKA Public API — 全AI向け公開エンドポイント
+# ngrok経由で任命済みAIが全サービスにアクセス可能
+# ============================================================
+
+@app.route("/public/todo")
+def public_todo():
+    """MOCKA_TODO.json を全AI向けに公開"""
+    import json
+    from pathlib import Path
+    TODO_PATH = Path(r"C:\Users\sirok\MOCKA_TODO.json")
+    if not TODO_PATH.exists():
+        return jsonify({"status": "NOT_FOUND"})
+    try:
+        return jsonify(json.loads(TODO_PATH.read_text(encoding="utf-8")))
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
+
+@app.route("/public/overview")
+def public_overview():
+    """MOCKA_OVERVIEW.json を全AI向けに公開"""
+    import json
+    from pathlib import Path
+    OV_PATH = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
+    if not OV_PATH.exists():
+        return jsonify({"status": "NOT_FOUND"})
+    try:
+        return jsonify(json.loads(OV_PATH.read_text(encoding="utf-8")))
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
+
+@app.route("/public/essence")
+def public_essence():
+    """lever_essence.json を全AI向けに公開"""
+    import json
+    from pathlib import Path
+    EP = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
+    if not EP.exists():
+        return jsonify({"status": "NOT_FOUND"})
+    try:
+        return jsonify(json.loads(EP.read_text(encoding="utf-8")))
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
+
+@app.route("/public/events")
+def public_events():
+    """直近イベントを全AI向けに公開"""
+    import csv as _csv
+    from pathlib import Path
+    EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
+    n = int(request.args.get("n", 20))
+    if not EP.exists():
+        return jsonify({"status": "NOT_FOUND"})
+    try:
+        rows = []
+        with open(EP, encoding="utf-8-sig", errors="replace") as f:
+            reader = _csv.DictReader(f)
+            for r in reader:
+                rows.append({k: (v or "") for k, v in r.items()})
+        return jsonify({"count": len(rows), "events": rows[-n:]})
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
+
+@app.route("/public/write_event", methods=["POST"])
+def public_write_event():
+    """全AI向けイベント記録エンドポイント"""
+    payload = request.get_json(force=True, silent=True) or {}
+    title = payload.get("title", "")
+    description = payload.get("description", "")
+    author = payload.get("author", "external_ai")
+    tags = payload.get("tags", "")
+    if not title or not description:
+        return jsonify({"status": "error", "message": "title and description required"}), 400
+    meta = {
+        "what_type": "ai_event",
+        "category_ab": "A",
+        "target_class": "infield",
+        "title": title,
+        "short_summary": description[:200],
+        "who_actor": author,
+        "where_component": "public_api",
+        "where_path": "/public/write_event",
+        "why_purpose": tags,
+        "how_trigger": "external_ai_call",
+        "channel_type": "http_api",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "before_state": "N/A",
+        "after_state": "N/A",
+        "change_type": "N/A",
+        "impact_scope": "local",
+        "impact_result": "N/A",
+        "related_event_id": "N/A",
+        "trace_id": "N/A",
+        "free_note": description,
+    }
+    append_event(meta)
+    return jsonify({"status": "ok", "event_id": next_event_id()})
+
+@app.route("/public/pipeline", methods=["POST"])
+def public_pipeline():
+    """全AI向けpipeline実行エンドポイント（essenceへの直接投入）"""
+    payload = request.get_json(force=True, silent=True) or {}
+    text = payload.get("text", "").strip()
+    author = payload.get("author", "external_ai")
+    if not text:
+        return jsonify({"status": "error", "message": "text required"}), 400
+    try:
+        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+        subprocess.Popen([sys.executable, _pl, "--text", text[:1000], "--no-ping"], cwd=ROOT_DIR)
+        print("[PUBLIC_PIPELINE] {} -> pipeline: {}...".format(author, text[:50]))
+        return jsonify({"status": "ok", "message": "pipeline started", "author": author})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/public/seal", methods=["POST"])
+def public_seal():
+    """全AI向けsealエンドポイント（events.csvのSHA-256）"""
+    import hashlib
+    from pathlib import Path
+    EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
+    if not EP.exists():
+        return jsonify({"status": "NOT_FOUND"})
+    try:
+        h = hashlib.sha256(EP.read_bytes()).hexdigest()
+        return jsonify({"status": "ok", "sha256": h, "file": str(EP), "timestamp": datetime.now().isoformat()})
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
+
+@app.route("/public/status")
+def public_status():
+    """MoCKA全体の状態を一括返却 — 新規AIのオンボーディング用"""
+    import json as _j
+    from pathlib import Path
+    result = {
+        "system": "MoCKA v3.0",
+        "status": "online",
+        "services": {
+            "todo":      "/public/todo",
+            "overview":  "/public/overview",
+            "essence":   "/public/essence",
+            "events":    "/public/events?n=20",
+            "write_event": "/public/write_event (POST)",
+            "pipeline":  "/public/pipeline (POST)",
+            "seal":      "/public/seal (POST)",
+            "pipeline_status": "/pipeline/status",
+            "danger_status":   "/danger/status",
+            "essence_detail":  "/essence/detail",
+        },
+        "mcp": {
+            "url": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp",
+            "tools": ["mocka_get_todo","mocka_get_overview","mocka_get_essence",
+                      "mocka_write_event","mocka_list_events","mocka_seal","mocka_search","mocka_read_event"]
+        },
+        "ngrok": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev",
+        "appointed_ai": ["Claude","Gemini","GPT","Copilot","Perplexity"],
+    }
+    return jsonify(result)
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
