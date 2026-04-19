@@ -1,211 +1,133 @@
 """
-MOCKA Firestore 双方向同期スクリプト
-ローカル MOCKA_TODO.json ↔ Firestore intent_queue
+MOCKA Firestore 双方向同期スクリプト v2
+APIキーは環境変数から取得（ハードコード禁止）
 
 使い方:
   python mocka_firestore_sync.py push   # ローカル→Firebase
   python mocka_firestore_sync.py pull   # Firebase→ローカル
-  python mocka_firestore_sync.py watch  # 60秒ごとに自動同期（pull優先）
+  python mocka_firestore_sync.py watch  # 60秒ごとに自動同期
 """
 
-import json
-import sys
-import time
-import urllib.request
-import urllib.error
+import json, os, sys, time, urllib.request, urllib.error
 from pathlib import Path
 from datetime import datetime
 
-# Firebase設定
-PROJECT_ID = "mocka-knowledge-gate"
-API_KEY = "AIzaSyCZWcJ3UmS3ux02LKYFGEBkOKuIZ7LSNFg"
-BASE_URL = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents"
+PROJECT_ID = os.environ.get("MOCKA_FIREBASE_PROJECT_ID", "mocka-knowledge-gate")
+API_KEY    = os.environ.get("MOCKA_FIREBASE_API_KEY", "")
+
+if not API_KEY:
+    print("ERROR: 環境変数 MOCKA_FIREBASE_API_KEY が未設定")
+    sys.exit(1)
+
+BASE_URL   = f"https://firestore.googleapis.com/v1/projects/{PROJECT_ID}/databases/(default)/documents"
 COLLECTION = "intent_queue"
+TODO_PATH  = Path("C:/Users/sirok/MOCKA_TODO.json")
 
-# ローカルパス
-TODO_PATH = Path("C:/Users/sirok/MOCKA_TODO.json")
+def to_fs(val):
+    if val is None:           return {"nullValue": None}
+    if isinstance(val, bool): return {"booleanValue": val}
+    if isinstance(val, int):  return {"integerValue": str(val)}
+    if isinstance(val, float):return {"doubleValue": val}
+    if isinstance(val, str):  return {"stringValue": val}
+    if isinstance(val, list): return {"arrayValue": {"values": [to_fs(v) for v in val]}}
+    if isinstance(val, dict): return {"mapValue": {"fields": {k: to_fs(v) for k, v in val.items()}}}
+    return {"stringValue": str(val)}
 
-
-# ── Firestore変換ユーティリティ ──────────────────────────
-
-def to_firestore_value(val):
-    if val is None:
-        return {"nullValue": None}
-    elif isinstance(val, bool):
-        return {"booleanValue": val}
-    elif isinstance(val, int):
-        return {"integerValue": str(val)}
-    elif isinstance(val, float):
-        return {"doubleValue": val}
-    elif isinstance(val, str):
-        return {"stringValue": val}
-    elif isinstance(val, list):
-        return {"arrayValue": {"values": [to_firestore_value(v) for v in val]}}
-    elif isinstance(val, dict):
-        return {"mapValue": {"fields": {k: to_firestore_value(v) for k, v in val.items()}}}
-    else:
-        return {"stringValue": str(val)}
-
-
-def from_firestore_value(fval: dict):
-    if "nullValue" in fval:
-        return None
-    elif "booleanValue" in fval:
-        return fval["booleanValue"]
-    elif "integerValue" in fval:
-        return int(fval["integerValue"])
-    elif "doubleValue" in fval:
-        return fval["doubleValue"]
-    elif "stringValue" in fval:
-        return fval["stringValue"]
-    elif "arrayValue" in fval:
-        return [from_firestore_value(v) for v in fval["arrayValue"].get("values", [])]
-    elif "mapValue" in fval:
-        return {k: from_firestore_value(v) for k, v in fval["mapValue"].get("fields", {}).items()}
+def from_fs(fval):
+    if "nullValue"    in fval: return None
+    if "booleanValue" in fval: return fval["booleanValue"]
+    if "integerValue" in fval: return int(fval["integerValue"])
+    if "doubleValue"  in fval: return fval["doubleValue"]
+    if "stringValue"  in fval: return fval["stringValue"]
+    if "arrayValue"   in fval: return [from_fs(v) for v in fval["arrayValue"].get("values", [])]
+    if "mapValue"     in fval: return {k: from_fs(v) for k, v in fval["mapValue"].get("fields", {}).items()}
     return None
 
-
-def fields_to_dict(fields: dict) -> dict:
-    return {k: from_firestore_value(v) for k, v in fields.items()}
-
-
-# ── Firestore REST API ───────────────────────────────────
-
-def firestore_get_all() -> dict:
-    """intent_queue全件取得 → {todo_id: dict}"""
+def fs_get_all():
     url = f"{BASE_URL}/{COLLECTION}?key={API_KEY}&pageSize=200"
-    req = urllib.request.Request(url, headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req) as res:
+    with urllib.request.urlopen(urllib.request.Request(url)) as res:
         data = json.loads(res.read())
-    result = {}
-    for doc in data.get("documents", []):
-        name = doc["name"].split("/")[-1]
-        result[name] = fields_to_dict(doc.get("fields", {}))
-    return result
+    return {doc["name"].split("/")[-1]: {k: from_fs(v) for k, v in doc.get("fields",{}).items()}
+            for doc in data.get("documents", [])}
 
+def fs_patch(tid, todo):
+    url  = f"{BASE_URL}/{COLLECTION}/{tid}?key={API_KEY}"
+    body = json.dumps({"fields": {k: to_fs(v) for k, v in todo.items()}}).encode("utf-8")
+    req  = urllib.request.Request(url, data=body, method="PATCH", headers={"Content-Type":"application/json"})
+    with urllib.request.urlopen(req): pass
 
-def firestore_patch(todo_id: str, todo: dict):
-    """1件をFirestoreにPATCH（upsert）"""
-    url = f"{BASE_URL}/{COLLECTION}/{todo_id}?key={API_KEY}"
-    fields = {k: to_firestore_value(v) for k, v in todo.items()}
-    body = json.dumps({"fields": fields}).encode("utf-8")
-    req = urllib.request.Request(url, data=body, method="PATCH",
-                                  headers={"Content-Type": "application/json"})
-    with urllib.request.urlopen(req):
-        pass
+def load_local():
+    with open(TODO_PATH, encoding="utf-8") as f: return json.load(f)
 
-
-# ── ローカルI/O ──────────────────────────────────────────
-
-def load_local() -> dict:
-    with open(TODO_PATH, encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_local(data: dict):
-    data["meta"]["updated"] = datetime.now().strftime("%Y-%m-%d")
+def save_local(data):
+    data["meta"]["updated"]    = datetime.now().strftime("%Y-%m-%d")
     data["meta"]["updated_by"] = "firestore_sync"
     with open(TODO_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-
-def local_todos_map(data: dict) -> dict:
-    """todos + completed を {id: dict} で返す"""
-    result = {}
-    for t in data.get("todos", []) + data.get("completed", []):
-        if "id" in t:
-            result[t["id"]] = t
-    return result
-
-
-# ── PUSH: ローカル → Firebase ────────────────────────────
+def local_map(data):
+    return {t["id"]: t for t in data.get("todos",[]) + data.get("completed",[]) if "id" in t}
 
 def cmd_push():
     print("=== PUSH: ローカル → Firestore ===")
-    data = load_local()
-    todos = local_todos_map(data)
-    success = 0
+    data, ok = load_local(), 0
+    todos = local_map(data)
     for tid, todo in todos.items():
         try:
-            firestore_patch(tid, todo)
+            fs_patch(tid, todo)
             print(f"  ✅ {tid}")
-            success += 1
+            ok += 1
         except Exception as e:
             print(f"  ❌ {tid}: {e}")
-    print(f"\n完了: {success}/{len(todos)}件")
-
-
-# ── PULL: Firebase → ローカル ────────────────────────────
+    print(f"\n完了: {ok}/{len(todos)}件")
 
 def cmd_pull():
     print("=== PULL: Firestore → ローカル ===")
-    data = load_local()
-    local_map = local_todos_map(data)
-
-    fb_map = firestore_get_all()
+    data    = load_local()
+    lmap    = local_map(data)
+    fb      = fs_get_all()
     updated = 0
-
-    for tid, fb_todo in fb_map.items():
-        if tid not in local_map:
-            # 新規（他AIが追加）→ todosに追加
+    for tid, fb_todo in fb.items():
+        if not tid.startswith("TODO_"): continue
+        if tid not in lmap:
             data["todos"].append(fb_todo)
-            print(f"  ➕ 新規追加: {tid}")
+            print(f"  ➕ 新規: {tid}")
             updated += 1
         else:
-            local = local_map[tid]
-            fb_status = fb_todo.get("status", "")
-            local_status = local.get("status", "")
-
-            # Firebaseの方がステータスが進んでいれば上書き
-            if fb_status != local_status:
-                # todos/completedどちらに入っているか特定して更新
-                for lst in [data["todos"], data.get("completed", [])]:
+            # 完了報告のみ取り込む（ローカルの完了を未着手に戻さない）
+            fb_s  = fb_todo.get("status","")
+            loc_s = lmap[tid].get("status","")
+            if fb_s == "完了" and loc_s != "完了":
+                for lst in [data["todos"], data.get("completed",[])]:
                     for item in lst:
                         if item.get("id") == tid:
-                            item["status"] = fb_status
-                            if fb_todo.get("note"):
-                                item["note"] = fb_todo["note"]
-                            if fb_todo.get("handoff_report"):
-                                item["handoff_report"] = fb_todo["handoff_report"]
+                            item["status"] = fb_s
+                            if fb_todo.get("note"):         item["note"] = fb_todo["note"]
+                            if fb_todo.get("handoff_report"):item["handoff_report"] = fb_todo["handoff_report"]
                             break
-                print(f"  🔄 更新: {tid} [{local_status}→{fb_status}]")
+                print(f"  🔄 完了取込: {tid}")
                 updated += 1
-
     if updated:
         save_local(data)
-        print(f"\nローカル保存完了: {updated}件更新")
+        print(f"\nローカル保存: {updated}件更新")
     else:
         print("\n差分なし")
 
-
-# ── WATCH: 自動同期 ──────────────────────────────────────
-
 def cmd_watch(interval=60):
-    print(f"=== WATCH: {interval}秒ごとに自動同期 (Ctrl+Cで停止) ===\n")
+    print(f"=== WATCH: {interval}秒ごと自動同期 ===")
     while True:
         try:
-            now = datetime.now().strftime("%H:%M:%S")
-            print(f"[{now}] 同期中...")
+            print(f"[{datetime.now().strftime('%H:%M:%S')}] 同期中...")
             cmd_pull()
-            print(f"次回: {interval}秒後\n")
             time.sleep(interval)
         except KeyboardInterrupt:
-            print("\n停止")
-            break
+            print("\n停止"); break
         except Exception as e:
-            print(f"エラー: {e} → {interval}秒後に再試行")
-            time.sleep(interval)
-
-
-# ── エントリーポイント ───────────────────────────────────
+            print(f"エラー: {e}"); time.sleep(interval)
 
 if __name__ == "__main__":
     cmd = sys.argv[1] if len(sys.argv) > 1 else "pull"
-    if cmd == "push":
-        cmd_push()
-    elif cmd == "pull":
-        cmd_pull()
-    elif cmd == "watch":
-        cmd_watch()
-    else:
-        print("使い方: python mocka_firestore_sync.py [push|pull|watch]")
+    if   cmd == "push":  cmd_push()
+    elif cmd == "pull":  cmd_pull()
+    elif cmd == "watch": cmd_watch()
+    else: print("使い方: python mocka_firestore_sync.py [push|pull|watch]")
