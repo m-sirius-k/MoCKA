@@ -1,4 +1,4 @@
-﻿"""
+"""
 mocka_caliber_server.py v5
 APIゼロ化版 - Claude Haiku API呼び出しをローカル処理に完全置き換え
 
@@ -296,98 +296,8 @@ def process():
     })
 
 
-
-# ============================================================
-# 自動RAW処理ループ（15秒間隔でRAWフォルダを監視）
-# ============================================================
-import threading as _threading
-import time as _time
-
-RAW_INFIELD = ROOT / "data" / "storage" / "infield" / "RAW"
-
-def auto_raw_loop():
-    print("[AUTO-RAW] 自動RAW処理ループ開始")
-    RAW_INFIELD.mkdir(parents=True, exist_ok=True)
-    while True:
-        try:
-            files = list(RAW_INFIELD.glob("*.json"))
-            if files:
-                print(f"[AUTO-RAW] {len(files)}件検出 -> 自動処理開始")
-                for fpath in files:
-                    try:
-                        _process_raw_file(fpath)
-                    except Exception as e:
-                        print(f"[AUTO-RAW] エラー({fpath.name}): {str(e)[:80]}")
-        except Exception as e:
-            print(f"[AUTO-RAW] ループ例外: {str(e)[:80]}")
-        _time.sleep(15)
-
-def _process_raw_file(fpath):
-    try:
-        raw = json.load(open(fpath, encoding="utf-8-sig"))
-    except Exception:
-        raw = json.loads(fpath.read_bytes().decode("utf-8", errors="replace"))
-    text = raw.get("text", raw.get("content", raw.get("summary", "")))
-    if not text and "messages" in raw:
-        for m in raw["messages"]:
-            if isinstance(m, dict):
-                text += m.get("content", "") + "\n"
-    if not text:
-        text = str(raw)
-    source    = raw.get("source", "unknown")
-    event_id  = raw.get("event_id", fpath.stem)
-    total_chars = len(text)
-    chunks    = sample_text(text)
-    keywords  = get_keywords()
-    sentences = []
-    for chunk in chunks:
-        for s in re.split(r'[。！？\n]', chunk):
-            s = s.strip()
-            if len(s) >= 8:
-                sentences.append(s)
-    scored = sorted(
-        [(s, score_sentence(s, keywords)) for s in sentences],
-        key=lambda x: x[1], reverse=True
-    )
-    extraction = "。".join([s for s, _ in scored[:15]])
-    rate       = calc_rate_local(text, extraction)
-    ts      = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
-    eid     = "ENRAW_" + ts + "_" + source[:4].upper()
-    h       = hashlib.sha256((eid + extraction[:100]).encode()).hexdigest()[:16]
-    status  = "RE_REDUCED" if rate >= THRESHOLD else "REDUCING"
-    dst_dir = RE_REDUCED  if rate >= THRESHOLD else REDUCING
-    out_data = {
-        "event_id": eid, "source": source,
-        "origin_file": fpath.name, "origin_event": event_id,
-        "timestamp": ts, "total_chars": total_chars,
-        "sampled_chunks": len(chunks), "restore_rate": rate,
-        "extraction": extraction, "hash": h,
-        "status": status, "pipeline": "auto_raw_loop_v1"
-    }
-    out = dst_dir / (ts + "_" + eid + ".json")
-    json.dump(out_data, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-    prev = get_prev_hash()
-    row  = [eid, ts, "auto_raw_loop", "process", "caliber_pipeline",
-            "mocka_caliber_server.py", fpath.name, "server", "internal",
-            "in_operation", "normal", "A", "infield/" + status,
-            extraction[:500], prev, "auto_raw_complete", status,
-            "local", "caliber_pipeline", "N/A", "N/A",
-            "hash=" + h + " rate=" + str(int(rate*100)) + "pct chars=" + str(total_chars)]
-    append_event(row)
-    archive = ROOT / "data" / "storage" / "infield" / "ARCHIVED"
-    archive.mkdir(parents=True, exist_ok=True)
-    done_name = fpath.stem + "_" + datetime.now(UTC).strftime("%H%M%S") + fpath.suffix
-    done_path = archive / done_name
-    if done_path.exists():
-        done_path = archive / (fpath.stem + "_" + ts + fpath.suffix)
-    fpath.rename(done_path)
-    print(f"[AUTO-RAW] OK {status} rate={int(rate*100)}% {out.name}")
-
-_auto_raw_thread = _threading.Thread(target=auto_raw_loop, daemon=True)
-_auto_raw_thread.start()
 if __name__ == "__main__":
     print("[MoCKA Caliber Server v5 - API ZERO] port 5679")
     print(f"[v5] keywords: {len(get_keywords())}")
     print(f"[v5] threshold: {THRESHOLD}")
     app.run(host="0.0.0.0", port=5679, debug=False, threaded=True)
-

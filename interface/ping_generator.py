@@ -9,9 +9,10 @@ NGROK_URL = "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp"
 
 def check_ngrok_status():
     try:
-        req = urllib.request.Request(NGROK_URL, headers={"ngrok-skip-browser-warning":"69420","User-Agent":"MoCKA-Monitor/2.0"})
+        req = urllib.request.Request("http://localhost:5000/ngrok/status", headers={"User-Agent":"MoCKA-Monitor/2.0"})
         with urllib.request.urlopen(req, timeout=5) as r:
-            return r.getcode() == 200
+            data = json.loads(r.read().decode())
+            return data.get("status") == "online"
     except:
         return False
 
@@ -87,6 +88,7 @@ def generate_ping():
 
 if __name__ == "__main__":
     generate_ping()
+
 
 
 

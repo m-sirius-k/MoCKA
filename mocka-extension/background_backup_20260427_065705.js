@@ -14,41 +14,11 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.contextMenus.create({ id:'mocka_collect_full',     title:'このchat全文をMoCKAに収集', contexts:['page'] });
     chrome.contextMenus.create({ id:'mocka_share',            title:'MoCKAに共有（Broadcast）', contexts:['selection'] });
     chrome.contextMenus.create({ id:'mocka_collaborate',      title:'MoCKAで協議（Orchestra）', contexts:['selection'] });
-    chrome.contextMenus.create({ id:'mocka_hint',  title:'ヒント！（成功シグナル）', contexts:['selection','page'] });
-    chrome.contextMenus.create({ id:'mocka_great', title:'グレイト！（強い成功シグナル）', contexts:['selection','page'] });
   });
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const source = detectSource(tab.url);
-
-  
-  // ── ヒント！/グレイト！ ──────────────────────────────────────────────────
-  if (info.menuItemId === 'mocka_hint' || info.menuItemId === 'mocka_great') {
-    const text    = info.selectionText || document.title || '';
-    const outcome = info.menuItemId === 'mocka_great' ? 'success_great' : 'success_hint';
-    const label   = info.menuItemId === 'mocka_great' ? 'グレイト！' : 'ヒント！';
-    if (!text) return;
-    try {
-      await fetch('http://127.0.0.1:5000/success', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text:       text,
-          what_type:  outcome,
-          source:     source,
-          label:      label,
-          timestamp:  new Date().toISOString()
-        })
-      });
-      chrome.notifications.create({
-        type: 'basic', iconUrl: 'icon.png',
-        title: `MoCKA ${label}`,
-        message: text.slice(0, 60)
-      });
-    } catch(e) { console.error('success signal error:', e); }
-    return;
-  }
 
   if (info.menuItemId === 'mocka_share') {
     const text = info.selectionText || '';

@@ -7,11 +7,11 @@
   "ESSENCE_SUMMARY": {
     "INCIDENT": "【問題動作検知】APIトークン枯渇した。なぜこんなに消費するのか。廃止して直接注入に移行する\n【インシデント】INCIDENT: Ollama暴走によるリソース枯渇・半日損失 → 【原因】MoCKA-START.batにessence_trigger.py・ollama serveを無条件毎回実行として組み込んだ結果、PC全体のCPU100%・キ → 【再発防止】要分析\n【関連ツール】ping_generator, events.csv, app.py, ping_latest, essence_classifier\n[軸③否定検知] 否定パターン3件検出 → AI動作問題として記録\n[軸④経緯分析] インシデント経緯25件抽出済み",
     "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗は資産になる。 疑問は制度改善のトリガー: APIトークン枯渇した。なぜこんなに消費するのか。廃止して直接注入に移行する 不要な複雑性は廃止し、シンプルな直接接続を優先する。 インシデントから学習し制度化する。",
-    "OPERATION": "[save] Related Work — 具体的な文章案 Prior work on AI governance has largely focused on two approaches: explainability and risk classification. Explainable AI (XAI) research asks \"can we see inside the model?\" — making predictions interpretable post-hoc. Regulatory frameworks such as NIST AI RMF and EU AI Act ask \"how do we categorize risk?\" — assigning compliance tiers before deployment.  Both approaches share a common assumption: that governing AI means governing the AI model itself.  This work begins from a different premise entirely.  We do not attempt to make the model transparent, nor to classify its risk level. Instead, we treat the AI model as an unreliable actor by design — one that may hallucinate, fabricate, or contradict itself across sessions. The question we ask is not \"how do we make AI trustworthy?\" but rather: \"how do we build a system that remains trustworthy even when the AI is not?\"  This is the distinction between governing AI and governing with AI. MoCKA belongs to neither the XAI tradition nor the regulatory compliance tradition. It belongs to a third category: cybernetic institutional memory — a system where every AI action is recorded, hashed, and verified independently of the AI that produced it.  Prior work assumes the AI can be fixed. We assume it cannot — and build accordingly."
+    "OPERATION": "[hint] 形態素解析は「別コンテナ・別サービス」で閉じる  形態素解析そのものは別のコンテナ（例：Alpine + MeCab + fugashi の軽量イメージ）で行い、  出力結果を JSON または固定フォーマットの CSV で返す。  その JSON / CSV を MoCKA が「バイナリではなく、UTF‑8 テキスト」として受け取るだけ。  「文字化けが減る」具体的な枠組みイメージ 入力元（ブラウザ・外部AI）  テキストを UTF‑8 で POST / WebSocket / CSV で送る。  ファイル名も .utf8.txt や events_official_ja.csv のように、文字エンコードを明示。  形態素解析サービス（別コンテナ）  入力は UTF‑8 のテキスト。  内部で MeCab / fugashi / Janome を使うが、そのコンテナの中だけで完結。  出力は以下のような JSON で吐き出す："
   },
-  "essence_updated": false,
-  "ngrok_online": false,
-  "NGROK": false,
+  "essence_updated": true,
+  "ngrok_online": true,
+  "NGROK": true,
   "current_phase": "Phase 2進行中",
   "top_todos": [
     {
@@ -40,5 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-04-26T16:22:03.130332"
+  "generated_at": "2026-04-27T08:13:05.552202"
 }
