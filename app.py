@@ -917,7 +917,7 @@ def _auto_danger_to_essence(incident_text: str):
         essence_path.write_text(_j.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
         # ping_generator自動実行
         import subprocess
-        ping_gen = __import__("pathlib").Path(ROOT_DIR) / "interface" / "ping_generator.py"
+        ping_gen = __import__("pathlib").Path(str(ROOT_DIR)) / "interface" / "ping_generator.py"
         if ping_gen.exists():
             subprocess.Popen(["python", str(ping_gen)], cwd=str(ROOT_DIR))
         print(f"[AUTO-PIPE] essence更新: {incident_text[:40]}")
@@ -938,18 +938,18 @@ def auto_audit_loop():
             now = datetime.now()
             today = now.strftime("%Y-%m-%d")
             if now.hour == 0 and _last_seal_date[0] != today:
-                seal_script = __import__("pathlib").Path(ROOT_DIR) / "scripts" / "ledger" / "anchor_update.py"
+                seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
                 if seal_script.exists():
                     subprocess.run(["python", str(seal_script), "AUTO_SEAL_" + today],
                                    cwd=str(ROOT_DIR), timeout=30)
                     print(f"[AUTO-AUDIT] 日次seal完了")
                 _last_seal_date[0] = today
-            events_path = __import__("pathlib").Path(ROOT_DIR) / "data" / "events.csv"
+            events_path = __import__("pathlib").Path(str(ROOT_DIR)) / "data" / "events.csv"
             if events_path.exists():
                 with open(events_path, encoding="utf-8") as f:
                     count = sum(1 for _ in f)
                 if count - _last_event_count[0] >= 50:
-                    seal_script = __import__("pathlib").Path(ROOT_DIR) / "scripts" / "ledger" / "anchor_update.py"
+                    seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
                     if seal_script.exists():
                         subprocess.run(["python", str(seal_script), "AUTO_SEAL_50EVT"],
                                        cwd=str(ROOT_DIR), timeout=30)
@@ -968,6 +968,7 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
+
 
 
 
