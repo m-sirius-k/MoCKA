@@ -1,4 +1,4 @@
-﻿const AI_DOMAINS = {
+const AI_DOMAINS = {
   ChatGPT:    'chatgpt.com',
   Gemini:     'gemini.google.com',
   Perplexity: 'perplexity.ai',
@@ -57,16 +57,21 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({ id:'mocka-save',      title:'MoCKAに保存',              contexts:['selection'] });
-  chrome.contextMenus.create({ id:'mocka-share',     title:'MoCKAで共有',              contexts:['selection'] });
-  chrome.contextMenus.create({ id:'mocka-orchestra', title:'MoCKAで協議',              contexts:['selection'] });
-  chrome.contextMenus.create({ id:'mocka-collect',   title:'このchat全文をMoCKAに収集', contexts:['page'] });
+  chrome.contextMenus.create({ id:'mocka-save',      title:'💾 MoCKAに保存',               contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-share',     title:'📡 MoCKAで共有',               contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-orchestra', title:'🤝 MoCKAで協議',               contexts:['selection'] });
+  chrome.contextMenus.create({ id:'separator-1', type:'separator', contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-hint',      title:'💡 ヒント！',                  contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-great',     title:'🏆 グレイト！',                contexts:['selection'] });
+  chrome.contextMenus.create({ id:'separator-2', type:'separator', contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-collect',   title:'📥 このchat全文をMoCKAに収集', contexts:['page'] });
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const text   = info.selectionText || '';
   const source = detectSource(tab.url);
 
+  // ===== 保存 =====
   if (info.menuItemId === 'mocka-save') {
     fetch('http://localhost:5000/ask', {
       method: 'POST',
@@ -77,6 +82,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     });
   }
 
+  // ===== 共有 =====
   if (info.menuItemId === 'mocka-share') {
     const targets = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
     targets.forEach(t => {
@@ -95,6 +101,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     });
   }
 
+  // ===== 協議 =====
   if (info.menuItemId === 'mocka-orchestra') {
     fetch('http://localhost:5000/orchestra', {
       method: 'POST',
@@ -105,6 +112,41 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     });
   }
 
+  // ===== ヒント！（成功シグナル・弱） =====
+  if (info.menuItemId === 'mocka-hint') {
+    fetch('http://localhost:5000/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({c:'A', o:'infield', memo:'[hint] ' + text})
+    }).then(() => {
+      chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: ヒント記録！') });
+    });
+    // pipelineにも投入（success_hint として記録）
+    fetch('http://localhost:5000/success', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({type: 'hint', text: text, source: source, url: tab.url})
+    }).catch(() => {});
+  }
+
+  // ===== グレイト！（成功シグナル・強） =====
+  if (info.menuItemId === 'mocka-great') {
+    fetch('http://localhost:5000/ask', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({c:'A', o:'infield', memo:'[great] ' + text})
+    }).then(() => {
+      chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: グレイト記録！！') });
+    });
+    // pipelineにも投入（success_great として記録）
+    fetch('http://localhost:5000/success', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({type: 'great', text: text, source: source, url: tab.url})
+    }).catch(() => {});
+  }
+
+  // ===== chat全文収集 =====
   if (info.menuItemId === 'mocka-collect') {
     let collected = false;
     try {

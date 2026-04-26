@@ -3,14 +3,42 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=APIトークン枯渇インシデント E20260418_005。",
+  "A": "Z-Axis=0.819 / INCIDENT=【問題動作検知】APIトークン枯渇した。なぜこんなに消費する",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "APIトークン枯渇インシデント E20260418_005。BOM混入によりbatch_ecol2.pyがAPI呼び出しを4倍以上増幅。50ドル消失。対策: No-Token Architecture導入・Sanitizer_Gate実装・D_i=1強制。",
-    "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗は資産になる。インシデントが起きるたびにdanger_patterns.jsonに学習され事故ゼロへ収束する自己進化ループ。Structure + Record + Verification = civilization。",
-    "OPERATION": "保存ボタンとpipelineの接続テスト完了。E20260418。コマンドセンターから直接essenceに蓄積できることを確認。"
+    "INCIDENT": "【問題動作検知】APIトークン枯渇した。なぜこんなに消費するのか。廃止して直接注入に移行する\n【インシデント】INCIDENT: Ollama暴走によるリソース枯渇・半日損失 → 【原因】MoCKA-START.batにessence_trigger.py・ollama serveを無条件毎回実行として組み込んだ結果、PC全体のCPU100%・キ → 【再発防止】要分析\n【関連ツール】ping_generator, events.csv, app.py, ping_latest, essence_classifier\n[軸③否定検知] 否定パターン3件検出 → AI動作問題として記録\n[軸④経緯分析] インシデント経緯25件抽出済み",
+    "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗は資産になる。 疑問は制度改善のトリガー: APIトークン枯渇した。なぜこんなに消費するのか。廃止して直接注入に移行する 不要な複雑性は廃止し、シンプルな直接接続を優先する。 インシデントから学習し制度化する。",
+    "OPERATION": "[save] Related Work — 具体的な文章案 Prior work on AI governance has largely focused on two approaches: explainability and risk classification. Explainable AI (XAI) research asks \"can we see inside the model?\" — making predictions interpretable post-hoc. Regulatory frameworks such as NIST AI RMF and EU AI Act ask \"how do we categorize risk?\" — assigning compliance tiers before deployment.  Both approaches share a common assumption: that governing AI means governing the AI model itself.  This work begins from a different premise entirely.  We do not attempt to make the model transparent, nor to classify its risk level. Instead, we treat the AI model as an unreliable actor by design — one that may hallucinate, fabricate, or contradict itself across sessions. The question we ask is not \"how do we make AI trustworthy?\" but rather: \"how do we build a system that remains trustworthy even when the AI is not?\"  This is the distinction between governing AI and governing with AI. MoCKA belongs to neither the XAI tradition nor the regulatory compliance tradition. It belongs to a third category: cybernetic institutional memory — a system where every AI action is recorded, hashed, and verified independently of the AI that produced it.  Prior work assumes the AI can be fixed. We assume it cannot — and build accordingly."
   },
-  "essence_updated": true,
-  "ngrok_online": true,
-  "NGROK": true,
-  "generated_at": "2026-04-18T15:59:13.592255"
+  "essence_updated": false,
+  "ngrok_online": false,
+  "NGROK": false,
+  "current_phase": "Phase 2進行中",
+  "top_todos": [
+    {
+      "id": "TODO_054",
+      "title": "AIES 2026投稿準備 — EasyChair登録・匿名化・フォーマット変換",
+      "priority": "最高"
+    },
+    {
+      "id": "TODO_055",
+      "title": "AIES 2026 — 10ページ版アウトライン設計・Supplementary Material分離",
+      "priority": "最高"
+    },
+    {
+      "id": "TODO_059",
+      "title": "SPP LaTeX版 Section 5-8移植・最終PDF確認",
+      "priority": "最高"
+    },
+    {
+      "id": "TODO_061",
+      "title": "トレッドミル試験設計・実施 — コンテキスト希釈SPP違反実測",
+      "priority": "最高"
+    },
+    {
+      "id": "TODO_062",
+      "title": "Gemini内面化状態観察実験 — 30問投入・Type B違反率測定",
+      "priority": "最高"
+    }
+  ],
+  "generated_at": "2026-04-26T16:22:03.130332"
 }

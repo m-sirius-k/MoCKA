@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 import csv
 import shutil
 import os
@@ -11,10 +11,9 @@ from flask import Flask, send_from_directory, jsonify, request
 from flask_cors import CORS
 
 app = Flask(__name__)
-
 CORS(app, origins="*", supports_credentials=True)
 
-# ===== 鬮｢・ｾ繝ｻ・ｪ髯ｷ閧ｴ蝮ｩ・つ繝ｻ・｣鬩搾ｽｯ陞｢・ｼ郢晢ｽｻ鬨ｾ繝ｻ繝ｻ=====
+# ===== 自動処理ループ（PILSキュー監視） =====
 import threading
 import time
 
@@ -36,18 +35,16 @@ def auto_process_loop():
                 if r.status_code == 200:
                     result = r.json()
                     rate = result.get("restore_rate", "?")
-                    print("[AUTO] 髯橸ｽｳ陟包ｽ｡繝ｻ・ｺ郢晢ｽｻrestore_rate={}".format(rate))
+                    print("[AUTO] 完了 restore_rate={}".format(rate))
                 else:
-                    print("[AUTO] 驛｢・ｧ繝ｻ・ｨ驛｢譎｢・ｽ・ｩ驛｢譎｢・ｽ・ｼ({}): {}".format(r.status_code, r.text[:80]))
+                    print("[AUTO] エラー({}): {}".format(r.status_code, r.text[:80]))
             time.sleep(10)
         except Exception as e:
-            print("[AUTO] 髣懃§蜚ｱ繝ｻ・､郢晢ｽｻ {}".format(str(e)[:80]))
+            print("[AUTO] 例外: {}".format(str(e)[:80]))
             time.sleep(30)
 
 _auto_thread = threading.Thread(target=auto_process_loop, daemon=True)
 _auto_thread.start()
-# ===== 鬮｢・ｾ繝ｻ・ｪ髯ｷ閧ｴ蝮ｩ・つ繝ｻ・｣鬩搾ｽｯ陞｢・ｼ郢晢ｽｻ鬨ｾ繝ｻ繝ｻ繝ｻ繝ｻ・ｸ・ｺ髦ｮ蜷ｮ遨宣し・ｺ繝ｻ・ｧ =====
-
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
@@ -60,6 +57,7 @@ DOCS_DIR = os.path.join(BASE_DIR, "docs")
 STORAGE = os.path.join(DATA_DIR, "storage", "infield")
 OUTBOX  = os.path.join(DATA_DIR, "storage", "outbox", "PILS")
 CALIBER_SERVER = "http://localhost:5679"
+PATTERN_SCORE  = os.path.join(DATA_DIR, "latest_score.json")
 
 FIELDNAMES = [
     "event_id", "when", "who_actor", "what_type",
@@ -70,6 +68,21 @@ FIELDNAMES = [
     "impact_scope", "impact_result", "related_event_id", "trace_id", "free_note",
 ]
 
+_intent_queue = {}
+_intent_lock = threading.Lock()
+
+# ===== Pattern Hook =====
+def run_pattern_score(text):
+    try:
+        import pattern_engine
+        result = pattern_engine.score_text(text)
+        print(f"[PATTERN] verdict={result['verdict']} s={result['success_score']} f={result['failure_score']}")
+        with open(PATTERN_SCORE, "w", encoding="utf-8") as f:
+            json.dump(result, f, ensure_ascii=False, indent=2)
+        return result
+    except Exception as e:
+        print(f"[PATTERN] error: {e}")
+        return None
 
 def ensure_dirs():
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -83,14 +96,12 @@ def ensure_dirs():
     os.makedirs(OLD_DIR, exist_ok=True)
     os.makedirs(os.path.join(DOCS_DIR, "decisions"), exist_ok=True)
 
-
 def ensure_events_csv():
     ensure_dirs()
     if not os.path.exists(EVENTS_CSV):
         with open(EVENTS_CSV, "w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
             writer.writeheader()
-
 
 def next_event_id():
     today = datetime.now().strftime("%Y%m%d")
@@ -111,7 +122,6 @@ def next_event_id():
                     except ValueError:
                         pass
     return f"{prefix}{last_n+1:03d}"
-
 
 def append_event(meta: dict):
     ensure_events_csv()
@@ -141,7 +151,6 @@ def append_event(meta: dict):
         writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
         writer.writerow(row)
 
-
 def load_history(limit=None):
     ensure_events_csv()
     rows = []
@@ -154,13 +163,11 @@ def load_history(limit=None):
         rows = rows[-int(limit):]
     return rows
 
-
 def count_layer(layer):
     d = os.path.join(STORAGE, layer)
     if not os.path.exists(d):
         return 0
     return len([f for f in os.listdir(d) if f.endswith(".json")])
-
 
 # =========================
 # Flask Routes
@@ -170,12 +177,80 @@ def count_layer(layer):
 def index():
     return send_from_directory(ROOT_DIR, "index.html")
 
-
 @app.route("/get_history")
 def get_history():
     rows = load_history()
     return jsonify(rows)
 
+@app.route("/get_intent/<ai_name>")
+def get_intent(ai_name):
+    with _intent_lock:
+        queue = _intent_queue.get(ai_name, [])
+        if not queue:
+            return '', 204
+        payload = queue.pop(0)
+        _intent_queue[ai_name] = queue
+    print(f"[INTENT] {ai_name} -> payload dispatched")
+    return jsonify({"payload": payload})
+
+@app.route("/set_intent", methods=["POST"])
+def set_intent():
+    payload = request.get_json(force=True, silent=True) or {}
+    ai_name = payload.get("ai_name", "")
+    text    = payload.get("text", "")
+    if not ai_name or not text:
+        return jsonify({"status": "error", "message": "ai_name and text required"}), 400
+    with _intent_lock:
+        if ai_name not in _intent_queue:
+            _intent_queue[ai_name] = []
+        _intent_queue[ai_name].append(text)
+    append_event({
+        "what_type": "collaboration",
+        "category_ab": "B",
+        "target_class": ai_name,
+        "title": f"協業依頼 -> {ai_name}",
+        "short_summary": text[:100],
+        "who_actor": "human_nsjsiro",
+        "where_component": "chrome_extension",
+        "how_trigger": "context_menu_click",
+        "channel_type": "browser_extension",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "impact_scope": "local",
+    })
+    return jsonify({"status": "ok", "ai_name": ai_name})
+
+@app.route("/collaborate", methods=["POST"])
+def collaborate():
+    payload = request.get_json(force=True, silent=True) or {}
+    text    = payload.get("text", payload.get("prompt", ""))
+    targets = payload.get("targets", ["ChatGPT", "Gemini", "Claude", "Perplexity", "Copilot", "Genspark"])
+    if not text:
+        return jsonify({"status": "error", "message": "text required"}), 400
+    with _intent_lock:
+        for ai_name in targets:
+            if ai_name not in _intent_queue:
+                _intent_queue[ai_name] = []
+            _intent_queue[ai_name].append(text)
+    try:
+        subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR)
+    except Exception as e:
+        print(f"[COLLABORATE] orchestra error: {e}")
+    append_event({
+        "what_type": "collaboration",
+        "category_ab": "B",
+        "target_class": ",".join(targets),
+        "title": f"協業一括投入: {text[:40]}",
+        "short_summary": text[:200],
+        "who_actor": "human_nsjsiro",
+        "where_component": "chrome_extension",
+        "how_trigger": "context_menu_click",
+        "channel_type": "browser_extension",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "impact_scope": "multi_ai",
+    })
+    return jsonify({"status": "ok", "targets": targets})
 
 @app.route("/caliber/status")
 def caliber_status():
@@ -190,16 +265,13 @@ def caliber_status():
         server = "offline"
     return jsonify({"layers": counts, "caliber_server": server})
 
-
 @app.route("/caliber/process", methods=["POST"])
 def caliber_process():
     try:
-        r = requests.post(CALIBER_SERVER + "/process",
-            json={}, headers={"Content-Type": "application/json"}, timeout=1800)
+        r = requests.post(CALIBER_SERVER + "/process", json={}, headers={"Content-Type": "application/json"}, timeout=1800)
         return jsonify(r.json())
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
-
 
 @app.route("/caliber/scan")
 def caliber_scan():
@@ -209,18 +281,13 @@ def caliber_scan():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
 @app.route("/orchestra", methods=["POST"])
 def orchestra():
     payload = request.get_json(force=True, silent=True) or {}
     prompt = payload.get("prompt", "MoCKA Broadcast")
     mode = payload.get("mode", "orchestra")
-    subprocess.Popen(
-        [sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode],
-        cwd=ROOT_DIR
-    )
+    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR)
     return jsonify({"status": "ok"})
-
 
 @app.route("/ask", methods=["POST"])
 def ask():
@@ -232,11 +299,11 @@ def ask():
         return jsonify({"status": "error", "message": "invalid payload"}), 400
     if c == "A":
         what_type = "storage"
-        title = f"髣厄ｽｫ隴取得・ｽ・ｭ郢晢ｽｻ {o}"
+        title = f"保存取得 {o}"
         short_summary = "Storage mission dispatched"
     else:
         what_type = "broadcast"
-        title = f"髯ｷ闌ｨ・ｽ・ｱ髫ｴ蟶吶・ {o}"
+        title = f"共有配信 {o}"
         short_summary = "Broadcast mission dispatched"
     meta = {
         "what_type": what_type,
@@ -262,17 +329,15 @@ def ask():
         "free_note": memo if memo else "N/A",
     }
     append_event(meta)
-    # 保存(A)の場合はpipelineでessence化
     if c == "A" and memo:
         try:
             _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
-            _tx = memo.strip()
-            subprocess.Popen([sys.executable, _pl, "--text", _tx, "--no-ping"], cwd=ROOT_DIR)
-            print(f"[ASK] pipeline隘搾ｽｷ陷阪・ {_tx[:50]}")
+            subprocess.Popen([sys.executable, _pl, "--text", memo.strip(), "--no-ping"], cwd=ROOT_DIR)
         except Exception as _e:
             print(f"[ASK] pipeline error: {_e}")
+        # Pattern scoring
+        threading.Thread(target=run_pattern_score, args=(memo,), daemon=True).start()
     return jsonify({"status": "ok"})
-
 
 @app.route("/collect", methods=["POST"])
 def collect():
@@ -308,22 +373,94 @@ def collect():
     PILS = P(r"C:/Users/sirok/MoCKA/data/storage/outbox/PILS")
     PILS.mkdir(parents=True,exist_ok=True)
     shutil.copy2(fname, PILS/fname.name)
-    print(f"[AUTO-PILS] copied to outbox/PILS")
     with open(EVENTS,"a",encoding="utf-8-sig",newline="") as f:
         _csv.writer(f).writerow([eid,ts_str,source,"collect","chat_import","mocka_bridge_v2",
             url[:80],"extension","external","in_operation","normal","A","infield/RAW",
             text[:100].encode("utf-8","replace").decode("utf-8"),prev,"ingest_complete","RAW","local","chat_pipeline","N/A","N/A",
             f"hash={h}|source={source}|mode={mode}"])
-    print(f"[COLLECT] {eid} from {source} ({len(text)} chars)")
-    # 蜿ｳ繧ｯ繝ｪ繝・け菫晏ｭ倥ｂpipeline縺ｧessence蛹・
     try:
         _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
         subprocess.Popen([sys.executable, _pl, '--text', text[:500], '--no-ping'], cwd=ROOT_DIR)
-        print('[COLLECT] pipeline襍ｷ蜍・ ' + eid)
     except Exception as _e:
         print('[COLLECT] pipeline error: ' + str(_e))
+    # Pattern scoring
+    threading.Thread(target=run_pattern_score, args=(text[:500],), daemon=True).start()
     return jsonify({"status":"ok","event_id":eid,"hash":h})
 
+# ===== Success Pattern API =====
+SUCCESS_PATTERNS_FILE = os.path.join(DATA_DIR, "success_patterns.json")
+
+def load_success_patterns():
+    if not os.path.exists(SUCCESS_PATTERNS_FILE):
+        return {"hint": [], "great": []}
+    with open(SUCCESS_PATTERNS_FILE, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+def save_success_patterns(patterns):
+    with open(SUCCESS_PATTERNS_FILE, "w", encoding="utf-8") as f:
+        json.dump(patterns, f, ensure_ascii=False, indent=2)
+
+@app.route("/success", methods=["POST"])
+def success():
+    payload = request.get_json(force=True, silent=True) or {}
+    success_type = payload.get("type", "hint")
+    text   = payload.get("text", "").strip()
+    source = payload.get("source", "unknown")
+    url    = payload.get("url", "")
+    if not text:
+        return jsonify({"status": "error", "message": "text required"}), 400
+    patterns = load_success_patterns()
+    entry = {"text": text, "source": source, "url": url, "timestamp": datetime.now().isoformat(timespec="seconds")}
+    patterns.setdefault(success_type, []).append(entry)
+    save_success_patterns(patterns)
+    what_type = "success_hint" if success_type == "hint" else "success_great"
+    label     = "[hint]" if success_type == "hint" else "[great]"
+    append_event({
+        "what_type": what_type,
+        "category_ab": "A",
+        "target_class": "infield",
+        "title": f"{label} {text[:40]}",
+        "short_summary": text[:200],
+        "who_actor": "human_nsjsiro",
+        "where_component": "chrome_extension",
+        "where_path": "mocka-extension/background.js",
+        "why_purpose": f"成功シグナル収集: {success_type}",
+        "how_trigger": "context_menu_click",
+        "channel_type": "browser_extension",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "normal",
+        "impact_scope": "local",
+        "free_note": f"source={source}|type={success_type}",
+    })
+    try:
+        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+        subprocess.Popen([sys.executable, _pl, "--text", f"{label} {text[:500]}", "--no-ping"], cwd=ROOT_DIR)
+    except Exception as e:
+        print(f"[SUCCESS] pipeline error: {e}")
+    # Pattern scoring
+    threading.Thread(target=run_pattern_score, args=(text,), daemon=True).start()
+    print(f"[SUCCESS] {what_type}: {text[:50]}")
+    return jsonify({"status": "ok", "type": success_type, "stored": len(patterns.get(success_type, []))})
+
+@app.route("/success/patterns")
+def success_patterns():
+    patterns = load_success_patterns()
+    return jsonify({
+        "hint_count":  len(patterns.get("hint", [])),
+        "great_count": len(patterns.get("great", [])),
+        "hints":  patterns.get("hint", [])[-10:],
+        "greats": patterns.get("great", [])[-10:],
+    })
+
+@app.route("/pattern/score")
+def pattern_score():
+    if not os.path.exists(PATTERN_SCORE):
+        return jsonify({"status": "NO_DATA"})
+    try:
+        with open(PATTERN_SCORE, encoding="utf-8") as f:
+            return jsonify(json.load(f))
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
 
 @app.route("/caliber/queue")
 def caliber_queue():
@@ -346,42 +483,14 @@ def caliber_queue():
         for f in files:
             try:
                 d = _json.load(open(os.path.join(re_reduced_dir, f), encoding="utf-8-sig"))
-                recent_results.append({
-                    "file": f,
-                    "source": d.get("source",""),
-                    "restore_rate": d.get("restore_rate", 0),
-                    "timestamp": d.get("timestamp",""),
-                    "status": d.get("status",""),
-                    "preview": d.get("extraction","")[:100]
-                })
-            except: pass
-    reducing_dir = os.path.join(DATA_DIR, "storage", "infield", "REDUCING")
-    reducing_results = []
-    if os.path.exists(reducing_dir):
-        files = sorted(os.listdir(reducing_dir), reverse=True)[:3]
-        for f in files:
-            try:
-                d = _json.load(open(os.path.join(reducing_dir, f), encoding="utf-8-sig"))
-                reducing_results.append({
-                    "file": f,
-                    "restore_rate": d.get("restore_rate", 0),
-                    "timestamp": d.get("timestamp","")
-                })
+                recent_results.append({"file": f, "source": d.get("source",""), "restore_rate": d.get("restore_rate", 0), "timestamp": d.get("timestamp",""), "status": d.get("status",""), "preview": d.get("extraction","")[:100]})
             except: pass
     try:
         r = __import__('requests').get("http://localhost:5679/health", timeout=2)
         server = "online"
     except:
         server = "offline"
-    return __import__('flask').jsonify({
-        "layers": counts,
-        "caliber_server": server,
-        "queue": pils_files,
-        "recent_results": recent_results,
-        "reducing": reducing_results,
-        "timestamp": datetime.now().strftime("%H:%M:%S")
-    })
-
+    return __import__('flask').jsonify({"layers": counts, "caliber_server": server, "queue": pils_files, "recent_results": recent_results, "timestamp": datetime.now().strftime("%H:%M:%S")})
 
 @app.route("/servers/status")
 def servers_status():
@@ -396,7 +505,6 @@ def servers_status():
             result[name] = {"status": "offline", "port": port}
     return jsonify(result)
 
-
 @app.route("/loop/status")
 def loop_status():
     import json, datetime
@@ -406,14 +514,10 @@ def loop_status():
     PING_PATH     = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
     RAW_DIR       = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW")
     RAW_DONE_DIR  = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW_DONE")
-
-    # INJECT MODE
     inject_mode = "ON"
     if INJECT_FLAG.exists():
         v = INJECT_FLAG.read_text(encoding="utf-8-sig").strip().upper()
         inject_mode = v if v in ["ON","OFF"] else "ON"
-
-    # ESSENCE COUNT 驕ｯ・ｶ郢晢ｽｻINCIDENT/PHILOSOPHY/OPERATION驍ｵ・ｺ繝ｻ・ｮ髯ｷ蛹ｻ繝ｻ繝ｻ・｡繝ｻ・ｫ髮九ｇ迴ｾ遶擾ｽｩ鬮ｴ繝ｻ・ｽ・ｸ髫ｰ・ｨ繝ｻ・ｰ(髫ｴ蟠｢ﾂ髯樊ｻゑｽｽ・ｧ3)
     essence_count = 0
     essence_axes  = {"INCIDENT": False, "PHILOSOPHY": False, "OPERATION": False}
     essence_updated = None
@@ -424,18 +528,12 @@ def loop_status():
                 if data.get(axis) and str(data[axis]).strip():
                     essence_axes[axis] = True
             essence_count = sum(essence_axes.values())
-            # 髫ｴ蟠｢ﾂ髫ｴ繝ｻ・ｽ・ｰ驍ｵ・ｺ繝ｻ・ｮ髫ｴ蜴・ｽｽ・ｴ髫ｴ繝ｻ・ｽ・ｰ髫ｴ魃会ｽｽ・･髫ｴ蠑ｱ・・・螳壽╂鬮｢ﾂ繝ｻ・ｾ郢晢ｽｻ
             dates = [data.get(f"{k}_updated") for k in essence_axes if data.get(f"{k}_updated")]
             if dates:
                 essence_updated = max(dates)
-        except:
-            pass
-
-    # RAW / RAW_DONE 驛｢・ｧ繝ｻ・ｫ驛｢・ｧ繝ｻ・ｦ驛｢譎｢・ｽ・ｳ驛｢譏ｴ繝ｻ
+        except: pass
     raw_count      = len(list(RAW_DIR.glob("*.json")))      if RAW_DIR.exists()      else 0
     raw_done_count = len(list(RAW_DONE_DIR.glob("*.json"))) if RAW_DONE_DIR.exists() else 0
-
-    # PING
     ping_data = {}
     ping_age  = None
     if PING_PATH.exists():
@@ -444,20 +542,8 @@ def loop_status():
             ping_data = json.loads(text)
             age = datetime.datetime.now().timestamp() - PING_PATH.stat().st_mtime
             ping_age = f"{int(age//3600)}h {int((age%3600)//60)}m ago"
-        except:
-            pass
-
-    return jsonify({
-        "inject_mode":     inject_mode,
-        "essence_count":   essence_count,       # 0-3: 髯ｷ蛹ｻ繝ｻ繝ｻ・｡繝ｻ・ｫ髮九ｇ迴ｾ遶擾ｽｩ鬮ｴ繝ｻ・ｽ・ｸ髫ｰ・ｨ繝ｻ・ｰ
-        "essence_axes":    essence_axes,         # {INCIDENT:bool, PHILOSOPHY:bool, OPERATION:bool}
-        "essence_updated": essence_updated,      # 髫ｴ蟠｢ﾂ鬩搾ｽｨ郢ｧ莠･・ｳ・ｩ髫ｴ繝ｻ・ｽ・ｰ髫ｴ魃会ｽｽ・･髫ｴ蠑ｱ繝ｻ
-        "raw_count":       raw_count,            # 髫ｴ蟷｢・ｽ・ｪ髯ｷ繝ｻ・ｽ・ｦ鬨ｾ繝ｻ繝ｻAW髣比ｼ夲ｽｽ・ｶ髫ｰ・ｨ繝ｻ・ｰ
-        "raw_done_count":  raw_done_count,       # 髯ｷ繝ｻ・ｽ・ｦ鬨ｾ繝ｻ繝ｻ繝ｻ・ｸ陋ｹ・ｻ遶擾ｽｩRAW髣比ｼ夲ｽｽ・ｶ髫ｰ・ｨ繝ｻ・ｰ
-        "ping_latest":     ping_data,
-        "ping_age":        ping_age,
-    })
-
+        except: pass
+    return jsonify({"inject_mode": inject_mode, "essence_count": essence_count, "essence_axes": essence_axes, "essence_updated": essence_updated, "raw_count": raw_count, "raw_done_count": raw_done_count, "ping_latest": ping_data, "ping_age": ping_age})
 
 @app.route("/loop/inject_toggle", methods=["POST"])
 def inject_toggle():
@@ -471,13 +557,12 @@ def inject_toggle():
     INJECT_FLAG.write_text(new_mode, encoding="utf-8-sig")
     return jsonify({"inject_mode": new_mode})
 
-
 @app.route("/get_latest_dna")
 def get_latest_dna():
-    import json
     from pathlib import Path
-    PING_PATH = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
+    PING_PATH   = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
     INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
+    TODO_PATH   = Path(r"C:\Users\sirok\MOCKA_TODO.json")
     inject_mode = "ON"
     if INJECT_FLAG.exists():
         v = INJECT_FLAG.read_text(encoding="utf-8-sig").strip().upper()
@@ -486,12 +571,54 @@ def get_latest_dna():
         return jsonify({"status": "OFF"}), 200
     if not PING_PATH.exists():
         return jsonify({"status": "NO_PING"}), 404
+    todo_summary = []
+    try:
+        todo_data = json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
+        priority_order = {"最高": 0, "高": 1, "中": 2, "低": 3}
+        pending = [t for t in todo_data.get("todos", []) if t.get("status") == "未着手"]
+        pending.sort(key=lambda x: priority_order.get(x.get("priority", "低"), 9))
+        todo_summary = [{"id": t.get("id"), "title": t.get("title"), "priority": t.get("priority")} for t in pending[:5]]
+    except: todo_summary = []
     try:
         ping = json.loads(PING_PATH.read_text(encoding="utf-8-sig"))
-        return jsonify({"status": "OK", "ping": ping}), 200
+        return jsonify({"status": "OK", "ping": ping, "todo_summary": todo_summary}), 200
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
+@app.route("/gemini/briefing")
+def gemini_briefing():
+    from pathlib import Path
+    TODO_PATH    = Path(r"C:\Users\sirok\MOCKA_TODO.json")
+    ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
+    todos_pending = []
+    try:
+        todo_data = json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
+        priority_order = {"最高": 0, "高": 1, "中": 2, "低": 3}
+        pending = [t for t in todo_data.get("todos", []) if t.get("status") == "未着手"]
+        pending.sort(key=lambda x: priority_order.get(x.get("priority", "低"), 9))
+        todos_pending = [{"id": t.get("id"), "title": t.get("title"), "priority": t.get("priority")} for t in pending]
+    except: pass
+    essence = {}
+    try:
+        essence = json.loads(ESSENCE_PATH.read_text(encoding="utf-8-sig"))
+    except: pass
+    top = todos_pending[0] if todos_pending else {}
+    header = f"[MoCKA SESSION START]\nPhase 2進行中\n未着手TODO: {len(todos_pending)}件\n最重要: {top.get('id','')} {top.get('title','')}"
+    return jsonify({"status": "OK", "prompt_header": header, "todos_pending": todos_pending, "essence": essence}), 200
+
+@app.route("/report", methods=["POST"])
+def receive_report():
+    from pathlib import Path
+    REPORT_DIR = Path(r"C:\Users\sirok\MoCKA\data\reports")
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    try:
+        data = request.get_json(force=True)
+        data["received_at"] = datetime.now().isoformat()
+        fname = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        (REPORT_DIR / fname).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+        return jsonify({"status": "OK", "saved": fname}), 200
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
 
 @app.route('/ngrok/status')
 def ngrok_status():
@@ -500,15 +627,9 @@ def ngrok_status():
         r = req.get('http://127.0.0.1:4040/api/tunnels', timeout=2)
         d = r.json()
         t = d['tunnels'][0] if d.get('tunnels') else None
-        return json.dumps({
-            'status': 'online' if t else 'offline',
-            'public_url': t['public_url'] if t else '',
-            'addr': t['config']['addr'] if t else ''
-        }), 200, {'Content-Type': 'application/json'}
+        return json.dumps({'status': 'online' if t else 'offline', 'public_url': t['public_url'] if t else '', 'addr': t['config']['addr'] if t else ''}), 200, {'Content-Type': 'application/json'}
     except:
         return json.dumps({'status': 'offline', 'public_url': '', 'addr': ''}), 200, {'Content-Type': 'application/json'}
-
-
 
 @app.route("/pipeline/status")
 def pipeline_status():
@@ -580,7 +701,6 @@ def pipeline_status():
 
 @app.route("/essence/detail")
 def essence_detail():
-    import json
     from pathlib import Path
     ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     if not ESSENCE_PATH.exists():
@@ -592,7 +712,6 @@ def essence_detail():
 
 @app.route("/danger/status")
 def danger_status():
-    import json
     from pathlib import Path
     PATTERNS_FILE = Path(r"C:\Users\sirok\MoCKA\interface\danger_patterns.json")
     if not PATTERNS_FILE.exists():
@@ -607,15 +726,8 @@ def danger_status():
     except Exception as e:
         return jsonify({"status":"ERROR","message":str(e)})
 
-# ============================================================
-# MoCKA Public API — 全AI向け公開エンドポイント
-# ngrok経由で任命済みAIが全サービスにアクセス可能
-# ============================================================
-
 @app.route("/public/todo")
 def public_todo():
-    """MOCKA_TODO.json を全AI向けに公開"""
-    import json
     from pathlib import Path
     TODO_PATH = Path(r"C:\Users\sirok\MOCKA_TODO.json")
     if not TODO_PATH.exists():
@@ -627,8 +739,6 @@ def public_todo():
 
 @app.route("/public/overview")
 def public_overview():
-    """MOCKA_OVERVIEW.json を全AI向けに公開"""
-    import json
     from pathlib import Path
     OV_PATH = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
     if not OV_PATH.exists():
@@ -640,8 +750,6 @@ def public_overview():
 
 @app.route("/public/essence")
 def public_essence():
-    """lever_essence.json を全AI向けに公開"""
-    import json
     from pathlib import Path
     EP = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     if not EP.exists():
@@ -653,7 +761,6 @@ def public_essence():
 
 @app.route("/public/events")
 def public_events():
-    """直近イベントを全AI向けに公開"""
     import csv as _csv
     from pathlib import Path
     EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
@@ -672,7 +779,6 @@ def public_events():
 
 @app.route("/public/write_event", methods=["POST"])
 def public_write_event():
-    """全AI向けイベント記録エンドポイント"""
     payload = request.get_json(force=True, silent=True) or {}
     title = payload.get("title", "")
     description = payload.get("description", "")
@@ -681,34 +787,20 @@ def public_write_event():
     if not title or not description:
         return jsonify({"status": "error", "message": "title and description required"}), 400
     meta = {
-        "what_type": "ai_event",
-        "category_ab": "A",
-        "target_class": "infield",
-        "title": title,
-        "short_summary": description[:200],
-        "who_actor": author,
-        "where_component": "public_api",
-        "where_path": "/public/write_event",
-        "why_purpose": tags,
-        "how_trigger": "external_ai_call",
-        "channel_type": "http_api",
-        "lifecycle_phase": "in_operation",
-        "risk_level": "normal",
-        "before_state": "N/A",
-        "after_state": "N/A",
-        "change_type": "N/A",
-        "impact_scope": "local",
-        "impact_result": "N/A",
-        "related_event_id": "N/A",
-        "trace_id": "N/A",
-        "free_note": description,
+        "what_type": "ai_event", "category_ab": "A", "target_class": "infield",
+        "title": title, "short_summary": description[:200], "who_actor": author,
+        "where_component": "public_api", "where_path": "/public/write_event",
+        "why_purpose": tags, "how_trigger": "external_ai_call",
+        "channel_type": "http_api", "lifecycle_phase": "in_operation",
+        "risk_level": "normal", "before_state": "N/A", "after_state": "N/A",
+        "change_type": "N/A", "impact_scope": "local", "impact_result": "N/A",
+        "related_event_id": "N/A", "trace_id": "N/A", "free_note": description,
     }
     append_event(meta)
     return jsonify({"status": "ok", "event_id": next_event_id()})
 
 @app.route("/public/pipeline", methods=["POST"])
 def public_pipeline():
-    """全AI向けpipeline実行エンドポイント（essenceへの直接投入）"""
     payload = request.get_json(force=True, silent=True) or {}
     text = payload.get("text", "").strip()
     author = payload.get("author", "external_ai")
@@ -717,14 +809,12 @@ def public_pipeline():
     try:
         _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
         subprocess.Popen([sys.executable, _pl, "--text", text[:1000], "--no-ping"], cwd=ROOT_DIR)
-        print("[PUBLIC_PIPELINE] {} -> pipeline: {}...".format(author, text[:50]))
         return jsonify({"status": "ok", "message": "pipeline started", "author": author})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route("/public/seal", methods=["POST"])
 def public_seal():
-    """全AI向けsealエンドポイント（events.csvのSHA-256）"""
     import hashlib
     from pathlib import Path
     EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
@@ -738,33 +828,25 @@ def public_seal():
 
 @app.route("/public/status")
 def public_status():
-    """MoCKA全体の状態を一括返却 — 新規AIのオンボーディング用"""
-    import json as _j
-    from pathlib import Path
     result = {
         "system": "MoCKA v3.0",
         "status": "online",
         "services": {
-            "todo":      "/public/todo",
-            "overview":  "/public/overview",
-            "essence":   "/public/essence",
-            "events":    "/public/events?n=20",
-            "write_event": "/public/write_event (POST)",
-            "pipeline":  "/public/pipeline (POST)",
-            "seal":      "/public/seal (POST)",
-            "pipeline_status": "/pipeline/status",
-            "danger_status":   "/danger/status",
-            "essence_detail":  "/essence/detail",
+            "todo": "/public/todo", "overview": "/public/overview",
+            "essence": "/public/essence", "events": "/public/events?n=20",
+            "write_event": "/public/write_event (POST)", "pipeline": "/public/pipeline (POST)",
+            "seal": "/public/seal (POST)", "pipeline_status": "/pipeline/status",
+            "danger_status": "/danger/status", "essence_detail": "/essence/detail",
+            "collaborate": "/collaborate (POST)", "set_intent": "/set_intent (POST)",
+            "get_intent": "/get_intent/<ai_name> (GET)",
+            "pattern_score": "/pattern/score (GET)",
         },
-        "mcp": {
-            "url": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp",
-            "tools": ["mocka_get_todo","mocka_get_overview","mocka_get_essence",
-                      "mocka_write_event","mocka_list_events","mocka_seal","mocka_search","mocka_read_event"]
-        },
+        "mcp": {"url": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp"},
         "ngrok": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev",
         "appointed_ai": ["Claude","Gemini","GPT","Copilot","Perplexity"],
     }
     return jsonify(result)
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")

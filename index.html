@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8"><title>MoCKA Command Center v3.0</title>
@@ -697,6 +697,31 @@ async function refreshAll(){
 refreshAll();
 // 自動更新
 setInterval(refreshAll, 15000);
+
+// ============================================================
+// PATTERN SCORE PANEL
+// ============================================================
+async function updatePatternScore(){
+  try{
+    const r=await fetch("http://localhost:5000/pattern/score");
+    const d=await r.json();
+    if(d.status==="NO_DATA") return;
+    const verdict=d.verdict||"NEUTRAL";
+    const colors={"SUCCESS":"#00ff88","GOOD":"#88ff00","NEUTRAL":"#aaaaaa","WARNING":"#ffaa00","DANGER":"#ff4444"};
+    const color=colors[verdict]||"#aaaaaa";
+    let el=document.getElementById("pattern-score-panel");
+    if(!el){
+      el=document.createElement("div");
+      el.id="pattern-score-panel";
+      el.style.cssText="position:fixed;bottom:20px;right:20px;background:#1a1a2e;border:2px solid "+color+";border-radius:8px;padding:12px 16px;font-family:monospace;font-size:13px;z-index:9999;min-width:200px;";
+      document.body.appendChild(el);
+    }
+    el.style.borderColor=color;
+    el.innerHTML=`<div style="color:${color};font-weight:bold;font-size:15px;">● ${verdict}</div><div style="color:#aaa;margin-top:4px;">SUCCESS: <span style="color:#00ff88">${d.success_score}</span> / FAILURE: <span style="color:#ff4444">${d.failure_score}</span></div><div style="color:#666;font-size:11px;margin-top:4px;">${(d.keywords||[]).slice(0,5).join(" / ")}</div>`;
+  }catch(e){}
+}
+setInterval(updatePatternScore, 5000);
+updatePatternScore();
 </script>
 </body>
 </html>

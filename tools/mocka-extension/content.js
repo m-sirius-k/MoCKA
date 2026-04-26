@@ -1,4 +1,4 @@
-(function() {
+﻿(function() {
     if (window.MOCKA_INITIALIZED) return;
     window.MOCKA_INITIALIZED = true;
     console.log("[MOCKA] 自律監視プロトコル v14 起動");

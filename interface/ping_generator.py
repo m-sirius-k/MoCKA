@@ -48,7 +48,7 @@ def generate_ping():
 
     essence_updated = True
     if PACKET_PATH.exists():
-        prev = json.loads(PACKET_PATH.read_text(encoding="utf-8"))
+        prev = json.loads(PACKET_PATH.read_text(encoding="utf-8-sig"))
         prev_summary = prev.get("ESSENCE_SUMMARY", {})
         if (prev_summary.get("INCIDENT")   == new_incident and
             prev_summary.get("PHILOSOPHY") == new_philosophy and
@@ -69,6 +69,15 @@ def generate_ping():
         "essence_updated": essence_updated,
         "ngrok_online": ngrok_online,
         "NGROK": ngrok_online,
+        "current_phase": overview.get("current_phase", "Phase 2進行中"),
+        "top_todos": sorted(
+            [
+                {"id": t.get("id",""), "title": t.get("title",""), "priority": t.get("priority","")}
+                for t in json.loads(Path("C:/Users/sirok/MOCKA_TODO.json").read_text(encoding="utf-8-sig")).get("todos",[])
+                if t.get("status","") not in ["完了"]
+            ],
+            key=lambda x: {"最高":0,"高":1,"中":2,"低":3}.get(x["priority"], 9)
+        )[:5],
         "generated_at": datetime.now().isoformat()
     }
     PACKET_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -78,3 +87,8 @@ def generate_ping():
 
 if __name__ == "__main__":
     generate_ping()
+
+
+
+
+
