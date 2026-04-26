@@ -962,12 +962,40 @@ def auto_audit_loop():
 _audit_thread = _lt.Thread(target=auto_audit_loop, daemon=True)
 _audit_thread.start()
 
+
+@app.route("/audit/status")
+def audit_status():
+    from pathlib import Path as _P
+    seal_log = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+    log = {}
+    if seal_log.exists():
+        try:
+            log = __import__("json").loads(seal_log.read_text(encoding="utf-8"))
+        except: pass
+    return jsonify({"last_seal": log, "seal_log_exists": seal_log.exists()})
+
+@app.route("/audit/seal", methods=["POST"])
+def audit_seal_manual():
+    import subprocess
+    from pathlib import Path as _P
+    seal_script = _P(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
+    seal_log    = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+    if seal_script.exists():
+        result = subprocess.run(
+            ["python", str(seal_script), "MANUAL_SEAL_" + datetime.now().strftime("%Y%m%d_%H%M%S")],
+            cwd=str(ROOT_DIR), capture_output=True, text=True, timeout=30
+        )
+        log = {"sealed_at": datetime.now().isoformat(), "result": result.stdout[:200]}
+        seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
+        return jsonify({"status": "ok", "sealed_at": log["sealed_at"]})
+    return jsonify({"status": "error", "message": "seal script not found"})
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
+
 
 
 
