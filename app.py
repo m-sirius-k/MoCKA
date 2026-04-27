@@ -1097,6 +1097,11 @@ def decision_reject():
     })
     return jsonify({"status": "ok", "rejected": pid})
 
+
+@app.route('/health')
+def health_check():
+    return jsonify({'status': 'ok', 'port': 5000})
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
