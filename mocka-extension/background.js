@@ -148,3 +148,74 @@ async function sendToMocka(source, text, url, mode) {
     }
   } catch(e) { console.error('MoCKA send error:', e); }
 }
+
+// ── TODO サマリー自動取得（DNA注入同梱用）──────────────────────────────
+const MOCKA_LOCAL = 'http://127.0.0.1:5000';
+const TODO_CACHE_KEY = 'mocka_todo_summary';
+const TODO_CACHE_TTL = 60 * 60 * 1000; // 1時間
+
+async function fetchTodoSummary() {
+  try {
+    const cached = await chrome.storage.local.get(TODO_CACHE_KEY);
+    const now = Date.now();
+    if (cached[TODO_CACHE_KEY] && (now - cached[TODO_CACHE_KEY].fetched_at) < TODO_CACHE_TTL) {
+      return cached[TODO_CACHE_KEY].data;
+    }
+    const res = await fetch(`${MOCKA_LOCAL}/public/todo`, { method:'GET' });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const todos = (data.todos || [])
+      .filter(t => t.status === '未着手' || t.status === '進行中')
+      .slice(0, 5)
+      .map(t => `[${t.id}] ${t.title} (${t.priority || '中'})`);
+    const summary = {
+      generated_at: new Date().toISOString(),
+      top5: todos,
+      text: '【MoCKA TODO TOP5】\n' + todos.map((t,i) => `${i+1}. ${t}`).join('\n')
+    };
+    await chrome.storage.local.set({ [TODO_CACHE_KEY]: { data: summary, fetched_at: now } });
+    return summary;
+  } catch(e) {
+    console.error('fetchTodoSummary error:', e);
+    return null;
+  }
+}
+
+// 起動時・インストール時にTODOを先読み
+chrome.runtime.onInstalled.addListener(() => { fetchTodoSummary(); });
+chrome.runtime.onStartup.addListener(() => { fetchTodoSummary(); });
+
+// 新規AIチャットページ検知 → DNA + TODOサマリーをクリップボードにコピー
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status !== 'complete') return;
+  const url = tab.url || '';
+  const isNewChat =
+    url === 'https://gemini.google.com/app' ||
+    url.startsWith('https://gemini.google.com/app?') ||
+    url === 'https://chatgpt.com/' ||
+    url.startsWith('https://chatgpt.com/?') ||
+    url === 'https://copilot.microsoft.com/' ||
+    url.startsWith('https://copilot.microsoft.com/?');
+  if (!isNewChat) return;
+
+  const todoSummary = await fetchTodoSummary();
+  if (!todoSummary) return;
+
+  // DNA + TODOサマリーをタブに注入
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      func: function(todoText) {
+        // クリップボードにコピー（ユーザーが貼り付けられる状態にする）
+        navigator.clipboard.writeText(todoText).catch(() => {});
+        // 画面右下に通知バッジ表示
+        const badge = document.createElement('div');
+        badge.style.cssText = 'position:fixed;bottom:20px;right:20px;background:#005700;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;z-index:99999;font-family:monospace;white-space:pre-line;max-width:360px;box-shadow:0 2px 12px rgba(0,0,0,0.4)';
+        badge.textContent = 'MoCKA TODO同梱済\n' + todoText.slice(0, 200);
+        document.body.appendChild(badge);
+        setTimeout(() => badge.remove(), 6000);
+      },
+      args: [todoSummary.text]
+    });
+  } catch(e) { console.error('DNA inject error:', e); }
+});
