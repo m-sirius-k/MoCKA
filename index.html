@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8"><title>MoCKA Command Center v4.2</title>
@@ -315,8 +315,15 @@ function refreshPipeline(){
 
 function refreshLoop(){
   fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
-    set('cn-observe',d.raw_count!=null?d.raw_count:'-');
-    set('cn-record',d.raw_done_count!=null?d.raw_done_count:'-');
+    var cl = d.civilization_loop || {};
+    set('cn-observe',    cl.observe    ? cl.observe.count    : (d.raw_count!=null?d.raw_count:'-'));
+    set('cn-record',     cl.record     ? cl.record.count     : (d.raw_done_count!=null?d.raw_done_count:'-'));
+    set('cn-incident',   cl.incident   ? cl.incident.count   : '-');
+    set('cn-recurrence', cl.recurrence ? cl.recurrence.count : '-');
+    set('cn-prevention', cl.prevention ? cl.prevention.count : '-');
+    set('cn-decision',   cl.decision   ? cl.decision.count   : '-');
+    set('cn-action',     cl.action     ? cl.action.count     : '-');
+    set('cn-audit',      cl.audit && cl.audit.last_seal ? cl.audit.last_seal.slice(0,10) : 'SEALED');
     if(d.ping_age)set('age-I',d.ping_age);
     if(d.ESSENCE_SUMMARY){
       var s=d.ESSENCE_SUMMARY;
