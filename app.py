@@ -990,6 +990,113 @@ def audit_seal_manual():
         return jsonify({"status": "ok", "sealed_at": log["sealed_at"]})
     return jsonify({"status": "error", "message": "seal script not found"})
 
+
+# ============================================================
+# AUTO-CHAIN: append_event後のessence自動トリガー
+# ============================================================
+import threading as _chain_t
+
+def _trigger_essence_chain(row):
+    def _run():
+        try:
+            from pathlib import Path as _P
+            import subprocess as _sp
+            risk = row.get("risk_level","normal").lower()
+            wtype = row.get("what_type","").lower()
+            trigger_types = {"danger","critical","incident","claim","prevention"}
+            if risk not in ("danger","critical") and wtype not in trigger_types:
+                return
+            ec = _P(ROOT_DIR) / "interface" / "essence_classifier.py"
+            pg = _P(ROOT_DIR) / "interface" / "ping_generator.py"
+            if ec.exists():
+                _sp.run(["python", str(ec)], cwd=ROOT_DIR, timeout=30)
+            if pg.exists():
+                _sp.run(["python", str(pg)], cwd=ROOT_DIR, timeout=30)
+            print("[AUTO-CHAIN] essence更新: " + row.get("event_id","?"))
+        except Exception as e:
+            print("[AUTO-CHAIN] エラー: " + str(e))
+    _chain_t.Thread(target=_run, daemon=True).start()
+
+# ============================================================
+# PREVENTION QUEUE + DECISION
+# ============================================================
+from pathlib import Path as _pp
+PREVENTION_QUEUE_PATH = _pp(ROOT_DIR) / "data" / "prevention_queue.json"
+
+def _load_pqueue():
+    if PREVENTION_QUEUE_PATH.exists():
+        try:
+            return json.loads(PREVENTION_QUEUE_PATH.read_text(encoding="utf-8"))
+        except:
+            pass
+    return {"queue": []}
+
+def _save_pqueue(data):
+    PREVENTION_QUEUE_PATH.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+@app.route("/prevention/queue")
+def prevention_queue():
+    data = _load_pqueue()
+    pending = [q for q in data.get("queue", []) if q.get("status") == "pending"]
+    return jsonify({"queue": data.get("queue", []), "pending_count": len(pending)})
+
+@app.route("/decision/approve", methods=["POST"])
+def decision_approve():
+    payload = request.get_json(force=True, silent=True) or {}
+    pid = payload.get("id", "")
+    data = _load_pqueue()
+    approved = None
+    for item in data["queue"]:
+        if item.get("id") == pid and item.get("status") == "pending":
+            item["status"] = "approved"
+            item["approved_at"] = datetime.now().isoformat()
+            approved = item
+            break
+    if not approved:
+        return jsonify({"status": "not_found"}), 404
+    _save_pqueue(data)
+    append_event({
+        "what_type": "DECISION_APPROVED",
+        "title": "[承認] " + approved.get("title", ""),
+        "short_summary": approved.get("description", "")[:100],
+        "risk_level": approved.get("risk_level", "normal"),
+        "who_actor": "kimura_hakase",
+        "free_note": pid,
+    })
+    def _upd():
+        try:
+            from pathlib import Path as _P
+            import subprocess as _sp
+            pg = _P(ROOT_DIR) / "interface" / "ping_generator.py"
+            if pg.exists():
+                _sp.run(["python", str(pg)], cwd=ROOT_DIR, timeout=30)
+        except Exception as e:
+            print("[ACTION] " + str(e))
+    _chain_t.Thread(target=_upd, daemon=True).start()
+    return jsonify({"status": "ok", "approved": pid})
+
+@app.route("/decision/reject", methods=["POST"])
+def decision_reject():
+    payload = request.get_json(force=True, silent=True) or {}
+    pid = payload.get("id", "")
+    data = _load_pqueue()
+    for item in data["queue"]:
+        if item.get("id") == pid and item.get("status") == "pending":
+            item["status"] = "rejected"
+            item["rejected_at"] = datetime.now().isoformat()
+            break
+    _save_pqueue(data)
+    append_event({
+        "what_type": "DECISION_REJECTED",
+        "title": "[却下] " + pid,
+        "short_summary": "Human Gateで却下",
+        "risk_level": "normal",
+        "who_actor": "kimura_hakase",
+        "free_note": pid,
+    })
+    return jsonify({"status": "ok", "rejected": pid})
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
