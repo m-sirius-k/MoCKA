@@ -571,7 +571,81 @@ def loop_status():
             age = datetime.datetime.now().timestamp() - PING_PATH.stat().st_mtime
             ping_age = f"{int(age//3600)}h {int((age%3600)//60)}m ago"
         except: pass
-    return jsonify({"inject_mode": inject_mode, "essence_count": essence_count, "essence_axes": essence_axes, "essence_updated": essence_updated, "raw_count": raw_count, "raw_done_count": raw_done_count, "ping_latest": ping_data, "ping_age": ping_age})
+    # --- 8ステージ実データ収集 ---
+    EVENTS_CSV   = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
+    RECURRENCE_CSV = Path(r"C:\Users\sirok\MoCKA\data\recurrence_registry.csv")
+    PREVENTION_JSON = Path(r"C:\Users\sirok\MoCKA\data\prevention_queue.json")
+    LEDGER_JSON  = Path(r"C:\Users\sirok\MoCKA\runtime\main\ledger.json")
+
+    # ② Record: events.csv総件数
+    record_count = 0
+    # ③ Incident件数
+    incident_count = 0
+    # ⑥ Decision件数
+    decision_count = 0
+    # ⑦ Action件数
+    action_count = 0
+    if EVENTS_CSV.exists():
+        try:
+            import csv
+            with open(EVENTS_CSV, encoding="utf-8-sig", errors="replace") as f:
+                rows = list(csv.DictReader(f))
+            record_count = len(rows)
+            for r in rows:
+                wt = str(r.get("what_type","")).upper()
+                rl = str(r.get("risk_level","")).upper()
+                title = str(r.get("title","")).upper()
+                if rl in ["DANGER","CRITICAL"] or "INCIDENT" in wt or "INCIDENT" in title:
+                    incident_count += 1
+                if "DECISION_APPROVED" in wt or "DECISION_APPROVED" in title:
+                    decision_count += 1
+                if "AUTO_GATE_APPROVED" in wt or "AUTO_GATE" in title:
+                    action_count += 1
+        except: pass
+
+    # ④ Recurrence件数
+    recurrence_count = 0
+    if RECURRENCE_CSV.exists():
+        try:
+            import csv as _csv
+            with open(RECURRENCE_CSV, encoding="utf-8-sig", errors="replace") as f:
+                recurrence_count = sum(1 for _ in _csv.DictReader(f))
+        except: pass
+
+    # ⑤ Prevention未承認件数
+    prevention_pending = 0
+    if PREVENTION_JSON.exists():
+        try:
+            pdata = json.loads(PREVENTION_JSON.read_text(encoding="utf-8-sig"))
+            items = pdata if isinstance(pdata, list) else pdata.get("queue", [])
+            prevention_pending = sum(1 for x in items if str(x.get("status","")).upper() not in ["APPROVED","REJECTED"])
+        except: pass
+
+    # ⑧ Audit: 最終seal時刻
+    last_seal = None
+    last_seal_hash = None
+    if LEDGER_JSON.exists():
+        try:
+            ldata = json.loads(LEDGER_JSON.read_text(encoding="utf-8-sig"))
+            last_seal = ldata.get("last_updated") or ldata.get("timestamp")
+            last_seal_hash = ldata.get("hash") or ldata.get("anchor_hash")
+        except: pass
+
+    civilization_loop = {
+        "observe":    {"label": "Observe",    "count": raw_count,          "detail": "RAW未処理"},
+        "record":     {"label": "Record",     "count": record_count,       "detail": "events.csv総件数"},
+        "incident":   {"label": "Incident",   "count": incident_count,     "detail": "DANGER/CRITICAL/INCIDENT"},
+        "recurrence": {"label": "Recurrence", "count": recurrence_count,   "detail": "再発パターン"},
+        "prevention": {"label": "Prevention", "count": prevention_pending,  "detail": "未承認Prevention案"},
+        "decision":   {"label": "Decision",   "count": decision_count,     "detail": "承認済みDecision"},
+        "action":     {"label": "Action",     "count": action_count,       "detail": "Auto Gate実行"},
+        "audit":      {"label": "Audit",      "last_seal": last_seal,      "last_seal_hash": last_seal_hash},
+    }
+
+    return jsonify({"inject_mode": inject_mode, "essence_count": essence_count, "essence_axes": essence_axes,
+                    "essence_updated": essence_updated, "raw_count": raw_count, "raw_done_count": raw_done_count,
+                    "ping_latest": ping_data, "ping_age": ping_age,
+                    "civilization_loop": civilization_loop})
 
 @app.route("/loop/inject_toggle", methods=["POST"])
 def inject_toggle():
