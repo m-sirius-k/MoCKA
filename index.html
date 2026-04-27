@@ -1,784 +1,593 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"><title>MoCKA Command Center v3.0</title>
+<meta charset="UTF-8"><title>MoCKA Command Center v4.0</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0f1a;color:#e5e7eb;font-family:monospace;padding:16px;}
-h1{font-size:20px;font-weight:700;color:#fff;margin-bottom:2px;letter-spacing:3px;}
-.subtitle{font-size:11px;color:#9ca3af;margin-bottom:16px;letter-spacing:1px;}
-.block{border:1px solid #2d3748;padding:14px;margin-bottom:12px;background:#111827;border-radius:8px;}
-h3{color:#d1d5db;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px;border-bottom:1px solid #2d3748;padding-bottom:6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-button{background:transparent;color:#d1d5db;border:1px solid #4b5563;padding:6px 14px;cursor:pointer;margin:2px;font-family:monospace;font-size:12px;border-radius:4px;transition:0.2s;}
-button:hover{border-color:#60a5fa;color:#60a5fa;}
-.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
-.chip{background:#1a2235;border:1px solid #2d3748;border-radius:5px;padding:7px 10px;text-align:center;min-width:72px;}
-.chip .num{font-size:20px;font-weight:700;color:#60a5fa;line-height:1.2;}
-.chip.g .num{color:#4ade80;}
-.chip.a .num{color:#fbbf24;}
-.chip.p .num{color:#c084fc;}
-.chip.r .num{color:#f87171;}
-.chip .lbl{font-size:9px;color:#9ca3af;margin-top:2px;letter-spacing:1px;}
-.srv-bar{display:flex;align-items:center;gap:8px;margin-left:auto;flex-wrap:wrap;}
-.srv-item{display:flex;align-items:center;gap:3px;font-size:11px;white-space:nowrap;}
-.sd{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.sd.on{background:#4ade80;box-shadow:0 0 4px #4ade80;}
-.sd.off{background:#ff4444;}
-.sv.on{color:#4ade80;}
-.sv.off{color:#ff4444;}
-.sl{color:#6b7280;}
-/* ESSENCE VIEWER */
-.essence-axis{border:1px solid #2d3748;border-radius:6px;padding:10px;margin-bottom:8px;position:relative;}
-.essence-axis.filled{border-color:#1a4a2a;}
-.essence-axis.empty{border-color:#4a1a1a;opacity:0.5;}
-.axis-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-.axis-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;letter-spacing:1px;}
-.ax-I{background:#4a1a1a;color:#f87171;}
-.ax-P{background:#1a2a4a;color:#60a5fa;}
-.ax-O{background:#1a3a2a;color:#4ade80;}
-.axis-updated{font-size:10px;color:#6b7280;margin-left:auto;}
-.axis-text{font-size:11px;color:#d1d5db;line-height:1.6;word-break:break-all;}
-.axis-count{font-size:10px;color:#6b7280;margin-top:4px;}
-/* DANGER MONITOR */
-.danger-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;}
-.danger-tier{background:#1a1a1a;border-radius:4px;padding:8px;text-align:center;}
-.danger-tier .dn{font-size:18px;font-weight:700;}
-.t1 .dn{color:#f87171;}.t2 .dn{color:#fbbf24;}.t3 .dn{color:#60a5fa;}
-.te .dn{color:#c084fc;}.ts .dn{color:#9ca3af;}
-.danger-tier .dl{font-size:9px;color:#6b7280;margin-top:2px;}
-.learn-bar{display:flex;align-items:center;gap:12px;padding:8px;background:#0a1a0f;border:1px solid #1a4a2a;border-radius:4px;font-size:11px;}
-/* INPUT PANEL */
-.input-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:4px;margin-bottom:5px;font-size:11px;}
-.input-row.active{background:#0a1a0f;border:1px solid #1a4a2a;}
-.input-row.inactive{background:#1a1a2a;border:1px solid #1a1a3a;opacity:0.6;}
-.input-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
-.input-dot.on{background:#4ade80;box-shadow:0 0 5px #4ade80;}
-.input-dot.off{background:#6b7280;}
-.input-label{color:#d1d5db;min-width:100px;}
-.input-val{color:#9ca3af;margin-left:auto;}
-/* PIPELINE FLOW */
-.pipe-flow{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:10px;}
-.pipe-node{background:#1a2235;border:1px solid #2d3748;border-radius:4px;padding:5px 8px;text-align:center;min-width:70px;}
-.pipe-node .pn{font-size:16px;font-weight:700;color:#60a5fa;}
-.pipe-node.g .pn{color:#4ade80;}
-.pipe-node.a .pn{color:#fbbf24;}
-.pipe-node .pl{font-size:9px;color:#9ca3af;margin-top:1px;}
-.pipe-arrow{color:#374151;font-size:14px;}
-/* PIPELINE ZONES */
-.pipeline-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
-.zone{border-radius:6px;padding:10px;min-height:100px;}
-.zone-incoming{background:#1a1030;border:1px solid #6d28d9;}
-.zone-processing{background:#1a1500;border:1px solid #92400e;}
-.zone-result{background:#0a1f15;border:1px solid #065f46;}
-.zone-title{font-size:11px;font-weight:700;letter-spacing:1px;margin-bottom:6px;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.1);}
-.zone-incoming .zone-title{color:#c084fc;}
-.zone-processing .zone-title{color:#fbbf24;}
-.zone-result .zone-title{color:#4ade80;}
-.qi{font-size:11px;padding:4px 6px;margin-bottom:3px;border-radius:2px;background:rgba(0,0,0,0.3);border-left:3px solid #a855f7;}
-.qi .qn{color:#e5e7eb;word-break:break-all;font-size:11px;}
-.qi .qs{color:#9ca3af;font-size:10px;}
-.ri{font-size:11px;padding:4px 6px;margin-bottom:3px;border-radius:2px;background:rgba(0,0,0,0.3);}
-.ri.ok{border-left:3px solid #4ade80;}
-.ri.ng{border-left:3px solid #fbbf24;}
-.rr{font-size:13px;font-weight:700;}
-.rr.ok{color:#4ade80;}.rr.ng{color:#fbbf24;}
-.rmeta{color:#9ca3af;font-size:10px;margin-left:5px;}
-.rprev{color:#6b7280;font-size:10px;margin-top:2px;word-break:break-all;}
-.empty-msg{color:#4b5563;font-size:11px;}
-.process-btn{background:#0a2015!important;border:1px solid #4ade80!important;color:#4ade80!important;width:100%;padding:12px!important;font-size:13px!important;letter-spacing:2px;margin-bottom:6px;border-radius:6px;}
-.process-btn:hover{box-shadow:0 0 12px rgba(74,222,128,0.3)!important;}
-/* MISC */
-.loop-stage{font-size:10px;padding:3px 7px;border-radius:4px;background:#0f2a1a;border:1px solid #1a4a2a;color:#4ade80;letter-spacing:0.5px;}
-.loop-arrow{font-size:10px;color:#374151;align-self:center;}
-.history-container{max-height:180px;overflow-y:auto;}
-table{width:100%;border-collapse:collapse;font-size:11px;}
-th{background:#1f2937;color:#d1d5db;padding:7px 8px;text-align:left;font-weight:700;letter-spacing:1px;font-size:10px;position:sticky;top:0;}
-td{border-bottom:1px solid #1f2937;padding:6px 8px;color:#d1d5db;}
-td:first-child{color:#9ca3af;font-size:10px;}
-tr:hover td{background:#1f2937;}
-::-webkit-scrollbar{width:3px;}
-::-webkit-scrollbar-thumb{background:#374151;}
-.opt-group{display:none;margin-top:8px;padding:8px;border:1px dashed #374151;border-radius:4px;}
-.tag-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;}
-#exec{width:100%;padding:14px;border:2px solid #374151;color:#6b7280;background:#111827;font-size:14px;font-weight:700;letter-spacing:2px;border-radius:6px;transition:0.3s;cursor:not-allowed;margin-bottom:12px;}
-#exec.ready{border-color:#FF8000;background:#1a0f00;color:#FF8000;cursor:pointer;box-shadow:0 0 14px rgba(255,128,0,0.4);}
-.status-bar{font-size:12px;color:#9ca3af;text-align:center;margin-bottom:8px;}
-.mcp-wrap{position:relative;cursor:default;}
-.mcp-badge{background:#0a2015;border:1px solid #4ade80;border-radius:8px;padding:0 5px;font-size:10px;color:#4ade80;margin-left:2px;}
-.mcp-popup{display:none;position:absolute;top:20px;right:0;background:#0d1117;border:1px solid #2d3748;border-radius:6px;padding:8px 12px;z-index:999;min-width:180px;font-size:11px;line-height:2;box-shadow:0 4px 12px rgba(0,0,0,0.6);}
-.mcp-wrap:hover .mcp-popup{display:block;}
-.active-a{background:#005700!important;border-color:#00cc00!important;color:#fff!important;box-shadow:0 0 8px #008a00;}
-.active-b{background:#1e3a5f!important;border-color:#60a5fa!important;color:#fff!important;box-shadow:0 0 8px #60a5fa;}
-.active-t{background:#2d1f4a!important;border-color:#c084fc!important;color:#e9d5ff!important;}
-textarea{width:100%;height:90px;background:#0d1626;color:#e5e7eb;border:1px solid #374151;border-radius:4px;font-family:monospace;font-size:12px;padding:8px;resize:vertical;outline:none;}
-textarea:focus{border-color:#60a5fa;}
+body{background:#0a0f1a;color:#e5e7eb;font-family:'Courier New',monospace;font-size:12px;padding:10px;min-height:100vh;}
+
+/* ===== TOP STATUS BAR ===== */
+.top-bar{display:flex;align-items:center;gap:6px;background:#0d1626;border:1px solid #1e293b;border-radius:6px;padding:6px 10px;margin-bottom:8px;flex-wrap:wrap;}
+.top-bar .logo{color:#00d4aa;font-weight:700;letter-spacing:2px;font-size:11px;margin-right:4px;}
+.top-bar .phase{color:#6b7280;font-size:10px;margin-right:8px;}
+.srv{display:flex;align-items:center;gap:3px;font-size:10px;}
+.srv .dot{width:7px;height:7px;border-radius:50%;background:#374151;}
+.srv .dot.on{background:#00d4aa;box-shadow:0 0 4px #00d4aa;}
+.srv .dot.warn{background:#f59e0b;box-shadow:0 0 4px #f59e0b;}
+.srv-sep{color:#374151;margin:0 4px;}
+.time-display{margin-left:auto;color:#4b5563;font-size:10px;font-family:'Courier New',monospace;}
+
+/* ===== CHIP ROW ===== */
+.chip-bar{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;}
+.chip{display:flex;flex-direction:column;align-items:center;background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:6px 10px;min-width:64px;cursor:pointer;transition:border-color .2s;}
+.chip:hover{border-color:#374151;}
+.chip.g{border-color:#064e3b;}
+.chip.a{border-color:#78350f;}
+.chip.r{border-color:#7f1d1d;}
+.chip.p{border-color:#3b0764;}
+.chip.b{border-color:#1e3a5f;}
+.chip .num{font-size:20px;font-weight:700;line-height:1;font-family:'Courier New',monospace;}
+.chip.g .num{color:#10b981;}
+.chip.a .num{color:#f59e0b;}
+.chip.r .num{color:#ef4444;}
+.chip.p .num{color:#a855f7;}
+.chip.b .num{color:#3b82f6;}
+.chip .lbl{font-size:9px;color:#6b7280;letter-spacing:1px;margin-top:2px;}
+.chip .sub{font-size:9px;color:#4b5563;margin-top:1px;}
+
+/* ===== PIPELINE BAR ===== */
+.pipe-bar{display:flex;align-items:center;background:#0d1626;border:1px solid #1e293b;border-radius:6px;padding:6px 10px;margin-bottom:8px;gap:4px;flex-wrap:wrap;}
+.pipe-bar .pb-label{color:#6b7280;font-size:9px;letter-spacing:1px;margin-right:4px;white-space:nowrap;}
+.pnode{display:flex;flex-direction:column;align-items:center;background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:3px 8px;min-width:52px;}
+.pnode .pn{font-size:14px;font-weight:700;color:#e5e7eb;font-family:'Courier New',monospace;}
+.pnode .pl{font-size:8px;color:#6b7280;letter-spacing:0.5px;}
+.pnode.g{border-color:#064e3b;} .pnode.g .pn{color:#10b981;}
+.pnode.a{border-color:#78350f;} .pnode.a .pn{color:#f59e0b;}
+.pnode.p{border-color:#3b0764;} .pnode.p .pn{color:#a855f7;}
+.parrow{color:#374151;font-size:10px;padding:0 1px;}
+
+/* ===== SECTION BLOCK ===== */
+.block{background:#0d1626;border:1px solid #1e293b;border-radius:6px;margin-bottom:8px;overflow:hidden;}
+.block-header{display:flex;align-items:center;padding:7px 12px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:background .15s;}
+.block-header:hover{background:#111827;}
+.block-header.expanded{border-bottom-color:#1e293b;}
+.bh-dot{width:7px;height:7px;border-radius:50%;margin-right:8px;flex-shrink:0;}
+.bh-title{font-size:10px;letter-spacing:2px;font-weight:700;color:#9ca3af;flex:1;}
+.bh-chips{display:flex;gap:6px;align-items:center;}
+.bh-chip{font-size:11px;font-weight:700;font-family:'Courier New',monospace;padding:1px 6px;border-radius:3px;background:#0a0f1a;}
+.bh-chip.g{color:#10b981;} .bh-chip.a{color:#f59e0b;} .bh-chip.r{color:#ef4444;} .bh-chip.p{color:#a855f7;}
+.bh-arrow{color:#4b5563;font-size:10px;margin-left:8px;transition:transform .2s;}
+.bh-arrow.open{transform:rotate(180deg);}
+.block-body{padding:10px 12px;display:none;}
+.block-body.open{display:block;}
+
+/* ===== ESSENCE ===== */
+.essence-axis{background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:8px;margin-bottom:6px;}
+.essence-axis:last-child{margin-bottom:0;}
+.ax-header{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
+.ax-badge{font-size:9px;letter-spacing:1px;padding:1px 5px;border-radius:2px;font-weight:700;}
+.ax-I{background:#1a2a1a;color:#10b981;} .ax-P{background:#1a1a2a;color:#6366f1;} .ax-O{background:#2a1a10;color:#f59e0b;}
+.ax-age{font-size:9px;color:#4b5563;margin-left:auto;}
+.ax-text{font-size:11px;color:#9ca3af;line-height:1.5;max-height:60px;overflow:hidden;transition:max-height .3s;}
+.ax-text.expanded{max-height:500px;}
+.ax-expand{font-size:9px;color:#4b5563;cursor:pointer;margin-top:3px;text-align:right;}
+.ax-expand:hover{color:#6b7280;}
+
+/* ===== DANGER ===== */
+.danger-grid{display:flex;gap:6px;flex-wrap:wrap;}
+.dtier{background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:6px 10px;text-align:center;min-width:70px;}
+.dtier.t1{border-color:#7f1d1d;} .dtier.t2{border-color:#78350f;} .dtier.t3{border-color:#713f12;}
+.dtier.te{border-color:#581c87;} .dtier.ts{border-color:#1e3a5f;}
+.dn{font-size:18px;font-weight:700;font-family:'Courier New',monospace;}
+.t1 .dn{color:#ef4444;} .t2 .dn{color:#f97316;} .t3 .dn{color:#eab308;}
+.te .dn{color:#a855f7;} .ts .dn{color:#3b82f6;}
+.dl{font-size:8px;color:#6b7280;letter-spacing:1px;}
+.learn-bar{margin-top:8px;background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:6px 10px;font-size:10px;color:#6b7280;}
+.learn-bar span{color:#10b981;font-weight:700;}
+
+/* ===== EVENTS STREAM ===== */
+.event-item{padding:4px 0;border-bottom:1px solid #111827;display:flex;gap:8px;align-items:flex-start;}
+.event-item:last-child{border-bottom:none;}
+.ev-id{color:#374151;font-size:9px;white-space:nowrap;flex-shrink:0;}
+.ev-type{font-size:9px;padding:1px 4px;border-radius:2px;background:#111827;white-space:nowrap;flex-shrink:0;}
+.ev-type.DANGER,.ev-type.CRITICAL{background:#1a0a0a;color:#ef4444;}
+.ev-type.WARNING{background:#1a1000;color:#f59e0b;}
+.ev-type.NORMAL,.ev-type.save,.ev-type.record{background:#0a1a0a;color:#10b981;}
+.ev-type.collaboration,.ev-type.share{background:#0a0a1a;color:#6366f1;}
+.ev-title{font-size:10px;color:#9ca3af;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ev-time{font-size:9px;color:#374151;white-space:nowrap;flex-shrink:0;}
+
+/* ===== DECISION QUEUE ===== */
+.decision-item{background:#0a0f1a;border:1px solid #1e2d1e;border-radius:4px;padding:8px;margin-bottom:6px;}
+.decision-item:last-child{margin-bottom:0;}
+.di-title{font-size:11px;color:#d1d5db;margin-bottom:4px;}
+.di-desc{font-size:10px;color:#6b7280;margin-bottom:6px;line-height:1.4;}
+.di-actions{display:flex;gap:6px;}
+.btn-approve{background:#064e3b;color:#10b981;border:1px solid #065f46;border-radius:3px;padding:3px 10px;font-size:10px;cursor:pointer;font-family:'Courier New',monospace;transition:background .15s;}
+.btn-approve:hover{background:#065f46;}
+.btn-reject{background:#1a0a0a;color:#ef4444;border:1px solid #7f1d1d;border-radius:3px;padding:3px 10px;font-size:10px;cursor:pointer;font-family:'Courier New',monospace;transition:background .15s;}
+.btn-reject:hover{background:#2a0a0a;}
+.empty-msg{color:#374151;font-size:10px;text-align:center;padding:8px;}
+
+/* ===== HEALTH ===== */
+.health-row{display:flex;gap:6px;flex-wrap:wrap;}
+.hchip{background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:5px 10px;text-align:center;min-width:80px;}
+.hchip .hn{font-size:16px;font-weight:700;font-family:'Courier New',monospace;color:#e5e7eb;}
+.hchip .hl{font-size:8px;color:#6b7280;letter-spacing:1px;}
+.hash-display{margin-top:8px;font-size:9px;color:#374151;word-break:break-all;padding:4px;background:#0a0f1a;border-radius:3px;}
+
+/* ===== AUDIT PANEL ===== */
+.audit-row{display:flex;gap:8px;align-items:center;font-size:10px;color:#6b7280;padding:3px 0;border-bottom:1px solid #111827;}
+.audit-row:last-child{border-bottom:none;}
+.audit-label{color:#4b5563;width:80px;flex-shrink:0;}
+.audit-val{color:#9ca3af;flex:1;}
+.audit-val.ok{color:#10b981;} .audit-val.warn{color:#f59e0b;} .audit-val.err{color:#ef4444;}
+
+/* ===== INPUT STATUS ===== */
+.input-rows{display:flex;flex-direction:column;gap:4px;}
+.irow{display:flex;align-items:center;gap:8px;padding:4px 0;}
+.idot{width:7px;height:7px;border-radius:50%;background:#1e293b;flex-shrink:0;}
+.idot.on{background:#10b981;box-shadow:0 0 4px #10b981;}
+.irow-label{font-size:10px;color:#6b7280;flex:1;}
+.irow-stat{font-size:9px;color:#374151;}
+
+/* ===== CIVILIZATION LOOP ===== */
+.civ-bar{display:flex;align-items:center;gap:2px;background:#0d1626;border:1px solid #1e293b;border-radius:6px;padding:6px 10px;margin-bottom:8px;flex-wrap:wrap;}
+.civ-node{display:flex;flex-direction:column;align-items:center;padding:4px 8px;border-radius:4px;min-width:56px;background:#0a0f1a;border:1px solid #1e293b;position:relative;}
+.civ-node.active{border-color:#00d4aa;}
+.cn-num{font-size:13px;font-weight:700;color:#e5e7eb;font-family:'Courier New',monospace;}
+.cn-lbl{font-size:8px;color:#6b7280;letter-spacing:0.5px;text-align:center;}
+.civ-arrow{color:#1e293b;font-size:9px;padding:0 1px;}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:#0a0f1a;}
+::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px;}
 </style>
 </head>
 <body>
-<h1>MoCKA COMMAND CENTER</h1>
-<p class="subtitle">Model of Cybernetic Knowledge Architecture — v3.0.0 | Knowledge Pipeline: CSV → 抽出 → 濃縮 → essence</p>
 
-<!-- ① ESSENCE STATUS -->
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+  <span class="logo">MoCKA</span>
+  <span class="phase">COMMAND CENTER v4.0</span>
+  <div class="srv"><div class="dot" id="d-app"></div><span>APP:5000</span></div>
+  <div class="srv"><div class="dot" id="d-cal"></div><span>CAL:5679</span></div>
+  <div class="srv"><div class="dot" id="d-mcp"></div><span>MCP:5002</span></div>
+  <div class="srv"><div class="dot" id="d-ngrok"></div><span>NGROK</span></div>
+  <span class="time-display" id="clock">--:--:--</span>
+</div>
+
+<!-- ===== CIVILIZATION LOOP BAR ===== -->
+<div class="civ-bar">
+  <div class="civ-node" id="civ-observe"><div class="cn-num" id="cn-observe">-</div><div class="cn-lbl">OBSERVE</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-record"><div class="cn-num" id="cn-record">-</div><div class="cn-lbl">RECORD</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-incident"><div class="cn-num" id="cn-incident">-</div><div class="cn-lbl">INCIDENT</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-recurrence"><div class="cn-num" id="cn-recurrence">-</div><div class="cn-lbl">RECURRENCE</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-prevention"><div class="cn-num" id="cn-prevention">-</div><div class="cn-lbl">PREVENTION</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-decision"><div class="cn-num" id="cn-decision">-</div><div class="cn-lbl">DECISION</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-action"><div class="cn-num" id="cn-action">-</div><div class="cn-lbl">ACTION</div></div>
+  <div class="civ-arrow">→</div>
+  <div class="civ-node" id="civ-audit"><div class="cn-num" id="cn-audit">-</div><div class="cn-lbl">AUDIT</div></div>
+</div>
+
+<!-- ===== PIPELINE BAR ===== -->
+<div class="pipe-bar">
+  <span class="pb-label" id="pipe-status-label">● PIPELINE</span>
+  <div class="pnode"><div class="pn" id="p-RAW">-</div><div class="pl">RAW</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode a"><div class="pn" id="p-DONE">-</div><div class="pl">DONE</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode"><div class="pn" id="p-REDUCED">-</div><div class="pl">REDUCED</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode g"><div class="pn" id="p-RE_REDUCED">-</div><div class="pl">RE_REDUCED</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode a"><div class="pn" id="p-REDUCING">-</div><div class="pl">REDUCING</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode"><div class="pn" id="p-CORE">-</div><div class="pl">CORE</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode g"><div class="pn" id="p-ESSENCE">-</div><div class="pl">ESSENCE</div></div>
+  <div class="parrow">→</div>
+  <div class="pnode p"><div class="pn" id="p-PILS">-</div><div class="pl">PILS</div></div>
+</div>
+
+<!-- ===== KEY METRICS CHIP BAR ===== -->
+<div class="chip-bar">
+  <div class="chip g" onclick="toggleBlock('b-essence')">
+    <div class="num" id="loop-essence-count">-</div>
+    <div class="lbl">ESSENCE</div>
+  </div>
+  <div class="chip" onclick="toggleBlock('b-pipeline')">
+    <div class="num" id="loop-raw-count">-</div>
+    <div class="lbl">RAW</div>
+  </div>
+  <div class="chip a" onclick="toggleBlock('b-pipeline')">
+    <div class="num" id="raw-done-count">-</div>
+    <div class="lbl">RAW_DONE</div>
+  </div>
+  <div class="chip r" onclick="toggleBlock('b-danger')">
+    <div class="num" id="danger-total">-</div>
+    <div class="lbl">DANGER</div>
+  </div>
+  <div class="chip a" onclick="toggleBlock('b-danger')">
+    <div class="num" id="learned-today">-</div>
+    <div class="lbl">LEARNED</div>
+  </div>
+  <div class="chip b" onclick="toggleBlock('b-health')">
+    <div class="num" id="h-events">-</div>
+    <div class="lbl">EVENTS</div>
+  </div>
+  <div class="chip g" onclick="toggleBlock('b-health')">
+    <div class="num" id="h-done">-</div>
+    <div class="lbl">TODO完了</div>
+  </div>
+  <div class="chip a" onclick="toggleBlock('b-health')">
+    <div class="num" id="h-todo">-</div>
+    <div class="lbl">TODO残</div>
+  </div>
+  <div class="chip p" onclick="toggleBlock('b-decision')">
+    <div class="num" id="decision-count">-</div>
+    <div class="lbl">DECISION</div>
+  </div>
+</div>
+
+<!-- ===== EVENTS STREAM (常時表示・コンパクト) ===== -->
 <div class="block">
-  <h3>
-    <span class="sd on"></span>
-    <span id="loop-inject-label" style="font-size:12px;color:#4ade80;letter-spacing:2px;">ESSENCE INJECT — ON</span>
-    <button id="loop-toggle-btn" onclick="toggleInject()" style="padding:3px 12px;font-size:11px;border-color:#4ade80;color:#4ade80;">⬛ STOP</button>
-    <button onclick="refreshAll()" style="padding:3px 10px;font-size:11px;">↻</button>
-    <span style="margin-left:auto;font-size:10px;color:#6b7280;" id="loop-ping-age">—</span>
-  </h3>
-  <div class="chip-row">
-    <div class="chip g"><div class="num" id="loop-essence-count">-</div><div class="lbl">ESSENCE軸</div></div>
-    <div class="chip"><div class="num" id="loop-raw-count">-</div><div class="lbl">RAW</div></div>
-    <div class="chip a"><div class="num" id="raw-done-count">-</div><div class="lbl">RAW_DONE</div></div>
-    <div class="chip p"><div class="num" id="danger-total">-</div><div class="lbl">DANGER語彙</div></div>
-    <div class="chip r"><div class="num" id="learned-today">-</div><div class="lbl">本日学習</div></div>
-  </div>
-  <!-- ESSENCE 3軸表示 -->
-  <div id="essence-viewer">
-    <div class="essence-axis empty" id="ax-INCIDENT">
-      <div class="axis-header"><span class="axis-badge ax-I">INCIDENT</span><span class="axis-updated" id="upd-INCIDENT">—</span></div>
-      <div class="axis-text" id="txt-INCIDENT">— 未取得 —</div>
-      <div class="axis-count" id="cnt-INCIDENT"></div>
+  <div class="block-header expanded" onclick="toggleBlock('b-events')">
+    <div class="bh-dot" style="background:#3b82f6;"></div>
+    <div class="bh-title">EVENTS STREAM</div>
+    <div class="bh-chips">
+      <span class="bh-chip b" id="ev-latest-id">—</span>
     </div>
-    <div class="essence-axis empty" id="ax-PHILOSOPHY">
-      <div class="axis-header"><span class="axis-badge ax-P">PHILOSOPHY</span><span class="axis-updated" id="upd-PHILOSOPHY">—</span></div>
-      <div class="axis-text" id="txt-PHILOSOPHY">— 未取得 —</div>
-      <div class="axis-count" id="cnt-PHILOSOPHY"></div>
-    </div>
-    <div class="essence-axis empty" id="ax-OPERATION">
-      <div class="axis-header"><span class="axis-badge ax-O">OPERATION</span><span class="axis-updated" id="upd-OPERATION">—</span></div>
-      <div class="axis-text" id="txt-OPERATION">— 未取得 —</div>
-      <div class="axis-count" id="cnt-OPERATION"></div>
-    </div>
+    <div class="bh-arrow open" id="arr-b-events">▼</div>
   </div>
-  <!-- PING PACKET -->
-  <div style="background:#0a1a0f;border:1px solid #1a4a2a;border-radius:5px;padding:8px;font-size:10px;font-family:monospace;color:#4ade80;min-height:36px;margin-top:8px;">
-    <div style="color:#6b7280;font-size:9px;letter-spacing:1px;margin-bottom:3px;">PING_LATEST.JSON — DNA v2.0</div>
-    <div id="loop-ping-preview">— loading —</div>
-  </div>
-  <div style="margin-top:8px;display:flex;gap:4px;flex-wrap:wrap;">
-    <span style="font-size:9px;color:#9ca3af;letter-spacing:1px;width:100%;margin-bottom:3px;">CIVILIZATION LOOP</span>
-    <span class="loop-stage">① Observe</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">② Record</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">③ Incident</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">④ Recurrence</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">⑤ Prevention</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">⑥ Decision</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">⑦ Action</span><span class="loop-arrow">→</span>
-    <span class="loop-stage">⑧ Audit</span>
+  <div class="block-body open" id="b-events">
+    <div id="events-stream"></div>
   </div>
 </div>
 
-<!-- ② INPUT — 情報の入口 -->
+<!-- ===== ESSENCE (折りたたみ) ===== -->
 <div class="block">
-  <h3><span class="sd on"></span>② INPUT — 情報の入口</h3>
-  <div class="input-row" id="irow-chrome">
-    <div class="input-dot off" id="idot-chrome"></div>
-    <span class="input-label">Chrome拡張 (ECOL)</span>
-    <span style="font-size:10px;color:#6b7280;">RAWフォルダへ収集</span>
-    <span class="input-val" id="ival-chrome">—</span>
+  <div class="block-header" onclick="toggleBlock('b-essence')">
+    <div class="bh-dot" style="background:#10b981;"></div>
+    <div class="bh-title">ESSENCE</div>
+    <div class="bh-chips">
+      <span class="bh-chip g" id="bh-essence-count">-</span>
+      <span style="font-size:9px;color:#4b5563;" id="bh-essence-age">—</span>
+    </div>
+    <div class="bh-arrow" id="arr-b-essence">▼</div>
   </div>
-  <div class="input-row active" id="irow-watchdog">
-    <div class="input-dot on" id="idot-watchdog"></div>
-    <span class="input-label">watchdog_mocka_v2</span>
-    <span style="font-size:10px;color:#6b7280;">10秒間隔で自動処理</span>
-    <span class="input-val" id="ival-watchdog">—</span>
-  </div>
-  <div class="input-row" id="irow-pipeline">
-    <div class="input-dot off" id="idot-pipeline"></div>
-    <span class="input-label">mocka_pipeline.py</span>
-    <span style="font-size:10px;color:#6b7280;">手動実行 or スケジュール</span>
-    <span class="input-val" id="ival-pipeline">—</span>
-  </div>
-  <div class="input-row" id="irow-manual">
-    <div class="input-dot off" id="idot-manual"></div>
-    <span class="input-label">手動入力 (::I::タグ)</span>
-    <span style="font-size:10px;color:#6b7280;">input/ フォルダに配置</span>
-    <span class="input-val" id="ival-manual">—</span>
+  <div class="block-body" id="b-essence">
+    <div class="essence-axis">
+      <div class="ax-header"><span class="ax-badge ax-I">INCIDENT</span><span class="ax-age" id="age-INCIDENT"></span></div>
+      <div class="ax-text" id="txt-INCIDENT">— 未取得 —</div>
+      <div class="ax-expand" onclick="expandAxis('txt-INCIDENT',this)">▼ 展開</div>
+    </div>
+    <div class="essence-axis">
+      <div class="ax-header"><span class="ax-badge ax-P">PHILOSOPHY</span><span class="ax-age" id="age-PHILOSOPHY"></span></div>
+      <div class="ax-text" id="txt-PHILOSOPHY">— 未取得 —</div>
+      <div class="ax-expand" onclick="expandAxis('txt-PHILOSOPHY',this)">▼ 展開</div>
+    </div>
+    <div class="essence-axis">
+      <div class="ax-header"><span class="ax-badge ax-O">OPERATION</span><span class="ax-age" id="age-OPERATION"></span></div>
+      <div class="ax-text" id="txt-OPERATION">— 未取得 —</div>
+      <div class="ax-expand" onclick="expandAxis('txt-OPERATION',this)">▼ 展開</div>
+    </div>
   </div>
 </div>
 
-<!-- ③ KNOWLEDGE PIPELINE -->
+<!-- ===== DANGER MONITOR (折りたたみ) ===== -->
 <div class="block">
-  <h3>
-    <span class="sd" id="sdot"></span>
-    <span id="sstat" style="font-size:12px;">③ KNOWLEDGE PIPELINE — checking...</span>
-    <button onclick="refreshQueue()" style="padding:3px 10px;font-size:11px;">↻</button>
-    <div class="srv-bar">
-      <div class="srv-item"><span class="sd off" id="d-app"></span><span class="sl">APP</span><span class="sv off" id="v-app">:5000</span></div>
-      <div class="srv-item"><span class="sd off" id="d-cal"></span><span class="sl">CAL</span><span class="sv off" id="v-cal">:5679</span></div>
-      <div class="srv-item mcp-wrap">
-        <span class="sd off" id="d-mcp"></span><span class="sl">MCP</span><span class="sv off" id="v-mcp">:5002</span>
-        <span class="mcp-badge" id="mcp-badge" style="display:none;">-</span>
-        <div class="mcp-popup" id="mcp-popup">— loading —</div>
-      </div>
-      <div class="srv-item"><span class="sd off" id="d-ngrok"></span><span class="sl">NGROK</span><span class="sv off" id="v-ngrok">→5002</span></div>
+  <div class="block-header" onclick="toggleBlock('b-danger')">
+    <div class="bh-dot" style="background:#ef4444;"></div>
+    <div class="bh-title">DANGER MONITOR</div>
+    <div class="bh-chips">
+      <span class="bh-chip r" id="bh-danger-total">-</span>
+      <span style="font-size:9px;color:#4b5563;" id="bh-last-critical">—</span>
     </div>
-    <span style="font-size:10px;color:#374151;" id="ts"></span>
-  </h3>
-  <!-- パイプラインフロー -->
-  <div class="pipe-flow">
-    <div class="pipe-node"><div class="pn" id="p-RAW">-</div><div class="pl">RAW</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node a"><div class="pn" id="p-DONE">-</div><div class="pl">RAW_DONE</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node"><div class="pn" id="p-REDUCED">-</div><div class="pl">REDUCED</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node g"><div class="pn" id="p-RE_REDUCED">-</div><div class="pl">RE_REDUCED</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node a"><div class="pn" id="p-REDUCING">-</div><div class="pl">REDUCING</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node"><div class="pn" id="p-CORE">-</div><div class="pl">CORE</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node g"><div class="pn" id="p-ESSENCE">-</div><div class="pl">ESSENCE</div></div>
-    <span class="pipe-arrow">→</span>
-    <div class="pipe-node" style="border-color:#c084fc;"><div class="pn" style="color:#c084fc;" id="p-PILS">-</div><div class="pl">PILS</div></div>
+    <div class="bh-arrow" id="arr-b-danger">▼</div>
   </div>
-  <!-- 3ゾーン -->
-  <div class="pipeline-grid">
-    <div class="zone zone-incoming">
-      <div class="zone-title">① INCOMING — 受信キュー</div>
-      <div id="zone-queue"><span class="empty-msg">— 待機中 —</span></div>
+  <div class="block-body" id="b-danger">
+    <div class="danger-grid">
+      <div class="dtier t1"><div class="dn" id="dt1">-</div><div class="dl">TIER 1</div></div>
+      <div class="dtier t2"><div class="dn" id="dt2">-</div><div class="dl">TIER 2</div></div>
+      <div class="dtier t3"><div class="dn" id="dt3">-</div><div class="dl">TIER 3</div></div>
+      <div class="dtier te"><div class="dn" id="dte">-</div><div class="dl">ESCALATION</div></div>
+      <div class="dtier ts"><div class="dn" id="dts">-</div><div class="dl">SILENT</div></div>
     </div>
-    <div class="zone zone-processing">
-      <div class="zone-title">② PROCESSING — 処理中</div>
-      <div id="zone-processing"><span class="empty-msg">— スタンバイ —</span></div>
-    </div>
-    <div class="zone zone-result">
-      <div class="zone-title">③ RESULT — 処理結果</div>
-      <div id="zone-result"><span class="empty-msg">— 結果なし —</span></div>
-    </div>
+    <div class="learn-bar">今日の学習: <span id="learn-today-d">0</span> 件 ／ 登録パターン総数: <span id="pattern-count">-</span> 件</div>
   </div>
-  <button class="process-btn" onclick="processNow()">▶ PROCESS NOW — PILS → Caliber</button>
-  <div style="font-size:11px;color:#9ca3af;min-height:18px;" id="proc-msg">— 待機中 —</div>
 </div>
 
-<!-- ④ DANGER MONITOR -->
+<!-- ===== DECISION QUEUE (折りたたみ) ===== -->
 <div class="block">
-  <h3><span class="sd on" style="background:#f87171;box-shadow:0 0 4px #f87171;"></span>④ DANGER MONITOR — Language Algorithm v1.0</h3>
-  <div class="danger-grid">
-    <div class="danger-tier t1"><div class="dn" id="dt1">-</div><div class="dl">Tier1 即検知</div></div>
-    <div class="danger-tier t2"><div class="dn" id="dt2">-</div><div class="dl">Tier2 高優先</div></div>
-    <div class="danger-tier t3"><div class="dn" id="dt3">-</div><div class="dl">Tier3 補助</div></div>
-    <div class="danger-tier te"><div class="dn" id="dte">-</div><div class="dl">Escalation</div></div>
-    <div class="danger-tier ts"><div class="dn" id="dts">-</div><div class="dl">Silent</div></div>
-    <div class="danger-tier" style="border:1px solid #2d3748;"><div class="dn" style="color:#4ade80;" id="dtotal">-</div><div class="dl">総語彙数</div></div>
+  <div class="block-header" onclick="toggleBlock('b-decision')">
+    <div class="bh-dot" style="background:#a855f7;" id="decision-dot"></div>
+    <div class="bh-title">DECISION QUEUE</div>
+    <div class="bh-chips">
+      <span class="bh-chip p" id="bh-decision-count">0</span>
+    </div>
+    <div class="bh-arrow" id="arr-b-decision">▼</div>
   </div>
-  <div class="learn-bar">
-    <span style="color:#4ade80;">🧠 自己学習</span>
-    <span style="color:#d1d5db;">本日追加: <strong id="lb-today" style="color:#fbbf24;">-</strong>件</span>
-    <span style="color:#6b7280;margin-left:auto;">直近CRITICAL: <span id="lb-last" style="color:#f87171;">—</span></span>
+  <div class="block-body" id="b-decision">
+    <div id="decision-list"><span class="empty-msg">— 承認待ちなし —</span></div>
   </div>
 </div>
 
-<!-- ⑤ MISSION -->
+<!-- ===== INPUT STATUS (折りたたみ) ===== -->
 <div class="block">
-  <h3>⑤ MISSION</h3>
-  <button id="btnA" onclick="setCat('A',this)">A: 保存 (Storage)</button>
-  <button id="btnB" onclick="setCat('B',this)">B: 共有 (Broadcast)</button>
-  <div id="opt-A" class="opt-group">
-    <div class="tag-row">
-      <button class="s-btn" onclick="toggleT('infield',this)">infield</button>
-      <button class="s-btn" onclick="toggleT('outfield',this)">outfield</button>
-      <button class="s-btn" onclick="toggleT('公文書',this)">公文書</button>
-      <button class="s-btn" onclick="toggleT('インシデント',this)">インシデント</button>
-      <button class="s-btn" onclick="toggleT('クレーム',this)">クレーム</button>
+  <div class="block-header" onclick="toggleBlock('b-input')">
+    <div class="bh-dot" style="background:#6366f1;"></div>
+    <div class="bh-title">INPUT STATUS</div>
+    <div class="bh-arrow" id="arr-b-input">▼</div>
+  </div>
+  <div class="block-body" id="b-input">
+    <div class="input-rows">
+      <div class="irow"><div class="idot" id="idot-chrome"></div><div class="irow-label">Chrome拡張</div><div class="irow-stat" id="istat-chrome">—</div></div>
+      <div class="irow"><div class="idot on" id="idot-watchdog"></div><div class="irow-label">Watchdog自動監視</div><div class="irow-stat">ACTIVE</div></div>
+      <div class="irow"><div class="idot" id="idot-pipeline"></div><div class="irow-label">パイプライン処理</div><div class="irow-stat" id="istat-pipeline">—</div></div>
+      <div class="irow"><div class="idot" id="idot-manual"></div><div class="irow-label">手動入力</div><div class="irow-stat">—</div></div>
     </div>
   </div>
-  <div id="opt-B" class="opt-group">
-    <div class="tag-row">
-      <button onclick="toggleAll(this)" style="border-color:#eab308;color:#eab308;">★ 全員一括</button>
-      <button class="s-btn" onclick="toggleT('ChatGPT',this)">ChatGPT</button>
-      <button class="s-btn" onclick="toggleT('Gemini',this)">Gemini</button>
-      <button class="s-btn" onclick="toggleT('Claude',this)">Claude</button>
-      <button class="s-btn" onclick="toggleT('Perplexity',this)">Perplexity</button>
-      <button class="s-btn" onclick="toggleT('Copilot',this)">Copilot</button>
+</div>
+
+<!-- ===== SYSTEM HEALTH (折りたたみ) ===== -->
+<div class="block">
+  <div class="block-header" onclick="toggleBlock('b-health')">
+    <div class="bh-dot" style="background:#3b82f6;"></div>
+    <div class="bh-title">SYSTEM HEALTH</div>
+    <div class="bh-chips">
+      <span class="bh-chip" id="bh-phase" style="color:#e5e7eb;">M1</span>
+    </div>
+    <div class="bh-arrow" id="arr-b-health">▼</div>
+  </div>
+  <div class="block-body" id="b-health">
+    <div class="health-row">
+      <div class="hchip"><div class="hn" id="hh-events">-</div><div class="hl">EVENTS</div></div>
+      <div class="hchip"><div class="hn" id="hh-done">-</div><div class="hl">TODO完了</div></div>
+      <div class="hchip"><div class="hn" id="hh-todo">-</div><div class="hl">TODO残</div></div>
+      <div class="hchip"><div class="hn" id="hh-recurrence">-</div><div class="hl">RECURRENCE</div></div>
+      <div class="hchip"><div class="hn" id="hh-seal">-</div><div class="hl">LAST SEAL</div></div>
+    </div>
+    <div class="hash-display" id="hash-display">— hash loading —</div>
+    <div style="margin-top:8px;">
+      <div class="audit-row"><span class="audit-label">LEDGER</span><span class="audit-val" id="au-ledger">—</span></div>
+      <div class="audit-row"><span class="audit-label">LAST AUDIT</span><span class="audit-val" id="au-last">—</span></div>
+      <div class="audit-row"><span class="audit-label">NEXT AUTO</span><span class="audit-val" id="au-next">—</span></div>
     </div>
   </div>
-  <div style="margin-top:10px;">
-    <input id="title" type="text" placeholder="タイトル" style="width:100%;background:#0d1626;color:#e5e7eb;border:1px solid #374151;border-radius:4px;padding:7px 10px;font-family:monospace;font-size:12px;outline:none;margin-bottom:7px;">
-    <textarea id="memo" placeholder="記録内容... Why（目的）· What（内容）· How（方法）"></textarea>
-  </div>
 </div>
 
-<div class="status-bar" id="status-bar">— SELECT CATEGORY AND TARGET —</div>
-<div id="launch-links" style="display:none;margin-bottom:10px;padding:10px;background:#111827;border:1px solid #a855f7;border-radius:6px;">
-  <div style="font-size:10px;color:#c084fc;letter-spacing:2px;margin-bottom:7px;">OPEN EACH AI TAB</div>
-  <div id="link-list" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
-</div>
-<button id="exec" onclick="fire()">SELECT MISSION TARGETS</button>
-
-<!-- ⑥ MISSION LOG -->
-<div class="block">
-  <h3>⑥ MISSION LOG — HISTORY</h3>
-  <div class="history-container">
-    <table><thead><tr><th>日時</th><th>対象</th><th>内容</th></tr></thead><tbody id="history-body"></tbody></table>
-  </div>
-</div>
-
-<!-- ⑦ EVENTS STREAM -->
-<div class="block">
-  <h3><span class="sd on"></span>⑦ EVENTS STREAM — 最新イベント</h3>
-  <div id="events-stream" style="max-height:180px;overflow-y:auto;"></div>
-</div>
-
-<!-- ⑨ SYSTEM HEALTH -->
-<div class="block">
-  <h3><span class="sd on"></span>⑨ SYSTEM HEALTH</h3>
-  <div class="chip-row">
-    <div class="chip"><div class="num" id="h-events">-</div><div class="lbl">EVENTS</div></div>
-    <div class="chip g"><div class="num" id="h-done">-</div><div class="lbl">TODO完了</div></div>
-    <div class="chip a"><div class="num" id="h-todo">-</div><div class="lbl">TODO残</div></div>
-    <div class="chip p"><div class="num" id="h-phase">M1</div><div class="lbl">PHASE</div></div>
-  </div>
-  <div id="hash-display" style="font-size:10px;color:#4b5563;word-break:break-all;margin-top:6px;"></div>
-</div>
-
-<script>
-// ============================================================
-// STATE
-// ============================================================
-let state = {c:null, targets:[]};
-const AI_URLS = {
-  ChatGPT:"https://chatgpt.com/",Gemini:"https://gemini.google.com/app",
-  Claude:"https://claude.ai/new",Perplexity:"https://www.perplexity.ai/",
-  Copilot:"https://copilot.microsoft.com/"
-};
-
-// ============================================================
-// ESSENCE + PIPELINE STATUS
-// ============================================================
-async function refreshLoop(){
-  try{
-    const r = await fetch('/loop/status');
-    const d = await r.json();
-    document.getElementById('loop-inject-label').innerText = 'ESSENCE INJECT — ' + (d.inject_mode||'?');
-    document.getElementById('loop-essence-count').innerText = d.essence_count ?? '-';
-    document.getElementById('loop-raw-count').innerText = d.raw_count ?? '-';
-    document.getElementById('loop-ping-age').innerText = d.ping_age ? 'PING: '+d.ping_age : '—';
-    // ping preview
-    const ping = d.ping_latest || {};
-    const parts = Object.entries(ping).filter(([k])=>!k.includes('generated')&&!k.includes('ngrok_online')).map(([k,v])=>{
-      let disp;
-      if(typeof v==='object'&&v!==null&&!Array.isArray(v)){
-        disp=Object.entries(v).map(([k2,v2])=>k2+':'+String(v2).substring(0,20)).join(' / ').substring(0,60);
-      }else if(Array.isArray(v)){
-        disp=v.map(x=>typeof x==='object'?x.id+'/'+x.title:String(x)).join(', ').substring(0,60);
-      }else{
-        disp=String(v).substring(0,40);
-      }
-      return `${k}: "${disp}"`;
-    });
-    document.getElementById('loop-ping-preview').innerText = parts.join('  ') || '— no data —';
-  }catch(e){console.error('loop/status',e);}
-}
-
-async function refreshPipeline(){
-  try{
-    const r = await fetch('/pipeline/status');
-    const d = await r.json();
-
-    // RAW_DONE
-    const layers = d.layers || {};
-    document.getElementById('raw-done-count').innerText = layers.RAW_DONE ?? '-';
-    document.getElementById('loop-raw-count').innerText = layers.RAW ?? '-';
-
-    // パイプラインフロー
-    const pm = {RAW:'p-RAW',REDUCED:'p-REDUCED',RE_REDUCED:'p-RE_REDUCED',
-                REDUCING:'p-REDUCING',CORE:'p-CORE',ESSENCE:'p-ESSENCE',PILS:'p-PILS'};
-    for(const [k,id] of Object.entries(pm)){
-      const el = document.getElementById(id);
-      if(el) el.innerText = layers[k==='PILS'?'PILS':k] ?? '-';
-    }
-    document.getElementById('p-DONE').innerText = layers.RAW_DONE ?? '-';
-
-    // DANGER MONITOR
-    const dng = d.danger || {};
-    document.getElementById('dt1').innerText    = dng.tier1 ?? '-';
-    document.getElementById('dt2').innerText    = dng.tier2 ?? '-';
-    document.getElementById('dt3').innerText    = dng.tier3 ?? '-';
-    document.getElementById('dte').innerText    = dng.escalation ?? '-';
-    document.getElementById('dts').innerText    = dng.silent_danger ?? '-';
-    document.getElementById('dtotal').innerText = dng.total ?? '-';
-    document.getElementById('danger-total').innerText = dng.total ?? '-';
-    document.getElementById('lb-today').innerText = dng.learned_today ?? '-';
-    document.getElementById('learned-today').innerText = dng.learned_today ?? '-';
-    document.getElementById('lb-last').innerText = dng.last_critical || '—';
-
-    // ESSENCE VIEWER
-    const ess = d.essence || {};
-    for(const axis of ['INCIDENT','PHILOSOPHY','OPERATION']){
-      const info = ess[axis] || {};
-      const axEl = document.getElementById('ax-'+axis);
-      const txtEl = document.getElementById('txt-'+axis);
-      const updEl = document.getElementById('upd-'+axis);
-      const cntEl = document.getElementById('cnt-'+axis);
-      if(info.filled){
-        axEl.className = 'essence-axis filled';
-        txtEl.innerText = info.text || '—';
-        updEl.innerText = (info.updated||'').substring(0,16);
-        cntEl.innerText = info.count ? `ソース: ${info.count}件` : '';
-      } else {
-        axEl.className = 'essence-axis empty';
-        txtEl.innerText = '— 未充填 —';
-      }
-    }
-
-    // INPUT STATUS
-    const inp = d.input || {};
-    const wd = inp.watchdog || {};
-    if(wd.running){
-      document.getElementById('idot-watchdog').className = 'input-dot on';
-      document.getElementById('ival-watchdog').innerText = `処理済: ${wd.processed_count||0}件`;
-      document.getElementById('irow-watchdog').className = 'input-row active';
-    }
-    const pl = inp.pipeline || {};
-    if(pl.last){
-      document.getElementById('idot-pipeline').className = 'input-dot on';
-      document.getElementById('ival-pipeline').innerText = pl.last;
-      document.getElementById('irow-pipeline').className = 'input-row active';
-    }
-    // RAW > 0ならChrome拡張が機能している
-    if((layers.RAW||0) > 0){
-      document.getElementById('idot-chrome').className = 'input-dot on';
-      document.getElementById('ival-chrome').innerText = `${layers.RAW}件 待機中`;
-      document.getElementById('irow-chrome').className = 'input-row active';
-    }
-
-  }catch(e){console.error('pipeline/status',e);}
-}
-
-// ============================================================
-// SERVER STATUS
-// ============================================================
-function srvSet(dotId, valId, on, text){
-  const d=document.getElementById(dotId), v=document.getElementById(valId);
-  if(d) d.className='sd '+(on?'on':'off');
-  if(v){v.className='sv '+(on?'on':'off');v.textContent=text;}
-}
-async function updateServerStatus(){
-  try{
-    srvSet('d-app','v-app',true,':5000 ✓');
-    const r=await fetch('/servers/status');
-    const d=await r.json();
-    const cal=d.caliber||{}, mcp=d.mcp||{};
-    srvSet('d-cal','v-cal',cal.status==='online',':5679'+(cal.status==='online'?' ✓':' ✗'));
-    srvSet('d-mcp','v-mcp',mcp.status==='online',':5002'+(mcp.status==='online'?' ✓':' ✗'));
-    const calOn=cal.status==='online';
-    document.getElementById('sdot').className='sd '+(calOn?'on':'off');
-    document.getElementById('sstat').innerText='③ KNOWLEDGE PIPELINE — '+(calOn?'ONLINE':'OFFLINE')+' :5679';
-    if(mcp.status==='online'&&mcp.tools){
-      const badge=document.getElementById('mcp-badge');
-      badge.style.display='inline';badge.innerText=mcp.tools.length||'?';
-      document.getElementById('mcp-popup').innerHTML=mcp.tools.map(t=>`<div>${t}</div>`).join('');
-    }
-  }catch(e){srvSet('d-cal','v-cal',false,':5679 ✗');}
-  try{
-    const r=await fetch('/ngrok/status');
-    const d=await r.json();
-    srvSet('d-ngrok','v-ngrok',d.status==='online','→5002'+(d.status==='online'?' ✓':' ✗'));
-  }catch(e){srvSet('d-ngrok','v-ngrok',false,'→5002 ✗');}
-  document.getElementById('ts').innerText=new Date().toLocaleTimeString('ja-JP');
-}
-
-// ============================================================
-// CALIBER QUEUE
-// ============================================================
-async function refreshQueue(){
-  try{
-    const r=await fetch('/caliber/queue');
-    const d=await r.json();
-    const layers=d.layers||{};
-    // pipe-flow更新（caliber/queueからも）
-    ['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE'].forEach(k=>{
-      const el=document.getElementById('p-'+k);
-      if(el) el.innerText=layers[k]??'-';
-    });
-    // OUTBOX/PILS
-    const pelEl=document.getElementById('p-PILS');
-    if(pelEl) pelEl.innerText=layers.outbox_PILS??d.queue?.length??'-';
-    // INCOMING
-    const qi=document.getElementById('zone-queue');
-    qi.innerHTML='';
-    if(!d.queue||!d.queue.length){ qi.innerHTML='<span class="empty-msg">— 待機中 —</span>'; }
-    else{
-      d.queue.slice(0,8).forEach(f=>{
-        const div=document.createElement('div'); div.className='qi';
-        div.innerHTML=`<div class="qn">${f.name}</div><div class="qs">${(f.size/1024).toFixed(1)} KB — 処理待ち</div>`;
-        qi.appendChild(div);
-      });
-      if(d.queue.length>8){ const m=document.createElement('div'); m.className='qi'; m.innerHTML=`<div class="qn" style="color:#6b7280;">... 他${d.queue.length-8}件</div>`; qi.appendChild(m); }
-    }
-    // PROCESSING
-    const zp=document.getElementById('zone-processing');
-    zp.innerHTML='';
-    if(!d.reducing||!d.reducing.length){ zp.innerHTML='<span class="empty-msg">— スタンバイ —</span>'; }
-    else{
-      d.reducing.forEach(r=>{
-        const div=document.createElement('div'); div.className='processing-item';
-        div.innerHTML=`${Math.round((r.restore_rate||0)*100)}% ${r.file?.substring(0,20)||'—'}`;
-        zp.appendChild(div);
-      });
-    }
-    // RESULT
-    const zr=document.getElementById('zone-result');
-    zr.innerHTML='';
-    if(!d.recent_results||!d.recent_results.length){ zr.innerHTML='<span class="empty-msg">— 結果なし —</span>'; }
-    else{
-      d.recent_results.forEach(r=>{
-        const rate=Math.round((r.restore_rate||0)*100);
-        const ok=rate>=80;
-        const div=document.createElement('div'); div.className=`ri ${ok?'ok':'ng'}`;
-        div.innerHTML=`<span class="rr ${ok?'ok':'ng'}">${rate}%</span><span class="rmeta">${r.status||''} | ${(r.timestamp||'').substring(0,13)}</span><div class="rprev">${(r.preview||'').substring(0,60)}</div>`;
-        zr.appendChild(div);
-      });
-    }
-  }catch(e){console.error('caliber/queue',e);}
-}
-
-async function processNow(){
-  document.getElementById('proc-msg').innerText='⏳ 処理中...';
-  try{
-    const r=await fetch('/caliber/process',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-    const d=await r.json();
-    document.getElementById('proc-msg').innerText=`✅ ${d.status||'ok'} rate=${d.restore_rate||'?'}`;
-    setTimeout(refreshQueue,2000);
-  }catch(e){ document.getElementById('proc-msg').innerText='❌ '+e.message; }
-}
-
-// ============================================================
-// INJECT TOGGLE
-// ============================================================
-async function toggleInject(){
-  try{
-    const r=await fetch('/loop/inject_toggle',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
-    const d=await r.json();
-    document.getElementById('loop-inject-label').innerText='ESSENCE INJECT — '+d.inject_mode;
-  }catch(e){console.error(e);}
-}
-
-// ============================================================
-// MISSION
-// ============================================================
-function setCat(c,btn){
-  state.c=c; state.targets=[];
-  document.querySelectorAll('.s-btn').forEach(b=>{b.classList.remove('active-t');});
-  document.getElementById('btnA').classList.toggle('active-a',c==='A');
-  document.getElementById('btnB').classList.toggle('active-b',c==='B');
-  document.getElementById('opt-A').style.display=c==='A'?'block':'none';
-  document.getElementById('opt-B').style.display=c==='B'?'block':'none';
-  document.getElementById('launch-links').style.display='none';
-  updateBtn();
-}
-function toggleT(t,btn){
-  const i=state.targets.indexOf(t);
-  if(i<0){ state.targets.push(t); btn.classList.add('active-t'); }
-  else{ state.targets.splice(i,1); btn.classList.remove('active-t'); }
-  updateBtn();
-}
-function toggleAll(btn){
-  const all=['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
-  if(state.targets.length===all.length){ state.targets=[]; document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('active-t')); }
-  else{ state.targets=[...all]; document.querySelectorAll('.s-btn').forEach(b=>b.classList.add('active-t')); }
-  updateBtn();
-}
-function updateBtn(){
-  const btn=document.getElementById('exec');
-  const ready=state.c&&state.targets.length>0;
-  btn.classList.toggle('ready',ready);
-  btn.innerText=ready?`▶ EXECUTE MISSION [${state.c}→${state.targets.join('+')}]`:'SELECT MISSION TARGETS';
-  btn.disabled=!ready;
-}
-async function fire(){
-  if(!state.c||!state.targets.length) return;
-  const btn=document.getElementById('exec');
-  btn.disabled=true;
-  const memo=document.getElementById('memo').value.trim();
-  const title=document.getElementById('title').value.trim();
-  try{
-    const r=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({c:state.c,o:state.targets.join(','),memo:memo?`[${title}] ${memo}`:title})});
-    if(state.c==='B'){
-      document.getElementById('status-bar').style.color='#c084fc';
-      document.getElementById('status-bar').innerText='PROMPT COPIED — OPEN EACH AI BELOW';
-      const ll=document.getElementById('link-list'); ll.innerHTML='';
-      for(const t of state.targets){
-        if(AI_URLS[t]){
-          const a=document.createElement('a'); a.href=AI_URLS[t]; a.target='_blank'; a.innerText='▶ '+t;
-          a.style.cssText='display:inline-block;padding:6px 12px;border:1px solid #a855f7;color:#c084fc;text-decoration:none;font-family:monospace;font-size:12px;border-radius:4px;';
-          ll.appendChild(a);
-        }
-      }
-      document.getElementById('launch-links').style.display='block';
-    }
-    btn.innerText='✓ MISSION COMPLETE';
-    await updateHistory();
-    setTimeout(()=>{updateBtn();document.getElementById('memo').value='';},2500);
-  }catch(e){ btn.innerText='ERROR: '+e.message; }
-}
-async function updateHistory(){
-  try{
-    const res=await fetch('/get_history');
-    const data=await res.json();
-    const body=document.getElementById('history-body');
-    body.innerHTML='';
-    data.reverse().slice(0,25).forEach(row=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML=`<td>${row.when||''}</td><td>${row.target_class||''}</td><td>${row.short_summary||row.free_note||''}</td>`;
-      body.appendChild(tr);
-    });
-  }catch(e){console.error(e);}
-}
-
-// ============================================================
-// MCP CALLS
-// ============================================================
-async function mcpCall(tool,args){
-  try{
-    const r=await fetch("http://localhost:5002/mcp",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/call",params:{name:tool,arguments:args||{}}})
-    });
-    const d=await r.json();
-    return JSON.parse(d.result.content[0].text);
-  }catch(e){return null;}
-}
-async function updateEventsStream(){
-  const d=await mcpCall("mocka_list_events",{n:10});
-  if(!d) return;
-  document.getElementById("h-events").textContent=d.count||"-";
-  const el=document.getElementById("events-stream"); el.innerHTML="";
-  [...(d.events||[])].reverse().forEach(e=>{
-    const div=document.createElement("div");
-    div.style.cssText="font-size:11px;padding:4px 7px;margin-bottom:3px;border-left:3px solid #6d28d9;background:rgba(0,0,0,0.3);border-radius:2px;display:flex;gap:7px;align-items:center;";
-    const when=(e.when||"").substring(0,16),actor=(e.who_actor||"").substring(0,8),title=(e.title||e.short_summary||"").substring(0,55);
-    div.innerHTML=`<span style="color:#6d28d9;min-width:115px;flex-shrink:0;">${when}</span><span style="color:#9ca3af;min-width:50px;flex-shrink:0;">${actor}</span><span style="color:#e5e7eb;">${title}</span>`;
-    el.appendChild(div);
-  });
-}
-async function updateTodoObserver(){
-  const d=await mcpCall("mocka_get_todo");
-  if(!d||!d.todos) return;
-  const el=document.getElementById("todo-stream"); el.innerHTML="";
-  const todos=d.todos||[], completed=d.completed||[];
-  document.getElementById("h-todo").textContent=todos.filter(t=>t.status!=="完了").length;
-  document.getElementById("h-done").textContent=completed.length;
-  todos.filter(t=>t.status!=="完了").forEach(t=>{
-    const div=document.createElement("div");
-    const c=t.priority==="高"?"#ef4444":t.priority==="中"?"#f59e0b":"#6b7280";
-    div.style.cssText=`background:#111827;border:1px solid ${c};border-radius:4px;padding:5px 9px;font-size:11px;max-width:180px;cursor:default;`;
-    div.title=t.description||"";
-    div.innerHTML=`<div style="color:${c};font-weight:700;font-size:10px;">${t.id||""}</div><div style="color:#e5e7eb;margin-top:2px;">${(t.title||"").substring(0,26)}</div><div style="color:#6b7280;margin-top:2px;font-size:10px;">${t.status} | ${(t.assigned_to||"").substring(0,10)}</div>`;
-    el.appendChild(div);
-  });
-}
-async function updateHealth(){
-  try{
-    const r=await fetch("http://localhost:5002/health");
-    const d=await r.json();
-    document.getElementById("hash-display").textContent="MCP v"+(d.version||"?")+" | "+new Date().toLocaleTimeString("ja-JP");
-  }catch(e){ document.getElementById("hash-display").textContent="MCP :5002 offline"; }
-}
-
-// ============================================================
-// REFRESH ALL
-// ============================================================
-async function refreshAll(){
-  await Promise.all([
-    refreshLoop(),
-    refreshPipeline(),
-    refreshQueue(),
-    updateServerStatus(),
-    updateEventsStream(),
-    updateTodoObserver(),
-    updateHealth(),
-    updateHistory(),
-  ]);
-}
-
-// 初回ロード
-refreshAll();
-// 自動更新
-setInterval(refreshAll, 15000);
-
-// ============================================================
-// PATTERN SCORE PANEL
-// ============================================================
-async function updatePatternScore(){
-  try{
-    const r=await fetch("http://localhost:5000/pattern/score");
-    const d=await r.json();
-    if(d.status==="NO_DATA") return;
-    const verdict=d.verdict||"NEUTRAL";
-    const colors={"SUCCESS":"#00ff88","GOOD":"#88ff00","NEUTRAL":"#aaaaaa","WARNING":"#ffaa00","DANGER":"#ff4444"};
-    const color=colors[verdict]||"#aaaaaa";
-    let el=document.getElementById("pattern-score-panel");
-    if(!el){
-      el=document.createElement("div");
-      el.id="pattern-score-panel";
-      el.style.cssText="position:fixed;bottom:20px;right:20px;background:#1a1a2e;border:2px solid "+color+";border-radius:8px;padding:12px 16px;font-family:monospace;font-size:13px;z-index:9999;min-width:200px;";
-      document.body.appendChild(el);
-    }
-    el.style.borderColor=color;
-    el.innerHTML=`<div style="color:${color};font-weight:bold;font-size:15px;">● ${verdict}</div><div style="color:#aaa;margin-top:4px;">SUCCESS: <span style="color:#00ff88">${d.success_score}</span> / FAILURE: <span style="color:#ff4444">${d.failure_score}</span></div><div style="color:#666;font-size:11px;margin-top:4px;">${(d.keywords||[]).slice(0,5).join(" / ")}</div>`;
-  }catch(e){}
-}
-setInterval(updatePatternScore, 5000);
-updatePatternScore();
-</script>
-
-<!-- === Pattern Score Panel (auto-patched) === -->
-<div id="pattern-panel" style="position:fixed;bottom:16px;right:16px;width:260px;background:#1a1a2e;color:#eee;border-radius:12px;padding:14px 16px;font-family:monospace;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,.4);z-index:9999;opacity:.95">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-    <span style="font-weight:bold;font-size:13px">PATTERN ENGINE</span>
-    <span id="pe-ts" style="color:#888;font-size:10px">--</span>
-  </div>
-  <div style="display:flex;gap:8px;margin-bottom:10px">
-    <div style="flex:1;text-align:center;background:#0f3460;border-radius:8px;padding:8px">
-      <div id="pe-verdict" style="font-size:18px;font-weight:bold;color:#00d4aa">--</div>
-      <div style="color:#888;font-size:10px">verdict</div>
-    </div>
-    <div style="flex:1;text-align:center;background:#0f3460;border-radius:8px;padding:8px">
-      <div id="pe-R" style="font-size:18px;font-weight:bold;color:#aaa">0.0</div>
-      <div style="color:#888;font-size:10px">R軸</div>
-    </div>
-  </div>
-  <div style="margin-bottom:5px"><span style="color:#888">DANGER </span><span id="pe-dbar" style="display:inline-block;height:6px;background:#ff6b6b;border-radius:3px;width:0;transition:width .4s;vertical-align:middle;margin:0 4px"></span><span id="pe-dn" style="color:#ff6b6b">0</span></div>
-  <div style="margin-bottom:10px"><span style="color:#888">SUCCESS</span><span id="pe-sbar" style="display:inline-block;height:6px;background:#00d4aa;border-radius:3px;width:0;transition:width .4s;vertical-align:middle;margin:0 4px"></span><span id="pe-sn" style="color:#00d4aa">0</span></div>
-  <div id="pe-prev" style="color:#aaa;font-size:10px;border-top:1px solid #333;padding-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">waiting...</div>
-</div>
 <script>
 (function(){
-  var C={CRITICAL:"#ff4444",DANGER:"#ff6b6b",WARNING:"#ffd166",SUCCESS:"#00d4aa",NEUTRAL:"#888"};
-  function tick(){
-    fetch('/pattern/status').then(r=>r.json()).then(d=>{
-      if(d.status!=='ok')return;
-      var v=d.last_verdict||'NEUTRAL';
-      var el=document.getElementById('pe-verdict');
-      el.textContent=v; el.style.color=C[v]||'#eee';
-      var rEl=document.getElementById('pe-R');
-      rEl.textContent=(d.last_R||0).toFixed(2);
-      rEl.style.color=d.last_R>0.6?'#ff6b6b':'#aaa';
-      var tot=Math.max(d.recent_count,1);
-      document.getElementById('pe-dbar').style.width=Math.round(d.danger_count/tot*120)+'px';
-      document.getElementById('pe-sbar').style.width=Math.round(d.success_count/tot*120)+'px';
-      document.getElementById('pe-dn').textContent=d.danger_count;
-      document.getElementById('pe-sn').textContent=d.success_count;
-      var last=(d.history||[]).slice(-1)[0];
-      if(last){
-        document.getElementById('pe-prev').textContent=last.preview||'';
-        document.getElementById('pe-ts').textContent=new Date(last.timestamp).toLocaleTimeString('ja-JP');
+'use strict';
+
+// ===== UTILS =====
+function $(id){return document.getElementById(id);}
+function setText(id,v){var el=$(id);if(el)el.textContent=v;}
+function toggleBlock(id){
+  var body=$(id), header=body?body.previousElementSibling:null, arrow=header?header.querySelector('.bh-arrow'):null;
+  if(!body)return;
+  var open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  if(arrow){arrow.classList.toggle('open',!open);}
+  if(header){header.classList.toggle('expanded',!open);}
+}
+function expandAxis(id,btn){
+  var el=$(id);
+  if(!el)return;
+  var exp=el.classList.toggle('expanded');
+  btn.textContent=exp?'▲ 折りたたむ':'▼ 展開';
+}
+window.toggleBlock=toggleBlock;
+window.expandAxis=expandAxis;
+
+// ===== CLOCK =====
+function updateClock(){
+  setText('clock', new Date().toLocaleTimeString('ja-JP'));
+}
+setInterval(updateClock,1000); updateClock();
+
+// ===== SERVER STATUS =====
+function checkServer(url,dotId,cb){
+  fetch(url).then(function(r){
+    var dot=$(dotId);
+    if(dot){dot.className='dot '+(r.ok?'on':'warn');}
+    if(cb)cb(r.ok);
+  }).catch(function(){
+    var dot=$(dotId);
+    if(dot){dot.className='dot';}
+    if(cb)cb(false);
+  });
+}
+
+// ===== PIPELINE STATUS =====
+function refreshPipeline(){
+  fetch('/pipeline/status').then(function(r){return r.json();}).then(function(d){
+    var p=d.pipeline||{};
+    setText('p-RAW', p.RAW!=null?p.RAW:'-');
+    setText('p-DONE', p.RAW_DONE!=null?p.RAW_DONE:'-');
+    setText('p-REDUCED', p.REDUCED!=null?p.REDUCED:'-');
+    setText('p-RE_REDUCED', p.RE_REDUCED!=null?p.RE_REDUCED:'-');
+    setText('p-REDUCING', p.REDUCING!=null?p.REDUCING:'-');
+    setText('p-CORE', p.CORE!=null?p.CORE:'-');
+    setText('p-ESSENCE', p.ESSENCE!=null?p.ESSENCE:'-');
+    setText('p-PILS', p.PILS!=null?p.PILS:'-');
+    setText('loop-raw-count', p.RAW!=null?p.RAW:'-');
+    setText('raw-done-count', p.RAW_DONE!=null?p.RAW_DONE:'-');
+    var lbl=$('pipe-status-label');
+    if(lbl){lbl.style.color='#10b981'; lbl.textContent='● PIPELINE ONLINE';}
+    // danger
+    var dg=d.danger||{};
+    var dtotal=dg.total!=null?dg.total:0;
+    setText('danger-total',dtotal); setText('bh-danger-total',dtotal);
+    setText('dt1',dg.tier1!=null?dg.tier1:'-');
+    setText('dt2',dg.tier2!=null?dg.tier2:'-');
+    setText('dt3',dg.tier3!=null?dg.tier3:'-');
+    setText('dte',dg.escalation!=null?dg.escalation:'-');
+    setText('dts',dg.silent_danger!=null?dg.silent_danger:'-');
+    setText('learned-today',dg.learned_today!=null?dg.learned_today:'-');
+    setText('learn-today-d',dg.learned_today!=null?dg.learned_today:'-');
+    if(dg.last_critical){setText('bh-last-critical',dg.last_critical.substring(0,16));}
+    // essence
+    var es=d.essence||{};
+    var ecount=Object.keys(es).length;
+    setText('loop-essence-count',ecount); setText('bh-essence-count',ecount);
+    ['INCIDENT','PHILOSOPHY','OPERATION'].forEach(function(k){
+      if(es[k]){
+        var txt=es[k].content||'—';
+        setText('txt-'+k, txt);
+        if(es[k].updated_at){setText('age-'+k,es[k].updated_at.substring(0,10));}
       }
-    }).catch(function(){});
-  }
-  setInterval(tick,5000); tick();
+    });
+  }).catch(function(){
+    var lbl=$('pipe-status-label');
+    if(lbl){lbl.style.color='#ef4444'; lbl.textContent='● PIPELINE OFFLINE';}
+  });
+}
+
+// ===== LOOP STATUS (CIVILIZATION LOOP + HEALTH) =====
+function refreshLoop(){
+  fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
+    var lp=d.loop||{};
+    setText('cn-observe', lp.observe!=null?lp.observe:'-');
+    setText('cn-record', lp.record!=null?lp.record:'-');
+    setText('cn-incident', lp.incident!=null?lp.incident:'-');
+    setText('cn-recurrence', lp.recurrence!=null?lp.recurrence:'-');
+    setText('cn-prevention', lp.prevention!=null?lp.prevention:'-');
+    setText('cn-decision', lp.decision!=null?lp.decision:'-');
+    setText('cn-action', lp.action!=null?lp.action:'-');
+    setText('cn-audit', lp.audit!=null?lp.audit:'-');
+    // health
+    var h=d.health||d;
+    setText('h-events', h.events_total!=null?h.events_total:'-');
+    setText('h-done', h.todo_done!=null?h.todo_done:'-');
+    setText('h-todo', h.todo_remaining!=null?h.todo_remaining:'-');
+    setText('hh-events', h.events_total!=null?h.events_total:'-');
+    setText('hh-done', h.todo_done!=null?h.todo_done:'-');
+    setText('hh-todo', h.todo_remaining!=null?h.todo_remaining:'-');
+    setText('hh-recurrence', h.recurrence_count!=null?h.recurrence_count:'-');
+    if(h.last_seal_time){setText('hh-seal',h.last_seal_time.substring(11,19));}
+    if(h.last_seal_hash){setText('hash-display',h.last_seal_hash);}
+    if(h.phase){setText('bh-phase',h.phase); setText('h-phase',h.phase);}
+    // ping age
+    if(d.ping_age){setText('bh-essence-age',d.ping_age);}
+    // audit
+    var au=d.audit||{};
+    if(au.last_seal_time){setText('au-last',au.last_seal_time);}
+    if(au.next_auto){setText('au-next',au.next_auto);}
+    setText('au-ledger','OK');
+  }).catch(function(){});
+}
+
+// ===== EVENTS STREAM =====
+function refreshEvents(){
+  fetch('/public/events?n=8').then(function(r){return r.json();}).then(function(d){
+    var events=d.events||d;
+    if(!Array.isArray(events)||events.length===0)return;
+    var container=$('events-stream');
+    if(!container)return;
+    container.innerHTML='';
+    events.slice().reverse().forEach(function(ev){
+      var div=document.createElement('div');
+      div.className='event-item';
+      var wt=ev.what_type||ev.type||'—';
+      var ts=(ev.when||ev.timestamp||'').substring(11,16);
+      div.innerHTML='<span class="ev-id">'+(ev.event_id||'—')+'</span>'
+        +'<span class="ev-type '+wt+'">'+wt+'</span>'
+        +'<span class="ev-title">'+(ev.title||ev.description||'—')+'</span>'
+        +'<span class="ev-time">'+ts+'</span>';
+      container.appendChild(div);
+    });
+    // latest id in header
+    var latest=events[events.length-1];
+    if(latest){setText('ev-latest-id',latest.event_id||'—');}
+  }).catch(function(){});
+}
+
+// ===== PATTERN STATUS =====
+function refreshPattern(){
+  fetch('/pattern/status').then(function(r){return r.json();}).then(function(d){
+    setText('pattern-count',d.keywords!=null?d.keywords:'-');
+  }).catch(function(){});
+}
+
+// ===== DECISION QUEUE =====
+function refreshDecision(){
+  fetch('/prevention/queue').then(function(r){return r.json();}).then(function(d){
+    var queue=d.queue||[];
+    var pending=queue.filter(function(q){return q.status==='pending';});
+    var cnt=pending.length;
+    setText('decision-count',cnt); setText('bh-decision-count',cnt);
+    var dot=$('decision-dot');
+    if(dot){dot.style.background=cnt>0?'#a855f7':'#374151';}
+    var list=$('decision-list');
+    if(!list)return;
+    if(pending.length===0){list.innerHTML='<span class="empty-msg">— 承認待ちなし —</span>';return;}
+    list.innerHTML='';
+    pending.forEach(function(item){
+      var div=document.createElement('div');
+      div.className='decision-item';
+      div.innerHTML='<div class="di-title">'+(item.title||item.proposal||'—')+'</div>'
+        +'<div class="di-desc">'+(item.description||'').substring(0,80)+'</div>'
+        +'<div class="di-actions">'
+        +'<button class="btn-approve" onclick="approveDecision(\''+item.id+'\')">✓ いいね！</button>'
+        +'<button class="btn-reject" onclick="rejectDecision(\''+item.id+'\')">✗ わるいね！</button>'
+        +'</div>';
+      list.appendChild(div);
+    });
+  }).catch(function(){});
+}
+
+window.approveDecision=function(id){
+  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){refreshDecision();});
+};
+window.rejectDecision=function(id){
+  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){refreshDecision();});
+};
+
+// ===== AUDIT STATUS =====
+function refreshAudit(){
+  fetch('/audit/status').then(function(r){return r.json();}).then(function(d){
+    if(d.last_seal_time){setText('au-last',d.last_seal_time.substring(0,16));}
+    if(d.next_auto_seal){setText('au-next',d.next_auto_seal.substring(0,16));}
+    if(d.last_seal_hash){setText('hash-display',d.last_seal_hash);}
+  }).catch(function(){});
+}
+
+// ===== REFRESH ALL =====
+function refreshServers(){
+  checkServer('/health','d-app');
+  checkServer('http://localhost:5679/health','d-cal');
+  checkServer('http://localhost:5002/health','d-mcp');
+  fetch('/public/status').then(function(r){
+    var dot=$('d-ngrok');
+    if(dot){dot.className='dot '+(r.ok?'on':'warn');}
+  }).catch(function(){var dot=$('d-ngrok');if(dot)dot.className='dot';});
+}
+
+function refreshAll(){
+  refreshPipeline();
+  refreshLoop();
+  refreshEvents();
+  refreshPattern();
+  refreshDecision();
+  refreshAudit();
+  refreshServers();
+}
+
+setInterval(refreshAll, 5000);
+refreshAll();
+
 })();
 </script>
-<!-- === /Pattern Score Panel === -->
-
 </body>
 </html>
-
-
-
