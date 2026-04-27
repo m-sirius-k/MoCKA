@@ -1,625 +1,376 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"><title>MoCKA Command Center v4.0</title>
+<meta charset="UTF-8"><title>MoCKA Command Center v4.1</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#0a0f1a;color:#e5e7eb;font-family:'Courier New',monospace;font-size:13px;padding:8px;min-height:100vh;}
+body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-size:13px;padding:8px;}
 
-/* ===== TOP STATUS BAR ===== */
-.top-bar{display:flex;align-items:center;gap:8px;background:#0d1626;border:1px solid #1e293b;border-radius:6px;padding:5px 10px;margin-bottom:6px;flex-wrap:wrap;}
-.top-bar .logo{color:#00d4aa;font-weight:700;letter-spacing:2px;font-size:14px;margin-right:4px;}
-.top-bar .phase{color:#6b7280;font-size:10px;margin-right:8px;}
-.srv{display:flex;align-items:center;gap:4px;font-size:12px;color:#e5e7eb;font-weight:600;}
-.srv .dot{width:7px;height:7px;border-radius:50%;background:#374151;}
-.srv .dot.on{background:#00d4aa;box-shadow:0 0 4px #00d4aa;}
-.srv .dot.warn{background:#f59e0b;box-shadow:0 0 4px #f59e0b;}
-.srv-sep{color:#374151;margin:0 4px;}
-.time-display{margin-left:auto;color:#4b5563;font-size:10px;font-family:'Courier New',monospace;}
+/* ===== TOP BAR ===== */
+.top-bar{display:flex;align-items:center;gap:12px;background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:6px 12px;margin-bottom:6px;}
+.logo{color:#00d4aa;font-weight:700;letter-spacing:3px;font-size:13px;}
+.srv-group{display:flex;align-items:center;gap:10px;margin-left:8px;}
+.srv{display:flex;align-items:center;gap:5px;font-size:12px;color:#e5e7eb;font-weight:700;letter-spacing:1px;}
+.dot{width:8px;height:8px;border-radius:50%;background:#1e293b;flex-shrink:0;}
+.dot.on{background:#00d4aa;box-shadow:0 0 5px #00d4aa;}
+.dot.warn{background:#f59e0b;box-shadow:0 0 5px #f59e0b;}
+.dot.off{background:#374151;}
+.clock{margin-left:auto;color:#4b5563;font-size:12px;letter-spacing:1px;}
 
-/* ===== CHIP ROW ===== */
-.chip-bar{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap;}
-.chip{display:flex;flex-direction:column;align-items:center;background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:6px 12px;min-width:76px;cursor:pointer;transition:border-color .2s;}
-.chip:hover{border-color:#374151;}
-.chip.g{border-color:#064e3b;}
-.chip.a{border-color:#78350f;}
-.chip.r{border-color:#7f1d1d;}
-.chip.p{border-color:#3b0764;}
-.chip.b{border-color:#1e3a5f;}
-.chip .num{font-size:28px;font-weight:700;line-height:1;font-family:'Courier New',monospace;}
-.chip.g .num{color:#10b981;}
-.chip.a .num{color:#f59e0b;}
-.chip.r .num{color:#ef4444;}
-.chip.p .num{color:#a855f7;}
-.chip.b .num{color:#3b82f6;}
-.chip .lbl{font-size:10px;color:#d1d5db;letter-spacing:1px;margin-top:1px;font-weight:600;}
-.chip .sub{font-size:9px;color:#4b5563;margin-top:1px;}
+/* ===== UNIFIED CHIP GRID ===== */
+/* 全チップ共通 — サイズ・形・フォント完全統一 */
+.chip-grid{display:grid;gap:4px;margin-bottom:6px;}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-5{grid-template-columns:repeat(5,1fr);}
+.grid-8{grid-template-columns:repeat(8,1fr);}
+.grid-9{grid-template-columns:repeat(9,1fr);}
+
+.chip{display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0d1626;border:1px solid #1e293b;border-radius:4px;padding:8px 4px;height:72px;}
+.chip .num{font-size:28px;font-weight:700;line-height:1;font-family:'Courier New',monospace;color:#e5e7eb;}
+.chip .lbl{font-size:10px;color:#ffffff;letter-spacing:1px;margin-top:4px;font-weight:700;text-align:center;}
+
+/* カラーバリアント */
+.chip.green{border-color:#065f46;} .chip.green .num{color:#10b981;}
+.chip.amber{border-color:#92400e;} .chip.amber .num{color:#f59e0b;}
+.chip.red{border-color:#991b1b;}   .chip.red .num{color:#ef4444;}
+.chip.purple{border-color:#4c1d95;}.chip.purple .num{color:#a855f7;}
+.chip.blue{border-color:#1e3a5f;}  .chip.blue .num{color:#3b82f6;}
+.chip.cyan{border-color:#164e63;}  .chip.cyan .num{color:#06b6d4;}
+.chip.dim{border-color:#1e293b;}   .chip.dim .num{color:#6b7280;}
 
 /* ===== PIPELINE BAR ===== */
-.pipe-bar{display:flex;align-items:center;background:#0d1626;border:1px solid #1e293b;border-radius:6px;padding:5px 8px;margin-bottom:6px;gap:3px;flex-wrap:wrap;}
-.pipe-bar .pb-label{color:#6b7280;font-size:9px;letter-spacing:1px;margin-right:4px;white-space:nowrap;}
-.pnode{display:flex;flex-direction:column;align-items:center;background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:4px 8px;min-width:60px;}
-.pnode .pn{font-size:28px;font-weight:700;color:#e5e7eb;font-family:'Courier New',monospace;}
-.pnode .pl{font-size:10px;color:#d1d5db;letter-spacing:0.5px;font-weight:600;}
-.pnode.g{border-color:#064e3b;} .pnode.g .pn{color:#10b981;}
-.pnode.a{border-color:#78350f;} .pnode.a .pn{color:#f59e0b;}
-.pnode.p{border-color:#3b0764;} .pnode.p .pn{color:#a855f7;}
-.parrow{color:#374151;font-size:10px;padding:0;}
+.pipe-row{display:flex;align-items:center;background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:5px 8px;margin-bottom:6px;gap:2px;}
+.pipe-label{font-size:11px;font-weight:700;letter-spacing:1px;margin-right:6px;white-space:nowrap;min-width:120px;}
+.pipe-label.online{color:#10b981;}
+.pipe-label.offline{color:#ef4444;}
+.pchip{display:flex;flex-direction:column;align-items:center;background:#080d18;border:1px solid #1e293b;border-radius:3px;padding:4px 6px;flex:1;min-width:0;}
+.pchip .pn{font-size:22px;font-weight:700;color:#e5e7eb;font-family:'Courier New',monospace;line-height:1;}
+.pchip .pl{font-size:9px;color:#ffffff;font-weight:700;letter-spacing:0.5px;margin-top:2px;white-space:nowrap;}
+.pchip.green{border-color:#065f46;}.pchip.green .pn{color:#10b981;}
+.pchip.amber{border-color:#92400e;}.pchip.amber .pn{color:#f59e0b;}
+.pchip.purple{border-color:#4c1d95;}.pchip.purple .pn{color:#a855f7;}
+.parr{color:#1e293b;font-size:9px;padding:0 1px;flex-shrink:0;}
 
-/* ===== SECTION BLOCK ===== */
-.block{background:#0d1626;border:1px solid #1e293b;border-radius:6px;margin-bottom:5px;overflow:hidden;}
-.block-header{display:flex;align-items:center;padding:6px 10px;cursor:pointer;user-select:none;border-bottom:1px solid transparent;transition:background .15s;}
-.block-header:hover{background:#111827;}
-.block-header.expanded{border-bottom-color:#1e293b;}
-.bh-dot{width:7px;height:7px;border-radius:50%;margin-right:8px;flex-shrink:0;}
-.bh-title{font-size:10px;letter-spacing:2px;font-weight:700;color:#9ca3af;flex:1;}
-.bh-chips{display:flex;gap:6px;align-items:center;}
-.bh-chip{font-size:11px;font-weight:700;font-family:'Courier New',monospace;padding:1px 6px;border-radius:3px;background:#0a0f1a;}
-.bh-chip.g{color:#10b981;} .bh-chip.a{color:#f59e0b;} .bh-chip.r{color:#ef4444;} .bh-chip.p{color:#a855f7;}
-.bh-arrow{color:#4b5563;font-size:10px;margin-left:8px;transition:transform .2s;}
-.bh-arrow.open{transform:rotate(180deg);}
-.block-body{padding:10px 12px;display:none;}
-.block-body.open{display:block;}
+/* ===== CIV LOOP BAR ===== */
+.civ-row{display:flex;align-items:center;background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:5px 8px;margin-bottom:6px;gap:2px;}
+.cchip{display:flex;flex-direction:column;align-items:center;background:#080d18;border:1px solid #1e293b;border-radius:3px;padding:4px 6px;flex:1;min-width:0;}
+.cchip .cn{font-size:22px;font-weight:700;color:#e5e7eb;font-family:'Courier New',monospace;line-height:1;}
+.cchip .cl{font-size:9px;color:#ffffff;font-weight:700;letter-spacing:0.5px;margin-top:2px;white-space:nowrap;text-align:center;}
+.cchip.active{border-color:#00d4aa;}.cchip.active .cn{color:#00d4aa;}
+.carr{color:#1e293b;font-size:9px;padding:0 1px;flex-shrink:0;}
 
-/* ===== ESSENCE ===== */
-.essence-axis{background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:8px;margin-bottom:6px;}
-.essence-axis:last-child{margin-bottom:0;}
-.ax-header{display:flex;align-items:center;gap:6px;margin-bottom:5px;}
-.ax-badge{font-size:9px;letter-spacing:1px;padding:1px 5px;border-radius:2px;font-weight:700;}
-.ax-I{background:#1a2a1a;color:#10b981;} .ax-P{background:#1a1a2a;color:#6366f1;} .ax-O{background:#2a1a10;color:#f59e0b;}
-.ax-age{font-size:9px;color:#4b5563;margin-left:auto;}
-.ax-text{font-size:11px;color:#9ca3af;line-height:1.5;max-height:60px;overflow:hidden;transition:max-height .3s;}
-.ax-text.expanded{max-height:500px;}
-.ax-expand{font-size:9px;color:#4b5563;cursor:pointer;margin-top:3px;text-align:right;}
-.ax-expand:hover{color:#6b7280;}
-
-/* ===== DANGER ===== */
-.danger-grid{display:flex;gap:4px;flex-wrap:wrap;}
-.dtier{background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:4px 8px;text-align:center;min-width:66px;}
-.dtier.t1{border-color:#7f1d1d;} .dtier.t2{border-color:#78350f;} .dtier.t3{border-color:#713f12;}
-.dtier.te{border-color:#581c87;} .dtier.ts{border-color:#1e3a5f;}
-.dn{font-size:28px;font-weight:700;font-family:'Courier New',monospace;}
-.t1 .dn{color:#ef4444;} .t2 .dn{color:#f97316;} .t3 .dn{color:#eab308;}
-.te .dn{color:#a855f7;} .ts .dn{color:#3b82f6;}
-.dl{font-size:10px;color:#d1d5db;letter-spacing:1px;font-weight:600;}
-.learn-bar{margin-top:8px;background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:6px 10px;font-size:10px;color:#6b7280;}
-.learn-bar span{color:#10b981;font-weight:700;}
+/* ===== SECTION LABEL ===== */
+.sec-label{font-size:10px;color:#4b5563;letter-spacing:2px;font-weight:700;padding:4px 0 3px;display:flex;align-items:center;gap:6px;}
+.sec-label::after{content:'';flex:1;height:1px;background:#1e293b;}
 
 /* ===== EVENTS STREAM ===== */
-.event-item{padding:4px 0;border-bottom:1px solid #111827;display:flex;gap:8px;align-items:flex-start;}
-.event-item:last-child{border-bottom:none;}
-.ev-id{color:#374151;font-size:9px;white-space:nowrap;flex-shrink:0;}
-.ev-type{font-size:9px;padding:1px 4px;border-radius:2px;background:#111827;white-space:nowrap;flex-shrink:0;}
-.ev-type.DANGER,.ev-type.CRITICAL{background:#1a0a0a;color:#ef4444;}
-.ev-type.WARNING{background:#1a1000;color:#f59e0b;}
-.ev-type.NORMAL,.ev-type.save,.ev-type.record{background:#0a1a0a;color:#10b981;}
-.ev-type.collaboration,.ev-type.share{background:#0a0a1a;color:#6366f1;}
+.events-box{background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:6px 8px;margin-bottom:6px;}
+.ev{display:flex;gap:6px;align-items:center;padding:3px 0;border-bottom:1px solid #0f1929;}
+.ev:last-child{border-bottom:none;}
+.ev-id{color:#374151;font-size:9px;white-space:nowrap;flex-shrink:0;width:120px;}
+.ev-type{font-size:9px;padding:1px 4px;border-radius:2px;background:#111827;white-space:nowrap;flex-shrink:0;min-width:80px;text-align:center;font-weight:700;}
+.ev-type.danger,.ev-type.critical{background:#1a0505;color:#ef4444;}
+.ev-type.warning{background:#1a1000;color:#f59e0b;}
+.ev-type.normal,.ev-type.save,.ev-type.record,.ev-type.claude_mcp{background:#051a0a;color:#10b981;}
+.ev-type.process{background:#0a0a1a;color:#6366f1;}
 .ev-title{font-size:10px;color:#9ca3af;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ev-time{font-size:9px;color:#374151;white-space:nowrap;flex-shrink:0;}
 
-/* ===== DECISION QUEUE ===== */
-.decision-item{background:#0a0f1a;border:1px solid #1e2d1e;border-radius:4px;padding:8px;margin-bottom:6px;}
-.decision-item:last-child{margin-bottom:0;}
-.di-title{font-size:11px;color:#d1d5db;margin-bottom:4px;}
-.di-desc{font-size:10px;color:#6b7280;margin-bottom:6px;line-height:1.4;}
-.di-actions{display:flex;gap:6px;}
-.btn-approve{background:#064e3b;color:#10b981;border:1px solid #065f46;border-radius:3px;padding:3px 10px;font-size:10px;cursor:pointer;font-family:'Courier New',monospace;transition:background .15s;}
-.btn-approve:hover{background:#065f46;}
-.btn-reject{background:#1a0a0a;color:#ef4444;border:1px solid #7f1d1d;border-radius:3px;padding:3px 10px;font-size:10px;cursor:pointer;font-family:'Courier New',monospace;transition:background .15s;}
-.btn-reject:hover{background:#2a0a0a;}
-.empty-msg{color:#374151;font-size:10px;text-align:center;padding:8px;}
+/* ===== ESSENCE ===== */
+.essence-box{background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:8px;margin-bottom:6px;}
+.ax{background:#080d18;border:1px solid #1e293b;border-radius:3px;padding:6px 8px;margin-bottom:4px;}
+.ax:last-child{margin-bottom:0;}
+.ax-head{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.ax-badge{font-size:9px;letter-spacing:1px;padding:1px 5px;border-radius:2px;font-weight:700;}
+.ax-I{background:#0a1a0a;color:#10b981;border:1px solid #065f46;}
+.ax-P{background:#0a0a1a;color:#6366f1;border:1px solid #312e81;}
+.ax-O{background:#1a1000;color:#f59e0b;border:1px solid #92400e;}
+.ax-age{font-size:9px;color:#374151;margin-left:auto;}
+.ax-text{font-size:10px;color:#9ca3af;line-height:1.5;max-height:52px;overflow:hidden;}
+.ax-text.exp{max-height:none;}
+.ax-btn{font-size:9px;color:#374151;cursor:pointer;text-align:right;margin-top:2px;}
+.ax-btn:hover{color:#6b7280;}
 
-/* ===== HEALTH ===== */
-.health-row{display:flex;gap:6px;flex-wrap:wrap;}
-.hchip{background:#0a0f1a;border:1px solid #1e293b;border-radius:4px;padding:4px 8px;text-align:center;min-width:80px;}
-.hchip .hn{font-size:28px;font-weight:700;font-family:'Courier New',monospace;color:#e5e7eb;}
-.hchip .hl{font-size:10px;color:#d1d5db;letter-spacing:1px;font-weight:600;}
-.hash-display{margin-top:8px;font-size:9px;color:#374151;word-break:break-all;padding:4px;background:#0a0f1a;border-radius:3px;}
-
-/* ===== AUDIT PANEL ===== */
-.audit-row{display:flex;gap:8px;align-items:center;font-size:10px;color:#6b7280;padding:3px 0;border-bottom:1px solid #111827;}
-.audit-row:last-child{border-bottom:none;}
-.audit-label{color:#4b5563;width:80px;flex-shrink:0;}
-.audit-val{color:#9ca3af;flex:1;}
-.audit-val.ok{color:#10b981;} .audit-val.warn{color:#f59e0b;} .audit-val.err{color:#ef4444;}
+/* ===== DECISION ===== */
+.dec-box{background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:6px 8px;margin-bottom:6px;}
+.dec-item{background:#080d18;border:1px solid #4c1d95;border-radius:3px;padding:6px 8px;margin-bottom:4px;}
+.dec-title{font-size:11px;color:#d1d5db;font-weight:700;margin-bottom:3px;}
+.dec-desc{font-size:10px;color:#6b7280;margin-bottom:5px;line-height:1.4;}
+.dec-btns{display:flex;gap:6px;}
+.btn-ok{background:#064e3b;color:#10b981;border:1px solid #065f46;border-radius:3px;padding:3px 12px;font-size:10px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
+.btn-ng{background:#1a0505;color:#ef4444;border:1px solid #991b1b;border-radius:3px;padding:3px 12px;font-size:10px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
+.empty{color:#374151;font-size:10px;text-align:center;padding:6px;}
 
 /* ===== INPUT STATUS ===== */
-.input-rows{display:flex;flex-direction:column;gap:4px;}
-.irow{display:flex;align-items:center;gap:8px;padding:4px 0;}
-.idot{width:7px;height:7px;border-radius:50%;background:#1e293b;flex-shrink:0;}
+.input-box{background:#0d1626;border:1px solid #1e293b;border-radius:5px;padding:6px 8px;margin-bottom:6px;}
+.irow{display:flex;align-items:center;gap:8px;padding:3px 0;border-bottom:1px solid #0f1929;}
+.irow:last-child{border-bottom:none;}
+.idot{width:8px;height:8px;border-radius:50%;background:#1e293b;flex-shrink:0;}
 .idot.on{background:#10b981;box-shadow:0 0 4px #10b981;}
-.irow-label{font-size:10px;color:#6b7280;flex:1;}
-.irow-stat{font-size:9px;color:#374151;}
+.iname{font-size:11px;color:#ffffff;font-weight:700;flex:1;}
+.istat{font-size:10px;color:#4b5563;}
 
-/* ===== CIVILIZATION LOOP ===== */
-.civ-bar{display:flex;align-items:center;gap:2px;background:#0d1626;border:1px solid #1e293b;border-radius:6px;padding:5px 8px;margin-bottom:6px;flex-wrap:wrap;}
-.civ-node{display:flex;flex-direction:column;align-items:center;padding:4px 8px;border-radius:4px;min-width:68px;background:#0a0f1a;border:1px solid #1e293b;position:relative;}
-.civ-node.active{border-color:#00d4aa;}
-.cn-num{font-size:28px;font-weight:700;color:#e5e7eb;font-family:'Courier New',monospace;}
-.cn-lbl{font-size:10px;color:#d1d5db;letter-spacing:0.5px;text-align:center;font-weight:600;}
-.civ-arrow{color:#1e293b;font-size:9px;padding:0;}
+/* ===== HASH ===== */
+.hash-box{font-size:9px;color:#374151;word-break:break-all;padding:4px 6px;background:#0d1626;border:1px solid #1e293b;border-radius:3px;margin-bottom:6px;}
 
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:#0a0f1a;}
-::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px;}
+::-webkit-scrollbar{width:3px;} ::-webkit-scrollbar-track{background:#080d18;} ::-webkit-scrollbar-thumb{background:#1e293b;}
 </style>
 </head>
 <body>
 
-<!-- ===== TOP BAR ===== -->
+<!-- TOP BAR -->
 <div class="top-bar">
   <span class="logo">MoCKA</span>
-  <span class="phase">COMMAND CENTER v4.0</span>
-  <div class="srv"><div class="dot" id="d-app"></div><span>APP:5000</span></div>
-  <div class="srv"><div class="dot" id="d-cal"></div><span>CAL:5679</span></div>
-  <div class="srv"><div class="dot" id="d-mcp"></div><span>MCP:5002</span></div>
-  <div class="srv"><div class="dot" id="d-ngrok"></div><span>NGROK</span></div>
-  <span class="time-display" id="clock">--:--:--</span>
+  <span style="color:#4b5563;font-size:10px;letter-spacing:1px;">COMMAND CENTER v4.1</span>
+  <div class="srv-group">
+    <div class="srv"><div class="dot" id="d-app"></div>APP:5000</div>
+    <div class="srv"><div class="dot" id="d-cal"></div>CAL:5679</div>
+    <div class="srv"><div class="dot" id="d-mcp"></div>MCP:5002</div>
+    <div class="srv"><div class="dot" id="d-ngrok"></div>NGROK</div>
+  </div>
+  <span class="clock" id="clock">--:--:--</span>
 </div>
 
-<!-- ===== CIVILIZATION LOOP BAR ===== -->
-<div class="civ-bar">
-  <div class="civ-node" id="civ-observe"><div class="cn-num" id="cn-observe">-</div><div class="cn-lbl">OBSERVE</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-record"><div class="cn-num" id="cn-record">-</div><div class="cn-lbl">RECORD</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-incident"><div class="cn-num" id="cn-incident">-</div><div class="cn-lbl">INCIDENT</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-recurrence"><div class="cn-num" id="cn-recurrence">-</div><div class="cn-lbl">RECURRENCE</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-prevention"><div class="cn-num" id="cn-prevention">-</div><div class="cn-lbl">PREVENTION</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-decision"><div class="cn-num" id="cn-decision">-</div><div class="cn-lbl">DECISION</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-action"><div class="cn-num" id="cn-action">-</div><div class="cn-lbl">ACTION</div></div>
-  <div class="civ-arrow">→</div>
-  <div class="civ-node" id="civ-audit"><div class="cn-num" id="cn-audit">-</div><div class="cn-lbl">AUDIT</div></div>
+<!-- CIVILIZATION LOOP -->
+<div class="sec-label">CIVILIZATION LOOP</div>
+<div class="civ-row">
+  <div class="cchip"><div class="cn" id="cn-observe">-</div><div class="cl">OBSERVE</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-record">-</div><div class="cl">RECORD</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-incident">-</div><div class="cl">INCIDENT</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-recurrence">-</div><div class="cl">RECURRENCE</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-prevention">-</div><div class="cl">PREVENTION</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-decision">-</div><div class="cl">DECISION</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-action">-</div><div class="cl">ACTION</div></div><div class="carr">→</div>
+  <div class="cchip"><div class="cn" id="cn-audit">-</div><div class="cl">AUDIT</div></div>
 </div>
 
-<!-- ===== PIPELINE BAR ===== -->
-<div class="pipe-bar">
-  <span class="pb-label" id="pipe-status-label">● PIPELINE</span>
-  <div class="pnode"><div class="pn" id="p-RAW">-</div><div class="pl">RAW</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode a"><div class="pn" id="p-DONE">-</div><div class="pl">DONE</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode"><div class="pn" id="p-REDUCED">-</div><div class="pl">REDUCED</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode g"><div class="pn" id="p-RE_REDUCED">-</div><div class="pl">RE_REDUCED</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode a"><div class="pn" id="p-REDUCING">-</div><div class="pl">REDUCING</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode"><div class="pn" id="p-CORE">-</div><div class="pl">CORE</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode g"><div class="pn" id="p-ESSENCE">-</div><div class="pl">ESSENCE</div></div>
-  <div class="parrow">→</div>
-  <div class="pnode p"><div class="pn" id="p-PILS">-</div><div class="pl">PILS</div></div>
+<!-- PIPELINE -->
+<div class="pipe-row">
+  <span class="pipe-label" id="pipe-label">● PIPELINE</span>
+  <div class="pchip"><div class="pn" id="p-RAW">-</div><div class="pl">RAW</div></div><div class="parr">→</div>
+  <div class="pchip amber"><div class="pn" id="p-DONE">-</div><div class="pl">RAW_DONE</div></div><div class="parr">→</div>
+  <div class="pchip"><div class="pn" id="p-REDUCED">-</div><div class="pl">REDUCED</div></div><div class="parr">→</div>
+  <div class="pchip green"><div class="pn" id="p-RE_REDUCED">-</div><div class="pl">RE_REDUCED</div></div><div class="parr">→</div>
+  <div class="pchip amber"><div class="pn" id="p-REDUCING">-</div><div class="pl">REDUCING</div></div><div class="parr">→</div>
+  <div class="pchip"><div class="pn" id="p-CORE">-</div><div class="pl">CORE</div></div><div class="parr">→</div>
+  <div class="pchip green"><div class="pn" id="p-ESSENCE">-</div><div class="pl">ESSENCE</div></div><div class="parr">→</div>
+  <div class="pchip purple"><div class="pn" id="p-PILS">-</div><div class="pl">PILS</div></div>
 </div>
 
-<!-- ===== KEY METRICS CHIP BAR ===== -->
-<div class="chip-bar">
-  <div class="chip g" onclick="toggleBlock('b-essence')">
-    <div class="num" id="loop-essence-count">-</div>
-    <div class="lbl">ESSENCE</div>
-  </div>
-  <div class="chip" onclick="toggleBlock('b-pipeline')">
-    <div class="num" id="loop-raw-count">-</div>
-    <div class="lbl">RAW</div>
-  </div>
-  <div class="chip a" onclick="toggleBlock('b-pipeline')">
-    <div class="num" id="raw-done-count">-</div>
-    <div class="lbl">RAW_DONE</div>
-  </div>
-  <div class="chip r" onclick="toggleBlock('b-danger')">
-    <div class="num" id="danger-total">-</div>
-    <div class="lbl">DANGER</div>
-  </div>
-  <div class="chip a" onclick="toggleBlock('b-danger')">
-    <div class="num" id="learned-today">-</div>
-    <div class="lbl">LEARNED</div>
-  </div>
-  <div class="chip b" onclick="toggleBlock('b-health')">
-    <div class="num" id="h-events">-</div>
-    <div class="lbl">EVENTS</div>
-  </div>
-  <div class="chip g" onclick="toggleBlock('b-health')">
-    <div class="num" id="h-done">-</div>
-    <div class="lbl">TODO完了</div>
-  </div>
-  <div class="chip a" onclick="toggleBlock('b-health')">
-    <div class="num" id="h-todo">-</div>
-    <div class="lbl">TODO残</div>
-  </div>
-  <div class="chip p" onclick="toggleBlock('b-decision')">
-    <div class="num" id="decision-count">-</div>
-    <div class="lbl">DECISION</div>
-  </div>
+<!-- KEY METRICS -->
+<div class="sec-label">KEY METRICS</div>
+<div class="chip-grid grid-9" style="margin-bottom:6px;">
+  <div class="chip green"><div class="num" id="m-essence">-</div><div class="lbl">ESSENCE</div></div>
+  <div class="chip"><div class="num" id="m-raw">-</div><div class="lbl">RAW</div></div>
+  <div class="chip amber"><div class="num" id="m-done">-</div><div class="lbl">RAW_DONE</div></div>
+  <div class="chip red"><div class="num" id="m-danger">-</div><div class="lbl">DANGER</div></div>
+  <div class="chip amber"><div class="num" id="m-learned">-</div><div class="lbl">LEARNED</div></div>
+  <div class="chip blue"><div class="num" id="m-events">-</div><div class="lbl">EVENTS</div></div>
+  <div class="chip green"><div class="num" id="m-done-todo">-</div><div class="lbl">TODO完了</div></div>
+  <div class="chip amber"><div class="num" id="m-todo">-</div><div class="lbl">TODO残</div></div>
+  <div class="chip purple"><div class="num" id="m-decision">0</div><div class="lbl">DECISION</div></div>
 </div>
 
-<!-- ===== EVENTS STREAM (常時表示・コンパクト) ===== -->
-<div class="block">
-  <div class="block-header expanded" onclick="toggleBlock('b-events')">
-    <div class="bh-dot" style="background:#3b82f6;"></div>
-    <div class="bh-title">EVENTS STREAM</div>
-    <div class="bh-chips">
-      <span class="bh-chip b" id="ev-latest-id">—</span>
-    </div>
-    <div class="bh-arrow open" id="arr-b-events">▼</div>
+<!-- DANGER -->
+<div class="sec-label">DANGER MONITOR</div>
+<div class="chip-grid grid-5" style="margin-bottom:6px;">
+  <div class="chip red"><div class="num" id="dt1">-</div><div class="lbl">TIER 1</div></div>
+  <div class="chip amber"><div class="num" id="dt2">-</div><div class="lbl">TIER 2</div></div>
+  <div class="chip"><div class="num" id="dt3">-</div><div class="lbl">TIER 3</div></div>
+  <div class="chip purple"><div class="num" id="dte">-</div><div class="lbl">ESCALATION</div></div>
+  <div class="chip blue"><div class="num" id="dts">-</div><div class="lbl">SILENT</div></div>
+</div>
+
+<!-- SYSTEM HEALTH -->
+<div class="sec-label">SYSTEM HEALTH</div>
+<div class="chip-grid grid-5" style="margin-bottom:6px;">
+  <div class="chip blue"><div class="num" id="h-events">-</div><div class="lbl">EVENTS</div></div>
+  <div class="chip green"><div class="num" id="h-done">-</div><div class="lbl">TODO完了</div></div>
+  <div class="chip amber"><div class="num" id="h-todo">-</div><div class="lbl">TODO残</div></div>
+  <div class="chip dim"><div class="num" id="h-recurrence">-</div><div class="lbl">RECURRENCE</div></div>
+  <div class="chip dim"><div class="num" id="h-seal" style="font-size:14px;">--:--:--</div><div class="lbl">LAST SEAL</div></div>
+</div>
+<div class="hash-box" id="hash-box">— hash loading —</div>
+
+<!-- EVENTS STREAM -->
+<div class="sec-label">EVENTS STREAM</div>
+<div class="events-box"><div id="events-stream"><div class="empty">— loading —</div></div></div>
+
+<!-- ESSENCE -->
+<div class="sec-label">ESSENCE</div>
+<div class="essence-box">
+  <div class="ax">
+    <div class="ax-head"><span class="ax-badge ax-I">INCIDENT</span><span class="ax-age" id="age-I"></span></div>
+    <div class="ax-text" id="txt-I">— 未取得 —</div>
+    <div class="ax-btn" onclick="toggleAx('txt-I',this)">▼ 展開</div>
   </div>
-  <div class="block-body open" id="b-events">
-    <div id="events-stream"></div>
+  <div class="ax">
+    <div class="ax-head"><span class="ax-badge ax-P">PHILOSOPHY</span><span class="ax-age" id="age-P"></span></div>
+    <div class="ax-text" id="txt-P">— 未取得 —</div>
+    <div class="ax-btn" onclick="toggleAx('txt-P',this)">▼ 展開</div>
+  </div>
+  <div class="ax">
+    <div class="ax-head"><span class="ax-badge ax-O">OPERATION</span><span class="ax-age" id="age-O"></span></div>
+    <div class="ax-text" id="txt-O">— 未取得 —</div>
+    <div class="ax-btn" onclick="toggleAx('txt-O',this)">▼ 展開</div>
   </div>
 </div>
 
-<!-- ===== ESSENCE (折りたたみ) ===== -->
-<div class="block">
-  <div class="block-header" onclick="toggleBlock('b-essence')">
-    <div class="bh-dot" style="background:#10b981;"></div>
-    <div class="bh-title">ESSENCE</div>
-    <div class="bh-chips">
-      <span class="bh-chip g" id="bh-essence-count">-</span>
-      <span style="font-size:9px;color:#4b5563;" id="bh-essence-age">—</span>
-    </div>
-    <div class="bh-arrow" id="arr-b-essence">▼</div>
-  </div>
-  <div class="block-body" id="b-essence">
-    <div class="essence-axis">
-      <div class="ax-header"><span class="ax-badge ax-I">INCIDENT</span><span class="ax-age" id="age-INCIDENT"></span></div>
-      <div class="ax-text" id="txt-INCIDENT">— 未取得 —</div>
-      <div class="ax-expand" onclick="expandAxis('txt-INCIDENT',this)">▼ 展開</div>
-    </div>
-    <div class="essence-axis">
-      <div class="ax-header"><span class="ax-badge ax-P">PHILOSOPHY</span><span class="ax-age" id="age-PHILOSOPHY"></span></div>
-      <div class="ax-text" id="txt-PHILOSOPHY">— 未取得 —</div>
-      <div class="ax-expand" onclick="expandAxis('txt-PHILOSOPHY',this)">▼ 展開</div>
-    </div>
-    <div class="essence-axis">
-      <div class="ax-header"><span class="ax-badge ax-O">OPERATION</span><span class="ax-age" id="age-OPERATION"></span></div>
-      <div class="ax-text" id="txt-OPERATION">— 未取得 —</div>
-      <div class="ax-expand" onclick="expandAxis('txt-OPERATION',this)">▼ 展開</div>
-    </div>
-  </div>
-</div>
+<!-- DECISION QUEUE -->
+<div class="sec-label">DECISION QUEUE</div>
+<div class="dec-box"><div id="dec-list"><div class="empty">— 承認待ちなし —</div></div></div>
 
-<!-- ===== DANGER MONITOR (折りたたみ) ===== -->
-<div class="block">
-  <div class="block-header" onclick="toggleBlock('b-danger')">
-    <div class="bh-dot" style="background:#ef4444;"></div>
-    <div class="bh-title">DANGER MONITOR</div>
-    <div class="bh-chips">
-      <span class="bh-chip r" id="bh-danger-total">-</span>
-      <span style="font-size:9px;color:#4b5563;" id="bh-last-critical">—</span>
-    </div>
-    <div class="bh-arrow" id="arr-b-danger">▼</div>
-  </div>
-  <div class="block-body" id="b-danger">
-    <div class="danger-grid">
-      <div class="dtier t1"><div class="dn" id="dt1">-</div><div class="dl">TIER 1</div></div>
-      <div class="dtier t2"><div class="dn" id="dt2">-</div><div class="dl">TIER 2</div></div>
-      <div class="dtier t3"><div class="dn" id="dt3">-</div><div class="dl">TIER 3</div></div>
-      <div class="dtier te"><div class="dn" id="dte">-</div><div class="dl">ESCALATION</div></div>
-      <div class="dtier ts"><div class="dn" id="dts">-</div><div class="dl">SILENT</div></div>
-    </div>
-    <div class="learn-bar">今日の学習: <span id="learn-today-d">0</span> 件 ／ 登録パターン総数: <span id="pattern-count">-</span> 件</div>
-  </div>
-</div>
-
-<!-- ===== DECISION QUEUE (折りたたみ) ===== -->
-<div class="block">
-  <div class="block-header" onclick="toggleBlock('b-decision')">
-    <div class="bh-dot" style="background:#a855f7;" id="decision-dot"></div>
-    <div class="bh-title">DECISION QUEUE</div>
-    <div class="bh-chips">
-      <span class="bh-chip p" id="bh-decision-count">0</span>
-    </div>
-    <div class="bh-arrow" id="arr-b-decision">▼</div>
-  </div>
-  <div class="block-body" id="b-decision">
-    <div id="decision-list"><span class="empty-msg">— 承認待ちなし —</span></div>
-  </div>
-</div>
-
-<!-- ===== INPUT STATUS (折りたたみ) ===== -->
-<div class="block">
-  <div class="block-header" onclick="toggleBlock('b-input')">
-    <div class="bh-dot" style="background:#6366f1;"></div>
-    <div class="bh-title">INPUT STATUS</div>
-    <div class="bh-arrow" id="arr-b-input">▼</div>
-  </div>
-  <div class="block-body" id="b-input">
-    <div class="input-rows">
-      <div class="irow"><div class="idot" id="idot-chrome"></div><div class="irow-label">Chrome拡張</div><div class="irow-stat" id="istat-chrome">—</div></div>
-      <div class="irow"><div class="idot on" id="idot-watchdog"></div><div class="irow-label">Watchdog自動監視</div><div class="irow-stat">ACTIVE</div></div>
-      <div class="irow"><div class="idot" id="idot-pipeline"></div><div class="irow-label">パイプライン処理</div><div class="irow-stat" id="istat-pipeline">—</div></div>
-      <div class="irow"><div class="idot" id="idot-manual"></div><div class="irow-label">手動入力</div><div class="irow-stat">—</div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== SYSTEM HEALTH (折りたたみ) ===== -->
-<div class="block">
-  <div class="block-header" onclick="toggleBlock('b-health')">
-    <div class="bh-dot" style="background:#3b82f6;"></div>
-    <div class="bh-title">SYSTEM HEALTH</div>
-    <div class="bh-chips">
-      <span class="bh-chip" id="bh-phase" style="color:#e5e7eb;">M1</span>
-    </div>
-    <div class="bh-arrow" id="arr-b-health">▼</div>
-  </div>
-  <div class="block-body" id="b-health">
-    <div class="health-row">
-      <div class="hchip"><div class="hn" id="hh-events">-</div><div class="hl">EVENTS</div></div>
-      <div class="hchip"><div class="hn" id="hh-done">-</div><div class="hl">TODO完了</div></div>
-      <div class="hchip"><div class="hn" id="hh-todo">-</div><div class="hl">TODO残</div></div>
-      <div class="hchip"><div class="hn" id="hh-recurrence">-</div><div class="hl">RECURRENCE</div></div>
-      <div class="hchip"><div class="hn" id="hh-seal">-</div><div class="hl">LAST SEAL</div></div>
-    </div>
-    <div class="hash-display" id="hash-display">— hash loading —</div>
-    <div style="margin-top:8px;">
-      <div class="audit-row"><span class="audit-label">LEDGER</span><span class="audit-val" id="au-ledger">—</span></div>
-      <div class="audit-row"><span class="audit-label">LAST AUDIT</span><span class="audit-val" id="au-last">—</span></div>
-      <div class="audit-row"><span class="audit-label">NEXT AUTO</span><span class="audit-val" id="au-next">—</span></div>
-    </div>
-  </div>
+<!-- INPUT STATUS -->
+<div class="sec-label">INPUT STATUS</div>
+<div class="input-box">
+  <div class="irow"><div class="idot" id="idot-chrome"></div><div class="iname">Chrome拡張</div><div class="istat" id="istat-chrome">—</div></div>
+  <div class="irow"><div class="idot on"></div><div class="iname">Watchdog自動監視</div><div class="istat">ACTIVE</div></div>
+  <div class="irow"><div class="idot" id="idot-pipe"></div><div class="iname">パイプライン処理</div><div class="istat" id="istat-pipe">—</div></div>
+  <div class="irow"><div class="idot"></div><div class="iname">手動入力</div><div class="istat">—</div></div>
 </div>
 
 <script>
 (function(){
 'use strict';
-
-// ===== UTILS =====
 function $(id){return document.getElementById(id);}
-function setText(id,v){var el=$(id);if(el)el.textContent=v;}
-function toggleBlock(id){
-  var body=$(id), header=body?body.previousElementSibling:null, arrow=header?header.querySelector('.bh-arrow'):null;
-  if(!body)return;
-  var open=body.classList.contains('open');
-  body.classList.toggle('open',!open);
-  if(arrow){arrow.classList.toggle('open',!open);}
-  if(header){header.classList.toggle('expanded',!open);}
-}
-function expandAxis(id,btn){
-  var el=$(id);
-  if(!el)return;
-  var exp=el.classList.toggle('expanded');
-  btn.textContent=exp?'▲ 折りたたむ':'▼ 展開';
-}
-window.toggleBlock=toggleBlock;
-window.expandAxis=expandAxis;
+function set(id,v){var e=$(id);if(e)e.textContent=v;}
+function toggleAx(id,btn){var e=$(id);if(!e)return;var x=e.classList.toggle('exp');btn.textContent=x?'▲ 折りたたむ':'▼ 展開';}
+window.toggleAx=toggleAx;
 
-// ===== CLOCK =====
-function updateClock(){
-  setText('clock', new Date().toLocaleTimeString('ja-JP'));
-}
-setInterval(updateClock,1000); updateClock();
+// Clock
+setInterval(function(){set('clock',new Date().toLocaleTimeString('ja-JP'));},1000);
+set('clock',new Date().toLocaleTimeString('ja-JP'));
 
-// ===== SERVER STATUS =====
-function checkServer(url,dotId,cb){
-  fetch(url).then(function(r){
-    var dot=$(dotId);
-    if(dot){dot.className='dot '+(r.ok?'on':'warn');}
-    if(cb)cb(r.ok);
-  }).catch(function(){
-    var dot=$(dotId);
-    if(dot){dot.className='dot';}
-    if(cb)cb(false);
-  });
+// Server dots
+function checkDot(url,id){
+  fetch(url).then(function(r){var d=$(id);if(d)d.className='dot '+(r.ok?'on':'warn');}).catch(function(){var d=$(id);if(d)d.className='dot off';});
 }
 
-// ===== PIPELINE STATUS =====
+function refreshServers(){
+  checkDot('/health','d-app');
+  checkDot('http://localhost:5679/health','d-cal');
+  checkDot('http://localhost:5002/health','d-mcp');
+  fetch('/public/status').then(function(r){var d=$('d-ngrok');if(d)d.className='dot '+(r.ok?'on':'warn');}).catch(function(){var d=$('d-ngrok');if(d)d.className='dot off';});
+}
+
 function refreshPipeline(){
   fetch('/pipeline/status').then(function(r){return r.json();}).then(function(d){
-    // d.layers にパイプライン数値が入っている
+    var lbl=$('pipe-label');
+    if(lbl){lbl.textContent='● PIPELINE ONLINE';lbl.className='pipe-label online';}
     var p=d.layers||{};
-    setText('p-RAW',       p.RAW!=null?p.RAW:'-');
-    setText('p-DONE',      p.RAW_DONE!=null?p.RAW_DONE:'-');
-    setText('p-REDUCED',   p.REDUCED!=null?p.REDUCED:'-');
-    setText('p-RE_REDUCED',p.RE_REDUCED!=null?p.RE_REDUCED:'-');
-    setText('p-REDUCING',  p.REDUCING!=null?p.REDUCING:'-');
-    setText('p-CORE',      p.CORE!=null?p.CORE:'-');
-    setText('p-ESSENCE',   p.ESSENCE!=null?p.ESSENCE:'-');
-    setText('p-PILS',      p.PILS!=null?p.PILS:'-');
-    setText('loop-raw-count',  p.RAW!=null?p.RAW:'-');
-    setText('raw-done-count',  p.RAW_DONE!=null?p.RAW_DONE:'-');
-    var lbl=$('pipe-status-label');
-    if(lbl){lbl.style.color='#10b981'; lbl.textContent='● PIPELINE ONLINE';}
-    // danger
+    set('p-RAW',p.RAW!=null?p.RAW:'-');
+    set('p-DONE',p.RAW_DONE!=null?p.RAW_DONE:'-');
+    set('p-REDUCED',p.REDUCED!=null?p.REDUCED:'-');
+    set('p-RE_REDUCED',p.RE_REDUCED!=null?p.RE_REDUCED:'-');
+    set('p-REDUCING',p.REDUCING!=null?p.REDUCING:'-');
+    set('p-CORE',p.CORE!=null?p.CORE:'-');
+    set('p-ESSENCE',p.ESSENCE!=null?p.ESSENCE:'-');
+    set('p-PILS',p.PILS!=null?p.PILS:'-');
+    set('m-raw',p.RAW!=null?p.RAW:'-');
+    set('m-done',p.RAW_DONE!=null?p.RAW_DONE:'-');
     var dg=d.danger||{};
-    var dtotal=dg.total!=null?dg.total:0;
-    setText('danger-total',dtotal); setText('bh-danger-total',dtotal);
-    setText('dt1',dg.tier1!=null?dg.tier1:'-');
-    setText('dt2',dg.tier2!=null?dg.tier2:'-');
-    setText('dt3',dg.tier3!=null?dg.tier3:'-');
-    setText('dte',dg.escalation!=null?dg.escalation:'-');
-    setText('dts',dg.silent_danger!=null?dg.silent_danger:'-');
-    setText('learned-today',dg.learned_today!=null?dg.learned_today:0);
-    setText('learn-today-d',dg.learned_today!=null?dg.learned_today:0);
-    if(dg.last_critical){setText('bh-last-critical',dg.last_critical.substring(0,16));}
-    // essence (d.essence.X.text / d.essence.X.updated)
+    var dt=dg.total!=null?dg.total:0;
+    set('m-danger',dt);set('dt1',dg.tier1!=null?dg.tier1:'-');set('dt2',dg.tier2!=null?dg.tier2:'-');
+    set('dt3',dg.tier3!=null?dg.tier3:'-');set('dte',dg.escalation!=null?dg.escalation:'-');
+    set('dts',dg.silent_danger!=null?dg.silent_danger:'-');
+    set('m-learned',dg.learned_today!=null?dg.learned_today:0);
     var es=d.essence||{};
-    var ecount=Object.keys(es).length;
-    setText('loop-essence-count',ecount); setText('bh-essence-count',ecount);
+    var ec=Object.keys(es).length;
+    set('m-essence',ec);
     ['INCIDENT','PHILOSOPHY','OPERATION'].forEach(function(k){
-      if(es[k]){
-        setText('txt-'+k, es[k].text||'—');
-        if(es[k].updated){setText('age-'+k,es[k].updated.substring(0,10));}
-      }
+      var short={INCIDENT:'I',PHILOSOPHY:'P',OPERATION:'O'}[k];
+      if(es[k]){set('txt-'+short,es[k].text||'—');if(es[k].updated)set('age-'+short,es[k].updated.substring(0,10));}
     });
-    // input status dots
     var inp=d.input||{};
-    if(inp.chrome_extension){
-      var dc=$('idot-chrome');
-      if(dc){dc.className='idot'+(inp.chrome_extension.last?' on':'');}
-    }
-    if(inp.pipeline){
-      var sp=$('istat-pipeline');
-      if(sp){sp.textContent=inp.pipeline.last||'—';}
-    }
-  }).catch(function(){
-    var lbl=$('pipe-status-label');
-    if(lbl){lbl.style.color='#ef4444'; lbl.textContent='● PIPELINE OFFLINE';}
-  });
+    if(inp.chrome_extension){var dc=$('idot-chrome');if(dc)dc.className='idot'+(inp.chrome_extension.last?' on':'');}
+    if(inp.pipeline&&inp.pipeline.last){set('istat-pipe',inp.pipeline.last);}
+  }).catch(function(){var lbl=$('pipe-label');if(lbl){lbl.textContent='● PIPELINE OFFLINE';lbl.className='pipe-label offline';}});
 }
 
-// ===== LOOP STATUS (CIVILIZATION LOOP + HEALTH) =====
 function refreshLoop(){
   fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
-    // CIVILIZATION LOOP — /loop/statusの実構造に合わせる
-    var lp=d.loop||{};
-    setText('cn-observe',  lp.observe!=null?lp.observe   : (d.raw_count!=null?d.raw_count:'-'));
-    setText('cn-record',   lp.record!=null?lp.record     : (d.raw_done_count!=null?d.raw_done_count:'-'));
-    setText('cn-incident', lp.incident!=null?lp.incident : '-');
-    setText('cn-recurrence',lp.recurrence!=null?lp.recurrence:'-');
-    setText('cn-prevention',lp.prevention!=null?lp.prevention:'-');
-    setText('cn-decision', lp.decision!=null?lp.decision : '-');
-    setText('cn-action',   lp.action!=null?lp.action     : '-');
-    setText('cn-audit',    lp.audit!=null?lp.audit       : '-');
-
-    // ESSENCE count（直下キー）
-    var ec=d.essence_count!=null?d.essence_count:Object.keys(d.essence_axes||{}).length;
-    setText('loop-essence-count', ec);
-    setText('bh-essence-count', ec);
-
-    // RAW counts（直下キー）
-    if(d.raw_count!=null){setText('loop-raw-count',d.raw_count); setText('p-RAW',d.raw_count);}
-    if(d.raw_done_count!=null){setText('raw-done-count',d.raw_done_count); setText('p-DONE',d.raw_done_count);}
-
-    // ping age
-    if(d.ping_age){setText('bh-essence-age',d.ping_age);}
-
-    // ESSENCE 3軸（ESSENCE_SUMMARY内）
-    var es=d.ESSENCE_SUMMARY||{};
-    ['INCIDENT','PHILOSOPHY','OPERATION'].forEach(function(k){
-      if(es[k]){setText('txt-'+k, es[k]);}
-    });
-    if(d.essence_updated){
-      var eu=d.essence_updated.substring(0,10);
-      setText('age-INCIDENT',eu); setText('age-PHILOSOPHY',eu); setText('age-OPERATION',eu);
+    set('cn-observe',d.raw_count!=null?d.raw_count:'-');
+    set('cn-record',d.raw_done_count!=null?d.raw_done_count:'-');
+    if(d.ping_age)set('age-I',d.ping_age);
+    if(d.ESSENCE_SUMMARY){
+      var s=d.ESSENCE_SUMMARY;
+      if(s.INCIDENT)set('txt-I',s.INCIDENT);
+      if(s.PHILOSOPHY)set('txt-P',s.PHILOSOPHY);
+      if(s.OPERATION)set('txt-O',s.OPERATION);
     }
-
-    // EVENTS count from /public/events
-    fetch('/public/events?n=1').then(function(r){return r.json();}).then(function(ev){
-      var cnt=ev.count!=null?ev.count:'-';
-      setText('h-events',cnt); setText('hh-events',cnt);
-    }).catch(function(){});
-
-    // TODO counts from /public/todo
-    fetch('/public/todo').then(function(r){return r.json();}).then(function(td){
-      var todos=td.todos||[];
-      var done=(td.completed||[]).length;
-      var remaining=todos.filter(function(t){return t.status!=='完了';}).length;
-      setText('h-done',done); setText('hh-done',done);
-      setText('h-todo',remaining); setText('hh-todo',remaining);
-    }).catch(function(){});
-
-    // TODO counts from top_todos（fallback）
-    if(d.top_todos){setText('h-todo',d.top_todos.length);}
-    setText('au-ledger','OK');
   }).catch(function(){});
 }
 
-// ===== EVENTS STREAM =====
 function refreshEvents(){
   fetch('/public/events?n=8').then(function(r){return r.json();}).then(function(d){
-    var events=d.events||d;
-    if(!Array.isArray(events)||events.length===0)return;
-    var container=$('events-stream');
-    if(!container)return;
-    container.innerHTML='';
-    events.slice().reverse().forEach(function(ev){
-      var div=document.createElement('div');
-      div.className='event-item';
-      var wt=ev.what_type||ev.type||'—';
-      var ts=(ev.when||ev.timestamp||'').substring(11,16);
+    var evs=d.events||[];
+    if(!evs.length)return;
+    var box=$('events-stream');if(!box)return;
+    box.innerHTML='';
+    evs.slice().reverse().forEach(function(ev){
+      var div=document.createElement('div');div.className='ev';
+      var wt=(ev.what_type||ev.type||'—').toLowerCase();
+      var ts=(ev.when||'').substring(11,16);
       div.innerHTML='<span class="ev-id">'+(ev.event_id||'—')+'</span>'
-        +'<span class="ev-type '+wt+'">'+wt+'</span>'
+        +'<span class="ev-type '+wt+'">'+wt.toUpperCase()+'</span>'
         +'<span class="ev-title">'+(ev.title||ev.description||'—')+'</span>'
         +'<span class="ev-time">'+ts+'</span>';
-      container.appendChild(div);
+      box.appendChild(div);
     });
-    // latest id in header
-    var latest=events[events.length-1];
-    if(latest){setText('ev-latest-id',latest.event_id||'—');}
   }).catch(function(){});
 }
 
-// ===== PATTERN STATUS =====
-function refreshPattern(){
-  fetch('/pattern/status').then(function(r){return r.json();}).then(function(d){
-    setText('pattern-count',d.keywords!=null?d.keywords:'-');
+function refreshHealth(){
+  fetch('/public/events?n=1').then(function(r){return r.json();}).then(function(d){
+    var c=d.count!=null?d.count:'-';set('m-events',c);set('h-events',c);
+  }).catch(function(){});
+  fetch('/public/todo').then(function(r){return r.json();}).then(function(d){
+    var todos=d.todos||[];
+    var rem=todos.filter(function(t){return t.status!=='完了';}).length;
+    var done=(d.completed||[]).length;
+    set('m-done-todo',done);set('m-todo',rem);set('h-done',done);set('h-todo',rem);
+  }).catch(function(){});
+  fetch('/audit/status').then(function(r){return r.json();}).then(function(d){
+    var log=d.last_seal||{};
+    if(log.sealed_at)set('h-seal',log.sealed_at.substring(11,19));
   }).catch(function(){});
 }
 
-// ===== DECISION QUEUE =====
 function refreshDecision(){
   fetch('/prevention/queue').then(function(r){return r.json();}).then(function(d){
-    var queue=d.queue||[];
-    var pending=queue.filter(function(q){return q.status==='pending';});
-    var cnt=pending.length;
-    setText('decision-count',cnt); setText('bh-decision-count',cnt);
-    var dot=$('decision-dot');
-    if(dot){dot.style.background=cnt>0?'#a855f7':'#374151';}
-    var list=$('decision-list');
-    if(!list)return;
-    if(pending.length===0){list.innerHTML='<span class="empty-msg">— 承認待ちなし —</span>';return;}
+    var q=d.queue||[];
+    var pending=q.filter(function(x){return x.status==='pending';});
+    set('m-decision',pending.length);
+    var list=$('dec-list');if(!list)return;
+    if(!pending.length){list.innerHTML='<div class="empty">— 承認待ちなし —</div>';return;}
     list.innerHTML='';
     pending.forEach(function(item){
-      var div=document.createElement('div');
-      div.className='decision-item';
-      div.innerHTML='<div class="di-title">'+(item.title||item.proposal||'—')+'</div>'
-        +'<div class="di-desc">'+(item.description||'').substring(0,80)+'</div>'
-        +'<div class="di-actions">'
-        +'<button class="btn-approve" onclick="approveDecision(\''+item.id+'\')">✓ いいね！</button>'
-        +'<button class="btn-reject" onclick="rejectDecision(\''+item.id+'\')">✗ わるいね！</button>'
+      var div=document.createElement('div');div.className='dec-item';
+      div.innerHTML='<div class="dec-title">'+(item.title||'—')+'</div>'
+        +'<div class="dec-desc">'+(item.description||'').substring(0,100)+'</div>'
+        +'<div class="dec-btns">'
+        +'<button class="btn-ok" onclick="approve(\''+item.id+'\')">✓ いいね！</button>'
+        +'<button class="btn-ng" onclick="reject(\''+item.id+'\')">✗ わるいね！</button>'
         +'</div>';
       list.appendChild(div);
     });
   }).catch(function(){});
 }
 
-window.approveDecision=function(id){
-  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(){refreshDecision();});
+window.approve=function(id){
+  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){refreshDecision();});
 };
-window.rejectDecision=function(id){
-  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(){refreshDecision();});
+window.reject=function(id){
+  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){refreshDecision();});
 };
-
-// ===== AUDIT STATUS =====
-function refreshAudit(){
-  fetch('/audit/status').then(function(r){return r.json();}).then(function(d){
-    if(d.last_seal_time){setText('au-last',d.last_seal_time.substring(0,16));}
-    if(d.next_auto_seal){setText('au-next',d.next_auto_seal.substring(0,16));}
-    if(d.last_seal_hash){setText('hash-display',d.last_seal_hash);}
-  }).catch(function(){});
-}
-
-// ===== REFRESH ALL =====
-function refreshServers(){
-  checkServer('/health','d-app');
-  checkServer('http://localhost:5679/health','d-cal');
-  checkServer('http://localhost:5002/health','d-mcp');
-  fetch('/public/status').then(function(r){
-    var dot=$('d-ngrok');
-    if(dot){dot.className='dot '+(r.ok?'on':'warn');}
-  }).catch(function(){var dot=$('d-ngrok');if(dot)dot.className='dot';});
-}
 
 function refreshAll(){
-  refreshPipeline();
-  refreshLoop();
-  refreshEvents();
-  refreshPattern();
-  refreshDecision();
-  refreshAudit();
-  refreshServers();
+  refreshServers();refreshPipeline();refreshLoop();refreshEvents();refreshHealth();refreshDecision();
 }
-
-setInterval(refreshAll, 5000);
+setInterval(refreshAll,5000);
 refreshAll();
-
 })();
 </script>
 </body>
