@@ -455,33 +455,50 @@ function refreshPipeline(){
 // ===== LOOP STATUS (CIVILIZATION LOOP + HEALTH) =====
 function refreshLoop(){
   fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
+    // CIVILIZATION LOOP — /loop/statusの実構造に合わせる
     var lp=d.loop||{};
-    setText('cn-observe', lp.observe!=null?lp.observe:'-');
-    setText('cn-record', lp.record!=null?lp.record:'-');
-    setText('cn-incident', lp.incident!=null?lp.incident:'-');
-    setText('cn-recurrence', lp.recurrence!=null?lp.recurrence:'-');
-    setText('cn-prevention', lp.prevention!=null?lp.prevention:'-');
-    setText('cn-decision', lp.decision!=null?lp.decision:'-');
-    setText('cn-action', lp.action!=null?lp.action:'-');
-    setText('cn-audit', lp.audit!=null?lp.audit:'-');
-    // health
-    var h=d.health||d;
-    setText('h-events', h.events_total!=null?h.events_total:'-');
-    setText('h-done', h.todo_done!=null?h.todo_done:'-');
-    setText('h-todo', h.todo_remaining!=null?h.todo_remaining:'-');
-    setText('hh-events', h.events_total!=null?h.events_total:'-');
-    setText('hh-done', h.todo_done!=null?h.todo_done:'-');
-    setText('hh-todo', h.todo_remaining!=null?h.todo_remaining:'-');
-    setText('hh-recurrence', h.recurrence_count!=null?h.recurrence_count:'-');
-    if(h.last_seal_time){setText('hh-seal',h.last_seal_time.substring(11,19));}
-    if(h.last_seal_hash){setText('hash-display',h.last_seal_hash);}
-    if(h.phase){setText('bh-phase',h.phase); setText('h-phase',h.phase);}
+    setText('cn-observe',  lp.observe!=null?lp.observe   : (d.raw_count!=null?d.raw_count:'-'));
+    setText('cn-record',   lp.record!=null?lp.record     : (d.raw_done_count!=null?d.raw_done_count:'-'));
+    setText('cn-incident', lp.incident!=null?lp.incident : '-');
+    setText('cn-recurrence',lp.recurrence!=null?lp.recurrence:'-');
+    setText('cn-prevention',lp.prevention!=null?lp.prevention:'-');
+    setText('cn-decision', lp.decision!=null?lp.decision : '-');
+    setText('cn-action',   lp.action!=null?lp.action     : '-');
+    setText('cn-audit',    lp.audit!=null?lp.audit       : '-');
+
+    // ESSENCE count（直下キー）
+    var ec=d.essence_count!=null?d.essence_count:Object.keys(d.essence_axes||{}).length;
+    setText('loop-essence-count', ec);
+    setText('bh-essence-count', ec);
+
+    // RAW counts（直下キー）
+    if(d.raw_count!=null){setText('loop-raw-count',d.raw_count); setText('p-RAW',d.raw_count);}
+    if(d.raw_done_count!=null){setText('raw-done-count',d.raw_done_count); setText('p-DONE',d.raw_done_count);}
+
     // ping age
     if(d.ping_age){setText('bh-essence-age',d.ping_age);}
-    // audit
-    var au=d.audit||{};
-    if(au.last_seal_time){setText('au-last',au.last_seal_time);}
-    if(au.next_auto){setText('au-next',au.next_auto);}
+
+    // ESSENCE 3軸（ESSENCE_SUMMARY内）
+    var es=d.ESSENCE_SUMMARY||{};
+    ['INCIDENT','PHILOSOPHY','OPERATION'].forEach(function(k){
+      if(es[k]){setText('txt-'+k, es[k]);}
+    });
+    if(d.essence_updated){
+      var eu=d.essence_updated.substring(0,10);
+      setText('age-INCIDENT',eu); setText('age-PHILOSOPHY',eu); setText('age-OPERATION',eu);
+    }
+
+    // health（別エンドポイントから取得）
+    fetch('/public/status').then(function(r){return r.json();}).then(function(s){
+      var ev=s.events_total||s.event_count||'-';
+      setText('h-events',ev); setText('hh-events',ev);
+      if(s.last_seal_hash){setText('hash-display',s.last_seal_hash);}
+      if(s.last_seal_time){setText('hh-seal',s.last_seal_time.substring(11,19));}
+    }).catch(function(){});
+
+    // TODO counts from top_todos
+    if(d.top_todos){setText('h-todo',d.top_todos.length);}
+
     setText('au-ledger','OK');
   }).catch(function(){});
 }
