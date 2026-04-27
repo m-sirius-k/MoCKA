@@ -410,17 +410,18 @@ function checkServer(url,dotId,cb){
 // ===== PIPELINE STATUS =====
 function refreshPipeline(){
   fetch('/pipeline/status').then(function(r){return r.json();}).then(function(d){
-    var p=d.pipeline||{};
-    setText('p-RAW', p.RAW!=null?p.RAW:'-');
-    setText('p-DONE', p.RAW_DONE!=null?p.RAW_DONE:'-');
-    setText('p-REDUCED', p.REDUCED!=null?p.REDUCED:'-');
-    setText('p-RE_REDUCED', p.RE_REDUCED!=null?p.RE_REDUCED:'-');
-    setText('p-REDUCING', p.REDUCING!=null?p.REDUCING:'-');
-    setText('p-CORE', p.CORE!=null?p.CORE:'-');
-    setText('p-ESSENCE', p.ESSENCE!=null?p.ESSENCE:'-');
-    setText('p-PILS', p.PILS!=null?p.PILS:'-');
-    setText('loop-raw-count', p.RAW!=null?p.RAW:'-');
-    setText('raw-done-count', p.RAW_DONE!=null?p.RAW_DONE:'-');
+    // d.layers にパイプライン数値が入っている
+    var p=d.layers||{};
+    setText('p-RAW',       p.RAW!=null?p.RAW:'-');
+    setText('p-DONE',      p.RAW_DONE!=null?p.RAW_DONE:'-');
+    setText('p-REDUCED',   p.REDUCED!=null?p.REDUCED:'-');
+    setText('p-RE_REDUCED',p.RE_REDUCED!=null?p.RE_REDUCED:'-');
+    setText('p-REDUCING',  p.REDUCING!=null?p.REDUCING:'-');
+    setText('p-CORE',      p.CORE!=null?p.CORE:'-');
+    setText('p-ESSENCE',   p.ESSENCE!=null?p.ESSENCE:'-');
+    setText('p-PILS',      p.PILS!=null?p.PILS:'-');
+    setText('loop-raw-count',  p.RAW!=null?p.RAW:'-');
+    setText('raw-done-count',  p.RAW_DONE!=null?p.RAW_DONE:'-');
     var lbl=$('pipe-status-label');
     if(lbl){lbl.style.color='#10b981'; lbl.textContent='● PIPELINE ONLINE';}
     // danger
@@ -432,20 +433,29 @@ function refreshPipeline(){
     setText('dt3',dg.tier3!=null?dg.tier3:'-');
     setText('dte',dg.escalation!=null?dg.escalation:'-');
     setText('dts',dg.silent_danger!=null?dg.silent_danger:'-');
-    setText('learned-today',dg.learned_today!=null?dg.learned_today:'-');
-    setText('learn-today-d',dg.learned_today!=null?dg.learned_today:'-');
+    setText('learned-today',dg.learned_today!=null?dg.learned_today:0);
+    setText('learn-today-d',dg.learned_today!=null?dg.learned_today:0);
     if(dg.last_critical){setText('bh-last-critical',dg.last_critical.substring(0,16));}
-    // essence
+    // essence (d.essence.X.text / d.essence.X.updated)
     var es=d.essence||{};
     var ecount=Object.keys(es).length;
     setText('loop-essence-count',ecount); setText('bh-essence-count',ecount);
     ['INCIDENT','PHILOSOPHY','OPERATION'].forEach(function(k){
       if(es[k]){
-        var txt=es[k].content||'—';
-        setText('txt-'+k, txt);
-        if(es[k].updated_at){setText('age-'+k,es[k].updated_at.substring(0,10));}
+        setText('txt-'+k, es[k].text||'—');
+        if(es[k].updated){setText('age-'+k,es[k].updated.substring(0,10));}
       }
     });
+    // input status dots
+    var inp=d.input||{};
+    if(inp.chrome_extension){
+      var dc=$('idot-chrome');
+      if(dc){dc.className='idot'+(inp.chrome_extension.last?' on':'');}
+    }
+    if(inp.pipeline){
+      var sp=$('istat-pipeline');
+      if(sp){sp.textContent=inp.pipeline.last||'—';}
+    }
   }).catch(function(){
     var lbl=$('pipe-status-label');
     if(lbl){lbl.style.color='#ef4444'; lbl.textContent='● PIPELINE OFFLINE';}
@@ -488,17 +498,23 @@ function refreshLoop(){
       setText('age-INCIDENT',eu); setText('age-PHILOSOPHY',eu); setText('age-OPERATION',eu);
     }
 
-    // health（別エンドポイントから取得）
-    fetch('/public/status').then(function(r){return r.json();}).then(function(s){
-      var ev=s.events_total||s.event_count||'-';
-      setText('h-events',ev); setText('hh-events',ev);
-      if(s.last_seal_hash){setText('hash-display',s.last_seal_hash);}
-      if(s.last_seal_time){setText('hh-seal',s.last_seal_time.substring(11,19));}
+    // EVENTS count from /public/events
+    fetch('/public/events?n=1').then(function(r){return r.json();}).then(function(ev){
+      var cnt=ev.count!=null?ev.count:'-';
+      setText('h-events',cnt); setText('hh-events',cnt);
     }).catch(function(){});
 
-    // TODO counts from top_todos
-    if(d.top_todos){setText('h-todo',d.top_todos.length);}
+    // TODO counts from /public/todo
+    fetch('/public/todo').then(function(r){return r.json();}).then(function(td){
+      var todos=td.todos||[];
+      var done=(td.completed||[]).length;
+      var remaining=todos.filter(function(t){return t.status!=='完了';}).length;
+      setText('h-done',done); setText('hh-done',done);
+      setText('h-todo',remaining); setText('hh-todo',remaining);
+    }).catch(function(){});
 
+    // TODO counts from top_todos（fallback）
+    if(d.top_todos){setText('h-todo',d.top_todos.length);}
     setText('au-ledger','OK');
   }).catch(function(){});
 }
