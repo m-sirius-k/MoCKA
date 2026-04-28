@@ -1220,19 +1220,6 @@ def ny_extract():
         "total":len(lines),
         "essence":"processing"
     })
-if __name__ == "__main__":
-    print("--- MoCKA STARTING ---")
-    print(f"Directory: {ROOT_DIR}")
-    ensure_dirs()
-    ensure_events_csv()
-    app.run(host="127.0.0.1", port=5000)
-
-
-
-
-
-
-
 
 # ── cross_audit エンドポイント ───────────────────────────────────────────────
 try:
@@ -1279,4 +1266,19 @@ try:
 except Exception as _ce:
     print(f"[app] cross_audit load error: {_ce}")
 # ─────────────────────────────────────────────────────────────────────────────
+
+
+if __name__ == "__main__":
+    print("--- MoCKA STARTING ---")
+    print(f"Directory: {ROOT_DIR}")
+    ensure_dirs()
+    ensure_events_csv()
+    app.run(host="127.0.0.1", port=5000)
+
+
+
+
+
+
+
 
