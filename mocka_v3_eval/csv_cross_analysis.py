@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 csv_cross_analysis.py
 =====================
@@ -27,7 +27,7 @@ def load_csv(path, enc="utf-8-sig"):
         return rows
     except Exception as e:
         try:
-            with open(path, encoding="cp932", newline="") as f:
+            with open(path, encoding="utf-8-sig", newline="") as f:
                 rows = list(csv.DictReader(f))
             return rows
         except:

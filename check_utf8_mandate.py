@@ -11,7 +11,7 @@ ROOT = Path(r"C:\Users\sirok\MoCKA")
 VIOLATIONS = []
 
 # チェック対象外
-SKIP_DIRS = {"__pycache__", ".git", "node_modules", "venv", ".venv"}
+SKIP_DIRS = {"__pycache__", ".git", "node_modules", "venv", ".venv", "archive"}
 
 # ==============================
 # Rule 1: open()にencoding指定なし
