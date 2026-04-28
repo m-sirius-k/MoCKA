@@ -3,15 +3,15 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=【問題動作検知】APIトークン枯渇した。なぜこんなに消費する",
+  "A": "Z-Axis=0.819 / INCIDENT=Geminiが統計値Z=0.88を捏造した。INTEGRIT",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "【問題動作検知】APIトークン枯渇した。なぜこんなに消費するのか。廃止して直接注入に移行する\n【インシデント】INCIDENT: Ollama暴走によるリソース枯渇・半日損失 → 【原因】MoCKA-START.batにessence_trigger.py・ollama serveを無条件毎回実行として組み込んだ結果、PC全体のCPU100%・キ → 【再発防止】要分析\n【関連ツール】ping_generator, events.csv, app.py, ping_latest, essence_classifier\n[軸③否定検知] 否定パターン3件検出 → AI動作問題として記録\n[軸④経緯分析] インシデント経緯25件抽出済み",
-    "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗は資産になる。 疑問は制度改善のトリガー: APIトークン枯渇した。なぜこんなに消費するのか。廃止して直接注入に移行する 不要な複雑性は廃止し、シンプルな直接接続を優先する。 インシデントから学習し制度化する。",
-    "OPERATION": "[hint] 形態素解析は「別コンテナ・別サービス」で閉じる  形態素解析そのものは別のコンテナ（例：Alpine + MeCab + fugashi の軽量イメージ）で行い、  出力結果を JSON または固定フォーマットの CSV で返す。  その JSON / CSV を MoCKA が「バイナリではなく、UTF‑8 テキスト」として受け取るだけ。  「文字化けが減る」具体的な枠組みイメージ 入力元（ブラウザ・外部AI）  テキストを UTF‑8 で POST / WebSocket / CSV で送る。  ファイル名も .utf8.txt や events_official_ja.csv のように、文字エンコードを明示。  形態素解析サービス（別コンテナ）  入力は UTF‑8 のテキスト。  内部で MeCab / fugashi / Janome を使うが、そのコンテナの中だけで完結。  出力は以下のような JSON で吐き出す："
+    "INCIDENT": "Geminiが統計値Z=0.88を捏造した。INTEGRITY_VIOLATIONインシデント。\nrouter.pyのDEPENDENCY_BREAKを修正。what_type=save誤記録を解消した。\nなぜそうなるの？答えはさっきと違う。意味がわからない。また同じだ。",
+    "PHILOSOPHY": "[hint] 「最初から汚染された物はどれだけフィルタリングして改善プログラムを作ったとしても、別のAIと共有しようとしたとき汚染されていれば読めない＝機能不全＝整合性がとれない＝文明崩壊」",
+    "OPERATION": "is a governance failure because systems that permit silence under uncertainty incentivize fabricated completion\nSPP is not a refusal mechanism; it is a failure-conversion mechanism under uncertainty\nSPP redesigns the state space in which AI can act\nAI????????????????????AI??????????????????????????\n??:????????????SPP:???????????\nthe burden of verification shifts from the user to the system\nregistry?????\n??????Z??????ZYXTS?????????????????\n???????S(t),Z(t),D(e,t)??????????????????\nAI ????????????????????????????????????????????????\n1????????????\nregistry???????????\nnote????????\nSPP???:??????????????????????\nVerify???????????????????????????True\n保存・共有・協業のトークン消費 保存（mocka-save） Claudeのトークン：使わない  選択テキスト → /ask → events.csv に記録するだけ mocka_pipeline.py が動くが、これはローカル処理 共有（mocka-share） Claudeのトークン：使わない  /ask (c:B) → events.csv記録 /orchestra → mocka_orchestra_v10.py起動 orchestraはPlaywright経由でブラウザを操作するだけ（API呼び出しなし） 協業（mocka-orchestra） Claudeのトークン：使わない  /orchestra → mocka_orchestra_v10.py起動 同上、ブラウザ操作のみ"
   },
   "essence_updated": true,
-  "ngrok_online": true,
-  "NGROK": true,
+  "ngrok_online": false,
+  "NGROK": false,
   "current_phase": "Phase 2進行中",
   "top_todos": [
     {
@@ -25,20 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_059",
-      "title": "SPP LaTeX版 Section 5-8移植・最終PDF確認",
-      "priority": "最高"
+      "id": "TODO_065",
+      "title": "Overleaf作業プロトコル改善 — 完全版1本渡し方式の確立",
+      "priority": "高"
     },
     {
-      "id": "TODO_061",
-      "title": "トレッドミル試験設計・実施 — コンテキスト希釈SPP違反実測",
-      "priority": "最高"
+      "id": "TODO_038",
+      "title": "クロス監査環境構築 — 複数AI相互検証基盤",
+      "priority": "中"
     },
     {
-      "id": "TODO_062",
-      "title": "Gemini内面化状態観察実験 — 30問投入・Type B違反率測定",
-      "priority": "最高"
+      "id": "TODO_005",
+      "title": "planningcaliberの整備",
+      "priority": "低"
     }
   ],
-  "generated_at": "2026-04-27T08:13:05.552202"
+  "generated_at": "2026-04-28T17:48:09.475061"
 }
