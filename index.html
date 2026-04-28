@@ -133,7 +133,7 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <span class="top-sub">command center v4.2</span>
   <div class="srv"><div class="srv-dot" id="d-app"></div><div class="srv-lbl">APP<br>5000</div></div>
   <div class="srv"><div class="srv-dot" id="d-cal"></div><div class="srv-lbl">CAL<br>5679</div></div>
-  <div class="srv"><div class="srv-dot" id="d-mcp"></div><div class="srv-lbl">MCP<br>5002</div></div>
+  <div class="srv"><div class="srv-dot" id="d-mcp"></div><div class="srv-lbl">MCP<br>5002</div></div><div class="srv"><div class="srv-dot" id="d-rtb"></div><div class="srv-lbl">RUNTIME-B<br>5003</div></div>
   <div class="srv"><div class="srv-dot" id="d-ngrok"></div><div class="srv-lbl">NGROK</div></div>
   <div class="srv"><div class="srv-dot" id="d-pipe"></div><div class="srv-lbl">PIPE</div></div>
   <span class="clock" id="clock">--:--:--</span>
@@ -262,6 +262,7 @@ function refreshServers(){
   checkDot('/health','d-app');
   checkDot('http://localhost:5679/health','d-cal');
   checkDot('http://localhost:5002/health','d-mcp');
+  checkDot('http://localhost:5003/b/health','d-rtb');
   checkDot('/public/status','d-ngrok');
 }
 
