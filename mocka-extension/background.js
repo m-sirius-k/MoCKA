@@ -81,6 +81,33 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === 'mocka_collect_selected') {
     await sendToMocka(source, info.selectionText, tab.url, 'selected');
   } else if (info.menuItemId === 'mocka_collect_full') {
+    // NY抽出モード: 全文 → /ny_extract → essence自動反映
+    const fullResults = await chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      func: function() {
+        document.execCommand('selectAll');
+        const t = window.getSelection().toString().trim();
+        window.getSelection().removeAllRanges();
+        return t;
+      }
+    });
+    const fullText = fullResults?.[0]?.result || '';
+    if (fullText) {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/ny_extract', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({text: fullText, source: source})
+        });
+        const data = await res.json();
+        chrome.notifications.create({
+          type: 'basic', iconUrl: 'icon.png',
+          title: 'MoCKA NY抽出完了',
+          message: `グレイト:${data.great}件 ヒント:${data.hint}件 インシデント:${data.incident}件 → Essence反映中`
+        });
+      } catch(e) { console.error('ny_extract error:', e); }
+    }
+    return; //
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: async function(source) {
