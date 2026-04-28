@@ -10,7 +10,7 @@ APIキーは環境変数から取得（ハードコード禁止）
 
 import json, io, os, sys
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace"), os, sys, time, urllib.request, urllib.error
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 from pathlib import Path
 from datetime import datetime
 
