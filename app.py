@@ -1271,6 +1271,7 @@ except Exception as _ce:
 
 @app.route('/sync/todo', methods=['POST'])
 def sync_todo():
+    print("SYNC_TODO_V3_ENTERED")
     try:
         import json as _json
         from pathlib import Path as _Path
@@ -1318,7 +1319,6 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
-
 
 
 
