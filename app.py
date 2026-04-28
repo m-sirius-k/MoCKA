@@ -1272,13 +1272,26 @@ except Exception as _ce:
 @app.route('/sync/todo', methods=['POST'])
 def sync_todo():
     try:
-        import subprocess, sys
-        r = subprocess.run(
-            [sys.executable, 'interface/mocka_firestore_sync.py', 'push'],
-            capture_output=True, text=True, timeout=30,
-            cwd='C:/Users/sirok/MoCKA'
+        import sys
+        sys.path.insert(0, 'C:/Users/sirok/MoCKA/interface')
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            'mocka_firestore_sync',
+            'C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py'
         )
-        return jsonify({'status': 'ok', 'output': r.stdout[-500:], 'error': r.stderr[-200:]})
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        data = mod.load_local()
+        todos = mod.local_map(data)
+        ok = 0
+        errors = []
+        for tid, todo in todos.items():
+            try:
+                mod.fs_patch(tid, todo)
+                ok += 1
+            except Exception as e:
+                errors.append(str(e)[:80])
+        return jsonify({'status': 'ok', 'pushed': ok, 'errors': errors})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
