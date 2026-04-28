@@ -1,8 +1,5 @@
 ﻿import sqlite3
 import csv
-import sys as _sys
-_sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
-import db_helper
 import shutil
 import os
 import json
@@ -135,7 +132,24 @@ def ensure_events_csv():
             writer.writeheader()
 
 def next_event_id():
-    return db_helper.get_next_event_id()
+    today = datetime.now().strftime("%Y%m%d")
+    prefix = f"E{today}_"
+    ensure_events_csv()
+    last_n = 0
+    with open(EVENTS_CSV, "r", newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            ev = (r.get("event_id") or "").strip()
+            if ev.startswith(prefix):
+                parts = ev.split("_")
+                if len(parts) == 2:
+                    try:
+                        n = int(parts[1])
+                        if n > last_n:
+                            last_n = n
+                    except ValueError:
+                        pass
+    return f"{prefix}{last_n+1:03d}"
 
 def append_event(meta: dict):
     ensure_events_csv()
@@ -161,12 +175,20 @@ def append_event(meta: dict):
     }
     with open(master_path, "w", encoding="utf-8-sig") as f:
         json.dump(master_obj, f, ensure_ascii=False, indent=2)
-    db_helper.write_event(row)
+    with open(EVENTS_CSV, "a", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer.writerow(row)
 
 def load_history(limit=None):
-    rows = db_helper.read_events(limit=int(limit) if limit else None)
-    # 既存コードとの互換性: 全フィールドを文字列に正規化
-    rows = [{k: (v if v is not None else "") for k, v in r.items()} for r in rows]
+    ensure_events_csv()
+    rows = []
+    with open(EVENTS_CSV, "r", newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for r in reader:
+            clean = {k: (v if v is not None else "") for k, v in r.items()}
+            rows.append(clean)
+    if limit is not None:
+        rows = rows[-int(limit):]
     return rows
 
 def count_layer(layer):
