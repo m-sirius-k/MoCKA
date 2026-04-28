@@ -8,7 +8,9 @@ APIキーは環境変数から取得（ハードコード禁止）
   python mocka_firestore_sync.py watch  # 60秒ごとに自動同期
 """
 
-import json, os, sys, time, urllib.request, urllib.error
+import json, io, sys
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace"), os, sys, time, urllib.request, urllib.error
 from pathlib import Path
 from datetime import datetime
 
