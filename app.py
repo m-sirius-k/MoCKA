@@ -1269,50 +1269,6 @@ except Exception as _ce:
 
 
 
-@app.route('/sync/todo', methods=['POST'])
-def sync_todo():
-    print("SYNC_TODO_V3_ENTERED")
-    try:
-        import json as _json
-        from pathlib import Path as _Path
-        _TODO = _Path('C:/Users/sirok/MOCKA_TODO.json')
-        with _TODO.open('r', encoding='utf-8-sig') as _f:
-            _data = _json.load(_f)
-        if not isinstance(_data, dict):
-            raise ValueError(f'top-level must be dict, got {type(_data).__name__}')
-        _raw = (_data.get('todos') or []) + (_data.get('completed') or [])
-        _todos = {}
-        for _t in _raw:
-            if not isinstance(_t, dict): continue
-            _tid = _t.get('id')
-            if _tid is None: continue
-            _todos[str(_tid)] = _t
-        import urllib.request as _req, urllib.error as _uerr
-        _PROJECT = 'mocka-knowledge-gate'
-        _KEY = __import__('os').environ.get('MOCKA_FIREBASE_API_KEY','')
-        _ok, _errors = 0, []
-        for tid, todo in _todos.items():
-            try:
-                _url = f'https://firestore.googleapis.com/v1/projects/{_PROJECT}/databases/(default)/documents/todos/{tid}?key={_KEY}'
-                _fields = {}
-                for _k, _v in todo.items():
-                    if _v is None: continue
-                    elif isinstance(_v, bool): _fields[_k] = {'booleanValue': _v}
-                    elif isinstance(_v, int): _fields[_k] = {'integerValue': str(_v)}
-                    elif isinstance(_v, float): _fields[_k] = {'doubleValue': _v}
-                    else: _fields[_k] = {'stringValue': str(_v)}
-                _body = _json.dumps({'fields': _fields}).encode('utf-8')
-                _r = _req.Request(_url, data=_body, method='PATCH')
-                _r.add_header('Content-Type', 'application/json')
-                with _req.urlopen(_r, timeout=5) as _resp:
-                    _resp.read()
-                _ok += 1
-            except Exception as e:
-                _errors.append(f'{tid}: {str(e)[:60]}')
-        return jsonify({'status': 'ok', 'pushed': _ok, 'total': len(_todos), 'errors': _errors[:5]})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)}), 500
-
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
