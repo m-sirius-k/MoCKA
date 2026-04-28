@@ -501,7 +501,7 @@ def caliber_queue():
 @app.route("/servers/status")
 def servers_status():
     result = {}
-    for name, port in [("caliber", 5679), ("mcp", 5002)]:
+    for name, port in [("caliber", 5679), ("mcp", 5002), ("runtime_b", 5003)]:
         try:
             r = requests.get(f"http://localhost:{port}/health", timeout=2)
             d = r.json()
