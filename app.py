@@ -1293,7 +1293,13 @@ def sync_todo():
         for tid, todo in _todos.items():
             try:
                 _url = f'https://firestore.googleapis.com/v1/projects/{_PROJECT}/databases/(default)/documents/todos/{tid}?key={_KEY}'
-                _fields = {k: ({'stringValue': str(v)} if not isinstance(v, bool) else {'booleanValue': v}) for k, v in todo.items()}
+                _fields = {}
+                for _k, _v in todo.items():
+                    if _v is None: continue
+                    elif isinstance(_v, bool): _fields[_k] = {'booleanValue': _v}
+                    elif isinstance(_v, int): _fields[_k] = {'integerValue': str(_v)}
+                    elif isinstance(_v, float): _fields[_k] = {'doubleValue': _v}
+                    else: _fields[_k] = {'stringValue': str(_v)}
                 _body = _json.dumps({'fields': _fields}).encode('utf-8')
                 _r = _req.Request(_url, data=_body, method='PATCH')
                 _r.add_header('Content-Type', 'application/json')
@@ -1312,7 +1318,6 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
-
 
 
 
