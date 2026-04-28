@@ -1268,6 +1268,20 @@ except Exception as _ce:
 # ─────────────────────────────────────────────────────────────────────────────
 
 
+
+@app.route('/sync/todo', methods=['POST'])
+def sync_todo():
+    try:
+        import subprocess, sys
+        r = subprocess.run(
+            [sys.executable, 'interface/mocka_firestore_sync.py', 'push'],
+            capture_output=True, text=True, timeout=30,
+            cwd='C:/Users/sirok/MoCKA'
+        )
+        return jsonify({'status': 'ok', 'output': r.stdout[-500:], 'error': r.stderr[-200:]})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
