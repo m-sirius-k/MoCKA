@@ -239,7 +239,7 @@ def collaborate():
                 _intent_queue[ai_name] = []
             _intent_queue[ai_name].append(text)
     try:
-        subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR)
+        subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
     except Exception as e:
         print(f"[COLLABORATE] orchestra error: {e}")
     append_event({
@@ -292,7 +292,7 @@ def orchestra():
     payload = request.get_json(force=True, silent=True) or {}
     prompt = payload.get("prompt", "MoCKA Broadcast")
     mode = payload.get("mode", "orchestra")
-    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR)
+    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
     return jsonify({"status": "ok"})
 
 @app.route("/ask", methods=["POST"])
@@ -338,7 +338,7 @@ def ask():
     if c == "A" and memo:
         try:
             _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
-            subprocess.Popen([sys.executable, _pl, "--text", memo.strip(), "--no-ping"], cwd=ROOT_DIR)
+            subprocess.Popen([sys.executable, _pl, "--text", memo.strip(), "--no-ping"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
         except Exception as _e:
             print(f"[ASK] pipeline error: {_e}")
         # Pattern scoring
@@ -386,7 +386,7 @@ def collect():
             f"hash={h}|source={source}|mode={mode}"])
     try:
         _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
-        subprocess.Popen([sys.executable, _pl, '--text', text[:500], '--no-ping'], cwd=ROOT_DIR)
+        subprocess.Popen([sys.executable, _pl, '--text', text[:500], '--no-ping'], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
     except Exception as _e:
         print('[COLLECT] pipeline error: ' + str(_e))
     # Pattern scoring
@@ -440,7 +440,7 @@ def success():
     })
     try:
         _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
-        subprocess.Popen([sys.executable, _pl, "--text", f"{label} {text[:500]}", "--no-ping"], cwd=ROOT_DIR)
+        subprocess.Popen([sys.executable, _pl, "--text", f"{label} {text[:500]}", "--no-ping"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
     except Exception as e:
         print(f"[SUCCESS] pipeline error: {e}")
     # Pattern scoring
@@ -888,7 +888,7 @@ def public_pipeline():
         return jsonify({"status": "error", "message": "text required"}), 400
     try:
         _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
-        subprocess.Popen([sys.executable, _pl, "--text", text[:1000], "--no-ping"], cwd=ROOT_DIR)
+        subprocess.Popen([sys.executable, _pl, "--text", text[:1000], "--no-ping"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
         return jsonify({"status": "ok", "message": "pipeline started", "author": author})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
@@ -1319,7 +1319,6 @@ if __name__ == "__main__":
     ensure_dirs()
     ensure_events_csv()
     app.run(host="127.0.0.1", port=5000)
-
 
 
 
