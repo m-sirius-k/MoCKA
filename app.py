@@ -1176,6 +1176,72 @@ def decision_reject():
 def health_check():
     return jsonify({'status': 'ok', 'port': 5000})
 
+
+# ==============================
+# NY抽出 → Essence自動反映エンドポイント
+# ==============================
+@app.route("/ny_extract", methods=["POST"])
+def ny_extract():
+    import threading
+    data   = request.get_json(force=True)
+    text   = data.get("text", "")
+    source = data.get("source", "unknown")
+    if not text:
+        return jsonify({"status":"error","message":"no text"}), 400
+
+    lines   = [l.strip() for l in text.split("\n") if len(l.strip()) > 15]
+    results = {"great":[], "hint":[], "incident":[]}
+
+    great_kw    = ["思想","哲学","格言","原則","本質","設計","制度","文明","再現","継承","座右","記録","証明"]
+    incident_kw = ["失敗","エラー","おかしい","なぜ","動かない","限界","無駄","消費","暴走","誤","壊"]
+
+    for line in lines:
+        if any(kw in line for kw in incident_kw):
+            what_type = "incident"
+            results["incident"].append(line)
+        elif any(kw in line for kw in great_kw):
+            what_type = "success_great"
+            results["great"].append(line)
+        else:
+            what_type = "success_hint"
+            results["hint"].append(line)
+
+        append_event({
+            "who_actor": source, "what_type": what_type,
+            "where_component": "ny_extract",
+            "title": f"[NY/{what_type}] {line[:40]}",
+            "short_summary": line, "risk_level": "normal",
+            "channel_type": "chrome_extension",
+            "lifecycle_phase": "in_operation",
+            "free_note": f"ny_extract|source={source}"
+        })
+
+        if what_type in ["success_great","success_hint"]:
+            try:
+                sp_path = Path(BASE_DIR) / "data" / "success_patterns.json"
+                sp = json.loads(sp_path.read_text(encoding="utf-8")) if sp_path.exists() else {"great":[],"hint":[]}
+                key = "great" if what_type == "success_great" else "hint"
+                if line not in sp.get(key,[]):
+                    sp.setdefault(key,[]).append(line)
+                    sp_path.write_text(json.dumps(sp,ensure_ascii=False,indent=2),encoding="utf-8")
+            except: pass
+
+    def run_essence():
+        try:
+            import subprocess, sys
+            subprocess.run([sys.executable,"interface/essence_classifier.py"],cwd=BASE_DIR,timeout=30)
+            subprocess.run([sys.executable,"interface/ping_generator.py"],cwd=BASE_DIR,timeout=30)
+        except: pass
+    threading.Thread(target=run_essence,daemon=True).start()
+
+    return jsonify({
+        "status":"ok",
+        "great":len(results["great"]),
+        "hint":len(results["hint"]),
+        "incident":len(results["incident"]),
+        "total":len(lines),
+        "essence":"processing"
+    })
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"Directory: {ROOT_DIR}")
