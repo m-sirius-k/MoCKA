@@ -33,47 +33,29 @@ New-Item -ItemType Directory -Force -Path $LOG_DIR | Out-Null
 # 送信関数（変更不要）
 # ==============================
 function Send-Pattern($text, $type, $label, $endpoint, $category) {
-    $id_prefix = switch ($category) {
-        "great"    { "GREAT" }
-        "hint"     { "HINT"  }
-        "incident" { "INC"   }
-    }
     $counter[$category]++
-    $pattern_id = "$id_prefix-$DATE_STR-$("{0:D3}" -f $counter[$category])"
-
-    $payload = @{
-        text       = $text
-        what_type  = $type
-        source     = "past_chat_batch"
-        label      = $label
-        pattern_id = $pattern_id
-        timestamp  = (Get-Date -Format "yyyy-MM-ddTHH:mm:ss")
+    $id_prefix = switch ($category) { "great" {"GREAT"} "hint" {"HINT"} "incident" {"INC"} }
+    $pattern_id = "$id_prefix-$(Get-Date -Format 'yyyyMMdd')-$("{0:D3}" -f $counter[$category])"
+    $json = ConvertTo-Json @{
+        text=$text; what_type=$type; source="past_chat_batch"
+        label=$label; pattern_id=$pattern_id
+        timestamp=(Get-Date -Format "yyyy-MM-ddTHH:mm:ss")
     }
-
-    $body = ConvertTo-Json $payload
-
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($json)
     try {
-        $res = Invoke-WebRequest -UseBasicParsing -Method POST `
-            -Uri "$BASE_URL/$endpoint" `
-            -ContentType "application/json" `
-            -Body $body
-        $status = "OK"
-        Write-Host "✅ [$pattern_id] $($text.Substring(0,[Math]::Min(30,$text.Length)))..."
+        $req = [System.Net.HttpWebRequest]::Create("http://localhost:5000/$endpoint")
+        $req.Method = "POST"
+        $req.ContentType = "application/json; charset=utf-8"
+        $req.ContentLength = $bytes.Length
+        $s = $req.GetRequestStream()
+        $s.Write($bytes, 0, $bytes.Length)
+        $s.Close()
+        $req.GetResponse() | Out-Null
+        Write-Host "✅ [$pattern_id] $($text.Substring(0,[Math]::Min(28,$text.Length)))..."
     } catch {
-        $status = "ERROR"
-        Write-Host "❌ [$pattern_id] Error: $($text.Substring(0,20))"
+        Write-Host "❌ [$pattern_id] $($text.Substring(0,20))"
     }
-
-    # ローカルログに追記（二重記録原則）
-    $log_items += [PSCustomObject]@{
-        pattern_id = $pattern_id
-        label      = $label
-        text       = $text
-        status     = $status
-        timestamp  = (Get-Date -Format "yyyy-MM-ddTHH:mm:ss")
-    }
-
-    Start-Sleep -Milliseconds 300
+    Start-Sleep -Milliseconds 200
 }
 
 # ==============================
