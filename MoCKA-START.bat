@@ -2,6 +2,15 @@
 python C:\Users\sirok\MoCKA\interface\ping_generator.py
 timeout /t 2 /nobreak > nul
 echo MoCKA Starting...
+echo [UTF-8 MANDATE CHECK]
+python C:\Users\sirok\MoCKA\check_utf8_mandate.py
+if %ERRORLEVEL% NEQ 0 (
+    echo UTF-8違反検出！起動を停止します。
+    pause
+    exit /b 1
+)
+echo UTF-8 OK
+
 taskkill /F /IM comet.exe /T >nul 2>&1
 timeout /t 2 /nobreak > nul
 start "" "C:\Users\sirok\AppData\Local\Perplexity\Comet\Application\comet.exe" --remote-debugging-port=9222
