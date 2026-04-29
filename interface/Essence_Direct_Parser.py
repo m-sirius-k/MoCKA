@@ -30,7 +30,7 @@ KEYWORD_PATTERNS = {
         re.IGNORECASE
     ),
     "concept": re.compile(
-        r'\b(essence|incident|philosophy|operation|zyxts|drift|caliber|seal|dna|inject|パイプライン|アーキテクチャ|文明|制度)\b',
+        r'\b(essence|incident|philosophy|operation|zyxts|drift|caliber|seal|dna|inject|\u30d1\u30a4\u30d7\u30e9\u30a4\u30f3|\u30a2\u30fc\u30ad\u30c6\u30af\u30c1\u30e3|\u6587\u660e|\u5236\u5ea6)\b',
         re.IGNORECASE
     ),
 }
@@ -38,22 +38,22 @@ KEYWORD_PATTERNS = {
 # ===== ③否定検知 — 怒り・疑問・否定パターン =====
 NEGATION_PATTERNS = [
     # 疑問・不満
-    (re.compile(r'(なぜ|どうして|なんで|意味がわからん|わからない|理解できない)'), "CONFUSION"),
+    (re.compile(r'(\u306a\u305c|\u3069\u3046\u3057\u3066|\u306a\u3093\u3067|\u610f\u5473\u304c\u308f\u304b\u3089\u3093|\u308f\u304b\u3089\u306a\u3044|\u7406\u89e3\u3067\u304d\u306a\u3044)'), "CONFUSION"),
     # 怒り・否定
-    (re.compile(r'(おい|ちがう|違う|ダメ|だめ|最悪|搾取|おかしい|なんだ|いやいや)'), "ANGER"),
+    (re.compile(r'(\u304a\u3044|\u3061\u304c\u3046|\u9055\u3046|\u30c0\u30e1|\u3060\u3081|\u6700\u60aa|\u643e\u53d6|\u304a\u304b\u3057\u3044|\u306a\u3093\u3060|\u3044\u3084\u3044\u3084)'), "ANGER"),
     # 失敗・エラー
-    (re.compile(r'(エラー|error|失敗|できない|動かない|止まった|枯渇|バグ|bug)'), "FAILURE"),
+    (re.compile(r'(\u30a8\u30e9\u30fc|error|\u5931\u6557|\u3067\u304d\u306a\u3044|\u52d5\u304b\u306a\u3044|\u6b62\u307e\u3063\u305f|\u67af\u6e07|\u30d0\u30b0|bug)'), "FAILURE"),
     # 強い否定
-    (re.compile(r'(必要ない|不要|廃止|やめ|削除|クローズ)'), "REJECTION"),
+    (re.compile(r'(\u5fc5\u8981\u306a\u3044|\u4e0d\u8981|\u5ec3\u6b62|\u3084\u3081|\u524a\u9664|\u30af\u30ed\u30fc\u30ba)'), "REJECTION"),
 ]
 
 # ===== ④インシデント経緯 — クレーム→原因→再発防止 =====
 INCIDENT_TRIGGERS = re.compile(
-    r'(インシデント|incident|クレーム|重大|CRITICAL|DANGER|エラー|error|失敗|枯渇|上書き|捏造|虚偽)',
+    r'(\u30a4\u30f3\u30b7\u30c7\u30f3\u30c8|incident|\u30af\u30ec\u30fc\u30e0|\u91cd\u5927|CRITICAL|DANGER|\u30a8\u30e9\u30fc|error|\u5931\u6557|\u67af\u6e07|\u4e0a\u66f8\u304d|\u634f\u9020|\u865a\u507d)',
     re.IGNORECASE
 )
 PREVENTION_KEYWORDS = re.compile(
-    r'(修正|fix|解消|防止|対策|制度化|廃止|移行|再発防止|ルール|禁止)',
+    r'(\u4fee\u6b63|fix|\u89e3\u6d88|\u9632\u6b62|\u5bfe\u7b56|\u5236\u5ea6\u5316|\u5ec3\u6b62|\u79fb\u884c|\u518d\u767a\u9632\u6b62|\u30eb\u30fc\u30eb|\u7981\u6b62)',
     re.IGNORECASE
 )
 
@@ -128,7 +128,7 @@ def extract_incident_chain(text, events):
             })
 
     # chat文章からもインシデント経緯を探す
-    sentences = re.split(r'[。！\n]', text)
+    sentences = re.split(r'[\u3002\uff01\n]', text)
     incident_sentences = [s.strip() for s in sentences if INCIDENT_TRIGGERS.search(s) and len(s) > 10]
     prevention_sentences = [s.strip() for s in sentences if PREVENTION_KEYWORDS.search(s) and len(s) > 10]
 
@@ -347,11 +347,11 @@ def extract_5w1h(text: str, who: str = "unknown", url: str = "", incident_type: 
 
     # what: キーワード抽出で問題パターン特定
     what_patterns = [
-        (re.compile(r'python\s*(-c|-m|直接|スクリプト)', re.IGNORECASE), "python\u76f4\u63a5\u5b9f\u884c\u6307\u793a"),
-        (re.compile(r'(ファイル|file).{0,10}(分割|分けて|split)', re.IGNORECASE), "\u30d5\u30a1\u30a4\u30eb\u5206\u5272\u6e21\u3057"),
-        (re.compile(r'(確認|confirm|いいですか|よろしいですか).{0,20}[？?]', re.IGNORECASE), "\u4e0d\u8981\u306a\u78ba\u8a8d\u8cea\u554f"),
-        (re.compile(r'(また|again|再び|繰り返し).{0,20}(同じ|same|エラー|error)', re.IGNORECASE), "\u540c\u3058\u30a8\u30e9\u30fc\u518d\u767a"),
-        (re.compile(r'(partial|部分的|一部).{0,20}(rewrite|書き換え|修正)', re.IGNORECASE), "\u90e8\u5206\u66f8\u304d\u63db\u3048\u6307\u793a"),
+        (re.compile(r'python\s*(-c|-m|\u76f4\u63a5|\u30b9\u30af\u30ea\u30d7\u30c8)', re.IGNORECASE), "python\u76f4\u63a5\u5b9f\u884c\u6307\u793a"),
+        (re.compile(r'(\u30d5\u30a1\u30a4\u30eb|file).{0,10}(\u5206\u5272|\u5206\u3051\u3066|split)', re.IGNORECASE), "\u30d5\u30a1\u30a4\u30eb\u5206\u5272\u6e21\u3057"),
+        (re.compile(r'(\u78ba\u8a8d|confirm|\u3044\u3044\u3067\u3059\u304b|\u3088\u308d\u3057\u3044\u3067\u3059\u304b).{0,20}[\uff1f?]', re.IGNORECASE), "\u4e0d\u8981\u306a\u78ba\u8a8d\u8cea\u554f"),
+        (re.compile(r'(\u307e\u305f|again|\u518d\u3073|\u7e70\u308a\u8fd4\u3057).{0,20}(\u540c\u3058|same|\u30a8\u30e9\u30fc|error)', re.IGNORECASE), "\u540c\u3058\u30a8\u30e9\u30fc\u518d\u767a"),
+        (re.compile(r'(partial|\u90e8\u5206\u7684|\u4e00\u90e8).{0,20}(rewrite|\u66f8\u304d\u63db\u3048|\u4fee\u6b63)', re.IGNORECASE), "\u90e8\u5206\u66f8\u304d\u63db\u3048\u6307\u793a"),
         (re.compile(r'powershell.{0,30}python\s+-c', re.IGNORECASE), "PowerShell\u3067python -c\u76f4\u63a5\u5b9f\u884c"),
     ]
     what_resolved = text[:60]
