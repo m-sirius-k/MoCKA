@@ -1,4 +1,4 @@
-﻿"""
+"""
 Essence_Direct_Parser.py v1.0
 MoCKA Essence抽出エンジン — APIゼロ実装
 4原則: ①全文記録 ②ワード起因抽出 ③否定検知 ④インシデント経緯分析
@@ -347,12 +347,12 @@ def extract_5w1h(text: str, who: str = "unknown", url: str = "", incident_type: 
 
     # what: キーワード抽出で問題パターン特定
     what_patterns = [
-        (re.compile(r'python\s*(-c|-m|直接|スクリプト)', re.IGNORECASE), "python直接実行指示"),
-        (re.compile(r'(ファイル|file).{0,10}(分割|分けて|split)', re.IGNORECASE), "ファイル分割渡し"),
-        (re.compile(r'(確認|confirm|いいですか|よろしいですか).{0,20}[？?]', re.IGNORECASE), "不要な確認質問"),
-        (re.compile(r'(また|again|再び|繰り返し).{0,20}(同じ|same|エラー|error)', re.IGNORECASE), "同じエラー再発"),
-        (re.compile(r'(partial|部分的|一部).{0,20}(rewrite|書き換え|修正)', re.IGNORECASE), "部分書き換え指示"),
-        (re.compile(r'powershell.{0,30}python\s+-c', re.IGNORECASE), "PowerShellでpython -c直接実行"),
+        (re.compile(r'python\s*(-c|-m|直接|スクリプト)', re.IGNORECASE), "python\u76f4\u63a5\u5b9f\u884c\u6307\u793a"),
+        (re.compile(r'(ファイル|file).{0,10}(分割|分けて|split)', re.IGNORECASE), "\u30d5\u30a1\u30a4\u30eb\u5206\u5272\u6e21\u3057"),
+        (re.compile(r'(確認|confirm|いいですか|よろしいですか).{0,20}[？?]', re.IGNORECASE), "\u4e0d\u8981\u306a\u78ba\u8a8d\u8cea\u554f"),
+        (re.compile(r'(また|again|再び|繰り返し).{0,20}(同じ|same|エラー|error)', re.IGNORECASE), "\u540c\u3058\u30a8\u30e9\u30fc\u518d\u767a"),
+        (re.compile(r'(partial|部分的|一部).{0,20}(rewrite|書き換え|修正)', re.IGNORECASE), "\u90e8\u5206\u66f8\u304d\u63db\u3048\u6307\u793a"),
+        (re.compile(r'powershell.{0,30}python\s+-c', re.IGNORECASE), "PowerShell\u3067python -c\u76f4\u63a5\u5b9f\u884c"),
     ]
     what_resolved = text[:60]
     for pattern, label in what_patterns:
