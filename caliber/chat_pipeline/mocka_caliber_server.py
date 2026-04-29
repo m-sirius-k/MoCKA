@@ -654,7 +654,7 @@ def phl_build_trace(state, candidates, selected, excluded, guard, essence=None):
             "reason_not_selected": reason,
         })
     return {
-        "version":         "v2" if essence else "v1",
+        "version":         "v2" if essence and any(essence.values()) else "v1",
         "state_summary":   {
             "goal_type":   state.get("goal_type"),
             "uncertainty": state.get("uncertainty"),
@@ -672,28 +672,40 @@ def phl_build_trace(state, candidates, selected, excluded, guard, essence=None):
         "counterfactuals":    counterfactuals,
     }
 
-def _phl_feedback_to_essence(state: dict, guard: dict):
-    """HALT/REANALYZE時にessence.INCIDENTへ自動フィードバック。閉ループ。"""
-    if guard.get("status") not in ("HALT", "REANALYZE"):
+def _phl_feedback_to_essence(state: dict, guard: dict, selected: list):
+    """guard結果をessenceへ自動フィードバック。スレッドセーフ。閉ループ。"""
+    status = guard.get("status", "SAFE")
+    if status not in ("HALT", "REANALYZE", "SAFE"):
         return
     try:
         import sqlite3 as _sq
-        db = str(Path(__file__).parent.parent.parent / "data" / "mocka_events.db")
-        conn = _sq.connect(db, timeout=0.5)
         from datetime import datetime, timezone
+        db  = str(Path(__file__).parent.parent.parent / "data" / "mocka_events.db")
         now = datetime.now(timezone.utc).isoformat()
-        reason = guard.get("reason", "unknown")
-        goal   = state.get("goal_type", "?")
-        new_incident = f"[PHL-HALT] goal={goal} reason={reason} at={now[:19]}"
-        conn.execute("""
-            UPDATE essence
-            SET content = content || '\n' || ?,
-                updated_at = ?,
-                source_count = source_count + 1
-            WHERE axis = 'INCIDENT'
-        """, (new_incident, now))
-        conn.commit()
-        conn.close()
+
+        with _essence_lock:
+            conn = _sq.connect(db, timeout=2.0)
+            if status in ("HALT", "REANALYZE"):
+                # 失敗パターン → INCIDENT軸に追記
+                reason  = guard.get("reason", "unknown")
+                goal    = state.get("goal_type", "?")
+                entry   = f"[PHL-{status}] goal={goal} reason={reason} at={now[:19]}"
+                axis    = "INCIDENT"
+            else:
+                # 成功パターン → OPERATION軸に[great]追記
+                mods  = ",".join(selected[:3])
+                goal  = state.get("goal_type", "?")
+                entry = f"[great] PHL-SAFE goal={goal} modules={mods} at={now[:19]}"
+                axis  = "OPERATION"
+            conn.execute("""
+                UPDATE essence
+                SET content      = content || char(10) || ?,
+                    updated_at   = ?,
+                    source_count = source_count + 1
+                WHERE axis = ?
+            """, (entry, now, axis))
+            conn.commit()
+            conn.close()
     except Exception as e:
         print(f"[PHL essence feedback] {e}")
 
@@ -731,9 +743,9 @@ def phl_analyze():
     draft   = body.get("draft", {"evidence_count": 1, "contradiction": False})
     state             = phl_build_state(payload)
     essence           = _phl_fetch_essence()
-    selected, candidates, excluded = phl_select_modules(state)
+    selected, candidates, excluded = phl_select_modules(state, essence)
     guard             = phl_run_guard(state, selected, draft)
-    _phl_feedback_to_essence(state, guard)
+    _phl_feedback_to_essence(state, guard, selected)
     trace             = phl_build_trace(state, candidates, selected, excluded, guard, essence)
     eid               = phl_record_event(state, selected, guard, trace)
     # v2: 実行コンテキスト生成（selected_modulesが実際の動作定義を持つ）
