@@ -390,6 +390,7 @@ def mataka():
     try:
         import sys
         sys.path.insert(0, os.path.join(ROOT_DIR, 'interface'))
+        import os as _eos; _eos.environ['PYTHONIOENCODING']='utf-8'
         from Essence_Direct_Parser import extract_5w1h
         w5h1 = extract_5w1h(selected_text, who=who, url=url, incident_type="MATAKA")
     except Exception as e:
@@ -499,6 +500,7 @@ def claim():
     try:
         import sys
         sys.path.insert(0, os.path.join(ROOT_DIR, 'interface'))
+        import os as _eos; _eos.environ['PYTHONIOENCODING']='utf-8'
         from Essence_Direct_Parser import extract_5w1h
         w5h1 = extract_5w1h(selected_text, who=who, url=url, incident_type="CLAIM")
     except Exception as e:
