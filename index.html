@@ -1,12 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8"><title>MoCKA Command Center v4.2</title>
+<meta charset="UTF-8"><title>MoCKA Command Center v4.3</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-size:12px;padding:6px;}
 
-/* ===== 変数 ===== */
 :root{
   --bg0:#080d18;
   --bg1:#0d1626;
@@ -23,7 +22,7 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   --teal:#00d4aa;
 }
 
-/* ===== TOP BAR ===== */
+/* TOP BAR */
 .top{display:flex;align-items:center;background:var(--bg1);border:1px solid var(--border);border-radius:4px;padding:5px 10px;margin-bottom:5px;gap:6px;}
 .top-title{color:var(--teal);font-weight:700;letter-spacing:3px;font-size:14px;margin-right:6px;}
 .top-sub{color:var(--dim);font-size:10px;letter-spacing:1px;margin-right:auto;}
@@ -35,12 +34,11 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .srv-lbl{font-size:9px;color:var(--text);font-weight:700;letter-spacing:0.5px;text-align:center;}
 .clock{color:var(--dim);font-size:11px;letter-spacing:1px;margin-left:8px;}
 
-/* ===== セクションラベル ===== */
+/* セクションラベル */
 .sec{font-size:9px;color:var(--teal);letter-spacing:2px;font-weight:700;padding:4px 2px 2px;border-bottom:1px solid var(--green-b);margin-bottom:3px;}
 
-/* ===== ユニバーサルチップ（全て同一サイズ） ===== */
-.row{display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;justify-content:flex-start;}
-
+/* チップ */
+.row{display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;}
 .chip{display:flex;flex-direction:column;align-items:center;justify-content:center;
   background:var(--bg1);border:1px solid var(--border);border-radius:3px;
   padding:4px 6px;width:72px;height:54px;flex-shrink:0;}
@@ -55,11 +53,9 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .chip.teal{border-color:var(--teal);}.chip.teal .n{color:var(--teal);}
 .chip.dim .n{color:var(--dim);}
 .chip.sm{height:46px;width:80px;}.chip.sm .n{font-size:18px;}
-
-/* arrow */
 .arr{color:var(--border);font-size:9px;padding:0 1px;align-self:center;flex-shrink:0;}
 
-/* ===== KDI パネル ===== */
+/* KDI パネル */
 .kdi-panel{display:flex;gap:3px;margin-bottom:3px;}
 .kdi-left{display:flex;flex-direction:column;gap:3px;flex:0 0 auto;}
 .kdi-right{flex:1;background:var(--bg1);border:1px solid var(--amber-b);border-radius:3px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;}
@@ -71,7 +67,80 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .kdi-formula{font-size:9px;color:var(--dim);margin-top:6px;border-top:1px solid var(--border);padding-top:4px;}
 .kdi-formula span{color:var(--amber);}
 
-/* ===== ESSENCE 3軸 ===== */
+/* ★ SPP/PHL + TODO 横並びレイアウト */
+.spp-todo-row{display:flex;flex-direction:row;gap:6px;margin-bottom:3px;width:100%;align-items:stretch;}
+.spp-col{flex:0 0 48%;min-width:0;}
+.todo-col{flex:1 1 0;min-width:0;background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 7px;overflow:hidden;}
+.todo-col .col-label{font-size:9px;color:var(--teal);letter-spacing:2px;font-weight:700;border-bottom:1px solid var(--green-b);padding-bottom:2px;margin-bottom:4px;}
+.todo-col ul{list-style:none;margin:0;padding:0;}
+.tc-item{display:flex;align-items:center;gap:4px;padding:3px 0;border-bottom:1px solid #0d1626;font-size:10px;}
+.tc-item:last-child{border-bottom:none;}
+
+/* 四角バッジ */
+.badge{display:inline-block;min-width:26px;padding:0 3px;height:14px;line-height:14px;
+  font-size:8px;font-family:'Courier New',monospace;font-weight:700;
+  text-align:center;border-radius:2px;flex-shrink:0;}
+.badge.saikou{background:#3a0505;color:#ff6b6b;border:1px solid #991b1b;}
+.badge.high   {background:#1a2a00;color:#7fff00;border:1px solid #3a6a00;}
+.badge.mid    {background:#0a0a2a;color:#818cf8;border:1px solid #312e81;}
+.badge.low    {background:#141414;color:#6b7280;border:1px solid #374151;}
+
+.tc-id{color:#444c56;font-size:9px;flex-shrink:0;width:38px;}
+.tc-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:#d1d5db;}
+
+/* ★ TODO 視覚ブロック（重要度別カラー行） */
+.todo-visual-bar{display:flex;flex-direction:column;gap:2px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid #1e293b;}
+.tvb-row{display:flex;align-items:stretch;gap:0;border-radius:3px;overflow:hidden;min-height:20px;}
+.tvb-pri{display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;font-family:'Courier New',monospace;padding:0 5px;flex-shrink:0;width:32px;}
+.tvb-row.saikou .tvb-pri{background:#5a0808;color:#ff8080;}
+.tvb-row.high    .tvb-pri{background:#1a3a00;color:#7fff00;}
+.tvb-row.mid     .tvb-pri{background:#0d0d2e;color:#818cf8;}
+.tvb-row.low     .tvb-pri{background:#161616;color:#6b7280;}
+.tvb-items{display:flex;flex-wrap:wrap;gap:3px;align-items:center;padding:3px 5px;flex:1;background:#0a0f1a;}
+.tvb-item{display:inline-flex;align-items:center;gap:3px;padding:1px 5px;border-radius:2px;font-size:9px;font-family:'Courier New',monospace;white-space:nowrap;}
+.tvb-row.saikou .tvb-item{background:#2a0505;border:1px solid #7a1010;color:#ffaaaa;}
+.tvb-row.high    .tvb-item{background:#0d1f00;border:1px solid #2a5a00;color:#a0e060;}
+.tvb-row.mid     .tvb-item{background:#08082a;border:1px solid #25256a;color:#9090d8;}
+.tvb-row.low     .tvb-item{background:#111118;border:1px solid #2a2a3a;color:#707090;}
+.tvb-item .tvi-num{font-size:8px;opacity:0.6;}
+.tvb-empty{color:#2a3a4a;font-size:8px;padding:2px 5px;}
+
+/* 既存TODO LIST（下部） */
+.todo-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 8px;margin-bottom:3px;max-height:140px;overflow-y:auto;}
+.todo-item{display:flex;gap:6px;align-items:center;padding:2px 0;border-bottom:1px solid var(--bg2);}
+.todo-item:last-child{border-bottom:none;}
+.todo-id{color:var(--dim);font-size:8px;white-space:nowrap;flex-shrink:0;width:70px;}
+.todo-pri{font-size:8px;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
+.todo-pri.最高{background:#1a0505;color:var(--red);font-weight:700;}
+.todo-pri.高{background:#1a0a00;color:var(--amber);font-weight:700;}
+.todo-pri.中{background:#0a0a1a;color:#818cf8;}
+.todo-pri.低{background:#111;color:#6b7280;}
+.todo-title{font-size:10px;color:#d1d5db;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* EVENTS STREAM */
+.events-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
+.ev{display:flex;gap:5px;align-items:center;padding:2px 0;border-bottom:1px solid var(--bg2);}
+.ev:last-child{border-bottom:none;}
+.ev-id{color:var(--dim);font-size:8px;white-space:nowrap;width:110px;flex-shrink:0;}
+.ev-type{font-size:8px;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;min-width:70px;text-align:center;font-weight:700;}
+.ev-type.claude_mcp,.ev-type.record,.ev-type.save{background:#051a0a;color:var(--green);}
+.ev-type.process{background:#0a0a1a;color:#818cf8;}
+.ev-type.danger,.ev-type.critical{background:#1a0505;color:var(--red);}
+.ev-type.warning{background:#1a0f00;color:var(--amber);}
+.ev-title{font-size:9px;color:#9ca3af;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ev-time{font-size:8px;color:var(--dim);white-space:nowrap;flex-shrink:0;}
+
+/* DECISION */
+.dec-panel{background:var(--bg1);border:1px solid var(--purple-b);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
+.dec-item{background:var(--bg0);border:1px solid var(--purple-b);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
+.dec-title{font-size:11px;color:var(--text);font-weight:700;margin-bottom:2px;}
+.dec-desc{font-size:9px;color:var(--dim);margin-bottom:4px;line-height:1.4;}
+.dec-btns{display:flex;gap:5px;}
+.btn-ok{background:var(--green-b);color:var(--green);border:1px solid #065f46;border-radius:2px;padding:2px 10px;font-size:9px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
+.btn-ng{background:#1a0505;color:var(--red);border:1px solid var(--red-b);border-radius:2px;padding:2px 10px;font-size:9px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
+.empty{color:var(--dim);font-size:9px;text-align:center;padding:5px;}
+
+/* ESSENCE 3軸 */
 .essence-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;margin-bottom:3px;}
 .ax{border-bottom:1px solid var(--bg2);padding:5px 8px;}
 .ax:last-child{border-bottom:none;}
@@ -86,40 +155,6 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .ax-btn{font-size:8px;color:var(--dim);cursor:pointer;text-align:right;margin-top:2px;}
 .ax-btn:hover{color:#9ca3af;}
 
-/* ===== TODO LIST ===== */
-.todo-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 8px;margin-bottom:3px;max-height:140px;overflow-y:auto;}
-.todo-item{display:flex;gap:6px;align-items:center;padding:2px 0;border-bottom:1px solid var(--bg2);}
-.todo-item:last-child{border-bottom:none;}
-.todo-id{color:var(--dim);font-size:8px;white-space:nowrap;flex-shrink:0;width:70px;}
-.todo-pri{font-size:8px;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
-.todo-pri.最高{background:#1a0505;color:var(--red);font-weight:700;}
-.todo-pri.高{background:#1a0a00;color:var(--amber);font-weight:700;}
-.todo-pri.中{background:#0a0a1a;color:#818cf8;}
-.todo-title{font-size:10px;color:#d1d5db;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* ===== EVENTS STREAM ===== */
-.events-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
-.ev{display:flex;gap:5px;align-items:center;padding:2px 0;border-bottom:1px solid var(--bg2);}
-.ev:last-child{border-bottom:none;}
-.ev-id{color:var(--dim);font-size:8px;white-space:nowrap;width:110px;flex-shrink:0;}
-.ev-type{font-size:8px;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;min-width:70px;text-align:center;font-weight:700;}
-.ev-type.claude_mcp,.ev-type.record,.ev-type.save{background:#051a0a;color:var(--green);}
-.ev-type.process{background:#0a0a1a;color:#818cf8;}
-.ev-type.danger,.ev-type.critical{background:#1a0505;color:var(--red);}
-.ev-type.warning{background:#1a0f00;color:var(--amber);}
-.ev-title{font-size:9px;color:#9ca3af;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ev-time{font-size:8px;color:var(--dim);white-space:nowrap;flex-shrink:0;}
-
-/* ===== DECISION ===== */
-.dec-panel{background:var(--bg1);border:1px solid var(--purple-b);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
-.dec-item{background:var(--bg0);border:1px solid var(--purple-b);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
-.dec-title{font-size:11px;color:var(--text);font-weight:700;margin-bottom:2px;}
-.dec-desc{font-size:9px;color:var(--dim);margin-bottom:4px;line-height:1.4;}
-.dec-btns{display:flex;gap:5px;}
-.btn-ok{background:var(--green-b);color:var(--green);border:1px solid #065f46;border-radius:2px;padding:2px 10px;font-size:9px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
-.btn-ng{background:#1a0505;color:var(--red);border:1px solid var(--red-b);border-radius:2px;padding:2px 10px;font-size:9px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
-.empty{color:var(--dim);font-size:9px;text-align:center;padding:5px;}
-
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-track{background:var(--bg0);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
@@ -130,10 +165,11 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 <!-- TOP BAR -->
 <div class="top">
   <span class="top-title">MoCKA</span>
-  <span class="top-sub">command center v4.2</span>
+  <span class="top-sub">command center v4.3</span>
   <div class="srv"><div class="srv-dot" id="d-app"></div><div class="srv-lbl">APP<br>5000</div></div>
   <div class="srv"><div class="srv-dot" id="d-cal"></div><div class="srv-lbl">CAL<br>5679</div></div>
-  <div class="srv"><div class="srv-dot" id="d-mcp"></div><div class="srv-lbl">MCP<br>5002</div></div><div class="srv"><div class="srv-dot" id="d-rtb"></div><div class="srv-lbl">RUNTIME-B<br>5003</div></div>
+  <div class="srv"><div class="srv-dot" id="d-mcp"></div><div class="srv-lbl">MCP<br>5002</div></div>
+  <div class="srv"><div class="srv-dot" id="d-rtb"></div><div class="srv-lbl">RUNTIME-B<br>5003</div></div>
   <div class="srv"><div class="srv-dot" id="d-ngrok"></div><div class="srv-lbl">NGROK</div></div>
   <div class="srv"><div class="srv-dot" id="d-pipe"></div><div class="srv-lbl">PIPE</div></div>
   <span class="clock" id="clock">--:--:--</span>
@@ -178,7 +214,7 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <div class="chip dim"><div class="n" id="m-seal" style="font-size:13px;">--:--</div><div class="l">LAST SEAL</div></div>
 </div>
 
-<!-- SYSTEM HEALTH: DANGER TILES -->
+<!-- DANGER MONITOR -->
 <div class="sec">DANGER MONITOR</div>
 <div class="row" style="margin-bottom:3px;">
   <div class="chip red"><div class="n" id="dt1">-</div><div class="l">TIER 1</div></div>
@@ -188,30 +224,43 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <div class="chip blue"><div class="n" id="dts">-</div><div class="l">SILENT</div></div>
 </div>
 
-<!-- SPP/PHL ESSENCE PANEL -->
-<div class="sec">SPP / PHL — ESSENCE</div>
-<div class="kdi-panel">
-  <div class="kdi-left">
-    <div class="chip green sm" style="width:90px;"><div class="n" id="kdi-active">-</div><div class="l">ACTIVE</div></div>
-    <div class="chip amber sm" style="width:90px;"><div class="n" id="kdi-pending">-</div><div class="l">PENDING</div></div>
-    <div class="chip dim sm" style="width:90px;"><div class="n" id="kdi-raw">-</div><div class="l">RAW BASE</div></div>
-  </div>
-  <div class="kdi-right">
-    <div class="kdi-label">● 構築中 ESSENCE — KDI（Knowledge Density Index）</div>
-    <div class="kdi-bar"><div class="kdi-fill" id="kdi-bar" style="width:0%"></div></div>
-    <div class="kdi-val"><span id="kdi-val">-</span> <span style="font-size:12px;color:var(--dim);">KDI</span></div>
-    <div class="kdi-sub" id="kdi-sub">CORE × 3 + ESSENCE × 10 + RAW_DONE × 0.5</div>
-    <div class="kdi-formula">
-      ACTIVE: <span id="f-essence">-</span> × 10 &nbsp;|&nbsp;
-      PENDING: <span id="f-core">-</span> × 3 &nbsp;|&nbsp;
-      BASE: <span id="f-raw">-</span> × 0.5
+<!-- ★ SPP/PHL + TODO 横並び -->
+<div class="sec">SPP / PHL — ESSENCE &nbsp;&nbsp;|&nbsp;&nbsp; TODO — 優先順</div>
+<div class="spp-todo-row">
+
+  <!-- 左: KDI/SPP パネル -->
+  <div class="spp-col">
+    <div class="kdi-panel" style="margin-bottom:0;">
+      <div class="kdi-left">
+        <div class="chip green sm" style="width:90px;"><div class="n" id="kdi-active">-</div><div class="l">ACTIVE</div></div>
+        <div class="chip amber sm" style="width:90px;"><div class="n" id="kdi-pending">-</div><div class="l">PENDING</div></div>
+        <div class="chip dim sm" style="width:90px;"><div class="n" id="kdi-raw">-</div><div class="l">RAW BASE</div></div>
+      </div>
+      <div class="kdi-right">
+        <div class="kdi-label">● ESSENCE — KDI</div>
+        <div class="kdi-bar"><div class="kdi-fill" id="kdi-bar" style="width:0%"></div></div>
+        <div class="kdi-val"><span id="kdi-val">-</span> <span style="font-size:12px;color:var(--dim);">KDI</span></div>
+        <div class="kdi-sub" id="kdi-sub">CORE×3 + ESSENCE×10 + RAW_DONE×0.5</div>
+        <div class="kdi-formula">
+          ACTIVE:<span id="f-essence">-</span>×10 &nbsp;|&nbsp;
+          PEND:<span id="f-core">-</span>×3 &nbsp;|&nbsp;
+          BASE:<span id="f-raw">-</span>×0.5
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- TODO -->
-<div class="sec">TODO — 優先順</div>
-<div class="todo-panel" id="todo-list"><div class="empty">— loading —</div></div>
+  <!-- 右: TODO インラインパネル -->
+  <div class="todo-col">
+    <div class="col-label">TODO — 優先順</div>
+    <!-- ★ 視覚ブロック -->
+    <div class="todo-visual-bar" id="todo-visual-bar"></div>
+    <ul id="todo-inline-list">
+      <li class="tc-item"><span style="color:var(--dim);font-size:9px;">— loading —</span></li>
+    </ul>
+  </div>
+
+</div>
 
 <!-- DECISION QUEUE -->
 <div class="sec" style="border-bottom-color:var(--purple-b);">DECISION QUEUE &nbsp;<span id="dec-count" style="color:var(--purple);">0</span></div>
@@ -280,24 +329,20 @@ function refreshPipeline(){
     set('p-RAW',raw);set('p-DONE',done);set('p-REDUCED',red);set('p-RE_REDUCED',rr);
     set('p-REDUCING',ring);set('p-CORE',core);set('p-ESSENCE',ess);set('p-PILS',pils);
 
-    // KDI
     var kdi=calcKDI(ess,core,done);
     set('m-kdi',kdi);set('kdi-val',kdi);
     set('kdi-active',ess);set('kdi-pending',core);set('kdi-raw',done);
     set('f-essence',ess);set('f-core',core);set('f-raw',done);
-    // KDIバー（最大1000想定）
     var bar=$('kdi-bar');
     if(bar)bar.style.width=Math.min(kdi/10,100)+'%';
     set('kdi-sub','CORE('+core+')×3 + ESSENCE('+ess+')×10 + RAW_DONE('+done+')×0.5 = '+kdi);
 
-    // DANGER
     var dg=d.danger||{};
     set('m-danger',dg.total||0);
     set('dt1',dg.tier1||0);set('dt2',dg.tier2||0);set('dt3',dg.tier3||0);
     set('dte',dg.escalation||0);set('dts',dg.silent_danger||0);
     set('m-learned',dg.learned_today||0);
 
-    // ESSENCE 3軸
     var es=d.essence||{};
     var axMap={INCIDENT:'I',PHILOSOPHY:'P',OPERATION:'O'};
     Object.keys(axMap).forEach(function(k){
@@ -307,24 +352,20 @@ function refreshPipeline(){
         if(es[k].updated)set('age-'+s,es[k].updated.substring(0,10));
       }
     });
-
-    // INPUT
-    var inp=d.input||{};
-    if(inp.pipeline&&inp.pipeline.last){/* pipe ok */}
   }).catch(function(){dot('d-pipe',null);});
 }
 
 function refreshLoop(){
   fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
-    var cl = d.civilization_loop || {};
-    set('cn-observe',    cl.observe    ? cl.observe.count    : (d.raw_count!=null?d.raw_count:'-'));
-    set('cn-record',     cl.record     ? cl.record.count     : (d.raw_done_count!=null?d.raw_done_count:'-'));
-    set('cn-incident',   cl.incident   ? cl.incident.count   : '-');
-    set('cn-recurrence', cl.recurrence ? cl.recurrence.count : '-');
-    set('cn-prevention', cl.prevention ? cl.prevention.count : '-');
-    set('cn-decision',   cl.decision   ? cl.decision.count   : '-');
-    set('cn-action',     cl.action     ? cl.action.count     : '-');
-    set('cn-audit',      cl.audit && cl.audit.last_seal ? cl.audit.last_seal.slice(0,10) : 'SEALED');
+    var cl=d.civilization_loop||{};
+    set('cn-observe',   cl.observe    ? cl.observe.count    : (d.raw_count!=null?d.raw_count:'-'));
+    set('cn-record',    cl.record     ? cl.record.count     : (d.raw_done_count!=null?d.raw_done_count:'-'));
+    set('cn-incident',  cl.incident   ? cl.incident.count   : '-');
+    set('cn-recurrence',cl.recurrence ? cl.recurrence.count : '-');
+    set('cn-prevention',cl.prevention ? cl.prevention.count : '-');
+    set('cn-decision',  cl.decision   ? cl.decision.count   : '-');
+    set('cn-action',    cl.action     ? cl.action.count     : '-');
+    set('cn-audit',     cl.audit&&cl.audit.last_seal ? cl.audit.last_seal.slice(0,10):'SEALED');
     if(d.ping_age)set('age-I',d.ping_age);
     if(d.ESSENCE_SUMMARY){
       var s=d.ESSENCE_SUMMARY;
@@ -351,9 +392,25 @@ function refreshEvents(){
         +'<span class="ev-time">'+ts+'</span>';
       box.appendChild(div);
     });
-    // events total
     if(d.count!=null)set('m-events',d.count);
   }).catch(function(){});
+}
+
+// ★ TODO 共通データ取得（インライン + 下部パネル両方を同一fetchで更新）
+var _todoPriOrder={'最高':0,'高':1,'中':2,'低':3};
+function priClass(p){
+  if(!p)return'low';
+  if(p.includes('最高'))return'saikou';
+  if(p.includes('高'))return'high';
+  if(p.includes('中'))return'mid';
+  return'low';
+}
+function priLabel(p){
+  if(!p)return'低';
+  if(p.includes('最高'))return'最高';
+  if(p.includes('高'))return'高';
+  if(p.includes('中'))return'中';
+  return'低';
 }
 
 function refreshTodo(){
@@ -362,20 +419,54 @@ function refreshTodo(){
     var rem=todos.filter(function(t){return t.status!=='完了';});
     var done=todos.length-rem.length;
     set('m-done',done);set('m-todo',rem.length);
-    var box=$('todo-list');if(!box)return;
-    if(!rem.length){box.innerHTML='<div class="empty">— TODOなし —</div>';return;}
-    box.innerHTML='';
-    // 優先度順
-    var priOrder={'最高':0,'高':1,'中':2,'低':3};
-    rem.sort(function(a,b){return (priOrder[a.priority]||9)-(priOrder[b.priority]||9);});
-    rem.slice(0,12).forEach(function(t){
-      var div=document.createElement('div');div.className='todo-item';
-      var pri=t.priority||'中';
-      div.innerHTML='<span class="todo-id">'+(t.id||'')+'</span>'
-        +'<span class="todo-pri '+pri+'">'+pri+'</span>'
-        +'<span class="todo-title">'+(t.title||'—')+'</span>';
-      box.appendChild(div);
+
+    rem.sort(function(a,b){
+      return (_todoPriOrder[priLabel(a.priority)]||9)-(_todoPriOrder[priLabel(b.priority)]||9);
     });
+
+    // ★ 視覚ブロック（重要度別カラー行）
+    var vbar=$('todo-visual-bar');
+    if(vbar){
+      var groups={saikou:[],high:[],mid:[],low:[]};
+      rem.forEach(function(t){groups[priClass(t.priority)].push(t);});
+      var gDef=[
+        {key:'saikou',lbl:'最高'},
+        {key:'high',  lbl:'高'},
+        {key:'mid',   lbl:'中'},
+        {key:'low',   lbl:'低'}
+      ];
+      vbar.innerHTML=gDef.filter(function(g){return groups[g.key].length>0;}).map(function(g){
+        var items=groups[g.key].map(function(t){
+          var num=(t.id||'').replace('TODO_','');
+          var ttl=(t.title||'').substring(0,14);
+          return '<span class="tvb-item"><span class="tvi-num">'+num+'</span> '+ttl+'</span>';
+        }).join('');
+        return '<div class="tvb-row '+g.key+'">'
+          +'<div class="tvb-pri">'+g.lbl+'</div>'
+          +'<div class="tvb-items">'+items+'</div>'
+          +'</div>';
+      }).join('') || '<div class="tvb-empty">— TODOなし —</div>';
+    }
+
+    // ★ インラインTODO（右カラム・リスト）
+    var inline=$('todo-inline-list');
+    if(inline){
+      if(!rem.length){
+        inline.innerHTML='<li class="tc-item"><span style="color:var(--dim);font-size:9px;">— なし —</span></li>';
+      } else {
+        inline.innerHTML=rem.slice(0,10).map(function(t){
+          var cls=priClass(t.priority);
+          var lbl=priLabel(t.priority);
+          var idNum=(t.id||'').replace('TODO_','');
+          var title=(t.title||'').substring(0,24);
+          return '<li class="tc-item">'
+            +'<span class="badge '+cls+'">'+lbl+'</span>'
+            +'<span class="tc-id">'+idNum+'</span>'
+            +'<span class="tc-title">'+title+'</span>'
+            +'</li>';
+        }).join('');
+      }
+    }
   }).catch(function(){});
 }
 
@@ -404,14 +495,17 @@ function refreshAudit(){
   fetch('/audit/status').then(function(r){return r.json();}).then(function(d){
     var log=d.last_seal||{};
     if(log.sealed_at)set('m-seal',log.sealed_at.substring(11,16));
+    if(d.event_count!=null)set('m-recurrence',d.event_count);
   }).catch(function(){});
 }
 
 window.approve=function(id){
-  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){refreshDecision();});
+  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){refreshDecision();});
 };
 window.reject=function(id){
-  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){refreshDecision();});
+  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){refreshDecision();});
 };
 
 function refreshAll(){
