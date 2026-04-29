@@ -568,7 +568,56 @@ def phl_run_guard(state, modules, draft):
         return {"status":"WARN",      "level":1, "reason":"risk_elevated"}
     return {"status":"SAFE",          "level":0, "reason":None}
 
-def phl_score(module, state):
+def _phl_fetch_essence() -> dict:
+    """localhost:5000/public/essenceからessenceを取得。失敗時は空dict。"""
+    try:
+        import urllib.request
+        req = urllib.request.Request(
+            "http://localhost:5000/public/essence",
+            headers={"ngrok-skip-browser-warning": "1"}
+        )
+        with urllib.request.urlopen(req, timeout=1.0) as r:
+            import json as _json
+            return _json.loads(r.read().decode("utf-8"))
+    except Exception:
+        return {}
+
+def phl_essence_bonus(module: str, state: dict, essence: dict) -> float:
+    """過去文脈（essence）からモジュールスコアを補正する。勝ちパターン加算・負けパターン減算。"""
+    if not essence:
+        return 0.0
+    bonus     = 0.0
+    operation = essence.get("OPERATION", "")
+    incident  = essence.get("INCIDENT", "")
+    goal      = state.get("goal_type", "")
+
+    # 勝ちパターン: [great]タグ + goal_typeが一致
+    if "[great]" in operation:
+        op_lower = operation.lower()
+        if goal in op_lower or any(k in op_lower for k in ["稼働", "完了", "成功", "確認"]):
+            if module in ["code", "artifact"]:
+                bonus += 0.10  # 実装系モジュールを強化
+
+    # 負けパターン: INTEGRITY違反 → ghostを強化
+    if "INTEGRITY" in incident or "捏造" in incident:
+        if module == "ghost":
+            bonus += 0.15
+        if module in ["code", "artifact"]:
+            bonus -= 0.05  # 実装系は慎重に
+
+    # 負けパターン: DEPENDENCY_BREAK → codeにペナルティ
+    if "DEPENDENCY_BREAK" in incident:
+        if module == "code":
+            bonus -= 0.10
+
+    # 負けパターン: 繰り返しエラー（「また同じだ」） → ghostを強化
+    if "また同じだ" in incident or "意味がわからない" in incident:
+        if module == "ghost":
+            bonus += 0.10
+
+    return round(bonus, 4)
+
+def phl_score(module, state, essence: dict = None):
     spec = PHL_MODULE_SPECS.get(module, {})
     if not spec:
         return 0.5
@@ -576,6 +625,8 @@ def phl_score(module, state):
     score += spec.get("structure", 0.5) * (0.2 + state.get("abstraction_level", 0.5) * 0.2)
     score += spec.get("speed",     0.5) * state.get("time_pressure", 0.3) * 0.2
     score -= spec.get("risk",      0.3) * state.get("risk_level", 0.3) * 0.3
+    if essence:
+        score += phl_essence_bonus(module, state, essence)
     return round(score, 4)
 
 def phl_build_trace(state, candidates, selected, excluded, guard):
