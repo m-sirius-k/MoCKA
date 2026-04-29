@@ -82,12 +82,27 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .puzzle-cnt.mid    {background:#080828;color:#818cf8;border:1px solid #1e1e6a;}
 .puzzle-cnt.low    {background:#111118;color:#6b7280;border:1px solid #2a2a3a;}
 
-/* パズルタイル群 — 大型カード */
-.puzzle-tiles{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;overflow-y:auto;flex:1;padding-bottom:2px;}
+/* パズルタイル群 — grid 2次元エリア */
+.puzzle-tiles{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,90px);
+  grid-auto-rows:72px;
+  gap:5px;
+  overflow-y:auto;
+  flex:1;
+  padding-bottom:2px;
+  align-content:start;
+}
 .ptile{
   display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;
   border-radius:4px;padding:6px 8px 5px 8px;cursor:default;
-  width:90px;height:72px;flex-shrink:0;position:relative;
+  width:90px;height:72px;
+  box-sizing:border-box;
+}
+.ptile-empty{
+  width:90px;height:72px;border-radius:4px;
+  background:transparent;
+  border:1px dashed #1a2030;
   box-sizing:border-box;
 }
 .ptile .pt-num{
@@ -483,7 +498,7 @@ function refreshTodo(){
       return (_todoPriOrder[priLabel(a.priority)]||9)-(_todoPriOrder[priLabel(b.priority)]||9);
     });
 
-    // ★ TODO PUZZLE タイル（CIV LOOP右）
+    // ★ TODO PUZZLE タイル（CIV LOOP右）— grid 2次元エリア
     var ptiles=$('puzzle-tiles');
     if(ptiles){
       var gc={saikou:0,high:0,mid:0,low:0};
@@ -493,9 +508,10 @@ function refreshTodo(){
       set('pc-mid','中 '+gc.mid);
       set('pc-low','低 '+gc.low);
       if(!rem.length){
-        ptiles.innerHTML='<span style="color:#1e293b;font-size:9px;">— TODOなし —</span>';
+        ptiles.innerHTML='<div class="ptile-empty"></div>';
       } else {
-        ptiles.innerHTML=rem.map(function(t){
+        // タイル生成
+        var tileHTML=rem.map(function(t){
           var cls=priClass(t.priority);
           var num=(t.id||'').replace('TODO_','');
           var ttl=(t.title||'').substring(0,16);
@@ -504,6 +520,14 @@ function refreshTodo(){
             +'<div class="pt-ttl">'+ttl+'</div>'
             +'</div>';
         }).join('');
+        // 空マス補完: gridの列数を計算して行末を揃える
+        var colW=90+5; // tile+gap
+        var containerW=ptiles.offsetWidth||300;
+        var cols=Math.max(1,Math.floor(containerW/colW));
+        var remainder=rem.length%cols;
+        var empties=(remainder===0)?0:cols-remainder;
+        for(var i=0;i<empties;i++){tileHTML+='<div class="ptile-empty"></div>';}
+        ptiles.innerHTML=tileHTML;
       }
     }
 
