@@ -317,7 +317,7 @@ if __name__ == "__main__":
     result = parse(chat_text)
     print(f"\n完了: {result['status']}")
 
-# ===== 5W1H自動推定（リアルタイム検知経路用）=====
+# ===== 5W1H自動推定（\u30ea\u30a2\u30eb\u30bf\u30a4\u30e0\u691c\u77e5経路用）=====
 def extract_5w1h(text: str, who: str = "unknown", url: str = "", incident_type: str = "INCIDENT") -> dict:
     """
     テキストから5W1Hを自動推定する
@@ -368,10 +368,10 @@ def extract_5w1h(text: str, who: str = "unknown", url: str = "", incident_type: 
             break
 
     # how: コードパターンから手段推定
-    how_resolved = "テキスト記述"
+    how_resolved = "\u30c6\u30ad\u30b9\u30c8\u8a18\u8ff0"
     for cat, pattern in KEYWORD_PATTERNS.items():
         if pattern.search(text):
-            how_resolved = f"{cat}操作: {incident_type}ボタン押下"
+            how_resolved = f"{cat}操作: {incident_type}\u30dc\u30bf\u30f3\u62bc\u4e0b"
             break
 
     return {
