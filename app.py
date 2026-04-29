@@ -391,7 +391,11 @@ def mataka():
         import sys
         sys.path.insert(0, os.path.join(ROOT_DIR, 'interface'))
         import os as _eos; _eos.environ['PYTHONIOENCODING']='utf-8'
-        from Essence_Direct_Parser import extract_5w1h
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location('EDP', r'C:/Users/sirok/MoCKA/interface/Essence_Direct_Parser.py')
+        _edp = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_edp)
+        extract_5w1h = _edp.extract_5w1h
         w5h1 = extract_5w1h(selected_text, who=who, url=url, incident_type="MATAKA")
     except Exception as e:
         w5h1 = {
@@ -501,7 +505,11 @@ def claim():
         import sys
         sys.path.insert(0, os.path.join(ROOT_DIR, 'interface'))
         import os as _eos; _eos.environ['PYTHONIOENCODING']='utf-8'
-        from Essence_Direct_Parser import extract_5w1h
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location('EDP', r'C:/Users/sirok/MoCKA/interface/Essence_Direct_Parser.py')
+        _edp = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_edp)
+        extract_5w1h = _edp.extract_5w1h
         w5h1 = extract_5w1h(selected_text, who=who, url=url, incident_type="CLAIM")
     except Exception as e:
         w5h1 = {
