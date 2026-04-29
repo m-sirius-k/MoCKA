@@ -629,10 +629,10 @@ def phl_score(module, state, essence: dict = None):
         score += phl_essence_bonus(module, state, essence)
     return round(score, 4)
 
-def phl_build_trace(state, candidates, selected, excluded, guard):
+def phl_build_trace(state, candidates, selected, excluded, guard, essence=None):
     all_mods     = [c["module"] for c in candidates]
     not_selected = [m for m in all_mods if m not in selected]
-    scores       = {m: phl_score(m, state) for m in all_mods}
+    scores       = {m: phl_score(m, state, essence) for m in all_mods}
     selected_reasons = {c["module"]: c["trigger"]
                         for c in candidates if c["module"] in selected}
     weights = {
@@ -651,7 +651,7 @@ def phl_build_trace(state, candidates, selected, excluded, guard):
             reason = "module_risk too high"
         counterfactuals.append({
             "module":              m,
-            "score":               phl_score(m, state),
+            "score":               phl_score(m, state, _phl_fetch_essence()),
             "expected_effect":     spec.get("desc", "-"),
             "reason_not_selected": reason,
         })
@@ -707,9 +707,10 @@ def phl_analyze():
     payload = body.get("state", body)
     draft   = body.get("draft", {"evidence_count": 1, "contradiction": False})
     state             = phl_build_state(payload)
+    essence           = _phl_fetch_essence()
     selected, candidates, excluded = phl_select_modules(state)
     guard             = phl_run_guard(state, selected, draft)
-    trace             = phl_build_trace(state, candidates, selected, excluded, guard)
+    trace             = phl_build_trace(state, candidates, selected, excluded, guard, essence)
     eid               = phl_record_event(state, selected, guard, trace)
     # v2: 実行コンテキスト生成（selected_modulesが実際の動作定義を持つ）
     exec_ctx = phl_build_execution_context(selected, state)
