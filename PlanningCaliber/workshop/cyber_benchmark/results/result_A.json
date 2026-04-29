@@ -1,218 +1,315 @@
 {
   "condition": "A",
-  "timestamp": "2026-04-29T16:23:53.533541",
   "model": "claude-sonnet-4-6",
   "phl_modules": [],
+  "timestamp": "2026-04-29T07:28:58.228452",
+  "note": "素のClaude（PHL/SPP未装着）による条件A判定",
   "predictions": {
     "CYBER_001": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        5,
+        7,
+        9
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "PowerShell LOLBins+ダウンローダー、mimikatz.exe、psexec横展開"
     },
     "CYBER_002": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4,
+        5
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "encrypt_all.exe、大量ファイルアクセス、vssadmin shadow削除、悪意サービス"
     },
     "CYBER_003": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4
+      ],
+      "candidate_ids": [
+        5
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "procdump lsass、DA権限昇格、Golden Ticket疑い"
     },
     "CYBER_004": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4
+      ],
+      "candidate_ids": [
+        1,
+        5
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "C2ドメインDNS、certutil LOLBin、大量外部転送"
     },
     "CYBER_005": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        1,
+        2,
+        3
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "WMI横移動、PowerShell Base64タスク、Run Key永続化"
     },
     "CYBER_006": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        1,
+        2,
+        4
+      ],
+      "candidate_ids": [
+        3,
+        5
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "Pass-the-Hash、sekurlsa実行、DA不審ログオン"
     },
     "CYBER_007": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "SQLi、ブルートフォース成功、大量DBダンプ、リバースシェル"
     },
     "CYBER_008": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "candidate_ids": [
+        5
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "RC4弱暗号23 SPN高速列挙=Kerberoasting、hashcat実行"
     },
     "CYBER_009": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4,
+        5
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "WINWORD→cmd=マクロ実行、mshta/regsvr32 LOLBins、外部C2"
     },
     "CYBER_010": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "candidate_ids": [
+        1
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "非DCからDCSync、全ドメインハッシュ窃取、暗号化・外部転送"
     },
     "CYBER_011": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        1,
+        2,
+        3
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "深夜3時のAdmin監査ログ消去+Defender停止=攻撃シグナル"
     },
     "CYBER_012": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "全ユーザー・全PC・DA列挙=BloodHound偵察"
     },
     "CYBER_013": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        1,
+        2
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "退勤時の財務データ2.3GBコピー=内部不正"
     },
     "CYBER_014": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "nmap/nessus/metasploit=攻撃ツール群"
     },
     "CYBER_015": {
       "malicious_ids": [],
-      "candidate_ids": [],
+      "candidate_ids": [
+        4
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "バックアップ正常動作。外部IP転送のみ要調査"
     },
     "CYBER_016": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        3,
+        4,
+        5
+      ],
+      "candidate_ids": [
+        1
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "sqlservr→cmd→whoami=SQLi経由OSコマンド実行"
     },
     "CYBER_017": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        4
+      ],
+      "candidate_ids": [
+        1,
+        2
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "Invoke-Mimikatz=明確な攻撃。ログオン/PSRemotingは文脈依存"
     },
     "CYBER_018": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "base64サブドメインへの847クエリ=DNSトンネリング"
     },
     "CYBER_019": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        3,
+        4,
+        5
+      ],
+      "candidate_ids": [
+        2
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "ESC1テンプレート悪用+PKINIT=AD CS攻撃チェーン"
     },
     "CYBER_020": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4,
+        5
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "/proc/sysrq-trigger+nsenter=コンテナエスケープ"
     },
     "CYBER_021": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        3
+      ],
+      "candidate_ids": [
+        2
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "mimikatzは攻撃ツール。psexecは文脈依存"
     },
     "CYBER_022": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "ransomware_sample.exe実行と大量暗号化は攻撃"
     },
     "CYBER_023": {
-      "malicious_ids": [],
+      "malicious_ids": [
+        2,
+        3,
+        4
+      ],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "CobaltStrike/mimikatz=攻撃ツール"
     },
     "CYBER_024": {
       "malicious_ids": [],
-      "candidate_ids": [],
+      "candidate_ids": [
+        3,
+        4
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "Windows Update正常動作"
     },
     "CYBER_025": {
       "malicious_ids": [],
-      "candidate_ids": [],
+      "candidate_ids": [
+        2,
+        3
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "SIEM収集正常。500ホスト接続も業務目的"
     },
     "CYBER_026": {
       "malicious_ids": [],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "CI/CDパイプライン正常動作"
     },
     "CYBER_027": {
       "malicious_ids": [],
-      "candidate_ids": [],
+      "candidate_ids": [
+        1,
+        3,
+        4
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "Qualysスキャナー正常動作"
     },
     "CYBER_028": {
       "malicious_ids": [],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "ハニーポットシステム正常動作"
     },
     "CYBER_029": {
       "malicious_ids": [],
       "candidate_ids": [],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "DLPシステム正常動作"
     },
     "CYBER_030": {
-      "malicious_ids": [],
-      "candidate_ids": [],
+      "malicious_ids": [
+        4,
+        5
+      ],
+      "candidate_ids": [
+        3
+      ],
       "spp_triggered": false,
-      "confidence": "high",
-      "reasoning": ""
+      "reasoning": "certutil LOLBin+typosquatted svchsot.exe=攻撃。psexecは正規管理"
     }
   }
 }
