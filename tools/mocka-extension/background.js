@@ -1,4 +1,4 @@
-const AI_DOMAINS = {
+﻿const AI_DOMAINS = {
   ChatGPT:    'chatgpt.com',
   Gemini:     'gemini.google.com',
   Perplexity: 'perplexity.ai',
@@ -65,6 +65,9 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({ id:'mocka-great',     title:'🏆 グレイト！',                contexts:['selection'] });
   chrome.contextMenus.create({ id:'separator-2', type:'separator', contexts:['selection'] });
   chrome.contextMenus.create({ id:'mocka-collect',   title:'📥 このchat全文をMoCKAに収集', contexts:['page'] });
+  chrome.contextMenus.create({ id:'separator-3', type:'separator', contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-mataka', title:'😤 またか！（再発クレーム）', contexts:['selection'] });
+  chrome.contextMenus.create({ id:'mocka-claim',  title:'🚨 クレーム！（インシデント）', contexts:['selection'] });
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
@@ -113,6 +116,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
   // ===== ヒント！（成功シグナル・弱） =====
+  if (info.menuItemId === 'mocka-mataka' || info.menuItemId === 'mocka-claim') {
+    const type = info.menuItemId === 'mocka-mataka' ? 'mataka' : 'claim';
+    await sendIncident(type, info.selectionText || '', tab.url || '');
+    return;
+  }
   if (info.menuItemId === 'mocka-hint') {
     fetch('http://localhost:5000/ask', {
       method: 'POST',
@@ -226,6 +234,33 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }
   }
 });
+
+// ===== またか！/ クレーム！ハンドラ =====
+async function sendIncident(type, selectedText, url) {
+  const source = detectSource(url);
+  const endpoint = type === 'mataka' ? '/mataka' : '/claim';
+  try {
+    const res = await fetch('http://127.0.0.1:5000' + endpoint, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        selected_text: selectedText,
+        url: url,
+        who: source,
+        timestamp: new Date().toISOString(),
+        type: type
+      })
+    });
+    const data = await res.json();
+    const count = data.recurrence_count || 1;
+    const msg = type === 'mataka'
+      ? `😤 またか！記録完了\nパターン: ${data.pattern || selectedText.slice(0,30)}\n再発: ${count}回目`
+      : `🚨 クレーム記録完了\nインシデント: ${data.event_id}`;
+    alert(msg);
+  } catch(e) {
+    alert('記録失敗: ' + e.message);
+  }
+}
 
 function detectSource(url) {
   if (!url) return 'unknown';

@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
@@ -369,6 +369,200 @@ def ask():
         threading.Thread(target=run_pattern_score, args=(memo,), daemon=True).start()
     return jsonify({"status": "ok"})
 
+
+# ===== またか！/ クレーム！エンドポイント =====
+@app.route("/mataka", methods=["POST"])
+def mataka():
+    """再発クレーム — Essence_Direct_Parserで5W1H抽出→recurrence照合→prevention昇格"""
+    import hashlib as _hs
+    from datetime import datetime, timezone
+    d = request.get_json(force=True, silent=True) or {}
+    selected_text = d.get("selected_text", "")
+    url           = d.get("url", "")
+    who           = d.get("who", "unknown")
+    ts            = datetime.now(timezone.utc)
+    ts_str        = ts.strftime("%Y-%m-%dT%H:%M:%S")
+    ts_f          = ts.strftime("%Y%m%d_%H%M%S")
+    if not selected_text:
+        return jsonify({"status": "empty"}), 400
+
+    # Essence_Direct_Parserで5W1H抽出
+    try:
+        import sys
+        sys.path.insert(0, os.path.join(ROOT_DIR, 'interface'))
+        from Essence_Direct_Parser import extract_5w1h
+        w5h1 = extract_5w1h(selected_text, who=who, url=url, incident_type="MATAKA")
+    except Exception as e:
+        w5h1 = {
+            "who": who, "what": selected_text[:80], "when": ts_str,
+            "where": url[:80], "why": "再発パターン検知", "how": "またか！ボタン押下"
+        }
+
+    # recurrence_registry照合 — 同パターン何回目か
+    recurrence_count = 1
+    pattern_key = selected_text[:50].strip()
+    try:
+        import sqlite3
+        db_path = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = sqlite3.connect(db_path)
+        cur = con.cursor()
+        cur.execute(
+            "SELECT COUNT(*) FROM events WHERE what_type='MATAKA' AND title LIKE ?",
+            (f"%{pattern_key[:30]}%",)
+        )
+        recurrence_count = (cur.fetchone()[0] or 0) + 1
+        con.close()
+    except Exception:
+        pass
+
+    eid = f"MATAKA_{ts_f}_{who[:4].upper()}"
+    h   = _hs.sha256(f"{eid}{ts_str}{selected_text[:50]}".encode()).hexdigest()[:16]
+
+    # events.dbに構造化記録
+    db_helper.write_event({
+        "event_id": eid, "when": ts_str,
+        "who_actor": w5h1.get("who", who),
+        "what_type": "MATAKA",
+        "where_component": w5h1.get("where", url[:80]),
+        "where_path": "chrome_extension",
+        "why_purpose": f"再発#{recurrence_count}: {w5h1.get('why','再発パターン')}",
+        "how_trigger": "またか！ボタン",
+        "channel_type": "external",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "high" if recurrence_count >= 3 else "normal",
+        "category_ab": "B",
+        "target_class": "recurrence",
+        "title": selected_text[:100],
+        "short_summary": f"再発#{recurrence_count}",
+        "before_state": "recurring_issue",
+        "after_state": "recorded",
+        "change_type": "incident",
+        "impact_scope": "ai_behavior",
+        "impact_result": f"recurrence_count={recurrence_count}",
+        "related_event_id": "N/A", "trace_id": "N/A",
+        "free_note": f"hash={h}|who={who}|pattern={pattern_key}",
+    })
+
+    # 3回以上でprevention_queue自動昇格
+    if recurrence_count >= 3:
+        try:
+            pq_path = os.path.join(ROOT_DIR, 'data', 'prevention_queue.json')
+            pq = json.load(open(pq_path, encoding='utf-8')) if os.path.exists(pq_path) else []
+            pq.append({
+                "id": eid,
+                "timestamp": ts_str,
+                "type": "MATAKA_AUTO",
+                "pattern": pattern_key,
+                "recurrence_count": recurrence_count,
+                "who": who,
+                "proposal": [
+                    f"【制度改善案】「{pattern_key[:40]}」が{recurrence_count}回再発。danger_patternsに登録を検討",
+                    f"【運用改善案】essenceのINCIDENT軸に「{who}の癖: {pattern_key[:40]}」を明記",
+                    f"【設計改善案】該当パターンをCLAUDE_RULES.mdに禁止事項として追記"
+                ],
+                "status": "pending",
+                "risk_level": "high"
+            })
+            json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"[MATAKA] prevention_queue error: {e}")
+
+    # language_detector経由でDANGERシグナルも発火
+    threading.Thread(target=run_pattern_score, args=(selected_text,), daemon=True).start()
+
+    return jsonify({
+        "status": "ok",
+        "event_id": eid,
+        "recurrence_count": recurrence_count,
+        "pattern": pattern_key,
+        "w5h1": w5h1,
+        "auto_escalated": recurrence_count >= 3
+    })
+
+
+@app.route("/claim", methods=["POST"])
+def claim():
+    """クレーム！— 新規インシデント即時記録"""
+    import hashlib as _hs
+    from datetime import datetime, timezone
+    d = request.get_json(force=True, silent=True) or {}
+    selected_text = d.get("selected_text", "")
+    url           = d.get("url", "")
+    who           = d.get("who", "unknown")
+    ts            = datetime.now(timezone.utc)
+    ts_str        = ts.strftime("%Y-%m-%dT%H:%M:%S")
+    ts_f          = ts.strftime("%Y%m%d_%H%M%S")
+    if not selected_text:
+        return jsonify({"status": "empty"}), 400
+
+    # Essence_Direct_Parserで5W1H抽出
+    try:
+        import sys
+        sys.path.insert(0, os.path.join(ROOT_DIR, 'interface'))
+        from Essence_Direct_Parser import extract_5w1h
+        w5h1 = extract_5w1h(selected_text, who=who, url=url, incident_type="CLAIM")
+    except Exception as e:
+        w5h1 = {
+            "who": who, "what": selected_text[:80], "when": ts_str,
+            "where": url[:80], "why": "クレーム", "how": "クレーム！ボタン押下"
+        }
+
+    eid = f"CLAIM_{ts_f}_{who[:4].upper()}"
+    h   = _hs.sha256(f"{eid}{ts_str}{selected_text[:50]}".encode()).hexdigest()[:16]
+
+    db_helper.write_event({
+        "event_id": eid, "when": ts_str,
+        "who_actor": w5h1.get("who", who),
+        "what_type": "CLAIM",
+        "where_component": w5h1.get("where", url[:80]),
+        "where_path": "chrome_extension",
+        "why_purpose": w5h1.get("why", "クレーム"),
+        "how_trigger": "クレーム！ボタン",
+        "channel_type": "external",
+        "lifecycle_phase": "in_operation",
+        "risk_level": "high",
+        "category_ab": "B",
+        "target_class": "incident",
+        "title": selected_text[:100],
+        "short_summary": w5h1.get("what", selected_text[:50]),
+        "before_state": "issue_detected",
+        "after_state": "recorded",
+        "change_type": "incident",
+        "impact_scope": "ai_behavior",
+        "impact_result": "claim_recorded",
+        "related_event_id": "N/A", "trace_id": "N/A",
+        "free_note": f"hash={h}|who={who}",
+    })
+
+    # prevention_queueに即登録
+    try:
+        pq_path = os.path.join(ROOT_DIR, 'data', 'prevention_queue.json')
+        pq = json.load(open(pq_path, encoding='utf-8')) if os.path.exists(pq_path) else []
+        pq.append({
+            "id": eid,
+            "timestamp": ts_str,
+            "type": "CLAIM",
+            "pattern": selected_text[:50],
+            "who": who,
+            "proposal": [
+                f"【即時対応】「{selected_text[:40]}」を確認・修正",
+                f"【再発防止】同パターンをdanger_patternsに登録",
+                f"【制度化】essenceのINCIDENT軸に記録し次回セッションから反映"
+            ],
+            "status": "pending",
+            "risk_level": "high"
+        })
+        json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[CLAIM] prevention_queue error: {e}")
+
+    threading.Thread(target=run_pattern_score, args=(selected_text,), daemon=True).start()
+
+    return jsonify({
+        "status": "ok",
+        "event_id": eid,
+        "w5h1": w5h1
+    })
 @app.route("/collect", methods=["POST"])
 def collect():
     import re as _re, csv as _csv, hashlib as _hs, json as _json

@@ -1,4 +1,4 @@
-"""
+﻿"""
 Essence_Direct_Parser.py v1.0
 MoCKA Essence抽出エンジン — APIゼロ実装
 4原則: ①全文記録 ②ワード起因抽出 ③否定検知 ④インシデント経緯分析
@@ -316,3 +316,69 @@ if __name__ == "__main__":
     chat_text = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else ""
     result = parse(chat_text)
     print(f"\n完了: {result['status']}")
+
+# ===== 5W1H自動推定（リアルタイム検知経路用）=====
+def extract_5w1h(text: str, who: str = "unknown", url: str = "", incident_type: str = "INCIDENT") -> dict:
+    """
+    テキストから5W1Hを自動推定する
+    - who:  URLからAI種別を判定
+    - what: キーワード抽出で問題パターンを特定
+    - when: 呼び出し時刻
+    - where: URL
+    - why:  否定パターンから理由を推定
+    - how:  コードパターンから手段を推定
+    """
+    import datetime
+    now = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
+    # who: URLからAI判定
+    who_map = {
+        "claude.ai": "Claude",
+        "chatgpt.com": "ChatGPT",
+        "gemini.google.com": "Gemini",
+        "perplexity.ai": "Perplexity",
+        "copilot.microsoft.com": "Copilot",
+    }
+    who_resolved = who
+    for domain, name in who_map.items():
+        if domain in url:
+            who_resolved = name
+            break
+
+    # what: キーワード抽出で問題パターン特定
+    what_patterns = [
+        (re.compile(r'python\s*(-c|-m|直接|スクリプト)', re.IGNORECASE), "python直接実行指示"),
+        (re.compile(r'(ファイル|file).{0,10}(分割|分けて|split)', re.IGNORECASE), "ファイル分割渡し"),
+        (re.compile(r'(確認|confirm|いいですか|よろしいですか).{0,20}[？?]', re.IGNORECASE), "不要な確認質問"),
+        (re.compile(r'(また|again|再び|繰り返し).{0,20}(同じ|same|エラー|error)', re.IGNORECASE), "同じエラー再発"),
+        (re.compile(r'(partial|部分的|一部).{0,20}(rewrite|書き換え|修正)', re.IGNORECASE), "部分書き換え指示"),
+        (re.compile(r'powershell.{0,30}python\s+-c', re.IGNORECASE), "PowerShellでpython -c直接実行"),
+    ]
+    what_resolved = text[:60]
+    for pattern, label in what_patterns:
+        if pattern.search(text):
+            what_resolved = label
+            break
+
+    # why: 否定パターンから理由推定
+    why_resolved = incident_type
+    for pattern, label in NEGATION_PATTERNS:
+        if pattern.search(text):
+            why_resolved = f"{label}: {incident_type}"
+            break
+
+    # how: コードパターンから手段推定
+    how_resolved = "テキスト記述"
+    for cat, pattern in KEYWORD_PATTERNS.items():
+        if pattern.search(text):
+            how_resolved = f"{cat}操作: {incident_type}ボタン押下"
+            break
+
+    return {
+        "who":   who_resolved,
+        "what":  what_resolved,
+        "when":  now,
+        "where": url[:80] or "chrome_extension",
+        "why":   why_resolved,
+        "how":   how_resolved,
+    }
