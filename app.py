@@ -12,55 +12,6 @@ import requests
 from datetime import datetime
 from flask import Flask, send_from_directory, jsonify, request
 
-# ── SQLite helper (added by phase2_app_patch.py) ──────────────────────────
-import sqlite3 as _sqlite3
-
-_MOCKA_DB = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
-
-def _db_conn():
-    conn = _sqlite3.connect(str(_MOCKA_DB), timeout=10)
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.row_factory = _sqlite3.Row
-    return conn
-
-def _read_events_from_db(n: int = 50) -> list:
-    """eventsテーブルから直近n件を取得してCSV互換形式で返す。"""
-    try:
-        conn = _db_conn()
-        rows = conn.execute(
-            """SELECT event_id, when_ts, who_actor, what_type, where_component,
-                      where_path, why_purpose, how_trigger, title, short_summary,
-                      free_note
-               FROM events
-               ORDER BY id DESC LIMIT ?""", (n,)
-        ).fetchall()
-        conn.close()
-        result = []
-        for r in rows:
-            result.append({
-                "event_id":    r["event_id"]    or "",
-                "when":        r["when_ts"]     or "",
-                "who":         r["who_actor"]   or "",
-                "what_type":   r["what_type"]   or "",
-                "where":       r["where_component"] or "",
-                "title":       r["title"]       or r["short_summary"] or "",
-                "description": r["free_note"]   or "",
-            })
-        return result
-    except Exception as e:
-        print(f"[DB] read error: {e}")
-        return []
-
-def _count_events_from_db() -> int:
-    try:
-        conn = _db_conn()
-        count = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
-        conn.close()
-        return count
-    except Exception:
-        return 0
-# ── end SQLite helper ──────────────────────────────────────────────────────
-
 # --- Pattern Engine v2 ---
 try:
     from interface.pattern_engine_v2 import PatternEngine as _PatternEngine
@@ -890,12 +841,21 @@ def public_essence():
 
 @app.route("/public/events")
 def public_events():
-    """events を SQLite から返す（CSV廃止後）"""
+    import csv as _csv
+    from pathlib import Path
+    EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
     n = int(request.args.get("n", 20))
-    events = _read_events_from_db(n)
-    count  = _count_events_from_db()
-    return jsonify({"events": events, "count": count})
-
+    if not EP.exists():
+        return jsonify({"status": "NOT_FOUND"})
+    try:
+        rows = []
+        with open(EP, encoding="utf-8-sig", errors="replace") as f:
+            reader = _csv.DictReader(f)
+            for r in reader:
+                rows.append({k: (v or "") for k, v in r.items()})
+        return jsonify({"count": len(rows), "events": rows[-n:]})
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)})
 
 @app.route("/public/write_event", methods=["POST"])
 def public_write_event():
