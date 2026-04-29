@@ -10,8 +10,8 @@
     "OPERATION": "[great] mocka_sender稼働確認"
   },
   "essence_updated": false,
-  "ngrok_online": true,
-  "NGROK": true,
+  "ngrok_online": false,
+  "NGROK": false,
   "current_phase": "Phase 2進行中",
   "top_todos": [
     {
@@ -40,5 +40,5 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-04-29T15:29:10.325389"
+  "generated_at": "2026-04-29T15:30:08.311904"
 }
