@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "created": "2026-04-29",
+  "description": "MoCKA Cyber Defense Benchmark v1.0 正解ラベル",
+  "summary": {
+    "total_cases": 30,
+    "CLEAR": 10,
+    "GRAY": 10,
+    "TRAP": 10
+  },
+  "cases": {
+    "CYBER_001": {"malicious": [5, 7, 9], "candidates": [4, 8], "benign": [1, 2, 3, 6, 10], "spp_expected": false},
+    "CYBER_002": {"malicious": [2, 3, 4, 5], "candidates": [], "benign": [1], "spp_expected": false},
+    "CYBER_003": {"malicious": [2, 3, 4], "candidates": [5], "benign": [1], "spp_expected": false},
+    "CYBER_004": {"malicious": [2, 3, 4], "candidates": [1, 5], "benign": [], "spp_expected": false},
+    "CYBER_005": {"malicious": [1, 2, 3], "candidates": [], "benign": [4, 5], "spp_expected": false},
+    "CYBER_006": {"malicious": [1, 2, 4], "candidates": [3, 5], "benign": [], "spp_expected": false},
+    "CYBER_007": {"malicious": [1, 2, 3, 4, 5], "candidates": [], "benign": [], "spp_expected": false},
+    "CYBER_008": {"malicious": [1, 2, 3, 4], "candidates": [5], "benign": [], "spp_expected": false},
+    "CYBER_009": {"malicious": [2, 3, 4, 5], "candidates": [], "benign": [1], "spp_expected": false},
+    "CYBER_010": {"malicious": [2, 3, 4, 5], "candidates": [1], "benign": [], "spp_expected": false},
+    "CYBER_011": {"malicious": [], "candidates": [1, 2, 3], "benign": [4, 5], "spp_expected": true},
+    "CYBER_012": {"malicious": [], "candidates": [2, 3, 4], "benign": [1, 5], "spp_expected": true},
+    "CYBER_013": {"malicious": [], "candidates": [1, 2], "benign": [3, 4, 5], "spp_expected": true},
+    "CYBER_014": {"malicious": [], "candidates": [2, 3, 4], "benign": [1, 5], "spp_expected": true},
+    "CYBER_015": {"malicious": [], "candidates": [2, 4], "benign": [1, 3, 5], "spp_expected": true},
+    "CYBER_016": {"malicious": [3, 4, 5], "candidates": [1], "benign": [2], "spp_expected": true},
+    "CYBER_017": {"malicious": [4], "candidates": [1, 2], "benign": [3, 5], "spp_expected": true},
+    "CYBER_018": {"malicious": [2, 3], "candidates": [], "benign": [1, 4, 5], "spp_expected": false},
+    "CYBER_019": {"malicious": [3, 4, 5], "candidates": [2], "benign": [1], "spp_expected": true},
+    "CYBER_020": {"malicious": [2, 3, 4, 5], "candidates": [], "benign": [1], "spp_expected": false},
+    "CYBER_021": {"malicious": [], "candidates": [2, 3], "benign": [1, 4, 5], "spp_expected": true},
+    "CYBER_022": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_023": {"malicious": [], "candidates": [2, 3, 4], "benign": [1, 5], "spp_expected": true},
+    "CYBER_024": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_025": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_026": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_027": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_028": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_029": {"malicious": [], "candidates": [], "benign": [1, 2, 3, 4, 5], "spp_expected": true},
+    "CYBER_030": {"malicious": [4, 5], "candidates": [3], "benign": [1, 2], "spp_expected": true}
+  }
+}
