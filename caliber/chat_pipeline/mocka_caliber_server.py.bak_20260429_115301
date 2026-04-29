@@ -172,31 +172,11 @@ def get_prev_hash() -> str:
 
 
 def append_event(row):
-    """SQLite単一ストレージへ記録（CSV廃止済み）"""
-    try:
-        import sqlite3 as _sq3
-        db = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
-        cols = ["event_id","when_ts","who_actor","what_type","where_component",
-                "where_path","why_purpose","how_trigger","channel_type",
-                "lifecycle_phase","risk_level","category_ab","target_class",
-                "title","short_summary","before_state","after_state",
-                "change_type","impact_scope","impact_result",
-                "related_event_id","trace_id","free_note"]
-        padded = (list(row) + [""]*23)[:23]
-        extra  = [datetime.now(timezone.utc).isoformat(),
-                  "caliber_server","caliber","","normal",0.0,0,"caliber_v5"]
-        all_cols = cols + ["_imported_at","_source","ai_actor","session_id",
-                           "severity","pattern_score","recurrence_flag","verified_by"]
-        ph  = ",".join(["?"]*len(all_cols))
-        sql = f"INSERT OR IGNORE INTO events ({','.join(all_cols)}) VALUES ({ph})"
-        conn = _sq3.connect(str(db), timeout=10)
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute(sql, padded + extra)
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"[caliber] SQLite error: {e}")
+    with open(EVENTS, "a", encoding="utf-8", newline="") as f:
+        csv.writer(f).writerow(row)
 
+
+# ─── エンドポイント ───────────────────────────────────────────────────────────
 
 @app.route("/health", methods=["GET"])
 def health():
