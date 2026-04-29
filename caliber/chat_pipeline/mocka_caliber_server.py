@@ -403,9 +403,11 @@ def _process_raw_file(fpath):
 
 _auto_raw_thread = _threading.Thread(target=auto_raw_loop, daemon=True)
 _auto_raw_thread.start()
+
 if __name__ == "__main__":
     print("[MoCKA Caliber Server v5 - API ZERO] port 5679")
     print(f"[v5] keywords: {len(get_keywords())}")
     print(f"[v5] threshold: {THRESHOLD}")
     app.run(host="0.0.0.0", port=5679, debug=False, threaded=True)
+
 
