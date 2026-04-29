@@ -25,20 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_065",
-      "title": "Overleaf作業プロトコル改善 — 完全版1本渡し方式の確立",
-      "priority": "高"
-    },
-    {
       "id": "TODO_094",
       "title": "PHL-OS Caliber統合完了 — v2スコアリング拡張",
       "priority": "高"
     },
     {
-      "id": "TODO_098",
-      "title": "COMMAND CENTER — PHL-OSパネル追加",
-      "priority": "中"
+      "id": "TODO_101",
+      "title": "MoCKA Cyber Defense Benchmark — PHL-OS vs LLM素の実証実験",
+      "priority": "高"
+    },
+    {
+      "id": "TODO_102",
+      "title": "Cyber Benchmark 条件C/D — GPT/Perplexity DNA注入あり/なし比較実験",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-04-29T15:30:08.311904"
+  "generated_at": "2026-04-29T17:01:51.546716"
 }
