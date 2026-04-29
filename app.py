@@ -1,4 +1,4 @@
-﻿import sqlite3
+import sqlite3
 import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
@@ -44,6 +44,33 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
+# ============================================================
+# 文字化け撲滅 防御ミドルウェア (2026-04-29)
+# ============================================================
+import unicodedata
+
+def _sanitize_utf8(text: str) -> str:
+    """制御文字・BOM・代替文字を除去してUTF-8安全文字列を返す"""
+    if not isinstance(text, str):
+        return str(text) if text is not None else ""
+    # BOM除去
+    text = text.lstrip("\ufeff")
+    # Shift-JIS混入文字（U+FFFD 代替文字）を警告・除去
+    if "\ufffd" in text:
+        print(f"[ENCODING-GUARD] U+FFFD detected → stripped")
+        text = text.replace("\ufffd", "")
+    # 制御文字除去（タブ・改行は保持）
+    text = "".join(c for c in text if unicodedata.category(c) != "Cc" or c in ("\t", "\n", "\r"))
+    return text
+
+def _sanitize_row(row: dict) -> dict:
+    """イベント行の全フィールドをUTF-8安全化"""
+    return {k: _sanitize_utf8(v) for k, v in row.items()}
+
+# append_event をラップして文字化け防御
+_orig_append_event = None  # 後でパッチ
+
+
 # ===== 自動処理ループ（PILSキュー監視） =====
 import threading
 import time
@@ -79,7 +106,7 @@ _auto_thread.start()
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
-EVENTS_CSV = os.path.join(DATA_DIR, "events.csv")
+EVENTS_CSV = os.path.join(DATA_DIR, "events.csv")  # 廃止済み変数（互換保持のみ・書き込み禁止）
 BASE_DIR = ROOT_DIR
 RECORDS_DIR = os.path.join(BASE_DIR, "records")
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
@@ -128,21 +155,18 @@ def ensure_dirs():
     os.makedirs(os.path.join(DOCS_DIR, "decisions"), exist_ok=True)
 
 def ensure_events_csv():
+    # CSV廃止済み（SQLite単一化 2026-04-29）。後方互換のため関数は残す。
     ensure_dirs()
-    if not os.path.exists(EVENTS_CSV):
-        with open(EVENTS_CSV, "w", newline="", encoding="utf-8-sig") as f:
-            writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
-            writer.writeheader()
 
 def next_event_id():
     return db_helper.get_next_event_id()
 
 def append_event(meta: dict):
-    ensure_events_csv()
+    # CSV書き込み廃止 → SQLite(db_helper)のみ + 文字化け防御
     row = {key: "N/A" for key in FIELDNAMES}
     for k, v in meta.items():
         if k in row and v is not None:
-            row[k] = str(v)
+            row[k] = _sanitize_utf8(str(v))
     if row["event_id"] == "N/A":
         row["event_id"] = next_event_id()
     if row["when"] == "N/A":
@@ -360,30 +384,40 @@ def collect():
     text    = _re.sub(r"(?i)password\s*[:=]\s*\S+","password=[MASKED]",text)
     if not text: return jsonify({"status":"empty"}),400
     INFIELD = P(r"C:/Users/sirok/MoCKA/data/storage/infield/RAW")
-    EVENTS  = P(r"C:/Users/sirok/MoCKA/data/events.csv")
     INFIELD.mkdir(parents=True,exist_ok=True)
     ts      = datetime.now(timezone.utc)
     ts_str  = ts.strftime("%Y-%m-%dT%H:%M:%S")
     ts_f    = ts.strftime("%Y%m%d_%H%M%S")
-    rows    = []
-    if EVENTS.exists():
-        with open(EVENTS, encoding="utf-8-sig", errors="replace") as _f:
-            rows = list(_csv.reader(_f))
-    prev    = _hs.sha256(",".join(rows[-1]).encode()).hexdigest()[:16] if rows else "GENESIS"
+    # prev_hash: CSV廃止 → SQLite最終イベントから取得
+    last_rows = db_helper.read_events(limit=1)
+    if last_rows:
+        prev_str = f"{last_rows[-1].get('event_id','')}{last_rows[-1].get('when','')}"
+        prev = _hs.sha256(prev_str.encode()).hexdigest()[:16]
+    else:
+        prev = "GENESIS"
     eid     = f"ECOL_{ts_f}_{source[:4].upper()}"
     h       = _hs.sha256(f"{eid}{ts_str}{text[:100]}{prev}".encode()).hexdigest()[:16]
     rec     = {"event_id":eid,"source":source,"layer":"RAW","url":url,"mode":mode,
                "text":text,"timestamp":ts_str,"hash":h,"prev_hash":prev,"status":"RAW"}
     fname = INFIELD/f"{ts_f}_{eid}.json"
-    _json.dump(rec,open(fname,"w",encoding="utf-8-sig"),ensure_ascii=False,indent=2)
+    _json.dump(rec,open(fname,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
     PILS = P(r"C:/Users/sirok/MoCKA/data/storage/outbox/PILS")
     PILS.mkdir(parents=True,exist_ok=True)
     shutil.copy2(fname, PILS/fname.name)
-    with open(EVENTS,"a",encoding="utf-8-sig",newline="") as f:
-        _csv.writer(f).writerow([eid,ts_str,source,"collect","chat_import","mocka_bridge_v2",
-            url[:80],"extension","external","in_operation","normal","A","infield/RAW",
-            text[:100].encode("utf-8","replace").decode("utf-8"),prev,"ingest_complete","RAW","local","chat_pipeline","N/A","N/A",
-            f"hash={h}|source={source}|mode={mode}"])
+    # CSV書き込み廃止 → SQLite(db_helper)に記録
+    db_helper.write_event({
+        "event_id": eid, "when": ts_str, "who_actor": source,
+        "what_type": "collect", "where_component": "chat_import",
+        "where_path": "mocka_bridge_v2", "why_purpose": url[:80],
+        "how_trigger": "extension", "channel_type": "external",
+        "lifecycle_phase": "in_operation", "risk_level": "normal",
+        "category_ab": "A", "target_class": "infield/RAW",
+        "title": text[:100], "short_summary": prev,
+        "before_state": "ingest_complete", "after_state": "RAW",
+        "change_type": "local", "impact_scope": "chat_pipeline",
+        "impact_result": "N/A", "related_event_id": "N/A", "trace_id": "N/A",
+        "free_note": f"hash={h}|source={source}|mode={mode}",
+    })
     try:
         _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
         subprocess.Popen([sys.executable, _pl, '--text', text[:500], '--no-ping'], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
@@ -550,43 +584,37 @@ def loop_status():
             ping_age = f"{int(age//3600)}h {int((age%3600)//60)}m ago"
         except: pass
     # --- 8ステージ実データ収集 ---
-    EVENTS_CSV   = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
     RECURRENCE_CSV = Path(r"C:\Users\sirok\MoCKA\data\recurrence_registry.csv")
     PREVENTION_JSON = Path(r"C:\Users\sirok\MoCKA\data\prevention_queue.json")
     LEDGER_JSON  = Path(r"C:\Users\sirok\MoCKA\runtime\main\ledger.json")
 
-    # ② Record: events.csv総件数
+    # ② Record: events.db総件数（CSV廃止済み → SQLite参照）
     record_count = 0
-    # ③ Incident件数
     incident_count = 0
-    # ⑥ Decision件数
     decision_count = 0
-    # ⑦ Action件数
     action_count = 0
-    if EVENTS_CSV.exists():
-        try:
-            import csv
-            with open(EVENTS_CSV, encoding="utf-8-sig", errors="replace") as f:
-                rows = list(csv.DictReader(f))
-            record_count = len(rows)
-            for r in rows:
-                wt = str(r.get("what_type","")).upper()
-                rl = str(r.get("risk_level","")).upper()
-                title = str(r.get("title","")).upper()
-                if rl in ["DANGER","CRITICAL"] or "INCIDENT" in wt or "INCIDENT" in title:
-                    incident_count += 1
-                if "DECISION_APPROVED" in wt or "DECISION_APPROVED" in title:
-                    decision_count += 1
-                if "AUTO_GATE_APPROVED" in wt or "AUTO_GATE" in title:
-                    action_count += 1
-        except: pass
+    try:
+        rows = db_helper.read_events(limit=None)
+        record_count = len(rows)
+        for r in rows:
+            wt    = str(r.get("what_type","")).upper()
+            rl    = str(r.get("risk_level","")).upper()
+            title = str(r.get("title","")).upper()
+            if rl in ["DANGER","CRITICAL"] or "INCIDENT" in wt or "INCIDENT" in title:
+                incident_count += 1
+            if "DECISION_APPROVED" in wt or "DECISION_APPROVED" in title:
+                decision_count += 1
+            if "AUTO_GATE_APPROVED" in wt or "AUTO_GATE" in title:
+                action_count += 1
+    except Exception as _e:
+        print(f"[loop/status] db read error: {_e}")
 
-    # ④ Recurrence件数
+    # ④ Recurrence件数（recurrence_registry.csv は継続利用）
     recurrence_count = 0
     if RECURRENCE_CSV.exists():
         try:
             import csv as _csv
-            with open(RECURRENCE_CSV, encoding="utf-8-sig", errors="replace") as f:
+            with open(RECURRENCE_CSV, encoding="utf-8", errors="replace") as f:
                 recurrence_count = sum(1 for _ in _csv.DictReader(f))
         except: pass
 
@@ -611,7 +639,7 @@ def loop_status():
 
     civilization_loop = {
         "observe":    {"label": "Observe",    "count": raw_count,          "detail": "RAW未処理"},
-        "record":     {"label": "Record",     "count": record_count,       "detail": "events.csv総件数"},
+        "record":     {"label": "Record",     "count": record_count,       "detail": "mocka_events.db総件数"},
         "incident":   {"label": "Incident",   "count": incident_count,     "detail": "DANGER/CRITICAL/INCIDENT"},
         "recurrence": {"label": "Recurrence", "count": recurrence_count,   "detail": "再発パターン"},
         "prevention": {"label": "Prevention", "count": prevention_pending,  "detail": "未承認Prevention案"},
@@ -841,19 +869,12 @@ def public_essence():
 
 @app.route("/public/events")
 def public_events():
-    import csv as _csv
-    from pathlib import Path
-    EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
+    # CSV廃止済み → SQLite(db_helper)参照
     n = int(request.args.get("n", 20))
-    if not EP.exists():
-        return jsonify({"status": "NOT_FOUND"})
     try:
-        rows = []
-        with open(EP, encoding="utf-8-sig", errors="replace") as f:
-            reader = _csv.DictReader(f)
-            for r in reader:
-                rows.append({k: (v or "") for k, v in r.items()})
-        return jsonify({"count": len(rows), "events": rows[-n:]})
+        rows = db_helper.read_events(limit=None)
+        rows = [{k: (v if v is not None else "") for k, v in r.items()} for r in rows]
+        return jsonify({"count": len(rows), "events": rows[-n:], "source": "sqlite"})
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
 
@@ -895,14 +916,14 @@ def public_pipeline():
 
 @app.route("/public/seal", methods=["POST"])
 def public_seal():
-    import hashlib
-    from pathlib import Path
-    EP = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
-    if not EP.exists():
-        return jsonify({"status": "NOT_FOUND"})
+    # CSV廃止済み → SQLiteのeventsテーブル全件ハッシュ
+    import hashlib, json as _j
     try:
-        h = hashlib.sha256(EP.read_bytes()).hexdigest()
-        return jsonify({"status": "ok", "sha256": h, "file": str(EP), "timestamp": datetime.now().isoformat()})
+        rows = db_helper.read_events(limit=None)
+        payload = _j.dumps(rows, ensure_ascii=False, sort_keys=True).encode("utf-8")
+        h = hashlib.sha256(payload).hexdigest()
+        return jsonify({"status": "ok", "sha256": h, "source": "sqlite",
+                        "event_count": len(rows), "timestamp": datetime.now().isoformat()})
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
 
@@ -996,10 +1017,12 @@ def auto_audit_loop():
                                    cwd=str(ROOT_DIR), timeout=30)
                     print(f"[AUTO-AUDIT] 日次seal完了")
                 _last_seal_date[0] = today
-            events_path = __import__("pathlib").Path(str(ROOT_DIR)) / "data" / "events.csv"
-            if events_path.exists():
-                with open(events_path, encoding="utf-8") as f:
-                    count = sum(1 for _ in f)
+            # CSV廃止済み → SQLite件数でトリガー判定
+            try:
+                count = len(db_helper.read_events(limit=None))
+            except Exception:
+                count = _last_event_count[0]
+            if True:
                 if count - _last_event_count[0] >= 50:
                     seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
                     if seal_script.exists():
@@ -1286,9 +1309,10 @@ def sync_todo():
 
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
+    print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
     print(f"Directory: {ROOT_DIR}")
     ensure_dirs()
-    ensure_events_csv()
+    # ensure_events_csv() → CSV廃止済み。SQLiteはdb_helperが自動初期化。
     app.run(host="127.0.0.1", port=5000)
 
 
