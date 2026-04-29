@@ -569,16 +569,14 @@ def phl_run_guard(state, modules, draft):
     return {"status":"SAFE",          "level":0, "reason":None}
 
 def _phl_fetch_essence() -> dict:
-    """localhost:5000/public/essenceからessenceを取得。失敗時は空dict。"""
+    """mocka_events.dbのessenceテーブルから直接取得。HTTP依存ゼロ。"""
     try:
-        import urllib.request
-        req = urllib.request.Request(
-            "http://localhost:5000/public/essence",
-            headers={"ngrok-skip-browser-warning": "1"}
-        )
-        with urllib.request.urlopen(req, timeout=1.0) as r:
-            import json as _json
-            return _json.loads(r.read().decode("utf-8"))
+        import sqlite3 as _sq
+        db = str(Path(__file__).parent.parent.parent / "data" / "mocka_events.db")
+        conn = _sq.connect(db, timeout=0.5)
+        rows = conn.execute("SELECT axis, content FROM essence").fetchall()
+        conn.close()
+        return {row[0]: row[1] for row in rows}
     except Exception:
         return {}
 
@@ -651,12 +649,12 @@ def phl_build_trace(state, candidates, selected, excluded, guard, essence=None):
             reason = "module_risk too high"
         counterfactuals.append({
             "module":              m,
-            "score":               phl_score(m, state, _phl_fetch_essence()),
+            "score":               phl_score(m, state, essence),
             "expected_effect":     spec.get("desc", "-"),
             "reason_not_selected": reason,
         })
     return {
-        "version":         "v1",
+        "version":         "v2" if essence else "v1",
         "state_summary":   {
             "goal_type":   state.get("goal_type"),
             "uncertainty": state.get("uncertainty"),
@@ -673,6 +671,31 @@ def phl_build_trace(state, candidates, selected, excluded, guard, essence=None):
         "guard_reason":       guard.get("reason"),
         "counterfactuals":    counterfactuals,
     }
+
+def _phl_feedback_to_essence(state: dict, guard: dict):
+    """HALT/REANALYZE時にessence.INCIDENTへ自動フィードバック。閉ループ。"""
+    if guard.get("status") not in ("HALT", "REANALYZE"):
+        return
+    try:
+        import sqlite3 as _sq
+        db = str(Path(__file__).parent.parent.parent / "data" / "mocka_events.db")
+        conn = _sq.connect(db, timeout=0.5)
+        from datetime import datetime, timezone
+        now = datetime.now(timezone.utc).isoformat()
+        reason = guard.get("reason", "unknown")
+        goal   = state.get("goal_type", "?")
+        new_incident = f"[PHL-HALT] goal={goal} reason={reason} at={now[:19]}"
+        conn.execute("""
+            UPDATE essence
+            SET content = content || '\n' || ?,
+                updated_at = ?,
+                source_count = source_count + 1
+            WHERE axis = 'INCIDENT'
+        """, (new_incident, now))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"[PHL essence feedback] {e}")
 
 def phl_record_event(state, selected, guard, trace):
     ts   = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
@@ -710,6 +733,7 @@ def phl_analyze():
     essence           = _phl_fetch_essence()
     selected, candidates, excluded = phl_select_modules(state)
     guard             = phl_run_guard(state, selected, draft)
+    _phl_feedback_to_essence(state, guard)
     trace             = phl_build_trace(state, candidates, selected, excluded, guard, essence)
     eid               = phl_record_event(state, selected, guard, trace)
     # v2: 実行コンテキスト生成（selected_modulesが実際の動作定義を持つ）
