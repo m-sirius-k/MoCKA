@@ -1,4 +1,4 @@
-"""
+﻿"""
 mocka_caliber_server.py v5
 APIゼロ化版 - Claude Haiku API呼び出しをローカル処理に完全置き換え
 
@@ -527,12 +527,27 @@ def phl_select_modules(state):
     if not candidates:
         candidates.append({"module":"ghost",      "trigger":"fallback:no_match"})
 
-    selected = list(dict.fromkeys(c["module"] for c in candidates))
+    # v2: スコアリングで選択・除外を決定
+    SCORE_THRESHOLD = 0.25
+    scored   = []
     excluded = []
-    if "OODA" in selected and "SAGE" in selected and state["time_pressure"] > 0.7:
+    for c in candidates:
+        s = phl_score(c["module"], state)
+        c["score"] = s
+        if s >= SCORE_THRESHOLD:
+            scored.append(c)
+        else:
+            excluded.append({"module": c["module"], "reason": f"score_below_threshold:{s:.4f}"})
+
+    # スコア降順ソート
+    scored.sort(key=lambda x: x["score"], reverse=True)
+
+    # 競合解消（既存ルール維持）
+    selected = list(dict.fromkeys(c["module"] for c in scored))
+    if "OODA" in selected and "SAGE" in selected and state.get("time_pressure", 0) > 0.7:
         selected.remove("SAGE")
         excluded.append({"module":"SAGE","reason":"conflict:OODA:time_pressure>0.7"})
-    return selected, candidates, excluded
+    return selected, scored, excluded
 
 def phl_run_guard(state, modules, draft):
     risk = state.get("risk_level", 0.0)
