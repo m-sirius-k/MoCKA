@@ -25,20 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_104",
-      "title": "Cyber Benchmark eval_cases.jsonl化 — 10ケースをPHL-OS自動テストスイートに転換",
+      "id": "TODO_109",
+      "title": "Essence_Direct_Parser → language_detector 接続 — リアルタイム検知経路に5W1H構造化を統合",
+      "priority": "最高"
+    },
+    {
+      "id": "TODO_108",
+      "title": "「またか！」専用ボタン実装 — 再発クレームをゼロコストで記録",
       "priority": "高"
     },
     {
       "id": "TODO_098",
       "title": "COMMAND CENTER — PHL-OSパネル追加",
       "priority": "中"
-    },
-    {
-      "id": "TODO_105",
-      "title": "Cyber Benchmark v2設計 — 10件→50件拡張・GRAY難化・ドリフト誘発型追加",
-      "priority": "中"
     }
   ],
-  "generated_at": "2026-04-30T07:15:53.263088"
+  "generated_at": "2026-04-30T08:11:13.090040"
 }
