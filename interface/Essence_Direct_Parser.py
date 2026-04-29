@@ -374,6 +374,8 @@ def extract_5w1h(text: str, who: str = "unknown", url: str = "", incident_type: 
             how_resolved = f"{cat}操作: {incident_type}\u30dc\u30bf\u30f3\u62bc\u4e0b"
             break
 
+    def to_ascii(s):
+        return s.encode('unicode_escape').decode('ascii') if isinstance(s, str) else s
     return {
         "who":   who_resolved,
         "what":  what_resolved,
