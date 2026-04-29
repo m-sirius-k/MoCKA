@@ -1,4 +1,4 @@
-﻿"""
+"""
 mocka_caliber_server.py v5
 APIゼロ化版 - Claude Haiku API呼び出しをローカル処理に完全置き換え
 
@@ -341,6 +341,160 @@ PHL_MODULE_SPECS = {
                    "desc":"implementation and code generation"},
 }
 
+# ============================================================
+# PHL-OS v2: Module Execution Directives
+# selected_modules -> actual behavioral change
+# ============================================================
+
+PHL_EXECUTION_DIRECTIVES = {
+    "ghost": {
+        "mode":             "precision",
+        "system_prefix":    "[GHOST MODE] Prioritize accuracy. Avoid speculation. State confidence level explicitly. Require evidence before claiming.",
+        "response_style":   "measured",
+        "hedge_required":   True,
+        "confidence_floor": 0.80,
+        "max_assertion_risk": 0.3,
+        "post_process":     "add_confidence_markers",
+    },
+    "L99": {
+        "mode":             "structured",
+        "system_prefix":    "[L99 MODE] Structure output in phases. Use numbered steps. Break down plans explicitly.",
+        "response_style":   "phased",
+        "hedge_required":   False,
+        "force_structure":  True,
+        "post_process":     "enforce_numbered_structure",
+    },
+    "OODA": {
+        "mode":             "speed",
+        "system_prefix":    "[OODA MODE] Observe-Orient-Decide-Act. Prioritize speed. Short sentences. Immediate actionable output.",
+        "response_style":   "terse",
+        "hedge_required":   False,
+        "max_response_tokens": 300,
+        "post_process":     "truncate_to_action",
+    },
+    "SAGE": {
+        "mode":             "abstraction",
+        "system_prefix":    "[SAGE MODE] Elevate to principles. Extract concepts. Identify meta-patterns. Think in systems.",
+        "response_style":   "conceptual",
+        "hedge_required":   True,
+        "post_process":     "extract_principles",
+    },
+    "STRATEGIST": {
+        "mode":             "strategic",
+        "system_prefix":    "[STRATEGIST MODE] Long-term design. Roadmap thinking. Identify dependencies and risks.",
+        "response_style":   "structured",
+        "hedge_required":   False,
+        "force_structure":  True,
+        "post_process":     "add_roadmap_framing",
+    },
+    "code": {
+        "mode":             "implementation",
+        "system_prefix":    "[CODE MODE] Prioritize working code. Include error handling. No theory unless asked.",
+        "response_style":   "technical",
+        "hedge_required":   False,
+        "post_process":     "enforce_code_blocks",
+    },
+    "artifact": {
+        "mode":             "output",
+        "system_prefix":    "[ARTIFACT MODE] Produce structured output. Tables, lists, and formatted data preferred.",
+        "response_style":   "formatted",
+        "hedge_required":   False,
+        "post_process":     "enforce_structured_output",
+    },
+}
+
+def phl_merge_directives(selected_modules: list) -> dict:
+    """複数モジュールのディレクティブをマージして実行指令を生成"""
+    if not selected_modules:
+        return {"mode": "default", "system_prefix": "", "post_process": "none"}
+
+    primary = selected_modules[0]
+    directive = dict(PHL_EXECUTION_DIRECTIVES.get(primary, {}))
+
+    # 追加モジュールのsystem_prefixを連結
+    additional_prefixes = []
+    for mod in selected_modules[1:]:
+        d = PHL_EXECUTION_DIRECTIVES.get(mod, {})
+        pfx = d.get("system_prefix", "")
+        if pfx:
+            additional_prefixes.append(pfx)
+
+    if additional_prefixes:
+        directive["system_prefix"] = directive.get("system_prefix","") + " | " + " | ".join(additional_prefixes)
+
+    directive["active_modules"] = selected_modules
+    directive["post_process_chain"] = [
+        PHL_EXECUTION_DIRECTIVES.get(m, {}).get("post_process", "none")
+        for m in selected_modules
+    ]
+    return directive
+
+def phl_post_process(text: str, directive: dict) -> str:
+    """post_process_chainに従ってテキストを後処理"""
+    chain = directive.get("post_process_chain", [])
+    result = text
+
+    for proc in chain:
+        if proc == "add_confidence_markers":
+            # 断言文に信頼度マーカーを付与
+            lines = result.split("\n")
+            processed = []
+            for line in lines:
+                if line.strip() and not line.startswith("[") and not line.startswith("#"):
+                    if any(w in line for w in ["必ず","確実","間違いなく","definitely","certainly","always"]):
+                        line = "[GHOST-CHECK] " + line
+                processed.append(line)
+            result = "\n".join(processed)
+
+        elif proc == "enforce_numbered_structure":
+            # 箇条書きを番号付きに変換
+            lines = result.split("\n")
+            numbered = []
+            counter = 1
+            for line in lines:
+                if line.startswith("- ") or line.startswith("* "):
+                    line = f"{counter}. " + line[2:]
+                    counter += 1
+                numbered.append(line)
+            result = "\n".join(numbered)
+
+        elif proc == "truncate_to_action":
+            # OODA: 最初の300文字に要約ラベル付与
+            if len(result) > 400:
+                result = result[:400] + "\n[OODA: truncated for speed]"
+
+        elif proc == "extract_principles":
+            # SAGEモード: 末尾に原則サマリーを追加
+            result = result + "\n\n[SAGE] Core principle: " + result.split("。")[0][:80] if "。" in result else result
+
+        elif proc == "add_roadmap_framing":
+            # STRATEGISTモード: Phase構造を付与
+            if "Phase" not in result and "フェーズ" not in result:
+                result = "**Roadmap framing applied**\n" + result
+
+    return result
+
+def phl_build_execution_context(selected_modules: list, state: dict, text: str = "") -> dict:
+    """実行コンテキストを生成 - AIへの指令として使用"""
+    directive = phl_merge_directives(selected_modules)
+    processed_text = phl_post_process(text, directive) if text else ""
+
+    return {
+        "directive":        directive,
+        "system_prefix":    directive.get("system_prefix", ""),
+        "mode":             directive.get("mode", "default"),
+        "active_modules":   selected_modules,
+        "processed_text":   processed_text,
+        "state_snapshot":   {
+            "uncertainty":   state.get("uncertainty", 0.5),
+            "risk_level":    state.get("risk_level", 0.3),
+            "time_pressure": state.get("time_pressure", 0.3),
+            "goal_type":     state.get("goal_type", "analysis"),
+        },
+        "version": "v2",
+    }
+
+
 def phl_build_state(payload):
     return {
         "goal_type":              payload.get("goal_type", "analysis"),
@@ -491,16 +645,81 @@ def phl_analyze():
     guard             = phl_run_guard(state, selected, draft)
     trace             = phl_build_trace(state, candidates, selected, excluded, guard)
     eid               = phl_record_event(state, selected, guard, trace)
+    # v2: 実行コンテキスト生成（selected_modulesが実際の動作定義を持つ）
+    exec_ctx = phl_build_execution_context(selected, state)
+
     result = {
-        "event_id":         eid,
-        "selected_modules": selected,
-        "guard":            guard,
-        "decision_trace":   trace,
-        "recorded":         True,
+        "event_id":          eid,
+        "selected_modules":  selected,
+        "guard":             guard,
+        "decision_trace":    trace,
+        "execution_context": exec_ctx,
+        "recorded":          True,
+        "version":           "v2",
     }
     _phl_push_history(result)
-    print("[PHL-OS] " + eid + " | modules=" + str(selected) + " | guard=" + guard["status"])
+    print("[PHL-OS v2] " + eid + " | modules=" + str(selected) + " | guard=" + guard["status"] + " | mode=" + exec_ctx["mode"])
     return jsonify(result)
+
+
+@app.route("/phl/execute", methods=["POST"])
+def phl_execute():
+    """v2: テキストをPHL-OSモジュールで後処理して返す実行エンドポイント"""
+    body    = request.json or {}
+    text    = body.get("text", "")
+    modules = body.get("modules", [])
+    state_payload = body.get("state", {})
+
+    if not text:
+        return jsonify({"status": "error", "message": "text required"}), 400
+    if not modules:
+        # モジュール未指定なら自動選択
+        state = phl_build_state(state_payload)
+        selected, candidates, excluded = phl_select_modules(state)
+        guard = phl_run_guard(state, selected, {})
+    else:
+        state    = phl_build_state(state_payload)
+        selected = modules
+        guard    = phl_run_guard(state, selected, {})
+
+    exec_ctx       = phl_build_execution_context(selected, state, text)
+    processed_text = exec_ctx["processed_text"]
+
+    return jsonify({
+        "status":           "ok",
+        "original_text":    text,
+        "processed_text":   processed_text,
+        "active_modules":   selected,
+        "mode":             exec_ctx["mode"],
+        "system_prefix":    exec_ctx["system_prefix"],
+        "guard":            guard,
+        "version":          "v2",
+    })
+
+
+@app.route("/phl/directive", methods=["POST"])
+def phl_directive():
+    """v2: モジュール指定でシステムプロンプト指令だけを返す（AI呼び出し前の前処理用）"""
+    body    = request.json or {}
+    modules = body.get("modules", [])
+    state_payload = body.get("state", {})
+
+    if not modules:
+        state = phl_build_state(state_payload)
+        selected, _, _ = phl_select_modules(state)
+    else:
+        state    = phl_build_state(state_payload)
+        selected = modules
+
+    exec_ctx = phl_build_execution_context(selected, state)
+    return jsonify({
+        "status":         "ok",
+        "active_modules": selected,
+        "mode":           exec_ctx["mode"],
+        "system_prefix":  exec_ctx["system_prefix"],
+        "directive":      exec_ctx["directive"],
+        "version":        "v2",
+    })
 
 @app.route("/phl/history", methods=["GET"])
 def phl_history():
