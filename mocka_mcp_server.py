@@ -4,7 +4,7 @@ MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
-import json, csv, hashlib, datetime, re
+import json, csv, hashlib, datetime, re, sqlite3, unicodedata
 from pathlib import Path
 from flask import Flask, request
 from flask_cors import CORS
@@ -13,9 +13,84 @@ BASE           = Path(r"C:\Users\sirok\MoCKA")
 OVERVIEW_PATH  = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
 TODO_PATH      = Path(r"C:\Users\sirok\MOCKA_TODO.json")
 KNOWLEDGE_GATE = BASE / "data"
-EVENTS_CSV     = BASE / "data" / "events.csv"
+EVENTS_CSV     = BASE / "data" / "events.csv"  # 廃止済み（互換保持のみ）
 FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
 AUTO_LOG_CSV   = BASE / "data" / "claude_sessions.csv"
+DB_PATH        = BASE / "data" / "mocka_events.db"
+
+# ============================================================
+# SQLite接続ヘルパー（文字化け防御ゲート付き）
+# ============================================================
+def _get_db():
+    con = sqlite3.connect(str(DB_PATH))
+    con.row_factory = sqlite3.Row
+    return con
+
+def _sanitize(text):
+    """U+FFFD・BOM・????パターンを除去して安全なUTF-8文字列を返す"""
+    if not isinstance(text, str):
+        return str(text) if text is not None else ""
+    text = text.lstrip("\ufeff")
+    text = text.replace("\ufffd", "")
+    # ????パターン検出（3個以上の?が連続）
+    if text.count("?") >= 3 and len(text.replace("?","").strip()) < len(text) * 0.5:
+        return ""  # データ欠損行は空文字で安全化
+    return text
+
+def _db_read_events(n=None):
+    """SQLiteからevents読み込み（旧CSV互換形式で返す）"""
+    try:
+        con = _get_db()
+        cur = con.cursor()
+        if n:
+            cur.execute("SELECT * FROM events ORDER BY rowid DESC LIMIT ?", (n,))
+        else:
+            cur.execute("SELECT * FROM events ORDER BY rowid")
+        cols = [d[0] for d in cur.description]
+        rows = []
+        for r in cur.fetchall():
+            row = dict(zip(cols, r))
+            # when_ts → when の互換マッピング
+            if "when_ts" in row and "when" not in row:
+                row["when"] = row["when_ts"]
+            rows.append(row)
+        con.close()
+        return rows
+    except Exception as e:
+        print(f"[MCP] db_read_events error: {e}")
+        return []
+
+def _db_write_event(row: dict):
+    """SQLiteにイベントを書き込む（文字化け防御ゲート付き）"""
+    try:
+        # 全フィールドをsanitize
+        safe = {k: _sanitize(str(v)) for k, v in row.items()}
+        con = _get_db()
+        cur = con.cursor()
+        cur.execute("""
+            INSERT OR IGNORE INTO events
+            (event_id, when_ts, who_actor, what_type, where_component, where_path,
+             why_purpose, how_trigger, channel_type, lifecycle_phase, risk_level,
+             category_ab, target_class, title, short_summary, before_state,
+             after_state, change_type, impact_scope, impact_result,
+             related_event_id, trace_id, free_note)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+            safe.get("event_id",""), safe.get("when",""), safe.get("who_actor",""),
+            safe.get("what_type",""), safe.get("where_component",""), safe.get("where_path",""),
+            safe.get("why_purpose",""), safe.get("how_trigger",""), safe.get("channel_type",""),
+            safe.get("lifecycle_phase",""), safe.get("risk_level",""), safe.get("category_ab",""),
+            safe.get("target_class",""), safe.get("title",""), safe.get("short_summary",""),
+            safe.get("before_state",""), safe.get("after_state",""), safe.get("change_type",""),
+            safe.get("impact_scope",""), safe.get("impact_result",""),
+            safe.get("related_event_id",""), safe.get("trace_id",""), safe.get("free_note",""),
+        ))
+        con.commit()
+        con.close()
+        return True
+    except Exception as e:
+        print(f"[MCP] db_write_event error: {e}")
+        return False
 
 EVENTS_FIELDS = ["event_id","when","who_actor","what_type","where_component","where_path","why_purpose","how_trigger","channel_type","lifecycle_phase","risk_level","category_ab","target_class","title","short_summary","before_state","after_state","change_type","impact_scope","impact_result","related_event_id","trace_id","free_note"]
 
@@ -34,19 +109,15 @@ def find_events_csv():
     return None
 
 def read_events(n=20):
-    path = find_events_csv()
-    if not path: return []
-    rows = []
-    with open(path, encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f): rows.append(dict(row))
-    return rows[-n:]
+    # CSV廃止済み → SQLite参照
+    rows = _db_read_events()
+    return rows[-n:] if n else rows
 
 def search_events(query):
-    path = find_events_csv()
-    if not path: return []
+    # CSV廃止済み → SQLite参照
     q = query.lower()
-    with open(path, encoding="utf-8", newline="") as f:
-        return [dict(r) for r in csv.DictReader(f) if any(q in str(v).lower() for v in r.values())]
+    rows = _db_read_events()
+    return [r for r in rows if any(q in str(v).lower() for v in r.values())]
 
 def search_knowledge_gate(query):
     q = query.lower()
@@ -72,9 +143,17 @@ def sha256_file(path):
 
 def next_event_id():
     today = datetime.date.today().strftime("%Y%m%d")
-    events = read_events(9999)
-    pattern = re.compile(rf"E{today}_(\d+)")
-    nums = [int(m.group(1)) for e in events for m in [pattern.search(e.get("event_id",""))] if m]
+    try:
+        con = _get_db()
+        cur = con.cursor()
+        pattern = f"E{today}_%"
+        cur.execute("SELECT event_id FROM events WHERE event_id LIKE ?", (pattern,))
+        ids = [r[0] for r in cur.fetchall()]
+        con.close()
+        rx = re.compile(rf"E{today}_(\d+)")
+        nums = [int(m.group(1)) for eid in ids for m in [rx.search(eid)] if m]
+    except:
+        nums = []
     return f"E{today}_{(max(nums)+1 if nums else 1):03d}"
 
 def auto_log(tool_name, args, result_summary):
@@ -199,8 +278,7 @@ def execute_tool(name, args):
             return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
 
         elif name == "mocka_write_event":
-            path = find_events_csv() or EVENTS_CSV
-            path.parent.mkdir(parents=True, exist_ok=True)
+            # CSV廃止済み → SQLite直接書き込み（文字化け防御ゲート通過）
             eid = next_event_id()
             ts  = datetime.datetime.now().isoformat()
             row = {f: "" for f in EVENTS_FIELDS}
@@ -218,17 +296,18 @@ def execute_tool(name, args):
             row["lifecycle_phase"] = "in_operation"
             row["risk_level"]      = "normal"
             row["channel_type"]    = "mcp"
-            with open(path, "a", encoding="utf-8", newline="") as f:
-                w = csv.DictWriter(f, fieldnames=EVENTS_FIELDS)
-                w.writerow(row)
-            auto_log(name, args, f"written {eid}")
-            return json.dumps({"status": "ok", "event_id": eid, "when": ts}, ensure_ascii=False)
+            ok = _db_write_event(row)
+            auto_log(name, args, f"written {eid} db={'ok' if ok else 'error'}")
+            return json.dumps({"status": "ok" if ok else "error", "event_id": eid, "when": ts, "storage": "sqlite"}, ensure_ascii=False)
 
         elif name == "mocka_seal":
-            path = find_events_csv()
-            if not path: return json.dumps({"error": "events.csv not found"})
-            h = sha256_file(path)
-            result = {"sha256": h, "file": str(path), "timestamp": datetime.datetime.now().isoformat()}
+            # CSV廃止済み → SQLite全件JSONハッシュ
+            import hashlib as _hl
+            rows = _db_read_events()
+            payload = json.dumps(rows, ensure_ascii=False, sort_keys=True).encode("utf-8")
+            h = _hl.sha256(payload).hexdigest()
+            result = {"sha256": h, "source": "sqlite", "event_count": len(rows),
+                      "timestamp": datetime.datetime.now().isoformat()}
             auto_log(name, args, h[:16])
             return json.dumps(result, ensure_ascii=False)
 
@@ -270,8 +349,11 @@ def register():
 
 @app.route("/health")
 def health():
-    ep = find_events_csv()
-    return json.dumps({"status": "ok", "version": "1.3.0", "port": 5002, "overview_exists": OVERVIEW_PATH.exists(), "todo_exists": TODO_PATH.exists(), "events_csv": str(ep) if ep else None, "tools": [t["name"] for t in TOOLS]}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+    rows = _db_read_events()
+    return json.dumps({"status": "ok", "version": "1.4.0", "port": 5002,
+                       "overview_exists": OVERVIEW_PATH.exists(), "todo_exists": TODO_PATH.exists(),
+                       "storage": "sqlite", "event_count": len(rows),
+                       "tools": [t["name"] for t in TOOLS]}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 
 # ========================================
