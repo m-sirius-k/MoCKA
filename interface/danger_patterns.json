@@ -210,5 +210,107 @@
     "auto_learned_count": 78,
     "last_analyzed": "2026-04-19T11:48:27.756407",
     "events_analyzed": 855
-  }
+  },
+  "tier2": [
+    {
+      "word": "commit",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "error",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "exception",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "fail",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "ignore",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "issue",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "repeated",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "secret",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "timeout",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "token",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "unauthorized",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "できない",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "また",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "エラー",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "問題",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "壊れ",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "失敗",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "無断",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "繰り返し",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    },
+    {
+      "word": "誤って",
+      "source": "pattern_library_INCIDENT",
+      "added_at": "2026-04-30T08:44:29.847908"
+    }
+  ]
 }
