@@ -71,8 +71,8 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .civloop-row{display:flex;flex-direction:row;gap:6px;margin-bottom:3px;align-items:stretch;}
 .civloop-chips{display:flex;flex-wrap:wrap;gap:3px;flex:0 0 auto;align-content:flex-start;}
 
-/* TODO PUZZLE ブロック */
-.todo-puzzle{flex:1 1 0;min-width:0;border-radius:4px;padding:6px 8px;border:1.5px solid #1e3a5f;background:#060c18;overflow:hidden;display:flex;flex-direction:column;}
+/* TODO PUZZLE ブロック — フルwidth独立パネル */
+.todo-puzzle{width:100%;border-radius:4px;padding:6px 8px;border:1.5px solid #1e3a5f;background:#060c18;display:flex;flex-direction:column;box-sizing:border-box;}
 .puzzle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid #1e293b;}
 .puzzle-title{font-size:9px;color:#00d4aa;letter-spacing:2px;font-weight:700;}
 .puzzle-counts{display:flex;gap:4px;}
@@ -82,25 +82,25 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .puzzle-cnt.mid    {background:#080828;color:#818cf8;border:1px solid #1e1e6a;}
 .puzzle-cnt.low    {background:#111118;color:#6b7280;border:1px solid #2a2a3a;}
 
-/* パズルタイル群 — grid 2次元エリア */
+/* パズルタイル群 — grid 2次元エリア フルwidth */
 .puzzle-tiles{
   display:grid;
-  grid-template-columns:repeat(auto-fill,90px);
+  grid-template-columns:repeat(auto-fill,minmax(82px,1fr));
   grid-auto-rows:72px;
   gap:5px;
   overflow-y:auto;
-  flex:1;
+  max-height:240px;
   padding-bottom:2px;
-  align-content:start;
+  margin-top:4px;
 }
 .ptile{
   display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;
   border-radius:4px;padding:6px 8px 5px 8px;cursor:default;
-  width:90px;height:72px;
+  width:100%;height:72px;
   box-sizing:border-box;
 }
 .ptile-empty{
-  width:90px;height:72px;border-radius:4px;
+  width:100%;height:72px;border-radius:4px;
   background:transparent;
   border:1px dashed #1a2030;
   box-sizing:border-box;
@@ -231,35 +231,17 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <span class="clock" id="clock">--:--:--</span>
 </div>
 
-<!-- CIVILIZATION LOOP + TODO PUZZLE -->
+<!-- CIVILIZATION LOOP -->
 <div class="sec">CIVILIZATION LOOP</div>
-<div class="civloop-row">
-  <div class="civloop-chips">
-    <div class="chip"><div class="n" id="cn-observe">-</div><div class="l">OBSERVE</div></div><div class="arr">→</div>
-    <div class="chip"><div class="n" id="cn-record">-</div><div class="l">RECORD</div></div><div class="arr">→</div>
-    <div class="chip"><div class="n" id="cn-incident">-</div><div class="l">INCIDENT</div></div><div class="arr">→</div>
-    <div class="chip"><div class="n" id="cn-recurrence">-</div><div class="l">RECURRENCE</div></div><div class="arr">→</div>
-    <div class="chip"><div class="n" id="cn-prevention">-</div><div class="l">PREVENTION</div></div><div class="arr">→</div>
-    <div class="chip"><div class="n" id="cn-decision">-</div><div class="l">DECISION</div></div><div class="arr">→</div>
-    <div class="chip"><div class="n" id="cn-action">-</div><div class="l">ACTION</div></div><div class="arr">→</div>
-    <div class="chip teal"><div class="n" id="cn-audit">-</div><div class="l">AUDIT</div></div>
-  </div>
-
-  <!-- ★ TODO PUZZLE -->
-  <div class="todo-puzzle">
-    <div class="puzzle-header">
-      <span class="puzzle-title">TODO BOARD</span>
-      <div class="puzzle-counts">
-        <span class="puzzle-cnt saikou" id="pc-saikou">最高 0</span>
-        <span class="puzzle-cnt high"   id="pc-high">高 0</span>
-        <span class="puzzle-cnt mid"    id="pc-mid">中 0</span>
-        <span class="puzzle-cnt low"    id="pc-low">低 0</span>
-      </div>
-    </div>
-    <div class="puzzle-tiles" id="puzzle-tiles">
-      <span style="color:#1e293b;font-size:9px;">— loading —</span>
-    </div>
-  </div>
+<div class="row" style="margin-bottom:3px;">
+  <div class="chip"><div class="n" id="cn-observe">-</div><div class="l">OBSERVE</div></div><div class="arr">→</div>
+  <div class="chip"><div class="n" id="cn-record">-</div><div class="l">RECORD</div></div><div class="arr">→</div>
+  <div class="chip"><div class="n" id="cn-incident">-</div><div class="l">INCIDENT</div></div><div class="arr">→</div>
+  <div class="chip"><div class="n" id="cn-recurrence">-</div><div class="l">RECURRENCE</div></div><div class="arr">→</div>
+  <div class="chip"><div class="n" id="cn-prevention">-</div><div class="l">PREVENTION</div></div><div class="arr">→</div>
+  <div class="chip"><div class="n" id="cn-decision">-</div><div class="l">DECISION</div></div><div class="arr">→</div>
+  <div class="chip"><div class="n" id="cn-action">-</div><div class="l">ACTION</div></div><div class="arr">→</div>
+  <div class="chip teal"><div class="n" id="cn-audit">-</div><div class="l">AUDIT</div></div>
 </div>
 
 <!-- PIPELINE -->
@@ -298,6 +280,23 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <div class="chip blue"><div class="n" id="dts">-</div><div class="l">SILENT</div></div>
 </div>
 
+<!-- ★ TODO BOARD — DANGER直下フルwidth -->
+<div class="sec">TODO BOARD</div>
+<div class="todo-puzzle" style="margin-bottom:3px;min-height:160px;">
+  <div class="puzzle-header">
+    <span class="puzzle-title">残タスク</span>
+    <div class="puzzle-counts">
+      <span class="puzzle-cnt saikou" id="pc-saikou">最高 0</span>
+      <span class="puzzle-cnt high"   id="pc-high">高 0</span>
+      <span class="puzzle-cnt mid"    id="pc-mid">中 0</span>
+      <span class="puzzle-cnt low"    id="pc-low">低 0</span>
+    </div>
+  </div>
+  <div class="puzzle-tiles" id="puzzle-tiles">
+    <div class="ptile-empty"></div>
+  </div>
+</div>
+
 <!-- ★ SPP/PHL + TODO 横並び -->
 <div class="sec">SPP / PHL — ESSENCE &nbsp;&nbsp;|&nbsp;&nbsp; TODO — 優先順</div>
 <div class="spp-todo-row">
@@ -327,7 +326,6 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <!-- 右: TODO インラインパネル -->
   <div class="todo-col">
     <div class="col-label">TODO — 優先順</div>
-    <!-- ★ 視覚ブロック -->
     <div class="todo-visual-bar" id="todo-visual-bar"></div>
     <ul id="todo-inline-list">
       <li class="tc-item"><span style="color:var(--dim);font-size:9px;">— loading —</span></li>
