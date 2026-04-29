@@ -1,5 +1,5 @@
 """
-mocka_mcp_server.py v1.3.0
+mocka_mcp_server.py v1.5.0
 MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
@@ -24,6 +24,15 @@ DB_PATH        = BASE / "data" / "mocka_events.db"
 def _get_db():
     con = sqlite3.connect(str(DB_PATH))
     con.row_factory = sqlite3.Row
+    # claude_sessionsテーブルを自動作成（初回のみ）
+    con.execute("""CREATE TABLE IF NOT EXISTS claude_sessions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp TEXT,
+        tool TEXT,
+        args TEXT,
+        result_summary TEXT
+    )""")
+    con.commit()
     return con
 
 def _sanitize(text):
@@ -157,14 +166,18 @@ def next_event_id():
     return f"E{today}_{(max(nums)+1 if nums else 1):03d}"
 
 def auto_log(tool_name, args, result_summary):
+    # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録
     try:
-        ts = datetime.datetime.now().isoformat()
-        row = {"timestamp": ts, "tool": tool_name, "args": json.dumps(args, ensure_ascii=False)[:200], "result": str(result_summary)[:200]}
-        exists = AUTO_LOG_CSV.exists()
-        with open(AUTO_LOG_CSV, "a", encoding="utf-8", newline="") as f:
-            w = csv.DictWriter(f, fieldnames=row.keys())
-            if not exists: w.writeheader()
-            w.writerow(row)
+        ts  = datetime.datetime.now().isoformat()
+        arg = json.dumps(args, ensure_ascii=False)[:200]
+        res = _sanitize(str(result_summary))[:200]
+        con = _get_db()
+        con.execute(
+            "INSERT INTO claude_sessions (timestamp, tool, args, result_summary) VALUES (?,?,?,?)",
+            (ts, tool_name, arg, res)
+        )
+        con.commit()
+        con.close()
     except: pass
 
 def load_todo():
@@ -350,7 +363,7 @@ def register():
 @app.route("/health")
 def health():
     rows = _db_read_events()
-    return json.dumps({"status": "ok", "version": "1.4.0", "port": 5002,
+    return json.dumps({"status": "ok", "version": "1.5.0", "port": 5002,
                        "overview_exists": OVERVIEW_PATH.exists(), "todo_exists": TODO_PATH.exists(),
                        "storage": "sqlite", "event_count": len(rows),
                        "tools": [t["name"] for t in TOOLS]}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
@@ -377,6 +390,6 @@ def agent_call(tool_name):
     result = execute_tool(tool_name, args)
     return result, 200, {"Content-Type": "application/json; charset=utf-8"}
 if __name__ == "__main__":
-    print("MoCKA MCP Server v1.3.0 -- http://localhost:5002/mcp")
+    print("MoCKA MCP Server v1.5.0 -- http://localhost:5002/mcp")
     print(f"Tools: {len(TOOLS)}")
     app.run(host="0.0.0.0", port=5002, debug=False)
