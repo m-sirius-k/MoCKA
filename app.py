@@ -1,4 +1,4 @@
-﻿import sqlite3
+import sqlite3
 import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
