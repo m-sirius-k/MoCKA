@@ -1,4 +1,4 @@
-"""
+﻿"""
 mocka_caliber_server.py v5
 APIゼロ化版 - Claude Haiku API呼び出しをローカル処理に完全置き換え
 
@@ -295,6 +295,201 @@ def process():
         "extraction_preview": extraction[:300],
     })
 
+
+
+# ===============================================================
+# PHL-OS Caliber Integration v1
+# Append this block just before: if __name__ == "__main__":
+# No Japanese characters - ASCII only to avoid encoding issues
+# ===============================================================
+
+# Module specs table
+PHL_MODULE_SPECS = {
+    "ghost":      {"precision":0.95,"structure":0.55,"speed":0.70,"stability":0.95,"risk":0.15,
+                   "desc":"precision and cooling mode"},
+    "L99":        {"precision":0.80,"structure":0.95,"speed":0.55,"stability":0.80,"risk":0.25,
+                   "desc":"structured planning mode"},
+    "OODA":       {"precision":0.70,"structure":0.70,"speed":0.90,"stability":0.60,"risk":0.45,
+                   "desc":"decision loop speed priority"},
+    "SAGE":       {"precision":0.75,"structure":0.65,"speed":0.40,"stability":0.70,"risk":0.35,
+                   "desc":"abstraction and concept extraction"},
+    "STRATEGIST": {"precision":0.82,"structure":0.88,"speed":0.50,"stability":0.82,"risk":0.28,
+                   "desc":"long-term design and roadmap"},
+    "artifact":   {"precision":0.72,"structure":0.92,"speed":0.72,"stability":0.78,"risk":0.20,
+                   "desc":"output generation and formatting"},
+    "code":       {"precision":0.85,"structure":0.78,"speed":0.68,"stability":0.74,"risk":0.40,
+                   "desc":"implementation and code generation"},
+}
+
+def phl_build_state(payload):
+    return {
+        "goal_type":              payload.get("goal_type", "analysis"),
+        "uncertainty":            float(payload.get("uncertainty", 0.5)),
+        "risk_level":             float(payload.get("risk_level", 0.3)),
+        "time_pressure":          float(payload.get("time_pressure", 0.3)),
+        "abstraction_level":      float(payload.get("abstraction_level", 0.5)),
+        "novelty":                float(payload.get("novelty", 0.4)),
+        "output_format":          payload.get("output_format", ["text"]),
+        "evidence_required":      float(payload.get("evidence_required", 0.5)),
+        "reversibility_required": float(payload.get("reversibility_required", 0.5)),
+        "stakes":                 payload.get("stakes", "medium"),
+    }
+
+def phl_select_modules(state):
+    candidates = []
+    if state["uncertainty"] >= 0.6 or state["evidence_required"] >= 0.7:
+        candidates.append({"module":"ghost",      "trigger":"uncertainty>=0.6 or evidence_required>=0.7"})
+    if "plan" in state["output_format"] or state["abstraction_level"] >= 0.6:
+        candidates.append({"module":"L99",        "trigger":"plan in output_format or abstraction_level>=0.6"})
+    if state["goal_type"] == "decision" or state["time_pressure"] >= 0.7:
+        candidates.append({"module":"OODA",       "trigger":"goal_type==decision or time_pressure>=0.7"})
+    if state["goal_type"] in ["design","review"] and state["abstraction_level"] >= 0.7:
+        candidates.append({"module":"SAGE",       "trigger":"goal_type in [design,review] and abstraction_level>=0.7"})
+        candidates.append({"module":"STRATEGIST", "trigger":"goal_type in [design,review] and abstraction_level>=0.7"})
+    if "code" in state["output_format"] or state["goal_type"] == "implementation":
+        candidates.append({"module":"code",       "trigger":"code in output_format or goal_type==implementation"})
+    if "table" in state["output_format"]:
+        candidates.append({"module":"artifact",   "trigger":"table in output_format"})
+    if not candidates:
+        candidates.append({"module":"ghost",      "trigger":"fallback:no_match"})
+
+    selected = list(dict.fromkeys(c["module"] for c in candidates))
+    excluded = []
+    if "OODA" in selected and "SAGE" in selected and state["time_pressure"] > 0.7:
+        selected.remove("SAGE")
+        excluded.append({"module":"SAGE","reason":"conflict:OODA:time_pressure>0.7"})
+    return selected, candidates, excluded
+
+def phl_run_guard(state, modules, draft):
+    risk = state.get("risk_level", 0.0)
+    rev  = state.get("reversibility_required", 0.0)
+    ev_r = state.get("evidence_required", 0.0)
+    ev_c = draft.get("evidence_count", 1)
+    if draft.get("contradiction", False):
+        return {"status":"HALT",      "level":4, "reason":"logical_contradiction"}
+    if risk > 0.75 and rev > 0.7:
+        return {"status":"HALT",      "level":4, "reason":"high_risk_irreversible"}
+    if risk > 0.9:
+        return {"status":"HALT",      "level":4, "reason":"extreme_risk"}
+    if ev_r > 0.8 and ev_c == 0:
+        return {"status":"REANALYZE", "level":3, "reason":"insufficient_evidence"}
+    if risk > 0.75:
+        return {"status":"RESTRICT",  "level":2, "reason":"risk_modules_limited"}
+    if risk > 0.6:
+        return {"status":"WARN",      "level":1, "reason":"risk_elevated"}
+    return {"status":"SAFE",          "level":0, "reason":None}
+
+def phl_score(module, state):
+    spec = PHL_MODULE_SPECS.get(module, {})
+    if not spec:
+        return 0.5
+    score  = spec.get("precision", 0.5) * (0.3 + state.get("uncertainty", 0.5) * 0.2)
+    score += spec.get("structure", 0.5) * (0.2 + state.get("abstraction_level", 0.5) * 0.2)
+    score += spec.get("speed",     0.5) * state.get("time_pressure", 0.3) * 0.2
+    score -= spec.get("risk",      0.3) * state.get("risk_level", 0.3) * 0.3
+    return round(score, 4)
+
+def phl_build_trace(state, candidates, selected, excluded, guard):
+    all_mods     = [c["module"] for c in candidates]
+    not_selected = [m for m in all_mods if m not in selected]
+    scores       = {m: phl_score(m, state) for m in all_mods}
+    selected_reasons = {c["module"]: c["trigger"]
+                        for c in candidates if c["module"] in selected}
+    weights = {
+        "precision_weight": round(0.3 + state.get("uncertainty", 0.5) * 0.2, 3),
+        "structure_weight": round(0.2 + state.get("abstraction_level", 0.5) * 0.2, 3),
+        "speed_weight":     round(state.get("time_pressure", 0.3) * 0.2, 3),
+        "risk_penalty":     round(state.get("risk_level", 0.3) * 0.3, 3),
+    }
+    counterfactuals = []
+    for m in not_selected:
+        spec   = PHL_MODULE_SPECS.get(m, {})
+        reason = "not triggered by state_vector"
+        if m == "SAGE" and state.get("time_pressure", 0) > 0.7:
+            reason = "time_pressure>0.7: OODA priority"
+        elif spec.get("risk", 0) > 0.7:
+            reason = "module_risk too high"
+        counterfactuals.append({
+            "module":              m,
+            "score":               phl_score(m, state),
+            "expected_effect":     spec.get("desc", "-"),
+            "reason_not_selected": reason,
+        })
+    return {
+        "version":         "v1",
+        "state_summary":   {
+            "goal_type":   state.get("goal_type"),
+            "uncertainty": state.get("uncertainty"),
+            "risk_level":  state.get("risk_level"),
+            "stakes":      state.get("stakes"),
+        },
+        "candidate_modules":  all_mods,
+        "scores":             scores,
+        "weights":            weights,
+        "selected":           selected,
+        "selected_reasons":   selected_reasons,
+        "excluded":           excluded,
+        "guard_status":       guard.get("status"),
+        "guard_reason":       guard.get("reason"),
+        "counterfactuals":    counterfactuals,
+    }
+
+def phl_record_event(state, selected, guard, trace):
+    ts   = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+    eid  = "EPHL_" + ts + "_" + state.get("goal_type","?")[:4].upper()
+    prev = get_prev_hash()
+    reasons_str = json.dumps(trace.get("selected_reasons", {}), ensure_ascii=False)
+    trace_str   = json.dumps(trace, ensure_ascii=False)
+    row = [
+        eid, ts, "PHL-OS", "phl_decision", "caliber/phl_os",
+        "mocka_caliber_server.py", reasons_str, "phl_analyze",
+        "internal", "in_operation", "normal", "A",
+        "selected:" + ",".join(selected),
+        "PHL-OS: " + state.get("goal_type","?") + " -> " + ",".join(selected),
+        prev, "guard:" + guard.get("status","?") + " stakes:" + state.get("stakes","?"),
+        "phl_decision", "caliber", "decision_trace",
+        "N/A", "N/A",
+        "guard=" + guard.get("status","?") + " trace=" + trace_str[:200],
+    ]
+    append_event(row)
+    return eid
+
+_phl_history = []
+
+def _phl_push_history(entry):
+    _phl_history.append(entry)
+    if len(_phl_history) > 50:
+        _phl_history.pop(0)
+
+@app.route("/phl/analyze", methods=["POST"])
+def phl_analyze():
+    body    = request.json or {}
+    payload = body.get("state", body)
+    draft   = body.get("draft", {"evidence_count": 1, "contradiction": False})
+    state             = phl_build_state(payload)
+    selected, candidates, excluded = phl_select_modules(state)
+    guard             = phl_run_guard(state, selected, draft)
+    trace             = phl_build_trace(state, candidates, selected, excluded, guard)
+    eid               = phl_record_event(state, selected, guard, trace)
+    result = {
+        "event_id":         eid,
+        "selected_modules": selected,
+        "guard":            guard,
+        "decision_trace":   trace,
+        "recorded":         True,
+    }
+    _phl_push_history(result)
+    print("[PHL-OS] " + eid + " | modules=" + str(selected) + " | guard=" + guard["status"])
+    return jsonify(result)
+
+@app.route("/phl/history", methods=["GET"])
+def phl_history():
+    n = int(request.args.get("n", 10))
+    return jsonify({"count": len(_phl_history), "history": _phl_history[-n:]})
+
+@app.route("/phl/modules", methods=["GET"])
+def phl_modules():
+    return jsonify({"modules": PHL_MODULE_SPECS, "count": len(PHL_MODULE_SPECS), "version": "v1"})
 
 if __name__ == "__main__":
     print("[MoCKA Caliber Server v5 - API ZERO] port 5679")
