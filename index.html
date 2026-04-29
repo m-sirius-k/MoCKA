@@ -67,6 +67,47 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 .kdi-formula{font-size:9px;color:var(--dim);margin-top:6px;border-top:1px solid var(--border);padding-top:4px;}
 .kdi-formula span{color:var(--amber);}
 
+/* ★ CIV LOOP + TODO PUZZLE 横並び */
+.civloop-row{display:flex;flex-direction:row;gap:6px;margin-bottom:3px;align-items:stretch;}
+.civloop-chips{display:flex;flex-wrap:wrap;gap:3px;flex:0 0 auto;align-content:flex-start;}
+
+/* TODO PUZZLE ブロック */
+.todo-puzzle{flex:1 1 0;min-width:0;border-radius:4px;padding:6px 8px;border:1.5px solid #1e3a5f;background:#060c18;overflow:hidden;display:flex;flex-direction:column;}
+.puzzle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid #1e293b;}
+.puzzle-title{font-size:9px;color:#00d4aa;letter-spacing:2px;font-weight:700;}
+.puzzle-counts{display:flex;gap:4px;}
+.puzzle-cnt{font-size:9px;font-weight:700;padding:1px 5px;border-radius:2px;}
+.puzzle-cnt.saikou{background:#3a0808;color:#ff8080;border:1px solid #7a1010;}
+.puzzle-cnt.high   {background:#0d2000;color:#7fff00;border:1px solid #2a5a00;}
+.puzzle-cnt.mid    {background:#080828;color:#818cf8;border:1px solid #1e1e6a;}
+.puzzle-cnt.low    {background:#111118;color:#6b7280;border:1px solid #2a2a3a;}
+
+/* パズルタイル群 — 大型カード */
+.puzzle-tiles{display:flex;flex-wrap:wrap;gap:5px;align-content:flex-start;overflow-y:auto;flex:1;padding-bottom:2px;}
+.ptile{
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;
+  border-radius:4px;padding:6px 8px 5px 8px;cursor:default;
+  width:90px;height:72px;flex-shrink:0;position:relative;
+  box-sizing:border-box;
+}
+.ptile .pt-num{
+  font-size:28px;font-weight:700;font-family:'Courier New',monospace;
+  line-height:1;display:block;
+}
+.ptile .pt-ttl{
+  font-size:8px;line-height:1.3;margin-top:3px;width:100%;
+  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;word-break:break-all;
+}
+.ptile.saikou{background:#1a0303;border:2px solid #cc2222;color:#ff9090;}
+.ptile.saikou .pt-num{color:#ff4444;}
+.ptile.high   {background:#071500;border:2px solid #228822;color:#90d060;}
+.ptile.high   .pt-num{color:#44cc00;}
+.ptile.mid    {background:#050520;border:2px solid #4444aa;color:#8888d8;}
+.ptile.mid    .pt-num{color:#6666cc;}
+.ptile.low    {background:#0e0e12;border:2px solid #333344;color:#606070;}
+.ptile.low    .pt-num{color:#505060;}
+
 /* ★ SPP/PHL + TODO 横並びレイアウト */
 .spp-todo-row{display:flex;flex-direction:row;gap:6px;margin-bottom:3px;width:100%;align-items:stretch;}
 .spp-col{flex:0 0 48%;min-width:0;}
@@ -175,17 +216,35 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
   <span class="clock" id="clock">--:--:--</span>
 </div>
 
-<!-- CIVILIZATION LOOP -->
+<!-- CIVILIZATION LOOP + TODO PUZZLE -->
 <div class="sec">CIVILIZATION LOOP</div>
-<div class="row" style="margin-bottom:3px;">
-  <div class="chip"><div class="n" id="cn-observe">-</div><div class="l">OBSERVE</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-record">-</div><div class="l">RECORD</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-incident">-</div><div class="l">INCIDENT</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-recurrence">-</div><div class="l">RECURRENCE</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-prevention">-</div><div class="l">PREVENTION</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-decision">-</div><div class="l">DECISION</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-action">-</div><div class="l">ACTION</div></div><div class="arr">→</div>
-  <div class="chip teal"><div class="n" id="cn-audit">-</div><div class="l">AUDIT</div></div>
+<div class="civloop-row">
+  <div class="civloop-chips">
+    <div class="chip"><div class="n" id="cn-observe">-</div><div class="l">OBSERVE</div></div><div class="arr">→</div>
+    <div class="chip"><div class="n" id="cn-record">-</div><div class="l">RECORD</div></div><div class="arr">→</div>
+    <div class="chip"><div class="n" id="cn-incident">-</div><div class="l">INCIDENT</div></div><div class="arr">→</div>
+    <div class="chip"><div class="n" id="cn-recurrence">-</div><div class="l">RECURRENCE</div></div><div class="arr">→</div>
+    <div class="chip"><div class="n" id="cn-prevention">-</div><div class="l">PREVENTION</div></div><div class="arr">→</div>
+    <div class="chip"><div class="n" id="cn-decision">-</div><div class="l">DECISION</div></div><div class="arr">→</div>
+    <div class="chip"><div class="n" id="cn-action">-</div><div class="l">ACTION</div></div><div class="arr">→</div>
+    <div class="chip teal"><div class="n" id="cn-audit">-</div><div class="l">AUDIT</div></div>
+  </div>
+
+  <!-- ★ TODO PUZZLE -->
+  <div class="todo-puzzle">
+    <div class="puzzle-header">
+      <span class="puzzle-title">TODO BOARD</span>
+      <div class="puzzle-counts">
+        <span class="puzzle-cnt saikou" id="pc-saikou">最高 0</span>
+        <span class="puzzle-cnt high"   id="pc-high">高 0</span>
+        <span class="puzzle-cnt mid"    id="pc-mid">中 0</span>
+        <span class="puzzle-cnt low"    id="pc-low">低 0</span>
+      </div>
+    </div>
+    <div class="puzzle-tiles" id="puzzle-tiles">
+      <span style="color:#1e293b;font-size:9px;">— loading —</span>
+    </div>
+  </div>
 </div>
 
 <!-- PIPELINE -->
@@ -423,6 +482,30 @@ function refreshTodo(){
     rem.sort(function(a,b){
       return (_todoPriOrder[priLabel(a.priority)]||9)-(_todoPriOrder[priLabel(b.priority)]||9);
     });
+
+    // ★ TODO PUZZLE タイル（CIV LOOP右）
+    var ptiles=$('puzzle-tiles');
+    if(ptiles){
+      var gc={saikou:0,high:0,mid:0,low:0};
+      rem.forEach(function(t){gc[priClass(t.priority)]=(gc[priClass(t.priority)]||0)+1;});
+      set('pc-saikou','最高 '+gc.saikou);
+      set('pc-high','高 '+gc.high);
+      set('pc-mid','中 '+gc.mid);
+      set('pc-low','低 '+gc.low);
+      if(!rem.length){
+        ptiles.innerHTML='<span style="color:#1e293b;font-size:9px;">— TODOなし —</span>';
+      } else {
+        ptiles.innerHTML=rem.map(function(t){
+          var cls=priClass(t.priority);
+          var num=(t.id||'').replace('TODO_','');
+          var ttl=(t.title||'').substring(0,16);
+          return '<div class="ptile '+cls+'">'
+            +'<div class="pt-num">'+num+'</div>'
+            +'<div class="pt-ttl">'+ttl+'</div>'
+            +'</div>';
+        }).join('');
+      }
+    }
 
     // ★ 視覚ブロック（重要度別カラー行）
     var vbar=$('todo-visual-bar');
