@@ -137,10 +137,54 @@ def run_pattern_score(text):
         print(f"[PATTERN] verdict={result['verdict']} s={result['success_score']} f={result['failure_score']}")
         with open(PATTERN_SCORE, "w", encoding="utf-8") as f:
             json.dump(result, f, ensure_ascii=False, indent=2)
-        return result
     except Exception as e:
         print(f"[PATTERN] error: {e}")
-        return None
+        result = None
+
+    # ===== Morphology Engine 接続 =====
+    try:
+        import importlib.util as _ilu
+        _spec = _ilu.spec_from_file_location(
+            'morphology_engine',
+            os.path.join(ROOT_DIR, 'interface', 'morphology_engine.py')
+        )
+        _me = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_me)
+        morph = _me.predict(text, threshold=0.3)
+        if morph['prediction'] != 'SAFE':
+            print(f"[MORPHO] {morph['prediction']} score={morph['danger_score']} tokens={morph['tokens'][:5]}")
+            # DANGER以上はprevention_queueに自動追加
+            if morph['danger_score'] >= 0.4:
+                try:
+                    pq_path = os.path.join(ROOT_DIR, 'data', 'prevention_queue.json')
+                    pq = json.load(open(pq_path, encoding='utf-8')) if os.path.exists(pq_path) else []
+                    import datetime
+                    pq.append({
+                        "id": f"MORPHO_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                        "timestamp": datetime.datetime.now().isoformat(),
+                        "type": "MORPHO_DANGER",
+                        "pattern": '|'.join(morph['tokens'][:5]),
+                        "danger_score": morph['danger_score'],
+                        "matched_l1": morph.get('matched_l1', []),
+                        "proposal": [
+                            f"【形態素解析】危険スコア{morph['danger_score']*100:.0f}%: {morph['interpretation']}",
+                            f"【パターン】{[m['pattern'] for m in morph.get('matched_l1', [])[:3]]}",
+                            "【対応】danger_patternsへの登録検討"
+                        ],
+                        "status": "pending",
+                        "risk_level": "high" if morph['danger_score'] >= 0.6 else "normal"
+                    })
+                    json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+                except Exception as _pe:
+                    print(f"[MORPHO] prevention_queue error: {_pe}")
+        # 形態素スコアをファイルに保存
+        morph_score_path = os.path.join(ROOT_DIR, 'data', 'morpho_score.json')
+        json.dump(morph, open(morph_score_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    except Exception as me:
+        print(f"[MORPHO] error: {me}")
+        morph = None
+
+    return result
 
 def ensure_dirs():
     os.makedirs(DATA_DIR, exist_ok=True)
