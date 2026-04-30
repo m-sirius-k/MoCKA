@@ -793,6 +793,49 @@ def servers_status():
             result[name] = {"status": "offline", "port": port}
     return jsonify(result)
 
+
+# ===== Morphology Engine Status =====
+@app.route("/morpho/status")
+def morpho_status():
+    import glob
+    try:
+        morph_path = os.path.join(ROOT_DIR, 'data', 'morpho_score.json')
+        morph = json.load(open(morph_path, encoding='utf-8')) if os.path.exists(morph_path) else {}
+    except Exception:
+        morph = {}
+    try:
+        import sqlite3
+        db_path = os.path.join(ROOT_DIR, 'data', 'morphology_patterns.db')
+        con = sqlite3.connect(db_path)
+        cur = con.cursor()
+        cur.execute("SELECT layer, COUNT(*), SUM(count) FROM patterns GROUP BY layer")
+        layers = {str(r[0]): {"unique": r[1], "total": r[2]} for r in cur.fetchall()}
+        cur.execute("SELECT COUNT(*) FROM predictions")
+        pred_count = cur.fetchone()[0]
+        cur.execute("SELECT prediction, danger_score, text, created_at FROM predictions ORDER BY rowid DESC LIMIT 5")
+        recent = [{"prediction": r[0], "score": r[1], "text": r[2][:50], "at": r[3]} for r in cur.fetchall()]
+        con.close()
+    except Exception as e:
+        layers = {}
+        pred_count = 0
+        recent = []
+    return jsonify({
+        "latest": morph,
+        "patterns": layers,
+        "prediction_count": pred_count,
+        "recent_predictions": recent
+    })
+
+# ===== Heinrich Status =====
+@app.route("/heinrich/status")
+def heinrich_status():
+    try:
+        h_path = os.path.join(ROOT_DIR, 'data', 'heinrich_report.json')
+        report = json.load(open(h_path, encoding='utf-8')) if os.path.exists(h_path) else {}
+        return jsonify(report)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 @app.route("/loop/status")
 def loop_status():
     import json, datetime
