@@ -325,30 +325,6 @@ header {
   </div>
 </header>
 
-<!-- GLOBAL RISK METER -->
-<div id="risk-banner">
-  <div class="risk-level" id="risk-level" style="color:var(--green)">SAFE</div>
-  <div class="risk-bar-wrap">
-    <div style="font-size:10px;color:var(--text2);margin-bottom:4px;">GLOBAL RISK SCORE</div>
-    <div class="risk-bar-bg"><div class="risk-bar-fill" id="risk-bar" style="width:0%;background:var(--green)"></div></div>
-    <div style="font-size:10px;color:var(--text2);margin-top:3px;">理論的安全水準から現在の乖離を示す複合指標</div>
-  </div>
-  <div class="risk-score" id="risk-score" style="color:var(--green)">0</div>
-  <div class="risk-rec">
-    <strong>SYSTEM RECOMMENDATION</strong>
-    <span id="risk-rec">読み込み中...</span>
-  </div>
-</div>
-
-<!-- RECOMMENDATION -->
-<div id="rec-box">
-  <span class="rec-icon">&#9654;</span>
-  <div id="rec-text">
-    <strong>NEXT BEST ACTION</strong>
-    <span id="rec-action">読み込み中...</span>
-  </div>
-</div>
-
 <!-- ROW 1: CIVILIZATION LOOP -->
 <div class="sec-label">Civilization Loop</div>
 <div style="padding:0 16px;">
@@ -506,6 +482,31 @@ header {
       未捕捉推定: <span id="h-missing" style="color:var(--red);font-family:var(--mono);">-件</span>
     </div>
   </div>
+</div>
+
+<!-- GLOBAL RISK METER（下部移動 TODO_115）-->
+<div class="sec-label">System Status</div>
+<div style="padding:0 16px 10px;">
+<div id="risk-banner">
+  <div class="risk-level" id="risk-level" style="color:var(--green)">SAFE</div>
+  <div class="risk-bar-wrap">
+    <div style="font-size:10px;color:var(--text2);margin-bottom:4px;">GLOBAL RISK SCORE</div>
+    <div class="risk-bar-bg"><div class="risk-bar-fill" id="risk-bar" style="width:0%;background:var(--green)"></div></div>
+    <div style="font-size:10px;color:var(--text2);margin-top:3px;">理論的安全水準から現在の乖離を示す複合指標</div>
+  </div>
+  <div class="risk-score" id="risk-score" style="color:var(--green)">0</div>
+  <div class="risk-rec">
+    <strong>SYSTEM RECOMMENDATION</strong>
+    <span id="risk-rec">読み込み中...</span>
+  </div>
+</div>
+<div id="rec-box" style="margin-top:8px;">
+  <span class="rec-icon">&#9654;</span>
+  <div id="rec-text">
+    <strong>NEXT BEST ACTION</strong>
+    <span id="rec-action">読み込み中...</span>
+  </div>
+</div>
 </div>
 
 <div style="height:20px;"></div>
@@ -868,6 +869,10 @@ function refreshTodo(){
     var todos=(d.todos||[]).filter(function(t){return t.status!=='完了';}).slice(0,6);
     var el=document.getElementById('todo-board');
     if(!el) return;
+    if(todos.length===0){
+      el.innerHTML='<div class="empty">未着手TODOなし</div>';
+      return;
+    }
     var pcols={最高:'var(--red)',高:'var(--orange)',中:'var(--yellow)',低:'var(--text2)'};
     el.innerHTML=todos.map(function(t){
       var col=pcols[t.priority]||'var(--text2)';
@@ -877,8 +882,10 @@ function refreshTodo(){
         +'<span style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+t.title+'</span>'
         +'</div>';
     }).join('');
-  }).catch(function(){});
-}
+  }).catch(function(){
+    var el=document.getElementById('todo-board');
+    if(el) el.innerHTML='<div class="empty" style="color:var(--red);">取得エラー (/public/todo)</div>';
+  });
 
 // ── ALL ──
 function refreshAll(){
