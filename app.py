@@ -917,6 +917,224 @@ def heinrich_status():
         except Exception:
             return jsonify({"error": str(e)})
 
+
+# ================================================================
+# COMMAND CENTER v5.0 - 新規エンドポイント群
+# ================================================================
+
+# --- Global Risk Meter ---
+@app.route("/risk/global")
+def risk_global():
+    import sqlite3 as _sq, datetime as _dt
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db); cur = con.cursor()
+        # 直近24h のDANGER/CRITICAL/MATAKA件数
+        since = (_dt.datetime.now() - _dt.timedelta(hours=24)).isoformat()
+        cur.execute("SELECT COUNT(*) FROM events WHERE what_type IN ('MATAKA','CLAIM','CRITICAL','DANGER','ai_violation') AND when_ts >= ?", (since,))
+        incidents_24h = cur.fetchone()[0] or 0
+        cur.execute("SELECT COUNT(*) FROM events WHERE what_type='MATAKA'")
+        mataka_total = cur.fetchone()[0] or 0
+        con.close()
+        # morpho score
+        morph_path = os.path.join(ROOT_DIR, 'data', 'morpho_score.json')
+        morph_score = 0.0
+        if os.path.exists(morph_path):
+            try: morph_score = json.load(open(morph_path,encoding='utf-8')).get('danger_score',0.0)
+            except: pass
+        # prevention queue
+        pq_path = os.path.join(ROOT_DIR, 'data', 'prevention_queue.json')
+        pq_pending = 0
+        if os.path.exists(pq_path):
+            try: pq_pending = len([x for x in json.load(open(pq_path,encoding='utf-8')) if x.get('status')=='pending'])
+            except: pass
+        # スコア計算 (0-100)
+        score = min(100, int(
+            incidents_24h * 15 +
+            morph_score   * 40 +
+            pq_pending    *  5 +
+            (mataka_total // 5) * 3
+        ))
+        if   score >= 70: level = 'CRITICAL'
+        elif score >= 40: level = 'DANGER'
+        elif score >= 20: level = 'WARNING'
+        else:             level = 'SAFE'
+        # SYSTEM RECOMMENDATION
+        rec = ''
+        if pq_pending > 0:   rec = f'prevention_queueに{pq_pending}件の承認待ち案件があります。いいね！で承認してください。'
+        elif incidents_24h > 0: rec = f'直近24hに{incidents_24h}件のインシデントが発生。essenceを確認してください。'
+        elif mataka_total > 0:  rec = f'またか！が{mataka_total}件蓄積。morphologyパターンが強化されています。'
+        else:                    rec = '現在は安全な状態です。通常運用を継続してください。'
+        return jsonify({
+            'score': score, 'level': level,
+            'incidents_24h': incidents_24h,
+            'mataka_total': mataka_total,
+            'morph_score': morph_score,
+            'pq_pending': pq_pending,
+            'recommendation': rec,
+            'timestamp': _dt.datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({'score':0,'level':'SAFE','error':str(e)})
+
+# --- Temporal Analytics (7日トレンド) ---
+@app.route("/trend/weekly")
+def trend_weekly():
+    import sqlite3 as _sq, datetime as _dt
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db); cur = con.cursor()
+        days = []
+        for i in range(6, -1, -1):
+            d = _dt.datetime.now() - _dt.timedelta(days=i)
+            ds = d.strftime('%Y-%m-%d')
+            de = ds + 'T23:59:59'
+            ds2 = ds + 'T00:00:00'
+            cur.execute("SELECT COUNT(*) FROM events WHERE when_ts BETWEEN ? AND ?", (ds2, de))
+            total = cur.fetchone()[0] or 0
+            cur.execute("SELECT COUNT(*) FROM events WHERE what_type IN ('MATAKA','CLAIM','CRITICAL','ai_violation') AND when_ts BETWEEN ? AND ?", (ds2, de))
+            l1 = cur.fetchone()[0] or 0
+            cur.execute("SELECT COUNT(*) FROM events WHERE what_type IN ('DANGER','ERROR','INCIDENT') AND when_ts BETWEEN ? AND ?", (ds2, de))
+            l2 = cur.fetchone()[0] or 0
+            days.append({'date': ds, 'label': d.strftime('%m/%d'), 'total': total, 'l1': l1, 'l2': l2, 'l3': max(0, total-l1-l2)})
+        con.close()
+        # トレンド判定
+        recent3 = sum(d['l1']+d['l2'] for d in days[-3:])
+        prev3   = sum(d['l1']+d['l2'] for d in days[:3])
+        trend = 'up' if recent3 > prev3 * 1.2 else 'down' if recent3 < prev3 * 0.8 else 'flat'
+        return jsonify({'days': days, 'trend': trend, 'recent3': recent3, 'prev3': prev3})
+    except Exception as e:
+        return jsonify({'days':[],'trend':'flat','error':str(e)})
+
+# --- Decision Log (判断理由) ---
+@app.route("/decision/log")
+def decision_log():
+    import sqlite3 as _sq
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db); con.row_factory = _sq.Row
+        cur = con.cursor()
+        cur.execute("SELECT event_id,when_ts,what_type,title,why_purpose,how_trigger,free_note FROM events WHERE what_type IN ('DECISION_APPROVED','DECISION_REJECTED','AUTO_GATE_APPROVED','AUDIT_COMPLETE') ORDER BY rowid DESC LIMIT 10")
+        rows = [dict(r) for r in cur.fetchall()]
+        con.close()
+        return jsonify({'decisions': rows, 'count': len(rows)})
+    except Exception as e:
+        return jsonify({'decisions':[],'error':str(e)})
+
+# --- TODO Risk Score ---
+@app.route("/todo/risk")
+def todo_risk():
+    import importlib.util as _ilu, datetime as _dt
+    try:
+        todo_path = os.path.join(os.path.dirname(ROOT_DIR), 'MOCKA_TODO.json')
+        if not os.path.exists(todo_path):
+            todo_path = r'C:\Users\sirok\MOCKA_TODO.json'
+        todos = json.load(open(todo_path, encoding='utf-8')).get('todos', [])
+        # morphology engineでリスク評価
+        _spec = _ilu.spec_from_file_location('me_risk', os.path.join(ROOT_DIR,'interface','morphology_engine.py'))
+        _me = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_me)
+        scored = []
+        for t in todos:
+            if t.get('status') == '完了': continue
+            text = (t.get('title','') + ' ' + t.get('description','')).strip()
+            try:
+                r = _me.predict(text, threshold=0.2)
+                risk = r['danger_score']
+            except:
+                risk = 0.0
+            # 締切チェック
+            overdue = False
+            note = t.get('note','')
+            if '5/14' in note or '5/21' in note:
+                overdue = True
+                risk = min(1.0, risk + 0.3)
+            scored.append({
+                'id': t.get('id',''),
+                'title': t.get('title','')[:60],
+                'priority': t.get('priority','中'),
+                'risk_score': round(risk, 3),
+                'risk_level': 'CRITICAL' if risk>=0.6 else 'HIGH' if risk>=0.4 else 'MEDIUM' if risk>=0.2 else 'LOW',
+                'overdue': overdue,
+                'status': t.get('status','')
+            })
+        scored.sort(key=lambda x: -x['risk_score'])
+        return jsonify({'todos': scored[:10], 'top': scored[0] if scored else None})
+    except Exception as e:
+        return jsonify({'todos':[],'error':str(e)})
+
+# --- Data Integrity Monitor ---
+@app.route("/integrity/status")
+def integrity_status():
+    import sqlite3 as _sq, datetime as _dt
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        # 読み取りテスト
+        con = _sq.connect(db); cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM events"); total = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM events WHERE event_id IS NULL OR when_ts IS NULL"); nulls = cur.fetchone()[0]
+        cur.execute("SELECT MIN(when_ts), MAX(when_ts) FROM events"); span = cur.fetchone()
+        con.close()
+        health_pct = round((total-nulls)/total*100,1) if total>0 else 0
+        # seal hash確認
+        seal_path = os.path.join(ROOT_DIR, 'governance', 'anchor_record.json')
+        last_seal = {}
+        if os.path.exists(seal_path):
+            try: last_seal = json.load(open(seal_path,encoding='utf-8'))
+            except: pass
+        # 締切超過TODOチェック
+        overdue_todos = []
+        try:
+            todo_path = r'C:\Users\sirok\MOCKA_TODO.json'
+            todos = json.load(open(todo_path,encoding='utf-8')).get('todos',[])
+            for t in todos:
+                if t.get('status') == '完了': continue
+                note = t.get('note','')
+                if '5/14' in note or '5/21' in note:
+                    overdue_todos.append({'id':t['id'],'title':t.get('title','')[:50]})
+        except: pass
+        return jsonify({
+            'total_events': total,
+            'null_fields': nulls,
+            'health_pct': health_pct,
+            'oldest_event': span[0] if span else None,
+            'newest_event': span[1] if span else None,
+            'last_seal': last_seal,
+            'overdue_todos': overdue_todos,
+            'db_size_kb': round(os.path.getsize(db)/1024,1) if os.path.exists(db) else 0
+        })
+    except Exception as e:
+        return jsonify({'error':str(e),'health_pct':0})
+
+# --- Agent Allocation ---
+@app.route("/agent/allocation")
+def agent_allocation():
+    import sqlite3 as _sq, datetime as _dt
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db); cur = con.cursor()
+        since = (_dt.datetime.now() - _dt.timedelta(days=7)).isoformat()
+        cur.execute("SELECT who_actor, COUNT(*) as cnt FROM events WHERE when_ts >= ? GROUP BY who_actor ORDER BY cnt DESC LIMIT 10", (since,))
+        alloc = [{'agent': r[0] or 'unknown', 'count': r[1]} for r in cur.fetchall()]
+        total = sum(a['count'] for a in alloc)
+        for a in alloc:
+            a['pct'] = round(a['count']/total*100,1) if total>0 else 0
+        con.close()
+        return jsonify({'allocation': alloc, 'total': total, 'period_days': 7})
+    except Exception as e:
+        return jsonify({'allocation':[],'error':str(e)})
+
+# --- Seal History ---
+@app.route("/seal/history")
+def seal_history():
+    try:
+        seal_path = os.path.join(ROOT_DIR, 'governance', 'anchor_record.json')
+        if os.path.exists(seal_path):
+            data = json.load(open(seal_path, encoding='utf-8'))
+            return jsonify({'history': data if isinstance(data,list) else [data], 'count': 1})
+        return jsonify({'history':[],'count':0})
+    except Exception as e:
+        return jsonify({'history':[],'error':str(e)})
+
 @app.route("/loop/status")
 def loop_status():
     import json, datetime
