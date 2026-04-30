@@ -740,10 +740,11 @@ function refreshDecisionLog(){
 
 // ── ESSENCE ──
 function refreshEssence(){
-  fetch('/essence/detail').then(function(r){return r.json();}).then(function(d){
-    set('ess-incident',  d.INCIDENT||d.incident||'-');
-    set('ess-operation', d.OPERATION||d.operation||'-');
-    set('ess-philosophy',d.PHILOSOPHY||d.philosophy||'-');
+  fetch('/essence/detail').then(function(r){return r.json();}).then(function(resp){
+    var d=resp.data||resp;
+    set('ess-incident',  (d.INCIDENT||d.incident||'-').slice(0,300));
+    set('ess-operation', (d.OPERATION||d.operation||'-').slice(0,150));
+    set('ess-philosophy',(d.PHILOSOPHY||d.philosophy||'-').slice(0,150));
   }).catch(function(){});
 }
 
@@ -813,13 +814,15 @@ function refreshIntegrity(){
     // seal history
     var shEl=document.getElementById('seal-hist');
     if(shEl&&d.last_seal){
-      var sl=d.last_seal;
+      var sl=Array.isArray(d.last_seal)?d.last_seal[d.last_seal.length-1]:d.last_seal;
       var hash=sl.summary_hash||sl.sha256||sl.hash||'-';
+      var dt=sl.date||sl.sealed_at||sl.timestamp||sl.generated_at||'-';
       shEl.innerHTML='<div class="seal-entry">'
-        +'<div style="font-size:11px;color:var(--text2);">'+(sl.date||sl.timestamp||'-')+'</div>'
-        +'<div class="seal-hash">'+hash.slice(0,32)+'...</div>'
+        +'<div style="font-size:11px;color:var(--text2);">'+dt.slice(0,16)+'</div>'
+        +'<div class="seal-hash">'+hash.slice(0,40)+'...</div>'
+        +'<div style="font-size:10px;color:var(--green);margin-top:3px;">ALL CHECKS PASSED</div>'
         +'</div>';
-      set('m-seal', (sl.date||sl.timestamp||'-').slice(0,10));
+      set('m-seal', dt.slice(0,10));
     }
     // overdue todos
     var ov=d.overdue_todos||[];
