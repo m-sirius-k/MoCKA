@@ -415,6 +415,51 @@ def ask():
 
 
 # ===== またか！/ クレーム！エンドポイント =====
+
+# ===== 軸3: essence自動更新バッチ =====
+def auto_update_essence_from_mataka():
+    try:
+        import re as _re3
+        from pathlib import Path as _P3
+        pdb = os.path.join(ROOT_DIR, 'data', 'morphology_patterns.db')
+        if not os.path.exists(pdb): return
+        pcon = sqlite3.connect(pdb)
+        pcur = pcon.cursor()
+        pcur.execute("SELECT ngram, count FROM patterns WHERE layer=1 ORDER BY count DESC LIMIT 5")
+        top_patterns = pcur.fetchall()
+        pcon.close()
+        if not top_patterns: return
+        essence_path = _P3(r'C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json')
+        if not essence_path.exists(): return
+        essence = json.load(open(essence_path, encoding='utf-8'))
+        now = datetime.datetime.now().isoformat()
+        lines = ['[AUTO_MATAKA_TOP5 ' + now[:10] + ']']
+        for ng, cnt in top_patterns:
+            lines.append('  ' + str(cnt) + 'kai: ' + ng)
+        block = '\n'.join(lines)
+        old = essence.get('INCIDENT','')
+        old = _re3.sub(r'\[AUTO_MATAKA_TOP5[^\]]*\][^\[]*','',old).strip()
+        essence['INCIDENT'] = old + '\n' + block
+        essence['updated_at'] = now
+        json.dump(essence, open(essence_path,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
+        print('[ESSENCE] MATAKA Top5 自動更新完了')
+    except Exception as e:
+        print('[ESSENCE] error: ' + str(e))
+
+def check_and_trigger_essence_update():
+    try:
+        db_path = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = sqlite3.connect(db_path)
+        cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM events WHERE what_type='MATAKA'")
+        count = cur.fetchone()[0]
+        con.close()
+        if count > 0 and count % 5 == 0:
+            threading.Thread(target=auto_update_essence_from_mataka, daemon=True).start()
+            print('[ESSENCE] MATAKA ' + str(count) + '件 -> essence自動更新トリガー')
+    except Exception as e:
+        print('[ESSENCE] trigger error: ' + str(e))
+
 @app.route("/mataka", methods=["POST"])
 def mataka():
     """再発クレーム — Essence_Direct_Parserで5W1H抽出→recurrence照合→prevention昇格"""
@@ -518,6 +563,34 @@ def mataka():
 
     # language_detector経由でDANGERシグナルも発火
     threading.Thread(target=run_pattern_score, args=(selected_text,), daemon=True).start()
+
+    # 軸2: morphology自動更新
+    try:
+        import importlib.util as _ilu2, datetime as _dt2
+        _spec2 = _ilu2.spec_from_file_location('morphology_engine2', os.path.join(ROOT_DIR,'interface','morphology_engine.py'))
+        _me2 = _ilu2.module_from_spec(_spec2)
+        _spec2.loader.exec_module(_me2)
+        tokens = _me2.tokenize(selected_text)
+        ngrams = _me2.generate_ngrams(tokens, n=3)
+        if ngrams:
+            pdb = os.path.join(ROOT_DIR, 'data', 'morphology_patterns.db')
+            pcon = sqlite3.connect(pdb)
+            pcur = pcon.cursor()
+            now_str = _dt2.datetime.now().isoformat()
+            added = 0
+            for ng in ngrams:
+                ng_str = '|'.join(ng)
+                try:
+                    pcur.execute("""INSERT INTO patterns(ngram,layer,event_id,source,count,last_seen) VALUES(?,1,?,?,1,?) ON CONFLICT(ngram,layer) DO UPDATE SET count=count+1,last_seen=?""", (ng_str,eid,'MATAKA',now_str,now_str))
+                    added += 1
+                except Exception: pass
+            pcon.commit(); pcon.close()
+            print('[MATAKA] morphology自動更新: ' + str(added) + 'パターン追加')
+    except Exception as _me2e:
+        print('[MATAKA] morphology更新エラー: ' + str(_me2e))
+
+    # 軸4: フィードバックループ閉鎖
+    threading.Thread(target=check_and_trigger_essence_update, daemon=True).start()
 
     return jsonify({
         "status": "ok",
@@ -830,11 +903,19 @@ def morpho_status():
 @app.route("/heinrich/status")
 def heinrich_status():
     try:
-        h_path = os.path.join(ROOT_DIR, 'data', 'heinrich_report.json')
-        report = json.load(open(h_path, encoding='utf-8')) if os.path.exists(h_path) else {}
+        import importlib.util as _ilu_h
+        _spec_h = _ilu_h.spec_from_file_location('heinrich_engine', os.path.join(ROOT_DIR,'interface','heinrich_engine.py'))
+        _he = _ilu_h.module_from_spec(_spec_h)
+        _spec_h.loader.exec_module(_he)
+        report = _he.run()
         return jsonify(report)
     except Exception as e:
-        return jsonify({"error": str(e)})
+        # fallback: 既存JSONを返す
+        try:
+            h_path = os.path.join(ROOT_DIR, 'data', 'heinrich_report.json')
+            return jsonify(json.load(open(h_path, encoding='utf-8')))
+        except Exception:
+            return jsonify({"error": str(e)})
 
 @app.route("/loop/status")
 def loop_status():
