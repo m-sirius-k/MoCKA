@@ -25,15 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_106",
-      "title": "PHL-OS ドリフト回復実験設計 — Phase 2（汚染）→Phase 3（PHL再注入）→Phase 4（用量依存）",
-      "priority": "中"
+      "id": "TODO_115",
+      "title": "COMMAND CENTER — Global Risk Meter実装",
+      "priority": "最高"
     },
     {
-      "id": "TODO_110",
-      "title": "COMMAND CENTER 文字化け修正 — events表示のShift-JIS混入",
-      "priority": "低"
+      "id": "TODO_116",
+      "title": "COMMAND CENTER — Temporal Analytics（7日トレンド）実装",
+      "priority": "高"
+    },
+    {
+      "id": "TODO_117",
+      "title": "COMMAND CENTER — Decision Intelligence（判断理由ログ）実装",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-04-30T09:58:33.357763"
+  "generated_at": "2026-04-30T10:18:51.907478"
 }
