@@ -214,6 +214,33 @@ body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-s
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-track{background:var(--bg0);}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* ★ Heinrich + Morphology Panel */
+.heinrich-panel { background:#1a1a2e; border:1px solid #e94560; border-radius:8px; padding:14px; margin:10px 0; }
+.heinrich-title { color:#e94560; font-size:13px; font-weight:bold; margin-bottom:8px; }
+.h-bar { display:flex; align-items:center; gap:8px; margin:4px 0; }
+.h-label { color:#aaa; font-size:11px; width:80px; }
+.h-track { flex:1; background:#333; border-radius:4px; height:10px; overflow:hidden; }
+.h-fill-l1 { height:100%; background:#e94560; border-radius:4px; transition:width 0.5s; }
+.h-fill-l2 { height:100%; background:#f5a623; border-radius:4px; transition:width 0.5s; }
+.h-fill-l3 { height:100%; background:#4CAF50; border-radius:4px; transition:width 0.5s; }
+.h-count { color:#fff; font-size:11px; width:50px; text-align:right; }
+.morpho-panel { background:#0d1b2a; border:1px solid #00d4ff; border-radius:8px; padding:14px; margin:10px 0; }
+.morpho-title { color:#00d4ff; font-size:13px; font-weight:bold; margin-bottom:8px; }
+.morpho-score { font-size:28px; font-weight:bold; text-align:center; margin:8px 0; }
+.morpho-score.SAFE     { color:#4CAF50; }
+.morpho-score.WARNING  { color:#f5a623; }
+.morpho-score.DANGER   { color:#ff6b35; }
+.morpho-score.CRITICAL { color:#e94560; animation:blink 0.8s infinite; }
+.morpho-tokens { display:flex; flex-wrap:wrap; gap:4px; margin:6px 0; }
+.morpho-token { background:#1a3a4a; color:#00d4ff; border-radius:3px; padding:2px 6px; font-size:10px; }
+.morpho-match { background:#3a1a1a; color:#e94560; border-radius:3px; padding:2px 6px; font-size:10px; }
+.morpho-recent { margin-top:8px; }
+.morpho-recent-item { display:flex; justify-content:space-between; align-items:center; padding:3px 0; border-bottom:1px solid #1a3a4a; }
+.morpho-recent-pred { font-size:10px; font-weight:bold; }
+.morpho-recent-text { color:#888; font-size:10px; flex:1; padding:0 8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.morpho-recent-score { font-size:10px; color:#aaa; }
+.ratio-badge { display:inline-block; background:#333; border-radius:4px; padding:2px 6px; font-size:11px; color:#fff; margin:2px; }
 </style>
 </head>
 <body>
@@ -613,13 +640,113 @@ window.reject=function(id){
     .then(function(){refreshDecision();});
 };
 
+
+function refreshHeinrich(){
+  fetch('/heinrich/status').then(function(r){return r.json();}).then(function(d){
+    var h=d.heinrich||{};
+    var l1=h.layer1_critical&&h.layer1_critical.count||0;
+    var l2=h.layer2_minor&&h.layer2_minor.count||0;
+    var l3=h.layer3_near_miss&&h.layer3_near_miss.count||0;
+    var mx=Math.max(l1,l2,l3,1);
+    var el1=document.getElementById('h-bar-l1');
+    var el2=document.getElementById('h-bar-l2');
+    var el3=document.getElementById('h-bar-l3');
+    if(el1)el1.style.width=(l1/mx*100)+'%';
+    if(el2)el2.style.width=(l2/mx*100)+'%';
+    if(el3)el3.style.width=(l3/mx*100)+'%';
+    set('h-count-l1',l1);set('h-count-l2',l2);set('h-count-l3',l3);
+    var r2=l1>0?Math.round(l2/l1*10)/10:0;
+    var r3=l1>0?Math.round(l3/l1*10)/10:0;
+    set('h-ratio','1:'+r2+':'+r3);
+    var cap=h.capture_rate&&h.capture_rate.layer3||'-%';
+    var mis=l1>0?Math.max(0,l1*300-l3):'?';
+    set('h-capture',cap);
+    set('h-missing',mis+'件');
+  }).catch(function(){});
+}
+function refreshMorpho(){
+  fetch('/morpho/status').then(function(r){return r.json();}).then(function(d){
+    var lat=d.latest||{};
+    var pred=lat.prediction||'SAFE';
+    var el=document.getElementById('morpho-prediction');
+    if(el){el.textContent=pred;el.className='morpho-score '+pred;}
+    set('morpho-interp',lat.interpretation||'-');
+    var tEl=document.getElementById('morpho-tokens');
+    if(tEl&&lat.tokens){
+      var matched=(lat.matched_l1||[]).map(function(m){return m.pattern;});
+      tEl.innerHTML=(lat.tokens||[]).map(function(t){
+        var isMatch=matched.some(function(m){return m.indexOf(t)>=0;});
+        return '<span class="'+(isMatch?'morpho-match':'morpho-token')+'">'+t+'</span>';
+      }).join('');
+    }
+    var pats=d.patterns||{};
+    var l1pat=pats['1']&&pats['1'].unique||0;
+    set('morpho-l1-unique',l1pat);
+    set('morpho-pred-count',d.prediction_count||0);
+    var rEl=document.getElementById('morpho-recent');
+    if(rEl&&d.recent_predictions){
+      rEl.innerHTML=d.recent_predictions.slice(0,4).map(function(r){
+        var c=r.prediction==='SAFE'?'#4CAF50':r.prediction==='CRITICAL'?'#e94560':'#f5a623';
+        return '<div class="morpho-recent-item">'
+          +'<span class="morpho-recent-pred" style="color:'+c+'">'+r.prediction+'</span>'
+          +'<span class="morpho-recent-text">'+r.text+'</span>'
+          +'<span class="morpho-recent-score">'+Math.round(r.score*100)+'%</span>'
+          +'</div>';
+      }).join('');
+    }
+  }).catch(function(){});
+}
 function refreshAll(){
   refreshServers();refreshPipeline();refreshLoop();
-  refreshEvents();refreshTodo();refreshDecision();refreshAudit();
+  refreshEvents();refreshTodo();refreshDecision();refreshAudit();refreshHeinrich();refreshMorpho();
 }
 setInterval(refreshAll,5000);
 refreshAll();
 })();
 </script>
+
+<!-- ★ Heinrich + Morphology Panel -->
+<div style="display:flex;gap:10px;margin:10px 0;">
+  <!-- Heinrich Panel -->
+  <div class="heinrich-panel" style="flex:1;">
+    <div class="heinrich-title">&#9655; Heinrich Monitor</div>
+    <div class="h-bar">
+      <div class="h-label">Layer1 重大</div>
+      <div class="h-track"><div class="h-fill-l1" id="h-bar-l1" style="width:0%"></div></div>
+      <div class="h-count" id="h-count-l1">-</div>
+    </div>
+    <div class="h-bar">
+      <div class="h-label">Layer2 軽微</div>
+      <div class="h-track"><div class="h-fill-l2" id="h-bar-l2" style="width:0%"></div></div>
+      <div class="h-count" id="h-count-l2">-</div>
+    </div>
+    <div class="h-bar">
+      <div class="h-label">Layer3 ヒヤリ</div>
+      <div class="h-track"><div class="h-fill-l3" id="h-bar-l3" style="width:0%"></div></div>
+      <div class="h-count" id="h-count-l3">-</div>
+    </div>
+    <div style="margin-top:8px;font-size:11px;color:#aaa;">
+      実測比率: <span id="h-ratio" style="color:#fff;">-</span>
+      &nbsp;|&nbsp; 理論値: 1:29:300
+    </div>
+    <div style="font-size:11px;color:#aaa;margin-top:4px;">
+      Layer3捕捉率: <span id="h-capture" style="color:#4CAF50;">-%</span>
+      &nbsp;|&nbsp; 未捕捉推定: <span id="h-missing" style="color:#e94560;">-件</span>
+    </div>
+  </div>
+
+  <!-- Morphology Panel -->
+  <div class="morpho-panel" style="flex:1;">
+    <div class="morpho-title">&#9655; Morphology Predictor</div>
+    <div class="morpho-score SAFE" id="morpho-prediction">SAFE</div>
+    <div style="text-align:center;font-size:11px;color:#aaa;" id="morpho-interp">-</div>
+    <div class="morpho-tokens" id="morpho-tokens"></div>
+    <div style="font-size:11px;color:#aaa;margin-top:6px;">
+      Layer1パターン: <span id="morpho-l1-unique" style="color:#00d4ff;">-</span>件
+      &nbsp;|&nbsp; 予測実行: <span id="morpho-pred-count" style="color:#00d4ff;">-</span>回
+    </div>
+    <div class="morpho-recent" id="morpho-recent"></div>
+  </div>
+</div>
 </body>
 </html>
