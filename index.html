@@ -525,18 +525,34 @@ setInterval(tick,1000); tick();
 
 // ── SERVERS ──
 function refreshServers(){
+  var ngrokStatus = false;
+  // NGROKは別エンドポイント
+  fetch('/ngrok/status').then(function(r){return r.json();}).then(function(nd){
+    ngrokStatus = (nd.status === 'online');
+  }).catch(function(){});
+
   fetch('/servers/status').then(function(r){return r.json();}).then(function(d){
     var wrap = document.getElementById('srv-dots');
     wrap.innerHTML = '';
     var defs = [
-      {key:'app',   label:'APP'},
-      {key:'caliber',label:'CAL'},
-      {key:'mcp',   label:'MCP'},
-      {key:'runtime_b',label:'RTB'},
-      {key:'ngrok', label:'NGROK'},
+      {key:'app',        label:'APP'},
+      {key:'caliber',    label:'CAL'},
+      {key:'mcp',        label:'MCP'},
+      {key:'runtime_b',  label:'RTB'},
+      {key:'ngrok',      label:'NGROK'},
     ];
+    // app自身は常にONLINE（このページが表示されている時点で稼働中）
+    var statusOf = function(key){
+      if(key === 'app')   return true;
+      if(key === 'ngrok') return ngrokStatus;
+      var val = d[key];
+      if(!val) return false;
+      // レスポンスはオブジェクト {status: "online"/"offline", ...}
+      if(typeof val === 'object') return val.status === 'online' || val.status === 'ok';
+      return (val === 'ok' || val === true || val === 'online');
+    };
     defs.forEach(function(s){
-      var on = d[s.key] === 'ok' || d[s.key] === true;
+      var on = statusOf(s.key);
       var w = document.createElement('div');
       w.className='dot-wrap';
       w.innerHTML='<div class="dot '+(on?'on':'off')+'"></div><span>'+s.label+'</span>';
@@ -546,7 +562,7 @@ function refreshServers(){
     var tbl = document.getElementById('srv-table');
     if(tbl){
       tbl.innerHTML = defs.map(function(s){
-        var on = d[s.key]==='ok'||d[s.key]===true;
+        var on = statusOf(s.key);
         var col = on?'var(--green)':'var(--red)';
         return '<tr><td>'+s.label+'</td><td style="color:'+col+';font-family:var(--mono);">'+(on?'ONLINE':'OFFLINE')+'</td></tr>';
       }).join('');
@@ -882,10 +898,14 @@ function refreshAll(){
   refreshTodo();
 }
 
+// Global Risk Meter: 60秒ごと（TODO_115）
+setInterval(function(){
+  refreshRisk();
+}, 60000);
+
 // 軽量エンドポイント: 30秒ごと
 setInterval(function(){
   refreshServers();
-  refreshRisk();
   refreshLoop();
   refreshMorpho();
   refreshPrevention();
