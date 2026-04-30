@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-"""MoCKA Heinrich Engine v3 - 最適分類"""
-import json, sqlite3, sys, datetime, re
+"""MoCKA Heinrich Engine v4 - 実態最適分類版"""
+import json, sqlite3, sys, datetime
 from pathlib import Path
 sys.stdout.reconfigure(encoding='utf-8')
 
@@ -9,113 +9,100 @@ DB_PATH = BASE / 'data' / 'mocka_events.db'
 OUT     = BASE / 'data' / 'heinrich_report.json'
 
 # ===== Layer1: 重大事故 =====
-# AI/システムの意図的違反・データ破壊・制度違反・セキュリティ侵害
-LAYER1_EXACT_TYPES = {
-    'MATAKA', 'CLAIM', 'INTEGRITY_VIOLATION', 'CRITICAL',
-    'INSTRUCTION_IGNORE', 'DEPENDENCY_BREAK', 'FAST_WRONG',
-    'ai_violation', 'governance_degradation', 'AUDIT_VIOLATION'
+# AI違反・制度違反・データ破壊・セキュリティ侵害・MATAKA(またか！)
+LAYER1_EXACT = {
+    'MATAKA', 'CLAIM',
+    'ai_violation', 'governance_degradation',
+    'INTEGRITY_VIOLATION', 'CRITICAL',
+    'INSTRUCTION_IGNORE', 'DEPENDENCY_BREAK',
+    'security', 'FAST_WRONG',
 }
-LAYER1_KW_STRONG = [
-    # AI違反
-    'fabricat', 'unauthorized', 'overwrite', 'violation', 'ai_violation',
-    'integrity', '捏造', '無断', '上書き', '権限', 'permission',
-    # データ破壊
-    'corruption', 'destroy', 'delete_all', 'drop_table',
-    # 制度違反
-    'constitution_breach', 'rule_break', 'policy_violation',
-    # セキュリティ
-    'leak', 'exposure', 'credential', 'token_exposed'
+LAYER1_KW = [
+    'unauthorized', 'violation', 'integrity',
+    'fabricat', '捏造', '無断', '上書き', 'overwrite',
+    'credential', 'token_exposed', 'leak',
+    'GPT無断', 'ai_violation', 'oauth',
 ]
 
 # ===== Layer2: 軽微な事故 =====
-# エラー・失敗・再発・クレーム・警告・ドリフト
-LAYER2_EXACT_TYPES = {
+# エラー・失敗・設定ミス・品質問題・再発記録
+LAYER2_EXACT = {
     'DANGER', 'ERROR', 'INCIDENT', 'recurrence',
-    'SLOW_DRIFT', 'FORMAT_COLLAPSE', 'WARNING_EVENT',
-    'MATAKA_AUTO', 'MORPHO_DANGER'
+    'SLOW_DRIFT', 'FORMAT_COLLAPSE',
+    'config_error', 'environment_error', 'data_quality',
+    'MORPHO_DANGER', 'MATAKA_AUTO',
 }
 LAYER2_KW = [
-    # エラー系
-    'error', 'exception', 'fail', 'timeout', 'broken',
+    'error', 'fail', 'timeout', 'exception', 'broken',
     'エラー', '失敗', 'バグ', 'bug', 'invalid',
-    # 再発系
-    'また', '再発', 'recur', 'repeat', '繰り返し',
-    # 否定・問題
-    '問題', '誤って', 'できない', '動かない', '止まった',
-    '違う', 'ちがう', 'おかしい', 'wrong', 'incorrect',
-    # 認知的問題
-    'なぜ', 'どうして', '意味がわからん', 'わからない',
-    # ドリフト
-    'drift', 'collapse', 'degradation', 'decline'
+    'できない', '動かない', '止まった', '問題',
+    'recur', 'また', '再発', 'repeat', '繰り返し',
+    'drift', 'collapse', 'degradation', 'wrong',
+    'なぜ', 'どうして', 'わからない', '意味がわからん',
+    'omit', 'skip', 'miss', '省略', '漏れ',
 ]
-# Layer2除外: これらはLayer3
-LAYER2_EXCLUDE_TYPES = {
-    'save', 'collaboration', 'share', 'record', 'broadcast',
-    'process', 'storage', 'essence_update', 'claude_mcp',
-    'collect', 'success_hint', 'success_great', 'playwright_capture'
+# Layer2でもこれらタイプは除外(日常操作)
+LAYER2_EXCLUDE = {
+    'essence_update', 'claude_mcp', 'collect', 'save',
+    'process', 'broadcast', 'success_hint', 'storage',
+    'collaboration', 'share', 'record', 'phl_decision',
+    'ingest', 'RAW', 'generation', 'OPERATION',
+    'RE_REDUCED', 'playwright_capture', 'response',
+    'success_great', 'UPDATED', 'caliber', 'cli',
 }
 
 # ===== Layer3: ヒヤリハット =====
-# 日常操作・記録・収集・AIとの通常インタラクション
-LAYER3_EXACT_TYPES = {
-    'save', 'collaboration', 'share', 'record', 'broadcast',
-    'process', 'storage', 'essence_update', 'claude_mcp',
-    'collect', 'success_hint', 'success_great',
-    'playwright_capture',  # 通常の画面キャプチャ
-    'DECISION_APPROVED', 'DECISION_REJECTED',
-    'AUTO_GATE_APPROVED', 'AUDIT_COMPLETE'
+# 全ての日常操作・記録・共有・収集・AIとのインタラクション
+# → Layer1/Layer2に該当しない全て
+LAYER3_EXACT = {
+    'essence_update', 'claude_mcp', 'collect', 'save',
+    'process', 'broadcast', 'success_hint', 'storage',
+    'collaboration', 'share', 'record', 'phl_decision',
+    'ingest', 'RAW', 'generation', 'OPERATION',
+    'RE_REDUCED', 'playwright_capture', 'response',
+    'success_great', 'UPDATED', 'caliber', 'cli',
 }
-LAYER3_KW = [
-    'hint', 'check', '確認', '一応', '念のため',
-    'ちょっと', '少し', 'かも', 'maybe', 'perhaps'
-]
 
 def classify(row):
-    wt  = str(row['what_type'] or '').strip()
-    wtu = wt.upper()
-    title = str(row['title'] or '').lower()
-    why   = str(row['why_purpose'] or '').lower()
-    free  = str(row['free_note'] or '').lower()
-    full  = ' '.join([wt, title, why, free])
+    wt   = str(row['what_type'] or '').strip()
+    titl = str(row['title'] or '').lower()
+    why  = str(row['why_purpose'] or '').lower()
+    free = str(row['free_note'] or '').lower()
+    full = ' '.join([wt.lower(), titl, why, free])
 
-    # Layer1: 厳密な違反・重大事故
-    if wt in LAYER1_EXACT_TYPES:
+    # Layer1: 厳密判定
+    if wt in LAYER1_EXACT:
         return 1
-    if any(k in full for k in LAYER1_KW_STRONG):
-        # playwright_captureはLayer1除外（通常キャプチャ）
-        if wt == 'playwright_capture':
-            return 3
-        return 1
+    if any(k.lower() in full for k in LAYER1_KW):
+        if wt not in LAYER2_EXCLUDE and wt not in LAYER3_EXACT:
+            return 1
 
-    # Layer2: エラー・失敗・再発（ただしLayer2除外タイプは除く）
-    if wt in LAYER2_EXACT_TYPES and wt not in LAYER2_EXCLUDE_TYPES:
+    # Layer2: エラー・失敗系（日常操作タイプは除外）
+    if wt in LAYER2_EXACT and wt not in LAYER2_EXCLUDE:
         return 2
-    if wt not in LAYER3_EXACT_TYPES and any(k in full for k in LAYER2_KW):
-        return 2
+    if wt not in LAYER3_EXACT and wt not in LAYER2_EXCLUDE:
+        if any(k.lower() in full for k in LAYER2_KW):
+            return 2
 
-    # Layer3: 日常操作・観測価値のあるヒヤリハット
+    # Layer3: それ以外全て（日常操作・観測記録）
     return 3
 
 def run():
     con = sqlite3.connect(DB_PATH)
     con.row_factory = sqlite3.Row
     cur = con.cursor()
-    cur.execute("""
-        SELECT event_id, what_type, title, why_purpose,
-               how_trigger, free_note, when_ts
-        FROM events
-    """)
+    cur.execute("SELECT event_id,what_type,title,why_purpose,how_trigger,free_note,when_ts FROM events")
     rows = cur.fetchall()
     con.close()
 
-    buckets = {1: [], 2: [], 3: []}
-    type_stats = {}
+    buckets = {1:[], 2:[], 3:[]}
+    type_dist = {}
 
     for row in rows:
         layer = classify(row)
-        wt = str(row['what_type'] or '')
-        type_stats[wt] = type_stats.get(wt, {'l1':0,'l2':0,'l3':0})
-        type_stats[wt]['l'+str(layer)] += 1
+        wt = str(row['what_type'] or 'unknown')
+        type_dist.setdefault(wt, {1:0,2:0,3:0})
+        type_dist[wt][layer] += 1
         buckets[layer].append({
             'event_id':  row['event_id'],
             'what_type': row['what_type'],
@@ -123,21 +110,22 @@ def run():
             'when':      row['when_ts']
         })
 
-    L1, L2, L3 = len(buckets[1]), len(buckets[2]), len(buckets[3])
-    total = L1 + L2 + L3
+    L1,L2,L3 = len(buckets[1]),len(buckets[2]),len(buckets[3])
+    total = L1+L2+L3
 
-    r2 = round(L2/L1, 1) if L1 > 0 else 0
-    r3 = round(L3/L1, 1) if L1 > 0 else 0
-    g2 = round((r2/29)*100,  1) if L1 > 0 else 0
-    g3 = round((r3/300)*100, 1) if L1 > 0 else 0
+    r2 = round(L2/L1,1) if L1>0 else 0
+    r3 = round(L3/L1,1) if L1>0 else 0
+    g2 = round((r2/29)*100,1)  if L1>0 else 0
+    g3 = round((r3/300)*100,1) if L1>0 else 0
+    missing = max(0, int(L1*300-L3))
 
     report = {
         'generated_at': datetime.datetime.now().isoformat(),
         'total_events': total,
         'heinrich': {
-            'layer1_critical':  {'count': L1, 'theory': 1,   'label': 'Critical/重大事故'},
-            'layer2_minor':     {'count': L2, 'theory': 29,  'label': 'Minor/軽微な事故'},
-            'layer3_near_miss': {'count': L3, 'theory': 300, 'label': 'Near-miss/ヒヤリハット'},
+            'layer1_critical':  {'count':L1,'theory':1,  'label':'Critical/重大事故'},
+            'layer2_minor':     {'count':L2,'theory':29, 'label':'Minor/軽微な事故'},
+            'layer3_near_miss': {'count':L3,'theory':300,'label':'Near-miss/ヒヤリハット'},
             'actual_ratio':  f'1:{r2}:{r3}',
             'theory_ratio':  '1:29:300',
             'capture_rate': {
@@ -145,39 +133,50 @@ def run():
                 'layer3': f'{g3}%',
                 'interpretation': 'MoCKAが捕捉できている事案の割合'
             },
-            'missing_estimate': max(0, int(L1*300 - L3))
+            'missing_estimate': missing,
+            'insight': (
+                'Layer2が少ない=軽微事故の記録経路が不足。'
+                'またか！ボタンの活用でLayer2を増やすことが制度成熟への最短経路。'
+            )
         },
         'layer1_samples': buckets[1][:10],
         'layer2_samples': buckets[2][:10],
         'layer3_samples': buckets[3][:10],
-        'type_distribution': dict(
-            sorted(type_stats.items(), key=lambda x: -(x[1]['l1']+x[1]['l2']+x[1]['l3']))[:20]
-        )
+        'type_distribution': {
+            k: v for k,v in
+            sorted(type_dist.items(), key=lambda x:-(x[1][1]*100+x[1][2]*10+x[1][3]))[:25]
+        }
     }
 
-    json.dump(report, open(OUT, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+    json.dump(report, open(OUT,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
 
-    print('='*50)
-    print('MoCKA Heinrich Engine v3')
-    print('='*50)
-    print(f'Layer1 (重大):   {L1:4d}件')
-    print(f'Layer2 (軽微):   {L2:4d}件')
-    print(f'Layer3 (ヒヤリ): {L3:4d}件')
-    print(f'合計:            {total:4d}件')
-    print(f'実測比率: 1:{r2}:{r3}')
-    print(f'理論比率: 1:29:300')
-    print(f'Layer2捕捉率: {g2}%')
-    print(f'Layer3捕捉率: {g3}%')
-    print(f'未捕捉推定: {max(0,int(L1*300-L3))}件')
+    print('='*55)
+    print('MoCKA Heinrich Engine v4 - 実態最適分類版')
+    print('='*55)
+    print(f'Layer1 (重大事故):   {L1:5d}件  [{",".join(sorted(LAYER1_EXACT)[:4])}...]')
+    print(f'Layer2 (軽微な事故): {L2:5d}件  [{",".join(sorted(LAYER2_EXACT)[:4])}...]')
+    print(f'Layer3 (ヒヤリハット):{L3:5d}件  [日常操作全般]')
+    print(f'合計:                {total:5d}件')
     print()
-    print('Layer1サンプル（重大事故）:')
+    print(f'実測比率: 1 : {r2} : {r3}')
+    print(f'理論比率: 1 : 29  : 300')
+    print(f'Layer2捕捉率: {g2}%  (理論の{g2}%)')
+    print(f'Layer3捕捉率: {g3}%  (理論の{g3}%)')
+    print(f'未捕捉推定:   {missing}件')
+    print()
+    print('【洞察】')
+    print('  Layer2が少ない = 軽微事故の記録経路が不足')
+    print('  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく')
+    print('  これがMoCKA制度成熟の定量的証明になる')
+    print()
+    print('Layer1サンプル:')
     for s in buckets[1][:5]:
-        print(f"  [{s['what_type']}] {s['title'][:40]}")
+        print(f"  [{s['what_type']:20s}] {s['title'][:35]}")
     print()
-    print('Layer2サンプル（軽微事故）:')
+    print('Layer2サンプル:')
     for s in buckets[2][:5]:
-        print(f"  [{s['what_type']}] {s['title'][:40]}")
-    print('='*50)
+        print(f"  [{s['what_type']:20s}] {s['title'][:35]}")
+    print('='*55)
     return report
 
 if __name__ == '__main__':
