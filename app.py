@@ -902,18 +902,21 @@ def morpho_status():
 # ===== Heinrich Status =====
 @app.route("/heinrich/status")
 def heinrich_status():
+    cached = _cc_get('heinrich')
+    if cached: return jsonify(cached)
     try:
         import importlib.util as _ilu_h
         _spec_h = _ilu_h.spec_from_file_location('heinrich_engine', os.path.join(ROOT_DIR,'interface','heinrich_engine.py'))
         _he = _ilu_h.module_from_spec(_spec_h)
         _spec_h.loader.exec_module(_he)
         report = _he.run()
+        _cc_set('heinrich', report)
         return jsonify(report)
     except Exception as e:
-        # fallback: 既存JSONを返す
         try:
             h_path = os.path.join(ROOT_DIR, 'data', 'heinrich_report.json')
-            return jsonify(json.load(open(h_path, encoding='utf-8')))
+            report = json.load(open(h_path, encoding='utf-8'))
+            return jsonify(report)
         except Exception:
             return jsonify({"error": str(e)})
 
@@ -921,6 +924,26 @@ def heinrich_status():
 # ================================================================
 # COMMAND CENTER v5.0 - 新規エンドポイント群
 # ================================================================
+
+
+# ── COMMAND CENTER キャッシュ ──
+_cc_cache = {}
+_CC_TTL = {
+    'heinrich': 60,
+    'trend':    300,
+    'todo_risk': 60,
+    'agent':    120,
+}
+def _cc_get(key):
+    import time
+    if key in _cc_cache:
+        data, ts = _cc_cache[key]
+        if time.time() - ts < _CC_TTL.get(key, 60):
+            return data
+    return None
+def _cc_set(key, data):
+    import time
+    _cc_cache[key] = (data, time.time())
 
 # --- Global Risk Meter ---
 @app.route("/risk/global")
@@ -980,6 +1003,8 @@ def risk_global():
 # --- Temporal Analytics (7日トレンド) ---
 @app.route("/trend/weekly")
 def trend_weekly():
+    cached = _cc_get('trend')
+    if cached: return jsonify(cached)
     import sqlite3 as _sq, datetime as _dt
     try:
         db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
@@ -1002,7 +1027,9 @@ def trend_weekly():
         recent3 = sum(d['l1']+d['l2'] for d in days[-3:])
         prev3   = sum(d['l1']+d['l2'] for d in days[:3])
         trend = 'up' if recent3 > prev3 * 1.2 else 'down' if recent3 < prev3 * 0.8 else 'flat'
-        return jsonify({'days': days, 'trend': trend, 'recent3': recent3, 'prev3': prev3})
+        result = {'days': days, 'trend': trend, 'recent3': recent3, 'prev3': prev3}
+        _cc_set('trend', result)
+        return jsonify(result)
     except Exception as e:
         return jsonify({'days':[],'trend':'flat','error':str(e)})
 
@@ -1024,6 +1051,8 @@ def decision_log():
 # --- TODO Risk Score ---
 @app.route("/todo/risk")
 def todo_risk():
+    cached = _cc_get('todo_risk')
+    if cached: return jsonify(cached)
     import importlib.util as _ilu, datetime as _dt
     try:
         todo_path = os.path.join(os.path.dirname(ROOT_DIR), 'MOCKA_TODO.json')
@@ -1108,6 +1137,8 @@ def integrity_status():
 # --- Agent Allocation ---
 @app.route("/agent/allocation")
 def agent_allocation():
+    cached = _cc_get('agent')
+    if cached: return jsonify(cached)
     import sqlite3 as _sq, datetime as _dt
     try:
         db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')

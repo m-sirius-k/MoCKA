@@ -882,7 +882,28 @@ function refreshAll(){
   refreshTodo();
 }
 
-setInterval(refreshAll, 8000);
+// 軽量エンドポイント: 30秒ごと
+setInterval(function(){
+  refreshServers();
+  refreshRisk();
+  refreshLoop();
+  refreshMorpho();
+  refreshPrevention();
+  refreshDecisionLog();
+  refreshTodo();
+}, 30000);
+
+// 重いエンドポイント: 120秒ごと（DBフルスキャン系）
+setInterval(function(){
+  refreshHeinrich();
+  refreshTrend();
+  refreshTodoRisk();
+  refreshAgentAlloc();
+  refreshIntegrity();
+  refreshPipeline();
+  refreshEssence();
+}, 120000);
+
 refreshAll();
 
 })();
