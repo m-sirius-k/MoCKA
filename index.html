@@ -1,646 +1,615 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="UTF-8"><title>MoCKA Command Center v4.3</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MoCKA COMMAND CENTER v5.0</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:#080d18;color:#e5e7eb;font-family:'Courier New',monospace;font-size:12px;padding:6px;}
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap');
 
-:root{
-  --bg0:#080d18;
-  --bg1:#0d1626;
-  --bg2:#111827;
-  --border:#1e293b;
-  --text:#ffffff;
-  --dim:#6b7280;
-  --green:#10b981;--green-b:#064e3b;
-  --amber:#f59e0b;--amber-b:#92400e;
-  --red:#ef4444;  --red-b:#991b1b;
-  --purple:#a855f7;--purple-b:#4c1d95;
-  --blue:#3b82f6; --blue-b:#1e3a5f;
-  --cyan:#06b6d4; --cyan-b:#164e63;
-  --teal:#00d4aa;
+:root {
+  --bg:       #07090f;
+  --bg2:      #0d1117;
+  --bg3:      #111820;
+  --border:   #1e2d3d;
+  --border2:  #2a3f52;
+  --text:     #c9d1d9;
+  --text2:    #8b949e;
+  --accent:   #00d4ff;
+  --accent2:  #0090bb;
+  --green:    #3fb950;
+  --yellow:   #d29922;
+  --orange:   #f0883e;
+  --red:      #f85149;
+  --purple:   #bc8cff;
+  --mono:     'Share Tech Mono', monospace;
+  --head:     'Rajdhani', sans-serif;
+  --body:     'Noto Sans JP', sans-serif;
+  --radius:   6px;
+  --shadow:   0 2px 12px rgba(0,212,255,.08);
 }
 
-/* TOP BAR */
-.top{display:flex;align-items:center;background:var(--bg1);border:1px solid var(--border);border-radius:4px;padding:5px 10px;margin-bottom:5px;gap:6px;}
-.top-title{color:var(--teal);font-weight:700;letter-spacing:3px;font-size:14px;margin-right:6px;}
-.top-sub{color:var(--dim);font-size:10px;letter-spacing:1px;margin-right:auto;}
-.srv{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:48px;}
-.srv-dot{width:10px;height:10px;border-radius:50%;background:#1e293b;margin:0 auto;}
-.srv-dot.on{background:var(--teal);box-shadow:0 0 5px var(--teal);}
-.srv-dot.warn{background:var(--amber);box-shadow:0 0 5px var(--amber);}
-.srv-dot.off{background:var(--dim);}
-.srv-lbl{font-size:9px;color:var(--text);font-weight:700;letter-spacing:0.5px;text-align:center;}
-.clock{color:var(--dim);font-size:11px;letter-spacing:1px;margin-left:8px;}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:var(--bg); color:var(--text); font-family:var(--body); font-size:13px; min-height:100vh; overflow-x:hidden; }
 
-/* セクションラベル */
-.sec{font-size:9px;color:var(--teal);letter-spacing:2px;font-weight:700;padding:4px 2px 2px;border-bottom:1px solid var(--green-b);margin-bottom:3px;}
+/* ── scrollbar ── */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:var(--bg); }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
 
-/* チップ */
-.row{display:flex;gap:3px;margin-bottom:3px;flex-wrap:wrap;}
-.chip{display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:var(--bg1);border:1px solid var(--border);border-radius:3px;
-  padding:4px 6px;width:72px;height:54px;flex-shrink:0;}
-.chip .n{font-size:22px;font-weight:700;line-height:1;font-family:'Courier New',monospace;color:var(--text);}
-.chip .l{font-size:8px;color:var(--text);font-weight:700;letter-spacing:0.5px;margin-top:2px;text-align:center;}
-.chip.green{border-color:var(--green-b);}.chip.green .n{color:var(--green);}
-.chip.amber{border-color:var(--amber-b);}.chip.amber .n{color:var(--amber);}
-.chip.red{border-color:var(--red-b);}.chip.red .n{color:var(--red);}
-.chip.purple{border-color:var(--purple-b);}.chip.purple .n{color:var(--purple);}
-.chip.blue{border-color:var(--blue-b);}.chip.blue .n{color:var(--blue);}
-.chip.cyan{border-color:var(--cyan-b);}.chip.cyan .n{color:var(--cyan);}
-.chip.teal{border-color:var(--teal);}.chip.teal .n{color:var(--teal);}
-.chip.dim .n{color:var(--dim);}
-.chip.sm{height:46px;width:80px;}.chip.sm .n{font-size:18px;}
-.arr{color:var(--border);font-size:9px;padding:0 1px;align-self:center;flex-shrink:0;}
-
-/* KDI パネル */
-.kdi-panel{display:flex;gap:3px;margin-bottom:3px;}
-.kdi-left{display:flex;flex-direction:column;gap:3px;flex:0 0 auto;}
-.kdi-right{flex:1;background:var(--bg1);border:1px solid var(--amber-b);border-radius:3px;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;}
-.kdi-label{font-size:9px;color:var(--amber);font-weight:700;letter-spacing:1px;margin-bottom:4px;}
-.kdi-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;margin-bottom:3px;}
-.kdi-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--teal));border-radius:4px;transition:width .5s;}
-.kdi-val{font-size:22px;font-weight:700;color:var(--teal);font-family:'Courier New',monospace;}
-.kdi-sub{font-size:9px;color:var(--dim);margin-top:2px;}
-.kdi-formula{font-size:9px;color:var(--dim);margin-top:6px;border-top:1px solid var(--border);padding-top:4px;}
-.kdi-formula span{color:var(--amber);}
-
-/* ★ CIV LOOP + TODO PUZZLE 横並び */
-.civloop-row{display:flex;flex-direction:row;gap:6px;margin-bottom:3px;align-items:stretch;}
-.civloop-chips{display:flex;flex-wrap:wrap;gap:3px;flex:0 0 auto;align-content:flex-start;}
-
-/* TODO PUZZLE ブロック — フルwidth独立パネル */
-.todo-puzzle{width:100%;border-radius:4px;padding:6px 8px;border:1.5px solid #1e3a5f;background:#060c18;display:flex;flex-direction:column;box-sizing:border-box;}
-.puzzle-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;padding-bottom:3px;border-bottom:1px solid #1e293b;}
-.puzzle-title{font-size:9px;color:#00d4aa;letter-spacing:2px;font-weight:700;}
-.puzzle-counts{display:flex;gap:4px;}
-.puzzle-cnt{font-size:9px;font-weight:700;padding:1px 5px;border-radius:2px;}
-.puzzle-cnt.saikou{background:#3a0808;color:#ff8080;border:1px solid #7a1010;}
-.puzzle-cnt.high   {background:#0d2000;color:#7fff00;border:1px solid #2a5a00;}
-.puzzle-cnt.mid    {background:#080828;color:#818cf8;border:1px solid #1e1e6a;}
-.puzzle-cnt.low    {background:#111118;color:#6b7280;border:1px solid #2a2a3a;}
-
-/* パズルタイル群 — grid 2次元エリア フルwidth */
-.puzzle-tiles{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(82px,1fr));
-  grid-auto-rows:72px;
-  gap:5px;
-  overflow-y:auto;
-  max-height:240px;
-  padding-bottom:2px;
-  margin-top:4px;
+/* ── HEADER ── */
+header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 20px; background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:sticky; top:0; z-index:100;
 }
-.ptile{
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;
-  border-radius:4px;padding:6px 8px 5px 8px;cursor:default;
-  width:100%;height:72px;
-  box-sizing:border-box;
+.logo { font-family:var(--head); font-size:20px; font-weight:700; color:var(--accent); letter-spacing:2px; }
+.logo span { color:var(--text2); font-size:12px; font-weight:400; margin-left:8px; }
+.servers { display:flex; gap:8px; align-items:center; }
+.dot { width:8px; height:8px; border-radius:50%; background:#333; }
+.dot.on  { background:var(--green); box-shadow:0 0 6px var(--green); }
+.dot.off { background:var(--red); }
+.dot-wrap { display:flex; align-items:center; gap:4px; font-size:11px; color:var(--text2); }
+.timestamp { font-family:var(--mono); font-size:11px; color:var(--text2); }
+#btn-refresh {
+  background:var(--bg3); border:1px solid var(--border2); color:var(--accent);
+  padding:4px 12px; border-radius:var(--radius); cursor:pointer; font-size:12px;
+  font-family:var(--mono); transition:all .2s;
 }
-.ptile-empty{
-  width:100%;height:72px;border-radius:4px;
-  background:transparent;
-  border:1px dashed #1a2030;
-  box-sizing:border-box;
+#btn-refresh:hover { background:var(--accent); color:var(--bg); }
+
+/* ── GLOBAL RISK METER ── */
+#risk-banner {
+  margin:12px 16px 0; border-radius:var(--radius);
+  padding:12px 20px; border:1px solid var(--border);
+  display:flex; align-items:center; gap:20px;
+  transition:all .5s; background:var(--bg2);
 }
-.ptile .pt-num{
-  font-size:28px;font-weight:700;font-family:'Courier New',monospace;
-  line-height:1;display:block;
+.risk-level {
+  font-family:var(--head); font-size:28px; font-weight:700;
+  min-width:110px; letter-spacing:2px;
 }
-.ptile .pt-ttl{
-  font-size:8px;line-height:1.3;margin-top:3px;width:100%;
-  overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
-  -webkit-box-orient:vertical;word-break:break-all;
+.risk-bar-wrap { flex:1; }
+.risk-bar-bg { background:var(--bg3); border-radius:3px; height:8px; overflow:hidden; }
+.risk-bar-fill { height:100%; border-radius:3px; transition:width .8s ease; }
+.risk-score { font-family:var(--mono); font-size:24px; font-weight:bold; min-width:60px; text-align:right; }
+.risk-rec { flex:2; font-size:12px; color:var(--text2); border-left:1px solid var(--border); padding-left:16px; }
+.risk-rec strong { color:var(--text); display:block; margin-bottom:2px; }
+
+/* ── GRID LAYOUT ── */
+.grid { display:grid; gap:10px; padding:10px 16px; }
+.grid-top    { grid-template-columns: repeat(4,1fr); }
+.grid-mid    { grid-template-columns: 2fr 2fr 1.5fr; }
+.grid-bottom { grid-template-columns: 1.5fr 2fr 1.5fr; }
+.grid-last   { grid-template-columns: 1fr 1fr 1fr 1fr; }
+
+/* ── PANEL ── */
+.panel {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:var(--radius); padding:12px 14px;
+  box-shadow:var(--shadow); position:relative;
+  overflow:hidden;
 }
-.ptile.saikou{background:#1a0303;border:2px solid #cc2222;color:#ff9090;}
-.ptile.saikou .pt-num{color:#ff4444;}
-.ptile.high   {background:#071500;border:2px solid #228822;color:#90d060;}
-.ptile.high   .pt-num{color:#44cc00;}
-.ptile.mid    {background:#050520;border:2px solid #4444aa;color:#8888d8;}
-.ptile.mid    .pt-num{color:#6666cc;}
-.ptile.low    {background:#0e0e12;border:2px solid #333344;color:#606070;}
-.ptile.low    .pt-num{color:#505060;}
+.panel::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,var(--accent),transparent);
+}
+.panel.red::before  { background:linear-gradient(90deg,var(--red),transparent); }
+.panel.grn::before  { background:linear-gradient(90deg,var(--green),transparent); }
+.panel.ylw::before  { background:linear-gradient(90deg,var(--yellow),transparent); }
+.panel.purp::before { background:linear-gradient(90deg,var(--purple),transparent); }
+.panel.orn::before  { background:linear-gradient(90deg,var(--orange),transparent); }
 
-/* ★ SPP/PHL + TODO 横並びレイアウト */
-.spp-todo-row{display:flex;flex-direction:row;gap:6px;margin-bottom:3px;width:100%;align-items:stretch;}
-.spp-col{flex:0 0 48%;min-width:0;}
-.todo-col{flex:1 1 0;min-width:0;background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 7px;overflow:hidden;}
-.todo-col .col-label{font-size:9px;color:var(--teal);letter-spacing:2px;font-weight:700;border-bottom:1px solid var(--green-b);padding-bottom:2px;margin-bottom:4px;}
-.todo-col ul{list-style:none;margin:0;padding:0;}
-.tc-item{display:flex;align-items:center;gap:4px;padding:3px 0;border-bottom:1px solid #0d1626;font-size:10px;}
-.tc-item:last-child{border-bottom:none;}
+.panel-title {
+  font-family:var(--head); font-size:11px; font-weight:600;
+  color:var(--text2); letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+.panel-title .icon { font-size:13px; }
 
-/* 四角バッジ */
-.badge{display:inline-block;min-width:26px;padding:0 3px;height:14px;line-height:14px;
-  font-size:8px;font-family:'Courier New',monospace;font-weight:700;
-  text-align:center;border-radius:2px;flex-shrink:0;}
-.badge.saikou{background:#3a0505;color:#ff6b6b;border:1px solid #991b1b;}
-.badge.high   {background:#1a2a00;color:#7fff00;border:1px solid #3a6a00;}
-.badge.mid    {background:#0a0a2a;color:#818cf8;border:1px solid #312e81;}
-.badge.low    {background:#141414;color:#6b7280;border:1px solid #374151;}
+/* ── CIVILIZATION LOOP ── */
+.civ-loop { display:flex; align-items:center; gap:0; overflow-x:auto; padding:4px 0; }
+.civ-node {
+  display:flex; flex-direction:column; align-items:center;
+  min-width:70px; position:relative;
+}
+.civ-node::after {
+  content:'→'; position:absolute; right:-10px; top:50%; transform:translateY(-50%);
+  color:var(--border2); font-size:14px;
+}
+.civ-node:last-child::after { display:none; }
+.cn-circle {
+  width:42px; height:42px; border-radius:50%;
+  border:2px solid var(--border2); background:var(--bg3);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:11px; font-weight:bold;
+  color:var(--text2); transition:all .3s; cursor:default;
+}
+.cn-circle.active { border-color:var(--accent); color:var(--accent); box-shadow:0 0 10px rgba(0,212,255,.3); }
+.cn-circle.warn   { border-color:var(--yellow); color:var(--yellow); }
+.cn-circle.danger { border-color:var(--red); color:var(--red); animation:pulse-red .8s infinite; }
+.cn-label { font-size:9px; color:var(--text2); margin-top:4px; text-align:center; }
 
-.tc-id{color:#444c56;font-size:9px;flex-shrink:0;width:38px;}
-.tc-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;color:#d1d5db;}
+/* ── CHIPS ── */
+.chips { display:flex; flex-wrap:wrap; gap:6px; }
+.chip {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:4px; padding:6px 10px; text-align:center; min-width:60px;
+}
+.chip .n { font-family:var(--mono); font-size:18px; font-weight:bold; color:var(--accent); }
+.chip .l { font-size:10px; color:var(--text2); margin-top:2px; }
+.chip.red .n   { color:var(--red); }
+.chip.grn .n   { color:var(--green); }
+.chip.ylw .n   { color:var(--yellow); }
+.chip.purp .n  { color:var(--purple); }
 
-/* ★ TODO 視覚ブロック（重要度別カラー行） */
-.todo-visual-bar{display:flex;flex-direction:column;gap:2px;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid #1e293b;}
-.tvb-row{display:flex;align-items:stretch;gap:0;border-radius:3px;overflow:hidden;min-height:20px;}
-.tvb-pri{display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;font-family:'Courier New',monospace;padding:0 5px;flex-shrink:0;width:32px;}
-.tvb-row.saikou .tvb-pri{background:#5a0808;color:#ff8080;}
-.tvb-row.high    .tvb-pri{background:#1a3a00;color:#7fff00;}
-.tvb-row.mid     .tvb-pri{background:#0d0d2e;color:#818cf8;}
-.tvb-row.low     .tvb-pri{background:#161616;color:#6b7280;}
-.tvb-items{display:flex;flex-wrap:wrap;gap:3px;align-items:center;padding:3px 5px;flex:1;background:#0a0f1a;}
-.tvb-item{display:inline-flex;align-items:center;gap:3px;padding:1px 5px;border-radius:2px;font-size:9px;font-family:'Courier New',monospace;white-space:nowrap;}
-.tvb-row.saikou .tvb-item{background:#2a0505;border:1px solid #7a1010;color:#ffaaaa;}
-.tvb-row.high    .tvb-item{background:#0d1f00;border:1px solid #2a5a00;color:#a0e060;}
-.tvb-row.mid     .tvb-item{background:#08082a;border:1px solid #25256a;color:#9090d8;}
-.tvb-row.low     .tvb-item{background:#111118;border:1px solid #2a2a3a;color:#707090;}
-.tvb-item .tvi-num{font-size:8px;opacity:0.6;}
-.tvb-empty{color:#2a3a4a;font-size:8px;padding:2px 5px;}
+/* ── BARS ── */
+.bar-row { display:flex; align-items:center; gap:8px; margin:4px 0; }
+.bar-label { font-size:11px; color:var(--text2); width:72px; flex-shrink:0; }
+.bar-track { flex:1; background:var(--bg3); border-radius:3px; height:8px; overflow:hidden; }
+.bar-fill  { height:100%; border-radius:3px; transition:width .6s ease; }
+.bar-val   { font-family:var(--mono); font-size:11px; color:var(--text); width:44px; text-align:right; }
 
-/* 既存TODO LIST（下部） */
-.todo-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 8px;margin-bottom:3px;max-height:140px;overflow-y:auto;}
-.todo-item{display:flex;gap:6px;align-items:center;padding:2px 0;border-bottom:1px solid var(--bg2);}
-.todo-item:last-child{border-bottom:none;}
-.todo-id{color:var(--dim);font-size:8px;white-space:nowrap;flex-shrink:0;width:70px;}
-.todo-pri{font-size:8px;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;}
-.todo-pri.最高{background:#1a0505;color:var(--red);font-weight:700;}
-.todo-pri.高{background:#1a0a00;color:var(--amber);font-weight:700;}
-.todo-pri.中{background:#0a0a1a;color:#818cf8;}
-.todo-pri.低{background:#111;color:#6b7280;}
-.todo-title{font-size:10px;color:#d1d5db;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* ── SPARKLINE ── */
+.sparkline-wrap { overflow:hidden; }
+.spark-row { display:flex; align-items:flex-end; gap:3px; height:40px; padding:0 2px; }
+.spark-bar {
+  flex:1; border-radius:2px 2px 0 0; min-width:8px;
+  background:var(--accent2); transition:height .4s;
+  position:relative; cursor:default;
+}
+.spark-bar:hover::after {
+  content:attr(data-tip);
+  position:absolute; bottom:110%; left:50%; transform:translateX(-50%);
+  background:var(--bg3); border:1px solid var(--border2);
+  color:var(--text); font-size:10px; padding:2px 6px;
+  border-radius:3px; white-space:nowrap; z-index:10;
+}
+.spark-bar.l1 { background:var(--red); }
+.spark-bar.l2 { background:var(--yellow); }
+.spark-labels { display:flex; gap:3px; padding:2px 2px 0; }
+.spark-lbl { flex:1; font-size:9px; color:var(--text2); text-align:center; overflow:hidden; }
+.trend-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:11px; padding:2px 8px; border-radius:10px;
+  font-family:var(--mono);
+}
+.trend-badge.up   { background:rgba(248,81,73,.15); color:var(--red); }
+.trend-badge.down { background:rgba(63,185,80,.15);  color:var(--green); }
+.trend-badge.flat { background:rgba(139,148,158,.15);color:var(--text2); }
 
-/* EVENTS STREAM */
-.events-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
-.ev{display:flex;gap:5px;align-items:center;padding:2px 0;border-bottom:1px solid var(--bg2);}
-.ev:last-child{border-bottom:none;}
-.ev-id{color:var(--dim);font-size:8px;white-space:nowrap;width:110px;flex-shrink:0;}
-.ev-type{font-size:8px;padding:1px 3px;border-radius:2px;white-space:nowrap;flex-shrink:0;min-width:70px;text-align:center;font-weight:700;}
-.ev-type.claude_mcp,.ev-type.record,.ev-type.save{background:#051a0a;color:var(--green);}
-.ev-type.process{background:#0a0a1a;color:#818cf8;}
-.ev-type.danger,.ev-type.critical{background:#1a0505;color:var(--red);}
-.ev-type.warning{background:#1a0f00;color:var(--amber);}
-.ev-title{font-size:9px;color:#9ca3af;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ev-time{font-size:8px;color:var(--dim);white-space:nowrap;flex-shrink:0;}
+/* ── TABLES ── */
+.mini-table { width:100%; border-collapse:collapse; }
+.mini-table td { padding:4px 6px; font-size:11px; border-bottom:1px solid var(--border); }
+.mini-table td:first-child { color:var(--text2); }
+.mini-table tr:last-child td { border-bottom:none; }
 
-/* DECISION */
-.dec-panel{background:var(--bg1);border:1px solid var(--purple-b);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
-.dec-item{background:var(--bg0);border:1px solid var(--purple-b);border-radius:3px;padding:5px 8px;margin-bottom:3px;}
-.dec-title{font-size:11px;color:var(--text);font-weight:700;margin-bottom:2px;}
-.dec-desc{font-size:9px;color:var(--dim);margin-bottom:4px;line-height:1.4;}
-.dec-btns{display:flex;gap:5px;}
-.btn-ok{background:var(--green-b);color:var(--green);border:1px solid #065f46;border-radius:2px;padding:2px 10px;font-size:9px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
-.btn-ng{background:#1a0505;color:var(--red);border:1px solid var(--red-b);border-radius:2px;padding:2px 10px;font-size:9px;cursor:pointer;font-family:'Courier New',monospace;font-weight:700;}
-.empty{color:var(--dim);font-size:9px;text-align:center;padding:5px;}
+/* ── TODO RISK ── */
+.todo-item {
+  display:flex; align-items:center; gap:8px;
+  padding:5px 0; border-bottom:1px solid var(--border);
+}
+.todo-item:last-child { border-bottom:none; }
+.todo-risk-badge {
+  font-size:9px; font-family:var(--mono); padding:2px 5px;
+  border-radius:3px; min-width:52px; text-align:center; flex-shrink:0;
+}
+.todo-risk-badge.CRITICAL { background:rgba(248,81,73,.2);  color:var(--red); }
+.todo-risk-badge.HIGH     { background:rgba(240,136,62,.2); color:var(--orange); }
+.todo-risk-badge.MEDIUM   { background:rgba(210,153,34,.2); color:var(--yellow); }
+.todo-risk-badge.LOW      { background:rgba(63,185,80,.2);  color:var(--green); }
+.todo-title { flex:1; font-size:11px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.todo-overdue { font-size:10px; color:var(--red); }
 
-/* ESSENCE 3軸 */
-.essence-panel{background:var(--bg1);border:1px solid var(--border);border-radius:3px;margin-bottom:3px;}
-.ax{border-bottom:1px solid var(--bg2);padding:5px 8px;}
-.ax:last-child{border-bottom:none;}
-.ax-head{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
-.ax-badge{font-size:8px;letter-spacing:1px;padding:1px 4px;border-radius:2px;font-weight:700;}
-.ax-I{background:#0a1a0a;color:var(--green);border:1px solid var(--green-b);}
-.ax-P{background:#0a0a1a;color:#818cf8;border:1px solid #312e81;}
-.ax-O{background:#1a1000;color:var(--amber);border:1px solid var(--amber-b);}
-.ax-age{font-size:8px;color:var(--dim);margin-left:auto;}
-.ax-text{font-size:10px;color:#9ca3af;line-height:1.5;max-height:48px;overflow:hidden;}
-.ax-text.exp{max-height:none;}
-.ax-btn{font-size:8px;color:var(--dim);cursor:pointer;text-align:right;margin-top:2px;}
-.ax-btn:hover{color:#9ca3af;}
+/* ── DECISION LOG ── */
+.dec-item { padding:5px 0; border-bottom:1px solid var(--border); }
+.dec-item:last-child { border-bottom:none; }
+.dec-type { font-size:10px; font-family:var(--mono); }
+.dec-type.APPROVED { color:var(--green); }
+.dec-type.REJECTED { color:var(--red); }
+.dec-title { font-size:11px; color:var(--text2); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
-::-webkit-scrollbar{width:3px;height:3px;}
-::-webkit-scrollbar-track{background:var(--bg0);}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+/* ── AGENT ALLOCATION ── */
+.agent-row { display:flex; align-items:center; gap:8px; margin:3px 0; }
+.agent-name { font-size:11px; width:80px; overflow:hidden; text-overflow:ellipsis; }
+.agent-bar-wrap { flex:1; background:var(--bg3); border-radius:3px; height:6px; overflow:hidden; }
+.agent-bar-fill { height:100%; border-radius:3px; background:var(--purple); transition:width .6s; }
+.agent-pct { font-family:var(--mono); font-size:10px; color:var(--text2); width:35px; text-align:right; }
 
-/* ★ Heinrich + Morphology Panel */
-.heinrich-panel { background:#1a1a2e; border:1px solid #e94560; border-radius:8px; padding:14px; margin:10px 0; }
-.heinrich-title { color:#e94560; font-size:13px; font-weight:bold; margin-bottom:8px; }
-.h-bar { display:flex; align-items:center; gap:8px; margin:4px 0; }
-.h-label { color:#aaa; font-size:11px; width:80px; }
-.h-track { flex:1; background:#333; border-radius:4px; height:10px; overflow:hidden; }
-.h-fill-l1 { height:100%; background:#e94560; border-radius:4px; transition:width 0.5s; }
-.h-fill-l2 { height:100%; background:#f5a623; border-radius:4px; transition:width 0.5s; }
-.h-fill-l3 { height:100%; background:#4CAF50; border-radius:4px; transition:width 0.5s; }
-.h-count { color:#fff; font-size:11px; width:50px; text-align:right; }
-.morpho-panel { background:#0d1b2a; border:1px solid #00d4ff; border-radius:8px; padding:14px; margin:10px 0; }
-.morpho-title { color:#00d4ff; font-size:13px; font-weight:bold; margin-bottom:8px; }
-.morpho-score { font-size:28px; font-weight:bold; text-align:center; margin:8px 0; }
-.morpho-score.SAFE     { color:#4CAF50; }
-.morpho-score.WARNING  { color:#f5a623; }
-.morpho-score.DANGER   { color:#ff6b35; }
-.morpho-score.CRITICAL { color:#e94560; animation:blink 0.8s infinite; }
+/* ── MORPHOLOGY ── */
+.morpho-score {
+  font-family:var(--head); font-size:32px; font-weight:700;
+  text-align:center; margin:6px 0 2px; letter-spacing:2px;
+}
 .morpho-tokens { display:flex; flex-wrap:wrap; gap:4px; margin:6px 0; }
-.morpho-token { background:#1a3a4a; color:#00d4ff; border-radius:3px; padding:2px 6px; font-size:10px; }
-.morpho-match { background:#3a1a1a; color:#e94560; border-radius:3px; padding:2px 6px; font-size:10px; }
-.morpho-recent { margin-top:8px; }
-.morpho-recent-item { display:flex; justify-content:space-between; align-items:center; padding:3px 0; border-bottom:1px solid #1a3a4a; }
-.morpho-recent-pred { font-size:10px; font-weight:bold; }
-.morpho-recent-text { color:#888; font-size:10px; flex:1; padding:0 8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.morpho-recent-score { font-size:10px; color:#aaa; }
-.ratio-badge { display:inline-block; background:#333; border-radius:4px; padding:2px 6px; font-size:11px; color:#fff; margin:2px; }
+.morpho-token { background:var(--bg3); color:var(--accent); border-radius:3px; padding:2px 6px; font-size:10px; font-family:var(--mono); }
+.morpho-match { background:rgba(248,81,73,.15); color:var(--red); border-radius:3px; padding:2px 6px; font-size:10px; font-family:var(--mono); }
+.morpho-hist-item { display:flex; justify-content:space-between; align-items:center; padding:3px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.morpho-hist-item:last-child { border-bottom:none; }
+.pred-badge { font-family:var(--mono); font-size:10px; font-weight:bold; min-width:52px; }
+.pred-badge.SAFE     { color:var(--green); }
+.pred-badge.WARNING  { color:var(--yellow); }
+.pred-badge.DANGER   { color:var(--orange); }
+.pred-badge.CRITICAL { color:var(--red); }
+.hist-text { flex:1; padding:0 8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text2); }
+.hist-pct  { font-family:var(--mono); font-size:10px; color:var(--text2); }
+
+/* ── PREVENTION QUEUE ── */
+.prev-item { padding:6px 0; border-bottom:1px solid var(--border); }
+.prev-item:last-child { border-bottom:none; }
+.prev-pattern { font-size:11px; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.prev-proposal { font-size:10px; color:var(--text2); margin-bottom:4px; }
+.prev-actions { display:flex; gap:6px; }
+.btn-approve, .btn-reject {
+  padding:3px 10px; border-radius:3px; border:none; cursor:pointer;
+  font-size:11px; font-family:var(--mono); transition:all .2s;
+}
+.btn-approve { background:rgba(63,185,80,.2);  color:var(--green); border:1px solid rgba(63,185,80,.3); }
+.btn-approve:hover { background:var(--green); color:var(--bg); }
+.btn-reject  { background:rgba(248,81,73,.15); color:var(--red);   border:1px solid rgba(248,81,73,.3); }
+.btn-reject:hover  { background:var(--red);   color:var(--bg); }
+
+/* ── INTEGRITY ── */
+.int-row { display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.int-row:last-child { border-bottom:none; }
+.int-key { color:var(--text2); }
+.int-val { font-family:var(--mono); color:var(--text); }
+.int-val.ok   { color:var(--green); }
+.int-val.warn { color:var(--yellow); }
+.int-val.err  { color:var(--red); }
+
+/* ── RECOMMENDATION ── */
+#rec-box {
+  background:rgba(0,212,255,.05); border:1px solid rgba(0,212,255,.2);
+  border-radius:var(--radius); padding:8px 14px; margin:8px 16px 0;
+  font-size:12px; display:flex; align-items:center; gap:10px;
+}
+#rec-box .rec-icon { font-size:18px; }
+#rec-text { flex:1; }
+#rec-text strong { color:var(--accent); display:block; font-size:11px; margin-bottom:2px; font-family:var(--head); letter-spacing:1px; }
+
+/* ── ESSENCE VIEWER ── */
+.essence-axis { margin-bottom:8px; }
+.essence-axis-label { font-size:10px; color:var(--text2); font-family:var(--mono); margin-bottom:3px; }
+.essence-text { font-size:11px; color:var(--text); background:var(--bg3); border-radius:3px; padding:6px 8px; line-height:1.6; max-height:60px; overflow-y:auto; }
+
+/* ── SEAL ── */
+.seal-entry { padding:5px 0; border-bottom:1px solid var(--border); font-size:11px; }
+.seal-entry:last-child { border-bottom:none; }
+.seal-hash { font-family:var(--mono); font-size:10px; color:var(--accent2); word-break:break-all; }
+
+/* ── ANIMATIONS ── */
+@keyframes pulse-red {
+  0%,100% { box-shadow:0 0 6px rgba(248,81,73,.4); }
+  50%      { box-shadow:0 0 14px rgba(248,81,73,.8); }
+}
+@keyframes blink {
+  0%,100% { opacity:1; }
+  50%      { opacity:.4; }
+}
+@keyframes fadeIn { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+.panel { animation:fadeIn .4s ease both; }
+
+/* ── PIPELINE ── */
+.pipe-nodes { display:flex; gap:4px; flex-wrap:wrap; }
+.pipe-node {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:4px; padding:4px 8px; font-size:10px; font-family:var(--mono);
+  display:flex; align-items:center; gap:4px; color:var(--text2);
+}
+.pipe-node .pn { font-weight:bold; }
+.pipe-node.has-data { border-color:var(--accent2); color:var(--accent); }
+
+/* ── EMPTY STATE ── */
+.empty { text-align:center; color:var(--text2); font-size:11px; padding:16px 0; }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-family:var(--head); font-size:10px; letter-spacing:2px;
+  color:var(--text2); text-transform:uppercase; padding:6px 16px 2px;
+}
 </style>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="top">
-  <span class="top-title">MoCKA</span>
-  <span class="top-sub">command center v4.3</span>
-  <div class="srv"><div class="srv-dot" id="d-app"></div><div class="srv-lbl">APP<br>5000</div></div>
-  <div class="srv"><div class="srv-dot" id="d-cal"></div><div class="srv-lbl">CAL<br>5679</div></div>
-  <div class="srv"><div class="srv-dot" id="d-mcp"></div><div class="srv-lbl">MCP<br>5002</div></div>
-  <div class="srv"><div class="srv-dot" id="d-rtb"></div><div class="srv-lbl">RUNTIME-B<br>5003</div></div>
-  <div class="srv"><div class="srv-dot" id="d-ngrok"></div><div class="srv-lbl">NGROK</div></div>
-  <div class="srv"><div class="srv-dot" id="d-pipe"></div><div class="srv-lbl">PIPE</div></div>
-  <span class="clock" id="clock">--:--:--</span>
+<!-- HEADER -->
+<header>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="logo">MoCKA <span>COMMAND CENTER v5.0</span></div>
+    <div class="servers" id="srv-dots"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="timestamp" id="ts">--:--:--</span>
+    <button id="btn-refresh" onclick="refreshAll()">&#8635; REFRESH</button>
+  </div>
+</header>
+
+<!-- GLOBAL RISK METER -->
+<div id="risk-banner">
+  <div class="risk-level" id="risk-level" style="color:var(--green)">SAFE</div>
+  <div class="risk-bar-wrap">
+    <div style="font-size:10px;color:var(--text2);margin-bottom:4px;">GLOBAL RISK SCORE</div>
+    <div class="risk-bar-bg"><div class="risk-bar-fill" id="risk-bar" style="width:0%;background:var(--green)"></div></div>
+    <div style="font-size:10px;color:var(--text2);margin-top:3px;">理論的安全水準から現在の乖離を示す複合指標</div>
+  </div>
+  <div class="risk-score" id="risk-score" style="color:var(--green)">0</div>
+  <div class="risk-rec">
+    <strong>SYSTEM RECOMMENDATION</strong>
+    <span id="risk-rec">読み込み中...</span>
+  </div>
 </div>
 
-<!-- CIVILIZATION LOOP -->
-<div class="sec">CIVILIZATION LOOP</div>
-<div class="row" style="margin-bottom:3px;">
-  <div class="chip"><div class="n" id="cn-observe">-</div><div class="l">OBSERVE</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-record">-</div><div class="l">RECORD</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-incident">-</div><div class="l">INCIDENT</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-recurrence">-</div><div class="l">RECURRENCE</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-prevention">-</div><div class="l">PREVENTION</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-decision">-</div><div class="l">DECISION</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="cn-action">-</div><div class="l">ACTION</div></div><div class="arr">→</div>
-  <div class="chip teal"><div class="n" id="cn-audit">-</div><div class="l">AUDIT</div></div>
+<!-- RECOMMENDATION -->
+<div id="rec-box">
+  <span class="rec-icon">&#9654;</span>
+  <div id="rec-text">
+    <strong>NEXT BEST ACTION</strong>
+    <span id="rec-action">読み込み中...</span>
+  </div>
 </div>
 
-<!-- PIPELINE -->
-<div class="sec">PIPELINE</div>
-<div class="row" style="margin-bottom:3px;">
-  <div class="chip"><div class="n" id="p-RAW">-</div><div class="l">RAW</div></div><div class="arr">→</div>
-  <div class="chip amber"><div class="n" id="p-DONE">-</div><div class="l">RAW_DONE</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="p-REDUCED">-</div><div class="l">REDUCED</div></div><div class="arr">→</div>
-  <div class="chip green"><div class="n" id="p-RE_REDUCED">-</div><div class="l">RE_REDUCED</div></div><div class="arr">→</div>
-  <div class="chip amber"><div class="n" id="p-REDUCING">-</div><div class="l">REDUCING</div></div><div class="arr">→</div>
-  <div class="chip"><div class="n" id="p-CORE">-</div><div class="l">CORE</div></div><div class="arr">→</div>
-  <div class="chip green"><div class="n" id="p-ESSENCE">-</div><div class="l">ESSENCE</div></div><div class="arr">→</div>
-  <div class="chip purple"><div class="n" id="p-PILS">-</div><div class="l">PILS</div></div>
+<!-- ROW 1: CIVILIZATION LOOP -->
+<div class="sec-label">Civilization Loop</div>
+<div style="padding:0 16px;">
+  <div class="panel">
+    <div class="civ-loop" id="civ-loop"></div>
+  </div>
 </div>
 
-<!-- KEY METRICS -->
-<div class="sec">KEY METRICS</div>
-<div class="row" style="margin-bottom:3px;">
-  <div class="chip teal"><div class="n" id="m-kdi">-</div><div class="l">KDI</div></div>
-  <div class="chip red"><div class="n" id="m-danger">-</div><div class="l">DANGER</div></div>
-  <div class="chip amber"><div class="n" id="m-learned">-</div><div class="l">LEARNED</div></div>
-  <div class="chip blue"><div class="n" id="m-events">-</div><div class="l">EVENTS</div></div>
-  <div class="chip green"><div class="n" id="m-done">-</div><div class="l">TODO完了</div></div>
-  <div class="chip amber"><div class="n" id="m-todo">-</div><div class="l">TODO残</div></div>
-  <div class="chip dim"><div class="n" id="m-recurrence">-</div><div class="l">RECURRENCE</div></div>
-  <div class="chip dim"><div class="n" id="m-seal" style="font-size:13px;">--:--</div><div class="l">LAST SEAL</div></div>
-</div>
-
-<!-- DANGER MONITOR -->
-<div class="sec">DANGER MONITOR</div>
-<div class="row" style="margin-bottom:3px;">
-  <div class="chip red"><div class="n" id="dt1">-</div><div class="l">TIER 1</div></div>
-  <div class="chip amber"><div class="n" id="dt2">-</div><div class="l">TIER 2</div></div>
-  <div class="chip"><div class="n" id="dt3">-</div><div class="l">TIER 3</div></div>
-  <div class="chip purple"><div class="n" id="dte">-</div><div class="l">ESCALATION</div></div>
-  <div class="chip blue"><div class="n" id="dts">-</div><div class="l">SILENT</div></div>
-</div>
-
-<!-- ★ TODO BOARD — DANGER直下フルwidth -->
-<div class="sec">TODO BOARD</div>
-<div class="todo-puzzle" style="margin-bottom:3px;min-height:160px;">
-  <div class="puzzle-header">
-    <span class="puzzle-title">残タスク</span>
-    <div class="puzzle-counts">
-      <span class="puzzle-cnt saikou" id="pc-saikou">最高 0</span>
-      <span class="puzzle-cnt high"   id="pc-high">高 0</span>
-      <span class="puzzle-cnt mid"    id="pc-mid">中 0</span>
-      <span class="puzzle-cnt low"    id="pc-low">低 0</span>
+<!-- ROW 2: TOP CHIPS -->
+<div class="sec-label">Core Metrics</div>
+<div class="grid grid-top">
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9679;</span>Events DB</div>
+    <div class="chips">
+      <div class="chip"><div class="n" id="m-record">-</div><div class="l">TOTAL</div></div>
+      <div class="chip red"><div class="n" id="m-incident">-</div><div class="l">INCIDENT</div></div>
+      <div class="chip ylw"><div class="n" id="m-recurrence">-</div><div class="l">RECURRENCE</div></div>
+      <div class="chip grn"><div class="n" id="m-action">-</div><div class="l">ACTION</div></div>
     </div>
   </div>
-  <div class="puzzle-tiles" id="puzzle-tiles">
-    <div class="ptile-empty"></div>
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9650;</span>Heinrich Monitor</div>
+    <div class="bar-row">
+      <div class="bar-label">Layer1 重大</div>
+      <div class="bar-track"><div class="bar-fill" id="h-bar-l1" style="width:0%;background:var(--red)"></div></div>
+      <div class="bar-val" id="h-val-l1">-</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Layer2 軽微</div>
+      <div class="bar-track"><div class="bar-fill" id="h-bar-l2" style="width:0%;background:var(--yellow)"></div></div>
+      <div class="bar-val" id="h-val-l2">-</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">Layer3 ヒヤリ</div>
+      <div class="bar-track"><div class="bar-fill" id="h-bar-l3" style="width:0%;background:var(--green)"></div></div>
+      <div class="bar-val" id="h-val-l3">-</div>
+    </div>
+    <div style="font-size:10px;color:var(--text2);margin-top:6px;">
+      実測: <span id="h-ratio" style="color:var(--text)">-</span>
+      &nbsp;|&nbsp; 理論: 1:29:300
+      &nbsp;|&nbsp; L3捕捉率: <span id="h-cap" style="color:var(--green)">-%</span>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9670;</span>Morphology Predictor</div>
+    <div class="morpho-score" id="morpho-pred" style="color:var(--green)">SAFE</div>
+    <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:6px;" id="morpho-interp">-</div>
+    <div class="morpho-tokens" id="morpho-tokens"></div>
+  </div>
+  <div class="panel purp">
+    <div class="panel-title"><span class="icon">&#9632;</span>Seal & Integrity</div>
+    <div class="int-row"><span class="int-key">Last Seal</span><span class="int-val" id="m-seal">-</span></div>
+    <div class="int-row"><span class="int-key">DB Health</span><span class="int-val ok" id="int-health">-%</span></div>
+    <div class="int-row"><span class="int-key">DB Size</span><span class="int-val" id="int-size">-</span></div>
+    <div class="int-row"><span class="int-key">Events</span><span class="int-val" id="int-total">-</span></div>
+    <div class="int-row"><span class="int-key">Null Fields</span><span class="int-val" id="int-null">-</span></div>
   </div>
 </div>
 
-<!-- ★ SPP/PHL + TODO 横並び -->
-<div class="sec">SPP / PHL — ESSENCE &nbsp;&nbsp;|&nbsp;&nbsp; TODO — 優先順</div>
-<div class="spp-todo-row">
-
-  <!-- 左: KDI/SPP パネル -->
-  <div class="spp-col">
-    <div class="kdi-panel" style="margin-bottom:0;">
-      <div class="kdi-left">
-        <div class="chip green sm" style="width:90px;"><div class="n" id="kdi-active">-</div><div class="l">ACTIVE</div></div>
-        <div class="chip amber sm" style="width:90px;"><div class="n" id="kdi-pending">-</div><div class="l">PENDING</div></div>
-        <div class="chip dim sm" style="width:90px;"><div class="n" id="kdi-raw">-</div><div class="l">RAW BASE</div></div>
-      </div>
-      <div class="kdi-right">
-        <div class="kdi-label">● ESSENCE — KDI</div>
-        <div class="kdi-bar"><div class="kdi-fill" id="kdi-bar" style="width:0%"></div></div>
-        <div class="kdi-val"><span id="kdi-val">-</span> <span style="font-size:12px;color:var(--dim);">KDI</span></div>
-        <div class="kdi-sub" id="kdi-sub">CORE×3 + ESSENCE×10 + RAW_DONE×0.5</div>
-        <div class="kdi-formula">
-          ACTIVE:<span id="f-essence">-</span>×10 &nbsp;|&nbsp;
-          PEND:<span id="f-core">-</span>×3 &nbsp;|&nbsp;
-          BASE:<span id="f-raw">-</span>×0.5
-        </div>
-      </div>
+<!-- ROW 3: TREND + RISK TODO + DECISION -->
+<div class="sec-label">Analytics & Intelligence</div>
+<div class="grid grid-mid">
+  <!-- 7日トレンド -->
+  <div class="panel">
+    <div class="panel-title" style="justify-content:space-between;">
+      <span><span class="icon">&#8984;</span>7-Day Trend</span>
+      <span class="trend-badge flat" id="trend-badge">→ FLAT</span>
+    </div>
+    <div class="sparkline-wrap">
+      <div class="spark-row" id="spark-l1" style="height:30px;margin-bottom:2px;"></div>
+      <div class="spark-row" id="spark-l3" style="height:35px;"></div>
+      <div class="spark-labels" id="spark-labels"></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:6px;font-size:10px;">
+      <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--red);border-radius:2px;display:inline-block;"></span>重大</span>
+      <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--green);border-radius:2px;display:inline-block;"></span>ヒヤリ</span>
     </div>
   </div>
 
-  <!-- 右: TODO インラインパネル -->
-  <div class="todo-col">
-    <div class="col-label">TODO — 優先順</div>
-    <div class="todo-visual-bar" id="todo-visual-bar"></div>
-    <ul id="todo-inline-list">
-      <li class="tc-item"><span style="color:var(--dim);font-size:9px;">— loading —</span></li>
-    </ul>
+  <!-- TODO Risk Score -->
+  <div class="panel red">
+    <div class="panel-title"><span class="icon">&#9888;</span>TODO Risk Engine</div>
+    <div id="todo-risk-list"><div class="empty">読み込み中...</div></div>
   </div>
 
-</div>
-
-<!-- DECISION QUEUE -->
-<div class="sec" style="border-bottom-color:var(--purple-b);">DECISION QUEUE &nbsp;<span id="dec-count" style="color:var(--purple);">0</span></div>
-<div class="dec-panel"><div id="dec-list"><div class="empty">— 承認待ちなし —</div></div></div>
-
-<!-- EVENTS STREAM -->
-<div class="sec">EVENTS STREAM</div>
-<div class="events-panel"><div id="events-list"><div class="empty">— loading —</div></div></div>
-
-<!-- ESSENCE 3軸 -->
-<div class="sec">ESSENCE — 3軸</div>
-<div class="essence-panel">
-  <div class="ax">
-    <div class="ax-head"><span class="ax-badge ax-I">INCIDENT</span><span class="ax-age" id="age-I"></span></div>
-    <div class="ax-text" id="txt-I">— 未取得 —</div>
-    <div class="ax-btn" onclick="toggleAx('txt-I',this)">▼ 展開</div>
-  </div>
-  <div class="ax">
-    <div class="ax-head"><span class="ax-badge ax-P">PHILOSOPHY</span><span class="ax-age" id="age-P"></span></div>
-    <div class="ax-text" id="txt-P">— 未取得 —</div>
-    <div class="ax-btn" onclick="toggleAx('txt-P',this)">▼ 展開</div>
-  </div>
-  <div class="ax">
-    <div class="ax-head"><span class="ax-badge ax-O">OPERATION</span><span class="ax-age" id="age-O"></span></div>
-    <div class="ax-text" id="txt-O">— 未取得 —</div>
-    <div class="ax-btn" onclick="toggleAx('txt-O',this)">▼ 展開</div>
+  <!-- Decision Log -->
+  <div class="panel ylw">
+    <div class="panel-title"><span class="icon">&#9654;</span>Decision Log</div>
+    <div id="decision-log"><div class="empty">判断記録なし</div></div>
   </div>
 </div>
+
+<!-- ROW 4: ESSENCE + PREVENTION + AGENT -->
+<div class="sec-label">Knowledge & Operations</div>
+<div class="grid grid-bottom">
+
+  <!-- Essence Viewer -->
+  <div class="panel grn">
+    <div class="panel-title"><span class="icon">&#9670;</span>Essence Viewer</div>
+    <div class="essence-axis">
+      <div class="essence-axis-label">INCIDENT</div>
+      <div class="essence-text" id="ess-incident">-</div>
+    </div>
+    <div class="essence-axis">
+      <div class="essence-axis-label">OPERATION</div>
+      <div class="essence-text" id="ess-operation">-</div>
+    </div>
+    <div class="essence-axis">
+      <div class="essence-axis-label">PHILOSOPHY</div>
+      <div class="essence-text" id="ess-philosophy">-</div>
+    </div>
+  </div>
+
+  <!-- Prevention Queue -->
+  <div class="panel orn">
+    <div class="panel-title" style="justify-content:space-between;">
+      <span><span class="icon">&#9658;</span>Prevention Queue</span>
+      <span id="pq-count" style="font-family:var(--mono);font-size:11px;color:var(--orange);">0件</span>
+    </div>
+    <div id="prev-queue"><div class="empty">承認待ち案件なし</div></div>
+  </div>
+
+  <!-- Morpho History + Agent -->
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <div class="panel">
+      <div class="panel-title"><span class="icon">&#9670;</span>Morpho History</div>
+      <div id="morpho-hist"></div>
+    </div>
+    <div class="panel purp">
+      <div class="panel-title"><span class="icon">&#9632;</span>Agent Allocation</div>
+      <div id="agent-alloc"><div class="empty">読み込み中...</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ROW 5: PIPELINE + SERVERS + TODO BOARD -->
+<div class="sec-label">Infrastructure</div>
+<div class="grid grid-last">
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9679;</span>Pipeline</div>
+    <div class="pipe-nodes" id="pipeline-nodes"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9679;</span>Services</div>
+    <table class="mini-table" id="srv-table"></table>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9654;</span>TODO Board</div>
+    <div id="todo-board"></div>
+  </div>
+  <div class="panel">
+    <div class="panel-title"><span class="icon">&#9670;</span>Seal History</div>
+    <div id="seal-hist"></div>
+    <div style="margin-top:8px;font-size:10px;color:var(--text2);">
+      未捕捉推定: <span id="h-missing" style="color:var(--red);font-family:var(--mono);">-件</span>
+    </div>
+  </div>
+</div>
+
+<div style="height:20px;"></div>
 
 <script>
 (function(){
 'use strict';
-function $(i){return document.getElementById(i);}
-function set(i,v){var e=$(i);if(e)e.textContent=v;}
-function toggleAx(id,btn){var e=$(id);if(!e)return;var x=e.classList.toggle('exp');btn.textContent=x?'▲ 折りたたむ':'▼ 展開';}
-window.toggleAx=toggleAx;
 
-// Clock
-setInterval(function(){set('clock',new Date().toLocaleTimeString('ja-JP'));},1000);
-set('clock',new Date().toLocaleTimeString('ja-JP'));
+// ── utils ──────────────────────────────────────────
+function set(id,v){ var e=document.getElementById(id); if(e) e.textContent=v; }
+function html(id,v){ var e=document.getElementById(id); if(e) e.innerHTML=v; }
+function q(sel){ return document.querySelector(sel); }
 
-// Server dots
-function dot(id,ok){var e=$(id);if(!e)return;e.className='srv-dot '+(ok?'on':ok===null?'off':'warn');}
-function checkDot(url,id){
-  fetch(url).then(function(r){dot(id,r.ok);}).catch(function(){dot(id,null);});
-}
+// ── timestamp ──
+function tick(){ set('ts', new Date().toLocaleTimeString('ja-JP')); }
+setInterval(tick,1000); tick();
+
+// ── SERVERS ──
 function refreshServers(){
-  checkDot('/health','d-app');
-  checkDot('http://localhost:5679/health','d-cal');
-  checkDot('http://localhost:5002/health','d-mcp');
-  checkDot('http://localhost:5003/b/health','d-rtb');
-  checkDot('/public/status','d-ngrok');
-}
-
-// KDI計算
-function calcKDI(essence,core,rawDone){
-  return Math.round(essence*10 + core*3 + rawDone*0.5);
-}
-
-function refreshPipeline(){
-  fetch('/pipeline/status').then(function(r){return r.json();}).then(function(d){
-    dot('d-pipe',true);
-    var p=d.layers||{};
-    var raw=p.RAW||0,done=p.RAW_DONE||0,red=p.REDUCED||0,rr=p.RE_REDUCED||0;
-    var ring=p.REDUCING||0,core=p.CORE||0,ess=p.ESSENCE||0,pils=p.PILS||0;
-    set('p-RAW',raw);set('p-DONE',done);set('p-REDUCED',red);set('p-RE_REDUCED',rr);
-    set('p-REDUCING',ring);set('p-CORE',core);set('p-ESSENCE',ess);set('p-PILS',pils);
-
-    var kdi=calcKDI(ess,core,done);
-    set('m-kdi',kdi);set('kdi-val',kdi);
-    set('kdi-active',ess);set('kdi-pending',core);set('kdi-raw',done);
-    set('f-essence',ess);set('f-core',core);set('f-raw',done);
-    var bar=$('kdi-bar');
-    if(bar)bar.style.width=Math.min(kdi/10,100)+'%';
-    set('kdi-sub','CORE('+core+')×3 + ESSENCE('+ess+')×10 + RAW_DONE('+done+')×0.5 = '+kdi);
-
-    var dg=d.danger||{};
-    set('m-danger',dg.total||0);
-    set('dt1',dg.tier1||0);set('dt2',dg.tier2||0);set('dt3',dg.tier3||0);
-    set('dte',dg.escalation||0);set('dts',dg.silent_danger||0);
-    set('m-learned',dg.learned_today||0);
-
-    var es=d.essence||{};
-    var axMap={INCIDENT:'I',PHILOSOPHY:'P',OPERATION:'O'};
-    Object.keys(axMap).forEach(function(k){
-      var s=axMap[k];
-      if(es[k]){
-        set('txt-'+s,es[k].text||'—');
-        if(es[k].updated)set('age-'+s,es[k].updated.substring(0,10));
-      }
+  fetch('/servers/status').then(function(r){return r.json();}).then(function(d){
+    var wrap = document.getElementById('srv-dots');
+    wrap.innerHTML = '';
+    var defs = [
+      {key:'app',   label:'APP'},
+      {key:'caliber',label:'CAL'},
+      {key:'mcp',   label:'MCP'},
+      {key:'runtime_b',label:'RTB'},
+      {key:'ngrok', label:'NGROK'},
+    ];
+    defs.forEach(function(s){
+      var on = d[s.key] === 'ok' || d[s.key] === true;
+      var w = document.createElement('div');
+      w.className='dot-wrap';
+      w.innerHTML='<div class="dot '+(on?'on':'off')+'"></div><span>'+s.label+'</span>';
+      wrap.appendChild(w);
     });
-  }).catch(function(){dot('d-pipe',null);});
+    // table
+    var tbl = document.getElementById('srv-table');
+    if(tbl){
+      tbl.innerHTML = defs.map(function(s){
+        var on = d[s.key]==='ok'||d[s.key]===true;
+        var col = on?'var(--green)':'var(--red)';
+        return '<tr><td>'+s.label+'</td><td style="color:'+col+';font-family:var(--mono);">'+(on?'ONLINE':'OFFLINE')+'</td></tr>';
+      }).join('');
+    }
+  }).catch(function(){});
 }
 
+// ── GLOBAL RISK ──
+function refreshRisk(){
+  fetch('/risk/global').then(function(r){return r.json();}).then(function(d){
+    var lv = d.level || 'SAFE';
+    var sc = d.score || 0;
+    var colors = {SAFE:'var(--green)',WARNING:'var(--yellow)',DANGER:'var(--orange)',CRITICAL:'var(--red)'};
+    var col = colors[lv] || 'var(--green)';
+    var el = document.getElementById('risk-level');
+    if(el){ el.textContent=lv; el.style.color=col; }
+    var bar = document.getElementById('risk-bar');
+    if(bar){ bar.style.width=sc+'%'; bar.style.background=col; }
+    var scEl = document.getElementById('risk-score');
+    if(scEl){ scEl.textContent=sc; scEl.style.color=col; }
+    set('risk-rec', d.recommendation||'-');
+    set('rec-action', d.recommendation||'-');
+    // banner color
+    var banner = document.getElementById('risk-banner');
+    if(banner){
+      var bcolors = {SAFE:'rgba(63,185,80,.05)',WARNING:'rgba(210,153,34,.08)',DANGER:'rgba(240,136,62,.1)',CRITICAL:'rgba(248,81,73,.12)'};
+      banner.style.background = bcolors[lv]||'var(--bg2)';
+      banner.style.borderColor = col;
+    }
+  }).catch(function(){});
+}
+
+// ── CIVILIZATION LOOP ──
 function refreshLoop(){
   fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
-    var cl=d.civilization_loop||{};
-    set('cn-observe',   cl.observe    ? cl.observe.count    : (d.raw_count!=null?d.raw_count:'-'));
-    set('cn-record',    cl.record     ? cl.record.count     : (d.raw_done_count!=null?d.raw_done_count:'-'));
-    set('cn-incident',  cl.incident   ? cl.incident.count   : '-');
-    set('cn-recurrence',cl.recurrence ? cl.recurrence.count : '-');
-    set('cn-prevention',cl.prevention ? cl.prevention.count : '-');
-    set('cn-decision',  cl.decision   ? cl.decision.count   : '-');
-    set('cn-action',    cl.action     ? cl.action.count     : '-');
-    set('cn-audit',     cl.audit&&cl.audit.last_seal ? cl.audit.last_seal.slice(0,10):'SEALED');
-    if(d.ping_age)set('age-I',d.ping_age);
-    if(d.ESSENCE_SUMMARY){
-      var s=d.ESSENCE_SUMMARY;
-      if(s.INCIDENT)set('txt-I',s.INCIDENT);
-      if(s.PHILOSOPHY)set('txt-P',s.PHILOSOPHY);
-      if(s.OPERATION)set('txt-O',s.OPERATION);
-    }
+    var cl = d.civilization_loop||{};
+    var nodes = [
+      {id:'observe',  label:'OBSERVE',    val:cl.observe&&cl.observe.count},
+      {id:'record',   label:'RECORD',     val:cl.record&&cl.record.count},
+      {id:'incident', label:'INCIDENT',   val:cl.incident&&cl.incident.count},
+      {id:'recurrence',label:'RECURRENCE',val:cl.recurrence&&cl.recurrence.count},
+      {id:'prevention',label:'PREVENTION',val:cl.prevention&&cl.prevention.count},
+      {id:'decision', label:'DECISION',   val:cl.decision&&cl.decision.count},
+      {id:'action',   label:'ACTION',     val:cl.action&&cl.action.count},
+      {id:'audit',    label:'AUDIT',      val:cl.audit&&cl.audit.last_seal},
+    ];
+    var wrap = document.getElementById('civ-loop');
+    wrap.innerHTML = nodes.map(function(n){
+      var v = n.val!=null ? n.val : '-';
+      var cls = v && v!='0' && v!==0 ? 'active' : '';
+      if(n.id==='incident'&&v>5) cls='danger';
+      if(n.id==='prevention'&&v===0) cls='warn';
+      return '<div class="civ-node"><div class="cn-circle '+cls+'">'+v+'</div><div class="cn-label">'+n.label+'</div></div>';
+    }).join('');
+    set('m-record', cl.record&&cl.record.count||'-');
+    set('m-incident', cl.incident&&cl.incident.count||'-');
+    set('m-recurrence', cl.recurrence&&cl.recurrence.count||'-');
+    set('m-action', cl.action&&cl.action.count||'-');
+    if(cl.audit&&cl.audit.last_seal) set('m-seal', cl.audit.last_seal.slice(0,10));
   }).catch(function(){});
 }
 
-function refreshEvents(){
-  fetch('/public/events?n=8').then(function(r){return r.json();}).then(function(d){
-    var evs=d.events||[];
-    var box=$('events-list');if(!box)return;
-    if(!evs.length){box.innerHTML='<div class="empty">— イベントなし —</div>';return;}
-    box.innerHTML='';
-    evs.slice().reverse().forEach(function(ev){
-      var div=document.createElement('div');div.className='ev';
-      var wt=(ev.what_type||'—').toLowerCase();
-      var ts=(ev.when||'').substring(11,16);
-      div.innerHTML='<span class="ev-id">'+(ev.event_id||'—')+'</span>'
-        +'<span class="ev-type '+wt+'">'+wt.toUpperCase()+'</span>'
-        +'<span class="ev-title">'+(ev.title||ev.description||'—')+'</span>'
-        +'<span class="ev-time">'+ts+'</span>';
-      box.appendChild(div);
-    });
-    if(d.count!=null)set('m-events',d.count);
-  }).catch(function(){});
-}
-
-// ★ TODO 共通データ取得（インライン + 下部パネル両方を同一fetchで更新）
-var _todoPriOrder={'最高':0,'高':1,'中':2,'低':3};
-function priClass(p){
-  if(!p)return'low';
-  if(p.includes('最高'))return'saikou';
-  if(p.includes('高'))return'high';
-  if(p.includes('中'))return'mid';
-  return'low';
-}
-function priLabel(p){
-  if(!p)return'低';
-  if(p.includes('最高'))return'最高';
-  if(p.includes('高'))return'高';
-  if(p.includes('中'))return'中';
-  return'低';
-}
-
-function refreshTodo(){
-  fetch('/public/todo').then(function(r){return r.json();}).then(function(d){
-    var todos=d.todos||[];
-    var rem=todos.filter(function(t){return t.status!=='完了';});
-    var done=todos.length-rem.length;
-    set('m-done',done);set('m-todo',rem.length);
-
-    rem.sort(function(a,b){
-      return (_todoPriOrder[priLabel(a.priority)]||9)-(_todoPriOrder[priLabel(b.priority)]||9);
-    });
-
-    // ★ TODO PUZZLE タイル（CIV LOOP右）— grid 2次元エリア
-    var ptiles=$('puzzle-tiles');
-    if(ptiles){
-      var gc={saikou:0,high:0,mid:0,low:0};
-      rem.forEach(function(t){gc[priClass(t.priority)]=(gc[priClass(t.priority)]||0)+1;});
-      set('pc-saikou','最高 '+gc.saikou);
-      set('pc-high','高 '+gc.high);
-      set('pc-mid','中 '+gc.mid);
-      set('pc-low','低 '+gc.low);
-      if(!rem.length){
-        ptiles.innerHTML='<div class="ptile-empty"></div>';
-      } else {
-        // タイル生成
-        var tileHTML=rem.map(function(t){
-          var cls=priClass(t.priority);
-          var num=(t.id||'').replace('TODO_','');
-          var ttl=(t.title||'').substring(0,16);
-          return '<div class="ptile '+cls+'">'
-            +'<div class="pt-num">'+num+'</div>'
-            +'<div class="pt-ttl">'+ttl+'</div>'
-            +'</div>';
-        }).join('');
-        // 空マス補完: gridの列数を計算して行末を揃える
-        var colW=90+5; // tile+gap
-        var containerW=ptiles.offsetWidth||300;
-        var cols=Math.max(1,Math.floor(containerW/colW));
-        var remainder=rem.length%cols;
-        var empties=(remainder===0)?0:cols-remainder;
-        for(var i=0;i<empties;i++){tileHTML+='<div class="ptile-empty"></div>';}
-        ptiles.innerHTML=tileHTML;
-      }
-    }
-
-    // ★ 視覚ブロック（重要度別カラー行）
-    var vbar=$('todo-visual-bar');
-    if(vbar){
-      var groups={saikou:[],high:[],mid:[],low:[]};
-      rem.forEach(function(t){groups[priClass(t.priority)].push(t);});
-      var gDef=[
-        {key:'saikou',lbl:'最高'},
-        {key:'high',  lbl:'高'},
-        {key:'mid',   lbl:'中'},
-        {key:'low',   lbl:'低'}
-      ];
-      vbar.innerHTML=gDef.filter(function(g){return groups[g.key].length>0;}).map(function(g){
-        var items=groups[g.key].map(function(t){
-          var num=(t.id||'').replace('TODO_','');
-          var ttl=(t.title||'').substring(0,14);
-          return '<span class="tvb-item"><span class="tvi-num">'+num+'</span> '+ttl+'</span>';
-        }).join('');
-        return '<div class="tvb-row '+g.key+'">'
-          +'<div class="tvb-pri">'+g.lbl+'</div>'
-          +'<div class="tvb-items">'+items+'</div>'
-          +'</div>';
-      }).join('') || '<div class="tvb-empty">— TODOなし —</div>';
-    }
-
-    // ★ インラインTODO（右カラム・リスト）
-    var inline=$('todo-inline-list');
-    if(inline){
-      if(!rem.length){
-        inline.innerHTML='<li class="tc-item"><span style="color:var(--dim);font-size:9px;">— なし —</span></li>';
-      } else {
-        inline.innerHTML=rem.slice(0,10).map(function(t){
-          var cls=priClass(t.priority);
-          var lbl=priLabel(t.priority);
-          var idNum=(t.id||'').replace('TODO_','');
-          var title=(t.title||'').substring(0,24);
-          return '<li class="tc-item">'
-            +'<span class="badge '+cls+'">'+lbl+'</span>'
-            +'<span class="tc-id">'+idNum+'</span>'
-            +'<span class="tc-title">'+title+'</span>'
-            +'</li>';
-        }).join('');
-      }
-    }
-  }).catch(function(){});
-}
-
-function refreshDecision(){
-  fetch('/prevention/queue').then(function(r){return r.json();}).then(function(d){
-    var q=d.queue||[];
-    var pending=q.filter(function(x){return x.status==='pending';});
-    set('dec-count',pending.length);
-    var box=$('dec-list');if(!box)return;
-    if(!pending.length){box.innerHTML='<div class="empty">— 承認待ちなし —</div>';return;}
-    box.innerHTML='';
-    pending.forEach(function(item){
-      var div=document.createElement('div');div.className='dec-item';
-      div.innerHTML='<div class="dec-title">'+(item.title||'—')+'</div>'
-        +'<div class="dec-desc">'+(item.description||'').substring(0,120)+'</div>'
-        +'<div class="dec-btns">'
-        +'<button class="btn-ok" onclick="approve(\''+item.id+'\')">✓ いいね！</button>'
-        +'<button class="btn-ng" onclick="reject(\''+item.id+'\')">✗ わるいね！</button>'
-        +'</div>';
-      box.appendChild(div);
-    });
-  }).catch(function(){});
-}
-
-function refreshAudit(){
-  fetch('/audit/status').then(function(r){return r.json();}).then(function(d){
-    var log=d.last_seal||{};
-    if(log.sealed_at)set('m-seal',log.sealed_at.substring(11,16));
-    if(d.event_count!=null)set('m-recurrence',d.event_count);
-  }).catch(function(){});
-}
-
-window.approve=function(id){
-  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(){refreshDecision();});
-};
-window.reject=function(id){
-  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(){refreshDecision();});
-};
-
-
+// ── HEINRICH ──
 function refreshHeinrich(){
   fetch('/heinrich/status').then(function(r){return r.json();}).then(function(d){
     var h=d.heinrich||{};
@@ -648,133 +617,272 @@ function refreshHeinrich(){
     var l2=h.layer2_minor&&h.layer2_minor.count||0;
     var l3=h.layer3_near_miss&&h.layer3_near_miss.count||0;
     var mx=Math.max(l1,l2,l3,1);
-    var el1=document.getElementById('h-bar-l1');
-    var el2=document.getElementById('h-bar-l2');
-    var el3=document.getElementById('h-bar-l3');
-    if(el1)el1.style.width=(l1/mx*100)+'%';
-    if(el2)el2.style.width=(l2/mx*100)+'%';
-    if(el3)el3.style.width=(l3/mx*100)+'%';
-    set('h-count-l1',l1);set('h-count-l2',l2);set('h-count-l3',l3);
-    var r2=l1>0?Math.round(l2/l1*10)/10:0;
-    var r3=l1>0?Math.round(l3/l1*10)/10:0;
-    set('h-ratio','1:'+r2+':'+r3);
-    var cap=h.capture_rate&&h.capture_rate.layer3||'-%';
-    var mis=l1>0?Math.max(0,l1*300-l3):'?';
-    set('h-capture',cap);
-    set('h-missing',mis+'件');
+    var b1=document.getElementById('h-bar-l1');
+    var b2=document.getElementById('h-bar-l2');
+    var b3=document.getElementById('h-bar-l3');
+    if(b1)b1.style.width=(l1/mx*100)+'%';
+    if(b2)b2.style.width=(l2/mx*100)+'%';
+    if(b3)b3.style.width=(l3/mx*100)+'%';
+    set('h-val-l1',l1); set('h-val-l2',l2); set('h-val-l3',l3);
+    set('h-ratio', h.actual_ratio||'-');
+    var cap = h.capture_rate&&h.capture_rate.layer3||'-%';
+    set('h-cap', cap);
+    set('h-missing', (h.missing_estimate||0)+'件');
     var capNum=parseFloat(cap)||0;
-    var hTitle=document.querySelector('.heinrich-title');
-    if(hTitle){
-      if(capNum<2.0){hTitle.style.color='#e94560';hTitle.textContent='▶ Heinrich Monitor ⚠ 捕捉率低下';}
-      else if(capNum<5.0){hTitle.style.color='#f5a623';hTitle.textContent='▶ Heinrich Monitor △ 改善余地あり';}
-      else{hTitle.style.color='#4CAF50';hTitle.textContent='▶ Heinrich Monitor ✓ 正常';}
-    }
+    var hCapEl=document.getElementById('h-cap');
+    if(hCapEl) hCapEl.style.color = capNum>=10?'var(--green)':capNum>=5?'var(--yellow)':'var(--red)';
   }).catch(function(){});
 }
+
+// ── MORPHOLOGY ──
 function refreshMorpho(){
   fetch('/morpho/status').then(function(r){return r.json();}).then(function(d){
     var lat=d.latest||{};
     var pred=lat.prediction||'SAFE';
-    var el=document.getElementById('morpho-prediction');
-    if(el){el.textContent=pred;el.className='morpho-score '+pred;}
-    set('morpho-interp',lat.interpretation||'-');
+    var colors={SAFE:'var(--green)',WARNING:'var(--yellow)',DANGER:'var(--orange)',CRITICAL:'var(--red)'};
+    var col=colors[pred]||'var(--green)';
+    var el=document.getElementById('morpho-pred');
+    if(el){el.textContent=pred;el.style.color=col;el.style.animation=pred==='CRITICAL'?'blink .8s infinite':'';}
+    set('morpho-interp',lat.interpretation||'失敗経路への進入確率: 0%');
+    var matched=(lat.matched_l1||[]).map(function(m){return m.pattern;});
     var tEl=document.getElementById('morpho-tokens');
     if(tEl&&lat.tokens){
-      var matched=(lat.matched_l1||[]).map(function(m){return m.pattern;});
       tEl.innerHTML=(lat.tokens||[]).map(function(t){
-        var isMatch=matched.some(function(m){return m.indexOf(t)>=0;});
-        return '<span class="'+(isMatch?'morpho-match':'morpho-token')+'">'+t+'</span>';
+        var isMt=matched.some(function(m){return m.indexOf(t)>=0;});
+        return '<span class="'+(isMt?'morpho-match':'morpho-token')+'">'+t+'</span>';
       }).join('');
     }
-    var pats=d.patterns||{};
-    var l1pat=pats['1']&&pats['1'].unique||0;
-    set('morpho-l1-unique',l1pat);
-    set('morpho-pred-count',d.prediction_count||0);
-    var rEl=document.getElementById('morpho-recent');
-    if(rEl&&d.recent_predictions){
-      rEl.innerHTML=d.recent_predictions.slice(0,4).map(function(r){
-        var c=r.prediction==='SAFE'?'#4CAF50':r.prediction==='CRITICAL'?'#e94560':'#f5a623';
-        return '<div class="morpho-recent-item">'
-          +'<span class="morpho-recent-pred" style="color:'+c+'">'+r.prediction+'</span>'
-          +'<span class="morpho-recent-text">'+r.text+'</span>'
-          +'<span class="morpho-recent-score">'+Math.round(r.score*100)+'%</span>'
+    var hEl=document.getElementById('morpho-hist');
+    if(hEl&&d.recent_predictions){
+      hEl.innerHTML=d.recent_predictions.slice(0,5).map(function(r){
+        var c=colors[r.prediction]||'var(--green)';
+        return '<div class="morpho-hist-item">'
+          +'<span class="pred-badge '+r.prediction+'" style="color:'+c+'">'+r.prediction+'</span>'
+          +'<span class="hist-text">'+r.text+'</span>'
+          +'<span class="hist-pct">'+Math.round(r.score*100)+'%</span>'
           +'</div>';
       }).join('');
     }
-    var mTitle=document.querySelector('.morpho-title');
-    var sc=(d.latest&&d.latest.danger_score)||0;
-    if(mTitle){
-      if(sc>=0.6){mTitle.style.color='#e94560';mTitle.textContent='▶ Morphology Predictor 🚨 CRITICAL検知';}
-      else if(sc>=0.4){mTitle.style.color='#f5a623';mTitle.textContent='▶ Morphology Predictor ⚠ DANGER検知';}
-      else if(sc>=0.3){mTitle.style.color='#f5a623';mTitle.textContent='▶ Morphology Predictor △ WARNING';}
-      else{mTitle.style.color='#00d4ff';mTitle.textContent='▶ Morphology Predictor ✓ 正常';}
+  }).catch(function(){});
+}
+
+// ── TREND ──
+function refreshTrend(){
+  fetch('/trend/weekly').then(function(r){return r.json();}).then(function(d){
+    var days=d.days||[];
+    var maxL1=Math.max.apply(null,days.map(function(x){return x.l1||0;}))||1;
+    var maxL3=Math.max.apply(null,days.map(function(x){return x.l3||0;}))||1;
+    var l1El=document.getElementById('spark-l1');
+    var l3El=document.getElementById('spark-l3');
+    var lbEl=document.getElementById('spark-labels');
+    if(l1El){
+      l1El.innerHTML=days.map(function(day){
+        var h=Math.max(4,Math.round((day.l1/maxL1)*30));
+        return '<div class="spark-bar l1" style="height:'+h+'px" data-tip="'+day.label+': L1='+day.l1+'"></div>';
+      }).join('');
     }
-    if(sc>=0.4){
-      fetch('/prevention/queue').then(function(r){return r.json();}).then(function(pq){
-        var pending=(pq||[]).filter(function(p){return p.type==='MORPHO_DANGER'&&p.status==='pending';});
-        if(pending.length>0){
-          var badge=document.getElementById('morpho-badge');
-          if(!badge){badge=document.createElement('div');badge.id='morpho-badge';
-            badge.style.cssText='position:fixed;bottom:20px;right:20px;background:#e94560;color:#fff;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:bold;z-index:9999;';
-            document.body.appendChild(badge);}
-          badge.textContent='⚠ 防止案 '+pending.length+'件 → いいね！で承認';
-          badge.style.display='block';
-        }
-      }).catch(function(){});
+    if(l3El){
+      l3El.innerHTML=days.map(function(day){
+        var h=Math.max(4,Math.round((day.l3/maxL3)*35));
+        return '<div class="spark-bar" style="height:'+h+'px;background:var(--green);" data-tip="'+day.label+': L3='+day.l3+'"></div>';
+      }).join('');
+    }
+    if(lbEl){
+      lbEl.innerHTML=days.map(function(day){
+        return '<div class="spark-lbl">'+day.label+'</div>';
+      }).join('');
+    }
+    var tb=document.getElementById('trend-badge');
+    if(tb){
+      var t=d.trend||'flat';
+      var labels={up:'↑ UP',down:'↓ DOWN',flat:'→ FLAT'};
+      tb.textContent=labels[t]||'→ FLAT';
+      tb.className='trend-badge '+t;
     }
   }).catch(function(){});
 }
-function refreshAll(){
-  refreshServers();refreshPipeline();refreshLoop();
-  refreshEvents();refreshTodo();refreshDecision();refreshAudit();refreshHeinrich();refreshMorpho();
+
+// ── TODO RISK ──
+function refreshTodoRisk(){
+  fetch('/todo/risk').then(function(r){return r.json();}).then(function(d){
+    var todos=d.todos||[];
+    var el=document.getElementById('todo-risk-list');
+    if(!el) return;
+    if(!todos.length){el.innerHTML='<div class="empty">リスク評価対象なし</div>';return;}
+    el.innerHTML=todos.slice(0,8).map(function(t){
+      return '<div class="todo-item">'
+        +'<span class="todo-risk-badge '+t.risk_level+'">'+t.risk_level+'</span>'
+        +'<span class="todo-title">'+t.title+'</span>'
+        +(t.overdue?'<span class="todo-overdue">期限超過</span>':'')
+        +'</div>';
+    }).join('');
+  }).catch(function(){});
 }
-setInterval(refreshAll,5000);
+
+// ── DECISION LOG ──
+function refreshDecisionLog(){
+  fetch('/decision/log').then(function(r){return r.json();}).then(function(d){
+    var decs=d.decisions||[];
+    var el=document.getElementById('decision-log');
+    if(!el) return;
+    if(!decs.length){el.innerHTML='<div class="empty">判断記録なし</div>';return;}
+    el.innerHTML=decs.slice(0,6).map(function(dec){
+      var type=dec.what_type||'';
+      var label=type.indexOf('APPROVED')>=0?'APPROVED':'REJECTED';
+      return '<div class="dec-item">'
+        +'<span class="dec-type '+label+'">'+label+'</span>'
+        +'<span style="font-size:10px;color:var(--text2);margin-left:6px;">'+(dec.when_ts||'').slice(0,16)+'</span>'
+        +'<div class="dec-title">'+(dec.title||dec.why_purpose||'-')+'</div>'
+        +'</div>';
+    }).join('');
+  }).catch(function(){});
+}
+
+// ── ESSENCE ──
+function refreshEssence(){
+  fetch('/essence/detail').then(function(r){return r.json();}).then(function(d){
+    set('ess-incident',  d.INCIDENT||d.incident||'-');
+    set('ess-operation', d.OPERATION||d.operation||'-');
+    set('ess-philosophy',d.PHILOSOPHY||d.philosophy||'-');
+  }).catch(function(){});
+}
+
+// ── PREVENTION QUEUE ──
+function refreshPrevention(){
+  fetch('/prevention/queue').then(function(r){return r.json();}).then(function(d){
+    var pq=(d||[]).filter(function(x){return x.status==='pending';});
+    set('pq-count', pq.length+'件');
+    var el=document.getElementById('prev-queue');
+    if(!el) return;
+    if(!pq.length){el.innerHTML='<div class="empty">承認待ち案件なし</div>';return;}
+    el.innerHTML=pq.slice(0,3).map(function(p){
+      var proposals=p.proposal||[];
+      return '<div class="prev-item">'
+        +'<div class="prev-pattern">'+( p.pattern||p.type||'-' )+'</div>'
+        +'<div class="prev-proposal">'+(proposals[0]||'-')+'</div>'
+        +'<div class="prev-actions">'
+        +'<button class="btn-approve" onclick="doApprove(\''+p.id+'\')">&#9829; いいね！</button>'
+        +'<button class="btn-reject"  onclick="doReject(\''+p.id+'\')">&#9747; わるいね！</button>'
+        +'</div></div>';
+    }).join('');
+  }).catch(function(){});
+}
+window.doApprove=function(id){
+  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){refreshPrevention();refreshDecisionLog();refreshRisk();});
+};
+window.doReject=function(id){
+  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
+    .then(function(){refreshPrevention();refreshDecisionLog();});
+};
+
+// ── AGENT ALLOCATION ──
+function refreshAgentAlloc(){
+  fetch('/agent/allocation').then(function(r){return r.json();}).then(function(d){
+    var al=d.allocation||[];
+    var el=document.getElementById('agent-alloc');
+    if(!el) return;
+    if(!al.length){el.innerHTML='<div class="empty">データなし</div>';return;}
+    var cols=['var(--accent)','var(--purple)','var(--green)','var(--yellow)','var(--orange)'];
+    el.innerHTML=al.slice(0,6).map(function(a,i){
+      return '<div class="agent-row">'
+        +'<div class="agent-name">'+a.agent+'</div>'
+        +'<div class="agent-bar-wrap"><div class="agent-bar-fill" style="width:'+a.pct+'%;background:'+cols[i%5]+';"></div></div>'
+        +'<div class="agent-pct">'+a.pct+'%</div>'
+        +'</div>';
+    }).join('');
+  }).catch(function(){});
+}
+
+// ── INTEGRITY ──
+function refreshIntegrity(){
+  fetch('/integrity/status').then(function(r){return r.json();}).then(function(d){
+    var hp=d.health_pct||0;
+    var hpEl=document.getElementById('int-health');
+    if(hpEl){
+      hpEl.textContent=hp+'%';
+      hpEl.className='int-val '+(hp>=99?'ok':hp>=90?'warn':'err');
+    }
+    set('int-size', (d.db_size_kb||0)+'KB');
+    set('int-total', d.total_events||'-');
+    var nullEl=document.getElementById('int-null');
+    if(nullEl){
+      nullEl.textContent=d.null_fields||0;
+      nullEl.className='int-val '+(d.null_fields===0?'ok':'warn');
+    }
+    // seal history
+    var shEl=document.getElementById('seal-hist');
+    if(shEl&&d.last_seal){
+      var sl=d.last_seal;
+      var hash=sl.summary_hash||sl.sha256||sl.hash||'-';
+      shEl.innerHTML='<div class="seal-entry">'
+        +'<div style="font-size:11px;color:var(--text2);">'+(sl.date||sl.timestamp||'-')+'</div>'
+        +'<div class="seal-hash">'+hash.slice(0,32)+'...</div>'
+        +'</div>';
+      set('m-seal', (sl.date||sl.timestamp||'-').slice(0,10));
+    }
+    // overdue todos
+    var ov=d.overdue_todos||[];
+    if(ov.length>0){
+      var intRow=document.getElementById('int-null');
+      // show overdue warning
+    }
+  }).catch(function(){});
+}
+
+// ── PIPELINE ──
+function refreshPipeline(){
+  fetch('/pipeline/status').then(function(r){return r.json();}).then(function(d){
+    var nodes=['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE','PILS'];
+    var el=document.getElementById('pipeline-nodes');
+    if(!el) return;
+    el.innerHTML=nodes.map(function(n){
+      var cnt=d[n]||0;
+      return '<div class="pipe-node'+(cnt>0?' has-data':'')+'"><span class="pn">'+n+'</span><span>'+cnt+'</span></div>';
+    }).join('');
+  }).catch(function(){});
+}
+
+// ── TODO BOARD ──
+function refreshTodo(){
+  fetch('/public/todo').then(function(r){return r.json();}).then(function(d){
+    var todos=(d.todos||[]).filter(function(t){return t.status!=='完了';}).slice(0,6);
+    var el=document.getElementById('todo-board');
+    if(!el) return;
+    var pcols={最高:'var(--red)',高:'var(--orange)',中:'var(--yellow)',低:'var(--text2)'};
+    el.innerHTML=todos.map(function(t){
+      var col=pcols[t.priority]||'var(--text2)';
+      return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);">'
+        +'<span style="width:6px;height:6px;border-radius:50%;background:'+col+';flex-shrink:0;"></span>'
+        +'<span style="font-size:10px;color:var(--text2);width:55px;flex-shrink:0;">'+t.id+'</span>'
+        +'<span style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+t.title+'</span>'
+        +'</div>';
+    }).join('');
+  }).catch(function(){});
+}
+
+// ── ALL ──
+function refreshAll(){
+  refreshServers();
+  refreshRisk();
+  refreshLoop();
+  refreshHeinrich();
+  refreshMorpho();
+  refreshTrend();
+  refreshTodoRisk();
+  refreshDecisionLog();
+  refreshEssence();
+  refreshPrevention();
+  refreshAgentAlloc();
+  refreshIntegrity();
+  refreshPipeline();
+  refreshTodo();
+}
+
+setInterval(refreshAll, 8000);
 refreshAll();
+
 })();
 </script>
-
-<!-- ★ Heinrich + Morphology Panel -->
-<div style="display:flex;gap:10px;margin:10px 0;">
-  <!-- Heinrich Panel -->
-  <div class="heinrich-panel" style="flex:1;">
-    <div class="heinrich-title">&#9655; Heinrich Monitor</div>
-    <div class="h-bar">
-      <div class="h-label">Layer1 重大</div>
-      <div class="h-track"><div class="h-fill-l1" id="h-bar-l1" style="width:0%"></div></div>
-      <div class="h-count" id="h-count-l1">-</div>
-    </div>
-    <div class="h-bar">
-      <div class="h-label">Layer2 軽微</div>
-      <div class="h-track"><div class="h-fill-l2" id="h-bar-l2" style="width:0%"></div></div>
-      <div class="h-count" id="h-count-l2">-</div>
-    </div>
-    <div class="h-bar">
-      <div class="h-label">Layer3 ヒヤリ</div>
-      <div class="h-track"><div class="h-fill-l3" id="h-bar-l3" style="width:0%"></div></div>
-      <div class="h-count" id="h-count-l3">-</div>
-    </div>
-    <div style="margin-top:8px;font-size:11px;color:#aaa;">
-      実測比率: <span id="h-ratio" style="color:#fff;">-</span>
-      &nbsp;|&nbsp; 理論値: 1:29:300
-    </div>
-    <div style="font-size:11px;color:#aaa;margin-top:4px;">
-      Layer3捕捉率: <span id="h-capture" style="color:#4CAF50;">-%</span>
-      &nbsp;|&nbsp; 未捕捉推定: <span id="h-missing" style="color:#e94560;">-件</span>
-    </div>
-  </div>
-
-  <!-- Morphology Panel -->
-  <div class="morpho-panel" style="flex:1;">
-    <div class="morpho-title">&#9655; Morphology Predictor</div>
-    <div class="morpho-score SAFE" id="morpho-prediction">SAFE</div>
-    <div style="text-align:center;font-size:11px;color:#aaa;" id="morpho-interp">-</div>
-    <div class="morpho-tokens" id="morpho-tokens"></div>
-    <div style="font-size:11px;color:#aaa;margin-top:6px;">
-      Layer1パターン: <span id="morpho-l1-unique" style="color:#00d4ff;">-</span>件
-      &nbsp;|&nbsp; 予測実行: <span id="morpho-pred-count" style="color:#00d4ff;">-</span>回
-    </div>
-    <div class="morpho-recent" id="morpho-recent"></div>
-  </div>
-</div>
 </body>
 </html>
