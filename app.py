@@ -1498,7 +1498,8 @@ def public_events():
             row = {k: (v if v is not None else "") for k, v in r.items()}
             if row.get("_source") == "csv_migration" and not row.get("title") and not row.get("when_ts"):
                 continue
-            clean.append(row)
+            if row.get("when_ts") and row.get("event_id") and row.get("what_type"):
+                clean.append(row)
         return jsonify({"count": len(clean), "events": clean[-n:], "source": "sqlite"})
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
