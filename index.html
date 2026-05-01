@@ -646,23 +646,35 @@ function refreshPipeline(){
 
 // ── TODO BOARD ──
 function refreshTodo(){
-  fetch('/public/todo').then(function(r){return r.json();}).then(function(d){
-    var todos=(d.todos||[]).filter(function(t){return t.status!=='完了';}).slice(0,6);
+  fetch('/public/todo?_='+Date.now()).then(function(r){return r.json();}).then(function(d){
+    var PORD={最高:0,高:1,中:2,低:3};
+    var todos=(d.todos||[])
+      .filter(function(t){return t.status!=='完了' && t.status!=='complete';})
+      .sort(function(a,b){
+        var pa=PORD[a.priority]!=null?PORD[a.priority]:9;
+        var pb=PORD[b.priority]!=null?PORD[b.priority]:9;
+        return pa-pb;
+      })
+      .slice(0,8);
     var el=document.getElementById('todo-board');
     if(!el) return;
     if(!todos.length){el.innerHTML='<div class="empty">未着手TODOなし</div>';return;}
     var pcols={最高:'var(--red)',高:'var(--orange)',中:'var(--yellow)',低:'var(--text2)'};
+    var pbadge={最高:'🔴',高:'🟠',中:'🟡',低:'⚪'};
     el.innerHTML=todos.map(function(t){
       var col=pcols[t.priority]||'var(--text2)';
+      var badge=pbadge[t.priority]||'⚪';
+      var prog=t.status==='進行中'?'<span style="font-size:9px;color:var(--accent);margin-left:4px;">▶</span>':'';
       return '<div style="display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);">'
-        +'<span style="width:6px;height:6px;border-radius:50%;background:'+col+';flex-shrink:0;"></span>'
-        +'<span style="font-size:10px;color:var(--text2);width:55px;flex-shrink:0;">'+t.id+'</span>'
-        +'<span style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+t.title+'</span>'
+        +'<span style="font-size:10px;flex-shrink:0;">'+badge+'</span>'
+        +'<span style="font-size:10px;color:var(--text2);width:60px;flex-shrink:0;">'+t.id+'</span>'
+        +'<span style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">'+t.title+'</span>'
+        +prog
         +'</div>';
     }).join('');
   }).catch(function(e){
     var el=document.getElementById('todo-board');
-    if(el) el.innerHTML='<div class="empty" style="color:var(--red);">取得エラー (/public/todo)</div>';
+    if(el) el.innerHTML='<div class="empty" style="color:var(--red);">取得エラー</div>';
   });
 }
 
