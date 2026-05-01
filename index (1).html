@@ -39,9 +39,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .risk-rec strong{color:var(--text);display:block;margin-bottom:2px;}
 .grid{display:grid;gap:10px;padding:10px 16px;}
 .grid-top{grid-template-columns:repeat(4,1fr);}
-.grid-mid{grid-template-columns:2fr 2fr 1.5fr;}
+/* Analytics: TODO Board(広め) + Trend + Decision */
+.grid-mid{grid-template-columns:2.5fr 2fr 1fr;}
 .grid-bottom{grid-template-columns:1.5fr 2fr 1.5fr;}
-.grid-last{grid-template-columns:1fr 1fr 1fr 1fr;}
+/* Infrastructure: Pipeline + Services + Risk Engine + Seal */
+.grid-last{grid-template-columns:1fr 1fr 1.5fr 1fr;}
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:fadeIn .4s ease both;}
 .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
 .panel.red::before{background:linear-gradient(90deg,var(--red),transparent);}
@@ -85,20 +87,28 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .mini-table td{padding:4px 6px;font-size:11px;border-bottom:1px solid var(--border);}
 .mini-table td:first-child{color:var(--text2);}
 .mini-table tr:last-child td{border-bottom:none;}
-.todo-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);}
+/* TODO Board 専用スタイル */
+.todo-board-item{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}
+.todo-board-item:last-child{border-bottom:none;}
+.todo-board-id{font-family:var(--mono);font-size:11px;font-weight:bold;color:var(--accent);min-width:80px;flex-shrink:0;}
+.todo-board-title{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.todo-board-badge{font-size:12px;flex-shrink:0;}
+.todo-board-prog{font-size:10px;color:var(--accent);flex-shrink:0;}
+/* TODO Risk */
+.todo-item{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);}
 .todo-item:last-child{border-bottom:none;}
-.todo-risk-badge{font-size:9px;font-family:var(--mono);padding:2px 5px;border-radius:3px;min-width:52px;text-align:center;flex-shrink:0;}
+.todo-risk-badge{font-size:9px;font-family:var(--mono);padding:2px 4px;border-radius:3px;min-width:44px;text-align:center;flex-shrink:0;}
 .todo-risk-badge.CRITICAL{background:rgba(248,81,73,.2);color:var(--red);}
 .todo-risk-badge.HIGH{background:rgba(240,136,62,.2);color:var(--orange);}
 .todo-risk-badge.MEDIUM{background:rgba(210,153,34,.2);color:var(--yellow);}
 .todo-risk-badge.LOW{background:rgba(63,185,80,.2);color:var(--green);}
-.todo-title{flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.todo-overdue{font-size:10px;color:var(--red);}
-.dec-item{padding:5px 0;border-bottom:1px solid var(--border);}
+.todo-title{flex:1;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.todo-overdue{font-size:9px;color:var(--red);flex-shrink:0;}
+.dec-item{padding:4px 0;border-bottom:1px solid var(--border);}
 .dec-item:last-child{border-bottom:none;}
 .dec-type{font-size:10px;font-family:var(--mono);}
 .dec-type.APPROVED{color:var(--green);} .dec-type.REJECTED{color:var(--red);}
-.dec-title{font-size:11px;color:var(--text2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.dec-title{font-size:10px;color:var(--text2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .agent-row{display:flex;align-items:center;gap:8px;margin:3px 0;}
 .agent-name{font-size:11px;width:80px;overflow:hidden;text-overflow:ellipsis;}
 .agent-bar-wrap{flex:1;background:var(--bg3);border-radius:3px;height:6px;overflow:hidden;}
@@ -218,8 +228,20 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
   </div>
 </div>
 
+<!-- ROW: TODO Board(大) + 7日トレンド + Decision Log(小) -->
 <div class="sec-label">Analytics &amp; Intelligence</div>
 <div class="grid grid-mid">
+
+  <!-- TODO Board: 最優先表示・優先度順・番号付き -->
+  <div class="panel grn">
+    <div class="panel-title" style="justify-content:space-between;">
+      <span><span class="icon">&#9654;</span>TODO Board</span>
+      <span style="font-size:10px;color:var(--text2);font-family:var(--mono);" id="todo-board-count">-件</span>
+    </div>
+    <div id="todo-board"></div>
+  </div>
+
+  <!-- 7-Day Trend -->
   <div class="panel">
     <div class="panel-title" style="justify-content:space-between;">
       <span><span class="icon">&#8984;</span>7-Day Trend</span>
@@ -235,13 +257,11 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
       <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--green);border-radius:2px;display:inline-block;"></span>ヒヤリ</span>
     </div>
   </div>
-  <div class="panel red">
-    <div class="panel-title"><span class="icon">&#9888;</span>TODO Risk Engine</div>
-    <div id="todo-risk-list"><div class="empty">読み込み中...</div></div>
-  </div>
-  <div class="panel ylw" style="max-height:180px;overflow:hidden;">
+
+  <!-- Decision Log: コンパクト -->
+  <div class="panel ylw">
     <div class="panel-title"><span class="icon">&#9654;</span>Decision Log</div>
-    <div id="decision-log" style="max-height:130px;overflow-y:auto;"><div class="empty">判断記録なし</div></div>
+    <div id="decision-log" style="max-height:160px;overflow-y:auto;"><div class="empty">判断記録なし</div></div>
   </div>
 </div>
 
@@ -281,6 +301,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
   </div>
 </div>
 
+<!-- Infrastructure: Pipeline + Services + TODO Risk Engine + Seal -->
 <div class="sec-label">Infrastructure</div>
 <div class="grid grid-last">
   <div class="panel">
@@ -291,9 +312,10 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
     <div class="panel-title"><span class="icon">&#9679;</span>Services</div>
     <table class="mini-table" id="srv-table"></table>
   </div>
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9654;</span>TODO Board</div>
-    <div id="todo-board"></div>
+  <!-- TODO Risk Engine: コンパクト版 -->
+  <div class="panel red">
+    <div class="panel-title"><span class="icon">&#9888;</span>TODO Risk Engine</div>
+    <div id="todo-risk-list"><div class="empty">読み込み中...</div></div>
   </div>
   <div class="panel">
     <div class="panel-title"><span class="icon">&#9670;</span>Seal History</div>
@@ -335,7 +357,6 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 'use strict';
 
 function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
-function html(id,v){var e=document.getElementById(id);if(e)e.innerHTML=v;}
 
 function tick(){set('ts',new Date().toLocaleTimeString('ja-JP'));}
 setInterval(tick,1000);tick();
@@ -513,18 +534,18 @@ function refreshTrend(){
   }).catch(function(){});
 }
 
-// ── TODO RISK ──
+// ── TODO RISK (Infrastructure用コンパクト版) ──
 function refreshTodoRisk(){
   fetch('/todo/risk').then(function(r){return r.json();}).then(function(d){
     var todos=d.todos||[];
     var el=document.getElementById('todo-risk-list');
     if(!el) return;
     if(!todos.length){el.innerHTML='<div class="empty">リスク評価対象なし</div>';return;}
-    el.innerHTML=todos.slice(0,8).map(function(t){
+    el.innerHTML=todos.slice(0,6).map(function(t){
       return '<div class="todo-item">'
         +'<span class="todo-risk-badge '+t.risk_level+'">'+t.risk_level+'</span>'
-        +'<span class="todo-title">'+t.title+'</span>'
-        +(t.overdue?'<span class="todo-overdue">期限超過</span>':'')
+        +'<span class="todo-title">'+t.id+' '+t.title+'</span>'
+        +(t.overdue?'<span class="todo-overdue">超過</span>':'')
         +'</div>';
     }).join('');
   }).catch(function(){});
@@ -542,7 +563,7 @@ function refreshDecisionLog(){
       var label=type.indexOf('APPROVED')>=0?'APPROVED':'REJECTED';
       return '<div class="dec-item">'
         +'<span class="dec-type '+label+'">'+label+'</span>'
-        +'<span style="font-size:10px;color:var(--text2);margin-left:6px;">'+(dec.when_ts||'').slice(0,16)+'</span>'
+        +'<span style="font-size:9px;color:var(--text2);margin-left:4px;">'+(dec.when_ts||'').slice(0,16)+'</span>'
         +'<div class="dec-title">'+(dec.title||dec.why_purpose||'-')+'</div>'
         +'</div>';
     }).join('');
@@ -644,35 +665,35 @@ function refreshPipeline(){
   }).catch(function(){});
 }
 
-// ── TODO BOARD ──
+// ── TODO BOARD (Analytics最優先・番号・優先度順) ──
 function refreshTodo(){
   fetch('/public/todo?_='+Date.now()).then(function(r){return r.json();}).then(function(d){
     var PORD={最高:0,高:1,中:2,低:3};
-    var todos=(d.todos||[])
-      .filter(function(t){return t.status!=='完了' && t.status!=='complete';})
-      .sort(function(a,b){
-        var pa=PORD[a.priority]!=null?PORD[a.priority]:9;
-        var pb=PORD[b.priority]!=null?PORD[b.priority]:9;
-        return pa-pb;
-      })
-      .slice(0,8);
+    var all=(d.todos||[]).filter(function(t){
+      return t.status!=='完了' && t.status!=='complete';
+    }).sort(function(a,b){
+      var pa=PORD[a.priority]!=null?PORD[a.priority]:9;
+      var pb=PORD[b.priority]!=null?PORD[b.priority]:9;
+      return pa-pb;
+    });
+    var todos=all.slice(0,10);
     var el=document.getElementById('todo-board');
+    var cntEl=document.getElementById('todo-board-count');
+    if(cntEl) cntEl.textContent=all.length+'件';
     if(!el) return;
     if(!todos.length){el.innerHTML='<div class="empty">未着手TODOなし</div>';return;}
-    var pcols={最高:'var(--red)',高:'var(--orange)',中:'var(--yellow)',低:'var(--text2)'};
     var pbadge={最高:'🔴',高:'🟠',中:'🟡',低:'⚪'};
     el.innerHTML=todos.map(function(t){
-      var col=pcols[t.priority]||'var(--text2)';
       var badge=pbadge[t.priority]||'⚪';
-      var prog=t.status==='進行中'?'<span style="font-size:9px;color:var(--accent);margin-left:3px;flex-shrink:0;">▶</span>':'';
-      return '<div style="display:flex;align-items:center;gap:4px;padding:3px 0;border-bottom:1px solid var(--border);">'
-        +'<span style="font-size:10px;flex-shrink:0;">'+badge+'</span>'
-        +'<span style="font-family:var(--mono);font-size:10px;color:var(--accent);width:72px;flex-shrink:0;font-weight:bold;">'+t.id+'</span>'
-        +'<span style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">'+t.title+'</span>'
+      var prog=t.status==='進行中'?'<span class="todo-board-prog">▶進行中</span>':'';
+      return '<div class="todo-board-item">'
+        +'<span class="todo-board-badge">'+badge+'</span>'
+        +'<span class="todo-board-id">'+t.id+'</span>'
+        +'<span class="todo-board-title">'+t.title+'</span>'
         +prog
         +'</div>';
     }).join('');
-  }).catch(function(e){
+  }).catch(function(){
     var el=document.getElementById('todo-board');
     if(el) el.innerHTML='<div class="empty" style="color:var(--red);">取得エラー</div>';
   });
@@ -696,13 +717,10 @@ function refreshAll(){
   refreshTodo();
 }
 
-// 60秒: Risk
 setInterval(refreshRisk, 60000);
-// 30秒: 軽量
 setInterval(function(){
   refreshServers();refreshLoop();refreshMorpho();refreshPrevention();refreshDecisionLog();refreshTodo();
 }, 30000);
-// 120秒: 重量
 setInterval(function(){
   refreshHeinrich();refreshTrend();refreshTodoRisk();refreshAgentAlloc();refreshIntegrity();refreshPipeline();refreshEssence();
 }, 120000);
