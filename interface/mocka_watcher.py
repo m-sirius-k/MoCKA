@@ -1,8 +1,6 @@
-"""
-MoCKA Watcher — Firestore intent_queue監視
-60秒ごとにpollingしてstatus=完了を検知
-検知したらdata/watcher_queue/にJSONを出力
-"""
+﻿"""
+MoCKA Watcher 窶・Firestore intent_queue逶｣隕・60遘偵＃縺ｨ縺ｫpolling縺励※status=螳御ｺ・ｒ讀懃衍
+讀懃衍縺励◆繧嬰ata/watcher_queue/縺ｫJSON繧貞・蜉・"""
 
 import os
 import json
@@ -12,12 +10,10 @@ from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# 環境設定（KEY_PATHのデフォルト値を修正）
-KEY_PATH   = os.environ.get("MOCKA_FIREBASE_KEY_PATH",
+# 迺ｰ蠅・ｨｭ螳夲ｼ・EY_PATH縺ｮ繝・ヵ繧ｩ繝ｫ繝亥､繧剃ｿｮ豁｣・・KEY_PATH   = os.environ.get("MOCKA_FIREBASE_KEY_PATH",
                              r"X:\down\MoCKA_Downloads\mocka-knowledge-gate-130cbb27554d.json")
 PROJECT_ID = os.environ.get("MOCKA_FIREBASE_PROJECT_ID", "mocka-knowledge-gate")
-INTERVAL   = 60  # 秒
-
+INTERVAL   = 60  # 遘・
 WATCHER_QUEUE = Path("C:/Users/sirok/MoCKA/data/watcher_queue")
 PROCESSED_LOG = Path("C:/Users/sirok/MoCKA/data/watcher_processed.json")
 
@@ -46,7 +42,7 @@ def main():
     while True:
         try:
             processed_ids = load_processed_ids()
-            docs = db.collection("intent_queue").where("status", "==", "完了").stream()
+            docs = db.collection("intent_queue").where("status", "==", "螳御ｺ・).stream()
 
             new_count = 0
             for doc in docs:
@@ -80,3 +76,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
