@@ -1,6 +1,5 @@
-"""
-MoCKA Watcher 窶・Firestore intent_queue逶｣隕・60遘偵＃縺ｨ縺ｫpolling縺励※status=螳御ｺ・ｒ讀懃衍
-讀懃衍縺励◆繧嬰ata/watcher_queue/縺ｫJSON繧貞・蜉・"""
+﻿"""
+MoCKA Watcher 遯ｶ繝ｻFirestore intent_queue騾ｶ・｣髫輔・60驕伜・・・ｸｺ・ｨ邵ｺ・ｫpolling邵ｺ蜉ｱ窶ｻstatus=陞ｳ蠕｡・ｺ繝ｻ・定ｮ諛・｡・隶諛・｡咲ｸｺ蜉ｱ笳・ｹｧ螫ｰata/watcher_queue/邵ｺ・ｫJSON郢ｧ雋槭・陷峨・"""
 
 import os
 import json
@@ -10,9 +9,9 @@ from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# 迺ｰ蠅・ｨｭ螳夲ｼ・EY_PATH縺ｮ繝・ヵ繧ｩ繝ｫ繝亥､繧剃ｿｮ豁｣・・KEY_PATH   = os.environ.get("MOCKA_FIREBASE_KEY_PATH", r"A:\secrets\mocka-knowledge-gate-firebase-adminsdk-fbsvc-53613922c1.json")
+# 霑ｺ・ｰ陟・・・ｨ・ｭ陞ｳ螟ｲ・ｼ繝ｻEY_PATH邵ｺ・ｮ郢昴・繝ｵ郢ｧ・ｩ郢晢ｽｫ郢昜ｺ･ﾂ・､郢ｧ蜑・ｽｿ・ｮ雎・ｽ｣繝ｻ繝ｻKEY_PATH   = os.environ.get("MOCKA_FIREBASE_KEY_PATH", r"A:\secrets\mocka-knowledge-gate-firebase-adminsdk-fbsvc-53613922c1.json")
 PROJECT_ID = os.environ.get("MOCKA_FIREBASE_PROJECT_ID", "mocka-knowledge-gate")
-INTERVAL   = 60  # 遘・
+INTERVAL   = 60  # 驕倥・
 WATCHER_QUEUE = Path("C:/Users/sirok/MoCKA/data/watcher_queue")
 PROCESSED_LOG = Path("C:/Users/sirok/MoCKA/data/watcher_processed.json")
 
@@ -41,7 +40,7 @@ def main():
     while True:
         try:
             processed_ids = load_processed_ids()
-            docs = db.collection("intent_queue").where("status", "==", "螳御ｺ・).stream()
+            docs = db.collection("intent_queue").where("status", "==", "陞ｳ蠕｡・ｺ繝ｻ).stream()
 
             new_count = 0
             for doc in docs:
@@ -75,4 +74,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
