@@ -10,8 +10,8 @@
     "OPERATION": "ファイル管理: X:\\down\\ 作業中 → X:\\down\\mocka関係\\ 長期保管。01_paper/02_code/03_doc/04_config/05_installer/06_old_dup/07_misc/08_benchmark"
   },
   "essence_updated": false,
-  "ngrok_online": true,
-  "NGROK": true,
+  "ngrok_online": false,
+  "NGROK": false,
   "current_phase": "Phase 2進行中",
   "top_todos": [
     {
@@ -40,5 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-01T18:21:28.085352"
+  "generated_at": "2026-05-01T18:24:57.502750"
 }
