@@ -9,7 +9,7 @@
     "PHILOSOPHY": "[hint] テスト：AIを信じるな、システムで縛れ",
     "OPERATION": "[great] X:\\down\\          ← 作業中ファイル置き場（一時）     ↓ 使い終わったら X:\\down\\mocka関係\\ ← バンカー（長期保管）     ├── 01_paper   論文系     ├── 02_code    コード系     ├── 03_doc     ドキュメント系     ├── 04_config  キー・設定（重要）     ├── 05_installer MSI等     ├── 06_old_dup 旧版（gitのold1相当）     ├── 07_misc    その他     └── 08_benchmark ベンチマーク"
   },
-  "essence_updated": true,
+  "essence_updated": false,
   "ngrok_online": false,
   "NGROK": false,
   "current_phase": "Phase 2進行中",
@@ -25,11 +25,6 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_115",
-      "title": "COMMAND CENTER — Global Risk Meter実装",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_116",
       "title": "COMMAND CENTER — Temporal Analytics（7日トレンド）実装",
       "priority": "高"
@@ -38,7 +33,12 @@
       "id": "TODO_117",
       "title": "COMMAND CENTER — Decision Intelligence（判断理由ログ）実装",
       "priority": "高"
+    },
+    {
+      "id": "TODO_118",
+      "title": "Risk Engine — TODOリスクスコア + SYSTEM RECOMMENDATION実装",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-05-01T08:18:50.324953"
+  "generated_at": "2026-05-01T09:01:29.168224"
 }
