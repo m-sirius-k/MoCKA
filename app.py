@@ -104,6 +104,19 @@ def auto_process_loop():
 _auto_thread = threading.Thread(target=auto_process_loop, daemon=True)
 _auto_thread.start()
 
+# ===== Essence自動更新ループ（RE_REDUCED監視）=====
+try:
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location(
+        'essence_auto_updater',
+        str(Path(__file__).parent / 'interface' / 'essence_auto_updater.py')
+    )
+    _eau = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_eau)
+    _eau.start_essence_auto_loop()
+except Exception as _eau_err:
+    print(f"[ESSENCE_AUTO] 起動失敗: {_eau_err}")
+
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 EVENTS_CSV = os.path.join(DATA_DIR, "events.csv")  # 廃止済み変数（互換保持のみ・書き込み禁止）

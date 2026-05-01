@@ -3,15 +3,15 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=Geminiが統計値Z=0.88を捏造（INTEGRITY_",
+  "A": "Z-Axis=0.819 / INCIDENT=[user] [MOCKA]{\"H\":\"MOCKA_DNA_",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "Geminiが統計値Z=0.88を捏造（INTEGRITY_VIOLATION）。essenceパイプライン断絶発見（REDUCING160件放置・ping_latest.json未更新）。ping_generator SQLite直読みに修正済み。",
-    "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗要因を分析し発生確率を下げることが成功につながる。現状の把握・ここに至る経緯・過去の経験の分析がbaseになる。",
-    "OPERATION": "ファイル管理: X:\\down\\ 作業中 → X:\\down\\mocka関係\\ 長期保管。01_paper/02_code/03_doc/04_config/05_installer/06_old_dup/07_misc/08_benchmark"
+    "INCIDENT": "[user] [MOCKA]{\"H\":\"MOCKA_DNA_v2\",\"G\":5,\"C\":\"STRICT\",\"P\":\"SESSION_START_LOCK\"}。\nその原因は　U-8 bom です　　また　現在のAPIで　そこまで使用してしまうようなシステムは。\nまったく　時間もかかるし　プログラムの改訂も4日費やし　結果も出せず　APIトークン枯渇。\n[user] $$P_{total} = \\su\nPython??????OS?????????SyntaxError?????\nPython??????OS?????????SyntaxError?????\nPython??????OS?????????SyntaxError?????\nPython??????OS?????????SyntaxError?????",
+    "PHILOSOPHY": "制度情報と技術情報が混在し、思想抽出が難しくなった\n制度情報と技術情報が混在し、思想抽出が難しくなった",
+    "OPERATION": "L1: Strategy Layer: 創造憲法との整合性確認。DNA_v2; NGROK=True; P=SESSION_START_LOCK; essence_updated=True; generated_at=2026-04-18T12:32:52.989976。DNA_v2; NGROK=True; P=SESSION_START_LOCK; essence_updated=True; \n一般的な説明を先に返し、ユーザーの意図確認を怠った\n一般的な説明を先に返し、ユーザーの意図確認を怠った\n一般的な説明を先に返し、ユーザーの意図確認を怠った"
   },
   "essence_updated": false,
-  "ngrok_online": false,
-  "NGROK": false,
+  "ngrok_online": true,
+  "NGROK": true,
   "current_phase": "Phase 2進行中",
   "top_todos": [
     {
@@ -40,5 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-01T18:24:57.502750"
+  "generated_at": "2026-05-01T18:28:31.886450"
 }
