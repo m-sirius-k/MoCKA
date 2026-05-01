@@ -1490,15 +1490,18 @@ def public_essence():
 
 @app.route("/public/events")
 def public_events():
-    # CSV廃止済み → SQLite(db_helper)参照
     n = int(request.args.get("n", 20))
     try:
         rows = db_helper.read_events(limit=None)
-        rows = [{k: (v if v is not None else "") for k, v in r.items()} for r in rows]
-        return jsonify({"count": len(rows), "events": rows[-n:], "source": "sqlite"})
+        clean = []
+        for r in rows:
+            row = {k: (v if v is not None else "") for k, v in r.items()}
+            if row.get("_source") == "csv_migration" and not row.get("title") and not row.get("when_ts"):
+                continue
+            clean.append(row)
+        return jsonify({"count": len(clean), "events": clean[-n:], "source": "sqlite"})
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
-
 @app.route("/public/write_event", methods=["POST"])
 def public_write_event():
     payload = request.get_json(force=True, silent=True) or {}
