@@ -3,13 +3,13 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT={\n  \"event_id\": \"ERRD_20260402",
+  "A": "Z-Axis=0.819 / INCIDENT=Geminiが統計値Z=0.88を捏造（INTEGRITY_",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "{\n  \"event_id\": \"ERRD_20260402_073756_CLAU\",\n  \"source\": \"claude\",\n  \"url\": \"\",\n  \"reduced_file\": \"20260402_031919_REDUCED_CLAU.json\",\n  \"raw_file\": \"20260402_014343_ECOL_20260402_014343_CLAU.json\",\n \n{\n  \"event_id\": \"EN8N_20260402_105831_CLAU\",\n  \"source\": \"claude\",\n  \"origin_file\": \"20260402_095350_ECOL_20260402_095350_CLAU.json\",\n  \"origin_event\": \"ECOL_20260402_095350_CLAU\",\n  \"timestamp\": \"202\n{\n  \"event_id\": \"EN8N_20260402_110556_CLAU\",\n  \"source\": \"claude\",\n  \"origin_file\": \"20260402_095350_ECOL_20260402_095350_CLAU.json\",\n  \"origin_event\": \"ECOL_20260402_095350_CLAU\",\n  \"timestamp\": \"202",
-    "PHILOSOPHY": "  \"extraction\": \"制度情報と技術情報が混在し、思想抽出が難しくなった\",",
-    "OPERATION": "  \"extraction\": \"一般的な説明を先に返し、ユーザーの意図確認を怠った\",\n  \"extraction\": \"一般的な説明を先に返し、ユーザーの意図確認を怠った\",\n  \"extraction\": \"一般的な説明を先に返し、ユーザーの意図確認を怠った\","
+    "INCIDENT": "Geminiが統計値Z=0.88を捏造（INTEGRITY_VIOLATION）。essenceパイプライン断絶発見（REDUCING160件放置・ping_latest.json未更新）。ping_generator SQLite直読みに修正済み。",
+    "PHILOSOPHY": "AIを信じるな、システムで縛れ。失敗要因を分析し発生確率を下げることが成功につながる。現状の把握・ここに至る経緯・過去の経験の分析がbaseになる。",
+    "OPERATION": "ファイル管理: X:\\down\\ 作業中 → X:\\down\\mocka関係\\ 長期保管。01_paper/02_code/03_doc/04_config/05_installer/06_old_dup/07_misc/08_benchmark"
   },
-  "essence_updated": true,
+  "essence_updated": false,
   "ngrok_online": true,
   "NGROK": true,
   "current_phase": "Phase 2進行中",
@@ -40,5 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-01T11:37:13.145466"
+  "generated_at": "2026-05-01T18:20:33.602221"
 }
