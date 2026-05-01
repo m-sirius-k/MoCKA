@@ -1,7 +1,8 @@
 ﻿import json, sys
 from pathlib import Path
 from datetime import datetime
-ESSENCE_PATH  = Path("C:/Users/sirok/planningcaliber/workshop/needle_eye_project/experiments/lever_essence.json")
+import sqlite3
+DB_PATH       = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
 PACKET_PATH   = Path("C:/Users/sirok/MoCKA/data/ping_latest.json")
 OVERVIEW_PATH = Path("C:/Users/sirok/MOCKA_OVERVIEW.json")
 import urllib.request
@@ -16,32 +17,24 @@ def check_ngrok_status():
     except:
         return False
 
-def generate_ping():
-    data = json.loads(ESSENCE_PATH.read_text(encoding="utf-8"))
+def _read_essence_from_db():
+    """SQLiteのessenceテーブルから3軸を読む"""
+    try:
+        con = sqlite3.connect(str(DB_PATH))
+        rows = con.execute("SELECT axis, content FROM essence").fetchall()
+        con.close()
+        d = {r[0]: r[1] for r in rows}
+        return (
+            d.get("INCIDENT",   "") or "none",
+            d.get("PHILOSOPHY", "") or "none",
+            d.get("OPERATION",  "") or "none",
+        )
+    except Exception as e:
+        print(f"[WARN] DB読み込み失敗: {e}")
+        return "none", "none", "none"
 
-    # 新形式（トップレベルキー）と旧形式（essenceリスト）の両対応
-    if "INCIDENT" in data and "PHILOSOPHY" in data and "OPERATION" in data:
-        # 新形式: トップレベルキーを直接参照
-        new_incident   = data.get("INCIDENT",   "") or "none"
-        new_philosophy = data.get("PHILOSOPHY", "") or "none"
-        new_operation  = data.get("OPERATION",  "") or "none"
-    else:
-        # 旧形式: essenceリストから抽出
-        entries = [e for e in data.get("essence", []) if isinstance(e, dict)]
-        today   = datetime.now().strftime("%Y-%m-%d")
-        def latest(etype):
-            hits = [e for e in entries if e.get("type")==etype and e.get("timestamp","").startswith(today) and e.get("timestamp","")[11:16] < "19:00"]
-            if not hits:
-                hits = [e for e in entries if e.get("type")==etype and e.get("timestamp","").startswith(today)]
-            if not hits:
-                hits = [e for e in entries if e.get("type")==etype]
-            return max(hits, key=lambda e: e.get("timestamp","")) if hits else None
-        incident   = latest("INCIDENT")
-        philosophy = latest("PHILOSOPHY")
-        operation  = latest("OPERATION")
-        new_incident   = incident["text"]   if incident   else "none"
-        new_philosophy = philosophy["text"] if philosophy else "none"
-        new_operation  = operation["text"]  if operation  else "none"
+def generate_ping():
+    new_incident, new_philosophy, new_operation = _read_essence_from_db()
 
     overview = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8"))
     z_after  = overview.get("fluid_coordinate_theory", {}).get("current_values", {}).get("Z", 0.819)
