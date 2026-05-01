@@ -2056,3 +2056,103 @@ def operator_load():
         })
     except Exception as e:
         return jsonify({'error': str(e)})
+
+
+
+# ============================================================
+# TODO_119: 締切超過TODO自動INCIDENT化 + Data Integrity Monitor
+# ============================================================
+import threading as _threading
+
+def _auto_incident_overdue():
+    import sqlite3 as _sq
+    OVERDUE_KEYWORDS = ['5/14','5/21','4/30','5/1','5/2','5/3','5/4','5/5']
+    try:
+        todo_path = r'C:\Users\sirok\MOCKA_TODO.json'
+        todos = json.load(open(todo_path, encoding='utf-8')).get('todos', [])
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db)
+        cur = con.cursor()
+        for t in todos:
+            if t.get('status') == '完了':
+                continue
+            note = t.get('note', '') + t.get('description', '')
+            is_overdue = any(kw in note for kw in OVERDUE_KEYWORDS)
+            if not is_overdue:
+                continue
+            tid = t.get('id', '')
+            cur.execute("SELECT COUNT(*) FROM events WHERE title LIKE ? AND what_type='OVERDUE_INCIDENT'", (f'%{tid}%',))
+            if cur.fetchone()[0] > 0:
+                continue
+            eid = f"OVD_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{tid}"
+            cur.execute("""INSERT INTO events
+                (event_id,when_ts,what_type,who_actor,title,why_purpose,how_trigger,free_note)
+                VALUES (?,?,?,?,?,?,?,?)""",
+                (eid, datetime.now().isoformat(), 'OVERDUE_INCIDENT', 'system',
+                 f'[締切超過] {tid}: {t.get("title","")[:50]}',
+                 '締切超過TODOの自動INCIDENT化',
+                 'auto_incident_overdue()',
+                 f'priority={t.get("priority","")} status={t.get("status","")}'))
+            con.commit()
+            print(f'[OVERDUE] INCIDENT化: {tid}')
+        con.close()
+    except Exception as e:
+        print(f'[OVERDUE] error: {e}')
+
+def _start_overdue_loop():
+    _auto_incident_overdue()
+    t = _threading.Timer(3600, _start_overdue_loop)
+    t.daemon = True
+    t.start()
+
+_threading.Timer(10, _start_overdue_loop).start()
+
+@app.route('/integrity/monitor')
+def integrity_monitor():
+    import sqlite3 as _sq
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db); cur = con.cursor()
+        cur.execute("SELECT COUNT(*) FROM events"); total = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM events WHERE what_type='OVERDUE_INCIDENT'"); overdue_cnt = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM error_rows"); error_cnt = cur.fetchone()[0]
+        db_size = os.path.getsize(db) // 1024
+        con.close()
+        return jsonify({'status':'ok','total_events':total,'overdue_incidents':overdue_cnt,'error_rows':error_cnt,'db_size_kb':db_size,'checked_at':datetime.now().isoformat()})
+    except Exception as e:
+        return jsonify({'status':'error','error':str(e)})
+
+@app.route('/operator/load')
+def operator_load():
+    import sqlite3 as _sq, datetime as _dt
+    try:
+        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+        con = _sq.connect(db); cur = con.cursor()
+        since1h  = (_dt.datetime.now() - _dt.timedelta(hours=1)).isoformat()
+        since24h = (_dt.datetime.now() - _dt.timedelta(hours=24)).isoformat()
+        cur.execute("SELECT COUNT(*) FROM events WHERE when_ts >= ?", (since1h,))
+        events_1h = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM events WHERE when_ts >= ?", (since24h,))
+        events_24h = cur.fetchone()[0]
+        cur.execute("SELECT COUNT(*) FROM events WHERE what_type IN ('DANGER','CRITICAL','MATAKA') AND when_ts >= ?", (since24h,))
+        alerts_24h = cur.fetchone()[0]
+        alert_density = round(alerts_24h / 24, 2)
+        cli = min(100, int(alert_density * 10 + events_1h * 2))
+        con.close()
+        reducing = 0
+        try:
+            cal = requests.get('http://localhost:5679/status', timeout=2).json()
+            reducing = cal.get('REDUCING', 0)
+        except: pass
+        return jsonify({'events_1h':events_1h,'events_24h':events_24h,'alerts_24h':alerts_24h,'alert_density':alert_density,'cognitive_load_index':cli,'reducing_tasks':reducing,'status':'HEAVY' if cli>60 else 'MODERATE' if cli>30 else 'LIGHT'})
+    except Exception as e:
+        return jsonify({'error':str(e)})
+
+
+if __name__ == "__main__":
+    print("--- MoCKA STARTING ---")
+    print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
+    print(f"Directory: {ROOT_DIR}")
+    ensure_dirs()
+    # ensure_events_csv() → CSV廃止済み。SQLiteはdb_helperが自動初期化。
+    app.run(host="127.0.0.1", port=5000)
