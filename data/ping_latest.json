@@ -25,6 +25,11 @@
       "priority": "最高"
     },
     {
+      "id": "TODO_126",
+      "title": "論文最終微修正3点 — S/R/T動機付け・Figure説明・Limitations多モデル追記",
+      "priority": "最高"
+    },
+    {
       "id": "TODO_116",
       "title": "COMMAND CENTER — Temporal Analytics（7日トレンド）実装",
       "priority": "高"
@@ -33,12 +38,7 @@
       "id": "TODO_117",
       "title": "COMMAND CENTER — Decision Intelligence（判断理由ログ）実装",
       "priority": "高"
-    },
-    {
-      "id": "TODO_118",
-      "title": "Risk Engine — TODOリスクスコア + SYSTEM RECOMMENDATION実装",
-      "priority": "高"
     }
   ],
-  "generated_at": "2026-05-07T09:14:49.606387"
+  "generated_at": "2026-05-08T08:56:40.884272"
 }
