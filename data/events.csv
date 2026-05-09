@@ -7343,3 +7343,69 @@ ParsedHtml        : mshtml.HTMLDocumentClass
 RawContentLength  : 81
 
 PS C:\Users\sirok>"
+E20260509_029,2026-05-09T09:14:07.252Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"impamkjmlflhhjaabhaenkgmnmpflobd
+
+
+
+
+
+
+
+PS C:\Users\sirok> ls C:\Users\sirok\MoCKA\*extension* -Recurse -Filter ""background.js"" 2>$null
+
+    ディレクトリ: C:\Users\sirok\MoCKA\mocka-extension
+
+Mode         ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"impamkjmlflhhjaabhaenkgmnmpflobd
+
+
+
+
+
+
+
+PS C:\Users\sirok> ls C:\Users\sirok\MoCKA\*extension* -Recurse -Filter ""background.js"" 2>$null
+
+    ディレクトリ: C:\Users\sirok\MoCKA\mocka-extension
+
+Mode                 LastWriteTime         Length Name
+
+----                 -------------         ------ ----
+
+-a----        2026/04/28     12:15          10849 background.js
+
+PS C:\Users\sirok> ls C:\Users\sirok\*mocka*extension* -Filter ""background.js"" -Recurse 2>$null
+
+PS C:\Users\sirok>"
+E20260509_029,2026-05-09T09:14:07.251Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"impamkjmlflhhjaabhaenkgmnmpflobd
+
+
+
+
+
+
+
+PS C:\Users\sirok> ls C:\Users\sirok\MoCKA\*extension* -Recurse -Filter ""background.js"" 2>$null
+
+    ディレクトリ: C:\Users\sirok\MoCKA\mocka-extension
+
+Mode         ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"impamkjmlflhhjaabhaenkgmnmpflobd
+
+
+
+
+
+
+
+PS C:\Users\sirok> ls C:\Users\sirok\MoCKA\*extension* -Recurse -Filter ""background.js"" 2>$null
+
+    ディレクトリ: C:\Users\sirok\MoCKA\mocka-extension
+
+Mode                 LastWriteTime         Length Name
+
+----                 -------------         ------ ----
+
+-a----        2026/04/28     12:15          10849 background.js
+
+PS C:\Users\sirok> ls C:\Users\sirok\*mocka*extension* -Filter ""background.js"" -Recurse 2>$null
+
+PS C:\Users\sirok>"
