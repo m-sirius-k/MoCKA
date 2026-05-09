@@ -7157,3 +7157,189 @@ VM15811:1 DIV font-sans text-sm text-foreground truncate selecti PlaywrightをMo
 VM15811:1 DIV font-sans text-sm text-foreground truncate selecti MoCKAの入口統合が完成した意義は何か？
 
 VM15811:1 DIV font-sans text-sm text-foreground truncate selecti MoCKAの最大の強みは何か？"
+E20260509_025,2026-05-09T09:06:54.289Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"document.querySelectorAll('[data-testid*=""message""], .font-claude-message').length",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"document.querySelectorAll('[data-testid*=""message""], .font-claude-message').length"
+E20260509_025,2026-05-09T09:06:54.288Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"document.querySelectorAll('[data-testid*=""message""], .font-claude-message').length",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"document.querySelectorAll('[data-testid*=""message""], .font-claude-message').length"
+E20260509_026,2026-05-09T09:07:12.512Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,8,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,8
+E20260509_026,2026-05-09T09:07:12.512Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,8,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,8
+ECOL_20260509_090739_CLAU,2026-05-09T09:07:39,claude,collect,chat_import,mocka_bridge_v2,test,extension,external,in_operation,normal,A,infield/RAW,test,19d7d0340d388b37,ingest_complete,RAW,local,chat_pipeline,N/A,N/A,N/A,hash=c36a7fefff9a765c|source=claude|mode=test
+EP_20260509_180739,2026-05-09T18:07:39,pipeline,essence_update,mocka_pipeline,direct_input,axis=OPERATION,pipeline,internal,in_operation,normal,A,infield/essence,danger=INFO(0) essence=[],N/A,pipeline_complete,OPERATION,local,pipeline,N/A,N/A,no_api|D_i=1|ΔE=0
+E20260509_027,2026-05-09T09:07:47.162Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+            ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+                    Connection: close
+
+                    Content-Length: 81
+
+                    Content-Type: application/json
+
+                    Date: Sat, 09 May 2026 09:07:39 GMT
+
+                    Server: Werkzeug/3.1.6 Python/3.13.13
+
+                    {""event_id"":""ECOL_20260509_090739_...
+
+Forms             : {}
+
+Headers           : {[Connection, close], [Content-Length, 81], [Content-Type, application/json], [Date, Sat, 09 May 20
+
+                    26 09:07:39 GMT]...}
+
+Images            : {}
+
+InputFields       : {}
+
+Links             : {}
+
+ParsedHtml        : mshtml.HTMLDocumentClass
+
+RawContentLength  : 81
+
+PS C:\Users\sirok>"
+E20260509_027,2026-05-09T09:07:47.162Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+            ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+                    Connection: close
+
+                    Content-Length: 81
+
+                    Content-Type: application/json
+
+                    Date: Sat, 09 May 2026 09:07:39 GMT
+
+                    Server: Werkzeug/3.1.6 Python/3.13.13
+
+                    {""event_id"":""ECOL_20260509_090739_...
+
+Forms             : {}
+
+Headers           : {[Connection, close], [Content-Length, 81], [Content-Type, application/json], [Date, Sat, 09 May 20
+
+                    26 09:07:39 GMT]...}
+
+Images            : {}
+
+InputFields       : {}
+
+Links             : {}
+
+ParsedHtml        : mshtml.HTMLDocumentClass
+
+RawContentLength  : 81
+
+PS C:\Users\sirok>"
+E20260509_028,2026-05-09T09:07:48.956Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+            ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+                    Connection: close
+
+                    Content-Length: 81
+
+                    Content-Type: application/json
+
+                    Date: Sat, 09 May 2026 09:07:39 GMT
+
+                    Server: Werkzeug/3.1.6 Python/3.13.13
+
+                    {""event_id"":""ECOL_20260509_090739_...
+
+Forms             : {}
+
+Headers           : {[Connection, close], [Content-Length, 81], [Content-Type, application/json], [Date, Sat, 09 May 20
+
+                    26 09:07:39 GMT]...}
+
+Images            : {}
+
+InputFields       : {}
+
+Links             : {}
+
+ParsedHtml        : mshtml.HTMLDocumentClass
+
+RawContentLength  : 81
+
+PS C:\Users\sirok>"
+E20260509_028,2026-05-09T09:07:48.957Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+            ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""event_id"":""ECOL_20260509_090739_CLAU"",""hash"":""c36a7fefff9a765c"",""status"":""ok""}
+
+RawContent        : HTTP/1.1 200 OK
+
+                    Connection: close
+
+                    Content-Length: 81
+
+                    Content-Type: application/json
+
+                    Date: Sat, 09 May 2026 09:07:39 GMT
+
+                    Server: Werkzeug/3.1.6 Python/3.13.13
+
+                    {""event_id"":""ECOL_20260509_090739_...
+
+Forms             : {}
+
+Headers           : {[Connection, close], [Content-Length, 81], [Content-Type, application/json], [Date, Sat, 09 May 20
+
+                    26 09:07:39 GMT]...}
+
+Images            : {}
+
+InputFields       : {}
+
+Links             : {}
+
+ParsedHtml        : mshtml.HTMLDocumentClass
+
+RawContentLength  : 81
+
+PS C:\Users\sirok>"
