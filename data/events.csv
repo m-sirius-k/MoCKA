@@ -6939,3 +6939,137 @@ E20260509_010,2026-05-09T14:49:08,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,v
 250     rows = [{k: (v if v is not None else """") for k, v in r.items()} for r in rows]
 
 PS C:\Users\sirok>"
+E20260509_011,2026-05-09T06:04:08.461Z,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/new
+",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/new
+
+content.js:132 [MOCKA] DNA取得中...
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:203 [MOCKA] 送信ボタン待機中...
+
+content.js:218 [MOCKA] 送信ボタンクリック成功
+
+content.js:138 [MOCKA] DNA注入完了
+
+content.js:149 [MOCKA] essence_updated=false skip
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/chat/ca375cec-97e5-40a2-874a-96c3aa649152
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:166 [MOCKA] /chat/ essence_updated=false: skip
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/chat/e337d2a2-b7b6-4cb0-a76a-c4d5ab878950
+
+content.js:166 [MOCKA] /chat/ essence_updated=false: skip
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了"
+E20260509_012,2026-05-09T06:04:10.266Z,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/new
+",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/new
+
+content.js:132 [MOCKA] DNA取得中...
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:203 [MOCKA] 送信ボタン待機中...
+
+content.js:218 [MOCKA] 送信ボタンクリック成功
+
+content.js:138 [MOCKA] DNA注入完了
+
+content.js:149 [MOCKA] essence_updated=false skip
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/chat/ca375cec-97e5-40a2-874a-96c3aa649152
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:166 [MOCKA] /chat/ essence_updated=false: skip
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+content.js:41 [MOCKA] Enterキーにuser_voiceフック完了
+
+content.js:70 [MOCKA] URL変化検知: https://claude.ai/chat/e337d2a2-b7b6-4cb0-a76a-c4d5ab878950
+
+content.js:166 [MOCKA] /chat/ essence_updated=false: skip
+
+content.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了"
+E20260509_013,2026-05-09T06:05:06.395Z,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python -c ""
+
+>> src = open(r'X:\down\content.js', encoding='utf-8').read()
+
+>> print('version:', 'v15.1' if 'v15.1' in src else 'v15 OLD')
+
+>> ""
+
+version: v15 OLD
+
+PS C:\Users\sirok",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python -c ""
+
+>> src = open(r'X:\down\content.js', encoding='utf-8').read()
+
+>> print('version:', 'v15.1' if 'v15.1' in src else 'v15 OLD')
+
+>> ""
+
+version: v15 OLD
+
+PS C:\Users\sirok>"
+E20260509_014,2026-05-09T06:05:26.492Z,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python -c ""
+
+>> src = open(r'X:\down\content.js', encoding='utf-8').read()
+
+>> print('version:', 'v15.1' if 'v15.1' in src else 'v15 OLD')
+
+>> ""
+
+version: v15 OLD
+
+PS C:\Users\sirok",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python -c ""
+
+>> src = open(r'X:\down\content.js', encoding='utf-8').read()
+
+>> print('version:', 'v15.1' if 'v15.1' in src else 'v15 OLD')
+
+>> ""
+
+version: v15 OLD
+
+PS C:\Users\sirok>"
