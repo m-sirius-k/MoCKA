@@ -284,15 +284,17 @@ def user_voice():
         when_ts  = timestamp or datetime.now().isoformat()
 
         append_event({
-            'event_id':   event_id,
-            'what':       text[:500],
-            'what_type':  'user_voice',
-            'who':        'kimura',
-            'where':      'claude.ai/' + chat_id,
-            'when':       when_ts,
-            'why':        'voice_capture',
-            'how':        'chrome_extension_v15',
-            'memo':       text,
+            'event_id':        event_id,
+            'what_type':       'user_voice',
+            'who_actor':       'kimura',
+            'where_component': 'claude.ai',
+            'where_path':      chat_id,
+            'when_ts':         when_ts,
+            'why_purpose':     'voice_capture',
+            'how_trigger':     'chrome_extension_v15',
+            'title':           text[:200],
+            'free_note':       text,
+            'channel_type':    'chat',
         })
 
         return jsonify({'status': 'ok', 'event_id': event_id}), 200
