@@ -260,6 +260,47 @@ def count_layer(layer):
 # Flask Routes
 # =========================
 
+
+# ===== USER VOICE: きむら博士の発言を自動保存 =====
+@app.route('/user_voice', methods=['POST'])
+def user_voice():
+    """content.js から送信される きむら博士の発言を events.db に保存する"""
+    try:
+        data = request.get_json(force=True)
+        text      = data.get('text', '').strip()
+        url       = data.get('url', '')
+        timestamp = data.get('timestamp', '')
+
+        if not text:
+            return jsonify({'status': 'skip', 'reason': 'empty'}), 200
+
+        # セッションURLからchat_idを抽出
+        chat_id = 'unknown'
+        m = re.search(r'/chat/([a-zA-Z0-9_-]+)', url)
+        if m:
+            chat_id = m.group(1)[:16]
+
+        # events.db に記録
+        event_id = get_next_event_id()
+        when_ts  = timestamp or datetime.now().isoformat()
+        insert_event(
+            event_id  = event_id,
+            what      = text[:500],          # 最大500文字
+            what_type = 'user_voice',
+            who       = 'kimura',
+            where     = 'claude.ai/' + chat_id,
+            when_ts   = when_ts,
+            why       = 'voice_capture',
+            how       = 'chrome_extension_v15',
+            memo      = text                 # 全文をmemoに
+        )
+
+        return jsonify({'status': 'ok', 'event_id': event_id}), 200
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+
 @app.route("/")
 def index():
     return send_from_directory(ROOT_DIR, "index.html")

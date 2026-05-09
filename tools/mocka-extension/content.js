@@ -1,11 +1,68 @@
-﻿(function() {
+(function() {
     if (window.MOCKA_INITIALIZED) return;
     window.MOCKA_INITIALIZED = true;
-    console.log("[MOCKA] 自律監視プロトコル v14 起動");
+    console.log("[MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)");
 
     let lastUrl = window.location.href;
     let dnaSentInThisSession = false;
     let essenceSentInThisSession = false;
+
+    // ===== USER VOICE: 送信フック =====
+    // 送信ボタン監視: クリック前にきむら博士の発言を保存する
+    let sendButtonHooked = false;
+
+    function hookSendButton() {
+        const btn = getSendButton();
+        if (!btn || btn._mockaHooked) return;
+        btn._mockaHooked = true;
+        btn.addEventListener('click', function() {
+            const editor = getEditor();
+            if (!editor) return;
+            const text = getEditorText(editor).trim();
+            // DNA注入テキストは保存しない
+            if (!text || text.startsWith('[MOCKA]{')) return;
+            saveUserVoice(text);
+        }, true); // capture=true: Claudeのイベントより先に発火
+        console.log("[MOCKA] 送信ボタンにuser_voiceフック完了");
+    }
+
+    // Enterキーによる送信も捕捉
+    function hookEditorEnter() {
+        const editor = getEditor();
+        if (!editor || editor._mockaVoiceHooked) return;
+        editor._mockaVoiceHooked = true;
+        editor.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                const text = getEditorText(editor).trim();
+                if (!text || text.startsWith('[MOCKA]{')) return;
+                saveUserVoice(text);
+            }
+        }, true);
+        console.log("[MOCKA] Enterキーにuser_voiceフック完了");
+    }
+
+    async function saveUserVoice(text) {
+        const url = window.location.href;
+        const ts  = new Date().toISOString();
+        try {
+            await fetch('http://127.0.0.1:5000/user_voice', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ text: text, url: url, timestamp: ts })
+            });
+            console.log("[MOCKA] user_voice保存:", text.slice(0, 40) + (text.length > 40 ? '...' : ''));
+        } catch(e) {
+            console.warn("[MOCKA] user_voice保存失敗:", e.message);
+        }
+    }
+
+    // 定期的にフックを確認（DOM再構築に対応）
+    const hookLoop = setInterval(() => {
+        hookSendButton();
+        hookEditorEnter();
+    }, 1500);
+
+    // ===== 既存コード（変更なし）=====
 
     const urlWatcher = setInterval(() => {
         const currentUrl = window.location.href;
@@ -80,7 +137,6 @@
             await writeAndSend(el, text);
             console.log("[MOCKA] DNA注入完了");
 
-            // 現在フック中インジケーター表示（chat欄直上・右寄せ）
             const hookIndicator = document.createElement('div');
             hookIndicator.textContent = '⚡MOCKA HOOKED';
             hookIndicator.style.cssText = 'position:fixed;bottom:120px;right:20px;color:rgba(255,255,255,0.6);font-size:10px;z-index:99999;pointer-events:none;letter-spacing:1px;';
@@ -99,7 +155,6 @@
     }
 
     async function shootEssence(el) {
-        // essence_updatedフラグのみ確認。chat送信は行わない。
         essenceSentInThisSession = true;
         try {
             const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
