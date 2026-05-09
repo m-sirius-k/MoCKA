@@ -83,7 +83,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   } else if (info.menuItemId === 'mocka_collect_full') {
     // NY抽出モード: 全文 → /ny_extract → essence自動反映
     const fullResults = await chrome.scripting.executeScript({
-      target: { tabId: tabId },
+      target: { tabId: tab.id },
       func: function() {
         document.execCommand('selectAll');
         const t = window.getSelection().toString().trim();
@@ -223,7 +223,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // DNA + TODOサマリーをタブに注入
   try {
     await chrome.scripting.executeScript({
-      target: { tabId: tabId },
+      target: { tabId: tab.id },
       func: function(todoText) {
         // クリップボードにコピー（ユーザーが貼り付けられる状態にする）
         navigator.clipboard.writeText(todoText).catch(() => {});
