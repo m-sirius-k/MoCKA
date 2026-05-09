@@ -1,4 +1,4 @@
-﻿const AI_DOMAINS = {
+const AI_DOMAINS = {
   ChatGPT:    'chatgpt.com',
   Gemini:     'gemini.google.com',
   Perplexity: 'perplexity.ai',
