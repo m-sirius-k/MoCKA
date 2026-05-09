@@ -6557,3 +6557,37 @@ EP_20260508_181203,2026-05-08T18:12:03,pipeline,essence_update,mocka_pipeline,di
 EP_20260508_181203,2026-05-08T18:12:03,pipeline,essence_update,mocka_pipeline,direct_input,axis=OPERATION,pipeline,internal,in_operation,normal,A,infield/essence,danger=INFO(0) essence=[],N/A,pipeline_complete,OPERATION,local,pipeline,N/A,N/A,no_api|D_i=1|ΔE=0
 E20260509_003,2026-05-09T00:00:00,N/A,user_voice,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A
 E20260509_004,2026-05-09T14:31:22,kimura,user_voice,claude.ai,test123,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,テスト発言：きむら博士の言葉を保存するテストです,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,テスト発言：きむら博士の言葉を保存するテストです
+E20260509_005,2026-05-09T14:47:23,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python X:\down\check_voice_db.py
+
+[OK] user_voice 記録あり:
+
+  2026-05-09T14:31:22 | テスト発言：きむら博士の言葉を保存するテストです
+
+  2026-05-09T00:00:00 | N/A
+
+PS C:\Users\sirok>",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python X:\down\check_voice_db.py
+
+[OK] user_voice 記録あり:
+
+  2026-05-09T14:31:22 | テスト発言：きむら博士の言葉を保存するテストです
+
+  2026-05-09T00:00:00 | N/A
+
+PS C:\Users\sirok>"
+E20260509_006,2026-05-09T14:47:39,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python X:\down\check_voice_db.py
+
+[OK] user_voice 記録あり:
+
+  2026-05-09T14:31:22 | テスト発言：きむら博士の言葉を保存するテストです
+
+  2026-05-09T00:00:00 | N/A
+
+PS C:\Users\sirok>",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python X:\down\check_voice_db.py
+
+[OK] user_voice 記録あり:
+
+  2026-05-09T14:31:22 | テスト発言：きむら博士の言葉を保存するテストです
+
+  2026-05-09T00:00:00 | N/A
+
+PS C:\Users\sirok>"
