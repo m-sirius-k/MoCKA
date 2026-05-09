@@ -10,10 +10,13 @@ const AI_DOMAINS = {
 async function poll() {
   for (const [name, domain] of Object.entries(AI_DOMAINS)) {
     try {
-      const res = await fetch(`http://127.0.0.1:5000/get_intent/${name}`).catch(() => null);
+      const res = await fetch(`http://127.0.0.1:5000/get_intent/${name}`, {
+        signal: AbortSignal.timeout(3000)
+      }).catch(() => null);
       if (!res || !res.ok) continue;
       if (res.status === 204) continue;
-      const data = await res.json();
+      let data = null;
+      try { data = await res.json(); } catch(e) { continue; }
       if (!data) continue;
       const tabs = await chrome.tabs.query({});
       const targetTab = tabs.find(t => t.url && t.url.includes(domain));
@@ -31,14 +34,22 @@ async function poll() {
             }
           },
           args: [data.payload]
-        });
+        }).catch(() => {});
       } else {
         chrome.tabs.create({ url: 'https://' + domain });
       }
-    } catch(e) { console.error(e); }
+    } catch(e) {
+      // エラーを握りつぶしてService Workerを生かし続ける
+      console.warn('[MoCKA] poll error:', e.message);
+    }
   }
 }
-setInterval(poll, 1500);
+
+// poll失敗でもService Workerがクラッシュしないようにtry-catchで囲む
+function safePoll() {
+  poll().catch(e => console.warn('[MoCKA] safePoll:', e.message));
+}
+setInterval(safePoll, 1500);
 
 const injectedTabs = new Set();
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -74,7 +85,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const text   = info.selectionText || '';
   const source = detectSource(tab.url);
 
-  // ===== 保存 =====
   if (info.menuItemId === 'mocka-save') {
     fetch('http://localhost:5000/ask', {
       method: 'POST',
@@ -82,10 +92,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       body: JSON.stringify({c:'A', o:'infield', memo:'[save] ' + text})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: saved') });
-    });
+    }).catch(() => {});
   }
 
-  // ===== 共有 =====
   if (info.menuItemId === 'mocka-share') {
     const targets = ['ChatGPT','Gemini','Claude','Perplexity','Copilot'];
     targets.forEach(t => {
@@ -93,7 +102,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({c:'B', o:t, memo:text})
-      });
+      }).catch(() => {});
     });
     fetch('http://localhost:5000/orchestra', {
       method: 'POST',
@@ -101,10 +110,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       body: JSON.stringify({prompt: text, mode: 'share'})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: shared') });
-    });
+    }).catch(() => {});
   }
 
-  // ===== 協議 =====
   if (info.menuItemId === 'mocka-orchestra') {
     fetch('http://localhost:5000/orchestra', {
       method: 'POST',
@@ -112,15 +120,15 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       body: JSON.stringify({prompt: text})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: orchestra started') });
-    });
+    }).catch(() => {});
   }
 
-  // ===== ヒント！（成功シグナル・弱） =====
   if (info.menuItemId === 'mocka-mataka' || info.menuItemId === 'mocka-claim') {
     const type = info.menuItemId === 'mocka-mataka' ? 'mataka' : 'claim';
     await sendIncident(type, info.selectionText || '', tab.url || '');
     return;
   }
+
   if (info.menuItemId === 'mocka-hint') {
     fetch('http://localhost:5000/ask', {
       method: 'POST',
@@ -128,8 +136,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       body: JSON.stringify({c:'A', o:'infield', memo:'[hint] ' + text})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: ヒント記録！') });
-    });
-    // pipelineにも投入（success_hint として記録）
+    }).catch(() => {});
     fetch('http://localhost:5000/success', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -137,7 +144,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }).catch(() => {});
   }
 
-  // ===== グレイト！（成功シグナル・強） =====
   if (info.menuItemId === 'mocka-great') {
     fetch('http://localhost:5000/ask', {
       method: 'POST',
@@ -145,8 +151,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       body: JSON.stringify({c:'A', o:'infield', memo:'[great] ' + text})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: グレイト記録！！') });
-    });
-    // pipelineにも投入（success_great として記録）
+    }).catch(() => {});
     fetch('http://localhost:5000/success', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -154,7 +159,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }).catch(() => {});
   }
 
-  // ===== chat全文収集 =====
   if (info.menuItemId === 'mocka-collect') {
     let collected = false;
     try {
@@ -235,7 +239,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-// ===== またか！/ クレーム！ハンドラ =====
 async function sendIncident(type, selectedText, url) {
   const source = detectSource(url);
   const endpoint = type === 'mataka' ? '/mataka' : '/claim';
