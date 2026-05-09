@@ -15,18 +15,8 @@
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
-      "id": "TODO_054",
-      "title": "AIES 2026投稿準備 — EasyChair登録・匿名化・フォーマット変換",
-      "priority": "最高"
-    },
-    {
-      "id": "TODO_055",
-      "title": "AIES 2026 — 10ページ版アウトライン設計・Supplementary Material分離",
-      "priority": "最高"
-    },
-    {
-      "id": "TODO_126",
-      "title": "論文最終微修正3点 — S/R/T動機付け・Figure説明・Limitations多モデル追記",
+      "id": "TODO_127",
+      "title": "AIES 2026 PDF最終提出 — Submission 282更新",
       "priority": "最高"
     },
     {
@@ -38,7 +28,17 @@
       "id": "TODO_117",
       "title": "COMMAND CENTER — Decision Intelligence（判断理由ログ）実装",
       "priority": "高"
+    },
+    {
+      "id": "TODO_118",
+      "title": "Risk Engine — TODOリスクスコア + SYSTEM RECOMMENDATION実装",
+      "priority": "高"
+    },
+    {
+      "id": "TODO_121",
+      "title": "ファイル編集運用制度化 — PowerShell文字列操作禁止・Python統一",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-05-08T08:56:40.884272"
+  "generated_at": "2026-05-09T10:00:51.903514"
 }
