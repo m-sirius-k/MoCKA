@@ -6591,3 +6591,351 @@ PS C:\Users\sirok>",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python X
   2026-05-09T00:00:00 | N/A
 
 PS C:\Users\sirok>"
+E20260509_007,2026-05-09T14:48:28,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"=======================================================
+
+MoCKA Heinrich Engine v4 - 実態最適分類版
+
+=======================================================
+
+Layer1 (重大事故):      49件  [CLAIM,CRITICAL,DEPENDENC",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"=======================================================
+
+MoCKA Heinrich Engine v4 - 実態最適分類版
+
+=======================================================
+
+Layer1 (重大事故):      49件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /risk/global HTTP/1.1"" 200 -
+
+Layer2 (軽微な事故):     6件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+
+Layer3 (ヒヤリハット): 1202件  [日常操作全般]
+
+合計:                 1257件
+
+実測比率: 1 : 0.1 : 24.5
+
+理論比率: 1 : 29  : 300
+
+Layer2捕捉率: 0.3%  (理論の0.3%)
+
+Layer3捕捉率: 8.2%  (理論の8.2%)
+
+未捕捉推定:   13498件
+
+【洞察】
+
+  Layer2が少ない = 軽微事故の記録経路が不足
+
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。]
+
+  [INCIDENT            ]
+
+=======================================================
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /heinrich/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /prevention/queue HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /morpho/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /decision/log HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /loop/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /public/todo?_=1778305619371 HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:02] ""GET /todo/risk HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:05] ""GET /servers/status HTTP/1.1"" 200 -
+
+[AUTO-AUDIT] ループ例外: Command '['python', 'C:\\Users\\sirok\\MoCKA\\scripts\\ledger\\anchor_update.py', 'AUTO_SEAL_50EVT']' timed out after 30 seconds
+
+127.0.0.1 - - [09/May/2026 14:47:23] ""OPTIONS /user_voice HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:23] ""POST /user_voice HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /ngrok/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /prevention/queue HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /decision/log HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /public/todo?_=1778305649380 HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /morpho/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /loop/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:35] ""GET /servers/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:39] ""OPTIONS /user_voice HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:39] ""POST /user_voice HTTP/1.1"" 200 -"
+E20260509_008,2026-05-09T14:48:32,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"=======================================================
+
+MoCKA Heinrich Engine v4 - 実態最適分類版
+
+=======================================================
+
+Layer1 (重大事故):      49件  [CLAIM,CRITICAL,DEPENDENC",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"=======================================================
+
+MoCKA Heinrich Engine v4 - 実態最適分類版
+
+=======================================================
+
+Layer1 (重大事故):      49件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /risk/global HTTP/1.1"" 200 -
+
+Layer2 (軽微な事故):     6件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+
+Layer3 (ヒヤリハット): 1202件  [日常操作全般]
+
+合計:                 1257件
+
+実測比率: 1 : 0.1 : 24.5
+
+理論比率: 1 : 29  : 300
+
+Layer2捕捉率: 0.3%  (理論の0.3%)
+
+Layer3捕捉率: 8.2%  (理論の8.2%)
+
+未捕捉推定:   13498件
+
+【洞察】
+
+  Layer2が少ない = 軽微事故の記録経路が不足
+
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。]
+
+  [INCIDENT            ]
+
+=======================================================
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /heinrich/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /prevention/queue HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /morpho/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /decision/log HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /loop/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:46:59] ""GET /public/todo?_=1778305619371 HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:02] ""GET /todo/risk HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:05] ""GET /servers/status HTTP/1.1"" 200 -
+
+[AUTO-AUDIT] ループ例外: Command '['python', 'C:\\Users\\sirok\\MoCKA\\scripts\\ledger\\anchor_update.py', 'AUTO_SEAL_50EVT']' timed out after 30 seconds
+
+127.0.0.1 - - [09/May/2026 14:47:23] ""OPTIONS /user_voice HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:23] ""POST /user_voice HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /ngrok/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /prevention/queue HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /decision/log HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /public/todo?_=1778305649380 HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /morpho/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:29] ""GET /loop/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:35] ""GET /servers/status HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:39] ""OPTIONS /user_voice HTTP/1.1"" 200 -
+
+127.0.0.1 - - [09/May/2026 14:47:39] ""POST /user_voice HTTP/1.1"" 200 -"
+E20260509_009,2026-05-09T14:49:03,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"221 def append_event(meta: dict):
+
+222     # CSV書き込み廃止 → SQLite(db_helper)のみ + 文字化け防御
+
+223     row = {key: ""N/A"" for key in FIELDNAMES}
+
+224     for k, v in meta.items():
+
+225         if k in row and ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"221 def append_event(meta: dict):
+
+222     # CSV書き込み廃止 → SQLite(db_helper)のみ + 文字化け防御
+
+223     row = {key: ""N/A"" for key in FIELDNAMES}
+
+224     for k, v in meta.items():
+
+225         if k in row and v is not None:
+
+226             row[k] = _sanitize_utf8(str(v))
+
+227     if row[""event_id""] == ""N/A"":
+
+228         row[""event_id""] = next_event_id()
+
+229     if row[""when""] == ""N/A"":
+
+230         row[""when""] = datetime.now().isoformat(timespec=""seconds"")
+
+231     eid = row[""event_id""]
+
+232     category = row.get(""category_ab"", ""N/A"")
+
+233     target = row.get(""target_class"", ""N/A"")
+
+234     master_path = os.path.join(RECORDS_DIR, ""master"", f""{eid}.json"")
+
+235     master_obj = {
+
+236         ""event_id"": eid,
+
+237         ""timestamp"": row[""when""],
+
+238         ""what_type"": row.get(""what_type"", ""N/A""),
+
+239         ""status"": ""recorded"",
+
+240         ""category"": category,
+
+241         ""target"": target,
+
+242     }
+
+243     with open(master_path, ""w"", encoding=""utf-8-sig"") as f:
+
+244         json.dump(master_obj, f, ensure_ascii=False, indent=2)
+
+245     db_helper.write_event(row)
+
+246
+
+247 def load_history(limit=None):
+
+248     rows = db_helper.read_events(limit=int(limit) if limit else None)
+
+249     # 既存コードとの互換性: 全フィールドを文字列に正規化
+
+250     rows = [{k: (v if v is not None else """") for k, v in r.items()} for r in rows]
+
+PS C:\Users\sirok>"
+E20260509_010,2026-05-09T14:49:08,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"221 def append_event(meta: dict):
+
+222     # CSV書き込み廃止 → SQLite(db_helper)のみ + 文字化け防御
+
+223     row = {key: ""N/A"" for key in FIELDNAMES}
+
+224     for k, v in meta.items():
+
+225         if k in row and ",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"221 def append_event(meta: dict):
+
+222     # CSV書き込み廃止 → SQLite(db_helper)のみ + 文字化け防御
+
+223     row = {key: ""N/A"" for key in FIELDNAMES}
+
+224     for k, v in meta.items():
+
+225         if k in row and v is not None:
+
+226             row[k] = _sanitize_utf8(str(v))
+
+227     if row[""event_id""] == ""N/A"":
+
+228         row[""event_id""] = next_event_id()
+
+229     if row[""when""] == ""N/A"":
+
+230         row[""when""] = datetime.now().isoformat(timespec=""seconds"")
+
+231     eid = row[""event_id""]
+
+232     category = row.get(""category_ab"", ""N/A"")
+
+233     target = row.get(""target_class"", ""N/A"")
+
+234     master_path = os.path.join(RECORDS_DIR, ""master"", f""{eid}.json"")
+
+235     master_obj = {
+
+236         ""event_id"": eid,
+
+237         ""timestamp"": row[""when""],
+
+238         ""what_type"": row.get(""what_type"", ""N/A""),
+
+239         ""status"": ""recorded"",
+
+240         ""category"": category,
+
+241         ""target"": target,
+
+242     }
+
+243     with open(master_path, ""w"", encoding=""utf-8-sig"") as f:
+
+244         json.dump(master_obj, f, ensure_ascii=False, indent=2)
+
+245     db_helper.write_event(row)
+
+246
+
+247 def load_history(limit=None):
+
+248     rows = db_helper.read_events(limit=int(limit) if limit else None)
+
+249     # 既存コードとの互換性: 全フィールドを文字列に正規化
+
+250     rows = [{k: (v if v is not None else """") for k, v in r.items()} for r in rows]
+
+PS C:\Users\sirok>"
