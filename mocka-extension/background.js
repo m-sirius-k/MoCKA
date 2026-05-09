@@ -111,15 +111,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     const results = await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       func: async function(source) {
-        let last = null;
-        for (let i = 0; i < 30; i++) {
-          window.scrollTo(0, 0);
-          await new Promise(r => setTimeout(r, 1200));
-          const h = document.body.scrollHeight;
-          if (h === last) break;
-          last = h;
-        }
-        await new Promise(r => setTimeout(r, 2000));
+        await new Promise(r => setTimeout(r, 500));
         const SEL = {
           chatgpt:    '[data-message-author-role]',
           claude:     '[data-testid*="message"], .font-claude-message',
