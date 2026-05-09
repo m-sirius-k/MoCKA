@@ -15,11 +15,6 @@
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
-      "id": "TODO_127",
-      "title": "AIES 2026 PDF最終提出 — Submission 282更新",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_116",
       "title": "COMMAND CENTER — Temporal Analytics（7日トレンド）実装",
       "priority": "高"
@@ -38,7 +33,12 @@
       "id": "TODO_121",
       "title": "ファイル編集運用制度化 — PowerShell文字列操作禁止・Python統一",
       "priority": "高"
+    },
+    {
+      "id": "TODO_106",
+      "title": "PHL-OS ドリフト回復実験設計 — Phase 2（汚染）→Phase 3（PHL再注入）→Phase 4（用量依存）",
+      "priority": "中"
     }
   ],
-  "generated_at": "2026-05-09T10:00:51.903514"
+  "generated_at": "2026-05-09T13:24:31.774124"
 }
