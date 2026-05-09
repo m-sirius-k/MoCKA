@@ -289,7 +289,7 @@ def user_voice():
             'who_actor':       'kimura',
             'where_component': 'claude.ai',
             'where_path':      chat_id,
-            'when_ts':         when_ts,
+            'when':            when_ts,
             'why_purpose':     'voice_capture',
             'how_trigger':     'chrome_extension_v15',
             'title':           text[:200],
