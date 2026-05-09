@@ -1,15 +1,21 @@
 (function() {
     if (window.MOCKA_INITIALIZED) return;
     window.MOCKA_INITIALIZED = true;
-    console.log("[MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)");
+    console.log("[MOCKA] 自律監視プロトコル v15.1 起動 (user_voice ON / claude.ai入力欄限定)");
 
     let lastUrl = window.location.href;
     let dnaSentInThisSession = false;
     let essenceSentInThisSession = false;
 
     // ===== USER VOICE: 送信フック =====
-    // 送信ボタン監視: クリック前にきむら博士の発言を保存する
-    let sendButtonHooked = false;
+    function isClaudeInputEditor(el) {
+        if (!el) return false;
+        if (el.getAttribute('data-placeholder')) return true;
+        if (el.closest('form')) return true;
+        const parent = el.closest('footer, [class*="composer"], [class*="chat-input"], [class*="ProseMirror"]');
+        if (parent) return true;
+        return false;
+    }
 
     function hookSendButton() {
         const btn = getSendButton();
@@ -17,19 +23,18 @@
         btn._mockaHooked = true;
         btn.addEventListener('click', function() {
             const editor = getEditor();
-            if (!editor) return;
+            if (!editor || !isClaudeInputEditor(editor)) return;
             const text = getEditorText(editor).trim();
-            // DNA注入テキストは保存しない
             if (!text || text.startsWith('[MOCKA]{')) return;
             saveUserVoice(text);
-        }, true); // capture=true: Claudeのイベントより先に発火
+        }, true);
         console.log("[MOCKA] 送信ボタンにuser_voiceフック完了");
     }
 
-    // Enterキーによる送信も捕捉
     function hookEditorEnter() {
         const editor = getEditor();
         if (!editor || editor._mockaVoiceHooked) return;
+        if (!isClaudeInputEditor(editor)) return;
         editor._mockaVoiceHooked = true;
         editor.addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -43,7 +48,8 @@
 
     async function saveUserVoice(text) {
         const url = window.location.href;
-        const ts  = new Date().toISOString();
+        if (!url.includes('claude.ai')) return;
+        const ts = new Date().toISOString();
         try {
             await fetch('http://127.0.0.1:5000/user_voice', {
                 method: 'POST',
@@ -56,13 +62,12 @@
         }
     }
 
-    // 定期的にフックを確認（DOM再構築に対応）
     const hookLoop = setInterval(() => {
         hookSendButton();
         hookEditorEnter();
     }, 1500);
 
-    // ===== 既存コード（変更なし）=====
+    // ===== 既存コード =====
 
     const urlWatcher = setInterval(() => {
         const currentUrl = window.location.href;
