@@ -153,7 +153,7 @@ def fetch_events(db_path: Path, limit: int = 2000) -> list[dict]:
 
     # user_voice + INCIDENT系 + MATAKAを取得
     cur.execute("""
-        SELECT event_id, when_ts, who_actor, what_type,
+        SELECT event_id, [when], who_actor, what_type,
                title, short_summary, free_note,
                why_purpose, how_trigger, risk_level,
                recurrence_flag
@@ -161,7 +161,7 @@ def fetch_events(db_path: Path, limit: int = 2000) -> list[dict]:
         WHERE what_type IN ('user_voice','incident','mataka','claim','record','decision')
            OR recurrence_flag = 1
            OR risk_level IN ('WARNING','CRITICAL','DANGER')
-        ORDER BY when_ts DESC
+        ORDER BY [when] DESC
         LIMIT ?
     """, (limit,))
 
@@ -211,7 +211,7 @@ def extract_5w1h(text: str, event: dict) -> dict:
     what = what_map.get(category, "記録")
 
     # WHEN: タイムスタンプ
-    when = event.get("when_ts", "")[:10]
+    when = event.get("when", "")[:10]
 
     # WHERE: コンポーネント
     where = event.get("where_component") or "claude.ai"
