@@ -26,7 +26,7 @@ from pathlib import Path
 # 設定
 # ============================================================
 MOCKA_ROOT = Path(r"C:\Users\sirok\MoCKA")
-DB_PATH    = MOCKA_ROOT / "mocka_events.db"
+DB_PATH    = MOCKA_ROOT / "data" / "events.db"
 GUIDELINES = MOCKA_ROOT / "data" / "guidelines.json"
 ESSENCE    = MOCKA_ROOT / "data" / "lever_essence.json"
 PROCESSED  = MOCKA_ROOT / "data" / "guidelines_processed.json"
