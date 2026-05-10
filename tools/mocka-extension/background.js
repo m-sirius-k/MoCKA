@@ -39,13 +39,11 @@ async function poll() {
         chrome.tabs.create({ url: 'https://' + domain });
       }
     } catch(e) {
-      // エラーを握りつぶしてService Workerを生かし続ける
       console.warn('[MoCKA] poll error:', e.message);
     }
   }
 }
 
-// poll失敗でもService Workerがクラッシュしないようにtry-catchで囲む
 function safePoll() {
   poll().catch(e => console.warn('[MoCKA] safePoll:', e.message));
 }
@@ -159,26 +157,29 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }).catch(() => {});
   }
 
+  // ===== chat全文収集 (Perplexity対応強化版) =====
   if (info.menuItemId === 'mocka-collect') {
     let collected = false;
     try {
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: async function(source) {
-          let last = null;
-          for (let i = 0; i < 30; i++) {
-            window.scrollTo(0, 0);
-            await new Promise(r => setTimeout(r, 1200));
-            const h = document.body.scrollHeight;
-            if (h === last) break;
-            last = h;
+          for (let i = 0; i < 10; i++) {
+            window.scrollTo(0, document.body.scrollHeight);
+            await new Promise(r => setTimeout(r, 800));
           }
-          await new Promise(r => setTimeout(r, 2000));
+          window.scrollTo(0, 0);
+          await new Promise(r => setTimeout(r, 1000));
+
+          // Perplexity: innerText全文をrawで送る
+          if (source === 'perplexity') {
+            return '[perplexity_raw]\n' + document.body.innerText;
+          }
+
           const SEL = {
             chatgpt:    '[data-message-author-role]',
             claude:     '[data-testid*="message"], .font-claude-message',
             gemini:     'message-content, model-response, user-query',
-            perplexity: '.prose, [class*="answer"], .break-words',
             copilot:    '[class*="message"]',
           };
           const sel = SEL[source] || 'p';
@@ -186,55 +187,42 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           let lines = [];
           nodes.forEach((n, i) => {
             const role = n.getAttribute('data-message-author-role') || (i%2===0 ? 'user' : 'assistant');
-            const text = n.innerText.trim();
-            if (text) lines.push('[' + role + '] ' + text);
+            const t = n.innerText.trim();
+            if (t) lines.push('[' + role + '] ' + t);
           });
-          if (!lines.length) {
-            document.execCommand('selectAll');
-            const t = window.getSelection().toString().trim();
-            window.getSelection().removeAllRanges();
-            if (t) lines.push(t);
-          }
+          if (!lines.length) lines.push(document.body.innerText.trim());
           return lines.join('\n\n');
         },
         args: [source]
       });
+
       if (results && results[0] && results[0].result) {
         await fetch('http://127.0.0.1:5000/collect', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
-            source: source, text: results[0].result,
-            url: tab.url, mode: 'full_scroll',
+            source: source,
+            text: results[0].result,
+            url: tab.url,
+            mode: 'full_scroll',
             timestamp: new Date().toISOString()
           })
         });
-        chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: collected') });
+        chrome.scripting.executeScript({
+          target: {tabId: tab.id},
+          func: () => alert('MoCKA: collected!')
+        });
         collected = true;
       }
-    } catch(e) { console.warn('[MoCKA] executeScript blocked:', e.message); }
+    } catch(e) {
+      console.warn('[MoCKA] collect error:', e.message);
+    }
 
     if (!collected) {
-      try {
-        const clipText = await navigator.clipboard.readText();
-        if (clipText && clipText.length > 50) {
-          await fetch('http://127.0.0.1:5000/collect', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-              source: source, text: clipText, url: tab.url,
-              mode: 'clipboard_fallback', timestamp: new Date().toISOString()
-            })
-          });
-          collected = true;
-          alert('MoCKA: collected (clipboard mode)');
-        } else {
-          alert('MoCKA: collection failed\nCtrl+A → Ctrl+C 後に再実行してください');
-        }
-      } catch(e2) {
-        alert('MoCKA: collection failed');
-        console.error('[MoCKA] clipboard fallback failed:', e2);
-      }
+      chrome.scripting.executeScript({
+        target: {tabId: tab.id},
+        func: () => alert('MoCKA: collection failed')
+      });
     }
   }
 });
