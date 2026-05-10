@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MoCKA Bridge",
-  "version": "2.3",
+  "version": "2.4",
   "permissions": [
     "tabs",
     "scripting",
@@ -18,6 +18,8 @@
     "https://chatgpt.com/*",
     "https://gemini.google.com/*",
     "https://*.perplexity.ai/*",
+    "https://www.perplexity.ai/*",
+    "https://perplexity.ai/*",
     "https://claude.ai/*",
     "https://*.microsoft.com/*",
     "https://genspark.ai/*"
@@ -32,7 +34,10 @@
       "run_at": "document_idle"
     },
     {
-      "matches": ["https://www.perplexity.ai/*"],
+      "matches": [
+        "https://www.perplexity.ai/*",
+        "https://perplexity.ai/*"
+      ],
       "js": ["mocka_perplexity.js"],
       "run_at": "document_idle"
     }
