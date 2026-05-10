@@ -1,3 +1,4 @@
+console.log("[MOCKA] background.js 起動開始");
 const AI_DOMAINS = {
   ChatGPT:    'chatgpt.com',
   Gemini:     'gemini.google.com',
@@ -47,7 +48,8 @@ async function poll() {
 function safePoll() {
   poll().catch(e => console.warn('[MoCKA] safePoll:', e.message));
 }
-setInterval(safePoll, 1500);
+// 5秒後に開始（起動直後のクラッシュ防止）
+setTimeout(() => { safePoll(); setInterval(safePoll, 1500); }, 5000);
 
 const injectedTabs = new Set();
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
