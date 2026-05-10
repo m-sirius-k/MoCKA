@@ -279,6 +279,202 @@
         "how": "AND追記して参照可能に維持"
       },
       "action_directive": "【GENERAL】Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄… → AND追記して参照可能に維持"
+    },
+    {
+      "id": "GL_20260510_025841_834e3590a49e",
+      "fingerprint": "834e3590a49e",
+      "category": "GENERAL",
+      "score": 0.35,
+      "source_event_id": "E20260404_040",
+      "created": "2026-05-10T02:58:41.214388+00:00",
+      "trust_score": 0.35,
+      "cause_5w1h": {
+        "who": "System",
+        "what": "記録",
+        "when": "2026-04-04",
+        "where": "router",
+        "why": "不明",
+        "how": "cli",
+        "category": "GENERAL",
+        "source_text": "[share] MoCKA 隲匁枚謠仙・ TODO 菴懈・: 2026-04-04 蜷郁ｭｰ邨先棡縺ｫ蝓ｺ縺･縺丞ｮ溯｡瑚ｨ育判 逶ｮ讓・ AI"
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "GENERALへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "AND追記して参照可能に維持"
+      },
+      "action_directive": "【GENERAL】[share] MoCKA 隲匁枚謠仙・ TODO 菴懈・: 2026-04-04 蜷郁ｭｰ邨先棡縺ｫ蝓ｺ縺･縺丞ｮ溯｡瑚ｨ育判 逶ｮ讓・ … → AND追記して参照可能に維持"
+    },
+    {
+      "id": "GL_20260510_025841_c1a1f30d40ef",
+      "fingerprint": "c1a1f30d40ef",
+      "category": "GENERAL",
+      "score": 0.35,
+      "source_event_id": "E20260404_034",
+      "created": "2026-05-10T02:58:41.214759+00:00",
+      "trust_score": 0.35,
+      "cause_5w1h": {
+        "who": "System",
+        "what": "記録",
+        "when": "2026-04-04",
+        "where": "router",
+        "why": "不明",
+        "how": "cli",
+        "category": "GENERAL",
+        "source_text": "[collaboration] # MoCKA 髫ｲ蛹∵椢隰莉吶・驕ｽ繝ｻ蟲・髮会ｽｪ騾咲ｬｬ蠍・# 闖ｴ諛医・: 2026-04-04\n# 陋ｻ・､隴・ｽｭ髢繝ｻ"
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "GENERALへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "AND追記して参照可能に維持"
+      },
+      "action_directive": "【GENERAL】[collaboration] # MoCKA 髫ｲ蛹∵椢隰莉吶・驕ｽ繝ｻ蟲・髮会ｽｪ騾咲ｬｬ蠍・# 闖ｴ諛医・: 2026-04-04\n… → AND追記して参照可能に維持"
+    },
+    {
+      "id": "GL_20260510_025841_ad8cbe5a0ff2",
+      "fingerprint": "ad8cbe5a0ff2",
+      "category": "GENERAL",
+      "score": 0.35,
+      "source_event_id": "E20260404_007",
+      "created": "2026-05-10T02:58:41.214971+00:00",
+      "trust_score": 0.35,
+      "cause_5w1h": {
+        "who": "Claude",
+        "what": "記録",
+        "when": "2026-04-04",
+        "where": "router",
+        "why": "不明",
+        "how": "cli",
+        "category": "GENERAL",
+        "source_text": "[collaboration] MoCKA Orchestra 雉ｪ逍第嶌 逶ｮ逧・ AIES2026隲匁枚縺ｮ縺溘ａ縺ｮ螳檎挑縺ｪ螳滄ｨ薙ョ繝ｼ繧ｿ險ｭ險・謚・\"[Claude] 譌｢蟄倥ち繝匁､懃ｴ｢荳ｭ..."
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "GENERALへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "AND追記して参照可能に維持"
+      },
+      "action_directive": "【GENERAL】[collaboration] MoCKA Orchestra 雉ｪ逍第嶌 逶ｮ逧・ AIES2026隲匁枚縺ｮ縺溘ａ縺ｮ螳檎挑縺ｪ螳滄ｨ薙… → AND追記して参照可能に維持"
+    },
+    {
+      "id": "GL_20260510_025841_5040a711bf0c",
+      "fingerprint": "5040a711bf0c",
+      "category": "GENERAL",
+      "score": 0.35,
+      "source_event_id": "E20260403_019",
+      "created": "2026-05-10T02:58:41.216268+00:00",
+      "trust_score": 0.35,
+      "cause_5w1h": {
+        "who": "System",
+        "what": "記録",
+        "when": "2026-04-03",
+        "where": "router",
+        "why": "不明",
+        "how": "cli",
+        "category": "GENERAL",
+        "source_text": "[collaboration] MoCKA 陦悟虚謖・・逕滓・繧ｷ繧ｹ繝・Β險ｭ險域晄Φ\n縲仙鵠隴ｰ萓晞ｼ縲閃oCKA縺ｮ陦悟虚謖・・逕滓・繧ｷ繧ｹ繝・Β縺ｫ縺､縺・※諢剰ｦ九ｒ"
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "GENERALへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "AND追記して参照可能に維持"
+      },
+      "action_directive": "【GENERAL】[collaboration] MoCKA 陦悟虚謖・・逕滓・繧ｷ繧ｹ繝・Β險ｭ險域晄Φ\n縲仙鵠隴ｰ萓晞ｼ縲閃oCKA縺ｮ陦悟虚謖・・逕… → AND追記して参照可能に維持"
+    },
+    {
+      "id": "GL_20260510_025841_3ac01a357b35",
+      "fingerprint": "3ac01a357b35",
+      "category": "INCIDENT",
+      "score": 0.45,
+      "source_event_id": "E20260403_013",
+      "created": "2026-05-10T02:58:41.216801+00:00",
+      "trust_score": 0.44999999999999996,
+      "cause_5w1h": {
+        "who": "System",
+        "what": "問題発生",
+        "when": "2026-04-03",
+        "where": "router",
+        "why": "不明",
+        "how": "cli",
+        "category": "INCIDENT",
+        "source_text": "[collaboration] MoCKA 陦悟虚謖・・逕滓・繧ｷ繧ｹ繝・Β險ｭ險域晄Φ\n繧・▲縺ｨ縲驥崎ｦ√↑莨夊ｩｱ縺ｨ縺ｪ繧翫∪縺・縺薙％縺ｾ縺ｧ縺阪∪縺励◆縲縺ｪ繧薙→縺ｪ縺・,,N/A,collaboration_complete,generation,local,collaboration,N/A,N/A,(node:8148) [DEP0169] DeprecationWarn"
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "INCIDENTへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "prevention_queueに登録→Human Gate承認→essence INCIDENT軸に記録"
+      },
+      "action_directive": "【INCIDENT】[collaboration] MoCKA 陦悟虚謖・・逕滓・繧ｷ繧ｹ繝・Β險ｭ險域晄Φ\n繧・▲縺ｨ縲驥崎ｦ√↑莨夊ｩｱ縺ｨ縺ｪ繧翫∪縺… → prevention_queueに登録→Human Gate承認→essence INCIDENT軸に記録"
+    },
+    {
+      "id": "GL_20260510_025841_d2022602516f",
+      "fingerprint": "d2022602516f",
+      "category": "GENERAL",
+      "score": 0.35,
+      "source_event_id": "E20260403_006",
+      "created": "2026-05-10T02:58:41.217179+00:00",
+      "trust_score": 0.35,
+      "cause_5w1h": {
+        "who": "System",
+        "what": "記録",
+        "when": "2026-04-03",
+        "where": "router",
+        "why": "不明",
+        "how": "cli",
+        "category": "GENERAL",
+        "source_text": "[share] caliber_serv"
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "GENERALへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "AND追記して参照可能に維持"
+      },
+      "action_directive": "【GENERAL】[share] caliber_serv… → AND追記して参照可能に維持"
+    },
+    {
+      "id": "GL_20260510_025841_3f774f1f74b5",
+      "fingerprint": "3f774f1f74b5",
+      "category": "GENERAL",
+      "score": 0.35,
+      "source_event_id": "E20260401_018",
+      "created": "2026-05-10T02:58:41.217553+00:00",
+      "trust_score": 0.35,
+      "cause_5w1h": {
+        "who": "Claude",
+        "what": "記録",
+        "when": "2026-04-01",
+        "where": "philosophy",
+        "why": "不明",
+        "how": "cli",
+        "category": "GENERAL",
+        "source_text": "MoCKA縺ｯ蟶ｸ譎ょｾｪ迺ｰ蝙九〒縺ｯ縺ｪ縺丞ｿ・ｦ∵凾襍ｷ蜍募梛繝ｻ蜿取據蠢怜髄繝｢繝・Ν縲・0000縺ｮ蜈･蜉帙ｒ10縺ｫ豼・ｸｮ縺鈴♀蜍募ｺｧ讓吩ｻ倩ｿ代・譛ｬ雉ｪ繧呈ｮ九☆陬・ｽｮ縲ら岼逧・・逵滓э繧貞炎繧雁・縺吶％縺ｨ縲・37ae7b9bc2f92d51"
+      },
+      "prevention_5w1h": {
+        "who": "Claude+きむら博士",
+        "what": "GENERALへの対処",
+        "when": "次回同一状況で",
+        "where": "MoCKAシステム全体",
+        "why": "不明の再発防止",
+        "how": "AND追記して参照可能に維持"
+      },
+      "action_directive": "【GENERAL】MoCKA縺ｯ蟶ｸ譎ょｾｪ迺ｰ蝙九〒縺ｯ縺ｪ縺丞ｿ・ｦ∵凾襍ｷ蜍募梛繝ｻ蜿取據蠢怜髄繝｢繝・Ν縲・0000縺ｮ蜈･蜉帙ｒ10縺ｫ豼・ｸｮ縺鈴… → AND追記して参照可能に維持"
     }
   ],
   "meta": {
@@ -286,10 +482,11 @@
     "created": "2026-04-03T01:36:47.724835+00:00"
   },
   "summary": {
-    "total": 10,
+    "total": 17,
     "by_category": {
-      "GENERAL": 10
+      "GENERAL": 16,
+      "INCIDENT": 1
     },
-    "last_updated": "2026-05-10T02:56:14.240398+00:00"
+    "last_updated": "2026-05-10T02:58:41.218351+00:00"
   }
 }

@@ -9,7 +9,7 @@ from pathlib import Path
 MOCKA_ROOT = Path(r"C:\Users\sirok\MoCKA")
 DB_PATH    = MOCKA_ROOT / "data" / "events.db"
 GUIDELINES = MOCKA_ROOT / "data" / "guidelines.json"
-ESSENCE    = MOCKA_ROOT / "data" / "lever_essence.json"
+ESSENCE    = MOCKA_ROOT / "data" / "essence_condensed.json"
 PROCESSED  = MOCKA_ROOT / "data" / "guidelines_processed.json"
 
 NOISE_PATTERNS = [
@@ -71,8 +71,15 @@ def fetch_events(db_path, limit=2000):
                where_component, why_purpose, how_trigger,
                risk_level, title, short_summary, free_note
         FROM events
-        WHERE what_type IN ('user_voice','incident','mataka','claim','record','decision')
-           OR risk_level IN ('WARNING','CRITICAL','DANGER')
+        WHERE what_type IN (
+               'save','record','collaboration','share','incident',
+               'ai_violation','governance_degradation','environment_error',
+               'data_quality','config_error','security','cli','ingest'
+           )
+           OR risk_level IN ('WARNING','CRITICAL','DANGER','high')
+           OR what_type LIKE '%incident%'
+           OR what_type LIKE '%error%'
+           OR what_type LIKE '%violation%'
         ORDER BY [when] DESC LIMIT ?
     """, (limit,))
     rows = [dict(r) for r in cur.fetchall()]
@@ -162,7 +169,8 @@ def inject_to_essence(essence_path, guidelines_data):
     lines = [l for l in essence.get("PHILOSOPHY","").split("\n") if not l.startswith("[GL:")]
     lines.append(f"[{now}] Guidelines Engine v1.1 TOP5:")
     for g in top5: lines.append(f"[GL:{g['category']}] {g['action_directive'][:100]}")
-    essence["PHILOSOPHY"] = "\n".join(lines[-20:])
+    phil_key = next((k for k in ["PHILOSOPHY","philosophy"] if k in essence), "PHILOSOPHY")
+    essence[phil_key] = "\n".join(lines[-20:])
     essence_path.write_text(json.dumps(essence, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[OK] essence PHILOSOPHY: {len(top5)}件注入")
 
