@@ -122,7 +122,11 @@ def generate_prevention(w5h1):
             "why":f"{w5h1['why']}の再発防止","how":how_map.get(cat,"")}
 
 def load_guidelines(path):
-    if path.exists(): return json.loads(path.read_text(encoding="utf-8"))
+    if path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if "summary" not in data:
+            data["summary"] = {"total":0,"by_category":{},"last_updated":""}
+        return data
     return {"meta":{"version":"1.1","philosophy":"失敗は資産になる",
                     "created":datetime.now(timezone.utc).isoformat()},
             "guidelines":[],"summary":{"total":0,"by_category":{},"last_updated":""}}
