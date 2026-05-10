@@ -200,21 +200,20 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       console.warn('[MoCKA] script collect blocked, trying clipboard:', e.message);
     }
 
-    // クリップボードフォールバック（Perplexity等CSPブロックサイト用）
+    // content script経由でclipboard取得（Perplexity等CSPブロックサイト用）
     if (!collected) {
       try {
-        const clipText = await navigator.clipboard.readText();
-        if (clipText && clipText.length > 20) {
+        const response = await chrome.tabs.sendMessage(tab.id, { action: 'collect_clipboard' });
+        if (response && response.ok && response.text && response.text.length > 20) {
           await fetch('http://127.0.0.1:5000/collect', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ source, text: clipText, url: tab.url, mode: 'clipboard', timestamp: new Date().toISOString() })
+            body: JSON.stringify({ source, text: response.text, url: tab.url, mode: 'clipboard', timestamp: new Date().toISOString() })
           });
-          // 通知はnotificationsで（executeScriptが使えないため）
           chrome.notifications.create({
             type: 'basic', iconUrl: 'icon.png',
             title: 'MoCKA収集完了',
-            message: source + ' から ' + clipText.length + '文字収集しました'
+            message: source + ' から ' + response.text.length + '文字収集しました'
           });
           collected = true;
         } else {
@@ -225,11 +224,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           });
         }
       } catch(e2) {
-        console.error('[MoCKA] clipboard fallback failed:', e2);
+        console.error('[MoCKA] content script message failed:', e2);
         chrome.notifications.create({
           type: 'basic', iconUrl: 'icon.png',
           title: 'MoCKA収集失敗',
-          message: 'クリップボード読み取りエラー: ' + e2.message
+          message: e2.message
         });
       }
     }

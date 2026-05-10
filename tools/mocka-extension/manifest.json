@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MoCKA Bridge",
-  "version": "2.2",
+  "version": "2.3",
   "permissions": [
     "tabs",
     "scripting",
@@ -27,12 +27,13 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://claude.ai/*"
-      ],
-      "js": [
-        "content.js"
-      ],
+      "matches": ["https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.perplexity.ai/*"],
+      "js": ["mocka_perplexity.js"],
       "run_at": "document_idle"
     }
   ]
