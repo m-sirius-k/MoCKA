@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 MOCKA_ROOT = Path(r"C:\Users\sirok\MoCKA")
-DB_PATH    = MOCKA_ROOT / "data" / "events.db"
+DB_PATH    = MOCKA_ROOT / "data" / "mocka_events.db"
 GUIDELINES = MOCKA_ROOT / "data" / "guidelines.json"
 ESSENCE    = MOCKA_ROOT / "data" / "essence_condensed.json"
 PROCESSED  = MOCKA_ROOT / "data" / "guidelines_processed.json"
@@ -74,20 +74,20 @@ def fetch_events(db_path, limit=2000):
     conn.row_factory = sqlite3.Row
     cur = conn.cursor()
     cur.execute("""
-        SELECT event_id, [when], who_actor, what_type,
+        SELECT event_id, when_ts, who_actor, what_type,
                where_component, why_purpose, how_trigger,
                risk_level, title, short_summary, free_note
         FROM events
         WHERE what_type IN (
-               'save','record','collaboration','share','incident',
-               'ai_violation','governance_degradation','environment_error',
-               'data_quality','config_error','security','cli','ingest'
+               'user_voice','save','record','collaboration','share',
+               'incident','ai_violation','governance_degradation',
+               'environment_error','data_quality','config_error',
+               'security','cli','ingest','mataka','claim','decision'
            )
            OR risk_level IN ('WARNING','CRITICAL','DANGER','high')
            OR what_type LIKE '%incident%'
-           OR what_type LIKE '%error%'
            OR what_type LIKE '%violation%'
-        ORDER BY [when] DESC LIMIT ?
+        ORDER BY when_ts DESC LIMIT ?
     """, (limit,))
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
@@ -111,7 +111,7 @@ def extract_5w1h(text, ev):
     elif "Gemini" in text: who = "Gemini"
     what_map = {"INCIDENT":"問題発生","MATAKA":"再発","DECISION":"判断確定",
                 "INSIGHT":"気づき","CHALLENGE":"異議","GENERAL":"記録"}
-    when = str(ev.get("when") or "")[:10]
+    when = str(ev.get("when_ts") or "")[:10]
     why = "不明"
     for p in [r"なぜ(.{0,50})[？?。\n]", r"問題は(.{0,50})[。\n]"]:
         m = re.search(p, text)
