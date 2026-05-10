@@ -46,12 +46,13 @@ SIGNAL_RE = [re.compile(p, re.IGNORECASE) for p in THOUGHT_SIGNALS]
 def is_noise(t):
     if not t or len(t.strip()) < 4: return True
     if any(p.search(t) for p in NOISE_RE): return True
-    # 制御文字混入 = Shift-JIS文字化け残骸
-    ctrl_count = sum(1 for c in t if ord(c) < 0x20 and c not in (chr(9), chr(10), chr(13)))
-    if ctrl_count >= 1: return True
-    # 非ASCII文字が多すぎる（日本語正常文字U+3000-U+9FFFは除外）
-    weird = sum(1 for c in t if 0x80 <= ord(c) <= 0x9F)
-    if weird >= 1: return True
+    # 制御文字（Shift-JIS残骸）
+    if sum(1 for c in t if ord(c) < 0x20 and c not in (chr(9), chr(10), chr(13))) >= 1:
+        return True
+    # 半角カタカナ (U+FF61-FF9F) が1文字でも混入 = 文字化け確定
+    # （正常な日本語文には半角カタカナは原則使用しない）
+    hankaku_kata = sum(1 for c in t if 0xFF61 <= ord(c) <= 0xFF9F)
+    if hankaku_kata >= 1: return True
     return False
 def classify(t):
     for cat, kws in INCIDENT_KW.items():
