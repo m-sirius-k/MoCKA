@@ -10,8 +10,8 @@
     "OPERATION": "[2026-04-28] [hint] the burden of verification shifts from t the burden of verification shifts from the user to the system source=past_chat_batch|type=hint\n[2026-04-28] [hint] SPP redesigns the state space in which A SPP redesigns the state space in which AI can act source=past_chat_batch|type=hint\n[2026-04-28] [hint] SPP is not a refusal mechanism; it is a  SPP is not a refusal mechanism; it is a failure-conversion mechanism under uncertainty source=past_chat_batch|type=hint\n[2026-05-01] TODO_110 events文字化け修正 — 部分完了・凍結 csv_migration空行47件をpublic_eventsから除外完了(1233→1186件)。csv_legacyのtitle文字化けはCSV移行時のデータ破損が原因でDB内に固着。表示側での根本修正は不可。現時点では凍結・許容\n[2026-05-01] MoCKA-START.bat WATCHER修正完了 MoCKA-START.batのMoCKA-WATCHERタブのMOCKA_FIREBASE_KEY_PATHをX:\\down\\mocka-knowledge-gate-firebase-adminsdk-fbsvc-53613922c1.js\n[2026-05-01] index.html文字化け全修正・COMMAND CENTER v5.0復旧 mocka_watcher.py: KEY_PATH X:\\down\\ → A:\\secrets\\mocka-knowledge-gate.json修正、文字化けSyntaxError全修正、新規UTF-8完全版書き直し\n[2026-04-30] 保存取得 infield [great] X:\\down\\          ← 作業中ファイル置き場（一時）     ↓ 使い終わったら X:\\down\\mocka関係\\ ← バンカー（長期保管）     ├── 01_paper   論文系     ├── 02_code    コード系    \n[2026-04-30] [hint] ハインリッヒの法則です！　この理論を数的に実証してこそ　成り立ちます！ ハインリッヒの法則です！　この理論を数的に実証してこそ　成り立ちます！ source=claude|type=hint"
   },
   "essence_updated": false,
-  "ngrok_online": false,
-  "NGROK": false,
+  "ngrok_online": true,
+  "NGROK": true,
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
@@ -40,5 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-11T07:44:03.036607"
+  "generated_at": "2026-05-11T08:03:23.077175"
 }
