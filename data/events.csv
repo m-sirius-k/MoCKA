@@ -7417,3 +7417,10 @@ E20260509_030,2026-05-09T09:28:51.889Z,kimura,user_voice,claude.ai,4703c7b8-97f9
 E20260509_030,2026-05-09T09:28:51.890Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,background.js:215 [MoCKA] executeScript blocked: This page cannot be scripted due to an ExtensionsSettings policy.,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,background.js:215 [MoCKA] executeScript blocked: This page cannot be scripted due to an ExtensionsSettings policy.
 E20260509_031,2026-05-09T09:40:14.411Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,そこはない！,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,そこはない！
 E20260509_031,2026-05-09T09:40:14.412Z,kimura,user_voice,claude.ai,4703c7b8-97f9-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,そこはない！,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,そこはない！
+E20260510_001,2026-05-10T01:27:01.372Z,kimura,user_voice,claude.ai,e337d2a2-b7b6-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python -c ""f=open(r'C:\Users\sirok\MoCKA\tools\mocka-extension\background.js',encoding='utf-8');c=f.read();f.close();print('Perplexity対応:', 'perplexity_raw' in c)""
+
+Perplexity対応: Tr",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"PS C:\Users\sirok> python -c ""f=open(r'C:\Users\sirok\MoCKA\tools\mocka-extension\background.js',encoding='utf-8');c=f.read();f.close();print('Perplexity対応:', 'perplexity_raw' in c)""
+
+Perplexity対応: True
+
+PS C:\Users\sirok>"
