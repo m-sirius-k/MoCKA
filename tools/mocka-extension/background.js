@@ -159,25 +159,15 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     }).catch(() => {});
   }
 
-  // ===== chat全文収集 (Perplexity対応強化版) =====
+  // ===== chat全文収集 (clipboard専用版) =====
   if (info.menuItemId === 'mocka-collect') {
     let collected = false;
+
+    // まずexecuteScriptを試みる（claude/chatgpt用）
     try {
       const results = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: async function(source) {
-          for (let i = 0; i < 10; i++) {
-            window.scrollTo(0, document.body.scrollHeight);
-            await new Promise(r => setTimeout(r, 800));
-          }
-          window.scrollTo(0, 0);
-          await new Promise(r => setTimeout(r, 1000));
-
-          // Perplexity: innerText全文をrawで送る
-          if (source === 'perplexity') {
-            return '[perplexity_raw]\n' + document.body.innerText;
-          }
-
           const SEL = {
             chatgpt:    '[data-message-author-role]',
             claude:     '[data-testid*="message"], .font-claude-message',
@@ -197,34 +187,51 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         },
         args: [source]
       });
-
-      if (results && results[0] && results[0].result) {
+      if (results && results[0] && results[0].result && results[0].result.length > 50) {
         await fetch('http://127.0.0.1:5000/collect', {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({
-            source: source,
-            text: results[0].result,
-            url: tab.url,
-            mode: 'full_scroll',
-            timestamp: new Date().toISOString()
-          })
+          body: JSON.stringify({ source, text: results[0].result, url: tab.url, mode: 'script', timestamp: new Date().toISOString() })
         });
-        chrome.scripting.executeScript({
-          target: {tabId: tab.id},
-          func: () => alert('MoCKA: collected!')
-        });
+        chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: collected!') }).catch(() => {});
         collected = true;
       }
     } catch(e) {
-      console.warn('[MoCKA] collect error:', e.message);
+      console.warn('[MoCKA] script collect blocked, trying clipboard:', e.message);
     }
 
+    // クリップボードフォールバック（Perplexity等CSPブロックサイト用）
     if (!collected) {
-      chrome.scripting.executeScript({
-        target: {tabId: tab.id},
-        func: () => alert('MoCKA: collection failed')
-      });
+      try {
+        const clipText = await navigator.clipboard.readText();
+        if (clipText && clipText.length > 20) {
+          await fetch('http://127.0.0.1:5000/collect', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ source, text: clipText, url: tab.url, mode: 'clipboard', timestamp: new Date().toISOString() })
+          });
+          // 通知はnotificationsで（executeScriptが使えないため）
+          chrome.notifications.create({
+            type: 'basic', iconUrl: 'icon.png',
+            title: 'MoCKA収集完了',
+            message: source + ' から ' + clipText.length + '文字収集しました'
+          });
+          collected = true;
+        } else {
+          chrome.notifications.create({
+            type: 'basic', iconUrl: 'icon.png',
+            title: 'MoCKA収集失敗',
+            message: 'Ctrl+A → Ctrl+C 後に再実行してください'
+          });
+        }
+      } catch(e2) {
+        console.error('[MoCKA] clipboard fallback failed:', e2);
+        chrome.notifications.create({
+          type: 'basic', iconUrl: 'icon.png',
+          title: 'MoCKA収集失敗',
+          message: 'クリップボード読み取りエラー: ' + e2.message
+        });
+      }
     }
   }
 });
