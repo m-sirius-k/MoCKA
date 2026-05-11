@@ -7449,3 +7449,32 @@ MATAKA_20260510_233452_CLAU,2026-05-10T23:34:52,Claude,MATAKA,https://claude.ai/
 E20260511_008,2026-05-11T10:00:00,kimura,user_voice,claude.ai,test,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,なぜPowerShellで書いているんですか,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,なぜPowerShellで書いているんですか
 E20260511_009,2026-05-11T00:11:57.179Z,kimura,user_voice,claude.ai,35ccfe2c-280f-4b,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"Select-String -Path ""C:\Users\sirok\MoCKA\tools\mocka-extension\content.js"" -Pattern ""matcher|ping_latest|DNA|inject|PING"" | Select-Object LineNumber, Line | Format-Table -AutoSize -Wrap",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"Select-String -Path ""C:\Users\sirok\MoCKA\tools\mocka-extension\content.js"" -Pattern ""matcher|ping_latest|DNA|inject|PING"" | Select-Object LineNumber, Line | Format-Table -AutoSize -Wrap"
 E20260511_010,2026-05-11T12:00:00Z,kimura,user_voice,claude.ai,unknown,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,なぜPowerShellで書くのですか,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,なぜPowerShellで書くのですか
+E20260511_011,2026-05-11T01:09:15.007Z,kimura,user_voice,claude.ai,bd9d0469-b8b5-47,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"[PING GENERATED] NGROK_STATUS=False | essence_updated=False
+
+Traceback (most recent call last):
+
+  File ""C:\Users\sirok\MoCKA\interface\ping_generator.py"", line 104, in <module>
+
+    _inject_alert_pen",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"[PING GENERATED] NGROK_STATUS=False | essence_updated=False
+
+Traceback (most recent call last):
+
+  File ""C:\Users\sirok\MoCKA\interface\ping_generator.py"", line 104, in <module>
+
+    _inject_alert_pending_to_ping()
+
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+
+  File ""C:\Users\sirok\MoCKA\interface\ping_generator.py"", line 93, in _inject_alert_pending_to_ping
+
+    pending = _get_alert_pending()
+
+              ^^^^^^^^^^^^^^^^^^
+
+NameError: name '_get_alert_pending' is not defined
+
+MoCKA Starting...
+
+[UTF-8 MANDATE CHECK]
+
+✅ UTF-8鉄の掟 違反なし。MoCKAは清潔です。"
