@@ -297,6 +297,38 @@ def user_voice():
             'channel_type':    'chat',
         })
 
+
+        # ===== matcher_v3 自動照合 =====
+        try:
+            import importlib.util
+            from pathlib import Path
+            _mpath = Path(r'C:\Users\sirok\MoCKA\interface\matcher_v3.py')
+            _spec = importlib.util.spec_from_file_location("matcher_v3", _mpath)
+            _mod = importlib.util.module_from_spec(_spec)
+            _spec.loader.exec_module(_mod)
+            _result = _mod.match_v3(text, verbose=False)
+            # ping_latest.jsonに結果を追記
+            import json as _json
+            _ping_path = Path(r'C:\Users\sirok\MoCKA\data\ping_latest.json')
+            if _ping_path.exists():
+                _ping = _json.loads(_ping_path.read_text(encoding='utf-8'))
+            else:
+                _ping = {}
+            _ping['matcher_result'] = {
+                'verdict':      _result['verdict'],
+                'score':        _result['score'],
+                'danger_rate':  _result['danger_rate'],
+                'success_rate': _result['success_rate'],
+                'text':         text[:80],
+                'top_events':   _result['top_events'][:2],
+                'updated_at':   when_ts,
+            }
+            _ping_path.write_text(_json.dumps(_ping, ensure_ascii=False, indent=2), encoding='utf-8')
+        except Exception as _e:
+            import traceback
+            print('[MOCKA matcher_v3 ERROR]', traceback.format_exc())
+        # ===== matcher_v3 終了 =====
+
         return jsonify({'status': 'ok', 'event_id': event_id}), 200
 
     except Exception as e:

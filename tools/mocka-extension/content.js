@@ -1,7 +1,7 @@
 (function() {
     if (window.MOCKA_INITIALIZED) return;
     window.MOCKA_INITIALIZED = true;
-    console.log("[MOCKA] 自律監視プロトコル v15.1 起動 (user_voice ON / claude.ai入力欄限定)");
+    console.log("[MOCKA] 自律監視プロトコル v16.0 起動 (user_voice ON / matcher_result注入 ON)");
 
     let lastUrl = window.location.href;
     let dnaSentInThisSession = false;
@@ -131,6 +131,34 @@
         return null;
     }
 
+    // ===== Layer 3: matcher_result読み込み =====
+    async function fetchMatcherResult() {
+        try {
+            const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
+            const data = await res.json();
+            const mr = data.ping && data.ping.matcher_result;
+            if (!mr) return null;
+            // SAFE以外のみ注入（SAFEはノイズになるので省く）
+            if (mr.verdict === 'SAFE') return null;
+            return mr;
+        } catch(e) {
+            return null;
+        }
+    }
+
+    function buildMatcherPrefix(mr) {
+        const emoji = mr.verdict === 'CRITICAL' ? '🚨' :
+                      mr.verdict === 'DANGER'   ? '⚠️' :
+                      mr.verdict === 'WARNING'  ? '🟡' : '';
+        const lines = [
+            `[MOCKA_ALERT] ${emoji} verdict=${mr.verdict} score=${mr.score}`,
+        ];
+        if (mr.matched_patterns && mr.matched_patterns.length > 0) {
+            lines.push(`matched: ${mr.matched_patterns.slice(0, 3).join(' / ')}`);
+        }
+        return lines.join('\n') + '\n';
+    }
+
     async function injectDNA(el) {
         dnaSentInThisSession = true;
         try {
@@ -138,12 +166,25 @@
             const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
             const data = await res.json();
             const p = data.ping;
-            const text = `[MOCKA]{"H":"${p.H}","G":${p.G},"C":"${p.C}","P":"${p.P}"}`;
+
+            // Layer 3: matcher_result があれば先頭に付加
+            let prefix = '';
+            const mr = p.matcher_result;
+            if (mr && mr.verdict && mr.verdict !== 'SAFE') {
+                prefix = buildMatcherPrefix(mr);
+                console.log("[MOCKA] matcher_result注入:", mr.verdict, mr.score);
+            }
+
+            const dnaText = `[MOCKA]{"H":"${p.H}","G":${p.G},"C":"${p.C}","P":"${p.P}"}`;
+            const text = prefix ? prefix + dnaText : dnaText;
+
             await writeAndSend(el, text);
-            console.log("[MOCKA] DNA注入完了");
+            console.log("[MOCKA] DNA注入完了 (v16.0)");
 
             const hookIndicator = document.createElement('div');
-            hookIndicator.textContent = '⚡MOCKA HOOKED';
+            hookIndicator.textContent = mr && mr.verdict !== 'SAFE'
+                ? `⚡MOCKA HOOKED [${mr.verdict}]`
+                : '⚡MOCKA HOOKED';
             hookIndicator.style.cssText = 'position:fixed;bottom:120px;right:20px;color:rgba(255,255,255,0.6);font-size:10px;z-index:99999;pointer-events:none;letter-spacing:1px;';
             document.body.appendChild(hookIndicator);
 

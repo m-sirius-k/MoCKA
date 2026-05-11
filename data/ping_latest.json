@@ -9,9 +9,9 @@
     "PHILOSOPHY": "[2026-03-10:MoCKA インベントリ CSV] 私の最適解：Event Ledger Architecture の具体設計 ChatGPTの三層構造は正しい。しかしMoCKAの現実に即して、第3層（クラウド統合・AI配信層）を明示的に加えた四層構造が最適\n[2026-02-28:MoCKA 公開最適化] 公開対象は器のみであり、運用データはローカル保持とし、制度の連続性と\n[2026-03-21:MoCKA 状態と進行] 到達済 記録制度（CSV・ledger） インシデント制度（5W1H） 再発検知（semantic） 自己疑念（STOP） 自動修正（REAL_EXECUTED） 予防層\n[2026-03-23:MoCKA Movement 起動実装] 本記録は、MoCKA文明における「静的完成状態」から「動的存在状態」への遷移を確定\n[2026-03-24:因果文明の進行] フェーズ20：因果文明（初期起動段階） 直前までに成立したもの 手続き記憶（プロセス）",
     "OPERATION": "[2026-02-14:MoCKA 3.0 引継書] GPT外部監査: 文明の航海日誌。構造・状態定義・障害履歴・思想階層・未完了項目が明示された制度移行文書\n[2026-02-15:文明設計転換] GPT外部監査: 依存構造から主権構造への転換宣言。APIクレジット枯渇後に自立設計へ\n[2026-02-28:MoCKA 公開最適化] GPT外部監査: 器のみ公開・運用データはローカル封印・ガードを制度化。設計思想として極めて健全\n[2026-03-13:MoCKA 自律AI進化] GPT外部監査: 単体AIプログラムを超え制度化された自律AI機関として成立\n[2026-03-20:MoCKA 記録制度設計] GPT外部監査: 目的駆動型→失敗記録制度型へ存在定義を更新。創造憲法レベルの再定義"
   },
-  "essence_updated": true,
-  "ngrok_online": true,
-  "NGROK": true,
+  "essence_updated": false,
+  "ngrok_online": false,
+  "NGROK": false,
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
@@ -40,5 +40,41 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-11T08:06:22.716952"
+  "generated_at": "2026-05-11T09:33:26.059788",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "なぜPowerShellで書くのですか",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-04",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "router 再発タイプ別:   save                 53件   collaboration        17件   share                7件 PS C:",
+        "recur": 0,
+        "matched": [
+          "なぜ",
+          "PowerShell"
+        ],
+        "score": 2
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-31",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "recur": 0,
+        "matched": [
+          "なぜ",
+          "PowerShell"
+        ],
+        "score": 2
+      }
+    ],
+    "updated_at": "2026-05-11T12:00:00Z"
+  }
 }
