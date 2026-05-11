@@ -20,6 +20,11 @@
       "priority": "最高"
     },
     {
+      "id": "TODO_135",
+      "title": "ping_generator.py BOM除去 — 次回セッション冒頭で実行",
+      "priority": "最高"
+    },
+    {
       "id": "TODO_116",
       "title": "COMMAND CENTER — Temporal Analytics（7日トレンド）実装",
       "priority": "高"
@@ -33,12 +38,7 @@
       "id": "TODO_118",
       "title": "Risk Engine — TODOリスクスコア + SYSTEM RECOMMENDATION実装",
       "priority": "高"
-    },
-    {
-      "id": "TODO_121",
-      "title": "ファイル編集運用制度化 — PowerShell文字列操作禁止・Python統一",
-      "priority": "高"
     }
   ],
-  "generated_at": "2026-05-11T10:15:13.025616"
+  "generated_at": "2026-05-11T15:17:53.543426"
 }
