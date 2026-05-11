@@ -46,7 +46,7 @@
     "score": -1.0,
     "danger_rate": 0.0,
     "success_rate": 1.0,
-    "text": "[PING GENERATED] NGROK_STATUS=False | essence_updated=False\n\nTraceback (most rec",
+    "text": "File \"C:\\Users\\sirok\\MoCKA\\interface\\ping_generator.py\", line 32\n\n    ﻿import js",
     "top_events": [
       {
         "verdict": "SUCCESS",
@@ -61,6 +61,6 @@
         "score": 1
       }
     ],
-    "updated_at": "2026-05-11T01:09:15.007Z"
+    "updated_at": "2026-05-11T01:13:00.050Z"
   }
 }
