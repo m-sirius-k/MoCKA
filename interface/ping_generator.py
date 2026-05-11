@@ -1,3 +1,34 @@
+import json
+
+def _get_alert_pending():
+    """prevention_queue.jsonの未承認件数を返す"""
+    try:
+        pq = Path(__file__).parent.parent / "data" / "prevention_queue.json"
+        if pq.exists():
+            items = json.load(open(pq, encoding="utf-8"))
+            pending = [i for i in (items if isinstance(items, list) else [])
+                       if str(i.get("status","")).lower() in ("pending","未承認","")]
+            if pending:
+                top = (pending[0].get("summary") or pending[0].get("action")
+                       or pending[0].get("description",""))[:60]
+                return {"count": len(pending), "top": top}
+    except Exception:
+        pass
+    return None
+
+def _inject_alert_pending_to_ping():
+    """ping_latest.jsonにalert_pendingを後付け注入"""
+    pending = _get_alert_pending()
+    pj = Path(__file__).parent.parent / "data" / "ping_latest.json"
+    if not pj.exists():
+        return
+    try:
+        data = json.load(open(pj, encoding="utf-8"))
+        data["alert_pending"] = pending
+        json.dump(data, open(pj, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+    except Exception as e:
+        print(f"[WARN] alert_pending: {e}")
+
 ﻿import json, sys
 from pathlib import Path
 from datetime import datetime
@@ -87,18 +118,3 @@ if __name__ == "__main__":
 
 
 
-
-
-def _inject_alert_pending_to_ping():
-    pending = _get_alert_pending()
-    pj = Path(__file__).parent.parent / "data" / "ping_latest.json"
-    if not pj.exists():
-        return
-    try:
-        data = json.load(open(pj, encoding="utf-8"))
-        data["alert_pending"] = pending
-        json.dump(data, open(pj, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"[WARN] {e}")
-
-_inject_alert_pending_to_ping()
