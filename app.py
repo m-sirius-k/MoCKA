@@ -1829,12 +1829,12 @@ def prevention_generate():
     """recurrence_registryから未対応パターンをprevention_queueに自動生成"""
     import csv, uuid
     from datetime import datetime
+    from collections import defaultdict
 
     rec_path = _pp(ROOT_DIR) / "data" / "recurrence_registry.csv"
     if not rec_path.exists():
         return jsonify({"error": "recurrence_registry.csv not found"}), 404
 
-    # recurrence_registryを読み込み
     rows = []
     try:
         with open(rec_path, encoding="utf-8-sig") as f:
@@ -1844,22 +1844,15 @@ def prevention_generate():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-    # component+what_typeで集計
-    from collections import defaultdict
     groups = defaultdict(list)
     for row in rows:
         key = f"{row.get('component','unknown')}::{row.get('what_type','unknown')}"
         groups[key].append(row)
 
-    # 既存prevention_queueを読み込み（重複防止）
-    pq = _load_prevention_queue()
-    existing_keys = set()
-    for item in pq:
-        k = item.get("recurrence_key", "")
-        if k:
-            existing_keys.add(k)
+    pq_data = _load_pqueue()
+    pq = pq_data if isinstance(pq_data, list) else pq_data.get("queue", [])
+    existing_keys = {item.get("recurrence_key","") for item in pq}
 
-    # 新規生成
     generated = 0
     for key, recs in groups.items():
         if key in existing_keys:
@@ -1867,10 +1860,8 @@ def prevention_generate():
         count = max(int(r.get("recurrence_count", 1)) for r in recs)
         if count < 2:
             continue
-
         component, what_type = key.split("::", 1)
         severity = "HIGH" if count >= 5 else "CAUTION" if count >= 3 else "NORMAL"
-
         entry = {
             "id": f"PQ_{uuid.uuid4().hex[:8].upper()}",
             "recurrence_key": key,
@@ -1890,7 +1881,6 @@ def prevention_generate():
         pq.append(entry)
         generated += 1
 
-    # 保存
     PREVENTION_QUEUE_PATH.write_text(
         json.dumps(pq, ensure_ascii=False, indent=2),
         encoding="utf-8"
@@ -1901,7 +1891,6 @@ def prevention_generate():
         "total_pending": sum(1 for x in pq if x.get("status") == "PENDING"),
         "groups_analyzed": len(groups)
     })
-
 
 
 @app.route("/prevention/queue")
