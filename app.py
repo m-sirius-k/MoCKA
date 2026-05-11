@@ -1720,8 +1720,39 @@ def _auto_danger_to_essence(incident_text: str):
 _last_seal_date = [None]
 _last_event_count = [0]
 
+
+def _auto_approve_prevention():
+    """NORMAL/CAUTIONのPrevention案を自動承認（3ヶ月レビュー方針）"""
+    import uuid
+    from datetime import datetime
+    try:
+        pq_data = _load_pqueue()
+        pq = pq_data if isinstance(pq_data, list) else pq_data.get("queue", [])
+        changed = False
+        for item in pq:
+            if item.get("status") != "pending":
+                continue
+            severity = item.get("severity", "NORMAL").upper()
+            if severity in ("HIGH", "CRITICAL"):
+                continue  # Human Gate
+            item["status"] = "approved"
+            item["approved_at"] = datetime.now().isoformat()
+            item["approved_by"] = "AUTO_GATE"
+            changed = True
+            print(f"[AUTO_APPROVE] {item['id']} {item.get('recurrence_key','')} severity={severity}")
+        if changed:
+            save_data = {"queue": pq} if isinstance(pq_data, dict) else pq
+            PREVENTION_QUEUE_PATH.write_text(
+                json.dumps(save_data, ensure_ascii=False, indent=2),
+                encoding="utf-8"
+            )
+    except Exception as e:
+        print(f"[AUTO_APPROVE] error: {e}")
+
+
 def auto_audit_loop():
     import subprocess, time
+    _auto_approve_prevention()
     print("[AUTO-AUDIT] 日次自動sealループ開始")
     while True:
         try:
