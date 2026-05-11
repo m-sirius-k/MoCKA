@@ -10,8 +10,8 @@
     "OPERATION": "[2026-02-14:MoCKA 3.0 引継書] GPT外部監査: 文明の航海日誌。構造・状態定義・障害履歴・思想階層・未完了項目が明示された制度移行文書\n[2026-02-15:文明設計転換] GPT外部監査: 依存構造から主権構造への転換宣言。APIクレジット枯渇後に自立設計へ\n[2026-02-28:MoCKA 公開最適化] GPT外部監査: 器のみ公開・運用データはローカル封印・ガードを制度化。設計思想として極めて健全\n[2026-03-13:MoCKA 自律AI進化] GPT外部監査: 単体AIプログラムを超え制度化された自律AI機関として成立\n[2026-03-20:MoCKA 記録制度設計] GPT外部監査: 目的駆動型→失敗記録制度型へ存在定義を更新。創造憲法レベルの再定義"
   },
   "essence_updated": false,
-  "ngrok_online": false,
-  "NGROK": false,
+  "ngrok_online": true,
+  "NGROK": true,
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
@@ -40,42 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-11T09:33:26.059788",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "なぜPowerShellで書くのですか",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-04",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "router 再発タイプ別:   save                 53件   collaboration        17件   share                7件 PS C:",
-        "recur": 0,
-        "matched": [
-          "なぜ",
-          "PowerShell"
-        ],
-        "score": 2
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-31",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
-        "recur": 0,
-        "matched": [
-          "なぜ",
-          "PowerShell"
-        ],
-        "score": 2
-      }
-    ],
-    "updated_at": "2026-05-11T12:00:00Z"
-  },
-  "alert_pending": null
+  "generated_at": "2026-05-11T10:07:02.051021"
 }
