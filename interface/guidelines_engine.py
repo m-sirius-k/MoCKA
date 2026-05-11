@@ -15,7 +15,27 @@ PROCESSED  = MOCKA_ROOT / "data" / "guidelines_processed.json"
 
 # ===== ノイズパターン（強化版） =====
 NOISE_PATTERNS = [
-    r"^PS C:\\",
+    r"^Mode\s+LastWriteTime",
+    r"^FullName\s*$",
+    r"^FullName\s*[-]+",
+    r"^LineNumber",
+    r"^Line\s+[-]+",
+    r"^[-]+\s*$",
+    r"^wt\s+-w\s+",
+    r"^@app\.route",
+    r"^async function",
+    r"^const\s+\w+",
+    r"_json\.dump\(",
+    r"http://\w+\.py",
+    r"^\s*OK:\s+\w+",
+    r"^\s*NG:\s+",
+    r"^done$",
+    r"^DONE$",
+    r"^FOUND:",
+    r"^REPLACED:",
+    r"^\s*\d+\s+\w+\s+\w+\s*$",
+    r"^PS C:\\
+",
     r"^StatusCode\s*:",
     r"background\.js:\d+",
     r"content\.js:\d+",
