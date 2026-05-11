@@ -583,7 +583,7 @@ function refreshEssence(){
 // ── PREVENTION QUEUE ──
 function refreshPrevention(){
   fetch('/prevention/queue').then(function(r){return r.json();}).then(function(d){
-    var pq=(d||[]).filter(function(x){return x.status==='pending';});
+    var pq=((d&&d.queue)||d||[]).filter(function(x){return x.status==='pending';});
     set('pq-count',pq.length+'件');
     var el=document.getElementById('prev-queue');
     if(!el) return;
