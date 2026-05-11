@@ -1,5 +1,5 @@
 """
-MoCKA Guidelines Engine v2.0
+MoCKA Guidelines Engine v2.1
 events.db → 行動指針抽出エンジン
 UTF-8 / ノイズフィルタ強化版
 """
@@ -308,7 +308,7 @@ def inject_to_essence(essence_path: Path, guidelines_data: dict):
     now   = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     lines = [l for l in essence.get("PHILOSOPHY", "").split("\n")
              if not l.startswith("[GL:")]
-    lines.append(f"[{now}] Guidelines Engine v2.0 TOP5:")
+    lines.append(f"[{now}] Guidelines Engine v2.1 TOP5:")
     for g in top5:
         lines.append(f"[GL:{g['category']}] {g['action_directive'][:100]}")
     phil_key = next(
@@ -324,9 +324,9 @@ def inject_to_essence(essence_path: Path, guidelines_data: dict):
 
 
 # ===== メイン =====
-def run(score_threshold: float = 0.35, max_new: int = 500):
+def run(score_threshold: float = 0.50, max_new: int = 500):
     print("=" * 60)
-    print("MoCKA Guidelines Engine v2.0")
+    print("MoCKA Guidelines Engine v2.1")
     print("=" * 60)
     if not DB_PATH.exists():
         print(f"[ERROR] DB not found: {DB_PATH}")
