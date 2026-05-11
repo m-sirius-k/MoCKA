@@ -1806,6 +1806,24 @@ def _trigger_essence_chain(row):
 
 # ============================================================
 
+# PREVENTION QUEUE + DECISION
+# ============================================================
+from pathlib import Path as _pp
+PREVENTION_QUEUE_PATH = _pp(ROOT_DIR) / "data" / "prevention_queue.json"
+
+def _load_pqueue():
+    if PREVENTION_QUEUE_PATH.exists():
+        try:
+            return json.loads(PREVENTION_QUEUE_PATH.read_text(encoding="utf-8"))
+        except:
+            pass
+    return {"queue": []}
+
+def _save_pqueue(data):
+    PREVENTION_QUEUE_PATH.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 @app.route("/prevention/generate", methods=["POST"])
 def prevention_generate():
     """recurrence_registryから未対応パターンをprevention_queueに自動生成"""
@@ -1885,22 +1903,6 @@ def prevention_generate():
     })
 
 
-# PREVENTION QUEUE + DECISION
-# ============================================================
-from pathlib import Path as _pp
-PREVENTION_QUEUE_PATH = _pp(ROOT_DIR) / "data" / "prevention_queue.json"
-
-def _load_pqueue():
-    if PREVENTION_QUEUE_PATH.exists():
-        try:
-            return json.loads(PREVENTION_QUEUE_PATH.read_text(encoding="utf-8"))
-        except:
-            pass
-    return {"queue": []}
-
-def _save_pqueue(data):
-    PREVENTION_QUEUE_PATH.write_text(
-        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 @app.route("/prevention/queue")
 def prevention_queue():
