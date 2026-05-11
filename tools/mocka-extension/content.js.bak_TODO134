@@ -282,12 +282,3 @@
     }
 
 })();
-
-
-  // TODO_134: PENDING承認待ちALERT注入
-  if (dna && dna.alert_pending && dna.alert_pending.count > 0) {
-    const _n   = dna.alert_pending.count;
-    const _top = dna.alert_pending.top || '';
-    alertPrefix += '[MOCKA_ALERT]  verdict=PENDING score=' + _n + '\n';
-    if (_top) alertPrefix += '承認待ち ' + _n + '件 — 最優先: ' + _top + '\n';
-  }
