@@ -34,8 +34,7 @@ NOISE_PATTERNS = [
     r"^FOUND:",
     r"^REPLACED:",
     r"^\s*\d+\s+\w+\s+\w+\s*$",
-    r"^PS C:\\
-",
+    r"^PS C:\\\\",
     r"^StatusCode\s*:",
     r"background\.js:\d+",
     r"content\.js:\d+",
