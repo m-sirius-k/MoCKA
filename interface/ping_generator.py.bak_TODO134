@@ -87,18 +87,3 @@ if __name__ == "__main__":
 
 
 
-
-
-def _inject_alert_pending_to_ping():
-    pending = _get_alert_pending()
-    pj = Path(__file__).parent.parent / "data" / "ping_latest.json"
-    if not pj.exists():
-        return
-    try:
-        data = json.load(open(pj, encoding="utf-8"))
-        data["alert_pending"] = pending
-        json.dump(data, open(pj, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-    except Exception as e:
-        print(f"[WARN] {e}")
-
-_inject_alert_pending_to_ping()
