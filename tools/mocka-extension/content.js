@@ -175,6 +175,15 @@
                 console.log("[MOCKA] matcher_result注入:", mr.verdict, mr.score);
             }
 
+
+            // TODO_134: PENDING承認待ちALERT注入
+            if (p && p.alert_pending && p.alert_pending.count > 0) {
+                const _n   = p.alert_pending.count;
+                const _top = p.alert_pending.top || '';
+                const pendingLine = '[MOCKA_ALERT]  verdict=PENDING score=' + _n + '\n'
+                    + (_top ? '承認待ち ' + _n + '件 — 最優先: ' + _top + '\n' : '');
+                prefix = pendingLine + (prefix || '');
+            }
             const dnaText = `[MOCKA]{"H":"${p.H}","G":${p.G},"C":"${p.C}","P":"${p.P}"}`;
             const text = prefix ? prefix + dnaText : dnaText;
 
@@ -283,11 +292,3 @@
 
 })();
 
-
-  // TODO_134: PENDING承認待ちALERT注入
-  if (dna && dna.alert_pending && dna.alert_pending.count > 0) {
-    const _n   = dna.alert_pending.count;
-    const _top = dna.alert_pending.top || '';
-    alertPrefix += '[MOCKA_ALERT]  verdict=PENDING score=' + _n + '\n';
-    if (_top) alertPrefix += '承認待ち ' + _n + '件 — 最優先: ' + _top + '\n';
-  }
