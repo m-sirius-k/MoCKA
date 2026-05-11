@@ -1342,8 +1342,13 @@ def loop_status():
     if LEDGER_JSON.exists():
         try:
             ldata = json.loads(LEDGER_JSON.read_text(encoding="utf-8-sig"))
-            last_seal = ldata.get("last_updated") or ldata.get("timestamp")
-            last_seal_hash = ldata.get("hash") or ldata.get("anchor_hash")
+            if isinstance(ldata, list) and ldata:
+                last_entry = ldata[-1]
+                last_seal = str(last_entry.get("timestamp", ""))
+                last_seal_hash = last_entry.get("event_hash", "")[:16]
+            elif isinstance(ldata, dict):
+                last_seal = ldata.get("last_updated") or ldata.get("timestamp")
+                last_seal_hash = ldata.get("hash") or ldata.get("anchor_hash")
         except: pass
 
     civilization_loop = {
