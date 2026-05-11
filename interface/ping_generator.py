@@ -29,7 +29,7 @@ def _inject_alert_pending_to_ping():
     except Exception as e:
         print(f"[WARN] alert_pending: {e}")
 
-﻿import json, sys
+import json, sys
 from pathlib import Path
 from datetime import datetime
 import sqlite3

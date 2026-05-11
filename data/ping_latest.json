@@ -40,27 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-11T10:08:17.981285",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -1.0,
-    "danger_rate": 0.0,
-    "success_rate": 1.0,
-    "text": "File \"C:\\Users\\sirok\\MoCKA\\interface\\ping_generator.py\", line 32\n\n    ﻿import js",
-    "top_events": [
-      {
-        "verdict": "SUCCESS",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
-        "recur": 0,
-        "matched": [
-          "ok"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-11T01:13:00.050Z"
-  }
+  "generated_at": "2026-05-11T10:15:13.025616"
 }

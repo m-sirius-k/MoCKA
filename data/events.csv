@@ -7505,3 +7505,30 @@ MoCKA Starting...
 ✅ UTF-8鉄の掟 違反なし。MoCKAは清潔です。
 
 UTF-8 OK"
+E20260511_013,2026-05-11T01:14:31.271Z,kimura,user_voice,claude.ai,bd9d0469-b8b5-47,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"File ""C:\Users\sirok\MoCKA\interface\ping_generator.py"", line 32
+
+    ﻿import json, sys
+
+    ^
+
+SyntaxError: invalid non-printable character U+FEFF
+
+MoCKA Starting...
+
+[UTF-8 MANDATE CHECK]
+
+✅ UTF-8鉄の",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"File ""C:\Users\sirok\MoCKA\interface\ping_generator.py"", line 32
+
+    ﻿import json, sys
+
+    ^
+
+SyntaxError: invalid non-printable character U+FEFF
+
+MoCKA Starting...
+
+[UTF-8 MANDATE CHECK]
+
+✅ UTF-8鉄の掟 違反なし。MoCKAは清潔です。
+
+UTF-8 OK"
