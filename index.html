@@ -589,9 +589,9 @@ function refreshPrevention(){
     if(!el) return;
     if(!pq.length){el.innerHTML='<div class="empty">承認待ち案件なし</div>';return;}
     el.innerHTML=pq.slice(0,3).map(function(p){
-      var proposals=p.proposal||[];
+      var proposals=p.candidates||p.proposal||[];
       return '<div class="prev-item">'
-        +'<div class="prev-pattern">'+(p.pattern||p.type||'-')+'</div>'
+        +'<div class="prev-pattern">'+(p.recurrence_key||p.pattern||p.type||'-')+'</div>'
         +'<div class="prev-proposal">'+(proposals[0]||'-')+'</div>'
         +'<div class="prev-actions">'
         +'<button class="btn-approve" onclick="doApprove(\''+p.id+'\')">&#9829; いいね！</button>'
