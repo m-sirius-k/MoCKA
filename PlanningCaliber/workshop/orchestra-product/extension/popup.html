@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Conversation Logger</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap');
+
+  :root {
+    --bg:       #0d0d0f;
+    --surface:  #141417;
+    --border:   #222228;
+    --accent:   #e8ff47;
+    --accent2:  #47d4ff;
+    --user:     #ff8c47;
+    --text:     #e8e8ec;
+    --muted:    #5a5a68;
+    --danger:   #ff4747;
+    --radius:   6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    width: 480px;
+    min-height: 560px;
+    max-height: 680px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 14px 16px 10px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .logo {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .header-title {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.3px;
+    flex: 1;
+  }
+  .header-title span { color: var(--accent); }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .stat {
+    flex: 1;
+    padding: 8px 12px;
+    text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 9px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 3px;
+  }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .search-box {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+  .search-box::placeholder { color: var(--muted); }
+
+  .btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 6px 10px;
+    cursor: pointer;
+    letter-spacing: 0.3px;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .btn.primary:hover { opacity: 0.85; color: #000; }
+
+  /* FILTER TABS */
+  .filter-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .tab {
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .tab.active { color: var(--accent); border-color: var(--accent); }
+  .tab:hover { color: var(--text); }
+
+  /* MESSAGE LIST */
+  .message-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .message-list::-webkit-scrollbar { width: 4px; }
+  .message-list::-webkit-scrollbar-track { background: transparent; }
+  .message-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .msg-item {
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 6px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.12s;
+    position: relative;
+  }
+  .msg-item:hover { border-color: var(--accent2); }
+  .msg-item.expanded { border-color: var(--accent); }
+
+  .msg-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 5px;
+  }
+  .role-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .role-badge.user {
+    background: rgba(255,140,71,0.15);
+    color: var(--user);
+    border: 1px solid rgba(255,140,71,0.3);
+  }
+  .role-badge.assistant {
+    background: rgba(71,212,255,0.1);
+    color: var(--accent2);
+    border: 1px solid rgba(71,212,255,0.25);
+  }
+  .msg-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    flex: 1;
+  }
+  .msg-session {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    background: var(--bg);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .msg-preview {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .msg-full {
+    font-size: 11px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    font-family: 'JetBrains Mono', monospace;
+    display: none;
+  }
+  .msg-item.expanded .msg-preview { display: none; }
+  .msg-item.expanded .msg-full { display: block; }
+
+  /* EMPTY STATE */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    color: var(--muted);
+    gap: 8px;
+  }
+  .empty-icon { font-size: 32px; opacity: 0.4; }
+  .empty-text { font-size: 12px; text-align: center; line-height: 1.6; }
+
+  /* STATUS BAR */
+  .status-bar {
+    padding: 6px 12px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .highlight { background: rgba(232,255,71,0.2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">◈</div>
+  <div class="header-title">AI <span>LOGGER</span></div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-val" id="stat-total">—</div>
+    <div class="stat-label">Messages</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="stat-sessions">—</div>
+    <div class="stat-label">Sessions</div>
+  </div>
+  <div class="stat">
+    <div class="stat-val" id="stat-showing">—</div>
+    <div class="stat-label">Showing</div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <input class="search-box" type="text" id="search" placeholder="Search messages...">
+  <button class="btn primary" id="btn-export-csv">↓ CSV</button>
+  <button class="btn" id="btn-export-json">↓ JSON</button>
+  <button class="btn danger" id="btn-clear">✕</button>
+</div>
+
+<div class="filter-tabs">
+  <div class="tab active" data-role="all">All</div>
+  <div class="tab" data-role="user">You</div>
+  <div class="tab" data-role="assistant">AI</div>
+</div>
+
+<div class="message-list" id="message-list">
+  <div class="empty-state">
+    <div class="empty-icon">◈</div>
+    <div class="empty-text">Loading…</div>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-dot"></div>
+  <span id="status-text">Monitoring claude.ai • Local only • No data leaves your device</span>
+</div>
+
+<script>
+  let allMessages = [];
+  let currentRole = 'all';
+  let currentQuery = '';
+
+  // Load stats
+  function loadStats() {
+    chrome.runtime.sendMessage({ type: 'GET_STATS' }, (res) => {
+      if (res?.ok) {
+        document.getElementById('stat-total').textContent = res.data.total;
+        document.getElementById('stat-sessions').textContent = res.data.sessions;
+      }
+    });
+  }
+
+  // Load messages
+  function loadMessages(query = '') {
+    currentQuery = query;
+    const msg = query
+      ? { type: 'GET_MESSAGES', query, limit: 200 }
+      : { type: 'GET_MESSAGES', limit: 200 };
+
+    chrome.runtime.sendMessage(msg, (res) => {
+      if (res?.ok) {
+        allMessages = res.data;
+        renderMessages();
+      }
+    });
+  }
+
+  // Render message list
+  function renderMessages() {
+    const list = document.getElementById('message-list');
+    const filtered = currentRole === 'all'
+      ? allMessages
+      : allMessages.filter(m => m.role === currentRole);
+
+    document.getElementById('stat-showing').textContent = filtered.length;
+
+    if (filtered.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">◈</div>
+          <div class="empty-text">
+            ${currentQuery ? 'No results for "' + escHtml(currentQuery) + '"' : 'No messages captured yet.<br>Open claude.ai and start chatting!'}
+          </div>
+        </div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(m => {
+      const timeStr = new Date(m.timestamp).toLocaleString('en', {
+        month: 'short', day: 'numeric',
+        hour: '2-digit', minute: '2-digit'
+      });
+      const sessShort = m.session_id ? m.session_id.slice(-6) : '——';
+      const preview = escHtml(m.content.slice(0, 120));
+      const full = escHtml(m.content);
+      const highlighted = currentQuery
+        ? preview.replace(new RegExp(escRegex(currentQuery), 'gi'), s => `<span class="highlight">${s}</span>`)
+        : preview;
+
+      return `
+        <div class="msg-item" data-id="${m.id}">
+          <div class="msg-header">
+            <span class="role-badge ${m.role}">${m.role === 'user' ? 'YOU' : 'AI'}</span>
+            <span class="msg-time">${timeStr}</span>
+            <span class="msg-session">#${sessShort}</span>
+          </div>
+          <div class="msg-preview">${highlighted}${m.content.length > 120 ? '…' : ''}</div>
+          <div class="msg-full">${full}</div>
+        </div>`;
+    }).join('');
+
+    // Expand/collapse on click
+    list.querySelectorAll('.msg-item').forEach(el => {
+      el.addEventListener('click', () => el.classList.toggle('expanded'));
+    });
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function escRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  // Download helper
+  function download(content, filename, mime) {
+    const blob = new Blob([content], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  // Export CSV
+  document.getElementById('btn-export-csv').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'EXPORT_CSV' }, (res) => {
+      if (res?.ok) {
+        const ts = new Date().toISOString().slice(0,10);
+        download(res.data, `ai-conversations-${ts}.csv`, 'text/csv');
+      }
+    });
+  });
+
+  // Export JSON
+  document.getElementById('btn-export-json').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'EXPORT_JSON' }, (res) => {
+      if (res?.ok) {
+        const ts = new Date().toISOString().slice(0,10);
+        download(res.data, `ai-conversations-${ts}.json`, 'application/json');
+      }
+    });
+  });
+
+  // Clear all
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (confirm('Delete ALL saved messages? This cannot be undone.')) {
+      chrome.runtime.sendMessage({ type: 'CLEAR_ALL' }, () => {
+        allMessages = [];
+        renderMessages();
+        loadStats();
+      });
+    }
+  });
+
+  // Search
+  let searchTimer;
+  document.getElementById('search').addEventListener('input', (e) => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => loadMessages(e.target.value.trim()), 300);
+  });
+
+  // Filter tabs
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      currentRole = tab.dataset.role;
+      renderMessages();
+    });
+  });
+
+  // Init
+  loadStats();
+  loadMessages();
+</script>
+</body>
+</html>
