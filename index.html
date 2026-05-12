@@ -571,21 +571,22 @@ function refreshDecisionLog(){
     var el=document.getElementById('decision-log');
     if(!el) return;
     if(!decs.length){el.innerHTML='<div class="empty">判断記録なし</div>';return;}
-    el.innerHTML=decs.map(function(dec){
+    el.innerHTML=decs.slice(0,6).map(function(dec){
       var vColor=dec.verdict==='APPROVED'?'var(--green)':'var(--red)';
       var rColor=dec.risk_level==='HIGH'||dec.risk_level==='critical'?'var(--red)':dec.risk_level==='normal'?'var(--green)':'var(--yellow)';
       var cands=dec.candidates||[];
-      return '<div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:10px;">'
-        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-        +'<span style="color:'+vColor+';font-weight:700;">'+dec.verdict+'</span>'
-        +'<span style="color:var(--text2);">'+dec.when_ts.slice(0,16)+'</span>'
+      var candText=cands.length?(cands[0].length>38?cands[0].slice(0,38)+'…':cands[0]):'';
+      return '<div style="border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-size:10px;">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">'
+        +'<div style="display:flex;gap:3px;align-items:center;overflow:hidden;">'
+        +'<span style="color:'+vColor+';font-weight:700;white-space:nowrap;">'+dec.verdict+'</span>'
+        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:var(--accent);white-space:nowrap;">'+dec.component+'</span>'
+        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:var(--text2);white-space:nowrap;">'+dec.what_type+'</span>'
+        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:'+rColor+';white-space:nowrap;">再発'+dec.recurrence_count+'</span>'
         +'</div>'
-        +'<div style="display:flex;gap:6px;margin-bottom:4px;">'
-        +'<span style="background:var(--bg3);padding:1px 5px;border-radius:2px;color:var(--accent);">'+dec.component+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 5px;border-radius:2px;color:var(--text2);">'+dec.what_type+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 5px;border-radius:2px;color:'+rColor+';">再発'+dec.recurrence_count+'回</span>'
+        +'<span style="color:var(--text2);font-size:9px;white-space:nowrap;">'+dec.when_ts.slice(5,16)+'</span>'
         +'</div>'
-        +(cands.length?'<div style="color:var(--text2);border-left:2px solid var(--border);padding-left:5px;">'+cands[0]+'</div>':'')
+        +(candText?'<div style="color:var(--text2);font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+candText+'</div>':'')
         +'</div>';
     }).join('');
     return; // 旧コードをスキップ
