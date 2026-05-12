@@ -15,30 +15,10 @@
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
-      "id": "TODO_106",
-      "title": "PHL-OS ドリフト回復実験設計 — Phase 2（汚染）→Phase 3（PHL再注入）→Phase 4（用量依存）",
-      "priority": "中"
-    },
-    {
-      "id": "TODO_120",
-      "title": "COMMAND CENTER — Operator Load + Agent Allocation パネル",
-      "priority": "中"
-    },
-    {
       "id": "TODO_122",
       "title": "MoCKA Go移行 — app.pyをGoに段階的置換",
       "priority": "中"
-    },
-    {
-      "id": "TODO_129",
-      "title": "Perplexity収集方式確立 — Markdownエクスポート一括投入",
-      "priority": "中"
-    },
-    {
-      "id": "TODO_110",
-      "title": "COMMAND CENTER 文字化け修正 — events表示のShift-JIS混入",
-      "priority": "低"
     }
   ],
-  "generated_at": "2026-05-12T13:14:35.908504"
+  "generated_at": "2026-05-12T17:15:23.780822"
 }
