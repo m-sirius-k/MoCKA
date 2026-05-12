@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#09090b;color:#f4f4f5;min-height:100vh;overflow-x:hidden}
+.hero{text-align:center;padding:80px 24px 60px;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse at center,rgba(139,92,246,.15) 0%,transparent 70%);pointer-events:none}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);border-radius:100px;padding:5px 14px;font-size:12px;color:#a78bfa;letter-spacing:.5px;margin-bottom:28px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-size:clamp(36px,5vw,60px);font-weight:300;line-height:1.1;letter-spacing:-1.5px;margin-bottom:20px;color:#fafafa}
+h1 em{font-style:normal;color:#a78bfa}
+.sub{font-size:17px;color:#71717a;line-height:1.6;max-width:520px;margin:0 auto 40px;font-weight:300}
+.cta-group{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:#7c3aed;color:#fff;border:none;border-radius:10px;padding:13px 26px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s}
+.btn-primary:hover{background:#6d28d9;transform:translateY(-1px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;color:#a1a1aa;border:1px solid #27272a;border-radius:10px;padding:13px 22px;font-family:'DM Sans',sans-serif;font-size:15px;cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:#52525b;color:#f4f4f5}
+.hint{font-size:12px;color:#52525b}
+.divider{height:1px;background:linear-gradient(90deg,transparent,#27272a,transparent);margin:0 24px}
+.how{padding:60px 24px;max-width:860px;margin:0 auto}
+.section-label{font-size:11px;letter-spacing:1.5px;color:#7c3aed;text-transform:uppercase;margin-bottom:12px;font-family:'DM Mono',monospace}
+.section-title{font-size:28px;font-weight:300;letter-spacing:-.5px;margin-bottom:40px;color:#fafafa}
+.flow{display:flex;align-items:center;gap:0;margin-bottom:48px;overflow-x:auto;padding-bottom:8px}
+.flow-step{flex-shrink:0;text-align:center;width:130px}
+.flow-icon{width:48px;height:48px;border-radius:12px;background:#18181b;border:1px solid #27272a;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px}
+.flow-label{font-size:12px;color:#a1a1aa;line-height:1.4}
+.flow-label strong{display:block;color:#f4f4f5;font-size:13px;font-weight:500;margin-bottom:2px}
+.flow-arrow{flex-shrink:0;width:32px;text-align:center;color:#3f3f46;font-size:18px;margin-top:-20px}
+.ai-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:48px}
+.ai-card{background:#111113;border:1px solid #1c1c1f;border-radius:12px;padding:16px;display:flex;align-items:center;gap:10px}
+.ai-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ai-name{font-size:14px;color:#e4e4e7;font-weight:500}
+.ai-note{font-size:11px;color:#52525b;margin-top:2px}
+.ai-card.hub{border-color:#7c3aed;background:#0f0a1e}
+.ai-card.hub .ai-name{color:#c4b5fd}
+.pricing{padding:60px 24px;max-width:860px;margin:0 auto}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:40px}
+.plan{background:#111113;border:1px solid #1c1c1f;border-radius:16px;padding:24px 20px;position:relative;transition:border-color .2s}
+.plan:hover{border-color:#3f3f46}
+.plan.featured{border-color:#7c3aed;background:#0f0a1e}
+.plan-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#e9d5ff;font-size:10px;font-weight:500;padding:3px 12px;border-radius:100px;white-space:nowrap;letter-spacing:.3px}
+.plan-name{font-size:13px;color:#71717a;margin-bottom:8px;font-family:'DM Mono',monospace;letter-spacing:.5px}
+.plan-price{font-size:32px;font-weight:300;color:#fafafa;letter-spacing:-1px;line-height:1}
+.plan-price sup{font-size:16px;vertical-align:top;margin-top:6px;color:#a1a1aa}
+.plan-price sub{font-size:13px;color:#71717a;font-weight:400}
+.plan-desc{font-size:12px;color:#52525b;margin:10px 0 16px;line-height:1.5}
+.plan-divider{height:1px;background:#1c1c1f;margin-bottom:16px}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:8px}
+.plan-features li{font-size:12px;color:#a1a1aa;display:flex;align-items:center;gap:7px}
+.plan-features li.check::before{content:'✓';width:14px;height:14px;border-radius:50%;background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;color:#a78bfa}
+.plan-features li.muted{color:#3f3f46}
+.plan-features li.muted::before{content:'';width:14px;height:14px;border-radius:50%;background:rgba(63,63,70,.2);border:1px solid #27272a;flex-shrink:0}
+.saving{text-align:center;margin-top:20px;font-size:13px;color:#52525b}
+.saving span{color:#a78bfa}
+.footer-note{text-align:center;padding:40px 24px 60px;color:#3f3f46;font-size:13px;line-height:1.6}
+.footer-note strong{color:#52525b;font-weight:400}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="badge"><span class="badge-dot"></span>API不要 · ローカル完結 · プライバシー保証</div>
+  <h1>5つのAIに、<br><em>同時に</em>聞く。</h1>
+  <p class="sub">右クリック1回で ChatGPT・Gemini・Copilot・Perplexity に並列投入。全回答をClaudeが統合する。APIキー不要。</p>
+  <div class="cta-group">
+    <button class="btn-primary">⬇ 無料でインストール</button>
+    <button class="btn-ghost">デモを見る →</button>
+  </div>
+  <p class="hint">Chrome Web Store · 無料プランあり · クレジットカード不要</p>
+</div>
+<div class="divider"></div>
+<div class="how">
+  <div class="section-label">How it works</div>
+  <div class="section-title">3ステップで合議が始まる</div>
+  <div class="flow">
+    <div class="flow-step"><div class="flow-icon">🖱</div><div class="flow-label"><strong>右クリック</strong>テキストを選択<br>「Orchestra」</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon">⚡</div><div class="flow-label"><strong>並列投入</strong>4AIに<br>同時に送信</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon">🎯</div><div class="flow-label"><strong>Claude統合</strong>全回答を<br>Claudeに集約</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="flow-icon">✓</div><div class="flow-label"><strong>確認・送信</strong>内容確認して<br>Enterで実行</div></div>
+  </div>
+  <div class="ai-grid">
+    <div class="ai-card"><div class="ai-dot" style="background:#10a37f"></div><div><div class="ai-name">ChatGPT</div><div class="ai-note">chatgpt.com</div></div></div>
+    <div class="ai-card"><div class="ai-dot" style="background:#4285f4"></div><div><div class="ai-name">Gemini</div><div class="ai-note">gemini.google.com</div></div></div>
+    <div class="ai-card"><div class="ai-dot" style="background:#0078d4"></div><div><div class="ai-name">Copilot</div><div class="ai-note">copilot.microsoft.com</div></div></div>
+    <div class="ai-card"><div class="ai-dot" style="background:#20b2aa"></div><div><div class="ai-name">Perplexity</div><div class="ai-note">perplexity.ai</div></div></div>
+    <div class="ai-card hub"><div class="ai-dot" style="background:#a78bfa"></div><div><div class="ai-name">Claude</div><div class="ai-note">統合・最終判断</div></div></div>
+  </div>
+</div>
+<div class="divider"></div>
+<div class="pricing">
+  <div class="section-label">Pricing</div>
+  <div class="section-title">シンプルな4プラン</div>
+  <div class="plans">
+    <div class="plan">
+      <div class="plan-name">FREE</div>
+      <div class="plan-price"><sup>$</sup>0</div>
+      <div class="plan-desc">まず試してみたい方へ</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="check">会話の保存・検索</li>
+        <li class="check">CSV / JSONエクスポート</li>
+        <li class="muted">API接続が必要</li>
+        <li class="muted">5AI並列合議なし</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <div class="plan-name">LOCAL</div>
+      <div class="plan-price"><sup>$</sup>5<sub>/月</sub></div>
+      <div class="plan-desc">APIキー不要・完全ローカル</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="check">会話の保存・検索</li>
+        <li class="check">CSV / JSONエクスポート</li>
+        <li class="check">APIキー不要</li>
+        <li class="muted">5AI並列合議なし</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <div class="plan-name">ORCHESTRA</div>
+      <div class="plan-price"><sup>$</sup>5<sub>/月</sub></div>
+      <div class="plan-desc">5AI並列合議の核心機能</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="check">5AI並列投入・統合</li>
+        <li class="check">右クリック1回で起動</li>
+        <li class="check">APIキー不要</li>
+        <li class="muted">保存・検索なし</li>
+      </ul>
+    </div>
+    <div class="plan featured">
+      <div class="plan-badge">🎯 20% OFF</div>
+      <div class="plan-name">BUNDLE</div>
+      <div class="plan-price"><sup>$</sup>8<sub>/月</sub></div>
+      <div class="plan-desc">全機能セット・最もお得</div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="check">5AI並列投入・統合</li>
+        <li class="check">会話の保存・検索</li>
+        <li class="check">CSV / JSONエクスポート</li>
+        <li class="check">APIキー不要</li>
+      </ul>
+    </div>
+  </div>
+  <div class="saving">Local + Orchestra = <s style="color:#3f3f46">$10</s> → Bundle <span>$8</span>（20% OFF）</div>
+</div>
+<div class="divider"></div>
+<div class="footer-note">
+  <strong>データはあなたのブラウザにのみ保存されます。</strong><br>
+  外部サーバーへの送信なし · トラッキングなし · 広告なし<br><br>
+  <span style="color:#27272a">Orchestra — Built on MoCKA research · AIES 2026</span>
+</div>
+</body>
+</html>
