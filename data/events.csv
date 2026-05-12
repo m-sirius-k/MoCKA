@@ -7682,3 +7682,44 @@ E20260512_009,2026-05-12T00:22:55.908Z,kimura,user_voice,claude.ai,91455755-6dd8
 E20260512_010,2026-05-12T00:23:03.583Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,Aが最適解ですよね？,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,Aが最適解ですよね？
 E20260512_011,2026-05-12T09:50:47.182834,kimura,user_voice,claude.ai,test,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,6回目テスト日本語,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,6回目テスト日本語
 E20260512_012,2026-05-12T00:54:30.983Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,新規チャット → このメッセージを送信,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,新規チャット → このメッセージを送信
+E20260512_013,2026-05-12T02:41:46.471Z,kimura,user_voice,claude.ai,c5e89ab4-c916-43,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"aimgr.exe が CPU 100% を常時食っている暴走状態 は、Office AI の ai.exe 複数インスタンスが無限ループや異常処理を起こす典型症状です 。タスクマネージャーで確認し、即時強制終了後、無効化で根本解決。
+
+即時対処 (PowerShell Admin で実行)
+
+プロセス確認・終了:
+
+text
+
+Get-Process | Where-Object {$_.Pro",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"aimgr.exe が CPU 100% を常時食っている暴走状態 は、Office AI の ai.exe 複数インスタンスが無限ループや異常処理を起こす典型症状です 。タスクマネージャーで確認し、即時強制終了後、無効化で根本解決。
+
+即時対処 (PowerShell Admin で実行)
+
+プロセス確認・終了:
+
+text
+
+Get-Process | Where-Object {$_.ProcessName -like ""*ai*"" -or $_.ProcessName -eq ""aimgr""} | Stop-Process -Force
+
+これで aimgr.exe と全 ai.exe を即殺 。
+
+AI フォルダ完全削除 (再起動防止):
+
+text
+
+rmdir /s /q ""C:\Program Files\Microsoft Office\root\vfs\ProgramFilesCommonX64\Microsoft Shared\OFFICE16\AI"" rmdir /s /q ""C:\Program Files (x86)\Microsoft Office\root\vfs\ProgramFilesCommonX86\Microsoft Shared\OFFICE16\AI""
+
+Office 修復 (オプション、CPU 確認後):
+
+text
+
+& ""C:\Program Files\Common Files\microsoft shared\ClickToRun\OfficeC2RClient.exe"" /update user updatetodriver=0
+
+予防・確認
+
+電源プラン: 「高パフォーマンス」 or 「バランス」に変更 (低電力で CPU 100% 誘発) 。
+
+スタートアップ無効: msconfig で「通常スタートアップ」選択、再起動 。
+
+タスクマネージャー > 詳細 > CPU 列で再確認。MoCKA 干渉なしなら安定。
+
+これで CPU 解放。Office 更新時は再発注意 。タスクマネージャーで今どのプロセスが一番食ってる？。C:\Program Files (x86)\IObit\IObit Uninstaller\UninstallMonitor.exe"
