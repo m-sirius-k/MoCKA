@@ -42,37 +42,37 @@
   ],
   "generated_at": "2026-05-12T09:00:11.493635",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.277,
-    "danger_rate": 0.362,
-    "success_rate": 0.638,
-    "text": "StatusCode        : 200\n\nStatusDescription : OK\n\nContent           : {\"civilizat",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "Aが最適解ですよね？",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-03-28",
+        "when": "2026-05-09",
         "why": "voice_capture",
-        "how": "export_import",
-        "note": "PS C:\\Users\\sirok\\MoCKA> Get-ChildItem \"C:\\Users\\sirok\\MoCKA\" -Filter \"anchor_update.py\" -Recurse -N",
+        "how": "chrome_extension_v15",
+        "note": "=======================================================\n\nMoCKA Heinrich Engine v4 - 実態最適分類版\n\n=======",
         "recur": 0,
         "matched": [
-          "Python script"
+          "最適"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-28",
+        "when": "2026-05-09",
         "why": "voice_capture",
-        "how": "export_import",
-        "note": "PS C:\\Users\\sirok\\MoCKA> $addition = @'\n>>\n>> # MoCKA shortcuts\n>> function mocka-check {\n>>     cd ",
+        "how": "chrome_extension_v15",
+        "note": "=======================================================\n\nMoCKA Heinrich Engine v4 - 実態最適分類版\n\n=======",
         "recur": 0,
         "matched": [
-          "Python script"
+          "最適"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-12T00:21:17.154Z"
+    "updated_at": "2026-05-12T00:23:03.583Z"
   }
 }
