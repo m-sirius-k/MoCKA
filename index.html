@@ -39,10 +39,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 .risk-rec strong{color:var(--text);display:block;margin-bottom:2px;}
 .grid{display:grid;gap:10px;padding:10px 16px;}
 .grid-top{grid-template-columns:repeat(4,1fr);}
-/* Analytics: TODO Board + Trend + Decision Intelligence */
-.grid-mid{grid-template-columns:minmax(200px,2fr) minmax(180px,2.5fr) minmax(160px,1.2fr);}
-/* Knowledge: Essence + Prevention(縮小) + Morpho + OpLoad+AgentAlloc */
-.grid-bottom{grid-template-columns:minmax(160px,1.2fr) minmax(120px,0.8fr) minmax(180px,1.5fr) minmax(140px,1fr);}
+/* Analytics: TODO Board(広め) + Trend + Decision */
+.grid-mid{grid-template-columns:2.5fr 2fr 1fr;}
+.grid-bottom{grid-template-columns:1.5fr 2fr 1.5fr;}
 /* Infrastructure: Pipeline + Services + Risk Engine + Seal */
 .grid-last{grid-template-columns:1fr 1fr 1.5fr 1fr;}
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:fadeIn .4s ease both;}
@@ -255,46 +254,40 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
   <!-- Decision Intelligence -->
   <div class="panel ylw" style="display:flex;flex-direction:column;">
     <div class="panel-title" style="flex-shrink:0;"><span class="icon">&#9654;</span>Decision Intelligence</div>
-    <div id="decision-log" <div class="grid grid-bottom">
-  <!-- Essence Viewer -->
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9830;</span>Essence Viewer</div>
-    <div style="font-size:10px;line-height:1.5;">
-      <div style="color:var(--red);font-size:9px;letter-spacing:1px;margin-bottom:2px;">INCIDENT</div>
-      <div id="ess-incident" style="color:var(--text2);margin-bottom:6px;max-height:60px;overflow:hidden;"></div>
-      <div style="color:var(--yellow);font-size:9px;letter-spacing:1px;margin-bottom:2px;">OPERATION</div>
-      <div id="ess-operation" style="color:var(--text2);margin-bottom:6px;max-height:40px;overflow:hidden;"></div>
-      <div style="color:var(--purple);font-size:9px;letter-spacing:1px;margin-bottom:2px;">PHILOSOPHY</div>
-      <div id="ess-philosophy" style="color:var(--text2);max-height:40px;overflow:hidden;"></div>
+    <div id="decision-log" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"><div class="empty">判断記録なし</div></div>
+  </div>
+</div>
+
+<div class="sec-label">Knowledge &amp; Operations</div>
+<div class="grid grid-bottom">
+  <div class="panel grn">
+    <div class="panel-title"><span class="icon">&#9670;</span>Essence Viewer</div>
+    <div class="essence-axis">
+      <div class="essence-axis-label">INCIDENT</div>
+      <div class="essence-text" id="ess-incident">-</div>
+    </div>
+    <div class="essence-axis">
+      <div class="essence-axis-label">OPERATION</div>
+      <div class="essence-text" id="ess-operation">-</div>
+    </div>
+    <div class="essence-axis">
+      <div class="essence-axis-label">PHILOSOPHY</div>
+      <div class="essence-text" id="ess-philosophy">-</div>
     </div>
   </div>
-  <!-- Prevention Queue (縮小) -->
-  <div class="panel orn" style="min-width:0;">
+  <div class="panel orn">
     <div class="panel-title" style="justify-content:space-between;">
-      <span><span class="icon">&#9658;</span>Prevention</span>
+      <span><span class="icon">&#9658;</span>Prevention Queue</span>
       <span id="pq-count" style="font-family:var(--mono);font-size:11px;color:var(--orange);">0件</span>
     </div>
     <div id="prev-queue"><div class="empty">承認待ち案件なし</div></div>
   </div>
-  <!-- Morpho History -->
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9670;</span>Morpho History</div>
-    <div id="morpho-hist"></div>
-  </div>
-  <!-- Operator Load + Agent Allocation (縦積み) -->
-  <div style="display:flex;flex-direction:column;gap:10px;min-width:0;">
-    <div class="panel" style="font-size:10px;flex-shrink:0;">
-      <div class="panel-title" style="font-size:10px;padding:2px 0;margin-bottom:6px;"><span class="icon">&#9636;</span>Operator Load</div>
-      <div id="op-load"><div class="empty">読み込み中...</div></div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <div class="panel">
+      <div class="panel-title"><span class="icon">&#9670;</span>Morpho History</div>
+      <div id="morpho-hist"></div>
     </div>
-    <div class="panel purp" style="flex:1;min-height:0;">
-      <div class="panel-title"><span class="icon">&#9632;</span>Agent Allocation</div>
-      <div id="agent-alloc"><div class="empty">読み込み中...</div></div>
-    </div>
-  </div>
-</div>
-
-">
+    <div class="panel purp">
       <div class="panel-title"><span class="icon">&#9632;</span>Agent Allocation</div>
       <div id="agent-alloc"><div class="empty">読み込み中...</div></div>
     </div>
@@ -578,28 +571,21 @@ function refreshDecisionLog(){
     var el=document.getElementById('decision-log');
     if(!el) return;
     if(!decs.length){el.innerHTML='<div class="empty">判断記録なし</div>';return;}
-    el.innerHTML=decs.slice(0,6).map(function(dec){
+    el.innerHTML=decs.map(function(dec){
       var vColor=dec.verdict==='APPROVED'?'var(--green)':'var(--red)';
       var rColor=dec.risk_level==='HIGH'||dec.risk_level==='critical'?'var(--red)':dec.risk_level==='normal'?'var(--green)':'var(--yellow)';
       var cands=dec.candidates||[];
-      var candText=cands.length?(cands[0].length>38?cands[0].slice(0,38)+'…':cands[0]):'';
-      var why=dec.why_decided||'';
-      var whyText=why.length>42?why.slice(0,42)+'…':why;
-      var axisColor=dec.essence_axis==='INCIDENT'?'var(--red)':dec.essence_axis==='OPERATION'?'var(--yellow)':'var(--purple)';
-      var basisText=(dec.basis_event_ids||[]).slice(0,2).join(' ');
-      return '<div style="border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-size:10px;">'
-        +'<div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">'
-        +'<div style="display:flex;gap:3px;align-items:center;overflow:hidden;">'
-        +'<span style="color:'+vColor+';font-weight:700;white-space:nowrap;">'+dec.verdict+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:var(--accent);white-space:nowrap;">'+dec.component+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:var(--text2);white-space:nowrap;">'+dec.what_type+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:'+rColor+';white-space:nowrap;">再発'+dec.recurrence_count+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:'+axisColor+';white-space:nowrap;">'+dec.essence_axis+'</span>'
+      return '<div style="border:1px solid var(--border);border-radius:4px;padding:6px 8px;font-size:10px;">'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+        +'<span style="color:'+vColor+';font-weight:700;">'+dec.verdict+'</span>'
+        +'<span style="color:var(--text2);">'+dec.when_ts.slice(0,16)+'</span>'
         +'</div>'
-        +'<span style="color:var(--text2);font-size:9px;white-space:nowrap;">'+dec.when_ts.slice(5,16)+'</span>'
+        +'<div style="display:flex;gap:6px;margin-bottom:4px;">'
+        +'<span style="background:var(--bg3);padding:1px 5px;border-radius:2px;color:var(--accent);">'+dec.component+'</span>'
+        +'<span style="background:var(--bg3);padding:1px 5px;border-radius:2px;color:var(--text2);">'+dec.what_type+'</span>'
+        +'<span style="background:var(--bg3);padding:1px 5px;border-radius:2px;color:'+rColor+';">再発'+dec.recurrence_count+'回</span>'
         +'</div>'
-        +(whyText?'<div style="color:var(--yellow);font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">→ '+whyText+'</div>':'')
-        +(basisText?'<div style="color:var(--text2);font-size:8px;margin-top:1px;opacity:0.6;">根拠: '+basisText+'</div>':'')
+        +(cands.length?'<div style="color:var(--text2);border-left:2px solid var(--border);padding-left:5px;">'+cands[0]+'</div>':'')
         +'</div>';
     }).join('');
     return; // 旧コードをスキップ
@@ -670,34 +656,6 @@ function refreshAgentAlloc(){
         +'<div class="agent-pct">'+a.pct+'%</div>'
         +'</div>';
     }).join('');
-  }).catch(function(){});
-}
-
-// ── OPERATOR LOAD ──
-function refreshOperatorLoad(){
-  fetch('/operator/load').then(function(r){return r.json();}).then(function(d){
-    var el=document.getElementById('op-load');
-    if(!el) return;
-    var sc={LIGHT:'var(--green)',MODERATE:'var(--yellow)',HEAVY:'var(--red)'};
-    var col=sc[d.status]||'var(--text2)';
-    el.innerHTML='<div style="display:flex;flex-direction:column;gap:3px;padding:2px 0;">'
-      +'<div style="display:flex;justify-content:space-between;">'
-      +'<span style="color:var(--text2);">負荷状態</span>'
-      +'<span style="color:'+col+';font-weight:700;">'+d.status+'</span>'
-      +'</div>'
-      +'<div style="display:flex;justify-content:space-between;">'
-      +'<span style="color:var(--text2);">1h件数</span>'
-      +'<span style="color:var(--accent);">'+d.events_1h+'</span>'
-      +'</div>'
-      +'<div style="display:flex;justify-content:space-between;">'
-      +'<span style="color:var(--text2);">24hアラート</span>'
-      +'<span style="color:var(--orange);">'+d.alerts_24h+'</span>'
-      +'</div>'
-      +'<div style="display:flex;justify-content:space-between;">'
-      +'<span style="color:var(--text2);">CLI</span>'
-      +'<span style="color:'+col+';">'+d.cognitive_load_index+'</span>'
-      +'</div>'
-      +'</div>';
   }).catch(function(){});
 }
 
@@ -783,7 +741,6 @@ function refreshAll(){
   refreshTrend();
   refreshTodoRisk();
   refreshDecisionLog();
-  refreshOperatorLoad();
   refreshEssence();
   refreshPrevention();
   refreshAgentAlloc();
@@ -794,7 +751,7 @@ function refreshAll(){
 
 setInterval(refreshRisk, 60000);
 setInterval(function(){
-  refreshServers();refreshLoop();refreshMorpho();refreshPrevention();refreshDecisionLog();refreshTodo();refreshOperatorLoad();
+  refreshServers();refreshLoop();refreshMorpho();refreshPrevention();refreshDecisionLog();refreshTodo();
 }, 30000);
 setInterval(function(){
   refreshHeinrich();refreshTrend();refreshTodoRisk();refreshAgentAlloc();refreshIntegrity();refreshPipeline();refreshEssence();
@@ -888,55 +845,6 @@ function runGuidelines() {
 
 setInterval(refreshGuidelines, 60000);
 refreshGuidelines();
-</script>
-
-
-    <!-- TODO_118: Risk Engine Panel -->
-    <div class="panel" id="risk-engine-panel" style="grid-column: span 2;">
-      <div class="panel-header">&#127919; SYSTEM RECOMMENDATION</div>
-      <div id="risk-rec-content" style="padding:8px;">
-        <div id="risk-rec-message" style="font-size:1.1em;font-weight:bold;margin-bottom:6px;">読み込み中...</div>
-        <div id="risk-rec-reason" style="font-size:0.85em;opacity:0.7;"></div>
-      </div>
-      <div class="panel-header" style="margin-top:8px;">&#128202; TODO RISK SCORES</div>
-      <div id="risk-todo-list" style="max-height:200px;overflow-y:auto;padding:4px 8px;font-size:0.82em;">読み込み中...</div>
-    </div>
-
-<script>
-async function refreshRiskEngine() {
-  try {
-    const recRes = await fetch('/risk/recommendation');
-    const recData = await recRes.json();
-    if (recData.status === 'ok' && recData.recommendation) {
-      const r = recData.recommendation;
-      const lc = {CRITICAL:'#ff4444',HIGH:'#ff8800',MEDIUM:'#ffcc00',LOW:'#44ff88'};
-      document.getElementById('risk-rec-message').innerHTML =
-        '<span style="color:' + (lc[r.risk_level]||'#fff') + '">' + r.message + '</span>';
-      document.getElementById('risk-rec-reason').textContent =
-        '根拠: ' + r.reason_summary + ' | スコア: ' + (r.risk_score*100).toFixed(0);
-    } else {
-      document.getElementById('risk-rec-message').textContent = '全TODO完了';
-    }
-    const listRes = await fetch('/risk/todos');
-    const listData = await listRes.json();
-    if (listData.status === 'ok') {
-      const lc = {CRITICAL:'#ff4444',HIGH:'#ff8800',MEDIUM:'#ffcc00',LOW:'#44ff88'};
-      const html = listData.todos.slice(0,8).map(function(t) {
-        return '<div style="margin:3px 0;display:flex;gap:6px;align-items:center;">'
-          + '<span style="color:' + (lc[t.risk_level]||'#aaa') + ';min-width:60px">' + t.risk_level + '</span>'
-          + '<span style="opacity:0.6;min-width:80px">' + t.id + '</span>'
-          + '<span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + t.title + '</span>'
-          + '<span style="opacity:0.5">' + (t.risk_score*100).toFixed(0) + 'pt</span>'
-          + '</div>';
-      }).join('');
-      document.getElementById('risk-todo-list').innerHTML = html || '<div>未着手TODOなし</div>';
-    }
-  } catch(e) {
-    document.getElementById('risk-rec-message').textContent = 'Risk Engine接続エラー';
-  }
-}
-setInterval(refreshRiskEngine, 60000);
-refreshRiskEngine();
 </script>
 
 </body>
