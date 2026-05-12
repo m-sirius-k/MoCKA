@@ -847,54 +847,5 @@ setInterval(refreshGuidelines, 60000);
 refreshGuidelines();
 </script>
 
-
-    <!-- TODO_118: Risk Engine Panel -->
-    <div class="panel" id="risk-engine-panel" style="grid-column: span 2;">
-      <div class="panel-header">&#127919; SYSTEM RECOMMENDATION</div>
-      <div id="risk-rec-content" style="padding:8px;">
-        <div id="risk-rec-message" style="font-size:1.1em;font-weight:bold;margin-bottom:6px;">読み込み中...</div>
-        <div id="risk-rec-reason" style="font-size:0.85em;opacity:0.7;"></div>
-      </div>
-      <div class="panel-header" style="margin-top:8px;">&#128202; TODO RISK SCORES</div>
-      <div id="risk-todo-list" style="max-height:200px;overflow-y:auto;padding:4px 8px;font-size:0.82em;">読み込み中...</div>
-    </div>
-
-<script>
-async function refreshRiskEngine() {
-  try {
-    const recRes = await fetch('/risk/recommendation');
-    const recData = await recRes.json();
-    if (recData.status === 'ok' && recData.recommendation) {
-      const r = recData.recommendation;
-      const lc = {CRITICAL:'#ff4444',HIGH:'#ff8800',MEDIUM:'#ffcc00',LOW:'#44ff88'};
-      document.getElementById('risk-rec-message').innerHTML =
-        '<span style="color:' + (lc[r.risk_level]||'#fff') + '">' + r.message + '</span>';
-      document.getElementById('risk-rec-reason').textContent =
-        '根拠: ' + r.reason_summary + ' | スコア: ' + (r.risk_score*100).toFixed(0);
-    } else {
-      document.getElementById('risk-rec-message').textContent = '全TODO完了';
-    }
-    const listRes = await fetch('/risk/todos');
-    const listData = await listRes.json();
-    if (listData.status === 'ok') {
-      const lc = {CRITICAL:'#ff4444',HIGH:'#ff8800',MEDIUM:'#ffcc00',LOW:'#44ff88'};
-      const html = listData.todos.slice(0,8).map(function(t) {
-        return '<div style="margin:3px 0;display:flex;gap:6px;align-items:center;">'
-          + '<span style="color:' + (lc[t.risk_level]||'#aaa') + ';min-width:60px">' + t.risk_level + '</span>'
-          + '<span style="opacity:0.6;min-width:80px">' + t.id + '</span>'
-          + '<span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + t.title + '</span>'
-          + '<span style="opacity:0.5">' + (t.risk_score*100).toFixed(0) + 'pt</span>'
-          + '</div>';
-      }).join('');
-      document.getElementById('risk-todo-list').innerHTML = html || '<div>未着手TODOなし</div>';
-    }
-  } catch(e) {
-    document.getElementById('risk-rec-message').textContent = 'Risk Engine接続エラー';
-  }
-}
-setInterval(refreshRiskEngine, 60000);
-refreshRiskEngine();
-</script>
-
 </body>
 </html>
