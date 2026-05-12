@@ -270,7 +270,7 @@ def temporal_trend():
     try:
         from datetime import datetime, timedelta
         import sqlite3 as _sqlite3
-        conn = _sqlite3.connect(DB_PATH)
+        conn = _sqlite3.connect(db_helper.DB_PATH)
         days = []
         for i in range(6, -1, -1):
             d = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
