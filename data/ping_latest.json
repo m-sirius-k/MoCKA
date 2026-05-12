@@ -46,33 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "6回目テスト日本語",
+    "text": "新規チャット → このメッセージを送信",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "",
-        "how": "",
-        "note": "TODO_018,テスト,5W1H",
+        "when": "2026-04-29",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
         "recur": 0,
         "matched": [
-          "テスト"
+          "新規"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-18",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "[保存テスト] ::I::\n保存ボタンからessenceへの接続テスト。pipeline経由で自動essence化される。\n::END::",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "MoCKA流動性座標理論 実装移行報告書（公文書）\n第1章 総論（到達点の定義）\n本報告は、これまでの検討を踏まえ、MoCKAにおける判定理論が 静的二値判定から流動性座標モデルへ移行したことを正式に",
         "recur": 0,
         "matched": [
-          "テスト"
+          "新規"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-12T09:50:47.182834"
+    "updated_at": "2026-05-12T00:54:30.983Z"
   }
 }
