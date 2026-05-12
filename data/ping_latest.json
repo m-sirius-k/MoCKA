@@ -42,37 +42,37 @@
   ],
   "generated_at": "2026-05-12T09:00:11.493635",
   "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "テスト送信3回目",
+    "verdict": "SUCCESS",
+    "score": -0.277,
+    "danger_rate": 0.362,
+    "success_rate": 0.638,
+    "text": "StatusCode        : 200\n\nStatusDescription : OK\n\nContent           : {\"civilizat",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "",
-        "how": "",
-        "note": "TODO_018,テスト,5W1H",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok\\MoCKA> Get-ChildItem \"C:\\Users\\sirok\\MoCKA\" -Filter \"anchor_update.py\" -Recurse -N",
         "recur": 0,
         "matched": [
-          "テスト"
+          "Python script"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-18",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "[保存テスト] ::I::\n保存ボタンからessenceへの接続テスト。pipeline経由で自動essence化される。\n::END::",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok\\MoCKA> $addition = @'\n>>\n>> # MoCKA shortcuts\n>> function mocka-check {\n>>     cd ",
         "recur": 0,
         "matched": [
-          "テスト"
+          "Python script"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-12T00:20:03.291Z"
+    "updated_at": "2026-05-12T00:21:17.154Z"
   }
 }

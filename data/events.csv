@@ -7581,3 +7581,98 @@ VM2814 content.js:262 [MOCKA] /chat/ essence_updated=true: MCPツールで取得
 
 VM2814 content.js:31 [MOCKA] 送信ボタンにuser_voiceフック完了"
 E20260512_003,2026-05-12T00:20:03.291Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,テスト送信3回目,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,テスト送信3回目
+E20260512_004,2026-05-12T00:20:18.542Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,テスト送信3回目　　[MOCKA] user_voice保存: テスト送信3回目,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,テスト送信3回目　　[MOCKA] user_voice保存: テスト送信3回目
+E20260512_005,2026-05-12T00:21:14.591Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""civilization_loop"":{""action"":{""count"":3,""detail"":""Auto Gate\u5b9f\u884c"",""label"":""Action""},""audit
+
+                    "":{""label""",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""civilization_loop"":{""action"":{""count"":3,""detail"":""Auto Gate\u5b9f\u884c"",""label"":""Action""},""audit
+
+                    "":{""label"":""Audit"",""last_seal"":""2026-03-26T23:33:06.894819+00:00"",""last_seal_hash"":""08686a24a7c84d3
+
+                    c""...
+
+RawContent        : HTTP/1.1 200 OK
+
+                    Connection: close
+
+                    Content-Length: 17750
+
+                    Content-Type: application/json
+
+                    Date: Tue, 12 May 2026 00:21:06 GMT
+
+                    Server: Werkzeug/3.1.6 Python/3.13.13
+
+                    {""civilization_loop"":{""action"":...
+
+Forms             : {}
+
+Headers           : {[Connection, close], [Content-Length, 17750], [Content-Type, application/json], [Date, Tue, 12 May
+
+                     2026 00:21:06 GMT]...}
+
+Images            : {}
+
+InputFields       : {}
+
+Links             : {}
+
+ParsedHtml        : mshtml.HTMLDocumentClass
+
+RawContentLength  : 17750
+
+PS C:\Users\sirok\MoCKA>"
+E20260512_006,2026-05-12T00:21:17.154Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""civilization_loop"":{""action"":{""count"":3,""detail"":""Auto Gate\u5b9f\u884c"",""label"":""Action""},""audit
+
+                    "":{""label""",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"StatusCode        : 200
+
+StatusDescription : OK
+
+Content           : {""civilization_loop"":{""action"":{""count"":3,""detail"":""Auto Gate\u5b9f\u884c"",""label"":""Action""},""audit
+
+                    "":{""label"":""Audit"",""last_seal"":""2026-03-26T23:33:06.894819+00:00"",""last_seal_hash"":""08686a24a7c84d3
+
+                    c""...
+
+RawContent        : HTTP/1.1 200 OK
+
+                    Connection: close
+
+                    Content-Length: 17750
+
+                    Content-Type: application/json
+
+                    Date: Tue, 12 May 2026 00:21:06 GMT
+
+                    Server: Werkzeug/3.1.6 Python/3.13.13
+
+                    {""civilization_loop"":{""action"":...
+
+Forms             : {}
+
+Headers           : {[Connection, close], [Content-Length, 17750], [Content-Type, application/json], [Date, Tue, 12 May
+
+                     2026 00:21:06 GMT]...}
+
+Images            : {}
+
+InputFields       : {}
+
+Links             : {}
+
+ParsedHtml        : mshtml.HTMLDocumentClass
+
+RawContentLength  : 17750
+
+PS C:\Users\sirok\MoCKA>"
