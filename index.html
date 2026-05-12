@@ -287,6 +287,10 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
       <div class="panel-title"><span class="icon">&#9670;</span>Morpho History</div>
       <div id="morpho-hist"></div>
     </div>
+    <div class="panel" style="font-size:10px;">
+      <div class="panel-title"><span class="icon">&#9636;</span>Operator Load</div>
+      <div id="op-load"><div class="empty">読み込み中...</div></div>
+    </div>
     <div class="panel purp">
       <div class="panel-title"><span class="icon">&#9632;</span>Agent Allocation</div>
       <div id="agent-alloc"><div class="empty">読み込み中...</div></div>
@@ -666,6 +670,34 @@ function refreshAgentAlloc(){
   }).catch(function(){});
 }
 
+// ── OPERATOR LOAD ──
+function refreshOperatorLoad(){
+  fetch('/operator/load').then(function(r){return r.json();}).then(function(d){
+    var el=document.getElementById('op-load');
+    if(!el) return;
+    var sc={LIGHT:'var(--green)',MODERATE:'var(--yellow)',HEAVY:'var(--red)'};
+    var col=sc[d.status]||'var(--text2)';
+    el.innerHTML='<div style="display:flex;flex-direction:column;gap:3px;padding:2px 0;">'
+      +'<div style="display:flex;justify-content:space-between;">'
+      +'<span style="color:var(--text2);">負荷状態</span>'
+      +'<span style="color:'+col+';font-weight:700;">'+d.status+'</span>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:space-between;">'
+      +'<span style="color:var(--text2);">1h件数</span>'
+      +'<span style="color:var(--accent);">'+d.events_1h+'</span>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:space-between;">'
+      +'<span style="color:var(--text2);">24hアラート</span>'
+      +'<span style="color:var(--orange);">'+d.alerts_24h+'</span>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:space-between;">'
+      +'<span style="color:var(--text2);">CLI</span>'
+      +'<span style="color:'+col+';">'+d.cognitive_load_index+'</span>'
+      +'</div>'
+      +'</div>';
+  }).catch(function(){});
+}
+
 // ── INTEGRITY ──
 function refreshIntegrity(){
   fetch('/integrity/status').then(function(r){return r.json();}).then(function(d){
@@ -748,6 +780,7 @@ function refreshAll(){
   refreshTrend();
   refreshTodoRisk();
   refreshDecisionLog();
+  refreshOperatorLoad();
   refreshEssence();
   refreshPrevention();
   refreshAgentAlloc();
@@ -758,7 +791,7 @@ function refreshAll(){
 
 setInterval(refreshRisk, 60000);
 setInterval(function(){
-  refreshServers();refreshLoop();refreshMorpho();refreshPrevention();refreshDecisionLog();refreshTodo();
+  refreshServers();refreshLoop();refreshMorpho();refreshPrevention();refreshDecisionLog();refreshTodo();refreshOperatorLoad();
 }, 30000);
 setInterval(function(){
   refreshHeinrich();refreshTrend();refreshTodoRisk();refreshAgentAlloc();refreshIntegrity();refreshPipeline();refreshEssence();

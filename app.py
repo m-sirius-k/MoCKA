@@ -2394,7 +2394,7 @@ def operator_load():
         cur.execute("SELECT COUNT(*) FROM events WHERE what_type IN ('DANGER','CRITICAL','MATAKA') AND when_ts >= ?", (since24h,))
         alerts_24h = cur.fetchone()[0]
         alert_density = round(alerts_24h / 24, 2)
-        cli = min(100, int(alert_density * 10 + events_1h * 2))
+        cli = min(100, int(alert_density * 20 + events_1h * 0.3))
         con.close()
         reducing = 0
         try:
