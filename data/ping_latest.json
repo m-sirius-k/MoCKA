@@ -40,40 +40,5 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-05-12T11:26:41.224851",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "aimgr.exe が CPU 100% を常時食っている暴走状態 は、Office AI の ai.exe 複数インスタンスが無限ループや異常処理を起こす典型",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-04",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "router 再発タイプ別:   save                 53件   collaboration        17件   share                7件 PS C:",
-        "recur": 0,
-        "matched": [
-          "再発",
-          "PowerShell"
-        ],
-        "score": 2
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "MoCKA部分修正禁止原則の制度化・再発防止記録",
-        "how": "",
-        "note": "CLAIM,incident,部分修正禁止,app.py,再発防止",
-        "recur": 0,
-        "matched": [
-          "再発"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-12T02:41:46.471Z"
-  }
+  "generated_at": "2026-05-12T12:23:03.246517"
 }
