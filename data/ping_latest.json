@@ -35,44 +35,10 @@
       "priority": "高"
     },
     {
-      "id": "TODO_128",
-      "title": "user_voice品質向上 — 余分ログ除去・essence連動・検索UI",
-      "priority": "高"
+      "id": "TODO_106",
+      "title": "PHL-OS ドリフト回復実験設計 — Phase 2（汚染）→Phase 3（PHL再注入）→Phase 4（用量依存）",
+      "priority": "中"
     }
   ],
-  "generated_at": "2026-05-12T09:43:49.345150",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "新規チャット → このメッセージを送信",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-29",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
-        "recur": 0,
-        "matched": [
-          "新規"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "MoCKA流動性座標理論 実装移行報告書（公文書）\n第1章 総論（到達点の定義）\n本報告は、これまでの検討を踏まえ、MoCKAにおける判定理論が 静的二値判定から流動性座標モデルへ移行したことを正式に",
-        "recur": 0,
-        "matched": [
-          "新規"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-12T00:54:30.983Z"
-  }
+  "generated_at": "2026-05-12T09:58:35.978145"
 }

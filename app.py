@@ -264,6 +264,7 @@ def count_layer(layer):
 
 # ===== TEMPORAL ANALYTICS: 7日トレンド =====
 @app.route('/temporal/trend', methods=['GET'])
+@app.route('/trend/weekly', methods=['GET'])
 def temporal_trend():
     """直近7日のイベント推移・リスク分布・user_voice件数を返す"""
     try:
