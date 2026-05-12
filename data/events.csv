@@ -7537,3 +7537,46 @@ E20260511_015,2026-05-11T16:05:23,kimura_hakase,DECISION_APPROVED,N/A,N/A,N/A,N/
 E20260511_016,2026-05-11T16:05:24,kimura_hakase,DECISION_APPROVED,N/A,N/A,N/A,N/A,N/A,N/A,normal,N/A,N/A,[承認] ,,N/A,N/A,N/A,N/A,N/A,N/A,N/A,PQ_2FAC1DD2
 E20260511_017,2026-05-11T16:05:26,kimura_hakase,DECISION_APPROVED,N/A,N/A,N/A,N/A,N/A,N/A,normal,N/A,N/A,[承認] ,,N/A,N/A,N/A,N/A,N/A,N/A,N/A,PQ_DAAAB02E
 E20260512_001,2026-05-12T09:02:03.547056,kimura,user_voice,claude.ai,test,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,テスト送信,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,テスト送信
+E20260512_002,2026-05-12T00:17:46.874Z,kimura,user_voice,claude.ai,91455755-6dd8-41,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"Loading the font 'https://frontend-cdn.perplexity.ai/_agi_assets/fonts/FKGroteskNeue.woff2' violates the following Content Security Policy directive: ""font-src 'self' assets.claude.ai assets-proxy.ant",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"Loading the font 'https://frontend-cdn.perplexity.ai/_agi_assets/fonts/FKGroteskNeue.woff2' violates the following Content Security Policy directive: ""font-src 'self' assets.claude.ai assets-proxy.anthropic.com https://fonts.gstatic.com https://js.intercomcdn.com https://fonts.intercomcdn.com"". The action has been blocked.
+
+c393cb7f5-BRHl4lnW.js:2 [O11Y] [DatadogRUM] Initialized Object
+
+contentScript.js:2 Datadog Browser SDK: SDK is loaded more than once. This is unsupported and might have unexpected behavior.
+
+(anonymous) @ contentScript.js:2
+
+contentScript.bundle.js:31 getIdsFromUrl result - promptId: null jobId: null agentMode: false
+
+contentScript.bundle.js:31 Checking domain: claude.ai
+
+contentScript.bundle.js:31 📊 Domain detected: Claude, fetching selectors from API
+
+contentScript.bundle.js:31 🔍 Delay detection: URL parameter 'null', using 1000ms delay
+
+contentScript.bundle.js:31 🚀 Queue initialized with delay feature active (1000ms between prompts)
+
+contentScript.bundle.js:31 ⚠️ IMPORTANT: Make sure URL has delay parameter if you want to customize delay time
+
+contentScript.bundle.js:31 ✅ Queue initialization complete - ready to process messages
+
+VM2814 content.js:4 [MOCKA] 自律監視プロトコル v16.0 起動 (user_voice ON / matcher_result注入 ON)
+
+VM2814 content.js:31 [MOCKA] 送信ボタンにuser_voiceフック完了
+
+VM2814 content.js:46 [MOCKA] Enterキーにuser_voiceフック完了
+
+isolated-segment.html?v=ab12524b43:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+
+91455755-6dd8-4137-91b5-541eefec26cb:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+
+isolated-segment.html?v=ab12524b43:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+
+991455755-6dd8-4137-91b5-541eefec26cb:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+
+2isolated-segment.html?v=ab12524b43:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+
+691455755-6dd8-4137-91b5-541eefec26cb:1 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+
+VM2814 content.js:262 [MOCKA] /chat/ essence_updated=true: MCPツールで取得済み
+
+VM2814 content.js:31 [MOCKA] 送信ボタンにuser_voiceフック完了"
