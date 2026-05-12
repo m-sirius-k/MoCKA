@@ -57,7 +57,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (injectedTabs.has(tabId)) return;
     injectedTabs.add(tabId);
     chrome.scripting.executeScript({
-      target: { tabId: tabId },
+      target: { tabId: tab.id },
       files: ['content.js']
     }).catch(() => {});
   }
