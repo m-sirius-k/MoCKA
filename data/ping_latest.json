@@ -40,5 +40,39 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-05-12T12:45:13.435350"
+  "generated_at": "2026-05-12T12:45:13.435350",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "cpu使用状況チェックして",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-29",
+        "why": "",
+        "how": "manual_click",
+        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
+        "recur": 0,
+        "matched": [
+          "check"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-11",
+        "why": "",
+        "how": "",
+        "note": "test,why_purpose,field_check",
+        "recur": 0,
+        "matched": [
+          "check"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-12T03:46:41.742Z"
+  }
 }
