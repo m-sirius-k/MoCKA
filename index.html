@@ -143,7 +143,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 #rec-box .rec-icon{font-size:18px;}
 #rec-text{flex:1;}
 #rec-text strong{color:var(--accent);display:block;font-size:11px;margin-bottom:2px;font-family:var(--head);letter-spacing:1px;}
-.essence-axis{margin-bottom:8px;}
+.essence-axis{margin-bottom:4px;}.essence-panel{max-height:220px;overflow-y:auto;}
 .essence-axis-label{font-size:10px;color:var(--text2);font-family:var(--mono);margin-bottom:3px;}
 .essence-text{font-size:11px;color:var(--text);background:var(--bg3);border-radius:3px;padding:6px 8px;line-height:1.6;max-height:60px;overflow-y:auto;}
 .seal-entry{padding:5px 0;border-bottom:1px solid var(--border);font-size:11px;}
@@ -260,9 +260,9 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
 
 <div class="sec-label">Knowledge &amp; Operations</div>
 <div class="grid grid-bottom">
-  <div class="panel grn">
+  <div class="panel grn" style="overflow:hidden;max-height:280px;">
     <div class="panel-title"><span class="icon">&#9670;</span>Essence Viewer</div>
-    <div class="essence-axis">
+    <div class="essence-panel"><div class="essence-axis">
       <div class="essence-axis-label">INCIDENT</div>
       <div class="essence-text" id="ess-incident">-</div>
     </div>
@@ -273,6 +273,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
     <div class="essence-axis">
       <div class="essence-axis-label">PHILOSOPHY</div>
       <div class="essence-text" id="ess-philosophy">-</div>
+    </div>
     </div>
   </div>
   <div class="panel orn">
@@ -673,12 +674,12 @@ function refreshOperatorLoad(){
     if(!el) return;
     var sc={LIGHT:'var(--green)',MODERATE:'var(--yellow)',HEAVY:'var(--red)'};
     var col=sc[d.status]||'var(--text2)';
-    el.innerHTML='<table style="width:100%;font-size:10px;border-collapse:collapse;">'
-      +'<tr><td style="color:var(--text2);">\u8ca0\u8377</td><td style="text-align:right;color:'+col+';font-weight:700;">'+d.status+'</td></tr>'
-      +'<tr><td style="color:var(--text2);">1h\u4ef6\u6570</td><td style="text-align:right;color:var(--accent);">'+d.events_1h+'</td></tr>'
-      +'<tr><td style="color:var(--text2);">24h\u30a2\u30e9\u30fc\u30c8</td><td style="text-align:right;color:var(--orange);">'+d.alerts_24h+'</td></tr>'
-      +'<tr><td style="color:var(--text2);">CLI</td><td style="text-align:right;color:'+col+';">'+d.cognitive_load_index+'</td></tr>'
-      +'</table>';
+    el.innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:2px 8px;font-size:10px;">'
+      +'<span style="color:var(--text2);">負荷</span><span style="text-align:right;color:'+col+';font-weight:700;">'+(d.status||'-')+'</span>'
+      +'<span style="color:var(--text2);">1h件数</span><span style="text-align:right;color:var(--accent);">'+(d.events_1h||0)+'</span>'
+      +'<span style="color:var(--text2);">24hアラート</span><span style="text-align:right;color:var(--orange);">'+(d.alerts_24h||0)+'</span>'
+      +'<span style="color:var(--text2);">CLI</span><span style="text-align:right;color:'+col+';">'+(d.cognitive_load_index||0)+'</span>'
+      +'</div>';
   }).catch(function(){});
 }
 
