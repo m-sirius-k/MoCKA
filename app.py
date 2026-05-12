@@ -261,6 +261,56 @@ def count_layer(layer):
 # =========================
 
 
+
+# ===== TEMPORAL ANALYTICS: 7日トレンド =====
+@app.route('/temporal/trend', methods=['GET'])
+def temporal_trend():
+    """直近7日のイベント推移・リスク分布・user_voice件数を返す"""
+    try:
+        from datetime import datetime, timedelta
+        import sqlite3 as _sqlite3
+        conn = _sqlite3.connect(DB_PATH)
+        days = []
+        for i in range(6, -1, -1):
+            d = (datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d')
+            total = conn.execute(
+                "SELECT COUNT(*) FROM events WHERE when_ts LIKE ?", (f'{d}%',)
+            ).fetchone()[0]
+            danger = conn.execute(
+                "SELECT COUNT(*) FROM events WHERE when_ts LIKE ? AND risk_level IN ('high','critical','danger')",
+                (f'{d}%',)
+            ).fetchone()[0]
+            voice = conn.execute(
+                "SELECT COUNT(*) FROM events WHERE when_ts LIKE ? AND what_type='user_voice'",
+                (f'{d}%',)
+            ).fetchone()[0]
+            incident = conn.execute(
+                "SELECT COUNT(*) FROM events WHERE when_ts LIKE ? AND what_type IN ('claim','mataka','incident')",
+                (f'{d}%',)
+            ).fetchone()[0]
+            days.append({
+                'date': d,
+                'total': total,
+                'danger': danger,
+                'voice': voice,
+                'incident': incident,
+            })
+        conn.close()
+
+        # トレンド矢印（直近3日 vs 前4日の平均比較）
+        recent_avg = sum(d['total'] for d in days[-3:]) / 3
+        prev_avg   = sum(d['total'] for d in days[:4]) / 4
+        if recent_avg > prev_avg * 1.1:
+            trend = '↑'
+        elif recent_avg < prev_avg * 0.9:
+            trend = '↓'
+        else:
+            trend = '→'
+
+        return jsonify({'days': days, 'trend': trend, 'recent_avg': round(recent_avg, 1), 'prev_avg': round(prev_avg, 1)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ===== USER VOICE: きむら博士の発言を自動保存 =====
 @app.route('/user_voice', methods=['POST'])
 def user_voice():
