@@ -291,10 +291,13 @@ def temporal_trend():
             ).fetchone()[0]
             days.append({
                 'date': d,
+                'label': d[5:],   # MM-DD形式
                 'total': total,
                 'danger': danger,
                 'voice': voice,
                 'incident': incident,
+                'l1': danger,     # Heinrich Layer1 = high/critical/danger
+                'l3': voice,      # Heinrich Layer3 = user_voice（活動量）
             })
         conn.close()
 
