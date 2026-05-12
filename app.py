@@ -306,11 +306,11 @@ def user_voice():
                 r'^\[O11Y\]',
             ]
             for pat in noise_patterns:
-                if re.match(pat, t):
+                if _re.match(pat, t):
                     return False
 
             # 日本語を含む → きむら博士の発言として保存
-            if re.search(r'[ぁ-んァ-ン一-龥]', t):
+            if _re.search(r'[ぁ-んァ-ン一-龥]', t):
                 return True
 
             # 英数字のみ かつ 短い（40文字以下）→ コマンド・短い指示として保存
