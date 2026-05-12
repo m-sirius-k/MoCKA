@@ -262,6 +262,53 @@ def count_layer(layer):
 
 
 
+
+# ===== DECISION INTELLIGENCE: 判断理由ログ =====
+@app.route('/decision/log/detail', methods=['GET'])
+def decision_log_detail():
+    """Decision LogにPrevention Queue情報を突合して詳細表示"""
+    try:
+        import sqlite3 as _sq, json as _json
+        # prevention_queue読み込み
+        pq_path = os.path.join(os.path.dirname(__file__), 'data', 'prevention_queue.json')
+        pq_map = {}
+        if os.path.exists(pq_path):
+            with open(pq_path, encoding='utf-8') as f:
+                pq_data = _json.load(f)
+            for item in pq_data.get('queue', []):
+                pq_map[item['id']] = item
+
+        conn = _sq.connect(db_helper.DB_PATH)
+        rows = conn.execute("""
+            SELECT event_id, when_ts, title, free_note, risk_level, what_type
+            FROM events
+            WHERE what_type IN ('DECISION_APPROVED','DECISION_REJECTED','decision')
+            ORDER BY when_ts DESC
+            LIMIT 10
+        """).fetchall()
+        conn.close()
+
+        decisions = []
+        for r in rows:
+            event_id, when_ts, title, free_note, risk_level, what_type = r
+            pq = pq_map.get(free_note, {})
+            decisions.append({
+                'event_id':        event_id,
+                'when_ts':         when_ts,
+                'verdict':         'APPROVED' if 'APPROVED' in (what_type or '') else 'REJECTED',
+                'risk_level':      risk_level or pq.get('severity', 'normal'),
+                'component':       pq.get('component', 'N/A'),
+                'what_type':       pq.get('what_type', 'N/A'),
+                'recurrence_count':pq.get('recurrence_count', 0),
+                'candidates':      pq.get('candidates', []),
+                'source':          pq.get('source', 'manual'),
+                'pq_id':           free_note,
+            })
+
+        return jsonify({'decisions': decisions, 'count': len(decisions)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 # ===== TEMPORAL ANALYTICS: 7日トレンド =====
 @app.route('/temporal/trend', methods=['GET'])
 @app.route('/trend/weekly', methods=['GET'])
