@@ -247,15 +247,7 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
       <span><span class="icon">&#8984;</span>7-Day Trend</span>
       <span class="trend-badge flat" id="trend-badge">&#8594; FLAT</span>
     </div>
-    <div class="sparkline-wrap">
-      <div class="spark-row" id="spark-l1" style="height:30px;margin-bottom:2px;"></div>
-      <div class="spark-row" id="spark-l3" style="height:35px;"></div>
-      <div class="spark-labels" id="spark-labels"></div>
-    </div>
-    <div style="display:flex;gap:10px;margin-top:6px;font-size:10px;">
-      <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--red);border-radius:2px;display:inline-block;"></span>重大</span>
-      <span style="display:flex;align-items:center;gap:3px;"><span style="width:8px;height:8px;background:var(--green);border-radius:2px;display:inline-block;"></span>ヒヤリ</span>
-    </div>
+    <div id="trend-vertical" style="display:flex;flex-direction:column;gap:3px;"></div>
   </div>
 
   <!-- Decision Log: コンパクト -->
@@ -521,16 +513,23 @@ function refreshMorpho(){
 function refreshTrend(){
   fetch('/trend/weekly').then(function(r){return r.json();}).then(function(d){
     var days=d.days||[];
-    var maxL1=Math.max.apply(null,days.map(function(x){return x.l1||0;}))||1;
-    var maxL3=Math.max.apply(null,days.map(function(x){return x.l3||0;}))||1;
-    var l1El=document.getElementById('spark-l1');
-    var l3El=document.getElementById('spark-l3');
-    var lbEl=document.getElementById('spark-labels');
-    if(l1El) l1El.innerHTML=days.map(function(day){var h=Math.max(4,Math.round((day.l1/maxL1)*30));return '<div class="spark-bar l1" style="height:'+h+'px" data-tip="'+day.label+': L1='+day.l1+'"></div>';}).join('');
-    if(l3El) l3El.innerHTML=days.map(function(day){var h=Math.max(4,Math.round((day.l3/maxL3)*35));return '<div class="spark-bar" style="height:'+h+'px;background:var(--green);" data-tip="'+day.label+': L3='+day.l3+'"></div>';}).join('');
-    if(lbEl) lbEl.innerHTML=days.map(function(day){return '<div class="spark-lbl">'+day.label+'</div>';}).join('');
+    var maxTotal=Math.max.apply(null,days.map(function(x){return x.total||0;}))||1;
+    var el=document.getElementById('trend-vertical');
+    if(el){
+      el.innerHTML=days.map(function(day){
+        var barW=Math.max(4,Math.round((day.total/maxTotal)*80));
+        var dangerW=day.total>0?Math.round((day.danger/day.total)*barW):0;
+        return '<div style="display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--mono);">'
+          +'<span style="width:32px;color:var(--text2);flex-shrink:0;">'+day.label+'</span>'
+          +'<div style="position:relative;height:8px;width:'+barW+'px;background:var(--green);border-radius:2px;flex-shrink:0;">'
+          +(dangerW>0?'<div style="position:absolute;right:0;top:0;height:8px;width:'+dangerW+'px;background:var(--red);border-radius:2px;"></div>':'')
+          +'</div>'
+          +'<span style="color:var(--text2);">'+day.total+'</span>'
+          +'</div>';
+      }).join('');
+    }
     var tb=document.getElementById('trend-badge');
-    if(tb){var t=d.trend||'flat';var labels={up:'&#8593; UP',down:'&#8595; DOWN',flat:'&#8594; FLAT'};tb.innerHTML=labels[t]||'&#8594; FLAT';tb.className='trend-badge '+t;}
+    if(tb){var t=d.trend||'flat';var labels={'↑':'&#8593; UP','↓':'&#8595; DOWN','→':'&#8594; FLAT'};tb.innerHTML=labels[t]||'&#8594; FLAT';tb.className='trend-badge '+(t==='↑'?'up':t==='↓'?'down':'flat');}
   }).catch(function(){});
 }
 
