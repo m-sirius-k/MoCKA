@@ -275,6 +275,54 @@ def user_voice():
         if not text:
             return jsonify({'status': 'skip', 'reason': 'empty'}), 200
 
+        # ===== サーバー側フィルター: きむら博士の発言のみ保存 =====
+        def is_kimura_voice(t):
+            # 3文字以下はスキップ
+            if len(t) < 3:
+                return False
+            # システムログパターン（確実なノイズ）
+            noise_patterns = [
+                r'^\[PING',
+                r'^\[MOCKA',
+                r'^\[UTF-8',
+                r'^Traceback',
+                r'^File "[^"]+", line \d+',
+                r'^SyntaxError:',
+                r'^TypeError:',
+                r'^ValueError:',
+                r'^AttributeError:',
+                r'^ImportError:',
+                r'^OperationalError:',
+                r'^Enumerating objects:',
+                r'^Counting objects:',
+                r'^Writing objects:',
+                r'^remote:',
+                r'^StatusCode\s+:',
+                r'^StatusDescription\s+:',
+                r'^RawContent\s+:',
+                r'^Content\s+:',
+                r'^Loading the font',
+                r'^\[COMPLETION\]',
+                r'^\[O11Y\]',
+            ]
+            for pat in noise_patterns:
+                if re.match(pat, t):
+                    return False
+
+            # 日本語を含む → きむら博士の発言として保存
+            if re.search(r'[ぁ-んァ-ン一-龥]', t):
+                return True
+
+            # 英数字のみ かつ 短い（40文字以下）→ コマンド・短い指示として保存
+            if len(t) <= 40:
+                return True
+
+            # 英数字のみ かつ 長い → PowerShell出力の可能性 → スキップ
+            return False
+
+        if not is_kimura_voice(text):
+            return jsonify({'status': 'skip', 'reason': 'noise_filtered'}), 200
+
         chat_id = 'unknown'
         m = _re.search(r'/chat/([a-zA-Z0-9_-]+)', url)
         if m:
