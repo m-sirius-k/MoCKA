@@ -576,6 +576,10 @@ function refreshDecisionLog(){
       var rColor=dec.risk_level==='HIGH'||dec.risk_level==='critical'?'var(--red)':dec.risk_level==='normal'?'var(--green)':'var(--yellow)';
       var cands=dec.candidates||[];
       var candText=cands.length?(cands[0].length>38?cands[0].slice(0,38)+'…':cands[0]):'';
+      var why=dec.why_decided||'';
+      var whyText=why.length>42?why.slice(0,42)+'…':why;
+      var axisColor=dec.essence_axis==='INCIDENT'?'var(--red)':dec.essence_axis==='OPERATION'?'var(--yellow)':'var(--purple)';
+      var basisText=(dec.basis_event_ids||[]).slice(0,2).join(' ');
       return '<div style="border:1px solid var(--border);border-radius:4px;padding:4px 7px;font-size:10px;">'
         +'<div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">'
         +'<div style="display:flex;gap:3px;align-items:center;overflow:hidden;">'
@@ -583,10 +587,12 @@ function refreshDecisionLog(){
         +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:var(--accent);white-space:nowrap;">'+dec.component+'</span>'
         +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:var(--text2);white-space:nowrap;">'+dec.what_type+'</span>'
         +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:'+rColor+';white-space:nowrap;">再発'+dec.recurrence_count+'</span>'
+        +'<span style="background:var(--bg3);padding:1px 4px;border-radius:2px;color:'+axisColor+';white-space:nowrap;">'+dec.essence_axis+'</span>'
         +'</div>'
         +'<span style="color:var(--text2);font-size:9px;white-space:nowrap;">'+dec.when_ts.slice(5,16)+'</span>'
         +'</div>'
-        +(candText?'<div style="color:var(--text2);font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+candText+'</div>':'')
+        +(whyText?'<div style="color:var(--yellow);font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">→ '+whyText+'</div>':'')
+        +(basisText?'<div style="color:var(--text2);font-size:8px;margin-top:1px;opacity:0.6;">根拠: '+basisText+'</div>':'')
         +'</div>';
     }).join('');
     return; // 旧コードをスキップ

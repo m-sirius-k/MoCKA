@@ -288,22 +288,64 @@ def decision_log_detail():
         """).fetchall()
         conn.close()
 
+        # basis_event_ids用: component+what_typeでevents DB照合
+        conn2 = _sq.connect(db_helper.DB_PATH)
+        def _get_basis_events(component, what_type_pq):
+            try:
+                rs = conn2.execute(
+                    """SELECT event_id FROM events
+                       WHERE (title LIKE ? OR free_note LIKE ?)
+                       AND what_type NOT IN ('DECISION_APPROVED','DECISION_REJECTED')
+                       ORDER BY when_ts DESC LIMIT 3""",
+                    (f'%{component}%', f'%{what_type_pq}%')
+                ).fetchall()
+                return [r[0] for r in rs]
+            except:
+                return []
+
         decisions = []
         for r in rows:
             event_id, when_ts, title, free_note, risk_level, what_type = r
             pq = pq_map.get(free_note, {})
+            rc = pq.get('recurrence_count', 0)
+            sev = (risk_level or pq.get('severity', 'normal')).upper()
+            comp = pq.get('component', 'N/A')
+            wt = pq.get('what_type', 'N/A')
+
+            # 判断理由自動生成
+            if rc >= 10:
+                why = f'{comp}:{wt} が{rc}回再発 — 制度的介入が必要と判断'
+            elif rc >= 3:
+                why = f'{comp}:{wt} が{rc}回再発 — バリデーション追加を承認'
+            else:
+                why = f'{comp}:{wt} インシデント検知 — 予防措置を承認'
+
+            # ESSENCE軸判定
+            if sev in ('HIGH', 'CRITICAL') or rc >= 5:
+                essence_axis = 'INCIDENT'
+            elif rc >= 2:
+                essence_axis = 'OPERATION'
+            else:
+                essence_axis = 'PHILOSOPHY'
+
+            basis_ids = _get_basis_events(comp, wt)
+
             decisions.append({
-                'event_id':        event_id,
-                'when_ts':         when_ts,
-                'verdict':         'APPROVED' if 'APPROVED' in (what_type or '') else 'REJECTED',
-                'risk_level':      risk_level or pq.get('severity', 'normal'),
-                'component':       pq.get('component', 'N/A'),
-                'what_type':       pq.get('what_type', 'N/A'),
-                'recurrence_count':pq.get('recurrence_count', 0),
-                'candidates':      pq.get('candidates', []),
-                'source':          pq.get('source', 'manual'),
-                'pq_id':           free_note,
+                'event_id':         event_id,
+                'when_ts':          when_ts,
+                'verdict':          'APPROVED' if 'APPROVED' in (what_type or '') else 'REJECTED',
+                'risk_level':       sev,
+                'component':        comp,
+                'what_type':        wt,
+                'recurrence_count': rc,
+                'candidates':       pq.get('candidates', []),
+                'source':           pq.get('source', 'manual'),
+                'pq_id':            free_note,
+                'why_decided':      why,
+                'essence_axis':     essence_axis,
+                'basis_event_ids':  basis_ids,
             })
+        conn2.close()
 
         return jsonify({'decisions': decisions, 'count': len(decisions)})
     except Exception as e:
