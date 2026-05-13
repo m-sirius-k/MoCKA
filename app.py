@@ -2677,7 +2677,7 @@ def risk_recommendation():
 @app.route('/search', methods=['GET'])
 def search():
     q = request.args.get('q', '').strip()
-    limit = int(request.args.get('limit', 100))
+    limit = int(request.args.get('limit', 99999))
     src_filter = request.args.get('src', 'all')
     if not q or len(q) < 2:
         return jsonify({'results': [], 'total': 0, 'query': q})
