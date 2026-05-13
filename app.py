@@ -2673,6 +2673,47 @@ def risk_recommendation():
 
 
 
+
+@app.route('/search', methods=['GET'])
+def search():
+    q = request.args.get('q', '').strip()
+    limit = int(request.args.get('limit', 50))
+    if not q or len(q) < 2:
+        return jsonify({'results': [], 'total': 0, 'query': q})
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        results = []
+        like = f'%{q}%'
+        rows = conn.execute("""
+            SELECT 'user_voice' as src, id, timestamp as ts,
+                   text as body, session_title as title
+            FROM user_voice
+            WHERE text LIKE ?
+            ORDER BY timestamp DESC LIMIT ?
+        """, (like, limit)).fetchall()
+        for r in rows:
+            results.append({'source': r['src'], 'id': r['id'],
+                           'ts': r['ts'], 'title': r['title'] or '(no title)',
+                           'body': r['body'][:200]})
+        rows = conn.execute("""
+            SELECT 'event' as src, event_id as id, when_ts as ts,
+                   title, short_summary as body, what_type, risk_level
+            FROM events
+            WHERE title LIKE ? OR short_summary LIKE ? OR free_note LIKE ?
+            ORDER BY when_ts DESC LIMIT ?
+        """, (like, like, like, limit)).fetchall()
+        for r in rows:
+            results.append({'source': r['src'], 'id': r['id'],
+                           'ts': r['ts'], 'title': r['title'] or r['what_type'],
+                           'body': (r['body'] or '')[:200],
+                           'risk': r['risk_level']})
+        conn.close()
+        results.sort(key=lambda x: x.get('ts',''), reverse=True)
+        return jsonify({'results': results[:limit], 'total': len(results), 'query': q})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
