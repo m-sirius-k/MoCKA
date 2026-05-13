@@ -2691,7 +2691,10 @@ def search():
         'year': now - timedelta(days=365),
     }
     period_from = period_map.get(period)
-    period_clause = f"AND ts >= '{period_from.strftime('%Y%m%d_%H%M%S')}'" if period_from else ''
+    if period_from:
+        period_clause = period_from.strftime('%Y%m%d')
+    else:
+        period_clause = ''
     if not q or len(q) < 2:
         return jsonify({'results': [], 'total': 0, 'query': q})
     try:
@@ -2721,7 +2724,7 @@ def search():
         if src_filter in ('all', 'user_voice'):
             fields = ['text', 'session_title']
             clause, params = make_like_clause(fields, keywords, mode)
-            pc = period_clause.replace('ts', 'timestamp') if period_clause else ''
+            pc = f"AND timestamp >= '{period_clause}'" if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'user_voice' as src, id, timestamp as ts,
                        text as body, session_title as title
@@ -2739,7 +2742,7 @@ def search():
         if src_filter in ('all', 'event'):
             fields = ['title','short_summary','free_note','why_purpose','how_trigger','before_state','after_state','who_actor']
             clause, params = make_like_clause(fields, keywords, mode)
-            pc2 = period_clause.replace('ts', 'when_ts') if period_clause else ''
+            pc2 = f"AND when_ts >= '{period_clause}'" if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'event' as src, event_id as id, when_ts as ts,
                        title, short_summary as body, what_type, risk_level, why_purpose
@@ -2759,7 +2762,7 @@ def search():
         if src_filter in ('all', 'session'):
             fields = ['args','result_summary','tool']
             clause, params = make_like_clause(fields, keywords, mode)
-            pc3 = period_clause.replace('ts', 'timestamp') if period_clause else ''
+            pc3 = f"AND timestamp >= '{period_clause}'" if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'session' as src, id, timestamp as ts,
                        tool as title, result_summary as body
