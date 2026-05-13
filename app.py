@@ -2692,7 +2692,7 @@ def search():
     }
     period_from = period_map.get(period)
     if period_from:
-        period_clause = period_from.strftime('%Y%m%d')
+        period_clause = period_from.strftime('%Y-%m-%d')
     else:
         period_clause = ''
     if not q or len(q) < 2:
@@ -2742,7 +2742,7 @@ def search():
         if src_filter in ('all', 'event'):
             fields = ['title','short_summary','free_note','why_purpose','how_trigger','before_state','after_state','who_actor']
             clause, params = make_like_clause(fields, keywords, mode)
-            pc2 = f"AND when_ts >= '{period_clause}'" if period_clause else ''
+            pc2 = f"AND event_id >= '{period_clause.replace('-','')}' " if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'event' as src, event_id as id, when_ts as ts,
                        title, short_summary as body, what_type, risk_level, why_purpose
