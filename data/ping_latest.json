@@ -32,25 +32,37 @@
   ],
   "generated_at": "2026-05-13T09:44:58.681359",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -1.0,
-    "danger_rate": 0.0,
-    "success_rate": 1.0,
-    "text": "OK: UI更新完了 lines: 958\n\nPS C:\\Users\\sirok>",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "2818件 / \"python \"",
     "top_events": [
       {
-        "verdict": "SUCCESS",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
+        "verdict": "DANGER",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok\\MoCKA> Get-ChildItem \"C:\\Users\\sirok\\MoCKA\" -Filter \"anchor_update.py\" -Recurse -N",
         "recur": 0,
         "matched": [
-          "ok"
+          "Python script"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok\\MoCKA> $addition = @'\n>>\n>> # MoCKA shortcuts\n>> function mocka-check {\n>>     cd ",
+        "recur": 0,
+        "matched": [
+          "Python script"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-13T00:51:53.482Z"
+    "updated_at": "2026-05-13T01:14:47.134Z"
   }
 }
