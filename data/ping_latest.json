@@ -30,39 +30,5 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-05-13T12:55:20.049251",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "cpu　持ってかれてる",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
-        "recur": 0,
-        "matched": [
-          "持っ"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
-        "recur": 0,
-        "matched": [
-          "持っ"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-13T03:56:55.521Z"
-  }
+  "generated_at": "2026-05-13T13:07:06.235490"
 }
