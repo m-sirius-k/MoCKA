@@ -82,8 +82,22 @@ async def get_or_resume_page(context, ai_name, domain, new_url):
 
 async def run_chatgpt(context):
     page, status = await get_or_resume_page(context, "ChatGPT", "chatgpt.com", "https://chatgpt.com/")
-    await page.click("#prompt-textarea", timeout=5000)
-    await page.fill("#prompt-textarea", PROMPT)
+    # ChatGPT入力欄 - 複数セレクター対応
+    chatgpt_box = None
+    for sel in ["#prompt-textarea", "textarea", "[data-testid='text-input']", "div[contenteditable='true']", "div.ProseMirror"]:
+        try:
+            el = page.locator(sel).first
+            await el.wait_for(state="visible", timeout=5000)
+            chatgpt_box = el
+            print(f"[ChatGPT] セレクター発見: {sel}")
+            break
+        except:
+            continue
+    if chatgpt_box is None:
+        print("[ChatGPT] 入力欄が見つからない - スキップ")
+        return "ChatGPT", ""
+    await chatgpt_box.click()
+    await chatgpt_box.fill(PROMPT)
     await asyncio.sleep(1)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
