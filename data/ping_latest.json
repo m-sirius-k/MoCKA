@@ -36,33 +36,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "これどう？",
+    "text": "git sealをどうぞ",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
+        "when": "2026-04-11",
+        "why": "arXiv endorsement待ちの間にGitHub public repoで先行権のタイムスタンプを確保する",
+        "how": "arXiv endorsement壁→GitHub先行権戦略に切り替え→mocka-publicにPDF push完了",
+        "note": "先行権,GitHub,preprint,論文,v8,TODO_021,歴史的",
         "recur": 0,
         "matched": [
-          "これ"
+          "Git"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
+        "when": "2026-04-11",
+        "why": "MoCKAの全革新概念を国際学術プレプリントとして権利確定し商用展開の完全な基盤を作る",
+        "how": "完璧主義方針→7本生成→PDF変換→Zenodo投稿→GitHub push→全完了",
+        "note": "歴史的,TN1,TN2,TN3,TN4,TN5,TN6,TN7,Zenodo,GitHub,権利確定,完了",
         "recur": 0,
         "matched": [
-          "これ"
+          "Git"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-13T09:44:24.183Z"
+    "updated_at": "2026-05-13T10:23:10.771Z"
   }
 }
