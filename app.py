@@ -2802,7 +2802,9 @@ def search():
             ts = str(ts)
             if 'T' in ts: return ts[:19].replace('T',' ')
             if '_' in ts and len(ts) >= 15:
-                return ts[:8]+' '+ts[9:11]+':'+ts[11:13]+':'+ts[13:15]
+                d = ts[:8]
+                t = ts[9:15]
+                return d[:4]+'-'+d[4:6]+'-'+d[6:8]+' '+t[:2]+':'+t[2:4]+':'+t[4:6]
             return ts
         results.sort(key=lambda x: normalize_ts(x.get('ts','')), reverse=(sort_order=='desc'))
         return jsonify({'results': results[:limit], 'total': len(results), 'query': q, 'mode': mode})
