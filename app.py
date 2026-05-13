@@ -2679,6 +2679,7 @@ def search():
     q = request.args.get('q', '').strip()
     limit = int(request.args.get('limit', 99999))
     src_filter = request.args.get('src', 'all')
+    from datetime import datetime, timedelta
     sort_order = request.args.get('sort', 'desc')
     period = request.args.get('period', 'all')
     order = 'ASC' if sort_order == 'asc' else 'DESC'
