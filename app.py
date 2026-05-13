@@ -2797,7 +2797,7 @@ def search():
                 })
 
         conn.close()
-        results.sort(key=lambda x: x.get('ts',''), reverse=True)
+        results.sort(key=lambda x: x.get('ts',''), reverse=(sort_order=='desc'))
         return jsonify({'results': results[:limit], 'total': len(results), 'query': q, 'mode': mode})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
