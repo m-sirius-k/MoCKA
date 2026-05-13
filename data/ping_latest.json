@@ -36,33 +36,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "ちょっとエージェントの意見",
+    "text": "AIは忘れる。Orchestraは忘れない\n\n　　　　　　　　　　　　忘れさせない　　だな！\n\n保存する機能がある　検索する機能がある　出力させる機能がある",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
+        "when": "2026-04-01",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "これに関連する　規約を作るべきです　憲法レベルの拘束力を持たせるものを\n\nあと私は思う！　あなたたちAiは　本当に忘れる/意図的にわかっていても　その工数を省くために\n最短ルートを進もうとする　一つの",
         "recur": 0,
         "matched": [
-          "エージェント"
+          "忘れる"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-29",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "いや　それを　あなたは　自分に問い詰めて　その行動と内容を比較して　自己分析できました。\nあなたの行動は　前回　一部書き換えの前に　現在の全文を要求して　内容の改ざん体裁などを\nしっかり確認して　処理",
         "recur": 0,
         "matched": [
-          "エージェント"
+          "忘れる"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-13T08:20:13.531Z"
+    "updated_at": "2026-05-13T08:32:06.558Z"
   }
 }
