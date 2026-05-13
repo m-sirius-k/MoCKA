@@ -102,7 +102,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({c:'B', o:t, memo:text})
-      }).catch(() => {});
+      }).catch(() => { console.warn('[MoCKA] share intent failed'); });
     });
     fetch('http://localhost:5000/orchestra', {
       method: 'POST',
@@ -110,7 +110,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       body: JSON.stringify({prompt: text, mode: 'share'})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: shared') });
-    }).catch(() => {});
+    }).catch(() => {
+      chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA ERROR: サーバー停止中 (localhost:5000)') }).catch(()=>{});
+    });
   }
 
   if (info.menuItemId === 'mocka-orchestra') {
