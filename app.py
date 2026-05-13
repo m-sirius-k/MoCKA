@@ -2681,7 +2681,7 @@ def search():
     if not q or len(q) < 2:
         return jsonify({'results': [], 'total': 0, 'query': q})
     try:
-        conn = sqlite3.connect(DB_PATH)
+        conn = sqlite3.connect(db_helper.DB_PATH)
         conn.row_factory = sqlite3.Row
         results = []
         like = f'%{q}%'

@@ -30,39 +30,5 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-05-13T09:23:38.508499",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": 0.0,
-    "danger_rate": 0.5,
-    "success_rate": 0.5,
-    "text": "入力場所はできたけど　検索できない",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
-        "recur": 0,
-        "matched": [
-          "でき"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
-        "recur": 0,
-        "matched": [
-          "でき"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-13T00:26:14.911Z"
-  }
+  "generated_at": "2026-05-13T09:28:52.289920"
 }
