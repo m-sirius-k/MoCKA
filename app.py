@@ -2677,40 +2677,108 @@ def risk_recommendation():
 @app.route('/search', methods=['GET'])
 def search():
     q = request.args.get('q', '').strip()
-    limit = int(request.args.get('limit', 50))
+    limit = int(request.args.get('limit', 100))
+    src_filter = request.args.get('src', 'all')
     if not q or len(q) < 2:
         return jsonify({'results': [], 'total': 0, 'query': q})
     try:
         conn = sqlite3.connect(db_helper.DB_PATH)
         conn.row_factory = sqlite3.Row
         results = []
-        like = f'%{q}%'
-        rows = conn.execute("""
-            SELECT 'user_voice' as src, id, timestamp as ts,
-                   text as body, session_title as title
-            FROM user_voice
-            WHERE text LIKE ?
-            ORDER BY timestamp DESC LIMIT ?
-        """, (like, limit)).fetchall()
-        for r in rows:
-            results.append({'source': r['src'], 'id': r['id'],
-                           'ts': r['ts'], 'title': r['title'] or '(no title)',
-                           'body': r['body'][:200]})
-        rows = conn.execute("""
-            SELECT 'event' as src, event_id as id, when_ts as ts,
-                   title, short_summary as body, what_type, risk_level
-            FROM events
-            WHERE title LIKE ? OR short_summary LIKE ? OR free_note LIKE ?
-            ORDER BY when_ts DESC LIMIT ?
-        """, (like, like, like, limit)).fetchall()
-        for r in rows:
-            results.append({'source': r['src'], 'id': r['id'],
-                           'ts': r['ts'], 'title': r['title'] or r['what_type'],
-                           'body': (r['body'] or '')[:200],
-                           'risk': r['risk_level']})
+
+        # AND/OR解析
+        if ' OR ' in q.upper():
+            keywords = [k.strip() for k in q.upper().replace(' OR ', '|').split('|')]
+            mode = 'OR'
+        else:
+            keywords = [k.strip() for k in q.split()]
+            mode = 'AND'
+
+        def make_like_clause(fields, keywords, mode):
+            clauses = []
+            params = []
+            for kw in keywords:
+                sub = ' OR '.join([f"{f} LIKE ?" for f in fields])
+                clauses.append(f"({sub})")
+                params.extend([f"%{kw}%"] * len(fields))
+            join = ' OR ' if mode == 'OR' else ' AND '
+            return join.join(clauses), params
+
+        # user_voice検索
+        if src_filter in ('all', 'user_voice'):
+            fields = ['text', 'session_title']
+            clause, params = make_like_clause(fields, keywords, mode)
+            rows = conn.execute(f"""
+                SELECT 'user_voice' as src, id, timestamp as ts,
+                       text as body, session_title as title
+                FROM user_voice WHERE {clause}
+                ORDER BY timestamp DESC LIMIT ?
+            """, params + [limit]).fetchall()
+            for r in rows:
+                results.append({
+                    'source': r['src'], 'id': str(r['id']),
+                    'ts': r['ts'], 'title': r['title'] or '(no title)',
+                    'body': (r['body'] or '')[:300]
+                })
+
+        # events検索（全主要フィールド）
+        if src_filter in ('all', 'event'):
+            fields = ['title','short_summary','free_note','why_purpose','how_trigger','before_state','after_state','who_actor']
+            clause, params = make_like_clause(fields, keywords, mode)
+            rows = conn.execute(f"""
+                SELECT 'event' as src, event_id as id, when_ts as ts,
+                       title, short_summary as body, what_type, risk_level, why_purpose
+                FROM events WHERE {clause}
+                ORDER BY when_ts DESC LIMIT ?
+            """, params + [limit]).fetchall()
+            for r in rows:
+                results.append({
+                    'source': r['src'], 'id': str(r['id']),
+                    'ts': r['ts'],
+                    'title': r['title'] or r['what_type'] or '(event)',
+                    'body': (r['body'] or r['why_purpose'] or '')[:300],
+                    'risk': r['risk_level']
+                })
+
+        # claude_sessions検索
+        if src_filter in ('all', 'session'):
+            fields = ['args','result_summary','tool']
+            clause, params = make_like_clause(fields, keywords, mode)
+            rows = conn.execute(f"""
+                SELECT 'session' as src, id, timestamp as ts,
+                       tool as title, result_summary as body
+                FROM claude_sessions WHERE {clause}
+                ORDER BY timestamp DESC LIMIT ?
+            """, params + [limit]).fetchall()
+            for r in rows:
+                results.append({
+                    'source': r['src'], 'id': str(r['id']),
+                    'ts': r['ts'],
+                    'title': f"[session] {r['title'] or ''}",
+                    'body': (r['body'] or '')[:300]
+                })
+
+        # guidelines検索
+        if src_filter in ('all', 'guideline'):
+            fields = ['source_text','action_summary','edited_content']
+            clause, params = make_like_clause(fields, keywords, mode)
+            rows = conn.execute(f"""
+                SELECT 'guideline' as src, id, reviewed_at as ts,
+                       category as title, action_summary as body
+                FROM guidelines_reviewed WHERE {clause}
+                ORDER BY reviewed_at DESC LIMIT ?
+            """, params + [limit]).fetchall()
+            for r in rows:
+                results.append({
+                    'source': r['src'], 'id': str(r['id']),
+                    'ts': r['ts'],
+                    'title': f"[guideline] {r['title'] or ''}",
+                    'body': (r['body'] or '')[:300]
+                })
+
         conn.close()
         results.sort(key=lambda x: x.get('ts',''), reverse=True)
-        return jsonify({'results': results[:limit], 'total': len(results), 'query': q})
+        return jsonify({'results': results[:limit], 'total': len(results), 'query': q, 'mode': mode})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
