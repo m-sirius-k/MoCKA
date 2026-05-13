@@ -202,3 +202,79 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 // Init on startup
 initDB().catch(console.error);
+
+// ── 右クリックメニュー（共有・協議・ヒント・グレイト）──────────────────────
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({ id:'orch_share',       title:'MoCKAで共有',         contexts:['selection'] });
+    chrome.contextMenus.create({ id:'orch_collaborate', title:'MoCKAで協議',         contexts:['selection'] });
+    chrome.contextMenus.create({ id:'orch_hint',        title:'ヒント！',             contexts:['selection','page'] });
+    chrome.contextMenus.create({ id:'orch_great',       title:'グレイト！',           contexts:['selection','page'] });
+    chrome.contextMenus.create({ id:'orch_mataka',      title:'またか！（再発）',      contexts:['selection','page'] });
+    chrome.contextMenus.create({ id:'orch_claim',       title:'クレーム！（インシデント）', contexts:['selection','page'] });
+  });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  const text = info.selectionText || '';
+  const url  = tab ? tab.url : '';
+
+  if (info.menuItemId === 'orch_share') {
+    if (!text) return;
+    try {
+      await fetch('http://127.0.0.1:5000/ask', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ c:'B', o:text, memo:'Orchestraから共有' })
+      });
+      chrome.notifications.create({ type:'basic', iconUrl:'icon.png', title:'共有完了', message:'MoCKAに送信しました' });
+    } catch(e) { console.error('share error:', e); }
+    return;
+  }
+
+  if (info.menuItemId === 'orch_collaborate') {
+    if (!text) return;
+    try {
+      await fetch('http://127.0.0.1:5000/orchestra', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ prompt:text, mode:'orchestra' })
+      });
+      chrome.notifications.create({ type:'basic', iconUrl:'icon.png', title:'協議開始', message:'4AI合議を開始しました' });
+    } catch(e) { console.error('collaborate error:', e); }
+    return;
+  }
+
+  if (info.menuItemId === 'orch_hint' || info.menuItemId === 'orch_great') {
+    const outcome = info.menuItemId === 'orch_great' ? 'success_great' : 'success_hint';
+    const label   = info.menuItemId === 'orch_great' ? 'グレイト！' : 'ヒント！';
+    try {
+      await fetch('http://127.0.0.1:5000/success', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ text:text, what_type:outcome, source:url, label:label, timestamp:new Date().toISOString() })
+      });
+      chrome.notifications.create({ type:'basic', iconUrl:'icon.png', title:Orchestra , message:(text||url).slice(0,60) });
+    } catch(e) { console.error('success error:', e); }
+    return;
+  }
+
+  if (info.menuItemId === 'orch_mataka') {
+    try {
+      await fetch('http://127.0.0.1:5000/mataka', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ text:text, url:url, timestamp:new Date().toISOString() })
+      });
+      chrome.notifications.create({ type:'basic', iconUrl:'icon.png', title:'またか！記録', message:(text||'').slice(0,60) });
+    } catch(e) { console.error('mataka error:', e); }
+    return;
+  }
+
+  if (info.menuItemId === 'orch_claim') {
+    try {
+      await fetch('http://127.0.0.1:5000/claim', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ text:text, url:url, timestamp:new Date().toISOString() })
+      });
+      chrome.notifications.create({ type:'basic', iconUrl:'icon.png', title:'クレーム！記録', message:(text||'').slice(0,60) });
+    } catch(e) { console.error('claim error:', e); }
+    return;
+  }
+});
