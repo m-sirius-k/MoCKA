@@ -165,7 +165,20 @@ async def run_gemini(context):
 
 async def run_copilot(context):
     page, status = await get_or_resume_page(context, "Copilot", "copilot.microsoft.com", "https://copilot.microsoft.com/")
-    box = page.locator("textarea").first
+    # Copilot入力欄 - 複数セレクター対応
+    box = None
+    for selector in ["textarea", "#userInput", "[data-testid='composer-input']", "div[contenteditable='true']", "cib-text-input textarea", "div.input-area textarea"]:
+        try:
+            el = page.locator(selector).first
+            await el.wait_for(state="visible", timeout=5000)
+            box = el
+            print(f"[Copilot] セレクター発見: {selector}")
+            break
+        except:
+            continue
+    if box is None:
+        print("[Copilot] 入力欄が見つからない - スキップ")
+        return "Copilot", ""
     await box.click()
     await box.fill(PROMPT)
     await asyncio.sleep(2)
