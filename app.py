@@ -2725,7 +2725,7 @@ def search():
                 SELECT 'user_voice' as src, id, timestamp as ts,
                        text as body, session_title as title
                 FROM user_voice WHERE {clause}
-                ORDER BY timestamp '+order+' LIMIT ?
+                ORDER BY timestamp {order} LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
                 results.append({
@@ -2742,7 +2742,7 @@ def search():
                 SELECT 'event' as src, event_id as id, when_ts as ts,
                        title, short_summary as body, what_type, risk_level, why_purpose
                 FROM events WHERE {clause}
-                ORDER BY when_ts '+order+' LIMIT ?
+                ORDER BY when_ts {order} LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
                 results.append({
@@ -2761,7 +2761,7 @@ def search():
                 SELECT 'session' as src, id, timestamp as ts,
                        tool as title, result_summary as body
                 FROM claude_sessions WHERE {clause}
-                ORDER BY timestamp '+order+' LIMIT ?
+                ORDER BY timestamp {order} LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
                 results.append({
