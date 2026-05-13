@@ -2721,10 +2721,11 @@ def search():
         if src_filter in ('all', 'user_voice'):
             fields = ['text', 'session_title']
             clause, params = make_like_clause(fields, keywords, mode)
+            pc = period_clause.replace('ts', 'timestamp') if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'user_voice' as src, id, timestamp as ts,
                        text as body, session_title as title
-                FROM user_voice WHERE {clause}
+                FROM user_voice WHERE {clause} {pc}
                 ORDER BY timestamp {order} LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
@@ -2738,10 +2739,11 @@ def search():
         if src_filter in ('all', 'event'):
             fields = ['title','short_summary','free_note','why_purpose','how_trigger','before_state','after_state','who_actor']
             clause, params = make_like_clause(fields, keywords, mode)
+            pc2 = period_clause.replace('ts', 'when_ts') if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'event' as src, event_id as id, when_ts as ts,
                        title, short_summary as body, what_type, risk_level, why_purpose
-                FROM events WHERE {clause}
+                FROM events WHERE {clause} {pc2}
                 ORDER BY when_ts {order} LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
@@ -2757,10 +2759,11 @@ def search():
         if src_filter in ('all', 'session'):
             fields = ['args','result_summary','tool']
             clause, params = make_like_clause(fields, keywords, mode)
+            pc3 = period_clause.replace('ts', 'timestamp') if period_clause else ''
             rows = conn.execute(f"""
                 SELECT 'session' as src, id, timestamp as ts,
                        tool as title, result_summary as body
-                FROM claude_sessions WHERE {clause}
+                FROM claude_sessions WHERE {clause} {pc3}
                 ORDER BY timestamp {order} LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
