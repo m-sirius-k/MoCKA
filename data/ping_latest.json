@@ -36,35 +36,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "Claudeの整理はかなり正確です。\n\n特に「Playwrightそのもの」と「各AIサービス規約」は分離して考える必要がある、という点は重要です。\n\nただし、",
+    "text": "ちょっとエージェントの意見",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-02",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「==================================================...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "when": "2026-04-16",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
         "recur": 0,
         "matched": [
-          "指摘",
-          "問題は"
+          "エージェント"
         ],
-        "score": 2
+        "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-28",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "1. 問題の確定（創造憲法レベル）\n指摘は正確であり、原因はここにある：\nfor k, v in todo.items()\nこの v に None が混入し、結果として：\nFirestoreの型変換が",
+        "when": "2026-04-29",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
         "recur": 0,
         "matched": [
-          "指摘",
-          "問題は"
+          "エージェント"
         ],
-        "score": 2
+        "score": 1
       }
     ],
-    "updated_at": "2026-05-13T08:11:47.152Z"
+    "updated_at": "2026-05-13T08:20:13.531Z"
   }
 }
