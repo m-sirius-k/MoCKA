@@ -877,9 +877,8 @@ refreshGuidelines();
 <div class="panel" id="search-panel">
 <div class="panel-header">🔍 KNOWLEDGE SEARCH</div>
 <div style="display:flex;gap:8px;margin-bottom:12px">
-  <input type="text" id="search-input" placeholder="キーワードを入力..." 
-    style="flex:1;background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px 12px;color:#e0e0e0;font-size:13px"
-    id="search-input-box">
+  <input type="text" id="search-input" placeholder="キーワードを入力... (スペース=AND / OR=OR検索)"
+    style="flex:1;background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px 12px;color:#e0e0e0;font-size:13px">
   <select id="search-src"
     style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px;color:#e0e0e0;font-size:12px">
     <option value="all">全て</option>
@@ -887,6 +886,7 @@ refreshGuidelines();
     <option value="event">イベント</option>
     <option value="session">Claudeセッション</option>
     <option value="guideline">ガイドライン</option>
+  </select>
 </div>
 <div id="search-status" style="font-size:11px;color:#666;margin-bottom:8px"></div>
 <div id="search-results" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
