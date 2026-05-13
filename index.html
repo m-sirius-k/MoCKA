@@ -919,7 +919,10 @@ function runSearch(q){
   }
   var srcFilter = document.getElementById('search-src').value;
   document.getElementById('search-status').textContent='検索中...';
-  fetch('/search?q='+encodeURIComponent(q)+'&limit=30')
+  var sortVal = (document.getElementById('search-sort')||{value:'desc'}).value;
+  var periodVal = (document.getElementById('search-period')||{value:'all'}).value;
+  var srcFilter = (document.getElementById('search-src')||{value:'all'}).value;
+  fetch('/search?q='+encodeURIComponent(q)+'&limit=9999&src='+srcFilter+'&sort='+sortVal+'&period='+periodVal)
     .then(function(res){ return res.json(); })
     .then(function(data){
       var items = data.results || [];
