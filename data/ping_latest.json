@@ -30,5 +30,27 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-05-13T09:44:58.681359"
+  "generated_at": "2026-05-13T09:44:58.681359",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -1.0,
+    "danger_rate": 0.0,
+    "success_rate": 1.0,
+    "text": "OK: UI更新完了 lines: 958\n\nPS C:\\Users\\sirok>",
+    "top_events": [
+      {
+        "verdict": "SUCCESS",
+        "when": "2026-03-29",
+        "why": "",
+        "how": "manual_click",
+        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
+        "recur": 0,
+        "matched": [
+          "ok"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-13T00:51:53.482Z"
+  }
 }

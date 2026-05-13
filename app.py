@@ -2679,6 +2679,19 @@ def search():
     q = request.args.get('q', '').strip()
     limit = int(request.args.get('limit', 99999))
     src_filter = request.args.get('src', 'all')
+    sort_order = request.args.get('sort', 'desc')
+    period = request.args.get('period', 'all')
+    order = 'ASC' if sort_order == 'asc' else 'DESC'
+    now = datetime.now()
+    period_map = {
+        'week': now - timedelta(days=7),
+        'month': now - timedelta(days=30),
+        '3month': now - timedelta(days=90),
+        '6month': now - timedelta(days=180),
+        'year': now - timedelta(days=365),
+    }
+    period_from = period_map.get(period)
+    period_clause = f"AND ts >= '{period_from.strftime('%Y%m%d_%H%M%S')}'" if period_from else ''
     if not q or len(q) < 2:
         return jsonify({'results': [], 'total': 0, 'query': q})
     try:
@@ -2712,7 +2725,7 @@ def search():
                 SELECT 'user_voice' as src, id, timestamp as ts,
                        text as body, session_title as title
                 FROM user_voice WHERE {clause}
-                ORDER BY timestamp DESC LIMIT ?
+                ORDER BY timestamp '+order+' LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
                 results.append({
@@ -2729,7 +2742,7 @@ def search():
                 SELECT 'event' as src, event_id as id, when_ts as ts,
                        title, short_summary as body, what_type, risk_level, why_purpose
                 FROM events WHERE {clause}
-                ORDER BY when_ts DESC LIMIT ?
+                ORDER BY when_ts '+order+' LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
                 results.append({
@@ -2748,7 +2761,7 @@ def search():
                 SELECT 'session' as src, id, timestamp as ts,
                        tool as title, result_summary as body
                 FROM claude_sessions WHERE {clause}
-                ORDER BY timestamp DESC LIMIT ?
+                ORDER BY timestamp '+order+' LIMIT ?
             """, params + [limit]).fetchall()
             for r in rows:
                 results.append({

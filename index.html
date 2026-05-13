@@ -877,16 +877,30 @@ refreshGuidelines();
 <div class="panel" id="search-panel">
 <div class="panel-header">🔍 KNOWLEDGE SEARCH</div>
 <div style="display:flex;gap:8px;margin-bottom:12px">
-  <input type="text" id="search-input" placeholder="キーワードを入力... (スペース=AND / OR=OR検索)"
+  <input type="text" id="search-input" placeholder="キーワード (スペース=AND / OR=OR検索)"
     style="flex:1;background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px 12px;color:#e0e0e0;font-size:13px">
-  <select id="search-src"
-    style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px;color:#e0e0e0;font-size:12px">
+  <select id="search-src" style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px;color:#e0e0e0;font-size:12px">
     <option value="all">全て</option>
     <option value="user_voice">発言</option>
     <option value="event">イベント</option>
     <option value="session">Claudeセッション</option>
     <option value="guideline">ガイドライン</option>
   </select>
+</div>
+<div style="display:flex;gap:8px;margin-bottom:10px">
+  <select id="search-sort" style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:6px 8px;color:#e0e0e0;font-size:12px">
+    <option value="desc">新しい順</option>
+    <option value="asc">古い順</option>
+  </select>
+  <select id="search-period" style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:6px 8px;color:#e0e0e0;font-size:12px">
+    <option value="all">全期間</option>
+    <option value="week">今週</option>
+    <option value="month">今月</option>
+    <option value="3month">3ヶ月</option>
+    <option value="6month">6ヶ月</option>
+    <option value="year">今年</option>
+  </select>
+  <span id="search-mode-badge" style="font-size:10px;color:#666;align-self:center;margin-left:4px"></span>
 </div>
 <div id="search-status" style="font-size:11px;color:#666;margin-bottom:8px"></div>
 <div id="search-results" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
@@ -910,6 +924,8 @@ function runSearch(q){
     .then(function(data){
       var items = data.results || [];
       if(srcFilter !== 'all') items = items.filter(function(r){ return r.source===srcFilter; });
+      var badge = document.getElementById('search-mode-badge');
+      if(badge) badge.textContent = data.mode==='OR'?'OR検索':'AND検索';
       document.getElementById('search-status').textContent = items.length+'件 / "'+q+'"';
       document.getElementById('search-results').innerHTML = items.map(function(r){
         var srcBadge = r.source==='user_voice'
@@ -937,6 +953,10 @@ document.addEventListener('DOMContentLoaded', function(){
   var sel = document.getElementById('search-src');
   if(inp) inp.addEventListener('input', function(){ debounceSearch(this.value); });
   if(sel) sel.addEventListener('change', function(){ runSearch(); });
+  var sortEl = document.getElementById('search-sort');
+  var periodEl = document.getElementById('search-period');
+  if(sortEl) sortEl.addEventListener('change', function(){ runSearch(); });
+  if(periodEl) periodEl.addEventListener('change', function(){ runSearch(); });
 });
 </script>
 </body>
