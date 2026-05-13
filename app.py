@@ -1910,6 +1910,7 @@ def _auto_danger_to_essence(incident_text: str):
 # ============================================================
 _last_seal_date = [None]
 _last_event_count = [0]
+_seal_running = [False]
 
 
 def _auto_approve_prevention():
@@ -1961,8 +1962,8 @@ def auto_audit_loop():
                 count = len(db_helper.read_events(limit=None))
             except Exception:
                 count = _last_event_count[0]
-            if True:
-                if count - _last_event_count[0] >= 50:
+            if count - _last_event_count[0] >= 50 and not _seal_running[0]:
+                if True:
                     seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
                     if seal_script.exists():
                         subprocess.run(["python", str(seal_script), "AUTO_SEAL_50EVT"],
