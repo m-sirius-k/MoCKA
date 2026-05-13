@@ -2797,7 +2797,14 @@ def search():
                 })
 
         conn.close()
-        results.sort(key=lambda x: x.get('ts',''), reverse=(sort_order=='desc'))
+        def normalize_ts(ts):
+            if not ts: return ''
+            ts = str(ts)
+            if 'T' in ts: return ts[:19].replace('T',' ')
+            if '_' in ts and len(ts) >= 15:
+                return ts[:8]+' '+ts[9:11]+':'+ts[11:13]+':'+ts[13:15]
+            return ts
+        results.sort(key=lambda x: normalize_ts(x.get('ts','')), reverse=(sort_order=='desc'))
         return jsonify({'results': results[:limit], 'total': len(results), 'query': q, 'mode': mode})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
