@@ -7745,3 +7745,118 @@ E20260513_006,2026-05-13T12:29:45,human_nsjsiro,broadcast,chrome_extension,mocka
 E20260513_006,2026-05-13T12:29:45,human_nsjsiro,broadcast,chrome_extension,mocka-extension/background.js,save/broadcast from command center,context_menu_click,browser_extension,in_operation,normal,B,Gemini,共有配信 Gemini,ただ正直に言うと、「右クリック共有が突然使えなくなった」という事象は今回だけではなく、app.pyが落ちるたびに発生する構造的な問題です。  MoCKA-START.batを手動で起動しないと復活しないので、PC起動時の自動起動を設定していないと必ずこうなります。  Windowsタスクスケジューラでログオン時にMoCKA-START.batを自動実行する設定を入れますか？,N/A,N/A,N/A,local,N/A,N/A,N/A,ただ正直に言うと、「右クリック共有が突然使えなくなった」という事象は今回だけではなく、app.pyが落ちるたびに発生する構造的な問題です。  MoCKA-START.batを手動で起動しないと復活しないので、PC起動時の自動起動を設定していないと必ずこうなります。  Windowsタスクスケジューラでログオン時にMoCKA-START.batを自動実行する設定を入れますか？
 E20260513_008,2026-05-13T03:56:55.521Z,kimura,user_voice,claude.ai,0d011b24-5521-4c,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,cpu　持ってかれてる,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,cpu　持ってかれてる
 MATAKA_20260513_040637_CLAU,2026-05-13T04:06:37,Claude,MATAKA,https://claude.ai/chat/f94b137e-7c61-402d-b05d-78520bc5cef2,chrome_extension,再発#1: MATAKA,またか！ボタン,external,in_operation,normal,B,recurrence,失礼しました。PythonコードをそのままPowerShellに貼ってしまいました。,再発#1,recurring_issue,recorded,incident,ai_behavior,recurrence_count=1,N/A,N/A,hash=2ef90aa4e0341924|who=claude|pattern=失礼しました。PythonコードをそのままPowerShellに貼ってしまいました。
+E20260513_009,2026-05-13T07:52:00.742Z,kimura,user_voice,claude.ai,b30fbf35-bd87-40,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"結論として、今の案からのアップデートは「Orchestra / Orchestra One」ペアで確定させて、その上に Launch Edition（$8・500本）を被せる構造が一番きれいです。
+
+1. いまの評価コメントの要点整理
+
+あなたの整理はこう言っていると理解しました。
+
+Solo は語感は良いが、「簡易版」に見えるリスクがある。
+
+実態は「API依存版（Orchestra）」より「自",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"結論として、今の案からのアップデートは「Orchestra / Orchestra One」ペアで確定させて、その上に Launch Edition（$8・500本）を被せる構造が一番きれいです。
+
+1. いまの評価コメントの要点整理
+
+あなたの整理はこう言っていると理解しました。
+
+Solo は語感は良いが、「簡易版」に見えるリスクがある。
+
+実態は「API依存版（Orchestra）」より「自立運用版（Solo/One/etc）」の方が上位。
+
+なので、名前に“上位感・完全体感”をきちんと乗せたい。
+
+その上で出している候補は:
+
+Orchestra One（最も自然で汎用）
+
+Orchestra Prime（プレミアムだが、やや既視感）
+
+Orchestra Autonomous（思想は強いが、一般向けには硬い）
+
+この評価軸はそのまま採用してよいと思います。
+
+2. 名前の最終案（プロダクト階層）
+
+READMEの確定プラン構造と整合させると、こうなります。
+
+プラン名（提案） 価格 役割・意味
+
+Free $0 保存・検索・CSV/JSON（API前提）
+
+Orchestra $5/月 5AI並列合議・Claude統合（API使用）
+
+Orchestra One $10/月 全機能・API不要・ローカル完結の完全版
+
+Orchestra One Launch Edition $8/月 上記と同じ機能、500本限定のローンチ価格
+
+ポイント:
+
+「Free / Orchestra / Orchestra One」できれいな序列感が出る。
+
+“One” が「中核・完全体・オールインワン」を自然に連想させる。
+
+“Launch Edition” はプロダクトの儀式性・初期参加感を付与できる。
+
+3. 500本限定の「儀式」の設計
+
+あなたが書いている通り、限定価格は「やるなら本当にやる」が重要です。
+
+最低限やるべきこと:
+
+Gumroad側: タイトル or 説明文に「500本限定 Launch Edition（残数表示）」を明記。
+
+手動でもよいので、「残り◯本」を更新するか、Gumroadの販売本数を見てLP側の文言を変える運用ルールを決める。
+
+500本到達後は、本当に $10 に切り替え、「Launch Edition sold out」の文言に変える。
+
+これを守るだけで、初期ユーザー = 儀式に参加した人という物語を作れます。
+
+4. READMEとの整合（次の修正ポイント）
+
+README-4.md は今こうなっています。
+
+プラン 内容 価格
+
+Free 保存・検索・API必要 $0
+
+Local 保存・検索・API不要・ローカル $5/月
+
+Orchestra 4AI並列合議・Playwright $5/月
+
+Bundle 全部入り $8/月
+
+ここからやりたいのは:
+
+Local → Orchestra One のコア機能として吸収（「ローカル完結・アーカイブ」は One の説明で前面に出す）
+
+Bundle → Orchestra One Launch Edition（$8）に置き換え
+
+価格は「$5 / $10（$8）構造」にアップデート
+
+なので、README側はこう書き換えるのが良さそうです。
+
+text
+
+## 価格（暫定）
+
+| プラン | 内容 | 価格 |
+
+|---------------------------|---------------------------------------|--------|
+
+| Free | 保存・検索・CSV/JSON出力（API前提） | $0 |
+
+| Orchestra | 5AI並列合議・Claude統合（API使用） | $5/月 |
+
+| Orchestra One Launch Edition | 全機能・API不要・ローカル完結（500本限定） | $8/月 |
+
+| Orchestra One | 全機能・API不要・ローカル完結 | $10/月 |
+
+5. 次の一手
+
+ここまで決め切れているので、次の作業としては:
+
+Gumroad用の価格・プラン説明を、この「Orchestra / Orchestra One / Launch Edition」構造で文章化。
+
+その文章をベースに、Chrome Web Store 用の短縮版テキストを後で抜き出す。
+
+に進めるのが自然です。"
