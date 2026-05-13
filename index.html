@@ -879,8 +879,8 @@ refreshGuidelines();
 <div style="display:flex;gap:8px;margin-bottom:12px">
   <input type="text" id="search-input" placeholder="キーワードを入力..." 
     style="flex:1;background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px 12px;color:#e0e0e0;font-size:13px"
-    oninput="debounceSearch(this.value)">
-  <select id="search-src" onchange="runSearch()" 
+    id="search-input-box">
+  <select id="search-src"  
     style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px;color:#e0e0e0;font-size:12px">
     <option value="all">全て</option>
     <option value="user_voice">発言</option>
@@ -931,6 +931,12 @@ function runSearch(q){
     });
 }
 function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+document.addEventListener('DOMContentLoaded', function(){
+  var inp = document.getElementById('search-input');
+  var sel = document.getElementById('search-src');
+  if(inp) inp.addEventListener('input', function(){ debounceSearch(this.value); });
+  if(sel) sel.addEventListener('change', function(){ runSearch(); });
+});
 </script>
 </body>
 </html>
