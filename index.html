@@ -922,7 +922,9 @@ function runSearch(q){
   var sortVal = (document.getElementById('search-sort')||{value:'desc'}).value;
   var periodVal = (document.getElementById('search-period')||{value:'all'}).value;
   var srcFilter = (document.getElementById('search-src')||{value:'all'}).value;
-  fetch('/search?q='+encodeURIComponent(q)+'&limit=9999&src='+srcFilter+'&sort='+sortVal+'&period='+periodVal)
+  var searchUrl = '/search?q='+encodeURIComponent(q)+'&limit=9999&src='+srcFilter+'&sort='+sortVal+'&period='+periodVal;
+  document.getElementById('search-status').textContent = 'URL: '+searchUrl;
+  fetch(searchUrl)
     .then(function(res){ return res.json(); })
     .then(function(data){
       var items = data.results || [];
