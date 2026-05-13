@@ -891,43 +891,46 @@ refreshGuidelines();
 <div id="search-results" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
 </div>
 
+
 <script>
-let _searchTimer = null;
-function debounceSearch(v){ clearTimeout(_searchTimer); _searchTimer = setTimeout(()=>runSearch(v),350); }
-async function runSearch(q){
-  q = q || document.getElementById('search-input').value;
-  if(!q || q.length < 2){ 
+var _searchTimer = null;
+function debounceSearch(v){ clearTimeout(_searchTimer); _searchTimer = setTimeout(function(){ runSearch(v); }, 350); }
+function runSearch(q){
+  q = q !== undefined ? q : document.getElementById('search-input').value;
+  if(!q || q.length < 2){
     document.getElementById('search-results').innerHTML='';
     document.getElementById('search-status').textContent='';
     return;
   }
-  const src = document.getElementById('search-src').value;
+  var srcFilter = document.getElementById('search-src').value;
   document.getElementById('search-status').textContent='検索中...';
-  try {
-    const res = await fetch('/search?q='+encodeURIComponent(q)+'&limit=30');
-    const data = await res.json();
-    let items = data.results || [];
-    if(src !== 'all') items = items.filter(r=>r.source===src);
-    document.getElementById('search-status').textContent = items.length+'件 / "'+q+'"';
-    document.getElementById('search-results').innerHTML = items.map(r=>{
-      const srcBadge = r.source==='user_voice'
-        ? '<span style="color:#a78bfa;font-size:10px">発言</span>'
-        : '<span style="color:#4fc3f7;font-size:10px">イベント</span>';
-      const risk = r.risk ? '<span style="color:'+(r.risk==='HIGH'||r.risk==='CRITICAL'?'#ff6b6b':'#888')+';font-size:10px"> ['+r.risk+']</span>' : '';
-      const ts = (r.ts||'').substring(0,16).replace('T',' ');
-      return '<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:6px;padding:10px 12px;cursor:pointer" onclick="this.querySelector('.body-text').style.display=this.querySelector('.body-text').style.display==='none'?'block':'none'">'
-        +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
-        +'<span style="font-size:12px;color:#e0e0e0;font-weight:500">'+escH(r.title||'')+'</span>'
-        +'<span style="font-size:10px;color:#555">'+ts+'</span></div>'
-        +'<div style="display:flex;gap:8px;align-items:center">'+srcBadge+risk+'</div>'
-        +'<div class="body-text" style="display:none;margin-top:8px;font-size:11px;color:#888;line-height:1.5;border-top:1px solid #2a2a4a;padding-top:8px">'+escH(r.body||'')+'</div>'
-        +'</div>';
-    }).join('');
-  } catch(e){
-    document.getElementById('search-status').textContent='エラー: '+e.message;
-  }
+  fetch('/search?q='+encodeURIComponent(q)+'&limit=30')
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      var items = data.results || [];
+      if(srcFilter !== 'all') items = items.filter(function(r){ return r.source===srcFilter; });
+      document.getElementById('search-status').textContent = items.length+'件 / "'+q+'"';
+      document.getElementById('search-results').innerHTML = items.map(function(r){
+        var srcBadge = r.source==='user_voice'
+          ? '<span style="color:#a78bfa;font-size:10px">発言</span>'
+          : '<span style="color:#4fc3f7;font-size:10px">イベント</span>';
+        var risk = r.risk ? '<span style="color:'+(r.risk==='HIGH'||r.risk==='CRITICAL'?'#ff6b6b':'#888')+';font-size:10px"> ['+r.risk+']</span>' : '';
+        var ts = (r.ts||'').substring(0,16).replace('T',' ');
+        var id = 'body_'+Math.random().toString(36).substr(2,9);
+        return '<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:6px;padding:10px 12px;cursor:pointer;margin-bottom:4px" onclick="var el=document.getElementById(''+id+'');el.style.display=el.style.display==='none'?'block':'none'">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
+          +'<span style="font-size:12px;color:#e0e0e0;font-weight:500">'+escH(r.title||'')+'</span>'
+          +'<span style="font-size:10px;color:#555">'+ts+'</span></div>'
+          +'<div>'+srcBadge+risk+'</div>'
+          +'<div id="'+id+'" style="display:none;margin-top:8px;font-size:11px;color:#888;line-height:1.5;border-top:1px solid #2a2a4a;padding-top:8px">'+escH(r.body||'')+'</div>'
+          +'</div>';
+      }).join('');
+    })
+    .catch(function(e){
+      document.getElementById('search-status').textContent='エラー: '+e.message;
+    });
 }
-function escH(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 </script>
 </body>
 </html>
