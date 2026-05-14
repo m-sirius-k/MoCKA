@@ -8378,3 +8378,16 @@ const req = indexedDB.open('orchestra_db'); req.onsuccess = e => { const db = e.
 e => { const db = e.target.result; const tx = db.transaction('messages', 'readonly'); const store = tx.objectStore('messages'); const all = store.getAll(); all.onsuccess = () => console.log('件数:', al…
 
 VM14:1 件数: 0 undefined"
+E20260514_017,2026-05-14T00:42:20.617Z,kimura,user_voice,claude.ai,90793efd-6a60-45,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"さっきのだって！件数: 0 undefined
+
+VM14:1 件数: 0 undefined
+
+VM18:1 undefined
+
+Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist.",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"さっきのだって！件数: 0 undefined
+
+VM14:1 件数: 0 undefined
+
+VM18:1 undefined
+
+Unchecked runtime.lastError: Could not establish connection. Receiving end does not exist."

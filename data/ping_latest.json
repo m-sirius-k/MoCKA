@@ -46,33 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "// DBの中身を直接確認\n\nconst req = indexedDB.open('orchestra_db');\n\nreq.onsuccess = e =>",
+    "text": "さっきのだって！件数: 0 undefined\n\nVM14:1 件数: 0 undefined\n\nVM18:1 undefined\n\nUnchecked run",
     "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
-        "recur": 0,
-        "matched": [
-          "verify"
-        ],
-        "score": 1
-      },
       {
         "verdict": "DANGER",
         "when": "2026-04-05",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "o changes added to commit (use \"git add\" and/or \"git commit -a\")\nCOMMIT: 6561fc5977b0e3f3ad7323b3838",
+        "note": "FullName\n--------\nC:\\Users\\sirok\\MoCKA\\verify_all.py\nC:\\Users\\sirok\\MoCKA\\verify\\verify_all.py\nPS C:",
         "recur": 0,
         "matched": [
-          "verify"
+          "さっき"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-31",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "さっき　打ってくれたEVENTS_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), \"..\", \"data\", \"event",
+        "recur": 0,
+        "matched": [
+          "さっき"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:40:01.709Z"
+    "updated_at": "2026-05-14T00:42:20.617Z"
   }
 }
