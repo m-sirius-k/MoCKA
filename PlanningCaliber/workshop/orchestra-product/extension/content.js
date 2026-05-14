@@ -34,7 +34,7 @@
 
     // User messages
     document.querySelectorAll('[data-testid="user-message"]').forEach((el) => {
-      const text = el.innerText?.trim();
+      const text = el.textContent?.trim();
       if (!text) return;
       messages.push({ role: 'user', text });
     });
@@ -45,7 +45,7 @@
       '.font-claude-response'
     );
     assistantBlocks.forEach((el) => {
-      const text = el.innerText?.trim();
+      const text = el.textContent?.trim();
       if (!text) return;
       messages.push({ role: 'assistant', text });
     });
