@@ -130,3 +130,9 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 loadStats();
 loadMessages();
+
+// 2秒ごとに自動更新
+setInterval(() => {
+  loadStats();
+  loadMessages(currentQuery);
+}, 2000);

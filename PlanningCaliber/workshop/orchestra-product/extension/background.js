@@ -118,7 +118,7 @@ async function exportCSV() {
     const content = '"' + m.content.replace(/"/g, '""').replace(/\n/g, '\\n') + '"';
     return `${m.id},${m.service},${m.role},${m.timestamp},${m.session_id},${content}`;
   });
-  return [header, ...rows].join('\n');
+  return '\uFEFF' + [header, ...rows].join('\n');
 }
 
 async function clearAll() {
