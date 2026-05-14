@@ -1,0 +1,282 @@
+{
+  "meta": {
+    "version": "1.0",
+    "created": "2026-05-15",
+    "purpose": "MoCKA第三の柱『発明する文明』— インシデント・記録データをSCAMPER7視点で発明的解決策に変換するテンプレートライブラリ",
+    "philosophy": "記録→予測→発明。失敗を制度として昇華させ、次の設計を生む",
+    "usage": "incident / operation / philosophy の各データをinputとして受け取り、7視点で問いかけを展開する"
+  },
+  "scamper": {
+    "S": {
+      "label": "Substitute（代替）",
+      "core_question": "これを別のもので代替できないか？",
+      "description": "現行の要素・プロセス・素材・役割を別のもので置き換える",
+      "mocka_context": "インシデントの根本原因となった仕組みを、別の仕組みで代替する発想",
+      "templates": [
+        {
+          "id": "S-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデントを引き起こした「{what}」を、別の仕組みで代替できないか？",
+          "example_input": "what=PowerShell文字化け",
+          "example_output": "Python UTF-8統一書き込みで代替 → file_editor.py制度化",
+          "output_type": "代替設計案"
+        },
+        {
+          "id": "S-02",
+          "trigger": "OPERATION",
+          "question": "現在「{who}」が担っている役割を、別のAIやシステムで代替できないか？",
+          "example_input": "who=Claude（手動確認）",
+          "example_output": "auto_gate.pyで自動承認に代替",
+          "output_type": "役割代替案"
+        },
+        {
+          "id": "S-03",
+          "trigger": "RECURRENCE",
+          "question": "この再発（{n}回目）を防ぐために、人間判断を自動判定で代替できないか？",
+          "example_input": "n=3",
+          "example_output": "mataka自動検知 + prevention_queue自動昇格",
+          "output_type": "自動化代替案"
+        }
+      ]
+    },
+    "C": {
+      "label": "Combine（結合）",
+      "core_question": "複数の要素を組み合わせて新しい価値を生めないか？",
+      "description": "別々に存在している機能・アイデア・プロセスを統合する",
+      "mocka_context": "独立して動いているMoCKAの各モジュールを組み合わせることで、新しい制度を生む",
+      "templates": [
+        {
+          "id": "C-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデント（{title}）と類似した過去インシデントを組み合わせて、パターン名を付けられないか？",
+          "example_input": "title=CSV文字化け再発",
+          "example_output": "『エンコーディング漂流症候群』パターン → danger_patternsに登録",
+          "output_type": "パターン命名・登録"
+        },
+        {
+          "id": "C-02",
+          "trigger": "OPERATION",
+          "question": "「{operation_a}」と「{operation_b}」を統合すると、どんな新機能が生まれるか？",
+          "example_input": "operation_a=morphology_engine, operation_b=PHL-OS",
+          "example_output": "形態素解析スコアがPHL-OSモジュール選択に直結するリアルタイム適応エンジン",
+          "output_type": "統合機能案"
+        },
+        {
+          "id": "C-03",
+          "trigger": "PHILOSOPHY",
+          "question": "「{philosophy}」と現在の実装を組み合わせると、どんな新しい制度的価値が生まれるか？",
+          "example_input": "philosophy=失敗は資産になる",
+          "example_output": "インシデントDB → 論文Study 4候補 → 学術的価値に変換する制度",
+          "output_type": "制度的価値案"
+        }
+      ]
+    },
+    "A": {
+      "label": "Adapt（適応）",
+      "core_question": "他の分野・文脈の解決策を転用できないか？",
+      "description": "成功している別領域のアイデア・設計・制度を現在の問題に適応させる",
+      "mocka_context": "植物制御工学・製造業QC・航空安全など、きむら博士の専門知識をMoCKAに転用する",
+      "templates": [
+        {
+          "id": "A-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデントと構造的に似た問題が、製造業・航空・医療などで解決されている事例はあるか？その手法をMoCKAに転用できないか？",
+          "example_input": "AI出力の信頼性問題",
+          "example_output": "航空FMEAを転用 → MoCKA Failure Mode Catalogの制度化",
+          "output_type": "他領域転用案"
+        },
+        {
+          "id": "A-02",
+          "trigger": "OPERATION",
+          "question": "植物制御工学の「フィードバック制御」概念をMoCKAの「{operation}」に適応させると、どう設計が変わるか？",
+          "example_input": "operation=essence自動更新",
+          "example_output": "PID制御型essence更新 — 偏差(deviation)に応じて更新頻度を動的調整",
+          "output_type": "制御工学転用案"
+        },
+        {
+          "id": "A-03",
+          "trigger": "RECURRENCE",
+          "question": "この再発パターンは、ハインリッヒの法則のどの層に属するか？他の安全工学の防止手法を適応できないか？",
+          "example_input": "再発=PowerShell誤書き込み 3回",
+          "example_output": "Layer2（軽微）→ ポカヨケ（物理的防止）転用 → Python強制経由ゲート",
+          "output_type": "安全工学転用案"
+        }
+      ]
+    },
+    "M": {
+      "label": "Modify / Magnify / Minify（変更・拡大・縮小）",
+      "core_question": "規模・頻度・強度を変えたらどうなるか？",
+      "description": "要素を大きくする・小さくする・変形させることで新しい可能性を探る",
+      "mocka_context": "MoCKAの記録粒度・監視頻度・AI数・適用範囲を変えることで設計の幅を広げる",
+      "templates": [
+        {
+          "id": "M-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデント（{title}）の影響範囲を10倍に拡大したら、どんな制度が必要になるか？",
+          "example_input": "title=Gemini捏造報告書インシデント",
+          "example_output": "全AI出力に対する多重検証制度（Cross Audit強制化）",
+          "output_type": "スケール拡大設計"
+        },
+        {
+          "id": "M-02",
+          "trigger": "OPERATION",
+          "question": "「{operation}」の実行頻度を現在の{freq}から1/10に縮小したとき、失われる価値は何か？逆に得られるものは？",
+          "example_input": "operation=essence更新, freq=5分",
+          "example_output": "縮小: リアルタイム性低下。得: CPU負荷削減・バッチ処理最適化",
+          "output_type": "頻度最適化案"
+        },
+        {
+          "id": "M-03",
+          "trigger": "PHILOSOPHY",
+          "question": "「{philosophy}」をMoCKA単体から、複数組織・複数文明に拡大適用するとどんな設計が必要か？",
+          "example_input": "philosophy=AIを信じるな、システムで縛れ",
+          "example_output": "MoCKA OSS化 — caliberをアプリとして配布・各組織が文明核を持てる設計",
+          "output_type": "文明拡張設計"
+        }
+      ]
+    },
+    "P": {
+      "label": "Put to other uses（転用）",
+      "core_question": "この仕組み・データを別の目的に使えないか？",
+      "description": "現在の目的以外の用途・市場・ユーザーに適用する",
+      "mocka_context": "MoCKAが蓄積したインシデントデータ・パターンライブラリを、論文・製品・教育に転用する",
+      "templates": [
+        {
+          "id": "P-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデント記録（{n}件の蓄積データ）を、論文の実験データとして転用できないか？",
+          "example_input": "n=1223",
+          "example_output": "events.db → Study 4ハインリッヒ実測論文 → AIES 2027候補",
+          "output_type": "研究転用案"
+        },
+        {
+          "id": "P-02",
+          "trigger": "OPERATION",
+          "question": "MoCKAの「{operation}」機能を、Orchestra製品の機能として転用・販売できないか？",
+          "example_input": "operation=PHL-OS（Persistent History Layer）",
+          "example_output": "Orchestra Proプラン機能 — 会話履歴から自動学習するAIパーソナライゼーション",
+          "output_type": "製品転用案"
+        },
+        {
+          "id": "P-03",
+          "trigger": "PHILOSOPHY",
+          "question": "MoCKAの「{philosophy}」を、企業のAIガバナンス教育コンテンツとして転用できないか？",
+          "example_input": "philosophy=失敗は制度として昇華させる",
+          "example_output": "AI導入企業向けインシデント管理研修 → MoCKA Caliber認定制度",
+          "output_type": "教育転用案"
+        }
+      ]
+    },
+    "E": {
+      "label": "Eliminate（排除）",
+      "core_question": "削除・省略したらシンプルになるものは何か？",
+      "description": "不要な要素・プロセス・依存を取り除くことで本質に近づく",
+      "mocka_context": "MoCKAを複雑にしている依存・プロセス・中間層を排除し、制度核を純化する",
+      "templates": [
+        {
+          "id": "E-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデント（{title}）の根本に「排除すべき不要な複雑さ」はないか？",
+          "example_input": "title=CSVパイプライン文字化け多段インシデント",
+          "example_output": "CSV自体を排除 → SQLite単一化で解決（TODO_090として制度化済み）",
+          "output_type": "シンプル化案"
+        },
+        {
+          "id": "E-02",
+          "trigger": "OPERATION",
+          "question": "「{operation}」のプロセスから、削除してもMoCKAの本質が失われない要素はあるか？",
+          "example_input": "operation=essence多段パイプライン（RAW→REDUCED→RE_REDUCED→ESSENCE）",
+          "example_output": "中間層REDUCED廃止 → きむら博士発言を直接ESSENCE抽出",
+          "output_type": "プロセス削減案"
+        },
+        {
+          "id": "E-03",
+          "trigger": "PHILOSOPHY",
+          "question": "「{philosophy}」の中で、現在の実装と矛盾している・形骸化している部分はないか？排除して再構成すると何が残るか？",
+          "example_input": "philosophy=全記録主義",
+          "example_output": "きむら博士発言以外のノイズを排除 → 品質優先の選択的記録に純化",
+          "output_type": "哲学純化案"
+        }
+      ]
+    },
+    "R": {
+      "label": "Reverse / Rearrange（逆転・再配置）",
+      "core_question": "逆にしたら・順番を入れ替えたらどうなるか？",
+      "description": "因果関係・順序・役割・視点を逆転させることで新しい設計を発見する",
+      "mocka_context": "MoCKAの因果ループを逆から設計する — 「記録して予防」から「予防して記録」へ",
+      "templates": [
+        {
+          "id": "R-01",
+          "trigger": "INCIDENT",
+          "question": "このインシデント（{title}）の原因と結果を逆転させると、どんな予防設計が見えてくるか？",
+          "example_input": "title=auto_audit_loop CPU暴走",
+          "example_output": "逆転: CPU監視が先にあり、閾値超えたらloop自動停止する設計",
+          "output_type": "予防逆転設計"
+        },
+        {
+          "id": "R-02",
+          "trigger": "OPERATION",
+          "question": "現在「{who}→{what}」の順で行っている処理を逆転（{what}→{who}）にしたとき、新しい価値が生まれないか？",
+          "example_input": "who=Claude, what=essenceを読んで回答",
+          "example_output": "逆転: 回答内容からessenceを自動生成 → 対話からessenceが育つ自己組織化",
+          "output_type": "フロー逆転案"
+        },
+        {
+          "id": "R-03",
+          "trigger": "PHILOSOPHY",
+          "question": "「{philosophy}」を逆の立場（AIがきむら博士をガバナンスする）から見ると、どんな設計になるか？",
+          "example_input": "philosophy=AIを信じるな、システムで縛れ",
+          "example_output": "逆転: MoCKAがきむら博士の判断を記録・パターン化し、過去の意思決定との整合性を検証する",
+          "output_type": "逆転ガバナンス設計"
+        }
+      ]
+    }
+  },
+  "expansion_rules": {
+    "description": "インシデント1件に対してSCAMPERを展開する際のルール",
+    "input_fields": ["title", "what", "who", "why", "how", "n", "operation", "philosophy", "freq"],
+    "trigger_mapping": {
+      "INCIDENT": ["S-01", "S-03", "C-01", "A-01", "A-03", "M-01", "P-01", "E-01", "R-01"],
+      "OPERATION": ["S-02", "C-02", "A-02", "M-02", "P-02", "E-02", "R-02"],
+      "PHILOSOPHY": ["C-03", "M-03", "P-03", "E-03", "R-03"]
+    },
+    "output_format": {
+      "scamper_id": "S-01など",
+      "question_filled": "変数置換済みの問いかけ",
+      "candidate_answer": "MoCKA文脈での発明案",
+      "next_action": "TODO登録候補 or 設計メモ"
+    }
+  },
+  "test_case": {
+    "description": "Phase1手動テスト用インシデント",
+    "input": {
+      "trigger": "INCIDENT",
+      "title": "auto_audit_loop CPU暴走再発",
+      "what": "auto_audit_loopの無条件実行",
+      "who": "Claude（修正担当）",
+      "why": "_seal_running mutexを追加したが条件分岐が不完全だった",
+      "how": "app.py内のループ処理が起動時から無制限に実行",
+      "n": 2
+    },
+    "expected_outputs": [
+      {
+        "scamper_id": "S-01",
+        "question_filled": "このインシデントを引き起こした「auto_audit_loopの無条件実行」を、別の仕組みで代替できないか？",
+        "candidate_answer": "Windowsタスクスケジューラによる外部トリガー方式に代替 — app.py内ループを廃止し、定時実行を外部委譲",
+        "next_action": "TODO候補: Go移行時にWindowsサービス化"
+      },
+      {
+        "scamper_id": "R-01",
+        "question_filled": "このインシデント（auto_audit_loop CPU暴走再発）の原因と結果を逆転させると、どんな予防設計が見えてくるか？",
+        "candidate_answer": "逆転: CPU監視が先にあり、閾値（80%）超えたらloop自動停止するwatch dog設計",
+        "next_action": "TODO候補: app.pyにCPU閾値ガード追加"
+      },
+      {
+        "scamper_id": "A-03",
+        "question_filled": "この再発パターンは、ハインリッヒの法則のどの層に属するか？他の安全工学の防止手法を適応できないか？",
+        "candidate_answer": "Layer1（重大）判定 → ポカヨケ転用: startup時のmutex状態をassertionで強制検査、失敗したら起動拒否",
+        "next_action": "TODO候補: MoCKA-START.bat起動前チェックスクリプト"
+      }
+    ]
+  }
+}
