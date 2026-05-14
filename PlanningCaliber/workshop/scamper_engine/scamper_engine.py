@@ -26,7 +26,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).parent
 MOCKA_DIR = Path("C:/Users/sirok/MoCKA")
 TEMPLATES_PATH = BASE_DIR / "scamper_templates.json"
-DB_PATH = MOCKA_DIR / "mocka_events.db"
+DB_PATH = MOCKA_DIR / "data" / "mocka_events.db"
 OUTPUT_DIR = BASE_DIR / "scamper_outputs"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
