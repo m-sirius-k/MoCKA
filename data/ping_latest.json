@@ -46,33 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "355　　　0",
+    "text": "試験POP2回目！試験送信",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-03-26",
+        "when": "2026-05-09",
         "why": "voice_capture",
-        "how": "export_import",
-        "note": "PS C:\\Users\\sirok\\MoCKA> Get-ChildItem -Recurse -Filter \"*.bak*\" -Name\nmain_loop.py.bak_20260218_152",
+        "how": "chrome_extension_v15",
+        "note": "試験します試験します　この文字列は試験です",
         "recur": 0,
         "matched": [
-          "355"
+          "試験"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-26",
+        "when": "2026-03-30",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "PS C:\\Users\\sirok\\MoCKA> cat runtime\\main\\ledger.json | Select-Object -First 30\n[\n  {\n    \"type\": \"D",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」への各AI回答です。統合分析してください：\n\n【ChatGPT】\nChatGPT:\nPlaywright機能群のMoCKA統合評価\n\n副題：記録",
         "recur": 0,
         "matched": [
-          "355"
+          "試験"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:32:13.814Z"
+    "updated_at": "2026-05-14T00:35:25.051Z"
   }
 }
