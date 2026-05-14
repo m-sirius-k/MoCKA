@@ -56,17 +56,15 @@ def fetch_events(trigger_type=None, event_id=None, limit=5):
     elif trigger_type:
         cur.execute(
             """SELECT * FROM events
-               WHERE what_type LIKE ? OR tags LIKE ?
+               WHERE what_type LIKE ?
                ORDER BY when_ts DESC LIMIT ?""",
-            (f"%{trigger_type}%", f"%{trigger_type}%", limit)
+            (f"%{trigger_type}%", limit)
         )
     else:
         # インシデント系を優先取得
         cur.execute(
             """SELECT * FROM events
                WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM')
-                  OR tags LIKE '%INCIDENT%'
-                  OR tags LIKE '%DANGER%'
                ORDER BY when_ts DESC LIMIT ?""",
             (limit,)
         )
@@ -77,26 +75,20 @@ def fetch_events(trigger_type=None, event_id=None, limit=5):
 
 # ── イベントからSCAMPER入力変数を抽出 ──────────────────────
 def extract_variables(event):
-    desc = event.get("description", "") or ""
-    title = event.get("title", "") or ""
-    tags = event.get("tags", "") or ""
+    # DBの実カラムを使用（free_note, why_purpose, how_trigger, who_actor, what_type）
+    desc   = event.get("free_note", "") or ""
+    title  = event.get("title", "") or ""
+    who    = event.get("who_actor", "") or "Claude"
+    what_t = event.get("what_type", "") or ""
+    why    = event.get("why_purpose", "") or ""
+    how    = event.get("how_trigger", "") or ""
 
     # triggerタイプ判定
     trigger = "INCIDENT"
-    if any(t in tags.upper() for t in ["OPERATION", "CHANGE_DONE", "CHANGE_START"]):
+    if what_t in ("CHANGE_DONE", "CHANGE_START", "OPERATION", "FIX"):
         trigger = "OPERATION"
-    elif any(t in tags.upper() for t in ["PHILOSOPHY", "DESIGN"]):
+    elif what_t in ("PHILOSOPHY", "DESIGN"):
         trigger = "PHILOSOPHY"
-
-    # 5W1H抽出（正規表現）
-    def extract_field(pattern, text, default=""):
-        m = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
-        return m.group(1).strip() if m else default
-
-    who  = extract_field(r"WHO\s*[:：]\s*(.+)", desc) or "Claude"
-    what = extract_field(r"WHAT\s*[:：]\s*(.+)", desc) or title
-    why  = extract_field(r"WHY\s*[:：]\s*(.+)", desc) or ""
-    how  = extract_field(r"HOW\s*[:：]\s*(.+)", desc) or ""
 
     # タイトルから短いwhatを生成
     short_what = title.replace("INCIDENT:", "").replace("CHANGE_DONE:", "").strip()
@@ -105,7 +97,7 @@ def extract_variables(event):
     return {
         "trigger": trigger,
         "title": short_what,
-        "what": what[:60] if what else short_what,
+        "what": short_what,
         "who": who,
         "why": why[:60] if why else "不明",
         "how": how[:60] if how else "不明",
