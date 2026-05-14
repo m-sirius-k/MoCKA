@@ -42,37 +42,12 @@
   ],
   "generated_at": "2026-05-14T07:45:07.927478",
   "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "無効がでてる",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-08",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] ちょっとあなたと話したい！ この論文は　本質的に　[AIとの協業　パートナーシップ]なんです！ 礼儀/作法/なり振る舞い/　自分の行動と発言に責任を持たせるような Claude君も良くあ",
-        "recur": 0,
-        "matched": [
-          "てる"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-09",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] まずさー　こうやって私が打つchatの言葉を全て保存するところから開始して欲しい！ 自分でも　過去に書いた記憶はあります　でも　正確に思い出せないそんなことがあります  AIは　最適解で",
-        "recur": 0,
-        "matched": [
-          "てる"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-14T00:21:34.516Z"
+    "verdict": "NEUTRAL",
+    "score": 0,
+    "danger_rate": 0,
+    "success_rate": 0,
+    "text": "何もでてないです！",
+    "top_events": [],
+    "updated_at": "2026-05-14T00:30:30.684Z"
   }
 }
