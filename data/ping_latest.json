@@ -46,33 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "50　　　0",
+    "text": "355　　　0",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-02",
-        "why": "commit: d92f1a2",
-        "how": "cli",
-        "note": "(node:3508) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er",
+        "when": "2026-03-26",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok\\MoCKA> Get-ChildItem -Recurse -Filter \"*.bak*\" -Name\nmain_loop.py.bak_20260218_152",
         "recur": 0,
         "matched": [
-          "50"
+          "355"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
+        "when": "2026-03-26",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok\\MoCKA> cat runtime\\main\\ledger.json | Select-Object -First 30\n[\n  {\n    \"type\": \"D",
         "recur": 0,
         "matched": [
-          "50"
+          "355"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:30:57.477Z"
+    "updated_at": "2026-05-14T00:32:13.814Z"
   }
 }
