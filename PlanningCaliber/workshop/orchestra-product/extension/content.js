@@ -69,6 +69,24 @@
     return messages;
   }
 
+  // Send with retry (Extension context invalidated 対策)
+  function sendWithRetry(record, retries = 3) {
+    try {
+      chrome.runtime.sendMessage({ type: 'SAVE_MESSAGE', payload: record }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.warn('[Orchestra] SW dead, retry...', chrome.runtime.lastError.message);
+          if (retries > 0) {
+            setTimeout(() => sendWithRetry(record, retries - 1), 1000);
+          }
+        }
+      });
+    } catch (e) {
+      if (retries > 0) {
+        setTimeout(() => sendWithRetry(record, retries - 1), 1000);
+      }
+    }
+  }
+
   // Send new messages to background for storage
   function saveNewMessages(messages) {
     messages.forEach((msg) => {
@@ -86,7 +104,7 @@
         url: location.href,
       };
 
-      chrome.runtime.sendMessage({ type: 'SAVE_MESSAGE', payload: record });
+      sendWithRetry(record);
     });
   }
 
