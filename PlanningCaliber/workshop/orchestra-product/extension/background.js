@@ -162,6 +162,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           await clearAll();
           sendResponse({ ok: true });
           break;
+        case 'PING':
+          sendResponse({ ok: true });
+          break;
+
         default:
           sendResponse({ ok: false, error: 'Unknown message type' });
       }
@@ -173,8 +177,3 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 initDB().catch(console.error);
-
-// Keep Service Worker alive
-const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20000);
-chrome.runtime.onStartup.addListener(keepAlive);
-keepAlive();

@@ -129,6 +129,23 @@
     scan();
   }, 5000);
 
+
+  // Keep Service Worker alive while claude.ai is open
+  function pingServiceWorker() {
+    try {
+      chrome.runtime.sendMessage({type: 'PING'}, (res) => {
+        if (chrome.runtime.lastError) {
+          // SW stopped, retry after 1 second
+          setTimeout(pingServiceWorker, 1000);
+        }
+      });
+    } catch(e) {
+      setTimeout(pingServiceWorker, 1000);
+    }
+  }
+  setInterval(pingServiceWorker, 5000);
+  pingServiceWorker();
+
   // Listen for popup requests to get current session info
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === 'GET_SESSION') {
