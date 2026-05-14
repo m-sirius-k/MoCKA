@@ -46,33 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "さっきのだって！件数: 0 undefined\n\nVM14:1 件数: 0 undefined\n\nVM18:1 undefined\n\nUnchecked run",
+    "text": "window.__mocka_injected\n\nundefined",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "FullName\n--------\nC:\\Users\\sirok\\MoCKA\\verify_all.py\nC:\\Users\\sirok\\MoCKA\\verify\\verify_all.py\nPS C:",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
         "recur": 0,
         "matched": [
-          "さっき"
+          "window"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-31",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "さっき　打ってくれたEVENTS_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), \"..\", \"data\", \"event",
+        "when": "2026-04-29",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
         "recur": 0,
         "matched": [
-          "さっき"
+          "window"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:42:20.617Z"
+    "updated_at": "2026-05-14T00:45:40.311Z"
   }
 }
