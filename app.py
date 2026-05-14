@@ -2815,6 +2815,149 @@ def search():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
+# ── SCAMPER Creative Engine エンドポイント ─────────────────────────────────
+SCAMPER_ENGINE_PATH = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_engine.py")
+SCAMPER_TEMPLATES_PATH = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_templates.json")
+
+def _load_scamper_templates():
+    if not os.path.exists(SCAMPER_TEMPLATES_PATH):
+        return None
+    with open(SCAMPER_TEMPLATES_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+def _run_scamper(event_row, templates, use_all=False):
+    import re as _re
+    scamper = templates["scamper"]
+    rules   = templates["expansion_rules"]["trigger_mapping"]
+
+    # 変数抽出
+    title  = event_row.get("title", "") or ""
+    who    = event_row.get("who_actor", "") or "Claude"
+    what_t = event_row.get("what_type", "") or "INCIDENT"
+    why    = event_row.get("why_purpose", "") or ""
+    how    = event_row.get("how_trigger", "") or ""
+
+    trigger = "INCIDENT"
+    if what_t in ("CHANGE_DONE", "CHANGE_START", "FIX", "OPERATION"):
+        trigger = "OPERATION"
+    elif what_t in ("PHILOSOPHY", "DESIGN"):
+        trigger = "PHILOSOPHY"
+
+    short_what = title.replace("INCIDENT:", "").replace("CHANGE_DONE:", "").strip()
+    if not short_what:
+        short_what = what_t or "不明インシデント"
+    short_what = short_what[:40]
+
+    variables = {
+        "trigger": trigger, "title": short_what, "what": short_what,
+        "who": who, "why": why[:60] or "不明", "how": how[:60] or "不明",
+        "n": 1, "operation": short_what,
+        "philosophy": "AIを信じるな、システムで縛れ",
+        "freq": "5分", "operation_a": "morphology_engine", "operation_b": "PHL-OS",
+    }
+
+    apply_ids = list({i for ids in rules.values() for i in ids}) if use_all else rules.get(trigger, rules["INCIDENT"])
+
+    def fill(q, v):
+        return _re.sub(r"\{(\w+)\}", lambda m: str(v.get(m.group(1), "{"+m.group(1)+"}")), q)
+
+    expansions = []
+    for vk, vd in scamper.items():
+        for tmpl in vd["templates"]:
+            if tmpl["id"] not in apply_ids:
+                continue
+            expansions.append({
+                "scamper_id": tmpl["id"],
+                "view": f"{vk}: {vd['label']}",
+                "question": fill(tmpl["question"], variables),
+                "output_type": tmpl["output_type"],
+                "example_output": tmpl["example_output"],
+            })
+
+    return {
+        "event_id":    event_row.get("event_id", ""),
+        "event_title": title,
+        "trigger":     trigger,
+        "variables":   variables,
+        "expansions":  expansions,
+    }
+
+@app.route("/scamper/run", methods=["POST"])
+def scamper_run():
+    """指定event_idをSCAMPER展開して返す"""
+    try:
+        data     = request.get_json() or {}
+        event_id = data.get("event_id")
+        use_all  = data.get("use_all", False)
+
+        templates = _load_scamper_templates()
+        if not templates:
+            return jsonify({"error": "scamper_templates.json が見つかりません"}), 500
+
+        conn = get_db_connection()
+        if event_id:
+            row = conn.execute("SELECT * FROM events WHERE event_id=? LIMIT 1", (event_id,)).fetchone()
+        else:
+            row = conn.execute(
+                "SELECT * FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM') ORDER BY when_ts DESC LIMIT 1"
+            ).fetchone()
+        conn.close()
+
+        if not row:
+            return jsonify({"error": "イベントが見つかりません"}), 404
+
+        result = _run_scamper(dict(row), templates, use_all=use_all)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/scamper/recent", methods=["GET"])
+def scamper_recent():
+    """直近インシデントN件をまとめてSCAMPER展開"""
+    try:
+        limit = int(request.args.get("limit", 3))
+        templates = _load_scamper_templates()
+        if not templates:
+            return jsonify({"error": "scamper_templates.json が見つかりません"}), 500
+
+        conn = get_db_connection()
+        rows = conn.execute(
+            "SELECT * FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM') ORDER BY when_ts DESC LIMIT ?",
+            (limit,)
+        ).fetchall()
+        conn.close()
+
+        results = [_run_scamper(dict(r), templates) for r in rows]
+        return jsonify({"count": len(results), "results": results})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/scamper/status", methods=["GET"])
+def scamper_status():
+    """SCАMPERエンジンの状態確認"""
+    try:
+        templates_ok = os.path.exists(SCAMPER_TEMPLATES_PATH)
+        engine_ok    = os.path.exists(SCAMPER_ENGINE_PATH)
+        output_dir   = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_outputs")
+        output_count = len([f for f in os.listdir(output_dir) if f.endswith(".json")]) if os.path.exists(output_dir) else 0
+
+        conn = get_db_connection()
+        incident_count = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM')"
+        ).fetchone()[0]
+        conn.close()
+
+        return jsonify({
+            "templates_loaded": templates_ok,
+            "engine_ready":     engine_ok,
+            "output_files":     output_count,
+            "incident_pool":    incident_count,
+            "status":           "READY" if templates_ok else "ERROR"
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
