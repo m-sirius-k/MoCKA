@@ -964,5 +964,24 @@ document.addEventListener('DOMContentLoaded', function(){
   if(periodEl) periodEl.addEventListener('change', function(){ runSearch(); });
 });
 </script>
+
+      <!-- SCAMPER Creative Engine パネル -->
+      <div class="panel" id="scamper-panel">
+        <div class="panel-header">
+          🔬 SCAMPER Creative Engine
+          <span id="scamper-status-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#555;margin-left:8px;"></span>
+        </div>
+        <div class="panel-body">
+          <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
+            <input id="scamper-event-id" type="text" placeholder="event_id (空=直近インシデント)"
+              style="flex:1;padding:5px 8px;background:#1a1a1a;color:#e0e0e0;border:1px solid #444;border-radius:4px;font-size:12px;">
+            <button onclick="runScamper()" style="padding:5px 12px;background:#b8860b;color:#000;border:none;border-radius:4px;font-weight:bold;cursor:pointer;">展開</button>
+            <button onclick="loadScamperRecent()" style="padding:5px 12px;background:#2a5a2a;color:#e0e0e0;border:none;border-radius:4px;cursor:pointer;">直近3件</button>
+          </div>
+          <div id="scamper-pool" style="font-size:11px;color:#888;margin-bottom:8px;"></div>
+          <div id="scamper-results" style="max-height:320px;overflow-y:auto;"></div>
+        </div>
+      </div>
+
 </body>
 </html>
