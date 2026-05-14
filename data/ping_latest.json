@@ -42,25 +42,37 @@
   ],
   "generated_at": "2026-05-14T07:45:07.927478",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -1.0,
-    "danger_rate": 0.0,
-    "success_rate": 1.0,
-    "text": "Comet\t147.0.7727.56 (公式ビルド) （64 ビット） Perplexity Build (1860) \n\nDevice ID\tf632995",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "送信テスト　chrome1回目",
     "top_events": [
       {
-        "verdict": "SUCCESS",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
         "recur": 0,
         "matched": [
-          "ok"
+          "送信"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "送信"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:56:21.839Z"
+    "updated_at": "2026-05-14T01:00:12.526Z"
   }
 }
