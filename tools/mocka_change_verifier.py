@@ -99,20 +99,21 @@ def verify_changes(since_date=None):
     # 記録済みファイルを抽出
     recorded_files = set()
     for ev in recorded:
-        desc = ev.get("description", "") or ""
+        # where_pathから直接ファイル名取得
+        wp = ev.get("where_path", "") or ""
+        if wp:
+            fname = os.path.basename(wp.replace("\\", "/"))
+            if fname:
+                recorded_files.add(fname)
+        # free_noteとtitleからもファイルパスを抽出
+        note = ev.get("free_note", "") or ""
         title = ev.get("title", "") or ""
-        # descriptionからファイルパスを抽出
-        for line in desc.splitlines():
-            if "WHERE" in line or ".py" in line or ".json" in line or ".bat" in line:
-                # パス部分を抽出
-                parts = line.split(":")
-                if len(parts) > 1:
-                    candidate = parts[-1].strip()
-                    if "\\" in candidate or "/" in candidate:
-                        # ファイル名だけ取得
-                        fname = os.path.basename(candidate.replace("\\", "/"))
-                        if fname:
-                            recorded_files.add(fname)
+        for text in [note, title]:
+            for part in text.replace("\\", "/").split():
+                if ".py" in part or ".json" in part or ".bat" in part or ".md" in part:
+                    fname = os.path.basename(part.strip(".,()[]"))
+                    if fname:
+                        recorded_files.add(fname)
     
     # 照合: git変更ファイルのうちeventDBに記録がないもの
     unrecorded = []
