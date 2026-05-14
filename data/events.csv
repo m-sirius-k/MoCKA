@@ -8575,3 +8575,73 @@ a4406b35-ccf52fb6
 E20260514_022,2026-05-14T01:00:12.526Z,kimura,user_voice,claude.ai,90793efd-6a60-45,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,送信テスト　chrome1回目,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,送信テスト　chrome1回目
 E20260514_023,2026-05-14T01:05:46.036Z,kimura,user_voice,claude.ai,90793efd-6a60-45,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,テスト送信2回目,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,テスト送信2回目
 E20260514_024,2026-05-14T01:09:35.012Z,kimura,user_voice,claude.ai,90793efd-6a60-45,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,試験pop3回目,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,試験pop3回目
+E20260514_030,2026-05-14T17:19:30,きむら博士,ai_event,public_api,/public/write_event,"FILE_CHANGE,PRE,mocka_file_editor.py",external_ai_call,http_api,in_operation,normal,A,infield,CHANGE_START: mocka_file_editor.py L27 — URL修正後の動作確認テスト,"【変更着手前記録】
+WHO  : きむら博士
+WHAT : mocka_file_editor.py L27 の変更
+WHERE: C:\Users\sirok\MoCKA\tools\mocka_file_editor.py
+WHEN : 2026-05-14 17:19:27
+WHY  : URL修正後の動作確認テスト
+HOW  : mocka_file_editor.py による制度的変更
+",N/A,N/A,N/A,local,N/A,N/A,N/A,"【変更着手前記録】
+WHO  : きむら博士
+WHAT : mocka_file_editor.py L27 の変更
+WHERE: C:\Users\sirok\MoCKA\tools\mocka_file_editor.py
+WHEN : 2026-05-14 17:19:27
+WHY  : URL修正後の動作確認テスト
+HOW  : mocka_file_editor.py による制度的変更
+
+【変更前コード】(L27付近)
+    L  22: import hashlib
+    L  23: import datetime
+    L  24: import os
+    L  25: import sys
+    L  26: 
+>>> L  27: # ========== 設定 ==========
+    L  28: MCP_URL = ""https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev""
+    L  29: LOCAL_URL = ""http://localhost:5000""
+    L  30: CONTEXT_LINES = 5  # 前後何行を記録するか
+    L  31: 
+    L  32: 
+
+【変更内容】
+- 変更前: '# ========== 設定 =========='
++ 変更後: '# ========== 設定 =========='
+
+【変更前ハッシュ】56cfbbef15b86fa7"
+E20260514_031,2026-05-14T17:19:34,きむら博士,ai_event,public_api,/public/write_event,"FILE_CHANGE,POST,FIX,mocka_file_editor.py",external_ai_call,http_api,in_operation,normal,A,infield,CHANGE_DONE: mocka_file_editor.py L27 — URL修正後の動作確認テスト,"【変更完了記録】
+WHO  : きむら博士
+WHAT : mocka_file_editor.py L27 の変更完了
+WHERE: C:\Users\sirok\MoCKA\tools\mocka_file_editor.py
+WHEN : 2026-05-14 17:19:30
+WHY  : URL修正後の動作確認テスト
+
+【変更後コード】(変更箇所付近)
+    L  22: import ",N/A,N/A,N/A,local,N/A,N/A,N/A,"【変更完了記録】
+WHO  : きむら博士
+WHAT : mocka_file_editor.py L27 の変更完了
+WHERE: C:\Users\sirok\MoCKA\tools\mocka_file_editor.py
+WHEN : 2026-05-14 17:19:30
+WHY  : URL修正後の動作確認テスト
+
+【変更後コード】(変更箇所付近)
+    L  22: import hashlib
+    L  23: import datetime
+    L  24: import os
+    L  25: import sys
+    L  26: 
+>>> L  27: # ========== 設定 ==========
+    L  28: MCP_URL = ""https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev""
+    L  29: LOCAL_URL = ""http://localhost:5000""
+    L  30: CONTEXT_LINES = 5  # 前後何行を記録するか
+    L  31: 
+    L  32: 
+
+【差分サマリー】
+- 変更前: '# ========== 設定 =========='
++ 変更後: '# ========== 設定 =========='
+
+【ハッシュ変化】
+  Before: 56cfbbef15b86fa7
+  After : 56cfbbef15b86fa7
+
+【参照イベント】E20260514_031"
