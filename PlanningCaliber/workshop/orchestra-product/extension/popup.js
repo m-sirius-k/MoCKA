@@ -2,6 +2,8 @@
 let allMessages = [];
 let currentRole = 'all';
 let currentQuery = '';
+let currentSort = 'desc';
+let currentPeriod = 'all';
 
 function loadStats() {
   chrome.runtime.sendMessage({ type: 'GET_STATS' }, (res) => {
@@ -27,9 +29,31 @@ function loadMessages(query = '') {
 
 function renderMessages() {
   const list = document.getElementById('message-list');
-  const filtered = currentRole === 'all'
-    ? allMessages
-    : allMessages.filter(m => m.role === currentRole);
+
+  // 期間フィルター
+  const now = new Date();
+  let filtered = allMessages.filter(m => {
+    if (currentRole !== 'all' && m.role !== currentRole) return false;
+    if (currentPeriod === 'all') return true;
+    const d = new Date(m.timestamp);
+    if (currentPeriod === 'today') {
+      return d.toDateString() === now.toDateString();
+    } else if (currentPeriod === 'week') {
+      const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
+      return d >= weekAgo;
+    } else if (currentPeriod === 'month') {
+      const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
+      return d >= monthAgo;
+    }
+    return true;
+  });
+
+  // ソート
+  filtered = filtered.slice().sort((a, b) => {
+    return currentSort === 'desc'
+      ? b.timestamp.localeCompare(a.timestamp)
+      : a.timestamp.localeCompare(b.timestamp);
+  });
 
   document.getElementById('stat-showing').textContent = filtered.length;
 
@@ -130,6 +154,18 @@ document.querySelectorAll('.tab').forEach(tab => {
 
 loadStats();
 loadMessages();
+
+// ソート変更
+document.getElementById('select-sort').addEventListener('change', (e) => {
+  currentSort = e.target.value;
+  renderMessages();
+});
+
+// 期間変更
+document.getElementById('select-period').addEventListener('change', (e) => {
+  currentPeriod = e.target.value;
+  renderMessages();
+});
 
 // 2秒ごとに自動更新
 setInterval(() => {
