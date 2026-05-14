@@ -1,0 +1,94 @@
+{
+  "event_id": "2026-04-18 15:06:17",
+  "event_title": "",
+  "trigger": "INCIDENT",
+  "variables": {
+    "trigger": "INCIDENT",
+    "title": "INCIDENT",
+    "what": "INCIDENT",
+    "who": "direct_input",
+    "why": "不明",
+    "how": "不明",
+    "n": 1,
+    "operation": "INCIDENT",
+    "philosophy": "AIを信じるな、システムで縛れ",
+    "freq": "5分",
+    "operation_a": "morphology_engine",
+    "operation_b": "PHL-OS"
+  },
+  "generated_at": "2026-05-15T08:33:22.170286",
+  "expansions": [
+    {
+      "scamper_id": "S-01",
+      "view": "S: Substitute（代替）",
+      "core_question": "これを別のもので代替できないか？",
+      "question": "このインシデントを引き起こした「INCIDENT」を、別の仕組みで代替できないか？",
+      "output_type": "代替設計案",
+      "example_output": "Python UTF-8統一書き込みで代替 → file_editor.py制度化"
+    },
+    {
+      "scamper_id": "S-03",
+      "view": "S: Substitute（代替）",
+      "core_question": "これを別のもので代替できないか？",
+      "question": "この再発（1回目）を防ぐために、人間判断を自動判定で代替できないか？",
+      "output_type": "自動化代替案",
+      "example_output": "mataka自動検知 + prevention_queue自動昇格"
+    },
+    {
+      "scamper_id": "C-01",
+      "view": "C: Combine（結合）",
+      "core_question": "複数の要素を組み合わせて新しい価値を生めないか？",
+      "question": "このインシデント（INCIDENT）と類似した過去インシデントを組み合わせて、パターン名を付けられないか？",
+      "output_type": "パターン命名・登録",
+      "example_output": "『エンコーディング漂流症候群』パターン → danger_patternsに登録"
+    },
+    {
+      "scamper_id": "A-01",
+      "view": "A: Adapt（適応）",
+      "core_question": "他の分野・文脈の解決策を転用できないか？",
+      "question": "このインシデントと構造的に似た問題が、製造業・航空・医療などで解決されている事例はあるか？その手法をMoCKAに転用できないか？",
+      "output_type": "他領域転用案",
+      "example_output": "航空FMEAを転用 → MoCKA Failure Mode Catalogの制度化"
+    },
+    {
+      "scamper_id": "A-03",
+      "view": "A: Adapt（適応）",
+      "core_question": "他の分野・文脈の解決策を転用できないか？",
+      "question": "この再発パターンは、ハインリッヒの法則のどの層に属するか？他の安全工学の防止手法を適応できないか？",
+      "output_type": "安全工学転用案",
+      "example_output": "Layer2（軽微）→ ポカヨケ（物理的防止）転用 → Python強制経由ゲート"
+    },
+    {
+      "scamper_id": "M-01",
+      "view": "M: Modify / Magnify / Minify（変更・拡大・縮小）",
+      "core_question": "規模・頻度・強度を変えたらどうなるか？",
+      "question": "このインシデント（INCIDENT）の影響範囲を10倍に拡大したら、どんな制度が必要になるか？",
+      "output_type": "スケール拡大設計",
+      "example_output": "全AI出力に対する多重検証制度（Cross Audit強制化）"
+    },
+    {
+      "scamper_id": "P-01",
+      "view": "P: Put to other uses（転用）",
+      "core_question": "この仕組み・データを別の目的に使えないか？",
+      "question": "このインシデント記録（1件の蓄積データ）を、論文の実験データとして転用できないか？",
+      "output_type": "研究転用案",
+      "example_output": "events.db → Study 4ハインリッヒ実測論文 → AIES 2027候補"
+    },
+    {
+      "scamper_id": "E-01",
+      "view": "E: Eliminate（排除）",
+      "core_question": "削除・省略したらシンプルになるものは何か？",
+      "question": "このインシデント（INCIDENT）の根本に「排除すべき不要な複雑さ」はないか？",
+      "output_type": "シンプル化案",
+      "example_output": "CSV自体を排除 → SQLite単一化で解決（TODO_090として制度化済み）"
+    },
+    {
+      "scamper_id": "R-01",
+      "view": "R: Reverse / Rearrange（逆転・再配置）",
+      "core_question": "逆にしたら・順番を入れ替えたらどうなるか？",
+      "question": "このインシデント（INCIDENT）の原因と結果を逆転させると、どんな予防設計が見えてくるか？",
+      "output_type": "予防逆転設計",
+      "example_output": "逆転: CPU監視が先にあり、閾値超えたらloop自動停止する設計"
+    }
+  ]
+}
