@@ -42,25 +42,37 @@
   ],
   "generated_at": "2026-05-14T07:45:07.927478",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -1.0,
-    "danger_rate": 0.0,
-    "success_rate": 1.0,
-    "text": "OK\n\nPS C:\\Users\\sirok>",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "試験POP3回目！試験送信",
     "top_events": [
       {
-        "verdict": "SUCCESS",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
+        "verdict": "DANGER",
+        "when": "2026-05-09",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "試験します試験します　この文字列は試験です",
         "recur": 0,
         "matched": [
-          "ok"
+          "試験"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」への各AI回答です。統合分析してください：\n\n【ChatGPT】\nChatGPT:\nPlaywright機能群のMoCKA統合評価\n\n副題：記録",
+        "recur": 0,
+        "matched": [
+          "試験"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:36:52.711Z"
+    "updated_at": "2026-05-14T00:37:20.281Z"
   }
 }
