@@ -29,7 +29,7 @@
     // Strategy: look for the main conversation turn containers
     const turnSelectors = [
       '[data-testid="user-message"]',
-      '[data-testid="assistant-message"]',
+      '.font-claude-response',
     ];
 
     // User messages
@@ -42,7 +42,7 @@
     // Assistant messages - look for the streaming/rendered prose blocks
     // Claude uses a specific structure for its responses
     const assistantBlocks = document.querySelectorAll(
-      '.font-claude-message, [data-testid="assistant-message"]'
+      '.font-claude-response'
     );
     assistantBlocks.forEach((el) => {
       const text = el.innerText?.trim();
