@@ -48,7 +48,7 @@ def write_event(title, description, why_purpose, how_trigger, tags, author="Clau
         try:
             data = json.dumps(payload).encode("utf-8")
             req = urllib.request.Request(
-                f"{base_url}/write_event",
+                f"{base_url}/public/write_event",
                 data=data,
                 headers={
                     "Content-Type": "application/json",
