@@ -321,7 +321,7 @@ def process():
 # ===============================================================
 # PHL-OS Caliber Integration v1
 # Append this block just before: if __name__ == "__main__":
-# No Japanese characters - ASCII only to avoid encoding issues
+# UTF-8完全対応済み（sanitizeゲート・SQLite移行により文字化けリスク解消 E20260514_040）
 # ===============================================================
 
 # Module specs table
