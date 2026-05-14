@@ -176,4 +176,23 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   return true;
 });
 
+
+// Alarms-based keepAlive (MV3 Service Worker自動停止対策)
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create('keepAlive', { periodInMinutes: 0.4 }); // 24秒間隔
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'keepAlive') {
+    initDB().catch(console.error); // DB接続でSWを維持
+  }
+});
+
+// 起動時にアラームが消えていたら再登録
+chrome.alarms.get('keepAlive', (alarm) => {
+  if (!alarm) {
+    chrome.alarms.create('keepAlive', { periodInMinutes: 0.4 });
+  }
+});
+
 initDB().catch(console.error);
