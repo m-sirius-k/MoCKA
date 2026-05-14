@@ -42,12 +42,37 @@
   ],
   "generated_at": "2026-05-14T07:45:07.927478",
   "matcher_result": {
-    "verdict": "NEUTRAL",
-    "score": 0,
-    "danger_rate": 0,
-    "success_rate": 0,
-    "text": "何もでてないです！",
-    "top_events": [],
-    "updated_at": "2026-05-14T00:30:30.684Z"
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "50　　　0",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-02",
+        "why": "commit: d92f1a2",
+        "how": "cli",
+        "note": "(node:3508) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er",
+        "recur": 0,
+        "matched": [
+          "50"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-14",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
+        "recur": 0,
+        "matched": [
+          "50"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-14T00:30:57.477Z"
   }
 }
