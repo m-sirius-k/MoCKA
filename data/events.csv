@@ -8330,3 +8330,4 @@ PS C:\Users\sirok>",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"OK
 
 PS C:\Users\sirok>"
 E20260514_014,2026-05-14T00:37:20.281Z,kimura,user_voice,claude.ai,90793efd-6a60-45,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,試験POP3回目！試験送信,N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,試験POP3回目！試験送信
+E20260514_015,2026-05-14T00:38:54.597Z,kimura,user_voice,claude.ai,90793efd-6a60-45,voice_capture,chrome_extension_v15,chat,N/A,N/A,N/A,N/A,"e => { const db = e.target.result; const tx = db.transaction('messages', 'readonly'); const store = tx.objectStore('messages'); const all = store.getAll(); all.onsuccess = () => console.log('件数:', al…",N/A,N/A,N/A,N/A,N/A,N/A,N/A,N/A,"e => { const db = e.target.result; const tx = db.transaction('messages', 'readonly'); const store = tx.objectStore('messages'); const all = store.getAll(); all.onsuccess = () => console.log('件数:', al…"
