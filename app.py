@@ -1963,13 +1963,16 @@ def auto_audit_loop():
             except Exception:
                 count = _last_event_count[0]
             if count - _last_event_count[0] >= 50 and not _seal_running[0]:
-                if True:
+                _seal_running[0] = True
+                try:
                     seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
                     if seal_script.exists():
                         subprocess.run(["python", str(seal_script), "AUTO_SEAL_50EVT"],
                                        cwd=str(ROOT_DIR), timeout=30)
                         print(f"[AUTO-AUDIT] 50件seal完了")
                     _last_event_count[0] = count
+                finally:
+                    _seal_running[0] = False
         except Exception as e:
             print(f"[AUTO-AUDIT] ループ例外: {e}")
         _lt2.sleep(60)
