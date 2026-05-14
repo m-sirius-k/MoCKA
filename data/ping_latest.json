@@ -46,7 +46,7 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "window.__mocka_injected\n\nundefined",
+    "text": "window.__orchestra_loaded\n\nundefined",
     "top_events": [
       {
         "verdict": "DANGER",
@@ -73,6 +73,6 @@
         "score": 1
       }
     ],
-    "updated_at": "2026-05-14T00:45:40.311Z"
+    "updated_at": "2026-05-14T00:46:00.499Z"
   }
 }
