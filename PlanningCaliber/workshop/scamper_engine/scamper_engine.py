@@ -92,6 +92,8 @@ def extract_variables(event):
 
     # タイトルから短いwhatを生成
     short_what = title.replace("INCIDENT:", "").replace("CHANGE_DONE:", "").strip()
+    if not short_what:
+        short_what = what_t or "不明インシデント"
     short_what = short_what[:40] if len(short_what) > 40 else short_what
 
     return {
@@ -146,9 +148,13 @@ def expand_scamper(event, templates, use_all=False):
                 "example_output": tmpl["example_output"],
             })
 
+    # event_id: DBカラム名はevent_id、なければwhen_tsで代替
+    eid = event.get("event_id") or event.get("when_ts", "MANUAL")
+    etitle = event.get("title", "") or ""
+
     return {
-        "event_id": event.get("event_id", "MANUAL"),
-        "event_title": event.get("title", ""),
+        "event_id": eid,
+        "event_title": etitle,
         "trigger": trigger,
         "variables": variables,
         "generated_at": datetime.now().isoformat(),
@@ -175,8 +181,10 @@ def print_result(result):
 # ── JSON保存 ────────────────────────────────────────────────
 def save_result(result):
     ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    event_id = result["event_id"].replace("/", "_")
-    out_path = OUTPUT_DIR / f"scamper_{event_id}_{ts}.json"
+    # ファイル名に使えない文字を除去
+    raw_id = str(result["event_id"])
+    safe_id = re.sub(r'[\\/:*?"<>|\s]', '_', raw_id)[:40]
+    out_path = OUTPUT_DIR / f"scamper_{safe_id}_{ts}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
     print(f"\n💾 保存: {out_path}")
