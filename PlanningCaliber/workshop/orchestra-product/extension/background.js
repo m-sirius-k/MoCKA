@@ -173,3 +173,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 initDB().catch(console.error);
+
+// Keep Service Worker alive
+const keepAlive = () => setInterval(chrome.runtime.getPlatformInfo, 20000);
+chrome.runtime.onStartup.addListener(keepAlive);
+keepAlive();
