@@ -15,6 +15,11 @@
   "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
   "top_todos": [
     {
+      "id": "TODO_144",
+      "title": "ファイル変更前後の強制記録制度 — 変更着手前INCIDENT・完了後FIX記録を必須化",
+      "priority": "最高"
+    },
+    {
       "id": "TODO_139",
       "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
       "priority": "高"
@@ -30,49 +35,10 @@
       "priority": "高"
     },
     {
-      "id": "TODO_122",
-      "title": "MoCKA Go移行 — app.pyをGoに段階的置換",
-      "priority": "中"
-    },
-    {
-      "id": "TODO_142",
-      "title": "Orchestra One — EXE化・Gumroad販売準備",
-      "priority": "中"
+      "id": "TODO_145",
+      "title": "SCAMPER Creative Engine — Phase 1 scamper_templates.json作成",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-05-14T17:03:22.400026",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "このファイルは、MoCKAの設計思想を「UTF-8徹底」「全量記録」「変更前後の記録義務」という3本柱で総点検した議事応答書です。\n\n特に、CSVからSQLit",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-26",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] 形態素解析は「別コンテナ・別サービス」で閉じる  形態素解析そのものは別のコンテナ（例：Alpine + MeCab + fugashi の軽量イメージ）で行い、  出力結果を JSON",
-        "recur": 0,
-        "matched": [
-          "文字化け"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-28",
-        "why": "成功・失敗パターンの正確な蓄積を保証する。",
-        "how": "",
-        "note": "文字化け,UTF-8,修正完了,mocka_pattern_batch",
-        "recur": 0,
-        "matched": [
-          "文字化け"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-14T08:45:48.777Z"
-  }
+  "generated_at": "2026-05-15T07:35:33.407899"
 }
