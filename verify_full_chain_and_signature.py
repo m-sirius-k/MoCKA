@@ -55,7 +55,7 @@ def main():
 
     prev_chain_hash = ""
     # 鍵ファイルが存在しない場合はスキップ（CI環境対応）
-    if not Path(PUBKEY_PATH).exists():
+    if not _Path(PUBKEY_PATH).exists():
         print(json.dumps({"status": "SKIPPED", "reason": "public key not found", "path": PUBKEY_PATH}))
         return
     pubkey = load_ed25519_public_key_auto(PUBKEY_PATH)
