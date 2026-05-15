@@ -6,7 +6,7 @@ import re
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives import serialization
 
-DB = str(_Path(__file__).resolve().parent / "audit/ed25519/audit.db")
+DB = str(_Path(__file__).resolve().parent / "audit/ed25519/verify_pack/audit.db")
 TABLE = "audit_ledger_event"
 PUBKEY_PATH = str(_Path(__file__).resolve().parent / "audit/ed25519/keys/ed25519_public.key")
 
