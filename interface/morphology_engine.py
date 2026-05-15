@@ -151,10 +151,10 @@ def build_pattern_library():
     print(f'Layer2郢昜ｻ｣縺｡郢晢ｽｼ郢晢ｽｳ騾具ｽｻ鬪ｭ・ｲ: {l2_patterns}闔会ｽｶ')
 
 def predict(text, threshold=0.3):
-    """
+    """Predict danger score from text."""
 
 
-    """
+
     tokens = tokenize(text)
     if not tokens:
         return {'danger_score': 0.0, 'prediction': 'SAFE', 'matched': []}
