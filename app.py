@@ -2817,9 +2817,29 @@ def search():
 
 
 
-# ── SCAMPER Creative Engine エンドポイント ─────────────────────────────────
-SCAMPER_ENGINE_PATH = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_engine.py")
-SCAMPER_TEMPLATES_PATH = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_templates.json")
+
+# ── SCAMPER Creative Engine v2.0 エンドポイント ────────────────────────────
+import sys as _sys
+_scamper_dir = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine")
+if _scamper_dir not in _sys.path:
+    _sys.path.insert(0, _scamper_dir)
+
+SCAMPER_TEMPLATES_PATH = os.path.join(_scamper_dir, "scamper_templates.json")
+
+SCAMPER_TRIGGER_TYPES = {
+    "INCIDENT":  ["MATAKA","INCIDENT","CLAIM","ai_violation","OVERDUE_INCIDENT",
+                  "governance_degradation","config_error","incident","environment_error","security"],
+    "SUCCESS":   ["success_hint","success_great","DECISION_APPROVED"],
+    "OPERATION": ["collaboration","phl_decision","OPERATION","save","process",
+                  "broadcast","storage","record","caliber"],
+    "VOICE":     ["user_voice"],
+}
+
+def _scamper_detect_trigger(what_type):
+    for trigger, types in SCAMPER_TRIGGER_TYPES.items():
+        if what_type in types:
+            return trigger
+    return "INCIDENT"
 
 def _load_scamper_templates():
     if not os.path.exists(SCAMPER_TEMPLATES_PATH):
@@ -2827,41 +2847,35 @@ def _load_scamper_templates():
     with open(SCAMPER_TEMPLATES_PATH, encoding="utf-8") as f:
         return json.load(f)
 
-def _run_scamper(event_row, templates, use_all=False):
+def _run_scamper_v2(event_row, templates):
     import re as _re
     scamper = templates["scamper"]
-    rules   = templates["expansion_rules"]["trigger_mapping"]
+    rules   = templates["expansion_rules"]
 
-    # 変数抽出
-    title  = event_row.get("title", "") or ""
-    who    = event_row.get("who_actor", "") or "Claude"
-    what_t = event_row.get("what_type", "") or "INCIDENT"
-    why    = event_row.get("why_purpose", "") or ""
-    how    = event_row.get("how_trigger", "") or ""
+    title   = event_row.get("title", "") or ""
+    who     = event_row.get("who_actor", "") or "Claude"
+    what_t  = event_row.get("what_type", "") or ""
+    why     = event_row.get("why_purpose", "") or ""
+    summary = event_row.get("short_summary", "") or ""
+    note    = event_row.get("free_note", "") or ""
 
-    trigger = "INCIDENT"
-    if what_t in ("CHANGE_DONE", "CHANGE_START", "FIX", "OPERATION"):
-        trigger = "OPERATION"
-    elif what_t in ("PHILOSOPHY", "DESIGN"):
-        trigger = "PHILOSOPHY"
+    trigger = _scamper_detect_trigger(what_t)
 
-    short_what = title.replace("INCIDENT:", "").replace("CHANGE_DONE:", "").strip()
-    if not short_what:
-        short_what = what_t or "不明インシデント"
-    short_what = short_what[:40]
+    what = title.strip() or summary.strip() or (note[:60].strip() if note else "") or what_t
+    what = what[:60]
 
     variables = {
-        "trigger": trigger, "title": short_what, "what": short_what,
-        "who": who, "why": why[:60] or "不明", "how": how[:60] or "不明",
-        "n": 1, "operation": short_what,
-        "philosophy": "AIを信じるな、システムで縛れ",
-        "freq": "5分", "operation_a": "morphology_engine", "operation_b": "PHL-OS",
+        "trigger": trigger, "title": what, "what": what,
+        "who": who, "why": (why or "不明")[:60],
+        "n": 1, "operation": what,
+        "philosophy": what if trigger == "VOICE" else "AIを信じるな、システムで縛れ",
+        "freq": "5分",
     }
 
-    apply_ids = list({i for ids in rules.values() for i in ids}) if use_all else rules.get(trigger, rules["INCIDENT"])
+    apply_ids = rules.get(trigger, rules["INCIDENT"])
 
-    def fill(q, v):
-        return _re.sub(r"\{(\w+)\}", lambda m: str(v.get(m.group(1), "{"+m.group(1)+"}")), q)
+    def fill(q):
+        return _re.sub(r"\{(\w+)\}", lambda m: str(variables.get(m.group(1), "{"+m.group(1)+"}")), q)
 
     expansions = []
     for vk, vd in scamper.items():
@@ -2869,28 +2883,26 @@ def _run_scamper(event_row, templates, use_all=False):
             if tmpl["id"] not in apply_ids:
                 continue
             expansions.append({
-                "scamper_id": tmpl["id"],
-                "view": f"{vk}: {vd['label']}",
-                "question": fill(tmpl["question"], variables),
-                "output_type": tmpl["output_type"],
+                "scamper_id":    tmpl["id"],
+                "view":          f"{vk}: {vd['label']}",
+                "question":      fill(tmpl["question"]),
+                "output_type":   tmpl["output_type"],
                 "example_output": tmpl["example_output"],
             })
 
+    eid = event_row.get("event_id") or event_row.get("when_ts", "MANUAL")
     return {
-        "event_id":    event_row.get("event_id", ""),
-        "event_title": title,
-        "trigger":     trigger,
-        "variables":   variables,
-        "expansions":  expansions,
+        "event_id": eid, "event_title": what,
+        "what_type": what_t, "trigger": trigger,
+        "variables": variables, "expansions": expansions,
     }
 
 @app.route("/scamper/run", methods=["POST"])
 def scamper_run():
-    """指定event_idをSCAMPER展開して返す"""
     try:
         data     = request.get_json() or {}
         event_id = data.get("event_id")
-        use_all  = data.get("use_all", False)
+        trigger  = data.get("trigger")
 
         templates = _load_scamper_templates()
         if not templates:
@@ -2900,62 +2912,75 @@ def scamper_run():
         conn.row_factory = sqlite3.Row
         if event_id:
             row = conn.execute("SELECT * FROM events WHERE event_id=? LIMIT 1", (event_id,)).fetchone()
+        elif trigger and trigger in SCAMPER_TRIGGER_TYPES:
+            types = SCAMPER_TRIGGER_TYPES[trigger]
+            ph = ",".join("?"*len(types))
+            row = conn.execute(f"SELECT * FROM events WHERE what_type IN ({ph}) ORDER BY when_ts DESC LIMIT 1", types).fetchone()
         else:
             row = conn.execute(
-                "SELECT * FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM') ORDER BY when_ts DESC LIMIT 1"
+                "SELECT * FROM events WHERE what_type IN ('MATAKA','INCIDENT','CLAIM','ai_violation') ORDER BY when_ts DESC LIMIT 1"
             ).fetchone()
         conn.close()
 
         if not row:
             return jsonify({"error": "イベントが見つかりません"}), 404
 
-        result = _run_scamper(dict(row), templates, use_all=use_all)
+        result = _run_scamper_v2(dict(row), templates)
         return jsonify(result)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route("/scamper/recent", methods=["GET"])
 def scamper_recent():
-    """直近インシデントN件をまとめてSCAMPER展開"""
     try:
-        limit = int(request.args.get("limit", 3))
+        limit   = int(request.args.get("limit", 3))
+        trigger = request.args.get("trigger")
+
         templates = _load_scamper_templates()
         if not templates:
             return jsonify({"error": "scamper_templates.json が見つかりません"}), 500
 
         conn = sqlite3.connect(db_helper.DB_PATH)
         conn.row_factory = sqlite3.Row
-        rows = conn.execute(
-            "SELECT * FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM') ORDER BY when_ts DESC LIMIT ?",
-            (limit,)
-        ).fetchall()
-        conn.close()
 
-        results = [_run_scamper(dict(r), templates) for r in rows]
+        if trigger and trigger in SCAMPER_TRIGGER_TYPES:
+            types = SCAMPER_TRIGGER_TYPES[trigger]
+            ph = ",".join("?"*len(types))
+            rows = conn.execute(f"SELECT * FROM events WHERE what_type IN ({ph}) ORDER BY when_ts DESC LIMIT ?", types+[limit]).fetchall()
+        else:
+            # 全trigger各1件
+            rows = []
+            for t_name, types in SCAMPER_TRIGGER_TYPES.items():
+                ph = ",".join("?"*len(types))
+                r = conn.execute(f"SELECT * FROM events WHERE what_type IN ({ph}) ORDER BY when_ts DESC LIMIT 1", types).fetchall()
+                rows.extend(r)
+
+        conn.close()
+        results = [_run_scamper_v2(dict(r), templates) for r in rows]
         return jsonify({"count": len(results), "results": results})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route("/scamper/status", methods=["GET"])
 def scamper_status():
-    """SCАMPERエンジンの状態確認"""
     try:
         templates_ok = os.path.exists(SCAMPER_TEMPLATES_PATH)
-        engine_ok    = os.path.exists(SCAMPER_ENGINE_PATH)
-        output_dir   = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_outputs")
+        output_dir   = os.path.join(_scamper_dir, "scamper_outputs")
         output_count = len([f for f in os.listdir(output_dir) if f.endswith(".json")]) if os.path.exists(output_dir) else 0
 
         conn = sqlite3.connect(db_helper.DB_PATH)
-        incident_count = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM')"
-        ).fetchone()[0]
+        counts = {}
+        for t_name, types in SCAMPER_TRIGGER_TYPES.items():
+            ph = ",".join("?"*len(types))
+            c = conn.execute(f"SELECT COUNT(*) FROM events WHERE what_type IN ({ph})", types).fetchone()[0]
+            counts[t_name] = c
         conn.close()
 
         return jsonify({
             "templates_loaded": templates_ok,
-            "engine_ready":     engine_ok,
             "output_files":     output_count,
-            "incident_pool":    incident_count,
+            "trigger_counts":   counts,
+            "total_pool":       sum(counts.values()),
             "status":           "READY" if templates_ok else "ERROR"
         })
     except Exception as e:
