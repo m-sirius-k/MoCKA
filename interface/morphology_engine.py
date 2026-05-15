@@ -51,7 +51,7 @@ def tokenize(text):
         return []
 
 def generate_ngrams(tokens, n=2):
-    """N-gram驍ｨ繝ｻ竏ｩ陷ｷ蛹ｻ・冗ｸｺ蟶ｷ蜃ｽ隰後・2-gram + 3-gram)"""
+    """Generate N-grams (2-gram + 3-gram)"""
     surfaces = [t['surface'] for t in tokens]
     ngrams = []
     for size in range(2, n+2):
@@ -60,7 +60,7 @@ def generate_ngrams(tokens, n=2):
     return ngrams
 
 def init_pattern_db():
-    """郢昜ｻ｣縺｡郢晢ｽｼ郢晢ｽｳDB郢ｧ雋槭・隴帶ｺｷ蝟ｧ"""
+    """Init pattern DB"""
     con = sqlite3.connect(PATTERN_DB)
     cur = con.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS patterns (
@@ -88,7 +88,7 @@ def init_pattern_db():
 
 def build_pattern_library():
     """
-    events.db邵ｺ・ｮLayer1/Layer2郢ｧ・､郢晏生ﾎｦ郢晏現ﾂｰ郢ｧ繝ｻ    陞滂ｽｱ隰ｨ蜉ｱ繝ｱ郢ｧ・ｿ郢晢ｽｼ郢晢ｽｳ邵ｺ・ｮN-gram髴取ｨ雁ｶ檎ｹｧ蜻茨ｽｧ迢暦ｽｯ繝ｻ    """
+    """Build pattern library from events.db Layer1/Layer2"""
     # 郢昜ｸ翫≧郢晢ｽｳ郢晢ｽｪ郢昴・繝ｲ郢晢ｽｬ郢晄亢繝ｻ郢晏現ﾂｰ郢ｧ繝ｻLayer1/Layer2郢ｧ・ｵ郢晢ｽｳ郢晏干ﾎ晁愾髢・ｾ繝ｻ    heinrich = json.load(open(HEINRICH, encoding='utf-8'))
     layer1_ids = {s['event_id'] for s in heinrich['heinrich']['layer1_critical'].get('samples', []) 
                   if isinstance(heinrich['heinrich']['layer1_critical'], dict) and 'samples' in heinrich['heinrich']['layer1_critical']}
@@ -152,8 +152,8 @@ def build_pattern_library():
 
 def predict(text, threshold=0.3):
     """
-    陷茨ｽ･陷牙ｸ吶Θ郢ｧ・ｭ郢ｧ・ｹ郢晏現・帝囓・｣隴ｫ闊鯉ｼ邵ｺ・ｦ陞滂ｽｱ隰ｨ遉ｼ・ｵ迹夲ｽｷ・ｯ邵ｺ・ｸ邵ｺ・ｮ鬨ｾ・ｲ陷茨ｽ･驕抵ｽｺ驍・・・帝恆譁絶・
-    threshold: 0.0-1.0 (邵ｺ阮吶・陋滂ｽ､郢ｧ螳夲ｽｶ繝ｻ竏ｴ郢ｧ荵昶・DANGER)
+    print(f'Layer1 patterns: {l1_patterns}')
+    print(f'Layer2 patterns: {l2_patterns}')
     """
     tokens = tokenize(text)
     if not tokens:
