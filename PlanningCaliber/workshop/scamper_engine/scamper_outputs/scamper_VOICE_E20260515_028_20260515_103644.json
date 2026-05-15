@@ -1,0 +1,70 @@
+{
+  "event_id": "E20260515_028",
+  "event_title": "展開　直近3件　押しても何も起きません",
+  "what_type": "user_voice",
+  "trigger": "VOICE",
+  "variables": {
+    "trigger": "VOICE",
+    "title": "展開　直近3件　押しても何も起きません",
+    "what": "展開　直近3件　押しても何も起きません",
+    "who": "kimura",
+    "why": "voice_capture",
+    "how": "chrome_extension_v15",
+    "n": 1,
+    "operation": "展開　直近3件　押しても何も起きません",
+    "philosophy": "展開　直近3件　押しても何も起きません",
+    "freq": "5分"
+  },
+  "generated_at": "2026-05-15T10:36:44.495903",
+  "expansions": [
+    {
+      "scamper_id": "S-04",
+      "view": "S: Substitute（代替）",
+      "question": "きむら博士の「展開　直近3件　押しても何も起きません」という思想を、AIが自律実行できる仕組みで代替できないか？",
+      "output_type": "思想自動化案",
+      "example_output": "「全記録主義」→ auto_audit_loopで自律記録に代替"
+    },
+    {
+      "scamper_id": "C-03",
+      "view": "C: Combine（結合）",
+      "question": "「展開　直近3件　押しても何も起きません」ときむら博士の別の発言を組み合わせると、どんな新しい設計思想が生まれるか？",
+      "output_type": "思想結合案",
+      "example_output": "「AIは嘘をつく」×「失敗は資産」→ インシデント資産化制度"
+    },
+    {
+      "scamper_id": "A-04",
+      "view": "A: Adapt（適応）",
+      "question": "「展開　直近3件　押しても何も起きません」という思想は、どの学術分野の理論に最も近いか？その理論を逆にMoCKAに適応させられないか？",
+      "output_type": "学術理論適応案",
+      "example_output": "「AIを縛れ」→ 制御理論の安定性定理 → リアプノフ安定性をAIガバナンスに適応"
+    },
+    {
+      "scamper_id": "M-03",
+      "view": "M: Modify / Magnify / Minify（変更・拡大・縮小）",
+      "question": "「展開　直近3件　押しても何も起きません」をMoCKA単体から人類全体の課題に拡大すると、どんな文明的価値が生まれるか？",
+      "output_type": "文明的価値拡張",
+      "example_output": "「AIは嘘をつく」→ 人類のAIリテラシー標準 → UNESCO提言候補"
+    },
+    {
+      "scamper_id": "P-03",
+      "view": "P: Put to other uses（転用）",
+      "question": "「展開　直近3件　押しても何も起きません」という思想を、企業向けAIガバナンス研修コンテンツとして転用できないか？",
+      "output_type": "教育転用案",
+      "example_output": "「AIを信じるな、システムで縛れ」→ AI導入企業向け研修 → MoCKA認定制度"
+    },
+    {
+      "scamper_id": "E-03",
+      "view": "E: Eliminate（排除）",
+      "question": "「展開　直近3件　押しても何も起きません」から形骸化している部分を排除すると、どんな核心的思想が残るか？",
+      "output_type": "思想純化案",
+      "example_output": "「全記録主義」から排除 → 「きむら博士発言のみ記録」が核心"
+    },
+    {
+      "scamper_id": "R-03",
+      "view": "R: Reverse / Rearrange（逆転・再配置）",
+      "question": "「展開　直近3件　押しても何も起きません」を逆の立場（AIがきむら博士を評価する）から見ると、どんな設計になるか？",
+      "output_type": "逆転ガバナンス設計",
+      "example_output": "MoCKAがきむら博士の判断を記録・パターン化し、過去の意思決定との整合性を検証"
+    }
+  ]
+}

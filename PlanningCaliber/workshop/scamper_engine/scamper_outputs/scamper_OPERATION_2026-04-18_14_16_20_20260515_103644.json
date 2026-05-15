@@ -1,0 +1,70 @@
+{
+  "event_id": "2026-04-18 14:16:20",
+  "event_title": "OPERATION",
+  "what_type": "OPERATION",
+  "trigger": "OPERATION",
+  "variables": {
+    "trigger": "OPERATION",
+    "title": "OPERATION",
+    "what": "OPERATION",
+    "who": "direct_input",
+    "why": "不明",
+    "how": "不明",
+    "n": 1,
+    "operation": "OPERATION",
+    "philosophy": "AIを信じるな、システムで縛れ",
+    "freq": "5分"
+  },
+  "generated_at": "2026-05-15T10:36:44.489342",
+  "expansions": [
+    {
+      "scamper_id": "S-05",
+      "view": "S: Substitute（代替）",
+      "question": "現在の「OPERATION」プロセスを、より軽量な仕組みで代替できないか？",
+      "output_type": "軽量化代替案",
+      "example_output": "CSV多段パイプライン → SQLite直接書き込みに代替"
+    },
+    {
+      "scamper_id": "C-04",
+      "view": "C: Combine（結合）",
+      "question": "「OPERATION」と別の運用プロセスを統合すると、どんな新機能が生まれるか？",
+      "output_type": "統合機能案",
+      "example_output": "collaboration × phl_decision → 合議型意思決定エンジン"
+    },
+    {
+      "scamper_id": "A-05",
+      "view": "A: Adapt（適応）",
+      "question": "「OPERATION」の運用パターンを、OSのプロセス管理手法に適応させるとどう設計が変わるか？",
+      "output_type": "OS理論適応案",
+      "example_output": "essence_auto_updater → systemdデーモン方式に適応"
+    },
+    {
+      "scamper_id": "M-04",
+      "view": "M: Modify / Magnify / Minify（変更・拡大・縮小）",
+      "question": "「OPERATION」の実行頻度を1/10に縮小したとき、失われる価値と得られる価値は何か？",
+      "output_type": "頻度最適化案",
+      "example_output": "essence更新5分→50分: リアルタイム性低下、CPU負荷1/10"
+    },
+    {
+      "scamper_id": "P-04",
+      "view": "P: Put to other uses（転用）",
+      "question": "「OPERATION」の運用データを、AIの学習データ・評価指標として転用できないか？",
+      "output_type": "データ転用案",
+      "example_output": "collaboration履歴 → AIエージェント協調性評価ベンチマークに転用"
+    },
+    {
+      "scamper_id": "E-04",
+      "view": "E: Eliminate（排除）",
+      "question": "「OPERATION」のプロセスから削除してもMoCKAの本質が失われない要素はあるか？",
+      "output_type": "プロセス削減案",
+      "example_output": "essence中間層REDUCED廃止 → 直接ESSENCE抽出で同等品質"
+    },
+    {
+      "scamper_id": "R-04",
+      "view": "R: Reverse / Rearrange（逆転・再配置）",
+      "question": "「OPERATION」の処理順序を逆転させたとき、新しい価値が生まれないか？",
+      "output_type": "フロー逆転案",
+      "example_output": "「回答→essence生成」の逆転 → 対話からessenceが自己組織化する設計"
+    }
+  ]
+}

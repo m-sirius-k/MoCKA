@@ -1,16 +1,18 @@
 """
-SCAMPER Creative Engine v1.0
-MoCKA第三の柱「発明する文明」— Phase2実装
+SCAMPER Creative Engine v2.0
+MoCKA第三の柱「発明する文明」— 4trigger完全版
 
-events.dbのインシデント/OPERATION/PHILOSOPHYデータを
-SCAMPER7視点で自動展開し、発明的解決案を生成する。
+INCIDENT / SUCCESS / OPERATION / VOICE の全データをSCAMPER展開する
 
 Usage:
-    python scamper_engine.py                      # 直近インシデント5件を展開
-    python scamper_engine.py --event E20260514_026 # 特定イベントを展開
-    python scamper_engine.py --trigger INCIDENT    # triggerタイプ指定
-    python scamper_engine.py --all                 # 全テンプレート展開
-    python scamper_engine.py --interactive         # 対話モード
+    python scamper_engine.py                        # 各trigger直近1件ずつ展開
+    python scamper_engine.py --trigger VOICE        # VOICEのみ
+    python scamper_engine.py --trigger SUCCESS      # SUCCESSのみ
+    python scamper_engine.py --trigger INCIDENT     # INCIDENTのみ
+    python scamper_engine.py --trigger OPERATION    # OPERATIONのみ
+    python scamper_engine.py --event E20260514_026  # 特定イベント
+    python scamper_engine.py --interactive          # 対話モード
+    python scamper_engine.py --all                  # 全trigger・各3件
 """
 
 import json
@@ -23,12 +25,28 @@ from datetime import datetime
 from pathlib import Path
 
 # ── パス設定 ──────────────────────────────────────────────
-BASE_DIR = Path(__file__).parent
-MOCKA_DIR = Path("C:/Users/sirok/MoCKA")
+BASE_DIR    = Path(__file__).parent
+MOCKA_DIR   = Path("C:/Users/sirok/MoCKA")
 TEMPLATES_PATH = BASE_DIR / "scamper_templates.json"
-DB_PATH = MOCKA_DIR / "data" / "mocka_events.db"
-OUTPUT_DIR = BASE_DIR / "scamper_outputs"
+DB_PATH     = MOCKA_DIR / "data" / "mocka_events.db"
+OUTPUT_DIR  = BASE_DIR / "scamper_outputs"
 OUTPUT_DIR.mkdir(exist_ok=True)
+
+# ── trigger分類マップ ───────────────────────────────────────
+TRIGGER_TYPES = {
+    "INCIDENT":  ["MATAKA","INCIDENT","CLAIM","ai_violation","OVERDUE_INCIDENT",
+                  "governance_degradation","config_error","incident","environment_error","security"],
+    "SUCCESS":   ["success_hint","success_great","DECISION_APPROVED"],
+    "OPERATION": ["collaboration","phl_decision","OPERATION","save","process",
+                  "broadcast","storage","record","caliber"],
+    "VOICE":     ["user_voice"],
+}
+
+def detect_trigger(what_type):
+    for trigger, types in TRIGGER_TYPES.items():
+        if what_type in types:
+            return trigger
+    return "INCIDENT"  # デフォルト
 
 # ── テンプレート読み込み ────────────────────────────────────
 def load_templates():
@@ -39,191 +57,169 @@ def load_templates():
         return json.load(f)
 
 # ── events.dbからイベント取得 ───────────────────────────────
-def fetch_events(trigger_type=None, event_id=None, limit=5):
+def fetch_events(trigger_name=None, event_id=None, limit=3):
     if not DB_PATH.exists():
-        print(f"[ERROR] events.dbが見つかりません: {DB_PATH}")
+        print(f"[ERROR] DB未検出: {DB_PATH}")
         sys.exit(1)
 
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
-    cur = conn.cursor()
 
     if event_id:
-        cur.execute(
-            "SELECT * FROM events WHERE event_id = ? LIMIT 1",
-            (event_id,)
-        )
-    elif trigger_type:
-        cur.execute(
-            """SELECT * FROM events
-               WHERE what_type LIKE ?
-               ORDER BY when_ts DESC LIMIT ?""",
-            (f"%{trigger_type}%", limit)
-        )
+        rows = conn.execute(
+            "SELECT * FROM events WHERE event_id=? LIMIT 1", (event_id,)
+        ).fetchall()
+    elif trigger_name and trigger_name in TRIGGER_TYPES:
+        types = TRIGGER_TYPES[trigger_name]
+        placeholders = ",".join("?" * len(types))
+        rows = conn.execute(
+            f"SELECT * FROM events WHERE what_type IN ({placeholders}) ORDER BY when_ts DESC LIMIT ?",
+            types + [limit]
+        ).fetchall()
     else:
-        # インシデント系を優先取得
-        cur.execute(
-            """SELECT * FROM events
-               WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM')
-               ORDER BY when_ts DESC LIMIT ?""",
-            (limit,)
-        )
+        # 全trigger各limit件
+        rows = []
+        for t_name, types in TRIGGER_TYPES.items():
+            placeholders = ",".join("?" * len(types))
+            r = conn.execute(
+                f"SELECT * FROM events WHERE what_type IN ({placeholders}) ORDER BY when_ts DESC LIMIT ?",
+                types + [1]
+            ).fetchall()
+            rows.extend(r)
 
-    rows = cur.fetchall()
     conn.close()
     return [dict(r) for r in rows]
 
-# ── イベントからSCAMPER入力変数を抽出 ──────────────────────
+# ── 変数抽出 ────────────────────────────────────────────────
 def extract_variables(event):
-    # DBの実カラムを使用（free_note, why_purpose, how_trigger, who_actor, what_type）
-    desc   = event.get("free_note", "") or ""
-    title  = event.get("title", "") or ""
-    who    = event.get("who_actor", "") or "Claude"
-    what_t = event.get("what_type", "") or ""
-    why    = event.get("why_purpose", "") or ""
-    how    = event.get("how_trigger", "") or ""
+    title   = event.get("title", "") or ""
+    who     = event.get("who_actor", "") or "Claude"
+    what_t  = event.get("what_type", "") or ""
+    why     = event.get("why_purpose", "") or ""
+    how     = event.get("how_trigger", "") or ""
+    note    = event.get("free_note", "") or ""
+    summary = event.get("short_summary", "") or ""
 
-    # triggerタイプ判定
-    trigger = "INCIDENT"
-    if what_t in ("CHANGE_DONE", "CHANGE_START", "OPERATION", "FIX"):
-        trigger = "OPERATION"
-    elif what_t in ("PHILOSOPHY", "DESIGN"):
-        trigger = "PHILOSOPHY"
+    trigger = detect_trigger(what_t)
 
-    # タイトルから短いwhatを生成
-    short_what = title.replace("INCIDENT:", "").replace("CHANGE_DONE:", "").strip()
-    if not short_what:
-        short_what = what_t or "不明インシデント"
-    short_what = short_what[:40] if len(short_what) > 40 else short_what
+    # whatの優先順位: title > short_summary > free_note先頭 > what_type
+    what = title.strip()
+    if not what:
+        what = summary.strip()
+    if not what and note:
+        what = note[:60].strip()
+    if not what:
+        what = what_t
+
+    what = what[:60]
 
     return {
-        "trigger": trigger,
-        "title": short_what,
-        "what": short_what,
-        "who": who,
-        "why": why[:60] if why else "不明",
-        "how": how[:60] if how else "不明",
-        "n": 1,
-        "operation": short_what,
-        "philosophy": "AIを信じるな、システムで縛れ",
-        "freq": "5分",
-        "operation_a": "morphology_engine",
-        "operation_b": "PHL-OS",
+        "trigger":  trigger,
+        "title":    what,
+        "what":     what,
+        "who":      who,
+        "why":      (why or "不明")[:60],
+        "how":      (how or "不明")[:60],
+        "n":        1,
+        "operation": what,
+        "philosophy": what if trigger == "VOICE" else "AIを信じるな、システムで縛れ",
+        "freq":     "5分",
     }
 
 # ── テンプレート変数置換 ────────────────────────────────────
 def fill_template(question, variables):
-    def replacer(m):
-        key = m.group(1)
-        return str(variables.get(key, f"{{{key}}}"))
-    return re.sub(r"\{(\w+)\}", replacer, question)
+    return re.sub(r"\{(\w+)\}", lambda m: str(variables.get(m.group(1), "{"+m.group(1)+"}")), question)
 
-# ── SCAMPER展開メイン ───────────────────────────────────────
-def expand_scamper(event, templates, use_all=False):
+# ── SCAMPER展開 ─────────────────────────────────────────────
+def expand_scamper(event, templates):
     variables = extract_variables(event)
-    trigger = variables["trigger"]
-    scamper = templates["scamper"]
-    rules = templates["expansion_rules"]["trigger_mapping"]
+    trigger   = variables["trigger"]
+    scamper   = templates["scamper"]
+    rules     = templates["expansion_rules"]
+    apply_ids = rules.get(trigger, rules["INCIDENT"])
 
-    # 適用テンプレートID一覧
-    if use_all:
-        apply_ids = []
-        for ids in rules.values():
-            apply_ids.extend(ids)
-    else:
-        apply_ids = rules.get(trigger, rules["INCIDENT"])
-
-    results = []
-    for view_key, view_data in scamper.items():
-        for tmpl in view_data["templates"]:
+    expansions = []
+    for vk, vd in scamper.items():
+        for tmpl in vd["templates"]:
             if tmpl["id"] not in apply_ids:
                 continue
-            filled_q = fill_template(tmpl["question"], variables)
-            results.append({
-                "scamper_id": tmpl["id"],
-                "view": f"{view_key}: {view_data['label']}",
-                "core_question": view_data["core_question"],
-                "question": filled_q,
-                "output_type": tmpl["output_type"],
+            expansions.append({
+                "scamper_id":   tmpl["id"],
+                "view":         f"{vk}: {vd['label']}",
+                "question":     fill_template(tmpl["question"], variables),
+                "output_type":  tmpl["output_type"],
                 "example_output": tmpl["example_output"],
             })
 
-    # event_id: DBカラム名はevent_id、なければwhen_tsで代替
     eid = event.get("event_id") or event.get("when_ts", "MANUAL")
-    etitle = event.get("title", "") or ""
-
     return {
-        "event_id": eid,
-        "event_title": etitle,
-        "trigger": trigger,
-        "variables": variables,
+        "event_id":    eid,
+        "event_title": variables["what"],
+        "what_type":   event.get("what_type", ""),
+        "trigger":     trigger,
+        "variables":   variables,
         "generated_at": datetime.now().isoformat(),
-        "expansions": results,
+        "expansions":  expansions,
     }
 
-# ── 結果表示 ────────────────────────────────────────────────
+# ── 表示 ────────────────────────────────────────────────────
+TRIGGER_ICON = {"INCIDENT":"🔴","SUCCESS":"🟢","OPERATION":"🔵","VOICE":"💬"}
+
 def print_result(result):
+    icon = TRIGGER_ICON.get(result["trigger"], "🔬")
     print("\n" + "="*70)
-    print(f"🔬 SCAMPER展開: {result['event_id']}")
-    print(f"   イベント: {result['event_title'][:60]}")
-    print(f"   Trigger : {result['trigger']}")
-    print(f"   生成日時: {result['generated_at'][:19]}")
+    print(f"{icon} [{result['trigger']}] {result['event_id']}")
+    print(f"   内容: {result['event_title'][:55]}")
+    print(f"   type: {result['what_type']}")
     print("="*70)
-
-    for i, exp in enumerate(result["expansions"], 1):
+    for exp in result["expansions"]:
         print(f"\n[{exp['scamper_id']}] {exp['view']}")
-        print(f"  問い: {exp['question']}")
-        print(f"  期待出力タイプ: {exp['output_type']}")
-        print(f"  展開例: {exp['example_output']}")
+        print(f"  💡 {exp['question']}")
+        print(f"  → {exp['output_type']}: {exp['example_output'][:60]}...")
+    print(f"\n展開数: {len(result['expansions'])}件")
 
-    print(f"\n→ 展開数: {len(result['expansions'])}件")
-
-# ── JSON保存 ────────────────────────────────────────────────
+# ── 保存 ────────────────────────────────────────────────────
 def save_result(result):
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    # ファイル名に使えない文字を除去
+    ts     = datetime.now().strftime("%Y%m%d_%H%M%S")
     raw_id = str(result["event_id"])
-    safe_id = re.sub(r'[\\/:*?"<>|\s]', '_', raw_id)[:40]
-    out_path = OUTPUT_DIR / f"scamper_{safe_id}_{ts}.json"
-    with open(out_path, "w", encoding="utf-8") as f:
+    safe   = re.sub(r'[\\/:*?"<>|\s]', '_', raw_id)[:40]
+    path   = OUTPUT_DIR / f"scamper_{result['trigger']}_{safe}_{ts}.json"
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
-    print(f"\n💾 保存: {out_path}")
-    return out_path
+    print(f"💾 {path.name}")
+    return path
 
 # ── 対話モード ──────────────────────────────────────────────
 def interactive_mode(templates):
-    print("\n🎯 SCAMPER Creative Engine — 対話モード")
-    print("インシデントを手動入力してSCAMPERを展開します。\n")
-
-    title = input("インシデントタイトル: ").strip()
-    what  = input("WHAT（何が起きた）: ").strip()
-    who   = input("WHO（誰が）: ").strip() or "Claude"
-    why   = input("WHY（なぜ）: ").strip() or "調査中"
-
-    trigger = input("Trigger [INCIDENT/OPERATION/PHILOSOPHY] (Enter=INCIDENT): ").strip().upper()
-    if trigger not in ("INCIDENT", "OPERATION", "PHILOSOPHY"):
+    print("\n🎯 SCAMPER Creative Engine v2.0 — 対話モード")
+    what    = input("内容（インシデント・発言・成功内容など）: ").strip()
+    who     = input("WHO: ").strip() or "Claude"
+    trigger = input("Trigger [INCIDENT/SUCCESS/OPERATION/VOICE] (Enter=INCIDENT): ").strip().upper()
+    if trigger not in TRIGGER_TYPES:
         trigger = "INCIDENT"
 
     event = {
-        "event_id": "MANUAL_" + datetime.now().strftime("%Y%m%d_%H%M%S"),
-        "title": title,
-        "description": f"WHO: {who}\nWHAT: {what}\nWHY: {why}",
-        "tags": trigger,
-        "what_type": trigger,
+        "event_id":  "MANUAL_" + datetime.now().strftime("%Y%m%d_%H%M%S"),
+        "title":     what,
+        "what_type": list(TRIGGER_TYPES[trigger])[0],
+        "who_actor": who,
+        "why_purpose": "",
+        "how_trigger": "",
+        "free_note":   "",
+        "short_summary": "",
     }
-
     result = expand_scamper(event, templates)
     print_result(result)
     save_result(result)
 
 # ── エントリポイント ────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="SCAMPER Creative Engine v1.0")
-    parser.add_argument("--event",       help="特定event_idを展開")
-    parser.add_argument("--trigger",     help="triggerタイプ指定 (INCIDENT/OPERATION/PHILOSOPHY)")
-    parser.add_argument("--limit",       type=int, default=3, help="取得件数 (default: 3)")
-    parser.add_argument("--all",         action="store_true", help="全テンプレート展開")
-    parser.add_argument("--interactive", action="store_true", help="対話モード")
+    parser = argparse.ArgumentParser(description="SCAMPER Creative Engine v2.0")
+    parser.add_argument("--event",       help="特定event_id")
+    parser.add_argument("--trigger",     help="INCIDENT/SUCCESS/OPERATION/VOICE")
+    parser.add_argument("--limit",       type=int, default=3)
+    parser.add_argument("--all",         action="store_true", help="全trigger各3件")
+    parser.add_argument("--interactive", action="store_true")
     args = parser.parse_args()
 
     templates = load_templates()
@@ -232,26 +228,22 @@ def main():
         interactive_mode(templates)
         return
 
-    events = fetch_events(
-        trigger_type=args.trigger,
-        event_id=args.event,
-        limit=args.limit
-    )
+    limit = args.limit if not args.all else 3
+    events = fetch_events(trigger_name=args.trigger, event_id=args.event, limit=limit)
 
     if not events:
-        print("[INFO] 対象イベントが見つかりません。--interactiveで手動入力できます。")
+        print("[INFO] 対象イベントなし")
         return
 
-    print(f"\n📋 {len(events)}件のイベントをSCAMPER展開します...\n")
+    label = args.trigger or ("全trigger" if not args.event else args.event)
+    print(f"\n📋 {len(events)}件をSCAMPER展開 [{label}]...")
 
-    all_results = []
     for event in events:
-        result = expand_scamper(event, templates, use_all=args.all)
+        result = expand_scamper(event, templates)
         print_result(result)
-        saved = save_result(result)
-        all_results.append(result)
+        save_result(result)
 
-    print(f"\n✅ 完了: {len(all_results)}件展開 → {OUTPUT_DIR}")
+    print(f"\n✅ 完了 → {OUTPUT_DIR}")
 
 if __name__ == "__main__":
     main()

@@ -1,0 +1,70 @@
+{
+  "event_id": "E20260515_023",
+  "event_title": "[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測",
+  "what_type": "success_hint",
+  "trigger": "SUCCESS",
+  "variables": {
+    "trigger": "SUCCESS",
+    "title": "[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測",
+    "what": "[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測",
+    "who": "human_nsjsiro",
+    "why": "成功シグナル収集: hint",
+    "how": "context_menu_click",
+    "n": 1,
+    "operation": "[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測",
+    "philosophy": "AIを信じるな、システムで縛れ",
+    "freq": "5分"
+  },
+  "generated_at": "2026-05-15T10:36:44.463310",
+  "expansions": [
+    {
+      "scamper_id": "S-02",
+      "view": "S: Substitute（代替）",
+      "question": "この成功「[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測」を生んだ仕組みを、他の問題領域に代替適用できないか？",
+      "output_type": "成功パターン転用案",
+      "example_output": "PHL-OS成功パターン → Orchestra製品のパーソナライゼーション機能に代替適用"
+    },
+    {
+      "scamper_id": "C-02",
+      "view": "C: Combine（結合）",
+      "question": "この成功（[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測）と別の成功事例を結合すると、どんな新しい制度が生まれるか？",
+      "output_type": "成功結合案",
+      "example_output": "PHL-OS成功 × SPP成功 → 記憶注入制度として論文化"
+    },
+    {
+      "scamper_id": "A-02",
+      "view": "A: Adapt（適応）",
+      "question": "この成功パターン（[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測）を、きむら博士の植物制御工学の知識に適応させるとどんな設計になるか？",
+      "output_type": "専門知識適応案",
+      "example_output": "PHL成功 → フィードバック制御理論で解釈 → 適応型記憶注入システム"
+    },
+    {
+      "scamper_id": "M-02",
+      "view": "M: Modify / Magnify / Minify（変更・拡大・縮小）",
+      "question": "この成功（[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測）を組織全体・複数文明に拡大適用するとどんな設計が必要か？",
+      "output_type": "文明拡張設計",
+      "example_output": "MoCKA OSS化 → 各組織が文明核を持てるcaliber配布モデル"
+    },
+    {
+      "scamper_id": "P-02",
+      "view": "P: Put to other uses（転用）",
+      "question": "この成功パターン（[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測）を、Orchestra製品の機能・セールスポイントとして転用できないか？",
+      "output_type": "製品転用案",
+      "example_output": "PHL-OS成功 → Orchestra Proプランの差別化機能として転用"
+    },
+    {
+      "scamper_id": "E-02",
+      "view": "E: Eliminate（排除）",
+      "question": "この成功（[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測）から、本質でない要素を排除すると何が残るか？それが真の成功因子ではないか？",
+      "output_type": "成功因子純化",
+      "example_output": "PHL-OS成功の本質 → 「記録の持続性」のみが因子"
+    },
+    {
+      "scamper_id": "R-02",
+      "view": "R: Reverse / Rearrange（逆転・再配置）",
+      "question": "この成功（[hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測）が「失敗だった場合」を逆転して考えると、何が脆弱性として見えてくるか？",
+      "output_type": "脆弱性逆転発見",
+      "example_output": "PHL成功の逆転 → 「記憶注入が逆に偏見を固定化するリスク」が見える"
+    }
+  ]
+}
