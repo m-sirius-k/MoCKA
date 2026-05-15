@@ -87,7 +87,7 @@ def init_pattern_db():
     print('morphology_patterns.db 陋ｻ譎・ｄ陋ｹ髢・ｮ蠕｡・ｺ繝ｻ)
 
 def build_pattern_library():
-    """
+
     """Build pattern library from events.db Layer1/Layer2"""
     # 郢昜ｸ翫≧郢晢ｽｳ郢晢ｽｪ郢昴・繝ｲ郢晢ｽｬ郢晄亢繝ｻ郢晏現ﾂｰ郢ｧ繝ｻLayer1/Layer2郢ｧ・ｵ郢晢ｽｳ郢晏干ﾎ晁愾髢・ｾ繝ｻ    heinrich = json.load(open(HEINRICH, encoding='utf-8'))
     layer1_ids = {s['event_id'] for s in heinrich['heinrich']['layer1_critical'].get('samples', []) 
@@ -152,8 +152,8 @@ def build_pattern_library():
 
 def predict(text, threshold=0.3):
     """
-    print(f'Layer1 patterns: {l1_patterns}')
-    print(f'Layer2 patterns: {l2_patterns}')
+
+
     """
     tokens = tokenize(text)
     if not tokens:
