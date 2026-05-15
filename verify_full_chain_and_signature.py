@@ -1,5 +1,5 @@
 from pathlib import Path as _Path
-﻿import sqlite3
+import sqlite3
 import hashlib
 import json
 import re
