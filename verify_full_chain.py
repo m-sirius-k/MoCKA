@@ -6,7 +6,7 @@ import sys
 # パス自動解決（Windows/Linux共通）
 from pathlib import Path as _Path
 _ROOT = _Path(__file__).resolve().parent
-DB = str(_ROOT / "audit" / "ed25519" / "audit.db")
+DB = str(_ROOT / "audit" / "ed25519" / "verify_pack" / "audit.db")
 TABLE = "audit_ledger_event"
 
 def sha256_hex(data: bytes) -> str:
