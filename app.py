@@ -2816,6 +2816,7 @@ def search():
         return jsonify({'error': str(e)}), 500
 
 
+
 # ── SCAMPER Creative Engine エンドポイント ─────────────────────────────────
 SCAMPER_ENGINE_PATH = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_engine.py")
 SCAMPER_TEMPLATES_PATH = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_templates.json")
@@ -2895,7 +2896,8 @@ def scamper_run():
         if not templates:
             return jsonify({"error": "scamper_templates.json が見つかりません"}), 500
 
-        conn = get_db_connection()
+        conn = _sqlite3.connect(db_helper.DB_PATH)
+        conn.row_factory = _sqlite3.Row
         if event_id:
             row = conn.execute("SELECT * FROM events WHERE event_id=? LIMIT 1", (event_id,)).fetchone()
         else:
@@ -2921,7 +2923,8 @@ def scamper_recent():
         if not templates:
             return jsonify({"error": "scamper_templates.json が見つかりません"}), 500
 
-        conn = get_db_connection()
+        conn = _sqlite3.connect(db_helper.DB_PATH)
+        conn.row_factory = _sqlite3.Row
         rows = conn.execute(
             "SELECT * FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM') ORDER BY when_ts DESC LIMIT ?",
             (limit,)
@@ -2942,7 +2945,7 @@ def scamper_status():
         output_dir   = os.path.join(ROOT_DIR, "PlanningCaliber", "workshop", "scamper_engine", "scamper_outputs")
         output_count = len([f for f in os.listdir(output_dir) if f.endswith(".json")]) if os.path.exists(output_dir) else 0
 
-        conn = get_db_connection()
+        conn = _sqlite3.connect(db_helper.DB_PATH)
         incident_count = conn.execute(
             "SELECT COUNT(*) FROM events WHERE what_type IN ('INCIDENT','DANGER','CRITICAL','MATAKA','CLAIM')"
         ).fetchone()[0]
