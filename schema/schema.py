@@ -10,7 +10,10 @@ from datetime import datetime, timezone
 # =========================
 # 定数
 # =========================
-LEDGER_PATH = r"C:\Users\sirok\MoCKA\runtime\main\ledger.json"
+# パス自動解決（Windows/Linux共通）
+from pathlib import Path as _Path
+_ROOT = _Path(__file__).resolve().parent.parent
+LEDGER_PATH = str(_ROOT / "runtime" / "main" / "ledger.json")
 GENESIS_PREV_HASH = "0" * 64
 
 # =========================
