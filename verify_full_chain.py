@@ -3,7 +3,10 @@ import hashlib
 import json
 import sys
 
-DB = r"C:/Users/sirok/MoCKA/audit/ed25519/audit.db"
+# パス自動解決（Windows/Linux共通）
+from pathlib import Path as _Path
+_ROOT = _Path(__file__).resolve().parent
+DB = str(_ROOT / "audit" / "ed25519" / "audit.db")
 TABLE = "audit_ledger_event"
 
 def sha256_hex(data: bytes) -> str:

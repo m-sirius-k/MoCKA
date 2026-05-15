@@ -1,3 +1,4 @@
+from pathlib import Path as _Path
 ﻿import sqlite3
 import hashlib
 import json
@@ -5,9 +6,9 @@ import re
 from cryptography.hazmat.primitives.asymmetric import ed25519
 from cryptography.hazmat.primitives import serialization
 
-DB = r"C:/Users/sirok/MoCKA/audit/ed25519/audit.db"
+DB = str(_Path(__file__).resolve().parent / "audit/ed25519/audit.db")
 TABLE = "audit_ledger_event"
-PUBKEY_PATH = r"C:/Users/sirok/MoCKA/audit/ed25519/keys/ed25519_public.key"
+PUBKEY_PATH = str(_Path(__file__).resolve().parent / "audit/ed25519/keys/ed25519_public.key")
 
 def sha256_hex(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
