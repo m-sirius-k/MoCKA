@@ -965,7 +965,61 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
-      <!-- SCAMPER Creative Engine パネル -->
+      <script>
+  async function checkScamperStatus() {
+    try {
+      const r = await fetch('/scamper/status');
+      const d = await r.json();
+      const dot = document.getElementById('scamper-status-dot');
+      const pool = document.getElementById('scamper-pool');
+      if (dot) dot.style.background = d.status === 'READY' ? '#4caf50' : '#f44336';
+      if (pool) pool.textContent = 'インシデントプール: ' + d.incident_pool + '件 | 出力ファイル: ' + d.output_files + '件';
+    } catch(e) {}
+  }
+  function renderExpansions(results) {
+    const container = document.getElementById('scamper-results');
+    if (!container) return;
+    if (!results || results.length === 0) { container.innerHTML = '<div style="color:#888">結果なし</div>'; return; }
+    let html = '';
+    results.forEach(function(res) {
+      html += '<div style="border:1px solid #333;border-radius:4px;margin-bottom:10px;padding:8px;">';
+      html += '<div style="font-size:12px;color:#b8860b;font-weight:bold;margin-bottom:4px;">📋 ' + ((res.event_title||res.event_id||'').substring(0,50)) + ' <span style="color:#666;font-size:10px;">[' + res.trigger + ']</span></div>';
+      (res.expansions || []).forEach(function(exp) {
+        html += '<div style="margin-top:6px;padding:6px;background:#1a1a1a;border-radius:3px;">';
+        html += '<div style="font-size:11px;color:#4caf50;font-weight:bold;">[' + exp.scamper_id + '] ' + exp.view + '</div>';
+        html += '<div style="font-size:11px;color:#e0e0e0;margin-top:2px;">💡 ' + exp.question + '</div>';
+        html += '<div style="font-size:10px;color:#888;margin-top:2px;">→ ' + exp.output_type + ': ' + exp.example_output.substring(0,60) + '...</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    container.innerHTML = html;
+  }
+  async function runScamper() {
+    const el = document.getElementById('scamper-event-id');
+    const eid = el ? el.value.trim() : '';
+    const container = document.getElementById('scamper-results');
+    if (container) container.innerHTML = '<div style="color:#888">展開中...</div>';
+    try {
+      const r = await fetch('/scamper/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({event_id: eid||null})});
+      const d = await r.json();
+      if (d.error) { if(container) container.innerHTML='<div style="color:#f44336">エラー: '+d.error+'</div>'; }
+      else { renderExpansions([d]); }
+    } catch(e) { if(container) container.innerHTML='<div style="color:#f44336">'+e+'</div>'; }
+  }
+  async function loadScamperRecent() {
+    const container = document.getElementById('scamper-results');
+    if (container) container.innerHTML = '<div style="color:#888">直近3件展開中...</div>';
+    try {
+      const r = await fetch('/scamper/recent?limit=3');
+      const d = await r.json();
+      renderExpansions(d.results || []);
+    } catch(e) { if(container) container.innerHTML='<div style="color:#f44336">'+e+'</div>'; }
+  }
+  checkScamperStatus();
+  setInterval(checkScamperStatus, 60000);
+</script>
+<!-- SCAMPER Creative Engine パネル -->
       <div class="panel" id="scamper-panel">
         <div class="panel-header">
           🔬 SCAMPER Creative Engine
