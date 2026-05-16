@@ -40,5 +40,41 @@
       "priority": "中"
     }
   ],
-  "generated_at": "2026-05-16T09:23:31.383510"
+  "generated_at": "2026-05-16T09:23:31.383510",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": -0.008,
+    "danger_rate": 0.496,
+    "success_rate": 0.504,
+    "text": "=== 直近イベント（本日含む）===\n\n  E20260516_007 [claude_mcp] FIX: content.js NULLバイト除去+引き継ぎ",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-29",
+        "why": "再発#1: MATAKA",
+        "how": "またか！ボタン",
+        "note": "hash=423a43a367f04477|who=claude|pattern=文字化けの根本原因はapp.py内でimportされるときのstdout環境です。extract_5",
+        "recur": 0,
+        "matched": [
+          "文字化け",
+          "app.py"
+        ],
+        "score": 2
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-29",
+        "why": "再発#1: MATAKA",
+        "how": "またか！ボタン",
+        "note": "hash=92118059a92b6794|who=claude|pattern=実はこの文字化けの根本原因はapp.py起動時のコンソールエンコーディングです",
+        "recur": 0,
+        "matched": [
+          "文字化け",
+          "app.py"
+        ],
+        "score": 2
+      }
+    ],
+    "updated_at": "2026-05-16T00:39:46.992Z"
+  }
 }
