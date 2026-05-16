@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orchestra — AI forgets. Orchestra doesn't let it.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080809;--surface:#0f0f11;--surface2:#141416;
+  --border:#1e1e22;--border2:#2a2a30;--text:#f0f0f2;
+  --muted:#6b6b78;--hint:#3a3a42;--accent:#7c5cfc;
+  --accent-soft:rgba(124,92,252,.12);--accent-border:rgba(124,92,252,.35);
+  --gold:#c9a84c;--gold-soft:rgba(201,168,76,.1);--gold-border:rgba(201,168,76,.3);
+  --green:#22c55e;--r:10px;--rl:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ── LANG SWITCHER ── */
+.lang-switcher{display:flex;gap:4px;align-items:center}
+.lang-btn{
+  font-size:11px;font-weight:500;letter-spacing:.04em;
+  background:transparent;color:var(--muted);
+  border:1px solid transparent;border-radius:6px;
+  padding:4px 8px;cursor:pointer;transition:all .15s;
+  font-family:'Geist',sans-serif;
+}
+.lang-btn:hover{color:var(--text);border-color:var(--border)}
+.lang-btn.active{color:var(--accent);border-color:var(--accent-border);background:var(--accent-soft)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:rgba(8,8,9,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Instrument Serif',serif;font-size:20px;letter-spacing:-.3px;color:var(--text);}
+.nav-logo em{font-style:italic;color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{font-size:13px;font-weight:500;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;transition:opacity .15s;}
+.nav-cta:hover{opacity:.85}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(124,92,252,.12) 0%,transparent 65%);pointer-events:none;}
+.hero-glow2{position:absolute;bottom:5%;left:30%;width:400px;height:300px;background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 65%);pointer-events:none;}
+.launch-pill{display:inline-flex;align-items:center;gap:8px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--gold);letter-spacing:.04em;margin-bottom:32px;animation:fadeUp .6s ease both;}
+.launch-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+h1{font-family:'Instrument Serif',serif;font-size:clamp(48px,6vw,80px);font-weight:400;line-height:1.05;letter-spacing:-2px;color:var(--text);margin-bottom:24px;animation:fadeUp .6s .1s ease both;}
+h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:18px;font-weight:300;color:var(--muted);line-height:1.7;max-width:540px;margin:0 auto 48px;animation:fadeUp .6s .2s ease both;}
+.hero-sub strong{color:var(--text);font-weight:400}
+.cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;animation:fadeUp .6s .3s ease both;}
+.btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:var(--r);padding:14px 28px;font-family:'Geist',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;}
+.btn-main:hover{background:#6b4ee0;transform:translateY(-1px)}
+.btn-sub{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted);border:1px solid var(--border2);border-radius:var(--r);padding:14px 24px;font-family:'Geist',sans-serif;font-size:15px;cursor:pointer;transition:all .2s;}
+.btn-sub:hover{color:var(--text)}
+.hero-hint{font-size:12px;color:var(--hint);animation:fadeUp .6s .4s ease both;}
+
+.stats{display:flex;justify-content:center;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0;}
+.stat-item{flex:1;max-width:200px;text-align:center;padding:28px 16px;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Geist Mono',monospace;font-size:28px;font-weight:500;color:var(--text);line-height:1;margin-bottom:6px;}
+.stat-num .accent{color:var(--accent)}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:.05em}
+
+section{padding:80px 24px;max-width:900px;margin:0 auto}
+.section-tag{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;}
+.section-h{font-family:'Instrument Serif',serif;font-size:clamp(28px,3.5vw,44px);font-weight:400;letter-spacing:-1px;color:var(--text);line-height:1.15;margin-bottom:16px;}
+.section-h em{font-style:italic;color:var(--muted)}
+.section-p{font-size:16px;color:var(--muted);line-height:1.75;max-width:560px;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:0 32px;}
+
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:48px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+.flow-cell{padding:28px 20px;border-right:1px solid var(--border);}
+.flow-cell:last-child{border-right:none}
+.flow-num{font-family:'Geist Mono',monospace;font-size:11px;color:var(--hint);letter-spacing:.08em;margin-bottom:16px;}
+.flow-icon2{width:40px;height:40px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:14px;}
+.flow-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px}
+.flow-desc{font-size:12px;color:var(--muted);line-height:1.6}
+.hl{color:var(--text)}
+
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px;}
+.diff-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px;}
+.diff-card.them{opacity:.7}
+.diff-card.us{border-color:var(--accent-border);background:var(--accent-soft)}
+.diff-tag{font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;font-family:'Geist Mono',monospace;}
+.diff-tag.us-tag{color:var(--accent)}
+.diff-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:13px;}
+.diff-item:last-child{margin-bottom:0}
+.diff-icon{font-size:14px;margin-top:1px;flex-shrink:0}
+.diff-text{color:var(--muted);line-height:1.5}
+.diff-text strong{color:var(--text);font-weight:500}
+
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:48px;}
+.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:28px 22px;position:relative;transition:border-color .2s;}
+.plan-card:hover{border-color:var(--border2)}
+.plan-card.featured{border-color:var(--gold-border);background:linear-gradient(160deg,rgba(201,168,76,.06) 0%,var(--surface) 60%);}
+.plan-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;}
+.plan-label.gold{color:var(--gold)}
+.launch-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-soft);border:1px solid var(--gold-border);border-radius:6px;padding:4px 10px;font-size:10px;color:var(--gold);letter-spacing:.04em;margin-bottom:12px;}
+.plan-price-row{display:flex;align-items:baseline;gap:4px;margin-bottom:4px}
+.plan-price-main{font-family:'Instrument Serif',serif;font-size:44px;font-weight:400;color:var(--text);line-height:1;}
+.plan-price-main.strike{text-decoration:line-through;color:var(--hint);font-size:28px;}
+.plan-price-curr{font-size:18px;color:var(--muted);font-family:'Geist',sans-serif;font-weight:300;}
+.plan-price-period{font-size:13px;color:var(--hint)}
+.plan-desc2{font-size:13px;color:var(--muted);margin:12px 0 20px;line-height:1.6}
+.plan-sep{height:1px;background:var(--border);margin-bottom:20px}
+.feat-list{display:flex;flex-direction:column;gap:10px}
+.feat-item{display:flex;align-items:flex-start;gap:9px;font-size:13px;}
+.feat-check{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);font-size:9px;color:var(--green);}
+.feat-x{width:16px;height:16px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);font-size:9px;color:var(--hint);}
+.feat-text{color:var(--muted);line-height:1.5}
+.feat-text.strong{color:var(--text)}
+.limited-note{text-align:center;margin-top:20px;font-size:13px;color:var(--muted);}
+.limited-note span{color:var(--gold)}
+.plan-cta{display:block;width:100%;margin-top:24px;padding:12px;background:transparent;border:1px solid var(--border2);border-radius:var(--r);color:var(--muted);font-size:13px;font-weight:500;font-family:'Geist',sans-serif;cursor:pointer;transition:all .15s;text-align:center;}
+.plan-cta:hover{color:var(--text)}
+.plan-cta.gold-cta{background:var(--gold);color:#0a0800;border-color:var(--gold);}
+.plan-cta.gold-cta:hover{background:#b8963e}
+
+.faq-list{margin-top:40px;display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
+.faq-q{font-size:15px;color:var(--text);font-weight:400;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.faq-q:hover{color:var(--muted)}
+.faq-toggle{font-size:18px;color:var(--hint);flex-shrink:0;transition:transform .2s}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.75;padding-top:12px;display:none;}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-toggle{transform:rotate(45deg)}
+
+footer{border-top:1px solid var(--border);padding:40px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.foot-logo{font-family:'Instrument Serif',serif;font-size:18px;color:var(--muted);}
+.foot-logo em{font-style:italic;color:var(--hint)}
+.foot-note{font-size:12px;color:var(--hint);line-height:1.7;text-align:right}
+
+@media(max-width:700px){
+  nav{padding:14px 20px}
+  .nav-links{display:none}
+  .flow-grid{grid-template-columns:1fr 1fr}
+  .flow-cell{border-bottom:1px solid var(--border)}
+  .diff-grid{grid-template-columns:1fr}
+  .plans-grid{grid-template-columns:1fr}
+  .stats{flex-wrap:wrap}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);max-width:none}
+  footer{flex-direction:column;align-items:flex-start}
+  .foot-note{text-align:left}
+}
+@media(max-width:500px){.flow-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Orch<em>estra</em></div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#how" data-i18n="nav.how">How it works</a>
+      <a href="#pricing" data-i18n="nav.pricing">Pricing</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('ja')">JP</button>
+      <button class="lang-btn" onclick="setLang('de')">DE</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('ko')">KR</button>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cta">Launch Edition →</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="launch-pill">
+    <span class="launch-dot"></span>
+    <span data-i18n="hero.pill">Launch Edition — 500 copies only · $8/mo (20% off $10)</span>
+  </div>
+  <h1>
+    <span data-i18n="hero.h1_line1">AI forgets.</span><br>
+    Orchestra<br>
+    <em data-i18n="hero.h1_line3">won't let it.</em>
+  </h1>
+  <p class="hero-sub">
+    <span data-i18n="hero.sub">Assign each AI a role. Let them examine from multiple angles.</span><br>
+    <strong data-i18n="hero.sub_strong1">Save</strong> <span data-i18n="hero.sub_mid">the full record.</span>
+    <strong data-i18n="hero.sub_strong2">Search</strong> <span data-i18n="hero.sub_mid2">it anytime.</span>
+    <strong data-i18n="hero.sub_strong3">Export</strong> <span data-i18n="hero.sub_end">as CSV/JSON.</span><br>
+    <span data-i18n="hero.sub_privacy">Your data never leaves your PC.</span>
+  </p>
+  <div class="cta-row">
+    <button class="btn-main" data-i18n="hero.btn_install">⬇ Install for Free</button>
+    <button class="btn-sub" data-i18n="hero.btn_demo">Watch Demo →</button>
+  </div>
+  <p class="hero-hint" data-i18n="hero.hint">Chrome Web Store · Free plan available · No credit card required</p>
+</div>
+
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-num"><span class="accent">Orchestrate</span></div>
+    <div class="stat-label" data-i18n="stats.s1_label">Assign roles. Examine from every angle.</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="accent">Save</span></div>
+    <div class="stat-label" data-i18n="stats.s2_label">Every deliberation stays on your PC</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="accent">Search</span></div>
+    <div class="stat-label" data-i18n="stats.s3_label">Trace back any decision, any time</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="accent">Own</span></div>
+    <div class="stat-label" data-i18n="stats.s4_label">Export as CSV/JSON — your asset</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<section id="how">
+  <div class="section-tag" data-i18n="how.tag">How it works</div>
+  <h2 class="section-h"><span data-i18n="how.h2_main">Orchestrate. Record.</span> <em data-i18n="how.h2_em">Own it.</em></h2>
+  <p class="section-p" data-i18n="how.desc">AI gives you answers. Orchestra keeps the entire process.</p>
+  <div class="flow-grid">
+    <div class="flow-cell">
+      <div class="flow-num">01</div>
+      <div class="flow-icon2">🎭</div>
+      <div class="flow-title" data-i18n="how.step1_title">Assign roles</div>
+      <div class="flow-desc" data-i18n="how.step1_desc">Give each AI a job — cost, trends, evidence, risk. One right-click sends to all simultaneously</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-num">02</div>
+      <div class="flow-icon2">⚡</div>
+      <div class="flow-title" data-i18n="how.step2_title">Run in parallel</div>
+      <div class="flow-desc" data-i18n="how.step2_desc">4 AIs answer from their assigned angle. No API key needed — uses your existing browser sessions</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-num">03</div>
+      <div class="flow-icon2">🎯</div>
+      <div class="flow-title" data-i18n="how.step3_title">Claude synthesizes</div>
+      <div class="flow-desc" data-i18n="how.step3_desc">All responses flow into Claude. Who said what, why that conclusion — organized into a single best answer</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-num">04</div>
+      <div class="flow-icon2">🗄</div>
+      <div class="flow-title" data-i18n="how.step4_title">History stays</div>
+      <div class="flow-desc" data-i18n="how.step4_desc">The full deliberation is saved in your browser. Search it later. Export as CSV/JSON anytime</div>
+    </div>
+  </div>
+  <div style="margin-top:40px;background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:28px">
+    <div style="font-family:'Geist Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.1em;margin-bottom:20px" data-i18n="how.example_label">EXAMPLE — Role assignment mode</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:#10a37f;flex-shrink:0"></div><span style="font-size:12px;font-weight:500;color:var(--text)">ChatGPT</span></div>
+        <div style="font-size:11px;color:var(--accent);margin-bottom:4px" data-i18n="how.role_chatgpt">Role: Cost & feasibility</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6" data-i18n="how.role_chatgpt_desc">Budget, effort, technical barriers</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:#4285f4;flex-shrink:0"></div><span style="font-size:12px;font-weight:500;color:var(--text)">Gemini</span></div>
+        <div style="font-size:11px;color:var(--accent);margin-bottom:4px" data-i18n="how.role_gemini">Role: Trends & latest info</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6" data-i18n="how.role_gemini_desc">Market movement, recent cases</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:#20b2aa;flex-shrink:0"></div><span style="font-size:12px;font-weight:500;color:var(--text)">Perplexity</span></div>
+        <div style="font-size:11px;color:var(--accent);margin-bottom:4px" data-i18n="how.role_perplexity">Role: Evidence & sources</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6" data-i18n="how.role_perplexity_desc">Papers, citations, verified facts</div>
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:#0078d4;flex-shrink:0"></div><span style="font-size:12px;font-weight:500;color:var(--text)">Copilot</span></div>
+        <div style="font-size:11px;color:var(--accent);margin-bottom:4px" data-i18n="how.role_copilot">Role: Risk & counterarguments</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6" data-i18n="how.role_copilot_desc">Concerns, blind spots, alternatives</div>
+      </div>
+      <div style="background:rgba(124,92,252,.08);border:1px solid var(--accent-border);border-radius:var(--r);padding:14px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:#a78bfa;flex-shrink:0"></div><span style="font-size:12px;font-weight:500;color:var(--text)">Claude</span></div>
+        <div style="font-size:11px;color:var(--accent);margin-bottom:4px" data-i18n="how.role_claude">Role: Synthesis & final call</div>
+        <div style="font-size:11px;color:var(--muted);line-height:1.6" data-i18n="how.role_claude_desc">Integrates all views, delivers the best answer</div>
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px;background:var(--surface2);border-radius:var(--r);border-left:2px solid var(--accent)">
+      <div style="font-size:12px;color:var(--muted);line-height:1.7" data-i18n-html="how.process_note">The entire process — <span class="hl">who said what, why that conclusion was reached</span> — is saved automatically. Search it tomorrow or a year from now.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section>
+  <div class="section-tag" data-i18n="privacy.tag">Privacy by Design</div>
+  <h2 class="section-h"><span data-i18n="privacy.h2_main">Nothing leaves</span><br><em data-i18n="privacy.h2_em">your PC.</em></h2>
+  <p class="section-p" data-i18n="privacy.desc">Orchestra has no server. That's not a limitation — it's a deliberate choice.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:40px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px">
+      <div style="font-size:24px;margin-bottom:14px">🖥</div>
+      <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px" data-i18n="privacy.p1_title">Saved in your browser only</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7" data-i18n="privacy.p1_desc">Logs are written only to your browser's IndexedDB. Orchestra has no server — external transmission is physically impossible.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px">
+      <div style="font-size:24px;margin-bottom:14px">🔑</div>
+      <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px" data-i18n="privacy.p2_title">No API keys held</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7" data-i18n="privacy.p2_desc">Orchestra uses your existing browser sessions — the accounts you already use. We never store your credentials.</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:24px">
+      <div style="font-size:24px;margin-bottom:14px">📡</div>
+      <div style="font-size:14px;font-weight:500;color:var(--text);margin-bottom:8px" data-i18n="privacy.p3_title">Fully uninstallable</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7" data-i18n="privacy.p3_desc">Remove the extension and all data disappears with it. No residue on any server.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section id="pricing">
+  <div class="section-tag" data-i18n="pricing.tag">Pricing</div>
+  <h2 class="section-h"><span data-i18n="pricing.h2_main">Three plans.</span><br><em data-i18n="pricing.h2_em">Start free.</em></h2>
+  <p class="section-p" data-i18n="pricing.desc">Begin for free. Upgrade when you need more.</p>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <div class="plan-label" data-i18n="pricing.free_label">Free</div>
+      <div class="plan-price-row">
+        <span class="plan-price-curr">$</span>
+        <span class="plan-price-main" data-i18n="pricing.free_price">0</span>
+      </div>
+      <div class="plan-desc2" data-i18n="pricing.free_desc">Try it. Save and search without limits.</div>
+      <div class="plan-sep"></div>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text strong" data-i18n="pricing.free_f1">Save & search conversations</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text" data-i18n="pricing.free_f2">CSV / JSON export</div></div>
+        <div class="feat-item"><div class="feat-x">—</div><div class="feat-text" data-i18n="pricing.free_f3">5 AI parallel Orchestration</div></div>
+        <div class="feat-item"><div class="feat-x">—</div><div class="feat-text" data-i18n="pricing.free_f4">Claude synthesis</div></div>
+        <div class="feat-item"><div class="feat-x">—</div><div class="feat-text" data-i18n="pricing.free_f5">No-API-key mode</div></div>
+      </div>
+      <button class="plan-cta" data-i18n="pricing.free_cta">Install for Free</button>
+    </div>
+    <div class="plan-card">
+      <div class="plan-label" data-i18n="pricing.orch_label">Orchestra</div>
+      <div class="plan-price-row">
+        <span class="plan-price-curr">$</span>
+        <span class="plan-price-main" data-i18n="pricing.orch_price">5</span>
+        <span class="plan-price-period" data-i18n="pricing.orch_period">/mo</span>
+      </div>
+      <div class="plan-desc2" data-i18n="pricing.orch_desc">The core Orchestration engine. For users with existing AI access.</div>
+      <div class="plan-sep"></div>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text" data-i18n="pricing.orch_f1">Save & search conversations</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text" data-i18n="pricing.orch_f2">CSV / JSON export</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text strong" data-i18n="pricing.orch_f3">5 AI parallel Orchestration</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text strong" data-i18n="pricing.orch_f4">One right-click to launch</div></div>
+        <div class="feat-item"><div class="feat-x">—</div><div class="feat-text" data-i18n="pricing.orch_f5">No-API-key mode</div></div>
+      </div>
+      <button class="plan-cta" data-i18n="pricing.orch_cta">Start Orchestra</button>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-label gold" data-i18n="pricing.one_label">Orchestra One</div>
+      <div class="launch-badge">
+        <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block"></span>
+        <span data-i18n="pricing.one_launch">Launch Edition · 500 copies only</span>
+      </div>
+      <div class="plan-price-row" style="gap:8px;align-items:baseline">
+        <span class="plan-price-curr" style="color:var(--gold)">$</span>
+        <span class="plan-price-main" style="color:var(--gold)" data-i18n="pricing.one_price">8</span>
+        <span class="plan-price-period" data-i18n="pricing.one_period">/mo</span>
+        <span class="plan-price-main strike" data-i18n="pricing.one_strike">$10</span>
+      </div>
+      <div class="plan-desc2" data-i18n="pricing.one_desc">Everything. No API key. Fully local. The complete Orchestra.</div>
+      <div class="plan-sep"></div>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text" data-i18n="pricing.one_f1">Save & search conversations</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text" data-i18n="pricing.one_f2">CSV / JSON export</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text strong" data-i18n="pricing.one_f3">5 AI parallel Orchestration</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text strong" data-i18n="pricing.one_f4">One right-click to launch</div></div>
+        <div class="feat-item"><div class="feat-check">✓</div><div class="feat-text strong" data-i18n="pricing.one_f5">No API key · fully autonomous</div></div>
+      </div>
+      <button class="plan-cta gold-cta" data-i18n="pricing.one_cta">Get Launch Edition →</button>
+    </div>
+  </div>
+  <p class="limited-note" data-i18n-html="pricing.limited_note">Launch Edition is <span>limited to 500 copies</span>. After that, price returns to $10/mo.</p>
+</section>
+
+<hr class="divider">
+
+<section id="faq">
+  <div class="section-tag" data-i18n="faq.tag">FAQ</div>
+  <h2 class="section-h"><span data-i18n="faq.h2_main">Common</span> <em data-i18n="faq.h2_em">questions</em></h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        <span data-i18n="faq.q1">What does "no API key required" mean?</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a" data-i18n="faq.a1">Orchestra uses the browser sessions you already have — your ChatGPT, Gemini, Copilot, and Perplexity logins. You don't need to purchase API keys from OpenAI or Anthropic.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        <span data-i18n="faq.q2">Where is my data stored?</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a" data-i18n="faq.a2">All conversation logs are written only to your browser's IndexedDB. Orchestra has no server — external transmission is physically impossible.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        <span data-i18n="faq.q3">Could my prompts be exposed when sent to each AI?</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a" data-i18n-html="faq.a3">Honestly: yes, in the same way as using those AI services directly. Never send confidential business data to any AI tool.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        <span data-i18n="faq.q4">How is this different from ChatHub or Sider?</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a" data-i18n="faq.a4">ChatHub and Sider route your queries through their own servers. Orchestra has no such relay. Your browser communicates directly with each AI.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        <span data-i18n="faq.q5">Is the 500-copy Launch Edition limit real?</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a" data-i18n="faq.a5">Yes. Once 500 copies are sold, the Gumroad price switches to $10/mo. Early buyers keep $8/mo for the life of their subscription.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        <span data-i18n="faq.q6">What does the Free plan include?</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a" data-i18n="faq.a6">Free includes conversation saving, search, and CSV/JSON export — forever, with no time limit.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">Orch<em>estra</em></div>
+  <div class="foot-note">
+    <span data-i18n="footer.note">Stored in your browser only · No external transmission · No tracking</span><br>
+    <span style="color:var(--hint)" data-i18n="footer.built">Built on MoCKA research · AIES 2026</span>
+  </div>
+</footer>
+
+<script>
+// ── i18n engine ──────────────────────────────────────────────────────────────
+const LOCALES = {};
+const LANGS = ['en','ja','de','es','ko'];
+let currentLang = 'en';
+
+async function loadLocale(lang) {
+  if (LOCALES[lang]) return LOCALES[lang];
+  // Inline locales to avoid CORS issues when opened as local file
+  return null;
+}
+
+function getNestedValue(obj, path) {
+  return path.split('.').reduce((acc, key) => acc && acc[key], obj);
+}
+
+function applyTranslations(lang) {
+  const data = LOCALES[lang];
+  if (!data) return;
+
+  // data-i18n (text)
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = getNestedValue(data, key);
+    if (val !== undefined) el.textContent = val;
+  });
+
+  // data-i18n-html (innerHTML)
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.getAttribute('data-i18n-html');
+    const val = getNestedValue(data, key);
+    if (val !== undefined) el.innerHTML = val;
+  });
+
+  // lang buttons
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  const map = {en:'EN',ja:'JP',de:'DE',es:'ES',ko:'KR'};
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    if (btn.textContent.trim() === map[lang]) btn.classList.add('active');
+  });
+
+  document.documentElement.lang = lang;
+  currentLang = lang;
+  localStorage.setItem('orchestra_lang', lang);
+}
+
+function setLang(lang) {
+  if (LOCALES[lang]) {
+    applyTranslations(lang);
+  }
+}
+
+// ── Inline locale data ───────────────────────────────────────────────────────
+LOCALES['en'] = {"lang_name":"English","nav":{"how":"How it works","pricing":"Pricing","faq":"FAQ","cta":"Launch Edition →"},"hero":{"pill":"Launch Edition — 500 copies only · $8/mo (20% off $10)","h1_line1":"AI forgets.","h1_line2":"Orchestra","h1_line3":"won't let it.","sub":"Assign each AI a role. Let them examine from multiple angles.","sub_strong1":"Save","sub_mid":"the full record.","sub_strong2":"Search","sub_mid2":"it anytime.","sub_strong3":"Export","sub_end":"as CSV/JSON.","sub_privacy":"Your data never leaves your PC.","btn_install":"⬇ Install for Free","btn_demo":"Watch Demo →","hint":"Chrome Web Store · Free plan available · No credit card required"},"stats":{"s1_label":"Assign roles. Examine from every angle.","s2_label":"Every deliberation stays on your PC","s3_label":"Trace back any decision, any time","s4_label":"Export as CSV/JSON — your asset"},"how":{"tag":"How it works","h2_main":"Orchestrate. Record.","h2_em":"Own it.","desc":"AI gives you answers. Orchestra keeps the entire process.","step1_title":"Assign roles","step1_desc":"Give each AI a job — cost, trends, evidence, risk. One right-click sends to all simultaneously","step2_title":"Run in parallel","step2_desc":"4 AIs answer from their assigned angle. No API key needed — uses your existing browser sessions","step3_title":"Claude synthesizes","step3_desc":"All responses flow into Claude. Who said what, why that conclusion — organized into a single best answer","step4_title":"History stays","step4_desc":"The full deliberation is saved in your browser. Search it later. Export as CSV/JSON anytime","example_label":"EXAMPLE — Role assignment mode","role_chatgpt":"Role: Cost & feasibility","role_chatgpt_desc":"Budget, effort, technical barriers","role_gemini":"Role: Trends & latest info","role_gemini_desc":"Market movement, recent cases","role_perplexity":"Role: Evidence & sources","role_perplexity_desc":"Papers, citations, verified facts","role_copilot":"Role: Risk & counterarguments","role_copilot_desc":"Concerns, blind spots, alternatives","role_claude":"Role: Synthesis & final call","role_claude_desc":"Integrates all views, delivers the best answer","process_note":"The entire process — <span class=\"hl\">who said what, why that conclusion was reached</span> — is saved automatically. Search it tomorrow or a year from now."},"privacy":{"tag":"Privacy by Design","h2_main":"Nothing leaves","h2_em":"your PC.","desc":"Orchestra has no server. That's not a limitation — it's a deliberate choice.","p1_title":"Saved in your browser only","p1_desc":"Logs are written only to your browser's IndexedDB. Orchestra has no server — external transmission is physically impossible.","p2_title":"No API keys held","p2_desc":"Orchestra uses your existing browser sessions — the accounts you already use. We never store your credentials.","p3_title":"Fully uninstallable","p3_desc":"Remove the extension and all data disappears with it. No residue on any server."},"pricing":{"tag":"Pricing","h2_main":"Three plans.","h2_em":"Start free.","desc":"Begin for free. Upgrade when you need more.","free_label":"Free","free_price":"0","free_desc":"Try it. Save and search without limits.","free_f1":"Save & search conversations","free_f2":"CSV / JSON export","free_f3":"5 AI parallel Orchestration","free_f4":"Claude synthesis","free_f5":"No-API-key mode","free_cta":"Install for Free","orch_label":"Orchestra","orch_price":"5","orch_period":"/mo","orch_desc":"The core Orchestration engine. For users with existing AI access.","orch_f1":"Save & search conversations","orch_f2":"CSV / JSON export","orch_f3":"5 AI parallel Orchestration","orch_f4":"One right-click to launch","orch_f5":"No-API-key mode","orch_cta":"Start Orchestra","one_label":"Orchestra One","one_launch":"Launch Edition · 500 copies only","one_price":"8","one_period":"/mo","one_strike":"$10","one_desc":"Everything. No API key. Fully local. The complete Orchestra.","one_f1":"Save & search conversations","one_f2":"CSV / JSON export","one_f3":"5 AI parallel Orchestration","one_f4":"One right-click to launch","one_f5":"No API key · fully autonomous","one_cta":"Get Launch Edition →","limited_note":"Launch Edition is <span>limited to 500 copies</span>. After that, price returns to $10/mo."},"faq":{"tag":"FAQ","h2_main":"Common","h2_em":"questions","q1":"What does \"no API key required\" mean?","a1":"Orchestra uses the browser sessions you already have — your ChatGPT, Gemini, Copilot, and Perplexity logins. You don't need to purchase API keys from OpenAI or Anthropic. It works with the accounts you already use every day.","q2":"Where is my data stored?","a2":"All conversation logs are written only to your browser's IndexedDB. Orchestra has no server, no cloud storage, no database of its own — external transmission is physically impossible. Uninstall the extension and the data disappears with it.","q3":"Could my prompts be exposed when sent to each AI?","a3":"Honestly: yes, in the same way as using those AI services directly. When Orchestra sends your prompt to ChatGPT, Gemini, Copilot, or Perplexity, that content reaches each company's servers.<br><br>Never send confidential business data, personal information, or unpublished work to any AI tool. What Orchestra protects you from is Orchestra itself — we have no server to collect your data.","q4":"How is this different from ChatHub or Sider?","a4":"ChatHub and Sider route your queries through their own servers before forwarding to AI services — your data enters a third-party database. Orchestra has no such relay. Your browser communicates directly with each AI. Also, ChatHub shows answers side by side for you to compare. Orchestra has Claude synthesize everything into one best response.","q5":"Is the 500-copy Launch Edition limit real?","a5":"Yes. Once 500 copies are sold, the Gumroad price switches to $10/mo and the listing changes to \"Launch Edition sold out.\" Early buyers keep $8/mo for the life of their subscription.","q6":"What does the Free plan include?","a6":"Free includes conversation saving, search, and CSV/JSON export — forever, with no time limit. The 5 AI parallel Orchestration and Claude synthesis are available on Orchestra and Orchestra One. Start free, upgrade when you need parallel deliberation."},"footer":{"note":"Stored in your browser only · No external transmission · No tracking","built":"Built on MoCKA research · AIES 2026"}};
+
+LOCALES['ja'] = {"lang_name":"日本語","nav":{"how":"仕組み","pricing":"料金","faq":"よくある質問","cta":"Launch Edition →"},"hero":{"pill":"Launch Edition — 500本限定 · 月$8（$10より20%OFF）","h1_line1":"AIは忘れる。","h1_line2":"Orchestra は、","h1_line3":"忘れさせない。","sub":"各AIに役割を与え、多角的に検討させる。","sub_strong1":"保存","sub_mid":"して、","sub_strong2":"検索","sub_mid2":"して、","sub_strong3":"エクスポート","sub_end":"。すべてCSV/JSONで。","sub_privacy":"データはあなたのPCから一切外に出ません。","btn_install":"⬇ 無料でインストール","btn_demo":"デモを見る →","hint":"Chrome Web Store · 無料プランあり · クレジットカード不要"},"stats":{"s1_label":"役割を割り当て、あらゆる角度から検討","s2_label":"議論の全記録があなたのPCに残る","s3_label":"どの決断も、いつでも遡れる","s4_label":"CSV/JSONでエクスポート — あなたの資産に"},"how":{"tag":"仕組み","h2_main":"議論して、記録して、","h2_em":"自分のものにする。","desc":"AIは答えを出す。Orchestraはそのプロセス全体を保存する。","step1_title":"役割を割り当てる","step1_desc":"各AIにコスト・トレンド・根拠・リスクなどの担当を設定。右クリック1回で全AIに同時送信","step2_title":"並列で動かす","step2_desc":"4つのAIが担当角度から回答。APIキー不要 — 既存のブラウザセッションを使用","step3_title":"Claudeが統合する","step3_desc":"全回答がClaudeに集約。誰が何を言ったか、なぜその結論か — 最良の一答に整理される","step4_title":"履歴が残る","step4_desc":"議論の全記録がブラウザに保存。後から検索、CSV/JSONでいつでもエクスポート","example_label":"例 — 役割割り当てモード","role_chatgpt":"担当: コスト・実現性","role_chatgpt_desc":"予算、工数、技術的障壁","role_gemini":"担当: トレンド・最新情報","role_gemini_desc":"市場動向、最近の事例","role_perplexity":"担当: 根拠・情報源","role_perplexity_desc":"論文、引用、検証済み事実","role_copilot":"担当: リスク・反論","role_copilot_desc":"懸念点、盲点、代替案","role_claude":"担当: 統合・最終判断","role_claude_desc":"全視点を統合し、最良の答えを導く","process_note":"議論の全プロセス — <span class=\"hl\">誰が何を言い、なぜその結論に至ったか</span> — が自動保存される。明日でも1年後でも検索できる。"},"privacy":{"tag":"プライバシー設計","h2_main":"データは","h2_em":"外に出ない。","desc":"Orchestraにサーバーはありません。制限ではなく、意図した設計です。","p1_title":"ブラウザ内にのみ保存","p1_desc":"ログはブラウザのIndexedDBにのみ書き込まれます。Orchestraにサーバーはなく、外部送信は物理的に不可能です。","p2_title":"APIキーを保持しない","p2_desc":"既存のブラウザセッション（普段使っているアカウント）をそのまま使用。認証情報を保存することはありません。","p3_title":"完全にアンインストール可能","p3_desc":"拡張機能を削除すれば、すべてのデータが消えます。サーバーには何も残りません。"},"pricing":{"tag":"料金","h2_main":"3つのプラン。","h2_em":"まず無料から。","desc":"無料で始めて、必要になったらアップグレード。","free_label":"Free","free_price":"0","free_desc":"試してみる。保存と検索は無制限。","free_f1":"会話の保存・検索","free_f2":"CSV / JSON エクスポート","free_f3":"5AI並列オーケストレーション","free_f4":"Claude統合","free_f5":"APIキー不要モード","free_cta":"無料でインストール","orch_label":"Orchestra","orch_price":"5","orch_period":"/月","orch_desc":"コアのオーケストレーションエンジン。既存AIアクセスをお持ちの方向け。","orch_f1":"会話の保存・検索","orch_f2":"CSV / JSON エクスポート","orch_f3":"5AI並列オーケストレーション","orch_f4":"右クリック1回で起動","orch_f5":"APIキー不要モード","orch_cta":"Orchestraを始める","one_label":"Orchestra One","one_launch":"Launch Edition · 500本限定","one_price":"8","one_period":"/月","one_strike":"$10","one_desc":"すべての機能。APIキー不要。完全ローカル。完全版Orchestra。","one_f1":"会話の保存・検索","one_f2":"CSV / JSON エクスポート","one_f3":"5AI並列オーケストレーション","one_f4":"右クリック1回で起動","one_f5":"APIキー不要 · 完全自律動作","one_cta":"Launch Editionを入手 →","limited_note":"Launch Editionは<span>500本限定</span>。完売後は月$10に戻ります。"},"faq":{"tag":"よくある質問","h2_main":"よくある","h2_em":"質問","q1":"「APIキー不要」とはどういう意味ですか？","a1":"Orchestraはすでにお持ちのブラウザセッションをそのまま使用します。ChatGPT、Gemini、Copilot、PerplexityへのログインはそのままでOK。OpenAIやAnthropicからAPIキーを購入する必要はありません。","q2":"データはどこに保存されますか？","a2":"すべての会話ログはブラウザのIndexedDBにのみ書き込まれます。Orchestraにはサーバーも、クラウドストレージも、独自データベースもありません。外部送信は物理的に不可能です。","q3":"各AIにプロンプトが送信される際、内容が漏れる可能性はありますか？","a3":"正直にお答えします：あります。各AIサービスを直接使用する場合と同様です。機密ビジネスデータ、個人情報、未公開の作品はどのAIツールにも送信しないでください。","q4":"ChatHubやSiderとの違いは何ですか？","a4":"ChatHubやSiderはクエリをAIサービスへ転送する前に自身のサーバーを経由します。Orchestraにそのような中継はありません。ブラウザが各AIと直接通信します。またOrchestraはClaudeがすべてを1つの最良の回答に統合します。","q5":"500本限定のLaunch Editionは本当ですか？","a5":"はい。500本完売後、GumroadTransfer価格は月$10に切り替わります。早期購入者は生涯月$8が維持されます。","q6":"無料プランには何が含まれますか？","a6":"無料プランには会話の保存、検索、CSV/JSONエクスポートが期間制限なく含まれます。まず無料で始め、並列議論が必要になったらアップグレードしてください。"},"footer":{"note":"ブラウザ内にのみ保存 · 外部送信なし · トラッキングなし","built":"MoCKA研究に基づく · AIES 2026"}};
+
+LOCALES['de'] = {"lang_name":"Deutsch","nav":{"how":"So funktioniert's","pricing":"Preise","faq":"FAQ","cta":"Launch Edition →"},"hero":{"pill":"Launch Edition — nur 500 Exemplare · 8$/Monat (20% Rabatt auf $10)","h1_line1":"KI vergisst.","h1_line2":"Orchestra","h1_line3":"lässt es nicht zu.","sub":"Weise jeder KI eine Rolle zu. Lass sie aus verschiedenen Perspektiven analysieren.","sub_strong1":"Speichern","sub_mid":"des vollständigen Protokolls.","sub_strong2":"Suchen","sub_mid2":"jederzeit.","sub_strong3":"Exportieren","sub_end":"als CSV/JSON.","sub_privacy":"Deine Daten verlassen deinen PC niemals.","btn_install":"⬇ Kostenlos installieren","btn_demo":"Demo ansehen →","hint":"Chrome Web Store · Kostenloser Plan verfügbar · Keine Kreditkarte erforderlich"},"stats":{"s1_label":"Rollen zuweisen. Aus jedem Winkel analysieren.","s2_label":"Jede Beratung bleibt auf deinem PC","s3_label":"Jede Entscheidung jederzeit nachverfolgen","s4_label":"Als CSV/JSON exportieren — dein Eigentum"},"how":{"tag":"So funktioniert's","h2_main":"Orchestrieren. Aufzeichnen.","h2_em":"Besitzen.","desc":"KI gibt dir Antworten. Orchestra behält den gesamten Prozess.","step1_title":"Rollen zuweisen","step1_desc":"Gib jeder KI eine Aufgabe — Kosten, Trends, Belege, Risiken. Ein Rechtsklick sendet an alle gleichzeitig","step2_title":"Parallel ausführen","step2_desc":"4 KIs antworten aus ihrer zugewiesenen Perspektive. Kein API-Schlüssel nötig — nutzt deine vorhandenen Browser-Sitzungen","step3_title":"Claude synthetisiert","step3_desc":"Alle Antworten fließen in Claude. Wer was sagte, warum diese Schlussfolgerung — in einer optimalen Antwort zusammengefasst","step4_title":"Verlauf bleibt erhalten","step4_desc":"Die vollständige Beratung wird in deinem Browser gespeichert. Später suchen. Jederzeit als CSV/JSON exportieren","example_label":"BEISPIEL — Rollenzuweisungsmodus","role_chatgpt":"Rolle: Kosten & Machbarkeit","role_chatgpt_desc":"Budget, Aufwand, technische Hürden","role_gemini":"Rolle: Trends & aktuelle Infos","role_gemini_desc":"Marktbewegungen, aktuelle Fälle","role_perplexity":"Rolle: Belege & Quellen","role_perplexity_desc":"Studien, Zitate, verifizierte Fakten","role_copilot":"Rolle: Risiken & Gegenargumente","role_copilot_desc":"Bedenken, blinde Flecken, Alternativen","role_claude":"Rolle: Synthese & Entscheidung","role_claude_desc":"Integriert alle Perspektiven, liefert die beste Antwort","process_note":"Der gesamte Prozess — <span class=\"hl\">wer was sagte, warum diese Schlussfolgerung</span> — wird automatisch gespeichert. Morgen oder in einem Jahr durchsuchbar."},"privacy":{"tag":"Privacy by Design","h2_main":"Nichts verlässt","h2_em":"deinen PC.","desc":"Orchestra hat keinen Server. Das ist keine Einschränkung — es ist eine bewusste Entscheidung.","p1_title":"Nur im Browser gespeichert","p1_desc":"Logs werden nur in die IndexedDB deines Browsers geschrieben. Orchestra hat keinen Server — externe Übertragung ist physisch unmöglich.","p2_title":"Keine API-Schlüssel gespeichert","p2_desc":"Orchestra nutzt deine vorhandenen Browser-Sitzungen. Wir speichern niemals deine Anmeldedaten.","p3_title":"Vollständig deinstallierbar","p3_desc":"Entferne die Erweiterung und alle Daten verschwinden damit. Kein Rückstand auf einem Server."},"pricing":{"tag":"Preise","h2_main":"Drei Pläne.","h2_em":"Kostenlos starten.","desc":"Kostenlos beginnen. Upgraden wenn nötig.","free_label":"Free","free_price":"0","free_desc":"Einfach ausprobieren. Speichern und suchen ohne Limits.","free_f1":"Gespräche speichern & suchen","free_f2":"CSV / JSON Export","free_f3":"5 KI-parallele Orchestrierung","free_f4":"Claude-Synthese","free_f5":"Kein-API-Schlüssel-Modus","free_cta":"Kostenlos installieren","orch_label":"Orchestra","orch_price":"5","orch_period":"/Mo","orch_desc":"Die Kern-Orchestrierungs-Engine. Für Nutzer mit vorhandenem KI-Zugang.","orch_f1":"Gespräche speichern & suchen","orch_f2":"CSV / JSON Export","orch_f3":"5 KI-parallele Orchestrierung","orch_f4":"Ein Rechtsklick zum Starten","orch_f5":"Kein-API-Schlüssel-Modus","orch_cta":"Orchestra starten","one_label":"Orchestra One","one_launch":"Launch Edition · nur 500 Exemplare","one_price":"8","one_period":"/Mo","one_strike":"$10","one_desc":"Alles. Kein API-Schlüssel. Vollständig lokal. Das komplette Orchestra.","one_f1":"Gespräche speichern & suchen","one_f2":"CSV / JSON Export","one_f3":"5 KI-parallele Orchestrierung","one_f4":"Ein Rechtsklick zum Starten","one_f5":"Kein API-Schlüssel · vollständig autonom","one_cta":"Launch Edition holen →","limited_note":"Launch Edition ist auf <span>500 Exemplare limitiert</span>. Danach kehrt der Preis auf $10/Monat zurück."},"faq":{"tag":"FAQ","h2_main":"Häufige","h2_em":"Fragen","q1":"Was bedeutet \"kein API-Schlüssel erforderlich\"?","a1":"Orchestra nutzt deine vorhandenen Browser-Sitzungen — deine ChatGPT-, Gemini-, Copilot- und Perplexity-Anmeldungen. Du musst keine API-Schlüssel kaufen.","q2":"Wo werden meine Daten gespeichert?","a2":"Alle Gesprächsprotokolle werden nur in die IndexedDB deines Browsers geschrieben. Orchestra hat keinen Server — externe Übertragung ist physisch unmöglich.","q3":"Könnten meine Prompts beim Senden offengelegt werden?","a3":"Ehrlich gesagt: ja, genauso wie bei der direkten Nutzung dieser KI-Dienste. Sende niemals vertrauliche Daten an KI-Tools.","q4":"Wie unterscheidet sich das von ChatHub oder Sider?","a4":"ChatHub und Sider leiten deine Anfragen über ihre eigenen Server weiter. Orchestra hat keine solche Weiterleitung. Dein Browser kommuniziert direkt mit jeder KI.","q5":"Ist das 500-Exemplare-Limit der Launch Edition echt?","a5":"Ja. Nach dem Verkauf von 500 Exemplaren wechselt der Preis auf $10/Monat. Frühe Käufer behalten $8/Monat für die Dauer ihres Abonnements.","q6":"Was beinhaltet der kostenlose Plan?","a6":"Free beinhaltet Gesprächsspeicherung, Suche und CSV/JSON-Export — für immer, ohne Zeitlimit."},"footer":{"note":"Nur im Browser gespeichert · Keine externe Übertragung · Kein Tracking","built":"Basiert auf MoCKA-Forschung · AIES 2026"}};
+
+LOCALES['es'] = {"lang_name":"Español","nav":{"how":"Cómo funciona","pricing":"Precios","faq":"FAQ","cta":"Launch Edition →"},"hero":{"pill":"Launch Edition — solo 500 copias · $8/mes (20% dto. sobre $10)","h1_line1":"La IA olvida.","h1_line2":"Orchestra","h1_line3":"no lo permite.","sub":"Asigna un rol a cada IA. Deja que examinen desde múltiples ángulos.","sub_strong1":"Guarda","sub_mid":"el registro completo.","sub_strong2":"Búscalo","sub_mid2":"cuando quieras.","sub_strong3":"Exporta","sub_end":"como CSV/JSON.","sub_privacy":"Tus datos nunca salen de tu PC.","btn_install":"⬇ Instalar gratis","btn_demo":"Ver demo →","hint":"Chrome Web Store · Plan gratuito disponible · Sin tarjeta de crédito"},"stats":{"s1_label":"Asigna roles. Examina desde todos los ángulos.","s2_label":"Cada deliberación queda en tu PC","s3_label":"Rastrea cualquier decisión, en cualquier momento","s4_label":"Exporta como CSV/JSON — tu activo"},"how":{"tag":"Cómo funciona","h2_main":"Orquesta. Registra.","h2_em":"Hazlo tuyo.","desc":"La IA te da respuestas. Orchestra guarda todo el proceso.","step1_title":"Asigna roles","step1_desc":"Dale a cada IA un trabajo — costes, tendencias, evidencia, riesgo. Un clic derecho envía a todas simultáneamente","step2_title":"Ejecuta en paralelo","step2_desc":"4 IAs responden desde su ángulo asignado. Sin clave API — usa tus sesiones de navegador existentes","step3_title":"Claude sintetiza","step3_desc":"Todas las respuestas fluyen hacia Claude. Quién dijo qué, por qué esa conclusión — organizado en la mejor respuesta","step4_title":"El historial permanece","step4_desc":"La deliberación completa se guarda en tu navegador. Búscala después. Exporta como CSV/JSON cuando quieras","example_label":"EJEMPLO — Modo de asignación de roles","role_chatgpt":"Rol: Coste y viabilidad","role_chatgpt_desc":"Presupuesto, esfuerzo, barreras técnicas","role_gemini":"Rol: Tendencias e información actual","role_gemini_desc":"Movimientos del mercado, casos recientes","role_perplexity":"Rol: Evidencia y fuentes","role_perplexity_desc":"Artículos, citas, hechos verificados","role_copilot":"Rol: Riesgos y contraargumentos","role_copilot_desc":"Preocupaciones, puntos ciegos, alternativas","role_claude":"Rol: Síntesis y decisión final","role_claude_desc":"Integra todas las perspectivas, entrega la mejor respuesta","process_note":"Todo el proceso — <span class=\"hl\">quién dijo qué, por qué se llegó a esa conclusión</span> — se guarda automáticamente. Búscalo mañana o dentro de un año."},"privacy":{"tag":"Privacidad por diseño","h2_main":"Nada sale","h2_em":"de tu PC.","desc":"Orchestra no tiene servidor. No es una limitación — es una elección deliberada.","p1_title":"Guardado solo en tu navegador","p1_desc":"Los registros se escriben únicamente en el IndexedDB de tu navegador. Orchestra no tiene servidor — la transmisión externa es físicamente imposible.","p2_title":"Sin claves API almacenadas","p2_desc":"Orchestra usa tus sesiones de navegador existentes. Nunca almacenamos tus credenciales.","p3_title":"Completamente desinstalable","p3_desc":"Elimina la extensión y todos los datos desaparecen con ella. Sin residuos en ningún servidor."},"pricing":{"tag":"Precios","h2_main":"Tres planes.","h2_em":"Empieza gratis.","desc":"Comienza gratis. Actualiza cuando necesites más.","free_label":"Gratis","free_price":"0","free_desc":"Pruébalo. Guarda y busca sin límites.","free_f1":"Guardar y buscar conversaciones","free_f2":"Exportación CSV / JSON","free_f3":"Orquestación paralela de 5 IAs","free_f4":"Síntesis de Claude","free_f5":"Modo sin clave API","free_cta":"Instalar gratis","orch_label":"Orchestra","orch_price":"5","orch_period":"/mes","orch_desc":"El motor de orquestación principal. Para usuarios con acceso IA existente.","orch_f1":"Guardar y buscar conversaciones","orch_f2":"Exportación CSV / JSON","orch_f3":"Orquestación paralela de 5 IAs","orch_f4":"Un clic derecho para iniciar","orch_f5":"Modo sin clave API","orch_cta":"Iniciar Orchestra","one_label":"Orchestra One","one_launch":"Launch Edition · solo 500 copias","one_price":"8","one_period":"/mes","one_strike":"$10","one_desc":"Todo. Sin clave API. Completamente local. El Orchestra completo.","one_f1":"Guardar y buscar conversaciones","one_f2":"Exportación CSV / JSON","one_f3":"Orquestación paralela de 5 IAs","one_f4":"Un clic derecho para iniciar","one_f5":"Sin clave API · completamente autónomo","one_cta":"Obtener Launch Edition →","limited_note":"La Launch Edition está <span>limitada a 500 copias</span>. Después, el precio vuelve a $10/mes."},"faq":{"tag":"FAQ","h2_main":"Preguntas","h2_em":"frecuentes","q1":"¿Qué significa \"sin clave API requerida\"?","a1":"Orchestra usa las sesiones de navegador que ya tienes — tus inicios de sesión de ChatGPT, Gemini, Copilot y Perplexity. No necesitas comprar claves API.","q2":"¿Dónde se almacenan mis datos?","a2":"Todos los registros se escriben únicamente en el IndexedDB de tu navegador. Orchestra no tiene servidor — la transmisión externa es físicamente imposible.","q3":"¿Podrían exponerse mis prompts?","a3":"Honestamente: sí, de la misma manera que al usar esos servicios directamente. Nunca envíes datos confidenciales a ninguna herramienta de IA.","q4":"¿En qué se diferencia de ChatHub o Sider?","a4":"ChatHub y Sider enrutan tus consultas a través de sus propios servidores. Orchestra no tiene tal intermediario. Tu navegador se comunica directamente con cada IA.","q5":"¿Es real el límite de 500 copias?","a5":"Sí. Una vez vendidas 500 copias, el precio cambia a $10/mes. Los compradores tempranos mantienen $8/mes de por vida.","q6":"¿Qué incluye el plan gratuito?","a6":"Gratis incluye guardado, búsqueda y exportación CSV/JSON — para siempre, sin límite de tiempo."},"footer":{"note":"Guardado solo en tu navegador · Sin transmisión externa · Sin rastreo","built":"Basado en investigación MoCKA · AIES 2026"}};
+
+LOCALES['ko'] = {"lang_name":"한국어","nav":{"how":"작동 방식","pricing":"요금제","faq":"FAQ","cta":"런치 에디션 →"},"hero":{"pill":"런치 에디션 — 500개 한정 · 월 $8 ($10에서 20% 할인)","h1_line1":"AI는 잊는다.","h1_line2":"Orchestra는","h1_line3":"잊게 두지 않는다.","sub":"각 AI에 역할을 부여하고 다각도로 분석하게 하라.","sub_strong1":"저장","sub_mid":"하고,","sub_strong2":"검색","sub_mid2":"하고,","sub_strong3":"내보내기","sub_end":"— CSV/JSON으로.","sub_privacy":"데이터는 절대 내 PC 밖으로 나가지 않습니다.","btn_install":"⬇ 무료로 설치","btn_demo":"데모 보기 →","hint":"Chrome 웹 스토어 · 무료 플랜 제공 · 신용카드 불필요"},"stats":{"s1_label":"역할을 부여하고 모든 각도에서 분석","s2_label":"모든 토론이 내 PC에 남는다","s3_label":"어떤 결정도, 언제든지 추적 가능","s4_label":"CSV/JSON으로 내보내기 — 나의 자산"},"how":{"tag":"작동 방식","h2_main":"오케스트레이션. 기록.","h2_em":"나의 것으로.","desc":"AI가 답을 준다. Orchestra는 전체 과정을 보존한다.","step1_title":"역할 부여","step1_desc":"각 AI에 비용, 트렌드, 근거, 리스크 등의 역할을 부여. 우클릭 한 번으로 모두에게 동시 전송","step2_title":"병렬 실행","step2_desc":"4개의 AI가 각자의 관점에서 답변. API 키 불필요 — 기존 브라우저 세션 사용","step3_title":"Claude가 통합","step3_desc":"모든 응답이 Claude로 집결. 누가 무엇을 말했는지, 왜 그 결론인지 — 최선의 하나의 답으로 정리","step4_title":"기록이 남는다","step4_desc":"전체 토론이 브라우저에 저장. 나중에 검색하고, 언제든지 CSV/JSON으로 내보내기","example_label":"예시 — 역할 부여 모드","role_chatgpt":"역할: 비용 & 실현 가능성","role_chatgpt_desc":"예산, 공수, 기술적 장벽","role_gemini":"역할: 트렌드 & 최신 정보","role_gemini_desc":"시장 동향, 최근 사례","role_perplexity":"역할: 근거 & 출처","role_perplexity_desc":"논문, 인용, 검증된 사실","role_copilot":"역할: 리스크 & 반론","role_copilot_desc":"우려 사항, 맹점, 대안","role_claude":"역할: 통합 & 최종 판단","role_claude_desc":"모든 관점을 통합해 최선의 답을 도출","process_note":"전체 과정 — <span class=\"hl\">누가 무엇을 말했고, 왜 그 결론에 도달했는지</span> — 이 자동으로 저장된다. 내일이든 1년 후든 검색 가능."},"privacy":{"tag":"프라이버시 설계","h2_main":"아무것도","h2_em":"PC 밖으로 나가지 않는다.","desc":"Orchestra에는 서버가 없습니다. 제한이 아니라 의도된 설계입니다.","p1_title":"브라우저에만 저장","p1_desc":"로그는 브라우저의 IndexedDB에만 기록됩니다. Orchestra에는 서버가 없어 외부 전송이 물리적으로 불가능합니다.","p2_title":"API 키 미보관","p2_desc":"Orchestra는 기존 브라우저 세션을 사용합니다. 자격 증명을 저장하지 않습니다.","p3_title":"완전히 제거 가능","p3_desc":"확장 프로그램을 제거하면 모든 데이터가 함께 사라집니다. 서버에는 아무것도 남지 않습니다."},"pricing":{"tag":"요금제","h2_main":"세 가지 플랜.","h2_em":"무료로 시작.","desc":"무료로 시작하고, 필요할 때 업그레이드.","free_label":"무료","free_price":"0","free_desc":"체험해보세요. 저장과 검색은 무제한.","free_f1":"대화 저장 & 검색","free_f2":"CSV / JSON 내보내기","free_f3":"5 AI 병렬 오케스트레이션","free_f4":"Claude 통합","free_f5":"API 키 없는 모드","free_cta":"무료로 설치","orch_label":"Orchestra","orch_price":"5","orch_period":"/월","orch_desc":"핵심 오케스트레이션 엔진. 기존 AI 접근권을 보유한 사용자용.","orch_f1":"대화 저장 & 검색","orch_f2":"CSV / JSON 내보내기","orch_f3":"5 AI 병렬 오케스트레이션","orch_f4":"우클릭 한 번으로 실행","orch_f5":"API 키 없는 모드","orch_cta":"Orchestra 시작","one_label":"Orchestra One","one_launch":"런치 에디션 · 500개 한정","one_price":"8","one_period":"/월","one_strike":"$10","one_desc":"모든 기능. API 키 불필요. 완전 로컬. 완전한 Orchestra.","one_f1":"대화 저장 & 검색","one_f2":"CSV / JSON 내보내기","one_f3":"5 AI 병렬 오케스트레이션","one_f4":"우클릭 한 번으로 실행","one_f5":"API 키 없음 · 완전 자율 작동","one_cta":"런치 에디션 받기 →","limited_note":"런치 에디션은 <span>500개로 한정</span>됩니다. 완판 후 가격은 $10/월로 돌아갑니다."},"faq":{"tag":"FAQ","h2_main":"자주 묻는","h2_em":"질문","q1":"\"API 키 불필요\"는 무슨 뜻인가요?","a1":"Orchestra는 이미 보유한 브라우저 세션을 사용합니다. ChatGPT, Gemini, Copilot, Perplexity 로그인 그대로. API 키를 구매할 필요가 없습니다.","q2":"데이터는 어디에 저장되나요?","a2":"모든 대화 로그는 브라우저의 IndexedDB에만 기록됩니다. Orchestra에는 서버가 없어 외부 전송이 물리적으로 불가능합니다.","q3":"프롬프트가 노출될 수 있나요?","a3":"솔직히 말씀드리면: 네, 해당 AI 서비스를 직접 사용하는 것과 동일합니다. 기밀 데이터는 어떤 AI 도구에도 전송하지 마세요.","q4":"ChatHub나 Sider와 어떻게 다른가요?","a4":"ChatHub와 Sider는 자체 서버를 통해 쿼리를 라우팅합니다. Orchestra에는 그런 중계가 없습니다. 브라우저가 각 AI와 직접 통신합니다.","q5":"500개 한정은 정말인가요?","a5":"네. 500개 완판 후 가격은 $10/월로 전환됩니다. 초기 구매자는 구독 기간 동안 $8/월을 유지합니다.","q6":"무료 플랜에는 무엇이 포함되나요?","a6":"무료에는 대화 저장, 검색, CSV/JSON 내보내기가 시간 제한 없이 영구적으로 포함됩니다."},"footer":{"note":"브라우저에만 저장 · 외부 전송 없음 · 추적 없음","built":"MoCKA 연구 기반 · AIES 2026"}};
+
+// ── Auto-detect language ─────────────────────────────────────────────────────
+function detectLang() {
+  const saved = localStorage.getItem('orchestra_lang');
+  if (saved && LOCALES[saved]) return saved;
+  const browser = navigator.language.slice(0,2).toLowerCase();
+  const map = {ja:'ja',de:'de',es:'es',ko:'ko'};
+  return map[browser] || 'en';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  applyTranslations(detectLang());
+});
+</script>
+</body>
+</html>
