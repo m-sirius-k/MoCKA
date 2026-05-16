@@ -9,28 +9,50 @@
   let capturedIds = new Set();
   let lastUrl = location.href;
 
+  // ── ストリーミング中テキストのプレフィックス（除外対象）──────────────────
+  // Claudeのtool use / thinking表示がcontentに混入するパターン
+  const STREAMING_PREFIXES = [
+    'VConnecting',
+    'Vread_me',
+    'Vvisualiz',
+    'Loading...',
+    'Ran ',           // "Ran 3 commands..."
+    'Read ',          // "Read N files..."
+    'Viewed ',
+    'Created ',
+    'Wrote ',
+    'Executed ',
+  ];
+
+  function isStreamingArtifact(text) {
+    return STREAMING_PREFIXES.some(p => text.startsWith(p));
+  }
+
   function generateSessionId() {
     return 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
   }
 
+  // IDはtextの末尾80文字でハッシュ → ストリーミング途中と完成で同じIDになる
+  // （先頭はツール状態が変わるが末尾の実コンテンツは安定している）
   function generateMessageId(role, text) {
-    const hash = btoa(encodeURIComponent(role + text.slice(0, 80))).slice(0, 16);
+    const stable = text.slice(-80);  // ★ 末尾80文字を使用（旧: 先頭80文字）
+    const hash = btoa(encodeURIComponent(role + stable)).slice(0, 16);
     return 'msg_' + hash;
+  }
+
+  // ── ストリーミング完了検知 ──────────────────────────────────────────────
+  // Claude.aiはストリーミング完了後に streaming 属性 / stop-button が消える
+  function isStreaming() {
+    // 送信中ボタン（Stop generating）が存在する場合はストリーミング中
+    const stopBtn = document.querySelector(
+      'button[aria-label="Stop"], button[data-testid="stop-button"], [data-testid="input-menu-stop"]'
+    );
+    return !!stopBtn;
   }
 
   // Extract all visible messages from the DOM
   function extractMessages() {
     const messages = [];
-
-    // Claude.ai message structure: role determined by container class
-    // User messages: [data-testid="user-message"] or similar
-    // Assistant messages: prose content blocks
-
-    // Strategy: look for the main conversation turn containers
-    const turnSelectors = [
-      '[data-testid="user-message"]',
-      '.font-claude-response',
-    ];
 
     // User messages
     document.querySelectorAll('[data-testid="user-message"]').forEach((el) => {
@@ -39,18 +61,15 @@
       messages.push({ role: 'user', text });
     });
 
-    // Assistant messages - look for the streaming/rendered prose blocks
-    // Claude uses a specific structure for its responses
-    const assistantBlocks = document.querySelectorAll(
-      '.font-claude-response'
-    );
+    // Assistant messages
+    const assistantBlocks = document.querySelectorAll('.font-claude-response');
     assistantBlocks.forEach((el) => {
       const text = el.textContent?.trim();
       if (!text) return;
       messages.push({ role: 'assistant', text });
     });
 
-    // Fallback: interleaved scan based on conversation-turn containers
+    // Fallback
     if (messages.length === 0) {
       const turns = document.querySelectorAll(
         '[class*="conversation-turn"], [class*="human-turn"], [class*="ai-turn"]'
@@ -69,7 +88,7 @@
     return messages;
   }
 
-  // Send with retry (Extension context invalidated 対策)
+  // Send with retry
   function sendWithRetry(record, retries = 3) {
     try {
       chrome.runtime.sendMessage({ type: 'SAVE_MESSAGE', payload: record }, (response) => {
@@ -87,9 +106,11 @@
     }
   }
 
-  // Send new messages to background for storage
   function saveNewMessages(messages) {
     messages.forEach((msg) => {
+      // ★ ストリーミング中artifact除外
+      if (isStreamingArtifact(msg.text)) return;
+
       const id = generateMessageId(msg.role, msg.text);
       if (capturedIds.has(id)) return;
       capturedIds.add(id);
@@ -108,28 +129,33 @@
     });
   }
 
-  // Main scan function
-  function scan() {
-    const messages = extractMessages();
-    if (messages.length > 0) {
-      saveNewMessages(messages);
-    }
+  // ── スキャン：ストリーミング中は実行しない ──────────────────────────────
+  let scanTimer = null;
+
+  function scheduleScan() {
+    // ストリーミング中はキャンセル → 完了後500ms待って実行
+    if (scanTimer) clearTimeout(scanTimer);
+    scanTimer = setTimeout(() => {
+      if (!isStreaming()) {
+        const messages = extractMessages();
+        if (messages.length > 0) saveNewMessages(messages);
+      }
+    }, 500);
   }
 
-  // Reset session on URL change (new chat)
   function checkUrlChange() {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
       sessionId = generateSessionId();
       capturedIds.clear();
-      setTimeout(scan, 1000);
+      setTimeout(scheduleScan, 1000);
     }
   }
 
-  // Observe DOM mutations (streaming responses)
+  // MutationObserver
   const observer = new MutationObserver(() => {
     checkUrlChange();
-    scan();
+    scheduleScan();
   });
 
   observer.observe(document.body, {
@@ -138,22 +164,20 @@
     characterData: false,
   });
 
-  // Initial scan after page load
-  setTimeout(scan, 2000);
+  // Initial scan
+  setTimeout(scheduleScan, 2000);
 
-  // Periodic scan as safety net
+  // Periodic scan (safety net)
   setInterval(() => {
     checkUrlChange();
-    scan();
+    if (!isStreaming()) scheduleScan();
   }, 5000);
 
-
-  // Keep Service Worker alive while claude.ai is open
+  // Keep Service Worker alive
   function pingServiceWorker() {
     try {
-      chrome.runtime.sendMessage({type: 'PING'}, (res) => {
+      chrome.runtime.sendMessage({ type: 'PING' }, (res) => {
         if (chrome.runtime.lastError) {
-          // SW stopped, retry after 1 second
           setTimeout(pingServiceWorker, 1000);
         }
       });
@@ -164,7 +188,6 @@
   setInterval(pingServiceWorker, 5000);
   pingServiceWorker();
 
-  // Listen for popup requests to get current session info
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     if (msg.type === 'GET_SESSION') {
       sendResponse({ sessionId, capturedCount: capturedIds.size });
