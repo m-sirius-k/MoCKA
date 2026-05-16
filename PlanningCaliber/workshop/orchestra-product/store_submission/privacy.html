@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy Policy — Orchestra for Claude</title>
+<style>
+:root{
+  --bg:#080809;--surface:#0f0f11;--border:#1e1e22;
+  --text:#f0f0f2;--muted:#6b6b78;--hint:#3a3a42;
+  --accent:#7c5cfc;--r:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.75;
+  -webkit-font-smoothing:antialiased;}
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 32px;
+  background:rgba(8,8,9,.9);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{font-size:18px;font-weight:600;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none}
+.nav-back:hover{color:var(--text)}
+.container{max-width:720px;margin:0 auto;padding:120px 24px 80px}
+h1{font-size:36px;font-weight:700;color:var(--text);margin-bottom:8px}
+.meta{font-size:13px;color:var(--muted);margin-bottom:48px}
+h2{font-size:20px;font-weight:600;color:var(--text);margin:40px 0 12px;
+   padding-bottom:8px;border-bottom:1px solid var(--border)}
+p{font-size:15px;color:var(--muted);margin-bottom:16px}
+ul{margin:0 0 16px 0;padding-left:24px}
+li{font-size:15px;color:var(--muted);margin-bottom:8px}
+.highlight{
+  background:var(--surface);border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  border-radius:var(--r);padding:20px 24px;margin:24px 0;
+}
+.highlight p{margin:0;color:var(--text)}
+footer{
+  border-top:1px solid var(--border);padding:32px;
+  text-align:center;font-size:12px;color:var(--hint);
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">Orch<span>estra</span></a>
+  <a class="nav-back" href="/">← Back to home</a>
+</nav>
+
+<div class="container">
+  <h1>Privacy Policy</h1>
+  <p class="meta">Orchestra for Claude · Last updated: May 16, 2026</p>
+
+  <div class="highlight">
+    <p><strong>Summary:</strong> Orchestra has no server. All your data stays in your browser. We collect nothing, store nothing externally, and track nothing. Ever.</p>
+  </div>
+
+  <h2>1. What Orchestra Does</h2>
+  <p>Orchestra is a Chrome extension that automatically saves conversations from claude.ai to your browser's local storage (IndexedDB). It allows you to search, filter, and export those conversations as CSV or JSON files.</p>
+
+  <h2>2. Data We Collect</h2>
+  <p><strong>We collect nothing.</strong></p>
+  <p>Orchestra has no server, no database, no backend infrastructure of any kind. There is no mechanism by which Orchestra can receive, store, or process your data on our end.</p>
+  <ul>
+    <li>No account required</li>
+    <li>No email address collected</li>
+    <li>No usage analytics</li>
+    <li>No crash reporting</li>
+    <li>No telemetry of any kind</li>
+  </ul>
+
+  <h2>3. Where Your Data Is Stored</h2>
+  <p>All conversation logs are written exclusively to your browser's <strong>IndexedDB</strong> — a local storage mechanism built into Chrome. This data:</p>
+  <ul>
+    <li>Never leaves your device through Orchestra</li>
+    <li>Is not accessible to Orchestra's developers</li>
+    <li>Is completely removed when you uninstall the extension</li>
+    <li>Can be exported at any time as CSV or JSON and deleted</li>
+  </ul>
+
+  <h2>4. Third-Party AI Services</h2>
+  <p>When you use claude.ai (or any AI service), your prompts reach that service's servers — this is inherent to using any AI tool and is not related to Orchestra.</p>
+  <p>Orchestra does not intercept, modify, or store the network traffic between your browser and AI services. Orchestra only reads the rendered text content from the page DOM after it has already been displayed to you.</p>
+  <p><strong>We strongly recommend:</strong> Never send confidential business data, personal information, or unpublished work to any AI tool. Please review each AI service's own privacy policy.</p>
+
+  <h2>5. Permissions Explanation</h2>
+  <ul>
+    <li><strong>storage</strong> — To save conversation data to your local browser storage (IndexedDB)</li>
+    <li><strong>activeTab</strong> — To read the current claude.ai tab content</li>
+    <li><strong>alarms</strong> — To keep the service worker alive so saving works continuously</li>
+    <li><strong>host_permissions (claude.ai)</strong> — To access claude.ai page content only</li>
+  </ul>
+  <p>Orchestra does not request permissions to access other websites, your files, clipboard, camera, microphone, or any other sensitive system resource.</p>
+
+  <h2>6. Data Retention & Deletion</h2>
+  <p>You control your data completely:</p>
+  <ul>
+    <li>Use the <strong>× (Clear all)</strong> button in the popup to delete all saved conversations</li>
+    <li>Uninstalling Orchestra removes all stored data from your browser automatically</li>
+    <li>There is no cloud backup — once deleted, data cannot be recovered by us</li>
+  </ul>
+
+  <h2>7. Children's Privacy</h2>
+  <p>Orchestra does not knowingly collect any information from anyone, including children under 13. As we collect no data at all, there is nothing to specifically protect in this regard.</p>
+
+  <h2>8. Changes to This Policy</h2>
+  <p>If we make material changes to this privacy policy, we will update the "Last updated" date above. Continued use of Orchestra after changes constitutes acceptance of the updated policy.</p>
+
+  <h2>9. Contact</h2>
+  <p>For privacy questions or concerns:</p>
+  <ul>
+    <li>GitHub: <a href="https://github.com/m-sirius-k/sirius-lab">github.com/m-sirius-k/sirius-lab</a></li>
+    <li>Issues: <a href="https://github.com/m-sirius-k/sirius-lab/issues">github.com/m-sirius-k/sirius-lab/issues</a></li>
+  </ul>
+
+  <div class="highlight">
+    <p>Orchestra is built on the principle that your AI conversations belong to you — not to us, not to any server. That's not a feature. It's a design constraint we will never compromise on.</p>
+  </div>
+
+</div>
+
+<footer>
+  Orchestra for Claude · sirius-lab · Built on MoCKA research · AIES 2026<br>
+  <a href="/">Home</a> · <a href="/privacy.html">Privacy Policy</a>
+</footer>
+
+</body>
+</html>
