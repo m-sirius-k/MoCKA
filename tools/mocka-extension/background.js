@@ -213,14 +213,14 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             body: JSON.stringify({ source, text: response.text, url: tab.url, mode: 'clipboard', timestamp: new Date().toISOString() })
           });
           chrome.notifications.create({
-            type: 'basic', iconUrl: 'icon.png',
+            type: 'basic', iconUrl: 'icons/icon128.png',
             title: 'MoCKA収集完了',
             message: source + ' から ' + response.text.length + '文字収集しました'
           });
           collected = true;
         } else {
           chrome.notifications.create({
-            type: 'basic', iconUrl: 'icon.png',
+            type: 'basic', iconUrl: 'icons/icon128.png',
             title: 'MoCKA収集失敗',
             message: 'Ctrl+A → Ctrl+C 後に再実行してください'
           });
@@ -228,7 +228,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       } catch(e2) {
         console.error('[MoCKA] content script message failed:', e2);
         chrome.notifications.create({
-          type: 'basic', iconUrl: 'icon.png',
+          type: 'basic', iconUrl: 'icons/icon128.png',
           title: 'MoCKA収集失敗',
           message: e2.message
         });

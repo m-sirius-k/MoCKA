@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MoCKA Bridge",
-  "version": "2.1",
+  "version": "2.4",
+  "description": "MoCKA Bridge - AI orchestration extension",
   "permissions": [
     "tabs",
     "scripting",
@@ -21,5 +22,17 @@
   "background": {
     "service_worker": "background.js"
   },
-  "description": "MoCKA Playwright収集ルート（予備系）"
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "MoCKA Bridge"
+  }
 }
