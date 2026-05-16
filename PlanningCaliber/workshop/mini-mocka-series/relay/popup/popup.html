@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 280px; min-height: 200px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f172a; color: #e2e8f0; font-size: 13px;
+  }
+  .header {
+    padding: 16px; border-bottom: 1px solid #1e293b;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo {
+    width: 28px; height: 28px; background: #3b82f6;
+    border-radius: 8px; display: flex; align-items: center;
+    justify-content: center; font-size: 14px;
+  }
+  .header-text h1 { font-size: 15px; font-weight: 600; color: #f1f5f9; }
+  .header-text p { font-size: 11px; color: #64748b; margin-top: 1px; }
+
+  .stats { padding: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat {
+    background: #1e293b; border-radius: 8px; padding: 10px;
+    text-align: center;
+  }
+  .stat-num { font-size: 22px; font-weight: 600; color: #f1f5f9; }
+  .stat-label { font-size: 10px; color: #64748b; margin-top: 2px; text-transform: uppercase; letter-spacing: .04em; }
+
+  .section { padding: 0 16px 12px; }
+  .section-title { font-size: 11px; color: #64748b; text-transform: uppercase;
+    letter-spacing: .05em; margin-bottom: 8px; }
+  .setting-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid #1e293b;
+  }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-label { font-size: 12px; color: #cbd5e1; }
+  input[type="number"] {
+    width: 52px; background: #1e293b; border: 1px solid #334155;
+    color: #f1f5f9; font-size: 12px; padding: 4px 8px;
+    border-radius: 6px; text-align: center;
+  }
+
+  .btn {
+    display: block; width: calc(100% - 32px); margin: 0 16px 12px;
+    padding: 9px; border-radius: 8px; font-size: 12px; font-weight: 500;
+    cursor: pointer; text-align: center; border: none;
+  }
+  .btn-primary { background: #3b82f6; color: #fff; }
+  .btn-secondary { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
+  .btn:hover { opacity: .9; }
+
+  .footer { padding: 8px 16px; border-top: 1px solid #1e293b; }
+  .footer-text { font-size: 10px; color: #475569; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">⚡</div>
+  <div class="header-text">
+    <h1>Relay</h1>
+    <p>Conversation continuity for Claude</p>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num" id="stat-sessions">–</div>
+    <div class="stat-label">Relays</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" id="stat-messages">–</div>
+    <div class="stat-label">Msgs saved</div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">Settings</div>
+  <div class="setting-row">
+    <span class="setting-label">Warn at turn</span>
+    <input type="number" id="turn-limit" min="5" max="50" value="20">
+  </div>
+</div>
+
+<button class="btn btn-primary" id="btn-handoff">↗ Continue now (new chat)</button>
+<button class="btn btn-secondary" id="btn-history">Session history</button>
+
+<div class="footer">
+  <div class="footer-text">mini MoCKA Series · Relay v1.0</div>
+</div>
+
+<script src="popup.js"></script>
+</body>
+</html>
