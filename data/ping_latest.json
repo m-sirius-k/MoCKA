@@ -40,39 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-17T15:30:26.846811",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "errorでてます　popup/popup.html:0 (無名関数)",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-02",
-        "why": "commit: d92f1a2",
-        "how": "cli",
-        "note": "(node:3508) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to er",
-        "recur": 0,
-        "matched": [
-          "error"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-02",
-        "why": "菫晏ｭ・ infield",
-        "how": "cli",
-        "note": "manual_save | error_rate=0.0 | router_mode=full_orchestra | anomaly=NORMAL | action=NONE",
-        "recur": 0,
-        "matched": [
-          "error"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-17T07:24:26.351Z"
-  }
+  "generated_at": "2026-05-17T17:16:18.827594"
 }
