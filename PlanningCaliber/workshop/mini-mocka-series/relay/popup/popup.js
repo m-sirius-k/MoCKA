@@ -1,5 +1,5 @@
 /**
- * Relay — popup.js v2.0
+ * Relay - popup.js v2.0
  * Free: Home + Logbook
  * Pro:  Vault
  */
@@ -7,7 +7,7 @@
 let isPro = false;
 let currentSessionId = null;
 
-// ── Init ───────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 async function init() {
   await checkLicense();
   loadStats();
@@ -16,7 +16,7 @@ async function init() {
   bindButtons();
 }
 
-// ── License ────────────────────────────────────────────────────────────────
+// ── License ───────────────────────────────────────────────────────────────────
 async function checkLicense() {
   return new Promise(resolve => {
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
@@ -34,7 +34,7 @@ async function checkLicense() {
 function updateTierUI() {
   const badge = document.getElementById('tier-badge');
   if (isPro) {
-    badge.textContent = 'PRO ✦';
+    badge.textContent = 'PRO ★';
     badge.className = 'tier-badge tier-pro';
   } else {
     badge.textContent = 'FREE';
@@ -42,7 +42,7 @@ function updateTierUI() {
   }
 }
 
-// ── Stats ──────────────────────────────────────────────────────────────────
+// ── Stats ─────────────────────────────────────────────────────────────────────
 function loadStats() {
   chrome.runtime.sendMessage({ type: 'RELAY_GET_STATS' }, (stats) => {
     if (!stats) return;
@@ -52,7 +52,7 @@ function loadStats() {
   });
 }
 
-// ── Turn limit ─────────────────────────────────────────────────────────────
+// ── Turn limit ────────────────────────────────────────────────────────────────
 function loadTurnLimit() {
   chrome.storage.sync.get('mocka_global_prefs', (result) => {
     const prefs = result.mocka_global_prefs || {};
@@ -67,7 +67,7 @@ function loadTurnLimit() {
   });
 }
 
-// ── Tabs ───────────────────────────────────────────────────────────────────
+// ── Tabs ──────────────────────────────────────────────────────────────────────
 function bindTabs() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -83,7 +83,7 @@ function bindTabs() {
   });
 }
 
-// ── Buttons ────────────────────────────────────────────────────────────────
+// ── Buttons ───────────────────────────────────────────────────────────────────
 function bindButtons() {
   // Handoff
   document.getElementById('btn-handoff').addEventListener('click', () => {
@@ -123,7 +123,7 @@ function bindButtons() {
         if (r?.ok) {
           document.getElementById('btn-save-vault').textContent = '✓ Saved to Vault!';
           setTimeout(() => {
-            document.getElementById('btn-save-vault').textContent = '✦ Save to Vault (Pro)';
+            document.getElementById('btn-save-vault').textContent = '★ Save to Vault (Pro)';
           }, 2000);
         } else {
           alert('Vault requires Relay Pro. Activate your license in the Vault tab.');
@@ -161,7 +161,7 @@ function buildVaultText(session) {
   return parts.join('\n\n') || session.messages?.slice(-2).map(m => m.text).join('\n') || '';
 }
 
-// ── Logbook ────────────────────────────────────────────────────────────────
+// ── Logbook ───────────────────────────────────────────────────────────────────
 function loadLogbook() {
   document.getElementById('detail-view').style.display = 'none';
   document.getElementById('list-view').style.display  = 'block';
@@ -178,9 +178,9 @@ function loadLogbook() {
     container.innerHTML = index.map(s => {
       const lb = s.logbook || {};
       const chips = [
-        lb.decisions ? `<span class="logbook-chip decision">📌 ${lb.decisions} decision${lb.decisions !== 1 ? 's' : ''}</span>` : '',
-        lb.todos     ? `<span class="logbook-chip todo">✅ ${lb.todos} todo${lb.todos !== 1 ? 's' : ''}</span>` : '',
-        lb.insights  ? `<span class="logbook-chip insight">💡 ${lb.insights} insight${lb.insights !== 1 ? 's' : ''}</span>` : ''
+        lb.decisions ? `<span class="logbook-chip decision">✓ ${lb.decisions} decision${lb.decisions !== 1 ? 's' : ''}</span>` : '',
+        lb.todos     ? `<span class="logbook-chip todo">→ ${lb.todos} todo${lb.todos !== 1 ? 's' : ''}</span>` : '',
+        lb.insights  ? `<span class="logbook-chip insight">★ ${lb.insights} insight${lb.insights !== 1 ? 's' : ''}</span>` : ''
       ].filter(Boolean).join('');
       const date = new Date(s.createdAt).toLocaleDateString('en', { month:'short', day:'numeric' });
       return `
@@ -212,19 +212,19 @@ function showDetail(id) {
     let html = '';
     if (lb.decisions?.length) {
       html += `<div class="detail-section">
-        <h4>📌 Decisions</h4>
+        <h4>✓ Decisions</h4>
         ${lb.decisions.map(d => `<div class="detail-item">${escHtml(d)}</div>`).join('')}
       </div>`;
     }
     if (lb.todos?.length) {
       html += `<div class="detail-section">
-        <h4>✅ Next steps</h4>
+        <h4>→ Next steps</h4>
         ${lb.todos.map(t => `<div class="detail-item">${escHtml(t)}</div>`).join('')}
       </div>`;
     }
     if (lb.insights?.length) {
       html += `<div class="detail-section">
-        <h4>💡 Key insights</h4>
+        <h4>★ Key insights</h4>
         ${lb.insights.map(i => `<div class="detail-item">${escHtml(i)}</div>`).join('')}
       </div>`;
     }
@@ -234,7 +234,7 @@ function showDetail(id) {
 
     document.getElementById('detail-content').innerHTML = html;
 
-    // Vaultボタン: Proのみ表示
+    // Vault button: Pro only
     const vaultBtn = document.getElementById('btn-save-vault');
     vaultBtn.style.display = isPro ? 'flex' : 'none';
 
@@ -243,7 +243,7 @@ function showDetail(id) {
   });
 }
 
-// ── Vault ──────────────────────────────────────────────────────────────────
+// ── Vault ─────────────────────────────────────────────────────────────────────
 function loadVault() {
   const gate    = document.getElementById('vault-gate');
   const content = document.getElementById('vault-content');
@@ -295,7 +295,7 @@ function loadVault() {
   });
 }
 
-// ── License activation ─────────────────────────────────────────────────────
+// ── License activation ────────────────────────────────────────────────────────
 function activateLicense() {
   const key = document.getElementById('license-input').value.trim();
   const status = document.getElementById('license-status');
@@ -318,7 +318,7 @@ function activateLicense() {
   });
 }
 
-// ── Utils ──────────────────────────────────────────────────────────────────
+// ── Utils ─────────────────────────────────────────────────────────────────────
 function escHtml(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }

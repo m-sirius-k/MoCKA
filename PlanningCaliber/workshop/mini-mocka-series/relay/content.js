@@ -35,47 +35,34 @@
     return 0;
   }
 
-  // ── [FIX v2.1] getMessages: user-message基準に統一 ────────────────────────
+  // ── [FIX v2.2] getMessages: user-message限定取得 ────────────────────────────
   function getMessages() {
-    // user-messageを基準に取得（countTurns()と同じセレクタ）
-    let userNodes = document.querySelectorAll('[data-testid="user-message"]');
+    // user-messageのみ取得（実測14件確認済み）
+    const userNodes = [...document.querySelectorAll('[data-testid="user-message"]')];
+    if (!userNodes.length) return [];
 
-    if (userNodes.length > 0) {
-      // user-messageが取れた場合: 親要素を辿ってturn全体を取得
-      const messages = [];
-      userNodes.forEach((node, i) => {
-        const text = node.innerText?.trim() || '';
-        if (text) messages.push({ role: 'user', text, turn: i * 2 + 1 });
+    const messages = [];
+    userNodes.forEach((node, i) => {
+      const text = node.innerText?.trim() || '';
+      if (!text) return;
+      messages.push({ role: 'user', text, turn: i * 2 + 1 });
 
-        // 直後のassistant応答を探す
-        let next = node.closest('[data-testid^="conversation"]')?.nextElementSibling;
-        if (!next) {
-          // フォールバック: DOMツリーで兄弟を探す
-          const parent = node.parentElement?.parentElement;
-          next = parent?.nextElementSibling;
+      // assistant応答: user-messageの親turnの次の兄弟要素
+      // claude.ai構造: [data-testid="user-message"] は
+      // .grid > div > [data-testid="user-message"] の形
+      // assistant応答は同階層の次のturnにある
+      const turnEl = node.closest('[class*="group"]') ||
+                     node.parentElement?.parentElement?.parentElement;
+      const nextTurn = turnEl?.nextElementSibling;
+      if (nextTurn) {
+        // assistantメッセージ本文を取得（コードブロック含む）
+        const assistantText = nextTurn.innerText?.trim() || '';
+        if (assistantText) {
+          messages.push({ role: 'assistant', text: assistantText.slice(0, 500), turn: i * 2 + 2 });
         }
-        if (next) {
-          const assistantText = next.innerText?.trim() || '';
-          if (assistantText) messages.push({ role: 'assistant', text: assistantText, turn: i * 2 + 2 });
-        }
-      });
-      if (messages.length > 0) return messages;
-    }
-
-    // フォールバック: conversation-turnセレクタで取得
-    const selectors = [
-      '[data-testid="conversation-turn"]',
-      '[data-testid^="conversation-turn"]'
-    ];
-    let turns = [];
-    for (const s of selectors) {
-      turns = [...document.querySelectorAll(s)];
-      if (turns.length > 0) break;
-    }
-    return turns.map((el, i) => {
-      const isUser = !!el.querySelector('[data-testid="user-human-turn"], [class*="humanTurn"]');
-      return { role: isUser ? 'user' : 'assistant', text: el.innerText?.trim() || '', turn: i + 1 };
+      }
     });
+    return messages;
   }
 
   function isOnChatPage() {
