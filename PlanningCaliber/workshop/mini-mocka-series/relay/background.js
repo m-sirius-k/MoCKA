@@ -1,6 +1,6 @@
 /**
- * Relay for Claude — background.js v2.1
- * Fix: RELAY_POPUP_HANDOFF の executeScript 削除（多重注入→多タブ問題解消）
+ * Relay for Claude — background.js v2.2
+ * Fix: RELAY_POPUP_HANDOFF uses url query instead of active tab
  */
 
 const INDEX_KEY    = 'mocka_relay_sessions_index';
@@ -152,7 +152,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === 'RELAY_OPEN_NEW_CHAT') {
     const text = msg.payload.text;
-    // 重複防止フラグ
     if (chrome._relayOpeningChat) { sendResponse({ ok: false, error: 'duplicate' }); return true; }
     chrome._relayOpeningChat = true;
     setTimeout(() => { chrome._relayOpeningChat = false; }, 3000);
@@ -171,17 +170,16 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  // ── [FIX v2.1] RELAY_POPUP_HANDOFF ────────────────────────────────────────
-  // executeScript を完全削除。content.jsはmanifestで常に注入済みのため不要。
-  // 直接 sendMessage するだけ。
+  // ── [FIX v2.2] RELAY_POPUP_HANDOFF ────────────────────────────────────────
+  // active:true はポップアップ開時にclaude.aiタブがactiveでなくなるため使用不可
+  // url指定でclaude.aiタブを直接取得する
   if (msg.type === 'RELAY_POPUP_HANDOFF') {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.query({ url: 'https://claude.ai/*' }, (tabs) => {
       const tab = tabs[0];
       if (!tab) { sendResponse({ ok: false, error: 'no_tab' }); return; }
 
       chrome.tabs.sendMessage(tab.id, { type: 'RELAY_MANUAL_HANDOFF' }, (res) => {
         if (chrome.runtime.lastError) {
-          // content.jsが応答しない場合はfallback: 直接新タブ
           sendResponse({ ok: false, error: chrome.runtime.lastError.message });
         } else {
           sendResponse({ ok: true });
