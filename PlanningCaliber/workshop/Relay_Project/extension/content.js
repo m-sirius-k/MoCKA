@@ -1,7 +1,10 @@
 /**
- * Relay for Claude — content.js v2.1
- * Fix: getMessages() selector aligned with countTurns() (user-message)
- * Fix: injectText() ProseMirror injection strengthened
+ * Relay for Claude — content.js v2.4
+ * Fix v2.4: RELAY_GET_SUMMARY_FOR_VAULT が sendResponse/return true を欠いていたバグ修正
+ * Fix: Extension context invalidated — B案根本解決
+ *   - isContextValid() で全chrome.runtime呼び出しをガード
+ *   - setInterval / MutationObserver をコンテキスト無効時に自動停止
+ *   - chrome.runtime.onMessage も安全にラップ
  */
 
 (function() {
@@ -13,12 +16,33 @@
   let turnCount = 0;
   let lastUrl = location.href;
   let observer = null;
+  let intervalId = null;
+  let contextAlive = true; // コンテキスト生存フラグ
+
+  // ── コンテキスト有効チェック ──────────────────────────────────────────────
+  function isContextValid() {
+    try {
+      return !!(chrome && chrome.runtime && chrome.runtime.id);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  // コンテキスト無効になったら全リソースを解放
+  function teardown() {
+    contextAlive = false;
+    if (observer) { observer.disconnect(); observer = null; }
+    if (intervalId) { clearInterval(intervalId); intervalId = null; }
+    if (badge && badge.parentNode) { badge.remove(); badge = null; }
+  }
 
   // ── Load prefs ─────────────────────────────────────────────────────────────
-  chrome.storage.sync.get('mocka_global_prefs', (result) => {
-    const prefs = result?.mocka_global_prefs || {};
-    TURN_LIMIT = prefs.turnLimit || 20;
-  });
+  if (isContextValid()) {
+    chrome.storage.sync.get('mocka_global_prefs', (result) => {
+      const prefs = result?.mocka_global_prefs || {};
+      TURN_LIMIT = prefs.turnLimit || 20;
+    });
+  }
 
   // ── DOM helpers ────────────────────────────────────────────────────────────
   function countTurns() {
@@ -35,9 +59,8 @@
     return 0;
   }
 
-  // ── [FIX v2.2] getMessages: user-message限定取得 ────────────────────────────
+  // ── getMessages: user-message限定取得 ─────────────────────────────────────
   function getMessages() {
-    // user-messageのみ取得（実測14件確認済み）
     const userNodes = [...document.querySelectorAll('[data-testid="user-message"]')];
     if (!userNodes.length) return [];
 
@@ -47,15 +70,10 @@
       if (!text) return;
       messages.push({ role: 'user', text, turn: i * 2 + 1 });
 
-      // assistant応答: user-messageの親turnの次の兄弟要素
-      // claude.ai構造: [data-testid="user-message"] は
-      // .grid > div > [data-testid="user-message"] の形
-      // assistant応答は同階層の次のturnにある
       const turnEl = node.closest('[class*="group"]') ||
                      node.parentElement?.parentElement?.parentElement;
       const nextTurn = turnEl?.nextElementSibling;
       if (nextTurn) {
-        // assistantメッセージ本文を取得（コードブロック含む）
         const assistantText = nextTurn.innerText?.trim() || '';
         if (assistantText) {
           messages.push({ role: 'assistant', text: assistantText.slice(0, 500), turn: i * 2 + 2 });
@@ -126,7 +144,7 @@
     return parts.join('\n\n');
   }
 
-  // ── [FIX v2.1] injectText: ProseMirror強化版 ─────────────────────────────
+  // ── injectText: ProseMirror強化版 ─────────────────────────────────────────
   function injectText(text) {
     const selectors = [
       'div[contenteditable="true"][data-placeholder]',
@@ -144,16 +162,13 @@
     el.focus();
 
     if (el.tagName === 'TEXTAREA') {
-      // textarea: nativeSetter経由
       const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
       nativeSetter.call(el, text);
       el.dispatchEvent(new Event('input', { bubbles: true }));
       return true;
     }
 
-    // ProseMirror / contenteditable: 3段階フォールバック
-
-    // 方法1: execCommand (一部環境で動作)
+    // 方法1: execCommand
     try {
       el.focus();
       document.execCommand('selectAll', false, null);
@@ -171,7 +186,6 @@
       el.dispatchEvent(new InputEvent('input', {
         bubbles: true, cancelable: true, inputType: 'insertText', data: text
       }));
-      // キャレットを末尾に
       const range = document.createRange();
       const sel = window.getSelection();
       range.selectNodeContents(el);
@@ -181,7 +195,7 @@
       return true;
     } catch (_) {}
 
-    // 方法3: クリップボード経由 (最終手段)
+    // 方法3: クリップボード経由
     try {
       navigator.clipboard.writeText(text).then(() => {
         el.focus();
@@ -195,7 +209,9 @@
 
   // ── [B] Vault: 過去文脈を取得して注入 ────────────────────────────────────
   function getVaultContext(callback) {
+    if (!isContextValid()) return callback(null);
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
+      if (!isContextValid()) return callback(null);
       const prefs = result?.mocka_global_prefs || {};
       const isProUser = !!prefs.vaultEnabled;
       if (!isProUser) return callback(null);
@@ -208,6 +224,8 @@
 
   // ── Handoff ────────────────────────────────────────────────────────────────
   function triggerHandoff() {
+    if (!isContextValid()) return;
+
     const messages = getMessages();
     const title = document.title?.replace(' - Claude', '').trim() || 'Untitled';
     const logbook = extractLogbook(messages);
@@ -218,6 +236,7 @@
     });
 
     getVaultContext((vaultContext) => {
+      if (!isContextValid()) return;
       const summary = generateSummary(messages, vaultContext);
       chrome.runtime.sendMessage({
         type: 'RELAY_OPEN_NEW_CHAT',
@@ -336,6 +355,8 @@
   function startObserver() {
     if (observer) observer.disconnect();
     observer = new MutationObserver(() => {
+      // コンテキスト無効なら即停止
+      if (!isContextValid()) { teardown(); return; }
       checkUrlChange();
       if (!isOnChatPage()) return;
       const count = countTurns();
@@ -349,24 +370,28 @@
   }
 
   // ── Message handler ────────────────────────────────────────────────────────
-  chrome.runtime.onMessage.addListener((msg) => {
-    if (msg.type === 'RELAY_INJECT') {
-      setTimeout(() => injectText(msg.payload.text), 1200);
-    }
-    if (msg.type === 'RELAY_MANUAL_HANDOFF') {
-      triggerHandoff();
-    }
-    if (msg.type === 'RELAY_GET_SUMMARY_FOR_VAULT') {
-      const messages = getMessages();
-      const logbook = extractLogbook(messages);
-      const text = [
-        logbook.decisions.length ? 'Decisions:\n' + logbook.decisions.map(d => `• ${d}`).join('\n') : '',
-        logbook.todos.length     ? 'Next steps:\n' + logbook.todos.map(t => `• ${t}`).join('\n') : '',
-        logbook.insights.length  ? 'Key insights:\n' + logbook.insights.map(i => `• ${i}`).join('\n') : ''
-      ].filter(Boolean).join('\n\n');
-      // sendResponseはlistener内では使えないのでruntime経由は不可のため直接返す
-    }
-  });
+  if (isContextValid()) {
+    chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+      if (!isContextValid()) return;
+      if (msg.type === 'RELAY_INJECT') {
+        setTimeout(() => injectText(msg.payload.text), 1200);
+      }
+      if (msg.type === 'RELAY_MANUAL_HANDOFF') {
+        triggerHandoff();
+      }
+      if (msg.type === 'RELAY_GET_SUMMARY_FOR_VAULT') {
+        const messages = getMessages();
+        const logbook = extractLogbook(messages);
+        const text = [
+          logbook.decisions.length ? 'Decisions:\n' + logbook.decisions.map(d => `• ${d}`).join('\n') : '',
+          logbook.todos.length     ? 'Next steps:\n' + logbook.todos.map(t => `• ${t}`).join('\n') : '',
+          logbook.insights.length  ? 'Key insights:\n' + logbook.insights.map(i => `• ${i}`).join('\n') : ''
+        ].filter(Boolean).join('\n\n');
+        sendResponse({ text });
+        return true;
+      }
+    });
+  }
 
   // ── Init ───────────────────────────────────────────────────────────────────
   if (isOnChatPage()) {
@@ -376,7 +401,10 @@
   }
 
   let _lastPath = location.pathname;
-  setInterval(() => {
+  intervalId = setInterval(() => {
+    // コンテキスト無効なら停止
+    if (!isContextValid()) { teardown(); return; }
+
     if (location.pathname !== _lastPath) {
       _lastPath = location.pathname;
       if (isOnChatPage()) {
