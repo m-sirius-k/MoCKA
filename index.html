@@ -973,7 +973,7 @@ document.addEventListener('DOMContentLoaded', function(){
       const dot = document.getElementById('scamper-status-dot');
       const pool = document.getElementById('scamper-pool');
       if (dot) dot.style.background = d.status === 'READY' ? '#4caf50' : '#f44336';
-      if (pool) pool.textContent = 'インシデントプール: ' + d.incident_pool + '件 | 出力ファイル: ' + d.output_files + '件';
+      if (pool) pool.textContent = 'インシデントプール: ' + d.total_pool + '件 | 出力ファイル: ' + d.output_files + '件';
     } catch(e) {}
   }
   function renderExpansions(results) {

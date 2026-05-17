@@ -47,33 +47,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "いやこれじゃない！　上に　5種言語切り替えられるようになってた　　これだ！",
+    "text": "インシデントプール: 7315件 | 出力ファイル: 8件",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-30",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] いやいや！　あなたの考えがおかしい！ 全件ワード検索なら　少ないが　私の頭の中にあるのは  その文字列　その文脈から[予想し得る危険]と[予想し得る勝ちパターンです]  あなたは文字列　",
+        "when": "2026-03-29",
+        "why": "",
+        "how": "manual_click",
+        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
         "recur": 0,
         "matched": [
-          "いや"
+          "incident"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-31",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "いやいや　これって　mockaのこのための目的機能＝mockaでなく　mockaの入り口の機能であり\nこれがmockaだと誤解されても困りますね",
+        "when": "2026-04-10",
+        "why": "",
+        "how": "",
+        "note": "INCIDENT,INSTRUCTION_IGNORE,MCP,誤判定,自己訂正",
         "recur": 0,
         "matched": [
-          "いや"
+          "incident"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-17T02:17:55.408Z"
+    "updated_at": "2026-05-17T02:29:50.554Z"
   }
 }
