@@ -1,13 +1,12 @@
 /**
- * Relay for Claude — background.js v2.0
- * A: Logbook付きセッション保存
- * B: Vault Pro — 過去文脈注入
+ * Relay for Claude — background.js v2.1
+ * Fix: RELAY_POPUP_HANDOFF の executeScript 削除（多重注入→多タブ問題解消）
  */
 
-const INDEX_KEY  = 'mocka_relay_sessions_index';
-const VAULT_KEY  = 'mocka_relay_vault';       // Pro: 手動ピン留め文脈
-const NS         = 'mocka_relay_';
-const MAX_SESSIONS = 50;                       // ストレージ上限
+const INDEX_KEY    = 'mocka_relay_sessions_index';
+const VAULT_KEY    = 'mocka_relay_vault';
+const NS           = 'mocka_relay_';
+const MAX_SESSIONS = 50;
 
 // ── Session storage ────────────────────────────────────────────────────────
 
@@ -18,7 +17,7 @@ async function getIndex() {
 }
 
 async function saveSession(data) {
-  const id = crypto.randomUUID();
+  const id  = crypto.randomUUID();
   const now = new Date().toISOString();
   const session = {
     id, product: 'relay',
@@ -30,14 +29,11 @@ async function saveSession(data) {
     createdAt: now, updatedAt: now
   };
 
-  await new Promise(resolve => {
-    chrome.storage.local.set({ [NS + id]: session }, resolve);
-  });
+  await new Promise(resolve => chrome.storage.local.set({ [NS + id]: session }, resolve));
 
   let index = await getIndex();
   index.unshift({
-    id, title: session.title, turns: session.turns,
-    createdAt: now,
+    id, title: session.title, turns: session.turns, createdAt: now,
     logbook: {
       decisions: session.logbook.decisions.length,
       todos:     session.logbook.todos.length,
@@ -45,15 +41,12 @@ async function saveSession(data) {
     }
   });
 
-  // 古いセッションを削除（容量管理）
   if (index.length > MAX_SESSIONS) {
     const removed = index.splice(MAX_SESSIONS);
     removed.forEach(s => chrome.storage.local.remove(NS + s.id));
   }
 
-  await new Promise(resolve => {
-    chrome.storage.local.set({ [INDEX_KEY]: index }, resolve);
-  });
+  await new Promise(resolve => chrome.storage.local.set({ [INDEX_KEY]: index }, resolve));
   return id;
 }
 
@@ -65,27 +58,22 @@ async function getSession(id) {
 
 async function getStats() {
   const index = await getIndex();
-  const totalTodos = index.reduce((s, e) => s + (e.logbook?.todos || 0), 0);
   return {
     sessions: index.length,
     messages: index.reduce((s, e) => s + (e.turns || 0), 0),
-    todos:    totalTodos
+    todos:    index.reduce((s, e) => s + (e.logbook?.todos || 0), 0)
   };
 }
 
-// ── [B] Vault: Pro機能 ────────────────────────────────────────────────────
+// ── Vault ──────────────────────────────────────────────────────────────────
 
 async function getVaultContext() {
-  // Vaultにピン留めされた文脈を返す
   return new Promise(resolve => {
     chrome.storage.local.get(VAULT_KEY, r => {
       const vault = r[VAULT_KEY] || [];
-      if (!vault.length) return resolve(null);
-      // 有効なエントリを最大3件結合
       const active = vault.filter(v => v.active).slice(0, 3);
       if (!active.length) return resolve(null);
-      const context = active.map(v => `[${v.label}]\n${v.text}`).join('\n\n');
-      resolve(context);
+      resolve(active.map(v => `[${v.label}]\n${v.text}`).join('\n\n'));
     });
   });
 }
@@ -95,14 +83,13 @@ async function addToVault(data) {
     chrome.storage.local.get(VAULT_KEY, r => {
       const vault = r[VAULT_KEY] || [];
       vault.unshift({
-        id:        crypto.randomUUID(),
-        label:     data.label || 'Saved context',
-        text:      data.text  || '',
+        id: crypto.randomUUID(),
+        label:     data.label     || 'Saved context',
+        text:      data.text      || '',
         sessionId: data.sessionId || null,
         active:    true,
         createdAt: new Date().toISOString()
       });
-      // 最大20件
       if (vault.length > 20) vault.splice(20);
       chrome.storage.local.set({ [VAULT_KEY]: vault }, () => resolve(true));
     });
@@ -112,9 +99,7 @@ async function addToVault(data) {
 async function toggleVaultEntry(id, active) {
   return new Promise(resolve => {
     chrome.storage.local.get(VAULT_KEY, r => {
-      const vault = (r[VAULT_KEY] || []).map(v =>
-        v.id === id ? { ...v, active } : v
-      );
+      const vault = (r[VAULT_KEY] || []).map(v => v.id === id ? { ...v, active } : v);
       chrome.storage.local.set({ [VAULT_KEY]: vault }, () => resolve(true));
     });
   });
@@ -135,10 +120,9 @@ async function getVaultList() {
   });
 }
 
-// ── License check (Pro) ─────────────────────────────────────────────────────
+// ── License ────────────────────────────────────────────────────────────────
 
 function isProLicense(key) {
-  // MVP: プレフィックスチェック（将来サーバー検証に差し替え可）
   return typeof key === 'string' && key.startsWith('RELAY-PRO-') && key.length >= 20;
 }
 
@@ -168,6 +152,11 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === 'RELAY_OPEN_NEW_CHAT') {
     const text = msg.payload.text;
+    // 重複防止フラグ
+    if (chrome._relayOpeningChat) { sendResponse({ ok: false, error: 'duplicate' }); return true; }
+    chrome._relayOpeningChat = true;
+    setTimeout(() => { chrome._relayOpeningChat = false; }, 3000);
+
     chrome.tabs.create({ url: 'https://claude.ai/new' }, (tab) => {
       const listener = (tabId, info) => {
         if (tabId !== tab.id || info.status !== 'complete') return;
@@ -182,15 +171,32 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  // ── Vault (Pro) ──────────────────────────────────────────────────────────
+  // ── [FIX v2.1] RELAY_POPUP_HANDOFF ────────────────────────────────────────
+  // executeScript を完全削除。content.jsはmanifestで常に注入済みのため不要。
+  // 直接 sendMessage するだけ。
+  if (msg.type === 'RELAY_POPUP_HANDOFF') {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const tab = tabs[0];
+      if (!tab) { sendResponse({ ok: false, error: 'no_tab' }); return; }
+
+      chrome.tabs.sendMessage(tab.id, { type: 'RELAY_MANUAL_HANDOFF' }, (res) => {
+        if (chrome.runtime.lastError) {
+          // content.jsが応答しない場合はfallback: 直接新タブ
+          sendResponse({ ok: false, error: chrome.runtime.lastError.message });
+        } else {
+          sendResponse({ ok: true });
+        }
+      });
+    });
+    return true;
+  }
+
+  // ── Vault (Pro) ────────────────────────────────────────────────────────────
 
   if (msg.type === 'RELAY_GET_VAULT_CONTEXT') {
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
       const prefs = result?.mocka_global_prefs || {};
-      if (!isProLicense(prefs.licenseKey)) {
-        sendResponse({ context: null, error: 'pro_required' });
-        return;
-      }
+      if (!isProLicense(prefs.licenseKey)) { sendResponse({ context: null, error: 'pro_required' }); return; }
       getVaultContext().then(context => sendResponse({ context }));
     });
     return true;
@@ -199,10 +205,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.type === 'RELAY_VAULT_ADD') {
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
       const prefs = result?.mocka_global_prefs || {};
-      if (!isProLicense(prefs.licenseKey)) {
-        sendResponse({ ok: false, error: 'pro_required' });
-        return;
-      }
+      if (!isProLicense(prefs.licenseKey)) { sendResponse({ ok: false, error: 'pro_required' }); return; }
       addToVault(msg.payload).then(() => sendResponse({ ok: true }));
     });
     return true;
@@ -223,38 +226,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  // ── License verify ───────────────────────────────────────────────────────
-
   if (msg.type === 'RELAY_VERIFY_LICENSE') {
     const valid = isProLicense(msg.key);
     sendResponse({ valid, tier: valid ? 'pro' : 'free' });
-    return true;
-  }
-
-  // ── Handoff via background (popup→background→content) ───────────────────
-  // popupからcontent.jsへ直接sendMessageできない場合のフォールバック
-  if (msg.type === 'RELAY_POPUP_HANDOFF') {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tab = tabs[0];
-      if (!tab) { sendResponse({ ok: false, error: 'no_tab' }); return; }
-
-      // まずscriptingで注入を試みる（content.jsが未注入の場合）
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['content.js']
-      }).catch(() => {}).finally(() => {
-        // 注入後にメッセージ送信
-        setTimeout(() => {
-          chrome.tabs.sendMessage(tab.id, { type: 'RELAY_MANUAL_HANDOFF' }, (res) => {
-            if (chrome.runtime.lastError) {
-              sendResponse({ ok: false, error: chrome.runtime.lastError.message });
-            } else {
-              sendResponse({ ok: true });
-            }
-          });
-        }, 300);
-      });
-    });
     return true;
   }
 });

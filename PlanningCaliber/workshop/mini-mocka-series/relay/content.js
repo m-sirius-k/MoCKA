@@ -1,7 +1,7 @@
 /**
- * Relay for Claude — content.js v2.0
- * A: Logbook統合 (Free) — 決定事項・TODO・気づきを構造化抽出・保存
- * B: Vault注入対応 — 保存済み文脈をセッション冒頭に注入
+ * Relay for Claude — content.js v2.1
+ * Fix: getMessages() selector aligned with countTurns() (user-message)
+ * Fix: injectText() ProseMirror injection strengthened
  */
 
 (function() {
@@ -35,7 +35,34 @@
     return 0;
   }
 
+  // ── [FIX v2.1] getMessages: user-message基準に統一 ────────────────────────
   function getMessages() {
+    // user-messageを基準に取得（countTurns()と同じセレクタ）
+    let userNodes = document.querySelectorAll('[data-testid="user-message"]');
+
+    if (userNodes.length > 0) {
+      // user-messageが取れた場合: 親要素を辿ってturn全体を取得
+      const messages = [];
+      userNodes.forEach((node, i) => {
+        const text = node.innerText?.trim() || '';
+        if (text) messages.push({ role: 'user', text, turn: i * 2 + 1 });
+
+        // 直後のassistant応答を探す
+        let next = node.closest('[data-testid^="conversation"]')?.nextElementSibling;
+        if (!next) {
+          // フォールバック: DOMツリーで兄弟を探す
+          const parent = node.parentElement?.parentElement;
+          next = parent?.nextElementSibling;
+        }
+        if (next) {
+          const assistantText = next.innerText?.trim() || '';
+          if (assistantText) messages.push({ role: 'assistant', text: assistantText, turn: i * 2 + 2 });
+        }
+      });
+      if (messages.length > 0) return messages;
+    }
+
+    // フォールバック: conversation-turnセレクタで取得
     const selectors = [
       '[data-testid="conversation-turn"]',
       '[data-testid^="conversation-turn"]'
@@ -83,7 +110,7 @@
     };
   }
 
-  // ── Summary generator（Logbook統合版）────────────────────────────────────
+  // ── Summary generator ─────────────────────────────────────────────────────
   function generateSummary(messages, vaultContext) {
     const userMsgs = messages.filter(m => m.role === 'user');
     const last = userMsgs[userMsgs.length - 1]?.text?.slice(0, 200) || '';
@@ -92,11 +119,9 @@
 
     const parts = [`[Relay — continuing from ${count} turns]`];
 
-    // Vault文脈（Pro）があれば先頭に追加
     if (vaultContext) {
       parts.push(`[Vault context]\n${vaultContext}`);
     }
-
     if (logbook.decisions.length) {
       parts.push(`Decisions:\n${logbook.decisions.map(d => `• ${d}`).join('\n')}`);
     }
@@ -114,7 +139,7 @@
     return parts.join('\n\n');
   }
 
-  // ── Injector ───────────────────────────────────────────────────────────────
+  // ── [FIX v2.1] injectText: ProseMirror強化版 ─────────────────────────────
   function injectText(text) {
     const selectors = [
       'div[contenteditable="true"][data-placeholder]',
@@ -130,15 +155,55 @@
     if (!el) return false;
 
     el.focus();
+
     if (el.tagName === 'TEXTAREA') {
+      // textarea: nativeSetter経由
       const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, 'value').set;
       nativeSetter.call(el, text);
-    } else {
-      document.execCommand('selectAll', false, null);
-      document.execCommand('insertText', false, text);
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+      return true;
     }
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    return true;
+
+    // ProseMirror / contenteditable: 3段階フォールバック
+
+    // 方法1: execCommand (一部環境で動作)
+    try {
+      el.focus();
+      document.execCommand('selectAll', false, null);
+      const ok = document.execCommand('insertText', false, text);
+      if (ok && el.innerText.trim() === text.trim()) {
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+        return true;
+      }
+    } catch (_) {}
+
+    // 方法2: innerText直接書き込み + InputEvent
+    try {
+      el.focus();
+      el.innerText = text;
+      el.dispatchEvent(new InputEvent('input', {
+        bubbles: true, cancelable: true, inputType: 'insertText', data: text
+      }));
+      // キャレットを末尾に
+      const range = document.createRange();
+      const sel = window.getSelection();
+      range.selectNodeContents(el);
+      range.collapse(false);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      return true;
+    } catch (_) {}
+
+    // 方法3: クリップボード経由 (最終手段)
+    try {
+      navigator.clipboard.writeText(text).then(() => {
+        el.focus();
+        document.execCommand('paste');
+      });
+      return true;
+    } catch (_) {}
+
+    return false;
   }
 
   // ── [B] Vault: 過去文脈を取得して注入 ────────────────────────────────────
@@ -160,13 +225,11 @@
     const title = document.title?.replace(' - Claude', '').trim() || 'Untitled';
     const logbook = extractLogbook(messages);
 
-    // セッション保存（Logbook付き）
     chrome.runtime.sendMessage({
       type: 'RELAY_SAVE_SESSION',
       payload: { title, url: location.href, messages, logbook }
     });
 
-    // Vault文脈を取得してから新chatへ
     getVaultContext((vaultContext) => {
       const summary = generateSummary(messages, vaultContext);
       chrome.runtime.sendMessage({
@@ -207,10 +270,10 @@
     const b = getBadge();
     const pct = TURN_LIMIT > 0 ? Math.min(100, Math.round((count / TURN_LIMIT) * 100)) : 0;
     let borderColor, bgColor, textColor;
-    if (pct >= 100)      { borderColor = '#ef4444'; bgColor = 'rgba(239,68,68,0.2)';   textColor = '#fca5a5'; }
-    else if (pct >= 80)  { borderColor = '#f59e0b'; bgColor = 'rgba(245,158,11,0.15)'; textColor = '#fcd34d'; }
-    else if (pct >= 60)  { borderColor = '#f97316'; bgColor = 'rgba(249,115,22,0.1)';  textColor = '#fdba74'; }
-    else                 { borderColor = '#10b981'; bgColor = '#1a1a2e';               textColor = '#e2e8f0'; }
+    if (pct >= 100)     { borderColor = '#ef4444'; bgColor = 'rgba(239,68,68,0.2)';   textColor = '#fca5a5'; }
+    else if (pct >= 80) { borderColor = '#f59e0b'; bgColor = 'rgba(245,158,11,0.15)'; textColor = '#fcd34d'; }
+    else if (pct >= 60) { borderColor = '#f97316'; bgColor = 'rgba(249,115,22,0.1)';  textColor = '#fdba74'; }
+    else                { borderColor = '#10b981'; bgColor = '#1a1a2e';               textColor = '#e2e8f0'; }
     b.style.borderColor = borderColor;
     b.style.background  = bgColor;
     b.style.color       = textColor;
@@ -270,7 +333,7 @@
     `;
     document.body.appendChild(overlay);
     document.getElementById('relay-btn-continue').onclick = () => { overlay.remove(); triggerHandoff(); };
-    document.getElementById('relay-btn-dismiss').onclick = () => { overlay.remove(); };
+    document.getElementById('relay-btn-dismiss').onclick  = () => { overlay.remove(); };
   }
 
   // ── URL change & Observer ──────────────────────────────────────────────────
@@ -305,6 +368,16 @@
     }
     if (msg.type === 'RELAY_MANUAL_HANDOFF') {
       triggerHandoff();
+    }
+    if (msg.type === 'RELAY_GET_SUMMARY_FOR_VAULT') {
+      const messages = getMessages();
+      const logbook = extractLogbook(messages);
+      const text = [
+        logbook.decisions.length ? 'Decisions:\n' + logbook.decisions.map(d => `• ${d}`).join('\n') : '',
+        logbook.todos.length     ? 'Next steps:\n' + logbook.todos.map(t => `• ${t}`).join('\n') : '',
+        logbook.insights.length  ? 'Key insights:\n' + logbook.insights.map(i => `• ${i}`).join('\n') : ''
+      ].filter(Boolean).join('\n\n');
+      // sendResponseはlistener内では使えないのでruntime経由は不可のため直接返す
     }
   });
 
