@@ -40,5 +40,40 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-17T09:15:14.574051"
+  "generated_at": "2026-05-17T09:15:14.574051",
+  "dna_text": "\n[MOCKA_MANDATORY_PROTOCOL: RECORD_ALL_WORK]\nClaudeは以下を強制的に遵守する:\n① 作業着手前: mocka_write_event(CHANGE_START) — 対象ファイル・目的・変更前状態を記録\n② 作業完了後: mocka_write_event(CHANGE_DONE) — 変更後状態・差分・結果を記録\n③ 外部サービス操作(Store/Gumroad/GitHub/EasyChair等): 操作前後を即記録\n④ 設計判断・採用・却下: 理由とともに即記録\n適用範囲: MoCKAコア / planningcaliber / sirius-lab / 全外部サービス操作\n記録なき作業はMoCKAとして存在しない。(TODO_151)\n[END_MANDATORY_PROTOCOL]\n",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "X:\\down\\mocka関係\\ 整理の続き・確認",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
+        "recur": 0,
+        "matched": [
+          "続き"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "MoCKAプロジェクトの続きをお願いします。まず mocka_get_overview() を呼んで現在地とTODOを確認してください。",
+        "recur": 0,
+        "matched": [
+          "続き"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-17T00:47:30.677Z"
+  }
 }
