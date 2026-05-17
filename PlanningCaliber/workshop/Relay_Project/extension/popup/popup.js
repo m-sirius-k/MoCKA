@@ -1,7 +1,6 @@
 /**
- * Relay - popup.js v2.0
- * Free: Home + Logbook
- * Pro:  Vault
+ * Relay - popup.js v2.1
+ * Add: Settings tab (export folder + export buttons)
  */
 
 let isPro = false;
@@ -12,6 +11,7 @@ async function init() {
   await checkLicense();
   loadStats();
   loadTurnLimit();
+  loadExportFolder();
   bindTabs();
   bindButtons();
 }
@@ -67,6 +67,15 @@ function loadTurnLimit() {
   });
 }
 
+// ── Export folder ─────────────────────────────────────────────────────────────
+function loadExportFolder() {
+  chrome.runtime.sendMessage({ type: 'RELAY_GET_EXPORT_FOLDER' }, (res) => {
+    const folder = res?.folder || 'mocka-exports';
+    document.getElementById('export-folder').value = folder;
+    document.getElementById('folder-preview').textContent = folder;
+  });
+}
+
 // ── Tabs ──────────────────────────────────────────────────────────────────────
 function bindTabs() {
   document.querySelectorAll('.tab').forEach(tab => {
@@ -77,8 +86,9 @@ function bindTabs() {
       tab.classList.add('active');
       document.getElementById('panel-' + name).classList.add('active');
 
-      if (name === 'logbook') loadLogbook();
-      if (name === 'vault')   loadVault();
+      if (name === 'logbook')  loadLogbook();
+      if (name === 'vault')    loadVault();
+      if (name === 'settings') loadExportFolder();
     });
   });
 }
@@ -136,10 +146,7 @@ function bindButtons() {
   document.getElementById('btn-add-vault')?.addEventListener('click', () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.tabs.sendMessage(tabs[0].id, { type: 'RELAY_GET_SUMMARY_FOR_VAULT' }, (res) => {
-        if (!res?.text) {
-          alert('No active Claude chat found.');
-          return;
-        }
+        if (!res?.text) { alert('No active Claude chat found.'); return; }
         chrome.runtime.sendMessage({
           type: 'RELAY_VAULT_ADD',
           payload: { label: res.title || 'Current chat', text: res.text }
@@ -150,6 +157,38 @@ function bindButtons() {
 
   // License activation
   document.getElementById('btn-verify-license')?.addEventListener('click', activateLicense);
+
+  // Save export folder
+  document.getElementById('btn-save-folder').addEventListener('click', () => {
+    const folder = document.getElementById('export-folder').value.trim() || 'mocka-exports';
+    chrome.runtime.sendMessage({ type: 'RELAY_SET_EXPORT_FOLDER', folder }, () => {
+      document.getElementById('folder-preview').textContent = folder;
+      const saved = document.getElementById('folder-saved');
+      saved.style.display = 'block';
+      setTimeout(() => { saved.style.display = 'none'; }, 2000);
+    });
+  });
+
+  // Export sessions
+  document.getElementById('btn-export-sessions').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'RELAY_EXPORT_SESSIONS' }, (res) => {
+      if (res?.ok) showExportStatus(`✓ Saved: ${res.filename}`);
+    });
+  });
+
+  // Export logbook
+  document.getElementById('btn-export-logbook').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'RELAY_EXPORT_LOGBOOK' }, (res) => {
+      if (res?.ok) showExportStatus(`✓ Saved: ${res.filename}`);
+    });
+  });
+}
+
+function showExportStatus(msg) {
+  const el = document.getElementById('export-status');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 3000);
 }
 
 function buildVaultText(session) {
@@ -211,33 +250,24 @@ function showDetail(id) {
 
     let html = '';
     if (lb.decisions?.length) {
-      html += `<div class="detail-section">
-        <h4>✓ Decisions</h4>
-        ${lb.decisions.map(d => `<div class="detail-item">${escHtml(d)}</div>`).join('')}
-      </div>`;
+      html += `<div class="detail-section"><h4>✓ Decisions</h4>
+        ${lb.decisions.map(d => `<div class="detail-item">${escHtml(d)}</div>`).join('')}</div>`;
     }
     if (lb.todos?.length) {
-      html += `<div class="detail-section">
-        <h4>→ Next steps</h4>
-        ${lb.todos.map(t => `<div class="detail-item">${escHtml(t)}</div>`).join('')}
-      </div>`;
+      html += `<div class="detail-section"><h4>→ Next steps</h4>
+        ${lb.todos.map(t => `<div class="detail-item">${escHtml(t)}</div>`).join('')}</div>`;
     }
     if (lb.insights?.length) {
-      html += `<div class="detail-section">
-        <h4>★ Key insights</h4>
-        ${lb.insights.map(i => `<div class="detail-item">${escHtml(i)}</div>`).join('')}
-      </div>`;
+      html += `<div class="detail-section"><h4>★ Key insights</h4>
+        ${lb.insights.map(i => `<div class="detail-item">${escHtml(i)}</div>`).join('')}</div>`;
     }
     if (!html) {
       html = '<div class="logbook-empty" style="text-align:left;color:#4a6080;font-size:12px">No structured data extracted from this session.</div>';
     }
 
     document.getElementById('detail-content').innerHTML = html;
-
-    // Vault button: Pro only
     const vaultBtn = document.getElementById('btn-save-vault');
     vaultBtn.style.display = isPro ? 'flex' : 'none';
-
     document.getElementById('detail-view').style.display = 'block';
     document.getElementById('list-view').style.display   = 'none';
   });
@@ -279,9 +309,8 @@ function loadVault() {
     list.querySelectorAll('.vault-toggle').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        const id     = btn.dataset.id;
         const active = btn.dataset.active === 'true';
-        chrome.runtime.sendMessage({ type: 'RELAY_VAULT_TOGGLE', id, active: !active }, () => loadVault());
+        chrome.runtime.sendMessage({ type: 'RELAY_VAULT_TOGGLE', id: btn.dataset.id, active: !active }, () => loadVault());
       });
     });
     list.querySelectorAll('.vault-del').forEach(btn => {

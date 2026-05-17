@@ -1,12 +1,24 @@
 /**
- * Relay for Claude — background.js v2.2
- * Fix: RELAY_POPUP_HANDOFF uses url query instead of active tab
+ * Relay for Claude — background.js v2.3
+ * Add: RELAY_EXPORT_SESSIONS / RELAY_EXPORT_LOGBOOK handlers
+ * Add: getExportFolder() shared setting
  */
 
 const INDEX_KEY    = 'mocka_relay_sessions_index';
 const VAULT_KEY    = 'mocka_relay_vault';
 const NS           = 'mocka_relay_';
 const MAX_SESSIONS = 50;
+
+// ── Shared export folder setting ───────────────────────────────────────────
+
+async function getExportFolder() {
+  return new Promise(resolve => {
+    chrome.storage.sync.get('mocka_global_prefs', r => {
+      const prefs = r.mocka_global_prefs || {};
+      resolve(prefs.exportFolder || 'mocka-exports');
+    });
+  });
+}
 
 // ── Session storage ────────────────────────────────────────────────────────
 
@@ -56,6 +68,12 @@ async function getSession(id) {
   });
 }
 
+async function getAllSessions() {
+  const index = await getIndex();
+  const sessions = await Promise.all(index.map(s => getSession(s.id)));
+  return sessions.filter(Boolean);
+}
+
 async function getStats() {
   const index = await getIndex();
   return {
@@ -63,6 +81,42 @@ async function getStats() {
     messages: index.reduce((s, e) => s + (e.turns || 0), 0),
     todos:    index.reduce((s, e) => s + (e.logbook?.todos || 0), 0)
   };
+}
+
+// ── Export helpers ─────────────────────────────────────────────────────────
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+async function exportSessionsJSON() {
+  const sessions = await getAllSessions();
+  return JSON.stringify(sessions, null, 2);
+}
+
+async function exportLogbookJSON() {
+  const sessions = await getAllSessions();
+  const logbook = sessions.map(s => ({
+    id:        s.id,
+    title:     s.title,
+    createdAt: s.createdAt,
+    turns:     s.turns,
+    decisions: s.logbook?.decisions || [],
+    todos:     s.logbook?.todos     || [],
+    insights:  s.logbook?.insights  || []
+  }));
+  return JSON.stringify(logbook, null, 2);
+}
+
+async function downloadFile(content, subFolder, filename, mime) {
+  const folder = await getExportFolder();
+  const blob = new Blob([content], { type: mime });
+  const url  = URL.createObjectURL(blob);
+  const path = `${folder}/${subFolder}/${filename}`;
+
+  chrome.downloads.download({ url, filename: path, saveAs: false }, () => {
+    setTimeout(() => URL.revokeObjectURL(url), 3000);
+  });
 }
 
 // ── Vault ──────────────────────────────────────────────────────────────────
@@ -170,14 +224,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  // ── [FIX v2.2] RELAY_POPUP_HANDOFF ────────────────────────────────────────
-  // active:true はポップアップ開時にclaude.aiタブがactiveでなくなるため使用不可
-  // url指定でclaude.aiタブを直接取得する
   if (msg.type === 'RELAY_POPUP_HANDOFF') {
     chrome.tabs.query({ url: 'https://claude.ai/*' }, (tabs) => {
       const tab = tabs[0];
       if (!tab) { sendResponse({ ok: false, error: 'no_tab' }); return; }
-
       chrome.tabs.sendMessage(tab.id, { type: 'RELAY_MANUAL_HANDOFF' }, (res) => {
         if (chrome.runtime.lastError) {
           sendResponse({ ok: false, error: chrome.runtime.lastError.message });
@@ -185,6 +235,41 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           sendResponse({ ok: true });
         }
       });
+    });
+    return true;
+  }
+
+  // ── Export ─────────────────────────────────────────────────────────────────
+
+  if (msg.type === 'RELAY_EXPORT_SESSIONS') {
+    exportSessionsJSON().then(json => {
+      const filename = `relay-sessions-${todayStr()}.json`;
+      downloadFile(json, 'relay', filename, 'application/json');
+      sendResponse({ ok: true, filename });
+    });
+    return true;
+  }
+
+  if (msg.type === 'RELAY_EXPORT_LOGBOOK') {
+    exportLogbookJSON().then(json => {
+      const filename = `relay-logbook-${todayStr()}.json`;
+      downloadFile(json, 'relay', filename, 'application/json');
+      sendResponse({ ok: true, filename });
+    });
+    return true;
+  }
+
+  if (msg.type === 'RELAY_GET_EXPORT_FOLDER') {
+    getExportFolder().then(folder => sendResponse({ folder }));
+    return true;
+  }
+
+  if (msg.type === 'RELAY_SET_EXPORT_FOLDER') {
+    chrome.storage.sync.get('mocka_global_prefs', (result) => {
+      const prefs = result.mocka_global_prefs || {};
+      chrome.storage.sync.set({
+        mocka_global_prefs: { ...prefs, exportFolder: msg.folder }
+      }, () => sendResponse({ ok: true }));
     });
     return true;
   }

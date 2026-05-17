@@ -75,6 +75,39 @@
   input[type="text"]   { width: 150px; font-family: monospace; font-size: 11px; }
   input:focus { outline: none; border-color: #3b82f6; }
 
+  /* Folder input row */
+  .folder-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 0; border-bottom: 1px solid #0f1c30;
+  }
+  .folder-row input[type="text"] { width: 130px; }
+  .folder-save-btn {
+    background: #1a2540; color: #60a5fa; border: 1px solid #1e3050;
+    padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer;
+    white-space: nowrap;
+  }
+  .folder-save-btn:hover { background: #1e3050; }
+  .folder-saved { font-size: 10px; color: #34d399; margin-top: 4px; display: none; }
+
+  /* Export buttons */
+  .export-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    padding: 0 16px 12px;
+  }
+  .btn-export {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 10px 8px; border-radius: 8px; font-size: 11px; font-weight: 500;
+    cursor: pointer; border: 1px solid #1a2540; background: #0d1929;
+    color: #94a3b8; transition: all .2s;
+  }
+  .btn-export:hover { border-color: #3b82f6; color: #60a5fa; background: #0f1f35; }
+  .btn-export .export-icon { font-size: 18px; }
+  .btn-export .export-label { font-size: 10px; color: #4a6080; }
+  .export-status {
+    font-size: 10px; color: #34d399; text-align: center;
+    padding: 0 16px 8px; display: none;
+  }
+
   /* Buttons */
   .btn {
     display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -101,7 +134,7 @@
     font-size: 12px; font-weight: 600; color: #cbd5e1;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .logbook-item-meta { display: flex; gap: 8px; margin-top: 4px; }
+  .logbook-item-meta { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
   .logbook-chip {
     font-size: 10px; padding: 1px 6px; border-radius: 10px;
     background: #1a2540; color: #64748b;
@@ -159,7 +192,6 @@
 
   /* Detail view */
   #detail-view { display: none; padding: 12px 16px; }
-  #detail-view.show { display: block; }
   .detail-back {
     font-size: 11px; color: #60a5fa; cursor: pointer; margin-bottom: 10px;
     display: flex; align-items: center; gap: 4px;
@@ -208,6 +240,7 @@
   <div class="tab active" data-tab="home">Home</div>
   <div class="tab" data-tab="logbook">Logbook</div>
   <div class="tab" data-tab="vault">Vault ★</div>
+  <div class="tab" data-tab="settings">⚙</div>
 </div>
 
 <!-- HOME panel -->
@@ -241,7 +274,6 @@
 
 <!-- LOGBOOK panel -->
 <div class="panel" id="panel-logbook">
-  <!-- Detail view (hidden by default) -->
   <div id="detail-view">
     <div class="detail-back" id="detail-back">← Back</div>
     <div class="detail-title" id="detail-title"></div>
@@ -250,8 +282,6 @@
       ★ Save to Vault (Pro)
     </button>
   </div>
-
-  <!-- List view -->
   <div id="list-view">
     <div class="logbook-list" id="logbook-list">
       <div class="logbook-empty">No sessions yet.<br>Start a relay to build your Logbook.</div>
@@ -261,7 +291,6 @@
 
 <!-- VAULT panel -->
 <div class="panel" id="panel-vault">
-  <!-- Pro gate (shown when not Pro) -->
   <div class="pro-gate" id="vault-gate" style="display:none">
     <h3>★ Relay Pro</h3>
     <p>Save your best context snippets and auto-inject them into every new chat.<br>$5+ / month.</p>
@@ -271,8 +300,6 @@
     </div>
     <div class="license-status" id="license-status"></div>
   </div>
-
-  <!-- Vault content (shown when Pro) -->
   <div id="vault-content" style="display:none">
     <div class="section" style="padding-bottom:6px">
       <div class="section-title">Active context (injected on relay)</div>
@@ -284,9 +311,42 @@
   </div>
 </div>
 
+<!-- SETTINGS panel -->
+<div class="panel" id="panel-settings">
+  <div class="section">
+    <div class="section-title">Save Folder</div>
+    <div class="folder-row">
+      <input type="text" id="export-folder" placeholder="mocka-exports" value="mocka-exports">
+      <button class="folder-save-btn" id="btn-save-folder">Save</button>
+    </div>
+    <div class="folder-saved" id="folder-saved">✓ Saved</div>
+    <div style="font-size:10px;color:#2a3850;margin-top:6px;line-height:1.5">
+      Files saved to:<br>
+      Downloads/<span id="folder-preview">mocka-exports</span>/relay/
+    </div>
+  </div>
+
+  <div class="section" style="margin-top:4px">
+    <div class="section-title">Export</div>
+  </div>
+  <div class="export-grid">
+    <button class="btn-export" id="btn-export-sessions">
+      <span class="export-icon">💾</span>
+      Sessions
+      <span class="export-label">relay/ JSON</span>
+    </button>
+    <button class="btn-export" id="btn-export-logbook">
+      <span class="export-icon">📋</span>
+      Logbook
+      <span class="export-label">relay/ JSON</span>
+    </button>
+  </div>
+  <div class="export-status" id="export-status"></div>
+</div>
+
 <!-- Footer -->
 <div class="footer">
-  <div class="footer-text" id="footer-text">mini MoCKA Series · Relay v2.0</div>
+  <div class="footer-text">mini MoCKA Series · Relay v2.1</div>
 </div>
 
 <script src="popup.js"></script>
