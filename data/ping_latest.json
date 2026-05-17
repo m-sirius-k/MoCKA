@@ -40,39 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-17T17:16:18.827594",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "ひとつ前のchat確認せよ",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
-        "recur": 0,
-        "matched": [
-          "せよ"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "MoCKA流動性座標理論 実装移行報告書（公文書）\n第1章 総論（到達点の定義）\n本報告は、これまでの検討を踏まえ、MoCKAにおける判定理論が 静的二値判定から流動性座標モデルへ移行したことを正式に",
-        "recur": 0,
-        "matched": [
-          "せよ"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-17T09:38:15.662Z"
-  }
+  "generated_at": "2026-05-18T08:03:19.269087"
 }
