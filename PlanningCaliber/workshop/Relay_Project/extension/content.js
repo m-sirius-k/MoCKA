@@ -39,7 +39,7 @@
   // ── Load prefs ─────────────────────────────────────────────────────────────
   if (isContextValid()) {
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
-      const prefs = result?.mocka_global_prefs || {};
+      const prefs = (result && result.mocka_global_prefs) || {};
       TURN_LIMIT = prefs.turnLimit || 20;
     });
   }
@@ -66,15 +66,15 @@
 
     const messages = [];
     userNodes.forEach((node, i) => {
-      const text = node.innerText?.trim() || '';
+      const text = (node.innerText && node.innerText.trim()) || '';
       if (!text) return;
       messages.push({ role: 'user', text, turn: i * 2 + 1 });
 
       const turnEl = node.closest('[class*="group"]') ||
-                     node.parentElement?.parentElement?.parentElement;
-      const nextTurn = turnEl?.nextElementSibling;
+                     (node.parentElement && node.parentElement.parentElement && node.parentElement.parentElement.parentElement);
+      const nextTurn = turnEl && turnEl.nextElementSibling;
       if (nextTurn) {
-        const assistantText = nextTurn.innerText?.trim() || '';
+        const assistantText = (nextTurn.innerText && nextTurn.innerText.trim()) || '';
         if (assistantText) {
           messages.push({ role: 'assistant', text: assistantText.slice(0, 500), turn: i * 2 + 2 });
         }
@@ -118,7 +118,8 @@
   // ── Summary generator ─────────────────────────────────────────────────────
   function generateSummary(messages, vaultContext) {
     const userMsgs = messages.filter(m => m.role === 'user');
-    const last = userMsgs[userMsgs.length - 1]?.text?.slice(0, 200) || '';
+    const lastMsg = userMsgs[userMsgs.length - 1];
+    const last = (lastMsg && lastMsg.text && lastMsg.text.slice(0, 200)) || '';
     const count = messages.length;
     const logbook = extractLogbook(messages);
 
@@ -212,12 +213,12 @@
     if (!isContextValid()) return callback(null);
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
       if (!isContextValid()) return callback(null);
-      const prefs = result?.mocka_global_prefs || {};
+      const prefs = (result && result.mocka_global_prefs) || {};
       const isProUser = !!prefs.vaultEnabled;
       if (!isProUser) return callback(null);
 
       chrome.runtime.sendMessage({ type: 'RELAY_GET_VAULT_CONTEXT' }, (res) => {
-        callback(res?.context || null);
+        callback((res && res.context) || null);
       });
     });
   }
@@ -227,7 +228,7 @@
     if (!isContextValid()) return;
 
     const messages = getMessages();
-    const title = document.title?.replace(' - Claude', '').trim() || 'Untitled';
+    const title = (document.title && document.title.replace(' - Claude', '').trim()) || 'Untitled';
     const logbook = extractLogbook(messages);
 
     chrome.runtime.sendMessage({
