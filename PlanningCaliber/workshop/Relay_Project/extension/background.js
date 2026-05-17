@@ -110,13 +110,11 @@ async function exportLogbookJSON() {
 
 async function downloadFile(content, subFolder, filename, mime) {
   const folder = await getExportFolder();
-  const blob = new Blob([content], { type: mime });
-  const url  = URL.createObjectURL(blob);
   const path = `${folder}/${subFolder}/${filename}`;
-
-  chrome.downloads.download({ url, filename: path, saveAs: false }, () => {
-    setTimeout(() => URL.revokeObjectURL(url), 3000);
-  });
+  // MV3 Service Worker では URL.createObjectURL 不可 → data URL を使用
+  const base64 = btoa(unescape(encodeURIComponent(content)));
+  const url = `data:${mime};base64,${base64}`;
+  chrome.downloads.download({ url, filename: path, saveAs: false });
 }
 
 // ── Vault ──────────────────────────────────────────────────────────────────
