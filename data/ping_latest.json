@@ -25,55 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_151",
-      "title": "記録制度拡張 — planningcaliber配下の製品資産作成も記録必須化",
+      "id": "TODO_153",
+      "title": "ファイル生成後の自動mocka_write_event強制実行機構",
+      "priority": "最高"
+    },
+    {
+      "id": "TODO_154",
+      "title": "全文書き換え時の関連ファイル整合性確認を必須化",
       "priority": "最高"
     },
     {
       "id": "TODO_139",
       "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
       "priority": "高"
-    },
-    {
-      "id": "TODO_140",
-      "title": "Orchestra製品 — LP作成・Chrome Web Store登録・Gumroad販売ページ",
-      "priority": "高"
     }
   ],
-  "generated_at": "2026-05-17T09:15:14.574051",
-  "dna_text": "\n[MOCKA_MANDATORY_PROTOCOL: RECORD_ALL_WORK]\nClaudeは以下を強制的に遵守する:\n① 作業着手前: mocka_write_event(CHANGE_START) — 対象ファイル・目的・変更前状態を記録\n② 作業完了後: mocka_write_event(CHANGE_DONE) — 変更後状態・差分・結果を記録\n③ 外部サービス操作(Store/Gumroad/GitHub/EasyChair等): 操作前後を即記録\n④ 設計判断・採用・却下: 理由とともに即記録\n適用範囲: MoCKAコア / planningcaliber / sirius-lab / 全外部サービス操作\n記録なき作業はMoCKAとして存在しない。(TODO_151)\n[END_MANDATORY_PROTOCOL]\n",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "インシデントプール: 7315件 | 出力ファイル: 8件",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
-        "recur": 0,
-        "matched": [
-          "incident"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-10",
-        "why": "",
-        "how": "",
-        "note": "INCIDENT,INSTRUCTION_IGNORE,MCP,誤判定,自己訂正",
-        "recur": 0,
-        "matched": [
-          "incident"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-17T02:29:50.554Z"
-  }
+  "generated_at": "2026-05-17T15:30:26.846811"
 }
