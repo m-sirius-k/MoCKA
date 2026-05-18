@@ -43,6 +43,7 @@
   }
   .tab.active { color: #60a5fa; border-bottom-color: #3b82f6; }
   .tab:hover:not(.active) { color: #94a3b8; }
+  .tabs-row2 { border-top: none; }
 
   /* Panels */
   .panel { display: none; }
@@ -377,6 +378,8 @@
   <div class="tab active" data-tab="home">Home</div>
   <div class="tab" data-tab="todos">📋 TODO</div>
   <div class="tab" data-tab="log">📜 LOG</div>
+</div>
+<div class="tabs tabs-row2">
   <div class="tab" data-tab="logbook">Logbook</div>
   <div class="tab" data-tab="vault">Vault ★</div>
   <div class="tab" data-tab="settings">⚙</div>
@@ -445,6 +448,8 @@
     <button class="btn-clear-log" id="btn-clear-log">🗑 ログを全削除</button>
   </div>
 </div>
+
+
 
 <!-- LOGBOOK panel -->
 <div class="panel" id="panel-logbook">
@@ -519,7 +524,7 @@
 
 <!-- Footer -->
 <div class="footer">
-  <div class="footer-text">mini MoCKA Series · Relay v3.1</div>
+  <div class="footer-text">mini MoCKA Series · Relay v3.2</div>
 </div>
 
 <script src="popup.js"></script>

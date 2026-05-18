@@ -1,5 +1,5 @@
 ﻿/**
- * Relay - popup.js v3.1
+ * Relay - popup.js v3.2
  * Add: TODO完了→LOGアーカイブ / LOGタブ（完了履歴表示）
  */
 
@@ -85,10 +85,12 @@ function bindTabs() {
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       const name = tab.dataset.tab;
+      // 両段のタブからactiveを外す
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       tab.classList.add('active');
-      document.getElementById('panel-' + name).classList.add('active');
+      const panel = document.getElementById('panel-' + name);
+      if (panel) panel.classList.add('active');
 
       if (name === 'todos')    loadTodos();
       if (name === 'log')      loadLog();
