@@ -1,13 +1,13 @@
 /**
- * Relay for Claude — content.js v2.5
- * Fix v2.5: getMessages() のassistant取得を .font-claude-response + textContent に修正
- *   - nextElementSibling方式はclaud.aiのDOM構造と不一致のため廃止
- *   - .font-claude-response[index]とuser-message[index]を対応付け
- * Fix v2.4: RELAY_GET_SUMMARY_FOR_VAULT が sendResponse/return true を欠いていたバグ修正
+ * Relay for Claude — content.js v3.0
+ * Add: Logbook TODO Engine
+ *   - ユーザー発言から自然語でTODO自動抽出・LB_NNN番号付き管理
+ *   - 「LB_001完了」「001終わった」でステータス更新
+ *   - セッション跨いでlocalStorage永続化
+ *   - 次セッション冒頭に未着手TODO自動注入
+ * v2.5: getMessages() のassistant取得を .font-claude-response + textContent に修正
+ * v2.4: RELAY_GET_SUMMARY_FOR_VAULT が sendResponse/return true を欠いていたバグ修正
  * Fix: Extension context invalidated — B案根本解決
- *   - isContextValid() で全chrome.runtime呼び出しをガード
- *   - setInterval / MutationObserver をコンテキスト無効時に自動停止
- *   - chrome.runtime.onMessage も安全にラップ
  */
 
 (function() {
@@ -20,7 +20,7 @@
   let lastUrl = location.href;
   let observer = null;
   let intervalId = null;
-  let contextAlive = true; // コンテキスト生存フラグ
+  let contextAlive = true;
 
   // ── コンテキスト有効チェック ──────────────────────────────────────────────
   function isContextValid() {
@@ -31,7 +31,6 @@
     }
   }
 
-  // コンテキスト無効になったら全リソースを解放
   function teardown() {
     contextAlive = false;
     if (observer) { observer.disconnect(); observer = null; }
@@ -62,7 +61,6 @@
     return 0;
   }
 
-  // ── getMessages: user + assistant両取得 v2.5 ──────────────────────────────
   function getMessages() {
     var userNodes = Array.prototype.slice.call(document.querySelectorAll('[data-testid="user-message"]'));
     var assistantNodes = Array.prototype.slice.call(document.querySelectorAll('.font-claude-response'));
@@ -89,7 +87,211 @@
     return /claude\.ai\/(chat|new)/.test(location.href);
   }
 
-  // ── [A] Logbook: 構造化抽出 ────────────────────────────────────────────────
+  // ════════════════════════════════════════════════════════════════════════════
+  // ██ LOGBOOK TODO ENGINE v1.0
+  // ════════════════════════════════════════════════════════════════════════════
+
+  const LB_STORAGE_KEY = 'relay_logbook_todos';
+
+  // TODOパターン（日英）
+  const TODO_PATTERNS = [
+    // 日本語
+    /(?:^|[。\n])\s*(?:TODO[：:]?\s*|・|→\s*|次[はに]?[：:]?\s*|やること[：:]?\s*|対応[：:]?\s*|実装[：:]?\s*|確認[：:]?\s*)(.{5,80})(?=[。\n！？!?]|$)/gi,
+    /(.{5,80})(?:してください|する予定|しておく|しておいて|実装する|対応する|確認する|作成する|修正する|追加する)(?=[。\n]|$)/gi,
+    // 英語
+    /(?:^|[\.\n])\s*(?:TODO[：:]?\s*|[-•→]\s*|Next[：:]?\s*|Need to[：:]?\s*|Should[：:]?\s*)(.{5,80})(?=[.\n!?]|$)/gi,
+  ];
+
+  // ステータス更新コマンドパターン
+  const STATUS_PATTERNS = [
+    // 完了：「LB_001完了」「001終わった」「LB_003 done」
+    { re: /(?:LB[_-]?)?(\d{3})\s*(?:完了|終わった|done|finished|完成|済み|ok)/gi, status: '完了' },
+    // 進行中：「LB_002進行中」「002やってる」
+    { re: /(?:LB[_-]?)?(\d{3})\s*(?:進行中|やってる|作業中|対応中|in progress|wip)/gi, status: '進行中' },
+    // 未着手に戻す
+    { re: /(?:LB[_-]?)?(\d{3})\s*(?:未着手|戻す|キャンセル|cancel|undo)/gi, status: '未着手' },
+  ];
+
+  // localStorage からTODOリストを取得
+  function lbLoad() {
+    try {
+      const raw = localStorage.getItem(LB_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  // localStorageに保存
+  function lbSave(todos) {
+    try {
+      localStorage.setItem(LB_STORAGE_KEY, JSON.stringify(todos));
+    } catch (_) {}
+  }
+
+  // 次のLB番号を採番
+  function lbNextId(todos) {
+    if (!todos.length) return 'LB_001';
+    const nums = todos.map(t => parseInt(t.id.replace('LB_', ''), 10)).filter(n => !isNaN(n));
+    const next = Math.max(...nums) + 1;
+    return 'LB_' + String(next).padStart(3, '0');
+  }
+
+  // テキストからTODO候補を抽出
+  function extractTodoCandidates(text) {
+    const candidates = new Set();
+
+    // パターンマッチ
+    TODO_PATTERNS.forEach(pat => {
+      pat.lastIndex = 0;
+      let m;
+      while ((m = pat.exec(text)) !== null) {
+        const candidate = (m[1] || m[0]).trim().replace(/[。！？!?\n]+$/, '').trim();
+        if (candidate.length >= 5 && candidate.length <= 100) {
+          candidates.add(candidate);
+        }
+      }
+    });
+
+    // 行頭の箇条書きパターン
+    text.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      const bulletMatch = trimmed.match(/^(?:[-•✓→]\s*|(?:TODO|todo)[：:]\s*|(?:\d+[.)]\s*))(.{5,100})$/);
+      if (bulletMatch) {
+        candidates.add(bulletMatch[1].trim());
+      }
+    });
+
+    return [...candidates];
+  }
+
+  // ユーザー発言からステータス更新コマンドを検出して処理
+  function processStatusCommands(text) {
+    const todos = lbLoad();
+    let updated = false;
+
+    STATUS_PATTERNS.forEach(({ re, status }) => {
+      re.lastIndex = 0;
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const num = parseInt(m[1], 10);
+        const id = 'LB_' + String(num).padStart(3, '0');
+        const todo = todos.find(t => t.id === id);
+        if (todo && todo.status !== status) {
+          todo.status = status;
+          todo.updatedAt = new Date().toISOString();
+          updated = true;
+        }
+      }
+    });
+
+    if (updated) {
+      lbSave(todos);
+      showLbToast('✓ TODOステータスを更新しました');
+    }
+    return updated;
+  }
+
+  // 新しいTODOを追加（重複チェックあり）
+  function addTodos(candidates) {
+    const todos = lbLoad();
+    const existing = todos.map(t => t.content.toLowerCase());
+    let added = 0;
+
+    candidates.forEach(content => {
+      if (existing.includes(content.toLowerCase())) return;
+      const id = lbNextId(todos);
+      todos.push({
+        id,
+        content,
+        status: '未着手',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        sessionUrl: location.href,
+      });
+      existing.push(content.toLowerCase());
+      added++;
+    });
+
+    if (added > 0) lbSave(todos);
+    return added;
+  }
+
+  // 未着手TODOのサマリー文字列を生成
+  function buildTodoSummary() {
+    const todos = lbLoad();
+    const pending = todos.filter(t => t.status === '未着手');
+    const inProgress = todos.filter(t => t.status === '進行中');
+
+    if (!pending.length && !inProgress.length) return '';
+
+    const lines = ['[Logbook — 前回からの積み残し]'];
+    if (inProgress.length) {
+      lines.push('📌 進行中:');
+      inProgress.forEach(t => lines.push(`  ${t.id}: ${t.content}`));
+    }
+    if (pending.length) {
+      lines.push('📋 未着手:');
+      pending.slice(0, 10).forEach(t => lines.push(`  ${t.id}: ${t.content}`));
+      if (pending.length > 10) lines.push(`  ... 他${pending.length - 10}件`);
+    }
+    return lines.join('\n');
+  }
+
+  // ユーザーが送信したテキストを監視してTODO処理
+  let _lastUserText = '';
+  function monitorUserInput() {
+    const userNodes = document.querySelectorAll('[data-testid="user-message"]');
+    if (!userNodes.length) return;
+    const lastNode = userNodes[userNodes.length - 1];
+    const text = lastNode.textContent.trim();
+    if (!text || text === _lastUserText) return;
+    _lastUserText = text;
+
+    // ステータス更新コマンドを先に処理
+    const hasCommand = processStatusCommands(text);
+
+    // TODO候補を抽出して追加（コマンド行でなければ）
+    if (!hasCommand) {
+      const candidates = extractTodoCandidates(text);
+      if (candidates.length > 0) {
+        const added = addTodos(candidates);
+        if (added > 0) {
+          showLbToast(`📋 TODO ${added}件を記録しました`);
+        }
+      }
+    }
+  }
+
+  // トースト通知
+  function showLbToast(msg) {
+    const existing = document.getElementById('relay-lb-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'relay-lb-toast';
+    Object.assign(toast.style, {
+      position: 'fixed', bottom: '70px', right: '20px', zIndex: '999998',
+      background: '#0f172a', color: '#94a3b8',
+      border: '1px solid #1e3a5f',
+      fontFamily: '-apple-system,sans-serif', fontSize: '11px',
+      padding: '6px 12px', borderRadius: '8px',
+      opacity: '0', transition: 'opacity 0.3s',
+      pointerEvents: 'none',
+    });
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => { toast.style.opacity = '1'; });
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 300);
+    }, 2500);
+  }
+
+  // ════════════════════════════════════════════════════════════════════════════
+  // 以下 既存ロジック（extractLogbook / generateSummary / injectText / etc.）
+  // ════════════════════════════════════════════════════════════════════════════
+
   function extractLogbook(messages) {
     const decisions = [];
     const todos = [];
@@ -117,7 +319,6 @@
     };
   }
 
-  // ── Summary generator ─────────────────────────────────────────────────────
   function generateSummary(messages, vaultContext) {
     const userMsgs = messages.filter(m => m.role === 'user');
     const lastMsg = userMsgs[userMsgs.length - 1];
@@ -127,14 +328,17 @@
 
     const parts = [`[Relay — continuing from ${count} turns]`];
 
+    // ★ Logbook TODO注入（新機能）
+    const todoSummary = buildTodoSummary();
+    if (todoSummary) {
+      parts.push(todoSummary);
+    }
+
     if (vaultContext) {
       parts.push(`[Vault context]\n${vaultContext}`);
     }
     if (logbook.decisions.length) {
       parts.push(`Decisions:\n${logbook.decisions.map(d => `• ${d}`).join('\n')}`);
-    }
-    if (logbook.todos.length) {
-      parts.push(`Next steps:\n${logbook.todos.map(t => `• ${t}`).join('\n')}`);
     }
     if (logbook.insights.length) {
       parts.push(`Key insights:\n${logbook.insights.map(i => `• ${i}`).join('\n')}`);
@@ -147,7 +351,6 @@
     return parts.join('\n\n');
   }
 
-  // ── injectText: ProseMirror強化版 ─────────────────────────────────────────
   function injectText(text) {
     const selectors = [
       'div[contenteditable="true"][data-placeholder]',
@@ -171,7 +374,6 @@
       return true;
     }
 
-    // 方法1: execCommand
     try {
       el.focus();
       document.execCommand('selectAll', false, null);
@@ -182,7 +384,6 @@
       }
     } catch (_) {}
 
-    // 方法2: innerText直接書き込み + InputEvent
     try {
       el.focus();
       el.innerText = text;
@@ -198,7 +399,6 @@
       return true;
     } catch (_) {}
 
-    // 方法3: クリップボード経由
     try {
       navigator.clipboard.writeText(text).then(() => {
         el.focus();
@@ -210,7 +410,6 @@
     return false;
   }
 
-  // ── [B] Vault: 過去文脈を取得して注入 ────────────────────────────────────
   function getVaultContext(callback) {
     if (!isContextValid()) return callback(null);
     chrome.storage.sync.get('mocka_global_prefs', (result) => {
@@ -225,7 +424,6 @@
     });
   }
 
-  // ── Handoff ────────────────────────────────────────────────────────────────
   function triggerHandoff() {
     if (!isContextValid()) return;
 
@@ -297,10 +495,14 @@
     } else {
       b.style.animation = '';
     }
-    b.textContent = `Relay · ${count}/${TURN_LIMIT} turns`;
+
+    // TODO件数をバッジに追加表示
+    const todos = lbLoad();
+    const pendingCount = todos.filter(t => t.status !== '完了').length;
+    const todoLabel = pendingCount > 0 ? ` · 📋${pendingCount}` : '';
+    b.textContent = `Relay · ${count}/${TURN_LIMIT}${todoLabel}`;
   }
 
-  // ── Warning overlay ────────────────────────────────────────────────────────
   function showWarning(count) {
     if (warningShown) return;
     warningShown = true;
@@ -345,12 +547,12 @@
     document.getElementById('relay-btn-dismiss').onclick  = () => { overlay.remove(); };
   }
 
-  // ── URL change & Observer ──────────────────────────────────────────────────
   function checkUrlChange() {
     if (location.href !== lastUrl) {
       lastUrl = location.href;
       turnCount = 0;
       warningShown = false;
+      _lastUserText = '';
       updateBadge(0);
     }
   }
@@ -358,7 +560,6 @@
   function startObserver() {
     if (observer) observer.disconnect();
     observer = new MutationObserver(() => {
-      // コンテキスト無効なら即停止
       if (!isContextValid()) { teardown(); return; }
       checkUrlChange();
       if (!isOnChatPage()) return;
@@ -368,6 +569,8 @@
         updateBadge(count);
         if (count >= TURN_LIMIT && !warningShown) showWarning(count);
       }
+      // ★ ユーザー発言監視（TODO抽出）
+      monitorUserInput();
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
@@ -376,12 +579,15 @@
   if (isContextValid()) {
     chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
       if (!isContextValid()) return;
+
       if (msg.type === 'RELAY_INJECT') {
         setTimeout(() => injectText(msg.payload.text), 1200);
       }
+
       if (msg.type === 'RELAY_MANUAL_HANDOFF') {
         triggerHandoff();
       }
+
       if (msg.type === 'RELAY_GET_SUMMARY_FOR_VAULT') {
         const messages = getMessages();
         const logbook = extractLogbook(messages);
@@ -391,6 +597,56 @@
           logbook.insights.length  ? 'Key insights:\n' + logbook.insights.map(i => `• ${i}`).join('\n') : ''
         ].filter(Boolean).join('\n\n');
         sendResponse({ text });
+        return true;
+      }
+
+      // ★ Logbook TODO API
+      if (msg.type === 'RELAY_LB_GET_TODOS') {
+        sendResponse({ todos: lbLoad() });
+        return true;
+      }
+
+      if (msg.type === 'RELAY_LB_UPDATE_STATUS') {
+        const todos = lbLoad();
+        const todo = todos.find(t => t.id === msg.id);
+        if (todo) {
+          todo.status = msg.status;
+          todo.updatedAt = new Date().toISOString();
+          lbSave(todos);
+          sendResponse({ ok: true });
+        } else {
+          sendResponse({ ok: false, error: 'not found' });
+        }
+        return true;
+      }
+
+      if (msg.type === 'RELAY_LB_ADD_TODO') {
+        const todos = lbLoad();
+        const id = lbNextId(todos);
+        todos.push({
+          id,
+          content: msg.content,
+          status: '未着手',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          sessionUrl: location.href,
+        });
+        lbSave(todos);
+        sendResponse({ ok: true, id });
+        return true;
+      }
+
+      if (msg.type === 'RELAY_LB_DELETE_TODO') {
+        const todos = lbLoad().filter(t => t.id !== msg.id);
+        lbSave(todos);
+        sendResponse({ ok: true });
+        return true;
+      }
+
+      if (msg.type === 'RELAY_LB_CLEAR_DONE') {
+        const todos = lbLoad().filter(t => t.status !== '完了');
+        lbSave(todos);
+        sendResponse({ ok: true });
         return true;
       }
     });
@@ -405,7 +661,6 @@
 
   let _lastPath = location.pathname;
   intervalId = setInterval(() => {
-    // コンテキスト無効なら停止
     if (!isContextValid()) { teardown(); return; }
 
     if (location.pathname !== _lastPath) {

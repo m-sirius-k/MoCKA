@@ -1,6 +1,6 @@
 /**
- * Relay - popup.js v2.1
- * Add: Settings tab (export folder + export buttons)
+ * Relay - popup.js v3.0
+ * Add: Logbook TODO tab — LB_NNN番号管理・status操作・手動追加
  */
 
 let isPro = false;
@@ -86,6 +86,7 @@ function bindTabs() {
       tab.classList.add('active');
       document.getElementById('panel-' + name).classList.add('active');
 
+      if (name === 'todos')    loadTodos();
       if (name === 'logbook')  loadLogbook();
       if (name === 'vault')    loadVault();
       if (name === 'settings') loadExportFolder();
@@ -107,9 +108,9 @@ function bindButtons() {
     });
   });
 
-  // Open Logbook tab
-  document.getElementById('btn-view-logbook').addEventListener('click', () => {
-    document.querySelector('[data-tab="logbook"]').click();
+  // Open Todos tab
+  document.getElementById('btn-view-logbook')?.addEventListener('click', () => {
+    document.querySelector('[data-tab="todos"]')?.click();
   });
 
   // Detail back
@@ -182,6 +183,121 @@ function bindButtons() {
       if (res?.ok) showExportStatus(`✓ Saved: ${res.filename}`);
     });
   });
+
+  // TODO手動追加
+  document.getElementById('btn-add-todo')?.addEventListener('click', () => {
+    const input = document.getElementById('todo-input');
+    const content = input?.value?.trim();
+    if (!content) return;
+    sendToActiveTab({ type: 'RELAY_LB_ADD_TODO', content }, () => {
+      input.value = '';
+      loadTodos();
+    });
+  });
+
+  // 入力欄でEnterキー
+  document.getElementById('todo-input')?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('btn-add-todo')?.click();
+  });
+
+  // 完了済みTODOを全削除
+  document.getElementById('btn-clear-done')?.addEventListener('click', () => {
+    sendToActiveTab({ type: 'RELAY_LB_CLEAR_DONE' }, () => loadTodos());
+  });
+}
+
+// ── TODO タブ ─────────────────────────────────────────────────────────────────
+function loadTodos() {
+  sendToActiveTab({ type: 'RELAY_LB_GET_TODOS' }, (res) => {
+    const todos = res?.todos || [];
+    renderTodos(todos);
+  });
+}
+
+function renderTodos(todos) {
+  const container = document.getElementById('todos-list');
+  if (!container) return;
+
+  if (!todos.length) {
+    container.innerHTML = `
+      <div class="logbook-empty">
+        TODOはまだありません。<br>
+        会話中に「〜してください」「TODO:〜」と言うと<br>自動で記録されます。
+      </div>`;
+    return;
+  }
+
+  // ステータス別にグループ化
+  const groups = {
+    '進行中': todos.filter(t => t.status === '進行中'),
+    '未着手': todos.filter(t => t.status === '未着手'),
+    '完了':   todos.filter(t => t.status === '完了'),
+  };
+
+  const statusColors = {
+    '進行中': '#3b82f6',
+    '未着手': '#94a3b8',
+    '完了':   '#22c55e',
+  };
+  const statusIcons = { '進行中': '🔵', '未着手': '⬜', '完了': '✅' };
+
+  let html = '';
+  Object.entries(groups).forEach(([status, items]) => {
+    if (!items.length) return;
+    html += `<div class="todo-group">
+      <div class="todo-group-label">${statusIcons[status]} ${status} (${items.length})</div>`;
+    items.forEach(t => {
+      html += `
+        <div class="todo-item ${t.status === '完了' ? 'done' : ''}" data-id="${t.id}">
+          <div class="todo-item-header">
+            <span class="todo-id" style="color:${statusColors[t.status]}">${t.id}</span>
+            <div class="todo-actions">
+              ${t.status !== '進行中' ? `<button class="todo-btn" data-id="${t.id}" data-action="進行中" title="進行中に">▶</button>` : ''}
+              ${t.status !== '完了'   ? `<button class="todo-btn done-btn" data-id="${t.id}" data-action="完了" title="完了にする">✓</button>` : ''}
+              ${t.status !== '未着手' ? `<button class="todo-btn" data-id="${t.id}" data-action="未着手" title="未着手に戻す">↩</button>` : ''}
+              <button class="todo-btn del-btn" data-id="${t.id}" data-action="delete" title="削除">×</button>
+            </div>
+          </div>
+          <div class="todo-content">${escHtml(t.content)}</div>
+        </div>`;
+    });
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
+
+  // イベント登録
+  container.querySelectorAll('.todo-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'delete') {
+        sendToActiveTab({ type: 'RELAY_LB_DELETE_TODO', id }, () => loadTodos());
+      } else {
+        sendToActiveTab({ type: 'RELAY_LB_UPDATE_STATUS', id, status: action }, () => loadTodos());
+      }
+    });
+  });
+}
+
+// ── アクティブタブへメッセージ送信ヘルパー ────────────────────────────────────
+function sendToActiveTab(msg, callback) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs.find(t => t.url && t.url.includes('claude.ai'));
+    if (!tab) {
+      if (callback) callback(null);
+      return;
+    }
+    chrome.tabs.sendMessage(tab.id, msg, (res) => {
+      if (chrome.runtime.lastError) {
+        console.warn('Relay: tab msg error', chrome.runtime.lastError.message);
+        if (callback) callback(null);
+      } else {
+        if (callback) callback(res);
+      }
+    });
+  });
 }
 
 function showExportStatus(msg) {
@@ -200,7 +316,7 @@ function buildVaultText(session) {
   return parts.join('\n\n') || session.messages?.slice(-2).map(m => m.text).join('\n') || '';
 }
 
-// ── Logbook ───────────────────────────────────────────────────────────────────
+// ── Logbook（セッション履歴）タブ ────────────────────────────────────────────
 function loadLogbook() {
   document.getElementById('detail-view').style.display = 'none';
   document.getElementById('list-view').style.display  = 'block';
@@ -217,20 +333,19 @@ function loadLogbook() {
     container.innerHTML = index.map(s => {
       const lb = s.logbook || {};
       const chips = [
-        lb.decisions ? `<span class="logbook-chip decision">✓ ${lb.decisions} decision${lb.decisions !== 1 ? 's' : ''}</span>` : '',
-        lb.todos     ? `<span class="logbook-chip todo">→ ${lb.todos} todo${lb.todos !== 1 ? 's' : ''}</span>` : '',
-        lb.insights  ? `<span class="logbook-chip insight">★ ${lb.insights} insight${lb.insights !== 1 ? 's' : ''}</span>` : ''
+        lb.decisions ? `<span class="logbook-chip decision">✓ ${lb.decisions}</span>` : '',
+        lb.todos     ? `<span class="logbook-chip todo">→ ${lb.todos}</span>` : '',
+        lb.insights  ? `<span class="logbook-chip insight">★ ${lb.insights}</span>` : ''
       ].filter(Boolean).join('');
-      const date = new Date(s.createdAt).toLocaleDateString('en', { month:'short', day:'numeric' });
+      const date = new Date(s.createdAt).toLocaleDateString('ja', { month:'short', day:'numeric' });
       return `
         <div class="logbook-item" data-id="${s.id}">
           <div class="logbook-item-title">${escHtml(s.title)}</div>
           <div class="logbook-item-meta">
-            <span class="logbook-chip">${s.turns} turns · ${date}</span>
+            <span class="logbook-chip">${s.turns}t · ${date}</span>
             ${chips}
           </div>
-        </div>
-      `;
+        </div>`;
     }).join('');
 
     container.querySelectorAll('.logbook-item').forEach(el => {
@@ -292,7 +407,7 @@ function loadVault() {
     const list = document.getElementById('vault-list');
 
     if (!vault.length) {
-      list.innerHTML = '<div class="logbook-empty">No saved contexts yet.<br>Save a Logbook entry to start.</div>';
+      list.innerHTML = '<div class="logbook-empty">No saved contexts yet.</div>';
       return;
     }
 
@@ -303,8 +418,7 @@ function loadVault() {
         </button>
         <span class="vault-label">${escHtml(v.label)}</span>
         <button class="vault-del" data-id="${v.id}">×</button>
-      </div>
-    `).join('');
+      </div>`).join('');
 
     list.querySelectorAll('.vault-toggle').forEach(btn => {
       btn.addEventListener('click', (e) => {
