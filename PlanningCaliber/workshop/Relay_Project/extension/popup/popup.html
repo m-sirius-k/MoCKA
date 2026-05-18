@@ -123,7 +123,6 @@
   .btn:disabled { opacity: .4; cursor: not-allowed; }
 
   /* ══ TODO Panel ═══════════════════════════════════════════════════════ */
-
   .todo-add-row {
     display: flex; gap: 6px; padding: 10px 12px 6px;
   }
@@ -140,7 +139,7 @@
   .todo-add-row button:hover { background: #2d5a8e; }
 
   .todos-scroll {
-    overflow-y: auto; padding: 4px 12px; max-height: 280px;
+    overflow-y: auto; padding: 4px 12px; max-height: 250px;
   }
 
   .todo-group { margin-bottom: 8px; }
@@ -156,7 +155,6 @@
     transition: border-color .2s;
   }
   .todo-item:hover { border-color: #2d5a8e; }
-  .todo-item.done  { opacity: .45; border-color: #101e2e; }
 
   .todo-item-header {
     display: flex; justify-content: space-between; align-items: center;
@@ -164,6 +162,11 @@
   }
   .todo-id {
     font-size: 10px; font-weight: 700; font-family: monospace; letter-spacing: .5px;
+  }
+  .todo-priority {
+    font-size: 10px; padding: 1px 6px; border-radius: 8px;
+    background: rgba(255,255,255,0.05); color: #94a3b8;
+    margin-left: 4px; white-space: nowrap;
   }
 
   .todo-actions {
@@ -185,7 +188,6 @@
   .todo-content {
     font-size: 11px; color: #94a3b8; line-height: 1.4; word-break: break-all;
   }
-  .todo-item.done .todo-content { text-decoration: line-through; color: #334155; }
 
   .todo-footer {
     display: flex; align-items: center; justify-content: space-between;
@@ -196,8 +198,63 @@
     border-radius: 6px; color: #64748b; font-size: 10px;
     padding: 4px 8px; cursor: pointer; transition: all .15s;
   }
-  .btn-clear-done:hover { border-color: #ef4444; color: #fca5a5; }
+  .btn-clear-done:hover { border-color: #22c55e; color: #86efac; }
   .todo-hint { font-size: 9px; color: #2a3850; font-style: italic; }
+
+  /* ══ LOG Panel ════════════════════════════════════════════════════════ */
+  .log-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 12px 4px;
+  }
+  .log-header-title {
+    font-size: 10px; color: #4a6080; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .log-count-badge {
+    font-size: 10px; background: #1a2540; color: #64748b;
+    padding: 1px 7px; border-radius: 10px;
+  }
+  .log-scroll {
+    overflow-y: auto; padding: 4px 12px; max-height: 270px;
+  }
+  .log-date-group { margin-bottom: 10px; }
+  .log-date-label {
+    font-size: 10px; color: #3b82f6; letter-spacing: .4px;
+    padding: 4px 0 3px; border-bottom: 1px solid #1a2a3a; margin-bottom: 4px;
+  }
+  .log-item {
+    background: #0a1520; border: 1px solid #152030;
+    border-radius: 6px; padding: 6px 8px; margin-bottom: 4px;
+  }
+  .log-item-header {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
+  }
+  .log-id {
+    font-size: 10px; font-weight: 700; font-family: monospace;
+    color: #22c55e; letter-spacing: .5px;
+  }
+  .log-priority {
+    font-size: 10px; color: #64748b;
+  }
+  .log-time {
+    font-size: 10px; color: #334155; margin-left: auto;
+  }
+  .log-content {
+    font-size: 11px; color: #64748b; line-height: 1.4;
+    text-decoration: line-through; word-break: break-all;
+  }
+  .log-meta {
+    font-size: 9px; color: #2a3850; margin-top: 2px;
+  }
+  .log-footer {
+    display: flex; justify-content: flex-end;
+    padding: 6px 12px 10px; border-top: 1px solid #1a2a3a;
+  }
+  .btn-clear-log {
+    background: transparent; border: 1px solid #1e3a5f;
+    border-radius: 6px; color: #4a6080; font-size: 10px;
+    padding: 4px 8px; cursor: pointer; transition: all .15s;
+  }
+  .btn-clear-log:hover { border-color: #ef4444; color: #fca5a5; }
 
   /* ══ Logbook list ═════════════════════════════════════════════════════ */
   .logbook-list { padding: 0 16px 12px; max-height: 240px; overflow-y: auto; }
@@ -299,15 +356,6 @@
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #1a2540; border-radius: 2px; }
-    .todo-priority {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.05);
-      color: #94a3b8;
-      margin-left: 4px;
-      white-space: nowrap;
-    }
 </style>
 </head>
 <body>
@@ -328,6 +376,7 @@
 <div class="tabs">
   <div class="tab active" data-tab="home">Home</div>
   <div class="tab" data-tab="todos">📋 TODO</div>
+  <div class="tab" data-tab="log">📜 LOG</div>
   <div class="tab" data-tab="logbook">Logbook</div>
   <div class="tab" data-tab="vault">Vault ★</div>
   <div class="tab" data-tab="settings">⚙</div>
@@ -364,24 +413,36 @@
 
 <!-- TODO panel -->
 <div class="panel" id="panel-todos">
-  <!-- 手動追加 -->
   <div class="todo-add-row">
     <input type="text" id="todo-input" placeholder="TODOを追加…" maxlength="120">
     <button id="btn-add-todo">追加</button>
   </div>
-
-  <!-- 一覧 -->
   <div id="todos-list" class="todos-scroll">
     <div class="logbook-empty">
       TODOはまだありません。<br>
       会話中に「〜してください」「TODO:〜」と言うと<br>自動で記録されます。
     </div>
   </div>
-
-  <!-- フッター -->
   <div class="todo-footer">
-    <button class="btn-clear-done" id="btn-clear-done">✓ 完了済みを削除</button>
+    <button class="btn-clear-done" id="btn-clear-done">✅ 完了済みをLOGへ</button>
     <span class="todo-hint">「LB_001完了」で更新可</span>
+  </div>
+</div>
+
+<!-- LOG panel -->
+<div class="panel" id="panel-log">
+  <div class="log-header">
+    <span class="log-header-title">完了ログ</span>
+    <span class="log-count-badge" id="log-count">0</span>
+  </div>
+  <div id="log-list" class="log-scroll">
+    <div class="logbook-empty">
+      完了したTODOがここに記録されます。<br>
+      <span style="font-size:10px;color:#2a3850">TODOの✓ボタンまたは「LB_XXX完了」で追記</span>
+    </div>
+  </div>
+  <div class="log-footer">
+    <button class="btn-clear-log" id="btn-clear-log">🗑 ログを全削除</button>
   </div>
 </div>
 
@@ -438,7 +499,6 @@
       Downloads/<span id="folder-preview">mocka-exports</span>/relay/
     </div>
   </div>
-
   <div class="section" style="margin-top:4px">
     <div class="section-title">Export</div>
   </div>
@@ -459,7 +519,7 @@
 
 <!-- Footer -->
 <div class="footer">
-  <div class="footer-text">mini MoCKA Series · Relay v3.0</div>
+  <div class="footer-text">mini MoCKA Series · Relay v3.1</div>
 </div>
 
 <script src="popup.js"></script>

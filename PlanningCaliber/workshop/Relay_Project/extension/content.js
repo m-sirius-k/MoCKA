@@ -1,5 +1,5 @@
 ﻿/**
- * Relay for Claude — content.js v3.0
+ * Relay for Claude — content.js v3.1
  * Add: Logbook TODO Engine
  *   - ユーザー発言から自然語でTODO自動抽出・LB_NNN番号付き管理
  *   - 「LB_001完了」「001終わった」でステータス更新
@@ -180,13 +180,26 @@
         if (todo && todo.status !== status) {
           todo.status = status;
           todo.updatedAt = new Date().toISOString();
+          if (status === '完了') {
+            todo.completed_at = new Date().toISOString();
+          }
           updated = true;
         }
       }
     });
 
     if (updated) {
-      lbSave(todos);
+      // 完了になったものをLOGにアーカイブ
+      const doneItems = todos.filter(t => t.status === '完了');
+      const activeItems = todos.filter(t => t.status !== '完了');
+      lbSave(activeItems);
+      if (doneItems.length > 0) {
+        chrome.storage.local.get('mocka_relay_log', function(data) {
+          const log = data.mocka_relay_log || [];
+          const newLog = doneItems.concat(log);
+          chrome.storage.local.set({ mocka_relay_log: newLog });
+        });
+      }
       showLbToast('✓ TODOステータスを更新しました');
     }
     return updated;
@@ -755,10 +768,42 @@ LB_003 | 中   | （タイトル）
         return true;
       }
 
-      if (msg.type === 'RELAY_LB_CLEAR_DONE') {
-        const todos = lbLoad().filter(t => t.status !== '完了');
+      if (msg.type === 'RELAY_LB_COMPLETE_TO_LOG') {
+        // 個別TODO完了 → chrome.storage.local の mocka_relay_log に移動
+        const todos = lbLoad();
+        const idx = todos.findIndex(t => t.id === msg.id);
+        if (idx === -1) { sendResponse({ ok: false }); return true; }
+        const done = Object.assign({}, todos[idx], { status: '完了', completed_at: new Date().toISOString() });
+        todos.splice(idx, 1);
         lbSave(todos);
-        sendResponse({ ok: true });
+        chrome.storage.local.get('mocka_relay_log', function(data) {
+          const log = data.mocka_relay_log || [];
+          log.unshift(done);
+          chrome.storage.local.set({ mocka_relay_log: log }, function() {
+            showLbToast('✅ ' + done.id + ' 完了 → LOGに保存');
+            sendResponse({ ok: true });
+          });
+        });
+        return true;
+      }
+
+      if (msg.type === 'RELAY_LB_ARCHIVE_DONE') {
+        // 完了ステータスのTODOをまとめて mocka_relay_log にアーカイブ
+        const todos = lbLoad();
+        const now = new Date().toISOString();
+        const done  = todos.filter(t => t.status === '完了').map(function(t) {
+          return Object.assign({}, t, { completed_at: t.completed_at || now });
+        });
+        const active = todos.filter(t => t.status !== '完了');
+        lbSave(active);
+        chrome.storage.local.get('mocka_relay_log', function(data) {
+          const log = data.mocka_relay_log || [];
+          const newLog = done.concat(log);
+          chrome.storage.local.set({ mocka_relay_log: newLog }, function() {
+            showLbToast('✅ ' + done.length + '件をLOGにアーカイブ');
+            sendResponse({ ok: true, count: done.length });
+          });
+        });
         return true;
       }
     });

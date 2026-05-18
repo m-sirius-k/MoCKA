@@ -1,6 +1,6 @@
 ﻿/**
- * Relay - popup.js v3.0
- * Add: Logbook TODO tab — LB_NNN番号管理・status操作・手動追加
+ * Relay - popup.js v3.1
+ * Add: TODO完了→LOGアーカイブ / LOGタブ（完了履歴表示）
  */
 
 let isPro = false;
@@ -91,6 +91,7 @@ function bindTabs() {
       document.getElementById('panel-' + name).classList.add('active');
 
       if (name === 'todos')    loadTodos();
+      if (name === 'log')      loadLog();
       if (name === 'logbook')  loadLogbook();
       if (name === 'vault')    loadVault();
       if (name === 'settings') loadExportFolder();
@@ -204,9 +205,19 @@ function bindButtons() {
     if (e.key === 'Enter') document.getElementById('btn-add-todo')?.click();
   });
 
-  // 完了済みTODOを全削除
+  // 完了済みTODOをLOGへアーカイブ
   document.getElementById('btn-clear-done')?.addEventListener('click', () => {
-    sendToActiveTab({ type: 'RELAY_LB_CLEAR_DONE' }, () => loadTodos());
+    sendToActiveTab({ type: 'RELAY_LB_ARCHIVE_DONE' }, () => {
+      loadTodos();
+      // バッジ更新のためstatsも更新
+      loadStats();
+    });
+  });
+
+  // LOGを全クリア
+  document.getElementById('btn-clear-log')?.addEventListener('click', () => {
+    if (!confirm('完了ログを全て削除しますか？')) return;
+    chrome.storage.local.set({ mocka_relay_log: [] }, () => loadLog());
   });
 }
 
@@ -222,35 +233,31 @@ function renderTodos(todos) {
   const container = document.getElementById('todos-list');
   if (!container) return;
 
-  if (!todos.length) {
+  // アクティブTODOのみ表示（完了はLOGタブへ）
+  const activeTodos = todos.filter(t => t.status !== '完了');
+
+  if (!activeTodos.length) {
     container.innerHTML = `
       <div class="logbook-empty">
-        TODOはまだありません。<br>
-        会話中に「〜してください」「TODO:〜」と言うと<br>自動で記録されます。
+        アクティブなTODOはありません。<br>
+        <span style="font-size:10px;color:#2a3850">完了済みは📜LOGタブで確認できます</span>
       </div>`;
     return;
   }
 
-  // ステータス別にグループ化
   const groups = {
-    '進行中': todos.filter(t => t.status === '進行中'),
-    '未着手': todos.filter(t => t.status === '未着手'),
-    '完了':   todos.filter(t => t.status === '完了'),
+    '進行中': activeTodos.filter(t => t.status === '進行中'),
+    '未着手': activeTodos.filter(t => t.status === '未着手'),
   };
 
-  const statusColors = {
-    '進行中': '#3b82f6',
-    '未着手': '#94a3b8',
-    '完了':   '#22c55e',
-  };
-  const statusIcons = { '進行中': '🔵', '未着手': '⬜', '完了': '✅' };
+  const statusColors = { '進行中': '#3b82f6', '未着手': '#94a3b8' };
+  const statusIcons  = { '進行中': '🔵', '未着手': '⬜' };
   const priorityIcons = { '最高': '🔴', '高': '🟡', '中': '🟢', '低': '⚪' };
   const priorityOrder = { '最高': 0, '高': 1, '中': 2, '低': 3 };
 
   let html = '';
   Object.entries(groups).forEach(([status, items]) => {
     if (!items.length) return;
-    // 優先度順にソート
     const sorted = [...items].sort((a, b) =>
       (priorityOrder[a.priority] ?? 2) - (priorityOrder[b.priority] ?? 2)
     );
@@ -258,16 +265,14 @@ function renderTodos(todos) {
       <div class="todo-group-label">${statusIcons[status]} ${status} (${items.length})</div>`;
     sorted.forEach(t => {
       const pri = t.priority || '中';
-      const priIcon = priorityIcons[pri] || '⚪';
       html += `
-        <div class="todo-item ${t.status === '完了' ? 'done' : ''}" data-id="${t.id}">
+        <div class="todo-item" data-id="${t.id}">
           <div class="todo-item-header">
             <span class="todo-id" style="color:${statusColors[t.status]}">${t.id}</span>
-            <span class="todo-priority" title="優先度: ${pri}">${priIcon} ${pri}</span>
+            <span class="todo-priority">${priorityIcons[pri] || '⚪'} ${pri}</span>
             <div class="todo-actions">
               ${t.status !== '進行中' ? `<button class="todo-btn" data-id="${t.id}" data-action="進行中" title="進行中に">▶</button>` : ''}
-              ${t.status !== '完了'   ? `<button class="todo-btn done-btn" data-id="${t.id}" data-action="完了" title="完了にする">✓</button>` : ''}
-              ${t.status !== '未着手' ? `<button class="todo-btn" data-id="${t.id}" data-action="未着手" title="未着手に戻す">↩</button>` : ''}
+              <button class="todo-btn done-btn" data-id="${t.id}" data-action="完了" title="完了→LOGへ">✓</button>
               <button class="todo-btn del-btn" data-id="${t.id}" data-action="delete" title="削除">×</button>
             </div>
           </div>
@@ -279,19 +284,90 @@ function renderTodos(todos) {
 
   container.innerHTML = html;
 
-  // イベント登録
   container.querySelectorAll('.todo-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const id = btn.dataset.id;
+      const id     = btn.dataset.id;
       const action = btn.dataset.action;
       if (action === 'delete') {
         sendToActiveTab({ type: 'RELAY_LB_DELETE_TODO', id }, () => loadTodos());
+      } else if (action === '完了') {
+        // 完了 → LOGにアーカイブ
+        sendToActiveTab({ type: 'RELAY_LB_COMPLETE_TO_LOG', id }, () => {
+          loadTodos();
+          loadStats();
+        });
       } else {
         sendToActiveTab({ type: 'RELAY_LB_UPDATE_STATUS', id, status: action }, () => loadTodos());
       }
     });
   });
+}
+
+// ── LOG タブ ──────────────────────────────────────────────────────────────────
+function loadLog() {
+  chrome.storage.local.get('mocka_relay_log', (data) => {
+    const log = data.mocka_relay_log || [];
+    renderLog(log);
+  });
+}
+
+function renderLog(log) {
+  const container = document.getElementById('log-list');
+  if (!container) return;
+
+  // ログカウント更新
+  const countEl = document.getElementById('log-count');
+  if (countEl) countEl.textContent = log.length;
+
+  if (!log.length) {
+    container.innerHTML = `
+      <div class="logbook-empty">
+        完了したTODOがここに記録されます。<br>
+        <span style="font-size:10px;color:#2a3850">TODOの✓ボタンまたは「LB_XXX完了」で追記</span>
+      </div>`;
+    return;
+  }
+
+  const priorityIcons = { '最高': '🔴', '高': '🟡', '中': '🟢', '低': '⚪' };
+
+  // 日付でグループ化
+  const byDate = {};
+  log.forEach(item => {
+    const d = item.completed_at
+      ? new Date(item.completed_at).toLocaleDateString('ja', { month: 'numeric', day: 'numeric', weekday: 'short' })
+      : '不明';
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(item);
+  });
+
+  let html = '';
+  Object.entries(byDate).forEach(([date, items]) => {
+    html += `<div class="log-date-group">
+      <div class="log-date-label">📅 ${date} (${items.length}件)</div>`;
+    items.forEach(item => {
+      const pri = item.priority || '中';
+      const time = item.completed_at
+        ? new Date(item.completed_at).toLocaleTimeString('ja', { hour: '2-digit', minute: '2-digit' })
+        : '';
+      const created = item.created_at
+        ? new Date(item.created_at).toLocaleDateString('ja', { month: 'numeric', day: 'numeric' })
+        : '';
+      html += `
+        <div class="log-item">
+          <div class="log-item-header">
+            <span class="log-id">${escHtml(item.id)}</span>
+            <span class="log-priority">${priorityIcons[pri] || '⚪'} ${pri}</span>
+            <span class="log-time">✅ ${time}</span>
+          </div>
+          <div class="log-content">${escHtml(item.content)}</div>
+          ${created ? `<div class="log-meta">作成: ${created}</div>` : ''}
+        </div>`;
+    });
+    html += '</div>';
+  });
+
+  container.innerHTML = html;
 }
 
 // ── アクティブタブへメッセージ送信ヘルパー ────────────────────────────────────
@@ -304,7 +380,7 @@ function sendToActiveTab(msg, callback) {
     }
     chrome.tabs.sendMessage(tab.id, msg, (res) => {
       if (chrome.runtime.lastError) {
-        console.warn('Relay: tab msg error', chrome.runtime.lastError.message);
+        console.warn('Relay: tab msg error', chrome.runtime.lastError && chrome.runtime.lastError.message);
         if (callback) callback(null);
       } else {
         if (callback) callback(res);
