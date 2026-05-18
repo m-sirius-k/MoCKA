@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Relay for Claude — background.js v2.3
  * Add: RELAY_EXPORT_SESSIONS / RELAY_EXPORT_LOGBOOK handlers
  * Add: getExportFolder() shared setting
