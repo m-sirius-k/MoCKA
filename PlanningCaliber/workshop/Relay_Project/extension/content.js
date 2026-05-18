@@ -1,5 +1,5 @@
 ﻿/**
- * Relay for Claude — content.js v3.1
+ * Relay for Claude — content.js v3.2
  * Add: Logbook TODO Engine
  *   - ユーザー発言から自然語でTODO自動抽出・LB_NNN番号付き管理
  *   - 「LB_001完了」「001終わった」でステータス更新
@@ -112,6 +112,13 @@
     { re: /(?:LB[_-]?)?(\d{3})\s*(?:未着手|戻す|キャンセル|cancel|undo)/gi, status: '未着手' },
   ];
 
+  // 範囲指定コマンドパターン: 「005から008完了」「LB_001〜LB_005完了」
+  const RANGE_PATTERNS = [
+    { re: /(?:LB[_-]?)?(\d{3})\s*(?:から|〜|~|-)\s*(?:LB[_-]?)?(\d{3})\s*(?:完了|終わった|done|finished|完成|済み|ok)/gi, status: '完了' },
+    { re: /(?:LB[_-]?)?(\d{3})\s*(?:から|〜|~|-)\s*(?:LB[_-]?)?(\d{3})\s*(?:進行中|やってる|作業中|in progress|wip)/gi, status: '進行中' },
+    { re: /(?:LB[_-]?)?(\d{3})\s*(?:から|〜|~|-)\s*(?:LB[_-]?)?(\d{3})\s*(?:未着手|戻す|キャンセル|cancel|undo)/gi, status: '未着手' },
+  ];
+
   // localStorage からTODOリストを取得
   function lbLoad() {
     try {
@@ -169,7 +176,31 @@
   function processStatusCommands(text) {
     const todos = lbLoad();
     let updated = false;
+    const now = new Date().toISOString();
 
+    // 範囲指定: 「005から008完了」
+    RANGE_PATTERNS.forEach(({ re, status }) => {
+      re.lastIndex = 0;
+      let m;
+      while ((m = re.exec(text)) !== null) {
+        const from = parseInt(m[1], 10);
+        const to   = parseInt(m[2], 10);
+        const start = Math.min(from, to);
+        const end   = Math.max(from, to);
+        for (let n = start; n <= end; n++) {
+          const id = 'LB_' + String(n).padStart(3, '0');
+          const todo = todos.find(t => t.id === id);
+          if (todo && todo.status !== status) {
+            todo.status = status;
+            todo.updatedAt = now;
+            if (status === '完了') todo.completed_at = now;
+            updated = true;
+          }
+        }
+      }
+    });
+
+    // 個別指定: 「LB_001完了」「001完了」
     STATUS_PATTERNS.forEach(({ re, status }) => {
       re.lastIndex = 0;
       let m;
@@ -179,28 +210,24 @@
         const todo = todos.find(t => t.id === id);
         if (todo && todo.status !== status) {
           todo.status = status;
-          todo.updatedAt = new Date().toISOString();
-          if (status === '完了') {
-            todo.completed_at = new Date().toISOString();
-          }
+          todo.updatedAt = now;
+          if (status === '完了') todo.completed_at = now;
           updated = true;
         }
       }
     });
 
     if (updated) {
-      // 完了になったものをLOGにアーカイブ
-      const doneItems = todos.filter(t => t.status === '完了');
+      const doneItems  = todos.filter(t => t.status === '完了');
       const activeItems = todos.filter(t => t.status !== '完了');
       lbSave(activeItems);
       if (doneItems.length > 0) {
         chrome.storage.local.get('mocka_relay_log', function(data) {
           const log = data.mocka_relay_log || [];
-          const newLog = doneItems.concat(log);
-          chrome.storage.local.set({ mocka_relay_log: newLog });
+          chrome.storage.local.set({ mocka_relay_log: doneItems.concat(log) });
         });
       }
-      showLbToast('✓ TODOステータスを更新しました');
+      showLbToast('✓ ' + (doneItems ? doneItems.length + '件' : '') + 'TODOを更新しました');
     }
     return updated;
   }
