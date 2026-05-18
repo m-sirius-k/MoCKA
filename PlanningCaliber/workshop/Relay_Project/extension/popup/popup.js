@@ -244,17 +244,26 @@ function renderTodos(todos) {
     '完了':   '#22c55e',
   };
   const statusIcons = { '進行中': '🔵', '未着手': '⬜', '完了': '✅' };
+  const priorityIcons = { '最高': '🔴', '高': '🟡', '中': '🟢', '低': '⚪' };
+  const priorityOrder = { '最高': 0, '高': 1, '中': 2, '低': 3 };
 
   let html = '';
   Object.entries(groups).forEach(([status, items]) => {
     if (!items.length) return;
+    // 優先度順にソート
+    const sorted = [...items].sort((a, b) =>
+      (priorityOrder[a.priority] ?? 2) - (priorityOrder[b.priority] ?? 2)
+    );
     html += `<div class="todo-group">
       <div class="todo-group-label">${statusIcons[status]} ${status} (${items.length})</div>`;
-    items.forEach(t => {
+    sorted.forEach(t => {
+      const pri = t.priority || '中';
+      const priIcon = priorityIcons[pri] || '⚪';
       html += `
         <div class="todo-item ${t.status === '完了' ? 'done' : ''}" data-id="${t.id}">
           <div class="todo-item-header">
             <span class="todo-id" style="color:${statusColors[t.status]}">${t.id}</span>
+            <span class="todo-priority" title="優先度: ${pri}">${priIcon} ${pri}</span>
             <div class="todo-actions">
               ${t.status !== '進行中' ? `<button class="todo-btn" data-id="${t.id}" data-action="進行中" title="進行中に">▶</button>` : ''}
               ${t.status !== '完了'   ? `<button class="todo-btn done-btn" data-id="${t.id}" data-action="完了" title="完了にする">✓</button>` : ''}

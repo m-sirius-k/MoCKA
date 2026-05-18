@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Relay for Claude — content.js v3.0
  * Add: Logbook TODO Engine
  *   - ユーザー発言から自然語でTODO自動抽出・LB_NNN番号付き管理
@@ -446,6 +446,116 @@
     });
   }
 
+  // ════════════════════════════════════════════════════════════════════════════
+  // ██ RELAY_TODO ENGINE — Claudeの返答からTODOを自動検知・保存
+  // ════════════════════════════════════════════════════════════════════════════
+
+  const RELAY_TODO_MARKER = 'relay_todo_processed';
+
+  // 優先度アイコン
+  const PRIORITY_ICONS = { '最高': '🔴', '高': '🟡', '中': '🟢', '低': '⚪' };
+
+  // Claudeの最新返答テキストを取得
+  function getLatestAssistantText() {
+    const nodes = document.querySelectorAll('.font-claude-response');
+    if (!nodes.length) return '';
+    return nodes[nodes.length - 1].textContent.trim();
+  }
+
+  // [RELAY_TODO]...[/RELAY_TODO] をパースしてTODOリストに変換
+  function parseRelayTodoBlock(text) {
+    const match = text.match(/\[RELAY_TODO\]([\s\S]*?)\[\/RELAY_TODO\]/);
+    if (!match) return [];
+    const lines = match[1].trim().split('\n');
+    const results = [];
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (!trimmed) return;
+      // LB_NNN | 優先度 | タイトル 形式
+      const parts = trimmed.split('|').map(s => s.trim());
+      if (parts.length >= 3) {
+        results.push({
+          id: parts[0],       // LB_001
+          priority: parts[1], // 最高/高/中/低
+          content: parts[2],  // タイトル
+        });
+      } else if (parts.length === 2) {
+        results.push({ id: null, priority: parts[0], content: parts[1] });
+      } else if (parts.length === 1 && trimmed.length > 3) {
+        results.push({ id: null, priority: '中', content: trimmed });
+      }
+    });
+    return results;
+  }
+
+  // パースしたTODOをLogbookに保存
+  function saveRelayTodos(parsed) {
+    const todos = lbLoad();
+    const existing = todos.map(t => t.content.toLowerCase());
+    let added = 0;
+
+    parsed.forEach(item => {
+      if (existing.includes(item.content.toLowerCase())) return;
+      const id = lbNextId(todos);
+      todos.push({
+        id,
+        content: item.content,
+        priority: item.priority || '中',
+        status: '未着手',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        sessionUrl: location.href,
+      });
+      existing.push(item.content.toLowerCase());
+      added++;
+    });
+
+    if (added > 0) {
+      lbSave(todos);
+      showLbToast(`📋 TODO ${added}件をLogbookに保存しました`);
+    }
+    return added;
+  }
+
+  // Claudeの返答を監視してRELAY_TODOタグを検知
+  let _lastAssistantText = '';
+  function monitorRelayTodo() {
+    const text = getLatestAssistantText();
+    if (!text || text === _lastAssistantText) return;
+    if (!text.includes('[RELAY_TODO]')) return;
+    _lastAssistantText = text;
+
+    const parsed = parseRelayTodoBlock(text);
+    if (parsed.length > 0) {
+      saveRelayTodos(parsed);
+    }
+  }
+
+  // ── システムプロンプト注入 ─────────────────────────────────────────────────
+  const RELAY_SYSTEM_PROMPT = `[Relay System]
+ユーザーが「TODOして」「TODO化して」「一連の会話をTODOして」と言ったら、
+必ず以下の形式で出力してください（他の説明文の後に追加する形でOK）：
+
+[RELAY_TODO]
+LB_001 | 最高 | （タイトル）
+LB_002 | 高   | （タイトル）
+LB_003 | 中   | （タイトル）
+[/RELAY_TODO]
+
+優先度は「最高/高/中/低」の4段階で判断してください。
+このブロックを出力するとRelayが自動でTODOを保存します。`;
+
+  // 新規chat時にシステムプロンプトをinput欄に注入
+  function injectSystemPromptIfNew() {
+    if (!location.href.includes('/new')) return;
+    const already = sessionStorage.getItem('relay_system_injected');
+    if (already) return;
+    sessionStorage.setItem('relay_system_injected', '1');
+    setTimeout(() => {
+      injectText(RELAY_SYSTEM_PROMPT);
+    }, 1500);
+  }
+
   // ── Badge ──────────────────────────────────────────────────────────────────
   function getBadge() {
     if (badge && document.body.contains(badge)) return badge;
@@ -571,6 +681,8 @@
       }
       // ★ ユーザー発言監視（TODO抽出）
       monitorUserInput();
+      // ★ Claude返答からRELAY_TODOタグを検知
+      monitorRelayTodo();
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
