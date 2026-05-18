@@ -1,5 +1,8 @@
 /**
- * Relay for Claude — content.js v2.4
+ * Relay for Claude — content.js v2.5
+ * Fix v2.5: getMessages() のassistant取得を .font-claude-response + textContent に修正
+ *   - nextElementSibling方式はclaud.aiのDOM構造と不一致のため廃止
+ *   - .font-claude-response[index]とuser-message[index]を対応付け
  * Fix v2.4: RELAY_GET_SUMMARY_FOR_VAULT が sendResponse/return true を欠いていたバグ修正
  * Fix: Extension context invalidated — B案根本解決
  *   - isContextValid() で全chrome.runtime呼び出しをガード
@@ -59,22 +62,21 @@
     return 0;
   }
 
-  // ── getMessages: user-message限定取得 ─────────────────────────────────────
+  // ── getMessages: user + assistant両取得 v2.5 ──────────────────────────────
   function getMessages() {
-    const userNodes = [...document.querySelectorAll('[data-testid="user-message"]')];
+    var userNodes = Array.prototype.slice.call(document.querySelectorAll('[data-testid="user-message"]'));
+    var assistantNodes = Array.prototype.slice.call(document.querySelectorAll('.font-claude-response'));
     if (!userNodes.length) return [];
 
-    const messages = [];
-    userNodes.forEach((node, i) => {
-      const text = (node.innerText && node.innerText.trim()) || '';
+    var messages = [];
+    userNodes.forEach(function(node, i) {
+      var text = node.textContent ? node.textContent.trim() : '';
       if (!text) return;
-      messages.push({ role: 'user', text, turn: i * 2 + 1 });
+      messages.push({ role: 'user', text: text, turn: i * 2 + 1 });
 
-      const turnEl = node.closest('[class*="group"]') ||
-                     (node.parentElement && node.parentElement.parentElement && node.parentElement.parentElement.parentElement);
-      const nextTurn = turnEl && turnEl.nextElementSibling;
-      if (nextTurn) {
-        const assistantText = (nextTurn.innerText && nextTurn.innerText.trim()) || '';
+      var assistantEl = assistantNodes[i];
+      if (assistantEl) {
+        var assistantText = assistantEl.textContent ? assistantEl.textContent.trim() : '';
         if (assistantText) {
           messages.push({ role: 'assistant', text: assistantText.slice(0, 500), turn: i * 2 + 2 });
         }
