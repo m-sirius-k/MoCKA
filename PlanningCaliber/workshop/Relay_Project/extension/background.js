@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Relay for Claude — background.js v2.3
  * Add: RELAY_EXPORT_SESSIONS / RELAY_EXPORT_LOGBOOK handlers
  * Add: getExportFolder() shared setting
@@ -79,7 +79,7 @@ async function getStats() {
   return {
     sessions: index.length,
     messages: index.reduce((s, e) => s + (e.turns || 0), 0),
-    todos:    index.reduce((s, e) => s + (e.logbook?.todos || 0), 0)
+    todos:    index.reduce((s, e) => s + ((e.logbook && e.logbook.todos && e.logbook.todos.length) || 0), 0)
   };
 }
 

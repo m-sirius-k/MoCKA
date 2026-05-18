@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Relay - popup.js v3.0
  * Add: Logbook TODO tab — LB_NNN番号管理・status操作・手動追加
  */
@@ -48,7 +48,11 @@ function loadStats() {
     if (!stats) return;
     document.getElementById('stat-sessions').textContent = stats.sessions || 0;
     document.getElementById('stat-messages').textContent = stats.messages || 0;
-    document.getElementById('stat-todos').textContent    = stats.todos    || 0;
+    sendToActiveTab({ type: 'RELAY_LB_GET_TODOS' }, (res) => {
+      const todos = res?.todos || [];
+      const pending = todos.filter(t => t.status !== '完了').length;
+      document.getElementById('stat-todos').textContent = pending;
+    });
   });
 }
 
