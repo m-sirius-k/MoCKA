@@ -4,8 +4,6 @@
   "version": "0.1.0",
   "description": "Automatically saves your AI conversations locally. No server. No tracking. 100% private.",
   "permissions": [
-    "storage",
-    "activeTab",
     "alarms"
   ],
   "host_permissions": [
