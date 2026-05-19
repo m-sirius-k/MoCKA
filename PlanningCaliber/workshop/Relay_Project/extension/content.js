@@ -93,6 +93,20 @@
 
   const LB_STORAGE_KEY = 'relay_logbook_todos';
 
+  // ゴミTODO除外フィルター
+  function isValidTodoContent(text) {
+    if (!text || text.trim().length < 5) return false;
+    const t = text.trim();
+    if (/^[-=_]{3,}/.test(t)) return false;          // 区切り線
+    if (/^[`{}();]/.test(t)) return false;            // コード断片
+    if (/^s\.(map|length|filter|find)/.test(t)) return false; // JS断片
+    if (t.includes('${') || t.includes('`')) return false;    // テンプレートリテラル
+    // 日本語を含まない短い英数字のみはスキップ
+    const hasJP = /[぀-鿿]/.test(t);
+    if (!hasJP && t.length < 15 && /^[a-zA-Z0-9_.\s\-()]+$/.test(t)) return false;
+    return true;
+  }
+
   // TODOパターン（日英）
   const TODO_PATTERNS = [
     // 日本語
@@ -147,7 +161,7 @@
       let m;
       while ((m = pat.exec(text)) !== null) {
         const candidate = (m[1] || m[0]).trim().replace(/[。！？!?\n]+$/, '').trim();
-        if (candidate.length >= 5 && candidate.length <= 100) {
+        if (candidate.length >= 5 && candidate.length <= 100 && isValidTodoContent(candidate)) {
           candidates.add(candidate);
         }
       }
@@ -260,18 +274,39 @@
     const text = lastNode.textContent.trim();
     if (!text || text === _lastUserText) return;
     _lastUserText = text;
+    // ステータス更新コマンドのみ処理（TODO抽出はAI返答から行う）
+    processStatusCommands(text);
+  }
 
-    // ステータス更新コマンドを先に処理
-    const hasCommand = processStatusCommands(text);
-
-    // TODO候補を抽出して追加（コマンド行でなければ）
-    if (!hasCommand) {
-      const candidates = extractTodoCandidates(text);
-      if (candidates.length > 0) {
-        const added = addTodos(candidates);
-        if (added > 0) {
-          showLbToast(`📋 TODO ${added}件を記録しました`);
-        }
+  // AI返答監視 → 最新返答からTODO候補を抽出
+  let _lastAssistantText = '';
+  function monitorAssistantOutput() {
+    const selectors = [
+      '.font-claude-response',
+      '[data-testid="assistant-message"]',
+      '.font-claude-message',
+    ];
+    let nodes = [];
+    for (const sel of selectors) {
+      nodes = Array.from(document.querySelectorAll(sel));
+      if (nodes.length) break;
+    }
+    if (!nodes.length) return;
+    const lastNode = nodes[nodes.length - 1];
+    const text = lastNode.textContent.trim();
+    if (!text || text.length < 30 || text === _lastAssistantText) return;
+    _lastAssistantText = text;
+    // コードブロック・インラインコード・テーブル罫線を除去
+    const cleanText = text
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`[^`]+`/g, '')
+      .replace(/^\s*[|+\-]{3,}.*$/gm, '')
+      .trim();
+    const candidates = extractTodoCandidates(cleanText);
+    if (candidates.length > 0) {
+      const added = addTodos(candidates);
+      if (added > 0) {
+        showLbToast(`📋 TODO ${added}件を記録しました`);
       }
     }
   }
@@ -531,7 +566,6 @@
   }
 
   // Claudeの返答を監視してRELAY_TODOタグを検知
-  let _lastAssistantText = '';
   function monitorRelayTodo() {
     const text = getLatestAssistantText();
     if (!text || text === _lastAssistantText) return;
@@ -691,11 +725,15 @@ LB_003 | 中   | （タイトル）
         turnCount = count;
         updateBadge(count);
         if (count >= TURN_LIMIT && !warningShown) showWarning(count);
+        // ターン増加時のみTODO抽出・タグ検知を実行
+        _lastAssistantText = ''; // リセットして最新返答を必ず処理
+        setTimeout(() => {
+          monitorAssistantOutput();
+          monitorRelayTodo();
+        }, 800); // ストリーミング完了待ち
       }
-      // ★ ユーザー発言監視（TODO抽出）
+      // ★ ユーザー発言監視（ステータスコマンドのみ）
       monitorUserInput();
-      // ★ Claude返答からRELAY_TODOタグを検知
-      monitorRelayTodo();
     });
     observer.observe(document.body, { childList: true, subtree: true });
   }
