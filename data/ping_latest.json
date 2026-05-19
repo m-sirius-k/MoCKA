@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-19T18:42:00.310961",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "Service Workerの中にはerrorはない",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-13",
-        "why": "自動注入パイプライン（DNA→Essence）の安定稼働。断絶の恒久解消。",
-        "how": "既存チャットで何度F5リロード・拡張リロードしてもcontent.js:106エラーが再発。Service Worker",
-        "note": "chrome_extension,service_worker,cache,reinstall,bug_fix,injection_pipeline",
-        "recur": 0,
-        "matched": [
-          "Service"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-04",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "id                               url\n--                               ---\n96FE01506CCA0E0D2075ACA364",
-        "recur": 0,
-        "matched": [
-          "Service"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-19T09:55:49.085Z"
-  }
+  "generated_at": "2026-05-20T08:21:24.216825"
 }
