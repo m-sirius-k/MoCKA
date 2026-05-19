@@ -864,7 +864,7 @@ LB_003 | 中   | （タイトル）
 // ── INTENT ENGINE v1.1 ────────────────────────────────────────────────────
 (function() {
   const INTENT_STORAGE_KEY = 'relay_intent_patterns';
-  const LOGBOOK_KEY        = 'relay_logbook';
+  const LOGBOOK_KEY        = 'mocka_relay_log';
 
   // パターンDB読み込み
   async function loadPatterns() {
@@ -925,8 +925,10 @@ LB_003 | 中   | （タイトル）
     const logbook = await loadLogbook();
     let count = 0;
     for (const item of logbook) {
-      if (ids.includes(item.id) && item.status !== 'done') {
-        item.status = 'done';
+      if (ids.includes(item.id) && item.status !== '完了') {
+        item.status = '完了';
+        item.completed_at = new Date().toISOString();
+        item.updatedAt = new Date().toISOString();
         count++;
       }
     }
@@ -941,7 +943,7 @@ LB_003 | 中   | （タイトル）
   // Claude API でインテント判定
   async function judgeByApi(text) {
     const logbook = await loadLogbook();
-    const todoList = logbook.slice(0, 20).map(t => `${t.id}: ${t.text || t.title || ''}`).join('\n');
+    const todoList = logbook.slice(0, 20).map(t => t.id + ': ' + (t.content || t.text || '')).join('\n');
     try {
       const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
