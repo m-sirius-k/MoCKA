@@ -1,5 +1,5 @@
 /**
- * Relay for Claude — content.js v3.2
+ * Relay for Claude — content.js v3.3
  * Add: Logbook TODO Engine
  *   - ユーザー発言から自然語でTODO自動抽出・LB_NNN番号付き管理
  *   - 「LB_001完了」「001終わった」でステータス更新
@@ -160,10 +160,12 @@
       }
     });
 
-    // 行頭の箇条書きパターン
+    // 行頭の箇条書きパターン（日本語文字を含む行のみ対象）
     text.split('\n').forEach(line => {
       const trimmed = line.trim();
-      const bulletMatch = trimmed.match(/^(?:[-•✓→]\s*|(?:TODO|todo)[：:]\s*|(?:\d+[.)]\s*))(.{5,100})$/);
+      // 日本語文字（ひらがな・カタカナ・漢字）を含まない行はスキップ
+      if (!/[\u3040-\u9FFF]/.test(trimmed)) return;
+      const bulletMatch = trimmed.match(/^(?:[•✓→]\s*|(?:TODO|todo)[：:]\s*|(?:\d+[.)]\s*))(.{5,100})$/);
       if (bulletMatch) {
         candidates.add(bulletMatch[1].trim());
       }
@@ -218,16 +220,26 @@
     });
 
     if (updated) {
-      const doneItems  = todos.filter(t => t.status === '完了');
+      const doneItems   = todos.filter(t => t.status === '完了');
       const activeItems = todos.filter(t => t.status !== '完了');
       lbSave(activeItems);
       if (doneItems.length > 0) {
+        const logItems = doneItems.map(function(t) {
+          return Object.assign({}, t, {
+            completed_at: t.completed_at || now,
+            completed_trigger: text.slice(0, 100),
+            sessionUrl: location.href,
+          });
+        });
         chrome.storage.local.get('mocka_relay_log', function(data) {
           const log = data.mocka_relay_log || [];
-          chrome.storage.local.set({ mocka_relay_log: doneItems.concat(log) });
+          chrome.storage.local.set({ mocka_relay_log: logItems.concat(log) }, function() {
+            showLbToast('\u2705 ' + doneItems.length + '\u4ef6 \u5b8c\u4e86 \u2192 LOG\u306b\u4fdd\u5b58\u3057\u307e\u3057\u305f');
+          });
         });
+      } else {
+        showLbToast('\u2713 TODO\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f');
       }
-      showLbToast('✓ ' + (doneItems ? doneItems.length + '件' : '') + 'TODOを更新しました');
     }
     return updated;
   }

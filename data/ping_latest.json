@@ -40,39 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-19T07:52:27.538478",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "<div id=\"relay-badge\" title=\"クリックで今すぐ引き継ぎ\" style=\"position: fixed; bottom: 20px;",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-07",
-        "why": "再発#1: MATAKA",
-        "how": "またか！ボタン",
-        "note": "hash=d83583fb51159670|who=claude|pattern=引き継ぎうまくできてないのか？ ばかなのか？　おまえは？　一個前のchat読め　ばかなのか？",
-        "recur": 0,
-        "matched": [
-          "引き継ぎ"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "引き継ぎ確認して",
-        "recur": 0,
-        "matched": [
-          "引き継ぎ"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-19T00:06:53.093Z"
-  }
+  "generated_at": "2026-05-19T09:34:15.266077"
 }
