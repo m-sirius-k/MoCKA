@@ -1,0 +1,33 @@
+{
+  "_comment": "Relay manifest.json の content_scripts 部分を以下で置き換える。注入順が重要。",
+
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": [
+        "relay-state.js",
+        "relay-dom.js",
+        "relay-watchers.js",
+        "relay-logbook.js",
+        "relay-ui.js",
+        "relay-main.js"
+      ],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+
+  "permissions": [
+    "storage",
+    "clipboardWrite"
+  ],
+
+  "host_permissions": [
+    "https://claude.ai/*"
+  ],
+
+  "_removed_permissions_comment": [
+    "activeTab は未使用のため削除済み（Chrome Web Store 審査指摘対応）",
+    "alarms は未使用のため削除済み"
+  ]
+}
