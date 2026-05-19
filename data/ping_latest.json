@@ -40,5 +40,39 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-05-19T09:34:15.266077"
+  "generated_at": "2026-05-19T09:34:15.266077",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -0.714,
+    "danger_rate": 0.143,
+    "success_rate": 0.857,
+    "text": "[Relay — continuing from 86 turns] [Logbook — 前回からの積み残し] 📋 未着手: LB_004: s.map(t ",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-12",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "```\n未解決：\n- tool_searchがMoCKAツールを認識できなかった原因\n  → 再起動後、新規セッションで解消するか確認する\n\n積み残し：\n- events.csv文字化け（TODO_0",
+        "recur": 0,
+        "matched": [
+          "積み残し"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-19",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "[Relay — continuing from 150 turns] [Logbook — 前回からの積み残し] 📋 未着手: LB_002: [OK] chrome://extensions/ で",
+        "recur": 0,
+        "matched": [
+          "積み残し"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-19T01:19:15.109Z"
+  }
 }
