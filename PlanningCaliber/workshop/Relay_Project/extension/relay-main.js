@@ -1,6 +1,6 @@
 /**
  * Relay — relay-main.js
- * @version 3.3.0
+ * @version 3.4.0
  * @description 起動順制御・引き継ぎパケット生成・popup.jsメッセージ受信。
  *              manifest の content_scripts[].js に最後に注入する。
  *
@@ -15,6 +15,11 @@
  *   4. relay-logbook.js
  *   5. relay-ui.js
  *   6. relay-main.js  ← このファイル
+ *
+ * v3.4.0 変更点:
+ *   - _start() 内で logbook / ui の watchers 接続を明示的に実行
+ *   - 各サービスの _connectWatchers() を廃止し、ここに集中
+ *   - これにより「watchers未登録でスキップ」バグを根絶
  */
 
 (() => {
@@ -33,6 +38,37 @@
       return false;
     }
     return true;
+  }
+
+  // ─── watchers コールバック接続（ここに集中） ─────────────────────────────
+
+  function _connectAllCallbacks() {
+    const w  = Relay.services.watchers;
+    const lb = Relay.services.logbook;
+    const ui = Relay.services.ui;
+
+    // logbook: 安定テキスト → TODO抽出・保存 → バッジ更新
+    w.on('onStableAssistant', text => {
+      lb.processStableText(text).then(saved => {
+        if (saved.length > 0) {
+          console.info('[Relay] logbook: saved', saved.length, 'TODOs');
+          ui.refreshBadge();
+        }
+      });
+    });
+
+    // ui: 安定テキスト確定 → バッジ更新
+    w.on('onStableAssistant', () => ui.refreshBadge());
+
+    // ui: ターン変化 → バッジ更新 + 20ターン警告
+    w.on('onTurnChange', turn => {
+      ui.refreshBadge();
+      if (turn >= Relay.config.turnWarningAt && !Relay.state.warningShown) {
+        ui.showTurnWarning(turn);
+      }
+    });
+
+    console.info('[Relay] all watcher callbacks connected.');
   }
 
   // ─── 引き継ぎパケット生成 ─────────────────────────────────────────────────
@@ -78,13 +114,12 @@
   Relay.services.handoff = Object.freeze({ trigger: triggerHandoff });
 
   // ─── popup.js → content script メッセージリスナー ────────────────────────
-  // popup.js が chrome.tabs.sendMessage で送ってくるメッセージをここで受け取る
 
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     _handleMessage(msg)
       .then(result => sendResponse({ ok: true, ...result }))
       .catch(err   => sendResponse({ ok: false, error: String(err) }));
-    return true;  // 非同期応答に必須
+    return true;
   });
 
   async function _handleMessage(msg) {
@@ -92,25 +127,21 @@
 
     switch (msg.type) {
 
-      // ── TODO 一覧取得 ─────────────────────────────────────────────────────
       case 'RELAY_LB_GET_TODOS': {
         const todos = await lb.getTodos({ sessionOnly: false, includeArchived: false });
         return { todos };
       }
 
-      // ── TODO 追加 ─────────────────────────────────────────────────────────
       case 'RELAY_LB_ADD_TODO': {
         const rec = await lb.saveTodo(msg.content, 'manual');
         return { record: rec };
       }
 
-      // ── 完了済みをアーカイブ ───────────────────────────────────────────────
       case 'RELAY_LB_ARCHIVE_DONE': {
         const changed = await lb.archiveDone();
         return { changed };
       }
 
-      // ── TODO 削除 ─────────────────────────────────────────────────────────
       case 'RELAY_LB_DELETE_TODO': {
         const todos = await lb.getTodos({ includeArchived: true });
         const filtered = todos.filter(t => t.id !== msg.id);
@@ -118,31 +149,26 @@
         return { deleted: true };
       }
 
-      // ── TODO 完了→ログ移行 ────────────────────────────────────────────────
       case 'RELAY_LB_COMPLETE_TO_LOG': {
         await lb.toggleDone(msg.id);
         return { done: true };
       }
 
-      // ── TODO ステータス更新 ───────────────────────────────────────────────
       case 'RELAY_LB_UPDATE_STATUS': {
         await lb.toggleDone(msg.id);
         return { updated: true };
       }
 
-      // ── 手動引き継ぎ ──────────────────────────────────────────────────────
       case 'RELAY_MANUAL_HANDOFF': {
         await triggerHandoff();
         return { triggered: true };
       }
 
-      // ── Vault用サマリー生成 ───────────────────────────────────────────────
       case 'RELAY_GET_SUMMARY_FOR_VAULT': {
         const packet = await _buildHandoffPacket();
         return { summary: packet };
       }
 
-      // ── 不明なメッセージは無視（エラーにしない）──────────────────────────
       default:
         return { skipped: true, type: msg.type };
     }
@@ -163,6 +189,10 @@
       console.error('[Relay] startup aborted: services not ready.');
       return;
     }
+
+    // watchers 接続を main.js に集中（logbook/ui の _connectWatchers は削除済み）
+    _connectAllCallbacks();
+
     Relay.services.watchers.assistant.start();
     Relay.services.watchers.user.start();
     Relay.services.ui.refreshBadge();

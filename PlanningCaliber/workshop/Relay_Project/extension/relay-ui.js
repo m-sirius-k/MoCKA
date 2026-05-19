@@ -1,6 +1,6 @@
 /**
  * Relay — relay-ui.js
- * @version 3.2.0
+ * @version 3.3.0
  * @description バッジ・トースト・20ターン警告ポップアップ・引き継ぎUI。
  *
  * Purpose  : UI要素の生成・表示・更新
@@ -8,6 +8,9 @@
  * Must not : TODO抽出・MutationObserver・chrome.storage直接読み書き
  * Inputs   : logbook.getTodos() / state.turnCount
  * Outputs  : DOM要素の挿入・更新
+ *
+ * v3.3.0 変更点:
+ *   - _connectWatchers() を削除。watchers 接続は relay-main.js に集中。
  *
  * Known traps:
  *   - claude.ai のスタイル変更でバッジが隠れることがある → z-index:2147483647 固定
@@ -36,22 +39,22 @@
     const badge = document.createElement('div');
     badge.id = BADGE_ID;
     Object.assign(badge.style, {
-      position   : 'fixed',
-      bottom     : '20px',
-      right      : '20px',
-      zIndex     : String(Z_TOP),
-      background : '#1a1a2e',
-      color      : '#e2c97e',
-      border     : '1.5px solid #e2c97e',
+      position     : 'fixed',
+      bottom       : '20px',
+      right        : '20px',
+      zIndex       : String(Z_TOP),
+      background   : '#1a1a2e',
+      color        : '#e2c97e',
+      border       : '1.5px solid #e2c97e',
       borderRadius : '12px',
-      padding    : '4px 10px',
-      fontSize   : '12px',
-      fontFamily : 'monospace',
-      fontWeight : 'bold',
-      cursor     : 'pointer',
-      userSelect : 'none',
-      transition : 'opacity .2s',
-      display    : 'none',
+      padding      : '4px 10px',
+      fontSize     : '12px',
+      fontFamily   : 'monospace',
+      fontWeight   : 'bold',
+      cursor       : 'pointer',
+      userSelect   : 'none',
+      transition   : 'opacity .2s',
+      display      : 'none',
     });
 
     badge.title = 'Relay: TODO一覧を開く';
@@ -108,10 +111,10 @@
     };
     const p = palette[type] ?? palette.info;
     Object.assign(toast.style, {
-      background  : p.bg,
-      color       : p.color,
-      border      : `1.5px solid ${p.border}`,
-      opacity     : '1',
+      background : p.bg,
+      color      : p.color,
+      border     : `1.5px solid ${p.border}`,
+      opacity    : '1',
     });
 
     toast.textContent = message;
@@ -125,9 +128,8 @@
   // ─── 20ターン警告ポップアップ ─────────────────────────────────────────────
 
   async function showTurnWarning(turnCount) {
-    if (document.getElementById(POPUP_ID)) return;  // 既に表示中
+    if (document.getElementById(POPUP_ID)) return;
 
-    // 引き継ぎパケットを生成
     const todos = await Relay.services.logbook?.getTodos({ sessionOnly: true }) ?? [];
     const todoPart = todos.filter(t => !t.done)
       .slice(0, 5)
@@ -194,38 +196,15 @@
     });
   }
 
-  // ─── ターン変化ハンドラ ───────────────────────────────────────────────────
-
-  function _onTurnChange(turn) {
-    refreshBadge();
-    if (
-      turn >= Relay.config.turnWarningAt &&
-      !Relay.state.warningShown
-    ) {
-      showTurnWarning(turn);
-    }
-  }
-
   // ─── サービスとして登録 ───────────────────────────────────────────────────
+  // NOTE: watchers 接続は relay-main.js の _connectAllCallbacks() で行う。
+  //       ここでは接続しない（タイミング競合を防ぐため）。
 
   Relay.services.ui = Object.freeze({
     refreshBadge,
     showToast,
     showTurnWarning,
   });
-
-  // watchers コールバック接続（watchers より後にロードされることを想定）
-  const _connectWatchers = () => {
-    if (!Relay.services.watchers) return;
-    Relay.services.watchers.on('onTurnChange', _onTurnChange);
-    Relay.services.watchers.on('onStableAssistant', () => refreshBadge());
-  };
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _connectWatchers);
-  } else {
-    _connectWatchers();
-  }
 
   console.info('[Relay] relay-ui.js registered.');
 
