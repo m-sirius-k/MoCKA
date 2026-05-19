@@ -374,20 +374,34 @@ function renderLog(log) {
 
 // ── アクティブタブへメッセージ送信ヘルパー ────────────────────────────────────
 function sendToActiveTab(msg, callback) {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    const tab = tabs.find(t => t.url && t.url.includes('claude.ai'));
-    if (!tab) {
-      if (callback) callback(null);
+  // まずアクティブタブをチェック、なければ全タブからclaude.aiを探す
+  chrome.tabs.query({ active: true, currentWindow: true }, (activeTabs) => {
+    const activeClaudeTab = activeTabs.find(t => t.url && t.url.includes('claude.ai'));
+    if (activeClaudeTab) {
+      _sendMsg(activeClaudeTab.id, msg, callback);
       return;
     }
-    chrome.tabs.sendMessage(tab.id, msg, (res) => {
-      if (chrome.runtime.lastError) {
-        console.warn('Relay: tab msg error', chrome.runtime.lastError && chrome.runtime.lastError.message);
+    // アクティブタブにclaude.aiがない場合、全タブから検索
+    chrome.tabs.query({}, (allTabs) => {
+      const tab = allTabs.find(t => t.url && t.url.includes('claude.ai'));
+      if (!tab) {
+        console.warn('Relay: claude.ai tab not found');
         if (callback) callback(null);
-      } else {
-        if (callback) callback(res);
+        return;
       }
+      _sendMsg(tab.id, msg, callback);
     });
+  });
+}
+
+function _sendMsg(tabId, msg, callback) {
+  chrome.tabs.sendMessage(tabId, msg, (res) => {
+    if (chrome.runtime.lastError) {
+      console.warn('Relay: tab msg error', chrome.runtime.lastError.message);
+      if (callback) callback(null);
+    } else {
+      if (callback) callback(res);
+    }
   });
 }
 

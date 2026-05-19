@@ -1,5 +1,5 @@
-/**
- * Relay for Claude — content.js v3.3
+﻿/**
+ * Relay for Claude — content.js v3.1
  * Add: Logbook TODO Engine
  *   - ユーザー発言から自然語でTODO自動抽出・LB_NNN番号付き管理
  *   - 「LB_001完了」「001終わった」でステータス更新
@@ -112,13 +112,6 @@
     { re: /(?:LB[_-]?)?(\d{3})\s*(?:未着手|戻す|キャンセル|cancel|undo)/gi, status: '未着手' },
   ];
 
-  // 範囲指定コマンドパターン: 「005から008完了」「LB_001〜LB_005完了」
-  const RANGE_PATTERNS = [
-    { re: /(?:LB[_-]?)?(\d{3})\s*(?:から|〜|~|-)\s*(?:LB[_-]?)?(\d{3})\s*(?:完了|終わった|done|finished|完成|済み|ok)/gi, status: '完了' },
-    { re: /(?:LB[_-]?)?(\d{3})\s*(?:から|〜|~|-)\s*(?:LB[_-]?)?(\d{3})\s*(?:進行中|やってる|作業中|in progress|wip)/gi, status: '進行中' },
-    { re: /(?:LB[_-]?)?(\d{3})\s*(?:から|〜|~|-)\s*(?:LB[_-]?)?(\d{3})\s*(?:未着手|戻す|キャンセル|cancel|undo)/gi, status: '未着手' },
-  ];
-
   // localStorage からTODOリストを取得
   function lbLoad() {
     try {
@@ -160,12 +153,10 @@
       }
     });
 
-    // 行頭の箇条書きパターン（日本語文字を含む行のみ対象）
+    // 行頭の箇条書きパターン
     text.split('\n').forEach(line => {
       const trimmed = line.trim();
-      // 日本語文字（ひらがな・カタカナ・漢字）を含まない行はスキップ
-      if (!/[\u3040-\u9FFF]/.test(trimmed)) return;
-      const bulletMatch = trimmed.match(/^(?:[•✓→]\s*|(?:TODO|todo)[：:]\s*|(?:\d+[.)]\s*))(.{5,100})$/);
+      const bulletMatch = trimmed.match(/^(?:[-•✓→]\s*|(?:TODO|todo)[：:]\s*|(?:\d+[.)]\s*))(.{5,100})$/);
       if (bulletMatch) {
         candidates.add(bulletMatch[1].trim());
       }
@@ -178,31 +169,7 @@
   function processStatusCommands(text) {
     const todos = lbLoad();
     let updated = false;
-    const now = new Date().toISOString();
 
-    // 範囲指定: 「005から008完了」
-    RANGE_PATTERNS.forEach(({ re, status }) => {
-      re.lastIndex = 0;
-      let m;
-      while ((m = re.exec(text)) !== null) {
-        const from = parseInt(m[1], 10);
-        const to   = parseInt(m[2], 10);
-        const start = Math.min(from, to);
-        const end   = Math.max(from, to);
-        for (let n = start; n <= end; n++) {
-          const id = 'LB_' + String(n).padStart(3, '0');
-          const todo = todos.find(t => t.id === id);
-          if (todo && todo.status !== status) {
-            todo.status = status;
-            todo.updatedAt = now;
-            if (status === '完了') todo.completed_at = now;
-            updated = true;
-          }
-        }
-      }
-    });
-
-    // 個別指定: 「LB_001完了」「001完了」
     STATUS_PATTERNS.forEach(({ re, status }) => {
       re.lastIndex = 0;
       let m;
@@ -212,34 +179,28 @@
         const todo = todos.find(t => t.id === id);
         if (todo && todo.status !== status) {
           todo.status = status;
-          todo.updatedAt = now;
-          if (status === '完了') todo.completed_at = now;
+          todo.updatedAt = new Date().toISOString();
+          if (status === '完了') {
+            todo.completed_at = new Date().toISOString();
+          }
           updated = true;
         }
       }
     });
 
     if (updated) {
-      const doneItems   = todos.filter(t => t.status === '完了');
+      // 完了になったものをLOGにアーカイブ
+      const doneItems = todos.filter(t => t.status === '完了');
       const activeItems = todos.filter(t => t.status !== '完了');
       lbSave(activeItems);
       if (doneItems.length > 0) {
-        const logItems = doneItems.map(function(t) {
-          return Object.assign({}, t, {
-            completed_at: t.completed_at || now,
-            completed_trigger: text.slice(0, 100),
-            sessionUrl: location.href,
-          });
-        });
         chrome.storage.local.get('mocka_relay_log', function(data) {
           const log = data.mocka_relay_log || [];
-          chrome.storage.local.set({ mocka_relay_log: logItems.concat(log) }, function() {
-            showLbToast('\u2705 ' + doneItems.length + '\u4ef6 \u5b8c\u4e86 \u2192 LOG\u306b\u4fdd\u5b58\u3057\u307e\u3057\u305f');
-          });
+          const newLog = doneItems.concat(log);
+          chrome.storage.local.set({ mocka_relay_log: newLog });
         });
-      } else {
-        showLbToast('\u2713 TODO\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f');
       }
+      showLbToast('✓ TODOステータスを更新しました');
     }
     return updated;
   }
@@ -871,169 +832,4 @@ LB_003 | 中   | （タイトル）
     }
   }, 500);
 
-})();
-
-// ── INTENT ENGINE v1.1 ────────────────────────────────────────────────────
-(function() {
-  const INTENT_STORAGE_KEY = 'relay_intent_patterns';
-  const LOGBOOK_KEY        = 'mocka_relay_log';
-
-  // パターンDB読み込み
-  async function loadPatterns() {
-    return new Promise(resolve => {
-      chrome.storage.local.get(INTENT_STORAGE_KEY, r => {
-        resolve(r[INTENT_STORAGE_KEY] || []);
-      });
-    });
-  }
-
-  // パターンDB保存
-  async function savePattern(pattern, action) {
-    const patterns = await loadPatterns();
-    const existing = patterns.find(p => p.pattern === pattern);
-    if (existing) {
-      existing.count = (existing.count || 1) + 1;
-    } else {
-      patterns.push({ pattern, action, count: 1 });
-    }
-    chrome.storage.local.set({ [INTENT_STORAGE_KEY]: patterns });
-  }
-
-  // Logbook読み込み
-  async function loadLogbook() {
-    return new Promise(resolve => {
-      chrome.storage.local.get(LOGBOOK_KEY, r => {
-        resolve(r[LOGBOOK_KEY] || []);
-      });
-    });
-  }
-
-  // Logbook保存
-  async function saveLogbook(items) {
-    chrome.storage.local.set({ [LOGBOOK_KEY]: items });
-  }
-
-  // ID範囲解決 ("005から010" → ["LB_005","LB_006",...,"LB_010"])
-  function resolveIds(text) {
-    const rangeRe = /(\d{1,3})\s*(?:から|〜|~|to|-)\s*(\d{1,3})/i;
-    const singleRe = /(?:LB_)?(\d{1,3})/g;
-    const rangeM = text.match(rangeRe);
-    if (rangeM) {
-      const from = parseInt(rangeM[1]), to = parseInt(rangeM[2]);
-      const ids = [];
-      for (let i = from; i <= to; i++) ids.push('LB_' + String(i).padStart(3, '0'));
-      return ids;
-    }
-    const ids = [];
-    let m;
-    while ((m = singleRe.exec(text)) !== null) {
-      ids.push('LB_' + String(parseInt(m[1])).padStart(3, '0'));
-    }
-    return ids;
-  }
-
-  // TODO完了処理
-  async function completeTodos(ids, pattern) {
-    const logbook = await loadLogbook();
-    let count = 0;
-    for (const item of logbook) {
-      if (ids.includes(item.id) && item.status !== '完了') {
-        item.status = '完了';
-        item.completed_at = new Date().toISOString();
-        item.updatedAt = new Date().toISOString();
-        count++;
-      }
-    }
-    if (count > 0) {
-      await saveLogbook(logbook);
-      await savePattern(pattern, { action: 'complete', ids });
-      showToast(`✓ ${count}件のTODOを完了にしました`);
-    }
-    return count;
-  }
-
-  // Claude API でインテント判定
-  async function judgeByApi(text) {
-    const logbook = await loadLogbook();
-    const todoList = logbook.slice(0, 20).map(t => t.id + ': ' + (t.content || t.text || '')).join('\n');
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 200,
-          messages: [{
-            role: 'user',
-            content: `以下のユーザー入力からTODO操作インテントをJSON形式のみで返してください。\n操作なしの場合は {"action":"none"} を返してください。\n\nTODOリスト:\n${todoList}\n\nユーザー入力: "${text}"\n\n返答はJSONのみ。例: {"action":"complete","ids":["LB_005","LB_006"],"pattern":"完了にして"}`
-          }]
-        })
-      });
-      const data = await res.json();
-      const raw = data.content?.[0]?.text || '{"action":"none"}';
-      const cleaned = raw.replace(/^```[a-z]*\n?/, '').replace(/```$/, '').trim();
-      return JSON.parse(cleaned);
-    } catch (e) {
-      return { action: 'none' };
-    }
-  }
-
-  // トースト表示
-  function showToast(msg) {
-    const el = document.createElement('div');
-    el.textContent = msg;
-    el.style.cssText = 'position:fixed;bottom:70px;right:20px;background:#22c55e;color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;z-index:999999;';
-    document.body.appendChild(el);
-    setTimeout(() => el.remove(), 3000);
-  }
-
-  // ユーザー入力監視
-  async function processInput(text) {
-    if (!text || text.length < 2) return;
-
-    // 1. パターンDB照合（学習済み）
-    const patterns = await loadPatterns();
-    for (const p of patterns) {
-      if (p.count >= 3 && text.includes(p.pattern)) {
-        if (p.action?.action === 'complete') {
-          const ids = resolveIds(text).length > 0 ? resolveIds(text) : p.action.ids;
-          const count = await completeTodos(ids, p.pattern);
-          if (count > 0) { showToast(`🧠 ${count}件のTODOを完了にしました`); return; }
-        }
-      }
-    }
-
-    // 2. 正規表現クイック判定
-    const completeRe = /(\d|\d{1,3}\s*(?:から|〜|~|to|-)\s*\d{1,3}).*(完了|done|finish)/i;
-    if (completeRe.test(text)) {
-      const ids = resolveIds(text);
-      if (ids.length > 0) {
-        await completeTodos(ids, text.match(/完了|done|finish/i)?.[0] || '完了');
-        return;
-      }
-    }
-
-    // 3. Claude API判定（「完了」+数字が含まれる場合のみ）
-    if (/完了|done|finish/i.test(text) && /\d/.test(text)) {
-      const intent = await judgeByApi(text);
-      if (intent.action === 'complete' && intent.ids?.length > 0) {
-        await completeTodos(intent.ids, intent.pattern || '完了');
-      }
-    }
-  }
-
-  // 入力欄を監視
-  function watchInput() {
-    document.addEventListener('keydown', async (e) => {
-      if (e.key !== 'Enter' || e.shiftKey) return;
-      const input = document.querySelector('[contenteditable="true"]') ||
-                    document.querySelector('textarea');
-      if (!input) return;
-      const text = input.innerText || input.value || '';
-      setTimeout(() => processInput(text.trim()), 100);
-    });
-  }
-
-  watchInput();
-  console.log('[Relay] INTENT ENGINE v1.1 loaded');
 })();
