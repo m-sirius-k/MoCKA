@@ -344,22 +344,22 @@ def execute_tool(name, args):
             cur = conn.cursor()
             if query:
                 cur.execute(
-                    "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
-                    "WHERE (risk_level LIKE ? OR risk_level LIKE ? OR risk_level LIKE ?) "
-                    "AND (title LIKE ? OR short_summary LIKE ? OR event_id LIKE ?) "
+                    "SELECT event_id, when_ts, what_happened, tags FROM events "
+                    "WHERE (tags LIKE ? OR tags LIKE ? OR tags LIKE ?) "
+                    "AND (what_happened LIKE ? OR event_id LIKE ?) "
                     "ORDER BY when_ts DESC LIMIT ?",
-                    ("%INCIDENT%", "%DANGER%", "%CRITICAL%", f"%{query}%", f"%{query}%", f"%{query}%", limit)
+                    ("%INCIDENT%", "%DANGER%", "%CRITICAL%", f"%{query}%", f"%{query}%", limit)
                 )
             else:
                 cur.execute(
-                    "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
-                    "WHERE risk_level LIKE ? OR risk_level LIKE ? OR risk_level LIKE ? "
+                    "SELECT event_id, when_ts, what_happened, tags FROM events "
+                    "WHERE tags LIKE ? OR tags LIKE ? OR tags LIKE ? "
                     "ORDER BY when_ts DESC LIMIT ?",
                     ("%INCIDENT%", "%DANGER%", "%CRITICAL%", limit)
                 )
             rows = cur.fetchall()
             conn.close()
-            incidents = [{"id": r[0], "when": r[1], "title": r[2], "summary": r[3], "risk": r[4]} for r in rows]
+            incidents = [{"id": r[0], "when": r[1], "what": r[2], "tags": r[3]} for r in rows]
             auto_log(name, args, f"{len(incidents)} incidents found")
             return json.dumps(incidents, ensure_ascii=False, indent=2)
 
