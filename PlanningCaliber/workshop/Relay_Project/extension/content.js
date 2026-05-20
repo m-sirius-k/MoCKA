@@ -28,10 +28,10 @@
   const $ = s => document.querySelector(s);
 
   function getAssistantText() {
-    const el = $('[data-is-streaming="false"] .font-claude-message') ||
-               $('.font-claude-message') ||
+    const el = $('[data-is-streaming="false"] .font-claude-response') ||
+               $('.font-claude-response') ||
                $('[class*="prose"]');
-    return el ? (el.innerText || '').trim() : '';
+    return el ? (el.textContent || el.innerText || '').trim() : '';
   }
 
   function getInput() {
