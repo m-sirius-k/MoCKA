@@ -3,7 +3,7 @@
   "name": "Relay for Claude",
   "short_name": "Relay",
   "version": "2.0.0",
-  "description": "Auto-continue Claude conversations. Track TODOs, save session history, and hand off context to new chats.",
+  "description": "Never lose your Claude context again. Auto-continue conversations, save decisions and next steps (Logbook), and inject past context into new chats (Vault - Pro).",
   "icons": {
     "16":  "icons/icon16.png",
     "48":  "icons/icon48.png",
@@ -12,6 +12,7 @@
   "permissions": [
     "storage",
     "tabs",
+    "scripting",
     "downloads",
     "clipboardWrite"
   ],
@@ -21,7 +22,14 @@
   "content_scripts": [
     {
       "matches": ["https://claude.ai/*"],
-      "js": ["content.js"],
+      "js": [
+        "relay-state.js",
+        "relay-dom.js",
+        "relay-watchers.js",
+        "relay-logbook.js",
+        "relay-ui.js",
+        "relay-main.js"
+      ],
       "run_at": "document_idle",
       "all_frames": false
     }

@@ -1,532 +1,138 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Relay</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    width: 300px;
-    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #080e1a; color: #e2e8f0; font-size: 13px;
-    overflow-x: hidden;
-  }
-
-  /* Header */
-  .header {
-    padding: 14px 16px; border-bottom: 1px solid #1a2540;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .header-left { display: flex; align-items: center; gap: 10px; }
-  .logo {
-    width: 30px; height: 30px; background: linear-gradient(135deg, #3b82f6, #6366f1);
-    border-radius: 8px; display: flex; align-items: center;
-    justify-content: center; font-size: 15px;
-  }
-  .header-text h1 { font-size: 15px; font-weight: 700; color: #f1f5f9; letter-spacing: -.3px; }
-  .header-text p  { font-size: 10px; color: #4a6080; margin-top: 1px; }
-  .tier-badge {
-    font-size: 10px; font-weight: 600; padding: 3px 8px;
-    border-radius: 20px; letter-spacing: .04em;
-  }
-  .tier-free { background: #1a2540; color: #64748b; border: 1px solid #1e3050; }
-  .tier-pro  { background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff; }
-
-  /* Tabs */
-  .tabs { display: flex; border-bottom: 1px solid #1a2540; }
-  .tab {
-    flex: 1; padding: 9px 0; text-align: center;
-    font-size: 11px; font-weight: 500; color: #4a6080;
-    cursor: pointer; border-bottom: 2px solid transparent;
-    transition: all .2s;
-  }
-  .tab.active { color: #60a5fa; border-bottom-color: #3b82f6; }
-  .tab:hover:not(.active) { color: #94a3b8; }
-  .tabs-row2 { border-top: none; }
-
-  /* Panels */
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  /* Stats */
-  .stats { padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .stat { background: #0d1929; border: 1px solid #1a2540; border-radius: 8px; padding: 9px; text-align: center; }
-  .stat-num { font-size: 20px; font-weight: 700; color: #f1f5f9; }
-  .stat-label { font-size: 9px; color: #4a6080; margin-top: 2px; text-transform: uppercase; letter-spacing: .05em; }
-
-  /* Settings */
-  .section { padding: 8px 16px 10px; }
-  .section-title {
-    font-size: 10px; color: #4a6080; text-transform: uppercase;
-    letter-spacing: .06em; margin-bottom: 8px;
-  }
-  .setting-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 0; border-bottom: 1px solid #0f1c30;
-  }
-  .setting-row:last-child { border-bottom: none; }
-  .setting-label { font-size: 12px; color: #94a3b8; }
-  input[type="number"], input[type="text"] {
-    background: #0d1929; border: 1px solid #1e3050;
-    color: #f1f5f9; font-size: 12px; padding: 4px 8px;
-    border-radius: 6px;
-  }
-  input[type="number"] { width: 52px; text-align: center; }
-  input[type="text"]   { width: 150px; font-family: monospace; font-size: 11px; }
-  input:focus { outline: none; border-color: #3b82f6; }
-
-  /* Folder input row */
-  .folder-row {
-    display: flex; align-items: center; gap: 6px;
-    padding: 7px 0; border-bottom: 1px solid #0f1c30;
-  }
-  .folder-row input[type="text"] { width: 130px; }
-  .folder-save-btn {
-    background: #1a2540; color: #60a5fa; border: 1px solid #1e3050;
-    padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer;
-    white-space: nowrap;
-  }
-  .folder-save-btn:hover { background: #1e3050; }
-  .folder-saved { font-size: 10px; color: #34d399; margin-top: 4px; display: none; }
-
-  /* Export buttons */
-  .export-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
-    padding: 0 16px 12px;
-  }
-  .btn-export {
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    padding: 10px 8px; border-radius: 8px; font-size: 11px; font-weight: 500;
-    cursor: pointer; border: 1px solid #1a2540; background: #0d1929;
-    color: #94a3b8; transition: all .2s;
-  }
-  .btn-export:hover { border-color: #3b82f6; color: #60a5fa; background: #0f1f35; }
-  .btn-export .export-icon  { font-size: 18px; }
-  .btn-export .export-label { font-size: 10px; color: #4a6080; }
-  .export-status {
-    font-size: 10px; color: #34d399; text-align: center;
-    padding: 0 16px 8px; display: none;
-  }
-
-  /* Buttons */
-  .btn {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: calc(100% - 32px); margin: 0 16px 8px;
-    padding: 9px; border-radius: 8px; font-size: 12px; font-weight: 500;
-    cursor: pointer; border: none; transition: opacity .2s, transform .1s;
-  }
-  .btn:active { transform: scale(.98); }
-  .btn-primary   { background: linear-gradient(135deg, #3b82f6, #6366f1); color: #fff; }
-  .btn-secondary { background: #0d1929; color: #64748b; border: 1px solid #1a2540; }
-  .btn-vault     { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; }
-  .btn:hover { opacity: .9; }
-  .btn:disabled { opacity: .4; cursor: not-allowed; }
-
-  /* ══ TODO Panel ═══════════════════════════════════════════════════════ */
-  .todo-add-row {
-    display: flex; gap: 6px; padding: 10px 12px 6px;
-  }
-  .todo-add-row input[type="text"] {
-    flex: 1; width: auto; font-family: inherit; font-size: 12px;
-    padding: 5px 8px; border-radius: 6px;
-  }
-  .todo-add-row input[type="text"]:focus { border-color: #3b82f6; }
-  .todo-add-row button {
-    background: #1e3a5f; color: #93c5fd;
-    border: 1px solid #2d5a8e; border-radius: 6px;
-    font-size: 11px; padding: 5px 10px; cursor: pointer; white-space: nowrap;
-  }
-  .todo-add-row button:hover { background: #2d5a8e; }
-
-  .todos-scroll {
-    overflow-y: auto; padding: 4px 12px; max-height: 250px;
-  }
-
-  .todo-group { margin-bottom: 8px; }
-  .todo-group-label {
-    font-size: 10px; color: #4a6080; text-transform: uppercase;
-    letter-spacing: 0.5px; padding: 4px 0 2px;
-    border-bottom: 1px solid #1a2a3a; margin-bottom: 4px;
-  }
-
-  .todo-item {
-    background: #0d1929; border: 1px solid #1a2540;
-    border-radius: 6px; padding: 6px 8px; margin-bottom: 4px;
-    transition: border-color .2s;
-  }
-  .todo-item:hover { border-color: #2d5a8e; }
-
-  .todo-item-header {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 3px;
-  }
-  .todo-id {
-    font-size: 10px; font-weight: 700; font-family: monospace; letter-spacing: .5px;
-  }
-  .todo-priority {
-    font-size: 10px; padding: 1px 6px; border-radius: 8px;
-    background: rgba(255,255,255,0.05); color: #94a3b8;
-    margin-left: 4px; white-space: nowrap;
-  }
-
-  .todo-actions {
-    display: flex; gap: 3px; opacity: 0; transition: opacity .15s;
-  }
-  .todo-item:hover .todo-actions { opacity: 1; }
-
-  .todo-btn {
-    background: transparent; border: 1px solid #1e3a5f;
-    border-radius: 4px; color: #64748b;
-    font-size: 10px; width: 20px; height: 20px;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    padding: 0; transition: all .15s;
-  }
-  .todo-btn:hover       { border-color: #3b82f6; color: #93c5fd; }
-  .todo-btn.done-btn:hover { border-color: #22c55e; color: #86efac; }
-  .todo-btn.del-btn:hover  { border-color: #ef4444; color: #fca5a5; }
-
-  .todo-content {
-    font-size: 11px; color: #94a3b8; line-height: 1.4; word-break: break-all;
-  }
-
-  .todo-footer {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 6px 12px 10px; border-top: 1px solid #1a2a3a; margin-top: 4px;
-  }
-  .btn-clear-done {
-    background: transparent; border: 1px solid #1e3a5f;
-    border-radius: 6px; color: #64748b; font-size: 10px;
-    padding: 4px 8px; cursor: pointer; transition: all .15s;
-  }
-  .btn-clear-done:hover { border-color: #22c55e; color: #86efac; }
-  .todo-hint { font-size: 9px; color: #2a3850; font-style: italic; }
-
-  /* ══ LOG Panel ════════════════════════════════════════════════════════ */
-  .log-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 12px 4px;
-  }
-  .log-header-title {
-    font-size: 10px; color: #4a6080; text-transform: uppercase; letter-spacing: .06em;
-  }
-  .log-count-badge {
-    font-size: 10px; background: #1a2540; color: #64748b;
-    padding: 1px 7px; border-radius: 10px;
-  }
-  .log-scroll {
-    overflow-y: auto; padding: 4px 12px; max-height: 270px;
-  }
-  .log-date-group { margin-bottom: 10px; }
-  .log-date-label {
-    font-size: 10px; color: #3b82f6; letter-spacing: .4px;
-    padding: 4px 0 3px; border-bottom: 1px solid #1a2a3a; margin-bottom: 4px;
-  }
-  .log-item {
-    background: #0a1520; border: 1px solid #152030;
-    border-radius: 6px; padding: 6px 8px; margin-bottom: 4px;
-  }
-  .log-item-header {
-    display: flex; align-items: center; gap: 6px; margin-bottom: 3px;
-  }
-  .log-id {
-    font-size: 10px; font-weight: 700; font-family: monospace;
-    color: #22c55e; letter-spacing: .5px;
-  }
-  .log-priority {
-    font-size: 10px; color: #64748b;
-  }
-  .log-time {
-    font-size: 10px; color: #334155; margin-left: auto;
-  }
-  .log-content {
-    font-size: 11px; color: #64748b; line-height: 1.4;
-    text-decoration: line-through; word-break: break-all;
-  }
-  .log-meta {
-    font-size: 9px; color: #2a3850; margin-top: 2px;
-  }
-  .log-footer {
-    display: flex; justify-content: flex-end;
-    padding: 6px 12px 10px; border-top: 1px solid #1a2a3a;
-  }
-  .btn-clear-log {
-    background: transparent; border: 1px solid #1e3a5f;
-    border-radius: 6px; color: #4a6080; font-size: 10px;
-    padding: 4px 8px; cursor: pointer; transition: all .15s;
-  }
-  .btn-clear-log:hover { border-color: #ef4444; color: #fca5a5; }
-
-  /* ══ Logbook list ═════════════════════════════════════════════════════ */
-  .logbook-list { padding: 0 16px 12px; max-height: 240px; overflow-y: auto; }
-  .logbook-item {
-    background: #0d1929; border: 1px solid #1a2540;
-    border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
-    cursor: pointer; transition: border-color .2s;
-  }
-  .logbook-item:hover { border-color: #3b82f6; }
-  .logbook-item-title {
-    font-size: 12px; font-weight: 600; color: #cbd5e1;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .logbook-item-meta { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
-  .logbook-chip {
-    font-size: 10px; padding: 1px 6px; border-radius: 10px;
-    background: #1a2540; color: #64748b;
-  }
-  .logbook-chip.decision { background: rgba(59,130,246,.15); color: #60a5fa; }
-  .logbook-chip.todo     { background: rgba(16,185,129,.15);  color: #34d399; }
-  .logbook-chip.insight  { background: rgba(245,158,11,.15);  color: #fbbf24; }
-  .logbook-empty {
-    text-align: center; color: #4a6080; font-size: 12px;
-    padding: 20px 0; line-height: 1.6;
-  }
-
-  /* Vault list */
-  .vault-list { padding: 0 16px 12px; max-height: 180px; overflow-y: auto; }
-  .vault-item {
-    display: flex; align-items: flex-start; gap: 8px;
-    background: #0d1929; border: 1px solid #1a2540;
-    border-radius: 8px; padding: 8px 10px; margin-bottom: 6px;
-  }
-  .vault-item.inactive { opacity: .4; }
-  .vault-toggle {
-    width: 16px; height: 16px; border-radius: 4px; cursor: pointer;
-    background: #3b82f6; border: none; flex-shrink: 0; margin-top: 2px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: #fff;
-  }
-  .vault-toggle.off { background: #1a2540; }
-  .vault-label { font-size: 11px; color: #94a3b8; flex: 1;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .vault-del {
-    font-size: 14px; color: #4a6080; cursor: pointer;
-    background: none; border: none; padding: 0; line-height: 1;
-  }
-  .vault-del:hover { color: #ef4444; }
-
-  /* Pro gate */
-  .pro-gate {
-    margin: 8px 16px; padding: 14px; border-radius: 10px;
-    background: linear-gradient(135deg, rgba(79,70,229,.15), rgba(124,58,237,.15));
-    border: 1px solid rgba(99,102,241,.3); text-align: center;
-  }
-  .pro-gate h3 { font-size: 13px; font-weight: 600; color: #a5b4fc; margin-bottom: 6px; }
-  .pro-gate p  { font-size: 11px; color: #64748b; line-height: 1.5; margin-bottom: 10px; }
-  .pro-gate-input { display: flex; gap: 6px; align-items: center; }
-  .pro-gate-input input {
-    flex: 1; background: #0d1929; border: 1px solid #2d3748;
-    color: #f1f5f9; font-size: 11px; padding: 6px 8px;
-    border-radius: 6px; font-family: monospace;
-  }
-  .pro-gate-input button {
-    background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff;
-    border: none; padding: 6px 12px; border-radius: 6px;
-    font-size: 11px; cursor: pointer; font-weight: 500;
-  }
-  .license-status { font-size: 10px; margin-top: 6px; }
-  .license-ok  { color: #34d399; }
-  .license-err { color: #f87171; }
-
-  /* Detail view */
-  #detail-view { display: none; padding: 12px 16px; }
-  .detail-back {
-    font-size: 11px; color: #60a5fa; cursor: pointer; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 4px;
-  }
-  .detail-title { font-size: 14px; font-weight: 600; color: #f1f5f9; margin-bottom: 12px; }
-  .detail-section { margin-bottom: 10px; }
-  .detail-section h4 { font-size: 10px; text-transform: uppercase; letter-spacing: .06em; color: #4a6080; margin-bottom: 6px; }
-  .detail-item {
-    font-size: 11px; color: #94a3b8; padding: 4px 0;
-    border-bottom: 1px solid #0f1c30; line-height: 1.5;
-  }
-  .detail-item:last-child { border-bottom: none; }
-  .btn-vault-save {
-    display: flex; align-items: center; justify-content: center; gap: 6px;
-    width: 100%; padding: 8px; border-radius: 8px;
-    background: linear-gradient(135deg,#7c3aed,#4f46e5); color: #fff;
-    border: none; font-size: 12px; font-weight: 500; cursor: pointer; margin-top: 8px;
-  }
-
-  /* Footer */
-  .footer { padding: 7px 16px; border-top: 1px solid #1a2540; }
-  .footer-text { font-size: 10px; color: #2a3850; text-align: center; }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: #1a2540; border-radius: 2px; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay for Claude</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { width: 320px; min-height: 400px; background: #0d0d1a; color: #e2e8f0;
+           font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+    .header { padding: 12px 16px; border-bottom: 1px solid #1e293b;
+              display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: bold; color: #e2c97e; font-size: 14px; }
+    .tier-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px;
+                  font-weight: bold; }
+    .tier-free { background: #1e293b; color: #64748b; }
+    .tier-pro  { background: #854d0e; color: #fef08a; }
+    .tabs { display: flex; border-bottom: 1px solid #1e293b; }
+    .tab { flex: 1; padding: 8px 4px; text-align: center; cursor: pointer;
+           font-size: 11px; color: #64748b; border: none; background: none;
+           transition: color 0.2s; }
+    .tab.active { color: #e2c97e; border-bottom: 2px solid #e2c97e; }
+    .panel { display: none; padding: 12px 16px; }
+    .panel.active { display: block; }
+    .stat-row { display: flex; justify-content: space-around; margin-bottom: 12px; }
+    .stat { text-align: center; }
+    .stat-val { font-size: 24px; font-weight: bold; color: #e2c97e; }
+    .stat-label { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .btn { width: 100%; padding: 8px; border-radius: 6px; border: none;
+           cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 8px; }
+    .btn-primary { background: #e2c97e; color: #0d0d1a; }
+    .btn-secondary { background: #1e293b; color: #94a3b8; }
+    .todo-item { background: #1e293b; border-radius: 6px; padding: 8px 10px;
+                 margin-bottom: 6px; }
+    .todo-content { font-size: 12px; color: #e2e8f0; margin-bottom: 4px; }
+    .todo-actions { display: flex; gap: 6px; }
+    .todo-btn { padding: 2px 8px; border-radius: 4px; border: 1px solid #334155;
+                background: none; color: #94a3b8; font-size: 10px; cursor: pointer; }
+    .todo-btn:hover { background: #334155; }
+    .todo-input-wrap { display: flex; gap: 6px; margin-bottom: 8px; }
+    .todo-input { flex: 1; background: #1e293b; border: 1px solid #334155;
+                  border-radius: 6px; padding: 6px 8px; color: #e2e8f0;
+                  font-size: 12px; outline: none; }
+    .log-item { border-bottom: 1px solid #1e293b; padding: 8px 0; font-size: 12px; }
+    .log-done { color: #22c55e; font-size: 10px; }
+    .session-item { background: #1e293b; border-radius: 6px; padding: 8px 10px;
+                    margin-bottom: 6px; cursor: pointer; }
+    .session-title { font-size: 12px; color: #e2e8f0; }
+    .session-meta { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .empty { color: #64748b; font-size: 12px; text-align: center;
+             padding: 24px 0; }
+    .settings-row { display: flex; justify-content: space-between;
+                    align-items: center; margin-bottom: 10px; }
+    .settings-label { font-size: 12px; color: #94a3b8; }
+    .settings-input { background: #1e293b; border: 1px solid #334155;
+                      border-radius: 6px; padding: 4px 8px; color: #e2e8f0;
+                      font-size: 12px; width: 140px; outline: none; }
+    .license-status { font-size: 11px; margin-top: 4px; }
+    .license-ok  { color: #22c55e; }
+    .license-err { color: #ef4444; }
+  </style>
 </head>
 <body>
+  <div class="header">
+    <span class="logo">⚡ Relay</span>
+    <span class="tier-badge tier-free" id="tier-badge">FREE</span>
+  </div>
 
-<!-- Header -->
-<div class="header">
-  <div class="header-left">
-    <div class="logo">⚡</div>
-    <div class="header-text">
-      <h1>Relay</h1>
-      <p>Context continuity for Claude</p>
+  <div class="tabs">
+    <button class="tab active" data-tab="home">Home</button>
+    <button class="tab" data-tab="todos">TODOs</button>
+    <button class="tab" data-tab="log">Log</button>
+    <button class="tab" data-tab="logbook">Logbook</button>
+    <button class="tab" data-tab="settings">⚙</button>
+  </div>
+
+  <!-- Home -->
+  <div class="panel active" id="panel-home">
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" id="stat-sessions">0</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="stat-messages">0</div>
+        <div class="stat-label">Messages</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="stat-todos">0</div>
+        <div class="stat-label">TODOs</div>
+      </div>
     </div>
+    <button class="btn btn-primary" id="btn-handoff">Continue in New Chat →</button>
+    <button class="btn btn-secondary" style="margin-top:6px" id="btn-view-todos">View TODOs</button>
   </div>
-  <span class="tier-badge tier-free" id="tier-badge">FREE</span>
-</div>
 
-<!-- Tabs -->
-<div class="tabs">
-  <div class="tab active" data-tab="home">Home</div>
-  <div class="tab" data-tab="todos">📋 TODO</div>
-  <div class="tab" data-tab="log">📜 LOG</div>
-</div>
-<div class="tabs tabs-row2">
-  <div class="tab" data-tab="logbook">Logbook</div>
-  <div class="tab" data-tab="vault">Vault ★</div>
-  <div class="tab" data-tab="settings">⚙</div>
-</div>
-
-<!-- HOME panel -->
-<div class="panel active" id="panel-home">
-  <div class="stats">
-    <div class="stat">
-      <div class="stat-num" id="stat-sessions">-</div>
-      <div class="stat-label">Relays</div>
+  <!-- TODOs -->
+  <div class="panel" id="panel-todos">
+    <div class="todo-input-wrap">
+      <input class="todo-input" id="todo-input" placeholder="Add a TODO...">
+      <button class="todo-btn" id="btn-add-todo" style="padding:4px 10px">Add</button>
     </div>
-    <div class="stat">
-      <div class="stat-num" id="stat-messages">-</div>
-      <div class="stat-label">Msgs</div>
+    <div id="todo-list"><div class="empty">No TODOs yet.</div></div>
+  </div>
+
+  <!-- Log -->
+  <div class="panel" id="panel-log">
+    <div id="log-count-label" style="font-size:11px;color:#64748b;margin-bottom:8px">
+      Completed: <span id="log-count">0</span>
     </div>
-    <div class="stat">
-      <div class="stat-num" id="stat-todos">-</div>
-      <div class="stat-label">TODOs</div>
+    <div id="log-list"><div class="empty">No completed TODOs.</div></div>
+  </div>
+
+  <!-- Logbook -->
+  <div class="panel" id="panel-logbook">
+    <div id="logbook-list"><div class="empty">No sessions yet.</div></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="panel" id="panel-settings">
+    <div class="settings-row">
+      <span class="settings-label">Turn limit</span>
+      <input class="settings-input" type="number" id="turn-limit" value="20" min="5" max="100">
     </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">Settings</div>
-    <div class="setting-row">
-      <span class="setting-label">Warn at turn</span>
-      <input type="number" id="turn-limit" min="5" max="100" value="20">
+    <div class="settings-row">
+      <span class="settings-label">License key</span>
+      <input class="settings-input" type="text" id="license-input" placeholder="RELAY-PRO-...">
     </div>
-  </div>
-
-  <button class="btn btn-primary" id="btn-handoff">↗ Continue now (new chat)</button>
-  <button class="btn btn-secondary" id="btn-view-logbook">📋 Open TODO</button>
-</div>
-
-<!-- TODO panel -->
-<div class="panel" id="panel-todos">
-  <div class="todo-add-row">
-    <input type="text" id="todo-input" placeholder="TODOを追加…" maxlength="120">
-    <button id="btn-add-todo">追加</button>
-  </div>
-  <div id="todos-list" class="todos-scroll">
-    <div class="logbook-empty">
-      TODOはまだありません。<br>
-      会話中に「〜してください」「TODO:〜」と言うと<br>自動で記録されます。
-    </div>
-  </div>
-  <div class="todo-footer">
-    <button class="btn-clear-done" id="btn-clear-done">✅ 完了済みをLOGへ</button>
-    <span class="todo-hint">「LB_001完了」で更新可</span>
-  </div>
-</div>
-
-<!-- LOG panel -->
-<div class="panel" id="panel-log">
-  <div class="log-header">
-    <span class="log-header-title">完了ログ</span>
-    <span class="log-count-badge" id="log-count">0</span>
-  </div>
-  <div id="log-list" class="log-scroll">
-    <div class="logbook-empty">
-      完了したTODOがここに記録されます。<br>
-      <span style="font-size:10px;color:#2a3850">TODOの✓ボタンまたは「LB_XXX完了」で追記</span>
-    </div>
-  </div>
-  <div class="log-footer">
-    <button class="btn-clear-log" id="btn-clear-log">🗑 ログを全削除</button>
-  </div>
-</div>
-
-
-
-<!-- LOGBOOK panel -->
-<div class="panel" id="panel-logbook">
-  <div id="detail-view">
-    <div class="detail-back" id="detail-back">← Back</div>
-    <div class="detail-title" id="detail-title"></div>
-    <div id="detail-content"></div>
-    <button class="btn-vault-save" id="btn-save-vault" style="display:none">
-      ★ Save to Vault (Pro)
-    </button>
-  </div>
-  <div id="list-view">
-    <div class="logbook-list" id="logbook-list">
-      <div class="logbook-empty">No sessions yet.<br>Start a relay to build your Logbook.</div>
-    </div>
-  </div>
-</div>
-
-<!-- VAULT panel -->
-<div class="panel" id="panel-vault">
-  <div class="pro-gate" id="vault-gate" style="display:none">
-    <h3>★ Relay Pro</h3>
-    <p>Save your best context snippets and auto-inject them into every new chat.<br>$5+ / month.</p>
-    <div class="pro-gate-input">
-      <input type="text" id="license-input" placeholder="RELAY-PRO-XXXXXXXX">
-      <button id="btn-verify-license">Activate</button>
-    </div>
+    <button class="btn btn-secondary" id="btn-verify-license">Activate Pro</button>
     <div class="license-status" id="license-status"></div>
+    <hr style="border-color:#1e293b;margin:12px 0">
+    <button class="btn btn-secondary" id="btn-export-sessions">Export Sessions (JSON)</button>
+    <button class="btn btn-secondary" style="margin-top:6px" id="btn-export-todos">Export TODOs (JSON)</button>
   </div>
-  <div id="vault-content" style="display:none">
-    <div class="section" style="padding-bottom:6px">
-      <div class="section-title">Active context (injected on relay)</div>
-    </div>
-    <div class="vault-list" id="vault-list"></div>
-    <button class="btn btn-vault" id="btn-add-vault" style="margin-top:4px">
-      ★ Save current chat to Vault
-    </button>
-  </div>
-</div>
 
-<!-- SETTINGS panel -->
-<div class="panel" id="panel-settings">
-  <div class="section">
-    <div class="section-title">Save Folder</div>
-    <div class="folder-row">
-      <input type="text" id="export-folder" placeholder="mocka-exports" value="mocka-exports">
-      <button class="folder-save-btn" id="btn-save-folder">Save</button>
-    </div>
-    <div class="folder-saved" id="folder-saved">✓ Saved</div>
-    <div style="font-size:10px;color:#2a3850;margin-top:6px;line-height:1.5">
-      Files saved to:<br>
-      Downloads/<span id="folder-preview">mocka-exports</span>/relay/
-    </div>
-  </div>
-  <div class="section" style="margin-top:4px">
-    <div class="section-title">Export</div>
-  </div>
-  <div class="export-grid">
-    <button class="btn-export" id="btn-export-sessions">
-      <span class="export-icon">💾</span>
-      Sessions
-      <span class="export-label">relay/ JSON</span>
-    </button>
-    <button class="btn-export" id="btn-export-logbook">
-      <span class="export-icon">📋</span>
-      Logbook
-      <span class="export-label">relay/ JSON</span>
-    </button>
-  </div>
-  <div class="export-status" id="export-status"></div>
-</div>
-
-<!-- Footer -->
-<div class="footer">
-  <div class="footer-text">mini MoCKA Series · Relay v3.2</div>
-</div>
-
-<script src="popup.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>
