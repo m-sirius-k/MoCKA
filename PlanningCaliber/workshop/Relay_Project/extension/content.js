@@ -40,11 +40,7 @@
   }
 
   function countTurns() {
-    const els = document.querySelectorAll(
-      '[data-testid*="human-turn"],[data-testid*="assistant-turn"],' +
-      '.font-user-message,.font-claude-message'
-    );
-    return Math.floor(els.length / 2);
+    return document.querySelectorAll('[data-testid="user-message"]').length;
   }
 
   function hash(str) {
