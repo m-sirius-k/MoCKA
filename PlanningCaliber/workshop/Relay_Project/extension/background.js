@@ -350,20 +350,6 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  if (msg.type === 'RELAY_TAB_MESSAGE') {
-    chrome.tabs.query({ url: 'https://claude.ai/*' }, (tabs) => {
-      if (!tabs.length) { sendResponse({ ok: false, error: 'no_tab' }); return; }
-      chrome.tabs.sendMessage(tabs[0].id, msg.payload, (res) => {
-        if (chrome.runtime.lastError) {
-          sendResponse({ ok: false, error: chrome.runtime.lastError.message });
-        } else {
-          sendResponse(res || { ok: true });
-        }
-      });
-    });
-    return true;
-  }
-
   if (msg.type === 'RELAY_VERIFY_LICENSE') {
     const valid = isProLicense(msg.key);
     sendResponse({ valid, tier: valid ? 'pro' : 'free' });
