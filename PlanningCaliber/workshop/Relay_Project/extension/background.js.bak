@@ -203,42 +203,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'RELAY_OPEN_NEW_CHAT') {
-    const text = msg.payload?.text;
-    if (!text) { sendResponse({ ok: false, error: 'no_text' }); return true; }
+    const text = msg.payload.text;
+    if (chrome._relayOpeningChat) { sendResponse({ ok: false, error: 'duplicate' }); return true; }
+    chrome._relayOpeningChat = true;
+    setTimeout(() => { chrome._relayOpeningChat = false; }, 3000);
 
-    // 重複防止: タイムスタンプ付きフラグ（SW再起動でリセットされても5秒後に自然消滅）
-    const now = Date.now();
-    if (chrome._relayOpeningChat && now - (chrome._relayOpeningChatAt || 0) < 5000) {
-      sendResponse({ ok: false, error: 'duplicate' }); return true;
-    }
-    chrome._relayOpeningChat   = true;
-    chrome._relayOpeningChatAt = now;
-    setTimeout(() => { chrome._relayOpeningChat = false; }, 5000);
-
-    // Pro ユーザーなら Vault context をテキストの先頭に付加
-    chrome.storage.sync.get('mocka_global_prefs', async (result) => {
-      const prefs = result?.mocka_global_prefs || {};
-      let fullText = text;
-
-      if (isProLicense(prefs.licenseKey)) {
-        const vaultCtx = await getVaultContext();
-        if (vaultCtx) {
-          fullText = `[Vault Context]\n${vaultCtx}\n\n---\n\n${text}`;
-        }
-      }
-
-      chrome.tabs.create({ url: 'https://claude.ai/new' }, (tab) => {
-        const listener = (tabId, info) => {
-          if (tabId !== tab.id || info.status !== 'complete') return;
-          chrome.tabs.onUpdated.removeListener(listener);
-          setTimeout(() => {
-            chrome.tabs.sendMessage(tab.id, { type: 'RELAY_INJECT', payload: { text: fullText } });
-          }, 2000);
-        };
-        chrome.tabs.onUpdated.addListener(listener);
-      });
+    chrome.tabs.create({ url: 'https://claude.ai/new' }, (tab) => {
+      const listener = (tabId, info) => {
+        if (tabId !== tab.id || info.status !== 'complete') return;
+        chrome.tabs.onUpdated.removeListener(listener);
+        setTimeout(() => {
+          chrome.tabs.sendMessage(tab.id, { type: 'RELAY_INJECT', payload: { text } });
+        }, 2000);
+      };
+      chrome.tabs.onUpdated.addListener(listener);
     });
-
     sendResponse({ ok: true });
     return true;
   }

@@ -1,6 +1,6 @@
 /**
  * Relay — relay-main.js
- * @version 3.5.0
+ * @version 3.4.0
  * @description 起動順制御・引き継ぎパケット生成・popup.jsメッセージ受信。
  *              manifest の content_scripts[].js に最後に注入する。
  *
@@ -16,19 +16,10 @@
  *   5. relay-ui.js
  *   6. relay-main.js  ← このファイル
  *
- * v3.5.0 変更点:
- *   - triggerHandoff(): メッセージタイプ修正 ('RELAY/OPEN_NEW_CHAT'→'RELAY_OPEN_NEW_CHAT')
- *                       ペイロード形式修正 ({packet}→{payload:{text}})
- *   - RELAY_INJECT ハンドラ追加: 新チャットへのテキスト注入を受信
- *   - RELAY_GET_SUMMARY_FOR_VAULT: レスポンス修正 ({summary}→{text,title})
- *   - RELAY_LB_COMPLETE_TO_LOG: lb.updateStatus('完了') + _appendToLog() で二重記録
- *   - RELAY_LB_UPDATE_STATUS: lb.updateStatus(id, msg.status) に修正
- *   - RELAY_LB_DELETE_TODO: lb.deleteTodo(id) に移管（_saveAllTodos 廃止）
- *   - _appendToLog(): 完了 TODO を mocka_relay_log に追記
- *   - _saveSessionToBackground(): セッションを background.js に送信
- *   - triggerHandoff(): セッション自動保存を追加
- *   - onUrlChange コールバック: URL変化時にセッション保存 + 新 sessionId 発行
- *   - _syncTurnLimit(): chrome.storage.sync から turnWarningAt を同期
+ * v3.4.0 変更点:
+ *   - _start() 内で logbook / ui の watchers 接続を明示的に実行
+ *   - 各サービスの _connectWatchers() を廃止し、ここに集中
+ *   - これにより「watchers未登録でスキップ」バグを根絶
  */
 
 (() => {
@@ -49,7 +40,7 @@
     return true;
   }
 
-  // ─── watchers コールバック接続（ここに集中）─────────────────────────────
+  // ─── watchers コールバック接続（ここに集中） ─────────────────────────────
 
   function _connectAllCallbacks() {
     const w  = Relay.services.watchers;
@@ -69,22 +60,12 @@
     // ui: 安定テキスト確定 → バッジ更新
     w.on('onStableAssistant', () => ui.refreshBadge());
 
-    // ui: ターン変化 → バッジ更新 + 警告
+    // ui: ターン変化 → バッジ更新 + 20ターン警告
     w.on('onTurnChange', turn => {
       ui.refreshBadge();
       if (turn >= Relay.config.turnWarningAt && !Relay.state.warningShown) {
         ui.showTurnWarning(turn);
       }
-    });
-
-    // URL変化: state reset 前に発火 → セッション保存 → 新 sessionId 発行
-    w.on('onUrlChange', async () => {
-      if (Relay.state.turnCount > 0) {
-        await _saveSessionToBackground();
-        console.info('[Relay] session saved on URL change.');
-      }
-      Relay.state.sessionId = Relay.utils.uuid();
-      console.info('[Relay] new session started:', Relay.state.sessionId);
     });
 
     console.info('[Relay] all watcher callbacks connected.');
@@ -93,9 +74,9 @@
   // ─── 引き継ぎパケット生成 ─────────────────────────────────────────────────
 
   async function _buildHandoffPacket() {
-    const todos      = await Relay.services.logbook.getTodos({ sessionOnly: true });
-    const open       = todos.filter(t => t.status !== '完了');
-    const allMsgs    = Relay.services.dom.getAllMessages();
+    const todos    = await Relay.services.logbook.getTodos({ sessionOnly: true });
+    const open     = todos.filter(t => !t.done);
+    const allMsgs  = Relay.services.dom.getAllMessages();
     const recentMsgs = allMsgs.slice(-6);
 
     const summary = recentMsgs
@@ -103,7 +84,7 @@
       .join('\n\n');
 
     const todoSection = open.length > 0
-      ? `未着手TODO:\n${open.map((t, i) => `  ${i + 1}. ${t.content}`).join('\n')}`
+      ? `📋 未着手TODO:\n${open.map((t, i) => `  ${i + 1}. ${t.content}`).join('\n')}`
       : '';
 
     return [
@@ -115,72 +96,16 @@
     ].filter(Boolean).join('\n\n');
   }
 
-  // ─── セッションを background.js に保存 ────────────────────────────────────
-
-  async function _saveSessionToBackground() {
-    try {
-      const allMsgs = Relay.services.dom.getAllMessages();
-      if (!allMsgs.length) return;
-
-      const todos = await Relay.services.logbook.getTodos({ sessionOnly: true });
-      const title = (document.title || '').replace(/ - Claude$/, '').trim()
-        || allMsgs[0]?.text?.slice(0, 50)
-        || 'Untitled';
-
-      const payload = {
-        title,
-        url      : location.href,
-        messages : allMsgs.map(m => ({ role: m.role, text: m.text.slice(0, 500) })),
-        logbook  : {
-          decisions : [],
-          todos     : todos.filter(t => t.status !== '完了').map(t => t.content),
-          insights  : [],
-        },
-      };
-
-      chrome.runtime.sendMessage({ type: 'RELAY_SAVE_SESSION', payload }, res => {
-        if (chrome.runtime.lastError) return;
-        if (res?.ok) console.info('[Relay] session saved. id:', res.id);
-      });
-    } catch (e) {
-      console.warn('[Relay] _saveSessionToBackground error:', e);
-    }
-  }
-
-  // ─── 完了 TODO を mocka_relay_log に追記 ──────────────────────────────────
-
-  function _appendToLog(todo) {
-    return new Promise(resolve => {
-      try {
-        chrome.storage.local.get('mocka_relay_log', data => {
-          const log = Array.isArray(data.mocka_relay_log) ? data.mocka_relay_log : [];
-          log.unshift({ ...todo, completed_at: new Date().toISOString() });
-          if (log.length > 200) log.splice(200);
-          chrome.storage.local.set({ mocka_relay_log: log }, () => resolve());
-        });
-      } catch (_) { resolve(); }
-    });
-  }
-
   // ─── 引き継ぎトリガー ─────────────────────────────────────────────────────
 
   async function triggerHandoff() {
-    // セッションを先に保存してからパケット生成
-    await _saveSessionToBackground();
-
     const packet = await _buildHandoffPacket();
     await Relay.services.dom.copyToClipboard(packet);
     Relay.services.ui.showToast('引き継ぎパケットをコピーしました。新しいチャットに貼り付けてください。', 4000);
-
     try {
-      chrome.runtime.sendMessage(
-        { type: 'RELAY_OPEN_NEW_CHAT', payload: { text: packet } },
-        res => {
-          if (chrome.runtime.lastError || !res?.ok) {
-            window.open('https://claude.ai/new', '_blank');
-          }
-        }
-      );
+      chrome.runtime.sendMessage({ type: 'RELAY/OPEN_NEW_CHAT', packet }, res => {
+        if (chrome.runtime.lastError) window.open('https://claude.ai/new', '_blank');
+      });
     } catch (_) {
       window.open('https://claude.ai/new', '_blank');
     }
@@ -218,23 +143,19 @@
       }
 
       case 'RELAY_LB_DELETE_TODO': {
-        const deleted = await lb.deleteTodo(msg.id);
-        return { deleted };
+        const todos = await lb.getTodos({ includeArchived: true });
+        const filtered = todos.filter(t => t.id !== msg.id);
+        await _saveAllTodos(filtered);
+        return { deleted: true };
       }
 
       case 'RELAY_LB_COMPLETE_TO_LOG': {
-        // getTodos で正規化済みレコードを取得してからログへ追記
-        const todos = await lb.getTodos({ includeArchived: true });
-        const todo  = todos.find(t => t.id === msg.id);
-        if (todo) {
-          await lb.updateStatus(msg.id, '完了');
-          await _appendToLog({ ...todo, status: '完了' });
-        }
+        await lb.toggleDone(msg.id);
         return { done: true };
       }
 
       case 'RELAY_LB_UPDATE_STATUS': {
-        await lb.updateStatus(msg.id, msg.status);
+        await lb.toggleDone(msg.id);
         return { updated: true };
       }
 
@@ -245,21 +166,7 @@
 
       case 'RELAY_GET_SUMMARY_FOR_VAULT': {
         const packet = await _buildHandoffPacket();
-        const title  = (document.title || '').replace(/ - Claude$/, '').trim() || 'Current chat';
-        return { text: packet, title };
-      }
-
-      // background.js が新タブ生成後に転送するテキスト注入
-      case 'RELAY_INJECT': {
-        const text = msg.payload?.text;
-        if (text) {
-          setTimeout(() => {
-            const ok = Relay.services.dom.injectText(text);
-            if (!ok) console.warn('[Relay] RELAY_INJECT: injectText failed.');
-            else     console.info('[Relay] RELAY_INJECT: text injected.');
-          }, 500);
-        }
-        return { injected: !!text };
+        return { summary: packet };
       }
 
       default:
@@ -267,19 +174,12 @@
     }
   }
 
-  // ─── ターン制限を chrome.storage.sync から同期 ────────────────────────────
+  // ─── chrome.storage.local 全件保存ヘルパー ───────────────────────────────
 
-  function _syncTurnLimit() {
-    try {
-      chrome.storage.sync.get('mocka_global_prefs', result => {
-        if (chrome.runtime.lastError) return;
-        const limit = result?.mocka_global_prefs?.turnLimit;
-        if (typeof limit === 'number' && limit > 0) {
-          Relay.config.turnWarningAt = limit;
-          console.info('[Relay] turnWarningAt synced to', limit);
-        }
-      });
-    } catch (_) {}
+  function _saveAllTodos(todos) {
+    return new Promise(resolve => {
+      chrome.storage.local.set({ relay_todos: todos }, () => resolve());
+    });
   }
 
   // ─── 起動シーケンス ────────────────────────────────────────────────────────
@@ -290,7 +190,7 @@
       return;
     }
 
-    _syncTurnLimit();
+    // watchers 接続を main.js に集中（logbook/ui の _connectWatchers は削除済み）
     _connectAllCallbacks();
 
     Relay.services.watchers.assistant.start();

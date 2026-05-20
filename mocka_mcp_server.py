@@ -324,6 +324,85 @@ def execute_tool(name, args):
             auto_log(name, args, h[:16])
             return json.dumps(result, ensure_ascii=False)
 
+        elif name == "mocka_get_command_center":
+            try:
+                import urllib.request
+                with urllib.request.urlopen("http://localhost:5000/loop/status", timeout=3) as r:
+                    loop_data = json.loads(r.read().decode())
+                with urllib.request.urlopen("http://localhost:5000/risk/recommendation", timeout=3) as r:
+                    risk_data = json.loads(r.read().decode())
+                result = {"loop": loop_data, "risk": risk_data, "status": "ok"}
+            except Exception as e:
+                result = {"error": str(e), "note": "COMMAND CENTER(5000)未起動の可能性"}
+            auto_log(name, args, "command_center fetched")
+            return json.dumps(result, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_search_incidents":
+            query = args.get("query", "")
+            limit = int(args.get("limit", 10))
+            conn = _get_db()
+            cur = conn.cursor()
+            if query:
+                cur.execute(
+                    "SELECT event_id, when_ts, what_happened, tags FROM events "
+                    "WHERE (tags LIKE ? OR tags LIKE ? OR tags LIKE ?) "
+                    "AND (what_happened LIKE ? OR event_id LIKE ?) "
+                    "ORDER BY when_ts DESC LIMIT ?",
+                    ("%INCIDENT%", "%DANGER%", "%CRITICAL%", f"%{query}%", f"%{query}%", limit)
+                )
+            else:
+                cur.execute(
+                    "SELECT event_id, when_ts, what_happened, tags FROM events "
+                    "WHERE tags LIKE ? OR tags LIKE ? OR tags LIKE ? "
+                    "ORDER BY when_ts DESC LIMIT ?",
+                    ("%INCIDENT%", "%DANGER%", "%CRITICAL%", limit)
+                )
+            rows = cur.fetchall()
+            conn.close()
+            incidents = [{"id": r[0], "when": r[1], "what": r[2], "tags": r[3]} for r in rows]
+            auto_log(name, args, f"{len(incidents)} incidents found")
+            return json.dumps(incidents, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_phl":
+            import os as _os
+            BASE_DIR = _os.path.dirname(_os.path.abspath(__file__))
+            try:
+                with open(_os.path.join(BASE_DIR, "interface", "lever_essence.json"), encoding="utf-8") as f:
+                    philosophy = json.load(f).get("PHILOSOPHY", "")
+            except Exception as e:
+                philosophy = f"error: {e}"
+            phl = {
+                "philosophy": philosophy,
+                "phl_principles": [
+                    "不確実性下でのAI動作を制約するPersistent History Layer",
+                    "セッションをまたいで文脈を保持・再注入する",
+                    "希釈(dilution)に対してPHL再注入で回復する",
+                    "SPPとペアで機能: SPP=沈黙禁止 / PHL=文脈保持"
+                ],
+                "zenodo_doi": "10.5281/zenodo.19606271"
+            }
+            auto_log(name, args, "phl loaded")
+            return json.dumps(phl, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_spp":
+            spp = {
+                "spp_principles": [
+                    "Silence Prohibition Protocol: 不確実な状況でも沈黙してはならない",
+                    "AIは必ず何らかの応答・警告・報告をする義務がある",
+                    "DANGER/CRITICAL検知時は即座にアラートを発する",
+                    "Human Gateなしに重要判断を黙って実行してはならない"
+                ],
+                "governance_rules": [
+                    "全AIインタラクションはmocka_write_eventで記録必須",
+                    "ファイル変更前後にCHANGE_START/CHANGE_DONE記録",
+                    "記録なき作業はMoCKAとして存在しない(E20260516_023)",
+                    "AIを信じるな、システムで縛れ"
+                ],
+                "aies_paper": "Submission 282 / mocka_paper_FINAL_v9_20260509.pdf"
+            }
+            auto_log(name, args, "spp loaded")
+            return json.dumps(spp, ensure_ascii=False, indent=2)
+
         return json.dumps({"error": f"unknown tool: {name}"})
 
     except Exception as e:

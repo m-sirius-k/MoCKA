@@ -31,7 +31,6 @@
     onStableAssistant : [],   // 安定したアシスタントテキストが確定したとき
     onUserMessage     : [],   // 新しいユーザーメッセージが検出されたとき
     onTurnChange      : [],   // ターン数が変化したとき
-    onUrlChange       : [],   // SPA遷移でURLが変化したとき（state reset 前に発火）
   };
 
   function on(event, fn) {
@@ -142,10 +141,8 @@
     if (current === _lastUrl) return;
     _lastUrl = current;
 
-    // SPA遷移: state reset 前に onUrlChange を発火（セッション保存に使う）
+    // SPA遷移: Observer を再起動してセッションをリセット
     console.info('[Relay] URL changed → restarting observers. url:', current);
-    _emit('onUrlChange', current);
-
     _assistant.restart();
     _user.restart();
 

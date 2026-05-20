@@ -55,14 +55,14 @@ PHI OS は「保存機能」ではなく、全アプリの**共通契約**とし
 
 ### relay/（Relay 拡張）
 
-| ファイル | 責務 | Must not |
-|---|---|---|
-| `relay-state.js` | globalThis.__RELAY__ 初期化・共有状態唯一の真実源 | 副作用なし |
-| `relay-dom.js` | セレクタ・テキスト取得・input注入 | state書き込み・chrome API |
-| `relay-watchers.js` | MutationObserver lifecycle・stream安定化 | TODO抽出・storage |
-| `relay-logbook.js` | TODO抽出4段階パイプライン・chrome.storage永続化 | DOM操作 |
-| `relay-ui.js` | バッジ・トースト・20ターン警告ポップアップ | TODO抽出・storage直接 |
-| `relay-main.js` | 起動シーケンス・引き継ぎ生成・handoff | DOM監視・state直接書き込み |
+| ファイル | バージョン | 責務 | Must not |
+|---|---|---|---|
+| `relay-state.js` | v3.2.0 | globalThis.__RELAY__ 初期化・共有状態唯一の真実源 | 副作用なし |
+| `relay-dom.js` | v3.3.0 | セレクタ・テキスト取得・input注入 | state書き込み・chrome API |
+| `relay-watchers.js` | v3.2.0 | MutationObserver lifecycle・stream安定化・onUrlChange発火 | TODO抽出・storage |
+| `relay-logbook.js` | v3.4.0 | TODO抽出4段階パイプライン・schema v2(status/priority)・updateStatus/deleteTodo追加 | DOM操作 |
+| `relay-ui.js` | v3.5.0 | バッジ・トースト・警告ポップアップ | TODO抽出・storage直接 |
+| `relay-main.js` | v3.5.0 | 起動・引き継ぎ・handoff・セッション保存・mocka_relay_log書込み | DOM監視・state直接書き込み |
 
 ### 注入順（manifest content_scripts[].js）
 ```
@@ -140,16 +140,18 @@ DOM変化
 
 ## Known Traps（やってはいけないこと）
 
-| # | 罠 | 対策 |
-|---|---|---|
-| 1 | `let _lastAssistantText` を複数ファイルで宣言 | `__RELAY__.state.lastAssistantText` のみ使う |
-| 2 | Observer を stop() せずに start() を再呼び出し | `_isRunning` フラグで多重登録防止済み |
-| 3 | SPA遷移後に古い Observer が残存 | URL変化を監視して `restart()` する |
-| 4 | bash/heredoc でJSファイルを生成（cp932混入） | **必ず create_file ツールを使う**（TODO_155） |
-| 5 | `_lastAssistantText` の streamIdle が短すぎる | 1200ms 推奨（config.streamIdleMs） |
-| 6 | storage スキーマの旧形式/新形式が混在 | `schema_ver` フィールドで versioning |
-| 7 | popup→content script API がロード前に呼ばれる | エラーを返す前提でフォールバック実装 |
-| 8 | `chrome._relayOpeningChat` グローバルフラグ依存 | service worker 再起動時も安全な設計に移行 |
+| # | 罠 | 対策 | 状態 |
+|---|---|---|---|
+| 1 | `let _lastAssistantText` を複数ファイルで宣言 | `__RELAY__.state.lastAssistantText` のみ使う | ✅ 解決済み |
+| 2 | Observer を stop() せずに start() を再呼び出し | `_isRunning` フラグで多重登録防止済み | ✅ 解決済み |
+| 3 | SPA遷移後に古い Observer が残存 | URL変化を監視して `restart()` する | ✅ 解決済み |
+| 4 | bash/heredoc でJSファイルを生成（cp932混入） | **必ず Write ツールを使う（UTF-8強制）** | ✅ 運用ルール化 |
+| 5 | `_lastAssistantText` の streamIdle が短すぎる | 1200ms 推奨（config.streamIdleMs） | ✅ 解決済み |
+| 6 | storage スキーマの旧形式/新形式が混在 | `schema_ver` + `_normalize()` で自動補完 | ✅ v3.4.0で解決 |
+| 7 | popup→content script API がロード前に呼ばれる | エラーを返す前提でフォールバック実装 | ✅ 解決済み |
+| 8 | `chrome._relayOpeningChat` SW再起動でリセット | タイムスタンプ付きフラグ（5秒TTL）に変更 | ✅ v3.5.0で解決 |
+| 9 | handoffメッセージタイプ不一致（スラッシュ vs アンダースコア） | `RELAY_OPEN_NEW_CHAT` に統一 | ✅ v3.5.0で解決 |
+| 10 | TODOスキーマ不一致（done:boolean vs status:string） | schema v2で status/priority を正規フィールドに | ✅ v3.4.0で解決 |
 
 ---
 
@@ -164,4 +166,4 @@ DOM変化
 
 ---
 
-*最終更新: 2026-05-19 / E20260519_020*
+*最終更新: 2026-05-20 / E20260520_004*
