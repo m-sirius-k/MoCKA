@@ -345,17 +345,17 @@ def execute_tool(name, args):
             if query:
                 cur.execute(
                     "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
-                    "WHERE (risk_level LIKE ? OR risk_level LIKE ? OR risk_level LIKE ?) "
+                    "WHERE (LOWER(risk_level) IN ('incident','danger','critical','high')) "
                     "AND (title LIKE ? OR short_summary LIKE ? OR event_id LIKE ?) "
                     "ORDER BY when_ts DESC LIMIT ?",
-                    ("%INCIDENT%", "%DANGER%", "%CRITICAL%", f"%{query}%", f"%{query}%", f"%{query}%", limit)
+                    (f"%{query}%", f"%{query}%", f"%{query}%", limit)
                 )
             else:
                 cur.execute(
                     "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
-                    "WHERE risk_level LIKE ? OR risk_level LIKE ? OR risk_level LIKE ? "
+                    "WHERE LOWER(risk_level) IN ('incident','danger','critical','high') "
                     "ORDER BY when_ts DESC LIMIT ?",
-                    ("%INCIDENT%", "%DANGER%", "%CRITICAL%", limit)
+                    (limit,)
                 )
             rows = cur.fetchall()
             conn.close()
