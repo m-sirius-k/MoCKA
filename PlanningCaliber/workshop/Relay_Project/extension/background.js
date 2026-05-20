@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Relay for Claude — background.js v2.3
  * Add: RELAY_EXPORT_SESSIONS / RELAY_EXPORT_LOGBOOK handlers
  * Add: getExportFolder() shared setting
@@ -188,7 +188,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
 
   if (msg.type === 'RELAY_GET_STATS') {
-    getStats().then(stats => sendResponse(stats));
+    chrome.storage.local.get(['mocka_relay_sessions_index', 'relay_todos'], (data) => {
+      const index = data.mocka_relay_sessions_index || [];
+      const todos  = data.relay_todos || [];
+      sendResponse({
+        sessions: index.length,
+        messages: index.reduce((s, e) => s + (e.turns || 0), 0),
+        todos:    todos.filter(t => t.status !== '完了').length
+      });
+    });
     return true;
   }
 
@@ -325,6 +333,34 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
   if (msg.type === 'RELAY_VAULT_LIST') {
     getVaultList().then(vault => sendResponse({ vault }));
+    return true;
+  }
+
+  if (msg.type === 'RELAY_TAB_MESSAGE') {
+    chrome.tabs.query({ url: 'https://claude.ai/*' }, (tabs) => {
+      if (!tabs.length) { sendResponse({ ok: false, error: 'no_tab' }); return; }
+      chrome.tabs.sendMessage(tabs[0].id, msg.payload, (res) => {
+        if (chrome.runtime.lastError) {
+          sendResponse({ ok: false, error: chrome.runtime.lastError.message });
+        } else {
+          sendResponse(res || { ok: true });
+        }
+      });
+    });
+    return true;
+  }
+
+  if (msg.type === 'RELAY_TAB_MESSAGE') {
+    chrome.tabs.query({ url: 'https://claude.ai/*' }, (tabs) => {
+      if (!tabs.length) { sendResponse({ ok: false, error: 'no_tab' }); return; }
+      chrome.tabs.sendMessage(tabs[0].id, msg.payload, (res) => {
+        if (chrome.runtime.lastError) {
+          sendResponse({ ok: false, error: chrome.runtime.lastError.message });
+        } else {
+          sendResponse(res || { ok: true });
+        }
+      });
+    });
     return true;
   }
 
