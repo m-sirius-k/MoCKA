@@ -1,5 +1,5 @@
 /**
- * Relay for Claude — popup.js v2.0
+ * Relay for Claude — popup.js v2.1
  * PHI OS based. Background-only communication.
  * UI: English only.
  */
@@ -16,6 +16,7 @@ async function init() {
   await checkLicense();
   loadStats();
   loadTurnLimit();
+  loadRelayMode();
   bindTabs();
   bindButtons();
 }
@@ -64,6 +65,38 @@ function loadTurnLimit() {
       chrome.storage.local.set({ phi_prefs: { ...prefs, turnLimit: +e.target.value } })
     );
   });
+}
+
+// ── Relay Mode Toggle ─────────────────────────────────────────────────────
+
+function loadRelayMode() {
+  chrome.storage.local.get('mocka_relay_mode', (data) => {
+    const enabled = data.mocka_relay_mode === true;
+    const toggle = document.getElementById('relay-mode-toggle');
+    const status = document.getElementById('relay-mode-status');
+    if (toggle) toggle.checked = enabled;
+    updateRelayModeStatus(enabled);
+  });
+
+  document.getElementById('relay-mode-toggle')?.addEventListener('change', e => {
+    const enabled = e.target.checked;
+    chrome.storage.local.set({ mocka_relay_mode: enabled }, () => {
+      updateRelayModeStatus(enabled);
+      console.log('[Relay] mocka_relay_mode =', enabled);
+    });
+  });
+}
+
+function updateRelayModeStatus(enabled) {
+  const status = document.getElementById('relay-mode-status');
+  if (!status) return;
+  if (enabled) {
+    status.textContent = 'ON — Relay active';
+    status.className = 'toggle-status on';
+  } else {
+    status.textContent = 'OFF — MoCKA active';
+    status.className = 'toggle-status off';
+  }
 }
 
 // ── Tabs ──────────────────────────────────────────────────────────────────

@@ -58,6 +58,30 @@
     .license-status { font-size: 11px; margin-top: 4px; }
     .license-ok  { color: #22c55e; }
     .license-err { color: #ef4444; }
+
+    /* Toggle switch */
+    .toggle-wrap { display: flex; justify-content: space-between;
+                   align-items: center; margin-bottom: 10px; }
+    .toggle-label { font-size: 12px; color: #94a3b8; }
+    .toggle-label small { display: block; font-size: 10px; color: #475569; margin-top: 2px; }
+    .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background: #1e293b; border: 1px solid #334155; border-radius: 22px; transition: .25s;
+    }
+    .toggle-slider:before {
+      position: absolute; content: ""; height: 16px; width: 16px;
+      left: 2px; bottom: 2px; background: #475569; border-radius: 50%; transition: .25s;
+    }
+    input:checked + .toggle-slider { background: #166534; border-color: #22c55e; }
+    input:checked + .toggle-slider:before { background: #22c55e; transform: translateX(18px); }
+    .toggle-status { font-size: 10px; margin-top: 2px; }
+    .toggle-status.on  { color: #22c55e; }
+    .toggle-status.off { color: #f97316; }
+    .section-divider { border-color: #1e293b; margin: 12px 0; }
+    .section-title { font-size: 10px; color: #475569; text-transform: uppercase;
+                     letter-spacing: 0.08em; margin-bottom: 8px; }
   </style>
 </head>
 <body>
@@ -118,17 +142,47 @@
 
   <!-- Settings -->
   <div class="panel" id="panel-settings">
+
+    <!-- General -->
+    <div class="section-title">General</div>
     <div class="settings-row">
       <span class="settings-label">Turn limit</span>
       <input class="settings-input" type="number" id="turn-limit" value="20" min="5" max="100">
     </div>
+
+    <hr class="section-divider">
+
+    <!-- MoCKA Integration -->
+    <div class="section-title">MoCKA Integration</div>
+    <div class="toggle-wrap">
+      <div class="toggle-label">
+        Relay Mode
+        <small>Disable MoCKA turn counter<br>and use Relay instead</small>
+      </div>
+      <div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="relay-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+        <div class="toggle-status" id="relay-mode-status"></div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- License -->
+    <div class="section-title">License</div>
     <div class="settings-row">
       <span class="settings-label">License key</span>
       <input class="settings-input" type="text" id="license-input" placeholder="RELAY-PRO-...">
     </div>
     <button class="btn btn-secondary" id="btn-verify-license">Activate Pro</button>
     <div class="license-status" id="license-status"></div>
-    <hr style="border-color:#1e293b;margin:12px 0">
+
+    <hr class="section-divider">
+
+    <!-- Export -->
+    <div class="section-title">Export</div>
     <button class="btn btn-secondary" id="btn-export-sessions">Export Sessions (JSON)</button>
     <button class="btn btn-secondary" style="margin-top:6px" id="btn-export-todos">Export TODOs (JSON)</button>
   </div>
