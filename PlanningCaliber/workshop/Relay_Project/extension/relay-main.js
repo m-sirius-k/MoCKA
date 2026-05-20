@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Relay for Claude — relay-main.js v4.0
  * GPT設計通りに完全書き直し
  * - localStorage廃止 → chrome.storage.local統一
@@ -138,6 +138,7 @@
 
   // ─── バッジ更新 ────────────────────────────────────────────────────────────
   function refreshBadge() {
+    if (typeof chrome === 'undefined' || !chrome.storage) return;
     chrome.storage.local.get('relay_todos', (data) => {
       const todos  = (data.relay_todos || []).filter(t => t.status !== '完了');
       const count  = todos.length;
