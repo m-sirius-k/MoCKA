@@ -1,309 +1,397 @@
 /**
- * Relay — relay-main.js
- * @version 3.5.0
- * @description 起動順制御・引き継ぎパケット生成・popup.jsメッセージ受信。
- *              manifest の content_scripts[].js に最後に注入する。
- *
- * Purpose  : 全サービスの起動順制御・引き継ぎ機能・popup↔content bridge
- * Owns     : 起動シーケンス / handoff trigger / chrome.runtime.onMessage リスナー
- * Must not : DOM監視・TODO抽出・state 直接書き込み（サービス経由のみ）
- *
- * 注入順（manifest content_scripts[].js）:
- *   1. relay-state.js
- *   2. relay-dom.js
- *   3. relay-watchers.js
- *   4. relay-logbook.js
- *   5. relay-ui.js
- *   6. relay-main.js  ← このファイル
- *
- * v3.5.0 変更点:
- *   - triggerHandoff(): メッセージタイプ修正 ('RELAY/OPEN_NEW_CHAT'→'RELAY_OPEN_NEW_CHAT')
- *                       ペイロード形式修正 ({packet}→{payload:{text}})
- *   - RELAY_INJECT ハンドラ追加: 新チャットへのテキスト注入を受信
- *   - RELAY_GET_SUMMARY_FOR_VAULT: レスポンス修正 ({summary}→{text,title})
- *   - RELAY_LB_COMPLETE_TO_LOG: lb.updateStatus('完了') + _appendToLog() で二重記録
- *   - RELAY_LB_UPDATE_STATUS: lb.updateStatus(id, msg.status) に修正
- *   - RELAY_LB_DELETE_TODO: lb.deleteTodo(id) に移管（_saveAllTodos 廃止）
- *   - _appendToLog(): 完了 TODO を mocka_relay_log に追記
- *   - _saveSessionToBackground(): セッションを background.js に送信
- *   - triggerHandoff(): セッション自動保存を追加
- *   - onUrlChange コールバック: URL変化時にセッション保存 + 新 sessionId 発行
- *   - _syncTurnLimit(): chrome.storage.sync から turnWarningAt を同期
+ * Relay for Claude — relay-main.js v4.0
+ * GPT設計通りに完全書き直し
+ * - localStorage廃止 → chrome.storage.local統一
+ * - debounce observer 1200ms (streaming完了検知)
+ * - autosave: beforeunload / visibilitychange / 60秒定期
+ * - popup → background直通信 (content script依存排除)
+ * - content scriptは「DOM収集専用」に縮退
  */
-
 (() => {
   'use strict';
 
-  const Relay = globalThis.__RELAY__;
-  if (!Relay) { console.error('[Relay] relay-main.js: __RELAY__ not found'); return; }
+  // ─── 多重起動防止 ─────────────────────────────────────────────────────────
+  if (window.__RELAY_MAIN_LOADED__) return;
+  window.__RELAY_MAIN_LOADED__ = true;
 
-  // ─── 起動チェック ──────────────────────────────────────────────────────────
+  // ─── 設定 ─────────────────────────────────────────────────────────────────
+  const TURN_LIMIT        = 20;
+  const STREAM_IDLE_MS    = 1200;  // streaming完了判定
+  const AUTOSAVE_INTERVAL = 60000; // 60秒定期保存
+  const BADGE_UPDATE_MS   = 3000;  // バッジ更新間隔
 
-  function _checkServices() {
-    const required = ['dom', 'watchers', 'logbook', 'ui'];
-    const missing  = required.filter(k => !Relay.services[k]);
-    if (missing.length > 0) {
-      console.error('[Relay] missing services:', missing);
-      return false;
-    }
-    return true;
+  // ─── 状態 ─────────────────────────────────────────────────────────────────
+  let turnCount         = 0;
+  let lastAssistantText = '';
+  let lastSavedHash     = '';
+  let streamTimer       = null;
+  let badgeTimer        = null;
+  let warningShown      = false;
+  let sessionId         = crypto.randomUUID();
+  let messages          = [];
+
+  // ─── セレクター ────────────────────────────────────────────────────────────
+  function getAssistantEl() {
+    return (
+      document.querySelector('[data-is-streaming="false"] .font-claude-message') ||
+      document.querySelector('.font-claude-message') ||
+      document.querySelector('[class*="prose"]') ||
+      null
+    );
   }
 
-  // ─── watchers コールバック接続（ここに集中）─────────────────────────────
+  function getInputEl() {
+    return (
+      document.querySelector('div[contenteditable="true"][data-testid]') ||
+      document.querySelector('div[contenteditable="true"]') ||
+      null
+    );
+  }
 
-  function _connectAllCallbacks() {
-    const w  = Relay.services.watchers;
-    const lb = Relay.services.logbook;
-    const ui = Relay.services.ui;
+  function countTurns() {
+    const els = document.querySelectorAll(
+      '[data-testid*="human-turn"], [data-testid*="assistant-turn"], ' +
+      '.font-user-message, .font-claude-message'
+    );
+    return Math.floor(els.length / 2);
+  }
 
-    // logbook: 安定テキスト → TODO抽出・保存 → バッジ更新
-    w.on('onStableAssistant', text => {
-      lb.processStableText(text).then(saved => {
-        if (saved.length > 0) {
-          console.info('[Relay] logbook: saved', saved.length, 'TODOs');
-          ui.refreshBadge();
+  // ─── ハッシュ (重複保存防止) ───────────────────────────────────────────────
+  function simpleHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+      h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+    }
+    return String(h);
+  }
+
+  // ─── TODO抽出 ─────────────────────────────────────────────────────────────
+  function extractTodos(text) {
+    if (!text) return [];
+    const lines = text.split('\n');
+    const todos = [];
+    const todoPattern = /^[\s\-\*\d\.]*(\[RELAY_TODO\]|TODO[:\s]|次[のに]|確認|修正|実装|追加|対応|fix[:\s]|add[:\s])/i;
+
+    lines.forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed.length < 8) return;
+      if (/^```|^\s*[{};=>]|function |const |let |var |return /.test(trimmed)) return;
+      if (trimmed.match(todoPattern) || trimmed.startsWith('[RELAY_TODO]')) {
+        const content = trimmed.replace(/^\[RELAY_TODO\]\s*/, '').replace(/^[\-\*\d\.]+\s*/, '').trim();
+        if (content.length >= 8) {
+          todos.push(content);
+        }
+      }
+    });
+    return todos.slice(0, 5);
+  }
+
+  // ─── chrome.storage.local へ保存 ──────────────────────────────────────────
+  function saveTodos(todos) {
+    if (!todos.length) return;
+    chrome.runtime.sendMessage({ type: 'RELAY_GET_STATS' }, (stats) => {
+      // 既存TODOを取得してマージ
+      chrome.storage.local.get('relay_todos', (data) => {
+        const existing = data.relay_todos || [];
+        const existingContents = new Set(existing.map(t => t.content));
+        const newTodos = todos
+          .filter(c => !existingContents.has(c))
+          .map((content, i) => {
+            const nums = existing.map(t => parseInt((t.id || '').replace('LB_', ''), 10)).filter(n => !isNaN(n));
+            const nextNum = nums.length ? Math.max(...nums) + i + 1 : existing.length + i + 1;
+            return {
+              id:        'LB_' + String(nextNum).padStart(3, '0'),
+              content,
+              status:    '未着手',
+              priority:  '中',
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+              sessionId
+            };
+          });
+        if (newTodos.length) {
+          chrome.storage.local.set({ relay_todos: [...existing, ...newTodos] });
         }
       });
     });
-
-    // ui: 安定テキスト確定 → バッジ更新
-    w.on('onStableAssistant', () => ui.refreshBadge());
-
-    // ui: ターン変化 → バッジ更新 + 警告
-    w.on('onTurnChange', turn => {
-      ui.refreshBadge();
-      if (turn >= Relay.config.turnWarningAt && !Relay.state.warningShown) {
-        ui.showTurnWarning(turn);
-      }
-    });
-
-    // URL変化: state reset 前に発火 → セッション保存 → 新 sessionId 発行
-    w.on('onUrlChange', async () => {
-      if (Relay.state.turnCount > 0) {
-        await _saveSessionToBackground();
-        console.info('[Relay] session saved on URL change.');
-      }
-      Relay.state.sessionId = Relay.utils.uuid();
-      console.info('[Relay] new session started:', Relay.state.sessionId);
-    });
-
-    console.info('[Relay] all watcher callbacks connected.');
   }
 
-  // ─── 引き継ぎパケット生成 ─────────────────────────────────────────────────
-
-  async function _buildHandoffPacket() {
-    const todos      = await Relay.services.logbook.getTodos({ sessionOnly: true });
-    const open       = todos.filter(t => t.status !== '完了');
-    const allMsgs    = Relay.services.dom.getAllMessages();
-    const recentMsgs = allMsgs.slice(-6);
-
-    const summary = recentMsgs
-      .map(m => `${m.role === 'user' ? 'あなた' : 'Claude'}: ${m.text.slice(0, 200)}`)
-      .join('\n\n');
-
-    const todoSection = open.length > 0
-      ? `未着手TODO:\n${open.map((t, i) => `  ${i + 1}. ${t.content}`).join('\n')}`
-      : '';
-
-    return [
-      `[Relay — continuing from ${Relay.state.turnCount} turns]`,
-      todoSection,
-      summary ? `=== 直前の会話（末尾） ===\n${summary}` : '',
-      `Last message: "${recentMsgs.at(-1)?.text?.slice(0, 120) ?? ''}"`,
-      '--- Please continue from where we left off.',
-    ].filter(Boolean).join('\n\n');
+  // ─── autosave ─────────────────────────────────────────────────────────────
+  function buildSessionData() {
+    return {
+      title:    document.title || 'Untitled',
+      url:      location.href,
+      messages,
+      turns:    turnCount,
+      sessionId
+    };
   }
 
-  // ─── セッションを background.js に保存 ────────────────────────────────────
-
-  async function _saveSessionToBackground() {
-    try {
-      const allMsgs = Relay.services.dom.getAllMessages();
-      if (!allMsgs.length) return;
-
-      const todos = await Relay.services.logbook.getTodos({ sessionOnly: true });
-      const title = (document.title || '').replace(/ - Claude$/, '').trim()
-        || allMsgs[0]?.text?.slice(0, 50)
-        || 'Untitled';
-
-      const payload = {
-        title,
-        url      : location.href,
-        messages : allMsgs.map(m => ({ role: m.role, text: m.text.slice(0, 500) })),
-        logbook  : {
-          decisions : [],
-          todos     : todos.filter(t => t.status !== '完了').map(t => t.content),
-          insights  : [],
-        },
-      };
-
-      chrome.runtime.sendMessage({ type: 'RELAY_SAVE_SESSION', payload }, res => {
-        if (chrome.runtime.lastError) return;
-        if (res?.ok) console.info('[Relay] session saved. id:', res.id);
-      });
-    } catch (e) {
-      console.warn('[Relay] _saveSessionToBackground error:', e);
-    }
+  function autoSave() {
+    const data = buildSessionData();
+    const hash = simpleHash(JSON.stringify(data));
+    if (hash === lastSavedHash) return;
+    if (!messages.length) return;
+    lastSavedHash = hash;
+    chrome.runtime.sendMessage({ type: 'RELAY_SAVE_SESSION', payload: data });
   }
 
-  // ─── 完了 TODO を mocka_relay_log に追記 ──────────────────────────────────
+  // ─── バッジ更新 ────────────────────────────────────────────────────────────
+  function refreshBadge() {
+    chrome.storage.local.get('relay_todos', (data) => {
+      const todos  = (data.relay_todos || []).filter(t => t.status !== '完了');
+      const count  = todos.length;
+      const pct    = TURN_LIMIT > 0 ? turnCount / TURN_LIMIT : 0;
 
-  function _appendToLog(todo) {
-    return new Promise(resolve => {
-      try {
-        chrome.storage.local.get('mocka_relay_log', data => {
-          const log = Array.isArray(data.mocka_relay_log) ? data.mocka_relay_log : [];
-          log.unshift({ ...todo, completed_at: new Date().toISOString() });
-          if (log.length > 200) log.splice(200);
-          chrome.storage.local.set({ mocka_relay_log: log }, () => resolve());
+      let color = '#22c55e'; // 緑
+      if (pct >= 0.8)       color = '#ef4444'; // 赤
+      else if (pct >= 0.5)  color = '#f97316'; // オレンジ
+
+      // バッジ要素
+      let badge = document.getElementById('__relay_badge__');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.id = '__relay_badge__';
+        Object.assign(badge.style, {
+          position:     'fixed',
+          bottom:       '16px',
+          right:        '16px',
+          zIndex:       '2147483647',
+          background:   '#0d0d1a',
+          border:       '1.5px solid ' + color,
+          borderRadius: '20px',
+          padding:      '4px 12px',
+          fontFamily:   'monospace',
+          fontSize:     '12px',
+          fontWeight:   'bold',
+          color:        color,
+          cursor:       'pointer',
+          boxShadow:    '0 2px 8px rgba(0,0,0,0.4)',
+          transition:   'border-color 0.3s, color 0.3s',
+          userSelect:   'none',
         });
-      } catch (_) { resolve(); }
+        badge.addEventListener('click', triggerHandoff);
+        document.body.appendChild(badge);
+      }
+
+      badge.style.borderColor = color;
+      badge.style.color       = color;
+      badge.textContent       = count > 0
+        ? `${turnCount}/${TURN_LIMIT} 📋${count}`
+        : `${turnCount}/${TURN_LIMIT}`;
+
+      // 80%超で点滅
+      if (pct >= 0.8) {
+        badge.style.animation = 'relay-blink 1s step-end infinite';
+        if (!document.getElementById('__relay_blink_style__')) {
+          const s = document.createElement('style');
+          s.id = '__relay_blink_style__';
+          s.textContent = '@keyframes relay-blink{0%,100%{opacity:1}50%{opacity:0.3}}';
+          document.head.appendChild(s);
+        }
+      } else {
+        badge.style.animation = '';
+      }
     });
   }
 
-  // ─── 引き継ぎトリガー ─────────────────────────────────────────────────────
+  // ─── 引き継ぎポップアップ ──────────────────────────────────────────────────
+  function showHandoffPopup() {
+    if (document.getElementById('__relay_popup__')) return;
 
-  async function triggerHandoff() {
-    // セッションを先に保存してからパケット生成
-    await _saveSessionToBackground();
+    chrome.storage.local.get('relay_todos', (data) => {
+      const open = (data.relay_todos || []).filter(t => t.status !== '完了');
+      let todoPart = '';
+      if (open.length) {
+        todoPart = `<div style="font-size:11px;color:#888;margin:8px 0 4px">未完了TODO:</div>
+          <div style="font-size:12px;background:#1a1a2e;border:1px solid #333;border-radius:6px;
+                      padding:8px;max-height:80px;overflow-y:auto;line-height:1.6">
+            ${open.slice(0, 3).map(t => `• ${t.content}`).join('<br>')}
+            ${open.length > 3 ? `<br>他 ${open.length - 3} 件` : ''}
+          </div>`;
+      }
 
-    const packet = await _buildHandoffPacket();
-    await Relay.services.dom.copyToClipboard(packet);
-    Relay.services.ui.showToast('引き継ぎパケットをコピーしました。新しいチャットに貼り付けてください。', 4000);
+      const popup = document.createElement('div');
+      popup.id = '__relay_popup__';
+      Object.assign(popup.style, {
+        position:     'fixed',
+        bottom:       '60px',
+        right:        '20px',
+        zIndex:       '2147483647',
+        background:   '#0d0d1a',
+        border:       '1.5px solid #e2c97e',
+        borderRadius: '12px',
+        padding:      '16px',
+        width:        '260px',
+        fontFamily:   'monospace',
+        boxShadow:    '0 4px 20px rgba(0,0,0,0.5)',
+      });
+      popup.innerHTML = `
+        <div style="color:#e2c97e;font-size:13px;font-weight:bold;margin-bottom:6px">
+          ⚡ Relay: ${turnCount}ターンに達しました
+        </div>
+        <div style="color:#94a3b8;font-size:11px;line-height:1.6;margin-bottom:8px">
+          新しいチャットへ引き継ぐことを推奨します。
+        </div>
+        ${todoPart}
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
+          <button id="__relay_dismiss__"
+            style="background:none;border:1px solid #555;color:#888;border-radius:6px;
+                   padding:6px 14px;cursor:pointer;font-size:12px">後で</button>
+          <button id="__relay_handoff__"
+            style="background:#e2c97e;border:none;color:#0d0d1a;border-radius:6px;
+                   padding:6px 14px;cursor:pointer;font-size:12px;font-weight:bold">
+            新しいチャットへ →
+          </button>
+        </div>`;
+      document.body.appendChild(popup);
 
-    try {
-      chrome.runtime.sendMessage(
-        { type: 'RELAY_OPEN_NEW_CHAT', payload: { text: packet } },
-        res => {
-          if (chrome.runtime.lastError || !res?.ok) {
-            window.open('https://claude.ai/new', '_blank');
-          }
-        }
-      );
-    } catch (_) {
-      window.open('https://claude.ai/new', '_blank');
-    }
+      document.getElementById('__relay_dismiss__')?.addEventListener('click', () => {
+        popup.remove(); warningShown = true;
+      });
+      document.getElementById('__relay_handoff__')?.addEventListener('click', () => {
+        popup.remove(); warningShown = true; triggerHandoff();
+      });
+    });
   }
 
-  Relay.services.handoff = Object.freeze({ trigger: triggerHandoff });
+  // ─── 引き継ぎ実行 ──────────────────────────────────────────────────────────
+  function triggerHandoff() {
+    autoSave();
+    chrome.storage.local.get('relay_todos', (data) => {
+      const open = (data.relay_todos || []).filter(t => t.status !== '完了');
+      const lines = ['[Relay 引き継ぎ]', `セッション: ${sessionId}`, `ターン数: ${turnCount}`];
+      if (open.length) {
+        lines.push('', '未完了TODO:');
+        open.slice(0, 5).forEach(t => lines.push(`- ${t.content}`));
+      }
+      const text = lines.join('\n');
+      chrome.runtime.sendMessage({ type: 'RELAY_OPEN_NEW_CHAT', payload: { text } });
+    });
+  }
 
-  // ─── popup.js → content script メッセージリスナー ────────────────────────
+  // ─── streaming完了検知 (debounce) ─────────────────────────────────────────
+  function onStreamingStable() {
+    const el = getAssistantEl();
+    if (!el) return;
+    const text = el.innerText?.trim() || '';
+    if (!text || text === lastAssistantText) return;
+    lastAssistantText = text;
 
-  chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
-    _handleMessage(msg)
-      .then(result => sendResponse({ ok: true, ...result }))
-      .catch(err   => sendResponse({ ok: false, error: String(err) }));
-    return true;
+    // メッセージ記録
+    messages.push({ role: 'assistant', content: text.slice(0, 2000), ts: Date.now() });
+    if (messages.length > 200) messages.splice(0, messages.length - 200);
+
+    // TODO抽出 → chrome.storage.local保存
+    const todos = extractTodos(text);
+    if (todos.length) saveTodos(todos);
+
+    // ターン数更新
+    const newTurn = countTurns();
+    if (newTurn !== turnCount) {
+      turnCount = newTurn;
+      refreshBadge();
+      if (turnCount >= TURN_LIMIT && !warningShown) {
+        showHandoffPopup();
+      }
+    }
+
+    // autosave
+    autoSave();
+  }
+
+  // ─── MutationObserver ─────────────────────────────────────────────────────
+  const observer = new MutationObserver(() => {
+    clearTimeout(streamTimer);
+    streamTimer = setTimeout(onStreamingStable, STREAM_IDLE_MS);
   });
 
-  async function _handleMessage(msg) {
-    const lb = Relay.services.logbook;
+  observer.observe(document.body, {
+    childList:     true,
+    subtree:       true,
+    characterData: true
+  });
 
-    switch (msg.type) {
+  // ─── autosave トリガー ─────────────────────────────────────────────────────
+  window.addEventListener('beforeunload', autoSave);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') autoSave();
+  });
+  setInterval(autoSave, AUTOSAVE_INTERVAL);
 
-      case 'RELAY_LB_GET_TODOS': {
-        const todos = await lb.getTodos({ sessionOnly: false, includeArchived: false });
-        return { todos };
-      }
+  // ─── バッジ定期更新 ────────────────────────────────────────────────────────
+  setInterval(refreshBadge, BADGE_UPDATE_MS);
 
-      case 'RELAY_LB_ADD_TODO': {
-        const rec = await lb.saveTodo(msg.content, 'manual');
-        return { record: rec };
-      }
+  // ─── メッセージ受信 (background / popup から) ─────────────────────────────
+  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
-      case 'RELAY_LB_ARCHIVE_DONE': {
-        const changed = await lb.archiveDone();
-        return { changed };
-      }
-
-      case 'RELAY_LB_DELETE_TODO': {
-        const deleted = await lb.deleteTodo(msg.id);
-        return { deleted };
-      }
-
-      case 'RELAY_LB_COMPLETE_TO_LOG': {
-        // getTodos で正規化済みレコードを取得してからログへ追記
-        const todos = await lb.getTodos({ includeArchived: true });
-        const todo  = todos.find(t => t.id === msg.id);
-        if (todo) {
-          await lb.updateStatus(msg.id, '完了');
-          await _appendToLog({ ...todo, status: '完了' });
-        }
-        return { done: true };
-      }
-
-      case 'RELAY_LB_UPDATE_STATUS': {
-        await lb.updateStatus(msg.id, msg.status);
-        return { updated: true };
-      }
-
-      case 'RELAY_MANUAL_HANDOFF': {
-        await triggerHandoff();
-        return { triggered: true };
-      }
-
-      case 'RELAY_GET_SUMMARY_FOR_VAULT': {
-        const packet = await _buildHandoffPacket();
-        const title  = (document.title || '').replace(/ - Claude$/, '').trim() || 'Current chat';
-        return { text: packet, title };
-      }
-
-      // background.js が新タブ生成後に転送するテキスト注入
-      case 'RELAY_INJECT': {
-        const text = msg.payload?.text;
-        if (text) {
-          setTimeout(() => {
-            const ok = Relay.services.dom.injectText(text);
-            if (!ok) console.warn('[Relay] RELAY_INJECT: injectText failed.');
-            else     console.info('[Relay] RELAY_INJECT: text injected.');
-          }, 500);
-        }
-        return { injected: !!text };
-      }
-
-      default:
-        return { skipped: true, type: msg.type };
+    if (msg.type === 'RELAY_MANUAL_HANDOFF') {
+      triggerHandoff();
+      sendResponse({ ok: true });
+      return true;
     }
-  }
 
-  // ─── ターン制限を chrome.storage.sync から同期 ────────────────────────────
+    if (msg.type === 'RELAY_INJECT') {
+      const input = getInputEl();
+      if (!input) { sendResponse({ ok: false, error: 'no_input' }); return true; }
+      input.focus();
+      document.execCommand('selectAll');
+      document.execCommand('insertText', false, msg.payload?.text || '');
+      sendResponse({ ok: true });
+      return true;
+    }
 
-  function _syncTurnLimit() {
-    try {
-      chrome.storage.sync.get('mocka_global_prefs', result => {
-        if (chrome.runtime.lastError) return;
-        const limit = result?.mocka_global_prefs?.turnLimit;
-        if (typeof limit === 'number' && limit > 0) {
-          Relay.config.turnWarningAt = limit;
-          console.info('[Relay] turnWarningAt synced to', limit);
+    if (msg.type === 'RELAY_GET_SUMMARY_FOR_VAULT') {
+      const lines = [`セッション: ${sessionId}`, `ターン数: ${turnCount}`, `URL: ${location.href}`];
+      if (messages.length) {
+        lines.push('', '直近のやりとり:');
+        messages.slice(-3).forEach(m => lines.push(`[${m.role}] ${m.content.slice(0, 200)}`));
+      }
+      sendResponse({ text: lines.join('\n'), title: document.title });
+      return true;
+    }
+
+    if (msg.type === 'RELAY_LB_COMPLETE_TO_LOG') {
+      chrome.storage.local.get(['relay_todos', 'mocka_relay_log'], (data) => {
+        let todos = data.relay_todos || [];
+        const log = data.mocka_relay_log || [];
+        const idx = todos.findIndex(t => t.id === msg.id);
+        if (idx !== -1) {
+          const done = { ...todos[idx], status: '完了', completed_at: new Date().toISOString() };
+          todos.splice(idx, 1);
+          log.unshift(done);
+          chrome.storage.local.set({ relay_todos: todos, mocka_relay_log: log });
         }
+        sendResponse({ ok: true });
       });
-    } catch (_) {}
-  }
-
-  // ─── 起動シーケンス ────────────────────────────────────────────────────────
-
-  function _start() {
-    if (!_checkServices()) {
-      console.error('[Relay] startup aborted: services not ready.');
-      return;
+      return true;
     }
 
-    _syncTurnLimit();
-    _connectAllCallbacks();
+    if (msg.type === 'RELAY_LB_UPDATE_STATUS') {
+      chrome.storage.local.get('relay_todos', (data) => {
+        const todos = data.relay_todos || [];
+        const t = todos.find(x => x.id === msg.id);
+        if (t) { t.status = msg.status; t.updatedAt = new Date().toISOString(); }
+        chrome.storage.local.set({ relay_todos: todos });
+        sendResponse({ ok: true });
+      });
+      return true;
+    }
 
-    Relay.services.watchers.assistant.start();
-    Relay.services.watchers.user.start();
-    Relay.services.ui.refreshBadge();
-    Relay.state.initialized = true;
-    console.info('[Relay] ✅ all services started. session:', Relay.state.sessionId);
-  }
+    if (msg.type === 'RELAY_LB_DELETE') {
+      chrome.storage.local.get('relay_todos', (data) => {
+        const todos = (data.relay_todos || []).filter(t => t.id !== msg.id);
+        chrome.storage.local.set({ relay_todos: todos });
+        sendResponse({ ok: true });
+      });
+      return true;
+    }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', _start);
-  } else {
-    _start();
-  }
+    return false;
+  });
+
+  // ─── 起動完了 ─────────────────────────────────────────────────────────────
+  refreshBadge();
+  console.info('[Relay] relay-main.js v4.0 started. session:', sessionId);
 
 })();
