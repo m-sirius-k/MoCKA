@@ -301,38 +301,48 @@ document.getElementById('license-remove-btn')?.addEventListener('click', () => {
 // Load plan on popup open
 loadAndRenderPlan();
 
-// ── AI Target Selector ────────────────────────────────────────────────────────
-(function() {
-  const rows = document.querySelectorAll('.ai-target-row');
-  if (!rows.length) return;
+// ── AI Target Selector ───────────────────────────────────────────────────────
+(function initTargetSelector() {
+  // Settingsタブが表示されるまで待機してからrow取得
+  function bindTargetRows() {
+    const rows = document.querySelectorAll('.ai-target-row');
+    if (!rows.length) return;
 
-  // 保存済み選択を復元
-  chrome.runtime.sendMessage({ type: 'GET_TARGETS' }, (res) => {
-    if (!res || !res.targets) return;
+    // 保存済み選択を復元
+    chrome.runtime.sendMessage({ type: 'GET_TARGETS' }, (res) => {
+      const saved = (res && res.targets) ? res.targets : ['ChatGPT','Gemini','Perplexity','Copilot','Genspark'];
+      rows.forEach(row => {
+        if (saved.includes(row.dataset.ai)) {
+          row.classList.add('checked');
+        } else {
+          row.classList.remove('checked');
+        }
+      });
+    });
+
+    // クリックでtoggle + 保存
     rows.forEach(row => {
-      const ai = row.dataset.ai;
-      if (res.targets.includes(ai)) {
-        row.classList.add('checked');
-      } else {
-        row.classList.remove('checked');
-      }
+      row.addEventListener('click', () => {
+        row.classList.toggle('checked');
+        const selected = Array.from(rows)
+          .filter(r => r.classList.contains('checked'))
+          .map(r => r.dataset.ai);
+        if (selected.length === 0) {
+          row.classList.add('checked');
+          return;
+        }
+        chrome.runtime.sendMessage({ type: 'SET_TARGETS', targets: selected });
+      });
+    });
+  }
+
+  // nav-tab クリック時にもbind（Settingsタブ切替後）
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      setTimeout(bindTargetRows, 50);
     });
   });
 
-  // クリックでtoggle + 保存
-  rows.forEach(row => {
-    row.addEventListener('click', () => {
-      row.classList.toggle('checked');
-      const selected = Array.from(rows)
-        .filter(r => r.classList.contains('checked'))
-        .map(r => r.dataset.ai);
-      // 最低1つは選択を維持
-      if (selected.length === 0) {
-        row.classList.add('checked');
-        return;
-      }
-      chrome.runtime.sendMessage({ type: 'SET_TARGETS', targets: selected });
-    });
-  });
+  // 初期実行
+  bindTargetRows();
 })();
-

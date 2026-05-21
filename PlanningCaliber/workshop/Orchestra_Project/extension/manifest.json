@@ -16,7 +16,8 @@
     "https://chatgpt.com/*",
     "https://gemini.google.com/*",
     "https://www.perplexity.ai/*",
-    "https://copilot.microsoft.com/*"
+    "https://copilot.microsoft.com/*",
+    "https://www.genspark.ai/*"
   ],
   "content_scripts": [
     {
@@ -33,7 +34,8 @@
         "https://chatgpt.com/*",
         "https://gemini.google.com/*",
         "https://www.perplexity.ai/*",
-        "https://copilot.microsoft.com/*"
+        "https://copilot.microsoft.com/*",
+    "https://www.genspark.ai/*"
       ],
       "js": [
         "content_orchestra.js"

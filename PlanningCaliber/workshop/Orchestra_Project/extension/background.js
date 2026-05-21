@@ -142,6 +142,7 @@ const ALL_AI_TARGETS = [
   { name: 'Gemini',     url: 'https://gemini.google.com/app',    domain: 'gemini.google.com' },
   { name: 'Perplexity', url: 'https://www.perplexity.ai',        domain: 'perplexity.ai' },
   { name: 'Copilot',    url: 'https://copilot.microsoft.com',    domain: 'copilot.microsoft.com' },
+  { name: 'Genspark',  url: 'https://www.genspark.ai',           domain: 'genspark.ai' },
 ];
 
 // デフォルト: 全AI有効
