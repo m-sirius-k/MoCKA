@@ -1,270 +1,234 @@
-/**
- * Relay for Claude — content.js v2.0
- * PHI OS based. Single file. DOM collection only.
- * UI: English only.
- */
-(() => {
+// Relay content.js v3.0.0
+// Role: observe claude.ai, count turns, extract TODOs, send to background.js
+
+(function () {
   'use strict';
 
-  if (window.__RELAY_LOADED__) return;
-  window.__RELAY_LOADED__ = true;
+  // -- config --
+  const TURN_WARN_THRESHOLD = 20;
+  const SCAN_INTERVAL_MS    = 3000;
+  const IDLE_WAIT_MS        = 1500; // wait after streaming stops
 
-  // ── Config ────────────────────────────────────────────────────────────────
-  const PRODUCT       = 'relay';
-  const TURN_LIMIT    = 20;
-  const STREAM_IDLE   = 1200;
-  const SAVE_INTERVAL = 60000;
+  // -- TODO extraction patterns --
+  // English: imperative patterns
+  const EN_PATTERNS = [
+    /^\[RELAY_TODO\]\s*(.+)/i,                          // explicit tag (highest priority)
+    /^please\s+(?:make\s+sure\s+to\s+)?(.+)/i,         // Please...
+    /^make\s+sure\s+to\s+(.+)/i,                       // Make sure to...
+    /^do\s+(?:this|that)?\s*(.+)/i,                    // Do ...
+    /^could\s+you\s+(.+)/i,                            // Could you...
+    /^would\s+you\s+(.+)/i,                            // Would you...
+    /^(?:complete|finish|update|submit|add|fix|check|review|create|write|send|remove|delete|deploy|test|verify|confirm)\s+(.+)/i,
+  ];
+  // Japanese: request/instruction patterns
+  const JA_PATTERNS = [
+    /^TODO[:：]?\s*(.+)/i,                              // TODO: ...
+    /(.+)[\u3092\u3092](?:todo\u3057\u3066|todo\u767b\u9332\u3057\u3066|\u30bf\u30b9\u30af\u306b\u8ffd\u52a0\u3057\u3066)/,
+    /(.+)[\u3057\u3066\u3066](?:\u304a\u3044\u3066|\u304a\u304f|\u304f\u3060\u3055\u3044|\u4e0b\u3055\u3044)/,
+    /(.+)(?:\u306e\u5bfe\u5fdc|\u3092\u5b9f\u65bd|\u3092\u78ba\u8a8d|\u3092\u4fee\u6b63|\u3092\u8ffd\u52a0|\u3092\u524a\u9664|\u3092\u66f4\u65b0)(?:\u3057\u3066|\u3059\u308b|\u304a\u9858\u3044)/,
+    /\u3053\u306e\u30d7\u30e9\u30f3\u3067(?:\u884c\u304d|\u3044\u304d)\u307e\u3059[^\S\n]*todo\u3057\u3066/,
+    /\u4eca\u306e\u8a71[^\S\n]*todo\u3057\u3066\u304a\u3044\u3066/,
+  ];
 
-  // ── State ─────────────────────────────────────────────────────────────────
-  let turnCount     = 0;
-  let lastText      = '';
-  let lastHash      = '';
-  let streamTimer   = null;
-  let warningShown  = false;
-  let sessionId     = crypto.randomUUID();
-  let messages      = [];
+  // -- state --
+  let lastSeenMessages = new Set();
+  let turnCount        = 0;
+  let warnShown        = false;
+  let lastScanTime     = 0;
+  let scanTimer        = null;
 
-  // ── DOM helpers ───────────────────────────────────────────────────────────
-  const $ = s => document.querySelector(s);
-
-  function getAssistantText() {
-    const el = $('[data-is-streaming="false"] .font-claude-response') ||
-               $('.font-claude-response') ||
-               $('[class*="prose"]');
-    return el ? (el.textContent || el.innerText || '').trim() : '';
+  // -- DOM helpers --
+  function getMessageEls() {
+    // get conversation message elements
+    return Array.from(document.querySelectorAll(
+      '[data-testid="human-turn"], [data-testid="ai-turn"], ' +
+      '.font-claude-message, .font-user-message, ' +
+      '.font-claude-response'
+    ));
   }
 
-  function getInput() {
-    return $('div[contenteditable="true"][data-testid]') ||
-           $('div[contenteditable="true"]');
+  function getStableText(el) {
+    // check not streaming
+    const streaming = el.closest('[data-is-streaming="true"]');
+    if (streaming) return null;
+    return (el.textContent || el.innerText || '').trim();
   }
 
-  function countTurns() {
-    return document.querySelectorAll('[data-testid="user-message"]').length;
+  function isAssistantEl(el) {
+    const turn = el.closest('[data-testid="ai-turn"]');
+    if (turn) return true;
+    if (el.classList.contains('font-claude-message')) return true;
+    if (el.classList.contains('font-claude-response')) return true;
+    return false;
   }
 
-  function hash(str) {
-    let h = 0;
-    for (let i = 0; i < str.length; i++)
-      h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
-    return String(h);
-  }
-
-  // ── TODO extraction ───────────────────────────────────────────────────────
+  // -- extract TODOs --
   function extractTodos(text) {
-    // Remove code blocks first
-    const clean = text.replace(/```[\s\S]*?```/g, '').replace(/`[^`]+`/g, '');
-    const lines = clean.split('\n');
     const results = [];
+    const lines = text.split(/\n/);
 
-    const pattern = /^[-*\d.\s]*(\[RELAY_TODO\]|TODO[:\s]|Please\s+(confirm|check|verify|fix|add|update)|Next\s+step|Action\s+item)/i;
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line || line.length < 5 || line.length > 200) continue;
 
-    function isCode(line) {
-      if (/^(const|let|var|function|return|if|for|class|import|export)\s/.test(line)) return true;
-      if (/Write-Host|Get-Content|Copy-Item|chrome\.|console\.|document\./.test(line)) return true;
-      if (/^(PS |cd |git |python |pip |npm |\$)/.test(line)) return true;
-      const syms = (line.match(/[^a-zA-Z0-9぀-鿿\s]/g) || []).length;
-      return syms / Math.max(line.length, 1) > 0.35;
-    }
+      // skip code-like lines
+      if (/^[`{};=<>]/.test(line)) continue;
+      if (/\bfunction\b|\bconst\b|\blet\b|\bvar\b|\breturn\b/.test(line)) continue;
+      // skip high-symbol-density lines
+      const symbolCount = (line.match(/[^a-zA-Z0-9\u3040-\u9FFF\s]/g) || []).length;
+      if (symbolCount / line.length > 0.3) continue;
 
-    for (const line of lines) {
-      const t = line.trim();
-      if (t.length < 12 || isCode(t)) continue;
-      if (t.match(pattern) || t.startsWith('[RELAY_TODO]')) {
-        const content = t.replace(/^\[RELAY_TODO\]\s*/, '').replace(/^[-*\d.]+\s*/, '').trim();
-        if (content.length >= 12) results.push(content);
-        if (results.length >= 5) break;
+      // match English patterns
+      for (const pat of EN_PATTERNS) {
+        const m = line.match(pat);
+        if (m) {
+          const body = (m[1] || line).trim();
+          if (body.length >= 5) {
+            results.push({ text: body, source: 'en_pattern', raw: line });
+            break;
+          }
+        }
+      }
+      // match Japanese patterns
+      for (const pat of JA_PATTERNS) {
+        const m = line.match(pat);
+        if (m) {
+          const body = (m[1] || line).trim();
+          if (body.length >= 3) {
+            results.push({ text: body, source: 'ja_pattern', raw: line });
+            break;
+          }
+        }
       }
     }
     return results;
   }
 
-  // ── Send to background ────────────────────────────────────────────────────
-  function send(type, payload) {
-    if (typeof chrome === 'undefined' || !chrome.runtime) return;
-    chrome.runtime.sendMessage({ type, payload }).catch(() => {});
-  }
+  // -- scan --
+  function scan() {
+    const now = Date.now();
+    if (now - lastScanTime < IDLE_WAIT_MS) return;
+    lastScanTime = now;
 
-  // ── Auto save ─────────────────────────────────────────────────────────────
-  function autoSave() {
-    if (!messages.length) return;
-    const data = { product: PRODUCT, title: document.title, url: location.href,
-                   messages, turns: turnCount, sessionId,
-                   id: sessionId, created_at: new Date().toISOString() };
-    const h = hash(JSON.stringify(data));
-    if (h === lastHash) return;
-    lastHash = h;
-    send('RELAY_AUTO_SAVE', data);
-  }
+    const els = getMessageEls();
+    if (!els.length) return;
 
-  // ── Badge ─────────────────────────────────────────────────────────────────
-  function refreshBadge() {
-    if (typeof chrome === 'undefined' || !chrome.storage) return;
-    chrome.storage.local.get('phi_todos', (data) => {
-      if (chrome.runtime.lastError) return;
-      const open = ((data.phi_todos) || []).filter(t => t.status !== 'done');
-      const pct  = turnCount / TURN_LIMIT;
-      const color = pct >= 0.8 ? '#ef4444' : pct >= 0.5 ? '#f97316' : '#22c55e';
+    let newTurnCount = 0;
+    const newTodos   = [];
 
-      let badge = document.getElementById('__relay_badge__');
-      if (!badge) {
-        badge = document.createElement('div');
-        badge.id = '__relay_badge__';
-        Object.assign(badge.style, {
-          position: 'fixed', bottom: '16px', right: '16px',
-          zIndex: '2147483647', background: '#0d0d1a',
-          border: '1.5px solid ' + color, borderRadius: '20px',
-          padding: '4px 12px', fontFamily: 'monospace',
-          fontSize: '12px', fontWeight: 'bold', color,
-          cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.4)',
-          userSelect: 'none', transition: 'all 0.3s',
-        });
-        badge.addEventListener('click', showHandoffPopup);
-        document.body.appendChild(badge);
-      }
-      badge.style.borderColor = color;
-      badge.style.color = color;
-      badge.textContent = open.length
-        ? `${turnCount}/${TURN_LIMIT} 📋${open.length}`
-        : `${turnCount}/${TURN_LIMIT}`;
+    for (const el of els) {
+      const text = getStableText(el);
+      if (!text) continue;
 
-      if (pct >= 0.8) {
-        if (!document.getElementById('__relay_style__')) {
-          const s = document.createElement('style');
-          s.id = '__relay_style__';
-          s.textContent = '@keyframes relay-blink{0%,100%{opacity:1}50%{opacity:0.3}}';
-          document.head.appendChild(s);
+      // count turns by unique message ID or text
+      const key = el.dataset?.messageId || text.slice(0, 80);
+      if (!lastSeenMessages.has(key)) {
+        lastSeenMessages.add(key);
+        newTurnCount++;
+
+        // extract TODOs from both assistant and user messages
+        const todos = extractTodos(text);
+        for (const t of todos) {
+          t.isAssistant = isAssistantEl(el);
+          newTodos.push(t);
         }
-        badge.style.animation = 'relay-blink 1s step-end infinite';
-      } else {
-        badge.style.animation = '';
       }
-    });
-  }
+    }
 
-  // ── Handoff popup ─────────────────────────────────────────────────────────
-  function showHandoffPopup() {
-    if (document.getElementById('__relay_popup__')) return;
-    chrome.storage.local.get('phi_todos', (data) => {
-      const open = ((data.phi_todos) || []).filter(t => t.status !== 'done');
-      const todoHtml = open.length
-        ? `<div style="font-size:11px;color:#888;margin:8px 0 4px">Open TODOs:</div>
-           <div style="font-size:12px;background:#1a1a2e;border:1px solid #333;
-                       border-radius:6px;padding:8px;max-height:80px;overflow-y:auto">
-             ${open.slice(0, 3).map(t => `• ${t.content}`).join('<br>')}
-             ${open.length > 3 ? `<br>+${open.length - 3} more` : ''}
-           </div>` : '';
+    // update turn count
+    if (newTurnCount > 0) {
+      turnCount = lastSeenMessages.size;
+      chrome.runtime.sendMessage({
+        type: 'RELAY_TURN_UPDATE',
+        payload: { count: turnCount }
+      }).catch(() => {});
 
-      const popup = document.createElement('div');
-      popup.id = '__relay_popup__';
-      Object.assign(popup.style, {
-        position: 'fixed', bottom: '60px', right: '20px',
-        zIndex: '2147483647', background: '#0d0d1a',
-        border: '1.5px solid #e2c97e', borderRadius: '12px',
-        padding: '16px', width: '260px', fontFamily: 'monospace',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
-      });
-      popup.innerHTML = `
-        <div style="color:#e2c97e;font-size:13px;font-weight:bold;margin-bottom:6px">
-          ⚡ Relay: ${turnCount} turns reached
-        </div>
-        <div style="color:#94a3b8;font-size:11px;line-height:1.6;margin-bottom:8px">
-          Context is getting long. Continue in a new chat?
-        </div>
-        ${todoHtml}
-        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px">
-          <button id="__relay_dismiss__"
-            style="background:none;border:1px solid #555;color:#888;
-                   border-radius:6px;padding:6px 14px;cursor:pointer;font-size:12px">
-            Later
-          </button>
-          <button id="__relay_handoff__"
-            style="background:#e2c97e;border:none;color:#0d0d1a;
-                   border-radius:6px;padding:6px 14px;cursor:pointer;
-                   font-size:12px;font-weight:bold">
-            New Chat →
-          </button>
-        </div>`;
-      document.body.appendChild(popup);
-      document.getElementById('__relay_dismiss__')
-        ?.addEventListener('click', () => { popup.remove(); warningShown = true; });
-      document.getElementById('__relay_handoff__')
-        ?.addEventListener('click', () => { popup.remove(); warningShown = true; triggerHandoff(); });
-    });
-  }
-
-  // ── Handoff ───────────────────────────────────────────────────────────────
-  function triggerHandoff() {
-    autoSave();
-    chrome.storage.local.get('phi_todos', (data) => {
-      const open = ((data.phi_todos) || []).filter(t => t.status !== 'done');
-      const lines = [
-        '[Relay Handoff]',
-        `Session: ${sessionId}`,
-        `Turns: ${turnCount}`,
-        `URL: ${location.href}`,
-      ];
-      if (open.length) {
-        lines.push('', 'Open TODOs:');
-        open.slice(0, 5).forEach(t => lines.push(`- ${t.content}`));
+      // threshold warning
+      if (turnCount >= TURN_WARN_THRESHOLD && !warnShown) {
+        warnShown = true;
+        showWarning();
       }
-      send('RELAY_OPEN_NEW_CHAT', { text: lines.join('\n') });
-    });
+    }
+
+    // send new TODOs
+    for (const t of newTodos) {
+      chrome.runtime.sendMessage({
+        type: 'RELAY_ADD_TODO',
+        payload: {
+          text:        t.text,
+          source:      t.isAssistant ? 'assistant' : 'user',
+          pattern:     t.source,
+          created_at:  new Date().toISOString(),
+          url:         location.href
+        }
+      }).catch(() => {});
+    }
   }
 
-  // ── Streaming complete ────────────────────────────────────────────────────
-  function onStreamStable() {
-    const text = getAssistantText();
-    if (!text || text === lastText) return;
-    lastText = text;
-
-    messages.push({ role: 'assistant', content: text.slice(0, 2000), ts: Date.now() });
-    if (messages.length > 200) messages.splice(0, messages.length - 200);
-
-    const todos = extractTodos(text);
-    if (todos.length) send('RELAY_SAVE_TODOS', { todos, sessionId });
-
-    const t = countTurns();
-    if (t !== turnCount) {
-      turnCount = t;
-      refreshBadge();
-      if (turnCount >= TURN_LIMIT && !warningShown) showHandoffPopup();
-    }
-
-    autoSave();
+  // -- warning popup --
+  function showWarning() {
+    const div = document.createElement('div');
+    div.id = 'relay-warn';
+    div.style.cssText = [
+      'position:fixed', 'bottom:20px', 'right:20px', 'z-index:999999',
+      'background:#1a1a2e', 'color:#e0e0e0', 'padding:16px 20px',
+      'border-radius:10px', 'border:1px solid #ff6b6b',
+      'font-family:system-ui,sans-serif', 'font-size:14px',
+      'box-shadow:0 4px 20px rgba(0,0,0,.5)', 'max-width:320px'
+    ].join(';');
+    div.innerHTML = `
+      <div style="font-weight:bold;color:#ff6b6b;margin-bottom:8px">
+        ⚠️ Relay: ${turnCount} turns
+      </div>
+      <div style="margin-bottom:12px;line-height:1.5">
+        Context is getting long.<br>Consider starting a new chat.
+      </div>
+      <button id="relay-warn-close"
+        style="background:#ff6b6b;color:#fff;border:none;padding:6px 14px;
+               border-radius:6px;cursor:pointer;font-size:13px">
+        Got it
+      </button>
+    `;
+    document.body.appendChild(div);
+    div.querySelector('#relay-warn-close').onclick = () => div.remove();
+    setTimeout(() => div.remove(), 15000);
   }
 
-  // ── MutationObserver ──────────────────────────────────────────────────────
-  new MutationObserver(() => {
-    clearTimeout(streamTimer);
-    streamTimer = setTimeout(onStreamStable, STREAM_IDLE);
-  }).observe(document.body, { childList: true, subtree: true, characterData: true });
-
-  // ── Auto save triggers ────────────────────────────────────────────────────
-  window.addEventListener('beforeunload', autoSave);
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') autoSave();
-  });
-  setInterval(autoSave, SAVE_INTERVAL);
-  setInterval(refreshBadge, 3000);
-
-  // ── Message listener ──────────────────────────────────────────────────────
-  chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-    if (msg.type === 'RELAY_INJECT') {
-      const el = getInput();
-      if (!el) { sendResponse({ ok: false }); return true; }
-      el.focus();
-      document.execCommand('selectAll');
-      document.execCommand('insertText', false, msg.payload?.text || '');
-      sendResponse({ ok: true });
-      return true;
+  // -- URL change detection (reset on new chat) --
+  let lastUrl = location.href;
+  function checkUrlChange() {
+    if (location.href !== lastUrl) {
+      lastUrl      = location.href;
+      turnCount    = 0;
+      warnShown    = false;
+      lastSeenMessages.clear();
+      chrome.runtime.sendMessage({
+        type: 'RELAY_TURN_UPDATE',
+        payload: { count: 0 }
+      }).catch(() => {});
     }
-    if (msg.type === 'RELAY_MANUAL_HANDOFF') {
-      triggerHandoff(); sendResponse({ ok: true }); return true;
-    }
-    return false;
+  }
+
+  // -- MutationObserver --
+  const observer = new MutationObserver(() => {
+    checkUrlChange();
+    clearTimeout(scanTimer);
+    scanTimer = setTimeout(scan, IDLE_WAIT_MS);
   });
 
-  refreshBadge();
-  console.info('[Relay] content.js v2.0 loaded. session:', sessionId);
+  observer.observe(document.body, {
+    childList: true,
+    subtree:   true
+  });
+
+  // periodic scan (fallback)
+  setInterval(() => {
+    checkUrlChange();
+    scan();
+  }, SCAN_INTERVAL_MS);
+
+  // initial scan
+  setTimeout(scan, 2000);
+
+  console.log('[Relay] v3.0.0 content.js started');
 })();

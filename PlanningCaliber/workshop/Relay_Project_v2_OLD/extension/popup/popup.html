@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relay for Claude</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { width: 320px; min-height: 400px; background: #0d0d1a; color: #e2e8f0;
+           font-family: 'Segoe UI', system-ui, sans-serif; font-size: 13px; }
+    .header { padding: 12px 16px; border-bottom: 1px solid #1e293b;
+              display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: bold; color: #e2c97e; font-size: 14px; }
+    .tier-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px;
+                  font-weight: bold; }
+    .tier-free { background: #1e293b; color: #64748b; }
+    .tier-pro  { background: #854d0e; color: #fef08a; }
+    .tabs { display: flex; border-bottom: 1px solid #1e293b; }
+    .tab { flex: 1; padding: 8px 4px; text-align: center; cursor: pointer;
+           font-size: 11px; color: #64748b; border: none; background: none;
+           transition: color 0.2s; }
+    .tab.active { color: #e2c97e; border-bottom: 2px solid #e2c97e; }
+    .panel { display: none; padding: 12px 16px; }
+    .panel.active { display: block; }
+    .stat-row { display: flex; justify-content: space-around; margin-bottom: 12px; }
+    .stat { text-align: center; }
+    .stat-val { font-size: 24px; font-weight: bold; color: #e2c97e; }
+    .stat-label { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .btn { width: 100%; padding: 8px; border-radius: 6px; border: none;
+           cursor: pointer; font-size: 12px; font-weight: bold; margin-top: 8px; }
+    .btn-primary { background: #e2c97e; color: #0d0d1a; }
+    .btn-secondary { background: #1e293b; color: #94a3b8; }
+    .todo-item { background: #1e293b; border-radius: 6px; padding: 8px 10px;
+                 margin-bottom: 6px; }
+    .todo-content { font-size: 12px; color: #e2e8f0; margin-bottom: 4px; }
+    .todo-actions { display: flex; gap: 6px; }
+    .todo-btn { padding: 2px 8px; border-radius: 4px; border: 1px solid #334155;
+                background: none; color: #94a3b8; font-size: 10px; cursor: pointer; }
+    .todo-btn:hover { background: #334155; }
+    .todo-input-wrap { display: flex; gap: 6px; margin-bottom: 8px; }
+    .todo-input { flex: 1; background: #1e293b; border: 1px solid #334155;
+                  border-radius: 6px; padding: 6px 8px; color: #e2e8f0;
+                  font-size: 12px; outline: none; }
+    .log-item { border-bottom: 1px solid #1e293b; padding: 8px 0; font-size: 12px; }
+    .log-done { color: #22c55e; font-size: 10px; }
+    .session-item { background: #1e293b; border-radius: 6px; padding: 8px 10px;
+                    margin-bottom: 6px; cursor: pointer; }
+    .session-title { font-size: 12px; color: #e2e8f0; }
+    .session-meta { font-size: 10px; color: #64748b; margin-top: 2px; }
+    .empty { color: #64748b; font-size: 12px; text-align: center;
+             padding: 24px 0; }
+    .settings-row { display: flex; justify-content: space-between;
+                    align-items: center; margin-bottom: 10px; }
+    .settings-label { font-size: 12px; color: #94a3b8; }
+    .settings-input { background: #1e293b; border: 1px solid #334155;
+                      border-radius: 6px; padding: 4px 8px; color: #e2e8f0;
+                      font-size: 12px; width: 140px; outline: none; }
+    .license-status { font-size: 11px; margin-top: 4px; }
+    .license-ok  { color: #22c55e; }
+    .license-err { color: #ef4444; }
+
+    /* Toggle switch */
+    .toggle-wrap { display: flex; justify-content: space-between;
+                   align-items: center; margin-bottom: 10px; }
+    .toggle-label { font-size: 12px; color: #94a3b8; }
+    .toggle-label small { display: block; font-size: 10px; color: #475569; margin-top: 2px; }
+    .toggle-switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background: #1e293b; border: 1px solid #334155; border-radius: 22px; transition: .25s;
+    }
+    .toggle-slider:before {
+      position: absolute; content: ""; height: 16px; width: 16px;
+      left: 2px; bottom: 2px; background: #475569; border-radius: 50%; transition: .25s;
+    }
+    input:checked + .toggle-slider { background: #166534; border-color: #22c55e; }
+    input:checked + .toggle-slider:before { background: #22c55e; transform: translateX(18px); }
+    .toggle-status { font-size: 10px; margin-top: 2px; }
+    .toggle-status.on  { color: #22c55e; }
+    .toggle-status.off { color: #f97316; }
+    .section-divider { border-color: #1e293b; margin: 12px 0; }
+    .section-title { font-size: 10px; color: #475569; text-transform: uppercase;
+                     letter-spacing: 0.08em; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">⚡ Relay</span>
+    <span class="tier-badge tier-free" id="tier-badge">FREE</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="home">Home</button>
+    <button class="tab" data-tab="todos">TODOs</button>
+    <button class="tab" data-tab="log">Log</button>
+    <button class="tab" data-tab="logbook">Logbook</button>
+    <button class="tab" data-tab="settings">⚙</button>
+  </div>
+
+  <!-- Home -->
+  <div class="panel active" id="panel-home">
+    <div class="stat-row">
+      <div class="stat">
+        <div class="stat-val" id="stat-sessions">0</div>
+        <div class="stat-label">Sessions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="stat-messages">0</div>
+        <div class="stat-label">Messages</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val" id="stat-todos">0</div>
+        <div class="stat-label">TODOs</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="btn-handoff">Continue in New Chat →</button>
+    <button class="btn btn-secondary" style="margin-top:6px" id="btn-view-todos">View TODOs</button>
+  </div>
+
+  <!-- TODOs -->
+  <div class="panel" id="panel-todos">
+    <div class="todo-input-wrap">
+      <input class="todo-input" id="todo-input" placeholder="Add a TODO...">
+      <button class="todo-btn" id="btn-add-todo" style="padding:4px 10px">Add</button>
+    </div>
+    <div id="todo-list"><div class="empty">No TODOs yet.</div></div>
+  </div>
+
+  <!-- Log -->
+  <div class="panel" id="panel-log">
+    <div id="log-count-label" style="font-size:11px;color:#64748b;margin-bottom:8px">
+      Completed: <span id="log-count">0</span>
+    </div>
+    <div id="log-list"><div class="empty">No completed TODOs.</div></div>
+  </div>
+
+  <!-- Logbook -->
+  <div class="panel" id="panel-logbook">
+    <div id="logbook-list"><div class="empty">No sessions yet.</div></div>
+  </div>
+
+  <!-- Settings -->
+  <div class="panel" id="panel-settings">
+
+    <!-- General -->
+    <div class="section-title">General</div>
+    <div class="settings-row">
+      <span class="settings-label">Turn limit</span>
+      <input class="settings-input" type="number" id="turn-limit" value="20" min="5" max="100">
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- MoCKA Integration -->
+    <div class="section-title">MoCKA Integration</div>
+    <div class="toggle-wrap">
+      <div class="toggle-label">
+        Relay Mode
+        <small>Disable MoCKA turn counter<br>and use Relay instead</small>
+      </div>
+      <div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="relay-mode-toggle">
+          <span class="toggle-slider"></span>
+        </label>
+        <div class="toggle-status" id="relay-mode-status"></div>
+      </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- License -->
+    <div class="section-title">License</div>
+    <div class="settings-row">
+      <span class="settings-label">License key</span>
+      <input class="settings-input" type="text" id="license-input" placeholder="RELAY-PRO-...">
+    </div>
+    <button class="btn btn-secondary" id="btn-verify-license">Activate Pro</button>
+    <div class="license-status" id="license-status"></div>
+
+    <hr class="section-divider">
+
+    <!-- Export -->
+    <div class="section-title">Export</div>
+    <button class="btn btn-secondary" id="btn-export-sessions">Export Sessions (JSON)</button>
+    <button class="btn btn-secondary" style="margin-top:6px" id="btn-export-todos">Export TODOs (JSON)</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

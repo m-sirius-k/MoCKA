@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Relay for Claude",
+  "short_name": "Relay",
+  "version": "2.0.0",
+  "description": "Auto-continue Claude conversations. Track TODOs, save session history, and hand off context to new chats.",
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "downloads",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://claude.ai/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Relay for Claude"
+  }
+}
