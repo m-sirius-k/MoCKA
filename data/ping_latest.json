@@ -40,27 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-21T09:18:39.486396",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -1.0,
-    "danger_rate": 0.0,
-    "success_rate": 1.0,
-    "text": "決済用リンクの支払い回数を制限する\n\n決済用リンクの支払い回数を制限することができます。たとえば、在庫が限られている場合や、リンクを一度だけ使用したい場合に制限",
-    "top_events": [
-      {
-        "verdict": "SUCCESS",
-        "when": "2026-04-10",
-        "why": "",
-        "how": "",
-        "note": "実装完了,Layer0,Layer1,Layer2,essence,ping,DNA_v2,commit",
-        "recur": 0,
-        "matched": [
-          "完了"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-21T02:13:30.454Z"
-  }
+  "generated_at": "2026-05-21T16:37:22.863337"
 }
