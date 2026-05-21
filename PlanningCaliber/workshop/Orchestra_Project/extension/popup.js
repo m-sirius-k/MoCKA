@@ -172,3 +172,18 @@ setInterval(() => {
   loadStats();
   loadMessages(currentQuery);
 }, 2000);
+
+// Tab navigation
+document.querySelectorAll('[data-tab]').forEach(function(el) {
+  el.addEventListener('click', function() {
+    var tab = this.getAttribute('data-tab');
+    var mainPanel = document.getElementById('main-panel');
+    var settingsPanel = document.getElementById('settings-panel');
+    var navMain = document.getElementById('nav-main');
+    var navSettings = document.getElementById('nav-settings');
+    if (mainPanel) mainPanel.classList.toggle('hidden', tab !== 'main');
+    if (settingsPanel) settingsPanel.classList.toggle('active', tab === 'settings');
+    if (navMain) navMain.classList.toggle('active', tab === 'main');
+    if (navSettings) navSettings.classList.toggle('active', tab === 'settings');
+  });
+});

@@ -308,6 +308,88 @@
   }
   .select-box:hover, .select-box:focus { border-color: var(--accent); }
   .highlight { background: rgba(232,255,71,0.2); border-radius: 2px; }
+
+  /* NAV TABS */
+  .nav-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .nav-tab {
+    flex: 1;
+    padding: 8px 0;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: center;
+    border-bottom: 2px solid transparent;
+    transition: all 0.12s;
+  }
+  .nav-tab.active { color: var(--accent); border-color: var(--accent); }
+  .nav-tab:hover { color: var(--text); }
+
+  /* SETTINGS PANEL */
+  .settings-panel {
+    display: none;
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .settings-panel.active { display: flex; }
+  .main-panel { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+  .main-panel.hidden { display: none; }
+
+  .settings-section {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .settings-section-title {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .plan-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .plan-row:last-child { border-bottom: none; }
+  .plan-row-info { flex: 1; }
+  .plan-row-name { font-size: 11px; font-weight: 600; color: var(--text); }
+  .plan-row-name.accent { color: var(--accent); }
+  .plan-row-name.gold { color: #c9a84c; }
+  .plan-row-desc { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+  .plan-row-price { font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .plan-row-price.gold { color: #c9a84c; }
+  .plan-btn {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--muted);
+    font-family: "Syne", sans-serif; font-size: 9px; font-weight: 600;
+    padding: 5px 10px; cursor: pointer; text-decoration: none;
+    display: inline-block; letter-spacing: 0.3px; transition: all 0.12s; white-space: nowrap;
+  }
+  .plan-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .plan-btn.primary { background: var(--accent); border-color: var(--accent); color: #000; }
+  .plan-btn.gold-btn { background: #c9a84c; border-color: #c9a84c; color: #000; }
+  .launch-badge-s {
+    display: inline-block; background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.35); border-radius: 3px;
+    font-size: 9px; color: #c9a84c; padding: 1px 6px; letter-spacing: 0.4px; margin-left: 4px;
+  }
+  .settings-note { font-size: 10px; color: var(--muted); padding: 10px 12px; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -317,6 +399,12 @@
   <div class="header-title">ORCHESTRA</div>
 </div>
 
+
+<div class="nav-tabs">
+  <div class="nav-tab active" id="nav-main" data-tab="main">◈ Library</div>
+  <div class="nav-tab" id="nav-settings" data-tab="settings">⚙ Settings</div>
+</div>
+<div class="main-panel" id="main-panel">
 <div class="stats-bar">
   <div class="stat">
     <div class="stat-val" id="stat-total">—</div>
@@ -372,5 +460,75 @@
 </div>
 
 <script src="popup.js"></script>
+</div><!-- /main-panel -->
+
+<div class="settings-panel" id="settings-panel">
+
+  <!-- FREE: 現在のプラン -->
+  <div class="settings-section">
+    <div class="settings-section-title">Current Plan</div>
+    <div class="plan-row">
+      <div class="plan-row-info">
+        <div class="plan-row-name accent">Free <span style="background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.3);border-radius:3px;font-size:9px;color:var(--accent);padding:1px 6px;margin-left:4px">ACTIVE</span></div>
+        <div class="plan-row-desc">Save &amp; search conversations · CSV/JSON export · No time limit</div>
+      </div>
+      <div class="plan-row-price">$0</div>
+    </div>
+    <div class="settings-note">The Free plan is fully functional — no features are locked, no nudges to upgrade.<br>Orchestra works completely out of the box, forever, at no cost.</div>
+  </div>
+
+  <!-- UPGRADE OPTIONS -->
+  <div class="settings-section">
+    <div class="settings-section-title">Upgrade — makes it even more powerful</div>
+
+    <div class="plan-row">
+      <div class="plan-row-info">
+        <div class="plan-row-name accent">Orchestra Pro</div>
+        <div class="plan-row-desc">5 AI parallel Orchestration · assign roles · one right-click to launch</div>
+      </div>
+      <div class="plan-row-price">$5/mo</div>
+      <a href="https://buy.stripe.com/3cI8wPgW910TfUG02P2ZO02" target="_blank" class="plan-btn primary">Get Pro →</a>
+    </div>
+
+    <div class="plan-row">
+      <div class="plan-row-info">
+        <div class="plan-row-name accent">Pro → One Upgrade</div>
+        <div class="plan-row-desc">Already on Pro? Pay only the difference to unlock full autonomy</div>
+      </div>
+      <div class="plan-row-price">+$5/mo</div>
+      <a href="https://buy.stripe.com/8x2dR95drdNFgYK02P2ZO03" target="_blank" class="plan-btn">Upgrade →</a>
+    </div>
+
+    <div class="plan-row">
+      <div class="plan-row-info">
+        <div class="plan-row-name gold">Orchestra One</div>
+        <div class="plan-row-desc">Everything · No API key · Fully autonomous · 100% local</div>
+      </div>
+      <div class="plan-row-price gold">$10/mo</div>
+      <a href="https://buy.stripe.com/dRmcN535j5h9bEq7vh2ZO00" target="_blank" class="plan-btn">Get One →</a>
+    </div>
+
+    <div class="plan-row">
+      <div class="plan-row-info">
+        <div class="plan-row-name gold">One Launch Edition <span class="launch-badge-s">🎉 20% OFF</span></div>
+        <div class="plan-row-desc">Same as One · Lock in $8/mo for life · 500 copies only</div>
+      </div>
+      <div class="plan-row-price gold">$8/mo</div>
+      <a href="https://buy.stripe.com/aFa5kDfS5dNF4bYdTF2ZO01" target="_blank" class="plan-btn gold-btn">Get Launch →</a>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="settings-section">
+    <div class="settings-section-title">About</div>
+    <div class="plan-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+      <div class="plan-row-name">Orchestra</div>
+      <div class="plan-row-desc">100% local · No server · No tracking · No API keys stored<br>Uninstall = all data gone · Your conversations stay yours.</div>
+      <a href="https://m-sirius-k.github.io/sirius-lab/" target="_blank" class="plan-btn" style="margin-top:6px">Website →</a>
+    </div>
+  </div>
+
+</div><!-- /settings-panel -->
+
 </body>
 </html>
