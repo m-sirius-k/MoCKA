@@ -1,0 +1,9 @@
+{
+  "name": "com.sirius_lab.orchestra_one",
+  "description": "Orchestra One - Playwright autonomous host for 5-AI orchestration",
+  "path": "C:\\Users\\sirok\\orchestra_one\\run_host.bat",
+  "type": "stdio",
+  "allowed_origins": [
+    "chrome-extension://REPLACE_WITH_EXTENSION_ID/"
+  ]
+}

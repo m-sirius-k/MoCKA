@@ -273,7 +273,7 @@
               proBtn.disabled = false;
             }, 60000);
           } else {
-            showNotification('⚠ ' + (res?.error || 'Orchestra起動失敗'), '#ff4444');
+            showNotification('⚠ 'Orchestra: operation completed.'Orchestra起動失敗'), '#ff4444');
           }
         });
       };
@@ -294,7 +294,7 @@
                 oneBtn.disabled = false;
               }, 120000);
             } else {
-              showNotification('⚠ ' + (res?.error || 'Orchestra One起動失敗'), '#ff4444');
+              showNotification('⚠ 'Orchestra: operation completed.'Orchestra One起動失敗'), '#ff4444');
             }
           });
         };
