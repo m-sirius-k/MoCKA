@@ -296,7 +296,7 @@ console.log("[Orchestra] content.js loaded");
                 oneBtn.disabled = false;
               }, 120000);
             } else {
-              showNotification('⚠ 'Orchestra: operation completed.'Orchestra One起動失敗'), '#ff4444');
+              showNotification('⚠ Orchestra One起動失敗', '#ff4444');
             }
           });
         };

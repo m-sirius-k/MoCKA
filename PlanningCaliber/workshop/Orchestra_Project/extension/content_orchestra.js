@@ -18,10 +18,10 @@ const AI_CONFIGS = {
     isContentEditable: true,
   },
   'perplexity.ai': {
-    inputSelectors: ['textarea[placeholder]', 'textarea'],
+    inputSelectors: ['#ask-input', 'div[contenteditable="true"]', 'textarea[placeholder]', 'textarea'],
     responseSelector: '.prose, [data-testid="answer"] .prose, .answer-content',
     stopSelectors: ['button[aria-label="Stop"]', 'button[aria-label="Stop generating"]'],
-    isContentEditable: false,
+    isContentEditable: true,
   },
   'copilot.microsoft.com': {
     inputSelectors: ['textarea', '#userInput', 'div[contenteditable="true"]'],
