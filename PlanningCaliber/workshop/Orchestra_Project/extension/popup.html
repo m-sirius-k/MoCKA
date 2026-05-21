@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -412,6 +412,55 @@
   }
   .license-status.ok { color: var(--accent); }
   .license-status.err { color: var(--danger); }
+
+  /* AI TARGET SELECTOR */
+  .ai-targets {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .ai-target-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .ai-target-row:last-child { border-bottom: none; }
+  .ai-target-row:hover { background: rgba(232,255,71,0.04); }
+  .ai-target-check {
+    width: 15px; height: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.12s;
+    font-size: 10px;
+  }
+  .ai-target-row.checked .ai-target-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .ai-target-name {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+  .ai-target-note {
+    font-size: 9px;
+    color: var(--muted);
+  }
+  .targets-note {
+    font-size: 10px;
+    color: var(--muted);
+    padding: 8px 12px;
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+  }
 </style>
 </head>
 <body>
@@ -482,9 +531,41 @@
 </div>
 
 <script src="popup.js"></script>
+
 </div><!-- /main-panel -->
 
 <div class="settings-panel" id="settings-panel">
+
+  <!-- AI TARGET SELECTOR -->
+  <div class="settings-section">
+    <div class="settings-section-title">◈ Orchestra 送り先 AI（右クリックで共通適用）</div>
+    <div class="ai-targets" id="ai-targets">
+      <div class="ai-target-row checked" data-ai="ChatGPT">
+        <div class="ai-target-check">✓</div>
+        <div class="ai-target-name">ChatGPT</div>
+        <div class="ai-target-note">chatgpt.com</div>
+      </div>
+      <div class="ai-target-row checked" data-ai="Gemini">
+        <div class="ai-target-check">✓</div>
+        <div class="ai-target-name">Gemini</div>
+        <div class="ai-target-note">gemini.google.com</div>
+      </div>
+      <div class="ai-target-row checked" data-ai="Perplexity">
+        <div class="ai-target-check">✓</div>
+        <div class="ai-target-name">Perplexity</div>
+        <div class="ai-target-note">perplexity.ai</div>
+      </div>
+      <div class="ai-target-row checked" data-ai="Copilot">
+        <div class="ai-target-check">✓</div>
+        <div class="ai-target-name">Copilot</div>
+        <div class="ai-target-note">copilot.microsoft.com</div>
+      </div>
+    </div>
+    <div class="targets-note">
+      チェックしたAIが「保存 / 送る / 協議」の送り先になります。<br>
+      右クリック → ◈ Orchestra から操作できます。
+    </div>
+  </div>
 
   <!-- CURRENT PLAN (dynamic) -->
   <div class="settings-section">

@@ -1,13 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Orchestra",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Automatically saves your AI conversations locally. No server. No tracking. 100% private.",
   "permissions": [
     "alarms",
     "storage",
     "tabs",
-    "nativeMessaging"
+    "contextMenus",
+    "nativeMessaging",
+    "scripting"
   ],
   "host_permissions": [
     "https://claude.ai/*",
