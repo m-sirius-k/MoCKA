@@ -299,7 +299,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     }).catch(err => {
       console.warn('[Orchestra] Inject failed for', data.aiName, err.message);
     });
-  }, 2500);
+  }, 5000);
 });
 
 // ── Pro: Orchestra response collector ────────────────────────────────────────

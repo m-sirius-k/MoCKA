@@ -14,7 +14,7 @@ const AI_CONFIGS = {
   'gemini.google.com': {
     inputSelectors: ['.ql-editor', 'rich-textarea .ql-editor', 'div[contenteditable="true"]'],
     responseSelector: 'model-response .response-container, .model-response-text, [data-response-id] .markdown',
-    stopSelectors: ['button[aria-label="Stop response"]', '.stop-button', 'mat-icon[fonticon="stop_circle"]'],
+    stopSelectors: ['button[aria-label="Stop response"]', 'button[aria-label="回答を停止"]', '.stop-button', 'mat-icon[fonticon="stop_circle"]'],
     isContentEditable: true,
   },
   'perplexity.ai': {
