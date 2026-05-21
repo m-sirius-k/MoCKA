@@ -390,6 +390,27 @@
     font-size: 9px; color: #c9a84c; padding: 1px 6px; letter-spacing: 0.4px; margin-left: 4px;
   }
   .settings-note { font-size: 10px; color: var(--muted); padding: 10px 12px; line-height: 1.6; }
+
+  /* LICENSE INPUT */
+  .license-form {
+    display: flex; gap: 6px; padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .license-input {
+    flex: 1;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: var(--radius); color: var(--text);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 6px 10px; outline: none; transition: border-color 0.15s;
+  }
+  .license-input:focus { border-color: var(--accent); }
+  .license-input::placeholder { color: var(--muted); }
+  .license-status {
+    font-size: 10px; padding: 6px 12px;
+    color: var(--muted); line-height: 1.5;
+  }
+  .license-status.ok { color: var(--accent); }
+  .license-status.err { color: var(--danger); }
 </style>
 </head>
 <body>
@@ -464,17 +485,31 @@
 
 <div class="settings-panel" id="settings-panel">
 
-  <!-- FREE: 現在のプラン -->
+  <!-- CURRENT PLAN (dynamic) -->
   <div class="settings-section">
     <div class="settings-section-title">Current Plan</div>
-    <div class="plan-row">
+    <div class="plan-row" id="current-plan-row">
       <div class="plan-row-info">
-        <div class="plan-row-name accent">Free <span style="background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.3);border-radius:3px;font-size:9px;color:var(--accent);padding:1px 6px;margin-left:4px">ACTIVE</span></div>
-        <div class="plan-row-desc">Save &amp; search conversations · CSV/JSON export · No time limit</div>
+        <div class="plan-row-name accent" id="plan-name-display">
+          Free
+          <span id="plan-active-badge" style="background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.3);border-radius:3px;font-size:9px;color:var(--accent);padding:1px 6px;margin-left:4px">ACTIVE</span>
+        </div>
+        <div class="plan-row-desc" id="plan-desc-display">Save &amp; search conversations · CSV/JSON export · No time limit</div>
       </div>
-      <div class="plan-row-price">$0</div>
+      <div class="plan-row-price" id="plan-price-display">$0</div>
     </div>
-    <div class="settings-note">The Free plan is fully functional — no features are locked, no nudges to upgrade.<br>Orchestra works completely out of the box, forever, at no cost.</div>
+    <div class="settings-note" id="plan-note-display">The Free plan is fully functional — no features are locked, no nudges to upgrade.<br>Orchestra works completely out of the box, forever, at no cost.</div>
+  </div>
+
+  <!-- LICENSE KEY INPUT -->
+  <div class="settings-section">
+    <div class="settings-section-title">License Key</div>
+    <div class="license-form">
+      <input class="license-input" type="text" id="license-key-input" placeholder="OPR-xxxx or ONE-xxxx">
+      <button class="btn primary" id="license-activate-btn">Activate</button>
+      <button class="btn danger" id="license-remove-btn" style="display:none">Remove</button>
+    </div>
+    <div class="license-status" id="license-status-msg">Enter your license key to unlock Pro or One features.</div>
   </div>
 
   <!-- UPGRADE OPTIONS -->

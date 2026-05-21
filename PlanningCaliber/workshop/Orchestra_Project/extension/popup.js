@@ -61,7 +61,7 @@ function renderMessages() {
     const msg = currentQuery
       ? 'No results for "' + escHtml(currentQuery) + '"'
       : 'No messages captured yet.<br>Open claude.ai and start chatting!';
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">\u25c8</div><div class="empty-text">' + msg + '</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">' + msg + '</div></div>';
     return;
   }
 
@@ -187,3 +187,116 @@ document.querySelectorAll('[data-tab]').forEach(function(el) {
     if (navSettings) navSettings.classList.toggle('active', tab === 'settings');
   });
 });
+
+// ── Plan display & license management ────────────────────────────────────────
+
+const PLAN_META = {
+  free: {
+    label: 'Free',
+    labelClass: 'accent',
+    desc: 'Save &amp; search conversations · CSV/JSON export · No time limit',
+    price: '$0',
+    note: 'The Free plan is fully functional — no features are locked, no nudges to upgrade.<br>Orchestra works completely out of the box, forever, at no cost.',
+    badgeColor: 'rgba(232,255,71,0.3)',
+    badgeBg: 'rgba(232,255,71,0.1)',
+    badgeTextColor: 'var(--accent)',
+  },
+  pro: {
+    label: 'Orchestra Pro',
+    labelClass: 'accent',
+    desc: '5 AI parallel Orchestration · assign roles · one click to launch',
+    price: '$5/mo',
+    note: 'Pro plan active. Click the 🎼 5AI Orchestra button on any Claude response to launch.',
+    badgeColor: 'rgba(232,255,71,0.3)',
+    badgeBg: 'rgba(232,255,71,0.1)',
+    badgeTextColor: 'var(--accent)',
+  },
+  one: {
+    label: 'Orchestra One',
+    labelClass: 'gold',
+    desc: 'Everything · No API key · Fully autonomous · 100% local',
+    price: '$10/mo',
+    note: 'One plan active. Use 🎼 5AI Orchestra (semi-auto) or ⚡ Orchestra One (fully autonomous via Playwright).',
+    badgeColor: 'rgba(201,168,76,0.4)',
+    badgeBg: 'rgba(201,168,76,0.15)',
+    badgeTextColor: '#c9a84c',
+  },
+};
+
+function renderPlanUI(plan) {
+  const meta = PLAN_META[plan] || PLAN_META.free;
+
+  const nameEl = document.getElementById('plan-name-display');
+  const badgeEl = document.getElementById('plan-active-badge');
+  const descEl = document.getElementById('plan-desc-display');
+  const priceEl = document.getElementById('plan-price-display');
+  const noteEl = document.getElementById('plan-note-display');
+
+  if (nameEl) {
+    nameEl.innerHTML =
+      `<span class="plan-row-name ${meta.labelClass}">${meta.label}</span>`;
+    if (badgeEl) {
+      badgeEl.style.background = meta.badgeBg;
+      badgeEl.style.border = `1px solid ${meta.badgeColor}`;
+      badgeEl.style.color = meta.badgeTextColor;
+      nameEl.appendChild(badgeEl);
+    }
+  }
+  if (descEl) descEl.innerHTML = meta.desc;
+  if (priceEl) {
+    priceEl.textContent = meta.price;
+    priceEl.className = 'plan-row-price' + (plan === 'one' ? ' gold' : '');
+  }
+  if (noteEl) noteEl.innerHTML = meta.note;
+
+  // Show/hide Remove button based on whether a license is active
+  const removeBtn = document.getElementById('license-remove-btn');
+  if (removeBtn) removeBtn.style.display = plan !== 'free' ? 'inline-block' : 'none';
+}
+
+function loadAndRenderPlan() {
+  chrome.runtime.sendMessage({ type: 'GET_PLAN' }, res => {
+    if (res?.ok) renderPlanUI(res.plan);
+  });
+}
+
+// License activation
+document.getElementById('license-activate-btn')?.addEventListener('click', () => {
+  const input = document.getElementById('license-key-input');
+  const statusEl = document.getElementById('license-status-msg');
+  const key = input?.value?.trim();
+
+  if (!key) {
+    if (statusEl) { statusEl.textContent = 'Please enter a license key.'; statusEl.className = 'license-status err'; }
+    return;
+  }
+
+  chrome.runtime.sendMessage({ type: 'SET_LICENSE', key }, res => {
+    if (res?.ok) {
+      renderPlanUI(res.plan);
+      if (statusEl) {
+        const planName = PLAN_META[res.plan]?.label || res.plan;
+        statusEl.textContent = `✓ ${planName} activated successfully!`;
+        statusEl.className = 'license-status ok';
+      }
+      if (input) input.value = '';
+    } else {
+      if (statusEl) { statusEl.textContent = 'Activation failed. Please try again.'; statusEl.className = 'license-status err'; }
+    }
+  });
+});
+
+// License removal
+document.getElementById('license-remove-btn')?.addEventListener('click', () => {
+  if (!confirm('Remove license key and revert to Free plan?')) return;
+  chrome.runtime.sendMessage({ type: 'REMOVE_LICENSE' }, res => {
+    if (res?.ok) {
+      renderPlanUI('free');
+      const statusEl = document.getElementById('license-status-msg');
+      if (statusEl) { statusEl.textContent = 'License removed. Now on Free plan.'; statusEl.className = 'license-status'; }
+    }
+  });
+});
+
+// Load plan on popup open
+loadAndRenderPlan();

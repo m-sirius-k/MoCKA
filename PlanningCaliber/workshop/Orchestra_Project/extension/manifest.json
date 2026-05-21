@@ -1,13 +1,20 @@
 {
   "manifest_version": 3,
   "name": "Orchestra",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Automatically saves your AI conversations locally. No server. No tracking. 100% private.",
   "permissions": [
-    "alarms"
+    "alarms",
+    "storage",
+    "tabs",
+    "nativeMessaging"
   ],
   "host_permissions": [
-    "https://claude.ai/*"
+    "https://claude.ai/*",
+    "https://chatgpt.com/*",
+    "https://gemini.google.com/*",
+    "https://www.perplexity.ai/*",
+    "https://copilot.microsoft.com/*"
   ],
   "content_scripts": [
     {
@@ -16,6 +23,18 @@
       ],
       "js": [
         "content.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*",
+        "https://gemini.google.com/*",
+        "https://www.perplexity.ai/*",
+        "https://copilot.microsoft.com/*"
+      ],
+      "js": [
+        "content_orchestra.js"
       ],
       "run_at": "document_idle"
     }
