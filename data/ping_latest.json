@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-21T09:18:39.486396"
+  "generated_at": "2026-05-21T09:18:39.486396",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "Gumroad\n\n5月20日(水) 10:12 (23 時間前)\n\nWe need more information from you. To continue",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-13",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "結論として、今の案からのアップデートは「Orchestra / Orchestra One」ペアで確定させて、その上に Launch Edition（$8・500本）を被せる構造が一番きれいです。\n\n",
+        "recur": 0,
+        "matched": [
+          "Gumroad"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-13",
+        "why": "Orchestra製品化の第1フェーズ完了記録。次セッションへの引き継ぎ。",
+        "how": "",
+        "note": "Orchestra,製品,LP,Gumroad,ChromeStore,販売計画",
+        "recur": 0,
+        "matched": [
+          "Gumroad"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-21T00:39:36.155Z"
+  }
 }
