@@ -1,3 +1,5 @@
+window.__orchestra_loaded = true;
+console.log("[Orchestra] content.js loaded");
 // AI Conversation Logger - content.js
 // Monitors claude.ai DOM and captures messages
 
@@ -62,7 +64,7 @@
     });
 
     // Assistant messages
-    const assistantBlocks = document.querySelectorAll('.font-claude-response');
+    const assistantBlocks = document.querySelectorAll('div.group.relative.pb-3');
     assistantBlocks.forEach((el) => {
       const text = el.textContent?.trim();
       if (!text) return;
@@ -230,7 +232,7 @@
   // ── Button injection ────────────────────────────────────────────────────────
 
   const ASSISTANT_SELECTORS = [
-    '.font-claude-response',
+    'div.group.relative.pb-3',
     '[data-testid="assistant-message"]',
     '.font-claude-message',
   ];
@@ -273,7 +275,7 @@
               proBtn.disabled = false;
             }, 60000);
           } else {
-            showNotification('⚠ 'Orchestra: operation completed.'Orchestra起動失敗'), '#ff4444');
+            showNotification('⚠ Orchestra failed to start.', '#ff4444');
           }
         });
       };
