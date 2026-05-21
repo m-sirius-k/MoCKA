@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-21T16:37:22.863337"
+  "generated_at": "2026-05-21T16:37:22.863337",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "seal　今日の作業終了します",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-29",
+        "why": "",
+        "how": "manual_click",
+        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
+        "recur": 0,
+        "matched": [
+          "seal"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-17",
+        "why": "KPA時代の知識をMoCKAガバナンスチェーンに正式統合するため。各AIのブラックボックス内に眠っていた博士の意図を検証可能な形で記録する。",
+        "how": "Geminiのセッション開始応答にPILS/SACL/TRDPという未知用語が含まれていたことを検知。質問状→原文開示→",
+        "note": "KPA,HERITAGE,PILS,SACL,TRDP,Phase体系,AI-SHARE,TRDP,憲法,mocka-seal待ち",
+        "recur": 0,
+        "matched": [
+          "seal"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-21T09:23:17.145Z"
+  }
 }
