@@ -1,0 +1,75 @@
+{
+  "appName": { "message": "Orchestra" },
+  "appDescription": { "message": "AI 대화를 자동으로 로컬 저장. 서버 없음·추적 없음·100% 프라이버시." },
+
+  "navLibrary":   { "message": "◈ 라이브러리" },
+  "navSettings":  { "message": "⚙ 설정" },
+
+  "statMessages": { "message": "메시지" },
+  "statSessions": { "message": "세션" },
+  "statShowing":  { "message": "표시 중" },
+
+  "searchPlaceholder": { "message": "메시지 검색..." },
+  "btnCsv":   { "message": "↓ CSV" },
+  "btnJson":  { "message": "↓ JSON" },
+  "btnClear": { "message": "✕" },
+
+  "tabAll":  { "message": "전체" },
+  "tabYou":  { "message": "나" },
+  "tabAi":   { "message": "AI" },
+
+  "sortNewest":    { "message": "최신순" },
+  "sortOldest":    { "message": "오래된순" },
+  "periodAll":     { "message": "전체 기간" },
+  "periodToday":   { "message": "오늘" },
+  "periodWeek":    { "message": "이번 주" },
+  "periodMonth":   { "message": "이번 달" },
+
+  "statusBar": { "message": "claude.ai 모니터링 중 • 로컬 전용 • 데이터가 기기 밖으로 나가지 않습니다" },
+
+  "emptyDefault": { "message": "아직 저장된 메시지가 없습니다.\nclaude.ai를 열고 대화를 시작해 보세요!" },
+
+  "confirmClear": { "message": "저장된 모든 메시지를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다." },
+
+  "loginNoticeTitle": { "message": "⚠ 사용 전 주의" },
+  "loginNoticeBody":  { "message": "공유/협의 기능을 사용하기 전에 아래 각 AI 서비스에 미리 로그인해 주세요:" },
+
+  "orchestraSectionTitle": { "message": "◈ Orchestra 전송 대상 AI（우클릭 메뉴에 공통 적용）" },
+  "targetsNote": { "message": "체크한 AI가 「저장 / 보내기 / 협의」의 전송 대상이 됩니다.\n우클릭 → ◈ Orchestra 로 조작할 수 있습니다." },
+
+  "waitSliderTitle": { "message": "⏱ 응답 대기 시간" },
+  "waitSliderHint":  { "message": "⚠ 오류가 자주 발생하면 슬라이더를 「느림」 쪽으로 설정하세요" },
+  "waitSlow": { "message": "느림" },
+  "waitFast": { "message": "빠름" },
+
+  "currentPlanTitle": { "message": "현재 플랜" },
+  "licenseTitle":     { "message": "라이선스 키" },
+  "licensePlaceholder": { "message": "OPR-xxxx 또는 ONE-xxxx" },
+  "licenseActivate":  { "message": "활성화" },
+  "licenseRemove":    { "message": "삭제" },
+  "licenseDefault":   { "message": "라이선스 키를 입력하여 Pro 또는 One 기능을 활성화하세요." },
+  "licenseEmpty":     { "message": "라이선스 키를 입력해 주세요." },
+  "licenseError":     { "message": "활성화에 실패했습니다. 다시 시도해 주세요." },
+  "licenseRemoveConfirm": { "message": "라이선스 키를 삭제하고 Free 플랜으로 되돌리겠습니까?" },
+  "licenseRemoved":   { "message": "라이선스가 삭제되었습니다. Free 플랜으로 돌아왔습니다." },
+
+  "upgradeTitle": { "message": "업그레이드 — 더욱 강력하게" },
+  "getBtnPro":    { "message": "Pro 구매 →" },
+  "getBtnUpgrade":{ "message": "업그레이드 →" },
+  "getBtnOne":    { "message": "One 구매 →" },
+  "getBtnLaunch": { "message": "Launch 구매 →" },
+
+  "aboutTitle":   { "message": "정보" },
+  "aboutDesc":    { "message": "완전 로컬 · 서버 없음 · 추적 없음 · API 키 미저장\n제거하면 모든 데이터 삭제 · 대화는 오직 당신의 것입니다." },
+  "websiteBtn":   { "message": "공식 사이트 →" },
+
+  "planFreeLabel": { "message": "Free" },
+  "planFreeDesc":  { "message": "대화 저장 및 검색 · CSV/JSON 내보내기 · 기간 제한 없음" },
+  "planFreeNote":  { "message": "Free 플랜은 모든 기능을 제공합니다. 잠금 없음·업그레이드 유도 없음. Orchestra는 영원히 무료로 사용할 수 있습니다." },
+  "planProLabel":  { "message": "Orchestra Pro" },
+  "planProDesc":   { "message": "5AI 병렬 협의 · 역할 설정 · 원클릭 실행" },
+  "planProNote":   { "message": "Pro 플랜 활성화됨. Claude 답변의 🎼 5AI Orchestra 버튼을 클릭하여 실행하세요." },
+  "planOneLabel":  { "message": "Orchestra One" },
+  "planOneDesc":   { "message": "모든 기능 · API 키 불필요 · 완전 자율 · 100% 로컬" },
+  "planOneNote":   { "message": "One 플랜 활성화됨. 🎼 5AI Orchestra（반자동）또는 ⚡ Orchestra One（Playwright 완전 자율）을 사용할 수 있습니다." }
+}

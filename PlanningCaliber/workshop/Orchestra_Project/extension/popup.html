@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -593,6 +593,7 @@
   <span id="status-text">Monitoring claude.ai • Local only • No data leaves your device</span>
 </div>
 
+<script src="i18n.js"></script>
 <script src="popup.js"></script>
 
 </div><!-- /main-panel -->
@@ -601,17 +602,16 @@
 
   <!-- LOGIN NOTICE -->
   <div class="settings-section">
-    <div class="settings-section-title">⚠ ご利用前に</div>
+    <div class="settings-section-title" data-i18n="loginNoticeTitle">⚠ Before you start</div>
     <div class="settings-note" style="color:var(--accent);line-height:1.8">
-      共有・協議を使う前に、以下の各AIサービスへ<br>
-      <strong>事前にログイン</strong>してからご使用ください。<br>
+      <span data-i18n="loginNoticeBody">Please log in to each AI service before using Share / Orchestrate:</span>
       <span style="color:var(--muted);font-size:9px">ChatGPT / Gemini / Perplexity / Copilot / Genspark</span>
     </div>
   </div>
 
   <!-- AI TARGET SELECTOR -->
   <div class="settings-section">
-    <div class="settings-section-title">◈ Orchestra 送り先 AI（右クリックで共通適用）</div>
+    <div class="settings-section-title" data-i18n="orchestraSectionTitle">◈ Orchestra — Send-to AI (right-click menu)</div>
     <div class="ai-targets" id="ai-targets">
       <div class="ai-target-row checked" data-ai="ChatGPT">
         <div class="ai-target-check">✓</div>
@@ -640,17 +640,16 @@
       </div>
     </div>
     <div class="targets-note">
-      チェックしたAIが「保存 / 送る / 協議」の送り先になります。<br>
-      右クリック → ◈ Orchestra から操作できます。
+      <span data-i18n="targetsNote">Checked AIs receive Save / Send / Orchestrate actions. Right-click → ◈ Orchestra to operate.</span>
     </div>
     <!-- 応答待機時間スライダー -->
     <div class="wait-slider-section">
       <div class="wait-slider-label">
-        <span class="wait-slider-title">⏱ 応答待機時間</span>
-        <span class="wait-slider-val" id="wait-slider-display">標準 (2.0s)</span>
+        <span class="wait-slider-title" data-i18n="waitSliderTitle">⏱ Response wait time</span>
+        <span class="wait-slider-val" id="wait-slider-display">Standard (2.0s)</span>
       </div>
       <div class="wait-slider-track">
-        <span class="wait-slider-edge">遅い<br><span style="font-size:9px;color:var(--muted)">5.0s</span></span>
+        <span class="wait-slider-edge"><span data-i18n="waitSlow">Slow</span><br><span style="font-size:9px;color:var(--muted)">5.0s</span></span>
         <div style="flex:1;position:relative">
           <input type="range" id="wait-slider" min="1" max="10" value="5" step="1" style="width:100%">
           <div style="display:flex;justify-content:space-between;padding:0 2px;margin-top:2px">
@@ -666,9 +665,9 @@
             <span style="font-size:8px;color:var(--muted)">0.8</span>
           </div>
         </div>
-        <span class="wait-slider-edge">早い<br><span style="font-size:9px;color:var(--muted)">0.8s</span></span>
+        <span class="wait-slider-edge"><span data-i18n="waitFast">Fast</span><br><span style="font-size:9px;color:var(--muted)">0.8s</span></span>
       </div>
-      <div class="wait-slider-hint">⚠ エラーになりやすい時は「遅い」側に設定してください</div>
+      <div class="wait-slider-hint" data-i18n="waitSliderHint">⚠ If errors occur frequently, move the slider toward Slow.</div>
     </div>
   </div>
 

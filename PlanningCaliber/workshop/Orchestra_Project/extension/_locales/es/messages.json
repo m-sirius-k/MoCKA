@@ -1,0 +1,75 @@
+{
+  "appName": { "message": "Orchestra" },
+  "appDescription": { "message": "Guarda automáticamente tus conversaciones de IA en local. Sin servidor. Sin rastreo. 100% privado." },
+
+  "navLibrary":   { "message": "◈ Biblioteca" },
+  "navSettings":  { "message": "⚙ Ajustes" },
+
+  "statMessages": { "message": "Mensajes" },
+  "statSessions": { "message": "Sesiones" },
+  "statShowing":  { "message": "Mostrando" },
+
+  "searchPlaceholder": { "message": "Buscar mensajes..." },
+  "btnCsv":   { "message": "↓ CSV" },
+  "btnJson":  { "message": "↓ JSON" },
+  "btnClear": { "message": "✕" },
+
+  "tabAll":  { "message": "Todos" },
+  "tabYou":  { "message": "Tú" },
+  "tabAi":   { "message": "IA" },
+
+  "sortNewest":    { "message": "Más recientes" },
+  "sortOldest":    { "message": "Más antiguos" },
+  "periodAll":     { "message": "Todo el tiempo" },
+  "periodToday":   { "message": "Hoy" },
+  "periodWeek":    { "message": "Esta semana" },
+  "periodMonth":   { "message": "Este mes" },
+
+  "statusBar": { "message": "Monitorizando claude.ai • Solo local • Los datos no salen de tu dispositivo" },
+
+  "emptyDefault": { "message": "Aún no hay mensajes guardados.\n¡Abre claude.ai y empieza a chatear!" },
+
+  "confirmClear": { "message": "¿Eliminar TODOS los mensajes guardados? Esta acción no se puede deshacer." },
+
+  "loginNoticeTitle": { "message": "⚠ Antes de empezar" },
+  "loginNoticeBody":  { "message": "Inicia sesión en cada servicio de IA antes de usar Compartir / Orquestar:" },
+
+  "orchestraSectionTitle": { "message": "◈ Orchestra — IAs de destino (se aplica al menú contextual)" },
+  "targetsNote": { "message": "Las IAs marcadas recibirán mensajes de Guardar / Enviar / Orquestar.\nClic derecho → ◈ Orchestra para operar." },
+
+  "waitSliderTitle": { "message": "⏱ Tiempo de espera de respuesta" },
+  "waitSliderHint":  { "message": "⚠ Si ocurren errores frecuentes, mueve el control hacia Lento" },
+  "waitSlow": { "message": "Lento" },
+  "waitFast": { "message": "Rápido" },
+
+  "currentPlanTitle": { "message": "Plan actual" },
+  "licenseTitle":     { "message": "Clave de licencia" },
+  "licensePlaceholder": { "message": "OPR-xxxx u ONE-xxxx" },
+  "licenseActivate":  { "message": "Activar" },
+  "licenseRemove":    { "message": "Eliminar" },
+  "licenseDefault":   { "message": "Introduce tu clave de licencia para desbloquear las funciones Pro o One." },
+  "licenseEmpty":     { "message": "Por favor, introduce una clave de licencia." },
+  "licenseError":     { "message": "Error de activación. Por favor, inténtalo de nuevo." },
+  "licenseRemoveConfirm": { "message": "¿Eliminar la clave de licencia y volver al plan gratuito?" },
+  "licenseRemoved":   { "message": "Licencia eliminada. Ahora estás en el plan gratuito." },
+
+  "upgradeTitle": { "message": "Mejora — hazlo aún más poderoso" },
+  "getBtnPro":    { "message": "Obtener Pro →" },
+  "getBtnUpgrade":{ "message": "Actualizar →" },
+  "getBtnOne":    { "message": "Obtener One →" },
+  "getBtnLaunch": { "message": "Obtener Launch →" },
+
+  "aboutTitle":   { "message": "Acerca de" },
+  "aboutDesc":    { "message": "100% local · Sin servidor · Sin rastreo · Sin claves API almacenadas\nDesinstalar = todos los datos eliminados · Tus conversaciones son tuyas." },
+  "websiteBtn":   { "message": "Sitio web →" },
+
+  "planFreeLabel": { "message": "Gratis" },
+  "planFreeDesc":  { "message": "Guarda y busca conversaciones · Exportar CSV/JSON · Sin límite de tiempo" },
+  "planFreeNote":  { "message": "El plan gratuito tiene todas las funciones: sin bloqueos ni presión para actualizar. Orchestra funciona completamente desde el primer momento, para siempre, sin coste." },
+  "planProLabel":  { "message": "Orchestra Pro" },
+  "planProDesc":   { "message": "Orquestación paralela de 5 IAs · asignar roles · un clic para lanzar" },
+  "planProNote":   { "message": "Plan Pro activo. Haz clic en el botón 🎼 5AI Orchestra en cualquier respuesta de Claude para lanzarlo." },
+  "planOneLabel":  { "message": "Orchestra One" },
+  "planOneDesc":   { "message": "Todo incluido · Sin clave API · Totalmente autónomo · 100% local" },
+  "planOneNote":   { "message": "Plan One activo. Usa 🎼 5AI Orchestra (semi-auto) o ⚡ Orchestra One (completamente autónomo vía Playwright)." }
+}
