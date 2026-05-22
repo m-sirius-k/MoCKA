@@ -1226,6 +1226,15 @@ chrome.runtime.onMessage.addListener((msg) => {
   const label = msg.aiName || msg.ai || 'Unknown AI';
   session.responses[label] = msg.response;
 
+  // 各AI完了をパネルに通知（カウントアップ停止・✓表示）
+  if (session.sourceTabId) {
+    chrome.tabs.sendMessage(session.sourceTabId, {
+      type: 'ORCHESTRA_AI_DONE',
+      ai: label,
+      sessionId: msg.sessionId,
+    }).catch(() => {});
+  }
+
   const collected = Object.keys(session.responses).length;
   if (collected >= AI_TARGETS.length) {
     session.status = 'complete';
@@ -1270,7 +1279,8 @@ async function runOrchestraPro(conversationText, sourceTabId) {
       type: 'ORCHESTRA_STARTED',
       sessionId,
       targets: AI_TARGETS.map(t => t.name),
-    }).catch(() => {});
+      mode: 'deliberation',
+    }).catch(e => console.error("[Orchestra] STARTED failed:", e.message));
   }
 
   return { ok: true, sessionId };
