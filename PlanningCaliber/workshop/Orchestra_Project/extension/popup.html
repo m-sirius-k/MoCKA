@@ -413,6 +413,69 @@
   .license-status.ok { color: var(--accent); }
   .license-status.err { color: var(--danger); }
 
+  /* WAIT TIME SLIDER */
+  .wait-slider-section {
+    padding: 10px 12px 12px;
+  }
+  .wait-slider-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .wait-slider-title {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  .wait-slider-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(232,255,71,0.08);
+    padding: 1px 7px;
+    border-radius: 3px;
+    border: 1px solid rgba(232,255,71,0.2);
+  }
+  .wait-slider-track {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+  .wait-slider-edge {
+    font-size: 9px;
+    color: var(--muted);
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+  }
+  input[type="range"]#wait-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]#wait-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 2px solid #000;
+    box-shadow: 0 0 4px rgba(232,255,71,0.4);
+  }
+  .wait-slider-hint {
+    font-size: 9px;
+    color: #ff8c47;
+    letter-spacing: 0.2px;
+    margin-top: 2px;
+  }
+
   /* AI TARGET SELECTOR */
   .ai-targets {
     display: flex;
@@ -580,6 +643,19 @@
       チェックしたAIが「保存 / 送る / 協議」の送り先になります。<br>
       右クリック → ◈ Orchestra から操作できます。
     </div>
+    <!-- 応答待機時間スライダー -->
+    <div class="wait-slider-section">
+      <div class="wait-slider-label">
+        <span class="wait-slider-title">⏱ 応答待機時間</span>
+        <span class="wait-slider-val" id="wait-slider-display">標準 (2.0s)</span>
+      </div>
+      <div class="wait-slider-track">
+        <span class="wait-slider-edge">遅い</span>
+        <input type="range" id="wait-slider" min="1" max="10" value="5" step="1">
+        <span class="wait-slider-edge">早い</span>
+      </div>
+      <div class="wait-slider-hint">⚠ エラーになりやすい時は「遅い」側に設定してください</div>
+    </div>
   </div>
 
   <!-- CURRENT PLAN (dynamic) -->
@@ -662,5 +738,47 @@
 
 </div><!-- /settings-panel -->
 
+<script>
+// ── 応答待機時間スライダー ─────────────────────────────────────────────────────
+(function() {
+  const WAIT_LEVELS = {
+    1:  { ms: 5000, label: '最遅 (5.0s)' },
+    2:  { ms: 4500, label: '遅い (4.5s)' },
+    3:  { ms: 4000, label: '遅め (4.0s)' },
+    4:  { ms: 3000, label: 'やや遅 (3.0s)' },
+    5:  { ms: 2000, label: '標準 (2.0s)' },
+    6:  { ms: 1800, label: 'やや速 (1.8s)' },
+    7:  { ms: 1500, label: '速め (1.5s)' },
+    8:  { ms: 1200, label: '速い (1.2s)' },
+    9:  { ms: 1000, label: 'かなり速 (1.0s)' },
+    10: { ms: 800,  label: '最速 (0.8s)' },
+  };
+
+  const slider  = document.getElementById('wait-slider');
+  const display = document.getElementById('wait-slider-display');
+  if (!slider || !display) return;
+
+  // 保存済み値を読み込む
+  chrome.storage.sync.get(['orchestra_wait_level'], data => {
+    const saved = data.orchestra_wait_level;
+    if (saved && WAIT_LEVELS[saved]) {
+      slider.value = saved;
+      display.textContent = WAIT_LEVELS[saved].label;
+    }
+  });
+
+  // スライダー操作時
+  slider.addEventListener('input', () => {
+    const lv = parseInt(slider.value, 10);
+    display.textContent = WAIT_LEVELS[lv].label;
+  });
+
+  // マウスを離したら保存
+  slider.addEventListener('change', () => {
+    const lv = parseInt(slider.value, 10);
+    chrome.storage.sync.set({ orchestra_wait_level: lv });
+  });
+})();
+</script>
 </body>
 </html>

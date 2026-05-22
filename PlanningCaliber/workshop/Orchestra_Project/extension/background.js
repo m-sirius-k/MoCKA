@@ -166,6 +166,21 @@ function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// ── 応答待機時間: スライダー設定値をmsに変換 ──────────────────────────────────
+const WAIT_LEVEL_MAP = {
+  1: 5000, 2: 4500, 3: 4000, 4: 3000, 5: 2000,
+  6: 1800, 7: 1500, 8: 1200, 9: 1000, 10: 800,
+};
+
+async function getWaitTime() {
+  return new Promise(resolve => {
+    chrome.storage.sync.get(['orchestra_wait_level'], data => {
+      const lv = data.orchestra_wait_level || 5;
+      resolve(WAIT_LEVEL_MAP[lv] || 2000);
+    });
+  });
+}
+
 // ── Right-click: Context menu setup ──────────────────────────────────────────
 
 function setupContextMenus() {
@@ -701,11 +716,12 @@ async function injectAndCollect(target, text, sessionId) {
     await waitForTabLoad(targetTab.id);
   }
 
-  // サービス別初期化待ち
-  let initWait = 3000;
-  if (target.domain.includes('perplexity')) initWait = 6000; // クッキーダイアログ対策
-  if (target.domain.includes('genspark'))   initWait = 5000; // ログイン確認対策
-  if (target.domain.includes('chatgpt'))    initWait = 5000; // ログイン確認対策
+  // サービス別初期化待ち（スライダー設定値をベースに調整）
+  const baseWait = await getWaitTime();
+  let initWait = baseWait;
+  if (target.domain.includes('perplexity')) initWait = Math.max(baseWait, 3000); // クッキーダイアログ対策
+  if (target.domain.includes('genspark'))   initWait = Math.max(baseWait, 3000); // ログイン確認対策
+  if (target.domain.includes('chatgpt'))    initWait = Math.max(baseWait, 3000); // ログイン確認対策
   await sleep(initWait);
 
   // ── プリフライトチェック ──────────────────────────────────────────────────
