@@ -266,10 +266,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     case 'orchestra-send': {
       const targets = await getSelectedTargets();
       // ステータスオーバーレイ表示（全AI: 黄色=送信中）
-      showStatusOverlay(tab.id, targets.map(t => t.name), {});
+      chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_STARTED', targets: targets.map(t => t.name), mode: 'collaboration' });
       for (const target of targets) {
         await injectTextToAI(target, text, false);
-        updateStatusOverlay(tab.id, target.name, 'done');
+        chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_AI_DONE', ai: target.name }).catch(()=>{});
       }
       setTimeout(() => hideStatusOverlay(tab.id), 3000);
       notifyTab(tab.id, `→ ${targets.map(t => t.name).join(' / ')} に送りました`);
@@ -283,17 +283,17 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       const responseMap = {};
 
       // ステータスオーバーレイ表示（全AI: 黄色=回答待ち）
-      showStatusOverlay(tab.id, targets.map(t => t.name), {});
+      chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_STARTED', targets: targets.map(t => t.name), mode: 'deliberation' });
 
       // 並列で各AIに送信→回答回収（タブは残す）
       const promises = targets.map(async (target) => {
         try {
           const response = await injectAndCollect(target, text, sessionId);
           responseMap[target.name] = response;
-          updateStatusOverlay(tab.id, target.name, 'done');
+          chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_AI_DONE', ai: target.name }).catch(()=>{});
         } catch (e) {
           responseMap[target.name] = `[エラー: ${e.message}]`;
-          updateStatusOverlay(tab.id, target.name, 'error');
+          chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_AI_DONE', ai: target.name }).catch(()=>{});
         }
       });
 

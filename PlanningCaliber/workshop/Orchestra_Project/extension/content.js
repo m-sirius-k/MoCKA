@@ -1,4 +1,4 @@
-window.__orchestra_loaded = true;
+﻿window.__orchestra_loaded = true;
 console.log("[Orchestra] content.js loaded");
 // AI Conversation Logger - content.js
 // Monitors claude.ai DOM and captures messages
@@ -350,7 +350,7 @@ console.log("[Orchestra] content.js loaded");
       row.id = `orch-row-${t.replace(/\s/g, '_')}`;
       row.style.cssText = 'margin:2px 0;display:flex;justify-content:space-between;align-items:center;';
       row.innerHTML =
-        `<span>● ${t}</span>` +
+        `<span><span id="orch-dot-${t.replace(/\s/g, '_')}" style="color:${mainColor}">●</span> ${t}</span>` +
         `<span id="orch-timer-${t.replace(/\s/g, '_')}" style="color:${mainColor};font-size:11px;min-width:40px;text-align:right">0.0s</span>`;
       panel.appendChild(row);
 
@@ -383,6 +383,8 @@ console.log("[Orchestra] content.js loaded");
       clearInterval(_statusTimers[aiName]);
       delete _statusTimers[aiName];
     }
+    const dotEl = document.getElementById(`orch-dot-${aiName.replace(/\s/g, '_')}`);
+    if (dotEl) { dotEl.style.color = '#4caf50'; }
     const timerEl = document.getElementById(`orch-timer-${aiName.replace(/\s/g, '_')}`);
     if (timerEl) {
       const elapsed = ((_statusStart[aiName] ? Date.now() - _statusStart[aiName] : 0) / 1000).toFixed(1);
