@@ -265,13 +265,17 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       notifyTab(tab.id, `⚡ 協議開始: ${targets.map(t => t.name).join(' / ')}`);
 
-      // 並列で各AIに送信→回答回収
+      // 並列で各AIに送信→回答回収（タブIDも記録）
+      const createdTabIds = [];
       const promises = targets.map(async (target) => {
+        let tabId = null;
         try {
-          const response = await injectAndCollect(target, text, sessionId);
+          const response = await injectAndCollect(target, text, sessionId, (id) => { tabId = id; });
           responseMap[target.name] = response;
         } catch (e) {
           responseMap[target.name] = `[エラー: ${e.message}]`;
+        } finally {
+          if (tabId) createdTabIds.push(tabId);
         }
       });
 
@@ -279,6 +283,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
       // 回答をClaudeに返す
       await injectResponsesToClaude(tab.id, text, responseMap);
+
+      // 作成したタブを全てクローズ（次回の合議で古いタブが残らないように）
+      if (createdTabIds.length > 0) {
+        setTimeout(() => {
+          chrome.tabs.remove(createdTabIds).catch(() => {});
+        }, 2000);
+      }
       break;
     }
   }
@@ -402,27 +413,215 @@ function waitForTabLoad(tabId, timeout = 30000) {
   });
 }
 
+// ── プリフライト: UIブロッカー検知 ───────────────────────────────────────────
+// CAPTCHA / クッキーダイアログ / ログイン画面 を検知してtrueを返す
+
+async function detectUIBlocker(tabId) {
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => {
+        const body = document.body;
+        const html = body ? body.innerText.toLowerCase() : '';
+        const url  = location.href.toLowerCase();
+
+        // ── Copilot 固有 ────────────────────────────────────────────────────
+        // ロボット確認ページ (challenges.cloudflare.com へのリダイレクト含む)
+        if (url.includes('challenges.cloudflare') || url.includes('cloudflare')) return 'captcha';
+        // Copilot の「続行」/「サインイン」ボタン画面
+        if (document.querySelector('#b2c_form, [data-testid="sign-in-btn"], .c-form__input[type="password"]')) return 'login';
+        // Copilot の利用規約同意
+        if (document.querySelector('[data-testid="tos-accept-btn"], button[id*="accept"], button[id*="agree"]')) return 'cookie';
+
+        // ── Perplexity 固有 ─────────────────────────────────────────────────
+        // Perplexity のクッキーバナー
+        if (document.querySelector('[data-testid="cookie-banner"], #onetrust-accept-btn-handler, .ot-sdk-container')) return 'cookie';
+        // OneTrust 汎用（Perplexityが使用）
+        if (document.querySelector('#onetrust-banner-sdk, .onetrust-accept-btn-handler')) return 'cookie';
+        // Perplexity ログイン
+        if (url.includes('perplexity.ai/login') || document.querySelector('input[name="email"][type="email"]')) return 'login';
+
+        // ── Genspark 固有 ───────────────────────────────────────────────────
+        if (url.includes('genspark.ai/login') || url.includes('genspark.ai/auth')) return 'login';
+        if (document.querySelector('[class*="login-modal"], [class*="LoginModal"], [class*="auth-modal"]')) return 'login';
+        // Genspark CAPTCHA (hCaptcha)
+        if (document.querySelector('iframe[src*="hcaptcha"], .h-captcha, #hcaptcha')) return 'captcha';
+
+        // ── 汎用: ログイン画面 ───────────────────────────────────────────────
+        if (url.includes('login') || url.includes('signin') || url.includes('/auth')) return 'login';
+        if (document.querySelector('input[type="password"]')) return 'login';
+        // モーダル内のログインフォーム
+        if (document.querySelector('[role="dialog"] input[type="email"], [role="dialog"] input[type="password"]')) return 'login';
+
+        // ── 汎用: CAPTCHA ────────────────────────────────────────────────────
+        if (html.includes('robot') || html.includes('captcha') || html.includes('verify you are human')) return 'captcha';
+        if (document.querySelector('iframe[src*="recaptcha"], iframe[src*="captcha"], iframe[src*="hcaptcha"]')) return 'captcha';
+        // Cloudflare Turnstile
+        if (document.querySelector('iframe[src*="challenges.cloudflare"], .cf-turnstile')) return 'captcha';
+
+        // ── 汎用: クッキー同意 ───────────────────────────────────────────────
+        const cookieKeywords = ['cookie', 'consent', 'accept all', 'すべて受け入れ', 'クッキー', 'we use cookies'];
+        if (cookieKeywords.some(k => html.includes(k))) {
+          const btns = Array.from(document.querySelectorAll('button, a[role="button"]'));
+          const acceptBtn = btns.find(b => {
+            const t = (b.innerText || '').toLowerCase();
+            return t.includes('accept') || t.includes('agree') || t.includes('受け入れ') || t.includes('同意') || t.includes('allow');
+          });
+          if (acceptBtn) return 'cookie';
+        }
+
+        return null; // ブロッカーなし
+      },
+    });
+    return (results && results[0] && results[0].result) || null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// ── プリフライト: ブロッカー自動突破を試みる ──────────────────────────────────
+
+async function tryAutoBypass(tabId, blockerType) {
+  if (blockerType === 'cookie') {
+    try {
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: () => {
+          // ── Perplexity: OneTrust ────────────────────────────────────────
+          const oneTrust = document.querySelector(
+            '#onetrust-accept-btn-handler, .onetrust-accept-btn-handler, #accept-recommended-btn-handler'
+          );
+          if (oneTrust) { oneTrust.click(); return true; }
+
+          // ── Copilot: 利用規約同意ボタン ─────────────────────────────────
+          const copilotAccept = document.querySelector(
+            '[data-testid="tos-accept-btn"], button[id*="accept"], button[id*="agree"]'
+          );
+          if (copilotAccept) { copilotAccept.click(); return true; }
+
+          // ── 汎用: テキストマッチ ─────────────────────────────────────────
+          const btns = Array.from(document.querySelectorAll('button, a[role="button"]'));
+          const acceptBtn = btns.find(b => {
+            const t = (b.innerText || '').toLowerCase();
+            return t.includes('accept all') || t.includes('accept cookies') ||
+                   t.includes('agree') || t.includes('allow all') ||
+                   t.includes('受け入れ') || t.includes('同意') || t.includes('allow');
+          });
+          if (acceptBtn) { acceptBtn.click(); return true; }
+          return false;
+        },
+      });
+      await sleep(2000); // クッキー処理後の再描画待ち
+      return true;
+    } catch (e) { return false; }
+  }
+  return false; // CAPTCHA/ログインは自動突破不可（ユーザーに委ねる）
+}
+
+// ── プリフライト: PREFLIGHT_OKチェック ───────────────────────────────────────
+// 定型文を送信してORCHESTRA_PREFLIGHT_OKが返るか確認する
+
+async function runPreflightCheck(tabId, aiName) {
+  const PREFLIGHT_PROMPT =
+    `接続確認テストです。以下の3点に答えてください。\n` +
+    `Q1. 現在、ロボット確認・ログイン・クッキーダイアログは表示されていますか？（はい/いいえ）\n` +
+    `Q2. 入力欄は操作可能な状態ですか？（はい/いいえ）\n` +
+    `Q3. 末尾に「ORCHESTRA_PREFLIGHT_OK」と記載してください。`;
+
+  // プリフライトプロンプトを送信
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    func: (prompt) => {
+      const selectors = ['div[contenteditable="true"]', 'textarea', 'input[type="text"]', '[role="textbox"]'];
+      let el = null;
+      for (const sel of selectors) {
+        const candidates = document.querySelectorAll(sel);
+        for (const c of candidates) {
+          const rect = c.getBoundingClientRect();
+          if (rect.width > 100 && rect.height > 20) { el = c; break; }
+        }
+        if (el) break;
+      }
+      if (!el) return false;
+      el.focus();
+      if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        el.value = prompt;
+        el.dispatchEvent(new Event('input', { bubbles: true }));
+      } else {
+        el.innerText = prompt;
+        el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: prompt }));
+      }
+      setTimeout(() => {
+        el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true }));
+        const sendBtn = document.querySelector(
+          'button[data-testid="send-button"], button[aria-label*="send" i], button[aria-label*="送信"], button[type="submit"]'
+        );
+        if (sendBtn) sendBtn.click();
+      }, 300);
+      return true;
+    },
+    args: [PREFLIGHT_PROMPT],
+  });
+
+  // 回答を待機してPREFLIGHT_OKを確認
+  const response = await waitForResponse(tabId, 45000, 2000);
+  const ok = response.includes('ORCHESTRA_PREFLIGHT_OK');
+  console.log(`[Orchestra] Preflight ${aiName}: ${ok ? 'OK' : 'FAILED'} — ${response.slice(0, 80)}`);
+  return ok;
+}
+
 // ── 協議: AIに送信して回答を回収する ─────────────────────────────────────────
 
-async function injectAndCollect(target, text, sessionId) {
-  const tabs = await chrome.tabs.query({});
-  let targetTab = tabs.find(t => t.url && t.url.includes(target.domain));
+async function injectAndCollect(target, text, sessionId, onTabCreated) {
+  // ── 協議は必ず新規タブで実行 ──────────────────────────────────────────
+  // 既存タブを再利用すると古い会話に追記されるため毎回新規タブを作成する
+  // （ログイン状態はCookieで維持されるため新規タブでも通常ログイン済み）
+  const targetTab = await chrome.tabs.create({ url: target.url, active: false });
+  if (onTabCreated) onTabCreated(targetTab.id); // タブIDを呼び出し元に通知
+  await waitForTabLoad(targetTab.id);
 
-  if (!targetTab) {
-    targetTab = await chrome.tabs.create({ url: target.url, active: false });
-    await waitForTabLoad(targetTab.id);
-    await sleep(3000);
+  // サービス別初期化待ち
+  let initWait = 3000;
+  if (target.domain.includes('perplexity')) initWait = 6000; // クッキーダイアログ対策
+  if (target.domain.includes('genspark'))   initWait = 5000; // ログイン確認対策
+  if (target.domain.includes('chatgpt'))    initWait = 5000; // ログイン確認対策
+  await sleep(initWait);
+
+  // ── プリフライトチェック ──────────────────────────────────────────────────
+  // 1. UIブロッカー検知
+  const blocker = await detectUIBlocker(targetTab.id);
+  if (blocker) {
+    console.log(`[Orchestra] UIBlocker detected for ${target.name}: ${blocker}`);
+    // 2. 自動突破を試みる（クッキーのみ）
+    const bypassed = await tryAutoBypass(targetTab.id, blocker);
+    if (!bypassed) {
+      // 自動突破不可 → タブをアクティブにしてユーザーに知らせる
+      await chrome.tabs.update(targetTab.id, { active: true });
+      await sleep(15000); // ユーザーが手動で処理する時間（15秒）
+      await chrome.tabs.update(targetTab.id, { active: false });
+    }
+  }
+
+  // 3. プリフライトOK確認（ブロッカーがあった場合のみ実行）
+  if (blocker) {
+    const preflightOk = await runPreflightCheck(targetTab.id, target.name);
+    if (!preflightOk) {
+      return `[プリフライト失敗: ${target.name} — UIブロッカー(${blocker})が解除されていない可能性があります]`;
+    }
+    // プリフライト後は少し待機してから本題を送信
+    await sleep(2000);
   }
 
   // テキストを書き込んでEnter送信
   await chrome.scripting.executeScript({
     target: { tabId: targetTab.id },
-    func: (injectedText) => {
+    func: (injectedText, domain) => {
+      // ── 入力欄を探す ────────────────────────────────────────────────────
       const selectors = [
+        '[role="textbox"]',          // Perplexity優先（role=textbox DIV）
         'div[contenteditable="true"]',
         'textarea',
         'input[type="text"]',
-        '[role="textbox"]',
       ];
 
       let el = null;
@@ -443,25 +642,60 @@ async function injectAndCollect(target, text, sessionId) {
       el.focus();
 
       if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+        // 通常フォーム
         el.value = injectedText;
         el.dispatchEvent(new Event('input', { bubbles: true }));
         el.dispatchEvent(new Event('change', { bubbles: true }));
       } else {
-        el.innerText = injectedText;
-        el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: injectedText }));
+        // contenteditable / role=textbox DIV
+        // ── 方式1: execCommand（ProseMirror/Draft.js対応）─────────────────
+        try {
+          el.focus();
+          // 既存テキストを全選択して削除
+          document.execCommand('selectAll', false, null);
+          document.execCommand('delete', false, null);
+          // テキスト挿入
+          const inserted = document.execCommand('insertText', false, injectedText);
+          if (!inserted) throw new Error('execCommand failed');
+        } catch(e) {
+          // ── 方式2: innerText直接代入（フォールバック）──────────────────
+          el.innerText = injectedText;
+          el.dispatchEvent(new InputEvent('input', {
+            bubbles: true, inputType: 'insertText', data: injectedText
+          }));
+        }
       }
 
+      // ── 送信ボタンを探してクリック ────────────────────────────────────
       setTimeout(() => {
-        el.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true }));
-        const sendBtn = document.querySelector(
-          'button[data-testid="send-button"], button[aria-label*="send" i], button[aria-label*="送信"], button[type="submit"]'
+        // Perplexity固有の送信ボタン
+        const perplexitySend = document.querySelector(
+          'button[aria-label="Submit"], button[data-testid="submit-button"], ' +
+          'button svg[data-icon="arrow-right"], ' +
+          'button[class*="submit"], button[class*="send"]'
         );
-        if (sendBtn) sendBtn.click();
-      }, 300);
+
+        // 汎用送信ボタン
+        const genericSend = document.querySelector(
+          'button[data-testid="send-button"], button[aria-label*="send" i], ' +
+          'button[aria-label*="送信"], button[type="submit"]'
+        );
+
+        const sendBtn = perplexitySend || genericSend;
+
+        if (sendBtn) {
+          sendBtn.click();
+        } else {
+          // フォールバック: Enterキー
+          el.dispatchEvent(new KeyboardEvent('keydown', {
+            key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true
+          }));
+        }
+      }, 500);
 
       return true;
     },
-    args: [text],
+    args: [text, target.domain],
   });
 
   // 回答ストリーム完了を待機してテキスト取得
@@ -493,27 +727,58 @@ async function waitForResponse(tabId, timeout = 90000, stableMs = 2500) {
           const selectors = [
             // ChatGPT
             '[data-message-author-role="assistant"] .markdown',
+            '[data-message-author-role="assistant"]',
             // Gemini
             '.model-response-text',
             'model-response',
             // Perplexity
             '[data-testid="answer"]',
             '.prose',
-            // Copilot
-            '[class*="response"]',
-            // 汎用
-            '[role="presentation"] p',
+            // Copilot (copilot.microsoft.com) 複数候補
+            '[data-content="ai-response"]',
+            'cib-message[source="bot"] cib-message-content',
+            '[data-testid="conversationTurnBotMessage"]',
+            '.ac-textBlock',
+            'div[class*="responseText"]',
+            'div[class*="message"][class*="bot"]',
+            // Genspark
+            '[class*="answer-content"]',
+            '[class*="AgentResponse"]',
+            '[class*="response-content"]',
+            '[class*="spark-answer"]',
+            '[class*="chat-answer"]',
+            '[class*="message-content"]',
+            'div[class*="assistant"]',
+            '.agent-response p',
+            '[data-role="assistant"]',
+            // 汎用フォールバック
+            'main [role="presentation"] p',
+            'main p',
+            '[role="main"] p',
           ];
 
           let best = '';
           for (const sel of selectors) {
-            const els = document.querySelectorAll(sel);
-            if (els.length > 0) {
-              const last = els[els.length - 1];
-              const t = last.innerText || last.textContent || '';
-              if (t.trim().length > best.length) best = t.trim();
-            }
+            try {
+              const els = document.querySelectorAll(sel);
+              if (els.length > 0) {
+                const last = els[els.length - 1];
+                const t = last.innerText || last.textContent || '';
+                if (t.trim().length > best.length) best = t.trim();
+              }
+            } catch(e) {}
           }
+
+          // Copilot フォールバック: p/liタグ全結合
+          if (best.length < 50) {
+            const allP = Array.from(document.querySelectorAll('p, li'));
+            const combined = allP
+              .map(el => (el.innerText || '').trim())
+              .filter(t => t.length > 30)
+              .join('\n');
+            if (combined.length > best.length) best = combined;
+          }
+
           return best;
         },
         args: [],
@@ -539,6 +804,15 @@ async function waitForResponse(tabId, timeout = 90000, stableMs = 2500) {
   }
 
   // タイムアウト: 最後に取得できたテキストを返す
+  // ログイン画面テキストを誤取得した場合はタイムアウト扱い
+  const loginPatterns = [
+    'ログインすると', 'log in to', 'sign in to', 'create an account',
+    'アカウントを作成', 'サインイン', 'パスワードを入力',
+    'continue with google', 'continue with microsoft',
+  ];
+  if (loginPatterns.some(p => lastText.toLowerCase().includes(p.toLowerCase()))) {
+    return '[タイムアウト: ログイン画面が検出されました。事前にログインしてください]';
+  }
   return lastText || '[タイムアウト: 回答を取得できませんでした]';
 }
 
