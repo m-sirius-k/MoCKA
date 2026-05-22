@@ -261,47 +261,6 @@ console.log("[Orchestra] content.js loaded");
       const wrapper = document.createElement('div');
       wrapper.style.cssText = 'display:inline-flex;gap:6px;margin-top:8px;flex-wrap:wrap;';
 
-      // Pro button (always shown when Pro or One)
-      const proBtn = buildButton('🎼 5AI Orchestra', '#e0c070');
-      proBtn.title = 'Orchestra Pro: 5つのAIに同じ質問を送り、回答を統合';
-      proBtn.onclick = () => {
-        const text = block.innerText || block.textContent || '';
-        chrome.runtime.sendMessage({ type: 'START_ORCHESTRA', text: text.trim() }, res => {
-          if (res?.ok) {
-            proBtn.textContent = '🎼 起動中...';
-            proBtn.disabled = true;
-            setTimeout(() => {
-              proBtn.textContent = '🎼 5AI Orchestra';
-              proBtn.disabled = false;
-            }, 60000);
-          } else {
-            showNotification('⚠ Orchestra failed to start.', '#ff4444');
-          }
-        });
-      };
-      wrapper.appendChild(proBtn);
-
-      // One button (only when One plan)
-      if (canShowOne()) {
-        const oneBtn = buildButton('⚡ Orchestra One', '#c9a84c');
-        oneBtn.title = 'Orchestra One: Playwrightで完全自律実行';
-        oneBtn.onclick = () => {
-          const text = block.innerText || block.textContent || '';
-          chrome.runtime.sendMessage({ type: 'START_ORCHESTRA_ONE', text: text.trim() }, res => {
-            if (res?.ok) {
-              oneBtn.textContent = '⚡ 実行中...';
-              oneBtn.disabled = true;
-              setTimeout(() => {
-                oneBtn.textContent = '⚡ Orchestra One';
-                oneBtn.disabled = false;
-              }, 120000);
-            } else {
-              showNotification('⚠ Orchestra One起動失敗', '#ff4444');
-            }
-          });
-        };
-        wrapper.appendChild(oneBtn);
-      }
 
       container.appendChild(wrapper);
     });

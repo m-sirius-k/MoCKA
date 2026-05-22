@@ -1240,6 +1240,9 @@ const AI_TARGETS = [
   { name: 'Copilot',    url: 'https://copilot.microsoft.com' },
 ];
 
+function buildOrchestraPrompt(text) {
+  return `以下の内容について、あなたの見解と詳細な分析を教えてください。独自の視点を活かして回答してください。\n\n---\n${text.slice(0, 3000)}\n---`;
+}
 
 async function runOrchestraPro(conversationText, sourceTabId) {
   const plan = await getLicensePlan();
@@ -1249,7 +1252,7 @@ async function runOrchestraPro(conversationText, sourceTabId) {
 
   const sessionId = createOrchestraSession(sourceTabId);
   const session = orchestraSessions.get(sessionId);
-  const prompt = conversationText;
+  const prompt = buildOrchestraPrompt(conversationText);
 
   for (const target of AI_TARGETS) {
     try {
@@ -1312,7 +1315,7 @@ async function runOrchestraOne(conversationText, sourceTabId) {
     return { ok: false, error: 'Orchestra One plan required.' };
   }
 
-  const prompt = conversationText;
+  const prompt = buildOrchestraPrompt(conversationText);
 
   return new Promise(resolve => {
     let port;
