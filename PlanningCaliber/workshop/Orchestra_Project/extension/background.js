@@ -332,6 +332,12 @@ async function injectTextToAI(target, text, enterSend) {
     // ページロード完了まで待機
     await waitForTabLoad(targetTab.id);
     await sleep(3000); // JSフレームワーク初期化待ち
+  } else {
+    // 既存タブ再利用時もDOMが安定するまで待機
+    // Perplexity等は前の応答生成中や遷移中の場合があるため
+    let reuseWait = 1500;
+    if (target.domain.includes('perplexity')) reuseWait = 2500; // クッキーダイアログ残存対策
+    await sleep(reuseWait);
   }
 
   await chrome.scripting.executeScript({
@@ -573,12 +579,29 @@ async function runPreflightCheck(tabId, aiName) {
 // ── 協議: AIに送信して回答を回収する ─────────────────────────────────────────
 
 async function injectAndCollect(target, text, sessionId, onTabCreated) {
-  // ── 協議は必ず新規タブで実行 ──────────────────────────────────────────
-  // 既存タブを再利用すると古い会話に追記されるため毎回新規タブを作成する
-  // （ログイン状態はCookieで維持されるため新規タブでも通常ログイン済み）
-  const targetTab = await chrome.tabs.create({ url: target.url, active: false });
-  if (onTabCreated) onTabCreated(targetTab.id); // タブIDを呼び出し元に通知
-  await waitForTabLoad(targetTab.id);
+  // ── 協議: 既存ログイン済みタブを優先再利用 ───────────────────────────
+  // ログインが必要なAI（ChatGPT/Genspark等）は新規タブだとログイン画面になる場合がある。
+  // 既存の同ドメインタブ（ログイン済みの可能性が高い）があれば新規タブを開かずに再利用する。
+  // ただし再利用すると古い会話に追記されるため、新しいchatページへ遷移してから使用する。
+  const allTabs = await chrome.tabs.query({});
+  const existingTab = allTabs.find(t => t.url && t.url.includes(target.domain));
+
+  let targetTab;
+  let isReused = false;
+
+  if (existingTab) {
+    // 既存タブを新規chatページへ遷移させて再利用
+    targetTab = existingTab;
+    isReused = true;
+    await chrome.tabs.update(targetTab.id, { url: target.url, active: false });
+    await waitForTabLoad(targetTab.id);
+  } else {
+    // 既存タブなし → 新規タブ作成
+    targetTab = await chrome.tabs.create({ url: target.url, active: false });
+    await waitForTabLoad(targetTab.id);
+  }
+
+  if (onTabCreated && !isReused) onTabCreated(targetTab.id); // 新規作成タブのみIDを記録（クローズ対象）
 
   // サービス別初期化待ち
   let initWait = 3000;
