@@ -250,9 +250,13 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     // ── 送る（共有）────────────────────────────────────────────────────────
     case 'orchestra-send': {
       const targets = await getSelectedTargets();
+      // ステータスオーバーレイ表示（全AI: 黄色=送信中）
+      showStatusOverlay(tab.id, targets.map(t => t.name), {});
       for (const target of targets) {
-        await injectTextToAI(target, text, false); // Enter押さない
+        await injectTextToAI(target, text, false);
+        updateStatusOverlay(tab.id, target.name, 'done');
       }
+      setTimeout(() => hideStatusOverlay(tab.id), 3000);
       notifyTab(tab.id, `→ ${targets.map(t => t.name).join(' / ')} に送りました`);
       break;
     }
@@ -263,37 +267,135 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       const sessionId = 'delib_' + Date.now();
       const responseMap = {};
 
-      notifyTab(tab.id, `⚡ 協議開始: ${targets.map(t => t.name).join(' / ')}`);
+      // ステータスオーバーレイ表示（全AI: 黄色=回答待ち）
+      showStatusOverlay(tab.id, targets.map(t => t.name), {});
 
-      // 並列で各AIに送信→回答回収（タブIDも記録）
-      const createdTabIds = [];
+      // 並列で各AIに送信→回答回収（タブは残す）
       const promises = targets.map(async (target) => {
-        let tabId = null;
         try {
-          const response = await injectAndCollect(target, text, sessionId, (id) => { tabId = id; });
+          const response = await injectAndCollect(target, text, sessionId);
           responseMap[target.name] = response;
+          updateStatusOverlay(tab.id, target.name, 'done');
         } catch (e) {
           responseMap[target.name] = `[エラー: ${e.message}]`;
-        } finally {
-          if (tabId) createdTabIds.push(tabId);
+          updateStatusOverlay(tab.id, target.name, 'error');
         }
       });
 
       await Promise.all(promises);
 
-      // 回答をClaudeに返す
       await injectResponsesToClaude(tab.id, text, responseMap);
-
-      // 作成したタブを全てクローズ（次回の合議で古いタブが残らないように）
-      if (createdTabIds.length > 0) {
-        setTimeout(() => {
-          chrome.tabs.remove(createdTabIds).catch(() => {});
-        }, 2000);
-      }
+      setTimeout(() => hideStatusOverlay(tab.id), 4000);
       break;
     }
   }
 });
+
+// ── リアルタイムステータスオーバーレイ ──────────────────────────────────────────
+// 共有・協議中に右下に各AIの状態を表示する
+// 状態: pending=黄色(待機中) / done=青(完了) / error=灰(エラー)
+
+function showStatusOverlay(tabId, aiNames, initialStatus) {
+  chrome.scripting.executeScript({
+    target: { tabId },
+    func: (names) => {
+      // 既存オーバーレイを削除
+      const existing = document.getElementById('__orchestra_status__');
+      if (existing) existing.remove();
+
+      const panel = document.createElement('div');
+      panel.id = '__orchestra_status__';
+      panel.style.cssText = [
+        'position:fixed', 'bottom:20px', 'right:20px', 'z-index:999999',
+        'background:#0d0d0f', 'border:1px solid #222228',
+        'border-radius:8px', 'padding:12px 16px',
+        'font-family:monospace', 'font-size:12px',
+        'box-shadow:0 4px 20px rgba(0,0,0,0.6)',
+        'min-width:180px',
+      ].join(';');
+
+      // タイトル
+      const title = document.createElement('div');
+      title.style.cssText = 'color:#e8ff47;font-size:10px;font-weight:bold;letter-spacing:1px;margin-bottom:8px;';
+      title.textContent = '◈ ORCHESTRA';
+      panel.appendChild(title);
+
+      // 各AIの行
+      names.forEach(name => {
+        const row = document.createElement('div');
+        row.id = `__orch_ai_${name.replace(/\s/g,'')}__`;
+        row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:3px 0;';
+
+        const dot = document.createElement('div');
+        dot.style.cssText = [
+          'width:10px', 'height:10px', 'border-radius:50%',
+          'background:#e8c547',  // 黄色=待機中
+          'flex-shrink:0',
+          'animation:orch_pulse 1s infinite',
+        ].join(';');
+
+        const label = document.createElement('span');
+        label.style.cssText = 'color:#e8e8ec;font-size:11px;';
+        label.textContent = name;
+
+        row.appendChild(dot);
+        row.appendChild(label);
+        panel.appendChild(row);
+      });
+
+      // パルスアニメCSS
+      if (!document.getElementById('__orch_style__')) {
+        const style = document.createElement('style');
+        style.id = '__orch_style__';
+        style.textContent = `
+          @keyframes orch_pulse {
+            0%,100% { opacity:1; }
+            50% { opacity:0.3; }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+
+      document.body.appendChild(panel);
+    },
+    args: [aiNames],
+  }).catch(() => {});
+}
+
+function updateStatusOverlay(tabId, aiName, status) {
+  // status: 'done'=青 / 'error'=灰
+  chrome.scripting.executeScript({
+    target: { tabId },
+    func: (name, st) => {
+      const row = document.getElementById(`__orch_ai_${name.replace(/\s/g,'')}__`);
+      if (!row) return;
+      const dot = row.querySelector('div');
+      if (!dot) return;
+      if (st === 'done') {
+        dot.style.background = '#47d4ff';  // 青=完了
+        dot.style.animation = 'none';
+      } else if (st === 'error') {
+        dot.style.background = '#555566';  // 灰=エラー
+        dot.style.animation = 'none';
+      }
+    },
+    args: [aiName, status],
+  }).catch(() => {});
+}
+
+function hideStatusOverlay(tabId) {
+  chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => {
+      const el = document.getElementById('__orchestra_status__');
+      if (el) {
+        el.style.transition = 'opacity 0.5s';
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 500);
+      }
+    },
+  }).catch(() => {});
+}
 
 // ── 共通: タブへの通知 ────────────────────────────────────────────────────────
 
@@ -578,30 +680,26 @@ async function runPreflightCheck(tabId, aiName) {
 
 // ── 協議: AIに送信して回答を回収する ─────────────────────────────────────────
 
-async function injectAndCollect(target, text, sessionId, onTabCreated) {
+async function injectAndCollect(target, text, sessionId) {
   // ── 協議: 既存ログイン済みタブを優先再利用 ───────────────────────────
   // ログインが必要なAI（ChatGPT/Genspark等）は新規タブだとログイン画面になる場合がある。
-  // 既存の同ドメインタブ（ログイン済みの可能性が高い）があれば新規タブを開かずに再利用する。
-  // ただし再利用すると古い会話に追記されるため、新しいchatページへ遷移してから使用する。
+  // 既存の同ドメインタブがあれば target.url へ遷移させて再利用（古い会話への追記を防ぐ）。
+  // タブは閉じずに残し、次回合議でも同じタブを再利用する。
   const allTabs = await chrome.tabs.query({});
   const existingTab = allTabs.find(t => t.url && t.url.includes(target.domain));
 
   let targetTab;
-  let isReused = false;
 
   if (existingTab) {
     // 既存タブを新規chatページへ遷移させて再利用
     targetTab = existingTab;
-    isReused = true;
     await chrome.tabs.update(targetTab.id, { url: target.url, active: false });
     await waitForTabLoad(targetTab.id);
   } else {
-    // 既存タブなし → 新規タブ作成
+    // 既存タブなし → 新規タブ作成（次回以降はこのタブを再利用）
     targetTab = await chrome.tabs.create({ url: target.url, active: false });
     await waitForTabLoad(targetTab.id);
   }
-
-  if (onTabCreated && !isReused) onTabCreated(targetTab.id); // 新規作成タブのみIDを記録（クローズ対象）
 
   // サービス別初期化待ち
   let initWait = 3000;
@@ -634,6 +732,39 @@ async function injectAndCollect(target, text, sessionId, onTabCreated) {
     // プリフライト後は少し待機してから本題を送信
     await sleep(2000);
   }
+
+  // ── 注入前のテキスト長を記録（Genspark等の古データ誤取得防止）────────
+  // 注入後に増えた部分のみを新しい回答として返す
+  let baseTextLength = 0;
+  try {
+    const baseResults = await chrome.scripting.executeScript({
+      target: { tabId: targetTab.id },
+      func: () => {
+        const selectors = [
+          '[data-message-author-role="assistant"] .markdown',
+          '[data-message-author-role="assistant"]',
+          '.model-response-text', 'model-response',
+          '[data-testid="answer"]', '.prose',
+          '[class*="answer-content"]', '[class*="AgentResponse"]',
+          '[class*="response-content"]', '[class*="spark-answer"]',
+          '[class*="chat-answer"]', '[class*="message-content"]',
+          'div[class*="assistant"]', '[data-role="assistant"]',
+        ];
+        let best = '';
+        for (const sel of selectors) {
+          try {
+            const els = document.querySelectorAll(sel);
+            if (els.length > 0) {
+              const t = (els[els.length - 1].innerText || '').trim();
+              if (t.length > best.length) best = t;
+            }
+          } catch(e) {}
+        }
+        return best.length;
+      },
+    });
+    baseTextLength = (baseResults && baseResults[0] && baseResults[0].result) || 0;
+  } catch(e) { baseTextLength = 0; }
 
   // テキストを書き込んでEnter送信
   await chrome.scripting.executeScript({
@@ -721,15 +852,15 @@ async function injectAndCollect(target, text, sessionId, onTabCreated) {
     args: [text, target.domain],
   });
 
-  // 回答ストリーム完了を待機してテキスト取得
-  const response = await waitForResponse(targetTab.id);
+  // 回答ストリーム完了を待機してテキスト取得（注入前テキスト長を基準に増分のみ返す）
+  const response = await waitForResponse(targetTab.id, 90000, 2500, baseTextLength);
   return response;
 }
 
 // ── 協議: ストリーム完了検知 → 回答テキスト取得 ───────────────────────────────
 // テキスト変化が STABLE_MS 間止まったら完了と判定
 
-async function waitForResponse(tabId, timeout = 90000, stableMs = 2500) {
+async function waitForResponse(tabId, timeout = 90000, stableMs = 2500, baseTextLength = 0) {
   const start = Date.now();
 
   // 少し待ってからポーリング開始（送信→応答開始ラグ）
@@ -812,12 +943,15 @@ async function waitForResponse(tabId, timeout = 90000, stableMs = 2500) {
       break;
     }
 
-    if (currentText.length > 0) {
+    if (currentText.length > 0 && currentText.length > baseTextLength) {
       if (currentText === lastText) {
         if (!stableStart) stableStart = Date.now();
         if (Date.now() - stableStart >= stableMs) {
           // stableMs間変化なし → ストリーム完了
-          return currentText;
+          // baseTextLength分は古いデータなので除去して返す
+          return currentText.length > baseTextLength
+            ? currentText.slice(baseTextLength).trim() || currentText
+            : currentText;
         }
       } else {
         lastText = currentText;
