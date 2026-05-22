@@ -293,7 +293,12 @@ console.log("[Orchestra] content.js loaded");
 
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg.type === 'ORCHESTRA_STARTED') {
-      showStatusPanel(msg.targets || []);
+      showStatusPanel(msg.targets || [], msg.mode || 'deliberation');
+      sendResponse({ ok: true });
+    }
+
+    if (msg.type === 'ORCHESTRA_AI_DONE') {
+      markAiDone(msg.ai);
       sendResponse({ ok: true });
     }
 
@@ -305,30 +310,96 @@ console.log("[Orchestra] content.js loaded");
 
   // ── Status panel ────────────────────────────────────────────────────────────
 
-  function showStatusPanel(targets) {
+  let _statusTimers = {};   // { aiName: intervalId }
+  let _statusStart  = {};   // { aiName: Date.now() }
+  let _statusMode   = 'deliberation';  // 'deliberation'=協議 / 'collaboration'=協業
+
+  function showStatusPanel(targets, mode) {
     removeStatusPanel();
+    _statusMode   = mode || 'deliberation';
+    _statusTimers = {};
+    _statusStart  = {};
+
+    const isCollab  = _statusMode === 'collaboration';
+    const modeLabel = isCollab ? '🤝 協業' : '💬 協議';
+    const mainColor = isCollab ? '#4fc3f7' : '#e0c070';
+    const borderCol = isCollab ? '#2a7fa0' : '#e0c070';
+
     const panel = document.createElement('div');
     panel.id = 'orchestra-status-panel';
     panel.style.cssText = [
       'position:fixed', 'bottom:20px', 'right:20px', 'z-index:2147483647',
-      'background:#0d0d1a', 'border:1px solid #e0c070',
-      'border-radius:10px', 'padding:16px 20px', 'color:#e8e8ec',
+      'background:#0d0d1a', `border:1px solid ${borderCol}`,
+      'border-radius:10px', 'padding:14px 18px', 'color:#e8e8ec',
       'font-family:-apple-system,BlinkMacSystemFont,sans-serif',
       'font-size:12px', 'min-width:240px', 'max-width:300px',
-      'box-shadow:0 6px 30px rgba(0,0,0,0.7)', 'line-height:1.6',
+      'box-shadow:0 6px 30px rgba(0,0,0,0.7)', 'line-height:1.8',
     ].join(';');
 
-    panel.innerHTML =
-      '<div style="font-weight:700;color:#e0c070;margin-bottom:10px;font-size:13px">🎼 Orchestra 実行中</div>' +
-      targets.map(t => `<div style="margin:3px 0">⏳ ${t}</div>`).join('') +
-      '<div style="margin-top:10px;color:#888;font-size:10px">各タブでプロンプトを確認し Enter で送信してください。<br>回答完了後、自動的に統合プロンプトを生成します。</div>';
+    // ヘッダー
+    const header = document.createElement('div');
+    header.style.cssText = `font-weight:700;color:${mainColor};margin-bottom:8px;font-size:13px`;
+    header.textContent = `🎼 Orchestra  ${modeLabel}`;
+    panel.appendChild(header);
+
+    // 各AIの行（カウントアップ用にid付与）
+    const startTime = Date.now();
+    targets.forEach(t => {
+      _statusStart[t] = startTime;
+      const row = document.createElement('div');
+      row.id = `orch-row-${t.replace(/\s/g, '_')}`;
+      row.style.cssText = 'margin:2px 0;display:flex;justify-content:space-between;align-items:center;';
+      row.innerHTML =
+        `<span>● ${t}</span>` +
+        `<span id="orch-timer-${t.replace(/\s/g, '_')}" style="color:${mainColor};font-size:11px;min-width:40px;text-align:right">0.0s</span>`;
+      panel.appendChild(row);
+
+      // カウントアップ開始
+      _statusTimers[t] = setInterval(() => {
+        const el = document.getElementById(`orch-timer-${t.replace(/\s/g, '_')}`);
+        if (el) {
+          const elapsed = ((Date.now() - _statusStart[t]) / 1000).toFixed(1);
+          el.textContent = `${elapsed}s`;
+        }
+      }, 100);
+    });
+
+    // フッター
+    const footer = document.createElement('div');
+    footer.style.cssText = 'margin-top:8px;color:#666;font-size:10px';
+    footer.textContent = isCollab
+      ? '協業処理中...'
+      : '各タブで Enter を押してください。';
+    panel.appendChild(footer);
 
     document.body.appendChild(panel);
     // Auto-dismiss after 90 seconds
     setTimeout(removeStatusPanel, 90000);
   }
 
+  // 特定AIの完了を✓に切り替え
+  function markAiDone(aiName) {
+    if (_statusTimers[aiName]) {
+      clearInterval(_statusTimers[aiName]);
+      delete _statusTimers[aiName];
+    }
+    const timerEl = document.getElementById(`orch-timer-${aiName.replace(/\s/g, '_')}`);
+    if (timerEl) {
+      const elapsed = ((_statusStart[aiName] ? Date.now() - _statusStart[aiName] : 0) / 1000).toFixed(1);
+      timerEl.style.color = '#4caf50';
+      timerEl.textContent = `✓ ${elapsed}s`;
+    }
+    // 全員完了なら3秒後に消去
+    if (Object.keys(_statusTimers).length === 0) {
+      setTimeout(removeStatusPanel, 3000);
+    }
+  }
+
   function removeStatusPanel() {
+    // 残タイマー全停止
+    Object.values(_statusTimers).forEach(id => clearInterval(id));
+    _statusTimers = {};
+    _statusStart  = {};
     document.getElementById('orchestra-status-panel')?.remove();
   }
 

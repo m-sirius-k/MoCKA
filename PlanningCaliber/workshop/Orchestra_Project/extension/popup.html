@@ -650,9 +650,23 @@
         <span class="wait-slider-val" id="wait-slider-display">標準 (2.0s)</span>
       </div>
       <div class="wait-slider-track">
-        <span class="wait-slider-edge">遅い</span>
-        <input type="range" id="wait-slider" min="1" max="10" value="5" step="1">
-        <span class="wait-slider-edge">早い</span>
+        <span class="wait-slider-edge">遅い<br><span style="font-size:9px;color:var(--muted)">5.0s</span></span>
+        <div style="flex:1;position:relative">
+          <input type="range" id="wait-slider" min="1" max="10" value="5" step="1" style="width:100%">
+          <div style="display:flex;justify-content:space-between;padding:0 2px;margin-top:2px">
+            <span style="font-size:8px;color:var(--muted)">5.0</span>
+            <span style="font-size:8px;color:var(--muted)">4.5</span>
+            <span style="font-size:8px;color:var(--muted)">4.0</span>
+            <span style="font-size:8px;color:var(--muted)">3.0</span>
+            <span style="font-size:8px;color:var(--accent);font-weight:bold" title="デフォルト">▼2.0</span>
+            <span style="font-size:8px;color:var(--muted)">1.8</span>
+            <span style="font-size:8px;color:var(--muted)">1.5</span>
+            <span style="font-size:8px;color:var(--muted)">1.2</span>
+            <span style="font-size:8px;color:var(--muted)">1.0</span>
+            <span style="font-size:8px;color:var(--muted)">0.8</span>
+          </div>
+        </div>
+        <span class="wait-slider-edge">早い<br><span style="font-size:9px;color:var(--muted)">0.8s</span></span>
       </div>
       <div class="wait-slider-hint">⚠ エラーになりやすい時は「遅い」側に設定してください</div>
     </div>
@@ -738,47 +752,6 @@
 
 </div><!-- /settings-panel -->
 
-<script>
-// ── 応答待機時間スライダー ─────────────────────────────────────────────────────
-(function() {
-  const WAIT_LEVELS = {
-    1:  { ms: 5000, label: '最遅 (5.0s)' },
-    2:  { ms: 4500, label: '遅い (4.5s)' },
-    3:  { ms: 4000, label: '遅め (4.0s)' },
-    4:  { ms: 3000, label: 'やや遅 (3.0s)' },
-    5:  { ms: 2000, label: '標準 (2.0s)' },
-    6:  { ms: 1800, label: 'やや速 (1.8s)' },
-    7:  { ms: 1500, label: '速め (1.5s)' },
-    8:  { ms: 1200, label: '速い (1.2s)' },
-    9:  { ms: 1000, label: 'かなり速 (1.0s)' },
-    10: { ms: 800,  label: '最速 (0.8s)' },
-  };
 
-  const slider  = document.getElementById('wait-slider');
-  const display = document.getElementById('wait-slider-display');
-  if (!slider || !display) return;
-
-  // 保存済み値を読み込む
-  chrome.storage.sync.get(['orchestra_wait_level'], data => {
-    const saved = data.orchestra_wait_level;
-    if (saved && WAIT_LEVELS[saved]) {
-      slider.value = saved;
-      display.textContent = WAIT_LEVELS[saved].label;
-    }
-  });
-
-  // スライダー操作時
-  slider.addEventListener('input', () => {
-    const lv = parseInt(slider.value, 10);
-    display.textContent = WAIT_LEVELS[lv].label;
-  });
-
-  // マウスを離したら保存
-  slider.addEventListener('change', () => {
-    const lv = parseInt(slider.value, 10);
-    chrome.storage.sync.set({ orchestra_wait_level: lv });
-  });
-})();
-</script>
 </body>
 </html>

@@ -301,6 +301,70 @@ document.getElementById('license-remove-btn')?.addEventListener('click', () => {
 // Load plan on popup open
 loadAndRenderPlan();
 
+// ── 合議ステータス カウントアップ + 協議/協業ラベル ──────────────────────────────
+window.__orchestraTimers = {};
+
+function updateStatusBar(mode) {
+  const modeLabel = mode === 'collaboration' ? '🤝 協業' : '💬 協議';
+  const modeColor = mode === 'collaboration' ? '#4fc3f7' : '#e8ff47';
+  let bar = document.getElementById('orchestra-status-bar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'orchestra-status-bar';
+    bar.style.cssText = [
+      'position:fixed', 'bottom:0', 'left:0', 'right:0',
+      'background:#111', 'border-top:1px solid #333',
+      'padding:6px 10px', 'font-size:10px', 'z-index:9999',
+      'display:flex', 'flex-wrap:wrap', 'gap:6px', 'align-items:center'
+    ].join(';');
+    document.body.appendChild(bar);
+  }
+  const entries = Object.entries(window.__orchestraTimers).map(([name, data]) => {
+    const elapsed = ((Date.now() - data.startTime) / 1000).toFixed(1);
+    const statusText = data.done ? '✓' : `⏱ ${elapsed}s`;
+    const color = data.done ? '#666' : modeColor;
+    return `<span style="color:${color}">● ${name} ${statusText}</span>`;
+  }).join('');
+  bar.innerHTML = `<span style="color:${modeColor};font-weight:bold;margin-right:4px">${modeLabel}</span>${entries}`;
+}
+
+window.startOrchestraStatus = function(aiName, mode) {
+  if (window.__orchestraTimers[aiName]?.interval) {
+    clearInterval(window.__orchestraTimers[aiName].interval);
+  }
+  const startTime = Date.now();
+  const interval = setInterval(() => updateStatusBar(mode), 100);
+  window.__orchestraTimers[aiName] = { startTime, interval, done: false, mode };
+  updateStatusBar(mode);
+};
+
+window.doneOrchestraStatus = function(aiName) {
+  const t = window.__orchestraTimers[aiName];
+  if (!t) return;
+  clearInterval(t.interval);
+  t.done = true;
+  updateStatusBar(t.mode || 'deliberation');
+  const allDone = Object.values(window.__orchestraTimers).every(x => x.done);
+  if (allDone) {
+    setTimeout(() => {
+      const bar = document.getElementById('orchestra-status-bar');
+      if (bar) bar.remove();
+      window.__orchestraTimers = {};
+    }, 3000);
+  }
+};
+
+// background.js からの合議イベントを受信
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.type === 'ORCHESTRA_START') {
+    window.__orchestraTimers = {};
+    (msg.targets || []).forEach(ai => window.startOrchestraStatus(ai, msg.mode || 'deliberation'));
+  }
+  if (msg.type === 'ORCHESTRA_DONE') {
+    window.doneOrchestraStatus(msg.ai);
+  }
+});
+
 // ── AI Target Selector ───────────────────────────────────────────────────────
 (function initTargetSelector() {
   // Settingsタブが表示されるまで待機してからrow取得
