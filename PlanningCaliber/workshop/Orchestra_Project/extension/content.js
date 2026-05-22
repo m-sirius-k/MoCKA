@@ -1,4 +1,4 @@
-﻿window.__orchestra_loaded = true;
+window.__orchestra_loaded = true;
 console.log("[Orchestra] content.js loaded");
 // AI Conversation Logger - content.js
 // Monitors claude.ai DOM and captures messages
@@ -246,11 +246,8 @@ console.log("[Orchestra] content.js loaded");
   }
 
   function injectOrchestraButtons() {
-    if (!canShowPro()) return;
-
     const blocks = findAssistantBlocks();
     blocks.forEach(block => {
-      // Walk up to a stable container element
       const container = block.closest(
         '[data-test-render-count], [class*="group-"], [class*="message-"]'
       ) || block.parentElement;
@@ -261,6 +258,36 @@ console.log("[Orchestra] content.js loaded");
       const wrapper = document.createElement('div');
       wrapper.style.cssText = 'display:inline-flex;gap:6px;margin-top:8px;flex-wrap:wrap;';
 
+      // Free plan: ロックボタンを表示して誘導
+      if (!canShowPro()) {
+        const lockBtn = document.createElement('button');
+        lockBtn.className = 'orchestra-action-btn';
+        lockBtn.textContent = '🔒 5AI Orchestra (Pro)';
+        lockBtn.style.cssText = [
+          'background:linear-gradient(135deg,#0d0d1a,#16213e)',
+          'color:#666',
+          'border:1px solid #444',
+          'border-radius:6px',
+          'padding:5px 12px',
+          'cursor:pointer',
+          'font-size:11px',
+          'font-family:-apple-system,BlinkMacSystemFont,sans-serif',
+          'font-weight:600',
+          'letter-spacing:0.3px',
+          'white-space:nowrap',
+          'opacity:0.7',
+        ].join(';');
+        lockBtn.addEventListener('click', () => {
+          showNotification('🔒 This feature requires Orchestra Pro or One. Open Settings to activate your license key.', '#e8ff47');
+          // Orchestraポップアップのsettingsタブに誘導
+          chrome.runtime.sendMessage({ type: 'OPEN_SETTINGS' });
+        });
+        lockBtn.addEventListener('mouseenter', () => { lockBtn.style.opacity = '1'; });
+        lockBtn.addEventListener('mouseleave', () => { lockBtn.style.opacity = '0.7'; });
+        wrapper.appendChild(lockBtn);
+        container.appendChild(wrapper);
+        return;
+      }
 
       container.appendChild(wrapper);
     });

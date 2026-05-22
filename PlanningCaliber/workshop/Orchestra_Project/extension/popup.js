@@ -410,3 +410,101 @@ chrome.runtime.onMessage.addListener((msg) => {
   // 初期実行
   bindTargetRows();
 })();
+
+
+// ── Action Bar: Plan-aware unlock ────────────────────────────────────────────
+(function initActionBar() {
+  function applyPlanToActionBar(plan) {
+    const isPro = plan === 'pro' || plan === 'one';
+    const isOne = plan === 'one';
+
+    // Header badge
+    const badge = document.getElementById('header-plan-badge');
+    if (badge) {
+      badge.className = 'plan-badge';
+      if (isOne) {
+        badge.classList.add('one');
+        badge.textContent = 'ONE';
+      } else if (isPro) {
+        badge.classList.add('pro');
+        badge.textContent = 'PRO';
+      }
+    }
+
+    // AI Share button (Pro+)
+    const shareBtn = document.getElementById('action-share');
+    if (shareBtn) {
+      if (isPro) {
+        shareBtn.classList.remove('locked');
+        shareBtn.classList.add('unlocked');
+        shareBtn.addEventListener('click', () => {
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0]) {
+              chrome.tabs.sendMessage(tabs[0].id, { type: 'ORCHESTRA_SHARE' });
+              window.close();
+            }
+          });
+        });
+      } else {
+        shareBtn.classList.add('locked');
+        shareBtn.addEventListener('click', () => {
+          // Settingsタブへ誘導
+          const navSettings = document.getElementById('nav-settings');
+          if (navSettings) navSettings.click();
+          const licInput = document.getElementById('license-key-input');
+          if (licInput) {
+            licInput.focus();
+            licInput.style.borderColor = 'var(--accent)';
+            setTimeout(() => { licInput.style.borderColor = ''; }, 2000);
+          }
+        });
+      }
+    }
+
+    // AI Collab button (One only)
+    const collabBtn = document.getElementById('action-collab');
+    if (collabBtn) {
+      if (isOne) {
+        collabBtn.classList.remove('locked');
+        collabBtn.classList.add('unlocked');
+        collabBtn.addEventListener('click', () => {
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0]) {
+              chrome.tabs.sendMessage(tabs[0].id, { type: 'ORCHESTRA_COLLAB' });
+              window.close();
+            }
+          });
+        });
+      } else {
+        collabBtn.classList.add('locked');
+        collabBtn.addEventListener('click', () => {
+          const navSettings = document.getElementById('nav-settings');
+          if (navSettings) navSettings.click();
+          const licInput = document.getElementById('license-key-input');
+          if (licInput) {
+            licInput.focus();
+            licInput.style.borderColor = '#c9a84c';
+            setTimeout(() => { licInput.style.borderColor = ''; }, 2000);
+          }
+        });
+      }
+    }
+
+    // ツールチップのテキストを言語対応
+    if (window.ORCHESTRA_I18N) {
+      // 将来のi18n対応用フック
+    }
+  }
+
+  // プランを取得してアクションバーに反映
+  chrome.runtime.sendMessage({ type: 'GET_PLAN' }, (res) => {
+    if (res?.ok) applyPlanToActionBar(res.plan);
+  });
+
+  // プラン変更を監視（ライセンス有効化直後に反映）
+  chrome.storage.onChanged.addListener((changes) => {
+    if (changes.license_plan) {
+      applyPlanToActionBar(changes.license_plan.newValue || 'free');
+    }
+  });
+})();

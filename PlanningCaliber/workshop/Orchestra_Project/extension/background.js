@@ -1117,7 +1117,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           sendResponse({ ok: true, plan });
           break;
         case 'SET_LICENSE': {
-          const detectedPlan = validateLicense(msg.key);
+          const detectedPlan = await validateLicense(msg.key);
           await chrome.storage.sync.set({
             license_key: msg.key.trim(),
             license_plan: detectedPlan,
@@ -1164,12 +1164,47 @@ function getLicensePlan() {
   });
 }
 
-function validateLicense(key) {
+// ── HMAC License Validation v2.0 ─────────────────────────────────────────────
+// キー形式: OPR-[rand16hex][sig16hex] / ONE-[rand16hex][sig16hex]
+const _ORCHESTRA_VK = '1260a44bf996eeb4eb415e2896074709de67ea0f49098db068fa0d5e812a0fdb';
+
+async function _hmacVerify(prefix, randHex, sigHex) {
+  try {
+    const enc = new TextEncoder();
+    // Web Crypto API でHMAC-SHA256検証
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(_ORCHESTRA_VK),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    );
+    const msg = enc.encode(prefix + randHex);
+    const sigBuf = await crypto.subtle.sign('HMAC', keyMaterial, msg);
+    const sigArr = Array.from(new Uint8Array(sigBuf)).slice(0, 8);
+    const expected = sigArr.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    return expected === sigHex.toUpperCase();
+  } catch(e) {
+    return false;
+  }
+}
+
+async function validateLicense(key) {
   if (!key || typeof key !== 'string') return 'free';
   const k = key.trim().toUpperCase();
-  if (k.startsWith('ONE-')) return 'one';
-  if (k.startsWith('OPR-')) return 'pro';
-  return 'free';
+
+  let prefix = '';
+  if (k.startsWith('OPR-')) prefix = 'OPR';
+  else if (k.startsWith('ONE-')) prefix = 'ONE';
+  else return 'free';
+
+  const body = k.slice(4);
+  if (body.length !== 32) return 'free';
+
+  const randHex = body.slice(0, 16);
+  const sigHex  = body.slice(16);
+
+  const valid = await _hmacVerify(prefix, randHex, sigHex);
+  if (!valid) return 'free';
+
+  return prefix === 'OPR' ? 'pro' : 'one';
 }
 
 function isPro(plan) {
