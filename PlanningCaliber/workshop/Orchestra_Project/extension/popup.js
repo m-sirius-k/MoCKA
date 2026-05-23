@@ -223,7 +223,7 @@ const PLAN_META = {
   },
 };
 
-function renderPlanUI(plan) {
+function renderPlanUI(plan, expiry) {
   const meta = PLAN_META[plan] || PLAN_META.free;
 
   const nameEl = document.getElementById('plan-name-display');
@@ -231,6 +231,7 @@ function renderPlanUI(plan) {
   const descEl = document.getElementById('plan-desc-display');
   const priceEl = document.getElementById('plan-price-display');
   const noteEl = document.getElementById('plan-note-display');
+  const expiryEl = document.getElementById('plan-expiry-display');
 
   if (nameEl) {
     nameEl.innerHTML =
@@ -249,6 +250,25 @@ function renderPlanUI(plan) {
   }
   if (noteEl) noteEl.innerHTML = meta.note;
 
+  // 有効期限表示
+  if (expiryEl) {
+    if (expiry && plan !== 'free') {
+      const yr = expiry.slice(0,4), mo = expiry.slice(4,6), dy = expiry.slice(6,8);
+      const expDate = new Date(parseInt(yr), parseInt(mo)-1, parseInt(dy), 23, 59, 59);
+      const today = new Date();
+      const daysLeft = Math.ceil((expDate - today) / (1000*60*60*24));
+      const dispDate = `${yr}/${mo}/${dy}`;
+      if (daysLeft <= 7) {
+        expiryEl.innerHTML = `<span style="color:#ff6b6b">⚠ Expires in ${daysLeft} day${daysLeft===1?'':'s'} (${dispDate})</span>`;
+      } else {
+        expiryEl.innerHTML = `<span style="color:#8aff8a">✓ Valid until ${dispDate} (${daysLeft} days left)</span>`;
+      }
+      expiryEl.style.display = 'block';
+    } else {
+      expiryEl.style.display = 'none';
+    }
+  }
+
   // Show/hide Remove button based on whether a license is active
   const removeBtn = document.getElementById('license-remove-btn');
   if (removeBtn) removeBtn.style.display = plan !== 'free' ? 'inline-block' : 'none';
@@ -260,7 +280,7 @@ function loadAndRenderPlan(retry = 3) {
       if (retry > 0) setTimeout(() => loadAndRenderPlan(retry - 1), 200);
       return;
     }
-    if (res?.ok) renderPlanUI(res.plan);
+    if (res?.ok) renderPlanUI(res.plan, res.expiry);
   });
 }
 
@@ -276,8 +296,12 @@ document.getElementById('license-activate-btn')?.addEventListener('click', () =>
   }
 
   chrome.runtime.sendMessage({ type: 'SET_LICENSE', key }, res => {
+    if (res && res.expired) {
+      if (statusEl) { statusEl.textContent = 'This key has expired. Please renew your subscription.'; statusEl.className = 'license-status err'; }
+      return;
+    }
     if (res?.ok) {
-      renderPlanUI(res.plan);
+      renderPlanUI(res.plan, res.expiry);
       if (window.applyPlanToActionBar) window.applyPlanToActionBar(res.plan);
       if (statusEl) {
         const planName = PLAN_META[res.plan]?.label || res.plan;
@@ -521,7 +545,9 @@ chrome.runtime.onMessage.addListener((msg) => {
     if (changes.license_plan) {
       const newPlan = changes.license_plan.newValue || 'free';
       window.applyPlanToActionBar(newPlan);
-      renderPlanUI(newPlan);
+      chrome.runtime.sendMessage({ type: 'GET_PLAN' }, r => {
+        renderPlanUI(newPlan, r?.expiry);
+      });
     }
   });
 })();

@@ -1112,17 +1112,39 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         }
 
         // ── Pro/One: License ─────────────────────────────────────────────
-        case 'GET_PLAN':
+        case 'GET_PLAN': {
           const plan = await getLicensePlan();
-          sendResponse({ ok: true, plan });
+          const syncData = await new Promise(r => chrome.storage.sync.get(['license_expiry'], r));
+          const expiry = syncData.license_expiry || null;
+          // 有効期限チェック（起動時に自動失効）
+          if (expiry && plan !== 'free') {
+            const ep = expiry;
+            const expDate = new Date(
+              parseInt(ep.slice(0,4)), parseInt(ep.slice(4,6))-1, parseInt(ep.slice(6,8)), 23, 59, 59
+            );
+            if (expDate < new Date()) {
+              await chrome.storage.sync.remove(['license_key','license_plan','license_expiry']);
+              sendResponse({ ok: true, plan: 'free', expiry: null, auto_expired: true });
+              break;
+            }
+          }
+          sendResponse({ ok: true, plan, expiry });
           break;
+        }
         case 'SET_LICENSE': {
-          const detectedPlan = await validateLicense(msg.key);
+          const result = await validateLicense(msg.key);
+          const detectedPlan = result.plan;
+          const expiry = result.expiry || null;
+          if (result.expired) {
+            sendResponse({ ok: false, plan: 'free', expired: true });
+            break;
+          }
           await chrome.storage.sync.set({
             license_key: msg.key.trim(),
             license_plan: detectedPlan,
+            license_expiry: expiry,
           });
-          sendResponse({ ok: true, plan: detectedPlan });
+          sendResponse({ ok: true, plan: detectedPlan, expiry });
           break;
         }
         case 'REMOVE_LICENSE':
@@ -1187,24 +1209,60 @@ async function _hmacVerify(prefix, randHex, sigHex) {
 }
 
 async function validateLicense(key) {
-  if (!key || typeof key !== 'string') return 'free';
+  if (!key || typeof key !== 'string') return { plan: 'free', expiry: null };
   const k = key.trim().toUpperCase();
 
   let prefix = '';
   if (k.startsWith('OPR-')) prefix = 'OPR';
   else if (k.startsWith('ONE-')) prefix = 'ONE';
-  else return 'free';
+  else return { plan: 'free', expiry: null };
 
   const body = k.slice(4);
-  if (body.length !== 32) return 'free';
+  // v2: [YYYYMMDD:8][serial:6][sig:16] = 30文字
+  // v1: [rand:16][sig:16] = 32文字 (後方互換)
+  if (body.length === 30) {
+    // v2キー: 有効期限付き
+    const expiryStr = body.slice(0, 8);
+    const serialHex = body.slice(8, 14);
+    const sigHex    = body.slice(14);
+    // 有効期限チェック
+    const expYear  = parseInt(expiryStr.slice(0, 4));
+    const expMonth = parseInt(expiryStr.slice(4, 6)) - 1;
+    const expDay   = parseInt(expiryStr.slice(6, 8));
+    const expiry   = new Date(expYear, expMonth, expDay, 23, 59, 59);
+    if (expiry < new Date()) return { plan: 'free', expiry: null, expired: true };
+    // HMAC検証
+    const valid = await _hmacVerifyV2(prefix, expiryStr, serialHex, sigHex);
+    if (!valid) return { plan: 'free', expiry: null };
+    const plan = prefix === 'OPR' ? 'pro' : 'one';
+    return { plan, expiry: expiryStr };
+  } else if (body.length === 32) {
+    // v1キー: 後方互換（期限なし）
+    const randHex = body.slice(0, 16);
+    const sigHex  = body.slice(16);
+    const valid = await _hmacVerify(prefix, randHex, sigHex);
+    if (!valid) return { plan: 'free', expiry: null };
+    return { plan: prefix === 'OPR' ? 'pro' : 'one', expiry: null };
+  } else {
+    return { plan: 'free', expiry: null };
+  }
+}
 
-  const randHex = body.slice(0, 16);
-  const sigHex  = body.slice(16);
-
-  const valid = await _hmacVerify(prefix, randHex, sigHex);
-  if (!valid) return 'free';
-
-  return prefix === 'OPR' ? 'pro' : 'one';
+async function _hmacVerifyV2(prefix, expiryStr, serialHex, sigHex) {
+  try {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(_ORCHESTRA_VK),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    );
+    const msg = enc.encode(prefix + expiryStr + serialHex);
+    const sigBuf = await crypto.subtle.sign('HMAC', keyMaterial, msg);
+    const sigArr = Array.from(new Uint8Array(sigBuf)).slice(0, 8);
+    const expected = sigArr.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    return expected === sigHex.toUpperCase();
+  } catch(e) {
+    return false;
+  }
 }
 
 function isPro(plan) {
