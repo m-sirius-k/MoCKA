@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-23T09:49:12.929355"
+  "generated_at": "2026-05-23T09:49:12.929355",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "入力しましたが　何も変わりません",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-09",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[hint] まずさー　こうやって私が打つchatの言葉を全て保存するところから開始して欲しい！ 自分でも　過去に書いた記憶はあります　でも　正確に思い出せないそんなことがあります  AIは　最適解で",
+        "recur": 0,
+        "matched": [
+          "変わり"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-31",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "今日pushした内容を振り返ると、これ一択です：\n🎯 `tools/mocka-extension/` — Chrome拡張「MoCKA Save」\nなぜ刺さるか：\n「ブラウザで読んでいる記事を右クリ",
+        "recur": 0,
+        "matched": [
+          "変わり"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-23T01:17:08.959Z"
+  }
 }

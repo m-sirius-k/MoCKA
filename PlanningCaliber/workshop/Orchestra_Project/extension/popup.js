@@ -254,8 +254,12 @@ function renderPlanUI(plan) {
   if (removeBtn) removeBtn.style.display = plan !== 'free' ? 'inline-block' : 'none';
 }
 
-function loadAndRenderPlan() {
+function loadAndRenderPlan(retry = 3) {
   chrome.runtime.sendMessage({ type: 'GET_PLAN' }, res => {
+    if (chrome.runtime.lastError || !res) {
+      if (retry > 0) setTimeout(() => loadAndRenderPlan(retry - 1), 200);
+      return;
+    }
     if (res?.ok) renderPlanUI(res.plan);
   });
 }
@@ -274,6 +278,7 @@ document.getElementById('license-activate-btn')?.addEventListener('click', () =>
   chrome.runtime.sendMessage({ type: 'SET_LICENSE', key }, res => {
     if (res?.ok) {
       renderPlanUI(res.plan);
+      if (window.applyPlanToActionBar) window.applyPlanToActionBar(res.plan);
       if (statusEl) {
         const planName = PLAN_META[res.plan]?.label || res.plan;
         statusEl.textContent = `✓ ${planName} activated successfully!`;
@@ -414,7 +419,7 @@ chrome.runtime.onMessage.addListener((msg) => {
 
 // ── Action Bar: Plan-aware unlock ────────────────────────────────────────────
 (function initActionBar() {
-  function applyPlanToActionBar(plan) {
+  window.applyPlanToActionBar = function(plan) {
     const isPro = plan === 'pro' || plan === 'one';
     const isOne = plan === 'one';
 
@@ -497,18 +502,25 @@ chrome.runtime.onMessage.addListener((msg) => {
   }
 
   // プランを取得してアクションバーに反映
-  chrome.runtime.sendMessage({ type: 'GET_PLAN' }, (res) => {
-    if (res?.ok) {
-      applyPlanToActionBar(res.plan);
-      renderPlanUI(res.plan);
-    }
-  });
+  function fetchAndApplyPlan(retry = 3) {
+    chrome.runtime.sendMessage({ type: 'GET_PLAN' }, (res) => {
+      if (chrome.runtime.lastError || !res) {
+        if (retry > 0) setTimeout(() => fetchAndApplyPlan(retry - 1), 200);
+        return;
+      }
+      if (res?.ok) {
+        window.applyPlanToActionBar(res.plan);
+        renderPlanUI(res.plan);
+      }
+    });
+  }
+  fetchAndApplyPlan();
 
   // プラン変更を監視（ライセンス有効化直後に反映）
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.license_plan) {
       const newPlan = changes.license_plan.newValue || 'free';
-      applyPlanToActionBar(newPlan);
+      window.applyPlanToActionBar(newPlan);
       renderPlanUI(newPlan);
     }
   });
