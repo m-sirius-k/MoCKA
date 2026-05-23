@@ -1,4 +1,4 @@
-
+﻿
 let allMessages = [];
 let currentRole = 'all';
 let currentQuery = '';
@@ -498,13 +498,18 @@ chrome.runtime.onMessage.addListener((msg) => {
 
   // プランを取得してアクションバーに反映
   chrome.runtime.sendMessage({ type: 'GET_PLAN' }, (res) => {
-    if (res?.ok) applyPlanToActionBar(res.plan);
+    if (res?.ok) {
+      applyPlanToActionBar(res.plan);
+      renderPlanUI(res.plan);
+    }
   });
 
   // プラン変更を監視（ライセンス有効化直後に反映）
   chrome.storage.onChanged.addListener((changes) => {
     if (changes.license_plan) {
-      applyPlanToActionBar(changes.license_plan.newValue || 'free');
+      const newPlan = changes.license_plan.newValue || 'free';
+      applyPlanToActionBar(newPlan);
+      renderPlanUI(newPlan);
     }
   });
 })();
