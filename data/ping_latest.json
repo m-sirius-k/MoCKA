@@ -42,12 +42,37 @@
   ],
   "generated_at": "2026-05-24T08:51:18.391706",
   "matcher_result": {
-    "verdict": "NEUTRAL",
-    "score": 0,
-    "danger_rate": 0,
-    "success_rate": 0,
-    "text": "\"C:\\Program Files\\Shotcut\\share\\ffmpeg\"",
-    "top_events": [],
-    "updated_at": "2026-05-24T01:50:23.834Z"
+    "verdict": "DANGER",
+    "score": 0.077,
+    "danger_rate": 0.538,
+    "success_rate": 0.462,
+    "text": "【Orchestra 協議結果】\n\n\n\n\n【質問・テーマ】\n\nステータスパネル\n\n\n\n\n---\n\n\n\n\n## ChatGPT\n\n\n\n\n「ステータスパネル」につい",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-24T03:03:29.851Z"
   }
 }

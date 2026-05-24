@@ -258,7 +258,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         content: text,
       };
       await saveMessage(record);
-      notifyTab(tab.id, '💾 保存しました');
+      notifyTab(tab.id, '💾 Saved');
       break;
     }
 
@@ -272,7 +272,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_AI_DONE', ai: target.name }).catch(()=>{});
       }
       setTimeout(() => hideStatusOverlay(tab.id), 3000);
-      notifyTab(tab.id, `→ ${targets.map(t => t.name).join(' / ')} に送りました`);
+      notifyTab(tab.id, `→ Sent to ${targets.map(t => t.name).join(' / ')}`);
       break;
     }
 
@@ -845,13 +845,20 @@ async function injectAndCollect(target, text, sessionId) {
           'button[class*="submit"], button[class*="send"]'
         );
 
+        // Copilot固有の送信ボタン
+        const copilotSend = document.querySelector(
+          'button[aria-label="Submit message"], button[aria-label="Send"], ' +
+          'button[data-testid="composer-submit-button"], ' +
+          'button.submit-button, cib-text-input button'
+        );
+
         // 汎用送信ボタン
         const genericSend = document.querySelector(
           'button[data-testid="send-button"], button[aria-label*="send" i], ' +
           'button[aria-label*="送信"], button[type="submit"]'
         );
 
-        const sendBtn = perplexitySend || genericSend;
+        const sendBtn = perplexitySend || copilotSend || genericSend;
 
         if (sendBtn) {
           sendBtn.click();
@@ -998,8 +1005,8 @@ async function injectResponsesToClaude(sourceTabId, originalText, responseMap) {
     .join('\n\n---\n\n');
 
   const synthesisText =
-    `【Orchestra 協議結果】\n\n` +
-    `【質問・テーマ】\n${originalText.slice(0, 500)}\n\n` +
+    `【Orchestra Deliberation Results】\n\n` +
+    `【Question/Theme】\n${originalText.slice(0, 500)}\n\n` +
     `---\n\n${parts}\n\n---\n\n` +
     `上記の各AIの回答を比較・統合してください。重要な一致点・相違点・結論をまとめてください。`;
 
@@ -1410,44 +1417,49 @@ async function synthesizeAndInject(session) {
 }
 
 async function runOrchestraOne(conversationText, sourceTabId) {
+  // Orchestra One: Deliberate mode
+  // Sends prompt to all selected AIs in parallel, collects responses,
+  // and synthesizes them back into Claude automatically.
   const plan = await getLicensePlan();
   if (!isOne(plan)) {
     return { ok: false, error: 'Orchestra One plan required.' };
   }
 
-  const prompt = conversationText;
+  const targets = await getSelectedTargets();
+  const sessionId = 'one_' + Date.now();
+  const responseMap = {};
 
-  return new Promise(resolve => {
-    let port;
+  if (sourceTabId) {
+    chrome.tabs.sendMessage(sourceTabId, {
+      type: 'ORCHESTRA_STARTED',
+      sessionId,
+      targets: targets.map(t => t.name),
+      mode: 'deliberation',
+    }).catch(() => {});
+  }
+
+  const promises = targets.map(async (target) => {
     try {
-      port = chrome.runtime.connectNative('com.sirius_lab.orchestra_one');
+      const response = await injectAndCollect(target, conversationText, sessionId);
+      responseMap[target.name] = response;
+      if (sourceTabId) {
+        chrome.tabs.sendMessage(sourceTabId, {
+          type: 'ORCHESTRA_AI_DONE',
+          ai: target.name,
+        }).catch(() => {});
+      }
     } catch (e) {
-      resolve({ ok: false, error: 'Native host not installed. Please run install.bat.' });
-      return;
+      responseMap[target.name] = '[Error: ' + e.message + ']';
+      if (sourceTabId) {
+        chrome.tabs.sendMessage(sourceTabId, {
+          type: 'ORCHESTRA_AI_DONE',
+          ai: target.name,
+        }).catch(() => {});
+      }
     }
-
-    port.onMessage.addListener(async (response) => {
-      port.disconnect();
-      if (response.type === 'ORCHESTRA_RESULT' && response.results) {
-        const fakeSession = {
-          id: 'one_' + Date.now(),
-          sourceTabId,
-          responses: response.results,
-          tabIds: [],
-        };
-        await synthesizeAndInject(fakeSession);
-        resolve({ ok: true });
-      } else {
-        resolve({ ok: false, error: response.error || 'Unknown error from native host' });
-      }
-    });
-
-    port.onDisconnect.addListener(() => {
-      if (chrome.runtime.lastError) {
-        resolve({ ok: false, error: 'Native host disconnected: ' + chrome.runtime.lastError.message });
-      }
-    });
-
-    port.postMessage({ type: 'RUN_ORCHESTRA', prompt });
   });
+
+  await Promise.all(promises);
+  await injectResponsesToClaude(sourceTabId, conversationText, responseMap);
+  return { ok: true, sessionId };
 }

@@ -196,125 +196,11 @@ console.log("[Orchestra] content.js loaded");
     }
   });
 })();
-
-// ── Orchestra Pro/One: Button injection & synthesis ───────────────────────────
-// Separate block — Free機能（上のIIFE）は一切変更しない
+// ── Orchestra: Status panel & synthesis (Pro/One) ─────────────────────────────
+// Handles status panel display and response synthesis for Share/Deliberate
 
 (function () {
   'use strict';
-
-  let orchestraPlan = 'free';
-
-  // Load plan and keep in sync with storage changes
-  function refreshPlan() {
-    chrome.runtime.sendMessage({ type: 'GET_PLAN' }, res => {
-      if (res?.ok) orchestraPlan = res.plan;
-    });
-  }
-
-  chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'sync' && changes.license_plan) {
-      orchestraPlan = changes.license_plan.newValue || 'free';
-      // Re-scan to show/hide buttons if plan just upgraded
-      injectOrchestraButtons();
-    }
-  });
-
-  refreshPlan();
-
-  function canShowPro() {
-    return orchestraPlan === 'pro' || orchestraPlan === 'one';
-  }
-  function canShowOne() {
-    return orchestraPlan === 'one';
-  }
-
-  // ── Button injection ────────────────────────────────────────────────────────
-
-  const ASSISTANT_SELECTORS = [
-    'div.group.relative.pb-3',
-    '[data-testid="assistant-message"]',
-    '.font-claude-message',
-  ];
-
-  function findAssistantBlocks() {
-    for (const sel of ASSISTANT_SELECTORS) {
-      const els = document.querySelectorAll(sel);
-      if (els.length > 0) return Array.from(els);
-    }
-    return [];
-  }
-
-  function injectOrchestraButtons() {
-    const blocks = findAssistantBlocks();
-    blocks.forEach(block => {
-      const container = block.closest(
-        '[data-test-render-count], [class*="group-"], [class*="message-"]'
-      ) || block.parentElement;
-      if (!container) return;
-      if (container.hasAttribute('data-orchestra-injected')) return;
-      container.setAttribute('data-orchestra-injected', '1');
-
-      const wrapper = document.createElement('div');
-      wrapper.style.cssText = 'display:inline-flex;gap:6px;margin-top:8px;flex-wrap:wrap;';
-
-      // Free plan: ロックボタンを表示して誘導
-      if (!canShowPro()) {
-        const lockBtn = document.createElement('button');
-        lockBtn.className = 'orchestra-action-btn';
-        lockBtn.textContent = '🔒 5AI Orchestra (Pro)';
-        lockBtn.style.cssText = [
-          'background:linear-gradient(135deg,#0d0d1a,#16213e)',
-          'color:#666',
-          'border:1px solid #444',
-          'border-radius:6px',
-          'padding:5px 12px',
-          'cursor:pointer',
-          'font-size:11px',
-          'font-family:-apple-system,BlinkMacSystemFont,sans-serif',
-          'font-weight:600',
-          'letter-spacing:0.3px',
-          'white-space:nowrap',
-          'opacity:0.7',
-        ].join(';');
-        lockBtn.addEventListener('click', () => {
-          showNotification('🔒 This feature requires Orchestra Pro or One. Open Settings to activate your license key.', '#e8ff47');
-          // Orchestraポップアップのsettingsタブに誘導
-          chrome.runtime.sendMessage({ type: 'OPEN_SETTINGS' });
-        });
-        lockBtn.addEventListener('mouseenter', () => { lockBtn.style.opacity = '1'; });
-        lockBtn.addEventListener('mouseleave', () => { lockBtn.style.opacity = '0.7'; });
-        wrapper.appendChild(lockBtn);
-        container.appendChild(wrapper);
-        return;
-      }
-
-      container.appendChild(wrapper);
-    });
-  }
-
-  function buildButton(label, color) {
-    const btn = document.createElement('button');
-    btn.className = 'orchestra-action-btn';
-    btn.textContent = label;
-    btn.style.cssText = [
-      'background:linear-gradient(135deg,#0d0d1a,#16213e)',
-      `color:${color}`,
-      `border:1px solid ${color}`,
-      'border-radius:6px',
-      'padding:5px 12px',
-      'cursor:pointer',
-      'font-size:11px',
-      'font-family:-apple-system,BlinkMacSystemFont,sans-serif',
-      'font-weight:600',
-      'letter-spacing:0.3px',
-      'transition:opacity 0.15s',
-      'white-space:nowrap',
-    ].join(';');
-    btn.addEventListener('mouseenter', () => { btn.style.opacity = '0.8'; });
-    btn.addEventListener('mouseleave', () => { btn.style.opacity = '1'; });
-    return btn;
-  }
 
   // ── Incoming messages from background ──────────────────────────────────────
 
@@ -337,9 +223,9 @@ console.log("[Orchestra] content.js loaded");
 
   // ── Status panel ────────────────────────────────────────────────────────────
 
-  let _statusTimers = {};   // { aiName: intervalId }
-  let _statusStart  = {};   // { aiName: Date.now() }
-  let _statusMode   = 'deliberation';  // 'deliberation'=協議 / 'collaboration'=協業
+  let _statusTimers = {};
+  let _statusStart  = {};
+  let _statusMode   = 'deliberation';
 
   function showStatusPanel(targets, mode) {
     removeStatusPanel();
@@ -348,7 +234,7 @@ console.log("[Orchestra] content.js loaded");
     _statusStart  = {};
 
     const isCollab  = _statusMode === 'collaboration';
-    const modeLabel = isCollab ? '🤝 協業' : '💬 協議';
+    const modeLabel = isCollab ? '🤝 Share' : '💬 Deliberate';
     const mainColor = isCollab ? '#4fc3f7' : '#e0c070';
     const borderCol = isCollab ? '#2a7fa0' : '#e0c070';
 
@@ -363,13 +249,11 @@ console.log("[Orchestra] content.js loaded");
       'box-shadow:0 6px 30px rgba(0,0,0,0.7)', 'line-height:1.8',
     ].join(';');
 
-    // ヘッダー
     const header = document.createElement('div');
     header.style.cssText = `font-weight:700;color:${mainColor};margin-bottom:8px;font-size:13px`;
     header.textContent = `🎼 Orchestra  ${modeLabel}`;
     panel.appendChild(header);
 
-    // 各AIの行（カウントアップ用にid付与）
     const startTime = Date.now();
     targets.forEach(t => {
       _statusStart[t] = startTime;
@@ -381,7 +265,6 @@ console.log("[Orchestra] content.js loaded");
         `<span id="orch-timer-${t.replace(/\s/g, '_')}" style="color:${mainColor};font-size:11px;min-width:40px;text-align:right">0.0s</span>`;
       panel.appendChild(row);
 
-      // カウントアップ開始
       _statusTimers[t] = setInterval(() => {
         const el = document.getElementById(`orch-timer-${t.replace(/\s/g, '_')}`);
         if (el) {
@@ -391,20 +274,15 @@ console.log("[Orchestra] content.js loaded");
       }, 100);
     });
 
-    // フッター
     const footer = document.createElement('div');
     footer.style.cssText = 'margin-top:8px;color:#666;font-size:10px';
-    footer.textContent = isCollab
-      ? '協業処理中...'
-      : '各タブで Enter を押してください。';
+    footer.textContent = isCollab ? 'Sending to all AIs...' : 'Waiting for responses...';
     panel.appendChild(footer);
 
     document.body.appendChild(panel);
-    // Auto-dismiss after 90 seconds
     setTimeout(removeStatusPanel, 90000);
   }
 
-  // 特定AIの完了を✓に切り替え
   function markAiDone(aiName) {
     if (_statusTimers[aiName]) {
       clearInterval(_statusTimers[aiName]);
@@ -418,14 +296,12 @@ console.log("[Orchestra] content.js loaded");
       timerEl.style.color = '#4caf50';
       timerEl.textContent = `✓ ${elapsed}s`;
     }
-    // 全員完了なら3秒後に消去
     if (Object.keys(_statusTimers).length === 0) {
       setTimeout(removeStatusPanel, 3000);
     }
   }
 
   function removeStatusPanel() {
-    // 残タイマー全停止
     Object.values(_statusTimers).forEach(id => clearInterval(id));
     _statusTimers = {};
     _statusStart  = {};
@@ -451,8 +327,7 @@ console.log("[Orchestra] content.js loaded");
     }
 
     if (!input) {
-      showNotification('⚠ 入力欄が見つかりませんでした。手動で貼り付けてください。', '#ff8844');
-      // Fallback: copy to clipboard
+      showNotification('⚠ Input field not found. Please paste manually.', '#ff8844');
       navigator.clipboard.writeText(prompt).catch(() => {});
       return;
     }
@@ -475,7 +350,7 @@ console.log("[Orchestra] content.js loaded");
       input.dispatchEvent(new Event('input', { bubbles: true }));
     }
 
-    showNotification('🎼 Orchestra完了！統合プロンプトを注入しました。', '#e0c070');
+    showNotification('🎼 Orchestra complete! Synthesis prompt injected.', '#e0c070');
   }
 
   // ── Notification ────────────────────────────────────────────────────────────
@@ -496,20 +371,4 @@ console.log("[Orchestra] content.js loaded");
     setTimeout(() => el.remove(), 6000);
   }
 
-  // ── Periodic button injection (picks up new messages) ──────────────────────
-
-  // Run when DOM settles after streaming
-  const btnObserver = new MutationObserver(() => {
-    if (canShowPro()) {
-      clearTimeout(btnObserver._timer);
-      btnObserver._timer = setTimeout(injectOrchestraButtons, 800);
-    }
-  });
-  btnObserver.observe(document.body, { childList: true, subtree: true });
-
-  // Initial pass after page fully loads
-  setTimeout(() => {
-    refreshPlan();
-    setTimeout(injectOrchestraButtons, 1500);
-  }, 3000);
 })();
