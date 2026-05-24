@@ -42,12 +42,37 @@
   ],
   "generated_at": "2026-05-24T08:51:18.391706",
   "matcher_result": {
-    "verdict": "NEUTRAL",
-    "score": 0,
-    "danger_rate": 0,
-    "success_rate": 0,
-    "text": "\"X:\\down\\manifest.json\"",
-    "top_events": [],
-    "updated_at": "2026-05-24T00:04:40.249Z"
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "緊急で調査！\n\n確認作業中　aiを選択する所で　選択できない",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "でき"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "でき"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-24T00:45:19.204Z"
   }
 }

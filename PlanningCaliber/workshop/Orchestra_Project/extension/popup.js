@@ -396,12 +396,11 @@ chrome.runtime.onMessage.addListener((msg) => {
 
 // ── AI Target Selector ───────────────────────────────────────────────────────
 (function initTargetSelector() {
-  // Settingsタブが表示されるまで待機してからrow取得
-  function bindTargetRows() {
+  let _bound = false; // 二重登録防止フラグ
+
+  function restoreChecked() {
     const rows = document.querySelectorAll('.ai-target-row');
     if (!rows.length) return;
-
-    // 保存済み選択を復元
     chrome.runtime.sendMessage({ type: 'GET_TARGETS' }, (res) => {
       const saved = (res && res.targets) ? res.targets : ['ChatGPT','Gemini','Perplexity','Copilot','Genspark'];
       rows.forEach(row => {
@@ -412,14 +411,27 @@ chrome.runtime.onMessage.addListener((msg) => {
         }
       });
     });
+  }
 
-    // クリックでtoggle + 保存
+  function bindTargetRows() {
+    const rows = document.querySelectorAll('.ai-target-row');
+    if (!rows.length) return;
+
+    // 保存済み選択を復元（毎回）
+    restoreChecked();
+
+    // クリックイベントは初回のみ登録（二重登録防止）
+    if (_bound) return;
+    _bound = true;
+
     rows.forEach(row => {
       row.addEventListener('click', () => {
         row.classList.toggle('checked');
-        const selected = Array.from(rows)
+        const allRows = document.querySelectorAll('.ai-target-row');
+        const selected = Array.from(allRows)
           .filter(r => r.classList.contains('checked'))
           .map(r => r.dataset.ai);
+        // 最低1つは必ず選択
         if (selected.length === 0) {
           row.classList.add('checked');
           return;
@@ -429,10 +441,10 @@ chrome.runtime.onMessage.addListener((msg) => {
     });
   }
 
-  // nav-tab クリック時にもbind（Settingsタブ切替後）
+  // nav-tab クリック時にも復元（Settingsタブ切替後）
   document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
-      setTimeout(bindTargetRows, 50);
+      setTimeout(bindTargetRows, 150);
     });
   });
 
