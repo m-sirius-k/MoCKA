@@ -192,27 +192,27 @@ function setupContextMenus() {
       contexts: ['selection'],
     });
 
-    // 保存
+    // Save
     chrome.contextMenus.create({
       id: 'orchestra-save',
       parentId: 'orchestra-root',
-      title: '💾 保存',
+      title: '💾 Save',
       contexts: ['selection'],
     });
 
-    // 送る（共有）
+    // Share
     chrome.contextMenus.create({
       id: 'orchestra-send',
       parentId: 'orchestra-root',
-      title: '→ 送る（共有）',
+      title: '→ Share',
       contexts: ['selection'],
     });
 
-    // 協議（合議）
+    // Deliberate
     chrome.contextMenus.create({
       id: 'orchestra-deliberate',
       parentId: 'orchestra-root',
-      title: '⚡ 協議（合議）',
+      title: '⚡ Deliberate',
       contexts: ['selection'],
     });
   });
