@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 // Relay v4.0 — background.js
 // Responsibilities: storage hub, webRequest monitoring, CPI engine, message routing
 
@@ -417,6 +417,10 @@ async function handleMessage(msg) {
     case 'RELAY_GET_HANDOFF': {
       const packet = await getHandoffPacket();
       return { packet };
+    }
+    case 'RELAY_STORE_HANDOFF': {
+      await chrome.storage.local.set({ relay_handoff_packet: msg.packet });
+      return { ok: true };
     }
 
     case 'RELAY_SET_MODE': {

@@ -1,4 +1,4 @@
-'use strict';
+﻿'use strict';
 // Relay v4.0 — popup.js
 // Responsibilities: UI control, real-time updates, user interactions
 
@@ -263,6 +263,9 @@ async function doHandoff(btn, fbEl) {
   btn.disabled = true;
 
   try {
+    // セッション終了を明示的に通知してからパケット取得
+    await sendMsg({ type: 'RELAY_SESSION_END' });
+    await new Promise(r => setTimeout(r, 300)); // 保存完了を待つ
     const res = await sendMsg({ type: 'RELAY_GET_HANDOFF' });
 
     if (!res?.packet) {
