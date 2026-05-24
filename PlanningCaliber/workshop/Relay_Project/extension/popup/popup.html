@@ -1,250 +1,593 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relay</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    body {
-      width: 360px;
-      min-height: 420px;
-      background: #0f0f1a;
-      color: #e0e0e0;
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 13px;
+    :root {
+      --bg-deep:    #0a0e1a;
+      --bg-panel:   #111827;
+      --bg-card:    #141e33;
+      --border:     #1e3a5f;
+      --border-dim: #162032;
+      --text-main:  #e2e8f0;
+      --text-sub:   #64748b;
+      --text-dim:   #334155;
+      --accent:     #38bdf8;
+      --accent-dim: #0c4a6e;
+      --safe:       #22c55e;
+      --warn:       #f59e0b;
+      --danger:     #ef4444;
+      --glow-safe:  0 0 12px rgba(34,197,94,0.45);
+      --glow-warn:  0 0 12px rgba(245,158,11,0.45);
+      --glow-danger:0 0 12px rgba(239,68,68,0.45);
     }
 
-    /* Header */
+    body {
+      width: 320px;
+      min-height: 480px;
+      background: var(--bg-deep);
+      color: var(--text-main);
+      font-family: -apple-system, 'Segoe UI', 'Hiragino Sans', sans-serif;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* ── Typography ──────────────────────────────────────── */
+    .mono {
+      font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+    }
+
+    .label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--text-sub);
+    }
+
+    /* ── Header ──────────────────────────────────────────── */
     .header {
-      background: #1a1a2e;
-      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #2a2a3e;
-    }
-    .header-title {
-      font-size: 15px;
-      font-weight: 700;
-      color: #7c83ff;
-      letter-spacing: 0.5px;
-    }
-    .turn-badge {
-      background: #2a2a3e;
-      border: 1px solid #3a3a5e;
-      border-radius: 20px;
-      padding: 3px 10px;
-      font-size: 12px;
-      color: #a0a0c0;
-    }
-    .turn-badge.warn {
-      border-color: #ff6b6b;
-      color: #ff6b6b;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--border-dim);
+      background: linear-gradient(180deg, #0d1628 0%, var(--bg-deep) 100%);
     }
 
-    /* Tabs */
-    .tabs {
+    .header-logo {
       display: flex;
-      background: #1a1a2e;
-      border-bottom: 1px solid #2a2a3e;
+      align-items: center;
+      gap: 8px;
     }
-    .tab {
-      flex: 1;
-      padding: 9px 0;
-      text-align: center;
-      cursor: pointer;
-      color: #6a6a8a;
-      font-size: 12px;
-      font-weight: 600;
+
+    .logo-hex {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .logo-hex svg {
+      width: 28px;
+      height: 28px;
+    }
+
+    .logo-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--accent);
+      letter-spacing: -0.5px;
+      text-shadow: 0 0 12px rgba(56,189,248,0.4);
+    }
+
+    .header-version {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
       letter-spacing: 0.5px;
-      text-transform: uppercase;
-      border-bottom: 2px solid transparent;
-      transition: all .15s;
     }
-    .tab:hover { color: #a0a0c0; }
-    .tab.active {
-      color: #7c83ff;
-      border-bottom-color: #7c83ff;
+
+    /* ── Metric Cards ────────────────────────────────────── */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 10px 12px;
     }
-    .tab-count {
-      display: inline-block;
-      background: #2a2a3e;
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-dim);
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      transition: border-color 0.3s ease;
+    }
+
+    .card:hover { border-color: var(--border); }
+
+    .card-value {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      transition: color 0.4s ease;
+    }
+
+    .card-sub {
+      font-size: 9px;
+      color: var(--text-sub);
+      letter-spacing: 0.3px;
+    }
+
+    /* CPI Bar */
+    .cpi-segments {
+      display: flex;
+      gap: 2px;
+      margin: 2px 0;
+    }
+
+    .seg {
+      flex: 1;
+      height: 5px;
+      border-radius: 2px;
+      background: var(--bg-panel);
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .seg.s0, .seg.s1 { --seg-color: var(--safe); }
+    .seg.s2, .seg.s3 { --seg-color: #84cc16; }
+    .seg.s4, .seg.s5 { --seg-color: var(--warn); }
+    .seg.s6, .seg.s7 { --seg-color: #f97316; }
+    .seg.s8, .seg.s9 { --seg-color: var(--danger); }
+
+    .seg.active {
+      background: var(--seg-color);
+      box-shadow: 0 0 5px var(--seg-color);
+    }
+
+    /* CPI status text */
+    .cpi-status { font-size: 10px; font-weight: 600; }
+    .cpi-status.safe   { color: var(--safe); }
+    .cpi-status.warn   { color: var(--warn); }
+    .cpi-status.danger { color: var(--danger); }
+
+    /* Tokens card */
+    .token-num {
+      font-size: 20px;
+    }
+
+    /* ── Break-Even ──────────────────────────────────────── */
+    .section {
+      padding: 0 12px 10px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .be-bar-track {
+      height: 8px;
+      background: var(--bg-panel);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid var(--border-dim);
+    }
+
+    .be-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #22c55e 0%, #38bdf8 60%, #f59e0b 100%);
+      transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+      width: 0%;
+    }
+
+    .be-bar-fill.over {
+      background: var(--danger);
+      box-shadow: var(--glow-danger);
+    }
+
+    .be-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      font-size: 10px;
+      color: var(--text-sub);
+    }
+
+    .be-pct {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    /* ── Mode Row ────────────────────────────────────────── */
+    .mode-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px 10px;
+      border-top: 1px solid var(--border-dim);
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .mode-select {
+      flex: 1;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 11px;
+      font-family: inherit;
+      padding: 5px 8px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .mode-select:focus { border-color: var(--accent); }
+
+    .turn-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-sub);
+      white-space: nowrap;
+      padding: 5px 8px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+    }
+
+    .turn-badge.warn-turns { color: var(--warn); border-color: var(--warn); }
+
+    /* ── TODO Section ────────────────────────────────────── */
+    .todo-section {
+      padding: 8px 12px;
+    }
+
+    .todo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      padding: 2px 0;
+      margin-bottom: 6px;
+    }
+
+    .todo-header:hover .todo-toggle { color: var(--accent); }
+
+    .todo-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .todo-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      background: var(--accent-dim);
+      color: var(--accent);
       border-radius: 10px;
       padding: 1px 6px;
-      font-size: 10px;
-      margin-left: 4px;
-      color: #8080a0;
-    }
-    .tab.active .tab-count {
-      background: #3a3aff30;
-      color: #7c83ff;
-    }
-
-    /* Panel */
-    .panel { display: none; padding: 12px; max-height: 360px; overflow-y: auto; }
-    .panel.active { display: block; }
-
-    /* Empty state */
-    .empty {
+      min-width: 20px;
       text-align: center;
-      color: #4a4a6a;
-      padding: 40px 20px;
-      line-height: 1.6;
     }
-    .empty-icon { font-size: 28px; margin-bottom: 8px; }
 
-    /* TODO item */
+    .todo-toggle {
+      font-size: 10px;
+      color: var(--text-dim);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .todo-list {
+      max-height: 160px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .todo-list::-webkit-scrollbar { width: 3px; }
+    .todo-list::-webkit-scrollbar-track { background: transparent; }
+    .todo-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
     .todo-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
-      padding: 9px 10px;
-      margin-bottom: 6px;
-      background: #1a1a2e;
-      border: 1px solid #2a2a3e;
-      border-radius: 7px;
-      transition: border-color .15s;
+      gap: 7px;
+      padding: 6px 8px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      transition: border-color 0.2s, opacity 0.2s;
     }
-    .todo-item:hover { border-color: #4a4a7e; }
+
+    .todo-item:hover { border-color: var(--border); }
 
     .todo-check {
-      width: 16px;
-      height: 16px;
-      border: 2px solid #4a4a7e;
-      border-radius: 4px;
+      width: 14px;
+      height: 14px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
       cursor: pointer;
       flex-shrink: 0;
       margin-top: 1px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all .15s;
-    }
-    .todo-check:hover {
-      border-color: #7c83ff;
-      background: #7c83ff20;
+      transition: background 0.2s, border-color 0.2s;
     }
 
-    .todo-body { flex: 1; min-width: 0; }
+    .todo-check:hover { border-color: var(--safe); }
+
     .todo-text {
+      flex: 1;
+      font-size: 11px;
+      color: var(--text-main);
       line-height: 1.4;
-      word-break: break-word;
-      color: #d0d0e8;
+      word-break: break-all;
     }
-    .todo-meta {
-      font-size: 10px;
-      color: #5a5a7a;
-      margin-top: 3px;
-    }
-    .source-badge {
-      display: inline-block;
-      padding: 1px 5px;
-      border-radius: 3px;
-      font-size: 10px;
-      margin-right: 4px;
-    }
-    .source-badge.assistant { background: #1e3a5f; color: #5aabff; }
-    .source-badge.user { background: #3a1e5f; color: #b06aff; }
 
     .todo-del {
-      background: none;
-      border: none;
-      color: #4a4a6a;
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
       cursor: pointer;
-      padding: 2px 4px;
-      font-size: 14px;
-      line-height: 1;
       flex-shrink: 0;
-    }
-    .todo-del:hover { color: #ff6b6b; }
-
-    /* LOG item */
-    .log-item {
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      background: #1a1a2e;
-      border: 1px solid #2a2a3e;
-      border-left: 3px solid #2ecc71;
-      border-radius: 7px;
-    }
-    .log-text {
-      color: #c0c0d8;
-      line-height: 1.4;
-      word-break: break-word;
-      margin-bottom: 6px;
-    }
-    .log-5w1h {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
       font-size: 11px;
-      color: #5a5a7a;
-      line-height: 1.6;
-      border-top: 1px solid #2a2a3e;
-      padding-top: 6px;
-      margin-top: 4px;
+      transition: color 0.2s, background 0.2s;
     }
-    .log-5w1h span { color: #7c83ff; margin-right: 4px; }
 
-    /* Clear button */
-    .clear-btn {
-      display: block;
+    .todo-del:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+
+    .todo-empty {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-align: center;
+      padding: 12px;
+      font-style: italic;
+    }
+
+    /* ── Handoff Button ──────────────────────────────────── */
+    .handoff-section {
+      padding: 8px 12px 14px;
+    }
+
+    .btn-handoff {
       width: 100%;
-      margin-top: 8px;
-      padding: 7px;
-      background: none;
-      border: 1px solid #3a3a5e;
-      border-radius: 6px;
-      color: #5a5a7a;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--accent);
+      background: linear-gradient(135deg, #0c4a6e, #0369a1);
+      color: var(--accent);
+      font-family: -apple-system, 'Segoe UI', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
       cursor: pointer;
-      font-size: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-    .clear-btn:hover { border-color: #ff6b6b; color: #ff6b6b; }
 
-    /* Scrollbar */
-    .panel::-webkit-scrollbar { width: 4px; }
-    .panel::-webkit-scrollbar-track { background: transparent; }
-    .panel::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
+    .btn-handoff::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -120%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(56,189,248,0.2), transparent);
+      animation: shimmer 2.5s linear infinite;
+    }
+
+    .btn-handoff:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(56,189,248,0.25);
+    }
+
+    .btn-handoff:active {
+      transform: translateY(0);
+    }
+
+    .btn-handoff:disabled {
+      opacity: 0.5;
+      cursor: default;
+      animation: none;
+    }
+
+    .btn-handoff:disabled::before { animation: none; }
+
+    .btn-feedback {
+      text-align: center;
+      font-size: 11px;
+      margin-top: 6px;
+      height: 14px;
+      transition: opacity 0.3s;
+      color: var(--safe);
+    }
+
+    .btn-feedback.error { color: var(--danger); }
+
+    /* ── No Session State ────────────────────────────────── */
+    .no-session {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      gap: 8px;
+      color: var(--text-dim);
+      text-align: center;
+      min-height: 200px;
+    }
+
+    .no-session-icon { font-size: 28px; opacity: 0.4; }
+    .no-session-text { font-size: 12px; line-height: 1.5; }
+
+    /* ── Animations ──────────────────────────────────────── */
+    @keyframes shimmer {
+      to { left: 200%; }
+    }
+
+    @keyframes value-flash {
+      0%   { opacity: 0.4; }
+      100% { opacity: 1;   }
+    }
+
+    .flash-update {
+      animation: value-flash 0.4s ease-out;
+    }
+
+    /* ── Dividers ────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border-dim);
+      margin: 0;
+    }
   </style>
 </head>
 <body>
 
+  <!-- ── Header ──────────────────────────────────────── -->
   <div class="header">
-    <div class="header-title">⚡ Relay</div>
-    <div class="turn-badge" id="turn-badge">0 / 20 turns</div>
+    <div class="header-logo">
+      <div class="logo-hex">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14 2L25 8.5V19.5L14 26L3 19.5V8.5L14 2Z"
+                stroke="#38bdf8" stroke-width="1.5" fill="rgba(56,189,248,0.06)"/>
+          <text x="9" y="19" fill="#38bdf8" font-family="monospace" font-size="12" font-weight="800">R</text>
+        </svg>
+      </div>
+      <span class="logo-text">RELAY</span>
+    </div>
+    <span class="header-version mono">v4.0.0</span>
   </div>
 
-  <div class="tabs">
-    <div class="tab active" data-tab="todo">
-      TODO <span class="tab-count" id="todo-count">0</span>
-    </div>
-    <div class="tab" data-tab="log">
-      LOG <span class="tab-count" id="log-count">0</span>
-    </div>
-  </div>
+  <!-- ── Main content (hidden when no session) ──────── -->
+  <div id="main-content">
 
-  <!-- TODO Panel -->
-  <div class="panel active" id="panel-todo">
-    <div class="empty" id="todo-empty">
-      <div class="empty-icon">📋</div>
-      <div>No TODOs yet.</div>
-      <div style="font-size:11px;margin-top:6px;color:#3a3a5a">
-        Say "Please do X" or "Make sure to Y"<br>and Relay will pick it up.
+    <!-- Metric Cards -->
+    <div class="metrics-row">
+
+      <!-- CPI Card -->
+      <div class="card" id="cpi-card">
+        <span class="label">CPI</span>
+        <div class="cpi-segments" id="cpi-segments">
+          <div class="seg s0" data-idx="0"></div>
+          <div class="seg s1" data-idx="1"></div>
+          <div class="seg s2" data-idx="2"></div>
+          <div class="seg s3" data-idx="3"></div>
+          <div class="seg s4" data-idx="4"></div>
+          <div class="seg s5" data-idx="5"></div>
+          <div class="seg s6" data-idx="6"></div>
+          <div class="seg s7" data-idx="7"></div>
+          <div class="seg s8" data-idx="8"></div>
+          <div class="seg s9" data-idx="9"></div>
+        </div>
+        <span class="card-value mono" id="cpi-value">—</span>
+        <span class="cpi-status safe" id="cpi-status">待機中</span>
+      </div>
+
+      <!-- Tokens Card -->
+      <div class="card">
+        <span class="label">TOKENS</span>
+        <span class="card-value mono token-num" id="token-value">0</span>
+        <span class="card-sub">est. accumulated</span>
+      </div>
+
+    </div>
+
+    <!-- Break-Even -->
+    <div class="section">
+      <div class="section-header">
+        <span class="label">BREAK-EVEN POINT</span>
+        <span class="be-pct mono" id="be-pct">0%</span>
+      </div>
+      <div class="be-bar-track">
+        <div class="be-bar-fill" id="be-bar"></div>
+      </div>
+      <div class="be-meta">
+        <span id="be-margin">推奨切替まで: 計算中</span>
+        <span id="be-tstar" class="mono"></span>
       </div>
     </div>
-    <div id="todo-list"></div>
-  </div>
 
-  <!-- LOG Panel -->
-  <div class="panel" id="panel-log">
-    <div class="empty" id="log-empty">
-      <div class="empty-icon">📖</div>
-      <div>No completed TODOs yet.</div>
-      <div style="font-size:11px;margin-top:6px;color:#3a3a5a">
-        Check off a TODO and it will appear here.
+    <div class="divider"></div>
+
+    <!-- Mode Row -->
+    <div class="mode-row">
+      <select class="mode-select" id="mode-select">
+        <option value="light">軽作業（雑談・要約）</option>
+        <option value="heavy" selected>重作業（設計・実装）</option>
+        <option value="file">ファイル多用</option>
+      </select>
+      <div class="turn-badge mono" id="turn-badge">T: 0</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- TODO Section -->
+    <div class="todo-section">
+      <div class="todo-header" id="todo-header">
+        <div class="todo-title">
+          <span class="label">TODO</span>
+          <span class="todo-count" id="todo-count">0</span>
+        </div>
+        <span class="todo-toggle" id="todo-toggle">▼</span>
+      </div>
+      <div class="todo-list" id="todo-list">
+        <div class="todo-empty">タスクはまだありません</div>
       </div>
     </div>
-    <div id="log-list"></div>
-    <button class="clear-btn" id="clear-log-btn">Clear log</button>
+
+    <div class="divider"></div>
+
+    <!-- Handoff Button -->
+    <div class="handoff-section">
+      <button class="btn-handoff" id="btn-handoff">
+        ⚡ 今すぐ引き継ぎ
+      </button>
+      <div class="btn-feedback" id="btn-feedback"></div>
+    </div>
+
+  </div>
+
+  <!-- No session state -->
+  <div id="no-session-state" style="display:none;">
+    <div class="no-session">
+      <div class="no-session-icon">⬡</div>
+      <div class="no-session-text">
+        Claude.ai でチャットを開いてください<br>
+        <span style="color: #334155; font-size: 10px;">Relay が自動的に計測を開始します</span>
+      </div>
+    </div>
+    <!-- Still show handoff button for manual use -->
+    <div class="handoff-section">
+      <button class="btn-handoff" id="btn-handoff-alt">
+        ⚡ 今すぐ引き継ぎ
+      </button>
+      <div class="btn-feedback" id="btn-feedback-alt"></div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

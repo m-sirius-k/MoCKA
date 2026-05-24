@@ -1,18 +1,25 @@
 {
   "manifest_version": 3,
   "name": "Relay",
-  "version": "3.0.0",
-  "description": "Auto-extract TODOs from Claude conversations. Keep a log of what was done.",
-  "permissions": ["storage", "scripting"],
-  "host_permissions": ["https://claude.ai/*"],
+  "version": "4.0.0",
+  "description": "Smart context handoff for Claude. Know when to switch, carry what matters.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "webRequest",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://claude.ai/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup/popup.html",
     "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
       "128": "icons/icon128.png"
     }
   },
@@ -22,10 +29,5 @@
       "js": ["content.js"],
       "run_at": "document_idle"
     }
-  ],
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  }
+  ]
 }
