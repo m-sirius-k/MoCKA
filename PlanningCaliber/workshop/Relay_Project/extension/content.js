@@ -288,26 +288,47 @@ function extractTodos(text) {
 
 async function prepareInvisibleHandoff() {
   if (!isExtensionAlive()) return;
+
   // popup経由の手動引き継ぎパケットを優先確認
   const stored = await chrome.storage.local.get(['relay_handoff_packet']);
   let packet = stored.relay_handoff_packet || null;
   if (packet) {
-    // 使ったら削除
     await chrome.storage.local.remove(['relay_handoff_packet']);
     console.log('[Relay] Handoff packet from popup');
   } else {
     const res = await safeSendMessage({ type: 'RELAY_GET_HANDOFF' });
     packet = res?.packet || null;
   }
+
   if (!packet) {
     console.log('[Relay] No handoff packet — clean start');
     return;
   }
-  pendingHandoff  = packet;
-  sendIntercepted = false;
-  showBadgeReady();
-  console.log('[Relay] Handoff ready — will inject on first send');
-  waitForSendButton();
+
+  // テキストボックスが出現するまで最大5秒待ってから即入力
+  console.log('[Relay] Handoff packet ready — waiting for input box...');
+  injectWhenReady(packet, 0);
+}
+
+function injectWhenReady(packet, attempts) {
+  const MAX = 20; // 20 * 250ms = 5秒
+  const input = findInputEl();
+  if (input) {
+    setInputValue(input, packet);
+    showBadgeFlash('safe');
+    console.log('[Relay] Handoff injected into input box');
+    return;
+  }
+  if (attempts >= MAX) {
+    // fallback: 送信ボタン押下時に注入
+    pendingHandoff  = packet;
+    sendIntercepted = false;
+    showBadgeReady();
+    console.log('[Relay] Input not found — fallback to send-intercept mode');
+    waitForSendButton();
+    return;
+  }
+  setTimeout(() => injectWhenReady(packet, attempts + 1), 250);
 }
 
 function waitForSendButton() {
@@ -543,10 +564,16 @@ async function handleBadgeClick() {
   }
   try {
     const res = await safeSendMessage({ type: 'RELAY_GET_HANDOFF' });
-    if (!res?.packet) return;
+    const packet = res?.packet || null;
+    if (!packet) {
+      // パケットなしの場合もバッジをフラッシュして知らせる
+      showBadgeFlash('warn');
+      console.log('[Relay] Badge click — no handoff data available');
+      return;
+    }
     const input = findInputEl();
     if (input) {
-      setInputValue(input, res.packet);
+      setInputValue(input, packet);
       showBadgeFlash('safe');
     }
   } catch (err) {

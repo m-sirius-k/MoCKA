@@ -270,20 +270,30 @@ function calcBreakEven(mode, currentTokens) {
 
 async function getHandoffPacket() {
   try {
-    const stored = await chrome.storage.local.get([KEYS.SESSIONS, KEYS.TODOS]);
+    const stored = await chrome.storage.local.get([KEYS.SESSIONS, KEYS.TODOS, KEYS.CURRENT]);
     const sessions    = stored[KEYS.SESSIONS] || [];
     const activeTodos = (stored[KEYS.TODOS]   || []).filter(t => t.status === 'active');
-
-    if (!sessions.length && !activeTodos.length) return null;
+    const current     = stored[KEYS.CURRENT]  || {};
 
     const lines = ['[Relay引き継ぎ - 自動生成]', '━'.repeat(36), ''];
 
+    // アクティブTODO
     if (activeTodos.length) {
-      lines.push('■ 現在のセッション（未完了タスク）');
+      lines.push('■ 未完了タスク');
       activeTodos.slice(0, 10).forEach(t => lines.push(`  - ${t.text}`));
       lines.push('');
     }
 
+    // 現在セッション（まだendSessionされていない場合）
+    if (current.session_id) {
+      const d = new Date(current.started_at || Date.now());
+      const dateStr = `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+      lines.push(`■ 現在のセッション（${dateStr}〜）`);
+      lines.push(`  ターン数: ${current.turn_count || 0}`);
+      lines.push('');
+    }
+
+    // 過去セッション履歴
     const recent = sessions.slice(0, 2);
     recent.forEach((session, i) => {
       const label   = i === 0 ? '前セッション' : '前々セッション';
@@ -312,6 +322,12 @@ async function getHandoffPacket() {
       }
       lines.push('');
     });
+
+    // 何もデータがない場合でも最低限のパケットを返す
+    if (!activeTodos.length && !sessions.length && !current.session_id) {
+      lines.push('（引き継ぎデータなし — 新規セッション開始）');
+      lines.push('');
+    }
 
     lines.push('━'.repeat(36));
     lines.push('上記を踏まえて作業を継続してください。');

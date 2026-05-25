@@ -263,45 +263,34 @@ async function doHandoff(btn, fbEl) {
   btn.disabled = true;
 
   try {
-    // セッション終了を明示的に通知してからパケット取得
+    // 1. セッション終了 → endSession()でセッション履歴を保存
     await sendMsg({ type: 'RELAY_SESSION_END' });
-    await new Promise(r => setTimeout(r, 300)); // 保存完了を待つ
-    const res = await sendMsg({ type: 'RELAY_GET_HANDOFF' });
+    await new Promise(r => setTimeout(r, 400)); // endSession完了を待つ
 
+    // 2. パケット生成（セッション履歴+アクティブTODO）
+    const res = await sendMsg({ type: 'RELAY_GET_HANDOFF' });
     if (!res?.packet) {
       showFeedback(fbEl, '引き継ぎデータなし', 'warn');
+      btn.disabled = false;
       return;
     }
 
-    // 新規タブで claude.ai/new を開いて注入
-    // content.js v4.2 の prepareInvisibleHandoff が自動で拾う
-    const newTab = await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+    // 3. packetをstorageに保存
+    //    → 新規タブのcontent.jsがisNewチェック後に自動取得する
+    await sendMsg({ type: 'RELAY_STORE_HANDOFF', packet: res.packet });
 
-    // タブが読み込まれるまで待機してから注入
-    chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
-      if (tabId !== newTab.id || info.status !== 'complete') return;
-      chrome.tabs.onUpdated.removeListener(listener);
+    // 4. 新規タブを開く（content.jsのprepareInvisibleHandoffが自動注入）
+    await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
 
-      // 少し待ってからcontent.jsが起動するのを待つ
-      setTimeout(async () => {
-        try {
-          await chrome.tabs.sendMessage(newTab.id, {
-            type: 'RELAY_INJECT_HANDOFF',
-            packet: res.packet,
-          });
-        } catch (e) {
-          // content.js の prepareInvisibleHandoff が代わりに注入するので無視
-        }
-      }, 2000);
-    });
-
+    // 5. フィードバック表示後にpopupを閉じる
+    //    ※ window.close()の前にonUpdatedリスナーを張らない設計
     showFeedback(fbEl, '✓ 新規chatで引き継ぎ', 'success');
-    window.close(); // popup を閉じる
+    setTimeout(() => window.close(), 800);
+
   } catch (err) {
     console.error('[Relay popup] handoff error:', err);
     showFeedback(fbEl, 'エラー: ' + err.message, 'error');
-  } finally {
-    setTimeout(() => { if (btn) btn.disabled = false; }, 2000);
+    btn.disabled = false;
   }
 }
 
