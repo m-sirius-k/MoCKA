@@ -76,6 +76,11 @@ function init() {
   observeUrlChanges();
   observeDOM();
   scheduleMetricsPush();
+
+  // 新規タブで開かれた場合（chrome.tabs.createで/newに来た場合）も注入する
+  if (/\/new($|\?)/.test(location.href)) {
+    setTimeout(prepareInvisibleHandoff, CONFIG.INJECT_DELAY);
+  }
 }
 
 // ─── URL / Session Lifecycle ─────────────────────────────────────────────────
