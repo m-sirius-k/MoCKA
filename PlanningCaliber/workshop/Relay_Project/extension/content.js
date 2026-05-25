@@ -556,26 +556,25 @@ function injectBadgeStyles() {
 
 async function handleBadgeClick() {
   if (!isExtensionAlive()) return;
-  if (pendingHandoff) {
-    prependHandoffToInput();
-    clearPendingHandoff();
-    if (badgeEl) badgeEl.classList.remove('handoff-ready');
-    return;
-  }
   try {
+    // セッション終了してパケット生成
+    await safeSendMessage({ type: 'RELAY_SESSION_END' });
+    await new Promise(r => setTimeout(r, 400));
+
     const res = await safeSendMessage({ type: 'RELAY_GET_HANDOFF' });
     const packet = res?.packet || null;
+
     if (!packet) {
-      // パケットなしの場合もバッジをフラッシュして知らせる
       showBadgeFlash('warn');
-      console.log('[Relay] Badge click — no handoff data available');
+      console.log('[Relay] Badge click — no handoff data');
       return;
     }
-    const input = findInputEl();
-    if (input) {
-      setInputValue(input, packet);
-      showBadgeFlash('safe');
-    }
+
+    // storageに保存 → 新規タブのcontent.jsが自動取得して注入
+    await safeSendMessage({ type: 'RELAY_STORE_HANDOFF', packet });
+    await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+    showBadgeFlash('safe');
+
   } catch (err) {
     console.error('[Relay] Badge click error:', err);
   }

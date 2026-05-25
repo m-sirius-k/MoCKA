@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Relay</title>
   <style>
-    /* ── Reset & Base ─────────────────────────────────────── */
+    /* Reset & Base */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -37,7 +37,6 @@
       overflow-x: hidden;
     }
 
-    /* ── Typography ──────────────────────────────────────── */
     .mono {
       font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
     }
@@ -50,7 +49,7 @@
       color: var(--text-sub);
     }
 
-    /* ── Header ──────────────────────────────────────────── */
+    /* Header */
     .header {
       display: flex;
       align-items: center;
@@ -72,13 +71,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
     }
 
-    .logo-hex svg {
-      width: 28px;
-      height: 28px;
-    }
+    .logo-hex svg { width: 28px; height: 28px; }
 
     .logo-text {
       font-family: 'JetBrains Mono', monospace;
@@ -96,7 +91,7 @@
       letter-spacing: 0.5px;
     }
 
-    /* ── Metric Cards ────────────────────────────────────── */
+    /* Metric Cards */
     .metrics-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -158,18 +153,14 @@
       box-shadow: 0 0 5px var(--seg-color);
     }
 
-    /* CPI status text */
     .cpi-status { font-size: 10px; font-weight: 600; }
     .cpi-status.safe   { color: var(--safe); }
     .cpi-status.warn   { color: var(--warn); }
     .cpi-status.danger { color: var(--danger); }
 
-    /* Tokens card */
-    .token-num {
-      font-size: 20px;
-    }
+    .token-num { font-size: 20px; }
 
-    /* ── Break-Even ──────────────────────────────────────── */
+    /* Break-Even */
     .section {
       padding: 0 12px 10px;
     }
@@ -216,7 +207,7 @@
       color: var(--accent);
     }
 
-    /* ── Mode Row ────────────────────────────────────────── */
+    /* Mode Row */
     .mode-row {
       display: flex;
       align-items: center;
@@ -255,10 +246,8 @@
 
     .turn-badge.warn-turns { color: var(--warn); border-color: var(--warn); }
 
-    /* ── TODO Section ────────────────────────────────────── */
-    .todo-section {
-      padding: 8px 12px;
-    }
+    /* TODO Section */
+    .todo-section { padding: 8px 12px; }
 
     .todo-header {
       display: flex;
@@ -367,10 +356,8 @@
       font-style: italic;
     }
 
-    /* ── Handoff Button ──────────────────────────────────── */
-    .handoff-section {
-      padding: 8px 12px 14px;
-    }
+    /* Handoff Button */
+    .handoff-section { padding: 8px 12px 14px; }
 
     .btn-handoff {
       width: 100%;
@@ -392,10 +379,8 @@
     .btn-handoff::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: -120%;
-      width: 60%;
-      height: 100%;
+      top: 0; left: -120%;
+      width: 60%; height: 100%;
       background: linear-gradient(90deg, transparent, rgba(56,189,248,0.2), transparent);
       animation: shimmer 2.5s linear infinite;
     }
@@ -405,14 +390,11 @@
       box-shadow: 0 6px 20px rgba(56,189,248,0.25);
     }
 
-    .btn-handoff:active {
-      transform: translateY(0);
-    }
+    .btn-handoff:active { transform: translateY(0); }
 
     .btn-handoff:disabled {
       opacity: 0.5;
       cursor: default;
-      animation: none;
     }
 
     .btn-handoff:disabled::before { animation: none; }
@@ -428,7 +410,7 @@
 
     .btn-feedback.error { color: var(--danger); }
 
-    /* ── No Session State ────────────────────────────────── */
+    /* No Session State */
     .no-session {
       display: flex;
       flex-direction: column;
@@ -444,31 +426,22 @@
     .no-session-icon { font-size: 28px; opacity: 0.4; }
     .no-session-text { font-size: 12px; line-height: 1.5; }
 
-    /* ── Animations ──────────────────────────────────────── */
-    @keyframes shimmer {
-      to { left: 200%; }
-    }
+    /* Animations */
+    @keyframes shimmer { to { left: 200%; } }
 
     @keyframes value-flash {
       0%   { opacity: 0.4; }
       100% { opacity: 1;   }
     }
 
-    .flash-update {
-      animation: value-flash 0.4s ease-out;
-    }
+    .flash-update { animation: value-flash 0.4s ease-out; }
 
-    /* ── Dividers ────────────────────────────────────────── */
-    .divider {
-      height: 1px;
-      background: var(--border-dim);
-      margin: 0;
-    }
+    .divider { height: 1px; background: var(--border-dim); margin: 0; }
   </style>
 </head>
 <body>
 
-  <!-- ── Header ──────────────────────────────────────── -->
+  <!-- Header -->
   <div class="header">
     <div class="header-logo">
       <div class="logo-hex">
@@ -480,10 +453,10 @@
       </div>
       <span class="logo-text">RELAY</span>
     </div>
-    <span class="header-version mono">v4.0.0</span>
+    <span class="header-version mono">v4.1.0</span>
   </div>
 
-  <!-- ── Main content (hidden when no session) ──────── -->
+  <!-- Main content (visible when session active) -->
   <div id="main-content">
 
     <!-- Metric Cards -->
@@ -537,8 +510,8 @@
     <!-- Mode Row -->
     <div class="mode-row">
       <select class="mode-select" id="mode-select">
-        <option value="light">軽作業（雑談・要約）</option>
-        <option value="heavy" selected>重作業（設計・実装）</option>
+        <option value="light">軽作業（参照・質問・相談）</option>
+        <option value="heavy" selected>重作業（設計・実装・修正）</option>
         <option value="file">ファイル多用</option>
       </select>
       <div class="turn-badge mono" id="turn-badge">T: 0</div>
@@ -575,7 +548,7 @@
   <!-- No session state -->
   <div id="no-session-state" style="display:none;">
     <div class="no-session">
-      <div class="no-session-icon">⬡</div>
+      <div class="no-session-icon">◎</div>
       <div class="no-session-text">
         Claude.ai でチャットを開いてください<br>
         <span style="color: #334155; font-size: 10px;">Relay が自動的に計測を開始します</span>
