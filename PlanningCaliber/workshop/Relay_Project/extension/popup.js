@@ -1,5 +1,8 @@
 ﻿'use strict';
-// Relay v4.0 — popup.js
+// Relay v4.4 — popup.js
+// Fix v4.4: doHandoff() — RELAY_SESSION_END除去
+//   原因: SESSION_ENDでrelay_currentがnullになり新規タブのpopupが
+//         no-session-state（「Claude.aiでチャットを開いてください」）に戻っていた
 // Responsibilities: UI control, real-time updates, user interactions
 
 // ─── DOM References ───────────────────────────────────────────────────────────
@@ -263,11 +266,10 @@ async function doHandoff(btn, fbEl) {
   btn.disabled = true;
 
   try {
-    // 1. セッション終了 → endSession()でセッション履歴を保存
-    await sendMsg({ type: 'RELAY_SESSION_END' });
-    await new Promise(r => setTimeout(r, 400)); // endSession完了を待つ
-
-    // 2. パケット生成（セッション履歴+アクティブTODO）
+    // 1. パケット生成（現在のセッション情報+アクティブTODO）
+    //    ※ RELAY_SESSION_END は呼ばない
+    //      → 呼ぶと relay_current が null になり新規タブのpopupが
+    //         「Claude.aiでチャットを開いてください」（no-session状態）になるため
     const res = await sendMsg({ type: 'RELAY_GET_HANDOFF' });
     if (!res?.packet) {
       showFeedback(fbEl, '引き継ぎデータなし', 'warn');
@@ -275,15 +277,14 @@ async function doHandoff(btn, fbEl) {
       return;
     }
 
-    // 3. packetをstorageに保存
-    //    → 新規タブのcontent.jsがisNewチェック後に自動取得する
+    // 2. packetをstorageに保存
+    //    → 新規タブのcontent.jsが prepareInvisibleHandoff() で自動取得して注入
     await sendMsg({ type: 'RELAY_STORE_HANDOFF', packet: res.packet });
 
-    // 4. 新規タブを開く（content.jsのprepareInvisibleHandoffが自動注入）
+    // 3. 新規タブを開く
     await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
 
-    // 5. フィードバック表示後にpopupを閉じる
-    //    ※ window.close()の前にonUpdatedリスナーを張らない設計
+    // 4. フィードバック表示後にpopupを閉じる
     showFeedback(fbEl, '✓ 新規chatで引き継ぎ', 'success');
     setTimeout(() => window.close(), 800);
 
