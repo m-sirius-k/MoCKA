@@ -577,7 +577,7 @@ async function handleBadgeClick() {
 
     // storageに保存 → 新規タブのcontent.jsが自動取得して注入
     await safeSendMessage({ type: 'RELAY_STORE_HANDOFF', packet });
-    await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+    await safeSendMessage({ type: 'RELAY_OPEN_TAB' });
     showBadgeFlash('safe');
 
   } catch (err) {

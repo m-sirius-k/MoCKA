@@ -439,6 +439,11 @@ async function handleMessage(msg) {
       return { ok: true };
     }
 
+    case 'RELAY_OPEN_TAB': {
+      await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+      return { ok: true };
+    }
+
     case 'RELAY_SET_MODE': {
       const stored   = await chrome.storage.local.get([KEYS.SETTINGS, KEYS.CURRENT]);
       const settings = { ...(stored[KEYS.SETTINGS] || DEFAULT_SETTINGS), work_mode: msg.mode };
