@@ -1,5 +1,5 @@
 'use strict';
-// Relay v4.2 — content.js
+// Relay v4.6 — content.js
 // Fix v4.1: Extension context invalidated guard + CSP Google Fonts removed
 // Fix v4.2: Smart handoff — invisible inject on first send (not pasted into input)
 
@@ -488,10 +488,17 @@ function createBadge() {
   badgeEl = document.createElement('div');
   badgeEl.id = CONFIG.BADGE_ID;
   badgeEl.innerHTML = `
-    <div class="relay-badge-logo">R</div>
     <div class="relay-badge-indicator">
       <div class="relay-dot"></div>
-      <span class="relay-cpi">—</span>
+      <div class="relay-metric-row">
+        <span class="relay-metric-lbl">CPI</span>
+        <span class="relay-cpi-val">—</span>
+      </div>
+      <div class="relay-metric-row">
+        <span class="relay-metric-lbl">TOK</span>
+        <span class="relay-tok-val">—</span>
+      </div>
+      <span class="relay-cpi-label">正常</span>
     </div>
     <div class="relay-turns">T:0</div>
   `;
@@ -511,16 +518,16 @@ function injectBadgeStyles() {
       position: fixed !important;
       bottom: 24px !important;
       right: 24px !important;
-      width: 54px;
-      height: 66px;
-      background: #0a0e1a;
+      width: 72px;
+      height: 88px;
+      background: #0c1220;
       border: 1px solid #1e3a5f;
-      border-radius: 14px;
+      border-radius: 12px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 7px 5px;
+      padding: 7px 6px;
       cursor: pointer;
       z-index: 999999 !important;
       box-shadow: 0 4px 24px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04);
@@ -538,19 +545,26 @@ function injectBadgeStyles() {
     #relay-badge:active {
       transform: translateY(-1px) scale(1.01);
     }
-    .relay-badge-logo {
-      font-size: 20px;
-      font-weight: 800;
-      color: #38bdf8;
-      letter-spacing: -1px;
-      line-height: 1;
-      text-shadow: 0 0 8px rgba(56,189,248,0.5);
-    }
     .relay-badge-indicator {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 3px;
+      width: 100%;
+    }
+    .relay-metric-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      width: 100%;
       gap: 2px;
+    }
+    .relay-metric-lbl {
+      font-size: 8px;
+      color: #f0e060;
+      opacity: 0.7;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
     }
     .relay-dot {
       width: 11px;
@@ -575,14 +589,34 @@ function injectBadgeStyles() {
       box-shadow: 0 0 10px rgba(239,68,68,0.8);
       animation: relay-pulse 0.9s ease-in-out infinite;
     }
-    .relay-cpi {
-      font-size: 9px;
-      color: #475569;
+    .relay-cpi-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f0e060;
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+    .relay-cpi-label {
+      font-size: 8px;
+      color: #22c55e;
+      letter-spacing: 0;
+    }
+    .relay-cpi-label.warn   { color: #f59e0b; }
+    .relay-cpi-label.danger { color: #ef4444; }
+    .relay-tokens-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .relay-tok-val {
+      font-size: 11px;
+      font-weight: 600;
+      color: #f0e060;
       letter-spacing: 0;
     }
     .relay-turns {
       font-size: 9px;
-      color: #475569;
+      color: #f0e060;
       letter-spacing: 0.4px;
     }
     #relay-badge.handoff-ready {
@@ -631,20 +665,46 @@ async function handleBadgeClick() {
 function updateBadge() {
   if (!badgeEl || !isExtensionAlive()) return;
 
-  const dot   = badgeEl.querySelector('.relay-dot');
-  const cpiEl = badgeEl.querySelector('.relay-cpi');
-  const tEl   = badgeEl.querySelector('.relay-turns');
+  const dot      = badgeEl.querySelector('.relay-dot');
+  const cpiValEl = badgeEl.querySelector('.relay-cpi-val');
+  const cpiLblEl = badgeEl.querySelector('.relay-cpi-label');
+  const tokEl    = badgeEl.querySelector('.relay-tok-val');
+  const tEl      = badgeEl.querySelector('.relay-turns');
 
   if (tEl) tEl.textContent = `T:${turnCount}`;
 
-  safeSendMessage({ type: 'RELAY_GET_METRICS' }).then(m => {
-    if (!m) return;
-    const cpi = m?.cpi || 0;
-    if (cpiEl) cpiEl.textContent = cpi > 0 ? cpi.toFixed(1) : '—';
+  safeSendMessage({ type: 'RELAY_GET_STATS' }).then(s => {
+    if (!s) return;
+
+    // CPI
+    const cpi = s.cpi || 0;
+    if (cpiValEl) cpiValEl.textContent = cpi > 0 ? cpi.toFixed(2) : '—';
+
+    // CPI ラベル + 色
+    if (cpiLblEl) {
+      let label, cls;
+      if      (cpi <= 0)   { label = '待機中'; cls = ''; }
+      else if (cpi < 1.2)  { label = '正常';   cls = ''; }
+      else if (cpi < 1.8)  { label = '注意';   cls = 'warn'; }
+      else if (cpi < 2.5)  { label = '警告';   cls = 'warn'; }
+      else                 { label = '危険！'; cls = 'danger'; }
+      cpiLblEl.textContent = label;
+      cpiLblEl.className   = 'relay-cpi-label' + (cls ? ' ' + cls : '');
+    }
+
+    // DOT 色
     if (dot) {
       dot.className = 'relay-dot';
-      if (cpi >= 2.5)      dot.classList.add('danger');
+      if      (cpi >= 2.5) dot.classList.add('danger');
       else if (cpi >= 1.2) dot.classList.add('warn');
+    }
+
+    // TOKENS
+    const tok = s.estimated_tokens || 0;
+    if (tokEl) {
+      tokEl.textContent = tok >= 1000
+        ? (tok / 1000).toFixed(1) + 'K'
+        : tok > 0 ? tok.toString() : '—';
     }
   }).catch(() => {});
 }

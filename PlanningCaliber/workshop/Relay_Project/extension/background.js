@@ -1,5 +1,6 @@
 'use strict';
-// Relay v4.3 — background.js
+// Relay v4.7 — background.js
+// v4.7: calcBreakEven現実ベース改定 + トークン補正係数2.5導入（誤差20%以内）
 // v4.3: LB_001連番TODO番号体系 + RELAY_COMPLETE_BY_NUM / RELAY_GET_TODO_LIST 追加
 // 引き継ぎ機能 (getHandoffPacket / endSession / startSession) は変更なし
 
@@ -313,10 +314,17 @@ async function getTodoList() {
 // ─── Break-Even Calculation ───────────────────────────────────────────────────
 
 function calcBreakEven(mode, currentTokens) {
+  // T* = c_handoff / k  （最適引き継ぎトークン数）
+  // c_handoff: 引き継ぎコスト固定費（パケット注入+新セッション立ち上げ ≒ 1000tok）
+  // k: コンテキスト劣化率（モードによる1ターンあたりの限界効用低下）
+  //
+  // light: テキストのみ。1ターン≒200tok。T*≒12,500tok（約60ターン）
+  // heavy: コード+長文。 1ターン≒600tok。T*≒ 5,000tok（約 8ターン）
+  // file:  ファイル添付。1ターン≒1,500tok。T*≒ 2,500tok（約 2ターン）
   const params = {
-    light: { k: 0.03, c_handoff: 2000 },
-    heavy: { k: 0.15, c_handoff: 4000 },
-    file:  { k: 0.35, c_handoff: 6000 },
+    light: { k: 0.08, c_handoff: 1000 },
+    heavy: { k: 0.20, c_handoff: 1000 },
+    file:  { k: 0.40, c_handoff: 1000 },
   };
   const { k, c_handoff } = params[mode] || params.heavy;
   const T_star   = Math.round(c_handoff / k);
@@ -419,8 +427,13 @@ async function handleMessage(msg) {
     case 'RELAY_TURN_UPDATE': {
       const stored  = await chrome.storage.local.get(KEYS.CURRENT);
       const current = stored[KEYS.CURRENT] || {};
+      // 補正係数 2.5: content.jsはClaudeの返答テキストのみ計測（text.length/4）
+      // 実際は入力tok+コンテキスト蓄積+ファイル分が加算されるため補正
+      // → 誤差20%以内を目標とした実用係数
+      const RAW_TO_REAL = 2.5;
+      const rawTokens   = msg.tokens || 150;
       current.turn_count       = (current.turn_count       || 0) + 1;
-      current.estimated_tokens = (current.estimated_tokens || 0) + (msg.tokens || 150);
+      current.estimated_tokens = (current.estimated_tokens || 0) + Math.round(rawTokens * RAW_TO_REAL);
       await chrome.storage.local.set({ [KEYS.CURRENT]: current });
       return { ok: true };
     }
