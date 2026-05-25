@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 // Relay v4.2 — content.js
 // Fix v4.1: Extension context invalidated guard + CSP Google Fonts removed
 // Fix v4.2: Smart handoff — invisible inject on first send (not pasted into input)
@@ -167,22 +167,43 @@ function checkForNewMessages() {
 }
 
 function getAIMessages() {
+  // 2026年版 claude.ai セレクター（優先順）
   const selectors = [
+    // 現行 claude.ai DOM
     '[data-testid="assistant-message"]',
+    'div.font-claude-message',
+    'div[class*="font-claude"]',
     '.font-claude-response',
+    // フォールバック群
     '[class*="assistant-message"]',
-    '[data-is-streaming="false"]',
+    '[class*="AssistantMessage"]',
+    'div[class*="message-content"]',
   ];
 
   for (const sel of selectors) {
-    const els = Array.from(document.querySelectorAll(sel));
-    if (els.length) return els;
+    try {
+      const els = Array.from(document.querySelectorAll(sel));
+      if (els.length) return els;
+    } catch(e) {}
   }
 
-  // Generic fallback: look for large text blocks in the conversation area
-  const conv = document.querySelector('[class*="conversation"]') || document.body;
-  return Array.from(conv.querySelectorAll('div[class*="message"]'))
-    .filter(el => el.textContent.length > 100);
+  // 汎用フォールバック: 会話エリア内の100文字超テキストブロック
+  // role="presentation" や article タグも対象
+  const containers = [
+    document.querySelector('[class*="conversation-content"]'),
+    document.querySelector('[class*="ConversationContent"]'),
+    document.querySelector('main'),
+    document.body,
+  ].filter(Boolean);
+
+  for (const conv of containers) {
+    const candidates = Array.from(conv.querySelectorAll(
+      'div[class*="message"], article, [role="article"]'
+    )).filter(el => el.textContent.length > 100);
+    if (candidates.length) return candidates;
+  }
+
+  return [];
 }
 
 function getMessageId(el) {
