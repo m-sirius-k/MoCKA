@@ -72,14 +72,27 @@ function init() {
 
   console.log('[Relay] Initializing on', location.href);
   createBadge();
-  notifySessionStart();
   observeUrlChanges();
   observeDOM();
   scheduleMetricsPush();
 
-  // 新規タブで開かれた場合（chrome.tabs.createで/newに来た場合）も注入する
-  if (/\/new($|\?)/.test(location.href)) {
-    setTimeout(prepareInvisibleHandoff, CONFIG.INJECT_DELAY);
+  // URL確定後に1回だけセッション開始通知
+  // /new → /chat/xxx の遷移はonUrlChangeが処理するため、
+  // ここではchat確定ページのみ通知する（/newは遷移後に任せる）
+  if (/\/chat\/[a-z0-9-]+/.test(location.href)) {
+    notifySessionStart();
+  } else if (/\/new($|\?)/.test(location.href)) {
+    // /new は遷移後のonUrlChangeでnotifySessionStart+prepareInvisibleHandoffが走る
+    // ただし/newで止まる場合（直接開いた場合）のためフォールバック
+    setTimeout(() => {
+      if (/\/new($|\?)/.test(location.href)) {
+        notifySessionStart();
+        prepareInvisibleHandoff();
+      }
+    }, CONFIG.INJECT_DELAY);
+  } else {
+    // その他のページ（トップページ等）でも一応通知
+    notifySessionStart();
   }
 }
 
@@ -282,6 +295,15 @@ function extractTodos(text) {
     // Reject high symbol density (likely code)
     const symbols = (trimmed.match(/[^a-zA-Z0-9぀-龯\s\-:.,]/g) || []).length;
     if (symbols / trimmed.length > 0.30) continue;
+
+    // ★ Reject: MoCKA形式の完了報告行 (TODO_xxx完了, LB_xxx完了, _170完了 等)
+    if (/(?:TODO[_-]?\d+|LB[_-]?\d+|_\d+)\s*(?:[（(].*?[)）])?\s*[:：]?\s*.*(?:完了|done|finished)/i.test(trimmed)) continue;
+    // ★ Reject: _数字（〜）形式の引き継ぎ行全般 (完了文字なくても)
+    if (/^_\d+[（(【]/.test(trimmed)) continue;
+    // ★ Reject: 日付+完了パターン (2026-05-24完了, E20260524完了 等)
+    if (/20\d\d[-\/]\d\d[-\/]\d\d.*完了/.test(trimmed)) continue;
+    // ★ Reject: 表組みの行 (| で始まる or 含む)
+    if (/^\|.+\|/.test(trimmed)) continue;
 
     let matched = null;
 

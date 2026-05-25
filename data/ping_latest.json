@@ -40,5 +40,41 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-25T18:48:17.807458"
+  "generated_at": "2026-05-25T18:48:17.807458",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.104,
+    "danger_rate": 0.552,
+    "success_rate": 0.448,
+    "text": "【Orchestra Deliberation Results】\n\n\n\n\n【Question/Theme】\n\n100万円手元から　一千万にする最短の方法　日系　",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-25",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "【Orchestra Deliberation Results】\n\n\n\n\n【Question/Theme】\n\n100万円手元から　一千万にする最短の方法　日系　ニーサ　S＆Pにおいて　優良株と思われる",
+        "recur": 0,
+        "matched": [
+          "崩れ",
+          "思わ"
+        ],
+        "score": 2
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-25",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "【Orchestra Deliberation Results】\n\n\n\n\n【Question/Theme】\n\n100万円手元から　一千万にする最短の方法　日系　ニーサ　S＆Pにおいて　優良株と思われる",
+        "recur": 0,
+        "matched": [
+          "崩れ",
+          "思わ"
+        ],
+        "score": 2
+      }
+    ],
+    "updated_at": "2026-05-25T10:19:08.951Z"
+  }
 }

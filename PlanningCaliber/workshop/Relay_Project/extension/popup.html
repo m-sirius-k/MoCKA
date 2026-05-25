@@ -437,6 +437,30 @@
     .flash-update { animation: value-flash 0.4s ease-out; }
 
     .divider { height: 1px; background: var(--border-dim); margin: 0; }
+
+    /* Pin Button */
+    .pin-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border-dim);
+      background: transparent;
+      color: var(--text-dim);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .pin-btn:hover { border-color: var(--border); color: var(--text-sub); }
+    .pin-btn.pinned {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(56,189,248,0.08);
+      box-shadow: 0 0 8px rgba(56,189,248,0.2);
+    }
   </style>
 </head>
 <body>
@@ -453,7 +477,10 @@
       </div>
       <span class="logo-text">RELAY</span>
     </div>
-    <span class="header-version mono">v4.1.0</span>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="pin-btn" id="pin-btn" title="ピン留め: ONにするとpopupが自動で閉じません">📌</button>
+      <span class="header-version mono">v4.1.0</span>
+    </div>
   </div>
 
   <!-- Main content (visible when session active) -->

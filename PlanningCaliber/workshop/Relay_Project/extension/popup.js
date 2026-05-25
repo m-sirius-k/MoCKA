@@ -30,15 +30,22 @@ const UI = {
   btnFeedback:    $('btn-feedback'),
   btnHandoffAlt:  $('btn-handoff-alt'),
   btnFeedbackAlt: $('btn-feedback-alt'),
+  pinBtn:         $('pin-btn'),
 };
 
 let todoExpanded  = true;
 let feedbackTimer = null;
+let isPinned      = false;  // ピン留め状態
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 
 async function init() {
   try {
+    // ピン留め状態をストレージから復元
+    const stored = await chrome.storage.local.get(['relay_pinned']);
+    isPinned = stored.relay_pinned === true;
+    updatePinUI();
+
     await loadAll();
     bindEvents();
     listenStorageChanges();
@@ -253,6 +260,13 @@ function bindEvents() {
     }
   });
 
+  // Pin button
+  UI.pinBtn?.addEventListener('click', async () => {
+    isPinned = !isPinned;
+    await chrome.storage.local.set({ relay_pinned: isPinned });
+    updatePinUI();
+  });
+
   // Force handoff button
   [UI.btnHandoff, UI.btnHandoffAlt].forEach((btn, i) => {
     if (!btn) return;
@@ -284,9 +298,11 @@ async function doHandoff(btn, fbEl) {
     // 3. 新規タブを開く
     await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
 
-    // 4. フィードバック表示後にpopupを閉じる
+    // 4. フィードバック表示 → ピン留めOFFの時だけ自動クローズ
     showFeedback(fbEl, '✓ 新規chatで引き継ぎ', 'success');
-    setTimeout(() => window.close(), 800);
+    if (!isPinned) {
+      setTimeout(() => window.close(), 800);
+    }
 
   } catch (err) {
     console.error('[Relay popup] handoff error:', err);
@@ -349,6 +365,17 @@ function showMainContent() {
 function showNoSession() {
   if (UI.mainContent)  UI.mainContent.style.display  = 'none';
   if (UI.noSession)    UI.noSession.style.display     = '';
+}
+
+function updatePinUI() {
+  if (!UI.pinBtn) return;
+  if (isPinned) {
+    UI.pinBtn.classList.add('pinned');
+    UI.pinBtn.title = 'ピン留め中 — クリックで自動クローズに戻す';
+  } else {
+    UI.pinBtn.classList.remove('pinned');
+    UI.pinBtn.title = 'ピン留め: ONにするとpopupが自動で閉じません';
+  }
 }
 
 function flashUpdate(el) {
