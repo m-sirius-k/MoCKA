@@ -1,6 +1,7 @@
-﻿'use strict';
-// Relay v4.0 — background.js
-// Responsibilities: storage hub, webRequest monitoring, CPI engine, message routing
+'use strict';
+// Relay v4.3 — background.js
+// v4.3: LB_001連番TODO番号体系 + RELAY_COMPLETE_BY_NUM / RELAY_GET_TODO_LIST 追加
+// 引き継ぎ機能 (getHandoffPacket / endSession / startSession) は変更なし
 
 const KEYS = {
   SESSIONS:  'relay_sessions',
@@ -8,6 +9,7 @@ const KEYS = {
   METRICS:   'relay_metrics',
   SETTINGS:  'relay_settings',
   TODOS:     'relay_todos',
+  TODO_CTR:  'relay_todo_counter',  // LB連番カウンター
 };
 
 const DEFAULT_SETTINGS = {
@@ -38,7 +40,6 @@ chrome.webRequest.onCompleted.addListener(
     const responseSize = getContentLength(details.responseHeaders);
     pendingRequests.delete(details.requestId);
 
-    // Skip trivial assets
     if (latency < 30 && responseSize < 200) return;
 
     updateMetrics({ latency, responseSize }).catch(console.error);
@@ -78,7 +79,6 @@ async function updateMetrics(measurement) {
       metrics.measurements = metrics.measurements.slice(-60);
     }
 
-    // Establish baseline after 3 measurements
     if (metrics.measurements.length === 3 && !metrics.baseline) {
       metrics.baseline = {
         latency: avg(metrics.measurements.map(m => m.latency)),
@@ -208,25 +208,77 @@ function inferWorkDescription(todos) {
   return '一般作業';
 }
 
-// ─── TODO Management ──────────────────────────────────────────────────────────
+// ─── TODO Management (v4.3: LB_001連番) ──────────────────────────────────────
+
+// 次のLB番号を発行する
+async function nextLbNum() {
+  const stored = await chrome.storage.local.get(KEYS.TODO_CTR);
+  const next   = (stored[KEYS.TODO_CTR] || 0) + 1;
+  await chrome.storage.local.set({ [KEYS.TODO_CTR]: next });
+  return next;
+}
+
+// LB_001形式にフォーマット
+function lbId(num) {
+  return 'LB_' + String(num).padStart(3, '0');
+}
 
 async function addTodo(text, source) {
   try {
     const stored = await chrome.storage.local.get(KEYS.TODOS);
     const todos  = stored[KEYS.TODOS] || [];
-    if (todos.some(t => t.text === text)) return;
 
+    // テキスト重複チェック（activeのみ）
+    if (todos.some(t => t.text === text && t.status === 'active')) return;
+
+    const num = await nextLbNum();
     todos.push({
-      id:         Date.now().toString(),
+      id:         lbId(num),     // LB_001形式
+      num,                       // 数値（検索用）
       text,
       status:     'active',
       created_at: Date.now(),
       source:     source || 'auto',
     });
     await chrome.storage.local.set({ [KEYS.TODOS]: todos });
+    console.log('[Relay] TODO added:', lbId(num), text.slice(0, 40));
   } catch (err) {
     console.error('[Relay] addTodo error:', err);
   }
+}
+
+// IDまたはnum番号で完了にする
+async function completeTodoByNum(num) {
+  try {
+    const stored = await chrome.storage.local.get(KEYS.TODOS);
+    const todos  = stored[KEYS.TODOS] || [];
+    let hit = false;
+    const updated = todos.map(t => {
+      if (t.num === num && t.status === 'active') {
+        hit = true;
+        return { ...t, status: 'done', completed_at: Date.now() };
+      }
+      return t;
+    });
+    if (hit) {
+      await chrome.storage.local.set({ [KEYS.TODOS]: updated });
+      console.log('[Relay] TODO done: LB_' + String(num).padStart(3, '0'));
+    }
+    return hit;
+  } catch (err) {
+    console.error('[Relay] completeTodoByNum error:', err);
+    return false;
+  }
+}
+
+// 範囲完了（例: 1〜5）
+async function completeTodoRange(from, to) {
+  let count = 0;
+  for (let n = from; n <= to; n++) {
+    const hit = await completeTodoByNum(n);
+    if (hit) count++;
+  }
+  return count;
 }
 
 async function completeTodo(id) {
@@ -251,6 +303,13 @@ async function deleteTodo(id) {
   }
 }
 
+// activeなTODOを番号付きで返す
+async function getTodoList() {
+  const stored = await chrome.storage.local.get(KEYS.TODOS);
+  const todos  = stored[KEYS.TODOS] || [];
+  return todos.filter(t => t.status === 'active');
+}
+
 // ─── Break-Even Calculation ───────────────────────────────────────────────────
 
 function calcBreakEven(mode, currentTokens) {
@@ -267,6 +326,7 @@ function calcBreakEven(mode, currentTokens) {
 }
 
 // ─── Handoff Packet ───────────────────────────────────────────────────────────
+// ※ 引き継ぎ機能: 変更なし
 
 async function getHandoffPacket() {
   try {
@@ -277,14 +337,12 @@ async function getHandoffPacket() {
 
     const lines = ['[Relay引き継ぎ - 自動生成]', '━'.repeat(36), ''];
 
-    // アクティブTODO
     if (activeTodos.length) {
       lines.push('■ 未完了タスク');
-      activeTodos.slice(0, 10).forEach(t => lines.push(`  - ${t.text}`));
+      activeTodos.slice(0, 10).forEach(t => lines.push(`  - [${t.id}] ${t.text}`));
       lines.push('');
     }
 
-    // 現在セッション（まだendSessionされていない場合）
     if (current.session_id) {
       const d = new Date(current.started_at || Date.now());
       const dateStr = `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
@@ -293,7 +351,6 @@ async function getHandoffPacket() {
       lines.push('');
     }
 
-    // 過去セッション履歴
     const recent = sessions.slice(0, 2);
     recent.forEach((session, i) => {
       const label   = i === 0 ? '前セッション' : '前々セッション';
@@ -323,7 +380,6 @@ async function getHandoffPacket() {
       lines.push('');
     });
 
-    // 何もデータがない場合でも最低限のパケットを返す
     if (!activeTodos.length && !sessions.length && !current.session_id) {
       lines.push('（引き継ぎデータなし — 新規セッション開始）');
       lines.push('');
@@ -399,6 +455,18 @@ async function handleMessage(msg) {
       await completeTodo(msg.id);
       return { ok: true };
 
+    // ── 新規: 番号指定完了 ──
+    case 'RELAY_COMPLETE_BY_NUM': {
+      const hit = await completeTodoByNum(msg.num);
+      return { ok: hit };
+    }
+
+    // ── 新規: 範囲指定完了 ──
+    case 'RELAY_COMPLETE_RANGE': {
+      const count = await completeTodoRange(msg.from, msg.to);
+      return { ok: true, count };
+    }
+
     case 'RELAY_DELETE_TODO':
       await deleteTodo(msg.id);
       return { ok: true };
@@ -406,6 +474,12 @@ async function handleMessage(msg) {
     case 'RELAY_GET_TODOS': {
       const stored = await chrome.storage.local.get(KEYS.TODOS);
       return { todos: stored[KEYS.TODOS] || [] };
+    }
+
+    // ── 新規: active一覧取得 ──
+    case 'RELAY_GET_TODO_LIST': {
+      const list = await getTodoList();
+      return { todos: list };
     }
 
     case 'RELAY_GET_STATS': {
@@ -434,6 +508,7 @@ async function handleMessage(msg) {
       const packet = await getHandoffPacket();
       return { packet };
     }
+
     case 'RELAY_STORE_HANDOFF': {
       await chrome.storage.local.set({ relay_handoff_packet: msg.packet });
       return { ok: true };

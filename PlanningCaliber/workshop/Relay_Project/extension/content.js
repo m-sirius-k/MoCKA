@@ -665,6 +665,188 @@ function hashText(str) {
   return (h >>> 0).toString(36);
 }
 
+// ─── Intent Engine v2.0 — 口頭TODO完了 ───────────────────────────────────────
+// 「452番終了」「LB3完了」「1〜5 done」などを検知してbackground.jsに送信
+// ※ 引き継ぎ注入ロジック (prepareInvisibleHandoff等) には一切触れない
+
+(function() {
+
+  // ── パターン定義 ──────────────────────────────────────────────────────────
+  // 単体: 「452番終了」「LB_003完了」「3番おわった」「todo 7 done」
+  const SINGLE_RE   = /(?:LB[_-]?)?(\d{1,4})\s*(?:番|番目|号)?\s*(?:終了|完了|おわり|おわった|done|finish(?:ed)?|close[sd]?)/i;
+  // 範囲: 「1〜5番完了」「1から3終了」「1-3 done」
+  const RANGE_RE    = /(?:LB[_-]?)?(\d{1,4})\s*[〜~\-から]\s*(?:LB[_-]?)?(\d{1,4})\s*(?:番|番目|号)?\s*(?:終了|完了|おわり|おわった|done|finish(?:ed)?|close[sd]?)/i;
+  // TODOリスト表示: 「todoリスト」「todo見せて」「what's pending」
+  const LIST_RE     = /(?:todo\s*(?:リスト|一覧|見せ|show|list)|pending\s*todo|未完了\s*todo|todo\s*what)/i;
+
+  // ── 番号解析 ─────────────────────────────────────────────────────────────
+  function parseIntent(text) {
+    const t = text.trim();
+
+    // 範囲チェック（先に）
+    const rm = t.match(RANGE_RE);
+    if (rm) {
+      return { type: 'range', from: parseInt(rm[1]), to: parseInt(rm[2]) };
+    }
+
+    // 単体チェック
+    const sm = t.match(SINGLE_RE);
+    if (sm) {
+      return { type: 'single', num: parseInt(sm[1]) };
+    }
+
+    // リスト表示
+    if (LIST_RE.test(t)) {
+      return { type: 'list' };
+    }
+
+    return null;
+  }
+
+  // ── トースト表示 ─────────────────────────────────────────────────────────
+  function showIntentToast(msg, color) {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    el.style.cssText = [
+      'position:fixed', 'bottom:100px', 'right:24px',
+      `background:${color || '#22c55e'}`, 'color:#fff',
+      'padding:9px 16px', 'border-radius:10px', 'font-size:13px',
+      'z-index:9999999', 'font-family:ui-monospace,monospace',
+      'box-shadow:0 4px 16px rgba(0,0,0,0.5)', 'max-width:320px',
+    ].join(';');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+
+  // ── TODO一覧をトーストで表示 ─────────────────────────────────────────────
+  async function showTodoList() {
+    if (!isExtensionAlive()) return;
+    try {
+      const res = await safeSendMessage({ type: 'RELAY_GET_TODO_LIST' });
+      const todos = res?.todos || [];
+      if (!todos.length) {
+        showIntentToast('📋 未完了TODOはありません', '#475569');
+        return;
+      }
+      const lines = ['📋 未完了TODO:'];
+      todos.slice(0, 8).forEach(t => {
+        lines.push(`  ${t.id}: ${t.text.slice(0, 50)}${t.text.length > 50 ? '…' : ''}`);
+      });
+      if (todos.length > 8) lines.push(`  … 他${todos.length - 8}件`);
+      showIntentToast(lines.join('\n'), '#0f172a');
+    } catch (e) {
+      console.error('[Relay Intent] showTodoList error:', e);
+    }
+  }
+
+  // ── 完了処理 ─────────────────────────────────────────────────────────────
+  async function handleComplete(intent) {
+    if (!isExtensionAlive()) return;
+    try {
+      if (intent.type === 'single') {
+        const res = await safeSendMessage({ type: 'RELAY_COMPLETE_BY_NUM', num: intent.num });
+        if (res?.ok) {
+          showIntentToast(`✓ LB_${String(intent.num).padStart(3,'0')} 完了`);
+        } else {
+          showIntentToast(`LB_${String(intent.num).padStart(3,'0')} が見つかりません`, '#f59e0b');
+        }
+      } else if (intent.type === 'range') {
+        const res = await safeSendMessage({ type: 'RELAY_COMPLETE_RANGE', from: intent.from, to: intent.to });
+        showIntentToast(`✓ LB_${String(intent.from).padStart(3,'0')} 〜 LB_${String(intent.to).padStart(3,'0')} 完了 (${res?.count || 0}件)`);
+      }
+    } catch (e) {
+      console.error('[Relay Intent] handleComplete error:', e);
+    }
+  }
+
+  // ── Enterキー監視 ─────────────────────────────────────────────────────────
+  // ※ 引き継ぎ注入 (onFirstSend/onFirstSendKey) とは独立して動作
+  document.addEventListener('keydown', function onIntentKey(e) {
+    if (e.key !== 'Enter' || e.shiftKey) return;
+
+    const input = document.querySelector('div[contenteditable="true"]') ||
+                  document.querySelector('textarea');
+    if (!input) return;
+
+    const text = (input.innerText || input.value || '').trim();
+    if (!text || text.length < 2) return;
+
+    const intent = parseIntent(text);
+    if (!intent) return;
+
+    // Enterを少し遅らせてから処理（Claudeへの送信後に実行）
+    setTimeout(() => {
+      if (intent.type === 'list') {
+        showTodoList();
+      } else {
+        handleComplete(intent);
+      }
+    }, 300);
+
+  }, false);
+
+  console.log('[Relay] Intent Engine v2.0 loaded');
+
+})();
+
+// ─── Manual TODO — 選択テキスト右クリック (半自動) ───────────────────────────
+// テキスト選択後Ctrl+Shift+T でTODO登録
+// ※ 右クリックはmanifest.jsonのcontextMenusで対応、ここではキーショートカット
+
+(function() {
+
+  document.addEventListener('keydown', function onManualTodo(e) {
+    // Ctrl+Shift+T (Windows/Linux) or Cmd+Shift+T (Mac)
+    if (!((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'T')) return;
+
+    const sel = window.getSelection();
+    const text = sel ? sel.toString().trim() : '';
+
+    if (!text || text.length < 5) {
+      // 選択なし → TODOリスト表示
+      safeSendMessage({ type: 'RELAY_GET_TODO_LIST' }).then(res => {
+        const todos = res?.todos || [];
+        if (!todos.length) {
+          showManualToast('📋 未完了TODOはありません', '#475569');
+          return;
+        }
+        const lines = todos.slice(0, 6).map(t => `${t.id}: ${t.text.slice(0,45)}`);
+        showManualToast('📋 ' + lines.join('\n'), '#0f172a');
+      }).catch(() => {});
+      return;
+    }
+
+    if (text.length > 200) {
+      showManualToast('選択テキストが長すぎます（200文字以内）', '#f59e0b');
+      return;
+    }
+
+    safeSendMessage({ type: 'RELAY_ADD_TODO', text, source: 'manual' }).then(() => {
+      showManualToast(`📌 TODO登録: ${text.slice(0, 50)}${text.length > 50 ? '…' : ''}`);
+    }).catch(() => {});
+
+    e.preventDefault();
+  }, false);
+
+  function showManualToast(msg, color) {
+    const el = document.createElement('div');
+    el.textContent = msg;
+    el.style.cssText = [
+      'position:fixed', 'bottom:100px', 'right:24px',
+      `background:${color || '#3b82f6'}`, 'color:#fff',
+      'padding:9px 16px', 'border-radius:10px', 'font-size:13px',
+      'z-index:9999999', 'font-family:ui-monospace,monospace',
+      'box-shadow:0 4px 16px rgba(0,0,0,0.5)', 'white-space:pre-line',
+      'max-width:340px',
+    ].join(';');
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  }
+
+  console.log('[Relay] Manual TODO (Ctrl+Shift+T) loaded');
+
+})();
+
 // ─── Boot ────────────────────────────────────────────────────────────────────
 
 if (document.readyState === 'loading') {
