@@ -1,5 +1,8 @@
 ﻿'use strict';
-// Relay v4.4 — popup.js
+// Relay v4.8 — popup.js
+// Fix v4.8: loadAll() リトライポーリング追加（500ms×6回=最大3秒待機）
+//   原因: 新規chat遷移直後にcontent.js初期化完了前にpopupを開くと
+//         RELAY_GET_STATSがsession_id=nullを返し no-session表示になっていた
 // Fix v4.4: doHandoff() — RELAY_SESSION_END除去
 //   原因: SESSION_ENDでrelay_currentがnullになり新規タブのpopupが
 //         no-session-state（「Claude.aiでチャットを開いてください」）に戻っていた
@@ -56,14 +59,33 @@ async function init() {
 
 // ─── Data Loading ─────────────────────────────────────────────────────────────
 
+// 新規chat遷移直後はcontent.js初期化に時間がかかるため
+// 500ms × 最大6回（計3秒）リトライしてからno-session表示にフォールバック
 async function loadAll() {
-  const [statsRes, todosRes] = await Promise.all([
-    sendMsg({ type: 'RELAY_GET_STATS' }),
-    sendMsg({ type: 'RELAY_GET_TODOS' }),
-  ]);
+  const RETRY_INTERVAL = 500;
+  const MAX_RETRIES    = 6;
 
-  renderStats(statsRes);
-  renderTodos((todosRes?.todos || []).filter(t => t.status === 'active'));
+  for (let i = 0; i < MAX_RETRIES; i++) {
+    const [statsRes, todosRes] = await Promise.all([
+      sendMsg({ type: 'RELAY_GET_STATS' }),
+      sendMsg({ type: 'RELAY_GET_TODOS' }),
+    ]);
+
+    if (statsRes?.session_id) {
+      // セッション確立済み → 描画して終了
+      renderStats(statsRes);
+      renderTodos((todosRes?.todos || []).filter(t => t.status === 'active'));
+      return;
+    }
+
+    // まだ未確立 → 最終試行でなければ待機してリトライ
+    if (i < MAX_RETRIES - 1) {
+      await new Promise(r => setTimeout(r, RETRY_INTERVAL));
+    }
+  }
+
+  // 全リトライ失敗 → no-session表示
+  showNoSession();
 }
 
 async function renderStats(stats) {
