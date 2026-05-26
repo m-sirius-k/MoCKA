@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Relay — 「また説明し直し…」を消す。</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#080c18;--surface:#0d1220;--surface2:#111827;
+  --border:#1e3a5f;--border2:#2a3a55;--text:#e2e8f0;
+  --muted:#64748b;--hint:#334155;--accent:#38bdf8;
+  --accent-soft:rgba(56,189,248,.10);--accent-border:rgba(56,189,248,.30);
+  --gold:#f59e0b;--gold-soft:rgba(245,158,11,.08);--gold-border:rgba(245,158,11,.30);
+  --safe:#22c55e;--r:10px;--rl:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+.lang-switcher{display:flex;gap:4px;align-items:center}
+.lang-btn{font-size:11px;font-weight:500;letter-spacing:.04em;background:transparent;color:var(--muted);border:1px solid transparent;border-radius:6px;padding:4px 8px;cursor:pointer;transition:all .15s;font-family:'Geist',sans-serif;}
+.lang-btn:hover{color:var(--text);border-color:var(--border)}
+.lang-btn.active{color:var(--accent);border-color:var(--accent-border);background:var(--accent-soft)}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:rgba(8,12,24,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Geist Mono',monospace;font-size:17px;font-weight:700;letter-spacing:2px;color:var(--accent);text-shadow:0 0 12px rgba(56,189,248,.35);}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-links{display:flex;gap:28px}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .15s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{font-size:13px;font-weight:500;background:var(--accent);color:#0a0e1a;border:none;border-radius:8px;padding:8px 18px;cursor:pointer;transition:opacity .15s;}
+.nav-cta:hover{opacity:.85}
+
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;top:15%;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(56,189,248,.10) 0%,transparent 65%);pointer-events:none;}
+.hero-glow2{position:absolute;bottom:10%;left:35%;width:400px;height:280px;background:radial-gradient(ellipse,rgba(245,158,11,.06) 0%,transparent 65%);pointer-events:none;}
+.launch-pill{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);border:1px solid var(--accent-border);border-radius:100px;padding:6px 16px;font-size:12px;color:var(--accent);letter-spacing:.04em;margin-bottom:32px;animation:fadeUp .6s ease both;}
+.launch-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+h1{font-family:'Instrument Serif',serif;font-size:clamp(44px,6vw,76px);font-weight:400;line-height:1.07;letter-spacing:-2px;color:var(--text);margin-bottom:24px;animation:fadeUp .6s .1s ease both;}
+h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:17px;font-weight:300;color:var(--muted);line-height:1.75;max-width:520px;margin:0 auto 44px;animation:fadeUp .6s .2s ease both;}
+.hero-sub strong{color:var(--text);font-weight:400}
+.cta-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;animation:fadeUp .6s .3s ease both;}
+.btn-main{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#0a0e1a;border:none;border-radius:var(--r);padding:14px 28px;font-family:'Geist',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;}
+.btn-main:hover{opacity:.88;transform:translateY(-1px)}
+.btn-sub{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--muted);border:1px solid var(--border2);border-radius:var(--r);padding:14px 24px;font-family:'Geist',sans-serif;font-size:15px;cursor:pointer;transition:all .2s;}
+.btn-sub:hover{color:var(--text);border-color:var(--border)}
+.hero-hint{font-size:12px;color:var(--hint);animation:fadeUp .6s .4s ease both;}
+
+.stats{display:flex;justify-content:center;gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:0;}
+.stat-item{flex:1;max-width:220px;text-align:center;padding:28px 16px;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Geist Mono',monospace;font-size:26px;font-weight:500;color:var(--text);line-height:1;margin-bottom:6px;}
+.stat-num .ac{color:var(--accent)}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:.05em}
+
+section{padding:80px 24px;max-width:900px;margin:0 auto}
+.section-tag{font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--accent);text-transform:uppercase;margin-bottom:12px;}
+.section-h{font-family:'Instrument Serif',serif;font-size:clamp(26px,3.5vw,42px);font-weight:400;letter-spacing:-1px;color:var(--text);line-height:1.15;margin-bottom:16px;}
+.section-h em{font-style:italic;color:var(--muted)}
+.section-p{font-size:15px;color:var(--muted);line-height:1.8;max-width:560px;}
+hr.divider{border:none;border-top:1px solid var(--border);margin:0 32px;}
+
+/* How it works */
+.flow-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:44px;border:1px solid var(--border);border-radius:var(--rl);overflow:hidden;}
+.flow-cell{padding:26px 18px;border-right:1px solid var(--border);}
+.flow-cell:last-child{border-right:none}
+.flow-num{font-family:'Geist Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.08em;margin-bottom:14px;}
+.flow-icon2{width:38px;height:38px;border-radius:9px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:12px;}
+.flow-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:5px}
+.flow-desc{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* Plans */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:44px;}
+.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:26px 20px;position:relative;transition:border-color .2s;}
+.plan-card:hover{border-color:var(--border2)}
+.plan-card.featured-pro{border-color:var(--accent-border);background:linear-gradient(160deg,rgba(56,189,248,.05) 0%,var(--surface) 60%);}
+.plan-card.featured-one{border-color:var(--gold-border);background:linear-gradient(160deg,var(--gold-soft) 0%,var(--surface) 60%);}
+.plan-label{font-family:'Geist Mono',monospace;font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;}
+.plan-label.blue{color:var(--accent)}
+.plan-label.gold{color:var(--gold)}
+.plan-price-row{display:flex;align-items:baseline;gap:4px;margin-bottom:4px}
+.plan-price-main{font-family:'Instrument Serif',serif;font-size:42px;font-weight:400;color:var(--text);line-height:1;}
+.plan-price-curr{font-size:16px;color:var(--muted);font-family:'Geist',sans-serif;font-weight:300;}
+.plan-price-period{font-size:12px;color:var(--hint)}
+.plan-desc2{font-size:12px;color:var(--muted);margin:10px 0 18px;line-height:1.6}
+.plan-sep{height:1px;background:var(--border);margin-bottom:18px}
+.feat-list{display:flex;flex-direction:column;gap:9px}
+.feat-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;}
+.feat-check{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);font-size:8px;color:var(--safe);}
+.feat-x{width:15px;height:15px;border-radius:50%;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);font-size:8px;color:var(--hint);}
+.feat-text{color:var(--muted);line-height:1.5}
+.feat-text.strong{color:var(--text)}
+.plan-cta{display:block;width:100%;margin-top:22px;padding:11px;background:transparent;border:1px solid var(--border2);border-radius:var(--r);color:var(--muted);font-size:13px;font-weight:500;font-family:'Geist',sans-serif;cursor:pointer;transition:all .15s;text-align:center;text-decoration:none;}
+.plan-cta:hover{color:var(--text);border-color:var(--border)}
+.plan-cta.blue-cta{background:var(--accent);color:#0a0e1a;border-color:var(--accent);}
+.plan-cta.blue-cta:hover{opacity:.88}
+.plan-cta.gold-cta{background:var(--gold);color:#0a0800;border-color:var(--gold);}
+.plan-cta.gold-cta:hover{opacity:.88}
+
+/* FAQ */
+.faq-list{margin-top:40px;display:flex;flex-direction:column;gap:0}
+.faq-item{border-bottom:1px solid var(--border);padding:20px 0;}
+.faq-q{font-size:14px;color:var(--text);font-weight:400;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.faq-q:hover{color:var(--muted)}
+.faq-toggle{font-size:18px;color:var(--hint);flex-shrink:0;transition:transform .2s}
+.faq-a{font-size:13px;color:var(--muted);line-height:1.8;padding-top:12px;display:none;}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-toggle{transform:rotate(45deg)}
+
+footer{border-top:1px solid var(--border);padding:36px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.foot-logo{font-family:'Geist Mono',monospace;font-size:16px;font-weight:700;letter-spacing:2px;color:var(--accent);}
+.foot-note{font-size:11px;color:var(--hint);line-height:1.7;text-align:right}
+
+@media(max-width:700px){
+  nav{padding:14px 16px}
+  .nav-links{display:none}
+  .flow-grid{grid-template-columns:1fr 1fr}
+  .flow-cell{border-bottom:1px solid var(--border)}
+  .plans-grid{grid-template-columns:1fr}
+  .stats{flex-wrap:wrap}
+  .stat-item{border-right:none;border-bottom:1px solid var(--border);max-width:none}
+  footer{flex-direction:column;align-items:flex-start}
+  .foot-note{text-align:left}
+}
+@media(max-width:480px){.flow-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">RELAY</div>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#how"     data-i18n="nav.how">使い方</a>
+      <a href="#pricing" data-i18n="nav.pricing">料金</a>
+      <a href="#faq"     data-i18n="nav.faq">FAQ</a>
+    </div>
+    <div class="lang-switcher">
+      <button class="lang-btn active" onclick="setLang('ja')">JP</button>
+      <button class="lang-btn"        onclick="setLang('en')">EN</button>
+      <button class="lang-btn"        onclick="setLang('zh')">ZH</button>
+      <button class="lang-btn"        onclick="setLang('ko')">KR</button>
+      <button class="lang-btn"        onclick="setLang('es')">ES</button>
+    </div>
+    <button class="nav-cta" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" data-i18n="nav.cta">無料でインストール →</button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="launch-pill">
+    <span class="launch-dot"></span>
+    <span data-i18n="hero.pill">🚀 Chrome Web Store にて公開中</span>
+  </div>
+  <h1>
+    <em data-i18n="hero.h1_em">「また説明し直し…」</em><br>
+    <span data-i18n="hero.h1_main">を消す。</span>
+  </h1>
+  <p class="hero-sub">
+    <span data-i18n="hero.sub">Claude の会話が長くなるたびに説明し直す必要はありません。</span><br>
+    <strong data-i18n="hero.sub_strong">Relay</strong>
+    <span data-i18n="hero.sub_mid"> が文脈を自動でキャプチャし、次のチャットに</span>
+    <strong data-i18n="hero.sub_inject">そのまま引き継ぎ</strong>
+    <span data-i18n="hero.sub_end">ます。</span>
+  </p>
+  <div class="cta-row">
+    <button class="btn-main" onclick="window.open('https://chrome.google.com/webstore','_blank')" data-i18n="hero.btn_install">⬇ 無料でインストール</button>
+    <button class="btn-sub" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})" data-i18n="hero.btn_plans">プランを見る →</button>
+  </div>
+  <p class="hero-hint" data-i18n="hero.hint">Chrome Web Store · Free プランあり · APIキー不要</p>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-num"><span class="ac" data-i18n="stats.s1">キャプチャ</span></div>
+    <div class="stat-label" data-i18n="stats.s1_label">決定事項・ファイル・TODOを自動抽出</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="ac" data-i18n="stats.s2">引き継ぎ</span></div>
+    <div class="stat-label" data-i18n="stats.s2_label">ワンクリックで次のチャットに注入</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="ac" data-i18n="stats.s3">Vault</span></div>
+    <div class="stat-label" data-i18n="stats.s3_label">無制限のLogbookで過去を再利用</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-num"><span class="ac" data-i18n="stats.s4">ローカル</span></div>
+    <div class="stat-label" data-i18n="stats.s4_label">データはPCに保存。外部サーバー送信なし</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- How it works -->
+<section id="how">
+  <div class="section-tag" data-i18n="how.tag">使い方</div>
+  <h2 class="section-h">
+    <span data-i18n="how.h2_main">記録して、引き継いで、</span>
+    <em data-i18n="how.h2_em">続きから始める。</em>
+  </h2>
+  <p class="section-p" data-i18n="how.desc">Claude に毎回説明し直す時間を、作業に使いましょう。</p>
+  <div class="flow-grid">
+    <div class="flow-cell">
+      <div class="flow-num">01</div>
+      <div class="flow-icon2">📡</div>
+      <div class="flow-title" data-i18n="how.step1_title">自動キャプチャ</div>
+      <div class="flow-desc" data-i18n="how.step1_desc">会話からTODO・決定事項・ファイルパスをリアルタイムで抽出。入力不要</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-num">02</div>
+      <div class="flow-icon2">📊</div>
+      <div class="flow-title" data-i18n="how.step2_title">密度スコアリング</div>
+      <div class="flow-desc" data-i18n="how.step2_desc">会話密度をスコア化し、引き継ぎのベストタイミングを教えてくれる（One）</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-num">03</div>
+      <div class="flow-icon2">⚡</div>
+      <div class="flow-title" data-i18n="how.step3_title">引き継ぎ注入</div>
+      <div class="flow-desc" data-i18n="how.step3_desc">ボタン一つで引き継ぎパケットを生成し、新規チャットに自動で貼り付け</div>
+    </div>
+    <div class="flow-cell">
+      <div class="flow-num">04</div>
+      <div class="flow-icon2">🗄</div>
+      <div class="flow-title" data-i18n="how.step4_title">Vault蓄積</div>
+      <div class="flow-desc" data-i18n="how.step4_desc">全セッションをVaultに保存。関連度ランキングで過去の文脈を再利用（One）</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- Pricing -->
+<section id="pricing">
+  <div class="section-tag" data-i18n="pricing.tag">料金プラン</div>
+  <h2 class="section-h">
+    <span data-i18n="pricing.h2_main">シンプルな</span>
+    <em data-i18n="pricing.h2_em">3段階。</em>
+  </h2>
+  <p class="section-p" data-i18n="pricing.desc">すべてのデータはローカルに保存されます。外部サーバーへの送信はAPIキー利用時のみ。</p>
+
+  <div class="plans-grid">
+
+    <!-- Free -->
+    <div class="plan-card">
+      <div class="plan-label" data-i18n="plan.free_label">FREE</div>
+      <div class="plan-price-row">
+        <div class="plan-price-main">0</div>
+        <div class="plan-price-curr">$</div>
+      </div>
+      <div class="plan-price-period" data-i18n="plan.forever">永久無料</div>
+      <p class="plan-desc2" data-i18n="plan.free_desc">基本的な引き継ぎと TODO 管理</p>
+      <div class="plan-sep"></div>
+      <ul class="feat-list">
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.handoff">引き継ぎパケット生成</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.todo">TODO自動抽出 (LB連番)</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.cpi">CPI / ブレークイーブン計測</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.logbook1">Logbook 1件保持</span></li>
+        <li class="feat-item"><span class="feat-x">—</span><span class="feat-text" data-i18n="feat.ai_summary">AI要約 (Claude API)</span></li>
+        <li class="feat-item"><span class="feat-x">—</span><span class="feat-text" data-i18n="feat.vault">Vault（無制限Logbook）</span></li>
+        <li class="feat-item"><span class="feat-x">—</span><span class="feat-text" data-i18n="feat.density">密度スコアリング</span></li>
+      </ul>
+      <button class="plan-cta" onclick="window.open('https://chrome.google.com/webstore','_blank')" data-i18n="plan.free_cta">無料でインストール</button>
+    </div>
+
+    <!-- Pro -->
+    <div class="plan-card featured-pro">
+      <div class="plan-label blue" data-i18n="plan.pro_label">PRO</div>
+      <div class="plan-price-row">
+        <div class="plan-price-curr">$</div>
+        <div class="plan-price-main">5</div>
+        <div class="plan-price-period" data-i18n="plan.per_month">/月</div>
+      </div>
+      <p class="plan-desc2" data-i18n="plan.pro_desc">AI 要約で引き継ぎの質を上げる</p>
+      <div class="plan-sep"></div>
+      <ul class="feat-list">
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.all_free">Free のすべての機能</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.ai_summary_pro">AI 要約 — 5W1H 形式で自動整理</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.logbook5">Logbook 5件履歴</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.file_capture">ファイルパス永続キャプチャ</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.decision_marker">[RELAY_DECISION] マーカー検出</span></li>
+        <li class="feat-item"><span class="feat-x">—</span><span class="feat-text" data-i18n="feat.vault">Vault（無制限Logbook）</span></li>
+        <li class="feat-item"><span class="feat-x">—</span><span class="feat-text" data-i18n="feat.density">密度スコアリング</span></li>
+      </ul>
+      <!-- ⚠️ PLACEHOLDER: Stripe Payment Link for Relay Pro に差し替えること -->
+      <a class="plan-cta blue-cta" href="RELAY_STRIPE_PAYMENT_LINK_PRO_PLACEHOLDER" target="_blank" data-i18n="plan.pro_cta">Pro を購入 →</a>
+    </div>
+
+    <!-- One -->
+    <div class="plan-card featured-one">
+      <div class="plan-label gold" data-i18n="plan.one_label">ONE</div>
+      <div class="plan-price-row">
+        <div class="plan-price-curr">$</div>
+        <div class="plan-price-main">10</div>
+        <div class="plan-price-period" data-i18n="plan.per_month">/月</div>
+      </div>
+      <p class="plan-desc2" data-i18n="plan.one_desc">フル装備。Vault で文脈を無限に蓄積</p>
+      <div class="plan-sep"></div>
+      <ul class="feat-list">
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.all_pro">Pro のすべての機能</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.vault_one">Vault — 無制限 Logbook + 関連度ランキング</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.density_one">密度スコアリング — 引き継ぎ最適タイミング検知</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.auto_inject">新規チャット自動注入</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.export">Vault JSON エクスポート</span></li>
+        <li class="feat-item"><span class="feat-check">✓</span><span class="feat-text strong" data-i18n="feat.topic_shift">トピック転換検知 + 通知</span></li>
+      </ul>
+      <!-- ⚠️ PLACEHOLDER: Stripe Payment Link for Relay One に差し替えること -->
+      <a class="plan-cta gold-cta" href="RELAY_STRIPE_PAYMENT_LINK_ONE_PLACEHOLDER" target="_blank" data-i18n="plan.one_cta">One を購入 →</a>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-tag" data-i18n="faq.tag">よくある質問</div>
+  <h2 class="section-h" data-i18n="faq.h2">FAQ</h2>
+  <div class="faq-list" id="faq-list"></div>
+</section>
+
+<footer>
+  <div class="foot-logo">RELAY</div>
+  <div class="foot-note" data-i18n="footer.note">
+    © 2026 MoCKA / nsjp.org — データはPCに保存されます<br>
+    お問い合わせ: noreply@nsjp.org
+  </div>
+</footer>
+
+<script>
+// ─── i18n データ ──────────────────────────────────────────────────────────────
+const I18N = {
+  ja: {
+    'nav.how':      '使い方',
+    'nav.pricing':  '料金',
+    'nav.faq':      'FAQ',
+    'nav.cta':      '無料でインストール →',
+    'hero.pill':    '🚀 Chrome Web Store にて公開中',
+    'hero.h1_em':   '「また説明し直し…」',
+    'hero.h1_main': 'を消す。',
+    'hero.sub':     'Claude の会話が長くなるたびに説明し直す必要はありません。',
+    'hero.sub_strong': 'Relay',
+    'hero.sub_mid': ' が文脈を自動でキャプチャし、次のチャットに',
+    'hero.sub_inject': 'そのまま引き継ぎ',
+    'hero.sub_end': 'ます。',
+    'hero.btn_install': '⬇ 無料でインストール',
+    'hero.btn_plans':   'プランを見る →',
+    'hero.hint':    'Chrome Web Store · Free プランあり · APIキー不要',
+    'stats.s1':     'キャプチャ',
+    'stats.s1_label': '決定事項・ファイル・TODOを自動抽出',
+    'stats.s2':     '引き継ぎ',
+    'stats.s2_label': 'ワンクリックで次のチャットに注入',
+    'stats.s3':     'Vault',
+    'stats.s3_label': '無制限のLogbookで過去を再利用',
+    'stats.s4':     'ローカル',
+    'stats.s4_label': 'データはPCに保存。外部サーバー送信なし',
+    'how.tag':      '使い方',
+    'how.h2_main':  '記録して、引き継いで、',
+    'how.h2_em':    '続きから始める。',
+    'how.desc':     'Claude に毎回説明し直す時間を、作業に使いましょう。',
+    'how.step1_title': '自動キャプチャ',
+    'how.step1_desc':  '会話からTODO・決定事項・ファイルパスをリアルタイムで抽出。入力不要',
+    'how.step2_title': '密度スコアリング',
+    'how.step2_desc':  '会話密度をスコア化し、引き継ぎのベストタイミングを教えてくれる（One）',
+    'how.step3_title': '引き継ぎ注入',
+    'how.step3_desc':  'ボタン一つで引き継ぎパケットを生成し、新規チャットに自動で貼り付け',
+    'how.step4_title': 'Vault蓄積',
+    'how.step4_desc':  '全セッションをVaultに保存。関連度ランキングで過去の文脈を再利用（One）',
+    'pricing.tag':  '料金プラン',
+    'pricing.h2_main': 'シンプルな',
+    'pricing.h2_em':   '3段階。',
+    'pricing.desc': 'すべてのデータはローカルに保存されます。外部サーバーへの送信はAPIキー利用時のみ。',
+    'plan.free_label': 'FREE',
+    'plan.pro_label':  'PRO',
+    'plan.one_label':  'ONE',
+    'plan.forever':    '永久無料',
+    'plan.per_month':  '/月',
+    'plan.free_desc':  '基本的な引き継ぎと TODO 管理',
+    'plan.pro_desc':   'AI 要約で引き継ぎの質を上げる',
+    'plan.one_desc':   'フル装備。Vault で文脈を無限に蓄積',
+    'plan.free_cta':   '無料でインストール',
+    'plan.pro_cta':    'Pro を購入 →',
+    'plan.one_cta':    'One を購入 →',
+    'feat.handoff':    '引き継ぎパケット生成',
+    'feat.todo':       'TODO自動抽出 (LB連番)',
+    'feat.cpi':        'CPI / ブレークイーブン計測',
+    'feat.logbook1':   'Logbook 1件保持',
+    'feat.ai_summary': 'AI要約 (Claude API)',
+    'feat.vault':      'Vault（無制限Logbook）',
+    'feat.density':    '密度スコアリング',
+    'feat.all_free':   'Free のすべての機能',
+    'feat.ai_summary_pro': 'AI 要約 — 5W1H 形式で自動整理',
+    'feat.logbook5':   'Logbook 5件履歴',
+    'feat.file_capture': 'ファイルパス永続キャプチャ',
+    'feat.decision_marker': '[RELAY_DECISION] マーカー検出',
+    'feat.all_pro':    'Pro のすべての機能',
+    'feat.vault_one':  'Vault — 無制限 Logbook + 関連度ランキング',
+    'feat.density_one': '密度スコアリング — 引き継ぎ最適タイミング検知',
+    'feat.auto_inject': '新規チャット自動注入',
+    'feat.export':     'Vault JSON エクスポート',
+    'feat.topic_shift': 'トピック転換検知 + 通知',
+    'faq.tag':  'よくある質問',
+    'faq.h2':   'FAQ',
+    'footer.note': '© 2026 MoCKA / nsjp.org — データはPCに保存されます\nお問い合わせ: noreply@nsjp.org',
+    faqs: [
+      { q: 'Claude の APIキーは必要ですか？',
+        a: 'Free プランは完全に APIキー不要です。Pro / One プランの AI 要約機能を使う場合のみ、ご自身の Claude API キーが必要です。' },
+      { q: 'データはどこに保存されますか？',
+        a: 'すべてのデータは Chrome の chrome.storage.local（ブラウザのローカルストレージ）に保存されます。外部サーバーには一切送信されません。AI 要約機能使用時のみ Anthropic API に会話テキストが送信されます。' },
+      { q: 'Vault の容量上限はありますか？',
+        a: 'エントリ数の上限は 100 件です。それを超えると古いエントリが自動で整理されます。また Chrome ストレージ容量（約 5MB）に近づいた場合も自動でトリミングされます。' },
+      { q: 'ライセンスキーはどこで有効化しますか？',
+        a: '拡張機能のポップアップを開き、上部の設定パネルでプランを切り替え、「ライセンスキー認証」からキーを入力してください。購入後にメールで届くキーをそのまま貼り付けるだけです。' },
+      { q: '無料プランからいつでもアップグレードできますか？',
+        a: 'はい。いつでもアップグレード可能です。既存のセッションデータや TODO は引き継がれます。' },
+    ],
+  },
+  en: {
+    'nav.how':      'How it works',
+    'nav.pricing':  'Pricing',
+    'nav.faq':      'FAQ',
+    'nav.cta':      'Install Free →',
+    'hero.pill':    '🚀 Now on Chrome Web Store',
+    'hero.h1_em':   '"Stop explaining yourself again."',
+    'hero.h1_main': '',
+    'hero.sub':     "Every time your Claude chat gets long, you shouldn't have to re-explain everything.",
+    'hero.sub_strong': 'Relay',
+    'hero.sub_mid': ' automatically captures your context and',
+    'hero.sub_inject': 'carries it forward',
+    'hero.sub_end': ' to the next chat.',
+    'hero.btn_install': '⬇ Install for Free',
+    'hero.btn_plans':   'View Plans →',
+    'hero.hint':    'Chrome Web Store · Free plan available · No API key required',
+    'stats.s1':     'Capture',
+    'stats.s1_label': 'Decisions, files & TODOs extracted automatically',
+    'stats.s2':     'Hand off',
+    'stats.s2_label': 'One click injects context into new chat',
+    'stats.s3':     'Vault',
+    'stats.s3_label': 'Unlimited logbook — reuse past context',
+    'stats.s4':     'Local',
+    'stats.s4_label': 'Data stays on your PC. Never leaves your browser',
+    'how.tag':      'How it works',
+    'how.h2_main':  'Capture. Hand off.',
+    'how.h2_em':    'Pick up right where you left.',
+    'how.desc':     "Stop using time to re-explain. Use it to build.",
+    'how.step1_title': 'Auto capture',
+    'how.step1_desc':  'TODOs, decisions, and file paths are extracted from your conversation in real time. No input needed.',
+    'how.step2_title': 'Density scoring',
+    'how.step2_desc':  'Scores conversation density and alerts you at the best moment to hand off (One plan).',
+    'how.step3_title': 'Context injection',
+    'how.step3_desc':  'One button generates a handoff packet and auto-pastes it into the new chat.',
+    'how.step4_title': 'Vault storage',
+    'how.step4_desc':  'All sessions saved to Vault. Relevance ranking lets you reuse past context (One plan).',
+    'pricing.tag':  'Pricing',
+    'pricing.h2_main': 'Simple.',
+    'pricing.h2_em':   '3 tiers.',
+    'pricing.desc': 'All data stored locally. External calls only when using your own API key.',
+    'plan.free_label': 'FREE',
+    'plan.pro_label':  'PRO',
+    'plan.one_label':  'ONE',
+    'plan.forever':    'forever free',
+    'plan.per_month':  '/mo',
+    'plan.free_desc':  'Core handoff and TODO tracking',
+    'plan.pro_desc':   'AI summaries that level up handoff quality',
+    'plan.one_desc':   'Full power. Vault for unlimited context storage',
+    'plan.free_cta':   'Install Free',
+    'plan.pro_cta':    'Get Pro →',
+    'plan.one_cta':    'Get One →',
+    'feat.handoff':    'Handoff packet generation',
+    'feat.todo':       'Auto TODO extraction (LB serial)',
+    'feat.cpi':        'CPI / break-even tracking',
+    'feat.logbook1':   'Logbook — 1 entry',
+    'feat.ai_summary': 'AI summary (Claude API)',
+    'feat.vault':      'Vault (unlimited logbook)',
+    'feat.density':    'Density scoring',
+    'feat.all_free':   'Everything in Free',
+    'feat.ai_summary_pro': 'AI summary — auto 5W1H format',
+    'feat.logbook5':   'Logbook — 5 entries',
+    'feat.file_capture': 'Persistent file path capture',
+    'feat.decision_marker': '[RELAY_DECISION] marker detection',
+    'feat.all_pro':    'Everything in Pro',
+    'feat.vault_one':  'Vault — unlimited logbook + relevance ranking',
+    'feat.density_one': 'Density scoring — optimal handoff timing',
+    'feat.auto_inject': 'Auto-inject on new chat',
+    'feat.export':     'Vault JSON export',
+    'feat.topic_shift': 'Topic shift detection + notifications',
+    'faq.tag':  'FAQ',
+    'faq.h2':   'Frequently Asked Questions',
+    'footer.note': '© 2026 MoCKA / nsjp.org — Data stays on your PC\nContact: noreply@nsjp.org',
+    faqs: [
+      { q: 'Do I need a Claude API key?',
+        a: 'The Free plan requires no API key at all. You only need your own Claude API key if you want the AI summary feature in the Pro / One plans.' },
+      { q: 'Where is my data stored?',
+        a: "All data is saved to Chrome's chrome.storage.local — your browser's local storage. Nothing is sent to external servers. Only the AI summary feature sends conversation text to the Anthropic API." },
+      { q: 'Is there a Vault storage limit?',
+        a: 'There is a 100-entry cap. Older entries are trimmed automatically when exceeded. Entries are also trimmed if Chrome storage approaches 5MB.' },
+      { q: 'How do I activate my license key?',
+        a: "Open the extension popup, expand the settings panel at the top, switch to Pro or One, then paste your key and click Activate. The key arrives by email after purchase." },
+      { q: 'Can I upgrade from Free at any time?',
+        a: 'Yes. Upgrade anytime. Your existing session data and TODOs are preserved.' },
+    ],
+  },
+  zh: {
+    'nav.how':      '使用方法',
+    'nav.pricing':  '定价',
+    'nav.faq':      '常见问题',
+    'nav.cta':      '免费安装 →',
+    'hero.pill':    '🚀 已在 Chrome 网上应用店上架',
+    'hero.h1_em':   '「不再重新解释」',
+    'hero.h1_main': '',
+    'hero.sub':     '每次 Claude 对话变长时，您不必再重新解释一切。',
+    'hero.sub_strong': 'Relay',
+    'hero.sub_mid': ' 自动捕获上下文，并',
+    'hero.sub_inject': '无缝传递',
+    'hero.sub_end': '到下一个对话。',
+    'hero.btn_install': '⬇ 免费安装',
+    'hero.btn_plans':   '查看方案 →',
+    'hero.hint':    'Chrome 网上应用店 · 免费方案 · 无需 API 密钥',
+    'stats.s1':     '捕获',
+    'stats.s1_label': '自动提取决策、文件和 TODO',
+    'stats.s2':     '交接',
+    'stats.s2_label': '一键将上下文注入新对话',
+    'stats.s3':     'Vault',
+    'stats.s3_label': '无限日志，随时复用过去的上下文',
+    'stats.s4':     '本地',
+    'stats.s4_label': '数据存储在您的电脑上，不发送到外部服务器',
+    'how.tag':      '使用方法',
+    'how.h2_main':  '记录。交接。',
+    'how.h2_em':    '从上次停止的地方继续。',
+    'how.desc':     '把重新解释的时间用于真正的工作。',
+    'how.step1_title': '自动捕获',
+    'how.step1_desc':  '实时从对话中提取 TODO、决策和文件路径，无需手动输入',
+    'how.step2_title': '密度评分',
+    'how.step2_desc':  '量化对话密度，在最佳时机提醒您进行交接（One 方案）',
+    'how.step3_title': '上下文注入',
+    'how.step3_desc':  '一键生成交接数据包，自动粘贴到新对话中',
+    'how.step4_title': 'Vault 存储',
+    'how.step4_desc':  '所有会话保存到 Vault，相关性排名让您复用过去的上下文（One 方案）',
+    'pricing.tag':  '定价方案',
+    'pricing.h2_main': '简单的',
+    'pricing.h2_em':   '三个层级。',
+    'pricing.desc': '所有数据存储在本地。仅在使用 API 密钥时才向外部发送请求。',
+    'plan.free_label': '免费',
+    'plan.pro_label':  'PRO',
+    'plan.one_label':  'ONE',
+    'plan.forever':    '永久免费',
+    'plan.per_month':  '/月',
+    'plan.free_desc':  '基本交接和 TODO 管理',
+    'plan.pro_desc':   'AI 摘要提升交接质量',
+    'plan.one_desc':   '全功能。Vault 无限存储上下文',
+    'plan.free_cta':   '免费安装',
+    'plan.pro_cta':    '购买 Pro →',
+    'plan.one_cta':    '购买 One →',
+    'feat.handoff':    '交接数据包生成',
+    'feat.todo':       '自动提取 TODO（LB 编号）',
+    'feat.cpi':        'CPI / 盈亏平衡点追踪',
+    'feat.logbook1':   'Logbook 保存 1 条记录',
+    'feat.ai_summary': 'AI 摘要（Claude API）',
+    'feat.vault':      'Vault（无限 Logbook）',
+    'feat.density':    '密度评分',
+    'feat.all_free':   'Free 的所有功能',
+    'feat.ai_summary_pro': 'AI 摘要 — 自动 5W1H 格式',
+    'feat.logbook5':   'Logbook 保存 5 条记录',
+    'feat.file_capture': '持久化文件路径捕获',
+    'feat.decision_marker': '[RELAY_DECISION] 标记检测',
+    'feat.all_pro':    'Pro 的所有功能',
+    'feat.vault_one':  'Vault — 无限 Logbook + 相关性排名',
+    'feat.density_one': '密度评分 — 最佳交接时机检测',
+    'feat.auto_inject': '新对话自动注入',
+    'feat.export':     'Vault JSON 导出',
+    'feat.topic_shift': '话题转换检测 + 通知',
+    'faq.tag':  '常见问题',
+    'faq.h2':   '常见问题解答',
+    'footer.note': '© 2026 MoCKA / nsjp.org — 数据存储在您的电脑上\n联系我们: noreply@nsjp.org',
+    faqs: [
+      { q: '需要 Claude API 密钥吗？',
+        a: '免费方案完全不需要 API 密钥。只有在 Pro / One 方案中使用 AI 摘要功能时，才需要您自己的 Claude API 密钥。' },
+      { q: '我的数据存储在哪里？',
+        a: '所有数据保存在 Chrome 的 chrome.storage.local（浏览器本地存储）中。不会发送到任何外部服务器。仅在使用 AI 摘要功能时，对话文本会发送到 Anthropic API。' },
+      { q: 'Vault 有存储限制吗？',
+        a: '最多保存 100 条记录。超过后会自动清理旧记录。当 Chrome 存储接近 5MB 上限时也会自动精简。' },
+      { q: '在哪里激活许可证密钥？',
+        a: '打开扩展弹出窗口，展开顶部设置面板，切换到 Pro 或 One，然后粘贴密钥并点击"激活"。密钥将在购买后通过电子邮件发送给您。' },
+      { q: '可以随时从免费方案升级吗？',
+        a: '是的，随时可以升级。现有的会话数据和 TODO 都会保留。' },
+    ],
+  },
+  ko: {
+    'nav.how':      '사용 방법',
+    'nav.pricing':  '요금',
+    'nav.faq':      'FAQ',
+    'nav.cta':      '무료 설치 →',
+    'hero.pill':    '🚀 Chrome 웹 스토어에서 이용 가능',
+    'hero.h1_em':   '"다시 설명하지 마세요"',
+    'hero.h1_main': '',
+    'hero.sub':     'Claude 대화가 길어질 때마다 다시 설명할 필요가 없습니다.',
+    'hero.sub_strong': 'Relay',
+    'hero.sub_mid': '가 컨텍스트를 자동으로 캡처하고 다음 채팅으로',
+    'hero.sub_inject': '그대로 이어받기',
+    'hero.sub_end': '합니다.',
+    'hero.btn_install': '⬇ 무료로 설치',
+    'hero.btn_plans':   '요금제 보기 →',
+    'hero.hint':    'Chrome 웹 스토어 · 무료 플랜 제공 · API 키 불필요',
+    'stats.s1':     '캡처',
+    'stats.s1_label': '결정사항·파일·TODO 자동 추출',
+    'stats.s2':     '인계',
+    'stats.s2_label': '클릭 한 번으로 새 채팅에 컨텍스트 주입',
+    'stats.s3':     'Vault',
+    'stats.s3_label': '무제한 로그북으로 과거 컨텍스트 재활용',
+    'stats.s4':     '로컬',
+    'stats.s4_label': '데이터는 PC에 저장. 외부 서버 전송 없음',
+    'how.tag':      '사용 방법',
+    'how.h2_main':  '기록하고, 인계하고,',
+    'how.h2_em':    '멈춘 곳에서 계속.',
+    'how.desc':     '다시 설명하는 시간을 작업에 쓰세요.',
+    'how.step1_title': '자동 캡처',
+    'how.step1_desc':  '대화에서 TODO·결정사항·파일 경로를 실시간으로 추출. 입력 불필요',
+    'how.step2_title': '밀도 스코어링',
+    'how.step2_desc':  '대화 밀도를 점수화하여 최적의 인계 타이밍을 알려줍니다 (One)',
+    'how.step3_title': '컨텍스트 주입',
+    'how.step3_desc':  '버튼 하나로 인계 패킷을 생성하고 새 채팅에 자동으로 붙여넣기',
+    'how.step4_title': 'Vault 저장',
+    'how.step4_desc':  '모든 세션을 Vault에 저장. 관련성 순위로 과거 컨텍스트 재활용 (One)',
+    'pricing.tag':  '요금 플랜',
+    'pricing.h2_main': '심플한',
+    'pricing.h2_em':   '3단계.',
+    'pricing.desc': '모든 데이터는 로컬에 저장됩니다. API 키 사용 시에만 외부 전송.',
+    'plan.free_label': '무료',
+    'plan.pro_label':  'PRO',
+    'plan.one_label':  'ONE',
+    'plan.forever':    '영구 무료',
+    'plan.per_month':  '/월',
+    'plan.free_desc':  '기본 인계 및 TODO 관리',
+    'plan.pro_desc':   'AI 요약으로 인계 품질 향상',
+    'plan.one_desc':   '풀 장착. Vault로 컨텍스트 무제한 축적',
+    'plan.free_cta':   '무료로 설치',
+    'plan.pro_cta':    'Pro 구매 →',
+    'plan.one_cta':    'One 구매 →',
+    'feat.handoff':    '인계 패킷 생성',
+    'feat.todo':       'TODO 자동 추출 (LB 일련번호)',
+    'feat.cpi':        'CPI / 손익분기점 측정',
+    'feat.logbook1':   'Logbook 1건 보관',
+    'feat.ai_summary': 'AI 요약 (Claude API)',
+    'feat.vault':      'Vault (무제한 Logbook)',
+    'feat.density':    '밀도 스코어링',
+    'feat.all_free':   'Free의 모든 기능',
+    'feat.ai_summary_pro': 'AI 요약 — 자동 5W1H 형식',
+    'feat.logbook5':   'Logbook 5건 이력',
+    'feat.file_capture': '파일 경로 영구 캡처',
+    'feat.decision_marker': '[RELAY_DECISION] 마커 감지',
+    'feat.all_pro':    'Pro의 모든 기능',
+    'feat.vault_one':  'Vault — 무제한 Logbook + 관련성 순위',
+    'feat.density_one': '밀도 스코어링 — 최적 인계 타이밍 감지',
+    'feat.auto_inject': '새 채팅 자동 주입',
+    'feat.export':     'Vault JSON 내보내기',
+    'feat.topic_shift': '주제 전환 감지 + 알림',
+    'faq.tag':  '자주 묻는 질문',
+    'faq.h2':   'FAQ',
+    'footer.note': '© 2026 MoCKA / nsjp.org — 데이터는 PC에 저장됩니다\n문의: noreply@nsjp.org',
+    faqs: [
+      { q: 'Claude API 키가 필요한가요?',
+        a: '무료 플랜은 API 키가 전혀 필요 없습니다. Pro / One 플랜의 AI 요약 기능을 사용할 때만 본인의 Claude API 키가 필요합니다.' },
+      { q: '데이터는 어디에 저장되나요?',
+        a: '모든 데이터는 Chrome의 chrome.storage.local (브라우저 로컬 스토리지)에 저장됩니다. 외부 서버로는 일절 전송되지 않습니다. AI 요약 기능 사용 시에만 Anthropic API로 대화 텍스트가 전송됩니다.' },
+      { q: 'Vault 용량 제한이 있나요?',
+        a: '최대 100건입니다. 초과 시 오래된 항목이 자동으로 정리됩니다. Chrome 스토리지가 5MB에 근접해도 자동으로 트리밍됩니다.' },
+      { q: '라이선스 키는 어디서 활성화하나요?',
+        a: '확장 프로그램 팝업을 열고 상단 설정 패널에서 플랜을 Pro 또는 One으로 전환한 뒤, 라이선스 키를 붙여넣고 "인증" 버튼을 클릭하세요. 구매 후 이메일로 키가 전송됩니다.' },
+      { q: '무료 플랜에서 언제든지 업그레이드할 수 있나요?',
+        a: '네, 언제든지 업그레이드 가능합니다. 기존 세션 데이터와 TODO는 그대로 유지됩니다.' },
+    ],
+  },
+  es: {
+    'nav.how':      'Cómo funciona',
+    'nav.pricing':  'Precios',
+    'nav.faq':      'FAQ',
+    'nav.cta':      'Instalar gratis →',
+    'hero.pill':    '🚀 Ya disponible en Chrome Web Store',
+    'hero.h1_em':   '"Deja de explicarte de nuevo."',
+    'hero.h1_main': '',
+    'hero.sub':     'Cada vez que tu chat con Claude se alarga, no deberías tener que volver a explicarlo todo.',
+    'hero.sub_strong': 'Relay',
+    'hero.sub_mid': ' captura el contexto automáticamente y lo',
+    'hero.sub_inject': 'transfiere directamente',
+    'hero.sub_end': ' al siguiente chat.',
+    'hero.btn_install': '⬇ Instalar gratis',
+    'hero.btn_plans':   'Ver planes →',
+    'hero.hint':    'Chrome Web Store · Plan gratuito · Sin clave API requerida',
+    'stats.s1':     'Captura',
+    'stats.s1_label': 'Decisiones, archivos y TODOs extraídos automáticamente',
+    'stats.s2':     'Transferir',
+    'stats.s2_label': 'Un clic inyecta el contexto en el nuevo chat',
+    'stats.s3':     'Vault',
+    'stats.s3_label': 'Registro ilimitado — reutiliza contexto del pasado',
+    'stats.s4':     'Local',
+    'stats.s4_label': 'Datos en tu PC. No se envían a servidores externos',
+    'how.tag':      'Cómo funciona',
+    'how.h2_main':  'Captura. Transfiere.',
+    'how.h2_em':    'Continúa donde lo dejaste.',
+    'how.desc':     'Deja de usar tiempo re-explicando. Úsalo para construir.',
+    'how.step1_title': 'Captura automática',
+    'how.step1_desc':  'TODOs, decisiones y rutas de archivos se extraen en tiempo real. Sin entrada manual.',
+    'how.step2_title': 'Puntuación de densidad',
+    'how.step2_desc':  'Puntúa la densidad de la conversación y te avisa en el mejor momento (plan One).',
+    'how.step3_title': 'Inyección de contexto',
+    'how.step3_desc':  'Un botón genera el paquete de transferencia y lo pega automáticamente en el nuevo chat.',
+    'how.step4_title': 'Almacenamiento Vault',
+    'how.step4_desc':  'Todas las sesiones guardadas en Vault. Ranking de relevancia para reutilizar contexto (One).',
+    'pricing.tag':  'Planes de precios',
+    'pricing.h2_main': 'Simple.',
+    'pricing.h2_em':   '3 niveles.',
+    'pricing.desc': 'Todos los datos se almacenan localmente. Solo se envían datos externos cuando usas tu clave API.',
+    'plan.free_label': 'GRATIS',
+    'plan.pro_label':  'PRO',
+    'plan.one_label':  'ONE',
+    'plan.forever':    'siempre gratis',
+    'plan.per_month':  '/mes',
+    'plan.free_desc':  'Transferencia básica y gestión de TODOs',
+    'plan.pro_desc':   'Resúmenes IA que mejoran la calidad de transferencia',
+    'plan.one_desc':   'Potencia total. Vault para contexto ilimitado',
+    'plan.free_cta':   'Instalar gratis',
+    'plan.pro_cta':    'Obtener Pro →',
+    'plan.one_cta':    'Obtener One →',
+    'feat.handoff':    'Generación de paquete de transferencia',
+    'feat.todo':       'Extracción automática de TODOs (serie LB)',
+    'feat.cpi':        'Seguimiento CPI / punto de equilibrio',
+    'feat.logbook1':   'Logbook — 1 entrada',
+    'feat.ai_summary': 'Resumen IA (Claude API)',
+    'feat.vault':      'Vault (Logbook ilimitado)',
+    'feat.density':    'Puntuación de densidad',
+    'feat.all_free':   'Todo lo de Free',
+    'feat.ai_summary_pro': 'Resumen IA — formato 5W1H automático',
+    'feat.logbook5':   'Logbook — 5 entradas',
+    'feat.file_capture': 'Captura persistente de rutas de archivos',
+    'feat.decision_marker': 'Detección de marcador [RELAY_DECISION]',
+    'feat.all_pro':    'Todo lo de Pro',
+    'feat.vault_one':  'Vault — Logbook ilimitado + ranking de relevancia',
+    'feat.density_one': 'Puntuación de densidad — detección de timing óptimo',
+    'feat.auto_inject': 'Auto-inyección en nuevo chat',
+    'feat.export':     'Exportación Vault JSON',
+    'feat.topic_shift': 'Detección de cambio de tema + notificaciones',
+    'faq.tag':  'Preguntas frecuentes',
+    'faq.h2':   'FAQ',
+    'footer.note': '© 2026 MoCKA / nsjp.org — Los datos permanecen en tu PC\nContacto: noreply@nsjp.org',
+    faqs: [
+      { q: '¿Necesito una clave API de Claude?',
+        a: 'El plan Free no requiere ninguna clave API. Solo necesitas tu propia clave API de Claude para la función de resumen IA en los planes Pro / One.' },
+      { q: '¿Dónde se almacenan mis datos?',
+        a: 'Todos los datos se guardan en chrome.storage.local de Chrome — el almacenamiento local de tu navegador. No se envía nada a servidores externos. Solo la función de resumen IA envía texto de conversación a la API de Anthropic.' },
+      { q: '¿Hay un límite de almacenamiento en Vault?',
+        a: 'Hay un límite de 100 entradas. Las entradas más antiguas se eliminan automáticamente al superarlo. También se realiza una limpieza automática cuando el almacenamiento de Chrome se acerca a 5MB.' },
+      { q: '¿Dónde activo mi clave de licencia?',
+        a: 'Abre el popup de la extensión, expande el panel de configuración en la parte superior, cambia a Pro o One, pega tu clave y haz clic en "Activar". La clave llega por email tras la compra.' },
+      { q: '¿Puedo actualizar desde Free en cualquier momento?',
+        a: 'Sí, puedes actualizar cuando quieras. Tus datos de sesión y TODOs existentes se conservan.' },
+    ],
+  },
+};
+
+// ─── i18n 適用 ───────────────────────────────────────────────────────────────
+let currentLang = 'ja';
+
+function setLang(lang) {
+  if (!I18N[lang]) return;
+  currentLang = lang;
+  // ボタン状態
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === lang ||
+      (lang === 'ja' && btn.textContent === 'JP') ||
+      (lang === 'en' && btn.textContent === 'EN') ||
+      (lang === 'zh' && btn.textContent === 'ZH') ||
+      (lang === 'ko' && btn.textContent === 'KR') ||
+      (lang === 'es' && btn.textContent === 'ES'));
+  });
+  // テキスト置換
+  const d = I18N[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (d[key] !== undefined) el.textContent = d[key];
+  });
+  // FAQ再描画
+  renderFAQ(lang);
+  // html lang属性
+  document.documentElement.lang = lang;
+}
+
+// ─── FAQ レンダリング ─────────────────────────────────────────────────────────
+function renderFAQ(lang) {
+  const container = document.getElementById('faq-list');
+  if (!container) return;
+  const faqs = (I18N[lang] || I18N.ja).faqs || [];
+  container.innerHTML = faqs.map((faq, i) => `
+    <div class="faq-item" data-idx="${i}">
+      <div class="faq-q">
+        <span>${faq.q}</span>
+        <span class="faq-toggle">+</span>
+      </div>
+      <div class="faq-a">${faq.a}</div>
+    </div>
+  `).join('');
+  // アコーディオン
+  container.querySelectorAll('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      q.parentElement.classList.toggle('open');
+    });
+  });
+}
+
+// ─── 初期化 ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  renderFAQ('ja');
+  // ブラウザ言語に合わせて自動切替
+  const bl = (navigator.language || '').slice(0, 2);
+  const langMap = { ja:'ja', en:'en', zh:'zh', ko:'ko', es:'es' };
+  if (langMap[bl] && langMap[bl] !== 'ja') setLang(langMap[bl]);
+});
+</script>
+</body>
+</html>
