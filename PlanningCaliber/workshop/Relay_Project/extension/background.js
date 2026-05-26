@@ -15,7 +15,67 @@ const KEYS = {
   PLAN:            'relay_plan',            // 'free' | 'pro' | 'one'
   DENSITY_HISTORY: 'relay_density_history', // One版密度スコア履歴
   VAULT:           'relay_logbook_vault',   // One版無制限Logbook
+  LICENSE_KEY:     'relay_license_key',     // ライセンスキー文字列
+  LICENSE_EXP:     'relay_license_expiry',  // 有効期限 YYYYMMDD 文字列
 };
+
+// ─── ライセンス検証キー ────────────────────────────────────────────────────────
+// ⚠️  PLACEHOLDER: Cloudflare WorkerのRELAY_SECRET環境変数と必ず一致させること
+// 本番デプロイ前にきむら博士が両方に同じ値を設定する
+const _RELAY_VK = 'RELAY_VK_PLACEHOLDER_REPLACE_BEFORE_PRODUCTION_DEPLOY_2026';
+
+// ─── One: ライセンス検証 (HMAC-SHA256, Web Crypto API) ───────────────────────
+
+async function _relayHmacVerify(prefix, expiryStr, serialHex, sigHex) {
+  try {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(_RELAY_VK),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    );
+    const msg    = enc.encode(prefix + expiryStr + serialHex);
+    const sigBuf = await crypto.subtle.sign('HMAC', keyMaterial, msg);
+    const sigArr = Array.from(new Uint8Array(sigBuf)).slice(0, 8);
+    const expected = sigArr.map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase();
+    return expected === sigHex.toUpperCase();
+  } catch (e) {
+    return false;
+  }
+}
+
+// キー形式: RLY-P-{YYYYMMDD:8}{serial:6}{sig:16} (30文字body)
+//           RLY-O-{YYYYMMDD:8}{serial:6}{sig:16}
+async function validateRelayLicense(key) {
+  if (!key || typeof key !== 'string') return { plan: 'free', expiry: null };
+  const k = key.trim().toUpperCase();
+
+  let prefix = '';
+  if      (k.startsWith('RLY-P-')) prefix = 'RLY-P';
+  else if (k.startsWith('RLY-O-')) prefix = 'RLY-O';
+  else if (k.startsWith('RLY-F-')) return { plan: 'free', expiry: null }; // Free
+  else return { plan: 'free', expiry: null };
+
+  const body = k.slice(6); // prefix "RLY-P-" は6文字
+  if (body.length !== 30) return { plan: 'free', expiry: null };
+
+  const expiryStr = body.slice(0,  8);
+  const serialHex = body.slice(8,  14);
+  const sigHex    = body.slice(14, 30);
+
+  // 有効期限チェック
+  const expYear  = parseInt(expiryStr.slice(0, 4));
+  const expMonth = parseInt(expiryStr.slice(4, 6)) - 1;
+  const expDay   = parseInt(expiryStr.slice(6, 8));
+  const expDate  = new Date(expYear, expMonth, expDay, 23, 59, 59);
+  if (expDate < new Date()) return { plan: 'free', expiry: null, expired: true };
+
+  // HMAC署名検証
+  const valid = await _relayHmacVerify(prefix, expiryStr, serialHex, sigHex);
+  if (!valid) return { plan: 'free', expiry: null };
+
+  const plan = prefix === 'RLY-P' ? 'pro' : 'one';
+  return { plan, expiry: expiryStr };
+}
 
 // ─── One: 密度エンジン定数 ────────────────────────────────────────────────────
 
@@ -893,13 +953,32 @@ async function handleMessage(msg) {
 
     // ── Pro: プラン取得/設定 ──
     case 'RELAY_GET_PLAN': {
-      const s = await chrome.storage.local.get(KEYS.PLAN);
-      return { plan: s[KEYS.PLAN] || 'free' };
+      const s = await chrome.storage.local.get([KEYS.PLAN, KEYS.LICENSE_EXP]);
+      return { plan: s[KEYS.PLAN] || 'free', expiry: s[KEYS.LICENSE_EXP] || null };
     }
 
     case 'RELAY_SET_PLAN': {
       await chrome.storage.local.set({ [KEYS.PLAN]: msg.plan });
       return { ok: true };
+    }
+
+    // ── ライセンスキー検証・設定 ──
+    case 'RELAY_SET_LICENSE': {
+      const result = await validateRelayLicense(msg.key);
+      if (result.expired) return { ok: false, expired: true, plan: 'free' };
+      await chrome.storage.local.set({
+        [KEYS.LICENSE_KEY]: msg.key.trim(),
+        [KEYS.PLAN]:        result.plan,
+        [KEYS.LICENSE_EXP]: result.expiry || '',
+      });
+      return { ok: true, plan: result.plan, expiry: result.expiry };
+    }
+
+    // ── ライセンスキー削除（Free降格）──
+    case 'RELAY_REMOVE_LICENSE': {
+      await chrome.storage.local.remove([KEYS.LICENSE_KEY, KEYS.LICENSE_EXP]);
+      await chrome.storage.local.set({ [KEYS.PLAN]: 'free' });
+      return { ok: true, plan: 'free' };
     }
 
     // ── Pro: Pro設定（AI要約ON/OFF、APIキー）保存 ──

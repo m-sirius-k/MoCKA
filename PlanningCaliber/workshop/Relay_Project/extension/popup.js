@@ -58,14 +58,19 @@ const UI = {
   historyCount:   $('history-count'),
   historyToggle:  $('history-toggle'),
   // One
-  densitySection: $('density-section'),
-  densityBar:     $('density-bar'),
-  densityVal:     $('density-val'),
-  densityStatus:  $('density-status'),
-  densityGraph:   $('density-graph'),
-  vaultSection:   $('vault-section'),
-  vaultList:      $('vault-list'),
-  vaultCount:     $('vault-count'),
+  densitySection:    $('density-section'),
+  densityBar:        $('density-bar'),
+  densityVal:        $('density-val'),
+  densityStatus:     $('density-status'),
+  densityGraph:      $('density-graph'),
+  vaultSection:      $('vault-section'),
+  vaultList:         $('vault-list'),
+  vaultCount:        $('vault-count'),
+  vaultDensitySlider:$('vault-density-slider'),
+  vaultDensityVal:   $('vault-density-val'),
+  vaultAutoInject:   $('vault-auto-inject'),
+  btnVaultInject:    $('btn-vault-inject'),
+  btnVaultExport:    $('btn-vault-export'),
 };
 
 let todoExpanded  = true;
@@ -612,6 +617,7 @@ async function initPro() {
   if (currentPlan === 'one') {
     await loadDensity();
     await loadVault();
+    await loadVaultSettings();
   }
 }
 
@@ -661,6 +667,7 @@ function bindProEvents() {
     await loadHistory();
     await loadDensity();
     await loadVault();
+    await loadVaultSettings();
   });
 
   // AI summary toggle
@@ -708,6 +715,47 @@ function bindProEvents() {
     const item = e.target.closest('.history-item');
     if (!item) return;
     item.classList.toggle('expanded');
+  });
+
+  // One: Vault density slider
+  UI.vaultDensitySlider?.addEventListener('input', async (e) => {
+    const v = parseInt(e.target.value);
+    if (UI.vaultDensityVal) UI.vaultDensityVal.textContent = v;
+    await sendMsg({ type: 'RELAY_SET_VAULT_SETTINGS', density: v });
+  });
+
+  // One: Vault auto-inject toggle
+  UI.vaultAutoInject?.addEventListener('change', async (e) => {
+    await sendMsg({ type: 'RELAY_SET_VAULT_SETTINGS', autoInject: e.target.checked });
+  });
+
+  // One: Inject selected (or all by density) into new chat
+  UI.btnVaultInject?.addEventListener('click', async () => {
+    const checked = Array.from(UI.vaultList?.querySelectorAll('.vault-item-check:checked') || []);
+    const density    = parseInt(UI.vaultDensitySlider?.value || '3');
+    const selectedIds = checked.map(cb => cb.dataset.vaultId).filter(Boolean);
+    const res = await sendMsg({
+      type:        'RELAY_INJECT_VAULT',
+      selectedIds: selectedIds.length ? selectedIds : null,
+      density,
+    });
+    if (res?.packet) {
+      await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+      if (!isPinned) setTimeout(() => window.close(), 600);
+    }
+  });
+
+  // One: Export Vault as JSON download
+  UI.btnVaultExport?.addEventListener('click', async () => {
+    const res = await sendMsg({ type: 'RELAY_EXPORT_VAULT' });
+    if (!res?.json) return;
+    const blob = new Blob([res.json], { type: 'application/json' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `relay_vault_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   });
 }
 
@@ -768,6 +816,14 @@ async function loadVault() {
   renderVault(ranked);
 }
 
+async function loadVaultSettings() {
+  const res = await sendMsg({ type: 'RELAY_GET_VAULT_SETTINGS' });
+  if (!res) return;
+  if (UI.vaultDensitySlider) UI.vaultDensitySlider.value = res.density ?? 3;
+  if (UI.vaultDensityVal)    UI.vaultDensityVal.textContent = res.density ?? 3;
+  if (UI.vaultAutoInject)    UI.vaultAutoInject.checked = res.autoInject ?? false;
+}
+
 function renderVault(entries) {
   if (!UI.vaultList) return;
   if (UI.vaultCount) UI.vaultCount.textContent = entries.length;
@@ -777,30 +833,40 @@ function renderVault(entries) {
     return;
   }
 
-  UI.vaultList.innerHTML = entries.map((entry, i) => {
-    const d       = new Date(entry.timestamp);
+  UI.vaultList.innerHTML = entries.map((entry) => {
+    const d       = new Date(entry.date || entry.timestamp);
     const ts      = `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-    const preview = (entry.packet || '').replace(/\n/g, ' ').slice(0, 55);
-    const rel     = entry.relevance || 0;
+    const title   = entry.title || ts;
+    const preview = (entry.summary || entry.packet || '').replace(/\n/g, ' ').slice(0, 55);
+    const rel     = entry.relevance ?? 0;
+    const vid     = escHtml(entry.id || '');
     return `
-      <div class="vault-item">
+      <div class="vault-item" data-vault-id="${vid}">
         <div class="vault-item-header">
-          <span class="history-ts">${escHtml(ts)}</span>
-          <span class="vault-relevance">関連度 ${rel}</span>
+          <input type="checkbox" class="vault-item-check" data-vault-id="${vid}">
+          <span class="vault-item-title" title="${escHtml(title)}">${escHtml(title)}</span>
+          <span class="vault-relevance">関連 ${rel}</span>
         </div>
         <div class="vault-preview">${escHtml(preview)}…</div>
-        <button class="vault-use-btn" data-idx="${i}" data-packet="${escHtml(entry.packet || '')}">
-          ⚡ この引き継ぎを使う
-        </button>
+        <button class="vault-use-btn" data-vault-id="${vid}">⚡ この引き継ぎを使う</button>
       </div>`;
   }).join('');
 
   UI.vaultList.querySelectorAll('.vault-use-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
-      const packet = btn.dataset.packet;
-      await sendMsg({ type: 'RELAY_USE_VAULT_ENTRY', packet });
-      await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
-      if (!isPinned) setTimeout(() => window.close(), 600);
+      const vid = btn.dataset.vaultId;
+      const res = await sendMsg({ type: 'RELAY_INJECT_VAULT', selectedIds: [vid] });
+      if (res?.packet) {
+        await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+        if (!isPinned) setTimeout(() => window.close(), 600);
+      }
+    });
+  });
+
+  UI.vaultList.querySelectorAll('.vault-item-check').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const item = cb.closest('.vault-item');
+      if (item) item.classList.toggle('selected', cb.checked);
     });
   });
 }
