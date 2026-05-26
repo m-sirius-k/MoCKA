@@ -63,6 +63,7 @@ let initialized        = false;
 let pendingHandoff     = null;
 let sendIntercepted    = false;
 let sendButtonObserver = null;
+let turnWarningShown   = false;
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 
@@ -127,6 +128,7 @@ function onUrlChange(from, to) {
   if (isNew || isChat) {
     turnCount = 0;
     processedMessages.clear();
+    turnWarningShown = false;
 
     // Fix v4.9: SESSION_START を先に送り relay_current を確立してから
     // SESSION_END を送る。逆順だと popup の RELAY_GET_STATS が
@@ -139,6 +141,7 @@ function onUrlChange(from, to) {
     }
 
     if (isNew) {
+      chrome.storage.local.remove(['relay_injected']).catch(() => {});
       setTimeout(prepareInvisibleHandoff, CONFIG.INJECT_DELAY);
     }
   } else if (wasActive) {
@@ -259,6 +262,17 @@ function processMessage(el, id) {
 
   if (todos.length) console.log('[Relay] Extracted', todos.length, 'TODOs');
 
+  // Free: 決定事項・ファイルパス・重要キーワード抽出して蓄積
+  const decisions = extractDecisions(text);
+  const filePaths = extractFilePaths(text);
+  const keywords  = extractKeywords(text);
+  if (decisions.length) safeSendMessage({ type: 'RELAY_ADD_DECISIONS', items: decisions });
+  if (filePaths.length) safeSendMessage({ type: 'RELAY_ADD_FILEPATHS', items: filePaths });
+  if (keywords.length)  safeSendMessage({ type: 'RELAY_ADD_KEYWORDS',  items: keywords });
+
+  // 20ターン警告（1セッション1回のみ）
+  if (turnCount === CONFIG.TURN_WARN) showTurnWarning();
+
   detectAndSetWorkMode(text);
   updateBadge();
   console.log('[Relay] Turn', turnCount, '— tokens ~', tokens);
@@ -356,26 +370,149 @@ function extractTodos(text) {
   return [...new Set(todos)]; // dedup
 }
 
+// ─── Free Extraction (ルールベース) ──────────────────────────────────────────
+
+function extractDecisions(text) {
+  const decisions = [];
+  const lines = text.split('\n');
+  let inCode = false;
+
+  const DECISION_PATTERNS = [
+    /(.{5,60})(?:にした|に決定|に決めた|を採用|を却下|することにした)/,
+    /(?:採用|却下|決定|確定)\s*[:：]\s*(.{5,60})/,
+    /(.{5,60})\s*(?:で行く|でいく|に統一)/,
+  ];
+
+  for (const line of lines) {
+    if (line.startsWith('```')) { inCode = !inCode; continue; }
+    if (inCode) continue;
+    const trimmed = line.trim();
+    if (trimmed.length < 10 || trimmed.length > 150) continue;
+    for (const pat of DECISION_PATTERNS) {
+      const m = trimmed.match(pat);
+      if (m) {
+        const decision = (m[1] || trimmed).trim();
+        if (decision.length >= 5) { decisions.push(decision); break; }
+      }
+    }
+  }
+  return [...new Set(decisions)].slice(0, 5);
+}
+
+function extractFilePaths(text) {
+  const FILE_PATH_RE = /(?:[A-Za-z]:\\[\w\\\/.:-]+|\/[\w/.-]{4,}\.(?:js|ts|py|json|md|txt|html|css|jsx|tsx|vue|go|rs|java|rb|sh|yaml|yml)|[\w.-]+\/[\w/.-]+\.(?:js|ts|py|json|md|html|css|jsx|tsx|go|py))/g;
+  const matches = text.match(FILE_PATH_RE) || [];
+  return [...new Set(matches)].slice(0, 8);
+}
+
+function extractKeywords(text) {
+  const results = [];
+  const PATTERNS = [
+    /(?:エラー|バグ|修正|実装|完了|設計|警告|問題|解決)\s*[:：]\s*(.{5,60})/g,
+    /(?:error|bug|fix|implement|done|design|issue|warn)\s*[:：]?\s*(.{5,60})/gi,
+  ];
+  for (const pat of PATTERNS) {
+    const re = new RegExp(pat.source, pat.flags);
+    let m;
+    while ((m = re.exec(text)) !== null) {
+      const kw = (m[1] || '').trim();
+      if (kw.length >= 5) results.push(kw.slice(0, 60));
+    }
+  }
+  return [...new Set(results)].slice(0, 5);
+}
+
+// ─── 20ターン警告ポップアップ ─────────────────────────────────────────────────
+
+function showTurnWarning() {
+  if (turnWarningShown) return;
+  turnWarningShown = true;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'relay-turn-warning';
+  overlay.style.cssText = [
+    'position:fixed', 'top:50%', 'left:50%',
+    'transform:translate(-50%,-50%)',
+    'background:#0c1220', 'border:1px solid #f59e0b',
+    'border-radius:14px', 'padding:24px 28px',
+    'z-index:9999999', 'font-family:ui-monospace,monospace',
+    'box-shadow:0 8px 40px rgba(0,0,0,0.8),0 0 20px rgba(245,158,11,0.3)',
+    'min-width:300px', 'max-width:380px', 'text-align:center',
+  ].join(';');
+
+  overlay.innerHTML = `
+    <div style="font-size:22px;margin-bottom:8px;color:#f59e0b;">⚠</div>
+    <div style="color:#f59e0b;font-size:14px;font-weight:700;margin-bottom:8px;">
+      20ターン到達
+    </div>
+    <div style="color:#94a3b8;font-size:12px;margin-bottom:18px;line-height:1.6;">
+      会話が長くなってきました。<br>引き継ぎを準備しますか？
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="relay-warn-handoff" style="
+        background:#0369a1;border:1px solid #38bdf8;border-radius:8px;
+        color:#38bdf8;font-size:12px;font-weight:700;padding:9px 18px;
+        cursor:pointer;font-family:inherit;
+      ">⚡ 引き継ぎを準備</button>
+      <button id="relay-warn-dismiss" style="
+        background:transparent;border:1px solid #334155;border-radius:8px;
+        color:#64748b;font-size:12px;padding:9px 18px;
+        cursor:pointer;font-family:inherit;
+      ">後で</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+
+  document.getElementById('relay-warn-handoff')?.addEventListener('click', async () => {
+    overlay.remove();
+    await handleBadgeClick();
+  });
+
+  document.getElementById('relay-warn-dismiss')?.addEventListener('click', () => {
+    overlay.remove();
+  });
+
+  // 30秒後に自動消去
+  setTimeout(() => { const el = document.getElementById('relay-turn-warning'); el?.remove(); }, 30000);
+}
+
 // ─── Invisible Handoff (案A) ─────────────────────────────────────────────────
 
 async function prepareInvisibleHandoff() {
   if (!isExtensionAlive()) return;
 
-  // popup経由の手動引き継ぎパケットを優先確認
-  const stored = await chrome.storage.local.get(['relay_handoff_packet']);
+  // 二重注入防止フラグ確認
+  const injCheck = await chrome.storage.local.get(['relay_injected']);
+  if (injCheck.relay_injected) {
+    console.log('[Relay] Already injected — skip');
+    return;
+  }
+
+  // popup経由の手動引き継ぎパケットを最優先確認
+  const stored = await chrome.storage.local.get(['relay_handoff_packet', 'relay_logbook_current']);
   let packet = stored.relay_handoff_packet || null;
   if (packet) {
     await chrome.storage.local.remove(['relay_handoff_packet']);
     console.log('[Relay] Handoff packet from popup');
   } else {
-    const res = await safeSendMessage({ type: 'RELAY_GET_HANDOFF' });
-    packet = res?.packet || null;
+    // Free版: relay_logbook_current から自動取得（直近1chat分）
+    packet = stored.relay_logbook_current || null;
+    if (packet) {
+      console.log('[Relay] Handoff packet from logbook (Free)');
+    } else {
+      const res = await safeSendMessage({ type: 'RELAY_GET_HANDOFF' });
+      packet = res?.packet || null;
+    }
   }
 
   if (!packet) {
     console.log('[Relay] No handoff packet — clean start');
     return;
   }
+
+  // 注入フラグを立てる（二重注入防止）
+  await chrome.storage.local.set({ relay_injected: true });
 
   // テキストボックスが出現するまで最大5秒待ってから即入力
   console.log('[Relay] Handoff packet ready — waiting for input box...');

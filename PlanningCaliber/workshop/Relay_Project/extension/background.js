@@ -5,12 +5,13 @@
 // 引き継ぎ機能 (getHandoffPacket / endSession / startSession) は変更なし
 
 const KEYS = {
-  SESSIONS:  'relay_sessions',
-  CURRENT:   'relay_current',
-  METRICS:   'relay_metrics',
-  SETTINGS:  'relay_settings',
-  TODOS:     'relay_todos',
-  TODO_CTR:  'relay_todo_counter',  // LB連番カウンター
+  SESSIONS:        'relay_sessions',
+  CURRENT:         'relay_current',
+  METRICS:         'relay_metrics',
+  SETTINGS:        'relay_settings',
+  TODOS:           'relay_todos',
+  TODO_CTR:        'relay_todo_counter',   // LB連番カウンター
+  LOGBOOK_CURRENT: 'relay_logbook_current', // Free版引き継ぎパケット（直近1chat）
 };
 
 const DEFAULT_SETTINGS = {
@@ -128,13 +129,15 @@ function avg(arr) {
 async function startSession(sessionId) {
   try {
     const current = {
-      session_id: sessionId,
-      started_at: Date.now(),
-      turn_count: 0,
+      session_id:       sessionId,
+      started_at:       Date.now(),
+      turn_count:       0,
       estimated_tokens: 0,
-      work_mode: 'heavy',
-      cpi_peak: 0,
-      decisions: [],
+      work_mode:        'heavy',
+      cpi_peak:         0,
+      decisions:        [],
+      filePaths:        [],
+      keywords:         [],
     };
     await chrome.storage.local.set({ [KEYS.CURRENT]: current });
     await chrome.storage.local.set({
@@ -152,6 +155,55 @@ async function startSession(sessionId) {
   } catch (err) {
     console.error('[Relay] startSession error:', err);
   }
+}
+
+// ─── Free Handoff Packet (5W1H, APIキー不要) ──────────────────────────────────
+
+function generateFreeHandoffPacketSync(current, allTodos) {
+  const todos = allTodos.filter(t => t.status === 'active');
+  const now   = new Date();
+  const pad   = n => String(n).padStart(2, '0');
+  const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  const decisions = current.decisions || [];
+  const filePaths = current.filePaths || [];
+  const keywords  = current.keywords  || [];
+  const turnCount = current.turn_count || 0;
+
+  const topicSrc = [...decisions.slice(0, 1), ...todos.slice(0, 1).map(t => t.text)];
+  const topic    = topicSrc.length ? topicSrc[0].slice(0, 60) : '作業継続';
+
+  const lines = [
+    '## 引き継ぎパケット [Relay Free]',
+    `**いつ**: ${dateStr} (${turnCount}ターン)`,
+    `**何を**: ${topic}`,
+  ];
+
+  if (decisions.length) {
+    lines.push('**決定事項**:');
+    decisions.slice(0, 5).forEach(d => lines.push(`- ${d}`));
+  }
+
+  if (todos.length) {
+    lines.push('**TODO/次のアクション**:');
+    todos.slice(0, 8).forEach(t => lines.push(`- [${t.id}] ${t.text}`));
+  }
+
+  if (filePaths.length) {
+    lines.push('**関連ファイル**:');
+    filePaths.slice(0, 5).forEach(p => lines.push(`- ${p}`));
+  }
+
+  if (keywords.length) {
+    lines.push('**重要メモ**:');
+    keywords.slice(0, 5).forEach(k => lines.push(`- ${k}`));
+  }
+
+  if (!decisions.length && !todos.length && !filePaths.length && !keywords.length) {
+    lines.push('（引き継ぎデータなし）');
+  }
+
+  return lines.join('\n');
 }
 
 async function endSession() {
@@ -176,7 +228,12 @@ async function endSession() {
     sessions.unshift(session);
     if (sessions.length > 20) sessions.pop();
 
-    await chrome.storage.local.set({ [KEYS.SESSIONS]: sessions, [KEYS.CURRENT]: null });
+    const freePacket = generateFreeHandoffPacketSync(current, todos);
+    await chrome.storage.local.set({
+      [KEYS.SESSIONS]:        sessions,
+      [KEYS.CURRENT]:         null,
+      [KEYS.LOGBOOK_CURRENT]: freePacket,
+    });
     console.log('[Relay] Session ended:', current.session_id);
   } catch (err) {
     console.error('[Relay] endSession error:', err);
@@ -545,6 +602,39 @@ async function handleMessage(msg) {
       current.work_mode = msg.mode;
       await chrome.storage.local.set({ [KEYS.SETTINGS]: settings, [KEYS.CURRENT]: current });
       return { ok: true };
+    }
+
+    // ── Free版: 決定事項・ファイルパス・重要キーワード蓄積 ──
+    case 'RELAY_ADD_DECISIONS': {
+      const s = await chrome.storage.local.get(KEYS.CURRENT);
+      const c = s[KEYS.CURRENT] || {};
+      c.decisions = [...new Set([...(c.decisions || []), ...msg.items])].slice(0, 20);
+      await chrome.storage.local.set({ [KEYS.CURRENT]: c });
+      return { ok: true };
+    }
+
+    case 'RELAY_ADD_FILEPATHS': {
+      const s = await chrome.storage.local.get(KEYS.CURRENT);
+      const c = s[KEYS.CURRENT] || {};
+      c.filePaths = [...new Set([...(c.filePaths || []), ...msg.items])].slice(0, 20);
+      await chrome.storage.local.set({ [KEYS.CURRENT]: c });
+      return { ok: true };
+    }
+
+    case 'RELAY_ADD_KEYWORDS': {
+      const s = await chrome.storage.local.get(KEYS.CURRENT);
+      const c = s[KEYS.CURRENT] || {};
+      c.keywords = [...new Set([...(c.keywords || []), ...msg.items])].slice(0, 20);
+      await chrome.storage.local.set({ [KEYS.CURRENT]: c });
+      return { ok: true };
+    }
+
+    case 'RELAY_GET_FREE_HANDOFF': {
+      const s = await chrome.storage.local.get([KEYS.CURRENT, KEYS.TODOS]);
+      const current = s[KEYS.CURRENT];
+      if (!current) return { packet: null };
+      const packet = generateFreeHandoffPacketSync(current, s[KEYS.TODOS] || []);
+      return { packet };
     }
 
     default:
