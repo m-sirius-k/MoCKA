@@ -42,37 +42,37 @@
   ],
   "generated_at": "2026-05-26T09:17:04.925220",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.333,
-    "danger_rate": 0.333,
-    "success_rate": 0.667,
-    "text": "[Relay引き継ぎ - 自動生成]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n\n\n\n■ 未完了タスク\n\n  - [LB_0",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "これを空というおまえは何者？",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-27",
-        "why": "「クレームね・インシデントね」→記録→essence自動反映の全自動フローを実現。DECISIONはNORMAL自動・HIGH以上のみHuman Gate。",
-        "how": "",
-        "note": "auto_gate,essence_chain,TODO_046,TODO_084,app.py,完了",
+        "when": "2026-04-14",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
         "recur": 0,
         "matched": [
-          "auto"
+          "これ"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-27",
-        "why": "",
-        "how": "",
-        "note": "SESSION_COMPLETE,COMMAND_CENTER,v4.0,auto_gate,essence_chain",
+        "when": "2026-04-14",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
         "recur": 0,
         "matched": [
-          "auto"
+          "これ"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-26T00:18:30.745Z"
+    "updated_at": "2026-05-26T04:17:11.897Z"
   }
 }
