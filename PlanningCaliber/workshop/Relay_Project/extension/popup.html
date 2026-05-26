@@ -438,6 +438,137 @@
 
     .divider { height: 1px; background: var(--border-dim); margin: 0; }
 
+    /* Pro Row & Settings Panel */
+    .pro-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 12px; border-bottom: 1px solid var(--border-dim);
+      cursor: pointer; background: rgba(56,189,248,0.03);
+    }
+    .pro-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 800;
+      letter-spacing: 1px; color: var(--accent);
+      background: rgba(56,189,248,0.12); border: 1px solid rgba(56,189,248,0.3);
+      border-radius: 4px; padding: 2px 6px;
+    }
+    .pro-settings-panel {
+      display: none; flex-direction: column; gap: 10px;
+      padding: 10px 12px; background: var(--bg-card);
+      border-bottom: 1px solid var(--border-dim);
+    }
+    .pro-settings-panel.open { display: flex; }
+
+    /* Plan buttons */
+    .plan-select-row { display: flex; gap: 6px; }
+    .plan-btn {
+      flex: 1; padding: 6px; border-radius: 6px; font-size: 11px; font-weight: 700;
+      cursor: pointer; border: 1px solid var(--border-dim);
+      background: var(--bg-panel); color: var(--text-sub); transition: all 0.2s;
+    }
+    .plan-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    /* Toggle switch */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .toggle-label { font-size: 12px; color: var(--text-main); }
+    .toggle-switch { position: relative; width: 36px; height: 20px; cursor: pointer; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 10px; transition: background 0.3s;
+    }
+    .toggle-slider::before {
+      position: absolute; content: ''; width: 14px; height: 14px;
+      left: 2px; bottom: 2px; background: var(--text-dim);
+      border-radius: 50%; transition: transform 0.3s, background 0.3s;
+    }
+    .toggle-switch input:checked + .toggle-slider { background: var(--accent-dim); border-color: var(--accent); }
+    .toggle-switch input:checked + .toggle-slider::before { transform: translateX(16px); background: var(--accent); }
+
+    /* API key */
+    .api-key-row { display: flex; flex-direction: column; gap: 5px; }
+    .api-key-input {
+      width: 100%; background: var(--bg-panel); border: 1px solid var(--border-dim);
+      border-radius: 6px; color: var(--text-main); font-size: 11px;
+      font-family: 'JetBrains Mono', monospace; padding: 6px 8px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .api-key-input:focus { border-color: var(--accent); }
+    .api-key-actions { display: flex; gap: 5px; }
+    .btn-sm {
+      flex: 1; padding: 5px 8px; border-radius: 5px; font-size: 10px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: var(--bg-panel);
+      color: var(--text-sub); transition: all 0.2s; font-family: inherit;
+    }
+    .btn-sm:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-sm.primary { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .api-key-status { font-size: 10px; height: 13px; color: var(--text-dim); }
+    .api-key-status.ok  { color: var(--safe); }
+    .api-key-status.err { color: var(--danger); }
+
+    /* Density meter (One) */
+    .density-bar-fill {
+      height: 100%; border-radius: 4px;
+      transition: width 0.6s ease, background 0.4s ease;
+    }
+    .density-bar-fill.green  { background: var(--safe); }
+    .density-bar-fill.yellow { background: var(--warn); }
+    .density-bar-fill.red    { background: var(--danger); box-shadow: 0 0 6px rgba(239,68,68,0.5); }
+
+    /* Vault (One) */
+    .vault-section { padding: 8px 12px 10px; }
+    .vault-item {
+      background: var(--bg-card); border: 1px solid var(--border-dim);
+      border-radius: 6px; padding: 7px 9px; margin-bottom: 5px;
+      transition: border-color 0.2s;
+    }
+    .vault-item:hover { border-color: var(--border); }
+    .vault-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .vault-relevance {
+      font-size: 9px; font-family: 'JetBrains Mono', monospace;
+      color: var(--accent); background: var(--accent-dim);
+      border-radius: 4px; padding: 1px 5px;
+    }
+    .vault-preview {
+      font-size: 10px; color: var(--text-sub);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin-bottom: 5px;
+    }
+    .vault-use-btn {
+      font-size: 10px; padding: 4px 10px; border-radius: 5px;
+      border: 1px solid var(--accent); background: var(--accent-dim);
+      color: var(--accent); cursor: pointer; font-weight: 600;
+      transition: background 0.2s; width: 100%;
+    }
+    .vault-use-btn:hover { background: rgba(56,189,248,0.2); }
+
+    /* Logbook history */
+    .history-section { padding: 8px 12px 12px; }
+    .history-header {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; padding: 2px 0; margin-bottom: 6px;
+    }
+    .history-list { display: none; flex-direction: column; gap: 5px; }
+    .history-list.open { display: flex; }
+    .history-item {
+      background: var(--bg-card); border: 1px solid var(--border-dim);
+      border-radius: 6px; padding: 7px 9px; cursor: pointer; transition: border-color 0.2s;
+    }
+    .history-item:hover { border-color: var(--border); }
+    .history-item.expanded .history-full { display: block; }
+    .history-ts {
+      font-size: 9px; color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace; margin-bottom: 3px;
+    }
+    .history-preview {
+      font-size: 10px; color: var(--text-sub);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .history-full {
+      display: none; font-size: 10px; color: var(--text-sub);
+      white-space: pre-wrap; margin-top: 6px; max-height: 120px;
+      overflow-y: auto; line-height: 1.4;
+    }
+
     /* Pin Button */
     .pin-btn {
       width: 28px;
@@ -503,6 +634,46 @@
     </div>
   </div>
 
+  <!-- Pro Settings Row -->
+  <div class="pro-row" id="pro-row">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="pro-badge">PRO</span>
+      <span style="font-size:11px;color:var(--text-sub);" id="pro-row-label">設定</span>
+    </div>
+    <span style="font-size:10px;color:var(--text-dim);" id="pro-row-toggle">▶</span>
+  </div>
+
+  <!-- Pro Settings Panel -->
+  <div class="pro-settings-panel" id="pro-settings-panel">
+    <!-- Plan selection -->
+    <div>
+      <div class="label" style="margin-bottom:5px;">プラン</div>
+      <div class="plan-select-row">
+        <button class="plan-btn active" id="plan-btn-free">Free</button>
+        <button class="plan-btn" id="plan-btn-pro">Pro $5</button>
+        <button class="plan-btn" id="plan-btn-one">One $10</button>
+      </div>
+    </div>
+    <!-- AI Summary toggle (Pro only) -->
+    <div class="toggle-row" id="ai-summary-row" style="display:none;">
+      <span class="toggle-label">AI要約 (Claude API)</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="ai-summary-toggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <!-- API Key (Pro only) -->
+    <div class="api-key-row" id="api-key-row" style="display:none;">
+      <div class="label">Claude APIキー</div>
+      <input type="password" class="api-key-input" id="api-key-input" placeholder="sk-ant-...">
+      <div class="api-key-actions">
+        <button class="btn-sm" id="api-key-save">保存</button>
+        <button class="btn-sm primary" id="api-key-test">テスト接続</button>
+      </div>
+      <div class="api-key-status" id="api-key-status"></div>
+    </div>
+  </div>
+
   <!-- Main content (visible when session active) -->
   <div id="main-content">
 
@@ -535,6 +706,26 @@
         <span class="card-sub">est. accumulated</span>
       </div>
 
+    </div>
+
+    <!-- Density Meter (One) -->
+    <div id="density-section" style="display:none;">
+      <div class="section" style="padding-bottom:8px;">
+        <div class="section-header">
+          <span class="label" style="color:var(--accent);">DENSITY [ONE]</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="mono" id="density-status" style="font-size:9px;color:var(--safe);">正常</span>
+            <span class="mono" id="density-val" style="font-size:11px;color:var(--accent);">0.00</span>
+          </div>
+        </div>
+        <div class="be-bar-track">
+          <div class="density-bar-fill green" id="density-bar" style="width:0%;"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:4px;">
+          <svg id="density-graph" width="90" height="22" style="overflow:visible;"></svg>
+        </div>
+      </div>
+      <div class="divider"></div>
     </div>
 
     <!-- Break-Even -->
@@ -590,6 +781,20 @@
       <div class="btn-feedback" id="btn-feedback"></div>
     </div>
 
+    <div class="divider" id="history-divider" style="display:none;"></div>
+
+    <!-- Logbook History (Pro) -->
+    <div class="history-section" id="history-section" style="display:none;">
+      <div class="history-header" id="history-header">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="label">LOGBOOK履歴</span>
+          <span class="todo-count" id="history-count">0</span>
+        </div>
+        <span class="todo-toggle" id="history-toggle">▶</span>
+      </div>
+      <div class="history-list" id="history-list"></div>
+    </div>
+
   </div>
 
   <!-- No session state -->
@@ -600,6 +805,15 @@
         <span data-i18n="no_session">Claude.ai でチャットを開いてください</span><br>
         <span style="color: #334155; font-size: 10px;" data-i18n="no_session_sub">Relay が自動的に計測を開始します</span>
       </div>
+    </div>
+    <!-- Vault suggestions (One) -->
+    <div class="vault-section" id="vault-section" style="display:none;">
+      <div class="divider" style="margin-bottom:10px;"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <span class="label" style="color:var(--accent);">VAULT候補 [ONE]</span>
+        <span class="todo-count" id="vault-count">0</span>
+      </div>
+      <div id="vault-list"></div>
     </div>
     <!-- Still show handoff button for manual use -->
     <div class="handoff-section">

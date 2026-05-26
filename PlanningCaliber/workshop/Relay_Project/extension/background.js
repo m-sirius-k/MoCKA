@@ -12,7 +12,25 @@ const KEYS = {
   TODOS:           'relay_todos',
   TODO_CTR:        'relay_todo_counter',   // LB連番カウンター
   LOGBOOK_CURRENT: 'relay_logbook_current', // Free版引き継ぎパケット（直近1chat）
+  PLAN:            'relay_plan',            // 'free' | 'pro' | 'one'
+  DENSITY_HISTORY: 'relay_density_history', // One版密度スコア履歴
+  VAULT:           'relay_logbook_vault',   // One版無制限Logbook
 };
+
+// ─── One: 密度エンジン定数 ────────────────────────────────────────────────────
+
+const DENSITY_THRESHOLD = 0.65;
+const SHIFT_THRESHOLD   = 0.30;
+
+function detectBreakevenPoint(history) {
+  if (history.length < 2) return 'NORMAL';
+  const latest = history[history.length - 1] || 0;
+  const prev   = history[history.length - 2] || 0;
+  const last3  = history.slice(-3);
+  if (last3.length >= 3 && last3.every(s => s >= DENSITY_THRESHOLD)) return 'HIGH_DENSITY';
+  if (Math.abs(latest - prev) >= SHIFT_THRESHOLD) return 'TOPIC_SHIFT';
+  return 'NORMAL';
+}
 
 const DEFAULT_SETTINGS = {
   work_mode: 'heavy',
@@ -138,6 +156,7 @@ async function startSession(sessionId) {
       decisions:        [],
       filePaths:        [],
       keywords:         [],
+      convBuffer:       '',
     };
     await chrome.storage.local.set({ [KEYS.CURRENT]: current });
     await chrome.storage.local.set({
@@ -151,6 +170,8 @@ async function startSession(sessionId) {
         lastDom: 0,
       },
     });
+    // One: density history はセッション単位でリセット
+    await chrome.storage.local.remove([KEYS.DENSITY_HISTORY]);
     console.log('[Relay] Session started:', sessionId);
   } catch (err) {
     console.error('[Relay] startSession error:', err);
@@ -159,14 +180,14 @@ async function startSession(sessionId) {
 
 // ─── Free Handoff Packet (5W1H, APIキー不要) ──────────────────────────────────
 
-function generateFreeHandoffPacketSync(current, allTodos) {
+function generateFreeHandoffPacketSync(current, allTodos, capturedFiles) {
   const todos = allTodos.filter(t => t.status === 'active');
   const now   = new Date();
   const pad   = n => String(n).padStart(2, '0');
   const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
 
   const decisions = current.decisions || [];
-  const filePaths = current.filePaths || [];
+  const filePaths = [...new Set([...(current.filePaths || []), ...(capturedFiles || [])])];
   const keywords  = current.keywords  || [];
   const turnCount = current.turn_count || 0;
 
@@ -206,6 +227,114 @@ function generateFreeHandoffPacketSync(current, allTodos) {
   return lines.join('\n');
 }
 
+// ─── One: Vault ヘルパー ──────────────────────────────────────────────────────
+
+function inferVaultTitle(current, todos) {
+  const active = todos.filter(t => t.status === 'active');
+  if (current.decisions?.length)  return current.decisions[0].slice(0, 40);
+  if (active.length)              return active[0].text.slice(0, 40);
+  if (current.keywords?.length)   return current.keywords.slice(0, 3).join(' / ').slice(0, 40);
+  return `セッション (${current.turn_count || 0}ターン)`;
+}
+
+async function buildVaultPacket(selectedIds, density) {
+  const s     = await chrome.storage.local.get(KEYS.VAULT);
+  const vault = s[KEYS.VAULT] || [];
+  const d     = density || 3;
+
+  let entries;
+  if (selectedIds?.length) {
+    entries = vault.filter(e => selectedIds.includes(e.id));
+  } else {
+    const count = d >= 5 ? 5 : d >= 4 ? 3 : d >= 3 ? 2 : 1;
+    entries = vault.slice(0, count);
+  }
+  if (!entries.length) return null;
+
+  const lines = ['[Relay Vault — 文脈プリロード]', '━'.repeat(28), ''];
+  const pad   = n => String(n).padStart(2, '0');
+
+  for (const entry of entries) {
+    const dt      = new Date(entry.date || entry.timestamp);
+    const dateStr = `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+
+    lines.push(`【前回の続き（${dateStr}）】`);
+    const summaryText = entry.summary || entry.packet || '';
+    lines.push(d === 1 ? summaryText.split('\n').slice(0, 3).join('\n') : summaryText);
+
+    if (d >= 3 && entry.decisions?.length) {
+      lines.push('\n【重要決定事項】');
+      entry.decisions.slice(0, d >= 5 ? undefined : 3).forEach(dec => lines.push(`- ${dec}`));
+    }
+    if (d >= 4 && entry.files?.length) {
+      lines.push('\n【関連ファイル】');
+      entry.files.slice(0, d >= 5 ? undefined : 5).forEach(f => lines.push(`- ${f}`));
+    }
+    if (d >= 5 && entry.todos?.length) {
+      lines.push('\n【未完了TODO】');
+      entry.todos.forEach(t => lines.push(`- ${t}`));
+    }
+    lines.push('');
+  }
+
+  lines.push('━'.repeat(28));
+  lines.push('上記は前回の会話の引き継ぎ情報です。この文脈を踏まえて会話を始めてください。');
+  return lines.join('\n');
+}
+
+// ─── Pro Handoff Packet (Claude API 5W1H要約) ─────────────────────────────────
+
+async function generateProHandoffPacket(current, todos, apiKey) {
+  const activeTodos = todos.filter(t => t.status === 'active');
+  const convBuffer  = current.convBuffer || '';
+  const decisionsText = (current.decisions || []).slice(0, 5).join('\n- ');
+  const filePathsText = (current.filePaths || []).slice(0, 5).join(', ');
+
+  const contextParts = [
+    convBuffer,
+    decisionsText ? `決定事項:\n- ${decisionsText}` : '',
+    activeTodos.length ? `TODO:\n${activeTodos.slice(0, 5).map(t => `- ${t.text}`).join('\n')}` : '',
+    filePathsText ? `関連ファイル: ${filePathsText}` : '',
+  ].filter(Boolean).join('\n\n');
+
+  const prompt = `以下の会話を引き継ぎ用に要約してください。
+形式: WHO（誰が）/ WHAT（何を）/ WHERE（どこで・どのファイル）/ WHY（なぜ）/ HOW（どうやって）/ NEXT（次のアクション）
+会話:
+${contextParts}`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 600,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Claude API ${response.status}: ${errText}`);
+  }
+
+  const data    = await response.json();
+  const summary = data.content?.[0]?.text || '';
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  return [
+    '## 引き継ぎパケット [Relay Pro — AI要約]',
+    `**日時**: ${dateStr} (${current.turn_count || 0}ターン)`,
+    '',
+    summary,
+  ].join('\n');
+}
+
 async function endSession() {
   try {
     const stored = await chrome.storage.local.get([KEYS.CURRENT, KEYS.SESSIONS, KEYS.METRICS, KEYS.TODOS]);
@@ -228,11 +357,76 @@ async function endSession() {
     sessions.unshift(session);
     if (sessions.length > 20) sessions.pop();
 
-    const freePacket = generateFreeHandoffPacketSync(current, todos);
+    // Pro/One: check plan + AI summary settings
+    const proStored = await chrome.storage.local.get([KEYS.PLAN, 'relay_ai_summary_enabled', 'relay_api_key', 'relay_captured_files']);
+    const isPro  = ['pro', 'one'].includes(proStored[KEYS.PLAN]);
+    const isOne  = proStored[KEYS.PLAN] === 'one';
+    const apiKey = proStored.relay_api_key || '';
+
+    let logbookEntry = generateFreeHandoffPacketSync(current, todos, isPro ? proStored.relay_captured_files || [] : []);
+    if (isPro && proStored.relay_ai_summary_enabled && apiKey) {
+      try {
+        logbookEntry = await generateProHandoffPacket(current, todos, apiKey);
+      } catch (e) {
+        console.error('[Relay Pro] AI summary failed, using free packet:', e);
+      }
+    }
+
+    // Pro: save to logbook history (queue, max 5)
+    if (isPro) {
+      const histStored = await chrome.storage.local.get('relay_logbook_history');
+      const history = histStored.relay_logbook_history || [];
+      history.unshift({ timestamp: Date.now(), packet: logbookEntry });
+      if (history.length > 5) history.pop();
+      await chrome.storage.local.set({ relay_logbook_history: history });
+    }
+
+    // One: Vault（無制限Logbook）にリッチ形式で保存
+    if (isOne) {
+      const vaultStored = await chrome.storage.local.get([KEYS.VAULT, KEYS.DENSITY_HISTORY]);
+      let vault = vaultStored[KEYS.VAULT] || [];
+      const densityHist = vaultStored[KEYS.DENSITY_HISTORY] || [];
+      const densityScore = densityHist.length ? densityHist[densityHist.length - 1] : 0;
+
+      const now2 = new Date();
+      const pad2 = n => String(n).padStart(2, '0');
+      const isoDate = `${now2.getFullYear()}-${pad2(now2.getMonth()+1)}-${pad2(now2.getDate())}T${pad2(now2.getHours())}:${pad2(now2.getMinutes())}:${pad2(now2.getSeconds())}`;
+      const vaultId = `vault_${isoDate.replace(/[-:T]/g,'').slice(0, 14)}`;
+
+      vault.unshift({
+        id:            vaultId,
+        date:          isoDate,
+        timestamp:     Date.now(),
+        title:         inferVaultTitle(current, todos),
+        summary:       logbookEntry,
+        decisions:     current.decisions || [],
+        files:         [...new Set([...(current.filePaths || []), ...(proStored.relay_captured_files || [])])],
+        todos:         todos.filter(t => t.status === 'active').map(t => t.text),
+        keywords:      current.keywords || [],
+        turn_count:    current.turn_count || 0,
+        density_score: densityScore,
+        session_id:    current.session_id,
+      });
+
+      // 容量管理: 100件上限 + ストレージ使用量チェック
+      if (vault.length > 100) vault = vault.slice(0, 100);
+      await chrome.storage.local.set({ [KEYS.VAULT]: vault });
+
+      chrome.storage.local.getBytesInUse(KEYS.VAULT, (bytes) => {
+        if (bytes > 4.5 * 1024 * 1024) {
+          chrome.storage.local.get(KEYS.VAULT, (sv) => {
+            const trimmed = (sv[KEYS.VAULT] || []).slice(0, Math.floor((sv[KEYS.VAULT] || []).length * 0.7));
+            chrome.storage.local.set({ [KEYS.VAULT]: trimmed });
+            console.warn('[Relay Vault] Trimmed for storage capacity');
+          });
+        }
+      });
+    }
+
     await chrome.storage.local.set({
       [KEYS.SESSIONS]:        sessions,
       [KEYS.CURRENT]:         null,
-      [KEYS.LOGBOOK_CURRENT]: freePacket,
+      [KEYS.LOGBOOK_CURRENT]: logbookEntry,
     });
     console.log('[Relay] Session ended:', current.session_id);
   } catch (err) {
@@ -575,6 +769,19 @@ async function handleMessage(msg) {
     }
 
     case 'RELAY_GET_HANDOFF': {
+      const proStored2 = await chrome.storage.local.get([KEYS.PLAN, 'relay_ai_summary_enabled', 'relay_api_key']);
+      if (['pro', 'one'].includes(proStored2[KEYS.PLAN]) && proStored2.relay_ai_summary_enabled && proStored2.relay_api_key) {
+        const s2 = await chrome.storage.local.get([KEYS.CURRENT, KEYS.TODOS]);
+        const curr = s2[KEYS.CURRENT];
+        if (curr) {
+          try {
+            const packet = await generateProHandoffPacket(curr, s2[KEYS.TODOS] || [], proStored2.relay_api_key);
+            return { packet };
+          } catch (e) {
+            console.error('[Relay Pro] AI handoff failed, fallback:', e);
+          }
+        }
+      }
       const packet = await getHandoffPacket();
       return { packet };
     }
@@ -606,18 +813,28 @@ async function handleMessage(msg) {
 
     // ── Free版: 決定事項・ファイルパス・重要キーワード蓄積 ──
     case 'RELAY_ADD_DECISIONS': {
-      const s = await chrome.storage.local.get(KEYS.CURRENT);
+      const s = await chrome.storage.local.get([KEYS.CURRENT, KEYS.PLAN, 'relay_decisions']);
       const c = s[KEYS.CURRENT] || {};
       c.decisions = [...new Set([...(c.decisions || []), ...msg.items])].slice(0, 20);
-      await chrome.storage.local.set({ [KEYS.CURRENT]: c });
+      const updates = { [KEYS.CURRENT]: c };
+      if (['pro', 'one'].includes(s[KEYS.PLAN])) {
+        const existing = s.relay_decisions || [];
+        updates.relay_decisions = [...new Set([...existing, ...msg.items])].slice(0, 100);
+      }
+      await chrome.storage.local.set(updates);
       return { ok: true };
     }
 
     case 'RELAY_ADD_FILEPATHS': {
-      const s = await chrome.storage.local.get(KEYS.CURRENT);
+      const s = await chrome.storage.local.get([KEYS.CURRENT, KEYS.PLAN, 'relay_captured_files']);
       const c = s[KEYS.CURRENT] || {};
       c.filePaths = [...new Set([...(c.filePaths || []), ...msg.items])].slice(0, 20);
-      await chrome.storage.local.set({ [KEYS.CURRENT]: c });
+      const updates = { [KEYS.CURRENT]: c };
+      if (['pro', 'one'].includes(s[KEYS.PLAN])) {
+        const existing = s.relay_captured_files || [];
+        updates.relay_captured_files = [...new Set([...existing, ...msg.items])].slice(0, 100);
+      }
+      await chrome.storage.local.set(updates);
       return { ok: true };
     }
 
@@ -635,6 +852,161 @@ async function handleMessage(msg) {
       if (!current) return { packet: null };
       const packet = generateFreeHandoffPacketSync(current, s[KEYS.TODOS] || []);
       return { packet };
+    }
+
+    // ── Pro: 会話バッファ蓄積 ──
+    case 'RELAY_UPDATE_CONV_BUFFER': {
+      const s = await chrome.storage.local.get(KEYS.CURRENT);
+      const c = s[KEYS.CURRENT] || {};
+      c.convBuffer = ((c.convBuffer || '') + '\n' + (msg.text || '')).slice(-4000);
+      await chrome.storage.local.set({ [KEYS.CURRENT]: c });
+      return { ok: true };
+    }
+
+    // ── Pro: APIキーテスト接続 ──
+    case 'RELAY_TEST_API_KEY': {
+      try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': msg.apiKey,
+            'anthropic-version': '2023-06-01',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001',
+            max_tokens: 5,
+            messages: [{ role: 'user', content: 'hi' }],
+          }),
+        });
+        return { ok: resp.ok, status: resp.status };
+      } catch (e) {
+        return { ok: false, error: e.message };
+      }
+    }
+
+    // ── Pro: Logbook履歴取得 ──
+    case 'RELAY_GET_LOGBOOK_HISTORY': {
+      const s = await chrome.storage.local.get('relay_logbook_history');
+      return { history: s.relay_logbook_history || [] };
+    }
+
+    // ── Pro: プラン取得/設定 ──
+    case 'RELAY_GET_PLAN': {
+      const s = await chrome.storage.local.get(KEYS.PLAN);
+      return { plan: s[KEYS.PLAN] || 'free' };
+    }
+
+    case 'RELAY_SET_PLAN': {
+      await chrome.storage.local.set({ [KEYS.PLAN]: msg.plan });
+      return { ok: true };
+    }
+
+    // ── Pro: Pro設定（AI要約ON/OFF、APIキー）保存 ──
+    case 'RELAY_SET_PRO_SETTINGS': {
+      const updates = {};
+      if (msg.aiSummaryEnabled !== undefined) updates.relay_ai_summary_enabled = msg.aiSummaryEnabled;
+      if (msg.apiKey !== undefined)            updates.relay_api_key            = msg.apiKey;
+      await chrome.storage.local.set(updates);
+      return { ok: true };
+    }
+
+    // ── Pro: Pro設定取得 ──
+    case 'RELAY_GET_PRO_SETTINGS': {
+      const s = await chrome.storage.local.get(['relay_ai_summary_enabled', 'relay_api_key', KEYS.PLAN]);
+      return {
+        plan:             s[KEYS.PLAN] || 'free',
+        aiSummaryEnabled: s.relay_ai_summary_enabled || false,
+        apiKeySet:        !!(s.relay_api_key),
+      };
+    }
+
+    // ── One: 密度スコア更新 ──
+    case 'RELAY_DENSITY_UPDATE': {
+      const s = await chrome.storage.local.get(KEYS.PLAN);
+      if (s[KEYS.PLAN] !== 'one') return { notify: false };
+      const stored  = await chrome.storage.local.get(KEYS.DENSITY_HISTORY);
+      const history = stored[KEYS.DENSITY_HISTORY] || [];
+      history.push(msg.score || 0);
+      if (history.length > 20) history.shift();
+      await chrome.storage.local.set({ [KEYS.DENSITY_HISTORY]: history });
+      const status = detectBreakevenPoint(history);
+      return { notify: true, status };
+    }
+
+    // ── One: 密度履歴取得 ──
+    case 'RELAY_GET_DENSITY': {
+      const s = await chrome.storage.local.get(KEYS.DENSITY_HISTORY);
+      return { history: s[KEYS.DENSITY_HISTORY] || [] };
+    }
+
+    // ── One: Vault全件取得 ──
+    case 'RELAY_GET_VAULT': {
+      const s = await chrome.storage.local.get(KEYS.VAULT);
+      return { vault: s[KEYS.VAULT] || [] };
+    }
+
+    // ── One: Vault関連度ランキング（上位3件）──
+    case 'RELAY_RANK_VAULT': {
+      const s = await chrome.storage.local.get([KEYS.VAULT, KEYS.CURRENT]);
+      const vault   = s[KEYS.VAULT]   || [];
+      const current = s[KEYS.CURRENT] || {};
+      const ctxKws  = [
+        ...(current.keywords  || []),
+        ...(current.decisions || []),
+      ].map(k => k.toLowerCase());
+      const ranked = vault.map(entry => {
+        const ekws    = (entry.keywords || []).map(k => k.toLowerCase());
+        const overlap = ekws.filter(k => ctxKws.some(ck => ck.includes(k) || k.includes(ck))).length;
+        return { ...entry, relevance: overlap };
+      }).sort((a, b) => b.relevance - a.relevance).slice(0, 3);
+      return { ranked };
+    }
+
+    // ── One: Vault特定エントリをhandoff packetとして設定 ──
+    case 'RELAY_USE_VAULT_ENTRY': {
+      await chrome.storage.local.set({ relay_handoff_packet: msg.packet });
+      return { ok: true };
+    }
+
+    // ── One: 選択エントリ or 密度レベルでVaultパケット生成 ──
+    case 'RELAY_GET_VAULT_PACKET': {
+      const packet = await buildVaultPacket(msg.selectedIds, msg.density);
+      return { packet };
+    }
+
+    // ── One: Vaultパケットを生成してhandoff_packetに保存 ──
+    case 'RELAY_INJECT_VAULT': {
+      const packet = await buildVaultPacket(msg.selectedIds, msg.density);
+      if (packet) {
+        await chrome.storage.local.set({ relay_handoff_packet: packet });
+      }
+      return { packet };
+    }
+
+    // ── One: VaultデータをJSONでエクスポート ──
+    case 'RELAY_EXPORT_VAULT': {
+      const s = await chrome.storage.local.get(KEYS.VAULT);
+      const vault = s[KEYS.VAULT] || [];
+      return { json: JSON.stringify(vault, null, 2) };
+    }
+
+    // ── One: Vault設定取得（注入密度レベル、自動注入ON/OFF）──
+    case 'RELAY_GET_VAULT_SETTINGS': {
+      const s = await chrome.storage.local.get(['relay_inject_density', 'relay_auto_inject']);
+      return {
+        density:    s.relay_inject_density ?? 3,
+        autoInject: s.relay_auto_inject    ?? false,
+      };
+    }
+
+    // ── One: Vault設定保存 ──
+    case 'RELAY_SET_VAULT_SETTINGS': {
+      const updates = {};
+      if (msg.density    !== undefined) updates.relay_inject_density = msg.density;
+      if (msg.autoInject !== undefined) updates.relay_auto_inject    = msg.autoInject;
+      await chrome.storage.local.set(updates);
+      return { ok: true };
     }
 
     default:

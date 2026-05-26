@@ -129,6 +129,8 @@ function onUrlChange(from, to) {
     turnCount = 0;
     processedMessages.clear();
     turnWarningShown = false;
+    recentMessageTexts   = [];
+    densityNotifiedTypes = new Set();
 
     // Fix v4.9: SESSION_START を先に送り relay_current を確立してから
     // SESSION_END を送る。逆順だと popup の RELAY_GET_STATS が
@@ -262,6 +264,14 @@ function processMessage(el, id) {
 
   if (todos.length) console.log('[Relay] Extracted', todos.length, 'TODOs');
 
+  // Pro: 会話バッファに蓄積（AI要約用、最大500文字/ターン）
+  safeSendMessage({ type: 'RELAY_UPDATE_CONV_BUFFER', text: text.slice(0, 500) });
+
+  // One: 密度スコアリング用メッセージバッファ蓄積
+  recentMessageTexts.push(text.slice(0, 500));
+  if (recentMessageTexts.length > 5) recentMessageTexts.shift();
+  if (turnCount % DENSITY_CHECK_INTERVAL === 0) checkDensity();
+
   // Free: 決定事項・ファイルパス・重要キーワード抽出して蓄積
   const decisions = extractDecisions(text);
   const filePaths = extractFilePaths(text);
@@ -370,6 +380,112 @@ function extractTodos(text) {
   return [...new Set(todos)]; // dedup
 }
 
+// ─── One: Density Scoring Engine (API-zero, pure local) ──────────────────────
+
+const DENSITY_CHECK_INTERVAL = 5;
+const IMPORTANT_KEYWORDS = [
+  'エラー','バグ','修正','実装','完了','決定','採用','却下',
+  'TODO','次に','あとで','問題','解決','変更','追加','削除',
+  'error','bug','fix','implement','done','decision',
+];
+
+let recentMessageTexts   = [];
+let densityNotifiedTypes = new Set();
+
+function calcKeywordDensity(msgs) {
+  const text  = msgs.join(' ').toLowerCase();
+  const words = text.split(/\s+/).filter(Boolean);
+  if (!words.length) return 0;
+  const hits = words.filter(w => IMPORTANT_KEYWORDS.some(kw => w.includes(kw.toLowerCase()))).length;
+  return Math.min(1.0, (hits / words.length) * 10);
+}
+
+function calcFilePathCount(msgs) {
+  const text = msgs.join(' ');
+  const RE = /(?:[A-Z]:\\[^\s"']+\.[a-zA-Z]{1,5}|\/[a-zA-Z0-9_\-\/]+\.[a-zA-Z]{1,5}|\b\w+\.(js|py|json|ts|html|css|md|txt)\b)/g;
+  return Math.min(1.0, (text.match(RE) || []).length / 5);
+}
+
+function calcDecisionCount(msgs) {
+  const text = msgs.join('\n');
+  const RE = /(?:にした|に決定|を採用|を却下|することにした|\[RELAY_DECISION\])/g;
+  return Math.min(1.0, (text.match(RE) || []).length / 5);
+}
+
+function calcTopicShift(msgs) {
+  if (msgs.length < 2) return 0;
+  const latest = new Set(msgs[msgs.length - 1].toLowerCase().split(/\s+/).filter(w => w.length > 3));
+  const oldest = msgs[0].toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  const overlap = oldest.filter(w => latest.has(w)).length;
+  return Math.max(0, 1.0 - overlap / Math.max(latest.size, 1));
+}
+
+function calcDensityScore(msgs) {
+  return (
+    calcKeywordDensity(msgs)  * 0.35 +
+    calcFilePathCount(msgs)   * 0.25 +
+    calcDecisionCount(msgs)   * 0.25 +
+    calcTopicShift(msgs)      * 0.15
+  );
+}
+
+async function checkDensity() {
+  const msgs  = recentMessageTexts.slice(-5);
+  const score = Math.round(calcDensityScore(msgs) * 100) / 100;
+  const res   = await safeSendMessage({ type: 'RELAY_DENSITY_UPDATE', score });
+  if (!res?.notify || !res?.status || res.status === 'NORMAL') return;
+  if (densityNotifiedTypes.has(res.status)) return;
+  densityNotifiedTypes.add(res.status);
+  showDensityNotification(res.status);
+  if (res.status === 'TOPIC_SHIFT') {
+    setTimeout(() => densityNotifiedTypes.delete('TOPIC_SHIFT'), 15000);
+  }
+}
+
+function showDensityNotification(type) {
+  if (document.getElementById('relay-density-notify')) return;
+  const MESSAGES = {
+    HIGH_DENSITY: '重要な情報が集中しています。今が引き継ぎのベストタイミングです',
+    TOPIC_SHIFT:  '話題が大きく変わりました。前のトピックを引き継いでおきましょう',
+  };
+  const color = type === 'HIGH_DENSITY' ? '#ef4444' : '#f59e0b';
+  const icon  = type === 'HIGH_DENSITY' ? '🔴' : '🟡';
+
+  const overlay = document.createElement('div');
+  overlay.id = 'relay-density-notify';
+  overlay.style.cssText = [
+    'position:fixed','top:50%','left:50%','transform:translate(-50%,-50%)',
+    'background:#0c1220',`border:1px solid ${color}`,
+    'border-radius:14px','padding:24px 28px','z-index:9999999',
+    'font-family:ui-monospace,monospace','box-shadow:0 8px 40px rgba(0,0,0,0.8)',
+    'min-width:300px','max-width:380px','text-align:center',
+  ].join(';');
+  overlay.innerHTML = `
+    <div style="font-size:22px;margin-bottom:8px;">${icon}</div>
+    <div style="color:${color};font-size:13px;font-weight:700;margin-bottom:8px;">
+      ${type === 'HIGH_DENSITY' ? '密度ピーク検知' : '話題転換検知'}
+    </div>
+    <div style="color:#94a3b8;font-size:12px;margin-bottom:18px;line-height:1.6;">
+      ${MESSAGES[type]}
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button id="relay-density-handoff" style="background:#0369a1;border:1px solid #38bdf8;border-radius:8px;color:#38bdf8;font-size:12px;font-weight:700;padding:9px 18px;cursor:pointer;font-family:inherit;">⚡ 引き継ぎを準備</button>
+      <button id="relay-density-dismiss" style="background:transparent;border:1px solid #334155;border-radius:8px;color:#64748b;font-size:12px;padding:9px 18px;cursor:pointer;font-family:inherit;">後で</button>
+    </div>`;
+  document.body.appendChild(overlay);
+  document.getElementById('relay-density-handoff')?.addEventListener('click', async () => { overlay.remove(); await handleBadgeClick(); });
+  document.getElementById('relay-density-dismiss')?.addEventListener('click', () => overlay.remove());
+  setTimeout(() => document.getElementById('relay-density-notify')?.remove(), 30000);
+}
+
+// ─── Pro-enhanced FILE_PATTERNS ──────────────────────────────────────────────
+
+const FILE_PATTERNS_PRO = [
+  /[A-Z]:\\[^\s"']+\.[a-zA-Z]{1,5}/g,
+  /\/[a-zA-Z0-9_\-\/]+\.[a-zA-Z]{1,5}/g,
+  /\b\w+\.(js|py|json|ts|html|css|md|txt|csv)\b/g,
+];
+
 // ─── Free Extraction (ルールベース) ──────────────────────────────────────────
 
 function extractDecisions(text) {
@@ -388,6 +504,12 @@ function extractDecisions(text) {
     if (inCode) continue;
     const trimmed = line.trim();
     if (trimmed.length < 10 || trimmed.length > 150) continue;
+    // Pro: [RELAY_DECISION] マーカー付き行を優先検出
+    if (/\[RELAY_DECISION\]/.test(trimmed)) {
+      decisions.push(trimmed.replace(/\[RELAY_DECISION\]/, '').trim() || trimmed);
+      continue;
+    }
+
     for (const pat of DECISION_PATTERNS) {
       const m = trimmed.match(pat);
       if (m) {
@@ -401,8 +523,9 @@ function extractDecisions(text) {
 
 function extractFilePaths(text) {
   const FILE_PATH_RE = /(?:[A-Za-z]:\\[\w\\\/.:-]+|\/[\w/.-]{4,}\.(?:js|ts|py|json|md|txt|html|css|jsx|tsx|vue|go|rs|java|rb|sh|yaml|yml)|[\w.-]+\/[\w/.-]+\.(?:js|ts|py|json|md|html|css|jsx|tsx|go|py))/g;
-  const matches = text.match(FILE_PATH_RE) || [];
-  return [...new Set(matches)].slice(0, 8);
+  const base = text.match(FILE_PATH_RE) || [];
+  const pro  = FILE_PATTERNS_PRO.flatMap(re => Array.from(text.matchAll(new RegExp(re.source, re.flags))).map(m => m[0]));
+  return [...new Set([...base, ...pro])].filter(p => p.length > 3).slice(0, 10);
 }
 
 function extractKeywords(text) {
@@ -490,12 +613,22 @@ async function prepareInvisibleHandoff() {
   }
 
   // popup経由の手動引き継ぎパケットを最優先確認
-  const stored = await chrome.storage.local.get(['relay_handoff_packet', 'relay_logbook_current']);
+  const stored = await chrome.storage.local.get([
+    'relay_handoff_packet', 'relay_logbook_current',
+    'relay_auto_inject', 'relay_inject_density', 'relay_plan',
+  ]);
   let packet = stored.relay_handoff_packet || null;
   if (packet) {
     await chrome.storage.local.remove(['relay_handoff_packet']);
     console.log('[Relay] Handoff packet from popup');
-  } else {
+  } else if (stored.relay_plan === 'one' && stored.relay_auto_inject) {
+    // One版: Vault自動注入
+    const density = stored.relay_inject_density ?? 3;
+    const res = await safeSendMessage({ type: 'RELAY_GET_VAULT_PACKET', density });
+    packet = res?.packet || null;
+    if (packet) console.log('[Relay] Handoff packet from Vault (One auto-inject)');
+  }
+  if (!packet) {
     // Free版: relay_logbook_current から自動取得（直近1chat分）
     packet = stored.relay_logbook_current || null;
     if (packet) {

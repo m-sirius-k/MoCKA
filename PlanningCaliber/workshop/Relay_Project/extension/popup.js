@@ -36,6 +36,36 @@ const UI = {
   pinBtn:         $('pin-btn'),
   sideBtn:        $('side-btn'),
   langSelect:     $('lang-select'),
+  // Pro
+  proRow:         $('pro-row'),
+  proRowToggle:   $('pro-row-toggle'),
+  proRowLabel:    $('pro-row-label'),
+  proPanel:       $('pro-settings-panel'),
+  planBtnFree:    $('plan-btn-free'),
+  planBtnPro:     $('plan-btn-pro'),
+  planBtnOne:     $('plan-btn-one'),
+  aiSummaryRow:   $('ai-summary-row'),
+  aiSummaryToggle:$('ai-summary-toggle'),
+  apiKeyRow:      $('api-key-row'),
+  apiKeyInput:    $('api-key-input'),
+  apiKeySave:     $('api-key-save'),
+  apiKeyTest:     $('api-key-test'),
+  apiKeyStatus:   $('api-key-status'),
+  historySection: $('history-section'),
+  historyDivider: $('history-divider'),
+  historyHeader:  $('history-header'),
+  historyList:    $('history-list'),
+  historyCount:   $('history-count'),
+  historyToggle:  $('history-toggle'),
+  // One
+  densitySection: $('density-section'),
+  densityBar:     $('density-bar'),
+  densityVal:     $('density-val'),
+  densityStatus:  $('density-status'),
+  densityGraph:   $('density-graph'),
+  vaultSection:   $('vault-section'),
+  vaultList:      $('vault-list'),
+  vaultCount:     $('vault-count'),
 };
 
 let todoExpanded  = true;
@@ -165,7 +195,9 @@ async function init() {
     await initLang();
     await loadAll();
     bindEvents();
+    bindProEvents();
     listenStorageChanges();
+    await initPro();
 
     // 言語セレクター
     UI.langSelect?.addEventListener('change', async (e) => {
@@ -499,6 +531,11 @@ function listenStorageChanges() {
     if (changes.relay_todos) {
       await reloadTodos();
     }
+
+    if (changes.relay_density_history && currentPlan === 'one') {
+      const history = changes.relay_density_history.newValue || [];
+      renderDensity(history);
+    }
   });
 }
 
@@ -547,6 +584,252 @@ function escHtml(str) {
 
 function sendMsg(msg) {
   return chrome.runtime.sendMessage(msg).catch(() => null);
+}
+
+// ─── Pro Settings ─────────────────────────────────────────────────────────────
+
+let proSettingsOpen = false;
+let historyExpanded = false;
+let currentPlan     = 'free';
+
+async function initPro() {
+  const res = await sendMsg({ type: 'RELAY_GET_PRO_SETTINGS' });
+  if (!res) return;
+
+  currentPlan = res.plan || 'free';
+  applyPlanUI(currentPlan);
+
+  if (res.aiSummaryEnabled && UI.aiSummaryToggle) {
+    UI.aiSummaryToggle.checked = true;
+  }
+  if (res.apiKeySet && UI.apiKeyInput) {
+    UI.apiKeyInput.placeholder = '●●●●●●●●（保存済み）';
+  }
+
+  if (currentPlan === 'pro' || currentPlan === 'one') {
+    await loadHistory();
+  }
+  if (currentPlan === 'one') {
+    await loadDensity();
+    await loadVault();
+  }
+}
+
+function applyPlanUI(plan) {
+  currentPlan = plan;
+  const isPro = plan === 'pro' || plan === 'one';
+  const isOne = plan === 'one';
+
+  if (UI.planBtnFree) UI.planBtnFree.classList.toggle('active', plan === 'free');
+  if (UI.planBtnPro)  UI.planBtnPro.classList.toggle('active',  plan === 'pro');
+  if (UI.planBtnOne)  UI.planBtnOne.classList.toggle('active',  isOne);
+
+  if (UI.aiSummaryRow) UI.aiSummaryRow.style.display = isPro ? '' : 'none';
+  if (UI.apiKeyRow)    UI.apiKeyRow.style.display    = isPro ? '' : 'none';
+  if (UI.proRowLabel)  UI.proRowLabel.textContent    = isOne ? 'One 有効' : isPro ? 'Pro 有効' : '設定';
+
+  if (UI.historySection) UI.historySection.style.display = isPro ? '' : 'none';
+  if (UI.historyDivider) UI.historyDivider.style.display = isPro ? '' : 'none';
+
+  if (UI.densitySection) UI.densitySection.style.display = isOne ? '' : 'none';
+  if (UI.vaultSection)   UI.vaultSection.style.display   = isOne ? '' : 'none';
+}
+
+function bindProEvents() {
+  // Pro row toggle
+  UI.proRow?.addEventListener('click', () => {
+    proSettingsOpen = !proSettingsOpen;
+    UI.proPanel?.classList.toggle('open', proSettingsOpen);
+    if (UI.proRowToggle) UI.proRowToggle.textContent = proSettingsOpen ? '▼' : '▶';
+  });
+
+  // Plan buttons
+  UI.planBtnFree?.addEventListener('click', async () => {
+    await sendMsg({ type: 'RELAY_SET_PLAN', plan: 'free' });
+    applyPlanUI('free');
+  });
+
+  UI.planBtnPro?.addEventListener('click', async () => {
+    await sendMsg({ type: 'RELAY_SET_PLAN', plan: 'pro' });
+    applyPlanUI('pro');
+    await loadHistory();
+  });
+
+  UI.planBtnOne?.addEventListener('click', async () => {
+    await sendMsg({ type: 'RELAY_SET_PLAN', plan: 'one' });
+    applyPlanUI('one');
+    await loadHistory();
+    await loadDensity();
+    await loadVault();
+  });
+
+  // AI summary toggle
+  UI.aiSummaryToggle?.addEventListener('change', async (e) => {
+    await sendMsg({ type: 'RELAY_SET_PRO_SETTINGS', aiSummaryEnabled: e.target.checked });
+  });
+
+  // API key save
+  UI.apiKeySave?.addEventListener('click', async () => {
+    const key = UI.apiKeyInput?.value?.trim();
+    if (!key) return;
+    await sendMsg({ type: 'RELAY_SET_PRO_SETTINGS', apiKey: key });
+    if (UI.apiKeyInput) {
+      UI.apiKeyInput.value = '';
+      UI.apiKeyInput.placeholder = '●●●●●●●●（保存済み）';
+    }
+    setApiKeyStatus('保存しました', 'ok');
+  });
+
+  // API key test
+  UI.apiKeyTest?.addEventListener('click', async () => {
+    const key = UI.apiKeyInput?.value?.trim();
+    if (!key) {
+      setApiKeyStatus('APIキーを入力してください', 'err');
+      return;
+    }
+    setApiKeyStatus('接続確認中...', '');
+    const res = await sendMsg({ type: 'RELAY_TEST_API_KEY', apiKey: key });
+    if (res?.ok) {
+      setApiKeyStatus('✓ 接続成功', 'ok');
+    } else {
+      setApiKeyStatus(`✗ エラー (${res?.status || res?.error || 'unknown'})`, 'err');
+    }
+  });
+
+  // History header toggle
+  UI.historyHeader?.addEventListener('click', () => {
+    historyExpanded = !historyExpanded;
+    UI.historyList?.classList.toggle('open', historyExpanded);
+    if (UI.historyToggle) UI.historyToggle.textContent = historyExpanded ? '▼' : '▶';
+  });
+
+  // History list click (expand item)
+  UI.historyList?.addEventListener('click', (e) => {
+    const item = e.target.closest('.history-item');
+    if (!item) return;
+    item.classList.toggle('expanded');
+  });
+}
+
+function setApiKeyStatus(msg, cls) {
+  if (!UI.apiKeyStatus) return;
+  UI.apiKeyStatus.textContent = msg;
+  UI.apiKeyStatus.className   = `api-key-status${cls ? ' ' + cls : ''}`;
+}
+
+// ─── One: Density Meter ───────────────────────────────────────────────────────
+
+async function loadDensity() {
+  const res = await sendMsg({ type: 'RELAY_GET_DENSITY' });
+  renderDensity(res?.history || []);
+}
+
+function renderDensity(history) {
+  if (!UI.densityBar) return;
+  const score = history.length ? history[history.length - 1] : 0;
+  const pct   = Math.round(score * 100);
+
+  UI.densityBar.style.width = pct + '%';
+  UI.densityBar.className   = 'density-bar-fill ' + (score >= 0.65 ? 'red' : score >= 0.4 ? 'yellow' : 'green');
+
+  if (UI.densityVal)    UI.densityVal.textContent    = score.toFixed(2);
+  if (UI.densityStatus) {
+    const label = score >= 0.65 ? '密度ピーク' : score >= 0.4 ? '注意' : '正常';
+    const color = score >= 0.65 ? 'var(--danger)' : score >= 0.4 ? 'var(--warn)' : 'var(--safe)';
+    UI.densityStatus.textContent = label;
+    UI.densityStatus.style.color = color;
+  }
+
+  renderDensityGraph(history);
+}
+
+function renderDensityGraph(history) {
+  const svg = UI.densityGraph;
+  if (!svg) return;
+  const pts = history.slice(-5);
+  if (pts.length < 2) { svg.innerHTML = ''; return; }
+  const W = 90, H = 22;
+  const xStep = W / (pts.length - 1);
+  const coords = pts.map((v, i) => `${(i * xStep).toFixed(1)},${(H - v * H).toFixed(1)}`).join(' ');
+  const last   = pts[pts.length - 1];
+  const cx     = ((pts.length - 1) * xStep).toFixed(1);
+  const cy     = (H - last * H).toFixed(1);
+  const color  = last >= 0.65 ? '#ef4444' : last >= 0.4 ? '#f59e0b' : '#22c55e';
+  svg.innerHTML = `
+    <polyline points="${coords}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" opacity="0.8"/>
+    <circle cx="${cx}" cy="${cy}" r="2.5" fill="${color}"/>`;
+}
+
+// ─── One: Vault ───────────────────────────────────────────────────────────────
+
+async function loadVault() {
+  const res    = await sendMsg({ type: 'RELAY_RANK_VAULT' });
+  const ranked = res?.ranked || [];
+  renderVault(ranked);
+}
+
+function renderVault(entries) {
+  if (!UI.vaultList) return;
+  if (UI.vaultCount) UI.vaultCount.textContent = entries.length;
+
+  if (!entries.length) {
+    UI.vaultList.innerHTML = '<div class="todo-empty">Vault にエントリがありません</div>';
+    return;
+  }
+
+  UI.vaultList.innerHTML = entries.map((entry, i) => {
+    const d       = new Date(entry.timestamp);
+    const ts      = `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const preview = (entry.packet || '').replace(/\n/g, ' ').slice(0, 55);
+    const rel     = entry.relevance || 0;
+    return `
+      <div class="vault-item">
+        <div class="vault-item-header">
+          <span class="history-ts">${escHtml(ts)}</span>
+          <span class="vault-relevance">関連度 ${rel}</span>
+        </div>
+        <div class="vault-preview">${escHtml(preview)}…</div>
+        <button class="vault-use-btn" data-idx="${i}" data-packet="${escHtml(entry.packet || '')}">
+          ⚡ この引き継ぎを使う
+        </button>
+      </div>`;
+  }).join('');
+
+  UI.vaultList.querySelectorAll('.vault-use-btn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const packet = btn.dataset.packet;
+      await sendMsg({ type: 'RELAY_USE_VAULT_ENTRY', packet });
+      await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+      if (!isPinned) setTimeout(() => window.close(), 600);
+    });
+  });
+}
+
+async function loadHistory() {
+  const res = await sendMsg({ type: 'RELAY_GET_LOGBOOK_HISTORY' });
+  const history = res?.history || [];
+
+  if (!UI.historyCount) return;
+  UI.historyCount.textContent = history.length;
+
+  if (!UI.historyList) return;
+  if (!history.length) {
+    UI.historyList.innerHTML = '<div class="todo-empty">履歴はまだありません</div>';
+    return;
+  }
+
+  UI.historyList.innerHTML = history.map((item, i) => {
+    const d   = new Date(item.timestamp);
+    const ts  = `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    const preview = (item.packet || '').replace(/\n/g, ' ').slice(0, 60) + '…';
+    const full    = escHtml(item.packet || '');
+    return `
+      <div class="history-item" data-idx="${i}">
+        <div class="history-ts">${ts}</div>
+        <div class="history-preview">${escHtml(preview)}</div>
+        <div class="history-full">${full}</div>
+      </div>`;
+  }).join('');
 }
 
 // ─── Start ────────────────────────────────────────────────────────────────────
