@@ -1,8 +1,8 @@
 ﻿'use strict';
-// Relay v4.8 — popup.js
+// Relay v4.9 — popup.js
+// Fix v4.9: content.js onUrlChange() の SESSION_START→SESSION_END 順序修正に対応
+//           loadAll() リトライは保険として維持（最大3秒）
 // Fix v4.8: loadAll() リトライポーリング追加（500ms×6回=最大3秒待機）
-//   原因: 新規chat遷移直後にcontent.js初期化完了前にpopupを開くと
-//         RELAY_GET_STATSがsession_id=nullを返し no-session表示になっていた
 // Fix v4.4: doHandoff() — RELAY_SESSION_END除去
 //   原因: SESSION_ENDでrelay_currentがnullになり新規タブのpopupが
 //         no-session-state（「Claude.aiでチャットを開いてください」）に戻っていた

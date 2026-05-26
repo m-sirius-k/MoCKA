@@ -124,18 +124,26 @@ function onUrlChange(from, to) {
   const isNew     = /\/new($|\?)/.test(to);
   const isChat    = /\/chat\/[a-z0-9-]+/.test(to);
 
-  if (wasActive) {
-    safeSendMessage({ type: 'RELAY_SESSION_END' });
-  }
-
   if (isNew || isChat) {
     turnCount = 0;
     processedMessages.clear();
+
+    // Fix v4.9: SESSION_START を先に送り relay_current を確立してから
+    // SESSION_END を送る。逆順だと popup の RELAY_GET_STATS が
+    // relay_current=null の瞬間を踏んで no-session 表示になる。
     notifySessionStart();
+
+    if (wasActive) {
+      // 新セッションが storage に書き込まれるのを待ってから旧セッションを閉じる
+      setTimeout(() => safeSendMessage({ type: 'RELAY_SESSION_END' }), 150);
+    }
 
     if (isNew) {
       setTimeout(prepareInvisibleHandoff, CONFIG.INJECT_DELAY);
     }
+  } else if (wasActive) {
+    // chat でも /new でもないページへ移動した場合のみ即時 END
+    safeSendMessage({ type: 'RELAY_SESSION_END' });
   }
 
   currentUrl = to;
