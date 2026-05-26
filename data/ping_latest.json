@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-26T09:17:04.925220",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "これを空というおまえは何者？",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
-        "recur": 0,
-        "matched": [
-          "これ"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
-        "recur": 0,
-        "matched": [
-          "これ"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-26T04:17:25.188Z"
-  }
+  "generated_at": "2026-05-26T17:00:45.044989"
 }

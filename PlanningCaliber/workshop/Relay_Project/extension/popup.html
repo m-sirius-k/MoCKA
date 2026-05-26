@@ -490,10 +490,16 @@
       </div>
       <span class="logo-text">RELAY</span>
     </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button class="side-btn" id="side-btn" title="サイドパネルで開く">⬡</button>
-      <button class="pin-btn" id="pin-btn" title="ピン留め: ONにするとpopupが自動で閉じません">📌</button>
-      <span class="header-version mono">v4.1.0</span>
+    <div style="display:flex;align-items:center;gap:6px;">
+      <button class="side-btn" id="side-btn" title="Side panel">⬡</button>
+      <button class="pin-btn" id="pin-btn" title="Pin">📌</button>
+      <select id="lang-select" style="background:var(--bg-panel);border:1px solid var(--border-dim);border-radius:5px;color:var(--text-sub);font-size:10px;padding:3px 4px;cursor:pointer;outline:none;">
+        <option value="ja">🇯🇵</option>
+        <option value="en">🇺🇸</option>
+        <option value="de">🇩🇪</option>
+        <option value="fr">🇫🇷</option>
+        <option value="ko">🇰🇷</option>
+      </select>
     </div>
   </div>
 
@@ -505,7 +511,7 @@
 
       <!-- CPI Card -->
       <div class="card" id="cpi-card">
-        <span class="label">CPI</span>
+        <span class="label" data-i18n="cpi">CPI</span>
         <div class="cpi-segments" id="cpi-segments">
           <div class="seg s0" data-idx="0"></div>
           <div class="seg s1" data-idx="1"></div>
@@ -524,7 +530,7 @@
 
       <!-- Tokens Card -->
       <div class="card">
-        <span class="label">TOKENS</span>
+        <span class="label" data-i18n="tokens">TOKENS</span>
         <span class="card-value mono token-num" id="token-value">0</span>
         <span class="card-sub">est. accumulated</span>
       </div>
@@ -534,7 +540,7 @@
     <!-- Break-Even -->
     <div class="section">
       <div class="section-header">
-        <span class="label">BREAK-EVEN POINT</span>
+        <span class="label" data-i18n="breakeven">BREAK-EVEN POINT</span>
         <span class="be-pct mono" id="be-pct">0%</span>
       </div>
       <div class="be-bar-track">
@@ -551,9 +557,9 @@
     <!-- Mode Row -->
     <div class="mode-row">
       <select class="mode-select" id="mode-select">
-        <option value="light">軽作業（参照・質問・相談）</option>
-        <option value="heavy" selected>重作業（設計・実装・修正）</option>
-        <option value="file">ファイル多用</option>
+        <option value="light" data-i18n="mode_light">軽作業（参照・質問・相談）</option>
+        <option value="heavy" selected data-i18n="mode_heavy">重作業（設計・実装・修正）</option>
+        <option value="file" data-i18n="mode_file">ファイル多用</option>
       </select>
       <div class="turn-badge mono" id="turn-badge">T: 0</div>
     </div>
@@ -564,7 +570,7 @@
     <div class="todo-section">
       <div class="todo-header" id="todo-header">
         <div class="todo-title">
-          <span class="label">TODO</span>
+          <span class="label" data-i18n="todo_label">TODO</span>
           <span class="todo-count" id="todo-count">0</span>
         </div>
         <span class="todo-toggle" id="todo-toggle">▼</span>
@@ -579,7 +585,7 @@
     <!-- Handoff Button -->
     <div class="handoff-section">
       <button class="btn-handoff" id="btn-handoff">
-        ⚡ 今すぐ引き継ぎ
+        ⚡ <span data-i18n="handoff_label">今すぐ引き継ぎ</span>
       </button>
       <div class="btn-feedback" id="btn-feedback"></div>
     </div>
@@ -591,8 +597,8 @@
     <div class="no-session">
       <div class="no-session-icon">◎</div>
       <div class="no-session-text">
-        Claude.ai でチャットを開いてください<br>
-        <span style="color: #334155; font-size: 10px;">Relay が自動的に計測を開始します</span>
+        <span data-i18n="no_session">Claude.ai でチャットを開いてください</span><br>
+        <span style="color: #334155; font-size: 10px;" data-i18n="no_session_sub">Relay が自動的に計測を開始します</span>
       </div>
     </div>
     <!-- Still show handoff button for manual use -->
