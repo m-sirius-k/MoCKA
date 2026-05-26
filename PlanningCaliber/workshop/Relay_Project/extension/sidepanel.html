@@ -269,8 +269,8 @@
 
   <!-- Tabs -->
   <div class="tabs">
-    <div class="tab active" data-tab="todo">TODO</div>
-    <div class="tab" data-tab="handoff">引き継ぎ</div>
+    <div class="tab active" data-tab="todo" data-i18n="tab_todo">TODO</div>
+    <div class="tab" data-tab="handoff" data-i18n="tab_handoff">引き継ぎ</div>
   </div>
 
   <!-- TODO tab -->
@@ -280,20 +280,20 @@
       <!-- Add TODO -->
       <div class="add-todo-row">
         <input type="text" class="add-todo-input" id="sp-todo-input"
-               placeholder="TODOを手動追加...">
-        <button class="add-todo-btn" id="sp-todo-add">追加</button>
+               placeholder="TODOを手動追加..." data-i18n-placeholder="sp_placeholder">
+        <button class="add-todo-btn" id="sp-todo-add" data-i18n="sp_add">追加</button>
       </div>
 
       <!-- Filter chips -->
       <div class="filter-chips">
-        <div class="chip active" data-filter="active">未完了</div>
-        <div class="chip" data-filter="done">完了済</div>
-        <div class="chip" data-filter="all">すべて</div>
+        <div class="chip active" data-filter="active" data-i18n="sp_active">未完了</div>
+        <div class="chip" data-filter="done" data-i18n="sp_done">完了済</div>
+        <div class="chip" data-filter="all" data-i18n="sp_all">すべて</div>
       </div>
 
       <!-- Section bar -->
       <div class="section-bar">
-        <span class="label">TODO一覧</span>
+        <span class="label" data-i18n="sp_list">TODO一覧</span>
         <span class="badge" id="sp-todo-count">0</span>
       </div>
 
@@ -309,7 +309,7 @@
   <div class="tab-panel" id="tab-handoff">
     <div class="panel-body">
       <div class="section-bar" style="margin-bottom:8px;">
-        <span class="label">引き継ぎプレビュー</span>
+        <span class="label" data-i18n="sp_preview">引き継ぎプレビュー</span>
         <button class="icon-btn" id="sp-refresh-handoff" title="再生成" style="width:22px;height:22px;font-size:12px;">↺</button>
       </div>
 
@@ -329,7 +329,7 @@
         生成中...
       </div>
 
-      <button class="btn-primary" id="sp-btn-handoff">⚡ 今すぐ引き継ぎ</button>
+      <button class="btn-primary" id="sp-btn-handoff" data-i18n="sp_handoff">⚡ 今すぐ引き継ぎ</button>
       <div class="feedback" id="sp-feedback"></div>
     </div>
   </div>
