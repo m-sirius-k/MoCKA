@@ -522,11 +522,20 @@
       transition: border-color 0.2s;
     }
     .vault-item:hover { border-color: var(--border); }
-    .vault-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .vault-item.selected { border-color: var(--accent); background: rgba(56,189,248,0.05); }
+    .vault-item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; gap: 6px; }
+    .vault-item-check {
+      width: 14px; height: 14px; flex-shrink: 0; cursor: pointer;
+      accent-color: var(--accent);
+    }
+    .vault-item-title {
+      flex: 1; font-size: 11px; color: var(--text-main);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
     .vault-relevance {
       font-size: 9px; font-family: 'JetBrains Mono', monospace;
       color: var(--accent); background: var(--accent-dim);
-      border-radius: 4px; padding: 1px 5px;
+      border-radius: 4px; padding: 1px 5px; flex-shrink: 0;
     }
     .vault-preview {
       font-size: 10px; color: var(--text-sub);
@@ -540,6 +549,39 @@
       transition: background 0.2s; width: 100%;
     }
     .vault-use-btn:hover { background: rgba(56,189,248,0.2); }
+
+    /* Vault controls */
+    .vault-controls { display: flex; flex-direction: column; gap: 7px; margin-top: 8px; }
+    .vault-ctrl-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .vault-ctrl-label { font-size: 10px; color: var(--text-sub); white-space: nowrap; }
+    .density-slider {
+      flex: 1; -webkit-appearance: none; appearance: none;
+      height: 4px; border-radius: 2px; background: var(--border-dim);
+      outline: none; cursor: pointer;
+    }
+    .density-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 13px; height: 13px;
+      border-radius: 50%; background: var(--accent);
+      border: 2px solid var(--accent-dim); cursor: pointer;
+    }
+    .density-val-badge {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px;
+      color: var(--accent); background: var(--accent-dim);
+      border-radius: 4px; padding: 1px 6px; min-width: 20px; text-align: center;
+    }
+    .vault-action-row { display: flex; gap: 5px; margin-top: 4px; }
+    .btn-vault-inject {
+      flex: 2; padding: 7px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+      cursor: pointer; border: 1px solid var(--accent); background: var(--accent-dim);
+      color: var(--accent); transition: background 0.2s; font-family: inherit;
+    }
+    .btn-vault-inject:hover { background: rgba(56,189,248,0.2); }
+    .btn-vault-export {
+      flex: 1; padding: 7px 8px; border-radius: 6px; font-size: 10px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border); background: var(--bg-panel);
+      color: var(--text-sub); transition: all 0.2s; font-family: inherit;
+    }
+    .btn-vault-export:hover { border-color: var(--accent); color: var(--accent); }
 
     /* Logbook history */
     .history-section { padding: 8px 12px 12px; }
@@ -806,14 +848,36 @@
         <span style="color: #334155; font-size: 10px;" data-i18n="no_session_sub">Relay が自動的に計測を開始します</span>
       </div>
     </div>
-    <!-- Vault suggestions (One) -->
+    <!-- Vault (One) -->
     <div class="vault-section" id="vault-section" style="display:none;">
       <div class="divider" style="margin-bottom:10px;"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-        <span class="label" style="color:var(--accent);">VAULT候補 [ONE]</span>
+        <span class="label" style="color:var(--accent);">VAULT [ONE]</span>
         <span class="todo-count" id="vault-count">0</span>
       </div>
       <div id="vault-list"></div>
+      <!-- Vault Controls -->
+      <div class="vault-controls">
+        <!-- Density slider -->
+        <div class="vault-ctrl-row">
+          <span class="vault-ctrl-label">注入密度</span>
+          <input type="range" class="density-slider" id="vault-density-slider" min="1" max="5" value="3">
+          <span class="density-val-badge" id="vault-density-val">3</span>
+        </div>
+        <!-- Auto-inject toggle -->
+        <div class="vault-ctrl-row">
+          <span class="vault-ctrl-label">新規チャットで自動注入</span>
+          <label class="toggle-switch">
+            <input type="checkbox" id="vault-auto-inject">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <!-- Action buttons -->
+        <div class="vault-action-row">
+          <button class="btn-vault-inject" id="btn-vault-inject">⚡ 選択してnew chatに注入</button>
+          <button class="btn-vault-export" id="btn-vault-export">📥 Export</button>
+        </div>
+      </div>
     </div>
     <!-- Still show handoff button for manual use -->
     <div class="handoff-section">
