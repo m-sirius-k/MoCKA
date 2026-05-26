@@ -1,5 +1,5 @@
 'use strict';
-// Relay v4.7 — background.js
+// Relay v4.1.0 — background.js
 // v4.7: calcBreakEven現実ベース改定 + トークン補正係数2.5導入（誤差20%以内）
 // v4.3: LB_001連番TODO番号体系 + RELAY_COMPLETE_BY_NUM / RELAY_GET_TODO_LIST 追加
 // 引き継ぎ機能 (getHandoffPacket / endSession / startSession) は変更なし
@@ -529,6 +529,12 @@ async function handleMessage(msg) {
 
     case 'RELAY_OPEN_TAB': {
       await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
+      return { ok: true };
+    }
+
+    case 'RELAY_OPEN_POPUP': {
+      // サイドパネルからポップアップへ戻す
+      try { await chrome.action.openPopup(); } catch (_) {}
       return { ok: true };
     }
 

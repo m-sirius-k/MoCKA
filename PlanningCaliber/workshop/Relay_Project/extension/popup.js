@@ -1,5 +1,5 @@
 ﻿'use strict';
-// Relay v4.9 — popup.js
+// Relay v4.1.0 — popup.js
 // Fix v4.9: content.js onUrlChange() の SESSION_START→SESSION_END 順序修正に対応
 //           loadAll() リトライは保険として維持（最大3秒）
 // Fix v4.8: loadAll() リトライポーリング追加（500ms×6回=最大3秒待機）
@@ -34,6 +34,7 @@ const UI = {
   btnHandoffAlt:  $('btn-handoff-alt'),
   btnFeedbackAlt: $('btn-feedback-alt'),
   pinBtn:         $('pin-btn'),
+  sideBtn:        $('side-btn'),
 };
 
 let todoExpanded  = true;
@@ -280,6 +281,16 @@ function bindEvents() {
     if (stats?.break_even) {
       setBreakEven(stats.break_even, stats.estimated_tokens || 0);
     }
+  });
+
+  // Side Panel button
+  UI.sideBtn?.addEventListener('click', async () => {
+    // サイドパネルを開く
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab?.id) {
+      await chrome.sidePanel.open({ tabId: tab.id });
+    }
+    window.close();
   });
 
   // Pin button

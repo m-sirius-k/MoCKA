@@ -461,6 +461,19 @@
       background: rgba(56,189,248,0.08);
       box-shadow: 0 0 8px rgba(56,189,248,0.2);
     }
+    /* Side Panel Toggle Button */
+    .side-btn {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid var(--border-dim); background: transparent;
+      color: var(--text-sub); font-size: 13px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      flex-shrink: 0;
+    }
+    .side-btn:hover {
+      border-color: var(--accent); color: var(--accent);
+      background: rgba(56,189,248,0.08);
+    }
   </style>
 </head>
 <body>
@@ -478,6 +491,7 @@
       <span class="logo-text">RELAY</span>
     </div>
     <div style="display:flex;align-items:center;gap:8px;">
+      <button class="side-btn" id="side-btn" title="サイドパネルで開く">⬡</button>
       <button class="pin-btn" id="pin-btn" title="ピン留め: ONにするとpopupが自動で閉じません">📌</button>
       <span class="header-version mono">v4.1.0</span>
     </div>

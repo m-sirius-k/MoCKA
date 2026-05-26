@@ -1,13 +1,14 @@
-﻿{
+{
   "manifest_version": 3,
   "name": "Relay",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Smart context handoff for Claude. Know when to switch, carry what matters.",
   "permissions": [
     "storage",
     "scripting",
     "webRequest",
-    "tabs"
+    "tabs",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://claude.ai/*"
@@ -22,6 +23,9 @@
       "48":  "icons/icon48.png",
       "128": "icons/icon128.png"
     }
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "content_scripts": [
     {

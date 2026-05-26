@@ -304,14 +304,30 @@ function extractTodos(text) {
     const symbols = (trimmed.match(/[^a-zA-Z0-9぀-龯\s\-:.,]/g) || []).length;
     if (symbols / trimmed.length > 0.30) continue;
 
+    // ★ Reject: Relay引き継ぎブロックの区切り・ヘッダー行
+    if (/^━+$/.test(trimmed)) continue;
+    if (/^■\s/.test(trimmed)) continue;
+    // ★ Reject: [LB_xxx] 形式の引き継ぎTODO行（自己ブロック）
+    if (/^\[LB_\d+\]/.test(trimmed)) continue;
+    // ★ Reject: Relay引き継ぎセクション識別子
+    if (/^\[Relay引き継ぎ/.test(trimmed)) continue;
+    if (/^上記を踏まえて/.test(trimmed)) continue;
+    // ★ Reject: ターン数・作業・未完了TODOの引き継ぎ記述行
+    if (/^(?:ターン数|作業|未完了TODO)\s*[:：]/.test(trimmed)) continue;
     // ★ Reject: MoCKA形式の完了報告行 (TODO_xxx完了, LB_xxx完了, _170完了 等)
     if (/(?:TODO[_-]?\d+|LB[_-]?\d+|_\d+)\s*(?:[（(].*?[)）])?\s*[:：]?\s*.*(?:完了|done|finished)/i.test(trimmed)) continue;
-    // ★ Reject: _数字（〜）形式の引き継ぎ行全般 (完了文字なくても)
+    // ★ Reject: _数字（〜）形式の引き継ぎ行全般
     if (/^_\d+[（(【]/.test(trimmed)) continue;
-    // ★ Reject: 日付+完了パターン (2026-05-24完了, E20260524完了 等)
+    // ★ Reject: 🚫 ✅ → 等の記号付き注釈行
+    if (/^(?:→|→\s*🚫|→\s*✅|🚫|✅)/.test(trimmed)) continue;
+    // ★ Reject: 日付+完了パターン
     if (/20\d\d[-\/]\d\d[-\/]\d\d.*完了/.test(trimmed)) continue;
-    // ★ Reject: 表組みの行 (| で始まる or 含む)
+    // ★ Reject: 表組みの行
     if (/^\|.+\|/.test(trimmed)) continue;
+    // ★ Reject: × 数字（補正係数的な記述）
+    if (/^[×x]\s*\d/.test(trimmed)) continue;
+    // ★ Reject: 数字+ = 〜 のような計算式行
+    if (/^\d+[\+\-\*\/]\s*\d/.test(trimmed)) continue;
 
     let matched = null;
 
