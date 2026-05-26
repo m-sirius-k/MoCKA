@@ -35,6 +35,7 @@ const UI = {
   btnFeedbackAlt: $('btn-feedback-alt'),
   pinBtn:         $('pin-btn'),
   sideBtn:        $('side-btn'),
+  langSelect:     $('lang-select'),
 };
 
 let todoExpanded  = true;
@@ -43,6 +44,117 @@ let isPinned      = false;  // ピン留め状態
 
 // ─── Boot ─────────────────────────────────────────────────────────────────────
 
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+
+const I18N = {
+  ja: {
+    cpi: 'CPI', tokens: 'トークン', breakeven: '切替ポイント',
+    mode_light: '軽作業（参照・質問）', mode_heavy: '重作業（設計・実装）', mode_file: 'ファイル多用',
+    todo_label: 'TODO', todo_empty: 'タスクはまだありません',
+    handoff: '⚡ 今すぐ引き継ぎ',
+    no_session: 'Claude.ai でチャットを開いてください',
+    no_session_sub: 'Relay が自動的に計測を開始します',
+    until_switch: '推奨切替まで: ~{0} tok',
+    recommend_switch: '⚠ 切替を推奨します',
+    pin_title: 'ピン留め: ONにするとpopupが自動で閉じません',
+    side_title: 'サイドパネルで開く',
+    feedback_success: '✓ 新規chatで引き継ぎ',
+    feedback_nodata: '引き継ぎデータなし',
+  },
+  en: {
+    cpi: 'CPI', tokens: 'TOKENS', breakeven: 'BREAK-EVEN',
+    mode_light: 'Light (Q&A / reference)', mode_heavy: 'Heavy (code / design)', mode_file: 'File-heavy',
+    todo_label: 'TODO', todo_empty: 'No tasks yet',
+    handoff: '⚡ Hand off now',
+    no_session: 'Open a chat on Claude.ai',
+    no_session_sub: 'Relay will start tracking automatically',
+    until_switch: 'Switch recommended in ~{0} tok',
+    recommend_switch: '⚠ Switch recommended',
+    pin_title: 'Pin: keep popup open after handoff',
+    side_title: 'Open side panel',
+    feedback_success: '✓ Handed off to new chat',
+    feedback_nodata: 'No handoff data',
+  },
+  de: {
+    cpi: 'CPI', tokens: 'TOKEN', breakeven: 'BREAK-EVEN',
+    mode_light: 'Leicht (Fragen / Referenz)', mode_heavy: 'Schwer (Code / Design)', mode_file: 'Viele Dateien',
+    todo_label: 'AUFGABEN', todo_empty: 'Noch keine Aufgaben',
+    handoff: '⚡ Jetzt übergeben',
+    no_session: 'Öffne einen Chat auf Claude.ai',
+    no_session_sub: 'Relay beginnt automatisch mit der Messung',
+    until_switch: 'Wechsel empfohlen in ~{0} Tok',
+    recommend_switch: '⚠ Wechsel empfohlen',
+    pin_title: 'Anheften: Popup nach Übergabe offen halten',
+    side_title: 'Seitenleiste öffnen',
+    feedback_success: '✓ An neuen Chat übergeben',
+    feedback_nodata: 'Keine Übergabedaten',
+  },
+  fr: {
+    cpi: 'CPI', tokens: 'JETONS', breakeven: 'SEUIL DE RENTABILITÉ',
+    mode_light: 'Léger (Q&R / référence)', mode_heavy: 'Lourd (code / design)', mode_file: 'Fichiers intensifs',
+    todo_label: 'TÂCHES', todo_empty: "Aucune tâche pour l'instant",
+    handoff: '⚡ Transférer maintenant',
+    no_session: 'Ouvrez un chat sur Claude.ai',
+    no_session_sub: 'Relay commencera le suivi automatiquement',
+    until_switch: 'Transfert recommandé dans ~{0} tok',
+    recommend_switch: '⚠ Transfert recommandé',
+    pin_title: 'Épingler: garder le popup ouvert après transfert',
+    side_title: 'Ouvrir le panneau latéral',
+    feedback_success: '✓ Transféré vers un nouveau chat',
+    feedback_nodata: 'Aucune donnée de transfert',
+  },
+  ko: {
+    cpi: 'CPI', tokens: '토큰', breakeven: '전환 기준점',
+    mode_light: '가벼운 작업 (질문/참조)', mode_heavy: '무거운 작업 (코딩/설계)', mode_file: '파일 집약적',
+    todo_label: '할일', todo_empty: '아직 할일이 없습니다',
+    handoff: '⚡ 지금 인계하기',
+    no_session: 'Claude.ai에서 채팅을 열어주세요',
+    no_session_sub: 'Relay가 자동으로 측정을 시작합니다',
+    until_switch: '전환 권장까지: ~{0} tok',
+    recommend_switch: '⚠ 전환을 권장합니다',
+    pin_title: '고정: 인계 후 팝업 자동 닫힘 방지',
+    side_title: '사이드 패널 열기',
+    feedback_success: '✓ 새 채팅으로 인계됨',
+    feedback_nodata: '인계 데이터 없음',
+  },
+};
+
+let currentLang = 'ja';
+
+function t(key, ...args) {
+  let str = (I18N[currentLang] || I18N.ja)[key] || key;
+  args.forEach((a, i) => { str = str.replace('{' + i + '}', a); });
+  return str;
+}
+
+function applyLang() {
+  // ラベル
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+  // mode select options
+  const ms = document.getElementById('mode-select');
+  if (ms) {
+    ms.options[0].text = t('mode_light');
+    ms.options[1].text = t('mode_heavy');
+    ms.options[2].text = t('mode_file');
+  }
+  // pin/side titles
+  const pin  = document.getElementById('pin-btn');
+  const side = document.getElementById('side-btn');
+  if (pin)  pin.title  = t('pin_title');
+  if (side) side.title = t('side_title');
+}
+
+async function initLang() {
+  const stored = await chrome.storage.local.get(['relay_lang']);
+  currentLang = stored.relay_lang || navigator.language.slice(0,2) || 'ja';
+  if (!I18N[currentLang]) currentLang = 'ja';
+  const sel = document.getElementById('lang-select');
+  if (sel) sel.value = currentLang;
+  applyLang();
+}
+
 async function init() {
   try {
     // ピン留め状態をストレージから復元
@@ -50,9 +162,17 @@ async function init() {
     isPinned = stored.relay_pinned === true;
     updatePinUI();
 
+    await initLang();
     await loadAll();
     bindEvents();
     listenStorageChanges();
+
+    // 言語セレクター
+    UI.langSelect?.addEventListener('change', async (e) => {
+      currentLang = e.target.value;
+      await chrome.storage.local.set({ relay_lang: currentLang });
+      applyLang();
+    });
   } catch (err) {
     console.error('[Relay popup] init error:', err);
   }
@@ -178,13 +298,13 @@ function setBreakEven(be, currentTokens) {
 
   if (UI.beMargin) {
     if (over) {
-      UI.beMargin.textContent = '⚠ 切替を推奨します';
+      UI.beMargin.textContent = t('recommend_switch');
       UI.beMargin.style.color = 'var(--danger)';
     } else {
       const marginK = be.margin >= 1000
         ? (be.margin / 1000).toFixed(1) + 'K'
         : be.margin;
-      UI.beMargin.textContent = `推奨切替まで: ~${marginK} tok`;
+      UI.beMargin.textContent = t('until_switch', marginK);
       UI.beMargin.style.color = '';
     }
   }
@@ -213,7 +333,7 @@ function renderTodos(todos) {
   if (UI.todoCount) UI.todoCount.textContent = todos.length;
 
   if (!todos.length) {
-    UI.todoList.innerHTML = '<div class="todo-empty">タスクはまだありません</div>';
+    UI.todoList.innerHTML = `<div class="todo-empty">${t('todo_empty')}</div>`;
     return;
   }
 
@@ -319,7 +439,7 @@ async function doHandoff(btn, fbEl) {
     //         「Claude.aiでチャットを開いてください」（no-session状態）になるため
     const res = await sendMsg({ type: 'RELAY_GET_HANDOFF' });
     if (!res?.packet) {
-      showFeedback(fbEl, '引き継ぎデータなし', 'warn');
+      showFeedback(fbEl, t('feedback_nodata'), 'warn');
       btn.disabled = false;
       return;
     }
@@ -332,7 +452,7 @@ async function doHandoff(btn, fbEl) {
     await chrome.tabs.create({ url: 'https://claude.ai/new', active: true });
 
     // 4. フィードバック表示 → ピン留めOFFの時だけ自動クローズ
-    showFeedback(fbEl, '✓ 新規chatで引き継ぎ', 'success');
+    showFeedback(fbEl, t('feedback_success'), 'success');
     if (!isPinned) {
       setTimeout(() => window.close(), 800);
     }
