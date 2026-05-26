@@ -108,8 +108,13 @@ function renderTodos(all) {
            title="${t.status === 'done' ? '完了済' : '完了にする'}">
         ${t.status === 'done' ? '<svg width="9" height="9" viewBox="0 0 9 9"><path d="M1.5 4.5L3.5 6.5L7.5 2.5" stroke="#0a0e1a" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>' : ''}
       </div>
-      <span class="todo-num">${esc(t.id)}</span>
-      <span class="todo-text">${esc(t.text)}</span>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <span class="todo-num">${esc(t.id)}</span>
+          <span class="todo-text">${esc(t.text)}</span>
+        </div>
+        ${t.why ? `<div style="font-size:10px;color:#64748b;margin-top:2px;padding-left:2px;">← ${esc(t.why)}</div>` : ''}
+      </div>
       <div class="todo-del" data-action="delete" data-id="${esc(t.id)}" title="削除">✕</div>
     </div>
   `).join('');

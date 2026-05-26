@@ -193,7 +193,7 @@ function generateSummary(session, todos) {
   return {
     work_description: inferWorkDescription(todos),
     completed_todos:  completed.map(t => t.text),
-    pending_todos:    pending.map(t => t.text),
+    pending_todos:    pending.map(t => t.why ? `${t.text} ← ${t.why}` : t.text),
     key_decisions:    session.decisions || [],
     duration_min:     durationMin,
   };
@@ -224,7 +224,7 @@ function lbId(num) {
   return 'LB_' + String(num).padStart(3, '0');
 }
 
-async function addTodo(text, source) {
+async function addTodo(text, source, why, where) {
   try {
     const stored = await chrome.storage.local.get(KEYS.TODOS);
     const todos  = stored[KEYS.TODOS] || [];
@@ -234,15 +234,17 @@ async function addTodo(text, source) {
 
     const num = await nextLbNum();
     todos.push({
-      id:         lbId(num),     // LB_001形式
-      num,                       // 数値（検索用）
-      text,
+      id:         lbId(num),
+      num,
+      text,                        // WHAT
+      why:        why   || '',     // WHY（口頭指示からの理由）
+      where:      where || '',     // WHERE（ページURL）
       status:     'active',
-      created_at: Date.now(),
-      source:     source || 'auto',
+      created_at: Date.now(),      // WHEN
+      source:     source || 'auto',// HOW
     });
     await chrome.storage.local.set({ [KEYS.TODOS]: todos });
-    console.log('[Relay] TODO added:', lbId(num), text.slice(0, 40));
+    console.log('[Relay] TODO added:', lbId(num), text.slice(0, 40), why ? '/ WHY:' + why.slice(0,20) : '');
   } catch (err) {
     console.error('[Relay] addTodo error:', err);
   }
@@ -347,7 +349,10 @@ async function getHandoffPacket() {
 
     if (activeTodos.length) {
       lines.push('■ 未完了タスク');
-      activeTodos.slice(0, 10).forEach(t => lines.push(`  - [${t.id}] ${t.text}`));
+      activeTodos.slice(0, 10).forEach(t => {
+        const why = t.why ? ` ← ${t.why}` : '';
+        lines.push(`  - [${t.id}] ${t.text}${why}`);
+      });
       lines.push('');
     }
 
@@ -461,7 +466,7 @@ async function handleMessage(msg) {
     }
 
     case 'RELAY_ADD_TODO':
-      await addTodo(msg.text, msg.source);
+      await addTodo(msg.text, msg.source, msg.why || '', msg.where || '');
       return { ok: true };
 
     case 'RELAY_COMPLETE_TODO':
