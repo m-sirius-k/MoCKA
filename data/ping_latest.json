@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-26T17:00:45.044989"
+  "generated_at": "2026-05-26T17:00:45.044989",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "ちょい待ち　relay　名前通りの商品だとすると　Vault文脈注入はフリーで良いのでは？\n\n\n\n\nこれ本当に便利だわ！って　ばんばん使ってもらう方が良くない？",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-17",
+        "why": "KPA時代の知識をMoCKAガバナンスチェーンに正式統合するため。各AIのブラックボックス内に眠っていた博士の意図を検証可能な形で記録する。",
+        "how": "Geminiのセッション開始応答にPILS/SACL/TRDPという未知用語が含まれていたことを検知。質問状→原文開示→",
+        "note": "KPA,HERITAGE,PILS,SACL,TRDP,Phase体系,AI-SHARE,TRDP,憲法,mocka-seal待ち",
+        "recur": 0,
+        "matched": [
+          "待ち"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "=======================================================\nMoCKA policy_generator.py Day4\n制度改善候補 生成 + H",
+        "recur": 0,
+        "matched": [
+          "待ち"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-26T08:25:46.616Z"
+  }
 }
