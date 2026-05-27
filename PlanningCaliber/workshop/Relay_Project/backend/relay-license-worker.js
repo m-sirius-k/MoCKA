@@ -63,9 +63,51 @@ async function generateRelayKey(plan, env) {
   return { key, expiryStr, expiryDisplay, serialHex };
 }
 
+// ── ランダムサフィックス生成 (Web Crypto) ──
+function generateRandomSuffix(len) {
+  const arr = new Uint8Array(Math.ceil(len / 2));
+  crypto.getRandomValues(arr);
+  return Array.from(arr).map(b => b.toString(16).padStart(2, '0')).join('').toUpperCase().slice(0, len);
+}
+
+// ── Stripeクーポン作成 ──
+async function createStripeCoupon(couponCode, env) {
+  const res = await fetch('https://api.stripe.com/v1/coupons', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${env.STRIPE_SECRET_KEY}`,
+      'Content-Type':  'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      'id':              couponCode,
+      'percent_off':     '20',
+      'duration':        'once',
+      'max_redemptions': '1',
+      'redeem_by':       String(Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60),
+    }),
+  });
+  return res.ok;
+}
+
+// ── クロスクーポン HTMLブロック (Relayテーマ) ──
+function buildCouponHtml(couponCode, sisterProduct, targetUrl) {
+  return `
+    <hr style="border:none;border-top:1px solid #1e3a5f;margin:20px 0;">
+    <div style="background:#111827;border:1px solid #38bdf8;border-radius:6px;padding:18px;">
+      <p style="margin:0 0 10px;color:#38bdf8;font-size:13px;font-weight:bold;">🎁 姉妹製品を20% OFFでお試しください</p>
+      <p style="margin:0 0 12px;color:#94a3b8;font-size:12px;">${sisterProduct}をご購入いただいた感謝として特別価格をご提供します。</p>
+      <div style="background:#0a0e1a;border-radius:4px;padding:10px 14px;margin-bottom:12px;">
+        <p style="margin:0 0 4px;color:#64748b;font-size:11px;letter-spacing:1px;">クーポンコード</p>
+        <p style="margin:0;font-size:14px;letter-spacing:2px;color:#38bdf8;">${couponCode}</p>
+      </div>
+      <p style="margin:0 0 14px;color:#64748b;font-size:11px;">有効期限: 30日間 / 1回限り有効</p>
+      <a href="${targetUrl}?coupon=${couponCode}" style="display:inline-block;background:#38bdf8;color:#000;padding:10px 20px;border-radius:4px;text-decoration:none;font-size:12px;font-weight:bold;">${sisterProduct}を試す（20% OFF）</a>
+    </div>`;
+}
+
 // ── Resendでライセンスキーをメール送信 ───────────────────────────────────────────
 
-async function sendRelayKeyEmail(toEmail, plan, key, expiryDisplay, env) {
+async function sendRelayKeyEmail(toEmail, plan, key, expiryDisplay, env, couponHtml = '') {
   const planName = plan === 'one' ? 'Relay One' : 'Relay Pro';
   const planFeatures = plan === 'one'
     ? '• AI引き継ぎ要約 (Claude API)\n• 密度スコアリングエンジン\n• Vault（無制限Logbook）\n• コンテキスト自動注入'
@@ -103,6 +145,7 @@ async function sendRelayKeyEmail(toEmail, plan, key, expiryDisplay, env) {
           更新は有効期限前に再購入するだけです。残り日数は加算されます。<br>
           お問い合わせ: noreply@nsjp.org
         </p>
+        ${couponHtml}
       </div>
     `,
   };
@@ -160,6 +203,23 @@ export default {
 
       const { key, expiryDisplay } = await generateRelayKey(plan, env);
 
+      // クロスクーポン生成（Orchestra向け、冪等性チェック付き）
+      let couponHtml = '';
+      if (event.id) {
+        const idempotencyKey = `coupon_issued:${event.id}`;
+        const alreadyIssued  = await env.RELAY_KV.get(idempotencyKey);
+        if (!alreadyIssued) {
+          const couponCode = `ORCH20-${generateRandomSuffix(8)}`;
+          const orchLink   = env.ORCHESTRA_PAYMENT_LINK || 'PLACEHOLDER_REPLACE_ME';
+          const couponOk   = await createStripeCoupon(couponCode, env);
+          if (couponOk) {
+            await env.RELAY_KV.put(idempotencyKey, couponCode, { expirationTtl: 60 * 60 * 24 * 7 });
+            couponHtml = buildCouponHtml(couponCode, 'Orchestra', orchLink);
+            console.log(`[Relay] Cross-coupon issued: ${couponCode} → ${email}`);
+          }
+        }
+      }
+
       // KVに発行記録を保存（60日TTL）
       await env.RELAY_KV.put(
         `relay_issued:${key}`,
@@ -167,7 +227,7 @@ export default {
         { expirationTtl: 60 * 60 * 24 * 60 }
       );
 
-      const sent = await sendRelayKeyEmail(email, plan, key, expiryDisplay, env);
+      const sent = await sendRelayKeyEmail(email, plan, key, expiryDisplay, env, couponHtml);
 
       console.log(`[Relay] Key issued: ${key} → ${email} (sent: ${sent})`);
       return new Response(JSON.stringify({ ok: true, sent }), {
