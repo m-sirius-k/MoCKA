@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-27T07:37:35.505500",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.333,
-    "danger_rate": 0.333,
-    "success_rate": 0.667,
-    "text": "---\n\n## 作業完了報告\n\n### 実装内容\n\n| 機能 | 実装箇所 | ストレージキー |\n\n|---|---|---|\n\n| AI要約トグル ON/O",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
-        "recur": 0,
-        "matched": [
-          "失敗"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-17",
-        "why": "根本原因記録・再発防止・次のAIへの引き継ぎ",
-        "how": "きむら博士による重大インシデント宣言",
-        "note": "INCIDENT,CRITICAL,データ欠損,Chrome拡張,収集失敗,Claude迷走",
-        "recur": 0,
-        "matched": [
-          "失敗"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-26T22:50:14.884Z"
-  }
+  "generated_at": "2026-05-27T15:44:46.856845"
 }
