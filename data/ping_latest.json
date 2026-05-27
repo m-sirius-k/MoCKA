@@ -40,41 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-27T15:44:46.856845",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "ご指摘の通りで、Notion の論文草稿の内容を確認する必要があります。\n\nNotion のページから論文草稿の中身を確認しましたが、「AIES 提出論文（PH",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-29",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
-        "recur": 0,
-        "matched": [
-          "指摘",
-          "PHL"
-        ],
-        "score": 2
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "【知識記録（PILS）】\n\n* 本命：PHL-Eにおける「ポインタ参照型」への転換と軽量化\n* 起点AI：Gemini\n* 信頼度：5.0\n* 本文：従来の「essence（内容そのもの）」の注入から",
-        "recur": 0,
-        "matched": [
-          "指摘",
-          "PHL"
-        ],
-        "score": 2
-      }
-    ],
-    "updated_at": "2026-05-27T07:06:40.699Z"
-  }
+  "generated_at": "2026-05-28T08:49:42.187152"
 }
