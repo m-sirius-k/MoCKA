@@ -43,24 +43,38 @@
   "generated_at": "2026-05-28T16:01:55.039513",
   "matcher_result": {
     "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "ひらかない",
+    "score": 0.483,
+    "danger_rate": 0.741,
+    "success_rate": 0.259,
+    "text": "かなり良い設計です。これは「DNA_v3」というより、PHI OS の commit/restore 層を実装する設計図としてそのまま成立します 。\n\n設計の核",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-05-28",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "ひらかない",
+        "when": "2026-04-16",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
         "recur": 0,
         "matched": [
-          "ひらか"
+          "失敗",
+          "いう"
         ],
-        "score": 1
+        "score": 2
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-09",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[hint] まず　この環境で一番重要だと思うことは　[私のchatの言葉]です  そこには　理論的な物から出てくる言葉や　感覚的な言葉　推測　予測　確定事項　そんなのが一番含まれています  言葉は　",
+        "recur": 0,
+        "matched": [
+          "失敗",
+          "いう"
+        ],
+        "score": 2
       }
     ],
-    "updated_at": "2026-05-28T07:49:29.316Z"
+    "updated_at": "2026-05-28T08:28:12.769Z"
   }
 }
