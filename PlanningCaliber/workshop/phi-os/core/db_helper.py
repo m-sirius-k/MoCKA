@@ -152,10 +152,42 @@ def cmd_query(args):
     return {"rows": [dict(r) for r in rows]}
 
 
+def cmd_commit(args):
+    """commit_session ペイロード（new_fact/new_decision/remaining_task/tension/next_hook）を
+    judgement_reason に保存する。app.py /commit_session から呼ばれる。"""
+    data = json.loads(args) if args else {}
+    nd = data.get("new_decision", {}) or {}
+    decision = nd.get("decision", "保留")
+    reason   = nd.get("reason") or data.get("remaining_task") or "セッション引き継ぎ"
+    tension_text = None
+    tension_sev  = 0
+    if data.get("tension"):
+        t = data["tension"]
+        if isinstance(t, dict):
+            tension_text = t.get("text")
+            tension_sev  = t.get("severity", 0)
+        else:
+            tension_text = str(t)
+            tension_sev  = 1
+    payload = {
+        "event_id":         "relay_commit_" + datetime.now().strftime("%Y%m%d_%H%M%S"),
+        "session_date":     datetime.now().strftime("%Y-%m-%d"),
+        "decision":         decision if decision in ("採用", "却下", "保留") else "保留",
+        "reason":           reason,
+        "error_solved":     nd.get("error_solved"),
+        "tension":          tension_text,
+        "tension_severity": tension_sev,
+        "tags":             "relay,session_commit",
+        "source_map":       "relay_handoff_button",
+    }
+    return cmd_write_judgement(json.dumps(payload))
+
+
 COMMANDS = {
-    "write_judgement":  cmd_write_judgement,
+    "write_judgement":   cmd_write_judgement,
     "read_restore_data": cmd_read_restore_data,
-    "query":            cmd_query,
+    "query":             cmd_query,
+    "commit":            cmd_commit,
 }
 
 if __name__ == "__main__":
