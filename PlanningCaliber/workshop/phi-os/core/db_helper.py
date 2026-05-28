@@ -6,6 +6,10 @@ import sys
 import os
 from datetime import datetime, timezone
 
+# Windows cp932 環境でも UTF-8 で出力する
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+
 DB_PATH = r"C:\Users\sirok\MoCKA\data\mocka_events.db"
 
 
