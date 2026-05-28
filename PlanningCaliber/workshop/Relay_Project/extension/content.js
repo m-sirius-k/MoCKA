@@ -951,6 +951,26 @@ async function handleBadgeClick() {
     await safeSendMessage({ type: 'RELAY_OPEN_TAB' });
     showBadgeFlash('safe');
 
+    // DNA_v3 Commit: 引き継ぎ時にセッション状態を保存
+    try {
+      const commitData = {
+        new_fact: null,
+        new_decision: {
+          decision: '保留',
+          reason: 'セッション引き継ぎ実行',
+          error_solved: null
+        },
+        remaining_task: 'Relay引き継ぎパケット参照',
+        tension: null,
+        next_hook: '次セッション: restore_packet.jsonを確認してから作業開始'
+      };
+      fetch('http://localhost:5000/commit_session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json; charset=utf-8' },
+        body: JSON.stringify(commitData)
+      }).catch(() => {}); // サーバー未起動時は無視
+    } catch(e) {}
+
   } catch (err) {
     console.error('[Relay] Badge click error:', err);
   }

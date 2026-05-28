@@ -202,50 +202,97 @@
         return lines.join('\n') + '\n';
     }
 
+    // ── DNA_v3: restore_packet → 注入テキスト変換 ──────────────────
+    function buildV3DnaText(packet) {
+        const imm = packet.immutable || {};
+        const r5  = packet.restore_5points || {};
+        const ctx = packet.session_context || '';
+        const gen = (packet.generated_at || '').slice(0, 16).replace('T', ' ');
+
+        // IMMUTABLE層（先頭固定）
+        const philosophy = (imm.philosophy || []).join(' | ');
+        const forbidden  = (imm.forbidden  || []).map(s => s.slice(0, 25)).join(' | ');
+        const values     = (imm.values     || []).join(' | ');
+
+        // TODOs上位3件
+        const goals = (r5['2_current_goal'] || []).slice(0, 3)
+            .map(t => `${t.todo_id}/${t.priority}/${(t.title || '').slice(0, 20)}`).join(' | ');
+
+        // Tensions（severity>=3）
+        const tensions = (r5['4_tensions'] || []).filter(t => t.severity >= 3)
+            .map(t => `[S${t.severity}]${(t.text || '').slice(0, 30)}`).join(' / ');
+
+        const lines = [
+            `[MOCKA_v3]{"ctx":"${ctx}","gen":"${gen}"}`,
+            `▮IMMUTABLE: ${philosophy}`,
+            `▮禁止: ${forbidden}`,
+            `▮価値: ${values}`,
+        ];
+        if (goals)   lines.push(`▮TODO: ${goals}`);
+        if (tensions) lines.push(`▮TENSION: ${tensions}`);
+
+        return lines.join('\n');
+    }
+
+    // ── injectDNA: v3優先 → v2フォールバック ──────────────────────
     async function injectDNA(el) {
         dnaSentInThisSession = true;
         try {
-            console.log("[MOCKA] DNA取得中...");
-            const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
-            const data = await res.json();
-            const p = data.ping;
-
-            // Layer 3: matcher_result があれば先頭に付加
+            // DNA_v3 パスを試みる
+            let dnaText = null;
+            let hookLabel = '⚡MOCKA HOOKED';
             let prefix = '';
-            const mr = p.matcher_result;
-            if (mr && mr.verdict && mr.verdict !== 'SAFE') {
-                prefix = buildMatcherPrefix(mr);
-                console.log("[MOCKA] matcher_result注入:", mr.verdict, mr.score);
+
+            try {
+                const r3 = await fetch('http://127.0.0.1:5000/get_restore_packet');
+                const d3 = await r3.json();
+                if (d3.status === 'OK' && d3.packet) {
+                    dnaText   = buildV3DnaText(d3.packet);
+                    hookLabel = '⚡MOCKA_v3 HOOKED';
+                    console.log("[MOCKA] DNA_v3 取得成功");
+                }
+            } catch (_) {
+                console.log("[MOCKA] DNA_v3 未応答 → v2フォールバック");
             }
 
+            // v2 フォールバック
+            if (!dnaText) {
+                console.log("[MOCKA] DNA取得中 (v2)...");
+                const res = await fetch('http://127.0.0.1:5000/get_latest_dna');
+                const data = await res.json();
+                const p = data.ping;
 
-            // TODO_134: PENDING承認待ちALERT注入
-            if (p && p.alert_pending && p.alert_pending.count > 0) {
-                const _n   = p.alert_pending.count;
-                const _top = p.alert_pending.top || '';
-                const pendingLine = '[MOCKA_ALERT]  verdict=PENDING score=' + _n + '\n'
-                    + (_top ? '承認待ち ' + _n + '件 — 最優先: ' + _top + '\n' : '');
-                prefix = pendingLine + (prefix || '');
+                // matcher_result
+                const mr = p.matcher_result;
+                if (mr && mr.verdict && mr.verdict !== 'SAFE') {
+                    prefix = buildMatcherPrefix(mr);
+                    console.log("[MOCKA] matcher_result注入:", mr.verdict, mr.score);
+                    hookLabel = `⚡MOCKA HOOKED [${mr.verdict}]`;
+                }
+                // PENDING承認待ちALERT
+                if (p && p.alert_pending && p.alert_pending.count > 0) {
+                    const _n   = p.alert_pending.count;
+                    const _top = p.alert_pending.top || '';
+                    const pendingLine = '[MOCKA_ALERT]  verdict=PENDING score=' + _n + '\n'
+                        + (_top ? '承認待ち ' + _n + '件 — 最優先: ' + _top + '\n' : '');
+                    prefix = pendingLine + (prefix || '');
+                }
+                dnaText = `[MOCKA]{"H":"${p.H}","G":${p.G},"C":"${p.C}","P":"${p.P}"}`;
+
+                if (p.essence_updated === true) {
+                    essenceSentInThisSession = true;
+                }
             }
-            const dnaText = `[MOCKA]{"H":"${p.H}","G":${p.G},"C":"${p.C}","P":"${p.P}"}`;
+
             const text = prefix ? prefix + dnaText : dnaText;
-
             await writeAndSend(el, text);
-            console.log("[MOCKA] DNA注入完了 (v16.0)");
+            console.log("[MOCKA] DNA注入完了:", hookLabel);
 
             const hookIndicator = document.createElement('div');
-            hookIndicator.textContent = mr && mr.verdict !== 'SAFE'
-                ? `⚡MOCKA HOOKED [${mr.verdict}]`
-                : '⚡MOCKA HOOKED';
+            hookIndicator.textContent = hookLabel;
             hookIndicator.style.cssText = 'position:fixed;bottom:120px;right:20px;color:rgba(255,255,255,0.6);font-size:10px;z-index:99999;pointer-events:none;letter-spacing:1px;';
             document.body.appendChild(hookIndicator);
 
-            if (p.essence_updated === true) {
-                console.log("[MOCKA] essence_updated=true");
-                essenceSentInThisSession = true;
-            } else {
-                console.log("[MOCKA] essence_updated=false skip");
-            }
         } catch(e) {
             dnaSentInThisSession = false;
             console.error("[MOCKA] DNA取得失敗", e);

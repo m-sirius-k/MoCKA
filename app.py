@@ -1598,6 +1598,28 @@ def get_latest_dna():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
+# ===== DNA_v3 / PHI OS: セッション Commit =====
+@app.route('/commit_session', methods=['POST'])
+def commit_session():
+    """DNA_v3 Commit: セッション終了時の5点保存"""
+    try:
+        data = request.get_json(force=True)
+        import subprocess as _sp
+        db_helper = os.path.join(BASE_DIR, 'PlanningCaliber', 'workshop',
+                                 'phi-os', 'core', 'db_helper.py')
+        payload = json.dumps(data, ensure_ascii=False)
+        result = _sp.run(
+            [sys.executable, db_helper, 'commit', payload],
+            capture_output=True, text=True, encoding='utf-8',
+            cwd=BASE_DIR
+        )
+        if result.returncode == 0:
+            return jsonify({"status": "ok"})
+        else:
+            return jsonify({"status": "error", "detail": result.stderr}), 500
+    except Exception as e:
+        return jsonify({"status": "error", "detail": str(e)}), 500
+
 # ===== DNA_v3 / PHI OS: restore_packet 配信 =====
 @app.route("/get_restore_packet")
 def get_restore_packet():
