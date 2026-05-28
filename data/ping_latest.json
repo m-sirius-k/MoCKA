@@ -40,5 +40,41 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-29T07:12:48.190518"
+  "generated_at": "2026-05-29T07:12:48.190518",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": -0.017,
+    "danger_rate": 0.492,
+    "success_rate": 0.508,
+    "text": "実装完了です。\n\n---\n\n## PHI OS v1.0 — 実装サマリー\n\n**場所:** [`planningcaliber/workshop/phi-os",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-31",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "recur": 0,
+        "matched": [
+          "エラー",
+          "auto"
+        ],
+        "score": 2
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-04",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "PS C:\\Users\\sirok> Get-Content \"C:\\Users\\sirok\\MoCKA\\app.py\" | Select-Object -First 50\nimport csv\nim",
+        "recur": 0,
+        "matched": [
+          "エラー",
+          "auto"
+        ],
+        "score": 2
+      }
+    ],
+    "updated_at": "2026-05-28T23:39:05.099Z"
+  }
 }
