@@ -83,25 +83,25 @@ def cmd_read_restore_data(args):
     """, (limit_events,)).fetchall()
     result["recent_events"] = [dict(r) for r in rows]
 
-    # ── State層: watcher_queue から open/進行中 TODO ──
-    TODO_DIR = r"C:\Users\sirok\MoCKA\data\watcher_queue"
+    # ── State層: MOCKA_TODO.json から open/進行中 TODO ──
+    TODO_PATH = r"C:\Users\sirok\MOCKA_TODO.json"
     active_todos = []
-    if os.path.isdir(TODO_DIR):
-        for fp in sorted(glob_mod.glob(os.path.join(TODO_DIR, "TODO_*.json")), reverse=True):
-            try:
-                with open(fp, encoding="utf-8") as f:
-                    td = json.load(f)
-                d = td.get("data", td)
+    if os.path.exists(TODO_PATH):
+        try:
+            with open(TODO_PATH, encoding="utf-8-sig") as f:
+                todo_data = json.load(f)
+            todos = todo_data if isinstance(todo_data, list) else todo_data.get("todos", [])
+            for d in todos:
                 status = d.get("status", "")
                 if status not in ("完了", "closed", "done", "DONE"):
                     active_todos.append({
-                        "todo_id":  d.get("id", td.get("doc_id", "")),
+                        "todo_id":  d.get("id", ""),
                         "title":    d.get("title", ""),
                         "priority": d.get("priority", ""),
                         "status":   status,
                     })
-            except Exception:
-                pass
+        except Exception as e:
+            active_todos = [{"todo_id": "ERROR", "title": str(e), "priority": "", "status": ""}]
     result["active_todos"] = active_todos[:10]
 
     # ── Causality層: tension_severity >= 3 の未解決違和感 ──
