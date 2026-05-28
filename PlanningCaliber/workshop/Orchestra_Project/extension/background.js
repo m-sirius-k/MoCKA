@@ -1463,3 +1463,125 @@ async function runOrchestraOne(conversationText, sourceTabId) {
   await injectResponsesToClaude(sourceTabId, conversationText, responseMap);
   return { ok: true, sessionId };
 }
+
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// Orchestra background.js 末尾に追記するパッチ
+// Relay検索ブリッジからの内部メッセージを処理する
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// ── Relay検索ブリッジ対応ハンドラ ─────────────────────────────────────────────
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+
+  // 全文検索（bridge経由）
+  if (msg.type === 'ORCHESTRA_SEARCH_MESSAGES') {
+    const query = (msg.query || '').trim();
+    const limit = msg.limit || 30;
+    if (!query) { sendResponse({ results: [] }); return true; }
+
+    searchMessages(query, limit).then(raw => {
+      // session_idごとにグループ化してスニペット付きで返す
+      const grouped = groupBySession(raw, query);
+      sendResponse({ results: grouped });
+    }).catch(e => {
+      console.error('[Orchestra] Search error:', e);
+      sendResponse({ results: [] });
+    });
+    return true; // 非同期
+  }
+
+  // セッション一覧取得（bridge経由）
+  if (msg.type === 'ORCHESTRA_GET_SESSIONS_LIST') {
+    const limit = msg.limit || 20;
+    getAllMessages(limit * 10).then(all => {
+      const sessions = buildSessionList(all, limit);
+      sendResponse({ sessions });
+    }).catch(() => sendResponse({ sessions: [] }));
+    return true;
+  }
+
+  // 既存のPINGハンドラ（keepAlive）と競合しないようにfalseを返す
+  return false;
+});
+
+// ── ユーティリティ ────────────────────────────────────────────────────────────
+
+function groupBySession(messages, query) {
+  const q = query.toLowerCase();
+  const sessionMap = new Map();
+
+  messages.forEach(msg => {
+    const sid = msg.session_id || 'unknown';
+    if (!sessionMap.has(sid)) {
+      sessionMap.set(sid, {
+        session_id:     sid,
+        title:          '',
+        date:           msg.timestamp ? msg.timestamp.slice(0, 10) : '',
+        message_count:  0,
+        matched_count:  0,
+        snippet:        '',
+        messages:       [],
+      });
+    }
+    const sess = sessionMap.get(sid);
+    sess.message_count++;
+    sess.messages.push(msg);
+
+    // タイトル：最初のuserメッセージ先頭50文字
+    if (!sess.title && msg.role === 'user') {
+      sess.title = (msg.content || '').slice(0, 50).replace(/\n/g, ' ');
+    }
+
+    // スニペット：クエリ周辺50文字
+    if (msg.content && msg.content.toLowerCase().includes(q)) {
+      sess.matched_count++;
+      if (!sess.snippet) {
+        const idx = msg.content.toLowerCase().indexOf(q);
+        const start = Math.max(0, idx - 30);
+        const end   = Math.min(msg.content.length, idx + q.length + 50);
+        sess.snippet = (start > 0 ? '…' : '') +
+          msg.content.slice(start, end).replace(/\n/g, ' ') +
+          (end < msg.content.length ? '…' : '');
+      }
+    }
+  });
+
+  return Array.from(sessionMap.values())
+    .filter(s => s.matched_count > 0)
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, 20)
+    .map(s => {
+      // messagesは不要なのでサイズ削減
+      delete s.messages;
+      return s;
+    });
+}
+
+function buildSessionList(messages, limit) {
+  const sessionMap = new Map();
+  messages.forEach(msg => {
+    const sid = msg.session_id || 'unknown';
+    if (!sessionMap.has(sid)) {
+      sessionMap.set(sid, {
+        session_id:    sid,
+        title:         '',
+        date:          msg.timestamp ? msg.timestamp.slice(0, 10) : '',
+        message_count: 0,
+      });
+    }
+    const sess = sessionMap.get(sid);
+    sess.message_count++;
+    if (!sess.title && msg.role === 'user') {
+      sess.title = (msg.content || '').slice(0, 50).replace(/\n/g, ' ');
+    }
+    // より新しい日付に更新
+    if (msg.timestamp && msg.timestamp.slice(0, 10) > sess.date) {
+      sess.date = msg.timestamp.slice(0, 10);
+    }
+  });
+
+  return Array.from(sessionMap.values())
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .slice(0, limit);
+}
