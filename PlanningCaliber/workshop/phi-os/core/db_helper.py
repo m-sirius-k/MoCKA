@@ -59,25 +59,58 @@ def cmd_write_judgement(args):
 
 def cmd_read_restore_data(args):
     """Restore Packet 生成用データを4層から取得する"""
+    import glob as glob_mod
+
     params = json.loads(args) if args else {}
-    session_date = params.get("session_date", datetime.now().strftime("%Y-%m-%d"))
-    limit_tensions = params.get("limit_tensions", 5)
+    limit_tensions  = params.get("limit_tensions",  5)
     limit_decisions = params.get("limit_decisions", 5)
+    limit_events    = params.get("limit_events",   10)
 
     conn = get_db()
     result = {}
 
-    # Fact層: events から最新ファクト
+    # ── Fact層: events から最新 CHANGE_DONE/FACT ──
     rows = conn.execute("""
-        SELECT event_id, title, short_summary, when_ts
+        SELECT event_id, title, short_summary, when_ts, what_type
         FROM events
-        WHERE session_date(when_ts) >= date('now', '-7 days')
-          AND what_type IN ('CHANGE_DONE', 'CHANGE_START', 'FACT')
-        ORDER BY when_ts DESC LIMIT 10
-    """).fetchall()
+        WHERE what_type IN ('CHANGE_DONE','CHANGE_START','FACT','COMMIT_DONE')
+          AND when_ts >= datetime('now', '-7 days')
+        ORDER BY when_ts DESC LIMIT ?
+    """, (limit_events,)).fetchall()
     result["recent_events"] = [dict(r) for r in rows]
 
-    # State層: Causality から最新decisions
+    # ── State層: watcher_queue から open/進行中 TODO ──
+    TODO_DIR = r"C:\Users\sirok\MoCKA\data\watcher_queue"
+    active_todos = []
+    if os.path.isdir(TODO_DIR):
+        for fp in sorted(glob_mod.glob(os.path.join(TODO_DIR, "TODO_*.json")), reverse=True):
+            try:
+                with open(fp, encoding="utf-8") as f:
+                    td = json.load(f)
+                d = td.get("data", td)
+                status = d.get("status", "")
+                if status not in ("完了", "closed", "done", "DONE"):
+                    active_todos.append({
+                        "todo_id":  d.get("id", td.get("doc_id", "")),
+                        "title":    d.get("title", ""),
+                        "priority": d.get("priority", ""),
+                        "status":   status,
+                    })
+            except Exception:
+                pass
+    result["active_todos"] = active_todos[:10]
+
+    # ── Causality層: tension_severity >= 3 の未解決違和感 ──
+    rows = conn.execute("""
+        SELECT tension, tension_severity, tension_at, tags, source_map
+        FROM judgement_reason
+        WHERE tension_severity >= 3
+          AND (tags LIKE '%unresolved%' OR tags LIKE '%tension%' OR tags LIKE '%anomaly%')
+        ORDER BY tension_severity DESC, created_at DESC LIMIT ?
+    """, (limit_tensions,)).fetchall()
+    result["active_tensions"] = [dict(r) for r in rows]
+
+    # ── Intent層 (recent decisions) ──
     rows = conn.execute("""
         SELECT decision, reason, rejected_reason, error_solved, source_map, created_at
         FROM judgement_reason
@@ -85,17 +118,20 @@ def cmd_read_restore_data(args):
     """, (limit_decisions,)).fetchall()
     result["recent_decisions"] = [dict(r) for r in rows]
 
-    # Causality層: tension_severity >= 3 の未解決違和感
-    rows = conn.execute("""
-        SELECT tension, tension_severity, tension_at, tags, source_map
-        FROM judgement_reason
-        WHERE tension_severity >= 3
-          AND (tags LIKE '%unresolved%' OR tags LIKE '%tension%')
-        ORDER BY tension_severity DESC, created_at DESC LIMIT ?
-    """, (limit_tensions,)).fetchall()
-    result["active_tensions"] = [dict(r) for r in rows]
-
     conn.close()
+
+    # ── IMMUTABLE 層 (ファイルから読む) ──
+    ESSENCE_PATH = r"C:\Users\sirok\MoCKA\interface\lever_essence.json"
+    try:
+        with open(ESSENCE_PATH, encoding="utf-8") as f:
+            ess = json.load(f)
+        result["immutable"] = ess.get("IMMUTABLE", {})
+        result["philosophy_summary"] = ess.get("PHILOSOPHY", "")[:200]
+        result["operation_summary"]  = ess.get("OPERATION",  "")[:200]
+    except Exception as e:
+        result["immutable"] = {}
+        result["philosophy_summary"] = f"[READ ERROR: {e}]"
+
     return result
 
 
