@@ -1,11 +1,7 @@
-"""
-add_judgement_reason.py
-DNA_v3 Step2: mocka_events.db に judgement_reason テーブルを追加する。
-
-実際のDBパス: C:\Users\sirok\MoCKA\data\mocka_events.db
-仕様書記載パス: C:\Users\sirok\MoCKA\mocka_events.db  ← 0バイトの空ファイル
-→ data/ サブディレクトリの方が正しい（30MB、8テーブル存在）
-"""
+# add_judgement_reason.py
+# DNA_v3 Step2: mocka_events.db に judgement_reason テーブルを追加する。
+# 実際のDBパス: data/mocka_events.db (30MB)
+# 仕様書記載パス: ルート直下 mocka_events.db は 0バイト空ファイル → data/ が正しい
 import sqlite3
 import os
 import sys
