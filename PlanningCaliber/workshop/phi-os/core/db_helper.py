@@ -73,12 +73,10 @@ def cmd_read_restore_data(args):
     conn = get_db()
     result = {}
 
-    # ── Fact層: events から最新 CHANGE_DONE/FACT ──
+    # ── Fact層: events から最新イベント (what_type 不問) ──
     rows = conn.execute("""
         SELECT event_id, title, short_summary, when_ts, what_type
         FROM events
-        WHERE what_type IN ('CHANGE_DONE','CHANGE_START','FACT','COMMIT_DONE')
-          AND when_ts >= datetime('now', '-7 days')
         ORDER BY when_ts DESC LIMIT ?
     """, (limit_events,)).fetchall()
     result["recent_events"] = [dict(r) for r in rows]
