@@ -100,7 +100,9 @@ def cmd_read_restore_data(args):
                     })
         except Exception as e:
             active_todos = [{"todo_id": "ERROR", "title": str(e), "priority": "", "status": ""}]
-    result["active_todos"] = active_todos[:10]
+    # 最高優先度を先頭に、最大30件
+    active_todos.sort(key=lambda t: (0 if t["priority"] == "最高" else 1 if t["priority"] == "高" else 2, t["todo_id"]))
+    result["active_todos"] = active_todos[:30]
 
     # ── Causality層: tension_severity >= 3 の未解決違和感 ──
     rows = conn.execute("""
