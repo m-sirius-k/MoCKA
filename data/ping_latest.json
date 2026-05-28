@@ -40,5 +40,27 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-28T16:01:55.039513"
+  "generated_at": "2026-05-28T16:01:55.039513",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "ひらかない",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-28",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "ひらかない",
+        "recur": 0,
+        "matched": [
+          "ひらか"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-28T07:49:29.316Z"
+  }
 }

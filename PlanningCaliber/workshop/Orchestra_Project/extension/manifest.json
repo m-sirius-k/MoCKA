@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "Orchestra",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Automatically saves your AI conversations locally. No server. No tracking. 100% private.",
   "permissions": [
     "alarms",
     "storage",
     "tabs",
     "contextMenus",
-    "scripting"
+    "scripting",
+    "sidePanel"
   ],
   "host_permissions": [
     "https://claude.ai/*",
@@ -47,7 +48,6 @@
     "service_worker": "background.js"
   },
   "action": {
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "icon_16.png",
       "48": "icon_48.png",
@@ -60,5 +60,8 @@
     "48": "icon_48.png",
     "128": "icon_128.png"
   },
-  "default_locale": "en"
+  "default_locale": "en",
+  "side_panel": {
+    "default_path": "popup.html"
+  }
 }

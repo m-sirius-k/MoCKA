@@ -36,6 +36,21 @@
     flex-direction: column;
   }
 
+  /* サイドパネル時: 幅・高さ制限を解除 */
+  @media (min-width: 200px) and (max-width: 450px) {
+    body {
+      width: 100% !important;
+      max-height: 100vh !important;
+      min-height: 100vh !important;
+      overflow-y: auto !important;
+      overflow: unset !important;
+    }
+    .message-list {
+      max-height: calc(100vh - 220px) !important;
+      overflow-y: auto !important;
+    }
+  }
+
   /* HEADER */
   .header {
     padding: 14px 16px 10px;
@@ -652,7 +667,7 @@
 
 <div class="header">
   <div class="logo">◈</div>
-  <div class="header-title">ORCHESTRA<span class="plan-badge" id="header-plan-badge"></span></div>
+  <div class="header-title">ORCHESTRA<span class="plan-badge" id="header-plan-badge"></span></div><button id="btn-sidepanel" title="Open as Side Panel" style="background:none;border:1px solid #444;border-radius:4px;color:#8a8a9a;cursor:pointer;font-size:10px;padding:3px 8px;flex-shrink:0" >&#x25A3; Side</button>
 </div>
 
 

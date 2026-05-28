@@ -152,6 +152,14 @@ document.querySelectorAll('.tab').forEach(tab => {
   });
 });
 
+// サイドパネルボタン
+const btnSidePanel = document.getElementById('btn-sidepanel');
+if (btnSidePanel) {
+  btnSidePanel.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'OPEN_SIDE_PANEL' });
+  });
+}
+
 loadStats();
 loadMessages();
 

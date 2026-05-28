@@ -219,8 +219,12 @@ function setupContextMenus() {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.alarms.create('keepAlive', { periodInMinutes: 0.4 });
+  chrome.alarms.create('keepAlive', { periodInMinutes: 0.2 });
   setupContextMenus();
+  // サイドパネル: claude.aiでのみ有効化
+  if (chrome.sidePanel) {
+    chrome.sidePanel.setOptions({ enabled: true, path: 'popup.html' }).catch(() => {});
+  }
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
@@ -231,13 +235,18 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 chrome.alarms.get('keepAlive', (alarm) => {
   if (!alarm) {
-    chrome.alarms.create('keepAlive', { periodInMinutes: 0.4 });
+    chrome.alarms.create('keepAlive', { periodInMinutes: 0.2 });
   }
 });
 
 // SW再起動時もメニュー再構築
 try { setupContextMenus(); } catch(e) { console.warn('[Orchestra] contextMenus setup skipped:', e.message); }
 initDB().catch(console.error);
+
+// サイドパネル: アイコンクリックで開く（default_popup削除が必要）
+if (chrome.sidePanel) {
+  chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
+}
 
 // ── Right-click: Handler ──────────────────────────────────────────────────────
 
@@ -1076,6 +1085,8 @@ async function injectResponsesToClaude(sourceTabId, originalText, responseMap) {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   (async () => {
     try {
+      // SW生存確認: 受信時にDBを必ず初期化
+      await initDB();
       switch (msg.type) {
         case 'SAVE_MESSAGE':
           await saveMessage(msg.payload);
@@ -1170,6 +1181,19 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         case 'START_ORCHESTRA_ONE': {
           const resultOne = await runOrchestraOne(msg.text, sender.tab?.id);
           sendResponse(resultOne);
+          break;
+        }
+
+        case 'OPEN_SIDE_PANEL': {
+          // 現在アクティブなタブでサイドパネルを開く
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs[0] && chrome.sidePanel) {
+              chrome.sidePanel.open({ tabId: tabs[0].id }).catch(e => {
+                console.warn('[Orchestra] sidePanel.open failed:', e.message);
+              });
+            }
+          });
+          sendResponse({ ok: true });
           break;
         }
 
