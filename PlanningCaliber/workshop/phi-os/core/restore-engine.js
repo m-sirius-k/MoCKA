@@ -5,9 +5,13 @@
  *
  * 出力先: C:\Users\sirok\MoCKA\data\storage\infield\PACKET\restore_packet.json
  *
- * 疑念004 対応: トークン上限は未定義のためきむら博士確認待ち。
- *              現在は各フィールドを文字数で切り詰め（暫定値）。
- * 疑念002 対応: Commitトリガーは未定義。Restore は手動 or サーバーから呼び出す。
+ * 疑念004 解決: max_chars=3000。trimToMaxChars()で超過時にトリム。
+ * 疑念002 解決: CommitトリガーはRelay引き継ぎボタン。
+ */
+/*
+ * IMMUTABLE層への書き込みは禁止。
+ * Decay/Promotionの最終昇格はきむら博士のHuman Gate承認後のみ実施。
+ * このエンジンはREAD ONLYでIMMUTABLE層を参照する。
  */
 
 'use strict';
@@ -34,11 +38,35 @@ function dbCall(command, argsObj) {
 }
 
 // ────────────────────────────────────────────────────
-// 文字数切り詰め（疑念004: トークン上限暫定対応）
+// 文字数制限（疑念004 解決: max_chars=3000 確定）
 // ────────────────────────────────────────────────────
+const RESTORE_PACKET_MAX_CHARS = 3000;
+
 function trunc(str, max) {
   if (!str) return '';
   return str.length > max ? str.slice(0, max) + '…' : str;
+}
+
+function trimToMaxChars(packet) {
+  let text = JSON.stringify(packet, null, 2);
+  if (text.length <= RESTORE_PACKET_MAX_CHARS) return packet;
+
+  const r = packet.restore_5points;
+
+  // トリム優先順位: active_work → decisions → tensions → IMMUTABLEは削除しない
+  if (text.length > RESTORE_PACKET_MAX_CHARS && r['3_active_work']) {
+    r['3_active_work'] = r['3_active_work'].substring(0, 100) + '...（省略）';
+    text = JSON.stringify(packet, null, 2);
+  }
+  if (text.length > RESTORE_PACKET_MAX_CHARS && r['5_recent_decisions']) {
+    r['5_recent_decisions'] = r['5_recent_decisions'].slice(0, 2);
+    text = JSON.stringify(packet, null, 2);
+  }
+  if (text.length > RESTORE_PACKET_MAX_CHARS && r['4_tensions']) {
+    r['4_tensions'] = r['4_tensions'].slice(0, 2);
+  }
+  // IMMUTABLE層は削除しない
+  return packet;
 }
 
 // ────────────────────────────────────────────────────
@@ -116,7 +144,7 @@ function generateRestorePacket(opts = {}) {
     },
   };
 
-  return packet;
+  return trimToMaxChars(packet);
 }
 
 // ────────────────────────────────────────────────────

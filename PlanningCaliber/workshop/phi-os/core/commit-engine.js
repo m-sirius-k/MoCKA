@@ -1,9 +1,16 @@
 /**
  * commit-engine.js — DNA_v3 Step3
- * セッション終了時に5点を judgement_reason / events へ書き込む。
+ * セッション終了時に5点を judgement_reason へ書き込む。
  *
- * better-sqlite3 は Node v25 でビルド不可のため、
- * db_helper.py を child_process.spawnSync で呼び出してDB操作を行う。
+ * 疑念006 解決: better-sqlite3 は Node v25 でビルド不可。
+ *              db_helper.py (Python) + child_process.spawnSync 方式で代替。
+ * 疑念002 解決: CommitトリガーはRelay引き継ぎボタン（content.js経由）。
+ */
+/*
+ * IMMUTABLE層（lever_essence.json の IMMUTABLE キー）への書き込み禁止。
+ * 書き込み先: judgement_reason テーブルのみ。
+ * tags='immutable'のエントリ追加はきむら博士承認後に手動で行う。
+ */
  *
  * 使用方法:
  *   node commit-engine.js                        # 対話形式（stdin JSON）
