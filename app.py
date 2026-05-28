@@ -1598,6 +1598,33 @@ def get_latest_dna():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
+# ===== DNA_v3 / PHI OS: restore_packet 配信 =====
+@app.route("/get_restore_packet")
+def get_restore_packet():
+    """DNA_v3 Restore Packet を返す。
+    restore_packet.json が存在しない場合は get_latest_dna にフォールバックする。"""
+    from pathlib import Path
+    PACKET_PATH = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\PACKET\restore_packet.json")
+    INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
+    inject_mode = "ON"
+    if INJECT_FLAG.exists():
+        v = INJECT_FLAG.read_text(encoding="utf-8-sig").strip().upper()
+        inject_mode = v if v in ["ON", "OFF"] else "ON"
+    if inject_mode == "OFF":
+        return jsonify({"status": "OFF"}), 200
+    if not PACKET_PATH.exists():
+        return jsonify({"status": "NO_PACKET", "fallback": "v2"}), 404
+    try:
+        packet = json.loads(PACKET_PATH.read_text(encoding="utf-8"))
+        packet["generated_at_age_sec"] = (
+            __import__("datetime").datetime.now(tz=__import__("datetime").timezone.utc) -
+            __import__("datetime").datetime.fromisoformat(
+                packet.get("generated_at", "2000-01-01T00:00:00+00:00").replace("Z", "+00:00"))
+        ).total_seconds()
+        return jsonify({"status": "OK", "packet": packet}), 200
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
+
 @app.route("/gemini/briefing")
 def gemini_briefing():
     from pathlib import Path
