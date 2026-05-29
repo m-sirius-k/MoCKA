@@ -1,0 +1,90 @@
+// background.js — PHI OS Service Worker
+// chrome.storage.local のみ使用（IndexedDB は content.js 経由）
+'use strict';
+
+// [INLINE] core/schema-registry.js - ensureSchemaVersion
+async function ensureSchemaVersion() {
+  const { phi_schema_version } = await chrome.storage.local.get('phi_schema_version');
+  if (!phi_schema_version || phi_schema_version < 2) {
+    await chrome.storage.local.set({ phi_schema_version: 2 });
+    console.log('[PHI OS] Schema migrated to v2');
+  }
+}
+
+// [INLINE] core/permission-manager.js - registerProduct
+async function registerProduct(product, extensionId) {
+  const { phi_registered_products = {} } = await chrome.storage.local.get('phi_registered_products');
+  phi_registered_products[product] = { extensionId, registered_at: new Date().toISOString() };
+  await chrome.storage.local.set({ phi_registered_products });
+  console.log('[PHI OS] Product registered:', product, extensionId);
+}
+
+// ─── 起動時初期化 ──────────────────────────────────────────────────────────────
+
+chrome.runtime.onInstalled.addListener(async () => {
+  await ensureSchemaVersion();
+  console.log('[PHI OS] Installed / Updated');
+});
+
+chrome.runtime.onStartup.addListener(async () => {
+  await ensureSchemaVersion();
+  console.log('[PHI OS] Started');
+});
+
+// ─── メッセージハブ ────────────────────────────────────────────────────────────
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  handleMessage(msg, sender)
+    .then(sendResponse)
+    .catch(err => {
+      console.error('[PHI OS BG] handler error:', msg.type, err);
+      sendResponse({ error: err.message });
+    });
+  return true; // async response
+});
+
+async function handleMessage(msg, sender) {
+  switch (msg.type) {
+
+    case 'PHI_COMMIT_DONE':
+      // コミット完了をログ（将来: MoCKA送信もここで行う）
+      console.log('[PHI OS BG] Commit done. trigger:', msg.trigger);
+      return { ok: true };
+
+    case 'PHI_REGISTER_PRODUCT':
+      await registerProduct(msg.product, msg.extensionId || sender.id);
+      return { ok: true };
+
+    case 'PHI_PANEL_MODE_CHANGED':
+      // popup ⇔ sidepanel 切り換え: action.popup をnullにするか設定する
+      if (msg.mode === 'sidepanel') {
+        await chrome.action.setPopup({ popup: '' });
+      } else {
+        await chrome.action.setPopup({ popup: 'ui/options.html' });
+      }
+      return { ok: true };
+
+    case 'PHI_GET_STATUS': {
+      const { phi_commit_index = [] } = await chrome.storage.local.get('phi_commit_index');
+      const { phi_last_commit_ts }    = await chrome.storage.local.get('phi_last_commit_ts');
+      return {
+        commit_count:    phi_commit_index.length,
+        last_commit_ts:  phi_last_commit_ts || null,
+      };
+    }
+
+    case 'PHI_CLEAR_OLD_DATA': {
+      // 古いコミットを削除してストレージを解放
+      const { phi_commit_index = [] } = await chrome.storage.local.get('phi_commit_index');
+      const toDelete = phi_commit_index.slice(20); // 20件より古いものを削除
+      const keys     = toDelete.map(id => `phi_commit_${id}`);
+      if (keys.length) await chrome.storage.local.remove(keys);
+      const newIndex = phi_commit_index.slice(0, 20);
+      await chrome.storage.local.set({ phi_commit_index: newIndex });
+      return { ok: true, deleted: keys.length };
+    }
+
+    default:
+      return { error: `Unknown type: ${msg.type}` };
+  }
+}

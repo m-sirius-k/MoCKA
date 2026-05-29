@@ -1,0 +1,39 @@
+{
+  "version": "1.0",
+  "lang": "en",
+  "sections": {
+    "what_is": {
+      "title": "What is PHI OS",
+      "body": "PHI OS is a Chrome extension that solves the memory gap between Claude.ai sessions. It automatically saves your work at the end of each conversation and restores the important context when you start a new session. No more re-explaining the same things to AI."
+    },
+    "how_commit": {
+      "title": "How Saving Works",
+      "body": "Your session is automatically saved when: ① you close the tab ② you switch to another tab ③ 20 conversation turns have passed ④ you are idle for 5 minutes. The saved content includes 5 types: new facts, decisions, pending TODOs, tensions/doubts, and next session hook."
+    },
+    "how_restore": {
+      "title": "How Restore Works",
+      "body": "When you open claude.ai/new, PHI OS automatically injects the key context from your last session into the input field. This allows you to start a new Claude chat with your previous context already loaded. Up to 3,000 characters of context are restored."
+    },
+    "mode_switch": {
+      "title": "Mode Switching",
+      "body": "PHI OS has two operating modes: ① Standalone Mode (default): operates without any server connection. No internet required. ② MoCKA Connected Mode: when a local MoCKA server (localhost:5000) is running, advanced recording features are automatically enabled."
+    },
+    "lang_switch": {
+      "title": "Language Switching",
+      "body": "Use the language selector in the top right of the screen to switch between 日本語, English, 中文, 한국어, and Español. Your preference is saved for future sessions."
+    },
+    "panel_switch": {
+      "title": "Panel Mode Switching",
+      "body": "You can switch between popup and side panel display from the toolbar icon's right-click menu or the settings screen. Side panel is recommended for wide-screen work."
+    },
+    "troubleshoot": {
+      "title": "Troubleshooting",
+      "items": [
+        { "q": "Restore is not working", "a": "Open claude.ai/new. Restore only runs on new chat pages, not existing ones." },
+        { "q": "Content doesn't seem to be saved", "a": "Check that PHI OS is enabled at chrome://extensions. If storage is full, use the 'Delete Old Data' button in settings." },
+        { "q": "Language change not reflecting", "a": "Reload the extension via the update button in chrome://extensions." },
+        { "q": "MoCKA Connected Mode not activating", "a": "Start the MoCKA server with MoCKA-START.bat so localhost:5000 is responsive." }
+      ]
+    }
+  }
+}

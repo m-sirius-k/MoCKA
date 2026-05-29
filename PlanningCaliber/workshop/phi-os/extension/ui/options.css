@@ -1,0 +1,263 @@
+/* options.css — PHI OS Dashboard スタイル */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0a0e1a;
+  --bg2:       #111827;
+  --border:    #1e3a5f;
+  --accent:    #38bdf8;
+  --accent2:   #818cf8;
+  --green:     #22c55e;
+  --yellow:    #f59e0b;
+  --red:       #ef4444;
+  --text:      #e2e8f0;
+  --text2:     #94a3b8;
+  --text3:     #475569;
+  --radius:    10px;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  min-width: 480px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.phi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.phi-logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(56,189,248,0.4);
+  letter-spacing: -0.5px;
+}
+#lang-select {
+  background: var(--bg2);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+#lang-select:focus { border-color: var(--accent); }
+
+/* ─── Section ────────────────────────────────────────────────────────────── */
+.phi-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.phi-section h2 {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+/* ─── Status Grid ─────────────────────────────────────────────────────────── */
+.status-grid {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.status-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 72px;
+}
+.status-label { font-size: 10px; color: var(--text3); }
+.status-value { font-size: 12px; font-weight: 700; color: var(--accent); }
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text3);
+}
+.status-dot.green  { background: var(--green);  box-shadow: 0 0 6px rgba(34,197,94,0.6); }
+.status-dot.yellow { background: var(--yellow); box-shadow: 0 0 6px rgba(245,158,11,0.6); }
+.status-dot.red    { background: var(--red);    box-shadow: 0 0 6px rgba(239,68,68,0.6); }
+
+/* ─── Storage Bar ─────────────────────────────────────────────────────────── */
+.storage-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.storage-bar {
+  flex: 1;
+  height: 6px;
+  background: var(--bg);
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.storage-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.storage-fill.warn  { background: var(--yellow); }
+.storage-fill.danger { background: var(--red); }
+#storage-text { font-size: 11px; color: var(--text2); white-space: nowrap; }
+
+/* ─── Commit List ─────────────────────────────────────────────────────────── */
+.commit-list { max-height: 200px; overflow-y: auto; }
+.commit-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  margin-bottom: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.commit-item:hover { background: rgba(56,189,248,0.05); }
+.commit-trigger {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--accent);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.commit-ts { font-size: 11px; color: var(--text3); }
+.commit-summary { font-size: 11px; color: var(--text2); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.empty { color: var(--text3); font-size: 12px; text-align: center; padding: 16px 0; }
+
+/* ─── Buttons ─────────────────────────────────────────────────────────────── */
+.phi-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.phi-btn {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.phi-btn:hover  { border-color: var(--accent); color: var(--accent); }
+.phi-btn.primary { border-color: var(--accent); color: var(--accent); }
+.phi-btn.primary:hover { background: rgba(56,189,248,0.1); }
+.phi-btn.danger  { border-color: var(--red); color: var(--red); }
+.phi-btn.small   { font-size: 11px; padding: 6px 10px; }
+
+/* ─── Toggle ──────────────────────────────────────────────────────────────── */
+.phi-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+.phi-toggle input { display: none; }
+.phi-toggle-slider {
+  width: 36px;
+  height: 20px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.phi-toggle-slider::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text3);
+  transition: transform 0.2s, background 0.2s;
+}
+.phi-toggle input:checked + .phi-toggle-slider {
+  background: rgba(56,189,248,0.15);
+  border-color: var(--accent);
+}
+.phi-toggle input:checked + .phi-toggle-slider::after {
+  transform: translateX(16px);
+  background: var(--accent);
+}
+.phi-toggle-label { font-size: 12px; color: var(--text2); }
+.phi-note { font-size: 11px; color: var(--text3); margin-top: 8px; line-height: 1.6; }
+
+/* ─── Manual ──────────────────────────────────────────────────────────────── */
+.manual-content { max-height: 320px; overflow-y: auto; }
+.manual-item { margin-bottom: 14px; }
+.manual-item h3 { font-size: 12px; color: var(--accent); margin-bottom: 6px; }
+.manual-item p  { font-size: 12px; color: var(--text2); line-height: 1.7; }
+.manual-qa { margin-bottom: 8px; }
+.manual-qa .q { font-size: 12px; color: var(--yellow); margin-bottom: 3px; }
+.manual-qa .a { font-size: 12px; color: var(--text2); line-height: 1.6; padding-left: 8px; border-left: 2px solid var(--border); }
+
+/* ─── Pre / Debug ──────────────────────────────────────────────────────────── */
+.phi-pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 11px;
+  color: var(--text2);
+  white-space: pre-wrap;
+  margin-top: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+  display: none;
+}
+.phi-pre.visible { display: block; }
+
+/* ─── Toast ──────────────────────────────────────────────────────────────── */
+.phi-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg2);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-size: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  transition: opacity 0.3s;
+  z-index: 9999;
+}
+.phi-toast.hidden { opacity: 0; pointer-events: none; }
+.phi-toast.error  { border-color: var(--red); color: var(--red); }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }

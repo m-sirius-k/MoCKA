@@ -43,38 +43,36 @@
   "generated_at": "2026-05-29T07:12:48.190518",
   "matcher_result": {
     "verdict": "DANGER",
-    "score": -0.017,
-    "danger_rate": 0.492,
-    "success_rate": 0.508,
-    "text": "実装完了です。\n\n---\n\n## PHI OS v1.0 — 実装サマリー\n\n**場所:** [`planningcaliber/workshop/phi-os",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "拡張機能を読み込めませんでした\n\nファイル~\\MoCKA\\PlanningCaliber\\workshop\\phi-os\\extension\n\nエラーオプション",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-03-31",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
         "recur": 0,
         "matched": [
-          "エラー",
-          "auto"
+          "エラー"
         ],
-        "score": 2
+        "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-04",
+        "when": "2026-03-30",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "PS C:\\Users\\sirok> Get-Content \"C:\\Users\\sirok\\MoCKA\\app.py\" | Select-Object -First 50\nimport csv\nim",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
         "recur": 0,
         "matched": [
-          "エラー",
-          "auto"
+          "エラー"
         ],
-        "score": 2
+        "score": 1
       }
     ],
-    "updated_at": "2026-05-28T23:39:05.099Z"
+    "updated_at": "2026-05-28T23:57:42.938Z"
   }
 }

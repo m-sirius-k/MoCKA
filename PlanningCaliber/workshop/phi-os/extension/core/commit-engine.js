@@ -1,148 +1,150 @@
-/**
- * commit-engine.js — DNA_v3 Step3
- * セッション終了時に5点を judgement_reason へ書き込む。
- *
- * 疑念006 解決: better-sqlite3 は Node v25 でビルド不可。
- *              db_helper.py (Python) + child_process.spawnSync 方式で代替。
- * 疑念002 解決: CommitトリガーはRelay引き継ぎボタン（content.js経由）。
- */
-/*
- * IMMUTABLE層（lever_essence.json の IMMUTABLE キー）への書き込み禁止。
- * 書き込み先: judgement_reason テーブルのみ。
- * tags='immutable'のエントリ追加はきむら博士承認後に手動で行う。
- */
- *
- * 使用方法:
- *   node commit-engine.js                        # 対話形式（stdin JSON）
- *   node commit-engine.js --data '{ ... }'       # CLIから直接渡す
- *   const { commitSession } = require('./commit-engine'); // モジュール利用
- */
-
+// commit-engine.js — セッション終了時5点構造化保存
 'use strict';
 
-const { spawnSync } = require('child_process');
-const path = require('path');
-const fs = require('fs');
+import { set, get, idbSaveCommit } from './state-store.js';
+import { reportError } from '../debug/error-reporter.js';
 
-const DB_HELPER = path.join(__dirname, 'db_helper.py');
-const EVENTS_DB = String.raw`C:\Users\sirok\MoCKA\data\mocka_events.db`;
+const MAX_COMMITS = 50;
 
-// ────────────────────────────────────────────────────
-// DB ヘルパー呼び出し
-// ────────────────────────────────────────────────────
-function dbCall(command, argsObj) {
-  const result = spawnSync(
-    'python',
-    [DB_HELPER, command, JSON.stringify(argsObj)],
-    { encoding: 'utf-8', timeout: 15000 }
-  );
-  if (result.error) throw new Error(`db_helper spawn failed: ${result.error.message}`);
-  if (result.status !== 0) throw new Error(`db_helper stderr: ${result.stderr}`);
-  try {
-    return JSON.parse(result.stdout.trim());
-  } catch {
-    throw new Error(`db_helper parse error: ${result.stdout}`);
-  }
-}
-
-// ────────────────────────────────────────────────────
-// バリデーション
-// ────────────────────────────────────────────────────
-function validateCommitData(data) {
-  const errors = [];
-  if (!data.event_id)      errors.push('event_id が必須');
-  if (!data.session_date)  errors.push('session_date が必須');
-  if (!data.decision)      errors.push('decision が必須 (採用|却下|保留)');
-  if (!data.reason)        errors.push('reason が必須 (WHY)');
-  if (data.decision === '却下' && !data.rejected_reason) {
-    errors.push('decision=却下 のとき rejected_reason が必須');
-  }
-  const severity = data.tension_severity ?? 0;
-  if (severity < 0 || severity > 5) errors.push('tension_severity は 0〜5');
-  return errors;
-}
-
-// ────────────────────────────────────────────────────
-// 5点コミット
-// ────────────────────────────────────────────────────
 /**
- * @param {object} payload
- *   event_id        string   — events.db の event_id（参照）
- *   session_date    string   — YYYY-MM-DD
- *   decision        string   — '採用' | '却下' | '保留'
- *   reason          string   — なぜその判断か（WHY）
- *   rejected_reason string?  — 却下理由（decision='却下'時必須）
- *   error_solved    string?  — どのエラーをどう潰したか
- *   tension         string?  — 違和感テキスト
- *   tension_severity number? — 0〜5
- *   tension_at      string?  — ISO8601
- *   source_map      string?  — 例: events.db#E20260528_021
- *   tags            string?  — カンマ区切り
- * @returns {{ ok: boolean, id?: number, errors?: string[] }}
+ * CommitEngine — セッション内容を5点構造化してストレージに保存する
+ *
+ * 保存する5点:
+ *   1. facts      — 新事実（ファイルパス・設定変更・新発見）
+ *   2. decisions  — 新決定（採用/却下した判断とその理由）
+ *   3. todos      — 残課題（未完了・ブロック中）
+ *   4. tensions   — 違和感（tension/anomaly/unresolved タグ）
+ *   5. next_hook  — 次回起動フック（次セッション開始時に必ず復元すべきコンテキスト）
  */
-function commitSession(payload) {
-  const errors = validateCommitData(payload);
-  if (errors.length > 0) {
-    return { ok: false, errors };
-  }
-
-  const row = {
-    event_id:         payload.event_id,
-    session_date:     payload.session_date,
-    decision:         payload.decision,
-    rejected_reason:  payload.rejected_reason ?? null,
-    reason:           payload.reason,
-    error_solved:     payload.error_solved ?? null,
-    tension:          payload.tension ?? null,
-    tension_severity: payload.tension_severity ?? 0,
-    tension_at:       payload.tension_at ?? null,
-    source_map:       payload.source_map ?? null,
-    tags:             payload.tags ?? null,
-  };
-
-  const result = dbCall('write_judgement', row);
-  if (result.error) {
-    return { ok: false, errors: [result.error] };
-  }
-  return { ok: true, id: result.id };
-}
-
-// ────────────────────────────────────────────────────
-// CLI モード
-// ────────────────────────────────────────────────────
-function runCli() {
-  const args = process.argv.slice(2);
-  let payload;
-
-  const dataIdx = args.indexOf('--data');
-  if (dataIdx !== -1 && args[dataIdx + 1]) {
+export class CommitEngine {
+  /**
+   * @param {string} trigger  発火理由 (UNLOAD|VISIBILITY|TURN_THRESHOLD|IDLE|MANUAL)
+   */
+  async commit({ trigger, ts = Date.now() }) {
     try {
-      payload = JSON.parse(args[dataIdx + 1]);
-    } catch {
-      console.error('[ERROR] --data の JSON パースに失敗');
-      process.exit(1);
-    }
-  } else {
-    // stdin から読む
-    const raw = fs.readFileSync('/dev/stdin', 'utf-8');
-    try {
-      payload = JSON.parse(raw);
-    } catch {
-      console.error('[ERROR] stdin JSON パースに失敗');
-      process.exit(1);
+      const session = await this._collectSession();
+
+      // ターン数が少なすぎるセッションはスキップ（誤発火防止）
+      if ((session.turnCount || 0) < 3 && trigger !== 'MANUAL') {
+        console.log('[PHI OS CommitEngine] Skipped — turn count too low:', session.turnCount);
+        return null;
+      }
+
+      const packet = {
+        commit_id:  `CMT_${Date.now()}`,
+        trigger,
+        ts,
+        facts:      this._extractFacts(session),
+        decisions:  this._extractDecisions(session),
+        todos:      this._extractTodos(session),
+        tensions:   this._extractTensions(session),
+        next_hook:  this._buildNextHook(session),
+      };
+
+      await this._save(packet);
+      await set('phi_last_commit_ts', Date.now());
+      console.log('[PHI OS CommitEngine] Committed:', packet.commit_id, 'trigger:', trigger);
+      return packet;
+    } catch (e) {
+      await reportError({ type: 'COMMIT_ERROR', message: e.message, trigger, ts: Date.now() });
+      throw e;
     }
   }
 
-  const result = commitSession(payload);
-  console.log(JSON.stringify(result, null, 2));
-  if (!result.ok) process.exit(1);
-}
+  _extractFacts(session) {
+    // ファイルパスを検出: Windows/Unix/相対パス
+    const PATH_RE = /([A-Za-z]:\\[\w\\.\-/]+|\/[\w/.\-]{4,}|\.\/[\w/.\-]+)/g;
+    return [...new Set((session.text || '').match(PATH_RE) || [])].slice(0, 20);
+  }
 
-// ────────────────────────────────────────────────────
-// エクスポート / エントリポイント
-// ────────────────────────────────────────────────────
-if (require.main === module) {
-  runCli();
-} else {
-  module.exports = { commitSession, dbCall };
+  _extractDecisions(session) {
+    const DEC_PATTERNS = [
+      /[「『](.{5,60})[」』](?:で|に|として)(?:決定|確定|採用|却下)/g,
+      /(.{5,60})(?:にした|で行く|で確定|を採用|を却下)/g,
+    ];
+    const decisions = [];
+    for (const re of DEC_PATTERNS) {
+      let m;
+      while ((m = re.exec(session.text || '')) !== null) {
+        decisions.push(m[1]);
+      }
+    }
+    return [...new Set(decisions)].slice(0, 10);
+  }
+
+  _extractTodos(session) {
+    // [RELAY_TODO] タグ最優先
+    const TAGGED = /\[RELAY_TODO\]\s*(.+)/g;
+    const tagged = [];
+    let m;
+    while ((m = TAGGED.exec(session.text || '')) !== null) {
+      tagged.push(m[1].trim());
+    }
+
+    // Relay の logbook から直接取得した todos も合わせる
+    const existing = session.todos || [];
+    return [...new Set([...tagged, ...existing.map(t => t.text || t)])].slice(0, 15);
+  }
+
+  _extractTensions(session) {
+    const TENSION_RE = /(?:なぜ|どうして|おかしい|違和感|うまくいかない|意味がわからん|tension|anomaly)(.{5,50})/g;
+    const tensions = [];
+    let m;
+    while ((m = TENSION_RE.exec(session.text || '')) !== null) {
+      tensions.push({ text: m[0], tag: 'tension' });
+    }
+    return tensions.slice(0, 5);
+  }
+
+  _buildNextHook(session) {
+    return {
+      last_file:     session.lastFilePath   || null,
+      last_decision: session.decisions?.[0]  || null,
+      pending_todos: (session.todos || []).slice(0, 3).map(t => t.text || t),
+    };
+  }
+
+  async _collectSession() {
+    try {
+      // Relay のストレージからセッションデータを取得
+      const stored = await chrome.storage.local.get([
+        'relay_current',
+        'relay_todos',
+        'relay_logbook_current',
+      ]);
+
+      const current  = stored['relay_current']          || {};
+      const todos    = stored['relay_todos']             || [];
+      const logbook  = stored['relay_logbook_current']   || {};
+
+      return {
+        text:         logbook.text     || '',
+        turnCount:    current.turn_count || 0,
+        todos:        todos.filter(t => t.status === 'active'),
+        decisions:    current.decisions  || [],
+        lastFilePath: logbook.last_file  || null,
+      };
+    } catch (e) {
+      await reportError({ type: 'COLLECT_SESSION_ERROR', message: e.message, ts: Date.now() });
+      return { text: '', turnCount: 0, todos: [], decisions: [], lastFilePath: null };
+    }
+  }
+
+  async _save(packet) {
+    const key = `phi_commit_${packet.commit_id}`;
+    await set(key, packet);
+
+    // コミットインデックスを更新（最新50件）
+    const index = await get('phi_commit_index', []);
+    index.unshift(packet.commit_id);
+    if (index.length > MAX_COMMITS) index.pop();
+    await set('phi_commit_index', index);
+
+    // IndexedDB Hubにも保存（content.js内での呼び出し時のみ有効）
+    try {
+      await idbSaveCommit(packet);
+    } catch {
+      // IndexedDB が使えない環境（background.js等）では無視
+    }
+  }
 }

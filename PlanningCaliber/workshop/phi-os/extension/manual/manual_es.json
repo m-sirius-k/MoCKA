@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "lang": "es",
+  "sections": {
+    "what_is": { "title": "Qué es PHI OS", "body": "PHI OS es una extensión de Chrome que resuelve la brecha de memoria entre sesiones de Claude.ai. Guarda automáticamente el contenido al final de cada conversación y restaura el contexto importante al comenzar una nueva sesión. Sin necesidad de explicar lo mismo una y otra vez a la IA." },
+    "how_commit": { "title": "Cómo funciona el guardado", "body": "La sesión se guarda automáticamente cuando: ① cierras la pestaña ② cambias a otra pestaña ③ han pasado 20 turnos ④ hay 5 minutos de inactividad. El contenido guardado incluye 5 tipos: hechos nuevos, decisiones, tareas pendientes, dudas y punto de inicio de la siguiente sesión." },
+    "how_restore": { "title": "Cómo funciona la restauración", "body": "Al abrir claude.ai/new, PHI OS inyecta automáticamente el contexto clave de tu última sesión en el campo de entrada. Se restauran hasta 3.000 caracteres de contexto." },
+    "mode_switch": { "title": "Cambio de modo", "body": "PHI OS tiene dos modos: ① Modo independiente (predeterminado): funciona sin conexión al servidor. ② Modo MoCKA conectado: se activa automáticamente cuando el servidor MoCKA local (localhost:5000) está en ejecución." },
+    "lang_switch": { "title": "Cambio de idioma", "body": "Usa el selector de idioma en la esquina superior derecha para cambiar entre 日本語, English, 中文, 한국어 y Español. La preferencia se guarda para sesiones futuras." },
+    "panel_switch": { "title": "Cambio de panel", "body": "Puedes cambiar entre ventana emergente y panel lateral desde el menú contextual del icono de la barra de herramientas o desde la pantalla de configuración." },
+    "troubleshoot": {
+      "title": "Solución de problemas",
+      "items": [
+        { "q": "La restauración no funciona", "a": "Abre claude.ai/new. La restauración solo se ejecuta en páginas de nuevo chat, no en chats existentes." },
+        { "q": "El contenido no parece guardarse", "a": "Comprueba que PHI OS está habilitado en chrome://extensions. Si el almacenamiento está lleno, usa el botón 'Eliminar datos antiguos' en configuración." },
+        { "q": "El cambio de idioma no se refleja", "a": "Recarga la extensión con el botón de actualización en chrome://extensions." },
+        { "q": "El modo MoCKA conectado no se activa", "a": "Inicia el servidor MoCKA con MoCKA-START.bat para que localhost:5000 esté activo." }
+      ]
+    }
+  }
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PHI OS</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0a0e1a; --bg2: #111827; --border: #1e3a5f;
+  --accent: #38bdf8; --green: #22c55e; --red: #ef4444;
+  --text: #e2e8f0; --text2: #94a3b8; --text3: #475569;
+  --font: 'JetBrains Mono', 'Fira Code', monospace;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 12px; padding: 12px; }
+.phi-logo { font-size: 16px; font-weight: 800; color: var(--accent); margin-bottom: 12px; text-shadow: 0 0 8px rgba(56,189,248,0.4); }
+.section { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
+.section h3 { font-size: 10px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+.mode-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; border: 1px solid var(--accent); color: var(--accent); }
+.mode-badge.connected { border-color: var(--green); color: var(--green); }
+.btn { display: block; width: 100%; background: var(--bg); color: var(--text2); border: 1px solid var(--border); border-radius: 6px; padding: 7px 10px; font-family: var(--font); font-size: 11px; cursor: pointer; margin-bottom: 6px; text-align: left; transition: border-color 0.2s, color 0.2s; }
+.btn:hover { border-color: var(--accent); color: var(--accent); }
+.btn.primary { border-color: var(--accent); color: var(--accent); }
+#todo-list { max-height: 160px; overflow-y: auto; }
+.todo-item { display: flex; align-items: center; gap: 6px; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.todo-item:last-child { border-bottom: none; }
+.todo-text { flex: 1; font-size: 11px; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.done .todo-text { text-decoration: line-through; color: var(--text3); }
+.check { cursor: pointer; color: var(--text3); }
+.check:hover { color: var(--green); }
+#status-msg { font-size: 11px; color: var(--accent); margin-top: 8px; min-height: 16px; }
+</style>
+</head>
+<body>
+<div class="phi-logo">Φ PHI OS</div>
+
+<div class="section">
+  <h3>Mode</h3>
+  <span class="mode-badge" id="mode-badge">STANDALONE</span>
+</div>
+
+<div class="section">
+  <h3>Actions</h3>
+  <button class="btn primary" id="btn-commit" data-i18n="btn_commit">セッションを保存</button>
+  <button class="btn"         id="btn-restore" data-i18n="btn_restore">前回を復元</button>
+</div>
+
+<div class="section">
+  <h3>TODO</h3>
+  <div id="todo-list"><div style="color:var(--text3);font-size:11px">TODOなし</div></div>
+</div>
+
+<div id="status-msg"></div>
+
+<script src="sidepanel.js" type="module"></script>
+</body>
+</html>
