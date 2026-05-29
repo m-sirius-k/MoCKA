@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 // Relay v4.6 — content.js
 // Fix v4.1: Extension context invalidated guard + CSP Google Fonts removed
 // Fix v4.2: Smart handoff — invisible inject on first send (not pasted into input)
@@ -348,21 +348,6 @@ function extractTodos(text) {
     if (/20\d\d[-\/]\d\d[-\/]\d\d.*完了/.test(trimmed)) continue;
     // ★ Reject: 表組みの行
     if (/^\|.+\|/.test(trimmed)) continue;
-    // ★ Reject: コードスニペット・テンプレートの残骸 (LB_001原因)
-    if (/d_at\s*:|updated_at\s*:|created_at\s*:/.test(trimmed)) continue;
-    if (/\/\/\s*(WHEN|WHERE|WHO|WHAT|WHY|HOW)\s*$/.test(trimmed)) continue;
-    if (/:\s*1234567890/.test(trimmed)) continue;
-    // ★ Reject: 完了マーク付き行 (LB_004原因)
-    if (/\u2705/.test(trimmed)) continue;
-    // ★ Reject: _数字: 形式の説明行 (LB_005/006原因)
-    if (/^_\d+[:： ]/.test(trimmed)) continue;
-    // ★ Reject: 質問・提案文 (LB_006/008原因)
-    if (/(?:しましょうか|ますか)[？?]\s*$/.test(trimmed)) continue;
-    // ★ Reject: 「内容TODO_xxx」形式 (LB_015原因)
-    if (/^内容TODO_\d+/.test(trimmed)) continue;
-    if (/TODO_\d+.*TODO_\d+/.test(trimmed)) continue;
-    // ★ Reject: #コメント行
-    if (/^#\s+[→]/.test(trimmed)) continue;
     // ★ Reject: × 数字（補正係数的な記述）
     if (/^[×x]\s*\d/.test(trimmed)) continue;
     // ★ Reject: 数字+ = 〜 のような計算式行
