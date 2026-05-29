@@ -4,11 +4,17 @@
 import { detectMode }    from '../core/state-store.js';
 import { CommitEngine }  from '../core/commit-engine.js';
 import { RestoreEngine } from '../core/restore-engine.js';
+import { togglePanelMode } from './panel-switch.js';
+import { initI18n, setLang, getLang } from '../core/i18n.js';
 
 async function init() {
+  await initI18n();
   await refreshMode();
   await refreshTodos();
   bindEvents();
+  // 言語セレクターの初期値
+  const sel = document.getElementById('lang-select');
+  if (sel) sel.value = getLang();
   // 30秒ごとにモードを再確認
   setInterval(refreshMode, 30000);
 }
@@ -48,6 +54,17 @@ async function refreshTodos() {
 }
 
 function bindEvents() {
+  // パネル切り換え（サイド→ポップアップ）
+  document.getElementById('btn-panel')?.addEventListener('click', async () => {
+    await togglePanelMode();
+    setStatus('ポップアップモードに切り換えました');
+  });
+
+  // 言語切り換え
+  document.getElementById('lang-select')?.addEventListener('change', async (e) => {
+    await setLang(e.target.value);
+  });
+
   document.getElementById('btn-commit')?.addEventListener('click', async () => {
     setStatus('保存中...');
     try {

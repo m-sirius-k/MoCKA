@@ -2,22 +2,8 @@
 // chrome.storage.local のみ使用（IndexedDB は content.js 経由）
 'use strict';
 
-// [INLINE] core/schema-registry.js - ensureSchemaVersion
-async function ensureSchemaVersion() {
-  const { phi_schema_version } = await chrome.storage.local.get('phi_schema_version');
-  if (!phi_schema_version || phi_schema_version < 2) {
-    await chrome.storage.local.set({ phi_schema_version: 2 });
-    console.log('[PHI OS] Schema migrated to v2');
-  }
-}
-
-// [INLINE] core/permission-manager.js - registerProduct
-async function registerProduct(product, extensionId) {
-  const { phi_registered_products = {} } = await chrome.storage.local.get('phi_registered_products');
-  phi_registered_products[product] = { extensionId, registered_at: new Date().toISOString() };
-  await chrome.storage.local.set({ phi_registered_products });
-  console.log('[PHI OS] Product registered:', product, extensionId);
-}
+import { ensureSchemaVersion } from './core/schema-registry.js';
+import { registerProduct }     from './core/permission-manager.js';
 
 // ─── 起動時初期化 ──────────────────────────────────────────────────────────────
 
@@ -56,10 +42,12 @@ async function handleMessage(msg, sender) {
       return { ok: true };
 
     case 'PHI_PANEL_MODE_CHANGED':
-      // popup ⇔ sidepanel 切り換え: action.popup をnullにするか設定する
+      // popup ⇔ sidepanel 切り換え
       if (msg.mode === 'sidepanel') {
         await chrome.action.setPopup({ popup: '' });
+        await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
       } else {
+        await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
         await chrome.action.setPopup({ popup: 'ui/options.html' });
       }
       return { ok: true };

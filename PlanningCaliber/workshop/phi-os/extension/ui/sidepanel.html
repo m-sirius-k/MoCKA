@@ -28,10 +28,27 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); font
 .check { cursor: pointer; color: var(--text3); }
 .check:hover { color: var(--green); }
 #status-msg { font-size: 11px; color: var(--accent); margin-top: 8px; min-height: 16px; }
+.phi-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.phi-header-right { display: flex; align-items: center; gap: 6px; }
+.btn-icon { background: var(--bg2); color: var(--text2); border: 1px solid var(--border); border-radius: 4px; padding: 3px 7px; cursor: pointer; font-size: 13px; }
+.btn-icon:hover { border-color: var(--accent); color: var(--accent); }
+.lang-sel { background: var(--bg2); color: var(--text2); border: 1px solid var(--border); border-radius: 4px; padding: 3px 4px; font-size: 11px; cursor: pointer; }
 </style>
 </head>
 <body>
-<div class="phi-logo">Φ PHI OS</div>
+<div class="phi-header">
+  <div class="phi-logo">Φ PHI OS</div>
+  <div class="phi-header-right">
+    <button id="btn-panel" class="btn-icon" title="ポップアップに戻す">⊟</button>
+    <select id="lang-select" class="lang-sel">
+      <option value="ja">🇯🇵</option>
+      <option value="en">🇺🇸</option>
+      <option value="zh">🇨🇳</option>
+      <option value="ko">🇰🇷</option>
+      <option value="es">🇪🇸</option>
+    </select>
+  </div>
+</div>
 
 <div class="section">
   <h3>Mode</h3>
