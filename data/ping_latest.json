@@ -46,7 +46,7 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "拡張機能を読み込めませんでした\n\nファイル~\\MoCKA\\PlanningCaliber\\workshop\\phi-os\\extension\n\nエラーオプション",
+    "text": "Failed to load resource: the server responded with a status of 404 (NOT FOUND)この",
     "top_events": [
       {
         "verdict": "DANGER",
@@ -73,6 +73,6 @@
         "score": 1
       }
     ],
-    "updated_at": "2026-05-28T23:57:42.938Z"
+    "updated_at": "2026-05-29T00:23:16.947Z"
   }
 }
