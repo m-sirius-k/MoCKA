@@ -26,18 +26,22 @@ export async function togglePanelMode() {
     await chrome.storage.local.set({ [PANEL_MODE_KEY]: next });
 
     if (next === 'sidepanel') {
-      // chrome.sidePanel.open() はユーザーアクションの直接チェーン内でのみ動作する。
-      // background.js 経由（message → SW → open）だと Chrome がブロックするため、
-      // popup/options ページ側でユーザーアクション直後に直接呼ぶ必要がある。
-      const win = await chrome.windows.getCurrent();
-      await chrome.sidePanel.open({ windowId: win.id });
+      // Relay と同じパターン: windowId ではなく tabId を使う。
+      // tabs.query で現在のアクティブタブを取得してからサイドパネルを開き、
+      // ポップアップを window.close() で明示的に閉じる。
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tab?.id) {
+        await chrome.sidePanel.open({ tabId: tab.id });
+      }
     }
     // setPopup() / setPanelBehavior() は background 側でのみ変更可能なため委譲
-    // sidepanel→popup 方向は close() API がないため setPanelBehavior のみ設定し
-    // 次回ツールバークリックでポップアップが開くようにする
     await new Promise((resolve) => {
       chrome.runtime.sendMessage({ type: 'PHI_PANEL_MODE_CHANGED', mode: next }, resolve);
     });
+    // ポップアップを明示的に閉じる（sidepanel が開いた後 popup が残るのを防ぐ）
+    if (next === 'sidepanel') {
+      window.close();
+    }
   } catch (e) {
     console.error('[PHI OS PanelSwitch] togglePanelMode error:', e);
   }

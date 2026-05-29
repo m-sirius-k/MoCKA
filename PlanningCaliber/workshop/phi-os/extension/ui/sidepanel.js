@@ -55,9 +55,9 @@ async function refreshTodos() {
 
 function bindEvents() {
   // パネル切り換え（サイド→ポップアップ）
-  document.getElementById('btn-panel')?.addEventListener('click', async () => {
-    await togglePanelMode();
-    setStatus('ポップアップモードに切り換えました');
+  document.getElementById('btn-panel')?.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'PHI_OPEN_POPUP' }).catch(() => {});
+    window.close();
   });
 
   // 言語切り換え

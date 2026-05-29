@@ -41,6 +41,13 @@ async function handleMessage(msg, sender) {
       await registerProduct(msg.product, msg.extensionId || sender.id);
       return { ok: true };
 
+    case 'PHI_OPEN_POPUP':
+      await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: false });
+      await chrome.action.setPopup({ popup: 'ui/options.html' });
+      try { await chrome.action.openPopup(); } catch (_) {}
+      await chrome.storage.local.set({ phi_panel_mode: 'popup' });
+      return { ok: true };
+
     case 'PHI_PANEL_MODE_CHANGED':
       // sidePanel.open() は呼び出し元ページ側で直接実行済み。
       // ここでは action の popup 設定と次回クリック挙動のみ更新する。
