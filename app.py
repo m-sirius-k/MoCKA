@@ -1,4 +1,4 @@
-import sqlite3
+﻿import sqlite3
 import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
@@ -3034,6 +3034,53 @@ def scamper_status():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ===== PHI OS: イベント受信・ステータスエンドポイント =====
+
+@app.route("/api/phi-os-event", methods=["POST"])
+def phi_os_event():
+    """PHI OSから受信したイベントをMoCKAに記録する"""
+    try:
+        data = request.get_json(force=True) or {}
+        event_type = data.get("type", "PHI_EVENT")
+        source     = data.get("source", "phi-os")
+        workspace  = data.get("workspace", "")
+        payload    = data.get("payload", {})
+        timestamp  = data.get("timestamp", "")
+
+        # MoCKAイベントとして記録
+        from interface.db_helper import append_event
+        eid = append_event(
+            what=event_type,
+            who=source,
+            where=workspace or "phi-os",
+            why=str(payload),
+            how="PHI OS Chrome拡張から自動送信",
+            result="RECEIVED",
+            tags="phi-os,auto"
+        )
+        return jsonify({"ok": True, "event_id": eid})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/api/phi-os-status", methods=["GET"])
+def phi_os_status():
+    """PHI OS接続確認エンドポイント（ダッシュボード向け）"""
+    try:
+        from interface.db_helper import get_db_connection
+        conn = get_db_connection()
+        count = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE who LIKE '%phi-os%'"
+        ).fetchone()[0]
+        conn.close()
+        return jsonify({
+            "status": "connected",
+            "version": "1.0.0",
+            "phi_os_events": count,
+            "mocka_endpoint": "http://127.0.0.1:5000"
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
