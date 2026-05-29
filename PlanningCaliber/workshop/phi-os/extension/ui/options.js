@@ -1,4 +1,4 @@
-// options.js — PHI OS Dashboard ロジック
+﻿// options.js — PHI OS Dashboard ロジック
 'use strict';
 
 import { initI18n, setLang, t, getLang } from '../core/i18n.js';
@@ -271,4 +271,31 @@ function showToast(msg, isError = false) {
 }
 
 // ─── Boot ────────────────────────────────────────────────────────────────────
+// ===== MoCKA接続確認 =====
+async function checkMoCKA() {
+  const dot  = document.getElementById('mocka-dot');
+  const text = document.getElementById('mocka-status-text');
+  const detail = document.getElementById('mocka-detail');
+  if (!dot) return;
+  try {
+    const res  = await fetch('http://127.0.0.1:5000/api/phi-os-status', { signal: AbortSignal.timeout(3000) });
+    const data = await res.json();
+    dot.style.background = '#4caf50';
+    text.textContent = 'MoCKA Connected';
+    text.style.color = '#4caf50';
+    detail.textContent = `phi-os events: ${data.phi_os_events ?? 0} | endpoint: ${data.mocka_endpoint ?? ''}`;
+  } catch (e) {
+    dot.style.background = '#f44336';
+    text.textContent = 'MoCKA Offline';
+    text.style.color = '#f44336';
+    detail.textContent = 'localhost:5000 に接続できません';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkMoCKA();
+  const btn = document.getElementById('btn-mocka-check');
+  if (btn) btn.addEventListener('click', checkMoCKA);
+});
+
 init();

@@ -1,4 +1,4 @@
-// background.js — PHI OS Service Worker
+﻿// background.js — PHI OS Service Worker
 // chrome.storage.local のみ使用（IndexedDB は content.js 経由）
 'use strict';
 
@@ -30,10 +30,23 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 async function handleMessage(msg, sender) {
-  switch (msg.type) {
-
     case 'PHI_COMMIT_DONE':
-      // コミット完了をログ（将来: MoCKA送信もここで行う）
+      // MoCKA本体へイベント送信
+      try {
+        await fetch('http://127.0.0.1:5000/api/phi-os-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'PHI_COMMIT_DONE',
+            source: 'phi-os',
+            workspace: msg.workspace || '',
+            payload: msg.payload || {},
+            timestamp: new Date().toISOString()
+          })
+        });
+      } catch (e) {
+        console.warn('[PHI OS BG] MoCKA送信失敗(オフライン時は無視):', e.message);
+      }
       console.log('[PHI OS BG] Commit done. trigger:', msg.trigger);
       return { ok: true };
 

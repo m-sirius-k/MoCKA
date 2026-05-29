@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
@@ -116,6 +116,16 @@
   </section>
 
   <!-- ステータスメッセージ -->
+  <!-- MoCKA接続ステータス -->
+  <section class="phi-section" id="mocka-section">
+    <h2>&#127970; MoCKA Connection</h2>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+      <span id="mocka-dot" style="width:12px;height:12px;border-radius:50%;background:#666;display:inline-block"></span>
+      <span id="mocka-status-text" style="font-size:13px;color:#aaa">Checking...</span>
+    </div>
+    <div id="mocka-detail" style="font-size:11px;color:#666;font-family:monospace"></div>
+    <button id="btn-mocka-check" class="phi-btn small" style="margin-top:8px">接続確認</button>
+  </section>
   <div id="toast" class="phi-toast hidden"></div>
 
 </div>
