@@ -42,7 +42,8 @@ async function handleMessage(msg, sender) {
       return { ok: true };
 
     case 'PHI_PANEL_MODE_CHANGED':
-      // popup ⇔ sidepanel 切り換え
+      // sidePanel.open() は呼び出し元ページ側で直接実行済み。
+      // ここでは action の popup 設定と次回クリック挙動のみ更新する。
       if (msg.mode === 'sidepanel') {
         await chrome.action.setPopup({ popup: '' });
         await chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true });
