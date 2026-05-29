@@ -3045,11 +3045,11 @@ def phi_os_event():
         eid = get_next_event_id()
         write_event({
             "event_id": eid,
-            "what":     data.get("type", "PHI_EVENT"),
-            "who":      data.get("source", "phi-os"),
-            "where":    data.get("workspace", "phi-os"),
-            "why":      str(data.get("payload", {})),
-            "how":      "PHI OS Chrome拡張から自動送信",
+            "what_type": data.get("type", "PHI_EVENT"),
+            "who_actor": data.get("source", "phi-os"),
+            "where_component": data.get("workspace", "phi-os"),
+            "why_purpose": str(data.get("payload", {})),
+            "how_trigger": "PHI OS Chrome拡張から自動送信",
             "result":   "RECEIVED",
             "tags":     "phi-os,auto"
         })
@@ -3063,7 +3063,7 @@ def phi_os_status():
         from interface.db_helper import _get_conn
         conn  = _get_conn()
         count = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE who LIKE '%phi-os%'"
+            "SELECT COUNT(*) FROM events WHERE who_actor LIKE '%phi-os%'"
         ).fetchone()[0]
         conn.close()
         return jsonify({
