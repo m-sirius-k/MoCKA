@@ -30,6 +30,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 });
 
 async function handleMessage(msg, sender) {
+  switch (msg.type) {
     case 'PHI_COMMIT_DONE':
       // MoCKA本体へイベント送信
       try {
