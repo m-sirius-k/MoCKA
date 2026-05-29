@@ -3039,44 +3039,37 @@ def scamper_status():
 
 @app.route("/api/phi-os-event", methods=["POST"])
 def phi_os_event():
-    """PHI OSから受信したイベントをMoCKAに記録する"""
     try:
         data = request.get_json(force=True) or {}
-        event_type = data.get("type", "PHI_EVENT")
-        source     = data.get("source", "phi-os")
-        workspace  = data.get("workspace", "")
-        payload    = data.get("payload", {})
-        timestamp  = data.get("timestamp", "")
-
-        # MoCKAイベントとして記録
-        from interface.db_helper import append_event
-        eid = append_event(
-            what=event_type,
-            who=source,
-            where=workspace or "phi-os",
-            why=str(payload),
-            how="PHI OS Chrome拡張から自動送信",
-            result="RECEIVED",
-            tags="phi-os,auto"
-        )
+        from interface.db_helper import write_event, get_next_event_id
+        eid = get_next_event_id()
+        write_event({
+            "event_id": eid,
+            "what":     data.get("type", "PHI_EVENT"),
+            "who":      data.get("source", "phi-os"),
+            "where":    data.get("workspace", "phi-os"),
+            "why":      str(data.get("payload", {})),
+            "how":      "PHI OS Chrome拡張から自動送信",
+            "result":   "RECEIVED",
+            "tags":     "phi-os,auto"
+        })
         return jsonify({"ok": True, "event_id": eid})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/phi-os-status", methods=["GET"])
 def phi_os_status():
-    """PHI OS接続確認エンドポイント（ダッシュボード向け）"""
     try:
-        from interface.db_helper import get_db_connection
-        conn = get_db_connection()
+        from interface.db_helper import _get_conn
+        conn  = _get_conn()
         count = conn.execute(
             "SELECT COUNT(*) FROM events WHERE who LIKE '%phi-os%'"
         ).fetchone()[0]
         conn.close()
         return jsonify({
-            "status": "connected",
-            "version": "1.0.0",
-            "phi_os_events": count,
+            "status":         "connected",
+            "version":        "1.0.0",
+            "phi_os_events":  count,
             "mocka_endpoint": "http://127.0.0.1:5000"
         })
     except Exception as e:
