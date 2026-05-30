@@ -29,8 +29,11 @@ from scenarios import (
     scenario_11_fault_injection,
     scenario_12_business_value,
     scenario_13_evidence,
+    scenario_14_phi,
+    scenario_15_180day_org,
 )
 from operation_report_generator import generate_operation_report
+from institutional_report_generator import generate_institutional_report
 
 SCENARIOS = [
     # Phase 1
@@ -51,6 +54,8 @@ SCENARIOS = [
     ("SCENARIO-12", "経営価値",                       scenario_12_business_value),
     # Phase 4-6
     ("SCENARIO-13", "Evidence Ledger",               scenario_13_evidence),
+    ("SCENARIO-14", "PHI Layer + MoCKA Bridge",      scenario_14_phi),
+    ("SCENARIO-15", "180日組織運用",                  scenario_15_180day_org),
 ]
 
 
