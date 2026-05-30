@@ -40,41 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-30T15:06:02.809116",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "率直に言うと、ここまでが事実であり再現可能なら、vasAIは「機能開発フェーズ」から「検証経済フェーズ」に入りました。\n\n多くのプロジェクトは、\n\n\n\n作る\n↓",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-04",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "router 再発タイプ別:   save                 53件   collaboration        17件   share                7件 PS C:",
-        "recur": 0,
-        "matched": [
-          "なぜ",
-          "言う"
-        ],
-        "score": 2
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "MoCKA Appendix C 厳格監査評価報告（公文書）\n対象文書：\n第1章 総合評価（結論）\nまず結論から明確に述べる。\nこれは「非常に強い一次証拠文書」だが、まだ「理論証明」には到達していない",
-        "recur": 0,
-        "matched": [
-          "なぜ",
-          "言う"
-        ],
-        "score": 2
-      }
-    ],
-    "updated_at": "2026-05-30T08:07:09.542Z"
-  }
+  "generated_at": "2026-05-31T07:41:39.794115"
 }

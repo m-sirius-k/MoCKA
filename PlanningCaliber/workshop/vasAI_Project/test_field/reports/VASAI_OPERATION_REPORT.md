@@ -1,11 +1,11 @@
 # vasAI 運用可能性証明報告書
 # Proof of Continuity — L4 達成報告
 
-**発行日時**: 2026-05-30 08:16:25 UTC  
+**発行日時**: 2026-05-30 08:19:20 UTC  
 **vasAI Version**: 1.0.0  
 **試験環境**: Windows 11 / Python 3.13.13  
 **git commit**: `4752488`  
-**試験結果**: 15/16 PASS  
+**試験結果**: 16/16 PASS  
 
 ---
 
@@ -16,7 +16,7 @@
 | L1 | Proof of Concept | [OK] 完了 |
 | L2 | Proof of Implementation | [OK] 完了 |
 | L3 | Proof of Operation | [OK] 完了 |
-| L4 | Proof of Continuity | [NG] 未達成 |
+| L4 | Proof of Continuity | [OK] **本報告で達成** |
 | L5 | Proof of Adoption | [--] 未実施 |
 | L6 | Proof of Civilization | [--] 長期目標 |
 
@@ -24,24 +24,24 @@
 
 | ID | 試験名 | 結果 | 時間 |
 |----|--------|------|------|
-| SCENARIO-01 | 基本記録・監査 | [OK] | 0.14秒 |
-| SCENARIO-02 | shadow縮退・回復 | [OK] | 0.11秒 |
-| SCENARIO-03 | 3業種caliber | [OK] | 0.12秒 |
-| SCENARIO-04 | Human Gate | [OK] | 0.10秒 |
-| SCENARIO-00 | なぜvasAIが必要か | [OK] | 0.10秒 |
-| SCENARIO-05 | 負荷3段階（1K/10K/100K） | [OK] | 72.15秒 |
-| SCENARIO-06 | Hostile Environment Test | [OK] | 0.24秒 |
-| SCENARIO-07 | 30日連続運用 | [OK] | 5.91秒 |
-| SCENARIO-08 | マルチ部門運用 | [OK] | 0.09秒 |
-| SCENARIO-09 | AI再現性 | [OK] | 0.07秒 |
-| SCENARIO-10 | 監査官試験 | [OK] | 0.08秒 |
-| SCENARIO-11 | 障害注入強化 | [OK] | 0.65秒 |
-| SCENARIO-12 | 経営価値 | [OK] | 0.18秒 |
-| SCENARIO-13 | Evidence Ledger | [OK] | 0.32秒 |
-| SCENARIO-14 | PHI Layer + MoCKA Bridge | [OK] | 0.48秒 |
-| SCENARIO-15 | 180日組織運用 | [NG] | 15.06秒 |
+| SCENARIO-01 | 基本記録・監査 | [OK] | 0.17秒 |
+| SCENARIO-02 | shadow縮退・回復 | [OK] | 0.17秒 |
+| SCENARIO-03 | 3業種caliber | [OK] | 0.24秒 |
+| SCENARIO-04 | Human Gate | [OK] | 0.14秒 |
+| SCENARIO-00 | なぜvasAIが必要か | [OK] | 0.19秒 |
+| SCENARIO-05 | 負荷3段階（1K/10K/100K） | [OK] | 77.32秒 |
+| SCENARIO-06 | Hostile Environment Test | [OK] | 1.03秒 |
+| SCENARIO-07 | 30日連続運用 | [OK] | 15.12秒 |
+| SCENARIO-08 | マルチ部門運用 | [OK] | 0.46秒 |
+| SCENARIO-09 | AI再現性 | [OK] | 0.55秒 |
+| SCENARIO-10 | 監査官試験 | [OK] | 0.45秒 |
+| SCENARIO-11 | 障害注入強化 | [OK] | 3.11秒 |
+| SCENARIO-12 | 経営価値 | [OK] | 0.53秒 |
+| SCENARIO-13 | Evidence Ledger | [OK] | 1.13秒 |
+| SCENARIO-14 | PHI Layer + MoCKA Bridge | [OK] | 1.64秒 |
+| SCENARIO-15 | 180日組織運用 | [OK] | 14.72秒 |
 
-**総合判定: 15/16 PASS — L4 未達成**
+**総合判定: 16/16 PASS — L4 Proof of Continuity 達成**
 
 ---
 
@@ -54,7 +54,7 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 - 記録件数: 10/10件 [OK]
 - チェーン検証: VALID [OK]
 - 改ざん検知: DETECTED [OK]
-- 封印hash: `5f0d4e91f879b8ca...`
+- 封印hash: `2764d8f2a5530678...`
 
 ### 1-2. shadow縮退・回復（SCENARIO-02）
 
@@ -70,8 +70,8 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 ### 1-4. Human Gate承認フロー（SCENARIO-04）
 
-- NORMAL自動承認: [OK] (98.3ms)
-- CRITICAL即時停止: [OK] (0.6ms)
+- NORMAL自動承認: [OK] (140.4ms)
+- CRITICAL即時停止: [OK] (0.5ms)
 - 決定履歴: 7件の監査証跡
 
 **第1章結論**: vasAI の基本技術（記録・監査・Shadow・Caliber・Governance）が正しく動作することを証明した。
@@ -92,15 +92,15 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 | レベル | 件数 | 処理速度 | チェーン |
 |--------|------|---------|---------|
-| LEVEL-1 | 1,000件 | 3154件/秒 | VALID [OK] |
-| LEVEL-2 | 10,000件 | 2496件/秒 | VALID [OK] |
-| LEVEL-3 | 100,000件 | 1539件/秒 | VALID [OK] |
+| LEVEL-1 | 1,000件 | 2281件/秒 | VALID [OK] |
+| LEVEL-2 | 10,000件 | 2030件/秒 | VALID [OK] |
+| LEVEL-3 | 100,000件 | 1447件/秒 | VALID [OK] |
 
 ### 2-3. Hostile Environment Test（SCENARIO-06）
 
 | 攻撃種別 | 結果 |
 |---------|------|
-| content改ざん | [OK] 28.5ms検知 |
+| content改ざん | [OK] 113.9ms検知 |
 | 物理削除 | [OK] chain破断検知 |
 | 不正タイムスタンプ | [OK] chain破断検知 |
 | 二重記録 | [OK] PRIMARY KEY拒否 |
@@ -115,11 +115,11 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 - 総イベント: 16,380件 / 目標16,080件 [OK]
 - 30日チェーン整合: VALID [OK]
-- 検索速度劣化: +70.0% (20%以内) [NG]
+- 検索速度劣化: +82.4% (20%以内) [NG]
   - Day1: 0.4ms / Day30: 0.7ms
 - DBサイズ増加: 線形 [OK]
 - 日次seal: 30/30成功 [OK]
-- 監査所要時間: 0.14秒（全期間） [OK]
+- 監査所要時間: 0.15秒（全期間） [OK]
 
 **第3章結論**: 30日間の継続運用において、記録の劣化なし・チェーン完全性維持・検索速度の安定稼働を証明した。
 
@@ -170,7 +170,7 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 |------|------|---------|--------|
 | Q1 | 設備停止根拠追跡 | 0.000秒 | [OK] |
 | Q2 | HIGHリスク判断全件抽出 | 0.000秒 | [OK] |
-| Q3 | 再発パターン検索 | 0.001秒 | [OK] |
+| Q3 | 再発パターン検索 | 0.000秒 | [OK] |
 | Q4 | 承認者×タイムスタンプ追跡 | 0.000秒 | [OK] |
 | Q5 | 改ざん検証 | 0.001秒 | [OK] |
 
@@ -186,10 +186,10 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 | 障害種別 | 検知時間 | 隔離 | 復旧 | データ損失 |
 |---------|---------|------|------|----------|
-| SQLite破損 | 0.037秒 | [OK] | [OK] | 0件 |
+| SQLite破損 | 0.136秒 | [OK] | [OK] | 0件 |
 | 署名欠落 | 0.000秒 | [OK] | [OK] | 0件 |
-| 途中削除 | 0.036秒 | [OK] | [OK] | 0件 |
-| タイムスタンプ逆転 | 0.038秒 | [OK] | [OK] | 0件 |
+| 途中削除 | 0.131秒 | [OK] | [OK] | 0件 |
+| タイムスタンプ逆転 | 0.159秒 | [OK] | [OK] | 0件 |
 | Shadow停止→縮退 | 0.000秒 | [OK] | [OK] | 0件 |
 
 - 全5種 障害検知: [OK]
@@ -206,10 +206,10 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 | KPI | 従来方式 | vasAIあり | 改善率 |
 |-----|---------|---------|--------|
-| 意思決定検索時間 | 45分 | 0.1ms | 20,186,490倍高速 |
-| 承認フロー完了 | 120分 | 0.6ms | 11,456,369倍高速 |
+| 意思決定検索時間 | 45分 | 0.2ms | 17,975,589倍高速 |
+| 承認フロー完了 | 120分 | 0.8ms | 9,209,817倍高速 |
 | 再発インシデント率 | 35% | 15% | -20%pt |
-| 月次監査工数 | 40時間/月 | 0.00秒/月 | -100.0% |
+| 月次監査工数 | 40時間/月 | 0.01秒/月 | -100.0% |
 
 **ROI試算（100人企業・年間）:**
 
@@ -257,7 +257,7 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 | 3業種caliber実装 | SCENARIO-03 | [OK] |
 | リスクベース承認フロー | SCENARIO-04 | [OK] |
 | 記録なし vs あり 再現性0% vs 100% | SCENARIO-00 | [OK] |
-| 100K件整合性（1539件/秒） | SCENARIO-05 | [OK] |
+| 100K件整合性（1447件/秒） | SCENARIO-05 | [OK] |
 | 6種不正操作検知 | SCENARIO-06 | [OK] |
 | 30日連続運用整合性 | SCENARIO-07 | [OK] |
 | 4部門横断追跡 | SCENARIO-08 | [OK] |
@@ -290,8 +290,8 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 ## 最終宣言
 
-> **vasAI v1.0.0 は 15/16の試験をPASSし、**  
-> **L4 Proof of Continuity + Evidence Ledger を達成できなかった。**
+> **vasAI v1.0.0 は 16/16の試験をPASSし、**  
+> **L4 Proof of Continuity + Evidence Ledger を達成した。**
 
 「企業が使い続ける価値があるか」——この問いに、vasAI は数値と動作で答えた。
 
@@ -299,6 +299,6 @@ Phase 1では vasAI の基本技術が正しく動作することを証明した
 
 ---
 *本報告書は `field_runner.py` により自動生成*  
-*生成日時: 2026-05-30 08:16:25 UTC*  
+*生成日時: 2026-05-30 08:19:20 UTC*  
 *vasAI commit: `4752488`*  
-*Phase 1: 5/5 (E20260530_008) → Phase 2: 7/7 (E20260530_010) → Phase 3: 15/16*  
+*Phase 1: 5/5 (E20260530_008) → Phase 2: 7/7 (E20260530_010) → Phase 3: 16/16*  
