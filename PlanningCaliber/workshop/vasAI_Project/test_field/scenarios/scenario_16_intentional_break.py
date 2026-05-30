@@ -88,8 +88,9 @@ def run(db_path: str) -> dict:
         from core.evidence_ledger import EvidenceLedger
         import sqlite3
         ledger2 = EvidenceLedger()
-        eid3 = ledger2.record(
+        eid3 = ledger2.add_evidence(
             event_id="ev_dummy_003",
+            decision_id="dec_dummy_003",
             evidence_type="FACT",
             content={"value": "original_value"},
             source="test",
