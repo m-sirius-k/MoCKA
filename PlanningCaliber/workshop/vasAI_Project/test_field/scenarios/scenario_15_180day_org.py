@@ -102,10 +102,12 @@ def run(db_path: str) -> dict:
                 )
                 dna_ids.append(dna_id)
 
-                # 30日ごとにOUTCOMEを記録
-                if day % 30 == 0 and len(dna_ids) >= 3:
-                    phi.record_outcome(dna_ids[-3],
+                # 20日ごとにOUTCOMEを記録（直近2件）
+                if day % 20 == 0 and len(dna_ids) >= 2:
+                    phi.record_outcome(dna_ids[-2],
                                        f"Day{day}時点実測: 計画比達成率89%")
+                    phi.record_outcome(dna_ids[-1],
+                                       f"Day{day}確認完了: KPI達成。継続稼働中。")
 
             # 日次封印
             if day % 7 == 0:
