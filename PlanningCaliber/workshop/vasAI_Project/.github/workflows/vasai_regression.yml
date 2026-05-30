@@ -8,27 +8,37 @@ on:
 
 jobs:
   regression:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.12"]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python }}
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Verify Core Freeze
         run: python core_freeze.py verify
+        env:
+          VASAI_HMAC_KEY: ci-test-key-do-not-use-in-prod
+          PYTHONIOENCODING: utf-8
 
       - name: Run pytest (unit tests)
         run: python -m pytest tests/ -v --tb=short
+        env:
+          VASAI_HMAC_KEY: ci-test-key-do-not-use-in-prod
+          PYTHONIOENCODING: utf-8
 
-      - name: Run full regression (field_runner)
-        run: python test_field/field_runner.py
+      - name: Run reproduction (reproduce_l48.py)
+        run: python reproduce_l48.py
         env:
           VASAI_HMAC_KEY: ci-test-key-do-not-use-in-prod
           PYTHONIOENCODING: utf-8
@@ -53,13 +63,21 @@ jobs:
                   if not d.get('success'):
                       print(f'  FAIL: {d[\"id\"]} {d[\"name\"]}')
               sys.exit(1)
-          print('All scenarios PASS - Release approved')
+          print('All scenarios PASS - L4.9 Proof of Reproducibility: VERIFIED')
           "
+        env:
+          PYTHONIOENCODING: utf-8
 
-      - name: Upload test report
+      - name: Upload reproduce result
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproduce-result-${{ matrix.os }}-py${{ matrix.python }}
+          path: REPRODUCE_RESULT.md
+
+      - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: vasai-test-reports
+          name: vasai-test-reports-${{ matrix.os }}
           path: test_field/reports/
           retention-days: 30
