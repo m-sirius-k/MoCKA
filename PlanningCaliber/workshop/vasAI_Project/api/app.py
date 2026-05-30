@@ -20,6 +20,7 @@ def create_app() -> Flask:
     from api.routes.governance_routes import bp as governance_bp
     from api.routes.shadow_routes import bp as shadow_bp
     from api.routes.evidence_routes import bp as evidence_bp
+    from api.routes.phi_routes import bp as phi_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(events_bp)
@@ -28,6 +29,7 @@ def create_app() -> Flask:
     app.register_blueprint(governance_bp)
     app.register_blueprint(shadow_bp)
     app.register_blueprint(evidence_bp)
+    app.register_blueprint(phi_bp)
 
     from api.state import init_app_state
     with app.app_context():
