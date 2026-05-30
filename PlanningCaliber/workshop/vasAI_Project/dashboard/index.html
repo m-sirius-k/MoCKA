@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>vasAI COMMAND CENTER</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --card: #111827;
+    --border: #1e293b;
+    --accent: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --font: 'Consolas', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px; border-bottom: 1px solid var(--border);
+    background: rgba(17,24,39,0.95);
+  }
+  header h1 { font-size: 1.1rem; letter-spacing: 0.15em; color: var(--accent); }
+  .status-dots { display: flex; gap: 16px; font-size: 0.8rem; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .dot.alive { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .dot.dead  { background: var(--red); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; padding: 20px 24px; }
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 16px;
+  }
+  .card h2 { font-size: 0.7rem; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 12px; text-transform: uppercase; }
+  .card .big { font-size: 2rem; font-weight: bold; color: var(--text); }
+  .card .sub { font-size: 0.75rem; color: var(--muted); margin-top: 4px; }
+
+  .valid   { color: var(--green); }
+  .invalid { color: var(--red); }
+  .warn    { color: var(--yellow); }
+
+  .stage-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .stage-item { text-align: center; padding: 8px 4px; border-radius: 6px; background: #1e293b; }
+  .stage-item .stage-name { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .stage-item .stage-count { font-size: 1.2rem; font-weight: bold; color: var(--accent); }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 12px; }
+  button {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 4px;
+    background: var(--card); color: var(--text); cursor: pointer; font-family: var(--font);
+    font-size: 0.8rem; transition: background 0.15s;
+  }
+  button:hover { background: #1e293b; }
+  button.approve { border-color: var(--green); color: var(--green); }
+  button.reject  { border-color: var(--red); color: var(--red); }
+
+  #pending-list { font-size: 0.75rem; max-height: 120px; overflow-y: auto; }
+  .pending-item { padding: 4px 0; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+  .pending-item .risk-HIGH { color: var(--yellow); }
+
+  #last-updated { font-size: 0.7rem; color: var(--muted); text-align: right; padding: 8px 24px; }
+
+  .degraded-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; background: var(--yellow); color: #000; font-weight: bold;
+  }
+  .normal-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.7rem; background: var(--green); color: #000; font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>⬡ vasAI COMMAND CENTER</h1>
+  <div class="status-dots">
+    <span><span class="dot" id="dot-mocka"></span>mocka_movement</span>
+    <span><span class="dot" id="dot-shadow"></span>shadow_movement</span>
+    <span id="version-badge" style="color:var(--muted)">v1.0.0</span>
+  </div>
+</header>
+
+<div class="grid">
+
+  <!-- 今日のイベント -->
+  <div class="card">
+    <h2>今日のイベント</h2>
+    <div class="big" id="today-count">–</div>
+    <div class="sub">総イベント数</div>
+  </div>
+
+  <!-- 監査チェーン -->
+  <div class="card">
+    <h2>監査チェーン</h2>
+    <div class="big" id="chain-status">–</div>
+    <div class="sub" id="chain-count">検証中...</div>
+  </div>
+
+  <!-- Shadow状態 -->
+  <div class="card">
+    <h2>Shadow 状態</h2>
+    <div id="shadow-badge">–</div>
+    <div class="sub" id="shadow-pct" style="margin-top:8px">利用可能: –%</div>
+    <div class="btn-row">
+      <button onclick="enterDegraded()">縮退モード テスト</button>
+      <button onclick="exitDegraded()">復旧</button>
+    </div>
+  </div>
+
+  <!-- 承認待ち -->
+  <div class="card">
+    <h2>Governance Gate</h2>
+    <div class="big" id="pending-count">–</div>
+    <div class="sub">承認待ち件数</div>
+    <div id="pending-list" style="margin-top:10px"></div>
+  </div>
+
+</div>
+
+<!-- CIVILIZATION LOOP 8ステージ -->
+<div style="padding: 0 24px 20px;">
+  <div class="card">
+    <h2>Civilization Loop — 8 Stages</h2>
+    <div class="stage-grid" id="stage-grid">
+      <div class="stage-item"><div class="stage-name">OBS</div><div class="stage-count" id="s-OBSERVATION">0</div></div>
+      <div class="stage-item"><div class="stage-name">REC</div><div class="stage-count" id="s-RECORD">0</div></div>
+      <div class="stage-item"><div class="stage-name">INC</div><div class="stage-count" id="s-INCIDENT">0</div></div>
+      <div class="stage-item"><div class="stage-name">REC2</div><div class="stage-count" id="s-RECURRENCE">0</div></div>
+      <div class="stage-item"><div class="stage-name">PRE</div><div class="stage-count" id="s-PREVENTION">0</div></div>
+      <div class="stage-item"><div class="stage-name">DEC</div><div class="stage-count" id="s-DECISION">0</div></div>
+      <div class="stage-item"><div class="stage-name">ACT</div><div class="stage-count" id="s-ACTION">0</div></div>
+      <div class="stage-item"><div class="stage-name">AUD</div><div class="stage-count" id="s-AUDIT">0</div></div>
+    </div>
+  </div>
+</div>
+
+<div id="last-updated">最終更新: –</div>
+
+<script>
+const API = "http://localhost:6000";
+
+async function fetchJSON(path) {
+  const r = await fetch(API + path, {signal: AbortSignal.timeout(5000)});
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+
+function setDot(id, alive) {
+  const el = document.getElementById(id);
+  el.className = "dot " + (alive ? "alive" : "dead");
+}
+
+async function refresh() {
+  try {
+    // /health
+    const h = await fetchJSON("/health");
+    setDot("dot-mocka",  h.movement === "alive");
+    setDot("dot-shadow", h.shadow === "alive");
+
+    // /status
+    const s = await fetchJSON("/status");
+    const counts = s.stage_counts || {};
+    Object.entries(counts).forEach(([k, v]) => {
+      const el = document.getElementById("s-" + k);
+      if (el) el.textContent = v;
+    });
+
+    // /events?limit=1000
+    const ev = await fetchJSON("/events?limit=1000");
+    document.getElementById("today-count").textContent = ev.count;
+
+    // /audit/verify
+    const audit = await fetchJSON("/audit/verify");
+    const chainEl = document.getElementById("chain-status");
+    const chainValid = audit.chain_valid;
+    chainEl.textContent = chainValid ? "✓ VALID" : "✗ BROKEN";
+    chainEl.className = "big " + (chainValid ? "valid" : "invalid");
+    document.getElementById("chain-count").textContent =
+      `${audit.total_events} イベント検証済み`;
+
+    // /shadow/status
+    const sh = await fetchJSON("/shadow/status");
+    const pct = Math.round((sh.available_pct || 1.0) * 100);
+    document.getElementById("shadow-pct").textContent = `利用可能: ${pct}%`;
+    const badge = document.getElementById("shadow-badge");
+    if (sh.is_degraded) {
+      badge.innerHTML = '<span class="degraded-badge">DEGRADED</span>';
+    } else {
+      badge.innerHTML = '<span class="normal-badge">NORMAL</span>';
+    }
+
+    // /governance/queue
+    const q = await fetchJSON("/governance/queue");
+    document.getElementById("pending-count").textContent = q.count;
+    const listEl = document.getElementById("pending-list");
+    listEl.innerHTML = (q.pending || []).map(d =>
+      `<div class="pending-item">
+        <span class="risk-${d.risk_level}">[${d.risk_level}]</span>
+        <span>${d.decision_id.slice(0,8)}…</span>
+        <span>
+          <button class="approve" onclick="approve('${d.decision_id}')">✓</button>
+          <button class="reject"  onclick="reject('${d.decision_id}')">✗</button>
+        </span>
+      </div>`
+    ).join("");
+
+    document.getElementById("last-updated").textContent =
+      "最終更新: " + new Date().toLocaleTimeString("ja-JP");
+
+  } catch (e) {
+    console.warn("API unreachable:", e.message);
+    document.getElementById("chain-status").textContent = "接続待機中...";
+    document.getElementById("chain-status").className = "big warn";
+  }
+}
+
+async function approve(id) {
+  await fetch(`${API}/governance/approve/${id}`, {method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({reason:"Dashboard承認", approver:"HUMAN_GATE"})});
+  refresh();
+}
+
+async function reject(id) {
+  await fetch(`${API}/governance/reject/${id}`, {method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({reason:"Dashboard却下", approver:"HUMAN_GATE"})});
+  refresh();
+}
+
+async function enterDegraded() {
+  await fetch(`${API}/shadow/enter-degraded`, {method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({reason:"Dashboard手動テスト"})});
+  refresh();
+}
+
+async function exitDegraded() {
+  await fetch(`${API}/shadow/exit-degraded`, {method:"POST"});
+  refresh();
+}
+
+refresh();
+setInterval(refresh, 30000);
+</script>
+</body>
+</html>
