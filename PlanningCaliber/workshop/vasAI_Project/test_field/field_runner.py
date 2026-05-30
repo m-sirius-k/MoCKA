@@ -103,6 +103,9 @@ def main():
     passed = sum(1 for _, _, r in results if r.get("success"))
     total = len(results)
 
+    # CI用 last_run.json 生成
+    _save_ci_result(results, passed, total)
+
     print("\n" + "=" * 60)
     print(f"  RESULT: {passed}/{total} PASS")
     print(f"  L4 Proof of Continuity: {'ACHIEVED' if passed == total else 'INCOMPLETE'}")

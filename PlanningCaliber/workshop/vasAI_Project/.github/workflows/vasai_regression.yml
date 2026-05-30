@@ -1,0 +1,65 @@
+name: vasAI Regression CI
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Verify Core Freeze
+        run: python core_freeze.py verify
+
+      - name: Run pytest (unit tests)
+        run: python -m pytest tests/ -v --tb=short
+
+      - name: Run full regression (field_runner)
+        run: python test_field/field_runner.py
+        env:
+          VASAI_HMAC_KEY: ci-test-key-do-not-use-in-prod
+          PYTHONIOENCODING: utf-8
+
+      - name: Check PASS rate
+        run: |
+          python -c "
+          import json, sys
+          from pathlib import Path
+          p = Path('test_field/reports/last_run.json')
+          if not p.exists():
+              print('last_run.json not found')
+              sys.exit(1)
+          r = json.loads(p.read_text())
+          total = r['total']
+          passed = r['passed']
+          failed = r['failed']
+          print(f'vasAI Regression: {passed}/{total} PASS')
+          if failed > 0:
+              print(f'REGRESSION DETECTED: {failed} failure(s)')
+              for d in r.get('details', []):
+                  if not d.get('success'):
+                      print(f'  FAIL: {d[\"id\"]} {d[\"name\"]}')
+              sys.exit(1)
+          print('All scenarios PASS - Release approved')
+          "
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: vasai-test-reports
+          path: test_field/reports/
+          retention-days: 30
