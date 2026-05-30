@@ -49,6 +49,8 @@ SCENARIOS = [
     ("SCENARIO-10", "監査官試験",                     scenario_10_auditor),
     ("SCENARIO-11", "障害注入強化",                   scenario_11_fault_injection),
     ("SCENARIO-12", "経営価値",                       scenario_12_business_value),
+    # Phase 4-6
+    ("SCENARIO-13", "Evidence Ledger",               scenario_13_evidence),
 ]
 
 
