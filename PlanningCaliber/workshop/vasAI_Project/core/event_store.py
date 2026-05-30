@@ -1,9 +1,11 @@
 """
 vasAI Core: append-only SQLite event store with SHA-256 hash chain.
+一接続維持 + isolation_level=None で高速・安全なトランザクション管理。
 """
 import hashlib
 import json
 import sqlite3
+import threading
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -11,6 +13,8 @@ from typing import Optional
 from core.models import MovementStage
 
 _DEFAULT_DB = Path(__file__).parent.parent / "data" / "vasai_events.db"
+_lock = threading.Lock()
+_conn_cache: dict[str, sqlite3.Connection] = {}
 
 
 def _db_path() -> Path:
@@ -19,32 +23,53 @@ def _db_path() -> Path:
     return Path(p)
 
 
-def _connect() -> sqlite3.Connection:
-    path = _db_path()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(str(path))
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.execute("PRAGMA foreign_keys=ON")
-    return conn
+def _get_conn() -> sqlite3.Connection:
+    """DBパスごとにコネクションをキャッシュ（スレッドセーフ）。"""
+    path = str(_db_path())
+    with _lock:
+        conn = _conn_cache.get(path)
+        if conn is None:
+            Path(path).parent.mkdir(parents=True, exist_ok=True)
+            conn = sqlite3.connect(path, check_same_thread=False,
+                                   isolation_level=None)  # autocommit mode
+            conn.row_factory = sqlite3.Row
+            conn.execute("PRAGMA journal_mode=WAL")
+            conn.execute("PRAGMA synchronous=NORMAL")
+            conn.execute("PRAGMA cache_size=10000")
+            _conn_cache[path] = conn
+        return conn
+
+
+def _reset_conn() -> None:
+    """テスト用: DBパスが変わった時にコネクションキャッシュをクリア。"""
+    import os
+    path = str(_db_path())
+    with _lock:
+        old = _conn_cache.pop(path, None)
+        if old:
+            try:
+                old.close()
+            except Exception:
+                pass
 
 
 def initialize() -> None:
-    with _connect() as conn:
+    conn = _get_conn()
+    with _lock:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS events (
                 id              TEXT PRIMARY KEY,
                 when_ts         TEXT NOT NULL,
                 who_actor       TEXT NOT NULL,
                 what_type       TEXT NOT NULL,
-                where_component TEXT DEFAULT '',
-                why_purpose     TEXT DEFAULT '',
-                how_trigger     TEXT DEFAULT '',
-                content         TEXT DEFAULT '{}',
-                prev_hash       TEXT DEFAULT 'GENESIS',
+                where_component TEXT NOT NULL DEFAULT '',
+                why_purpose     TEXT NOT NULL DEFAULT '',
+                how_trigger     TEXT NOT NULL DEFAULT '',
+                content         TEXT NOT NULL DEFAULT '{}',
+                prev_hash       TEXT NOT NULL DEFAULT 'GENESIS',
                 hash            TEXT NOT NULL,
-                caliber_id      TEXT DEFAULT '',
-                stage           TEXT DEFAULT ''
+                caliber_id      TEXT NOT NULL DEFAULT '',
+                stage           TEXT NOT NULL DEFAULT ''
             )
         """)
         conn.execute("""
@@ -53,12 +78,12 @@ def initialize() -> None:
                 counter  INTEGER NOT NULL DEFAULT 0
             )
         """)
-        conn.commit()
 
 
-def _next_id(conn: sqlite3.Connection) -> str:
+def _next_id_unsafe(conn: sqlite3.Connection) -> str:
     key = datetime.now(timezone.utc).strftime("%Y%m%d")
-    row = conn.execute("SELECT counter FROM id_seq WHERE date_key=?", (key,)).fetchone()
+    row = conn.execute("SELECT counter FROM id_seq WHERE date_key=?",
+                       (key,)).fetchone()
     n = (row["counter"] + 1) if row else 1
     conn.execute(
         "INSERT INTO id_seq(date_key,counter) VALUES(?,?) "
@@ -68,21 +93,16 @@ def _next_id(conn: sqlite3.Connection) -> str:
     return f"E{key}_{n:03d}"
 
 
-def _compute_hash(fields: list[str]) -> str:
-    raw = "|".join(fields)
+def _compute_hash(fields: list) -> str:
+    parts = [f if f is not None else "" for f in fields]
+    raw = "|".join(parts)
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
 def get_latest_hash(conn: Optional[sqlite3.Connection] = None) -> str:
-    close_after = conn is None
-    if conn is None:
-        initialize()
-        conn = _connect()
-    row = conn.execute("SELECT hash FROM events ORDER BY id DESC LIMIT 1").fetchone()
-    result = row["hash"] if row else "GENESIS"
-    if close_after:
-        conn.close()
-    return result
+    c = conn or _get_conn()
+    row = c.execute("SELECT hash FROM events ORDER BY id DESC LIMIT 1").fetchone()
+    return row["hash"] if row else "GENESIS"
 
 
 def append(
@@ -98,29 +118,36 @@ def append(
     initialize()
     when_ts = datetime.now(timezone.utc).isoformat()
     content_str = json.dumps(content or {}, ensure_ascii=False, sort_keys=True)
+    wc = where_component or ""
+    wp = why_purpose or ""
+    ht = how_trigger or ""
+    ci = caliber_id or ""
+    st = stage or ""
 
-    with _connect() as conn:
-        event_id = _next_id(conn)
-        prev_hash = get_latest_hash(conn)
-        h = _compute_hash([
-            event_id, when_ts, who_actor, what_type,
-            where_component, why_purpose, how_trigger,
-            content_str, prev_hash, caliber_id,
-        ])
-        conn.execute(
-            "INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
-            (event_id, when_ts, who_actor, what_type, where_component,
-             why_purpose, how_trigger, content_str, prev_hash, h,
-             caliber_id, stage),
-        )
-        conn.commit()
+    conn = _get_conn()
+    with _lock:
+        conn.execute("BEGIN IMMEDIATE")
+        try:
+            event_id = _next_id_unsafe(conn)
+            prev_hash = get_latest_hash(conn)
+            h = _compute_hash([event_id, when_ts, who_actor, what_type,
+                               wc, wp, ht, content_str, prev_hash, ci])
+            conn.execute(
+                "INSERT INTO events VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                (event_id, when_ts, who_actor, what_type, wc, wp, ht,
+                 content_str, prev_hash, h, ci, st),
+            )
+            conn.execute("COMMIT")
+        except Exception:
+            conn.execute("ROLLBACK")
+            raise
     return event_id
 
 
 def get(event_id: str) -> Optional[dict]:
     initialize()
-    with _connect() as conn:
-        row = conn.execute("SELECT * FROM events WHERE id=?", (event_id,)).fetchone()
+    conn = _get_conn()
+    row = conn.execute("SELECT * FROM events WHERE id=?", (event_id,)).fetchone()
     if row is None:
         return None
     d = dict(row)
@@ -144,9 +171,8 @@ def list_events(
         params.append(caliber_id)
     query += " ORDER BY id DESC LIMIT ?"
     params.append(limit)
-
-    with _connect() as conn:
-        rows = conn.execute(query, params).fetchall()
+    conn = _get_conn()
+    rows = conn.execute(query, params).fetchall()
     result = []
     for row in rows:
         d = dict(row)
@@ -157,8 +183,8 @@ def list_events(
 
 def verify_chain() -> bool:
     initialize()
-    with _connect() as conn:
-        rows = conn.execute("SELECT * FROM events ORDER BY id ASC").fetchall()
+    conn = _get_conn()
+    rows = conn.execute("SELECT * FROM events ORDER BY id ASC").fetchall()
     if not rows:
         return True
     prev = "GENESIS"
@@ -168,8 +194,9 @@ def verify_chain() -> bool:
             return False
         expected = _compute_hash([
             d["id"], d["when_ts"], d["who_actor"], d["what_type"],
-            d["where_component"], d["why_purpose"], d["how_trigger"],
-            d["content"], d["prev_hash"], d["caliber_id"],
+            d["where_component"] or "", d["why_purpose"] or "",
+            d["how_trigger"] or "", d["content"],
+            d["prev_hash"], d["caliber_id"] or "",
         ])
         if expected != d["hash"]:
             return False
@@ -180,10 +207,10 @@ def verify_chain() -> bool:
 def get_stage_counts() -> dict[str, int]:
     initialize()
     counts = {s.value: 0 for s in MovementStage}
-    with _connect() as conn:
-        rows = conn.execute(
-            "SELECT stage, COUNT(*) as c FROM events WHERE stage!='' GROUP BY stage"
-        ).fetchall()
+    conn = _get_conn()
+    rows = conn.execute(
+        "SELECT stage, COUNT(*) as c FROM events WHERE stage!='' GROUP BY stage"
+    ).fetchall()
     for row in rows:
         if row["stage"] in counts:
             counts[row["stage"]] = row["c"]
