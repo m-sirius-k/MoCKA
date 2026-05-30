@@ -91,7 +91,7 @@ def _save_ci_result(results: list, passed: int, total: int) -> None:
 def main():
     print("=" * 60)
     print("  vasAI TestField Phase 3 START")
-    print("  Target: 13/13 PASS -- L4 Proof of Continuity")
+    print("  Target: 14/14 PASS -- L4 Proof of Continuity + Evidence Ledger")
     print(f"  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 60)
 
