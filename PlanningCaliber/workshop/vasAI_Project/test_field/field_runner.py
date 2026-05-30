@@ -51,6 +51,40 @@ SCENARIOS = [
 ]
 
 
+def _save_ci_result(results: list, passed: int, total: int) -> None:
+    import json, subprocess
+    from datetime import datetime, timezone
+    try:
+        commit = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True,
+            cwd=str(PROJECT_ROOT)
+        ).stdout.strip()
+    except Exception:
+        commit = "unknown"
+
+    ci = {
+        "total":     total,
+        "passed":    passed,
+        "failed":    total - passed,
+        "pass_rate": f"{passed}/{total}",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "commit":    commit,
+        "details": [
+            {
+                "id":      sid,
+                "name":    name,
+                "success": result.get("success", False),
+                "elapsed": round(result.get("elapsed", 0), 2),
+            }
+            for sid, name, result in results
+        ],
+    }
+    out = Path(__file__).parent / "reports" / "last_run.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(ci, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
 def main():
     print("=" * 60)
     print("  vasAI TestField Phase 3 START")
