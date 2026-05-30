@@ -66,7 +66,7 @@ def main():
 
         # ステップ詳細表示
         for step_name, ok, detail in result.get("steps", []):
-            icon = "  ✓" if ok else "  ✗"
+            icon = "  OK" if ok else "  NG"
             print(f"  {icon} {step_name}: {detail}")
 
         # DBクリーンアップ
@@ -85,7 +85,7 @@ def main():
     total = len(results)
 
     print("\n" + "=" * 60)
-    print(f"  総合結果: {passed}/{total} PASS")
+    print(f"  RESULT: {passed}/{total} PASS")
     print(f"  試験報告書: {report_path}")
     print("=" * 60)
 
