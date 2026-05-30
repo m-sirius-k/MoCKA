@@ -123,7 +123,7 @@ def run(db_path: str) -> dict:
             decision_summary="品質チェックをスキップして承認",
         )
         phi.record_outcome(dna_id4, outcome="顧客クレーム多発・品質問題発生")
-        dna = phi.get_dna(dna_id4)
+        dna = phi.get_full_dna("dec_004_test")
         contradiction = (
             dna is not None
             and "コスト削減" in dna.get("why", "")
