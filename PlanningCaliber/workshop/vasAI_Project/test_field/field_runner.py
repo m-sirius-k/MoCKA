@@ -1,7 +1,7 @@
 """
-vasAI 実装模擬試験 全シナリオ一括実行エンジン (Phase 3)
+vasAI 実装模擬試験 全シナリオ一括実行エンジン (Phase 6)
 実行: python test_field/field_runner.py
-目標: 13/13 PASS — L4 Proof of Continuity
+目標: 18/18 PASS — L4.9 Proof of Reproducibility
 """
 import os
 import sys
@@ -31,6 +31,8 @@ from scenarios import (
     scenario_13_evidence,
     scenario_14_phi,
     scenario_15_180day_org,
+    scenario_16_intentional_break,
+    scenario_17_failure_dna,
 )
 from operation_report_generator import generate_operation_report
 from institutional_report_generator import generate_institutional_report
@@ -52,10 +54,13 @@ SCENARIOS = [
     ("SCENARIO-10", "監査官試験",                     scenario_10_auditor),
     ("SCENARIO-11", "障害注入強化",                   scenario_11_fault_injection),
     ("SCENARIO-12", "経営価値",                       scenario_12_business_value),
-    # Phase 4-6
+    # Phase 4-5
     ("SCENARIO-13", "Evidence Ledger",               scenario_13_evidence),
     ("SCENARIO-14", "PHI Layer + MoCKA Bridge",      scenario_14_phi),
     ("SCENARIO-15", "180日組織運用",                  scenario_15_180day_org),
+    # Phase 6 — L4.9 追加
+    ("SCENARIO-16", "故意破壊試験",                   scenario_16_intentional_break),
+    ("SCENARIO-17", "失敗DNA試験",                    scenario_17_failure_dna),
 ]
 
 
@@ -95,8 +100,8 @@ def _save_ci_result(results: list, passed: int, total: int) -> None:
 
 def main():
     print("=" * 60)
-    print("  vasAI TestField Phase 3 START")
-    print("  Target: 16/16 PASS -- L4.8 Proof of Institutional Memory")
+    print("  vasAI TestField Phase 6 START")
+    print("  Target: 18/18 PASS -- L4.9 Proof of Reproducibility")
     print(f"  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 60)
 
@@ -153,7 +158,7 @@ def main():
 
     print("\n" + "=" * 60)
     print(f"  RESULT: {passed}/{total} PASS")
-    print(f"  L4 Proof of Continuity: {'ACHIEVED' if passed == total else 'INCOMPLETE'}")
+    print(f"  L4.9 Proof of Reproducibility: {'ACHIEVED' if passed == total else 'INCOMPLETE'}")
     print(f"  Report: {report_path}")
     print("=" * 60)
 
