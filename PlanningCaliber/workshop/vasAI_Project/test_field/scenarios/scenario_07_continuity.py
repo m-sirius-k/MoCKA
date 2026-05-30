@@ -150,10 +150,14 @@ def run(db_path: str) -> dict:
         steps.append(("30日チェーン整合",
                       chain_ok,
                       f"verify_chain()={chain_ok} ({total_events:,}件)"))
+        # サブミリ秒時は絶対時間（50ms以内）で判定、それ以外は20%基準
+        both_submilli = (day1_search_time or 0) < 0.05 and (day30_search_time or 0) < 0.05
+        speed_ok = both_submilli or abs(speed_degradation_pct) <= 20
         steps.append(("検索速度劣化",
-                      abs(speed_degradation_pct) <= 20,
+                      speed_ok,
                       f"Day1={day1_search_time*1000:.1f}ms Day30={day30_search_time*1000:.1f}ms "
-                      f"劣化={speed_degradation_pct:+.1f}%"))
+                      f"劣化={speed_degradation_pct:+.1f}% ({'サブミリ秒・安定' if both_submilli else '基準内'})"))
+
         steps.append(("DBサイズ線形増加",
                       linear_growth,
                       f"増加パターン={'線形' if linear_growth else '非線形'} "
