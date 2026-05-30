@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "vasAI Failure DNA Schema v1.0",
+  "description": "組織の失敗を継承可能な形で保存するスキーマ",
+  "type": "object",
+  "required": ["dna_id", "decision_id", "why", "what_went_wrong", "lesson"],
+  "properties": {
+    "dna_id": {
+      "type": "string",
+      "pattern": "^FAIL[0-9]{8}_[0-9]{3}$",
+      "description": "例: FAIL20260531_001"
+    },
+    "decision_id": {
+      "type": "string"
+    },
+    "why": {
+      "type": "string",
+      "description": "なぜその判断をしたか"
+    },
+    "reason": {
+      "type": "string",
+      "description": "推論プロセス"
+    },
+    "what_went_wrong": {
+      "type": "string",
+      "description": "何が間違っていたか"
+    },
+    "lesson": {
+      "type": "string",
+      "description": "次回どう変えるか"
+    },
+    "failure_pattern": {
+      "type": "string",
+      "description": "失敗パターン分類",
+      "examples": ["OVER_CONFIDENCE", "MISSING_CONTEXT", "WRONG_PRIORITY", "INCOMPLETE_INFO", "PROCESS_SKIP"]
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "hash": {
+      "type": "string"
+    }
+  }
+}
