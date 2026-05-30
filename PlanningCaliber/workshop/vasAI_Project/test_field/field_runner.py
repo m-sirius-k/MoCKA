@@ -28,6 +28,7 @@ from scenarios import (
     scenario_10_auditor,
     scenario_11_fault_injection,
     scenario_12_business_value,
+    scenario_13_evidence,
 )
 from operation_report_generator import generate_operation_report
 
