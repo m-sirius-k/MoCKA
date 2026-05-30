@@ -1,0 +1,60 @@
+{
+  "vasai_version": "1.0.0",
+  "freeze_level": "L4",
+  "proof_event": "E20260530_014",
+  "created_at": "2026-05-30T07:58:10.749241+00:00",
+  "git_commit": "ba2307c607aaf43526e50314f50669cd914bfb2b",
+  "total_files": 12,
+  "missing_files": [],
+  "files": {
+    "core/models.py": {
+      "sha256": "d2f955ad27eeaa2a08e40f1386ffc8d0db86510e7e1de8e3dd8abfe41e849f29",
+      "size_bytes": 2853
+    },
+    "core/event_store.py": {
+      "sha256": "effaa151f96082be96e74ff74e81b2795e32967245337d247509ddb90f1d99a9",
+      "size_bytes": 6776
+    },
+    "core/artifact_schema.py": {
+      "sha256": "9657db03ce79cb36cc9958f9e39f5099084b5704d4f0a33ae848ba16754c865e",
+      "size_bytes": 1392
+    },
+    "core/audit_chain.py": {
+      "sha256": "3453024d0091e74d0c76d3dd9d3f490baea71bd6fa5b63fec592b03a28c5625a",
+      "size_bytes": 1921
+    },
+    "core/governance.py": {
+      "sha256": "0429f7994ddf3b6f1fcbcdaa153d07213a4cad22e2480a59f04e94706c98a185",
+      "size_bytes": 4774
+    },
+    "movement/mocka_movement.py": {
+      "sha256": "350544af2ce5bbc8782ed54d6f931da3d309ae0c91fe29da50e6742376b0aaaa",
+      "size_bytes": 8232
+    },
+    "movement/shadow_movement.py": {
+      "sha256": "cd84f737cc7fd085c378dfef8e1237c084fa57ba1f33e72e733029da0e05e77c",
+      "size_bytes": 6444
+    },
+    "movement/stages.py": {
+      "sha256": "fdeeb84b2431b127fc69b98d56f2c3321d1371d742240f7c7e535cdd98b98406",
+      "size_bytes": 67
+    },
+    "caliber/base_caliber.py": {
+      "sha256": "ae165d91ecbc3caddcd42ae41b6aa14a0f09112e090b23194a48bfe3cba7e781",
+      "size_bytes": 3825
+    },
+    "caliber/example_medical.py": {
+      "sha256": "4eedbc81226729b696bcd8fd5772de1254abc58585b8bf9d20974103324b8493",
+      "size_bytes": 2637
+    },
+    "caliber/example_finance.py": {
+      "sha256": "f2cfb4f0dd067fe550a563f56235d88809918f780c6d95980d4eb3fcf9f54875",
+      "size_bytes": 3251
+    },
+    "test_field/reports/VASAI_OPERATION_REPORT.md": {
+      "sha256": "4d79d43cd81140f2ff3d61b9d5e04fd5f638e9909bd1193219281ffea4814d22",
+      "size_bytes": 10504
+    }
+  },
+  "manifest_hash": "1e432d044ed04917e5733cbfbe59fd7e5665e9fb4f76b2b5b62607bd359073a6"
+}
