@@ -1,106 +1,118 @@
 {
-  "total": 16,
-  "passed": 16,
-  "failed": 0,
-  "pass_rate": "16/16",
-  "timestamp": "2026-05-30T08:19:20.875464+00:00",
-  "commit": "4752488",
+  "total": 18,
+  "passed": 17,
+  "failed": 1,
+  "pass_rate": "17/18",
+  "timestamp": "2026-05-30T23:46:38.323551+00:00",
+  "commit": "2305d2a",
   "details": [
     {
       "id": "SCENARIO-01",
       "name": "基本記録・監査",
       "success": true,
-      "elapsed": 0.17
+      "elapsed": 1.19
     },
     {
       "id": "SCENARIO-02",
       "name": "shadow縮退・回復",
       "success": true,
-      "elapsed": 0.17
+      "elapsed": 0.64
     },
     {
       "id": "SCENARIO-03",
       "name": "3業種caliber",
       "success": true,
-      "elapsed": 0.24
+      "elapsed": 0.08
     },
     {
       "id": "SCENARIO-04",
       "name": "Human Gate",
       "success": true,
-      "elapsed": 0.14
+      "elapsed": 0.04
     },
     {
       "id": "SCENARIO-00",
       "name": "なぜvasAIが必要か",
       "success": true,
-      "elapsed": 0.19
+      "elapsed": 0.04
     },
     {
       "id": "SCENARIO-05",
       "name": "負荷3段階（1K/10K/100K）",
       "success": true,
-      "elapsed": 77.32
+      "elapsed": 83.29
     },
     {
       "id": "SCENARIO-06",
       "name": "Hostile Environment Test",
       "success": true,
-      "elapsed": 1.03
+      "elapsed": 0.44
     },
     {
       "id": "SCENARIO-07",
       "name": "30日連続運用",
       "success": true,
-      "elapsed": 15.12
+      "elapsed": 7.36
     },
     {
       "id": "SCENARIO-08",
       "name": "マルチ部門運用",
       "success": true,
-      "elapsed": 0.46
+      "elapsed": 0.12
     },
     {
       "id": "SCENARIO-09",
       "name": "AI再現性",
       "success": true,
-      "elapsed": 0.55
+      "elapsed": 0.09
     },
     {
       "id": "SCENARIO-10",
       "name": "監査官試験",
       "success": true,
-      "elapsed": 0.45
+      "elapsed": 0.1
     },
     {
       "id": "SCENARIO-11",
       "name": "障害注入強化",
       "success": true,
-      "elapsed": 3.11
+      "elapsed": 0.87
     },
     {
       "id": "SCENARIO-12",
       "name": "経営価値",
       "success": true,
-      "elapsed": 0.53
+      "elapsed": 0.21
     },
     {
       "id": "SCENARIO-13",
       "name": "Evidence Ledger",
       "success": true,
-      "elapsed": 1.13
+      "elapsed": 0.34
     },
     {
       "id": "SCENARIO-14",
       "name": "PHI Layer + MoCKA Bridge",
       "success": true,
-      "elapsed": 1.64
+      "elapsed": 0.59
     },
     {
       "id": "SCENARIO-15",
       "name": "180日組織運用",
       "success": true,
-      "elapsed": 14.72
+      "elapsed": 16.68
+    },
+    {
+      "id": "SCENARIO-16",
+      "name": "故意破壊試験",
+      "success": false,
+      "elapsed": 0.43
+    },
+    {
+      "id": "SCENARIO-17",
+      "name": "失敗DNA試験",
+      "success": true,
+      "elapsed": 0.94
     }
   ]
 }
