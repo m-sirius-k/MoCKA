@@ -90,7 +90,7 @@ def _next_id_unsafe(conn: sqlite3.Connection) -> str:
         "ON CONFLICT(date_key) DO UPDATE SET counter=excluded.counter",
         (key, n),
     )
-    return f"E{key}_{n:03d}"
+    return f"E{key}_{n:06d}"
 
 
 def _compute_hash(fields: list) -> str:
