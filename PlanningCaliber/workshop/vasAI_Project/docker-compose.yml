@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  reproduce:
+    build: .
+    command: python reproduce_l48.py
+    environment:
+      - VASAI_HMAC_KEY=docker-reproduce-key
+      - PYTHONIOENCODING=utf-8
+    volumes:
+      - ./reproduce_output:/vasai/reproduce_output
+
+  vasai:
+    build: .
+    command: python api/app.py
+    environment:
+      - VASAI_HMAC_KEY=docker-vasai-key
+      - PYTHONIOENCODING=utf-8
+    ports:
+      - "6000:6000"
