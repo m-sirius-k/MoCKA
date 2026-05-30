@@ -34,14 +34,14 @@ SCENARIOS = [
 
 def main():
     print("=" * 60)
-    print("  vasAI 実装模擬試験 開始")
-    print(f"  実行日時: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
+    print("  vasAI TestField START")
+    print(f"  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 60)
 
     results = []
 
     for sid, name, module in SCENARIOS:
-        print(f"\n▶ {sid}: {name}")
+        print(f"\n>> {sid}: {name}")
 
         # シナリオごとに独立したDBを使用
         db_file = tempfile.mktemp(suffix=".db", prefix=f"vasai_{sid}_")
@@ -61,7 +61,7 @@ def main():
         elapsed = time.time() - start
         result["elapsed"] = elapsed
 
-        status_str = "✅ PASS" if result.get("success") else "❌ FAIL"
+        status_str = "[PASS]" if result.get("success") else "[FAIL]"
         print(f"  {status_str} ({elapsed:.2f}秒)")
 
         # ステップ詳細表示
