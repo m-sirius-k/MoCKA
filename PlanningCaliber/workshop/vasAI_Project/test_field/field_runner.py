@@ -1,6 +1,7 @@
 """
-vasAI 実装模擬試験 全シナリオ一括実行エンジン (Phase 2)
+vasAI 実装模擬試験 全シナリオ一括実行エンジン (Phase 3)
 実行: python test_field/field_runner.py
+目標: 13/13 PASS — L4 Proof of Continuity
 """
 import os
 import sys
@@ -21,23 +22,39 @@ from scenarios import (
     scenario_04_governance,
     scenario_05_stress,
     scenario_06_hostile,
+    scenario_07_continuity,
+    scenario_08_multidept,
+    scenario_09_reproducibility,
+    scenario_10_auditor,
+    scenario_11_fault_injection,
+    scenario_12_business_value,
 )
-from report_generator import generate_report
+from operation_report_generator import generate_operation_report
 
 SCENARIOS = [
-    ("SCENARIO-00", "なぜvasAIが必要か（比較）",          scenario_00_why_vasai),
-    ("SCENARIO-01", "基本記録・監査",                     scenario_01_basic),
-    ("SCENARIO-02", "shadow縮退・回復",                   scenario_02_shadow),
-    ("SCENARIO-03", "3業種caliber実装",                   scenario_03_caliber),
-    ("SCENARIO-04", "Human Gate承認フロー",               scenario_04_governance),
-    ("SCENARIO-05", "負荷3段階（1K/10K/100K件）",         scenario_05_stress),
-    ("SCENARIO-06", "Hostile Environment Test",           scenario_06_hostile),
+    # Phase 1
+    ("SCENARIO-01", "基本記録・監査",                  scenario_01_basic),
+    ("SCENARIO-02", "shadow縮退・回復",                scenario_02_shadow),
+    ("SCENARIO-03", "3業種caliber",                   scenario_03_caliber),
+    ("SCENARIO-04", "Human Gate",                     scenario_04_governance),
+    # Phase 2
+    ("SCENARIO-00", "なぜvasAIが必要か",               scenario_00_why_vasai),
+    ("SCENARIO-05", "負荷3段階（1K/10K/100K）",        scenario_05_stress),
+    ("SCENARIO-06", "Hostile Environment Test",       scenario_06_hostile),
+    # Phase 3
+    ("SCENARIO-07", "30日連続運用",                   scenario_07_continuity),
+    ("SCENARIO-08", "マルチ部門運用",                  scenario_08_multidept),
+    ("SCENARIO-09", "AI再現性",                       scenario_09_reproducibility),
+    ("SCENARIO-10", "監査官試験",                     scenario_10_auditor),
+    ("SCENARIO-11", "障害注入強化",                   scenario_11_fault_injection),
+    ("SCENARIO-12", "経営価値",                       scenario_12_business_value),
 ]
 
 
 def main():
     print("=" * 60)
-    print("  vasAI TestField Phase 2 START")
+    print("  vasAI TestField Phase 3 START")
+    print("  Target: 13/13 PASS -- L4 Proof of Continuity")
     print(f"  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 60)
 
@@ -46,7 +63,7 @@ def main():
     for sid, name, module in SCENARIOS:
         print(f"\n>> {sid}: {name}")
 
-        db_file = tempfile.mktemp(suffix=".db", prefix=f"vasai_{sid}_")
+        db_file = tempfile.mktemp(suffix=".db", prefix=f"vasai_{sid.replace('-','')}_")
 
         import core.governance as gov
         gov._pending.clear()
@@ -59,18 +76,18 @@ def main():
             result = module.run(db_path=db_file)
         except Exception as e:
             import traceback
-            result = {"success": False, "error": str(e),
-                      "steps": [("UNHANDLED_ERROR", False, str(e))],
-                      "details": {"trace": traceback.format_exc()}}
+            result = {
+                "success": False, "error": str(e),
+                "steps": [("UNHANDLED_ERROR", False, str(e))],
+                "details": {"trace": traceback.format_exc()},
+            }
         elapsed = time.time() - start
         result["elapsed"] = elapsed
 
         status_str = "[PASS]" if result.get("success") else "[FAIL]"
         print(f"  {status_str} ({elapsed:.2f}sec)")
-
         for step_name, ok, detail in result.get("steps", []):
-            icon = "  OK" if ok else "  NG"
-            print(f"  {icon} {step_name}: {detail}")
+            print(f"  {'OK' if ok else 'NG'} {step_name}: {detail}")
 
         try:
             Path(db_file).unlink(missing_ok=True)
@@ -79,14 +96,16 @@ def main():
 
         results.append((sid, name, result))
 
-    report_path = Path(__file__).parent / "reports" / "VASAI_TEST_REPORT.md"
-    generate_report(results, report_path)
+    # 報告書生成
+    report_path = Path(__file__).parent / "reports" / "VASAI_OPERATION_REPORT.md"
+    generate_operation_report(results, report_path)
 
     passed = sum(1 for _, _, r in results if r.get("success"))
     total = len(results)
 
     print("\n" + "=" * 60)
     print(f"  RESULT: {passed}/{total} PASS")
+    print(f"  L4 Proof of Continuity: {'ACHIEVED' if passed == total else 'INCOMPLETE'}")
     print(f"  Report: {report_path}")
     print("=" * 60)
 
