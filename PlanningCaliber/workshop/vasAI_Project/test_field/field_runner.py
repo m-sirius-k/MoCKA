@@ -96,7 +96,7 @@ def _save_ci_result(results: list, passed: int, total: int) -> None:
 def main():
     print("=" * 60)
     print("  vasAI TestField Phase 3 START")
-    print("  Target: 14/14 PASS -- L4 Proof of Continuity + Evidence Ledger")
+    print("  Target: 16/16 PASS -- L4.8 Proof of Institutional Memory")
     print(f"  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}")
     print("=" * 60)
 
@@ -141,6 +141,9 @@ def main():
     # 報告書生成
     report_path = Path(__file__).parent / "reports" / "VASAI_OPERATION_REPORT.md"
     generate_operation_report(results, report_path)
+
+    inst_path = Path(__file__).parent / "reports" / "VASAI_INSTITUTIONAL_REPORT.md"
+    generate_institutional_report(results, inst_path)
 
     passed = sum(1 for _, _, r in results if r.get("success"))
     total = len(results)
