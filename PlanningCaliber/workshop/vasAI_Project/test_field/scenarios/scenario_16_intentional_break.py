@@ -123,11 +123,12 @@ def run(db_path: str) -> dict:
             decision_summary="品質チェックをスキップして承認",
         )
         phi.record_outcome(dna_id4, outcome="顧客クレーム多発・品質問題発生")
-        dna = phi.get_full_dna("dec_004_test")
+        dna_chain = phi.get_full_dna("dec_004_test")
+        first_dna = dna_chain.get("dna", [{}])[0] if dna_chain.get("dna") else {}
         contradiction = (
-            dna is not None
-            and "コスト削減" in dna.get("why", "")
-            and "クレーム" in dna.get("outcome", "")
+            dna_chain.get("found", False)
+            and "コスト削減" in first_dna.get("why", "")
+            and "クレーム" in first_dna.get("outcome", "")
         )
         event_store.append(
             who_actor="vasAI.phi",
