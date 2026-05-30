@@ -69,7 +69,7 @@ def test_event_id_format():
     parts = eid.split("_")
     assert parts[0].startswith("E")
     assert len(parts[0]) == 9  # E + 8桁日付
-    assert len(parts[1]) == 3  # 3桁連番
+    assert len(parts[1]) == 6  # 6桁連番
 
 
 # ── artifact_schema ────────────────────────────────────────
