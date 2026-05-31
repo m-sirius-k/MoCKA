@@ -623,8 +623,8 @@ def scenario_p10_manifest():
 
 def scenario_p11_js_syntax():
     """P-SCENARIO-11: JS ファイル構文チェック (Node.js経由)"""
+    import subprocess
     print(f"\n{BOLD}[P-S-11] JS構文チェック (静的解析){RESET}")
-    import subprocess, os
 
     ext_path = os.path.join(BASE_DIR, "extension")
     js_files = ["background.js", "content.js", "popup.js", "sidepanel.js", "relay_search_ui.js"]
@@ -659,7 +659,7 @@ def scenario_p11_js_syntax():
 
 def run_e2e_suite():
     """Puppeteer E2E テストスイートを実行して結果を統合する"""
-    import subprocess, os
+    import subprocess
     print(f"\n{BOLD}[E2E] Puppeteer Chrome拡張テスト (test/e2e_phios.js){RESET}")
 
     test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test")
