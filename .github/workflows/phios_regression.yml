@@ -40,8 +40,12 @@ jobs:
         uses: actions/checkout@v4
 
       # macOS: Docker未インストール → colima でLinuxコンテナ起動
+      # HOMEBREW_NO_AUTO_UPDATE=1 で brew の git 自動更新による exit 128 を回避
       - name: Setup Docker via colima (macOS)
         if: runner.os == 'macOS'
+        env:
+          HOMEBREW_NO_AUTO_UPDATE: "1"
+          HOMEBREW_NO_INSTALL_CLEANUP: "1"
         run: |
           brew install colima docker docker-buildx docker-compose
           mkdir -p ~/.docker/cli-plugins
@@ -49,6 +53,21 @@ jobs:
             ~/.docker/cli-plugins/docker-compose
           colima start --cpu 2 --memory 4 --disk 60 --wait
           docker context use colima
+
+      # Windows: Docker Desktop はプリインストール済みだが Windows コンテナモードで起動
+      # Linux コンテナ (node:20-bookworm-slim) を動かすためにモードを切り替え
+      - name: Switch to Linux containers (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $cli = "$env:ProgramFiles\Docker\Docker\DockerCli.exe"
+          if (Test-Path $cli) {
+            Write-Host "Switching Docker to Linux containers..."
+            & $cli -SwitchDaemon
+            Start-Sleep -Seconds 15
+          } else {
+            Write-Host "DockerCli.exe not found, assuming already in Linux mode"
+          }
 
       - name: Verify Docker daemon
         run: docker info
