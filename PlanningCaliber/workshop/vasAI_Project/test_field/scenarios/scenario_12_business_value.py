@@ -81,7 +81,7 @@ def run(db_path: str) -> dict:
             )
         else:
             approved = d
-        approval_time_sec = time.time() - t0
+        approval_time_sec = max(time.time() - t0, 1e-6)  # ゼロ除算防止
         approval_improvement = (TRADITIONAL["approval_time_min"] * 60) / approval_time_sec
 
         approval_ok = approved.status in (DecisionStatus.APPROVED, DecisionStatus.AUTO_APPROVED)
