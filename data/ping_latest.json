@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-05-31T07:41:39.794115",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 0.033,
-    "danger_rate": 0.517,
-    "success_rate": 0.483,
-    "text": "vasAI Phase 6（L4.9 Proof of Reproducibility）評価\n\n結論から言うと、この提案はかなり筋が良いです。\n\nL4.8が「動",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
-        "recur": 0,
-        "matched": [
-          "失敗"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-17",
-        "why": "根本原因記録・再発防止・次のAIへの引き継ぎ",
-        "how": "きむら博士による重大インシデント宣言",
-        "note": "INCIDENT,CRITICAL,データ欠損,Chrome拡張,収集失敗,Claude迷走",
-        "recur": 0,
-        "matched": [
-          "失敗"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-05-30T23:35:10.581Z"
-  }
+  "generated_at": "2026-05-31T21:05:29.827790"
 }

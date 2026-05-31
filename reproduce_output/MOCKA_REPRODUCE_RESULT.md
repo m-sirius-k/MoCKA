@@ -2,7 +2,7 @@
 
 **MoCKA — Proof of Reproducibility**
 
-- 実行日時: 2026-05-31 10:24:49
+- 実行日時: 2026-05-31 11:00:44
 - Python: 3.12.13
 - BASE_DIR: /mocka
 
@@ -20,11 +20,11 @@
 | M-S-01 | 存在: mocka_mcp_server.py | PASS | mocka_mcp_server.py あり (MCPサーバー (port 5002)) |
 | M-S-01 | 存在: requirements.txt | PASS | requirements.txt あり (依存パッケージ) |
 | M-S-01-z | schema.py importと関数確認 | PASS | verify_ledger=yes calc_hash=yes |
-| M-S-02-a | Genesisイベント生成とハッシュ一致 | PASS | genesis event created, hash=dcd5858ae9e4790a... |
+| M-S-02-a | Genesisイベント生成とハッシュ一致 | PASS | genesis event created, hash=cc7658a3e0f3a12b... |
 | M-S-02-b | 5イベントチェーン構築→検証 | PASS | CHAIN_VALID: 5 events |
-| M-S-02-c | 改ざん試行 → 検出確認 | PASS | 改ざん検出=YES: HASH_ERROR at index 1: id=ab512bb4-a36f-4b4d-a752 |
-| M-S-02-d | チェーン切断 → 検出確認 | PASS | チェーン切断検出=YES: CHAIN_BREAK at index 2: expected prev=45d369aa |
-| M-S-02-e | CRLF/LF正規化でハッシュ安定 (vasAI教訓) | PASS | CRLF正規化安定: 1ce5605a91b677d5... |
+| M-S-02-c | 改ざん試行 → 検出確認 | PASS | 改ざん検出=YES: HASH_ERROR at index 1: id=2c61c0cb-8182-4b74-a830 |
+| M-S-02-d | チェーン切断 → 検出確認 | PASS | チェーン切断検出=YES: CHAIN_BREAK at index 2: expected prev=e1a3d7af |
+| M-S-02-e | CRLF/LF正規化でハッシュ安定 (vasAI教訓) | PASS | CRLF正規化安定: 0aa369b8e8f4bc39... |
 | M-S-02-f | 既存 ledger.json の読み込み確認 | PASS | ledger.json: 47件のイベント |
 | M-S-03-a | 8ステージ完走（Observation→Audit） | PASS | 8ステージ完走: CHAIN_VALID: 8 events |
 | M-S-03-b | ステージ数=8 | PASS | ステージ数=8 |
@@ -47,7 +47,7 @@
 | M-S-07-b | ACTION_TO_GOAL: 8アクション中6以上カバー | PASS | coverage: 8/8 actions: ['ANALYZE', 'FIX', 'EXECUTE', 'VERIFY |
 | M-S-07-c | civilization goal types: 4種類確認 | PASS | goal types: ['increase_knowledge', 'increase_stability', 'in |
 | M-S-07-d | pull_from_civilization: ファイルなし→デフォルト値返却 | PASS | pull_from_civilization() default: {'civilization_progress':  |
-| M-S-08-a | 1000件インメモリ記録+チェーン検証 | PASS | CHAIN_VALID: 1000 events / 0.01s / 84435 events/s |
+| M-S-08-a | 1000件インメモリ記録+チェーン検証 | PASS | CHAIN_VALID: 1000 events / 0.01s / 83570 events/s |
 | M-S-08-b | 100ハッシュの一意性確認 | PASS | 100イベントのハッシュ全て一意: True |
 | M-S-08-c | ハッシュ計算の決定論性（再現性） | PASS | 決定論的ハッシュ: 5c6259ce01eada2d... (len=64) |
 | M-S-09-a | app.py (port 5000) /health | PASS | HTTP 200: {
@@ -92,7 +92,7 @@ sha256:4e147cf688b6b80aef42482aa50fa62ee4acf813dc4f8e765364642ea8ad647f
 ## Audit Hash（実行証跡ID）
 
 ```
-sha256:3f0682c6cc76ceb447d59e067f2ec7131e34388b983a7259bd28eea9e73754d6
+sha256:c1c35068426f6dab143e5f060626d5f5bced0d79530dfeaaff7ab9116f340d17
 ```
 
 > Reproduction Hashは環境・実行時刻に関わらず同一の結果なら常に一致します。
