@@ -128,12 +128,14 @@ def scenario_p03_storage_keys():
         run_test("P-S-03", f"storage key: {key}", make_t(key))
 
     def t_prefix_convention():
-        # phi_* プレフィックスが一貫して使用されていること
-        storage_calls = re.findall(r'storage\.local\.(?:get|set)\([\'"`]?([^\'"`,)\s]+)', bg)
-        non_phi = [k for k in storage_calls if k and not k.startswith('phi_')]
+        # 文字列リテラルとしてストレージに渡されるキーがphi_プレフィックスを持つか確認
+        # 例: storage.local.get('some_key') → some_key を抽出
+        # オブジェクトリテラル { key: val } は除外
+        string_keys = re.findall(r"storage\.local\.(?:get|set)\(\s*['\"]([^'\"]+)['\"]", bg)
+        non_phi = [k for k in string_keys if k and not k.startswith('phi_')]
         ok = len(non_phi) == 0
-        return ok, f"全ストレージキーがphi_プレフィックス (非phi_: {non_phi[:3]})"
-    run_test("P-S-03-x", "全ストレージキーがphi_プレフィックス", t_prefix_convention)
+        return ok, f"文字列キーが全てphi_プレフィックス: {string_keys[:5]} (非phi_: {non_phi[:3]})"
+    run_test("P-S-03-x", "文字列ストレージキーがphi_プレフィックス", t_prefix_convention)
 
 # ─── P-S-04: i18n対応言語 ─────────────────────────────────────────────────────
 
