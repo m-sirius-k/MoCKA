@@ -29,8 +29,9 @@ FREEZE_FILE = ROOT / "vasai_core_v1_freeze.json"
 
 
 def _sha256(path: Path) -> str:
+    """CRLF→LF に正規化してからSHA-256を計算（Windows/Linux/macOS共通ハッシュ）。"""
     h = hashlib.sha256()
-    h.update(path.read_bytes())
+    h.update(path.read_bytes().replace(b'\r\n', b'\n'))
     return h.hexdigest()
 
 
