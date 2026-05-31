@@ -653,19 +653,53 @@ def scenario_p11_js_syntax():
             return t
         run_test("P-S-11", f"{fname} 構文チェック", make_test(fpath, fname))
 
-# ─── Skipped (Browser-Only) Tests ─────────────────────────────────────────────
+# ─── E2E Suite (Puppeteer) ────────────────────────────────────────────────────
 
-def skip_browser_tests():
-    print(f"\n{BOLD}[BROWSER-ONLY] ブラウザ環境依存テスト (スキップ){RESET}")
-    skip_test("P-S-12", "chrome.storage.local 動作試験", "Chrome拡張APIはブラウザ環境必須")
-    skip_test("P-S-13", "chrome.runtime.sendMessage 試験", "Chrome拡張APIはブラウザ環境必須")
-    skip_test("P-S-14", "HMAC-SHA256 ライセンス検証", "Web Crypto APIはブラウザ環境必須")
-    skip_test("P-S-15", "popup.html レンダリング試験", "DOM操作はブラウザ環境必須")
-    skip_test("P-S-16", "sidepanel.html レンダリング試験", "DOM操作はブラウザ環境必須")
-    skip_test("P-S-17", "webRequest監視 (claude.ai)", "chrome.webRequestはブラウザ環境必須")
-    skip_test("P-S-18", "Pro AI要約 (Claude API)", "APIキー+実API呼び出し不可")
-    skip_test("P-S-19", "多言語UI表示試験", "DOM依存、ブラウザ環境必須")
-    skip_test("P-S-20", "セッション引き継ぎ E2E試験", "chrome.storage依存")
+def run_e2e_suite():
+    """Puppeteer E2E テストスイートを実行して結果を統合する"""
+    import subprocess, os
+    print(f"\n{BOLD}[E2E] Puppeteer Chrome拡張テスト (test/e2e_phios.js){RESET}")
+
+    test_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test")
+    e2e_path = os.path.join(test_dir, "e2e_phios.js")
+
+    if not os.path.exists(e2e_path):
+        skip_test("E2E", "e2e_phios.js が見つからない", f"path={e2e_path}")
+        return
+
+    try:
+        proc = subprocess.run(
+            ["node", e2e_path],
+            capture_output=True, timeout=180,
+            cwd=test_dir,
+        )
+        stdout = proc.stdout.decode("utf-8", errors="replace")
+        stderr = proc.stderr.decode("utf-8", errors="replace")
+
+        try:
+            e2e_results = json.loads(stdout)
+        except json.JSONDecodeError:
+            skip_test("E2E", "E2E JSON parse失敗", stdout[:100])
+            return
+
+        for r in e2e_results:
+            fn_status = "PASS" if r.get("status") == "PASS" else "FAIL"
+            results.append({
+                "id":     r.get("id", "E2E"),
+                "name":   r.get("name", "")[:50],
+                "status": fn_status,
+                "detail": r.get("detail", "")[:80],
+            })
+            icon = f"{GREEN}PASS{RESET}" if fn_status == "PASS" else f"{RED}FAIL{RESET}"
+            print(f"  [{icon}] {r.get('id','E2E')}: {r.get('name','')[:50]}")
+            if fn_status != "PASS":
+                print(f"         {YELLOW}{r.get('detail','')}{RESET}")
+                errors.append(f"{r.get('id')}: {r.get('detail','')}")
+
+    except subprocess.TimeoutExpired:
+        skip_test("E2E", "Puppeteer E2Eタイムアウト (180s)", "Chrome起動失敗の可能性")
+    except FileNotFoundError:
+        skip_test("E2E", "node コマンドが見つからない", "Node.js未インストール")
 
 # ─── Report Generation ─────────────────────────────────────────────────────────
 
