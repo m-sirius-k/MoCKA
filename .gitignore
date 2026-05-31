@@ -1,5 +1,5 @@
-data/
-# Cloudflare 同期用 JSON は追跡対象（*.db *.csv は除外維持）
+# data/ 内は全除外。Cloudflare 同期用4ファイルのみ例外追跡
+data/*
 !data/MOCKA_OVERVIEW.json
 !data/MOCKA_TODO.json
 !data/lever_essence.json

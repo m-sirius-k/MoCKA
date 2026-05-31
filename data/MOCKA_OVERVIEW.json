@@ -1,0 +1,376 @@
+{
+  "meta": {
+    "file": "MOCKA_OVERVIEW.json",
+    "purpose": "新しいchatにこれ1つ貼れば即作業開始できる完全マスターファイル",
+    "classification": "PRIVATE - ローカルのみ管理",
+    "storage": {
+      "primary": "C:/Users/sirok/MOCKA_OVERVIEW.json",
+      "backup": "A:/MOCKA_OVERVIEW.json"
+    },
+    "updated": "2026-05-01",
+    "version": "2.6"
+  },
+  "owner": {
+    "name": "nsjp_kimura",
+    "github_primary": "m-sirius-k",
+    "github_legacy": "nsjpkimura-del(統一済み)"
+  },
+  "what_is_mocka": {
+    "definition": "Model of Cybernetic Knowledge Architecture",
+    "essence": "AIではなく文明モデル。知識を記録・検証・証明し続ける制度カーネル",
+    "philosophy": {
+      "core": "AIを信じるな、システムで縛れ",
+      "method": "自由を許し、必ず記録し、証明する",
+      "incident": "事故→記録→分析→制度化→文明の進化",
+      "failures": "失敗は資産になる"
+    },
+    "constitution": [
+      "Event ledger is append only",
+      "All decisions preserve 5W1H",
+      "Infield is internal memory",
+      "Outfield is collaborative interface",
+      "Event history is the single source of truth"
+    ],
+    "ai_roster": [
+      "ChatGPT",
+      "Perplexity",
+      "Gemini",
+      "Claude"
+    ],
+    "structure": {
+      "mocka_Movement": "通常運用ループ（Observation->Record->Incident->Recurrence->Prevention->Decision->Action->Audit）",
+      "shadow_Movement": "縮退運用（部分障害時も75%機能維持）"
+    }
+  },
+  "server_config": {
+    "app": "localhost:5000（COMMAND CENTER / app.py）",
+    "caliber_pipeline": "localhost:5679（caliber/chat_pipeline/mocka_caliber_server.py）",
+    "mcp_caliber": "localhost:5002（mocka_mcp_server.py）",
+    "ngrok": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp",
+    "startup": "MoCKA-START.bat（デスクトップ）で全サーバー一括起動",
+    "status_display": "COMMAND CENTER RefreshボタンにCALIBER:5679 / MCP:5002リアルタイム表示",
+    "essence_auto_updater": "5分間隔自動更新（interface/essence_auto_updater.py v3 / events.db直読み / REDUCING監視 / Caliber死活監視）"
+  },
+  "command_center": {
+    "description": "MoCKA COMMAND CENTER v2.1.0",
+    "server": "app.py - Flask + CORS - ポート5000",
+    "path": "C:/Users/sirok/MoCKA/app.py",
+    "auto_process": "PILSキューを10秒間隔で自動監視・処理",
+    "ui": "index.html - COMMAND CENTER UI",
+    "pipeline_stages": [
+      "RAW",
+      "REDUCED",
+      "RE_REDUCED",
+      "REDUCING",
+      "CORE",
+      "ESSENCE",
+      "OUTBOX/PILS"
+    ],
+    "panels": {
+      "INCOMING": "受信キュー",
+      "PROCESSING": "処理中",
+      "RESULT": "処理結果（スコア付き）"
+    }
+  },
+  "router": {
+    "path": "C:/Users/sirok/MoCKA/interface/router.py",
+    "events_csv": "data/events.csv",
+    "orchestra": "tools/mocka_orchestra_v10.py",
+    "status": "2026-04-05修正済み（DEPENDENCY_BREAK解消）",
+    "fix_summary": "重複定義(collaborate/share×2)解消。what_type='save'誤記録→collaboration/share/recordに分離。MoCKARouter.save()削除。commit 6561fc5",
+    "functions": {
+      "get_next_event_id": "E{YYYYMMDD}_{NNN}形式でイベントID採番",
+      "calc_error_rate": "直近10件のERROR率計算（B3指標）",
+      "calc_drift_v3": "AEGIS多指標ドリフト検知（error_rate*0.45 + violation*0.30）",
+      "classify_anomaly": "FAST_WRONG/SLOW_DRIFT/FORMAT_COLLAPSE/DEPENDENCY_BREAK"
+    },
+    "recurrence_data": {
+      "total": 87,
+      "status": "誤検知77件修正済み（2026-04-04）・router重複定義修正済み（2026-04-05）",
+      "false_positives_cleared": true,
+      "panel_ui": 10
+    }
+  },
+  "fluid_coordinate_theory": {
+    "status": "理論確立済み・実装フェーズ移行（2026-04-05）",
+    "description": "MoCKA自律観測・流動性座標システム。静的二値判定から3次元座標モデルへ",
+    "coordinates": {
+      "X": "制度整合性（Institutional Integrity）",
+      "Y": "記録品質（Record Quality）",
+      "Z": "統治安定性（Governance Stability）"
+    },
+    "current_values": {
+      "X": 0.632,
+      "Y": 0.826,
+      "Z": 0.819,
+      "note": "Z軸回復: Before=0.6036 / After=0.8190 / ΔZ=+0.2154（Claude実測値・2026-04-09確定）"
+    },
+    "implemented": [
+      "trajectory.csv（325件処理済み）",
+      "evaluator_dynamic.py（TODO_011完了）",
+      "deviation_classifier.py（TODO_012完了）",
+      "distribution_engine.py（TODO_013完了）",
+      "policy_gen2.py（TODO_014完了・Human Gate承認済み）"
+    ],
+    "commit": "e926528",
+    "roadmap": "Day5: セキュリティ強化+コスト自動記録 / Day6: 論文評価15ケース自動実行"
+  },
+  "governance": {
+    "latest_seal": {
+      "commit": "358b260",
+      "date": "2026-04-30",
+      "summary_hash": "fb8481bc",
+      "status": "ALL CHECKS PASSED"
+    },
+    "write_policy": "Phase18以降: コアシステムファイルへの書き込みは人間ゲート承認必須（ChatGPT上書きインシデント対応）",
+    "file_edit_rule": "全AIインタラクションの記録義務。きむら博士がAIを使って行った全ての作業をmocka_write_eventで記録する。対象: ファイル作成・変更・設計・判断・生成物完成・外部サービス提出・登録・却下。フォルダ・Project・AIの種別を問わない。【明示的適用範囲】① MoCKAコアファイル（C:\\Users\\sirok\\MoCKA\\配下）② planningcaliber製品資産（C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\配下）③ sirius-lab製品資産（C:\\Users\\sirok\\MoCKA\\sirius-lab\\配下）④ 外部サービス操作（Chrome Web Store・Gumroad・GitHub・EasyChair等への提出・登録・設定変更）⑤ 設計・判断・合議結果（採用・却下の意思決定も記録対象）記録なき作業はMoCKAとして存在しない。（E20260516_023・TODO_151確定）",
+    "verified_working": [
+      "COMMAND CENTER v5.0 -> localhost:5000 稼働",
+      "Caliber pipeline -> localhost:5679 稼働（APIゼロ v5）",
+      "MCP caliber -> localhost:5002 / ngrok経由 稼働",
+      "Runtime B (Go) -> localhost:5003 稼働",
+      "essence_auto_updater v3 -> 5分間隔自動更新 稼働",
+      "SQLite単一化完了（events.csv完全廃止）",
+      "PHL-OS v2 -> essence連動スコアリング稼働"
+    ]
+  },
+  "paper": {
+    "title": "Silence Prohibition Protocol and Persistent History Layer: A Paired Governance Architecture for Trustworthy AI Systems",
+    "current_draft": "mocka_paper_FINAL_v4_20260428.tex（Overleaf管理）",
+    "zenodo_preprint": "DOI: 10.5281/zenodo.19606271（PHL preprint / CC BY-NC 4.0 / 2026-04-16）",
+    "zenodo_main": "DOI: 10.5281/zenodo.19503666 / 10.5281/zenodo.19507632（v8/v9）",
+    "target": "AIES 2026（Malmö）非アーカイバル投稿",
+    "deadlines": {
+      "easychair_abstract": "2026-05-14 AoE",
+      "pdf_submission": "2026-05-21 AoE"
+    },
+    "key_results": {
+      "n1_primary": 218,
+      "n2_observability": 13,
+      "n3_system_scale": 3610,
+      "alpha_observability": 0.0271,
+      "kendall_tau": 1.0,
+      "blind_evaluators": 5,
+      "z_before": 0.6036,
+      "z_after": 0.819,
+      "delta_z": 0.2154,
+      "note": "Gemini捏造Z=0.88は無効。Claudeの実測値のみ有効。"
+    },
+    "figures": [
+      "sppFigure_1_drawio.pdf",
+      "sppFigure_2_drawio.pdf"
+    ],
+    "anonymized": true,
+    "latex_package": "aaai2026（submissionモード）",
+    "remaining": "EasyChair登録（5/14）・PDF提出（5/21）のみ。5/7着手予定。"
+  },
+  "repositories": {
+    "heart": {
+      "name": "MoCKA",
+      "path": "C:/Users/sirok/MoCKA",
+      "remote": "git@github.com:m-sirius-k/MoCKA.git",
+      "role": "心臓部・制度核",
+      "status": "active_main",
+      "key_paths": {
+        "app": "app.py - COMMAND CENTER Flask server（port:5000）",
+        "router": "interface/router.py - DEPENDENCY_BREAK修正済み",
+        "ledger": "runtime/main/ledger.json",
+        "schema": "schema/schema.py",
+        "ledger_verify": "scripts/ledger/ledger_verify.py",
+        "anchor_update": "scripts/ledger/anchor_update.py",
+        "main_loop": "runtime/main_loop.py",
+        "bridge": "runtime/civilization_bridge.py",
+        "orchestra": "tools/mocka_orchestra_v10.py",
+        "events_csv": "data/events.csv（325件以上）",
+        "recurrence_csv": "data/recurrence_registry.csv",
+        "trajectory_csv": "data/trajectory.csv（新規・流動座標）",
+        "mcp_server": "mocka_mcp_server.py（port:5002）",
+        "caliber_server": "caliber/chat_pipeline/mocka_caliber_server.py（port:5679）",
+        "packet": "data/storage/infield/PACKET/packet_20260409_092255.md",
+        "essence_to_packet": "mocka_v3_eval/essence_to_packet.py",
+        "recurrence_injector": "mocka_v3_eval/recurrence_injector.py"
+      },
+      "powershell_shortcuts": {
+        "mocka-check": "scripts/ledger/ledger_verify.py + verify_all.py",
+        "mocka-seal": "scripts/ledger/anchor_update.py MESSAGE",
+        "mocka-loop": "cd runtime && python main_loop.py",
+        "mocka-ingest": "python runtime/infield_ingestor.py"
+      }
+    },
+    "blueprint": {
+      "name": "mocka-civilization",
+      "path": "C:/Users/sirok/mocka-civilization",
+      "remote": "https://github.com/m-sirius-k/mocka-civilization.git",
+      "role": "設計思想・青写真層",
+      "phases": "phase9-29"
+    },
+    "transparency": {
+      "name": "mocka-transparency",
+      "path": "C:/Users/sirok/mocka-transparency",
+      "remote": "https://github.com/m-sirius-k/mocka-transparency.git",
+      "role": "改ざん検知・署名検証デモ層"
+    },
+    "orchestrator_bus": {
+      "name": "mocka-external-brain",
+      "path": "C:/Users/sirok/mocka-external-brain",
+      "remote": "https://github.com/m-sirius-k/mocka-external-brain.git",
+      "role": "AIオーケストラ神経系・合議バス",
+      "protocol": "share->ask->reply->decide"
+    },
+    "experimental_core": {
+      "name": "mocka-core-private",
+      "path": "C:/Users/sirok/mocka-core-private",
+      "remote": "https://github.com/m-sirius-k/mocka-core-private.git",
+      "role": "実装実験・検証環境（凍結中）",
+      "execution_policy": "FORBIDDEN: Use MoCKA/run_with_audit.py"
+    },
+    "public_docs": {
+      "name": "mocka-public",
+      "path": "C:/Users/sirok/mocka-public",
+      "remote": "https://github.com/m-sirius-k/mocka-public.git",
+      "role": "公開ドキュメント・証明層"
+    },
+    "institutional_memory": {
+      "name": "mocka-knowledge-gate",
+      "path": "C:/Users/sirok/mocka-knowledge-gate",
+      "remote": "https://github.com/m-sirius-k/MoCKA-KNOWLEDGE-GATE.git",
+      "role": "制度的記憶層",
+      "language": "JavaScript/Firebase/Docker"
+    },
+    "public_network": {
+      "name": "mocka-outfield",
+      "path": "C:/Users/sirok/mocka-outfield",
+      "remote": "https://github.com/m-sirius-k/mocka-outfield.git",
+      "role": "外野・公開ネットワーク層"
+    },
+    "docs": {
+      "name": "mocka-docs",
+      "path": "C:/Users/sirok/mocka-docs",
+      "role": "ドキュメント群"
+    },
+    "caliber_workspace": {
+      "name": "planningcaliber",
+      "path": "C:/Users/sirok/planningcaliber",
+      "remote": "https://github.com/m-sirius-k/planningcaliber.git",
+      "role": "MoCKA caliber manufacturing workspace（private）",
+      "status": "workshop/candidates/specs構造作成済み",
+      "key_paths": {
+        "lever_verification": "workshop/needle_eye_project/experiments/lever_verification_claude.json"
+      }
+    }
+  },
+  "joints": {
+    "python_bridge": {
+      "name": "mocka-pythonbridge",
+      "path": "C:/Users/sirok/mocka-joints/mocka-pythonbridge",
+      "role": "Python橋渡し・ブラウザ操作・AI呼び出し層",
+      "ai_support": "Gemini(gemini-2.0-flash) + OpenAI(gpt-4o-mini) + Copilot(PS経由)"
+    },
+    "infield_memory": {
+      "name": "mocka-infield",
+      "path": "C:/Users/sirok/mocka-joints/mocka-infield",
+      "role": "内部記憶・イベント管理・状態DB"
+    },
+    "movement_manager": {
+      "name": "mocka-ecosystem-tools",
+      "path": "C:/Users/sirok/mocka-joints/mocka-ecosystem",
+      "role": "全リポジトリ横断管理ツール"
+    }
+  },
+  "current_issues": {
+    "essence_pipeline": "修復済み(2026-05-01): ping_generator SQLite直読み化・essence_auto_updater v3・REDUCING自動移動・Caliber死活監視",
+    "essence_content_quality": "改善中: きむら博士発言特化抽出ロジックに移行（mocka_strengthen.py適用）",
+    "re_reduced_archive": "制度化済み(2026-05-01): 処理済みファイルはESSENCE_DONEに自動アーカイブ",
+    "caliber_reducing_loop": "TODO_123完了: essence_auto_updater v3でREDUCING→RE_REDUCED自動移動（1分間隔）",
+    "aies_submission": "5/7着手・5/14 EasyChair登録・5/21 PDF提出"
+  },
+  "session_history": {
+    "2026_03_28": [
+      "ledger統一",
+      "スキーマ統一・ALL CHECKS PASSED",
+      "civilization_bridge.py統合完成",
+      "全リポジトリマッピング完成",
+      "README完全刷新",
+      "MOCKA_OVERVIEW.json作成"
+    ],
+    "2026_04_04": [
+      "COMMAND CENTER v2.1.0確認",
+      "recurrence_registry 87件確認",
+      "recurrence_registry誤検知バグ修正（偽陽性77件→0件）",
+      "mocka-seal c085d71",
+      "mocka-docs初期構築",
+      "planningcaliber整備"
+    ],
+    "2026_04_05": [
+      "MCP caliber接続完了（mocka_mcp_server.py v1.2.0）",
+      "ポート構成確定: app=5000/caliber=5679/mcp=5002",
+      "BAT統合・全自動起動完成",
+      "ChatGPTインシデント検知・復元・制度化完了",
+      "router.py DEPENDENCY_BREAK修正（commit 6561fc5）",
+      "chaos_gate UTF-8修正・ALL CHECKS PASSED",
+      "流動性座標理論確立・4AI合議（E20260405_044）",
+      "trajectory.csv / evaluator_dynamic.py / deviation_classifier.py / distribution_engine.py / policy_gen2.py 実装完了（Day1-4）",
+      "Human Gate承認: PC_save/collaboration/Z_DRIFT 3件",
+      "MOCKA_PAPER_DRAFT_v5.docx完成",
+      "Appendix C v2生成"
+    ],
+    "2026_04_06": [
+      "Appendix C v3生成（査読対応完全版・全Tier適用）",
+      "MOCKA_OVERVIEW.json v2.2更新"
+    ],
+    "2026_04_09": [
+      "断絶1解消: essence_to_packet.py・recurrence_injector.py完成・試料パケット生成成功",
+      "Recurrence 0%→100%補完（ESSENCE_recurrence_patched.json）",
+      "n値拡張: n=10→255（AIES基準達成）",
+      "Z軸実測値確定: Before Z=0.6036 / After Z=0.8190 / ΔZ=+0.2154",
+      "レバー制御実験Claude検証完了: 実行率0.44→1.00 / 再現率0.17→1.00",
+      "論文Draft v7完成",
+      "TODO_011〜016登録済み",
+      "Gemini虚偽報告書インシデント確認・訂正済み",
+      "MOCKA_OVERVIEW.json v2.3更新（TODO_014完了）"
+    ],
+    "2026_04_10": [
+      "INSTRUCTION_IGNORE インシデント記録（dynamic_lever_caliber.py未実行）",
+      "執行官内部状態報告書（DNA v2.0制御下）公文書記録",
+      "COND-B実験完了: ΔZ=+0.7167",
+      "Gemini捏造インシデント解剖・沈黙禁止設計確定",
+      "Layer0-3実装完了（commit: 5298f41）: validate_integrity/essence_classifier/ping_generator/BAT統合",
+      "MCP自動付加ツール誤判定インシデント自己訂正記録"
+    ],
+    "2026_04_11": [
+      "LOOPパイプライン①〜⑤設計確定・完成（commit: 9a5bd77）",
+      "essence_classifier/extractor/condenser/trigger 4スクリプト完成",
+      "230件essence・11バッチ濃縮・ping_latest.json更新",
+      "why_purpose/how_trigger MCPスキーマ疎通確認（Connector再登録）",
+      "event_id重複バグ修正完了（619行中404件再採番）",
+      "mocka-seal: 9eee8214 ALL CHECKS PASSED"
+    ],
+    "2026_05_01": [
+      "essenceパイプライン断絶発見・根本原因特定（ping_generatorが存在しないパス参照）",
+      "ping_generator.py SQLite直読みに修正",
+      "essence_auto_updater.py v3実装（5分間隔/REDUCING1分監視/Caliber死活2分監視）",
+      "app.pyにessence自動ループ組み込み",
+      "REDUCING160件をRE_REDUCEDに移動・v3で自動化完了",
+      "OVERVIEW.json v2.5更新",
+      "TODO_123登録・断絶修復完了"
+    ]
+  },
+  "next_actions": {
+    "immediate": [
+      "TODO_054: AIES 2026 EasyChair登録（5/14 AoE）— 5/7着手",
+      "TODO_124: essenceコンテンツ品質向上（きむら博士発言特化）",
+      "TODO_125: ping_generator定期強制実行追加"
+    ],
+    "short_term": [
+      "TODO_116: COMMAND CENTER Temporal Analytics（7日トレンド）",
+      "TODO_117: Decision Intelligence（判断理由ログ）",
+      "TODO_118: Risk Engine TODOリスクスコア",
+      "TODO_122: Go移行 Phase1（AIES後）"
+    ],
+    "paper": [
+      "AIES 2026 Malmö — 非アーカイバル投稿（5/21 AoE）",
+      "採択後: MoCKA正式公開・arXiv投稿"
+    ]
+  },
+  "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成"
+}

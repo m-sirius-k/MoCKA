@@ -1,0 +1,26 @@
+{
+    "IMMUTABLE": {
+        "_note": "KERNEL PROTECTED — 上書き不可・削除不可・セッション開始時に必ず先頭注入",
+        "philosophy": [
+            "できないのはやらないからだ",
+            "記録なき作業はMoCKAとして存在しない",
+            "AIを信じるな、システムで縛れ"
+        ],
+        "forbidden": [
+            "PowerShell環境でPythonコードを直接実行させない",
+            "ファイル編集はcreate_fileのみ（bash heredoc禁止）",
+            "PHL記録なき変更を行わない",
+            "関連ファイル照合なしの全文書き換えを行わない"
+        ],
+        "values": [
+            "違和感は次の発明のシード",
+            "失敗は資産になる",
+            "判断根拠を必ず残す"
+        ]
+    },
+    "INCIDENT":  "[2026-02-14:MoCKA 3.0 引継書] OpenAI API の「利用上限（quota）」に達したため、replan が API 呼び出しに失敗。MoCKAの制度連鎖はAPIクレジット枯渇で止まる脆弱性あり\n[2026-03-19:MoCKA 再接続検証] Watcher/Bridge統合後の動作確認で制度的整合性評価が必要。再接続フェーズは検証プロトコルを必ず踏むこと\n[2026-02-06:MoCKA 監査官評価] Copilot模範回答：MoCKAの重大リスクは記録の形骸化。形式的な5W1H記録では制度として機能しない",
+    "OPERATION":  "[PHL-RULE E20260514_052] Claudeがコードや変更指示を渡す前に必ずmocka_write_event(CHANGE_START)を呼ぶ。WHY/WHERE/変更前状態を記録する。\n[PHL-RULE E20260514_052] きむら博士から結果を受け取り完了宣言する前に必ずmocka_write_event(CHANGE_DONE)を呼ぶ。変更後状態・差分・結果を記録する。\n[PHL-RULE E20260514_052] 記録なき指示は存在しない。記録なき完了は存在しない。これはツールではなくClaudeの反射的行動規範。\n[2026-02-14:MoCKA 3.0 引継書] GPT外部監査: 文明の航海日誌。構造・状態定義・障害履歴・思想階層・未完了項目が明示された制度移行文書\n[2026-02-15:文明設計転換] GPT外部監査: 依存構造から主権構造への転換宣言。APIクレジット枯渇後に自立設計へ\n[2026-02-28:MoCKA 公開最適化] GPT外部監査: 器のみ公開・運用データはローカル封印・ガードを制度化。設計思想として極めて健全\n[2026-03-13:MoCKA 自律AI進化] GPT外部監査: 単体AIプログラムを超え制度化された自律AI機関として成立\n[2026-03-20:MoCKA 記録制度設計] GPT外部監査: 目的駆動型→失敗記録制度型へ存在定義を更新。創造憲法レベルの再定義",
+    "PHILOSOPHY":  "[TODO_154] 全文書き換え前に関連ファイルを必ず照合せよ。app.py変更時はindex.htmlも読む。index.html変更時はapp.pyも読む。照合なしの書き換えはMoCKA検証原則違反。\n[PHL-TOP TODO_151] 記録対象は全作業。MoCKAコア・planningcaliber・sirius-lab・外部サービス操作（Store/Gumroad/GitHub）、全てmocka_write_event必須。\n[PHL-TOP TODO_151] ファイル変更前=CHANGE_START、完了後=CHANGE_DONE。外部提出・登録・設定変更も即記録。設計判断・採用・却下も記録対象。\n[PHL-TOP TODO_151] 記録なき作業はMoCKAとして存在しない。Claudeは作業着手前に必ずmocka_write_eventを実行する。これは強制プロトコルである。\n[PHL-TOP E20260514_034] 記録の存在が全て。文字化けした記録は存在しない。UTF-8徹底は最上位制約。\n[PHL-TOP E20260514_034] 全量記録のみが戻れるを保証する。200文字要約では戻れない。原本全量保存が上位原則。\n[PHL-TOP E20260514_033] ファイル変更前後をmocka_write_eventで記録しない変更は存在しない。mocka_file_editor.py経由必須。\n[2026-03-10:MoCKA インベントリ CSV] 私の最適解：Event Ledger Architecture の具体設計 ChatGPTの三層構造は正しい。しかしMoCKAの現実に即して、第3層（クラウド統合・AI配信層）を明示的に加えた四層構造が最適\n[2026-02-28:MoCKA 公開最適化] 公開対象は器のみであり、運用データはローカル保持とし、制度の連続性と\n[2026-03-21:MoCKA 状態と進行] 到達済 記録制度（CSV・ledger） インシデント制度（5W1H） 再発検知（semantic） 自己疑念（STOP） 自動修正（REAL_EXECUTED） 予防層\n[2026-03-23:MoCKA Movement 起動実装] 本記録は、MoCKA文明における「静的完成状態」から「動的存在状態」への遷移を確定\n[2026-03-24:因果文明の進行] フェーズ20：因果文明（初期起動段階） 直前までに成立したもの 手続き記憶（プロセス）",
+    "updated_at":  "2026-05-28",
+    "source":  "DNA_v3_SPEC_v1_Step1"
+}
