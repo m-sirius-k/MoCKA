@@ -53,7 +53,7 @@ def run(db_path: str) -> dict:
         target_eid = decision_eids[42]
         t0 = time.time()
         found = event_store.get(target_eid)
-        search_time_sec = time.time() - t0
+        search_time_sec = max(time.time() - t0, 1e-6)  # ゼロ除算防止
         search_improvement = (TRADITIONAL["decision_search_min"] * 60) / search_time_sec
 
         search_ok = found is not None and search_time_sec < 1.0

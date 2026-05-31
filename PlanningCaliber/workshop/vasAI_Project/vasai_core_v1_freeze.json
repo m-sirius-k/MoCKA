@@ -2,8 +2,8 @@
   "vasai_version": "1.0.0",
   "freeze_level": "L4",
   "proof_event": "E20260530_014",
-  "created_at": "2026-05-31T00:17:37.828533+00:00",
-  "git_commit": "2ecdb6bb7e058429c8438acb15559d065cb44f55",
+  "created_at": "2026-05-31T00:26:26.903162+00:00",
+  "git_commit": "c9b683acb9255e8fcfcaa6db882f84ae20199b74",
   "total_files": 12,
   "missing_files": [],
   "files": {
@@ -52,9 +52,9 @@
       "size_bytes": 3251
     },
     "test_field/reports/VASAI_OPERATION_REPORT.md": {
-      "sha256": "09ba8d6bf2221dd3c0c13230f5d7c9367841fe744c0d5b5a97b34cef47e03194",
+      "sha256": "0c6a9b6e243d2ea6118383f749fa2e50fbeab8c5dcba5a712bd36c4dcf16e81f",
       "size_bytes": 11890
     }
   },
-  "manifest_hash": "9428849210891c636e10ddd7b79215793f430b3e6c701fd15b3368782d9bad87"
+  "manifest_hash": "65b8f8ce387473909ba26d9531217afdb71df066f451a9274896a6598acaaac7"
 }
