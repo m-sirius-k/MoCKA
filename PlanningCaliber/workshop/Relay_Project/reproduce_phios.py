@@ -299,7 +299,6 @@ def print_header():
 
 def check_environment():
     print(f"{BOLD}[ENV] 環境確認{RESET}")
-    import os
     ext_path = os.path.join(BASE_DIR, "extension")
     required = ["manifest.json", "background.js", "content.js", "popup.js",
                 "sidepanel.js", "relay_search_ui.js", "popup.html", "sidepanel.html"]
@@ -588,7 +587,6 @@ def scenario_p09_vault():
 def scenario_p10_manifest():
     """P-SCENARIO-10: manifest.json 整合性試験"""
     print(f"\n{BOLD}[P-S-10] manifest.json 整合性試験{RESET}")
-    import os
 
     ext_path = os.path.join(BASE_DIR, "extension")
     with open(os.path.join(ext_path, "manifest.json"), encoding="utf-8") as f:
@@ -752,7 +750,6 @@ def generate_report(duration_sec):
             print(f"    - {e}")
 
     # Save PHIOS_REPRODUCE_RESULT.md
-    import os
     out_dir = BASE_DIR
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
