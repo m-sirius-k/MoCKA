@@ -264,20 +264,38 @@ def scenario_js_syntax():
 
     for scenario_id, files in targets.items():
         for rel in files:
-            path = os.path.join(EXT_DIR, *rel.split("/"))
-            def make_t(p, r):
+            fpath = os.path.join(EXT_DIR, *rel.split("/"))
+            def make_t(p, r, sid):
                 def t():
                     if not os.path.exists(p):
                         return False, f"ファイルなし: {r}"
-                    result = subprocess.run(
-                        ["node", "--check", p],
-                        capture_output=True, text=True, timeout=10
-                    )
-                    ok = result.returncode == 0
-                    detail = result.stderr.strip()[:150] if not ok else "構文エラーなし"
+                    # background.js / content.js は CJS (CommonJS) → node --check
+                    # core/adapters/debug/ui は ES modules (import/export) →
+                    #   node --input-type=module stdin経由でチェック
+                    is_esm = any(r.startswith(d) for d in
+                                 ("core/", "adapters/", "debug/", "ui/"))
+                    if is_esm:
+                        src = open(p, encoding="utf-8").read().encode("utf-8")
+                        result = subprocess.run(
+                            ["node", "--input-type=module", "--check"],
+                            input=src, capture_output=True, timeout=10
+                        )
+                    else:
+                        result = subprocess.run(
+                            ["node", "--check", p],
+                            capture_output=True, text=True, timeout=10
+                        )
+                    ok     = result.returncode == 0
+                    stderr = (result.stderr.decode("utf-8", errors="replace")
+                              if isinstance(result.stderr, bytes) else result.stderr)
+                    # 「Failed to load ES module」 warning は exit 0 なら無視
+                    real_err = [l for l in stderr.splitlines()
+                                if "SyntaxError" in l or "error" in l.lower()]
+                    ok = ok and len(real_err) == 0
+                    detail = real_err[0][:150] if not ok else "構文エラーなし"
                     return ok, detail
                 return t
-            run_test(scenario_id, f"構文: {rel}", make_t(path, rel))
+            run_test(scenario_id, f"構文: {rel}", make_t(fpath, rel, scenario_id))
 
 # ─── E2E Suite (Puppeteer) ────────────────────────────────────────────────────
 
