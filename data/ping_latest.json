@@ -40,5 +40,27 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-01T06:18:29.619989"
+  "generated_at": "2026-06-01T06:18:29.619989",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "さくらのレンタルサーバ スタンダード",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-31",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "さくらのレンタルサーバ スタンダード",
+        "recur": 0,
+        "matched": [
+          "さくら"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-05-31T21:46:30.848Z"
+  }
 }

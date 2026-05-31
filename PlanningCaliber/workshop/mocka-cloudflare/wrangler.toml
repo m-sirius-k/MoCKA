@@ -1,0 +1,11 @@
+name            = "mocka-mcp"
+main            = "worker.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# GITHUB_TOKEN は wrangler secret put GITHUB_TOKEN で設定（平文でここに書かない）
+
+[[routes]]
+pattern = "mocka-mcp.nsjpkimura.workers.dev/*"
+zone_name = "workers.dev"
