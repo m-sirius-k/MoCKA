@@ -42,37 +42,38 @@
   ],
   "generated_at": "2026-06-01T06:18:29.619989",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.967,
-    "danger_rate": 0.016,
-    "success_rate": 0.984,
-    "text": "---\n\n## ✅ TIC 実装完了報告（Human Gate提示）\n\n### Risk Score ランキング（CRITICAL/WARNING）\n\n| ラン",
+    "verdict": "DANGER",
+    "score": -0.126,
+    "danger_rate": 0.437,
+    "success_rate": 0.563,
+    "text": "この報告内容なら、私の判定は「TIC Phase 1 完了認定」です。\n\n単にコードが動いたのではなく、制度として成立しているかという観点で見ると、重要な条件を",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
+        "when": "2026-04-05",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "SERVER STATUS\n● APP :5000 ONLINE\n● CALIBER :5679 ONLINE\n● MCP :5002 OFFLINE\n● NGROK OFFLINE\nMCP TOOL",
+        "note": "MoCKA Appendix C 査読対応評価報告（最終監査）\n第1章 総論（結論）\nあなたの判断は極めて正確であり、査読戦略として完成度が高い。 結論を明確にする。\n最終評価\n「研究者として正しい判",
         "recur": 0,
         "matched": [
-          "MCP tool"
+          "なぜ",
+          "動い"
         ],
-        "score": 1
+        "score": 2
       },
       {
-        "verdict": "SUCCESS",
-        "when": "2026-04-29",
-        "why": "save/broadcast from command center",
+        "verdict": "DANGER",
+        "when": "2026-04-14",
+        "why": "右クリックメニューからの保存・共有操作",
         "how": "context_menu_click",
-        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
+        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
         "recur": 0,
         "matched": [
-          "採用"
+          "なぜ"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-31T22:54:52.648Z"
+    "updated_at": "2026-05-31T23:14:46.714Z"
   }
 }
