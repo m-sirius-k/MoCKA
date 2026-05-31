@@ -115,7 +115,9 @@ jobs:
         env:
           PYTHONUTF8: "1"
           PYTHONIOENCODING: utf-8
-          # PUPPETEER_EXECUTABLE_PATH 未設定 → Puppeteer bundled Chromium を使用
+          # macOS: headless:true + extension で SW が登録されない問題を回避
+          # macOS ランナーは GUI VM なので headless:false でも動作する
+          PUPPETEER_HEADLESS: ${{ runner.os == 'macOS' && 'false' || 'true' }}
 
       - name: Confirm VERIFIED in result
         shell: bash

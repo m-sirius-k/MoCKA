@@ -321,8 +321,11 @@ async function main() {
 
   let browser;
   try {
+    // PUPPETEER_HEADLESS=false の場合は非ヘッドレス
+    // macOS CI では Google Chrome がheadless+extension で SW を登録しないため
+    const useHeadless = process.env.PUPPETEER_HEADLESS !== 'false';
     const launchOptions = {
-      headless: true,
+      headless: useHeadless,
       args: [
         `--disable-extensions-except=${EXT_PATH}`,
         `--load-extension=${EXT_PATH}`,
@@ -335,7 +338,7 @@ async function main() {
     if (process.env.PUPPETEER_EXECUTABLE_PATH) {
       launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
     }
-
+    process.stderr.write(`  headless=${useHeadless} exec=${launchOptions.executablePath || 'bundled'}\n`);
     browser = await puppeteer.launch(launchOptions);
     process.stderr.write('\n[SETUP] Chrome起動 + PHI OS 拡張ロード...\n');
 
