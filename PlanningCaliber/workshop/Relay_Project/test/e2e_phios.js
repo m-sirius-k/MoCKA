@@ -560,15 +560,23 @@ async function main() {
 
   let browser;
   try {
-    browser = await puppeteer.launch({
+    // Docker環境: PUPPETEER_EXECUTABLE_PATH でシステムChromiumを使用
+    // ローカル環境: Puppeteerが自動ダウンロードしたChromiumを使用
+    const launchOptions = {
       headless: true,
       args: [
         `--disable-extensions-except=${EXT_PATH}`,
         `--load-extension=${EXT_PATH}`,
         '--no-sandbox',
         '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',  // Docker: /dev/shm 64MB制限を回避
+        '--disable-gpu',
       ],
-    });
+    };
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+    }
+    browser = await puppeteer.launch(launchOptions);
 
     process.stderr.write('\n[SETUP] Chrome起動 + 拡張機能ロード...\n');
     const { extId, swTarget } = await getExtInfo(browser);

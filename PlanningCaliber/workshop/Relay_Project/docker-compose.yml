@@ -1,0 +1,12 @@
+services:
+  reproduce-phios:
+    build: .
+    command: python3 -X utf8 reproduce_phios.py
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - PYTHONUTF8=1
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+    volumes:
+      - ./reproduce_output:/phios/reproduce_output
+    shm_size: '256mb'
