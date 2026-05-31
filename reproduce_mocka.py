@@ -404,10 +404,22 @@ def scenario_m06_ledger():
             ledger = json.load(f)
         if len(ledger) < 2:
             return True, "イベント数<2: 単調性チェックスキップ"
-        # タイムスタンプが単調増加しているか
-        timestamps = [e.get("timestamp", 0) for e in ledger]
+        # タイムスタンプは float (Unix time) または ISO文字列の混在に対応
+        # str化して比較（float→str なら数値順が保たれる）
+        def ts_key(e):
+            t = e.get("timestamp", 0)
+            if isinstance(t, (int, float)):
+                return float(t)
+            try:
+                return float(t)
+            except (ValueError, TypeError):
+                return str(t)
+        timestamps = [ts_key(e) for e in ledger]
+        # 型が混在する場合は str 比較に統一
+        if not all(isinstance(t, float) for t in timestamps):
+            timestamps = [str(t) for t in timestamps]
         monotone = all(timestamps[i] <= timestamps[i+1] for i in range(len(timestamps)-1))
-        return monotone, f"タイムスタンプ単調増加={'YES' if monotone else 'NO'}"
+        return monotone, f"タイムスタンプ単調増加={'YES' if monotone else 'NO'} (sample: {str(timestamps[0])[:20]})"
     run_test("M-S-06-d", "レジャー タイムスタンプ単調性確認", t_monotone)
 
 # ─── M-SCENARIO-07: civilization_bridge 試験 ──────────────────────────────────
