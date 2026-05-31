@@ -6,6 +6,8 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 # GITHUB_TOKEN は wrangler secret put GITHUB_TOKEN で設定（平文でここに書かない）
 
-[[routes]]
-pattern = "mocka-mcp.nsjpkimura.workers.dev/*"
-zone_name = "workers.dev"
+# workers.dev サブドメインは自動割り当て（mocka-mcp.nsjpkimura.workers.dev）
+# カスタムドメイン (mocka.nsjp.org) を使う場合は以下を有効化:
+# [[routes]]
+# pattern = "mocka.nsjp.org/*"
+# zone_name = "nsjp.org"
