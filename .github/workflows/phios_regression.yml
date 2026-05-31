@@ -79,12 +79,16 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"   # puppeteer 25 は Node 22 推奨 (Node 20 では EBADENGINE 警告でpostinstallがスキップされる)
 
-      # Puppeteer が自身のChromiumをダウンロード（macOS/Windows用）
-      - name: Install npm deps (Puppeteer + Chromium)
+      # Puppeteer インストール + Chrome 明示的ダウンロード（macOS/Windows用）
+      # npm install だけでは postinstall が EBADENGINE でスキップされることがあるため
+      # npx puppeteer browsers install chrome を明示的に実行する
+      - name: Install npm deps + Chrome (Puppeteer)
         working-directory: ${{ env.PHIOS_DIR }}/test
-        run: npm install --no-audit --no-fund
+        run: |
+          npm install --no-audit --no-fund
+          npx puppeteer browsers install chrome
 
       - name: Run reproduce_phios.py → VERIFIED
         working-directory: ${{ env.PHIOS_DIR }}
