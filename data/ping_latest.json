@@ -42,25 +42,37 @@
   ],
   "generated_at": "2026-06-01T06:18:29.619989",
   "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "さくらのレンタルサーバ スタンダード",
+    "verdict": "SUCCESS",
+    "score": -0.333,
+    "danger_rate": 0.333,
+    "success_rate": 0.667,
+    "text": "クリーンアップ完了です。\n\n現在の状況と次のアクション\n\n完了済み ✅\n\nwrangler ログイン（m_kimura@nsjp.org、Account ID確",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-05-31",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "さくらのレンタルサーバ スタンダード",
+        "when": "2026-04-11",
+        "why": "arXiv endorsement待ちの間にGitHub public repoで先行権のタイムスタンプを確保する",
+        "how": "arXiv endorsement壁→GitHub先行権戦略に切り替え→mocka-publicにPDF push完了",
+        "note": "先行権,GitHub,preprint,論文,v8,TODO_021,歴史的",
         "recur": 0,
         "matched": [
-          "さくら"
+          "GitHub"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-11",
+        "why": "MoCKAの全革新概念を国際学術プレプリントとして権利確定し商用展開の完全な基盤を作る",
+        "how": "完璧主義方針→7本生成→PDF変換→Zenodo投稿→GitHub push→全完了",
+        "note": "歴史的,TN1,TN2,TN3,TN4,TN5,TN6,TN7,Zenodo,GitHub,権利確定,完了",
+        "recur": 0,
+        "matched": [
+          "GitHub"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-05-31T21:46:30.848Z"
+    "updated_at": "2026-05-31T22:07:09.788Z"
   }
 }
