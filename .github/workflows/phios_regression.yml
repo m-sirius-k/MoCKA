@@ -25,49 +25,13 @@ env:
   PHIOS_DIR: PlanningCaliber/workshop/phi-os
 
 jobs:
+  # ── Ubuntu: Docker (Linux コンテナ) ─────────────────────────────────────────
   reproduce-docker:
-    name: reproduce-phios (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
-
+    name: reproduce-phios / Docker (ubuntu)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # macOS: Docker未インストール → colima でLinuxコンテナ起動
-      # HOMEBREW_NO_AUTO_UPDATE=1 で brew の git 自動更新による exit 128 を回避
-      - name: Setup Docker via colima (macOS)
-        if: runner.os == 'macOS'
-        env:
-          HOMEBREW_NO_AUTO_UPDATE: "1"
-          HOMEBREW_NO_INSTALL_CLEANUP: "1"
-        run: |
-          brew install colima docker docker-buildx docker-compose
-          mkdir -p ~/.docker/cli-plugins
-          ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" \
-            ~/.docker/cli-plugins/docker-compose
-          colima start --cpu 2 --memory 4 --disk 60 --wait
-          docker context use colima
-
-      # Windows: Docker Desktop はプリインストール済みだが Windows コンテナモードで起動
-      # Linux コンテナ (node:20-bookworm-slim) を動かすためにモードを切り替え
-      - name: Switch to Linux containers (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
-        run: |
-          $cli = "$env:ProgramFiles\Docker\Docker\DockerCli.exe"
-          if (Test-Path $cli) {
-            Write-Host "Switching Docker to Linux containers..."
-            & $cli -SwitchDaemon
-            Start-Sleep -Seconds 15
-          } else {
-            Write-Host "DockerCli.exe not found, assuming already in Linux mode"
-          }
+      - uses: actions/checkout@v4
 
       - name: Verify Docker daemon
         run: docker info
@@ -81,15 +45,64 @@ jobs:
         run: docker compose run --rm reproduce-phios
 
       - name: Confirm VERIFIED in result
+        run: |
+          RESULT="${{ env.PHIOS_DIR }}/reproduce_output/PHIOS_REPRODUCE_RESULT.md"
+          if [ -f "$RESULT" ]; then
+            grep -E "VERIFIED|L4|PASS|FAIL|SKIP|Hash" "$RESULT" | head -10
+          fi
+
+      - name: Upload result (ubuntu)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phios-result-ubuntu
+          path: ${{ env.PHIOS_DIR }}/reproduce_output/PHIOS_REPRODUCE_RESULT.md
+          retention-days: 30
+
+  # ── macOS / Windows: Native Python + Puppeteer ───────────────────────────────
+  # Docker on macOS/Windows GitHub runners は不安定のため Native 実行
+  # (macOS: Docker未搭載, Windows: Linuxコンテナモード切替が信頼性低い)
+  reproduce-native:
+    name: reproduce-phios / Native (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # Puppeteer が自身のChromiumをダウンロード（macOS/Windows用）
+      - name: Install npm deps (Puppeteer + Chromium)
+        working-directory: ${{ env.PHIOS_DIR }}/test
+        run: npm install --no-audit --no-fund
+
+      - name: Run reproduce_phios.py → VERIFIED
+        working-directory: ${{ env.PHIOS_DIR }}
+        run: python3 -X utf8 reproduce_phios.py
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
+          # PUPPETEER_EXECUTABLE_PATH 未設定 → Puppeteer bundled Chromium を使用
+
+      - name: Confirm VERIFIED in result
         shell: bash
         run: |
           RESULT="${{ env.PHIOS_DIR }}/reproduce_output/PHIOS_REPRODUCE_RESULT.md"
           if [ -f "$RESULT" ]; then
-            echo "=== PHI-OS Result Summary ==="
-            grep -E "VERIFIED|L4|PASS|FAIL|SKIP|Hash" "$RESULT" | head -20 || true
+            grep -E "VERIFIED|L4|PASS|FAIL|SKIP|Hash" "$RESULT" | head -10 || true
           fi
 
-      - name: Upload PHIOS_REPRODUCE_RESULT
+      - name: Upload result (${{ matrix.os }})
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -97,13 +110,9 @@ jobs:
           path: ${{ env.PHIOS_DIR }}/reproduce_output/PHIOS_REPRODUCE_RESULT.md
           retention-days: 30
 
-      - name: Colima stop (macOS)
-        if: runner.os == 'macOS' && always()
-        run: colima stop || true
-
   summary:
     name: Summary
-    needs: reproduce-docker
+    needs: [reproduce-docker, reproduce-native]
     runs-on: ubuntu-latest
     if: always()
     steps:
@@ -111,10 +120,13 @@ jobs:
         run: |
           echo "=================================================="
           echo "  PHI-OS Regression CI — Result"
-          echo "  Job: ${{ needs.reproduce-docker.result }}"
-          if [ "${{ needs.reproduce-docker.result }}" = "success" ]; then
+          echo "  Docker  (ubuntu): ${{ needs.reproduce-docker.result }}"
+          echo "  Native (mac/win): ${{ needs.reproduce-native.result }}"
+          DOCKER="${{ needs.reproduce-docker.result }}"
+          NATIVE="${{ needs.reproduce-native.result }}"
+          if [ "$DOCKER" = "success" ] && [ "$NATIVE" = "success" ]; then
             echo "  ✅ ALL OS: PHI-OS Proof of Reproducibility VERIFIED (L4)"
           else
-            echo "  ❌ FAIL: 一部またはすべてのOSで失敗"
+            echo "  ❌ 一部またはすべてのOSで失敗"
           fi
           echo "=================================================="
