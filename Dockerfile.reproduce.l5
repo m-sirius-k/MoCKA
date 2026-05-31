@@ -23,6 +23,9 @@ COPY app.py              .
 COPY reproduce_mocka.py  .
 COPY reproduce_mocka_l5_runner.py .
 
+# app.py依存ローカルモジュール
+COPY interface/db_helper.py .
+
 # caliber server（存在する場合のみ）
 COPY caliber/            caliber/
 
