@@ -1,0 +1,13 @@
+services:
+  reproduce-mocka-l5:
+    build:
+      context: .
+      dockerfile: Dockerfile.reproduce.l5
+    command: python -X utf8 reproduce_mocka_l5_runner.py
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - PYTHONUTF8=1
+      - MOCKA_ROOT=/mocka
+      - MOCKA_DB=/mocka/data/mocka_events.db
+    volumes:
+      - ./reproduce_output:/mocka/reproduce_output

@@ -1,0 +1,37 @@
+# MoCKA Proof of Reproducibility L5 — Dockerfile
+# サーバー3本（5000/5679/5002）をコンテナ内起動してSKIP=0を達成する
+FROM python:3.12-slim
+
+WORKDIR /mocka
+
+# 依存パッケージ（サーバー起動に必要なものを追加）
+COPY requirements.txt .
+RUN pip install --no-cache-dir \
+    flask \
+    flask-cors \
+    requests \
+    && pip install --no-cache-dir -r requirements.txt 2>/dev/null || true
+
+# コアファイル
+COPY schema/             schema/
+COPY runtime/main/ledger.json runtime/main/ledger.json
+COPY runtime/civilization_bridge.py runtime/
+COPY runtime/governance/ runtime/governance/
+COPY scripts/ledger/     scripts/ledger/
+COPY mocka_mcp_server.py .
+COPY app.py              .
+COPY reproduce_mocka.py  .
+COPY reproduce_mocka_l5_runner.py .
+
+# caliber server（存在する場合のみ）
+COPY caliber/            caliber/
+
+# data ディレクトリ（mocka_events.db が必要な場合）
+RUN mkdir -p data reproduce_output
+
+ENV PYTHONIOENCODING=utf-8
+ENV PYTHONUTF8=1
+ENV MOCKA_ROOT=/mocka
+ENV MOCKA_DB=/mocka/data/mocka_events.db
+
+CMD ["python", "-X", "utf8", "reproduce_mocka_l5_runner.py"]
