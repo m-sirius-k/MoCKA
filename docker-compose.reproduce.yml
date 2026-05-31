@@ -1,0 +1,11 @@
+services:
+  reproduce-mocka:
+    build:
+      context: .
+      dockerfile: Dockerfile.reproduce
+    command: python -X utf8 reproduce_mocka.py
+    environment:
+      - PYTHONIOENCODING=utf-8
+      - PYTHONUTF8=1
+    volumes:
+      - ./reproduce_output:/mocka/reproduce_output
