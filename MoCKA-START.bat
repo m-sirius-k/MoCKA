@@ -5,11 +5,24 @@ echo MoCKA Starting...
 echo [UTF-8 MANDATE CHECK]
 python C:\Users\sirok\MoCKA\check_utf8_mandate.py
 if %ERRORLEVEL% NEQ 0 (
-    echo UTF-8ˆá”½ŒŸoI‹N“®‚ð’âŽ~‚µ‚Ü‚·B
+    echo UTF-8ï¿½á”½ï¿½ï¿½ï¿½oï¿½Iï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
     pause
     exit /b 1
 )
 echo UTF-8 OK
+
+echo [CLOUDFLARE SYNC] Exporting data and pushing to GitHub...
+python C:\Users\sirok\MoCKA\PlanningCaliber\workshop\mocka-cloudflare\export_for_cloudflare.py
+cd /d C:\Users\sirok\MoCKA
+git add data\MOCKA_OVERVIEW.json data\MOCKA_TODO.json data\lever_essence.json data\events_latest.json >nul 2>&1
+git diff --cached --quiet
+if %ERRORLEVEL% NEQ 0 (
+    git commit -m "data: sync %DATE% %TIME%"
+    git push origin main
+    echo [SYNC] pushed to GitHub
+) else (
+    echo [SYNC] no changes, skip push
+)
 
 taskkill /F /IM comet.exe /T >nul 2>&1
 timeout /t 2 /nobreak > nul

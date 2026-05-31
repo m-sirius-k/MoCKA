@@ -15,7 +15,7 @@ DB_PATH     = MOCKA_ROOT / "data" / "mocka_events.db"
 COPIES = [
     (USER_ROOT / "MOCKA_OVERVIEW.json",  DATA_OUT / "MOCKA_OVERVIEW.json"),
     (USER_ROOT / "MOCKA_TODO.json",      DATA_OUT / "MOCKA_TODO.json"),
-    (MOCKA_ROOT / "lever_essence.json",  DATA_OUT / "lever_essence.json"),
+    (MOCKA_ROOT / "interface" / "lever_essence.json",  DATA_OUT / "lever_essence.json"),
 ]
 
 def export_events():
