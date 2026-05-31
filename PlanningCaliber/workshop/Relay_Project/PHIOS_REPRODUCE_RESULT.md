@@ -2,7 +2,7 @@
 
 **PHI-OS (Relay v4.1.0) — Proof of Reproducibility**
 
-- 実行日時: 2026-05-31 12:20:28
+- 実行日時: 2026-05-31 12:51:52
 - 実行環境: Windows 11 / Python 3.13.13
 - 対象: Chrome Extension MV3
 
@@ -57,7 +57,7 @@
 | P-S-09-c | 空Vault → None | PASS | 空Vault→None (got None) |
 | P-S-09-d | density=5 → TODO/ファイル全表示 | PASS | density=5 → TODO+ファイル含む |
 | P-S-10-a | Manifest Version = 3 | PASS | MV=3 |
-| P-S-10-b | 必須パーミッション確認 | PASS | 必須permission充足 (got {'webRequest', 'sidePanel', 'storage', ' |
+| P-S-10-b | 必須パーミッション確認 | PASS | 必須permission充足 (got {'webRequest', 'tabs', 'storage', 'scrip |
 | P-S-10-c | claude.ai host_permission | PASS | claude.ai host_permission (got ['https://claude.ai/*', 'http |
 | P-S-10-d | service_worker = background.js | PASS | service_worker=background.js (got {'service_worker': 'backgr |
 | P-S-10-e | sidepanel.html 登録済み | PASS | sidepanel.html (got {'default_path': 'sidepanel.html'}) |
@@ -66,25 +66,63 @@
 | P-S-11 | popup.js 構文チェック | PASS | 構文エラーなし |
 | P-S-11 | sidepanel.js 構文チェック | PASS | 構文エラーなし |
 | P-S-11 | relay_search_ui.js 構文チェック | PASS | 構文エラーなし |
-| P-S-12 | chrome.storage.local 動作試験 | SKIP | Chrome拡張APIはブラウザ環境必須 |
-| P-S-13 | chrome.runtime.sendMessage 試験 | SKIP | Chrome拡張APIはブラウザ環境必須 |
-| P-S-14 | HMAC-SHA256 ライセンス検証 | SKIP | Web Crypto APIはブラウザ環境必須 |
-| P-S-15 | popup.html レンダリング試験 | SKIP | DOM操作はブラウザ環境必須 |
-| P-S-16 | sidepanel.html レンダリング試験 | SKIP | DOM操作はブラウザ環境必須 |
-| P-S-17 | webRequest監視 (claude.ai) | SKIP | chrome.webRequestはブラウザ環境必須 |
-| P-S-18 | Pro AI要約 (Claude API) | SKIP | APIキー+実API呼び出し不可 |
-| P-S-19 | 多言語UI表示試験 | SKIP | DOM依存、ブラウザ環境必須 |
-| P-S-20 | セッション引き継ぎ E2E試験 | SKIP | chrome.storage依存 |
+| P-S-12-a | storage.set() → storage.get() ラウンドト | PASS | got="hello_phios_2026" |
+| P-S-12-b | storage: セッションデータ構造の永続化 | PASS | session_id=e2e_test_001 turn_count=7 |
+| P-S-12-c | storage: TODO配列の永続化 | PASS | len=2 first.id=LB_001 |
+| P-S-12-d | storage.remove() → 削除確認 | PASS | phios_tmp after remove=undefined |
+| P-S-13-a | RELAY_GET_METRICS: オブジェクト応答 | PASS | type=object keys=cpi |
+| P-S-13-b | RELAY_GET_STATS: stats構造の確認 | PASS | turn_count=7 cpi=0 |
+| P-S-13-c | RELAY_GET_HANDOFF: パケット文字列応答 | PASS | packet len=181 |
+| P-S-13-d | RELAY_GET_TODO_LIST: 配列応答 | PASS | todos type=object len=1 |
+| P-S-13-e | RELAY_ADD_TODO → RELAY_GET_TODO_LIS | PASS | todos=[{"created_at":1780199502939,"id":"LB_001","num":1,"so |
+| P-S-14-a | Web Crypto API 利用可能 | PASS | crypto.subtle.sign=function |
+| P-S-14-b | HMAC-SHA256 署名生成 (16文字Hex) | PASS | sigHex=09B820183C542D8E |
+| P-S-14-c | HMAC-SHA256 署名→検証 ラウンドトリップ | PASS | 同じキー+メッセージで署名が一致=true |
+| P-S-14-d | ライセンスキー形式: PLACEHOLDER検出 | PASS | _RELAY_VK type=string |
+| P-S-15-a | popup.html ロード成功 | PASS | URL starts with chrome-extension://okocleheboabgenhlhliingbp |
+| P-S-15-b | 必須DOM要素の存在 (5要素) | PASS | 全要素あり |
+| P-S-15-c | ハンドオフボタン クリック可能 | PASS | btn-handoff clickable=true |
+| P-S-15-d | popup.html: エラーなしでスクリプトロード | PASS | エラーなし |
+| P-S-16-a | sidepanel.html ロード成功 | PASS | sidepanel URL OK |
+| P-S-16-b | sidepanel.html: body要素あり | PASS | body.innerHTML.length=3509 |
+| P-S-16-c | sidepanel.html: スクリプトロード確認 | PASS | script要素あり=true |
+| P-S-17-a | pendingRequests Map の存在確認 | PASS | pendingRequests typeof=object |
+| P-S-17-b | pendingRequests.size が 0 (初期状態) | PASS | size=0 |
+| P-S-17-c | getContentLength() 関数存在 | PASS | getContentLength=function |
+| P-S-17-d | getContentLength(): 正常ヘッダー解析 | PASS | getContentLength([content-length:9876])=9876 |
+| P-S-17-e | getContentLength(): ヘッダーなし→0 | PASS | getContentLength([])=0 |
+| P-S-17-f | computeCPI() 関数存在 | PASS | computeCPI=function |
+| P-S-17-g | avg() ユーティリティ存在 | PASS | avg=function |
+| P-S-18-a | generateProHandoffPacket() 関数存在 | PASS | type=function |
+| P-S-18-b | generateProHandoffPacket() 引数数 = 3 | PASS | length=3 (expected: current,todos,apiKey) |
+| P-S-18-c | generateFreeHandoffPacketSync() 関数存 | PASS | type=function |
+| P-S-18-d | inferVaultTitle() 関数存在 | PASS | type=function |
+| P-S-18-e | buildVaultPacket() 関数存在 | PASS | type=function |
+| P-S-19-a | lang-select 要素の存在 | PASS | lang-select=true |
+| P-S-19-b | 5言語オプション確認 (ja/en/de/fr/ko) | PASS | options=["ja","en","de","fr","ko"] missing=[] |
+| P-S-19-c | デフォルト言語が設定済み | PASS | default="ja" |
+| P-S-19-d | lang保存→復元: en | PASS | stored=en popup displayed="en" |
+| P-S-19-d | lang保存→復元: de | PASS | stored=de popup displayed="de" |
+| P-S-19-d | lang保存→復元: fr | PASS | stored=fr popup displayed="fr" |
+| P-S-19-d | lang保存→復元: ko | PASS | stored=ko popup displayed="ko" |
+| P-S-19-d | lang保存→復元: ja | PASS | stored=ja popup displayed="ja" |
+| P-S-20-a | ストレージ初期化 → クリーン状態 | PASS | relay_current=undefined relay_sessions=undefined |
+| P-S-20-b | SESSION_START: セッション開始 | PASS | session_id=e2e_s001 turn_count=0 |
+| P-S-20-c | RELAY_ADD_TODO: TODO追加 | PASS | todos.len=1 found=true |
+| P-S-20-d | RELAY_TURN_UPDATE: ターン更新 | PASS | ok=true turn_count=1 tokens=500 |
+| P-S-20-e | SESSION_END: セッション終了 | PASS | current=null:true sessions:true logbook:true |
+| P-S-20-f | GET_HANDOFF: パケットに前セッション情報 | PASS | packet len=252 has_Relay=true |
+| P-S-20-g | COMPLETE_TODO → GET_TODO_LIST: 完了後に | PASS | before.len=1 after.len=0 id=LB_001 |
 
 ## サマリー
 
 | 項目 | 値 |
 |-----|---|
-| PASS | 53 |
+| PASS | 100 |
 | FAIL | 0 |
-| SKIP | 9 |
-| TOTAL | 62 |
-| 実行時間 | 0.44s |
+| SKIP | 0 |
+| TOTAL | 100 |
+| 実行時間 | 18.22s |
 
 ## 証明レベル
 
@@ -93,12 +131,12 @@
 | L1 Proof of Concept | ✅ |
 | L2 Proof of Implementation | ✅ |
 | L3 Proof of Operation | ✅ |
-| L4 Proof of Reproducibility | ❌ |
+| L4 Proof of Reproducibility | ✅ |
 
 ## Reproduction Hash
 
 ```
-sha256:5726d118ed2708d2d2968dca575ec5dec733d6a2815d8282ead1b241f045f8ed
+sha256:339f5151836a1ce19eaf42b006a9294f4b0cae673e12ad7a8627f3c40126ee79
 ```
 
 *Generated by reproduce_phios.py — PHI-OS TestField*

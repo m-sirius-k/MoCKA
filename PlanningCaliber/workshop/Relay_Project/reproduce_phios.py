@@ -735,7 +735,11 @@ def generate_report(duration_sec):
     print(f"\n  Reproduction Hash: sha256:{sha256[:16]}...")
     print(f"{BOLD}{'═'*60}{RESET}")
 
-    if failed == 0:
+    if l4:
+        print(f"\n{GREEN}{BOLD}  PHI-OS Proof of Reproducibility: VERIFIED (L4){RESET}")
+    elif l3:
+        print(f"\n{GREEN}{BOLD}  PHI-OS Proof of Reproducibility: VERIFIED (L3){RESET}")
+    elif l2:
         print(f"\n{GREEN}{BOLD}  PHI-OS Proof of Reproducibility: VERIFIED (L2){RESET}")
     else:
         print(f"\n{YELLOW}{BOLD}  PHI-OS Proof of Reproducibility: PARTIAL (L1){RESET}")
@@ -819,7 +823,7 @@ def main():
     scenario_p09_vault()
     scenario_p10_manifest()
     scenario_p11_js_syntax()
-    skip_browser_tests()
+    run_e2e_suite()
 
     duration = time.time() - start
     sha256, passed, failed, skipped, l1, l2, l3, l4 = generate_report(duration)
