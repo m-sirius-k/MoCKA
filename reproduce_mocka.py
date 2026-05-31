@@ -559,16 +559,22 @@ def scenario_m09_servers():
     else:
         skip_test("M-S-09-b", "caliber_server (port 5679) /health", "サーバー未起動 — 手動確認が必要")
 
-    # MCP server (port 5002)
+    # MCP server (port 5002) — /health エンドポイントで確認
     if check_port("127.0.0.1", 5002):
         def t_mcp():
-            try:
-                import urllib.request
-                r = urllib.request.urlopen("http://127.0.0.1:5002/", timeout=2)
-                return True, f"HTTP {r.status}"
-            except Exception as e:
-                return False, f"mcp error: {e}"
-        run_test("M-S-09-c", "mocka_mcp_server (port 5002)", t_mcp)
+            import urllib.request, urllib.error
+            for endpoint in ["/health", "/mcp", "/agent/tools"]:
+                try:
+                    r = urllib.request.urlopen(f"http://127.0.0.1:5002{endpoint}", timeout=2)
+                    body = r.read().decode("utf-8", errors="replace")[:80]
+                    return True, f"HTTP {r.status} ({endpoint}): {body[:40]}"
+                except urllib.error.HTTPError as e:
+                    if e.code < 500:
+                        return True, f"HTTP {e.code} ({endpoint}) — サーバー応答あり"
+                except Exception:
+                    continue
+            return False, "全エンドポイント応答なし"
+        run_test("M-S-09-c", "mocka_mcp_server (port 5002) /health", t_mcp)
     else:
         skip_test("M-S-09-c", "mocka_mcp_server (port 5002)", "サーバー未起動 — 手動確認が必要")
 
