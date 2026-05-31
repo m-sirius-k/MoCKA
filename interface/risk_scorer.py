@@ -110,7 +110,7 @@ def run():
     print(f"  Today's Technical Risk Summary  {datetime.date.today()}")
     print("=" * 50)
     for comp, score, label, color in results:
-        bar = "█" * (score // 5)
+        bar = "#" * (score // 5)
         print(f"  {comp:<{width}}  {color}{score:>3}  [{label:<8}]{RESET}  {bar}")
     print("=" * 50)
     critical = [r for r in results if r[2] == "CRITICAL"]
