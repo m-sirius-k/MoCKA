@@ -79,7 +79,10 @@ def check_http_get(cfg: dict) -> tuple:
     import urllib.request
     import urllib.error
     try:
-        req = urllib.request.Request(cfg["url"])
+        req = urllib.request.Request(
+            cfg["url"],
+            headers={"User-Agent": "MoCKA-TIC-HealthCheck/1.0"},
+        )
         with urllib.request.urlopen(req, timeout=cfg["timeout"]) as r:
             status = r.status
     except urllib.error.HTTPError as e:
