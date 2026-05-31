@@ -498,7 +498,8 @@ def scenario_p07_infer_work():
         ([{"text": "meeting notes"}],           "一般作業"),
         ([],                                    "作業内容不明"),
         ([{"text": "バグをfixする"}],           "実装・設計作業"),
-        ([{"text": "コードをreviewする"}],      "確認・レビュー作業"),
+        # "コード" が heavy キーワードに含まれるため heavy が優先される仕様
+        ([{"text": "コードをreviewする"}],      "実装・設計作業"),
     ]
 
     for todos, expected in cases:
