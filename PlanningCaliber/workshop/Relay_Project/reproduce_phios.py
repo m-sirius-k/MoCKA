@@ -803,6 +803,14 @@ sha256:{sha256}
     with open(result_path, "w", encoding="utf-8") as f:
         f.write(md)
     print(f"\n  Result saved: {result_path}")
+
+    # Docker volume経由でCI/CD から取り出せるよう reproduce_output/ にも保存
+    vol_dir = os.path.join(out_dir, "reproduce_output")
+    os.makedirs(vol_dir, exist_ok=True)
+    vol_path = os.path.join(vol_dir, "PHIOS_REPRODUCE_RESULT.md")
+    with open(vol_path, "w", encoding="utf-8") as f:
+        f.write(md)
+
     return sha256, passed, failed, skipped, l1, l2, l3, l4
 
 # ─── Main ──────────────────────────────────────────────────────────────────────
