@@ -102,7 +102,8 @@ def run():
     now = datetime.datetime.now().isoformat()
     results = []
     for dep in deps:
-        score = calc_score(dep)
+        comp  = dep["component"]
+        score = HUMAN_GATE_OVERRIDES.get(comp, calc_score(dep))
         dep["risk_score"]    = score
         dep["last_verified"] = now
         label, color         = rank(score)
