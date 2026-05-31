@@ -675,7 +675,7 @@ def generate_report(duration_sec):
     print(f"{BOLD}{'═'*62}{RESET}")
 
     if l4:
-        print(f"\n{GREEN}{BOLD}  MoCKA Proof of Reproducibility: VERIFIED (L4){RESET}")
+        print(f"\n{GREEN}{BOLD}  MoCKA Proof of Reproducibility: VERIFIED (L5){RESET}")
     elif l3:
         print(f"\n{GREEN}{BOLD}  MoCKA Proof of Reproducibility: VERIFIED (L3){RESET}")
     elif failed == 0:
