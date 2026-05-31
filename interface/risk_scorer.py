@@ -25,6 +25,12 @@ MCP_URL  = "http://localhost:5002/agent/mocka_write_event"
 FREQ_SCORE  = {"critical": 40, "high": 30, "medium": 20, "low": 10}
 SUBST_SCORE = {"none": 30, "hard": 20, "easy": 5}
 
+# Human Gate 承認済みスコア上書き（E20260601_031）
+# 計算式を超える判断は human_gate_overrides で明示管理する
+HUMAN_GATE_OVERRIDES = {
+    "claude_ai_dom": 92,   # E20260601_031: 高頻度×高影響で引き上げ
+}
+
 RANK_LABELS = {
     (70, 101): ("CRITICAL", "\033[91m"),
     (50,  70): ("WARNING",  "\033[93m"),
