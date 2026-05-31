@@ -3075,6 +3075,82 @@ def phi_os_status():
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
 
+# ================================================================
+# TIC (Technology Intelligence Caliber) エンドポイント
+# ================================================================
+
+TIC_DIR      = os.path.join(ROOT_DIR, "data", "tic")
+TIC_MAP_PATH = os.path.join(TIC_DIR, "dependency_map.json")
+TIC_LOG_PATH = os.path.join(TIC_DIR, "health_log.jsonl")
+TIC_QUEUE_PATH = os.path.join(TIC_DIR, "evaluation_queue.jsonl")
+
+@app.route("/tic/health")
+def tic_health():
+    """最新のヘルスチェック結果を返す"""
+    try:
+        if not os.path.exists(TIC_LOG_PATH):
+            return jsonify({"timestamp": None, "overall": "NO_DATA", "checks": [], "fail_count": 0})
+        with open(TIC_LOG_PATH, encoding="utf-8") as f:
+            lines = [l.strip() for l in f if l.strip()]
+        if not lines:
+            return jsonify({"timestamp": None, "overall": "NO_DATA", "checks": [], "fail_count": 0})
+        latest = json.loads(lines[-1])
+        return jsonify(latest)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/tic/risk")
+def tic_risk():
+    """dependency_map の Risk Score サマリーを返す"""
+    try:
+        if not os.path.exists(TIC_MAP_PATH):
+            return jsonify({"error": "dependency_map.json not found"}), 404
+        data = json.loads(open(TIC_MAP_PATH, encoding="utf-8").read())
+        deps = data.get("dependencies", [])
+        result = {"critical": [], "warning": [], "caution": [], "stable": []}
+        for d in deps:
+            score = d.get("risk_score")
+            if score is None:
+                continue
+            entry = {"component": d["component"], "score": score}
+            if score >= 70:
+                result["critical"].append(entry)
+            elif score >= 50:
+                result["warning"].append(entry)
+            elif score >= 30:
+                result["caution"].append(entry)
+            else:
+                result["stable"].append(entry)
+        for k in result:
+            result[k].sort(key=lambda x: -x["score"])
+        result["generated_at"] = data.get("meta", {}).get("updated_by", "")
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/tic/queue")
+def tic_queue():
+    """evaluation_queue の未処理エントリを返す"""
+    try:
+        if not os.path.exists(TIC_QUEUE_PATH):
+            return jsonify({"total": 0, "new": []})
+        entries = []
+        with open(TIC_QUEUE_PATH, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    entries.append(json.loads(line))
+        new_entries = [e for e in entries if e.get("status") == "NEW"]
+        return jsonify({
+            "total": len(entries),
+            "new": [{"id": e.get("id"), "source_name": e.get("source_name"),
+                     "detected_at": e.get("detected_at"),
+                     "impact_components": e.get("impact_components", [])} for e in new_entries]
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
