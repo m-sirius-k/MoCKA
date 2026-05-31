@@ -81,27 +81,18 @@ jobs:
         with:
           node-version: "22"
 
-      # macOS: Gatekeeper が Puppeteer ダウンロード版 Chrome をブロックする。
-      # macOS ランナーにはシステム Chrome が事前インストール済みなので EXECUTABLE_PATH で指定。
-      - name: Set Chrome path (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-          if [ -f "$CHROME" ]; then
-            echo "PUPPETEER_EXECUTABLE_PATH=$CHROME" >> "$GITHUB_ENV"
-          else
-            echo "Chrome not found at default path, Puppeteer will download"
-          fi
-
-      # macOS: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true でシステム Chrome を使用
-      # Windows: 独自 Chrome をダウンロード (npx puppeteer browsers install)
-      - name: Install npm deps (macOS — system Chrome)
+      # macOS: Google Chrome は --load-extension をブロックする (コード署名制限)
+      # → Puppeteer の bundled Chromium をダウンロードして使用
+      # Gatekeeper quarantine 属性を xattr で除去することで exit 126 を回避
+      - name: Install npm deps + Chromium + remove quarantine (macOS)
         if: runner.os == 'macOS'
         working-directory: ${{ env.PHIOS_DIR }}/test
-        env:
-          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
-        run: npm install --no-audit --no-fund
+        run: |
+          npm install --no-audit --no-fund
+          npx puppeteer browsers install chrome
+          xattr -r -d com.apple.quarantine ~/.cache/puppeteer/ 2>/dev/null || true
 
+      # Windows: 独自 Chrome をダウンロード
       - name: Install npm deps + Chrome (Windows)
         if: runner.os == 'Windows'
         working-directory: ${{ env.PHIOS_DIR }}/test
@@ -115,9 +106,8 @@ jobs:
         env:
           PYTHONUTF8: "1"
           PYTHONIOENCODING: utf-8
-          # macOS: headless:true + extension で SW が登録されない問題を回避
-          # macOS ランナーは GUI VM なので headless:false でも動作する
-          PUPPETEER_HEADLESS: ${{ runner.os == 'macOS' && 'false' || 'true' }}
+          # macOS: Puppeteer bundled Chromium を使用 (system Chrome は --load-extension 拒否)
+          # PUPPETEER_EXECUTABLE_PATH 未設定 → Puppeteer が自動的に bundled Chrome を使用
 
       - name: Confirm VERIFIED in result
         shell: bash
