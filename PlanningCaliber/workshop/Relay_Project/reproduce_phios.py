@@ -300,7 +300,7 @@ def print_header():
 def check_environment():
     print(f"{BOLD}[ENV] 環境確認{RESET}")
     import os
-    ext_path = r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\Relay_Project\extension"
+    ext_path = os.path.join(BASE_DIR, "extension")
     required = ["manifest.json", "background.js", "content.js", "popup.js",
                 "sidepanel.js", "relay_search_ui.js", "popup.html", "sidepanel.html"]
     missing = [f for f in required if not os.path.exists(os.path.join(ext_path, f))]
@@ -590,7 +590,7 @@ def scenario_p10_manifest():
     print(f"\n{BOLD}[P-S-10] manifest.json 整合性試験{RESET}")
     import os
 
-    ext_path = r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\Relay_Project\extension"
+    ext_path = os.path.join(BASE_DIR, "extension")
     with open(os.path.join(ext_path, "manifest.json"), encoding="utf-8") as f:
         m = json.load(f)
 
@@ -628,7 +628,7 @@ def scenario_p11_js_syntax():
     print(f"\n{BOLD}[P-S-11] JS構文チェック (静的解析){RESET}")
     import subprocess, os
 
-    ext_path = r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\Relay_Project\extension"
+    ext_path = os.path.join(BASE_DIR, "extension")
     js_files = ["background.js", "content.js", "popup.js", "sidepanel.js", "relay_search_ui.js"]
 
     node_available = False
@@ -753,7 +753,7 @@ def generate_report(duration_sec):
 
     # Save PHIOS_REPRODUCE_RESULT.md
     import os
-    out_dir = r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\Relay_Project"
+    out_dir = BASE_DIR
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     rows = "\n".join(
