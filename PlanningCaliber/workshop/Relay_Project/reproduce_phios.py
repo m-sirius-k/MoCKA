@@ -22,7 +22,14 @@ import re
 import sys
 import time
 import math
+import io
 from datetime import datetime
+
+# Windows cp932 対策: stdout を UTF-8 で強制
+if sys.stdout.encoding != "utf-8":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+if sys.stderr.encoding != "utf-8":
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 # ─── ANSI colors ──────────────────────────────────────────────────────────────
 GREEN  = "\033[92m"
