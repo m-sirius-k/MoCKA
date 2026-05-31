@@ -42,37 +42,39 @@
   ],
   "generated_at": "2026-06-01T06:18:29.619989",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.333,
-    "danger_rate": 0.333,
-    "success_rate": 0.667,
-    "text": "クリーンアップ完了です。\n\n現在の状況と次のアクション\n\n完了済み ✅\n\nwrangler ログイン（m_kimura@nsjp.org、Account ID確",
+    "verdict": "DANGER",
+    "score": 0.057,
+    "danger_rate": 0.528,
+    "success_rate": 0.472,
+    "text": "私は、この発想はかなり良いと思います。ただし「Tech Watcher」単体ではなく、MoCKA全体の制度として組み込む方が重要です。\n\n現状認識\n\nMoCKA",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "arXiv endorsement待ちの間にGitHub public repoで先行権のタイムスタンプを確保する",
-        "how": "arXiv endorsement壁→GitHub先行権戦略に切り替え→mocka-publicにPDF push完了",
-        "note": "先行権,GitHub,preprint,論文,v8,TODO_021,歴史的",
+        "when": "2026-04-03",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "これ2枚の紙の原理　左が　今与えられた指令　右　過去同じような経験の記憶\nこれが重なって　まったく違うことになる　イメージ　＝　ヒューマンエラーとaiの思い込み事故\n\nわかりやすい？",
         "recur": 0,
         "matched": [
-          "GitHub"
+          "エラー",
+          "違う"
         ],
-        "score": 1
+        "score": 2
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "MoCKAの全革新概念を国際学術プレプリントとして権利確定し商用展開の完全な基盤を作る",
-        "how": "完璧主義方針→7本生成→PDF変換→Zenodo投稿→GitHub push→全完了",
-        "note": "歴史的,TN1,TN2,TN3,TN4,TN5,TN6,TN7,Zenodo,GitHub,権利確定,完了",
+        "when": "2026-04-04",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "なんか　それをやったら何をするスクリプトか\n* 指定したログテキスト（例：`session.txt`）を読み込む。\n* その中に以下8ステージのキーワードが含まれているかをチェックする。\n   * O",
         "recur": 0,
         "matched": [
-          "GitHub"
+          "エラー",
+          "違う"
         ],
-        "score": 1
+        "score": 2
       }
     ],
-    "updated_at": "2026-05-31T22:07:09.788Z"
+    "updated_at": "2026-05-31T22:34:44.785Z"
   }
 }
