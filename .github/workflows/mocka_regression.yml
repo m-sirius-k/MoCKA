@@ -1,0 +1,76 @@
+name: MoCKA Regression CI
+
+# MoCKA 文明核 — Proof of Reproducibility
+# reproduce_mocka.py → VERIFIED (L3/L4)
+# ubuntu / windows マトリクス
+# Note: サーバー試験(M-S-09)はサーバー未起動のため SKIP → L3達成
+
+on:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - "reproduce_mocka.py"
+      - "schema/**"
+      - "runtime/governance/**"
+      - "runtime/civilization_bridge.py"
+      - ".github/workflows/mocka_regression.yml"
+  pull_request:
+    branches: ["main", "master"]
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
+jobs:
+  reproduce:
+    name: reproduce-mocka (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.12"]
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: pip install flask flask-cors
+
+      - name: Run reproduction
+        run: python -X utf8 reproduce_mocka.py
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+
+      - name: Upload MOCKA_REPRODUCE_RESULT
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mocka-result-${{ matrix.os }}-py${{ matrix.python }}
+          path: |
+            MOCKA_REPRODUCE_RESULT.md
+            MOCKA_TEST_REPORT.md
+          retention-days: 30
+
+  summary:
+    name: Summary
+    needs: reproduce
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Result
+        run: |
+          echo "MoCKA Regression CI — ${{ needs.reproduce.result }}"
+          if [ "${{ needs.reproduce.result }}" = "success" ]; then
+            echo "✅ MoCKA Proof of Reproducibility: VERIFIED"
+          else
+            echo "❌ Failed"
+          fi
