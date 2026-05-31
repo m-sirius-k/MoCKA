@@ -1,0 +1,23 @@
+[Unit]
+Description=MoCKA MCP Server
+After=network.target
+
+[Service]
+Type=simple
+User=YOUR_SSH_USER
+WorkingDirectory=/home/YOUR_SSH_USER/mocka
+Environment="MOCKA_HOME=/home/YOUR_SSH_USER/mocka"
+Environment="MOCKA_PORT=5002"
+Environment="MOCKA_PUBLIC_URL=https://mocka.nsjp.org"
+ExecStart=/home/YOUR_SSH_USER/mocka/.venv/bin/gunicorn \
+    --bind 127.0.0.1:5002 \
+    --workers 2 \
+    --timeout 60 \
+    --access-logfile /home/YOUR_SSH_USER/mocka/logs/access.log \
+    --error-logfile /home/YOUR_SSH_USER/mocka/logs/error.log \
+    mocka_mcp_server_vps:app
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
