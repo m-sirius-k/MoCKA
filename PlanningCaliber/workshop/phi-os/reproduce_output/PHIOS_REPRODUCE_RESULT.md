@@ -2,8 +2,8 @@
 
 **PHI-OS v1.0.0 — Proof of Reproducibility**
 
-- 実行日時: 2026-05-31 13:48:36
-- 実行環境: Python 3.13.13
+- 実行日時: 2026-05-31 05:00:52
+- 実行環境: Python 3.11.2
 
 ## 試験結果
 
@@ -26,7 +26,7 @@
 | P-S-03 | storage key: phi_commit_index | PASS | 'phi_commit_index' キーあり=True |
 | P-S-03 | storage key: phi_last_commit_ts | PASS | 'phi_last_commit_ts' キーあり=True |
 | P-S-03 | storage key: phi_panel_mode | PASS | 'phi_panel_mode' キーあり=True |
-| P-S-03-x | 全ストレージキーがphi_プレフィックス | FAIL | 全ストレージキーがphi_プレフィックス (非phi_: ['{', '{', '{']) |
+| P-S-03-x | 文字列ストレージキーがphi_プレフィックス | PASS | 文字列キーが全てphi_プレフィックス: ['phi_schema_version', 'phi_commit_inde |
 | P-S-04-a | PHI_I18N オブジェクト定義あり | PASS | PHI_I18N定数あり=True |
 | P-S-04 | i18n: ja | PASS | 言語'ja'あり=True |
 | P-S-04 | i18n: en | PASS | 言語'en'あり=True |
@@ -62,40 +62,40 @@
 | P-S-06 | 存在: debug/health-check.js | PASS | debug/health-check.js あり |
 | P-S-07 | 構文: background.js | PASS | 構文エラーなし |
 | P-S-07 | 構文: content.js | PASS | 構文エラーなし |
-| P-S-08 | 構文: core/auto-trigger.js | FAIL | (node:15952) Warning: Failed to load the ES module: C:\Users |
-| P-S-08 | 構文: core/commit-engine.js | FAIL | (node:16840) Warning: Failed to load the ES module: C:\Users |
-| P-S-08 | 構文: core/event-bus.js | FAIL | (node:19952) Warning: Failed to load the ES module: C:\Users |
-| P-S-08 | 構文: core/i18n.js | FAIL | (node:6176) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-08 | 構文: core/permission-manager.js | FAIL | (node:19404) Warning: Failed to load the ES module: C:\Users |
-| P-S-08 | 構文: core/restore-engine.js | FAIL | (node:3560) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-08 | 構文: core/schema-registry.js | FAIL | (node:2920) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-08 | 構文: core/state-store.js | FAIL | (node:18532) Warning: Failed to load the ES module: C:\Users |
-| P-S-09 | 構文: adapters/memory-adapter.js | FAIL | (node:6060) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-09 | 構文: adapters/orchestra-adapter.js | FAIL | (node:2856) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-09 | 構文: adapters/phi-adapter.js | FAIL | (node:20804) Warning: Failed to load the ES module: C:\Users |
-| P-S-09 | 構文: adapters/relay-adapter.js | FAIL | (node:3268) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-10 | 構文: debug/debug-panel.js | FAIL | (node:7236) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-10 | 構文: debug/error-reporter.js | FAIL | (node:7504) Warning: Failed to load the ES module: C:\Users\ |
-| P-S-10 | 構文: debug/health-check.js | FAIL | (node:21412) Warning: Failed to load the ES module: C:\Users |
-| P-S-10 | 構文: ui/options.js | FAIL | (node:20792) Warning: Failed to load the ES module: C:\Users |
-| P-S-10 | 構文: ui/panel-switch.js | FAIL | (node:18660) Warning: Failed to load the ES module: C:\Users |
+| P-S-08 | 構文: core/auto-trigger.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/commit-engine.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/event-bus.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/i18n.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/permission-manager.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/restore-engine.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/schema-registry.js | PASS | 構文エラーなし |
+| P-S-08 | 構文: core/state-store.js | PASS | 構文エラーなし |
+| P-S-09 | 構文: adapters/memory-adapter.js | PASS | 構文エラーなし |
+| P-S-09 | 構文: adapters/orchestra-adapter.js | PASS | 構文エラーなし |
+| P-S-09 | 構文: adapters/phi-adapter.js | PASS | 構文エラーなし |
+| P-S-09 | 構文: adapters/relay-adapter.js | PASS | 構文エラーなし |
+| P-S-10 | 構文: debug/debug-panel.js | PASS | 構文エラーなし |
+| P-S-10 | 構文: debug/error-reporter.js | PASS | 構文エラーなし |
+| P-S-10 | 構文: debug/health-check.js | PASS | 構文エラーなし |
+| P-S-10 | 構文: ui/options.js | PASS | 構文エラーなし |
+| P-S-10 | 構文: ui/panel-switch.js | PASS | 構文エラーなし |
 | P-S-11-a | storage set/get ラウンドトリップ | PASS | got="phi_os_2026" |
 | P-S-11-b | phi_schema_version の読み書き | PASS | got=1.0.0 |
 | P-S-11-c | phi_commit_index 配列の永続化 | PASS | got=["commit_001","commit_002"] |
 | P-S-11-d | storage.remove() 削除確認 | PASS | after remove=undefined |
-| P-S-12-a | PHI_HEARTBEAT → ok:true,ts | PASS | ok=true ts=1780202911466 |
+| P-S-12-a | PHI_HEARTBEAT → ok:true,ts | PASS | ok=true ts=1780203647863 |
 | P-S-12-b | PHI_GET_STATUS → commit_count,last_commi | PASS | commit_count=2 last_ts=null |
 | P-S-12-c | PHI_REGISTER_PRODUCT → ok:true | PASS | ok=true |
 | P-S-12-d | PHI_PANEL_MODE_CHANGED (sidepanel) → ok: | PASS | ok=true |
 | P-S-12-e | PHI_PANEL_MODE_CHANGED (popup) → ok:true | PASS | ok=true |
 | P-S-12-f | PHI_CLEAR_OLD_DATA → ok:true,deleted | PASS | ok=true deleted=0 |
 | P-S-12-g | 不明typeはerrorを返す | PASS | res={"error":"Unknown type: PHI_UNKNOWN_9999"} |
-| P-S-13-a | ui/options.html ロード成功 | PASS | URL starts with chrome-extension://bieancjajjieckhmgkmcpigpa |
+| P-S-13-a | ui/options.html ロード成功 | PASS | URL starts with chrome-extension://poklinjlecdjkebjmnoachieb |
 | P-S-13-b | PHI-OS ダッシュボード必須要素確認 | PASS | 全要素あり |
 | P-S-13-c | lang-select: 5言語オプション (ja/en/zh/ko/es) | PASS | options=["ja","en","zh","ko","es"] missing=[] |
 | P-S-13-d | PHI-OS ロゴ/ヘッダー存在確認 | PASS | PHI OS ヘッダーあり=true |
 | P-S-14-a | ui/sidepanel.html ロード成功 | PASS | URL=true |
-| P-S-14-b | sidepanel: body要素あり | PASS | body.innerHTML.length=981 |
+| P-S-14-b | sidepanel: body要素あり | PASS | body.innerHTML.length=992 |
 | P-S-14-c | sidepanel: スクリプトまたはリンクあり | PASS | script/link count=1 |
 | P-S-15 | SW関数: ensureSchemaVersion() | PASS | ensureSchemaVersion typeof=function |
 | P-S-15 | SW関数: registerProduct() | PASS | registerProduct typeof=function |
@@ -111,11 +111,11 @@
 
 | 項目 | 値 |
 |-----|---|
-| PASS | 79 |
-| FAIL | 18 |
+| PASS | 97 |
+| FAIL | 0 |
 | SKIP | 0 |
 | TOTAL | 97 |
-| 実行時間 | 19.23s |
+| 実行時間 | 12.89s |
 
 ## 証明レベル
 
@@ -123,11 +123,11 @@
 |-------|-----|
 | L1 | ✅ |
 | L2 | ✅ |
-| L3 | ❌ |
-| L4 | ❌ |
+| L3 | ✅ |
+| L4 | ✅ |
 
 ## Reproduction Hash
 
 ```
-sha256:8822ed9d250ed1c12b598a2eeed752223ed93f6124d4b91d5a256c90b070a1a0
+sha256:0bd3026c9f32d6aa190174c99138f5cf7a459e9e259b672152de82ac8c37a228
 ```

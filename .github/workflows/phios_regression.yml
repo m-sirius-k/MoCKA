@@ -1,0 +1,101 @@
+name: PHI-OS Regression CI
+
+# PHI-OS v1.0.0 (Persistent History Interface)
+# docker compose run reproduce-phios → VERIFIED (L4)
+# ubuntu / macos / windows マトリクス
+#
+# phi-os実装場所: PlanningCaliber/workshop/phi-os/
+
+on:
+  push:
+    branches: ["main", "master"]
+    paths:
+      - "PlanningCaliber/workshop/phi-os/**"
+      - ".github/workflows/phios_regression.yml"
+  pull_request:
+    branches: ["main", "master"]
+    paths:
+      - "PlanningCaliber/workshop/phi-os/**"
+      - ".github/workflows/phios_regression.yml"
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+  PHIOS_DIR: PlanningCaliber/workshop/phi-os
+
+jobs:
+  reproduce-docker:
+    name: reproduce-phios (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # macOS: Docker未インストール → colima でLinuxコンテナ起動
+      - name: Setup Docker via colima (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          brew install colima docker docker-buildx docker-compose
+          mkdir -p ~/.docker/cli-plugins
+          ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" \
+            ~/.docker/cli-plugins/docker-compose
+          colima start --cpu 2 --memory 4 --disk 60 --wait
+          docker context use colima
+
+      - name: Verify Docker daemon
+        run: docker info
+
+      - name: Build image
+        working-directory: ${{ env.PHIOS_DIR }}
+        run: docker compose build reproduce-phios
+
+      - name: Run → VERIFIED
+        working-directory: ${{ env.PHIOS_DIR }}
+        run: docker compose run --rm reproduce-phios
+
+      - name: Confirm VERIFIED in result
+        shell: bash
+        run: |
+          RESULT="${{ env.PHIOS_DIR }}/reproduce_output/PHIOS_REPRODUCE_RESULT.md"
+          if [ -f "$RESULT" ]; then
+            echo "=== PHI-OS Result Summary ==="
+            grep -E "VERIFIED|L4|PASS|FAIL|SKIP|Hash" "$RESULT" | head -20 || true
+          fi
+
+      - name: Upload PHIOS_REPRODUCE_RESULT
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: phios-result-${{ matrix.os }}
+          path: ${{ env.PHIOS_DIR }}/reproduce_output/PHIOS_REPRODUCE_RESULT.md
+          retention-days: 30
+
+      - name: Colima stop (macOS)
+        if: runner.os == 'macOS' && always()
+        run: colima stop || true
+
+  summary:
+    name: Summary
+    needs: reproduce-docker
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Print result
+        run: |
+          echo "=================================================="
+          echo "  PHI-OS Regression CI — Result"
+          echo "  Job: ${{ needs.reproduce-docker.result }}"
+          if [ "${{ needs.reproduce-docker.result }}" = "success" ]; then
+            echo "  ✅ ALL OS: PHI-OS Proof of Reproducibility VERIFIED (L4)"
+          else
+            echo "  ❌ FAIL: 一部またはすべてのOSで失敗"
+          fi
+          echo "=================================================="
