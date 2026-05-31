@@ -1,0 +1,14 @@
+{
+  "name": "phios-e2e",
+  "version": "1.0.0",
+  "description": "PHI-OS E2E test suite",
+  "main": "e2e_phios.js",
+  "scripts": {
+    "test": "node e2e_phios.js"
+  },
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "puppeteer": "^25.1.0"
+  }
+}
