@@ -11,6 +11,13 @@ if %ERRORLEVEL% NEQ 0 (
 )
 echo UTF-8 OK
 
+echo [TIC] Running Health Check...
+python C:\Users\sirok\MoCKA\interface\health_check.py
+echo [TIC] Running Tech Watcher...
+python C:\Users\sirok\MoCKA\interface\tech_watcher.py
+echo [TIC] Updating Risk Scores...
+python C:\Users\sirok\MoCKA\interface\risk_scorer.py
+
 echo [CLOUDFLARE SYNC] Exporting data and pushing to GitHub...
 python C:\Users\sirok\MoCKA\PlanningCaliber\workshop\mocka-cloudflare\export_for_cloudflare.py
 cd /d C:\Users\sirok\MoCKA

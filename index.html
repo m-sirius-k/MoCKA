@@ -189,6 +189,29 @@ header{display:flex;align-items:center;justify-content:space-between;padding:10p
       <div class="chip grn"><div class="n" id="m-action">-</div><div class="l">ACTION</div></div>
     </div>
   </div>
+  <!-- TIC パネル -->
+  <div class="panel" id="tic-panel" style="border-left:3px solid var(--yellow)">
+    <div class="panel-title"><span class="icon">&#9888;</span>TIC Monitor</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
+      <div class="chip" id="tic-health-chip" style="background:var(--bg2)">
+        <div class="n" id="tic-health-val" style="font-size:12px">-</div>
+        <div class="l">HEALTH</div>
+      </div>
+      <div class="chip red">
+        <div class="n" id="tic-critical-val">-</div>
+        <div class="l">CRITICAL</div>
+      </div>
+      <div class="chip ylw">
+        <div class="n" id="tic-warning-val">-</div>
+        <div class="l">WARNING</div>
+      </div>
+      <div class="chip ylw">
+        <div class="n" id="tic-queue-val">-</div>
+        <div class="l">QUEUE</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--text2)" id="tic-top-risk">-</div>
+  </div>
   <div class="panel">
     <div class="panel-title"><span class="icon">&#9650;</span>Heinrich Monitor</div>
     <div class="bar-row">
@@ -756,6 +779,32 @@ function refreshTodo(){
 }
 
 // ── REFRESH ALL ──
+// ── TIC Monitor ──
+function refreshTic(){
+  var healthColors={
+    'ALL PASS':'var(--green)','DEGRADED':'var(--yellow)','FAIL':'var(--red)','NO_DATA':'var(--text2)'
+  };
+  fetch('/tic/health').then(function(r){return r.json();}).then(function(d){
+    var el=document.getElementById('tic-health-val');
+    var chip=document.getElementById('tic-health-chip');
+    var overall=d.overall||'NO_DATA';
+    var col=healthColors[overall]||'var(--text2)';
+    if(el){el.textContent=overall;el.style.color=col;}
+    if(chip){chip.style.borderColor=col;}
+  }).catch(function(){});
+  fetch('/tic/risk').then(function(r){return r.json();}).then(function(d){
+    set('tic-critical-val',(d.critical||[]).length);
+    set('tic-warning-val',(d.warning||[]).length);
+    var top=(d.critical||[]).concat(d.warning||[]).slice(0,3);
+    set('tic-top-risk',top.map(function(t){return t.component+'('+t.score+')'}).join(' / ')||'-');
+  }).catch(function(){});
+  fetch('/tic/queue').then(function(r){return r.json();}).then(function(d){
+    var n=d.new||[];
+    var el=document.getElementById('tic-queue-val');
+    if(el){el.textContent=n.length;el.style.color=n.length>0?'var(--yellow)':'var(--text)';}
+  }).catch(function(){});
+}
+
 function refreshAll(){
   refreshServers();
   refreshRisk();
@@ -772,6 +821,7 @@ function refreshAll(){
   refreshIntegrity();
   refreshPipeline();
   refreshTodo();
+  refreshTic();
 }
 
 setInterval(refreshRisk, 60000);
@@ -781,6 +831,7 @@ setInterval(function(){
 setInterval(function(){
   refreshHeinrich();refreshTrend();refreshTodoRisk();refreshAgentAlloc();refreshIntegrity();refreshPipeline();refreshEssence();
 }, 120000);
+setInterval(refreshTic, 30000);
 
 refreshAll();
 

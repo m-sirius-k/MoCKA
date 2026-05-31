@@ -42,39 +42,37 @@
   ],
   "generated_at": "2026-06-01T06:18:29.619989",
   "matcher_result": {
-    "verdict": "DANGER",
-    "score": 0.057,
-    "danger_rate": 0.528,
-    "success_rate": 0.472,
-    "text": "私は、この発想はかなり良いと思います。ただし「Tech Watcher」単体ではなく、MoCKA全体の制度として組み込む方が重要です。\n\n現状認識\n\nMoCKA",
+    "verdict": "SUCCESS",
+    "score": -0.967,
+    "danger_rate": 0.016,
+    "success_rate": 0.984,
+    "text": "---\n\n## ✅ TIC 実装完了報告（Human Gate提示）\n\n### Risk Score ランキング（CRITICAL/WARNING）\n\n| ラン",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-03",
+        "when": "2026-04-14",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "これ2枚の紙の原理　左が　今与えられた指令　右　過去同じような経験の記憶\nこれが重なって　まったく違うことになる　イメージ　＝　ヒューマンエラーとaiの思い込み事故\n\nわかりやすい？",
+        "note": "SERVER STATUS\n● APP :5000 ONLINE\n● CALIBER :5679 ONLINE\n● MCP :5002 OFFLINE\n● NGROK OFFLINE\nMCP TOOL",
         "recur": 0,
         "matched": [
-          "エラー",
-          "違う"
+          "MCP tool"
         ],
-        "score": 2
+        "score": 1
       },
       {
-        "verdict": "DANGER",
-        "when": "2026-04-04",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "なんか　それをやったら何をするスクリプトか\n* 指定したログテキスト（例：`session.txt`）を読み込む。\n* その中に以下8ステージのキーワードが含まれているかをチェックする。\n   * O",
+        "verdict": "SUCCESS",
+        "when": "2026-04-29",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
         "recur": 0,
         "matched": [
-          "エラー",
-          "違う"
+          "採用"
         ],
-        "score": 2
+        "score": 1
       }
     ],
-    "updated_at": "2026-05-31T22:34:44.785Z"
+    "updated_at": "2026-05-31T22:54:52.648Z"
   }
 }

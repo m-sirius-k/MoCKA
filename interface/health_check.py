@@ -52,7 +52,7 @@ HEALTH_CHECKS = {
     },
     "stripe_worker": {
         "method": "http_get",
-        "url": "https://orchestra-license.nsjpkimura.workers.dev/health",
+        "url": "https://orchestra-license.nsjpkimura-mocka.workers.dev/health",
         "timeout": 10,
         "expect_status": [200],
     },
