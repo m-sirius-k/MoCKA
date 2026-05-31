@@ -44,12 +44,17 @@ def blast_score(blast_radius: list) -> int:
 
 
 def calc_score(dep: dict) -> int:
+    freq = dep.get("change_frequency", "low")
     s = (
-        FREQ_SCORE.get(dep.get("change_frequency", "low"), 10)
+        FREQ_SCORE.get(freq, 10)
         + SUBST_SCORE.get(dep.get("substitutability", "easy"), 5)
         + blast_score(dep.get("blast_radius", []))
     )
-    return min(max(s, 0), 100)
+    score = min(max(s, 0), 100)
+    # critical 扱いの場合は最低 80 を保証（Human Gate 判断による下限）
+    if freq == "critical":
+        score = max(score, 80)
+    return score
 
 
 def rank(score: int) -> tuple:
