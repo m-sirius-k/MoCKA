@@ -301,7 +301,7 @@ if __name__ == "__main__":
         print(f"B: {text_b}")
         result = analyze_and_extract(text_a, text_b)
         if result.get("beta"):
-            print(f"β: {result['beta_ja']} ({result['beta']}) 信頼度={result['confidence']}")
+            print(f"β: {result['beta_ja']} ({result['beta']}) status={result['lifecycle_status']} ev+={result['evidence_increment']}")
             print(f"  対立軸: {result['tension']}")
             print(f"  機会: {result['opportunity']}")
             print(f"  リスク: {result['risk']}")
