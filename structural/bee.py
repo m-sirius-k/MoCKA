@@ -160,6 +160,13 @@ class BetaEcologyEngine:
         current = entry.get("status", "観察β")
         last_seen = entry.get("last_seen", datetime.now().strftime("%Y-%m-%d"))
 
+        # Human Gate 承認済みβは自動的に「衰退」には落とさない
+        if entry.get("approved_by") and current in ("確立", "制度化", "成長中"):
+            if rate >= 0.40:
+                # 承認済みβが高い反証率 → Human Gate に通知するだけで自動衰退はしない
+                print(f"  [BEE] 注意: {beta_id} 反証率={rate:.2f} (Human Gate承認済みのため自動衰退スキップ)")
+                return current
+
         # 消滅チェック（90日更新なし）
         try:
             days_since = (datetime.now() - datetime.strptime(last_seen, "%Y-%m-%d")).days
