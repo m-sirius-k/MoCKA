@@ -145,13 +145,20 @@ def extract_beta(structures_a: list, structures_b: list,
     tension_arrow  = tension_result[1] if tension_result else None
 
     # 3. βテンプレートから候補を取得
+    # まずカテゴリ+テンションで照合、次にテンションのみで照合（カテゴリが異なる場合のフォールバック）
     beta_key = None
     beta_ja  = None
-    for cat in common_cats:
+    for cat in (common_cats or ["_any"]):
         key = (cat, tension_desc)
         if key in BETA_TEMPLATES:
             beta_key, beta_ja = BETA_TEMPLATES[key]
             break
+    # テンション直接照合フォールバック（カテゴリが一致しなかった場合）
+    if not beta_key and tension_desc:
+        for (_, t_desc), (bk, bj) in BETA_TEMPLATES.items():
+            if t_desc == tension_desc:
+                beta_key, beta_ja = bk, bj
+                break
 
     # テンプレートにない場合は動的生成
     if not beta_key:
