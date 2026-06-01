@@ -161,7 +161,7 @@ def check_relay_dom(cfg: dict) -> tuple:
     url = cfg["url"]
     try:
         import urllib.request
-        req = urllib.request.Request(url, headers={"User-Agent": "MoCKA-HealthCheck/1.0"})
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"})
         with urllib.request.urlopen(req, timeout=cfg.get("timeout", 8)) as r:
             status = r.status
         return (status == 200), f"HTTP {status} (claude.ai 疎通OK)"
