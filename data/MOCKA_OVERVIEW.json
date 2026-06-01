@@ -7,8 +7,8 @@
       "primary": "C:/Users/sirok/MOCKA_OVERVIEW.json",
       "backup": "A:/MOCKA_OVERVIEW.json"
     },
-    "updated": "2026-05-01",
-    "version": "2.6"
+    "updated": "2026-06-01",
+    "version": "3.0"
   },
   "owner": {
     "name": "nsjp_kimura",
@@ -117,9 +117,9 @@
   },
   "governance": {
     "latest_seal": {
-      "commit": "358b260",
-      "date": "2026-04-30",
-      "summary_hash": "fb8481bc",
+      "commit": "c2d8c54e",
+      "date": "2026-06-01",
+      "planningcaliber_commit": "18be5ea",
       "status": "ALL CHECKS PASSED"
     },
     "write_policy": "Phase18以降: コアシステムファイルへの書き込みは人間ゲート承認必須（ChatGPT上書きインシデント対応）",
@@ -257,6 +257,19 @@
       "key_paths": {
         "lever_verification": "workshop/needle_eye_project/experiments/lever_verification_claude.json"
       }
+    },
+    "vasai": {
+      "name": "vasAI",
+      "remote": "https://github.com/m-sirius-k/vasAI",
+      "role": "AI統治証明システム・エンタープライズ向け制度核",
+      "status": "v1.4.9 VERIFIED封印済み（2026-05-31）",
+      "tag": "v1.4.9-reproducibility"
+    },
+    "phi_os": {
+      "name": "PHI-OS",
+      "path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/phi-os/",
+      "role": "Chrome拡張Runtime Layer — 製品間神経系",
+      "status": "v1.0実装完了・実機テスト待ち（TODO_195）"
     }
   },
   "joints": {
@@ -278,11 +291,10 @@
     }
   },
   "current_issues": {
-    "essence_pipeline": "修復済み(2026-05-01): ping_generator SQLite直読み化・essence_auto_updater v3・REDUCING自動移動・Caliber死活監視",
-    "essence_content_quality": "改善中: きむら博士発言特化抽出ロジックに移行（mocka_strengthen.py適用）",
-    "re_reduced_archive": "制度化済み(2026-05-01): 処理済みファイルはESSENCE_DONEに自動アーカイブ",
-    "caliber_reducing_loop": "TODO_123完了: essence_auto_updater v3でREDUCING→RE_REDUCED自動移動（1分間隔）",
-    "aies_submission": "5/7着手・5/14 EasyChair登録・5/21 PDF提出"
+    "relay_dom_selector_fail": "[ACTIVE] health_check.pyがrelay_dom_selectorをFAIL判定中。claude.aiのDOM変更またはセレクタ定義ファイルの問題。TIC初検知案件。",
+    "relay_monetization": "[PENDING] Relay Free/Pro/One実装完了だが収益化パイプライン未構築。TODO_178で解決。",
+    "phi_os_test": "[PENDING] PHI OS v1.0実装完了・実機テスト未実施。TODO_195。",
+    "tic_tech_watcher_noise": "[ACTIVE] tech_watcher.pyがHTML全体hashを比較しているため動的コンテンツで誤検知リスク。TODO_208で意味差分検知に改修予定。"
   },
   "session_history": {
     "2026_03_28": [
@@ -353,24 +365,109 @@
       "REDUCING160件をRE_REDUCEDに移動・v3で自動化完了",
       "OVERVIEW.json v2.5更新",
       "TODO_123登録・断絶修復完了"
+    ],
+    "2026_06_01": [
+      "AIES 2026 投稿完了（5/9確認）Phase 4移行",
+      "TIC Layer 0〜1実装（health_check/tech_watcher v2.0）",
+      "BEE v2.0実装・Human Gate承認4件・institutional_evolution誕生",
+      "PHI OS v1.0全実装完了（core/adapters/restore/commit/options）",
+      "Relay Free/Pro/One全機能実装完了",
+      "vasAI v1.4.9 VERIFIED封印・GitHub公開",
+      "Structural Intelligence実装（bee/beta_engine/morphology）",
+      "TODO棚卸し：廃止5件（博士承認）",
+      "OVERVIEW.json v3.0更新（本セッション）"
     ]
   },
   "next_actions": {
     "immediate": [
-      "TODO_054: AIES 2026 EasyChair登録（5/14 AoE）— 5/7着手",
-      "TODO_124: essenceコンテンツ品質向上（きむら博士発言特化）",
-      "TODO_125: ping_generator定期強制実行追加"
+      "TODO_178: Relay Stripe+CWS+LP作成（Orchestraパイプライン流用）",
+      "TODO_195: PHI OS v1.0 実機テスト（chrome://extensions読み込み・博士5分作業）",
+      "TODO_208: TIC tech_watcher 形骸化防止改修（意味差分検知・relay_dom_selector FAIL修正）"
     ],
     "short_term": [
-      "TODO_116: COMMAND CENTER Temporal Analytics（7日トレンド）",
-      "TODO_117: Decision Intelligence（判断理由ログ）",
-      "TODO_118: Risk Engine TODOリスクスコア",
-      "TODO_122: Go移行 Phase1（AIES後）"
+      "TODO_204: TIC Layer 1 — tech_watcher.py意味差分検知版稼働確認",
+      "TODO_215: β Engine API公開 — /api/beta-extract エンドポイント追加"
     ],
-    "paper": [
-      "AIES 2026 Malmö — 非アーカイバル投稿（5/21 AoE）",
-      "採択後: MoCKA正式公開・arXiv投稿"
+    "product_pipeline": [
+      "Orchestra: 本番稼働中（Stripe→Cloudflare Workers→Resend）",
+      "Relay: Free/Pro/One実装完了・収益化未着手（TODO_178）",
+      "PHI OS: v1.0実装完了・実機テスト待ち（TODO_195）",
+      "vasAI: v1.4.9 VERIFIED封印済み（GitHub公開済み）"
+    ],
+    "tic_roadmap": [
+      "Layer 0: health_check.py 稼働中（relay_dom_selector FAIL継続中）",
+      "Layer 1: tech_watcher.py v2.0 稼働中（形骸化防止改修待ち TODO_208）",
+      "Layer 2〜4: Sandbox/impact_analyzer/Human Gate UI（TODO_205〜207）",
+      "Phase 2: Dependency Intelligence（2026-06-15以降・TODO_209）"
+    ],
+    "deferred": [
+      "TODO_122: MoCKA Go移行（長期・商用安定後）",
+      "TODO_150: Prism開発（Phase 5）",
+      "TODO_171: Orchestra JS難読化"
     ]
   },
-  "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成"
+  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
+  "products": {
+    "orchestra": {
+      "status": "本番稼働中",
+      "stripe_plans": "Pro($5/月) / One($10/月) / Launch Edition($8)",
+      "pipeline": "Stripe→nsjpkimura-mocka.workers.dev→Resend→noreply@nsjp.org",
+      "hmac_prefix": "OPR- / ONE-",
+      "lp": "orchestra_i18n_cs.html（5言語）"
+    },
+    "relay": {
+      "status": "実装完了・収益化未着手",
+      "plans": "Free(ルールベース) / Pro($5/月・AI要約) / One($10/月・Vault注入)",
+      "hmac_prefix": "RLY-P- / RLY-O-",
+      "next": "TODO_178: Stripe+CWS+LP"
+    },
+    "phi_os": {
+      "status": "v1.0実装完了・実機テスト待ち",
+      "next": "TODO_195"
+    },
+    "memory": {
+      "status": "Free実装完了（E20260526_041）",
+      "prefix": "MEM-"
+    },
+    "vasai": {
+      "status": "v1.4.9 VERIFIED",
+      "url": "https://github.com/m-sirius-k/vasAI"
+    },
+    "prism": {
+      "status": "未着手（Phase 5）"
+    }
+  },
+  "structural_intelligence": {
+    "bee": {
+      "path": "structural/bee.py",
+      "status": "v2.0稼働中",
+      "confirmed_betas": 4
+    },
+    "beta_engine": {
+      "path": "structural/beta_engine.py",
+      "status": "実装完了"
+    },
+    "api_existing": [
+      "/api/beta/status",
+      "/api/beta/evidence",
+      "/api/beta/meta"
+    ],
+    "api_pending": [
+      "/api/beta-extract（TODO_215）"
+    ]
+  },
+  "tic": {
+    "description": "Technology Intelligence Caliber — 外部技術変化の4層防衛",
+    "layer0": "health_check.py — 7点モーニングチェック（relay_dom_selector FAIL中）",
+    "layer1": "tech_watcher.py v3.0 — 意味差分検知（TODO_208改修後）",
+    "layer2": "tech_lab/ Sandbox（TODO_205・未着手）",
+    "layer3": "impact_analyzer.py（TODO_206・未着手）",
+    "layer4": "COMMAND CENTER TICパネル（TODO_207・未着手）",
+    "phase2": "Dependency Intelligence（2026-06-15以降・TODO_209）",
+    "paths": {
+      "health_check": "interface/health_check.py",
+      "tech_watcher": "interface/tech_watcher.py",
+      "data": "data/tic/"
+    }
+  }
 }
