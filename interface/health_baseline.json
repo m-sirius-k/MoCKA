@@ -25,6 +25,6 @@
   },
   "relay_dom_selector": {
     "ok": false,
-    "detail": "Relay ping stale (>300s): last_ping=2026-06-02T08:06:43.096745"
+    "detail": "Relay未接続: last_ping なし（拡張が起動していないか /relay/ping 未実装）"
   }
 }
