@@ -456,14 +456,100 @@
     {
       "id": "TODO_202",
       "title": "Technology Caliber — 自動評価パイプライン（モック検証 + Human Gate提示）",
-      "status": "未着手",
+      "status": "最優先・再編",
       "priority": "中",
       "category": "製品/caliber/tech_eval",
       "description": "評価キューに入った技術を実際にモック検証する自動パイプライン。\n【Phase 1: 自動情報収集】\n- ドキュメントURLからコンテンツを取得・要約\n- MoCKAの現状（events.db/essence/TODO）との照合で「どこに刺さるか」を自動マッピング\n\n【Phase 2: モック試験場実行】\n- eval_template/配下にtech_xxx_eval.py を自動生成\n- 最小限のコードで機能を試す（本体MoCKAには触れない）\n- 実行結果をevaluation_log.jsonlに記録\n\n【Phase 3: Human Gate提示】\n- COMMAND CENTERに評価サマリーを表示\n- 採用/保留/却下ボタン → DECISION_APPROVED/REJECTED記録\n\n評価軸スコアリング（0-5）:\n- 有用性: MoCKAの課題を解決するか\n- 安定性: ベータか正式リリースか\n- 採用コスト: 実装工数\n- 依存リスク: 消えたとき何が壊れるか",
       "assigned_to": "Claude（実装）+ きむら博士（実施）",
-      "note": "E20260601_002。「試す価値あるが固定採用か不明」なものをモックで検証してHuman Gateへ。",
+      "note": "E20260601_011。きむら博士設計によりhealth_check.py（無音崩壊防止）として最優先に昇格。二層防衛のLayer 0（地震計）として位置付け。TODO_203として独立登録し直す。",
       "reference_event": "E20260601_002",
-      "created_at": "2026-06-01T06:38:12.708598"
+      "created_at": "2026-06-01T06:38:12.708598",
+      "updated_at": "2026-06-01T07:35:03.563822"
+    },
+    {
+      "id": "TODO_203",
+      "title": "TIC Layer 0 — health_check.py 実装（無音崩壊・地震計）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "制度/TIC/health",
+      "description": "Technology Intelligence Caliber 最優先実装。\n「エラーなし・無音崩壊」をキャリブレーション儀式で防ぐ。\n\n【監視対象（初期7点）】\n1. Relay DOM selector — claude.aiの入力欄/メッセージセレクタ生存確認\n2. MCP schema hash — mocka_mcp_server.pyのtool定義と前回の差分\n3. Anthropic API — /v1/models エンドポイント疎通\n4. Stripe webhook — orchestra-license worker /health\n5. SQLite integrity — mocka_events.db PRAGMA integrity_check\n6. Caliber pipeline — localhost:5679 /health\n7. MoCKA server — localhost:5000 /loop/status\n\n【出力形式】\n毎朝MoCKA-START.bat実行時に自動走行。\n各チェック結果をmocka_write_event(HEALTH_OK / HEALTH_DEGRADED / HEALTH_FAIL)で記録。\nFAILがあればTECH_ALERTをprevention_queueに自動投入。\nCOMMAND CENTERにHEALTH MONITORパネル追加。\n\n【制御工学的意味】\n正常状態の「証拠の積み上げ」が主目的。\n異常は比較があって初めて見える。",
+      "assigned_to": "Claude（実装）",
+      "note": "E20260601_011。制御工学的センサドリフト検知。毎朝のキャリブレーション儀式。",
+      "reference_event": "E20260601_011",
+      "created_at": "2026-06-01T07:35:16.070838"
+    },
+    {
+      "id": "TODO_204",
+      "title": "TIC Layer 1 — tech_watcher.py 実装（差分検知エンジン）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/TIC/watch",
+      "description": "TIC Layer 1。新技術・仕様変更の差分検知エンジン。\n\n【監視対象URL（初期）】\n- https://docs.anthropic.com/en/release-notes/api\n- https://docs.anthropic.com/en/release-notes/claude-code\n- https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3\n- https://stripe.com/docs/changelog\n- https://docs.python.org/3/whatsnew/\n\n【動作】\n①各URLのHTMLをhttplibで取得\n②前回取得のSHA-256ハッシュと比較\n③差分検出 → mocka_write_event(TECH_CHANGE_DETECTED)\n④evaluation_queue.jsonlに自動追加\n⑤COMMAND CENTER TECH WATCHパネルに浮上\n\n【記録内容】\n変更URL / 検知日時 / diff概要 / 評価ステータス(NEW)\nまだ評価しない。検知のみ。",
+      "assigned_to": "Claude（実装）",
+      "note": "E20260601_011。差分検知のみ。評価はTODO_205(Sandbox)に委ねる。",
+      "reference_event": "E20260601_011",
+      "created_at": "2026-06-01T07:35:24.722722"
+    },
+    {
+      "id": "TODO_205",
+      "title": "TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/TIC/sandbox",
+      "description": "TIC Layer 2。本体MoCKAに触れない隔離実験場。\n\n【フォルダ構造】\nplanningcaliber/workshop/tech_lab/\n├── README.md（sandbox規約: 本体接続禁止・実験後必ず記録）\n├── experiments/（個別実験フォルダ）\n│   ├── claude_agent_view/\n│   ├── mcp_v2_schema/\n│   └── _template/（実験テンプレート）\n└── results/（評価結果 evaluation_log.jsonl）\n\n【実験テンプレート内容】\n- 対象技術名 / 発見日 / 発見源\n- 仮説（MoCKAのどこに影響するか）\n- 実験手順\n- 結果: 有効/無効/危険\n- MoCKAへの影響範囲（Relay/Orchestra/PHI-OS/Caliber/COMMAND CENTER）\n- 推奨: 採用/保留/却下 + 理由\n\n【厳守ルール】\n本体MoCKAへの接続・変更は一切禁止。\n実験完了後にmocka_write_event(SANDBOX_RESULT)必須。",
+      "assigned_to": "きむら博士（設計）+ Claude（実装）",
+      "note": "E20260601_011。本体汚染ゼロの隔離原則。「まず試す、本体は守る」。",
+      "reference_event": "E20260601_011",
+      "created_at": "2026-06-01T07:35:35.646392"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/TIC/impact",
+      "description": "TIC Layer 3。「面白い機能」ではなく「MoCKAがどう変わるか」を自動洗い出し。\n\n【impact_analyzer.py の動作】\nevaluation_queue.jsonlから技術エントリを読み込み、\nMoCKAの依存マップ（dependency_map.json）と照合して\n影響を受けるコンポーネントを列挙する。\n\n【dependency_map.json 構造】\n{\n  \"claude.ai_dom\": [\"Relay\", \"Orchestra\", \"content.js\"],\n  \"anthropic_api\": [\"Caliber\", \"vasAI\"],\n  \"mcp_schema\": [\"mocka_mcp_server\", \"Caliber\", \"Claude接続\"],\n  \"stripe_webhook\": [\"Orchestra\", \"Relay(予定)\"],\n  \"chrome_mv3\": [\"Orchestra\", \"Relay\", \"PHI-OS\", \"Memory\"],\n  \"sqlite\": [\"events.db\", \"morphology.db\", \"Caliber\"],\n  \"cloudflare_workers\": [\"orchestra-license\", \"relay-license(予定)\"]\n}\n\n【出力】\n各技術変更に対して影響コンポーネントリストを自動生成。\nHuman Gate提示時に「このAPIが変わるとOrchestra/Relayが壊れます」と明示。",
+      "assigned_to": "Claude（実装）",
+      "note": "E20260601_011。依存マップが核心。MoCKA多層構造の全依存を可視化。",
+      "reference_event": "E20260601_011",
+      "created_at": "2026-06-01T07:35:46.706472"
+    },
+    {
+      "id": "TODO_207",
+      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/TIC/human_gate",
+      "description": "TIC Layer 4。AIに採用決定権を与えない制度的保証。\n\n【COMMAND CENTER TIC パネル】\n- HEALTH STATUS: 7点チェック結果（GREEN/AMBER/RED）\n- TECH ALERTS: FAIL項目の即時表示\n- EVALUATION QUEUE: Sandboxで評価待ちの技術一覧\n- IMPACT SUMMARY: 影響コンポーネント付き評価サマリー\n\n【Human Gate判定フロー】\n①impact_analyzer.pyが影響範囲を提示\n②「5年後も維持できるか」視点できむら博士が判定\n③採用 → MoCKA本体統合TODO自動生成\n  保留 → 60日後に再評価キュー\n  却下 → REJECTED + 理由をevents.dbに永久記録\n\n【判定基準の明文化（きむら博士版）】\n- 維持コスト: 5年後も自分でメンテできるか\n- 依存深度: これが消えたとき何が死ぬか\n- 代替可能性: 同等の代替手段が存在するか\n- MoCKA整合性: PHL/SPP思想と矛盾しないか",
+      "assigned_to": "きむら博士（最終判断）",
+      "note": "E20260601_011。「AIは便利だから採用と言う。博士は5年後も維持できるかを見る。」この非対称性がHuman Gateの存在理由。",
+      "reference_event": "E20260601_011",
+      "created_at": "2026-06-01T07:35:58.299123"
+    },
+    {
+      "id": "TODO_208",
+      "title": "TIC tech_watcher 形骸化防止改修（意味差分検知）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "制度/TIC/watch",
+      "description": "現状のHTML全体hash比較では動的コンテンツ（日付・広告・セッションID）で毎回「変更検出」が発火し評価キューが形骸化する。\n\n【改修方針：意味差分検知】\n①メインコンテンツ領域のみ抽出（BeautifulSoupでmain/article/section#content等）\n②バージョン番号・日付パターンの専用抽出（正規表現: v\\d+\\.\\d+, YYYY-MM-DD形式）\n③前回と比較して「バージョンが上がった」「新しい日付が追加された」場合のみ検知\n④それ以外の差分はNOISEとして記録するが通知しない\n\n【ソースごとの専用パーサー】\n- anthropic_docs: h2見出し一覧のhash（リリースノート追加で変化）\n- chrome_mv3: バージョン表記の抽出\n- stripe_changelog: 日付付きエントリ数のカウント\n\n【形骸化防止の制度ルール】\n連続7日間「変更検出なし」→ TECH_WATCH_STALEをevents.dbに記録（パーサーが死んでいる可能性を検知）\n連続3日間「毎日変更検出」→ TECH_WATCH_NOISEを記録（ノイズ発火の可能性）",
+      "assigned_to": "Claude（実装）",
+      "note": "E20260601_030。「監視システムが形骸化すると存在しないより悪い（偽の安心を生む）」—きむら博士の指摘を制度化。",
+      "reference_event": "E20260601_030",
+      "created_at": "2026-06-01T07:55:28.112468"
+    },
+    {
+      "id": "TODO_209",
+      "title": "TIC Phase 2 — Dependency Intelligence（連鎖障害解析）",
+      "status": "保留（2026-06-15以降・設計範囲確定済み）",
+      "priority": "中",
+      "category": "制度/TIC/phase2",
+      "description": "TIC Phase 2。A→B→C→D連鎖障害解析。「何が変わると何が壊れるか」を自動予測。\ndependency_map.jsonの依存グラフをトポロジカルソートで解析し、upstream変更時の全downstream影響を自動列挙。\n例: Anthropic変更→Claude DOM変更→Relay崩壊→Orchestra崩壊→PHI-OS崩壊を事前に計算。\n企業のCMDB（Configuration Management Database）思想の実装。",
+      "assigned_to": "Claude（実装）+ きむら博士（承認）",
+      "note": "E20260601_061。Phase 2設計範囲拡張確定：Technical Dependencyに加えBusiness Dependency（Stripe→Webhook→Worker→License→Orchestra）を含む。技術的正常≠業務的正常の概念を実装。2026-06-15以降着手。",
+      "reference_event": "E20260601_031",
+      "created_at": "2026-06-01T07:56:59.422698",
+      "updated_at": "2026-06-01T09:03:54.619083"
     }
   ],
   "completed": [
@@ -2676,6 +2762,20 @@
       "created_at": "2026-05-31T08:57:37.921536",
       "updated_at": "2026-05-31T12:07:35.945432",
       "completed_at": "2026-05-31"
+    },
+    {
+      "id": "TODO_210",
+      "title": "緊急: orchestra-license Worker URL変更確認・全参照箇所修正",
+      "status": "完了",
+      "priority": "最高",
+      "category": "製品/Orchestra/Cloudflare",
+      "description": "orchestra-license のWorkerURLが変更された可能性。\n旧URL: orchestra-license.nsjpkimura-mocka.workers.dev\n新URL: nsjpkimura-mocka.workers.dev（またはその派生）\n\n確認対象ファイル（旧URL参照箇所）:\n- Orchestra_Project/background.js（validateLicense内のworker URL）\n- Orchestra_Project/popup.js\n- sirius-lab内の設定ファイル\n- Relay / PHI-OS / Memory の各background.js（将来連携予定箇所も含む）\n- Cloudflare Dashboard で現在アクティブなWorker名を確認\n\nblast_radius: Orchestra課金（ライセンス認証が全滅する）\nfailure_mode: 旧URLへのfetchが404/DNS_FAIL → 全ユーザーのライセンス認証失敗\n\n対処: 全参照箇所を新URLに統一後、health_check.pyのstripe_worker URLも更新。",
+      "assigned_to": "きむら博士（確認）+ Claude（調査）",
+      "note": "E20260601_061。14件ヒット→アクティブ0件→修正2件→Human Gate1件（Stripe Webhook）。課金停止リスクあり→きむら博士がStripe Dashboard手動変更要。",
+      "reference_event": "E20260601_052",
+      "created_at": "2026-06-01T08:13:52.539660",
+      "updated_at": "2026-06-01T09:03:50.267909",
+      "completed_at": "2026-06-01"
     }
   ],
   "orchestra_handoff": {
