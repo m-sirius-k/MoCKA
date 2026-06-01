@@ -179,8 +179,8 @@ def run_check(name: str, cfg: dict) -> dict:
             ok, detail = check_sqlite(cfg)
         elif method == "file_hash":
             ok, detail = check_file_hash(cfg)
-        elif method == "import_test":
-            ok, detail = check_imports(cfg)
+        elif method == "relay_dom":
+            ok, detail = check_relay_dom(cfg)
         else:
             ok, detail = False, f"unknown method: {method}"
     except Exception as e:
