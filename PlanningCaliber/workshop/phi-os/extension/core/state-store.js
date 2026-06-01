@@ -107,6 +107,29 @@ export async function getBytesInUse() {
   }
 }
 
+/**
+ * L3: phi_ プレフィックスキーの全データを JSON として一括出力する（Snapshot Export）
+ * options.html のダッシュボードやデバッグツールから利用する
+ * @returns {Promise<object>}  { ts, bytesInUse, keys: { [key]: value } }
+ */
+export async function snapshot() {
+  try {
+    const all   = await chrome.storage.local.get(null);
+    const phiKeys = Object.fromEntries(
+      Object.entries(all).filter(([k]) => k.startsWith('phi_'))
+    );
+    return {
+      ts:          Date.now(),
+      bytesInUse:  await getBytesInUse(),
+      keyCount:    Object.keys(phiKeys).length,
+      keys:        phiKeys,
+    };
+  } catch (e) {
+    await reportError({ type: 'SNAPSHOT_ERROR', message: e.message, ts: Date.now() });
+    return { ts: Date.now(), bytesInUse: 0, keyCount: 0, keys: {} };
+  }
+}
+
 // ─── L3: IndexedDB (content.js専用 — background.jsからは呼ばない) ─────────────
 
 const IDB_NAME    = 'phi-os-hub';

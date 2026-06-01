@@ -1,6 +1,8 @@
-// event-bus.js — PHI OS 製品間メッセージング
+// event-bus.js — PHI OS 製品間メッセージング（TODO_187）
 // chrome.runtime.sendMessage の Extension ID 問題を回避するため
-// chrome.storage.local をイベントバスとして使用する
+// chrome.storage.local をイベントバスとして使用する。
+// CWS 審査後、本番 Extension ID が確定した段階で background.js に
+// ALLOWED_EXTENSIONS + onMessageExternal を追加する（DESIGN_v1.md §4.2 参照）。
 'use strict';
 
 import { reportError } from '../debug/error-reporter.js';
