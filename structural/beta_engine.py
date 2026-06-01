@@ -212,39 +212,49 @@ def extract_beta(structures_a: list, structures_b: list,
 def _update_registry(beta_key: str, beta_ja: str, result: dict,
                       existing: dict | None, breg: dict,
                       event_a_id: str, event_b_id: str):
-    """beta_registry.json を更新する"""
+    """beta_registry.json を evidence ベースで更新する（BEE v2.0 スキーマ）"""
     example = {}
     if event_a_id:
         example["a"] = event_a_id
     if event_b_id:
         example["b"] = event_b_id
     if not example:
-        example = {"a": str(result["source_a"])[:30], "b": str(result["source_b"])[:30]}
+        example = {"a": str(result["source_a"])[:40], "b": str(result["source_b"])[:40]}
+    example["ts"] = result["timestamp"]
+
+    ev_inc = result.get("evidence_increment", 1)
+    today  = datetime.now().strftime("%Y-%m-%d")
 
     if existing:
-        # 既存βの occurrence と confidence を更新
-        existing["occurrence"] = existing.get("occurrence", 1) + 1
-        old_avg = existing.get("confidence_avg", result["confidence"])
-        n       = existing["occurrence"]
-        existing["confidence_avg"] = round((old_avg * (n-1) + result["confidence"]) / n, 3)
-        existing["examples"] = existing.get("examples", [])
+        existing["evidence"]  = existing.get("evidence", 0) + ev_inc
+        existing["last_seen"] = today
+        existing["examples"]  = (existing.get("examples") or [])
         existing["examples"].append(example)
+        if len(existing["examples"]) > 20:
+            existing["examples"] = existing["examples"][-20:]
+        # confidence/occurrence フィールドが残っていれば除去
+        existing.pop("confidence_avg", None)
+        existing.pop("occurrence",     None)
         breg[beta_key] = existing
     else:
         breg[beta_key] = {
-            "beta_ja":        beta_ja,
-            "beta_en":        beta_key,
-            "first_seen":     datetime.now().strftime("%Y-%m-%d"),
-            "occurrence":     1,
-            "confidence_avg": result["confidence"],
-            "tension":        result.get("tension") or "",
-            "implication":    result["implication"],
-            "opportunity":    result["opportunity"],
-            "risk":           result["risk"],
-            "examples":       [example],
-            "approved_by":    None,
-            "approved_at":    None,
-            "status":         "pending_approval",
+            "beta_ja":      beta_ja,
+            "beta_en":      beta_key,
+            "status":       "観察β",
+            "evidence":     ev_inc,
+            "contradiction": 0,
+            "last_seen":    today,
+            "first_seen":   today,
+            "tension":      result.get("tension") or "",
+            "implication":  result["implication"],
+            "opportunity":  result["opportunity"],
+            "risk":         result["risk"],
+            "co_occurrence": [],
+            "meta_beta":    None,
+            "examples":     [example],
+            "approved_by":  None,
+            "approved_at":  None,
+            "expires_at":   None,
         }
 
     _save_json(BETA_REG_PATH, breg)
