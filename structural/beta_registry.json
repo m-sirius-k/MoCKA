@@ -5,26 +5,49 @@
     "migrated": "2026-06-01",
     "migration_note": "E20260601_076: confidence廃止 → evidence/contradiction蓄積モデルへ移行",
     "description": "Structural Intelligence — β Ecology Registry（β = 証拠で成長する仮説構造体）",
-    "lifecycle_stages": ["観察β", "成長中", "確立", "制度化", "衰退", "消滅"],
+    "lifecycle_stages": [
+      "観察β",
+      "成長中",
+      "確立",
+      "制度化",
+      "衰退",
+      "消滅"
+    ],
     "note": "新βはbeta_engine.pyが自動生成。status変更はHuman Gateまたはbee.pyが管理する"
   },
   "dependency_concentration_risk": {
     "beta_ja": "依存集中リスク",
     "beta_en": "dependency_concentration_risk",
-    "status": "確立",
-    "evidence": 22,
-    "contradiction": 2,
+    "status": "衰退",
+    "evidence": 25,
+    "contradiction": 20,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "rapid_growth → major_incident",
     "implication": "急成長と大障害は「依存集中」という共通構造を持つ。表面上は正反対の事象に見えるが、同一リスク構造の別側面である",
     "opportunity": "依存集中を制度的に検知・分散することで急成長を持続可能にできる",
     "risk": "依存集中を放置したまま成長を続けると次の大障害は規模が拡大する",
-    "co_occurrence": ["institutionalized_connection", "process_institutionalization"],
+    "co_occurrence": [
+      "institutionalized_connection",
+      "process_institutionalization"
+    ],
     "meta_beta": null,
     "examples": [
-      {"a": "rapid_growth", "b": "major_incident", "event_ref": "MoCKA履歴"},
-      {"a": "dependency_concentration", "b": "single_point_failure", "event_ref": "E20260601_068"}
+      {
+        "a": "rapid_growth",
+        "b": "major_incident",
+        "event_ref": "MoCKA履歴"
+      },
+      {
+        "a": "dependency_concentration",
+        "b": "single_point_failure",
+        "event_ref": "E20260601_068"
+      },
+      {
+        "a": "['dependency_concentration', 'rapid_grow",
+        "b": "['single_point_failure', 'dependency_con",
+        "ts": "2026-06-01T18:04:24.118418"
+      }
     ],
     "approved_by": "きむら博士",
     "approved_at": "2026-06-01",
@@ -33,20 +56,36 @@
   "process_institutionalization": {
     "beta_ja": "プロセスの制度化",
     "beta_en": "process_institutionalization",
-    "status": "成長中",
-    "evidence": 12,
-    "contradiction": 1,
+    "status": "衰退",
+    "evidence": 21,
+    "contradiction": 100,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "manual_process → automated_process",
     "implication": "手動と自動化の間に潜む構造：人間が繰り返す作業はすべて制度化の候補である",
     "opportunity": "手動プロセスを特定して自動化することでヒューマンエラーをゼロにできる",
     "risk": "中途半端な自動化は手動より壊れやすい単一障害点を生む",
-    "co_occurrence": ["dependency_concentration_risk", "observation_as_institution"],
+    "co_occurrence": [
+      "dependency_concentration_risk",
+      "observation_as_institution"
+    ],
     "meta_beta": null,
     "examples": [
-      {"a": "manual_process", "b": "automated_process", "event_ref": "E20260601_068"},
-      {"a": "manual_process", "b": "automated_process", "event_ref": "MoCKA-START.bat実装"}
+      {
+        "a": "manual_process",
+        "b": "automated_process",
+        "event_ref": "E20260601_068"
+      },
+      {
+        "a": "manual_process",
+        "b": "automated_process",
+        "event_ref": "MoCKA-START.bat実装"
+      },
+      {
+        "a": "['manual_process', 'institutional_knowle",
+        "b": "['automated_process']",
+        "ts": "2026-06-01T18:04:24.133076"
+      }
     ],
     "approved_by": null,
     "approved_at": null,
@@ -55,19 +94,30 @@
   "api_institutionalization": {
     "beta_ja": "API移行の制度化",
     "beta_en": "api_institutionalization",
-    "status": "観察β",
-    "evidence": 3,
-    "contradiction": 1,
+    "status": "成長中",
+    "evidence": 15,
+    "contradiction": 271,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "ui_dependency → official_interface",
     "implication": "DOM依存からMCP公式APIへの移行は「接続の制度化」のより具体的な形態",
     "opportunity": "Relay・Orchestra のMCP完全移行で長期安定性を獲得できる",
     "risk": "MCP自体がバージョンアップで破壊的変更を行う可能性がある",
-    "co_occurrence": ["institutionalized_connection"],
+    "co_occurrence": [
+      "institutionalized_connection"
+    ],
     "meta_beta": null,
     "examples": [
-      {"a": "ui_dependency", "b": "official_interface", "event_ref": "E20260601_068"}
+      {
+        "a": "ui_dependency",
+        "b": "official_interface",
+        "event_ref": "E20260601_068"
+      },
+      {
+        "a": "['ui_dependency', 'high_change_frequency",
+        "b": "['official_interface']",
+        "ts": "2026-06-01T18:04:24.105181"
+      }
     ],
     "approved_by": null,
     "approved_at": null,
@@ -76,19 +126,26 @@
   "institutionalized_connection": {
     "beta_ja": "接続の制度化",
     "beta_en": "institutionalized_connection",
-    "status": "成長中",
-    "evidence": 8,
-    "contradiction": 0,
+    "status": "衰退",
+    "evidence": 9,
+    "contradiction": 270,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "unofficial_interface → official_interface",
     "implication": "非公式依存から公式依存への移行トレンドが進行中。単なるツール移行でなく「依存の制度化」という上位構造",
     "opportunity": "MCP対応を制度として実装することで長期安定性の根拠を持てる",
     "risk": "移行完了前にDOM変更が起きると崩壊する。移行期が最もリスクが高い",
-    "co_occurrence": ["api_institutionalization", "dependency_concentration_risk"],
+    "co_occurrence": [
+      "api_institutionalization",
+      "dependency_concentration_risk"
+    ],
     "meta_beta": null,
     "examples": [
-      {"a": "claude_dom_change", "b": "mcp_adoption", "event_ref": "E20260601_068"}
+      {
+        "a": "claude_dom_change",
+        "b": "mcp_adoption",
+        "event_ref": "E20260601_068"
+      }
     ],
     "approved_by": null,
     "approved_at": null,
@@ -97,20 +154,31 @@
   "observation_as_institution": {
     "beta_ja": "観測の制度化",
     "beta_en": "observation_as_institution",
-    "status": "成長中",
-    "evidence": 7,
-    "contradiction": 0,
+    "status": "衰退",
+    "evidence": 8,
+    "contradiction": 90,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "silent_failure → observable_failure",
     "implication": "障害が見えない状態から証拠の積み上げによる常時監視体制へ。TIC自体がこのβの実装例",
     "opportunity": "health_check.py の毎朝実行がこのβの証拠蓄積装置になる",
     "risk": "監視自体が壊れると二重の盲点になる（監視の監視が必要）",
-    "co_occurrence": ["process_institutionalization", "dependency_concentration_risk"],
+    "co_occurrence": [
+      "process_institutionalization",
+      "dependency_concentration_risk"
+    ],
     "meta_beta": null,
     "examples": [
-      {"a": "silent_failure", "b": "observable_failure", "event_ref": "E20260601_065"},
-      {"a": "silent_failure", "b": "observable_failure", "event_ref": "health_check.py実装"}
+      {
+        "a": "silent_failure",
+        "b": "observable_failure",
+        "event_ref": "E20260601_065"
+      },
+      {
+        "a": "silent_failure",
+        "b": "observable_failure",
+        "event_ref": "health_check.py実装"
+      }
     ],
     "approved_by": null,
     "approved_at": null,

@@ -42,38 +42,37 @@
   ],
   "generated_at": "2026-06-01T17:17:27.683507",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.324,
-    "danger_rate": 0.338,
-    "success_rate": 0.662,
-    "text": "私はここで一段発想を変えた方がいいと思います。\n\n今の議論は、\n\nどうやってβの信頼度を上げるか\n\nになっています。\n\nしかし本当に重要なのは、\n\nβは信頼度を",
+    "verdict": "DANGER",
+    "score": 0.231,
+    "danger_rate": 0.615,
+    "success_rate": 0.385,
+    "text": "全 TODO が既に「完了」ステータスで登録済みです。`mocka_update_todo` の \"not found\" エラーは別インスタンスが先に更新してい",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-29",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "==================================================\nMoCKA 蓄積データ全量レポート\n===============================",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
         "recur": 0,
         "matched": [
-          "またか",
-          "events.db"
+          "エラー"
         ],
-        "score": 2
+        "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-05-09",
+        "when": "2026-03-30",
         "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "=======================================================\n\nMoCKA Heinrich Engine v4 - 実態最適分類版\n\n=======",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
         "recur": 0,
         "matched": [
-          "またか"
+          "エラー"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-01T08:55:22.529Z"
+    "updated_at": "2026-06-01T09:13:24.901Z"
   }
 }

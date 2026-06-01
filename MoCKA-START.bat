@@ -40,3 +40,9 @@ timeout /t 3 /nobreak > nul
 wt -w 0 new-tab --title "MoCKA-APP" --tabColor "#005700" cmd /k "cd /d C:\Users\sirok\MoCKA && python app.py" ; new-tab --title "MoCKA-MCP" --tabColor "#5f1e3a" cmd /k "cd /d C:\Users\sirok\MoCKA && python mocka_mcp_server.py" ; new-tab --title "MoCKA-NGROK" --tabColor "#3a1e5f" cmd /k "ngrok start mocka_mcp" ; new-tab --title "MoCKA-CALIBER" --tabColor "#1e3a5f" cmd /k "cd /d C:\Users\sirok\MoCKA\caliber\chat_pipeline && python mocka_caliber_server.py" ; new-tab --title "MoCKA-RUNTIME-B" --tabColor "#5f3a00" cmd /k "cd /d C:\Users\sirok\MoCKA\runtime_b && mocka_runtime_b.exe" ; new-tab --title "MoCKA-WORK" cmd /k "cd /d C:\Users\sirok\MoCKA" ; new-tab --title "MoCKA-WATCHER" --tabColor "#1e5f3a" cmd /k "cd /d C:\Users\sirok\MoCKA && set MOCKA_FIREBASE_KEY_PATH=A:\secrets\mocka-knowledge-gate.json&& python interface\mocka_watcher.py"
 timeout /t 4 /nobreak > nul
 start "" http://localhost:5000
+
+REM health_check（毎朝キャリブレーション・別ウィンドウで結果目視）
+start "HEALTH" cmd /k "cd /d C:\Users\sirok\MoCKA && python interface/health_check.py && pause"
+
+REM β Ecology 毎朝スキャン
+start "BEE" cmd /k "cd /d C:\Users\sirok\MoCKA && python structural/bee.py --daily && pause"
