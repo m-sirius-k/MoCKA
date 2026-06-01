@@ -25,6 +25,6 @@
   },
   "relay_dom_selector": {
     "ok": false,
-    "detail": "接続エラー: HTTP Error 403: Forbidden"
+    "detail": "HTTP 200, selector=MISSING"
   }
 }
