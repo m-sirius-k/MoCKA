@@ -87,11 +87,11 @@ HEALTH_CHECKS = {
     },
     "relay_dom_selector": {
         "method": "relay_dom",
-        "url": "https://claude.ai",
-        "timeout": 8,
-        "key_patterns": ["contenteditable", "ProseMirror", "data-testid"],
-        "risk":            "claude.ai DOM変更でRelayが完全停止する（非公式依存の典型）",
-        "opportunity":     "DOM生存確認によりMCP移行の緊急度を定量的に判断できる",
+        "url": "http://localhost:5000/relay/status",
+        "timeout": 5,
+        "stale_seconds": 300,
+        "risk":            "Relay拡張停止でclaudeとの疎通が失われる",
+        "opportunity":     "ping監視によりRelay稼働状況を定量的に把握できる",
         "beta_candidate":  "institutionalized_connection",
     },
 }
