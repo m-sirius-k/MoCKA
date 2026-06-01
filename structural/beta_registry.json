@@ -18,9 +18,9 @@
   "dependency_concentration_risk": {
     "beta_ja": "依存集中リスク",
     "beta_en": "dependency_concentration_risk",
-    "status": "衰退",
-    "evidence": 25,
-    "contradiction": 20,
+    "status": "確立",
+    "evidence": 30,
+    "contradiction": 2,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "rapid_growth → major_incident",
@@ -56,9 +56,9 @@
   "process_institutionalization": {
     "beta_ja": "プロセスの制度化",
     "beta_en": "process_institutionalization",
-    "status": "衰退",
-    "evidence": 21,
-    "contradiction": 100,
+    "status": "確立",
+    "evidence": 19,
+    "contradiction": 1,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "manual_process → automated_process",
@@ -87,16 +87,16 @@
         "ts": "2026-06-01T18:04:24.133076"
       }
     ],
-    "approved_by": null,
-    "approved_at": null,
+    "approved_by": "きむら博士",
+    "approved_at": "2026-06-01",
     "expires_at": null
   },
   "api_institutionalization": {
     "beta_ja": "API移行の制度化",
     "beta_en": "api_institutionalization",
     "status": "成長中",
-    "evidence": 15,
-    "contradiction": 271,
+    "evidence": 9,
+    "contradiction": 1,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "ui_dependency → official_interface",
@@ -119,16 +119,16 @@
         "ts": "2026-06-01T18:04:24.105181"
       }
     ],
-    "approved_by": null,
-    "approved_at": null,
+    "approved_by": "きむら博士",
+    "approved_at": "2026-06-01",
     "expires_at": null
   },
   "institutionalized_connection": {
     "beta_ja": "接続の制度化",
     "beta_en": "institutionalized_connection",
-    "status": "衰退",
-    "evidence": 9,
-    "contradiction": 270,
+    "status": "成長中",
+    "evidence": 13,
+    "contradiction": 0,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "unofficial_interface → official_interface",
@@ -147,16 +147,16 @@
         "event_ref": "E20260601_068"
       }
     ],
-    "approved_by": null,
-    "approved_at": null,
+    "approved_by": "きむら博士",
+    "approved_at": "2026-06-01",
     "expires_at": null
   },
   "observation_as_institution": {
     "beta_ja": "観測の制度化",
     "beta_en": "observation_as_institution",
-    "status": "衰退",
+    "status": "成長中",
     "evidence": 8,
-    "contradiction": 90,
+    "contradiction": 0,
     "last_seen": "2026-06-01",
     "first_seen": "2026-06-01",
     "tension": "silent_failure → observable_failure",

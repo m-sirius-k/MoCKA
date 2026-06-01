@@ -97,7 +97,7 @@ class BetaEcologyEngine:
         except Exception as e:
             return {"error": str(e), "beta_id": beta_id}
 
-        ev_new    = 0
+        ev_new     = 0
         contra_new = 0
         for row in rows:
             text = " ".join(str(c) for c in row if c)
@@ -106,9 +106,14 @@ class BetaEcologyEngine:
                 any(kw.lower() in text_lower for kw in self.pdb.get(tag, {}).get("keywords", []))
                 for tag in support_tags
             )
-            matched_contra = any(
-                any(kw.lower() in text_lower for kw in self.pdb.get(tag, {}).get("keywords", []))
-                for tag in contra_tags
+            # 反証: contra_tags のキーワードが出現し、かつ support_tags のキーワードが
+            # 出現しない場合のみカウント（支持と反証が同時にあれば支持を優先）
+            matched_contra = (
+                not matched_support and
+                any(
+                    any(kw.lower() in text_lower for kw in self.pdb.get(tag, {}).get("keywords", []))
+                    for tag in contra_tags
+                )
             )
             if matched_support:
                 ev_new += 1
