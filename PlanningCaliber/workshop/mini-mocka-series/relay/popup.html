@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 320px;
+    background: #07090f;
+    color: #c9d1d9;
+    font-family: 'Noto Sans JP', 'Segoe UI', sans-serif;
+    font-size: 13px;
+  }
+  header {
+    background: #0d1117;
+    border-bottom: 1px solid #1e2d3d;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo { font-size: 18px; font-weight: 700; color: #00d4ff; letter-spacing: 1px; }
+  .plan-badge {
+    font-size: 10px; padding: 2px 8px;
+    background: #1e2d3d; border-radius: 10px; color: #8b949e;
+  }
+  .section { padding: 12px 16px; border-bottom: 1px solid #1e2d3d; }
+  .section-title { font-size: 10px; color: #8b949e; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+  .stat-label { color: #8b949e; font-size: 12px; }
+  .stat-value { font-family: monospace; font-size: 14px; font-weight: bold; color: #c9d1d9; }
+  .stat-value.warn { color: #d29922; }
+  .stat-value.ok   { color: #3fb950; }
+  .btn {
+    display: block; width: 100%;
+    padding: 8px; border: none; border-radius: 6px;
+    cursor: pointer; font-size: 12px; font-weight: 700;
+    margin: 4px 0; transition: all 0.2s;
+  }
+  .btn-primary { background: #00d4ff; color: #07090f; }
+  .btn-primary:hover { background: #00b8d9; }
+  .btn-secondary { background: #1e2d3d; color: #c9d1d9; border: 1px solid #2a3f52; }
+  .btn-secondary:hover { background: #2a3f52; }
+  .actions { padding: 12px 16px; }
+  #density-bar-wrap { background: #1e2d3d; border-radius: 4px; height: 6px; margin-top: 6px; overflow: hidden; }
+  #density-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #00d4ff, #bc8cff); transition: width .5s; }
+  #status-msg { padding: 8px 16px; font-size: 11px; color: #8b949e; min-height: 24px; }
+  select {
+    background: #1e2d3d; color: #c9d1d9; border: 1px solid #2a3f52;
+    border-radius: 4px; padding: 4px 8px; font-size: 12px; width: 100%;
+  }
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">Relay</span>
+  <span class="plan-badge" id="plan-label">Free</span>
+</header>
+
+<div class="section">
+  <div class="section-title">セッション状態</div>
+  <div class="stat-row">
+    <span class="stat-label">ターン数</span>
+    <span class="stat-value" id="turn-count">--</span>
+  </div>
+  <div class="stat-row">
+    <span class="stat-label">密度スコア (One)</span>
+    <span class="stat-value" id="density-score">--</span>
+  </div>
+  <div id="density-bar-wrap"><div id="density-bar-fill" style="width:0%"></div></div>
+</div>
+
+<div class="section">
+  <div class="section-title">プラン設定</div>
+  <select id="plan-select">
+    <option value="free">Free — 20ターン警告</option>
+    <option value="pro">Pro — AI要約 + ファイルキャプチャ</option>
+    <option value="one">One — 最適タイミング検知</option>
+  </select>
+</div>
+
+<div class="actions">
+  <button class="btn btn-primary" id="btn-handoff">今すぐ引き継ぎ</button>
+  <button class="btn btn-secondary" id="btn-clear">セッションリセット</button>
+</div>
+
+<div id="status-msg"></div>
+
+<script src="popup.js"></script>
+</body>
+</html>
