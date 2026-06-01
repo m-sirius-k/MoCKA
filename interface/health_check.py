@@ -270,13 +270,28 @@ def run(target: str = None):
     total    = len(results)
     passed   = sum(1 for r in results if r["ok"])
     fails    = [r for r in results if not r["ok"]]
-    overall  = "ALL PASS" if not fails else ("DEGRADED" if passed > 0 else "FAIL")
+
+    # 前回比で悪化したコンポーネントを DEGRADED として検知
+    baseline = _load_baseline()
+    degraded = [r["component"] for r in results
+                if not r["ok"] and baseline.get(r["component"], {}).get("ok") is True]
+
+    overall  = "ALL PASS" if not fails else ("DEGRADED" if degraded else ("PARTIAL" if passed > 0 else "FAIL"))
     color    = GREEN if not fails else RED
 
     print()
     print(f"  Overall: {color}{overall} ({passed}/{total}){RESET}")
     print("=" * 40)
     print()
+
+    # [HEALTH] 形式のサマリ行（MoCKA-START.bat ログ用）
+    icon = "✅" if not fails else "⚠️"
+    print(f"[HEALTH] {icon} {passed}/{total} PASS" +
+          (f"  DEGRADED: {degraded}" if degraded else "") +
+          (f"  FAIL: {[r['component'] for r in fails]}" if fails else ""))
+
+    # baseline 更新
+    _save_baseline(results)
 
     # ログ・記録
     entry = append_health_log(results, overall)
