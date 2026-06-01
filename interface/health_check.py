@@ -157,20 +157,16 @@ def check_file_hash(cfg: dict) -> tuple:
 
 
 def check_relay_dom(cfg: dict) -> tuple:
-    """claude.ai 入力欄セレクタ生存確認（requests/urllib 両対応）"""
+    """claude.ai 疎通確認 HTTP200=PASS セレクター確認はRelay拡張に委譲"""
     url = cfg["url"]
-    patterns = cfg.get("key_patterns", ["contenteditable"])
     try:
         import urllib.request
         req = urllib.request.Request(url, headers={"User-Agent": "MoCKA-HealthCheck/1.0"})
         with urllib.request.urlopen(req, timeout=cfg.get("timeout", 8)) as r:
-            body = r.read(65536).decode("utf-8", errors="replace")
             status = r.status
-        found = any(p in body for p in patterns)
-        return found, f"HTTP {status}, selector={'ALIVE' if found else 'MISSING'}"
+        return (status == 200), f"HTTP {status} (claude.ai 疎通OK)"
     except Exception as e:
         return False, f"接続エラー: {e}"
-
 
 # ── health_baseline.json（全チェック差分検知）──
 
