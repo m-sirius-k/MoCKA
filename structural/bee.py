@@ -17,6 +17,13 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
+# Windows コンソール UTF-8 対応
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 ROOT           = Path(__file__).parent.parent
 STRUCTURAL_DIR = Path(__file__).parent
 BETA_REG_PATH  = STRUCTURAL_DIR / "beta_registry.json"

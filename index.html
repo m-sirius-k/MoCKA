@@ -1089,6 +1089,86 @@ document.addEventListener('DOMContentLoaded', function(){
       </div>
 
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- β ECOLOGY パネル (BEE / TODO_216)                           -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<script>
+(function(){
+  const STATUS_COLOR = {
+    '制度化': '#bc8cff', '確立': '#3fb950', '成長中': '#00d4ff',
+    '観察β': '#d29922',  '衰退': '#f0883e',  '消滅': '#f85149'
+  };
+  const STATUS_ICON = {
+    '制度化': '🌟', '確立': '✅', '成長中': '📈', '観察β': '🔍', '衰退': '⚠️', '消滅': '💀'
+  };
+
+  async function loadBetaStatus() {
+    const wrap = document.getElementById('bee-panel-rows');
+    const meta = document.getElementById('bee-meta-wrap');
+    if (!wrap) return;
+    try {
+      const [r1, r2] = await Promise.all([
+        fetch('/api/beta/status').then(r=>r.json()),
+        fetch('/api/beta/meta').then(r=>r.json()),
+      ]);
+      const betas = r1.betas || [];
+      wrap.innerHTML = betas.map(b => {
+        const ev    = b.evidence || 0;
+        const co    = b.contradiction || 0;
+        const total = ev + co;
+        const pct   = total > 0 ? Math.round(ev / total * 100) : 0;
+        const bar   = Math.round(pct / 8);
+        const filled= '█'.repeat(bar) + '░'.repeat(12-bar);
+        const col   = STATUS_COLOR[b.status] || '#8b949e';
+        const icon  = STATUS_ICON[b.status] || '?';
+        return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #1e2d3d;font-size:11px;">
+          <span style="min-width:56px;color:${col};font-weight:700;">${icon} ${b.status}</span>
+          <span style="min-width:150px;color:#c9d1d9;">${b.beta_ja||b.beta_id}</span>
+          <span style="color:#8b949e;font-family:monospace;font-size:10px;">ev:${ev} co:${co}</span>
+          <span style="font-family:monospace;font-size:10px;color:${col};">${filled} ${pct}%</span>
+          ${b.meta_beta ? `<span style="color:#bc8cff;font-size:10px;">→${b.meta_beta}</span>` : ''}
+        </div>`;
+      }).join('') || '<div style="color:#555;font-size:11px;">βなし</div>';
+
+      const metaBetas = r2.meta_betas || [];
+      if (meta) {
+        meta.innerHTML = metaBetas.length
+          ? metaBetas.map(m=>`<div style="color:#bc8cff;font-size:12px;padding:4px 0;">🌟 <strong>${m.beta_ja}</strong><br><span style="color:#8b949e;font-size:11px;">${m.implication||''}</span></div>`).join('')
+          : '<div style="color:#555;font-size:11px;">Meta β未生成（確立β3件以上で自動生成）</div>';
+      }
+    } catch(e) {
+      if(wrap) wrap.innerHTML = '<div style="color:#f85149;font-size:11px;">BEE接続エラー</div>';
+    }
+  }
+
+  window.addBeeEvidence = async function(betaId, type) {
+    try {
+      const r = await fetch('/api/beta/evidence', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({beta_id: betaId, type, source: 'manual_ui', amount: 1})
+      });
+      const d = await r.json();
+      if(d.status === 'ok') { loadBetaStatus(); }
+    } catch(e){}
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadBetaStatus();
+    setInterval(loadBetaStatus, 60000);  // 1分ごとに更新
+  });
+})();
+</script>
+
+<div class="panel purp" id="bee-panel" style="margin:10px 16px;">
+  <div class="panel-title">
+    <span class="icon">🧬</span> β ECOLOGY
+    <span style="flex:1;"></span>
+    <button onclick="loadBetaStatus()" style="padding:3px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--purple);border-radius:var(--radius);cursor:pointer;font-size:11px;font-family:var(--mono);">更新</button>
+  </div>
+  <div id="bee-panel-rows" style="max-height:180px;overflow-y:auto;"></div>
+  <div id="bee-meta-wrap" style="margin-top:8px;padding-top:8px;border-top:1px solid #1e2d3d;"></div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <!-- HEALTH MONITOR パネル (TIC Layer 0 / TODO_203)              -->
 <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
 <script>
