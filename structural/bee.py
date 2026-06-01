@@ -266,6 +266,44 @@ class BetaEcologyEngine:
                     cat_map.setdefault(cat, []).append(bid)
 
         generated = []
+
+        # 補助検出: 確立β が3件以上あり、名前に共通パターン（制度化）がある場合に
+        # カテゴリ横断 Meta β を生成する
+        institutionalization_betas = [
+            bid for bid in established
+            if "制度" in (self.breg[bid].get("beta_ja") or "")
+            or "institutionali" in bid.lower()
+        ]
+        if len(institutionalization_betas) >= 3:
+            meta_key = "institutional_evolution"
+            meta_ja  = "制度化進化フェーズ"
+            meta_impl = f"MoCKAは今、制度化フェーズへ収束中（確立β: {len(institutionalization_betas)}件）"
+            today = datetime.now().strftime("%Y-%m-%d")
+            if meta_key not in self.breg:
+                self.breg[meta_key] = {
+                    "beta_ja":       meta_ja,
+                    "beta_en":       meta_key,
+                    "status":        "制度化",
+                    "is_meta":       True,
+                    "evidence":      sum(self.breg[b].get("evidence", 0) for b in institutionalization_betas),
+                    "contradiction": 0,
+                    "last_seen":     today,
+                    "first_seen":    today,
+                    "implication":   meta_impl,
+                    "source_betas":  institutionalization_betas,
+                    "co_occurrence": [],
+                    "meta_beta":     None,
+                    "approved_by":   None,
+                    "approved_at":   None,
+                    "expires_at":    None,
+                }
+                self._dirty = True
+                for b in institutionalization_betas:
+                    self.breg[b]["meta_beta"] = meta_key
+                    self._dirty = True
+                generated.append({"meta_key": meta_key, "meta_ja": meta_ja,
+                                   "source_betas": institutionalization_betas})
+
         for (cat, threshold), (meta_key, meta_ja, meta_impl) in self.META_BETA_TEMPLATES.items():
             bids = cat_map.get(cat, [])
             if len(bids) < threshold:
