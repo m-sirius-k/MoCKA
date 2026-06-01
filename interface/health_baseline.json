@@ -1,0 +1,30 @@
+{
+  "mocka_server": {
+    "ok": true,
+    "detail": "200 OK"
+  },
+  "caliber_pipeline": {
+    "ok": true,
+    "detail": "200 OK"
+  },
+  "anthropic_api": {
+    "ok": true,
+    "detail": "401 (疎通確認OK)"
+  },
+  "stripe_worker": {
+    "ok": true,
+    "detail": "200 OK"
+  },
+  "sqlite_integrity": {
+    "ok": true,
+    "detail": "ok"
+  },
+  "mcp_schema_hash": {
+    "ok": true,
+    "detail": "変更なし (hash: 8032ba1d6571ddf6)"
+  },
+  "relay_dom_selector": {
+    "ok": false,
+    "detail": "接続エラー: HTTP Error 403: Forbidden"
+  }
+}
