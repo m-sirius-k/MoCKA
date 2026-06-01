@@ -134,16 +134,40 @@ def check_file_hash(cfg: dict) -> tuple:
     return True, f"変更なし (hash: {h})"
 
 
-def check_imports(cfg: dict) -> tuple:
-    failed = []
-    for mod in cfg["modules"]:
+def check_relay_dom(cfg: dict) -> tuple:
+    """claude.ai 入力欄セレクタ生存確認（requests/urllib 両対応）"""
+    url = cfg["url"]
+    patterns = cfg.get("key_patterns", ["contenteditable"])
+    try:
+        import urllib.request
+        req = urllib.request.Request(url, headers={"User-Agent": "MoCKA-HealthCheck/1.0"})
+        with urllib.request.urlopen(req, timeout=cfg.get("timeout", 8)) as r:
+            body = r.read(65536).decode("utf-8", errors="replace")
+            status = r.status
+        found = any(p in body for p in patterns)
+        return found, f"HTTP {status}, selector={'ALIVE' if found else 'MISSING'}"
+    except Exception as e:
+        return False, f"接続エラー: {e}"
+
+
+# ── health_baseline.json（全チェック差分検知）──
+
+BASELINE_PATH = Path("C:/Users/sirok/MoCKA/interface/health_baseline.json")
+
+
+def _load_baseline() -> dict:
+    if BASELINE_PATH.exists():
         try:
-            __import__(mod)
-        except ImportError:
-            failed.append(mod)
-    if failed:
-        return False, f"インポート失敗: {failed}"
-    return True, "全モジュール正常"
+            return json.loads(BASELINE_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            return {}
+    return {}
+
+
+def _save_baseline(results: list):
+    data = {r["component"]: {"ok": r["ok"], "detail": r["detail"]} for r in results}
+    BASELINE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    BASELINE_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def run_check(name: str, cfg: dict) -> dict:
