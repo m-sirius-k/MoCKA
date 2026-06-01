@@ -1,0 +1,169 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "created": "2026-06-01",
+    "description": "Structural Intelligence — 構造タグ辞書（MoCKAインシデント履歴から抽出）",
+    "note": "新規タグは Human Gate 承認後に追記すること"
+  },
+  "ui_dependency": {
+    "category": "dependency",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["DOM", "セレクタ", "UI変更", "クラス名", "selector", "css", "contenteditable", "data-testid"],
+    "description": "UIの非公式要素に依存している状態"
+  },
+  "unofficial_interface": {
+    "category": "dependency",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["非公式", "undocumented", "unofficial", "スクレイピング", "DOM解析"],
+    "description": "ドキュメント化されていないインターフェースへの依存"
+  },
+  "official_interface": {
+    "category": "stability",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["MCP", "API", "公式", "ドキュメント", "SDK", "official", "documented"],
+    "description": "公式ドキュメント化されたインターフェースの使用"
+  },
+  "single_point_failure": {
+    "category": "risk",
+    "risk_level": "critical",
+    "stability": "critical_low",
+    "keywords": ["単一障害点", "依存集中", "唯一", "SPOF", "single point"],
+    "description": "単一障害点が存在する構造"
+  },
+  "dependency_concentration": {
+    "category": "risk",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["急成長", "集中", "一極", "依存", "集約", "全依存"],
+    "description": "依存が特定の点に集中している状態"
+  },
+  "high_change_frequency": {
+    "category": "volatility",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["頻繁", "変更", "update", "破壊", "breaking change", "deprecated"],
+    "description": "変更頻度が高く依存側への影響が大きい"
+  },
+  "low_change_frequency": {
+    "category": "volatility",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["安定", "stable", "長期", "固定", "バージョン固定"],
+    "description": "変更頻度が低く安定している"
+  },
+  "silent_failure": {
+    "category": "observability",
+    "risk_level": "critical",
+    "stability": "critical_low",
+    "keywords": ["無音崩壊", "エラーなし", "silent", "気づかない", "検知不能"],
+    "description": "エラーなしで静かに崩壊する構造"
+  },
+  "observable_failure": {
+    "category": "observability",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["検知", "アラート", "監視", "alert", "observable", "TIC"],
+    "description": "障害が即座に検知できる構造"
+  },
+  "manual_process": {
+    "category": "automation",
+    "risk_level": "medium",
+    "stability": "medium",
+    "keywords": ["手動", "manual", "人手", "手作業", "毎回"],
+    "description": "手動で繰り返し実行が必要なプロセス"
+  },
+  "automated_process": {
+    "category": "automation",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["自動", "automatic", "bat", "スケジュール", "cron", "ループ"],
+    "description": "自動化されたプロセス"
+  },
+  "knowledge_silo": {
+    "category": "knowledge",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["暗黙知", "属人", "個人依存", "記録なし", "伝承"],
+    "description": "知識が特定個人に閉じている状態"
+  },
+  "institutional_knowledge": {
+    "category": "knowledge",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["記録", "制度", "文書化", "事例", "レジストリ", "DB"],
+    "description": "知識が制度として記録・継承されている状態"
+  },
+  "ai_hallucination_risk": {
+    "category": "ai_trust",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["捏造", "幻覚", "hallucination", "虚偽", "実測なし", "確認なし"],
+    "description": "AIの出力を無検証で採用するリスク"
+  },
+  "verified_output": {
+    "category": "ai_trust",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["実測", "検証済", "verified", "Human Gate", "承認", "確認済"],
+    "description": "AIの出力が人間によって検証された状態"
+  },
+  "context_degradation": {
+    "category": "ai_quality",
+    "risk_level": "medium",
+    "stability": "medium",
+    "keywords": ["コンテキスト", "引き継ぎ", "ターン数", "品質低下", "忘れる"],
+    "description": "長い会話でAIのコンテキスト品質が低下する"
+  },
+  "context_preserved": {
+    "category": "ai_quality",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["引き継ぎ完了", "サマリー", "引き継ぎパケット", "文脈保持"],
+    "description": "会話コンテキストが適切に引き継がれた状態"
+  },
+  "encoding_corruption": {
+    "category": "data_integrity",
+    "risk_level": "high",
+    "stability": "low",
+    "keywords": ["文字化け", "UTF-8", "BOM", "Shift-JIS", "encoding", "U+FFFD"],
+    "description": "文字エンコーディングの破損・汚染"
+  },
+  "data_integrity_assured": {
+    "category": "data_integrity",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["整合性", "integrity_check", "hash", "検証", "SHA-256", "改ざん検知"],
+    "description": "データの整合性が保証されている状態"
+  },
+  "rapid_growth": {
+    "category": "growth",
+    "risk_level": "medium",
+    "stability": "low",
+    "keywords": ["急成長", "急拡大", "爆発", "スケール", "急増"],
+    "description": "急速な成長・拡大フェーズ"
+  },
+  "major_incident": {
+    "category": "incident",
+    "risk_level": "critical",
+    "stability": "critical_low",
+    "keywords": ["大障害", "停止", "全停止", "クリティカル", "インシデント", "MATAKA"],
+    "description": "大規模な障害・インシデント発生"
+  },
+  "schema_change": {
+    "category": "compatibility",
+    "risk_level": "medium",
+    "stability": "low",
+    "keywords": ["スキーマ変更", "migration", "ALTER TABLE", "破壊的変更", "API変更"],
+    "description": "インターフェーススキーマの変更"
+  },
+  "backward_compatible": {
+    "category": "compatibility",
+    "risk_level": "low",
+    "stability": "high",
+    "keywords": ["後方互換", "backward compatible", "互換性", "バージョン対応"],
+    "description": "後方互換性が維持されている変更"
+  }
+}

@@ -1088,5 +1088,72 @@ document.addEventListener('DOMContentLoaded', function(){
         </div>
       </div>
 
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<!-- HEALTH MONITOR パネル (TIC Layer 0 / TODO_203)              -->
+<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+<script>
+(function() {
+  const COLOR_MAP = { GREEN: '#3fb950', AMBER: '#d29922', RED: '#f85149', UNKNOWN: '#8b949e' };
+  const ICON_MAP  = { GREEN: '✅', AMBER: '⚠️', RED: '❌', UNKNOWN: '⏳' };
+
+  async function loadHealthStatus() {
+    const wrap = document.getElementById('health-monitor-wrap');
+    if (!wrap) return;
+    try {
+      const r = await fetch('/health/status');
+      const d = await r.json();
+      const color  = COLOR_MAP[d.color] || COLOR_MAP.UNKNOWN;
+      const icon   = ICON_MAP[d.color]  || ICON_MAP.UNKNOWN;
+      const checks = d.checks || [];
+      const pass   = checks.filter(c => c.status === 'PASS').length;
+      const total  = checks.length;
+
+      document.getElementById('health-overall-dot').style.background = color;
+      document.getElementById('health-overall-dot').style.boxShadow  = `0 0 6px ${color}`;
+      document.getElementById('health-overall-label').textContent = `${icon} ${d.overall || 'UNKNOWN'} ${pass}/${total}`;
+      document.getElementById('health-overall-label').style.color = color;
+      document.getElementById('health-ts').textContent = d.ts ? d.ts.slice(0, 19) : '';
+
+      const rows = document.getElementById('health-rows');
+      rows.innerHTML = checks.map(c => {
+        const ok = c.status === 'PASS';
+        const ic = ok ? '✅' : '❌';
+        return `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #1e2d3d;font-size:11px;">
+          <span style="color:#8b949e;">${ic} ${c.component}</span>
+          <span style="color:${ok ? '#3fb950' : '#f85149'};max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${c.detail}">${c.detail || ''}</span>
+        </div>`;
+      }).join('');
+    } catch(e) {
+      const lbl = document.getElementById('health-overall-label');
+      if (lbl) lbl.textContent = '接続不可';
+    }
+  }
+
+  window.runHealthCheck = async function() {
+    const btn = document.getElementById('health-run-btn');
+    if (btn) { btn.disabled = true; btn.textContent = '実行中...'; }
+    await loadHealthStatus();
+    if (btn) { btn.disabled = false; btn.textContent = '今すぐ実行'; }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadHealthStatus();
+    setInterval(loadHealthStatus, 120000);  // 2分ごとに自動更新
+  });
+})();
+</script>
+
+<div class="panel grn" id="health-monitor-wrap" style="margin:10px 16px;">
+  <div class="panel-title">
+    <span class="icon">🩺</span> HEALTH MONITOR
+    <span id="health-overall-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#333;margin-left:6px;"></span>
+    <span id="health-overall-label" style="font-family:var(--mono);font-size:12px;margin-left:6px;color:#8b949e;">--</span>
+    <span style="flex:1;"></span>
+    <span id="health-ts" style="font-family:var(--mono);font-size:10px;color:var(--text2);"></span>
+    <button id="health-run-btn" onclick="runHealthCheck()" style="margin-left:10px;padding:3px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--accent);border-radius:var(--radius);cursor:pointer;font-size:11px;font-family:var(--mono);">今すぐ実行</button>
+  </div>
+  <div id="health-rows" style="max-height:200px;overflow-y:auto;"></div>
+</div>
+
 </body>
 </html>

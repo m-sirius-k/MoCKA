@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "created": "2026-06-01",
+    "description": "Structural Intelligence — 抽出済みβ蓄積DB",
+    "note": "新βは beta_engine.py が自動生成し、Human Gate 承認後に approved_by/approved_at を付与する"
+  },
+  "institutionalized_connection": {
+    "beta_ja": "接続の制度化",
+    "beta_en": "institutionalized_connection",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.82,
+    "tension": "unofficial_interface → official_interface",
+    "implication": "非公式依存から公式依存への移行トレンドが進行中",
+    "opportunity": "MCP対応で依存を長期安定化できる",
+    "risk": "移行完了前にDOM変更が起きると崩壊する",
+    "examples": [
+      {"a": "claude_dom_change", "b": "mcp_adoption", "event_ref": "E20260601_068"}
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  },
+  "observation_as_institution": {
+    "beta_ja": "観測の制度化",
+    "beta_en": "observation_as_institution",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.78,
+    "tension": "silent_failure → observable_failure",
+    "implication": "障害が見えない状態から、証拠の積み上げによる常時監視体制へ",
+    "opportunity": "TIC地震計により「無音崩壊」を事前に検知できる",
+    "risk": "監視自体が壊れると二重の盲点になる",
+    "examples": [
+      {"a": "silent_failure", "b": "observable_failure", "event_ref": "E20260601_065"}
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  }
+}
