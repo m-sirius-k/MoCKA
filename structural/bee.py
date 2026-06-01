@@ -267,13 +267,9 @@ class BetaEcologyEngine:
 
         generated = []
 
-        # 補助検出: 確立β が3件以上あり、名前に共通パターン（制度化）がある場合に
-        # カテゴリ横断 Meta β を生成する
-        institutionalization_betas = [
-            bid for bid in established
-            if "制度" in (self.breg[bid].get("beta_ja") or "")
-            or "institutionali" in bid.lower()
-        ]
+        # 補助検出: 確立β が3件以上でカテゴリ横断 Meta β を生成する
+        # （きむら博士設計: 確立β 3件 = MoCKAが制度化フェーズへ収束した証拠）
+        institutionalization_betas = established  # 確立β全件が対象
         if len(institutionalization_betas) >= 3:
             meta_key = "institutional_evolution"
             meta_ja  = "制度化進化フェーズ"

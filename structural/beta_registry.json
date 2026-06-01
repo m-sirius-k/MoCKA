@@ -31,7 +31,7 @@
       "institutionalized_connection",
       "process_institutionalization"
     ],
-    "meta_beta": null,
+    "meta_beta": "institutional_evolution",
     "examples": [
       {
         "a": "rapid_growth",
@@ -69,7 +69,7 @@
       "dependency_concentration_risk",
       "observation_as_institution"
     ],
-    "meta_beta": null,
+    "meta_beta": "institutional_evolution",
     "examples": [
       {
         "a": "manual_process",
@@ -139,7 +139,7 @@
       "api_institutionalization",
       "dependency_concentration_risk"
     ],
-    "meta_beta": null,
+    "meta_beta": "institutional_evolution",
     "examples": [
       {
         "a": "claude_dom_change",
@@ -180,6 +180,27 @@
         "event_ref": "health_check.py実装"
       }
     ],
+    "approved_by": null,
+    "approved_at": null,
+    "expires_at": null
+  },
+  "institutional_evolution": {
+    "beta_ja": "制度化進化フェーズ",
+    "beta_en": "institutional_evolution",
+    "status": "制度化",
+    "is_meta": true,
+    "evidence": 74,
+    "contradiction": 0,
+    "last_seen": "2026-06-01",
+    "first_seen": "2026-06-01",
+    "implication": "MoCKAは今、制度化フェーズへ収束中（確立β: 3件）",
+    "source_betas": [
+      "dependency_concentration_risk",
+      "process_institutionalization",
+      "institutionalized_connection"
+    ],
+    "co_occurrence": [],
+    "meta_beta": null,
     "approved_by": null,
     "approved_at": null,
     "expires_at": null
