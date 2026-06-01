@@ -20,7 +20,7 @@
     "beta_en": "dependency_concentration_risk",
     "status": "確立",
     "evidence": 30,
-    "contradiction": 20,
+    "contradiction": 37,
     "last_seen": "2026-06-02",
     "first_seen": "2026-06-01",
     "tension": "rapid_growth → major_incident",
@@ -57,8 +57,8 @@
     "beta_ja": "プロセスの制度化",
     "beta_en": "process_institutionalization",
     "status": "確立",
-    "evidence": 25,
-    "contradiction": 83,
+    "evidence": 31,
+    "contradiction": 156,
     "last_seen": "2026-06-02",
     "first_seen": "2026-06-01",
     "tension": "manual_process → automated_process",
@@ -67,7 +67,8 @@
     "risk": "中途半端な自動化は手動より壊れやすい単一障害点を生む",
     "co_occurrence": [
       "dependency_concentration_risk",
-      "observation_as_institution"
+      "observation_as_institution",
+      "api_institutionalization"
     ],
     "meta_beta": "institutional_evolution",
     "examples": [
@@ -95,8 +96,8 @@
     "beta_ja": "API移行の制度化",
     "beta_en": "api_institutionalization",
     "status": "成長中",
-    "evidence": 19,
-    "contradiction": 296,
+    "evidence": 35,
+    "contradiction": 598,
     "last_seen": "2026-06-02",
     "first_seen": "2026-06-01",
     "tension": "ui_dependency → official_interface",
@@ -104,7 +105,8 @@
     "opportunity": "Relay・Orchestra のMCP完全移行で長期安定性を獲得できる",
     "risk": "MCP自体がバージョンアップで破壊的変更を行う可能性がある",
     "co_occurrence": [
-      "institutionalized_connection"
+      "institutionalized_connection",
+      "process_institutionalization"
     ],
     "meta_beta": null,
     "examples": [
@@ -127,8 +129,8 @@
     "beta_ja": "接続の制度化",
     "beta_en": "institutionalized_connection",
     "status": "確立",
-    "evidence": 26,
-    "contradiction": 300,
+    "evidence": 27,
+    "contradiction": 612,
     "last_seen": "2026-06-02",
     "first_seen": "2026-06-01",
     "tension": "unofficial_interface → official_interface",
@@ -155,8 +157,8 @@
     "beta_ja": "観測の制度化",
     "beta_en": "observation_as_institution",
     "status": "衰退",
-    "evidence": 9,
-    "contradiction": 120,
+    "evidence": 10,
+    "contradiction": 267,
     "last_seen": "2026-06-02",
     "first_seen": "2026-06-01",
     "tension": "silent_failure → observable_failure",

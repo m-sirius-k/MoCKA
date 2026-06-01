@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-02T07:48:05.530649",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": 0.0,
-    "danger_rate": 0.5,
-    "success_rate": 0.5,
-    "text": "発生場所 行:14 文字:59\n\n+ return found, f\\\"HTTP {status}, selector={'ALIVE' if found el",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
-        "recur": 0,
-        "matched": [
-          "でき"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
-        "recur": 0,
-        "matched": [
-          "でき"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-01T22:59:00.812Z"
-  }
+  "generated_at": "2026-06-02T08:41:48.228120"
 }
