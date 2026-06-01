@@ -12,16 +12,11 @@
   "essence_updated": false,
   "ngrok_online": false,
   "NGROK": false,
-  "current_phase": "Phase 3: AIES 2026投稿最終段階（5/21 AoE）+ インフラ完全自動化達成",
+  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "top_todos": [
     {
       "id": "TODO_144",
       "title": "ファイル変更前後の強制記録制度 — 変更着手前INCIDENT・完了後FIX記録を必須化",
-      "priority": "最高"
-    },
-    {
-      "id": "TODO_147",
-      "title": "Relay — 会話自動引き継ぎChrome拡張 開発",
       "priority": "最高"
     },
     {
@@ -38,41 +33,12 @@
       "id": "TODO_155",
       "title": "ファイル生成UTF-8強制 — bash heredocによるJS/PY生成を全面禁止・create_fileのみ使用",
       "priority": "最高"
+    },
+    {
+      "id": "TODO_164",
+      "title": "PHI OS共通基盤確立 → Relay v2再設計 ロードマップ実行",
+      "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-01T17:17:27.683507",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": 0.0,
-    "danger_rate": 0.5,
-    "success_rate": 0.5,
-    "text": "To github.com:m-sirius-k/MoCKA.git\n\nb75939ff..c6c8b212 main -> main\n\n\n\n\nregistry",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "arXiv endorsement待ちの間にGitHub public repoで先行権のタイムスタンプを確保する",
-        "how": "arXiv endorsement壁→GitHub先行権戦略に切り替え→mocka-publicにPDF push完了",
-        "note": "先行権,GitHub,preprint,論文,v8,TODO_021,歴史的",
-        "recur": 0,
-        "matched": [
-          "GitHub"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "MoCKAの全革新概念を国際学術プレプリントとして権利確定し商用展開の完全な基盤を作る",
-        "how": "完璧主義方針→7本生成→PDF変換→Zenodo投稿→GitHub push→全完了",
-        "note": "歴史的,TN1,TN2,TN3,TN4,TN5,TN6,TN7,Zenodo,GitHub,権利確定,完了",
-        "recur": 0,
-        "matched": [
-          "GitHub"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-01T09:24:26.718Z"
-  }
+  "generated_at": "2026-06-02T07:48:05.530649"
 }
