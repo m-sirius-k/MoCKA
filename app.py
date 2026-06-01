@@ -3257,6 +3257,206 @@ def tic_queue():
         return jsonify({"error": str(e)}), 500
 
 
+# ======================================================
+# β Engine 抽出API  (TODO_215)
+# /api/beta-extract  — テキストペアからβを抽出してBEEに投入
+# ======================================================
+
+@app.route('/api/beta-extract', methods=['POST'])
+def api_beta_extract():
+    """
+    2つのテキスト（現状AとBの対比）からβ（構造的差異）を抽出する。
+    BEEに自動登録し、evidence/opportunityも初期設定する。
+
+    Request JSON:
+        {
+            "text_a":    "...",   # 比較元テキスト（現状・旧状態など）
+            "text_b":    "...",   # 比較先テキスト（変化後・新状態など）
+            "context":   "...",   # 省略可: どういう文脈か
+            "source":    "...",   # 省略可: 発生源（chat/file/event等）
+        }
+
+    Response JSON:
+        {
+            "status":   "ok",
+            "beta_id":  "xxx",
+            "beta":     { β構造体 },
+            "registered": true/false,   # BEEへの新規登録か既存更新か
+        }
+    """
+    import importlib.util as _ilu
+    from pathlib import Path as _P
+    try:
+        data     = request.get_json(force=True) or {}
+        text_a   = data.get('text_a', '')
+        text_b   = data.get('text_b', '')
+        context  = data.get('context', '')
+        source   = data.get('source', 'api')
+
+        if not text_a or not text_b:
+            return jsonify({'status': 'error', 'error': 'text_a と text_b は必須'}), 400
+
+        # beta_engine.py をロード
+        _spec = _ilu.spec_from_file_location(
+            'beta_engine',
+            str(_P(__file__).parent / 'structural' / 'beta_engine.py')
+        )
+        _bmod = _ilu.module_from_spec(_spec)
+        _spec.loader.exec_module(_bmod)
+
+        # β抽出
+        result = _bmod.analyze_and_extract(text_a, text_b, context=context)
+
+        if not result:
+            return jsonify({
+                'status':     'ok',
+                'beta_id':    None,
+                'beta':       None,
+                'registered': False,
+                'message':    '有意なβは検出されませんでした',
+            })
+
+        beta_id   = result.get('beta_id')
+        beta_body = result.get('beta', result)
+
+        # BEEに登録（observing → 観察βとして追加）
+        registered = False
+        try:
+            bee = _load_bee()
+            if beta_id and beta_id not in bee.breg:
+                bee.breg[beta_id] = {
+                    'hypothesis':    beta_body.get('hypothesis', str(beta_body)[:100]),
+                    'observation':   beta_body.get('observation', ''),
+                    'status':        '観察β',
+                    'evidence':      1,
+                    'contradiction': 0,
+                    'source':        source,
+                    'context':       context[:200] if context else '',
+                    'created_at':    __import__('datetime').datetime.now().strftime('%Y-%m-%d'),
+                    'last_seen':     __import__('datetime').datetime.now().strftime('%Y-%m-%d'),
+                    'opportunity':   beta_body.get('opportunity', ''),
+                    'risk':          beta_body.get('risk', ''),
+                }
+                bee._dirty = True
+                bee._save()
+                registered = True
+            elif beta_id:
+                # 既存βにevidence追加
+                bee.breg[beta_id]['evidence'] = bee.breg[beta_id].get('evidence', 0) + 1
+                bee.breg[beta_id]['last_seen'] = __import__('datetime').datetime.now().strftime('%Y-%m-%d')
+                bee._dirty = True
+                bee._save()
+        except Exception as bee_err:
+            pass  # BEE登録失敗しても抽出結果は返す
+
+        return jsonify({
+            'status':     'ok',
+            'beta_id':    beta_id,
+            'beta':       beta_body,
+            'registered': registered,
+            'source':     source,
+        })
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+# ======================================================
+# TIC Watcher ステータスAPI  (TODO_204)
+# /tic/watcher-status  — tech_watcher最新結果サマリー
+# ======================================================
+
+@app.route('/tic/watcher-status', methods=['GET'])
+def tic_watcher_status():
+    """
+    tech_watcher.py の最新実行結果（watch_hashes.json）を返す。
+    COMMAND CENTER TICパネル用。
+
+    Response:
+        {
+            "sources":   [ {id, name, fingerprint_hash, checked_at, semantic_streak, ...} ],
+            "stale_count":   int,   # 7日以上未確認のソース数
+            "noise_count":   int,   # semantic_streak >= 3 のソース数
+            "last_run":      str,   # 最後に実行された時刻
+            "queue_new":     int,   # evaluation_queue の NEW 件数
+        }
+    """
+    import os
+    try:
+        tic_dir    = os.path.join(ROOT_DIR, 'data', 'tic')
+        hashes_path = os.path.join(tic_dir, 'watch_hashes.json')
+        queue_path  = os.path.join(tic_dir, 'evaluation_queue.jsonl')
+
+        sources_summary = []
+        stale_count = 0
+        noise_count = 0
+        last_run    = None
+
+        if os.path.exists(hashes_path):
+            hashes = json.loads(open(hashes_path, encoding='utf-8').read())
+            now    = __import__('datetime').datetime.now()
+
+            for sid, entry in hashes.items():
+                checked_at = entry.get('checked_at', '')
+                age_days   = None
+                is_stale   = False
+
+                if checked_at:
+                    try:
+                        age_days = (now - __import__('datetime').datetime.fromisoformat(checked_at)).days
+                        is_stale = age_days >= 7
+                        if is_stale:
+                            stale_count += 1
+                        if last_run is None or checked_at > last_run:
+                            last_run = checked_at
+                    except Exception:
+                        pass
+
+                streak = entry.get('semantic_streak', 0)
+                if streak >= 3:
+                    noise_count += 1
+
+                fp = entry.get('fingerprint', {})
+                sources_summary.append({
+                    'id':               sid,
+                    'name':             entry.get('name', sid),
+                    'fingerprint_hash': fp.get('fingerprint_hash') if fp else entry.get('raw_hash'),
+                    'extract_method':   fp.get('extract_method', 'unknown') if fp else 'v2_raw_hash',
+                    'checked_at':       checked_at,
+                    'age_days':         age_days,
+                    'is_stale':         is_stale,
+                    'semantic_streak':  streak,
+                    'versions':         (fp.get('versions', []) if fp else [])[:5],
+                })
+
+        # evaluation_queue NEW件数
+        queue_new = 0
+        if os.path.exists(queue_path):
+            with open(queue_path, encoding='utf-8') as f:
+                for line in f:
+                    try:
+                        e = json.loads(line.strip())
+                        if e.get('status') == 'NEW':
+                            queue_new += 1
+                    except Exception:
+                        pass
+
+        return jsonify({
+            'status':      'ok',
+            'sources':     sources_summary,
+            'stale_count': stale_count,
+            'noise_count': noise_count,
+            'last_run':    last_run,
+            'queue_new':   queue_new,
+            'watcher_version': 'v3.0' if any(
+                s.get('extract_method', '') not in ('v2_raw_hash', 'unknown')
+                for s in sources_summary
+            ) else 'v2.0',
+        })
+
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
