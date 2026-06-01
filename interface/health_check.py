@@ -207,7 +207,15 @@ def run_check(name: str, cfg: dict) -> dict:
             ok, detail = False, f"unknown method: {method}"
     except Exception as e:
         ok, detail = False, f"例外: {e}"
-    return {"component": name, "status": "PASS" if ok else "FAIL", "detail": detail, "ok": ok}
+    return {
+        "component":     name,
+        "status":        "PASS" if ok else "FAIL",
+        "detail":        detail,
+        "ok":            ok,
+        "risk":          cfg.get("risk", ""),
+        "opportunity":   cfg.get("opportunity", ""),
+        "beta_candidate":cfg.get("beta_candidate", ""),
+    }
 
 
 # ── MoCKA 記録 ──
