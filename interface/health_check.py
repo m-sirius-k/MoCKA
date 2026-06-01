@@ -66,9 +66,11 @@ HEALTH_CHECKS = {
         "path": "C:/Users/sirok/MoCKA/mocka_mcp_server.py",
         "hash_store": str(HASH_STORE),
     },
-    "python_imports": {
-        "method": "import_test",
-        "modules": ["janome", "httpx", "flask", "sqlite3", "hashlib"],
+    "relay_dom_selector": {
+        "method": "relay_dom",
+        "url": "https://claude.ai",
+        "timeout": 8,
+        "key_patterns": ["contenteditable", "ProseMirror", "data-testid"],
     },
 }
 
