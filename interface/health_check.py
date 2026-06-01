@@ -157,16 +157,25 @@ def check_file_hash(cfg: dict) -> tuple:
 
 
 def check_relay_dom(cfg: dict) -> tuple:
-    """claude.ai 疎通確認 HTTP200=PASS セレクター確認はRelay拡張に委譲"""
+    """Relay拡張の生存確認: app.py /relay/status を参照（last_ping が stale_seconds 以内ならPASS）"""
+    import urllib.request
+    import urllib.error
     url = cfg["url"]
+    stale = cfg.get("stale_seconds", 300)
     try:
-        import urllib.request
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"})
-        with urllib.request.urlopen(req, timeout=cfg.get("timeout", 8)) as r:
-            status = r.status
-        return (status == 200), f"HTTP {status} (claude.ai 疎通OK)"
+        req = urllib.request.Request(url, headers={"User-Agent": "MoCKA-TIC-HealthCheck/1.0"})
+        with urllib.request.urlopen(req, timeout=cfg.get("timeout", 5)) as r:
+            data = json.loads(r.read().decode())
+        if data.get("alive"):
+            return True, f"Relay alive (last_ping: {data.get('last_ping', '?')}, v{data.get('version', '?')})"
+        last = data.get("last_ping")
+        if last:
+            return False, f"Relay ping stale (>{stale}s): last_ping={last}"
+        return False, "Relay未接続: last_ping なし（拡張が起動していないか /relay/ping 未実装）"
+    except urllib.error.URLError:
+        return False, "MoCKAサーバー未起動 (localhost:5000 に接続できません)"
     except Exception as e:
-        return False, f"接続エラー: {e}"
+        return False, f"エラー: {e}"
 
 # ── health_baseline.json（全チェック差分検知）──
 
