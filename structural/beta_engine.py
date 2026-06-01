@@ -123,7 +123,8 @@ def extract_beta(structures_a: list, structures_b: list,
         event_b_id:   事象BのイベントID（記録用）
 
     Returns:
-        β辞書（beta, beta_ja, confidence, tension, implication, opportunity, risk, ...）
+        β辞書（beta, beta_ja, tension, implication, opportunity, risk, evidence_increment, ...）
+        NOTE: confidence フィールドは廃止。βは「予測値」でなく「証拠で成長する仮説構造体」。
     """
     pdb  = _load_json(PATTERN_DB_PATH)
     breg = _load_json(BETA_REG_PATH)
@@ -137,7 +138,7 @@ def extract_beta(structures_a: list, structures_b: list,
     tension_arrow  = tension_result[1] if tension_result else None
 
     # 3. βテンプレートから候補を取得
-    # まずカテゴリ+テンションで照合、次にテンションのみで照合（カテゴリが異なる場合のフォールバック）
+    # まずカテゴリ+テンションで照合、次にテンションのみで照合（フォールバック）
     beta_key = None
     beta_ja  = None
     for cat in (common_cats or ["_any"]):
@@ -145,7 +146,6 @@ def extract_beta(structures_a: list, structures_b: list,
         if key in BETA_TEMPLATES:
             beta_key, beta_ja = BETA_TEMPLATES[key]
             break
-    # テンション直接照合フォールバック（カテゴリが一致しなかった場合）
     if not beta_key and tension_desc:
         for (_, t_desc), (bk, bj) in BETA_TEMPLATES.items():
             if t_desc == tension_desc:
@@ -164,45 +164,45 @@ def extract_beta(structures_a: list, structures_b: list,
     # 4. 既存βの照合
     existing = breg.get(beta_key)
 
-    # 5. 信頼度計算
-    confidence = _calc_confidence(common_cats, tension_desc, existing)
-
-    # 信頼度が低すぎる場合は β なしを返す
-    if confidence < 0.20:
+    # 5. 構造的根拠チェック（confidence廃止 → 根拠の有無で判定）
+    if not _has_structural_basis(common_cats, tension_desc):
         return {
-            "beta":       None,
-            "beta_ja":    None,
-            "confidence": confidence,
-            "message":    "構造的な共通因子が不足しています。構造タグを増やしてください。",
-            "source_a":   structures_a,
-            "source_b":   structures_b,
-            "timestamp":  datetime.now().isoformat(),
+            "beta":              None,
+            "beta_ja":           None,
+            "message":           "構造的な共通因子が不足しています。構造タグを増やしてください。",
+            "source_a":          structures_a,
+            "source_b":          structures_b,
+            "evidence_increment": 0,
+            "timestamp":         datetime.now().isoformat(),
         }
 
     implication = _generate_implication(beta_ja, tension_arrow or "不明", structures_a, structures_b)
     opportunity = _generate_opportunity(beta_ja, common_cats)
     risk        = _generate_risk(beta_ja, structures_a, pdb)
 
+    # evidence_increment: テンション検出=1、共通カテゴリ数=+カテゴリ数、既存βへの追加=1
+    ev_inc = 1 + len(common_cats)
+
     result = {
-        "beta":            beta_key,
-        "beta_ja":         beta_ja,
-        "confidence":      confidence,
-        "source_a":        structures_a,
-        "source_b":        structures_b,
-        "common_category": common_cats[0] if common_cats else None,
-        "all_common_cats": common_cats,
-        "tension":         tension_arrow,
-        "tension_desc":    tension_desc,
-        "implication":     implication,
-        "opportunity":     opportunity,
-        "risk":            risk,
-        "event_a_id":      event_a_id,
-        "event_b_id":      event_b_id,
-        "timestamp":       datetime.now().isoformat(),
-        "status":          "pending_approval",
+        "beta":              beta_key,
+        "beta_ja":           beta_ja,
+        "source_a":          structures_a,
+        "source_b":          structures_b,
+        "common_category":   common_cats[0] if common_cats else None,
+        "all_common_cats":   common_cats,
+        "tension":           tension_arrow,
+        "tension_desc":      tension_desc,
+        "implication":       implication,
+        "opportunity":       opportunity,
+        "risk":              risk,
+        "evidence_increment": ev_inc,
+        "event_a_id":        event_a_id,
+        "event_b_id":        event_b_id,
+        "timestamp":         datetime.now().isoformat(),
+        "lifecycle_status":  existing.get("status", "観察β") if existing else "観察β",
     }
 
-    # 6. beta_registry に登録 or 更新（Human Gate 承認前は status=pending）
+    # 6. beta_registry に登録 or 更新
     _update_registry(beta_key, beta_ja, result, existing, breg,
                      event_a_id, event_b_id)
 
