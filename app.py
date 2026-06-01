@@ -2243,23 +2243,46 @@ def health_check():
 
 # ── Relay 生存確認 ────────────────────────────────────────────────────────────
 
-_relay_ping_status = {"alive": False, "last_ping": None, "version": None}
+import pathlib as _pathlib
+import datetime as _dt
+
+_RELAY_PING_FILE = _pathlib.Path("C:/Users/sirok/MoCKA/data/tic/relay_ping.json")
+
+
+def _load_relay_ping() -> dict:
+    try:
+        if _RELAY_PING_FILE.exists():
+            return json.loads(_RELAY_PING_FILE.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+    return {"last_ping": None, "version": None}
+
+
+def _save_relay_ping(data: dict):
+    try:
+        _RELAY_PING_FILE.parent.mkdir(parents=True, exist_ok=True)
+        _RELAY_PING_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    except Exception:
+        pass
+
 
 @app.route('/relay/ping', methods=['POST'])
 def relay_ping():
     """Relay拡張からの定期生存報告を受け取る"""
-    import datetime as _dt
     data = request.get_json(silent=True) or {}
-    _relay_ping_status["alive"]     = True
-    _relay_ping_status["last_ping"] = _dt.datetime.now().isoformat()
-    _relay_ping_status["version"]   = data.get("version")
+    state = {
+        "last_ping": _dt.datetime.now().isoformat(),
+        "version":   data.get("version"),
+    }
+    _save_relay_ping(state)
     return jsonify({"ok": True})
+
 
 @app.route('/relay/status', methods=['GET'])
 def relay_status():
     """health_check.py から参照: last_ping が5分以内ならPASS"""
-    import datetime as _dt
-    last = _relay_ping_status.get("last_ping")
+    state = _load_relay_ping()
+    last = state.get("last_ping")
     if last:
         age = (_dt.datetime.now() - _dt.datetime.fromisoformat(last)).total_seconds()
         alive = age < 300
@@ -2268,7 +2291,7 @@ def relay_status():
     return jsonify({
         "alive":     alive,
         "last_ping": last,
-        "version":   _relay_ping_status.get("version"),
+        "version":   state.get("version"),
     })
 
 
