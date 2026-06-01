@@ -80,18 +80,10 @@ def _find_tension(tags_a: list, tags_b: list) -> tuple[str, str] | None:
     return None
 
 
-def _calc_confidence(common_cats: list, tension: str | None, existing_β: dict | None) -> float:
-    """信頼度スコア（0.0〜1.0）を計算する"""
-    score = 0.0
-    # 共通カテゴリがあれば基礎点
-    score += min(len(common_cats) * 0.25, 0.50)
-    # 対立軸が検出できれば加点
-    if tension:
-        score += 0.30
-    # 既存βで実績があれば加点
-    if existing_β and existing_β.get("occurrence", 0) > 1:
-        score += 0.10 * min(existing_β["occurrence"] - 1, 2)
-    return round(min(score, 1.0), 2)
+def _has_structural_basis(common_cats: list, tension_desc: str | None) -> bool:
+    """βを生成する最低限の構造的根拠があるか判定する（confidence の代替）"""
+    # テンション軸か、共通カテゴリのどちらかがあれば根拠あり
+    return bool(tension_desc) or len(common_cats) >= 1
 
 
 def _generate_implication(beta_ja: str, tension_desc: str, tags_a: list, tags_b: list) -> str:
