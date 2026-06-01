@@ -10,8 +10,8 @@
     "OPERATION": "[2026-05-15] [hint] その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超 その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超えて「創造」する source=claude|type=hint\n[2026-05-15] 保存取得 infield [hint] その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超えて「創造」する [hint] その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超えて「創造」する\n[2026-05-15] [hint] MOCKAは　30年分の私の知識としたときに　SCAMPERはその知識記憶記録を MOCKAは　30年分の私の知識としたときに　SCAMPERはその知識記憶記録を使った　創造部門　　そういう切り口です source=claude|type=hint\n[2026-02-14:MoCKA 3.0 引継書] GPT外部監査: 文明の航海日誌。構造・状態定義・障害履歴・思想階層・未完了項目が明示された制度移行文書\n[2026-02-15:文明設計転換] GPT外部監査: 依存構造から主権構造への転換宣言。APIクレジット枯渇後に自立設計へ\n[2026-02-28:MoCKA 公開最適化] GPT外部監査: 器のみ公開・運用データはローカル封印・ガードを制度化。設計思想として極めて健全\n[2026-03-13:MoCKA 自律AI進化] GPT外部監査: 単体AIプログラムを超え制度化された自律AI機関として成立\n[2026-03-20:MoCKA 記録制度設計] GPT外部監査: 目的駆動型→失敗記録制度型へ存在定義を更新。創造憲法レベルの再定義"
   },
   "essence_updated": false,
-  "ngrok_online": true,
-  "NGROK": true,
+  "ngrok_online": false,
+  "NGROK": false,
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "top_todos": [
     {
@@ -40,41 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-02T08:46:44.203352",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 0.556,
-    "danger_rate": 0.778,
-    "success_rate": 0.222,
-    "text": "調査完了です。以下に原因と構造をまとめます。\n\n---\n\n## relay_dom_selector FAIL の原因分析\n\n### 1. 判定ロジック（hea",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-04",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「テスト：協業動作確認2...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【ChatGPT】\n協業動作確認テスト2：応答記録\n1. 試験目的\n\n本試験は、MoC",
-        "recur": 0,
-        "matched": [
-          "問題は",
-          "エラー"
-        ],
-        "score": 2
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-16",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "はぁ？　意味がわからんことを　実際に　csv側ではしっかりでてる\n\n\n\n\nid\tservice\trole\ttimestamp\tsession_id\tcontent\nmsg_dXNlcmE=\tclaud",
-        "recur": 0,
-        "matched": [
-          "問題は",
-          "Python script"
-        ],
-        "score": 2
-      }
-    ],
-    "updated_at": "2026-06-01T23:54:02.244Z"
-  }
+  "generated_at": "2026-06-02T08:57:32.323641"
 }
