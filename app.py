@@ -2269,6 +2269,84 @@ def health_status():
         return jsonify({'status': 'error', 'overall': 'UNKNOWN', 'color': 'RED', 'error': str(e)}), 500
 
 
+# ======================================================
+# β Ecology Engine (BEE) API  (TODO_216)
+# ======================================================
+
+def _load_bee():
+    import importlib.util as _ilu
+    from pathlib import Path as _P
+    _spec = _ilu.spec_from_file_location('bee', str(_P(__file__).parent / 'structural' / 'bee.py'))
+    _bee_mod = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_bee_mod)
+    return _bee_mod.BetaEcologyEngine()
+
+
+@app.route('/api/beta/status', methods=['GET'])
+def api_beta_status():
+    """全βのライフサイクル状態一覧を返す"""
+    try:
+        bee = _load_bee()
+        order = {'制度化': 0, '確立': 1, '成長中': 2, '観察β': 3, '衰退': 4, '消滅': 5}
+        betas = [
+            {'beta_id': bid, **{k: v for k, v in e.items() if not k.startswith('_')}}
+            for bid, e in bee.breg.items() if not bid.startswith('_')
+        ]
+        betas.sort(key=lambda x: order.get(x.get('status', '観察β'), 9))
+        return jsonify({'status': 'ok', 'betas': betas, 'count': len(betas)})
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+@app.route('/api/beta/evidence', methods=['POST'])
+def api_beta_evidence():
+    """evidence / contradiction を手動追加する"""
+    try:
+        data     = request.get_json(force=True)
+        beta_id  = data.get('beta_id')
+        ev_type  = data.get('type', 'support')   # 'support' or 'contra'
+        source   = data.get('source', 'manual')
+        amount   = int(data.get('amount', 1))
+        bee = _load_bee()
+        if beta_id not in bee.breg:
+            return jsonify({'status': 'error', 'error': f'{beta_id} not found'}), 404
+        if ev_type == 'support':
+            bee.breg[beta_id]['evidence'] = bee.breg[beta_id].get('evidence', 0) + amount
+        else:
+            bee.breg[beta_id]['contradiction'] = bee.breg[beta_id].get('contradiction', 0) + amount
+        bee.breg[beta_id]['last_seen'] = __import__('datetime').datetime.now().strftime('%Y-%m-%d')
+        new_status = bee.update_lifecycle(beta_id)
+        bee._dirty = True
+        bee._save()
+        return jsonify({
+            'status':     'ok',
+            'beta_id':    beta_id,
+            'type':       ev_type,
+            'source':     source,
+            'amount':     amount,
+            'new_status': new_status,
+            'evidence':   bee.breg[beta_id].get('evidence', 0),
+            'contradiction': bee.breg[beta_id].get('contradiction', 0),
+        })
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
+@app.route('/api/beta/meta', methods=['GET'])
+def api_beta_meta():
+    """Meta β一覧を返す"""
+    try:
+        bee  = _load_bee()
+        meta = [
+            {'beta_id': bid, **{k: v for k, v in e.items() if not k.startswith('_')}}
+            for bid, e in bee.breg.items()
+            if not bid.startswith('_') and e.get('is_meta')
+        ]
+        return jsonify({'status': 'ok', 'meta_betas': meta, 'count': len(meta)})
+    except Exception as e:
+        return jsonify({'status': 'error', 'error': str(e)}), 500
+
+
 # ==============================
 # NY抽出 → Essence自動反映エンドポイント
 # ==============================
