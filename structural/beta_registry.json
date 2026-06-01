@@ -16,7 +16,11 @@
     "opportunity": "MCP対応で依存を長期安定化できる",
     "risk": "移行完了前にDOM変更が起きると崩壊する",
     "examples": [
-      {"a": "claude_dom_change", "b": "mcp_adoption", "event_ref": "E20260601_068"}
+      {
+        "a": "claude_dom_change",
+        "b": "mcp_adoption",
+        "event_ref": "E20260601_068"
+      }
     ],
     "approved_by": null,
     "approved_at": null,
@@ -33,7 +37,71 @@
     "opportunity": "TIC地震計により「無音崩壊」を事前に検知できる",
     "risk": "監視自体が壊れると二重の盲点になる",
     "examples": [
-      {"a": "silent_failure", "b": "observable_failure", "event_ref": "E20260601_065"}
+      {
+        "a": "silent_failure",
+        "b": "observable_failure",
+        "event_ref": "E20260601_065"
+      }
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  },
+  "unknown_synthesis": {
+    "beta_ja": "未分類の構造統合",
+    "beta_en": "unknown_synthesis",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.3,
+    "tension": "ui_dependency → official_interface",
+    "implication": "「ui_dependency」と「official_interface」の間に潜む構造として「未分類の構造統合」を発見。対立軸: ui_dependency → official_interface",
+    "opportunity": "「未分類の構造統合」を制度として実装することで長期的な安定性を獲得できる",
+    "risk": "「ui_dependency」が解消されないまま移行が中断すると未分類の構造統合が破綻する",
+    "examples": [
+      {
+        "a": "['ui_dependency', 'high_change",
+        "b": "['official_interface']"
+      }
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  },
+  "risk_synthesis": {
+    "beta_ja": "riskの統合",
+    "beta_en": "risk_synthesis",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.8,
+    "tension": "rapid_growth → major_incident",
+    "implication": "「dependency_concentration」と「single_point_failure」の間に潜む構造として「riskの統合」を発見。対立軸: rapid_growth → major_incident",
+    "opportunity": "「riskの統合」を制度として実装することで長期的な安定性を獲得できる",
+    "risk": "「dependency_concentration」が解消されないまま移行が中断するとriskの統合が破綻する",
+    "examples": [
+      {
+        "a": "['dependency_concentration', '",
+        "b": "['single_point_failure', 'depe"
+      }
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  },
+  "process_institutionalization": {
+    "beta_ja": "プロセスの制度化",
+    "beta_en": "process_institutionalization",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.55,
+    "tension": "manual_process → automated_process",
+    "implication": "「manual_process」と「automated_process」の間に潜む構造として「プロセスの制度化」を発見。対立軸: manual_process → automated_process",
+    "opportunity": "「プロセスの制度化」により手動作業をなくしヒューマンエラーを減らせる",
+    "risk": "「プロセスの制度化」が中途半端な実装に留まると新たな単一障害点を生む",
+    "examples": [
+      {
+        "a": "['manual_process', 'institutio",
+        "b": "['automated_process']"
+      }
     ],
     "approved_by": null,
     "approved_at": null,
