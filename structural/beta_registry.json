@@ -91,7 +91,7 @@
     "beta_ja": "プロセスの制度化",
     "beta_en": "process_institutionalization",
     "first_seen": "2026-06-01",
-    "occurrence": 1,
+    "occurrence": 2,
     "confidence_avg": 0.55,
     "tension": "manual_process → automated_process",
     "implication": "「manual_process」と「automated_process」の間に潜む構造として「プロセスの制度化」を発見。対立軸: manual_process → automated_process",
@@ -101,6 +101,50 @@
       {
         "a": "['manual_process', 'institutio",
         "b": "['automated_process']"
+      },
+      {
+        "a": "['manual_process', 'institutio",
+        "b": "['automated_process']"
+      }
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  },
+  "api_institutionalization": {
+    "beta_ja": "API移行の制度化",
+    "beta_en": "api_institutionalization",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.3,
+    "tension": "ui_dependency → official_interface",
+    "implication": "「ui_dependency」と「official_interface」の間に潜む構造として「API移行の制度化」を発見。対立軸: ui_dependency → official_interface",
+    "opportunity": "「API移行の制度化」を制度として実装することで長期的な安定性を獲得できる",
+    "risk": "「ui_dependency」が解消されないまま移行が中断するとAPI移行の制度化が破綻する",
+    "examples": [
+      {
+        "a": "['ui_dependency', 'high_change",
+        "b": "['official_interface']"
+      }
+    ],
+    "approved_by": null,
+    "approved_at": null,
+    "status": "pending_approval"
+  },
+  "dependency_concentration_risk": {
+    "beta_ja": "依存集中リスク",
+    "beta_en": "dependency_concentration_risk",
+    "first_seen": "2026-06-01",
+    "occurrence": 1,
+    "confidence_avg": 0.8,
+    "tension": "rapid_growth → major_incident",
+    "implication": "「dependency_concentration」と「single_point_failure」の間に潜む構造として「依存集中リスク」を発見。対立軸: rapid_growth → major_incident",
+    "opportunity": "「依存集中リスク」を制度として実装することで長期的な安定性を獲得できる",
+    "risk": "「dependency_concentration」が解消されないまま移行が中断すると依存集中リスクが破綻する",
+    "examples": [
+      {
+        "a": "['dependency_concentration', '",
+        "b": "['single_point_failure', 'depe"
       }
     ],
     "approved_by": null,
