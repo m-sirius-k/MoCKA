@@ -2241,6 +2241,37 @@ def health_check():
     return jsonify({'status': 'ok', 'port': 5000})
 
 
+# ── Relay 生存確認 ────────────────────────────────────────────────────────────
+
+_relay_ping_status = {"alive": False, "last_ping": None, "version": None}
+
+@app.route('/relay/ping', methods=['POST'])
+def relay_ping():
+    """Relay拡張からの定期生存報告を受け取る"""
+    import datetime as _dt
+    data = request.get_json(silent=True) or {}
+    _relay_ping_status["alive"]     = True
+    _relay_ping_status["last_ping"] = _dt.datetime.now().isoformat()
+    _relay_ping_status["version"]   = data.get("version")
+    return jsonify({"ok": True})
+
+@app.route('/relay/status', methods=['GET'])
+def relay_status():
+    """health_check.py から参照: last_ping が5分以内ならPASS"""
+    import datetime as _dt
+    last = _relay_ping_status.get("last_ping")
+    if last:
+        age = (_dt.datetime.now() - _dt.datetime.fromisoformat(last)).total_seconds()
+        alive = age < 300
+    else:
+        alive = False
+    return jsonify({
+        "alive":     alive,
+        "last_ping": last,
+        "version":   _relay_ping_status.get("version"),
+    })
+
+
 @app.route('/health/status', methods=['GET'])
 def health_status():
     """TIC Layer 0 — health_check.py の最新結果を返す"""
