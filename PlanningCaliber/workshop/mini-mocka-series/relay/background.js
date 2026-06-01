@@ -49,6 +49,32 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   return true;  // async response
 });
 
+// ─── MoCKA サーバーへの定期ping ──────────────────────────────────────────────
+
+const MOCKA_PING_URL = 'http://localhost:5000/relay/ping';
+const PING_INTERVAL_MS = 5 * 60 * 1000;  // 5分
+
+async function pingMoCKA() {
+  try {
+    const manifest = chrome.runtime.getManifest();
+    await fetch(MOCKA_PING_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        version: manifest.version,
+        selector_alive: true,
+        timestamp: Date.now(),
+      }),
+    });
+  } catch (_) {
+    // MoCKAサーバーが起動していない場合は無視
+  }
+}
+
+// 起動時に即ping、以降5分ごとに繰り返す
+pingMoCKA();
+setInterval(pingMoCKA, PING_INTERVAL_MS);
+
 // ─── インストール時初期化 ─────────────────────────────────────────────────────
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -57,4 +83,5 @@ chrome.runtime.onInstalled.addListener(() => {
     relay_turn_count: 0,
   });
   console.log('[Relay] installed / updated');
+  pingMoCKA();
 });

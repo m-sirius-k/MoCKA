@@ -10,7 +10,8 @@
     "scripting"
   ],
   "host_permissions": [
-    "https://claude.ai/*"
+    "https://claude.ai/*",
+    "http://localhost:5000/*"
   ],
   "background": {
     "service_worker": "background.js"
