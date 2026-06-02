@@ -1,11 +1,11 @@
 {
   "mocka_server": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "caliber_pipeline": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "anthropic_api": {
     "ok": true,
@@ -25,6 +25,6 @@
   },
   "relay_dom_selector": {
     "ok": false,
-    "detail": "Relay未接続: last_ping なし（拡張が起動していないか /relay/ping 未実装）"
+    "detail": "MoCKAサーバー未起動 (localhost:5000 に接続できません)"
   }
 }

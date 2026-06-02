@@ -40,27 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-02T15:39:26.475287",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -1.0,
-    "danger_rate": 0.0,
-    "success_rate": 1.0,
-    "text": "C:\\Users\\sirok/product-manual.html",
-    "top_events": [
-      {
-        "verdict": "SUCCESS",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
-        "recur": 0,
-        "matched": [
-          "ok"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-02T06:51:18.937Z"
-  }
+  "generated_at": "2026-06-03T07:32:09.015012"
 }
