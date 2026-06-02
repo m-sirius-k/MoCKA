@@ -1197,6 +1197,26 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           break;
         }
 
+        // ── Relay検索ブリッジ: セッション一覧 ──────────────────────────────
+        case 'ORCHESTRA_GET_SESSIONS_LIST': {
+          const limit = msg.limit || 20;
+          const all = await getAllMessages(limit * 10);
+          const sessions = buildSessionList(all, limit);
+          sendResponse({ sessions });
+          break;
+        }
+
+        // ── Relay検索ブリッジ: 全文検索 ─────────────────────────────────────
+        case 'ORCHESTRA_SEARCH_MESSAGES': {
+          const query = (msg.query || '').trim();
+          const limit = msg.limit || 30;
+          if (!query) { sendResponse({ results: [] }); break; }
+          const raw = await searchMessages(query, limit);
+          const grouped = groupBySession(raw, query);
+          sendResponse({ results: grouped });
+          break;
+        }
+
         default:
           sendResponse({ ok: false, error: 'Unknown message type' });
       }
