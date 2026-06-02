@@ -25,6 +25,6 @@
   },
   "relay_dom_selector": {
     "ok": false,
-    "detail": "Relay未接続: last_ping なし（拡張が起動していないか /relay/ping 未実装）"
+    "detail": "Relay: last_ping なし（claude.aiタブ未オープン、または拡張未起動）"
   }
 }
