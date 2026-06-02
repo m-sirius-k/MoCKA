@@ -37,8 +37,10 @@ console.log("[Orchestra] content.js loaded");
   // IDはtextの末尾80文字でハッシュ → ストリーミング途中と完成で同じIDになる
   // （先頭はツール状態が変わるが末尾の実コンテンツは安定している）
   function generateMessageId(role, text) {
-    const stable = text.slice(-80);  // ★ 末尾80文字を使用（旧: 先頭80文字）
-    const hash = btoa(encodeURIComponent(role + stable)).slice(0, 16);
+    const safeRole = role || '';
+    const safeText = text || '';
+    const stable   = safeText.slice(-80); // ★ 末尾80文字を使用（旧: 先頭80文字）
+    const hash = btoa(encodeURIComponent(safeRole + stable)).slice(0, 16);
     return 'msg_' + hash;
   }
 
