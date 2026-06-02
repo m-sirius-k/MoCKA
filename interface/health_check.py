@@ -303,13 +303,23 @@ def run(target: str = None):
         for extra in detail_lines[1:]:
             print(f"  {extra}")
 
-    total    = len(results)
-    passed   = sum(1 for r in results if r["ok"])
-    fails    = [r for r in results if not r["ok"]]
+    # optional チェック（relay_dom_selector 等）は overall 計算から除外
+    required = [r for r in results if not HEALTH_CHECKS[r["component"]].get("optional")]
+    optional = [r for r in results if     HEALTH_CHECKS[r["component"]].get("optional")]
+
+    total    = len(required)
+    passed   = sum(1 for r in required if r["ok"])
+    fails    = [r for r in required if not r["ok"]]
+
+    # optional FAIL は WARN 表示（画面には出すが overall に影響しない）
+    YELLOW = "\033[93m"
+    for r in optional:
+        if not r["ok"]:
+            r["status"] = "WARN"
 
     # 前回比で悪化したコンポーネントを DEGRADED として検知
     baseline = _load_baseline()
-    degraded = [r["component"] for r in results
+    degraded = [r["component"] for r in required
                 if not r["ok"] and baseline.get(r["component"], {}).get("ok") is True]
 
     overall  = "ALL PASS" if not fails else ("DEGRADED" if degraded else ("PARTIAL" if passed > 0 else "FAIL"))
@@ -317,6 +327,10 @@ def run(target: str = None):
 
     print()
     print(f"  Overall: {color}{overall} ({passed}/{total}){RESET}")
+    if optional:
+        warn_items = [r for r in optional if not r["ok"]]
+        if warn_items:
+            print(f"  {YELLOW}WARN (optional): {[r['component'] for r in warn_items]}{RESET}")
     print("=" * 40)
     print()
 
