@@ -2,27 +2,30 @@
 'use strict';
 
 (async () => {
-  // ── 状態読み込み ──────────────────────────────────────────────────────────
-  const { relay_plan_level, relay_turn_count, relay_density_score } =
-    await chrome.storage.local.get(['relay_plan_level', 'relay_turn_count', 'relay_density_score']);
+  // ── ライセンス検証済みプランを background から取得 ────────────────────────
+  // storage を直接読まず GET_PLAN 経由にすることで、
+  // 検証完了前に Free UI が描画されるチラつきをゼロにする。
+  const [planRes, storageRes] = await Promise.all([
+    chrome.runtime.sendMessage({ type: 'GET_PLAN' }),
+    chrome.storage.local.get(['relay_turn_count', 'relay_density_score']),
+  ]);
 
-  const plan     = relay_plan_level || 'free';
-  const turns    = relay_turn_count || 0;
-  const density  = relay_density_score || 0;
+  const plan    = planRes?.plan || 'free';
+  const turns   = storageRes.relay_turn_count   || 0;
+  const density = storageRes.relay_density_score || 0;
 
-  // ── UI 更新 ──────────────────────────────────────────────────────────────
-  const planLabel = document.getElementById('plan-label');
-  const turnEl    = document.getElementById('turn-count');
-  const densityEl = document.getElementById('density-score');
+  // ── UI を一度だけ描画 ────────────────────────────────────────────────────
+  const planLabel   = document.getElementById('plan-label');
+  const turnEl      = document.getElementById('turn-count');
+  const densityEl   = document.getElementById('density-score');
   const densityFill = document.getElementById('density-bar-fill');
   const planSelect  = document.getElementById('plan-select');
   const statusMsg   = document.getElementById('status-msg');
 
-  planLabel.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-  turnEl.textContent    = String(turns);
-  turnEl.className      = `stat-value ${turns >= 18 ? 'warn' : 'ok'}`;
-
-  densityEl.textContent = plan === 'one' ? `${Math.round(density * 100)}%` : 'Free/Pro非対応';
+  planLabel.textContent   = plan.charAt(0).toUpperCase() + plan.slice(1);
+  turnEl.textContent      = String(turns);
+  turnEl.className        = `stat-value ${turns >= 18 ? 'warn' : 'ok'}`;
+  densityEl.textContent   = plan === 'one' ? `${Math.round(density * 100)}%` : 'Free/Pro非対応';
   densityFill.style.width = plan === 'one' ? `${Math.round(density * 100)}%` : '0%';
 
   if (planSelect) {
@@ -33,6 +36,11 @@
       setStatus('プラン変更: 次のページ読み込みで反映');
     });
   }
+
+  // ── ローディング解除・UI 表示（描画完了後に一度だけ） ─────────────────────
+  document.getElementById('loading-overlay').style.display = 'none';
+  document.getElementById('main-ui').style.display         = 'block';
+  document.body.style.visibility                           = 'visible';
 
   // ── 引き継ぎボタン ────────────────────────────────────────────────────────
   document.getElementById('btn-handoff')?.addEventListener('click', async () => {
@@ -51,7 +59,7 @@
   // ── リセットボタン ────────────────────────────────────────────────────────
   document.getElementById('btn-clear')?.addEventListener('click', async () => {
     await chrome.storage.local.set({ relay_turn_count: 0, relay_density_score: 0 });
-    turnEl.textContent    = '0';
+    turnEl.textContent      = '0';
     densityFill.style.width = '0%';
     setStatus('セッションをリセットしました');
   });

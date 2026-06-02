@@ -12,6 +12,23 @@
     color: #c9d1d9;
     font-family: 'Noto Sans JP', 'Segoe UI', sans-serif;
     font-size: 13px;
+    visibility: hidden;  /* ライセンス検証完了まで非表示 */
+  }
+  #loading-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    visibility: visible;
+  }
+  #loading-overlay span {
+    color: #8b949e;
+    font-size: 12px;
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50%       { opacity: 1; }
   }
   header {
     background: #0d1117;
@@ -54,39 +71,43 @@
 </style>
 </head>
 <body>
-<header>
-  <span class="logo">Relay</span>
-  <span class="plan-badge" id="plan-label">Free</span>
-</header>
+<div id="loading-overlay"><span>検証中...</span></div>
 
-<div class="section">
-  <div class="section-title">セッション状態</div>
-  <div class="stat-row">
-    <span class="stat-label">ターン数</span>
-    <span class="stat-value" id="turn-count">--</span>
+<div id="main-ui" style="display:none">
+  <header>
+    <span class="logo">Relay</span>
+    <span class="plan-badge" id="plan-label"></span>
+  </header>
+
+  <div class="section">
+    <div class="section-title">セッション状態</div>
+    <div class="stat-row">
+      <span class="stat-label">ターン数</span>
+      <span class="stat-value" id="turn-count">--</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">密度スコア (One)</span>
+      <span class="stat-value" id="density-score">--</span>
+    </div>
+    <div id="density-bar-wrap"><div id="density-bar-fill" style="width:0%"></div></div>
   </div>
-  <div class="stat-row">
-    <span class="stat-label">密度スコア (One)</span>
-    <span class="stat-value" id="density-score">--</span>
+
+  <div class="section">
+    <div class="section-title">プラン設定</div>
+    <select id="plan-select">
+      <option value="free">Free — 20ターン警告</option>
+      <option value="pro">Pro — AI要約 + ファイルキャプチャ</option>
+      <option value="one">One — 最適タイミング検知</option>
+    </select>
   </div>
-  <div id="density-bar-wrap"><div id="density-bar-fill" style="width:0%"></div></div>
-</div>
 
-<div class="section">
-  <div class="section-title">プラン設定</div>
-  <select id="plan-select">
-    <option value="free">Free — 20ターン警告</option>
-    <option value="pro">Pro — AI要約 + ファイルキャプチャ</option>
-    <option value="one">One — 最適タイミング検知</option>
-  </select>
-</div>
+  <div class="actions">
+    <button class="btn btn-primary" id="btn-handoff">今すぐ引き継ぎ</button>
+    <button class="btn btn-secondary" id="btn-clear">セッションリセット</button>
+  </div>
 
-<div class="actions">
-  <button class="btn btn-primary" id="btn-handoff">今すぐ引き継ぎ</button>
-  <button class="btn btn-secondary" id="btn-clear">セッションリセット</button>
+  <div id="status-msg"></div>
 </div>
-
-<div id="status-msg"></div>
 
 <script src="popup.js"></script>
 </body>

@@ -15,12 +15,37 @@ function updateBadge(tabId, text, color) {
   chrome.action.setBadgeBackgroundColor({ color: BADGE_COLORS[color] || color, tabId });
 }
 
+// ─── ライセンス検証済みプラン ────────────────────────────────────────────────
+// popup.js は直接 storage を読まず GET_PLAN 経由で取得する。
+// これにより、ライセンス検証完了前に Free UI が描画されるチラつきをゼロにする。
+
+let _verifiedPlan = null;
+let _planPromise  = null;
+
+async function getVerifiedPlan() {
+  if (_verifiedPlan !== null) return _verifiedPlan;
+  if (_planPromise)           return _planPromise;
+
+  _planPromise = (async () => {
+    const { relay_plan_level } = await chrome.storage.local.get('relay_plan_level');
+    _verifiedPlan = relay_plan_level || 'free';
+    return _verifiedPlan;
+  })();
+
+  return _planPromise;
+}
+
 // ─── メッセージ受信 ──────────────────────────────────────────────────────────
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   const tabId = sender.tab?.id;
 
   switch (msg.type) {
+    case 'GET_PLAN':
+      // popup.js がライセンス検証完了後のプランを1回だけ要求する
+      getVerifiedPlan().then(plan => sendResponse({ plan }));
+      return true;  // async
+
     case 'SESSION_STARTED':
       // LB_005: notifySessionStart は background 側でのみ処理する
       // content.js の init() から直接呼ばないこと（レースコンディション防止）
