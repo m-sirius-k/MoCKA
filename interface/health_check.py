@@ -172,7 +172,7 @@ def check_relay_dom(cfg: dict) -> tuple:
         last = data.get("last_ping")
         if last:
             return False, f"Relay ping stale (>{stale}s): last_ping={last}"
-        return False, "Relay未接続: last_ping なし（拡張が起動していないか /relay/ping 未実装）"
+        return False, "Relay: last_ping なし（claude.aiタブ未オープン、または拡張未起動）"
     except urllib.error.URLError:
         return False, "MoCKAサーバー未起動 (localhost:5000 に接続できません)"
     except Exception as e:
