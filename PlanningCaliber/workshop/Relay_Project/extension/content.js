@@ -825,10 +825,10 @@ function injectBadgeStyles() {
   style.textContent = `
     #relay-badge {
       position: fixed !important;
-      bottom: 80px !important;
-      left: 50% !important;
-      right: auto !important;
-      transform: translateX(-50%);
+      bottom: 140px !important;
+      right: 80px !important;
+      left: auto !important;
+      transform: none;
       width: 72px;
       height: 88px;
       background: #0c1220;
@@ -849,7 +849,7 @@ function injectBadgeStyles() {
       user-select: none;
     }
     #relay-badge:hover {
-      transform: translateX(-50%) translateY(-3px) scale(1.04);
+      transform: translateY(-3px) scale(1.04);
       border-color: #38bdf8;
       box-shadow: 0 8px 32px rgba(0,0,0,0.8), 0 0 16px rgba(56,189,248,0.25);
     }

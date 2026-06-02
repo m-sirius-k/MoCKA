@@ -3,6 +3,24 @@
     window.MOCKA_INITIALIZED = true;
     console.log("[MOCKA] 自律監視プロトコル v16.1 起動 (user_voice ON / matcher_result注入 ON)");
 
+    // ===== 永続ステータスインジケーター =====
+    // content.js ロード直後に常時表示。injectDNA 成功時に内容を更新する。
+    function _createHookIndicator(label) {
+        const existing = document.getElementById('__mocka_hook_indicator__');
+        if (existing) { existing.textContent = label; return; }
+        const el = document.createElement('div');
+        el.id = '__mocka_hook_indicator__';
+        el.textContent = label;
+        el.style.cssText = 'position:fixed;bottom:120px;right:20px;color:rgba(255,255,255,0.5);font-size:10px;z-index:99999;pointer-events:none;letter-spacing:1px;';
+        document.body.appendChild(el);
+    }
+    // DOM ready 後に初期表示
+    if (document.body) {
+        _createHookIndicator('⚡MOCKA ACTIVE');
+    } else {
+        document.addEventListener('DOMContentLoaded', () => _createHookIndicator('⚡MOCKA ACTIVE'));
+    }
+
     let lastUrl = window.location.href;
     let dnaSentInThisSession = false;
     let essenceSentInThisSession = false;
@@ -288,10 +306,8 @@
             await writeAndSend(el, text);
             console.log("[MOCKA] DNA注入完了:", hookLabel);
 
-            const hookIndicator = document.createElement('div');
-            hookIndicator.textContent = hookLabel;
-            hookIndicator.style.cssText = 'position:fixed;bottom:120px;right:20px;color:rgba(255,255,255,0.6);font-size:10px;z-index:99999;pointer-events:none;letter-spacing:1px;';
-            document.body.appendChild(hookIndicator);
+            // 永続インジケーターを注入完了ラベルに更新（位置・スタイルはそのまま）
+            _createHookIndicator(hookLabel);
 
         } catch(e) {
             dnaSentInThisSession = false;
