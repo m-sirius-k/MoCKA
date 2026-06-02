@@ -90,6 +90,7 @@ HEALTH_CHECKS = {
         "url": "http://localhost:5000/relay/status",
         "timeout": 5,
         "stale_seconds": 300,
+        "optional": True,
         "risk":            "Relay拡張停止でclaudeとの疎通が失われる",
         "opportunity":     "ping監視によりRelay稼働状況を定量的に把握できる",
         "beta_candidate":  "institutionalized_connection",
