@@ -6,7 +6,8 @@ let currentSort = 'desc';
 let currentPeriod = 'all';
 
 // ドリルダウン状態
-let _drillSessionId = null; // null = グループ一覧, string = 特定セッション詳細
+let _drillSessionId = null; // null = グループ一覧, string = グループキー
+let _drillIsDate    = false; // date grouping mode かどうか
 
 function loadStats() {
   chrome.runtime.sendMessage({ type: 'GET_STATS' }, (res) => {
@@ -51,18 +52,28 @@ function applyFilters(messages) {
 }
 
 // ── セッションマップ構築 ──────────────────────────────────────────────────────
+// session_idが1種類以下（全て同一 or 全て未設定）の場合は日付でグループ化する
 function buildSessionMap(messages) {
+  const uniqueSids = new Set(
+    messages.map(m => m.session_id).filter(s => s && s !== 'unknown')
+  );
+  const useDate = uniqueSids.size <= 1; // date fallback
+
   const map = new Map();
   messages.forEach(m => {
-    const sid = m.session_id || 'unknown';
-    if (!map.has(sid)) map.set(sid, { messages: [], title: '', date: '', latestTs: '' });
-    const s = map.get(sid);
+    const key = useDate
+      ? (m.timestamp || '').slice(0, 10) || 'unknown'
+      : (m.session_id || (m.timestamp || '').slice(0, 10) || 'unknown');
+
+    if (!map.has(key)) map.set(key, { messages: [], title: '', date: '', latestTs: '' });
+    const s = map.get(key);
     s.messages.push(m);
     if (!s.title && m.role === 'user') s.title = m.content.slice(0, 30).replace(/\n/g, ' ');
     if (!s.date && m.timestamp)        s.date = m.timestamp.slice(0, 10);
-    if (m.timestamp > s.latestTs)      s.latestTs = m.timestamp;
+    if (!m.timestamp || m.timestamp > s.latestTs) s.latestTs = m.timestamp || '';
   });
-  return map;
+
+  return { map, useDate };
 }
 
 // ── メインレンダリング分岐 ────────────────────────────────────────────────────
@@ -71,7 +82,10 @@ function renderMessages() {
   document.getElementById('stat-showing').textContent = filtered.length;
 
   if (_drillSessionId) {
-    const sessionMsgs = filtered.filter(m => m.session_id === _drillSessionId);
+    // date grouping / session grouping どちらかでフィルタ
+    const sessionMsgs = _drillIsDate
+      ? filtered.filter(m => (m.timestamp || '').slice(0, 10) === _drillSessionId)
+      : filtered.filter(m => m.session_id === _drillSessionId);
     renderSessionDetail(sessionMsgs);
   } else {
     renderGroupedSessions(filtered);
@@ -90,7 +104,7 @@ function renderGroupedSessions(messages) {
     return;
   }
 
-  const map = buildSessionMap(messages);
+  const { map, useDate } = buildSessionMap(messages);
 
   // セッションを最新順にソート
   const sessions = Array.from(map.entries()).sort((a, b) =>
@@ -120,11 +134,12 @@ function renderGroupedSessions(messages) {
     '</div>';
   }).join('');
 
-  // ドリルダウン
+  // ドリルダウン（date/session どちらのグループキーかをフラグに保存）
   list.querySelectorAll('.sess-item').forEach(el => {
     el.addEventListener('click', (e) => {
       if (e.target.classList.contains('sess-insert-btn')) return;
       _drillSessionId = el.dataset.sid;
+      _drillIsDate    = useDate;
       renderMessages();
     });
   });
@@ -225,8 +240,8 @@ function injectToClaudeInput(text) {
     const claudeTab = tabs.find(t => t.url && t.url.includes('claude.ai'));
     if (claudeTab) {
       chrome.tabs.sendMessage(claudeTab.id, { type: 'ORCHESTRA_SYNTHESIZE', prompt: text }, () => {
-        chrome.windows.update(claudeTab.windowId, { focused: true }).catch(() => {});
-        chrome.tabs.update(claudeTab.id, { active: true });
+        // chrome.windows は未許可のためタブのみフォーカス
+        chrome.tabs.update(claudeTab.id, { active: true }).catch(() => {});
       });
     } else {
       // claude.aiが開いていない場合はクリップボードにコピー
