@@ -356,7 +356,7 @@ def run(target: str = None):
     else:
         write_event(
             "HEALTH_OK: ヘルスチェック全件正常",
-            f"全{total}件PASS @ {now_str}",
+            f"必須{total}件PASS @ {now_str}",
             "tic,health_check,health_ok",
         )
 
