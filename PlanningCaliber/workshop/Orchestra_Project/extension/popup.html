@@ -24,13 +24,13 @@
 
   body {
     width: 480px;
-    min-height: 560px;
-    max-height: 680px;
+    min-height: 600px;
+    max-height: 700px;
     overflow-y: auto;
     background: var(--bg);
     color: var(--text);
     font-family: 'Syne', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -324,6 +324,128 @@
   }
   .select-box:hover, .select-box:focus { border-color: var(--accent); }
   .highlight { background: rgba(232,255,71,0.2); border-radius: 2px; }
+
+  /* SESSION GROUP ITEMS */
+  .sess-item {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.12s;
+  }
+  .sess-item:hover { border-color: var(--accent2); }
+  .sess-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    gap: 8px;
+  }
+  .sess-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sess-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    background: rgba(71,212,255,0.15);
+    color: var(--accent2);
+    border: 1px solid rgba(71,212,255,0.3);
+    border-radius: 10px;
+    padding: 1px 7px;
+    flex-shrink: 0;
+  }
+  .sess-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .sess-preview {
+    font-size: 12px;
+    color: #a0a0b0;
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-bottom: 8px;
+  }
+  .sess-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sess-drill {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .sess-item:hover .sess-drill { color: var(--accent2); }
+  .sess-insert-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.12s;
+    letter-spacing: 0.3px;
+  }
+  .sess-insert-btn:hover {
+    background: rgba(232,255,71,0.1);
+    border-color: var(--accent);
+  }
+
+  /* DRILL-DOWN */
+  .back-btn {
+    font-size: 12px;
+    color: var(--accent2);
+    cursor: pointer;
+    padding: 6px 0 10px;
+    display: inline-block;
+    letter-spacing: 0.3px;
+  }
+  .back-btn:hover { text-decoration: underline; }
+  .drill-header {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    padding: 0 0 10px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .msg-insert-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    cursor: pointer;
+    margin-left: auto;
+    transition: all 0.12s;
+    flex-shrink: 0;
+  }
+  .msg-insert-btn:hover {
+    background: rgba(232,255,71,0.1);
+    border-color: var(--accent);
+  }
 
   /* NAV TABS */
   .nav-tabs {

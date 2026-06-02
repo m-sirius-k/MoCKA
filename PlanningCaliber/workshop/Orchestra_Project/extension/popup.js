@@ -5,6 +5,9 @@ let currentQuery = '';
 let currentSort = 'desc';
 let currentPeriod = 'all';
 
+// ドリルダウン状態
+let _drillSessionId = null; // null = グループ一覧, string = 特定セッション詳細
+
 function loadStats() {
   chrome.runtime.sendMessage({ type: 'GET_STATS' }, (res) => {
     if (res?.ok) {
@@ -16,9 +19,10 @@ function loadStats() {
 
 function loadMessages(query = '') {
   currentQuery = query;
+  _drillSessionId = null; // 検索時はトップに戻す
   const msg = query
-    ? { type: 'GET_MESSAGES', query, limit: 200 }
-    : { type: 'GET_MESSAGES', limit: 200 };
+    ? { type: 'GET_MESSAGES', query, limit: 500 }
+    : { type: 'GET_MESSAGES', limit: 500 };
   chrome.runtime.sendMessage(msg, (res) => {
     if (res?.ok) {
       allMessages = res.data;
@@ -27,69 +31,209 @@ function loadMessages(query = '') {
   });
 }
 
-function renderMessages() {
-  const list = document.getElementById('message-list');
-
-  // 期間フィルター
+// ── フィルタ共通処理 ──────────────────────────────────────────────────────────
+function applyFilters(messages) {
   const now = new Date();
-  let filtered = allMessages.filter(m => {
+  let filtered = messages.filter(m => {
     if (currentRole !== 'all' && m.role !== currentRole) return false;
     if (currentPeriod === 'all') return true;
     const d = new Date(m.timestamp);
-    if (currentPeriod === 'today') {
-      return d.toDateString() === now.toDateString();
-    } else if (currentPeriod === 'week') {
-      const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
-      return d >= weekAgo;
-    } else if (currentPeriod === 'month') {
-      const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
-      return d >= monthAgo;
-    }
+    if (currentPeriod === 'today')  return d.toDateString() === now.toDateString();
+    if (currentPeriod === 'week')   { const wa = new Date(now); wa.setDate(now.getDate()-7); return d >= wa; }
+    if (currentPeriod === 'month')  { const ma = new Date(now); ma.setMonth(now.getMonth()-1); return d >= ma; }
     return true;
   });
-
-  // ソート
-  filtered = filtered.slice().sort((a, b) => {
-    return currentSort === 'desc'
+  return filtered.slice().sort((a, b) =>
+    currentSort === 'desc'
       ? b.timestamp.localeCompare(a.timestamp)
-      : a.timestamp.localeCompare(b.timestamp);
-  });
+      : a.timestamp.localeCompare(b.timestamp)
+  );
+}
 
+// ── セッションマップ構築 ──────────────────────────────────────────────────────
+function buildSessionMap(messages) {
+  const map = new Map();
+  messages.forEach(m => {
+    const sid = m.session_id || 'unknown';
+    if (!map.has(sid)) map.set(sid, { messages: [], title: '', date: '', latestTs: '' });
+    const s = map.get(sid);
+    s.messages.push(m);
+    if (!s.title && m.role === 'user') s.title = m.content.slice(0, 30).replace(/\n/g, ' ');
+    if (!s.date && m.timestamp)        s.date = m.timestamp.slice(0, 10);
+    if (m.timestamp > s.latestTs)      s.latestTs = m.timestamp;
+  });
+  return map;
+}
+
+// ── メインレンダリング分岐 ────────────────────────────────────────────────────
+function renderMessages() {
+  const filtered = applyFilters(allMessages);
   document.getElementById('stat-showing').textContent = filtered.length;
 
-  if (filtered.length === 0) {
-    const msg = currentQuery
+  if (_drillSessionId) {
+    const sessionMsgs = filtered.filter(m => m.session_id === _drillSessionId);
+    renderSessionDetail(sessionMsgs);
+  } else {
+    renderGroupedSessions(filtered);
+  }
+}
+
+// ── グループ一覧ビュー ────────────────────────────────────────────────────────
+function renderGroupedSessions(messages) {
+  const list = document.getElementById('message-list');
+
+  if (messages.length === 0) {
+    const emptyMsg = currentQuery
       ? 'No results for "' + escHtml(currentQuery) + '"'
       : 'No messages captured yet.<br>Open claude.ai and start chatting!';
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">' + msg + '</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">' + emptyMsg + '</div></div>';
     return;
   }
 
-  list.innerHTML = filtered.map(m => {
-    const timeStr = new Date(m.timestamp).toLocaleString('en', {
-      month: 'short', day: 'numeric',
-      hour: '2-digit', minute: '2-digit'
-    });
-    const sessShort = m.session_id ? m.session_id.slice(-6) : '--';
-    const preview = escHtml(m.content.slice(0, 120));
-    const full = escHtml(m.content);
-    const highlighted = currentQuery
-      ? preview.replace(new RegExp(escRegex(currentQuery), 'gi'), s => '<span class="highlight">' + s + '</span>')
-      : preview;
+  const map = buildSessionMap(messages);
 
-    return '<div class="msg-item" data-id="' + m.id + '">' +
-      '<div class="msg-header">' +
-      '<span class="role-badge ' + m.role + '">' + (m.role === 'user' ? 'YOU' : 'AI') + '</span>' +
-      '<span class="msg-time">' + timeStr + '</span>' +
-      '<span class="msg-session">#' + sessShort + '</span>' +
+  // セッションを最新順にソート
+  const sessions = Array.from(map.entries()).sort((a, b) =>
+    b[1].latestTs.localeCompare(a[1].latestTs)
+  );
+
+  const highlighted = (text) => currentQuery
+    ? escHtml(text).replace(new RegExp(escRegex(currentQuery), 'gi'), s => '<span class="highlight">' + s + '</span>')
+    : escHtml(text);
+
+  list.innerHTML = sessions.map(([sid, data]) => {
+    const title   = data.title || '(no title)';
+    const count   = data.messages.length;
+    const date    = data.date;
+    const preview = data.messages.find(m => m.role === 'user')?.content.slice(0, 80) || '';
+    return '<div class="sess-item" data-sid="' + escHtml(sid) + '">' +
+      '<div class="sess-header">' +
+        '<span class="sess-title">' + highlighted(title) + '</span>' +
+        '<span class="sess-badge">' + count + '</span>' +
       '</div>' +
-      '<div class="msg-preview">' + highlighted + (m.content.length > 120 ? '...' : '') + '</div>' +
-      '<div class="msg-full">' + full + '</div>' +
-      '</div>';
+      '<div class="sess-meta">' + escHtml(date) + '</div>' +
+      '<div class="sess-preview">' + highlighted(preview) + (preview.length === 80 ? '…' : '') + '</div>' +
+      '<div class="sess-actions">' +
+        '<span class="sess-drill">詳細 ›</span>' +
+        '<button class="sess-insert-btn" data-sid="' + escHtml(sid) + '">⚡ 挿入</button>' +
+      '</div>' +
+    '</div>';
   }).join('');
 
+  // ドリルダウン
+  list.querySelectorAll('.sess-item').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if (e.target.classList.contains('sess-insert-btn')) return;
+      _drillSessionId = el.dataset.sid;
+      renderMessages();
+    });
+  });
+
+  // 挿入ボタン
+  list.querySelectorAll('.sess-insert-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const sid  = btn.dataset.sid;
+      const data = map.get(sid);
+      if (data) insertSessionContext(sid, data.title, data.messages);
+    });
+  });
+}
+
+// ── セッション詳細ビュー ──────────────────────────────────────────────────────
+function renderSessionDetail(messages) {
+  const list = document.getElementById('message-list');
+
+  if (messages.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">◈</div><div class="empty-text">No messages in this session.</div></div>';
+    return;
+  }
+
+  const title = messages.find(m => m.role === 'user')?.content.slice(0, 30) || '(no title)';
+  const highlighted = (text) => currentQuery
+    ? escHtml(text).replace(new RegExp(escRegex(currentQuery), 'gi'), s => '<span class="highlight">' + s + '</span>')
+    : escHtml(text);
+
+  const backBtn = '<div class="back-btn" id="drill-back">‹ Back to list</div>';
+  const header  = '<div class="drill-header">' + escHtml(title) + ' <span class="sess-badge">' + messages.length + '</span></div>';
+
+  const items = messages.map(m => {
+    const timeStr = new Date(m.timestamp).toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const preview = m.content.slice(0, 100);
+    const full    = m.content;
+    return '<div class="msg-item" data-id="' + m.id + '">' +
+      '<div class="msg-header">' +
+        '<span class="role-badge ' + m.role + '">' + (m.role === 'user' ? 'YOU' : 'AI') + '</span>' +
+        '<span class="msg-time">' + timeStr + '</span>' +
+        '<button class="msg-insert-btn" data-id="' + escHtml(m.id) + '">⚡ 挿入</button>' +
+      '</div>' +
+      '<div class="msg-preview">' + highlighted(preview) + (m.content.length > 100 ? '…' : '') + '</div>' +
+      '<div class="msg-full">' + escHtml(full) + '</div>' +
+    '</div>';
+  }).join('');
+
+  list.innerHTML = backBtn + header + items;
+
+  document.getElementById('drill-back')?.addEventListener('click', () => {
+    _drillSessionId = null;
+    renderMessages();
+  });
+
   list.querySelectorAll('.msg-item').forEach(el => {
-    el.addEventListener('click', () => el.classList.toggle('expanded'));
+    el.addEventListener('click', (e) => {
+      if (e.target.classList.contains('msg-insert-btn')) return;
+      el.classList.toggle('expanded');
+    });
+  });
+
+  list.querySelectorAll('.msg-insert-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id  = btn.dataset.id;
+      const msg = messages.find(m => m.id === id);
+      if (msg) insertMessageContext(title, msg);
+    });
+  });
+}
+
+// ── 挿入: セッション全体 ──────────────────────────────────────────────────────
+function insertSessionContext(sid, title, messages) {
+  const summary = messages
+    .filter(m => m.role === 'user')
+    .slice(0, 3)
+    .map(m => '・' + m.content.slice(0, 80).replace(/\n/g, ' '))
+    .join('\n');
+  const text = '【過去会話参照: ' + (title || sid) + '】\n' +
+    (summary ? '関連箇所:\n' + summary + '\n' : '') +
+    (currentQuery ? '検索キーワード: ' + currentQuery + '\n' : '') +
+    '\n上記の過去会話を踏まえて、';
+  injectToClaudeInput(text);
+}
+
+// ── 挿入: 単一メッセージ ──────────────────────────────────────────────────────
+function insertMessageContext(sessionTitle, msg) {
+  const text = '【過去会話参照: ' + (sessionTitle || '') + '】\n' +
+    '関連箇所: ' + msg.content.slice(0, 100).replace(/\n/g, ' ') + '\n' +
+    (currentQuery ? '検索キーワード: ' + currentQuery + '\n' : '') +
+    '\n上記の過去会話を踏まえて、';
+  injectToClaudeInput(text);
+}
+
+// ── Claude入力欄への注入（content.js 経由） ───────────────────────────────────
+function injectToClaudeInput(text) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const claudeTab = tabs.find(t => t.url && t.url.includes('claude.ai'));
+    if (claudeTab) {
+      chrome.tabs.sendMessage(claudeTab.id, { type: 'ORCHESTRA_SYNTHESIZE', prompt: text }, () => {
+        chrome.windows.update(claudeTab.windowId, { focused: true }).catch(() => {});
+        chrome.tabs.update(claudeTab.id, { active: true });
+      });
+    } else {
+      // claude.aiが開いていない場合はクリップボードにコピー
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Claude.aiが開いていません。\nテキストをクリップボードにコピーしました。');
+      }).catch(() => {});
+    }
   });
 }
 
