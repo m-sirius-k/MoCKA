@@ -1,10 +1,10 @@
 {
   "anchor_type": "manual_external_post",
-  "external_ref": "https://github.com/m-sirius-k/MoCKA/commit/77c1789d9c2f4644686cd74ca4d37fbe8eb78707",
+  "external_ref": "https://github.com/m-sirius-k/MoCKA/commit/da5d9a5a27b70dd5a5bd9b5cc655241907b99dff",
   "external_ref_semantics": "sealing_commit_reference",
   "schema": "mocka.governance.anchor_record.v1",
   "note": "Re-anchored after security cleanup 2026-04-16 E20260416_002",
-  "sealed_summary_hash": "e3ed62e35d1c7e1f82081624b469917dfbe5ff2a9e6a26ea5ae3660eea60dc1c",
-  "sealed_at_utc": "2026-06-02T23:28:14Z",
+  "sealed_summary_hash": "1f06efbbee78ad6a4ca84708c6c91800333c3039de09ba804f9a0f5ed0792eba",
+  "sealed_at_utc": "2026-06-02T23:35:08Z",
   "summary_hash_spec_version": "1.0"
 }
