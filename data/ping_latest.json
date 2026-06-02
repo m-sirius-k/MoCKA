@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-02T10:56:22.068127"
+  "generated_at": "2026-06-02T10:56:22.068127",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": 0.0,
+    "danger_rate": 0.5,
+    "success_rate": 0.5,
+    "text": "[Relay引き継ぎ - 自動生成]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n\n\n\n■ 未完了タスク\n\n  - [LB_0",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-27",
+        "why": "「クレームね・インシデントね」→記録→essence自動反映の全自動フローを実現。DECISIONはNORMAL自動・HIGH以上のみHuman Gate。",
+        "how": "",
+        "note": "auto_gate,essence_chain,TODO_046,TODO_084,app.py,完了",
+        "recur": 0,
+        "matched": [
+          "auto"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-27",
+        "why": "",
+        "how": "",
+        "note": "SESSION_COMPLETE,COMMAND_CENTER,v4.0,auto_gate,essence_chain",
+        "recur": 0,
+        "matched": [
+          "auto"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-02T02:01:02.993Z"
+  }
 }
