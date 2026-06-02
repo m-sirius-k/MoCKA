@@ -4,6 +4,9 @@
 import { SCHEMA_VERSION, PLAN_LIMITS } from './shared/constants.js';
 import { validateRegistry } from './shared/validators.js';
 
+// MOCKA_DEV_MODE: 開発者バイパス
+const MOCKA_DEV_ID = "m-sirius-k";
+
 // ============================================================
 // 初期化
 // ============================================================
@@ -266,7 +269,10 @@ async function timeMachineSearch(filename) {
 // ============================================================
 async function getRegistry() {
   const data = await chrome.storage.local.get('memory_registry');
-  return data.memory_registry || {};
+  const reg = data.memory_registry || {};
+  // MOCKA_DEV_MODE: 開発者IDが設定されていればOneプランとして扱う
+  if (MOCKA_DEV_ID === "m-sirius-k") reg.plan = 'one';
+  return reg;
 }
 
 async function saveRegistry(registry) {

@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-02T09:15:35.178392"
+  "generated_at": "2026-06-02T09:15:35.178392",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": 0.0,
+    "danger_rate": 0.5,
+    "success_rate": 0.5,
+    "text": "完了しました。変更箇所は2ヶ所:\n\n| ファイル | 変更箇所 | 変更内容 |\n\n|---|---|---|\n\n| [relay-ui.js:13-17](M",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "でき"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "でき"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-02T00:56:11.173Z"
+  }
 }

@@ -12,8 +12,9 @@ function createBanner() {
   el.id = BANNER_ID;
   el.style.cssText = `
     position: fixed;
-    bottom: 24px;
-    right: 24px;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 99999;
     background: #1a1a2e;
     border: 1px solid #00d4ff;

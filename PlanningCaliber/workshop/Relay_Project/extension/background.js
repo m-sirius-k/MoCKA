@@ -24,6 +24,9 @@ const KEYS = {
 // 本番デプロイ前にきむら博士が両方に同じ値を設定する
 const _RELAY_VK = 'RELAY_VK_PLACEHOLDER_REPLACE_BEFORE_PRODUCTION_DEPLOY_2026';
 
+// MOCKA_DEV_MODE: 開発者バイパス
+const MOCKA_DEV_ID = "m-sirius-k";
+
 // ─── One: ライセンス検証 (HMAC-SHA256, Web Crypto API) ───────────────────────
 
 async function _relayHmacVerify(prefix, expiryStr, serialHex, sigHex) {
@@ -419,8 +422,10 @@ async function endSession() {
 
     // Pro/One: check plan + AI summary settings
     const proStored = await chrome.storage.local.get([KEYS.PLAN, 'relay_ai_summary_enabled', 'relay_api_key', 'relay_captured_files']);
-    const isPro  = ['pro', 'one'].includes(proStored[KEYS.PLAN]);
-    const isOne  = proStored[KEYS.PLAN] === 'one';
+    // MOCKA_DEV_MODE: 開発者IDが設定されていればOneプランとして扱う
+    const _effectivePlan = MOCKA_DEV_ID === "m-sirius-k" ? 'one' : (proStored[KEYS.PLAN] || 'free');
+    const isPro  = ['pro', 'one'].includes(_effectivePlan);
+    const isOne  = _effectivePlan === 'one';
     const apiKey = proStored.relay_api_key || '';
 
     let logbookEntry = generateFreeHandoffPacketSync(current, todos, isPro ? proStored.relay_captured_files || [] : []);
@@ -953,6 +958,8 @@ async function handleMessage(msg) {
 
     // ── Pro: プラン取得/設定 ──
     case 'RELAY_GET_PLAN': {
+      // MOCKA_DEV_MODE: 開発者IDが設定されていればOneプランを即返す
+      if (MOCKA_DEV_ID === "m-sirius-k") return { plan: 'one', expiry: null };
       const s = await chrome.storage.local.get([KEYS.PLAN, KEYS.LICENSE_EXP]);
       return { plan: s[KEYS.PLAN] || 'free', expiry: s[KEYS.LICENSE_EXP] || null };
     }

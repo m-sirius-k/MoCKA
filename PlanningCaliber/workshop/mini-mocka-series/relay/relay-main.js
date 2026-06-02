@@ -55,7 +55,7 @@ function _notifyFreeWarning() {
   if (banner) return;
   const el = document.createElement('div');
   el.id = 'relay-free-warning';
-  el.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;background:#1a1a2e;border:1px solid #d29922;border-radius:8px;padding:12px 16px;color:#c9d1d9;font-size:13px;';
+  el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:99999;background:#1a1a2e;border:1px solid #d29922;border-radius:8px;padding:12px 16px;color:#c9d1d9;font-size:13px;';
   el.innerHTML = `⚠️ <strong>${_turnCount}ターン</strong>に達しました。引き継ぎを推奨します。`;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 8000);

@@ -161,6 +161,10 @@ async function sendRelayKeyEmail(toEmail, plan, key, expiryDisplay, env, couponH
   return res.ok;
 }
 
+// MOCKA_DEV_MODE: KVに登録された開発者GitHub ID
+// KV設定: wrangler kv:key put --binding=RELAY_KV DEVELOPER_GITHUB_ID "m-sirius-k"
+const DEVELOPER_GITHUB_ID = "m-sirius-k";
+
 // ── メインハンドラー ─────────────────────────────────────────────────────────────
 
 export default {
@@ -175,6 +179,14 @@ export default {
 
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    // MOCKA_DEV_MODE: x-mocka-dev-id ヘッダーが "m-sirius-k" ならOneプランを即返す
+    const devId = request.headers.get('x-mocka-dev-id');
+    if (devId && devId === DEVELOPER_GITHUB_ID) {
+      return new Response(JSON.stringify({ valid: true, planLevel: 'one', dev: true }), {
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
     }
 
     // ── /relay/checkout: Stripe Webhook処理 ────────────────────────────────────

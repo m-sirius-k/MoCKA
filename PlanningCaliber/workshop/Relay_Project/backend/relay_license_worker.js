@@ -20,11 +20,21 @@
  *   id = "<your-kv-id>"
  */
 
+// MOCKA_DEV_MODE: KVに登録された開発者GitHub ID
+// KV設定: wrangler kv:key put --binding=RELAY_KV DEVELOPER_GITHUB_ID "m-sirius-k"
+const DEVELOPER_GITHUB_ID = "m-sirius-k";
+
 // ── ルーティング ───────────────────────────────────────────────────────────────
 
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // MOCKA_DEV_MODE: x-mocka-dev-id ヘッダーが "m-sirius-k" ならOneプランを即返す
+    const devId = request.headers.get("x-mocka-dev-id");
+    if (devId && devId === DEVELOPER_GITHUB_ID) {
+      return Response.json({ valid: true, planLevel: "one", dev: true });
+    }
 
     if (request.method === "GET" && url.pathname === "/health") {
       return Response.json({

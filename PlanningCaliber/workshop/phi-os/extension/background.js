@@ -3,6 +3,9 @@
 // ensureSchemaVersion / registerProduct をインライン化
 'use strict';
 
+// MOCKA_DEV_MODE: 開発者バイパス（PHI-OSはライセンス不要だが識別子として定義）
+const MOCKA_DEV_ID = "m-sirius-k";
+
 const SCHEMA_VERSION  = '1.0.0';
 const KNOWN_PRODUCTS  = ['relay', 'orchestra', 'memory'];
 

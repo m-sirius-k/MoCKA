@@ -1209,8 +1209,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
 // ── Pro/One: License management ───────────────────────────────────────────────
 
+// MOCKA_DEV_MODE: 開発者バイパス
+const MOCKA_DEV_ID = "m-sirius-k";
+
 function getLicensePlan() {
   return new Promise(resolve => {
+    // MOCKA_DEV_MODE: 開発者IDが設定されていればOneプランを即返す
+    if (MOCKA_DEV_ID === "m-sirius-k") { resolve('one'); return; }
     chrome.storage.sync.get(['license_plan'], data => {
       resolve(data.license_plan || 'free');
     });
