@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-01",
+    "updated": "2026-06-03",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -149,19 +149,6 @@
       "reference_event": "",
       "created_at": "2026-05-13T17:13:25.096736",
       "updated_at": "2026-06-01T18:29:22.305825"
-    },
-    {
-      "id": "TODO_144",
-      "title": "ファイル変更前後の強制記録制度 — 変更着手前INCIDENT・完了後FIX記録を必須化",
-      "status": "進行中",
-      "priority": "最高",
-      "category": "制度/ガバナンス",
-      "description": "Claudeがファイルを変更する際の強制プロトコル確立。\n【ルール】\n①変更着手前: mocka_write_event(INCIDENT/PLAN)でWHO/WHAT/WHERE/WHY/HOW+変更前状態を記録\n②変更実施\n③完了後: mocka_write_event(FIX/CHANGE)で変更後状態・差分・結果を記録\n【記録必須項目】\n- ファイルパス・行番号\n- 変更前コード（抜粋）\n- 変更後コード（抜粋）\n- 変更理由（WHY）\n- 確認結果\n【目的】戻れる文化の実現。Gitと同じ思想をMoCKAイベントDBで実現。「なぜその変更をしたか」を常に追跡可能にする。",
-      "assigned_to": "Claude（執行）+ きむら博士（承認）",
-      "note": "2026-05-16: E20260516_021インシデント発生。store_submission資産作成時にmocka_write_eventが実行されなかった。根本原因: TODO_144の適用範囲がMoCKAコアファイルに限定されていると誤解。planningcaliber配下の製品資産も記録対象に明示拡張が必要。再発防止TODO_151を登録。",
-      "reference_event": "",
-      "created_at": "2026-05-14T17:12:10.287435",
-      "updated_at": "2026-05-16T19:01:58.717730"
     },
     {
       "id": "TODO_150",
@@ -446,6 +433,42 @@
       "reference_event": "E20260601_031",
       "created_at": "2026-06-01T07:56:59.422698",
       "updated_at": "2026-06-01T09:03:54.619083"
+    },
+    {
+      "id": "TODO_217",
+      "title": "change-tracker PostToolUse:Edit 自動フック連携 — beforeChange/afterChange自動発火",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/ガバナンス/change-tracker",
+      "description": "現在はbeforeChange/afterChangeを手動呼び出し運用。Claude CodeのPostToolUse:Edit（またはPreToolUse:Edit）フックと連携し、Editツール実行前後に自動でchange-trackerを発火させる。TODO_153（ファイル生成後の自動mocka_write強制）との統合も検討。完成すれば記録漏れがゼロになる構造的保証が完成する。",
+      "assigned_to": "Claude（実装）+ きむら博士（承認）",
+      "note": "TODO_144完了時の残課題①。TODO_153と統合候補。",
+      "reference_event": "E20260603_068",
+      "created_at": "2026-06-03T09:19:15.745223"
+    },
+    {
+      "id": "TODO_218",
+      "title": "mocka-bridge.js MOCKA_ENDPOINT 恒久URL化 — Sakura VPS移行後に差し替え",
+      "status": "未着手",
+      "priority": "低",
+      "category": "インフラ/change-tracker",
+      "description": "mocka-bridge.jsのMOCKA_ENDPOINT定数がngrok URLをハードコード。ngrok URLが変わるたびに手動更新が必要。Sakura VPS移行（MCP 24時間化）完了後に恒久URLに差し替える。または環境変数/設定ファイル化で管理を楽にする。",
+      "assigned_to": "きむら博士（Sakura VPS移行完了後）",
+      "note": "TODO_144完了時の残課題②。Sakura VPS移行完了後に即対応。",
+      "reference_event": "E20260603_068",
+      "created_at": "2026-06-03T09:19:21.697362"
+    },
+    {
+      "id": "TODO_219",
+      "title": "Relay token推定 — body.textContent fallback時の非会話テキスト混入対策",
+      "status": "未着手",
+      "priority": "中",
+      "category": "製品/Relay/token推定",
+      "description": "estimateActualTokens()のフォールバックがdocument.body.textContentを使う場合、ナビゲーション・サイドバー等の非会話テキストが混入しトークン推定値が過大になるリスクがある。対策候補: ①getAIMessages()セレクタとの共有化 ②会話エリア特定セレクタを専用に設ける ③フォールバック時は推定値に補正係数を掛ける（例: ×0.6）",
+      "assigned_to": "Claude（実装）",
+      "note": "DOM実測実装（E20260603_097）時の残課題。セレクタ全滅時のみ発動するため緊急度は低い。",
+      "reference_event": "E20260603_097",
+      "created_at": "2026-06-03T09:55:54.140352"
     }
   ],
   "completed": [
@@ -2882,6 +2905,20 @@
       "created_at": "2026-05-30T15:59:42.936777",
       "updated_at": "2026-06-01T19:08:04.827571",
       "completed_at": "2026-06-01"
+    },
+    {
+      "id": "TODO_144",
+      "title": "ファイル変更前後の強制記録制度 — 変更着手前INCIDENT・完了後FIX記録を必須化",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス",
+      "description": "Claudeがファイルを変更する際の強制プロトコル確立。\n【ルール】\n①変更着手前: mocka_write_event(INCIDENT/PLAN)でWHO/WHAT/WHERE/WHY/HOW+変更前状態を記録\n②変更実施\n③完了後: mocka_write_event(FIX/CHANGE)で変更後状態・差分・結果を記録\n【記録必須項目】\n- ファイルパス・行番号\n- 変更前コード（抜粋）\n- 変更後コード（抜粋）\n- 変更理由（WHY）\n- 確認結果\n【目的】戻れる文化の実現。Gitと同じ思想をMoCKAイベントDBで実現。「なぜその変更をしたか」を常に追跡可能にする。",
+      "assigned_to": "Claude（執行）+ きむら博士（承認）",
+      "note": "2026-06-03 Claude Code実装完了。change-record-store.js/change-tracker.js/mocka-bridge.js/README 4ファイル。全5テストPASS。PHI-OS統合・単独動作両対応。残課題: PostToolUse:Edit自動フック連携は将来フェーズ。E20260603_068。",
+      "reference_event": "",
+      "created_at": "2026-05-14T17:12:10.287435",
+      "updated_at": "2026-06-03T09:18:04.873880",
+      "completed_at": "2026-06-03"
     }
   ],
   "orchestra_handoff": {
