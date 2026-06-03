@@ -262,7 +262,7 @@ async function renderStats(stats) {
   setTokens(stats.estimated_tokens || 0);
 
   // Break-even
-  setBreakEven(stats.break_even, stats.estimated_tokens || 0);
+  setBreakEven(stats.break_even, stats.estimated_tokens || 0, stats.token_source);
 
   // Mode
   if (UI.modeSelect) {
@@ -321,7 +321,7 @@ function setTokens(n) {
 
 // ─── Break-Even ───────────────────────────────────────────────────────────────
 
-function setBreakEven(be, currentTokens) {
+function setBreakEven(be, currentTokens, tokenSource) {
   if (!be || !UI.beBar) return;
 
   const pct    = Math.min(1.2, be.progress) * 100;
@@ -341,7 +341,8 @@ function setBreakEven(be, currentTokens) {
       const marginK = be.margin >= 1000
         ? (be.margin / 1000).toFixed(1) + 'K'
         : be.margin;
-      UI.beMargin.textContent = t('until_switch', marginK);
+      const srcMark = tokenSource === 'dom' ? ' ✓' : ' ≈';
+      UI.beMargin.textContent = t('until_switch', marginK) + srcMark;
       UI.beMargin.style.color = '';
     }
   }
@@ -524,7 +525,7 @@ function listenStorageChanges() {
       if (stats) {
         setCPI(stats.cpi || 0);
         setTokens(stats.estimated_tokens || 0);
-        setBreakEven(stats.break_even, stats.estimated_tokens || 0);
+        setBreakEven(stats.break_even, stats.estimated_tokens || 0, stats.token_source);
         setTurns(stats.turn_count || 0);
         if (stats.session_id) showMainContent();
         if (UI.modeSelect && stats.work_mode) {

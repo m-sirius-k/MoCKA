@@ -258,7 +258,15 @@ function processMessage(el, id) {
   const text   = el.textContent || '';
   const tokens = estimateTokens(text);
 
-  safeSendMessage({ type: 'RELAY_TURN_UPDATE', tokens });
+  const domEst = estimateActualTokens();
+  safeSendMessage({
+    type:      'RELAY_TURN_UPDATE',
+    tokens,
+    domTokens: domEst.tokens,
+    domChars:  domEst.chars,
+    jpRatio:   domEst.jpRatio,
+    langMode:  domEst.mode,
+  });
 
   const todos = extractTodos(text);
   todos.forEach(t => {
@@ -293,6 +301,61 @@ function processMessage(el, id) {
 
 function estimateTokens(text) {
   return Math.round(text.length / 4);
+}
+
+/**
+ * claude.ai DOM の全メッセージ文字数からトークン数を実測推定する。
+ * 日本語混在率を自動判定し係数を切り替える。
+ * @returns {{ tokens: number, chars: number, jpRatio: number, mode: string }}
+ */
+function estimateActualTokens() {
+  // ── セレクタ（claude.ai 現行DOM）─────────────────────────
+  const MSG_SELECTORS = [
+    '[data-testid="user-message"]',
+    '[data-testid="assistant-message"]',
+    '.font-claude-message',
+    '[class*="human-turn"]',
+    '[class*="assistant-turn"]',
+  ];
+
+  let allText = '';
+  for (const sel of MSG_SELECTORS) {
+    try {
+      const els = document.querySelectorAll(sel);
+      if (els.length > 0) {
+        els.forEach(el => { allText += el.textContent + '\n'; });
+        break;
+      }
+    } catch (e) {}
+  }
+
+  // セレクタ未ヒット時のフォールバック
+  if (!allText.trim()) {
+    allText = document.body?.textContent || '';
+  }
+
+  const totalChars = allText.length;
+  if (totalChars === 0) return { tokens: 0, chars: 0, jpRatio: 0, mode: 'unknown' };
+
+  // ── 言語係数 ──────────────────────────────────────────────
+  // 日本語文字（ひらがな・カタカナ・漢字）の比率を計算
+  const jpChars = (allText.match(/[぀-鿿]/g) || []).length;
+  const jpRatio = jpChars / totalChars;
+
+  // 係数定義（実測ベース）
+  // 日本語: 1トークン ≒ 2.6文字 → 1文字 ≒ 0.38トークン
+  // 英語:   1トークン ≒ 4.0文字 → 1文字 ≒ 0.25トークン
+  // 混在:   比率で線形補間
+  const JP_COEF = 0.38;
+  const EN_COEF = 0.25;
+  const coef    = EN_COEF + (JP_COEF - EN_COEF) * jpRatio;
+
+  const mode = jpRatio > 0.6 ? 'japanese'
+             : jpRatio > 0.2 ? 'mixed'
+             : 'english';
+
+  const tokens = Math.round(totalChars * coef);
+  return { tokens, chars: totalChars, jpRatio: Math.round(jpRatio * 100) / 100, mode };
 }
 
 // ─── Work Mode Detection ──────────────────────────────────────────────────────

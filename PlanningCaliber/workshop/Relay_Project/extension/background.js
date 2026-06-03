@@ -743,13 +743,20 @@ async function handleMessage(msg) {
     case 'RELAY_TURN_UPDATE': {
       const stored  = await chrome.storage.local.get(KEYS.CURRENT);
       const current = stored[KEYS.CURRENT] || {};
-      // 補正係数 2.5: content.jsはClaudeの返答テキストのみ計測（text.length/4）
-      // 実際は入力tok+コンテキスト蓄積+ファイル分が加算されるため補正
-      // → 誤差20%以内を目標とした実用係数
-      const RAW_TO_REAL = 2.5;
       const rawTokens   = msg.tokens || 150;
-      current.turn_count       = (current.turn_count       || 0) + 1;
-      current.estimated_tokens = (current.estimated_tokens || 0) + Math.round(rawTokens * RAW_TO_REAL);
+      const RAW_TO_REAL = 2.5;
+      current.turn_count = (current.turn_count || 0) + 1;
+
+      // DOM実測値を優先（全会話の累計推定なので上書き代入）
+      // 取得できない場合は RAW_TO_REAL 補正の増分加算にフォールバック
+      if (msg.domTokens && msg.domTokens > 0) {
+        current.estimated_tokens = msg.domTokens;
+        current.token_source     = 'dom';
+      } else {
+        current.estimated_tokens = (current.estimated_tokens || 0) + Math.round(rawTokens * RAW_TO_REAL);
+        current.token_source     = 'raw';
+      }
+
       await chrome.storage.local.set({ [KEYS.CURRENT]: current });
       return { ok: true };
     }
@@ -825,6 +832,7 @@ async function handleMessage(msg) {
         work_mode:        mode,
         break_even:       be,
         session_id:       current.session_id || null,
+        token_source:     current.token_source     || 'raw',
       };
     }
 
