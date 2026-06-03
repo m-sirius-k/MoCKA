@@ -1,0 +1,36 @@
+{
+  "insurers": [
+    {
+      "id": "meiji",
+      "name": "明治安田生命",
+      "short_name": "明治安田",
+      "url": "https://www.meijiyasuda.co.jp/",
+      "products_url": "",
+      "enabled": true
+    },
+    {
+      "id": "nippon",
+      "name": "日本生命",
+      "short_name": "日本生命",
+      "url": "https://www.nissay.co.jp/",
+      "products_url": "",
+      "enabled": true
+    },
+    {
+      "id": "sumitomo",
+      "name": "住友生命",
+      "short_name": "住友生命",
+      "url": "https://www.sumitomolife.co.jp/",
+      "products_url": "",
+      "enabled": true
+    },
+    {
+      "id": "daichi",
+      "name": "第一生命",
+      "short_name": "第一生命",
+      "url": "https://www.dai-ichi-life.co.jp/",
+      "products_url": "",
+      "enabled": true
+    }
+  ]
+}

@@ -1,0 +1,144 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-06-03",
+  "products": [
+    {
+      "id": "meiji_term_20",
+      "insurer_id": "meiji",
+      "insurer_name": "明治安田生命",
+      "product_name": "定期保険プレミアム20",
+      "type": "term",
+      "coverage_types": ["death", "critical_illness"],
+      "age_range": {"min": 20, "max": 65},
+      "gender_available": ["male", "female"],
+      "smoker_rates": true,
+      "sum_assured_range": {"min": 500, "max": 10000, "unit": "万円"},
+      "term_options": [10, 15, 20],
+      "monthly_premium_sample": {
+        "male_30_nonsmoker_1000man": 2800,
+        "female_30_nonsmoker_1000man": 1900
+      },
+      "features": ["非喫煙者割引", "健康体割引", "インターネット申込割引"],
+      "health_requirements": "標準体以上",
+      "waiting_period_months": 0,
+      "renewal": true,
+      "convertible": true,
+      "score_weight": 1.0
+    },
+    {
+      "id": "nippon_whole_life",
+      "insurer_id": "nippon",
+      "insurer_name": "日本生命",
+      "product_name": "みらいのカタチ 終身保険",
+      "type": "whole_life",
+      "coverage_types": ["death", "medical", "nursing"],
+      "age_range": {"min": 0, "max": 70},
+      "gender_available": ["male", "female"],
+      "smoker_rates": false,
+      "sum_assured_range": {"min": 300, "max": 5000, "unit": "万円"},
+      "term_options": [],
+      "monthly_premium_sample": {
+        "male_30_1000man": 18500,
+        "female_30_1000man": 14200
+      },
+      "features": ["払込免除特約付き", "リビングニーズ特約", "介護転換可能"],
+      "health_requirements": "告知のみ",
+      "waiting_period_months": 0,
+      "renewal": false,
+      "convertible": false,
+      "score_weight": 1.0
+    },
+    {
+      "id": "sumitomo_medical",
+      "insurer_id": "sumitomo",
+      "insurer_name": "住友生命",
+      "product_name": "スミセイ 医療保険 Vitality",
+      "type": "medical",
+      "coverage_types": ["hospitalization", "surgery", "cancer", "stroke", "heart_attack"],
+      "age_range": {"min": 15, "max": 75},
+      "gender_available": ["male", "female"],
+      "smoker_rates": false,
+      "sum_assured_range": {"min": 5000, "max": 20000, "unit": "円/日"},
+      "term_options": [],
+      "monthly_premium_sample": {
+        "male_30_5000yen": 2100,
+        "female_30_5000yen": 2600
+      },
+      "features": ["Vitality健康増進プログラム", "三大疾病一時金", "先進医療特約"],
+      "health_requirements": "告知のみ",
+      "waiting_period_months": 3,
+      "renewal": true,
+      "convertible": false,
+      "score_weight": 1.0
+    },
+    {
+      "id": "daichi_income_protection",
+      "insurer_id": "daichi",
+      "insurer_name": "第一生命",
+      "product_name": "就業不能保険 はたらくあなたに",
+      "type": "income_protection",
+      "coverage_types": ["disability", "mental_illness", "long_term_care"],
+      "age_range": {"min": 18, "max": 59},
+      "gender_available": ["male", "female"],
+      "smoker_rates": false,
+      "sum_assured_range": {"min": 50000, "max": 300000, "unit": "円/月"},
+      "term_options": [],
+      "monthly_premium_sample": {
+        "male_30_100000yen": 3200,
+        "female_30_100000yen": 4100
+      },
+      "features": ["精神疾患保障", "60日免責期間", "介護状態保障"],
+      "health_requirements": "告知のみ",
+      "waiting_period_months": 0,
+      "renewal": true,
+      "convertible": false,
+      "score_weight": 1.0
+    },
+    {
+      "id": "meiji_cancer",
+      "insurer_id": "meiji",
+      "insurer_name": "明治安田生命",
+      "product_name": "がん保険 ベストスタイル",
+      "type": "cancer",
+      "coverage_types": ["cancer"],
+      "age_range": {"min": 20, "max": 75},
+      "gender_available": ["male", "female"],
+      "smoker_rates": false,
+      "sum_assured_range": {"min": 100, "max": 1000, "unit": "万円（診断一時金）"},
+      "term_options": [],
+      "monthly_premium_sample": {
+        "male_30_100man": 1800,
+        "female_30_100man": 2400
+      },
+      "features": ["診断一時金", "抗がん剤治療給付金", "再発保障"],
+      "health_requirements": "告知のみ・90日待機",
+      "waiting_period_months": 3,
+      "renewal": true,
+      "convertible": false,
+      "score_weight": 1.0
+    },
+    {
+      "id": "nippon_annuity",
+      "insurer_id": "nippon",
+      "insurer_name": "日本生命",
+      "product_name": "みらいのカタチ 個人年金",
+      "type": "annuity",
+      "coverage_types": ["retirement"],
+      "age_range": {"min": 20, "max": 60},
+      "gender_available": ["male", "female"],
+      "smoker_rates": false,
+      "sum_assured_range": {"min": 6, "max": 120, "unit": "万円/年"},
+      "term_options": [10, 15, 20],
+      "monthly_premium_sample": {
+        "male_30_annuity_start65_10man_year": 15000,
+        "female_30_annuity_start65_10man_year": 17000
+      },
+      "features": ["確定年金10年", "税控除対象", "据置期間あり"],
+      "health_requirements": "不要",
+      "waiting_period_months": 0,
+      "renewal": false,
+      "convertible": false,
+      "score_weight": 1.0
+    }
+  ]
+}
