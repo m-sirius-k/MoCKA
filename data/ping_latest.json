@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-03T08:36:13.424702"
+  "generated_at": "2026-06-03T08:36:13.424702",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.333,
+    "danger_rate": 0.667,
+    "success_rate": 0.333,
+    "text": "重要な発見があります。\n\n---\n\n## 問題発見: `getAIMessages()` のセレクタが古いまま\n\n`estimateActualTokens()",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
+        "recur": 0,
+        "matched": [
+          "あり"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
+        "recur": 0,
+        "matched": [
+          "あり"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-03T01:26:58.826Z"
+  }
 }

@@ -198,11 +198,8 @@ function checkForNewMessages() {
 function getAIMessages() {
   // 2026年版 claude.ai セレクター（優先順）
   const selectors = [
-    // 現行 claude.ai DOM
-    '[data-testid="assistant-message"]',
-    'div.font-claude-message',
-    'div[class*="font-claude"]',
-    '.font-claude-response',
+    // 現行 claude.ai DOM（2026-06-03 実機確認済み）
+    '.font-claude-response-body',
     // フォールバック群
     '[class*="assistant-message"]',
     '[class*="AssistantMessage"]',
@@ -312,8 +309,7 @@ function estimateActualTokens() {
   // ── セレクタ（claude.ai 現行DOM）─────────────────────────
   const MSG_SELECTORS = [
     '[data-testid="user-message"]',
-    '[data-testid="assistant-message"]',
-    '.font-claude-message',
+    '.font-claude-response-body',
     '[class*="human-turn"]',
     '[class*="assistant-turn"]',
   ];
