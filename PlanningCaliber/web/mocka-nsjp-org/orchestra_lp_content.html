@@ -1,0 +1,227 @@
+<!-- Orchestra LP — WordPress固定ページ用コンテンツ -->
+<!-- 投稿先: /mini-mocka/orchestra -->
+<!-- 貼り付け方: WordPress編集画面 → 「カスタムHTML」ブロックに貼る -->
+
+<style>
+.orch-wrap { max-width: 860px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color: #1a1a2e; }
+.orch-hero { text-align: center; padding: 64px 24px 48px; background: linear-gradient(135deg, #0f0c29, #302b63, #24243e); border-radius: 16px; margin-bottom: 48px; }
+.orch-hero h1 { font-size: 2.6rem; font-weight: 800; color: #fff; margin: 0 0 16px; letter-spacing: -1px; }
+.orch-hero .tagline { font-size: 1.15rem; color: #c8b8ff; margin: 0 0 32px; }
+.orch-hero .cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary { display: inline-block; padding: 14px 32px; background: #7c3aed; color: #fff; border-radius: 8px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: background .2s; }
+.btn-primary:hover { background: #6d28d9; color: #fff; }
+.btn-secondary { display: inline-block; padding: 14px 32px; border: 2px solid rgba(255,255,255,.4); color: #fff; border-radius: 8px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: all .2s; }
+.btn-secondary:hover { border-color: #fff; color: #fff; }
+
+.orch-section { margin-bottom: 56px; }
+.orch-section h2 { font-size: 1.6rem; font-weight: 700; margin-bottom: 24px; color: #1a1a2e; border-left: 4px solid #7c3aed; padding-left: 16px; }
+
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.feature-card { background: #f8f7ff; border: 1px solid #e5e0ff; border-radius: 12px; padding: 24px; }
+.feature-card .icon { font-size: 2rem; margin-bottom: 12px; }
+.feature-card h3 { font-size: 1.05rem; font-weight: 700; margin: 0 0 8px; }
+.feature-card p { font-size: .9rem; color: #555; margin: 0; line-height: 1.6; }
+
+.plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+.plan-card { border: 1px solid #e0e0e0; border-radius: 12px; padding: 28px 24px; position: relative; }
+.plan-card.featured { border: 2px solid #7c3aed; }
+.plan-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #7c3aed; color: #fff; font-size: .75rem; font-weight: 700; padding: 4px 14px; border-radius: 20px; white-space: nowrap; }
+.plan-name { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #7c3aed; margin-bottom: 8px; }
+.plan-price { font-size: 2rem; font-weight: 800; margin-bottom: 4px; }
+.plan-price span { font-size: 1rem; font-weight: 400; color: #888; }
+.plan-desc { font-size: .85rem; color: #666; margin-bottom: 20px; }
+.plan-features { list-style: none; padding: 0; margin: 0 0 24px; }
+.plan-features li { font-size: .9rem; padding: 6px 0; border-bottom: 1px solid #f0f0f0; display: flex; align-items: flex-start; gap: 8px; }
+.plan-features li::before { content: '✓'; color: #7c3aed; font-weight: 700; flex-shrink: 0; }
+.plan-features li.na { color: #bbb; }
+.plan-features li.na::before { content: '—'; color: #ddd; }
+.plan-btn { display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: 700; font-size: .95rem; text-decoration: none; transition: all .2s; }
+.plan-btn.free { background: #f0f0f0; color: #333; }
+.plan-btn.free:hover { background: #e0e0e0; }
+.plan-btn.paid { background: #7c3aed; color: #fff; }
+.plan-btn.paid:hover { background: #6d28d9; }
+
+.install-steps { counter-reset: step; }
+.install-step { display: flex; gap: 20px; margin-bottom: 24px; align-items: flex-start; }
+.step-num { counter-increment: step; background: #7c3aed; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: .9rem; flex-shrink: 0; }
+.step-num::before { content: counter(step); }
+.step-body h3 { margin: 0 0 6px; font-size: 1rem; }
+.step-body p { margin: 0; font-size: .9rem; color: #555; line-height: 1.6; }
+.step-body code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: .85rem; }
+
+.faq-item { border-bottom: 1px solid #eee; padding: 20px 0; }
+.faq-item:last-child { border-bottom: none; }
+.faq-item h3 { font-size: 1rem; font-weight: 700; margin: 0 0 8px; }
+.faq-item p { font-size: .9rem; color: #555; margin: 0; line-height: 1.7; }
+
+.orch-note { background: #fdf6ff; border: 1px solid #e5d0ff; border-radius: 8px; padding: 16px 20px; font-size: .875rem; color: #5b21b6; margin-top: 24px; }
+</style>
+
+<div class="orch-wrap">
+
+  <!-- ヒーロー -->
+  <div class="orch-hero">
+    <h1>🎼 Orchestra</h1>
+    <p class="tagline">複数AIに同時に聞いて、最善の答えを手に入れる</p>
+    <div class="cta-group">
+      <a class="btn-primary" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank">Chrome拡張を無料で追加</a>
+      <a class="btn-secondary" href="#plans">プランを見る</a>
+    </div>
+  </div>
+
+  <!-- 特徴 -->
+  <div class="orch-section">
+    <h2>できること</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">💾</div>
+        <h3>会話の保存・検索</h3>
+        <p>claude.aiの会話を自動保存。キーワードで過去の会話をすぐに検索できる。無料で使える。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">📤</div>
+        <h3>CSV/JSONエクスポート</h3>
+        <p>保存した会話をCSVまたはJSON形式でエクスポート。データとして活用できる。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🤝</div>
+        <h3>AIへ共有（Pro）</h3>
+        <p>会話内容を他のAI（Gemini・GPT等）に共有。比較や深掘りに使える。</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🎼</div>
+        <h3>5AI並列合議（One）</h3>
+        <p>5つのAIに同時に同じ質問を送り、全回答を比較。重要な判断に。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- プラン -->
+  <div class="orch-section" id="plans">
+    <h2>プランと料金</h2>
+    <div class="plan-grid">
+
+      <!-- Free -->
+      <div class="plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">¥0<span>/月</span></div>
+        <div class="plan-desc">まず試してみたい方に</div>
+        <ul class="plan-features">
+          <li>会話の自動保存</li>
+          <li>キーワード検索</li>
+          <li>CSV/JSONエクスポート</li>
+          <li class="na">AIへの共有</li>
+          <li class="na">5AI並列合議</li>
+        </ul>
+        <a class="plan-btn free" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank">無料で追加</a>
+      </div>
+
+      <!-- Pro -->
+      <div class="plan-card featured">
+        <div class="plan-badge">人気</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$5<span>/月</span></div>
+        <div class="plan-desc">AIをもっと使いこなしたい方に</div>
+        <ul class="plan-features">
+          <li>Free の全機能</li>
+          <li>他AIへの共有</li>
+          <li>ライセンスキー発行</li>
+          <li class="na">5AI並列合議</li>
+        </ul>
+        <a class="plan-btn paid" href="https://buy.stripe.com/3cI8wPgW910TfUG02P2ZO02" target="_blank">Proを購入</a>
+      </div>
+
+      <!-- One LAUNCH -->
+      <div class="plan-card" style="border:2px solid #c2410c; position:relative;">
+        <div class="plan-badge" style="background:#c2410c; position:absolute; top:-12px; left:50%; transform:translateX(-50%); white-space:nowrap; color:#fff; font-size:.75rem; font-weight:700; padding:4px 14px; border-radius:20px;">🔥 先着500本限定</div>
+        <div class="plan-name" style="color:#c2410c;">One</div>
+        <div class="plan-price">$8<span style="font-size:.85rem; color:#888; text-decoration:line-through; margin-left:6px;">$10</span><span>/月</span></div>
+        <div class="plan-desc" style="color:#c2410c; font-weight:600;">Launch Edition — 限定価格</div>
+        <ul class="plan-features">
+          <li>Pro の全機能</li>
+          <li>5AI並列合議</li>
+          <li>応答待機時間カスタマイズ</li>
+          <li>優先サポート</li>
+        </ul>
+        <a class="plan-btn paid" href="https://buy.stripe.com/aFa5kDfS5dNF4bYdTF2ZO01" target="_blank">Oneを購入（Launch Edition $8）</a>
+      </div>
+
+    </div>
+    <div class="orch-note">
+      💡 購入後、登録メールアドレスにライセンスキーが自動送信されます（noreply@nsjp.org）。Chrome拡張の設定画面でキーを入力するだけで有効化できます。
+    </div>
+  </div>
+
+  <!-- インストール手順 -->
+  <div class="orch-section">
+    <h2>インストール方法</h2>
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>Chrome Web Storeから追加</h3>
+          <p>上の「Chrome拡張を無料で追加」ボタンをクリック。Chromeブラウザが開きます。</p>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>「Chromeに追加」をクリック</h3>
+          <p>確認ダイアログが表示されます。「拡張機能を追加」をクリックして完了です。</p>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>claude.aiを開く</h3>
+          <p><code>claude.ai</code> を開くと自動的にOrchestraが有効になります。右クリックメニューにSave/Share/Deliberateが追加されます。</p>
+        </div>
+      </div>
+      <div class="install-step">
+        <div class="step-num"></div>
+        <div class="step-body">
+          <h3>（Pro/Oneのみ）ライセンスキーを入力</h3>
+          <p>購入後に届いたメール内のキー（OPR-xxxまたはONE-xxx）を、拡張機能のSettingsに入力して有効化。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- よくある質問 -->
+  <div class="orch-section">
+    <h2>よくある質問</h2>
+
+    <div class="faq-item">
+      <h3>どのブラウザで使えますか？</h3>
+      <p>Google Chrome（デスクトップ版）のみ対応しています。Edge・Firefox・Safariには現在対応していません。</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>5AI並列合議はどのAIに送れますか？</h3>
+      <p>Claude・ChatGPT・Gemini・Copilot・Perplexityなど、ブラウザで開いているAIのタブに送信できます。あらかじめ各AIのタブを開いておく必要があります。</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>購入後にキャンセルできますか？</h3>
+      <p>月額サブスクリプションはいつでもキャンセル可能です。Stripeの顧客ポータルから解約できます。</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>データはどこに保存されますか？</h3>
+      <p>会話データはすべてお使いのブラウザのローカルストレージに保存されます。外部サーバーには送信しません。</p>
+    </div>
+
+    <div class="faq-item">
+      <h3>ライセンスキーのメールが届きません</h3>
+      <p>迷惑メールフォルダをご確認ください。送信元は <code>noreply@nsjp.org</code> です。それでも届かない場合は下のお問い合わせフォームからご連絡ください。</p>
+    </div>
+
+  </div>
+
+  <!-- お問い合わせ -->
+  <div class="orch-section">
+    <h2>お問い合わせ</h2>
+    <p style="color:#555; font-size:.95rem;">ご質問・ご要望は<a href="/contact" style="color:#7c3aed;">お問い合わせフォーム</a>からどうぞ。</p>
+  </div>
+
+</div>
