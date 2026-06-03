@@ -163,9 +163,11 @@ function t(key, ...args) {
 }
 
 function applyLang() {
-  // ラベル
+  // ラベル（data-i18nキーがI18Nに存在する場合のみ上書き — 未定義キーで生テキスト化しない）
   document.querySelectorAll('[data-i18n]').forEach(el => {
-    el.textContent = t(el.dataset.i18n);
+    const key = el.dataset.i18n;
+    const val = (I18N[currentLang] || I18N.ja)[key];
+    if (val) el.textContent = val;
   });
   // mode select options
   const ms = document.getElementById('mode-select');
@@ -179,6 +181,12 @@ function applyLang() {
   const side = document.getElementById('side-btn');
   if (pin)  pin.title  = t('pin_title');
   if (side) side.title = t('side_title');
+  // handoffボタン — data-i18nキー名不一致に関係なく直接セット
+  const handoffLabel = t('handoff');
+  ['btn-handoff', 'btn-handoff-alt'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.textContent = handoffLabel;
+  });
 }
 
 async function initLang() {

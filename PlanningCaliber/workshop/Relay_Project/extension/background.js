@@ -398,6 +398,42 @@ ${contextParts}`;
   ].join('\n');
 }
 
+/**
+ * Free版用: ルールベースの軽量セッション要約を生成する（AI API不使用）
+ * relay_logbook_history に保存する形式（entry.packet を持つ）で返す
+ */
+function buildFreeSessionSummary(current, todos) {
+  const activeTodos = todos.filter(t => t.status === 'active');
+  const decisions   = current.decisions  || [];
+  const filePaths   = current.filePaths  || [];
+  const keywords    = current.keywords   || [];
+  const turnCount   = current.turn_count || 0;
+  const convExcerpt = (current.convBuffer || '').substring(0, 300).replace(/\n+/g, ' ').trim();
+
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  const dateStr = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+
+  const lines = [
+    `## 前セッション要約 [Relay Free] — ${dateStr} (${turnCount}ターン)`,
+  ];
+  if (convExcerpt)       lines.push(`**会話概要**: ${convExcerpt}`);
+  if (decisions.length)  lines.push(`**決定事項**: ${decisions.slice(0, 3).join(' / ')}`);
+  if (activeTodos.length) {
+    lines.push('**未完了TODO**:');
+    activeTodos.slice(0, 8).forEach(t => lines.push(`  - [${t.id}] ${t.text}`));
+  }
+  if (filePaths.length)  lines.push(`**関連ファイル**: ${filePaths.slice(0, 3).join(', ')}`);
+  if (keywords.length)   lines.push(`**重要メモ**: ${keywords.slice(0, 3).join(' / ')}`);
+
+  return {
+    timestamp: Date.now(),
+    packet:    lines.join('\n'),
+    plan:      'free',
+    turn_count: turnCount,
+  };
+}
+
 async function endSession() {
   try {
     const stored = await chrome.storage.local.get([KEYS.CURRENT, KEYS.SESSIONS, KEYS.METRICS, KEYS.TODOS]);
@@ -437,14 +473,16 @@ async function endSession() {
       }
     }
 
-    // Pro: save to logbook history (queue, max 5)
+    // Pro: 10件保持 / One: 無制限（Free は relay_logbook_history に保存しない）
     if (isPro) {
       const histStored = await chrome.storage.local.get('relay_logbook_history');
       const history = histStored.relay_logbook_history || [];
       history.unshift({ timestamp: Date.now(), packet: logbookEntry });
-      if (history.length > 5) history.pop();
+      if (!isOne && history.length > 10) history.pop(); // Pro: max 10件, One: 無制限
       await chrome.storage.local.set({ relay_logbook_history: history });
     }
+    // Free: relay_logbook_history には保存しない
+    // getHandoffPacket() が relay_current.convBuffer を直接参照する
 
     // One: Vault（無制限Logbook）にリッチ形式で保存
     if (isOne) {
@@ -540,7 +578,7 @@ function lbId(num) {
   return 'LB_' + String(num).padStart(3, '0');
 }
 
-async function addTodo(text, source) {
+async function addTodo(text, source, why, where) {
   try {
     const stored = await chrome.storage.local.get(KEYS.TODOS);
     const todos  = stored[KEYS.TODOS] || [];
@@ -549,14 +587,17 @@ async function addTodo(text, source) {
     if (todos.some(t => t.text === text && t.status === 'active')) return;
 
     const num = await nextLbNum();
-    todos.push({
-      id:         lbId(num),     // LB_001形式
-      num,                       // 数値（検索用）
+    const entry = {
+      id:         lbId(num),
+      num,
       text,
       status:     'active',
       created_at: Date.now(),
       source:     source || 'auto',
-    });
+    };
+    if (why)   entry.why   = why.slice(0, 100);
+    if (where) entry.where = where.slice(0, 100);
+    todos.push(entry);
     await chrome.storage.local.set({ [KEYS.TODOS]: todos });
     console.log('[Relay] TODO added:', lbId(num), text.slice(0, 40));
   } catch (err) {
@@ -652,65 +693,146 @@ function calcBreakEven(mode, currentTokens) {
 // ─── Handoff Packet ───────────────────────────────────────────────────────────
 // ※ 引き継ぎ機能: 変更なし
 
+// ─── 設計思想・経緯ブロック（固定テキスト）────────────────────────────────────
+const RELAY_PHILOSOPHY_BLOCK = `
+## Relay 設計思想
+- miniMoCKA鉄則: PHI-OSと連携するが単独でも動く
+- AIを信じるな、システムで縛れ
+- 記録なき作業はMoCKAとして存在しない
+
+## 製品構成
+- Free: ルールベース引き継ぎ + Logbook
+- Pro: AI要約(ユーザーAPIキー) + ファイルキャプチャ + 決定事項抽出
+- One: 内容密度検知タイミング + Vault文脈注入
+
+## 実装完了履歴
+- TODO_173: content.js init()に/new判定追加（引き継ぎバグ修正）完了
+- TODO_174/175/176: Free/Pro/One実装完了（2026-05-27）
+- TODO_177: Vault文脈注入 指示書作成済み・未実装（保留中）
+- DOM実測修正: .font-claude-response-bodyセレクタに統一済み（E20260603_107/122）
+- Session RESUME実装: F5リロード時にtokens引き継ぎ済み（E20260603_057）
+- 80%/100%切替バナー実装済み（E20260603_057）
+
+## 未着手TODO（次フェーズ）
+- TODO_177: Vault文脈注入（指示書あり・未実装）
+- TODO_178: Stripe + CWS + LP（収益化未着手）
+- TODO_219: token fallback時の非会話テキスト混入対策
+`.trim();
+
 async function getHandoffPacket() {
   try {
-    const stored = await chrome.storage.local.get([KEYS.SESSIONS, KEYS.TODOS, KEYS.CURRENT]);
-    const sessions    = stored[KEYS.SESSIONS] || [];
-    const activeTodos = (stored[KEYS.TODOS]   || []).filter(t => t.status === 'active');
+    // ── プラン判定 ──────────────────────────────────────────
+    const planStored    = await chrome.storage.local.get(KEYS.PLAN);
+    const _plan         = MOCKA_DEV_ID === "m-sirius-k" ? 'one' : (planStored[KEYS.PLAN] || 'free');
+    const isPro         = ['pro', 'one'].includes(_plan);
+    const isOne         = _plan === 'one';
+
+    const stored = await chrome.storage.local.get([
+      KEYS.SESSIONS, KEYS.TODOS, KEYS.CURRENT,
+      ...(isPro ? ['relay_logbook_history'] : []),
+    ]);
     const current     = stored[KEYS.CURRENT]  || {};
+    const activeTodos = (stored[KEYS.TODOS]   || []).filter(t => t.status === 'active');
+    const sessions    = stored[KEYS.SESSIONS] || [];
+    const logHistory  = isPro ? (stored.relay_logbook_history || []) : [];
 
-    const lines = ['[Relay引き継ぎ - 自動生成]', '━'.repeat(36), ''];
+    // ── Free: シンプルパケット（設計思想・LB・経緯なし）──────
+    if (!isPro) {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const ts  = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      const buf = (current.convBuffer || '').substring(0, 200).replace(/\n+/g, ' ').trim();
+      return [
+        '[Relay引き継ぎ - 自動生成]',
+        '━'.repeat(36),
+        '',
+        '## 引き継ぎパケット [Relay Free]',
+        `**いつ**: ${ts} (${current.turn_count || 0}ターン)`,
+        `**何を**: ${buf || '（会話内容なし）'}`,
+        '',
+        '━'.repeat(36),
+        '上記を踏まえて作業を継続してください。',
+      ].join('\n');
+    }
 
+    // ── Pro / One: フルパケット（設計思想 + LB + 経緯）───────
+    const lines = [
+      '[Relay引き継ぎ - 自動生成]',
+      '━'.repeat(36),
+      '',
+      RELAY_PHILOSOPHY_BLOCK,
+      '',
+      '━'.repeat(36),
+      '',
+    ];
+
+    // LBリスト（Pro/One のみ）
     if (activeTodos.length) {
-      lines.push('■ 未完了タスク');
-      activeTodos.slice(0, 10).forEach(t => lines.push(`  - [${t.id}] ${t.text}`));
+      lines.push('■ 未完了タスク（LBリスト）');
+      activeTodos.slice(0, 10).forEach(t => {
+        const ctx = t.context?.why ? `（${t.context.why.slice(0, 60)}）` : '';
+        lines.push(`  - [${t.id}] ${t.text}${ctx}`);
+      });
       lines.push('');
     }
 
+    // 現在のセッション（Pro/One のみ）
     if (current.session_id) {
       const d = new Date(current.started_at || Date.now());
       const dateStr = `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
       lines.push(`■ 現在のセッション（${dateStr}〜）`);
       lines.push(`  ターン数: ${current.turn_count || 0}`);
+      if (current.decisions?.length) {
+        lines.push('  決定事項: ' + current.decisions.slice(0, 3).join(' / '));
+      }
       lines.push('');
     }
 
-    const recent = sessions.slice(0, 2);
-    recent.forEach((session, i) => {
-      const label   = i === 0 ? '前セッション' : '前々セッション';
-      const ts      = session.ended_at || session.started_at;
-      const d       = new Date(ts);
-      const dateStr = `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
-
-      lines.push(`■ ${label}（${dateStr}）`);
-
-      if (session.summary) {
-        lines.push(`  作業: ${session.summary.work_description}`);
-
-        if (session.summary.pending_todos?.length) {
-          lines.push('  未完了TODO:');
-          session.summary.pending_todos.slice(0, 5).forEach(t => lines.push(`    - ${t}`));
+    // 直近2セッション（Pro/One: Logbook優先、なければ sessions フォールバック）
+    const recentLogbook = logHistory.slice(0, 2);
+    if (recentLogbook.length) {
+      recentLogbook.forEach((entry, i) => {
+        const label   = i === 0 ? '前セッション' : '前々セッション';
+        const ts      = entry.timestamp ? new Date(entry.timestamp) : null;
+        const dateStr = ts
+          ? `${ts.getMonth() + 1}/${ts.getDate()} ${ts.getHours()}:${String(ts.getMinutes()).padStart(2, '0')}`
+          : '日時不明';
+        lines.push(`■ ${label}（${dateStr}）[Logbook]`);
+        const packetText = entry.packet || '';
+        const summary = packetText.split('\n').filter(l => l.trim() && !l.startsWith('##')).slice(0, 4).join(' / ');
+        if (summary) lines.push(`  ${summary.slice(0, 200)}`);
+        lines.push('');
+      });
+    } else {
+      sessions.slice(0, 2).forEach((session, i) => {
+        const label   = i === 0 ? '前セッション' : '前々セッション';
+        const d       = new Date(session.ended_at || session.started_at);
+        const dateStr = `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2, '0')}`;
+        lines.push(`■ ${label}（${dateStr}）`);
+        if (session.summary) {
+          lines.push(`  作業: ${session.summary.work_description}`);
+          if (session.summary.pending_todos?.length) {
+            lines.push('  未完了TODO:');
+            session.summary.pending_todos.slice(0, 5).forEach(t => lines.push(`    - ${t}`));
+          }
+          if (session.summary.completed_todos?.length) {
+            lines.push(`  完了済: ${session.summary.completed_todos.slice(0, 3).join(' / ')}`);
+          }
+          if (session.summary.key_decisions?.length) {
+            lines.push('  重要決定: ' + session.summary.key_decisions.slice(0, 2).join(' / '));
+          }
         }
+        lines.push('');
+      });
+    }
 
-        if (session.summary.completed_todos?.length) {
-          const done = session.summary.completed_todos.slice(0, 3).join(' / ');
-          lines.push(`  完了済: ${done}`);
-        }
-
-        if (session.summary.key_decisions?.length) {
-          lines.push('  重要決定: ' + session.summary.key_decisions.slice(0, 2).join(' / '));
-        }
-      }
-      lines.push('');
-    });
-
-    if (!activeTodos.length && !sessions.length && !current.session_id) {
+    if (!activeTodos.length && !sessions.length && !recentLogbook.length && !current.session_id) {
       lines.push('（引き継ぎデータなし — 新規セッション開始）');
       lines.push('');
     }
 
     lines.push('━'.repeat(36));
-    lines.push('上記を踏まえて作業を継続してください。');
+    lines.push('上記の設計思想・経緯・未完了タスクを踏まえて作業を継続してください。');
 
     return lines.join('\n');
   } catch (err) {
@@ -784,7 +906,7 @@ async function handleMessage(msg) {
     }
 
     case 'RELAY_ADD_TODO':
-      await addTodo(msg.text, msg.source);
+      await addTodo(msg.text, msg.source, msg.why, msg.where);
       return { ok: true };
 
     case 'RELAY_COMPLETE_TODO':
@@ -1101,6 +1223,80 @@ async function handleMessage(msg) {
       if (msg.autoInject !== undefined) updates.relay_auto_inject    = msg.autoInject;
       await chrome.storage.local.set(updates);
       return { ok: true };
+    }
+
+    // ── Intent Engine v4.0: Claude API自然言語判定 ──
+    // content.jsから「これTODOにして」「3番消して」等を受け取り、構造化intentを返す
+    case 'RELAY_CLASSIFY_INTENT': {
+      const apiStored = await chrome.storage.local.get(['relay_api_key', KEYS.PLAN]);
+      const apiKey    = apiStored.relay_api_key || '';
+      if (!apiKey) {
+        // APIキー未設定時はフォールバック（無判定）
+        return { intent: null };
+      }
+      const prompt = `You are a task manager assistant embedded in a browser extension called Relay.
+The user typed a message. Determine if it is a TODO operation or normal conversation.
+
+Current TODO list:
+${msg.todoSummary || '（なし）'}
+
+Last AI message (for context):
+${(msg.lastAIText || '').slice(0, 200)}
+
+User typed:
+"${msg.userText}"
+
+Reply ONLY with a JSON object (no markdown, no explanation):
+- If normal conversation: {"type":"none"}
+- If user wants to SEE the TODO list: {"type":"list"}
+- If user wants to ADD a TODO: {"type":"add","what":"<task description>","why":"<reason if mentioned, else empty>"}
+- If user wants to COMPLETE a single item (e.g. "3番完了", "LB_005消して", "three done"): {"type":"single","num":<integer>}
+- If user wants to COMPLETE a range (e.g. "1から5完了", "LB_001〜003消して"): {"type":"range","from":<int>,"to":<int>}
+- If user wants to COMPLETE ALL items: {"type":"complete_all"}
+
+Rules:
+- "これ" "this" "it" "さっきの" refer to the last AI message content
+- Natural Japanese: 「消して」「片付けて」「終わった」「覚えといて」「メモして」all count
+- Natural English: "done", "finished", "close it", "remember this", "add to list" all count
+- If ambiguous, return {"type":"none"}`;
+
+      try {
+        const resp = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type':         'application/json',
+            'x-api-key':            apiKey,
+            'anthropic-version':    '2023-06-01',
+          },
+          body: JSON.stringify({
+            model:      'claude-haiku-4-5',
+            max_tokens: 120,
+            messages:   [{ role: 'user', content: prompt }],
+          }),
+        });
+        if (!resp.ok) return { intent: null };
+        const data   = await resp.json();
+        const raw    = (data.content?.[0]?.text || '').trim();
+        const clean  = raw.replace(/```json|```/g, '').trim();
+        const intent = JSON.parse(clean);
+        return { intent };
+      } catch(e) {
+        console.error('[Relay] RELAY_CLASSIFY_INTENT error:', e);
+        return { intent: null };
+      }
+    }
+
+    // ── 全TODO完了 ──
+    case 'RELAY_COMPLETE_ALL': {
+      const s     = await chrome.storage.local.get(KEYS.TODOS);
+      const todos = s[KEYS.TODOS] || [];
+      let count   = 0;
+      const updated = todos.map(t => {
+        if (t.status === 'active') { count++; return { ...t, status: 'done', done_at: Date.now() }; }
+        return t;
+      });
+      await chrome.storage.local.set({ [KEYS.TODOS]: updated });
+      return { ok: true, count };
     }
 
     default:

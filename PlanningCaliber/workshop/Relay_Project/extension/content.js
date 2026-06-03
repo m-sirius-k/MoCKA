@@ -374,16 +374,40 @@ function detectAndSetWorkMode(text) {
 
 // ─── TODO Extraction ─────────────────────────────────────────────────────────
 
+// ★ 引き継ぎパケット起源テキストを extractTodos に渡さないためのガード
+// processMessage() 経由でのみ呼び出す（直接呼び出し禁止）
+function isHandoffPacketText(text) {
+  return /^\[Relay引き継ぎ/.test(text.trim()) ||
+         /^## 引き継ぎパケット/.test(text.trim()) ||
+         /^━{10,}/.test(text.trim());
+}
+
 function extractTodos(text) {
+  // 引き継ぎパケット本文は絶対に処理しない
+  if (isHandoffPacketText(text)) return [];
+
   const lines   = text.split('\n');
   const todos   = [];
   let inCode    = false;
+  // 引き継ぎブロック内フラグ（パケットが会話の一部として現れた場合）
+  let inHandoff = false;
 
   for (const line of lines) {
     if (line.startsWith('```')) { inCode = !inCode; continue; }
     if (inCode) continue;
 
     const trimmed = line.trim();
+
+    // ★ 引き継ぎブロック開始/終了検出
+    if (/^\[Relay引き継ぎ/.test(trimmed) || /^## 引き継ぎパケット/.test(trimmed)) {
+      inHandoff = true; continue;
+    }
+    if (inHandoff && /^━{10,}$/.test(trimmed)) {
+      // 2本目の区切り線で終了
+      inHandoff = false; continue;
+    }
+    if (inHandoff) continue;
+
     if (trimmed.length < 15 || trimmed.length > 200) continue;
 
     // Reject high symbol density (likely code)
@@ -429,6 +453,12 @@ function extractTodos(text) {
     if (/^[×x]\s*\d/.test(trimmed)) continue;
     // ★ Reject: 数字+ = 〜 のような計算式行
     if (/^\d+[\+\-\*\/]\s*\d/.test(trimmed)) continue;
+    // ★ Reject: 番号付きリスト行（1. 2. 3. 形式 — 手順・説明文の誤爆防止）
+    if (/^\d+\.\s+.{5,}/.test(trimmed)) continue;
+    // ★ Reject: **太字** マークダウン見出し的な行
+    if (/^\*\*[^*]+\*\*[：:]\s*/.test(trimmed)) continue;
+    // ★ Reject: 「いつ」「何を」等のパケットフィールド行
+    if (/^\*\*(?:いつ|何を|TODO|次の|アクション)\*\*/.test(trimmed)) continue;
 
     let matched = null;
 
@@ -878,6 +908,71 @@ function createBadge() {
   badgeEl.addEventListener('click', handleBadgeClick);
 
   document.body.appendChild(badgeEl);
+  makeDraggable(badgeEl, 'relay_badge_pos', 16, 180);
+}
+
+// ─── Drag Support ─────────────────────────────────────────────────────────────
+
+/**
+ * バッジをドラッグ移動可能にする
+ * @param {HTMLElement} el       - ドラッグ対象要素
+ * @param {string} storageKey   - 位置保存用ストレージキー
+ * @param {number} defaultRight  - デフォルト right (px)
+ * @param {number} defaultBottom - デフォルト bottom (px)
+ */
+function makeDraggable(el, storageKey, defaultRight, defaultBottom) {
+  if (!isExtensionAlive()) return;
+  try {
+    chrome.storage.local.get(storageKey, (r) => {
+      const pos = r[storageKey];
+      if (pos) {
+        el.style.left   = pos.left !== undefined ? pos.left + 'px' : 'auto';
+        el.style.top    = pos.top  !== undefined ? pos.top  + 'px' : 'auto';
+        el.style.right  = '';
+        el.style.bottom = '';
+      }
+    });
+  } catch (e) { /* extension context invalidated */ }
+
+  let isDragging = false;
+  let startX, startY, startLeft, startTop;
+
+  el.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    isDragging = false;
+    const rect = el.getBoundingClientRect();
+    startX = e.clientX; startY = e.clientY;
+    startLeft = rect.left; startTop = rect.top;
+    el.style.right = ''; el.style.bottom = '';   // 先にクリア（!important対策）
+    el.style.left = startLeft + 'px'; el.style.top = startTop + 'px';
+
+    const onMove = (e) => {
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+      if (isDragging) {
+        el.style.left = Math.max(0, Math.min(window.innerWidth  - el.offsetWidth,  startLeft + dx)) + 'px';
+        el.style.top  = Math.max(0, Math.min(window.innerHeight - el.offsetHeight, startTop  + dy)) + 'px';
+      }
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      if (isDragging && isExtensionAlive()) {
+        try {
+          chrome.storage.local.set({ [storageKey]: { left: parseInt(el.style.left), top: parseInt(el.style.top) } });
+        } catch (e) { /* extension context invalidated — 無視 */ }
+      }
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    e.preventDefault();
+  });
+
+  el.addEventListener('click', (e) => {
+    if (isDragging) { e.stopImmediatePropagation(); isDragging = false; }
+  }, true);
+
+  el.style.cursor = 'grab';
 }
 
 function injectBadgeStyles() {
@@ -887,8 +982,8 @@ function injectBadgeStyles() {
   style.textContent = `
     #relay-badge {
       position: fixed !important;
-      bottom: 140px !important;
-      right: 80px !important;
+      bottom: 180px;
+      right: 16px;
       left: auto !important;
       transform: none;
       width: 72px;
@@ -902,7 +997,7 @@ function injectBadgeStyles() {
       justify-content: space-between;
       padding: 7px 6px;
       cursor: pointer;
-      z-index: 999999 !important;
+      z-index: 9000 !important;
       box-shadow: 0 4px 24px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.04);
       transition: transform 0.25s cubic-bezier(0.4,0,0.2,1),
                   border-color 0.3s ease,
@@ -1161,169 +1256,98 @@ function hashText(str) {
   return (h >>> 0).toString(36);
 }
 
-// ─── Intent Engine v3.0 — 口頭TODO登録 + 完了 ────────────────────────────────
-// 「これTODOにして」「なぜなら〜」「3番完了」などを検知
+// ─── Intent Engine v4.0 — Claude API自然言語判定 ────────────────────────────
+// 正規表現廃止。Claudeが「TODO登録/完了/一覧/無関係」を判定する。
+// ストレスなし自然言語操作: 「これ覚えといて」「3番消して」「片付けたリスト見せて」等
 // ※ 引き継ぎ注入ロジックには一切触れない
 
 (function() {
 
-  // ── 言語検出 ──────────────────────────────────────────────────────────────
-  function detectLang(text) {
-    if (/[ぁ-んァ-ン]/.test(text)) return 'ja';
-    if (/[가-힣]/.test(text))       return 'ko';
-    if (/(?:todo|task|add|mark|note|because|why|important)/i.test(text)) {
-      if (/(?:weil|wegen|da|füge|hinzu|mach|erledigt|fertig)/i.test(text)) return 'de';
-      if (/(?:parce|car|ajoute|tâche|terminer|fini|marque)/i.test(text))   return 'fr';
-      return 'en';
-    }
-    return 'ja';
-  }
-
-  // ── 完了パターン（5言語）──────────────────────────────────────────────────
-  const SINGLE_RE = /(?:LB[_-]?)?(\d{1,4})\s*(?:番|番目|号|번|번째)?\s*(?:終了|完了|おわり|おわった|done|finish(?:ed)?|close[sd]?|erledigt|fertig|terminé|fini|완료|끝)/i;
-  const RANGE_RE  = /(?:LB[_-]?)?(\d{1,4})\s*[〜~\-から]\s*(?:LB[_-]?)?(\d{1,4})\s*(?:番|番目|号|번)?\s*(?:終了|完了|おわり|done|finish(?:ed)?|erledigt|terminé|완료)/i;
-  const LIST_RE   = /(?:todo\s*(?:リスト|一覧|見せ|list|show|liste|목록)|pending\s*todo|未完了|할일\s*목록)/i;
-
-  // ── TODO登録パターン（5言語）─────────────────────────────────────────────
-  // JA: 「これtodoにして」「さっきのtodoして」
-  const ADD_RE_JA      = /(?:これ|さっきの|上の|この部分|今の|ここ)?\s*(?:todo|タスク|メモ)(?:に?して|登録|追加|して)/i;
-  const ADD_WHAT_RE_JA = /^(.+?)\s*を\s*(?:todo|タスク)(?:に?して|登録|追加)/i;
-  const WHY_RE_JA      = /(?:なぜなら|理由は)\s*(.+)|(.+?)(?:だから|のため|ので|なので)\s*(?:todo|タスク|登録)/i;
-
-  // EN: "add this as todo" "make this a task" "todo this because..."
-  const ADD_RE_EN      = /(?:add\s+(?:this|that|it)|make\s+(?:this|that|it)\s+a?\s*task|(?:this|that)\s+(?:as\s+a?\s*)?todo|mark\s+(?:this|that)\s+(?:as\s+)?(?:a\s+)?todo)/i;
-  const ADD_WHAT_RE_EN = /^(.+?)\s+(?:as\s+(?:a\s+)?todo|as\s+(?:a\s+)?task)/i;
-  const WHY_RE_EN      = /(?:because|since|reason(?:\s+is)?:?)\s*(.+)|(.+?)\s+(?:so\s+(?:add|make|todo)|that(?:'s\s+why)?)/i;
-
-  // DE: "füge das als todo hinzu" "mach das zu einer aufgabe"
-  const ADD_RE_DE      = /(?:füge?\s+(?:das|dies|es)\s+(?:als\s+)?(?:todo|aufgabe)\s+hinzu|mach\s+(?:das|dies)\s+(?:zu\s+(?:einer?\s+)?)?(?:aufgabe|todo))/i;
-  const ADD_WHAT_RE_DE = /^(.+?)\s+als\s+(?:todo|aufgabe)\s+(?:hinzufügen|eintragen)/i;
-  const WHY_RE_DE      = /(?:weil|wegen|da|denn)\s*(.+)/i;
-
-  // FR: "ajoute ça en todo" "mets ça comme tâche"
-  const ADD_RE_FR      = /(?:ajoute[rz]?\s+(?:ça|cela|ce(?:ci)?)\s+(?:en|comme)\s+(?:todo|tâche)|mets?\s+(?:ça|cela)\s+(?:en|comme)\s+(?:todo|tâche))/i;
-  const ADD_WHAT_RE_FR = /^(.+?)\s+(?:en|comme)\s+(?:todo|tâche)/i;
-  const WHY_RE_FR      = /(?:parce\s+que|car|puisque)\s*(.+)/i;
-
-  // KO: "이거 투두 등록해" "할일에 추가해"
-  const ADD_RE_KO      = /(?:이거|이것|이|저거|방금|위에?\s*것)?\s*(?:투두|할일|태스크)(?:에?\s*)?(?:등록|추가)(?:해|줘|해줘)/i;
-  const ADD_WHAT_RE_KO = /^(.+?)\s*(?:을|를)\s*(?:투두|할일|태스크)(?:에?\s*)?(?:등록|추가)/i;
-  const WHY_RE_KO      = /(?:왜냐하면|이유는|because)\s*(.+)|(.+?)(?:이기\s*때문|때문에|이므로)\s*(?:투두|할일|등록)/i;
-
   // ── 直前のClaudeメッセージを取得 ─────────────────────────────────────────
   function getLastAIText() {
     const selectors = [
+      '.font-claude-response-body',
       '[data-testid="assistant-message"]',
-      'div.font-claude-message',
       'div[class*="font-claude"]',
       '[class*="assistant-message"]',
     ];
-    let els = [];
     for (const sel of selectors) {
       try {
-        els = Array.from(document.querySelectorAll(sel));
-        if (els.length) break;
+        const els = Array.from(document.querySelectorAll(sel));
+        if (els.length) {
+          return (els[els.length - 1].textContent || '').trim().slice(0, 300);
+        }
       } catch(e) {}
     }
-    if (!els.length) return '';
-    const last = els[els.length - 1];
-    return (last.textContent || '').trim().slice(0, 200);
+    return '';
   }
 
-  // ── WHAT要点抽出（直前AI返答から先頭の意味ある1文を取る）──────────────
-  function extractWhat(aiText) {
-    if (!aiText) return '';
-    // コードブロックは除去
-    const clean = aiText.replace(/```[\s\S]*?```/g, '').trim();
-    // 最初の句点/改行までを取る（最大80文字）
-    const m = clean.match(/^(.{10,80}?)[\u3002\uff0e.\n]/);
+  // ── 軽量ローカル事前フィルタ（APIコスト節約）────────────────────────────
+  // 明らかにTODO操作でない長文は早期リターン
+  const QUICK_TODO_HINT = /todo|タスク|LB_?\d|完了|消して|終わった|登録|片付け|覚えといて|remind|task|done|finish|close|list|一覧|見せ|add|mark/i;
 
-
-    return m ? m[1].trim() : clean.slice(0, 80);
+  function mightBeIntent(text) {
+    // 50文字超の通常会話はAPIに投げない
+    if (text.length > 120) return false;
+    return QUICK_TODO_HINT.test(text);
   }
 
-  // ── Intent解析（登録 or 完了 or 一覧）───────────────────────────────────
-  function parseIntent(text) {
-    const t = text.trim();
+  // ── Claude API判定 ────────────────────────────────────────────────────────
+  // background.jsのRELAY_CLASSIFY_INTENTメッセージで判定（APIキー不要）
+  // background.jsが持つAPIキーを使うためにmessage経由
+  async function classifyIntent(userText, lastAIText, currentTodos) {
+    try {
+      const todoSummary = currentTodos.slice(0, 10)
+        .map(t => `  LB_${String(t.num).padStart(3,'0')}: ${t.text.slice(0,40)}`)
+        .join('\n') || '（なし）';
 
-    // 範囲完了（先に）
-    const rm = t.match(RANGE_RE);
-    if (rm) return { type: 'range', from: parseInt(rm[1]), to: parseInt(rm[2]) };
-
-    // 単体完了
-    const sm = t.match(SINGLE_RE);
-    if (sm) return { type: 'single', num: parseInt(sm[1]) };
-
-    // 一覧表示
-    if (LIST_RE.test(t)) return { type: 'list' };
-
-    // 多言語TODO登録パターン照合
-    const lang = detectLang(t);
-    const ADD_RE_MAP      = { ja: ADD_RE_JA,      en: ADD_RE_EN,      de: ADD_RE_DE,      fr: ADD_RE_FR,      ko: ADD_RE_KO      };
-    const ADD_WHAT_RE_MAP = { ja: ADD_WHAT_RE_JA, en: ADD_WHAT_RE_EN, de: ADD_WHAT_RE_DE, fr: ADD_WHAT_RE_FR, ko: ADD_WHAT_RE_KO };
-    const WHY_RE_MAP      = { ja: WHY_RE_JA,      en: WHY_RE_EN,      de: WHY_RE_DE,      fr: WHY_RE_FR,      ko: WHY_RE_KO      };
-
-    // 「〜をtodoして」形式（WHATが明示）
-    const wm = t.match(ADD_WHAT_RE_MAP[lang] || ADD_WHAT_RE_JA);
-    if (wm) {
-      const what = wm[1].trim();
-      const why  = extractWhy(t, WHY_RE_MAP[lang]);
-      return { type: 'add', what, why, source: 'voice' };
+      const res = await safeSendMessage({
+        type:        'RELAY_CLASSIFY_INTENT',
+        userText,
+        lastAIText,
+        todoSummary,
+      });
+      return res?.intent || null;
+    } catch(e) {
+      console.error('[Relay Intent v4] classify error:', e);
+      return null;
     }
-
-    // 「これtodoして」形式（WHATは直前AI返答から）
-    if ((ADD_RE_MAP[lang] || ADD_RE_JA).test(t)) {
-      const aiText = getLastAIText();
-      const what   = extractWhat(aiText);
-      const why    = extractWhy(t, WHY_RE_MAP[lang]);
-      return { type: 'add', what, why, source: 'voice_ref' };
-    }
-
-    return null;
-  }
-
-  // ── WHY抽出（多言語regex受け取り）────────────────────────────────────────
-  function extractWhy(text, re) {
-    const r = re || WHY_RE_JA;
-    const m = text.match(r);
-    if (!m) return '';
-    return (m[1] || m[2] || '').trim().slice(0, 100);
   }
 
   // ── トースト表示 ─────────────────────────────────────────────────────────
-  function showIntentToast(msg, color) {
+  function showIntentToast(msg, color, duration) {
     const el = document.createElement('div');
     el.style.cssText = [
       'position:fixed', 'bottom:100px', 'right:24px',
       `background:${color || '#22c55e'}`, 'color:#fff',
       'padding:9px 16px', 'border-radius:10px', 'font-size:13px',
       'z-index:9999999', 'font-family:ui-monospace,monospace',
-      'box-shadow:0 4px 16px rgba(0,0,0,0.5)', 'max-width:320px',
+      'box-shadow:0 4px 16px rgba(0,0,0,0.5)', 'max-width:340px',
       'white-space:pre-line',
     ].join(';');
     el.textContent = msg;
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 3500);
+    setTimeout(() => el.remove(), duration || 3500);
   }
 
   // ── TODO登録処理 ─────────────────────────────────────────────────────────
   async function handleAdd(intent) {
     if (!isExtensionAlive()) return;
-    if (!intent.what || intent.what.length < 5) {
+    const what = (intent.what || '').trim();
+    if (!what || what.length < 5) {
       showIntentToast('⚠ TODOの内容を取得できませんでした', '#f59e0b');
       return;
     }
-    const where = location.href.replace('https://claude.ai', '');
     await safeSendMessage({
       type:   'RELAY_ADD_TODO',
-      text:   intent.what,
+      text:   what,
       why:    intent.why || '',
-      where:  where,
-      source: intent.source || 'voice',
+      where:  location.href.replace('https://claude.ai', ''),
+      source: 'voice_ai',
     });
     const msg = intent.why
-      ? `📌 TODO登録\nWHAT: ${intent.what.slice(0,50)}\nWHY: ${intent.why.slice(0,50)}`
-      : `📌 TODO登録\n${intent.what.slice(0,60)}`;
+      ? `📌 TODO登録\nWHAT: ${what.slice(0,50)}\nWHY: ${intent.why.slice(0,50)}`
+      : `📌 TODO登録\n${what.slice(0,60)}`;
     showIntentToast(msg);
   }
 
@@ -1340,7 +1364,7 @@ function hashText(str) {
         lines.push(`  ${t.id}: ${t.text.slice(0,40)}${why}`);
       });
       if (todos.length > 8) lines.push(`  … 他${todos.length - 8}件`);
-      showIntentToast(lines.join('\n'), '#0f172a');
+      showIntentToast(lines.join('\n'), '#0f172a', 5000);
     } catch(e) { console.error('[Relay Intent] showTodoList error:', e); }
   }
 
@@ -1348,18 +1372,23 @@ function hashText(str) {
   async function handleComplete(intent) {
     if (!isExtensionAlive()) return;
     try {
-      if (intent.type === 'single') {
+      if (intent.type === 'single' && intent.num != null) {
         const res = await safeSendMessage({ type: 'RELAY_COMPLETE_BY_NUM', num: intent.num });
         if (res?.ok) showIntentToast(`✓ LB_${String(intent.num).padStart(3,'0')} 完了`);
         else showIntentToast(`LB_${String(intent.num).padStart(3,'0')} が見つかりません`, '#f59e0b');
-      } else if (intent.type === 'range') {
+      } else if (intent.type === 'range' && intent.from != null && intent.to != null) {
         const res = await safeSendMessage({ type: 'RELAY_COMPLETE_RANGE', from: intent.from, to: intent.to });
         showIntentToast(`✓ LB_${String(intent.from).padStart(3,'0')} 〜 LB_${String(intent.to).padStart(3,'0')} 完了 (${res?.count || 0}件)`);
+      } else if (intent.type === 'complete_all') {
+        const res = await safeSendMessage({ type: 'RELAY_COMPLETE_ALL' });
+        showIntentToast(`✓ 全TODO完了 (${res?.count || 0}件)`);
       }
     } catch(e) { console.error('[Relay Intent] handleComplete error:', e); }
   }
 
   // ── Enterキー監視 ─────────────────────────────────────────────────────────
+  let _classifying = false; // 二重処理防止
+
   document.addEventListener('keydown', function onIntentKey(e) {
     if (e.key !== 'Enter' || e.shiftKey) return;
 
@@ -1370,18 +1399,45 @@ function hashText(str) {
     const text = (input.innerText || input.value || '').trim();
     if (!text || text.length < 2) return;
 
-    const intent = parseIntent(text);
-    if (!intent) return;
+    // 軽量フィルタ — TODO操作の匂いがなければスキップ
+    if (!mightBeIntent(text)) return;
 
-    setTimeout(() => {
-      if (intent.type === 'list')    showTodoList();
-      else if (intent.type === 'add') handleAdd(intent);
-      else                            handleComplete(intent);
+    if (_classifying) return;
+    _classifying = true;
+
+    setTimeout(async () => {
+      try {
+        showIntentToast('🤔 …', '#475569', 8000);
+
+        // 現在のTODOリスト取得
+        const res   = await safeSendMessage({ type: 'RELAY_GET_TODO_LIST' });
+        const todos = res?.todos || [];
+
+        const lastAI = getLastAIText();
+        const intent = await classifyIntent(text, lastAI, todos);
+
+        // トースト消去
+        document.querySelectorAll('[data-relay-toast]').forEach(el => el.remove());
+
+        if (!intent || intent.type === 'none') {
+          // TODO操作ではなかった — 何もしない（通常送信）
+        } else if (intent.type === 'list') {
+          await showTodoList();
+        } else if (intent.type === 'add') {
+          await handleAdd(intent);
+        } else {
+          await handleComplete(intent);
+        }
+      } catch(err) {
+        console.error('[Relay Intent v4] error:', err);
+      } finally {
+        _classifying = false;
+      }
     }, 300);
 
   }, false);
 
-  console.log('[Relay] Intent Engine v3.0 loaded');
+  console.log('[Relay] Intent Engine v4.0 (Claude API判定) loaded');
 
 })();
 

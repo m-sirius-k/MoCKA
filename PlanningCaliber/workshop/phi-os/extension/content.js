@@ -145,6 +145,47 @@ function installGlobalHandlers() {
 // ============================================================
 // [INLINE] debug/debug-panel.js
 // ============================================================
+
+// ─── Drag Support ─────────────────────────────────────────────────────────────
+function makeDraggable(el, storageKey, defaultRight, defaultBottom) {
+  if (typeof chrome === 'undefined' || !chrome.storage) return;
+  chrome.storage.local.get(storageKey, (r) => {
+    const pos = r[storageKey];
+    if (pos) {
+      el.style.left = pos.left + 'px'; el.style.top = pos.top + 'px';
+      el.style.right = 'auto'; el.style.bottom = 'auto';
+    }
+  });
+  let isDragging = false, startX, startY, startLeft, startTop;
+  el.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    isDragging = false;
+    const rect = el.getBoundingClientRect();
+    startX = e.clientX; startY = e.clientY;
+    startLeft = rect.left; startTop = rect.top;
+    el.style.left = startLeft + 'px'; el.style.top = startTop + 'px';
+    el.style.right = 'auto'; el.style.bottom = 'auto';
+    const onMove = (e) => {
+      const dx = e.clientX - startX, dy = e.clientY - startY;
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) isDragging = true;
+      if (isDragging) {
+        el.style.left = Math.max(0, Math.min(window.innerWidth  - el.offsetWidth,  startLeft + dx)) + 'px';
+        el.style.top  = Math.max(0, Math.min(window.innerHeight - el.offsetHeight, startTop  + dy)) + 'px';
+      }
+    };
+    const onUp = () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      if (isDragging) chrome.storage.local.set({ [storageKey]: { left: parseInt(el.style.left), top: parseInt(el.style.top) } });
+    };
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    e.preventDefault();
+  });
+  el.addEventListener('click', (e) => { if (isDragging) { e.stopImmediatePropagation(); isDragging = false; } }, true);
+  el.style.cursor = 'grab';
+}
+
 class DebugPanel {
   constructor(i18n) {
     this._i18n = i18n;
@@ -176,13 +217,14 @@ class DebugPanel {
     const el = document.createElement('div');
     el.id = 'phi-os-debug';
     el.style.cssText = [
-      'position:fixed', 'bottom:16px', 'right:16px', 'z-index:2147483647',
+      'position:fixed', 'bottom:30px', 'right:16px', 'z-index:8800',
       'background:#1a1a2e', 'color:#e2e8f0', 'border:1px solid #4a5568',
       'border-radius:8px', 'padding:12px 16px', 'font-family:monospace',
       'font-size:12px', 'max-width:320px', 'box-shadow:0 4px 24px rgba(0,0,0,0.5)',
     ].join(';');
     el.innerHTML = `<div style="font-weight:bold;margin-bottom:8px;color:#90cdf4">${this._i18n.debug_title}</div><div id="phi-debug-body"></div>`;
     document.body.appendChild(el);
+    makeDraggable(el, 'phios_badge_pos', 16, 30);
     return el;
   }
 
