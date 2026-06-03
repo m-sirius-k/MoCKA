@@ -469,6 +469,66 @@
       "note": "DOM実測実装（E20260603_097）時の残課題。セレクタ全滅時のみ発動するため緊急度は低い。",
       "reference_event": "E20260603_097",
       "created_at": "2026-06-03T09:55:54.140352"
+    },
+    {
+      "id": "TODO_220",
+      "title": "mocka.nsjp.org — WordPress メニュー構築（ヘッダーナビ）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Web/WordPress",
+      "description": "WP-CLIで固定ページ12ページ作成完了済み。次はWordPress管理画面でメニューを組む。外観→メニュー→メインメニュー新規作成。Home/MoCKA/vasAI/mini MoCKA(子:Orchestra/Relay/PHI-OS/Memory)/Research/Verificationの構成。プライマリメニューに設定。",
+      "assigned_to": "きむら博士（WordPress管理画面）",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-03T15:57:28.901019"
+    },
+    {
+      "id": "TODO_221",
+      "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "Web/WordPress/miniMoCKA",
+      "description": "Orchestraは本番Stripe稼働中なのにLP未整備。最優先で投入する。コンテンツ: ①キャッチコピー+概要 ②Free/Pro/One料金プラン表 ③Stripeペイメントリンク埋め込み ④インストール方法 ⑤基本操作説明 ⑥Q&A。既存orchestra_i18n_cs.htmlのコンテンツを流用・WordPressに最適化。",
+      "assigned_to": "Claude（コンテンツ生成）+ きむら博士（投入）",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-03T15:57:36.763582"
+    },
+    {
+      "id": "TODO_222",
+      "title": "mocka.nsjp.org — トップページ（Sirius Labブランドハブ）コンテンツ投入",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Web/WordPress",
+      "description": "Sirius Labブランドハブとして機能するトップページ。3層(MoCKA/vasAI/miniMoCKA)への導線。哲学一文。Blocksyテーマでデザイン。",
+      "assigned_to": "Claude（コンテンツ生成）+ きむら博士（投入）",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-03T15:57:42.300807"
+    },
+    {
+      "id": "TODO_223",
+      "title": "mocka.nsjp.org — /vasai コンテンツ投入（製品紹介シンプル版）",
+      "status": "未着手",
+      "priority": "中",
+      "category": "Web/WordPress/vasAI",
+      "description": "vasAI v1.4.9 VERIFIED封印済み・GitHub公開済み。企業向けシンプル紹介ページ。caliberカスタマイズ・情報還流モデルの説明。GitHub READMEのコンテンツ流用。",
+      "assigned_to": "Claude（コンテンツ生成）+ きむら博士（投入）",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-03T15:57:48.306562"
+    },
+    {
+      "id": "TODO_224",
+      "title": "mocka.nsjp.org — インデックスON + Rank Mathサイトマップ送信",
+      "status": "未着手",
+      "priority": "低",
+      "category": "Web/WordPress",
+      "description": "全ページのコンテンツ投入完了後にインデックスをONにする。管理画面→設定→表示設定→「検索エンジンがサイトをインデックスしないようにする」のチェックを外す。Rank Mathのサイトマップ送信も同時実施。",
+      "assigned_to": "きむら博士",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-03T15:57:54.359741"
     }
   ],
   "completed": [
