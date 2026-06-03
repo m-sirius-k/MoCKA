@@ -177,19 +177,22 @@ function observeDOM() {
 function checkForNewMessages() {
   if (!isExtensionAlive()) return;
   const messages = getAIMessages();
-  messages.forEach(el => {
-    const id = getMessageId(el);
-    if (processedMessages.has(id)) return;
 
-    clearTimeout(streamingTimer);
-    streamingTimer = setTimeout(() => {
-      if (isStreaming()) return;
+  // 未処理メッセージのみ抽出
+  const unprocessed = messages.filter(el => !processedMessages.has(getMessageId(el)));
+  if (!unprocessed.length) return;
+
+  // タイマーはループ外で1回だけセット
+  clearTimeout(streamingTimer);
+  streamingTimer = setTimeout(() => {
+    if (isStreaming()) return;
+    unprocessed.forEach(el => {
       const freshId = getMessageId(el);
       if (!processedMessages.has(freshId)) {
         processMessage(el, freshId);
       }
-    }, CONFIG.IDLE_WAIT);
-  });
+    });
+  }, CONFIG.IDLE_WAIT);
 }
 
 function getAIMessages() {
