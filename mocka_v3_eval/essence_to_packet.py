@@ -6,7 +6,7 @@ ESS ENCEのJSONを「試料パケット（packet.md）」に変換する
 閉ループの最初の橋渡しスクリプト
 
 入力: data/storage/infield/ESSENCE/*.json
-出力: data/storage/infield/PACKET/packet_{timestamp}.md
+出力: PlanningCaliber/fp/packet_{timestamp}.md
 
 試料パケット構造:
   Theme / Strongest / Failure / Leap(+1) / Challenge(+3) / PING
