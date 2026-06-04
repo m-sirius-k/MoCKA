@@ -40,7 +40,7 @@ data["session_history"]["2026_04_09"] = [
 ]
 
 # 主要ファイルパス追加
-data["repositories"]["heart"]["key_paths"]["packet"] = "data/storage/infield/PACKET/packet_20260409_092255.md"
+data["repositories"]["heart"]["key_paths"]["packet"] = "PlanningCaliber/fp/packet_20260409_092255.md"
 data["repositories"]["heart"]["key_paths"]["essence_to_packet"] = "mocka_v3_eval/essence_to_packet.py"
 data["repositories"]["heart"]["key_paths"]["recurrence_injector"] = "mocka_v3_eval/recurrence_injector.py"
 data["repositories"]["caliber_workspace"]["key_paths"] = {
