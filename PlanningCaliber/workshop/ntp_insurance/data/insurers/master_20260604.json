@@ -1,0 +1,744 @@
+{
+  "version": "1.0",
+  "generated_at": "2026-06-04T00:00:00",
+  "source": "Perplexity Deep Research 2026-06-04",
+  "companies": [
+    {
+      "company_id": "A001",
+      "company_name": "三井住友海上あいおい生命",
+      "official_url": "https://www.msa-life.co.jp",
+      "product_list_url": "https://www.msa-life.co.jp/product/",
+      "news_urls": [
+        "https://www.msa-life.co.jp/news/2026/",
+        "https://www.msa-life.co.jp/news/2025/"
+      ],
+      "scraped_at": "2026-06-04T00:00:00",
+      "security_incidents": [],
+      "plans": [
+        {
+          "plan_id": "A001_P01",
+          "plan_name": "＆LIFE 医療保険Aセレクトup",
+          "formal_name": "医療保険（無解約返戻金型）（25） 無配当",
+          "detail_url": "https://www.msa-life.co.jp/lineup/iryo/",
+          "category": ["医療", "入院", "がん", "三大疾病"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "WEB見積り誘導のため公式固定値なし"
+          },
+          "coverage": {
+            "hospitalization_daily": true,
+            "hospitalization_initial_10days": true,
+            "lump_sum_hospitalization": true,
+            "surgery_benefit": null,
+            "advanced_medical": true,
+            "cancer_lump_sum": true,
+            "three_major_disease_lump_sum": true,
+            "cancer_specific_treatment_limit": 100000000,
+            "death": true,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": false,
+            "no_surrender_value": true
+          },
+          "optional_riders": [
+            "入院一時給付特約",
+            "三大疾病一時給付特約",
+            "がん特定診療特約",
+            "先進医療特約",
+            "通院給付特約",
+            "女性疾病給付特約",
+            "保険料払込免除特約",
+            "がん診断給付特約",
+            "抗がん剤治療給付特約",
+            "がん治療通院給付特約",
+            "死亡保障特則"
+          ],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": true,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査"
+            }
+          ]
+        },
+        {
+          "plan_id": "A001_P02",
+          "plan_name": "＆LIFE がん保険Sセレクト",
+          "formal_name": "がん保険（無解約返戻金型）（22） 無配当",
+          "detail_url": "https://www.msa-life.co.jp/lineup/cancer/",
+          "category": ["がん"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "WEB見積り誘導のため公式固定値なし"
+          },
+          "coverage": {
+            "hospitalization_daily": true,
+            "hospitalization_initial_10days": null,
+            "lump_sum_hospitalization": null,
+            "surgery_benefit": true,
+            "advanced_medical": true,
+            "cancer_lump_sum": true,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": true,
+            "nursing_care": false,
+            "discharge_benefit": true,
+            "asset_formation": false,
+            "no_surrender_value": true,
+            "cancer_basic_type": ["がん診断給付型", "がん入院給付型"],
+            "cancer_responsibility_start_day": 91,
+            "surrender_value_note": "がん診断給付金額の5%（特定条件下）"
+          },
+          "optional_riders": [
+            "保険料払込免除特約",
+            "診断確定特約",
+            "抗がん剤治療特約",
+            "先進医療特約",
+            "通院特約",
+            "退院特約",
+            "死亡・高度障害特約"
+          ],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": true,
+            "告知items": 3
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "company_id": "A002",
+      "company_name": "東京海上日動あんしん生命",
+      "official_url": "https://www.tmn-anshin.co.jp",
+      "product_list_url": null,
+      "news_urls": [
+        "https://www2.tmn-anshin.co.jp/system3/contents/contents.asp?category=1"
+      ],
+      "scraped_at": "2026-06-04T00:00:00",
+      "security_incidents": [],
+      "plans": [
+        {
+          "plan_id": "A002_P01",
+          "plan_name": "メディカルKit NEO",
+          "formal_name": "医療総合保険（基本保障・無解約返戻金型）［無配当］",
+          "detail_url": "https://www.tmn-anshin.co.jp/kojin/goods_medical/kit_neo/",
+          "category": ["医療", "入院", "三大疾病"],
+          "monthly_premium": {
+            "payment_method": "月払・口座振替",
+            "base_condition": "入院日額5,000円・死亡保険金500,000円・先進医療特約付加",
+            "M_30_5000": 2354,
+            "M_40_5000": 3149,
+            "M_50_5000": 4569,
+            "M_60_5000": 6984,
+            "F_30_5000": 2329,
+            "F_40_5000": 2784,
+            "F_50_5000": 3809,
+            "F_60_5000": 5604,
+            "note": null
+          },
+          "coverage": {
+            "hospitalization_daily": true,
+            "hospitalization_initial_10days": true,
+            "lump_sum_hospitalization": true,
+            "surgery_benefit": true,
+            "surgery_benefit_multiples": [5, 10, 20, 40],
+            "advanced_medical": true,
+            "cancer_lump_sum": null,
+            "three_major_disease_lump_sum": null,
+            "three_major_disease_hospitalization_unlimited": true,
+            "cancer_specific_treatment_limit": null,
+            "death": true,
+            "death_benefit_range_note": "入院日額の0倍〜500倍（50倍単位）",
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": false,
+            "no_surrender_value": true
+          },
+          "optional_riders": [
+            "初期入院保障特則",
+            "入院一時給付金特約",
+            "特定疾病保険料払込免除特則"
+          ],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": true,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査"
+            }
+          ]
+        },
+        {
+          "plan_id": "A002_P02",
+          "plan_name": "メディカルKit R",
+          "formal_name": "医療総合保険（基本保障・無解約返戻金型）健康還付特則 付加 ［無配当］",
+          "detail_url": "https://www.tmn-anshin.co.jp/kojin/goods_medical/kit_r/",
+          "category": ["医療", "入院", "三大疾病", "還付型"],
+          "monthly_premium": {
+            "payment_method": "月払・口座振替",
+            "base_condition": "入院日額5,000円・特定疾病保険料払込免除特則・先進医療特約付加",
+            "M_30_5000": 3628,
+            "M_40_5000": 5296,
+            "M_50_5000": 7518,
+            "M_60_5000": null,
+            "F_30_5000": 4017,
+            "F_40_5000": 5353,
+            "F_50_5000": 6309,
+            "F_60_5000": null,
+            "note": "60歳データ未取得"
+          },
+          "coverage": {
+            "hospitalization_daily": true,
+            "hospitalization_initial_10days": null,
+            "lump_sum_hospitalization": null,
+            "surgery_benefit": null,
+            "advanced_medical": true,
+            "cancer_lump_sum": null,
+            "three_major_disease_lump_sum": null,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": false,
+            "no_surrender_value": true,
+            "health_return_note": "所定年齢までに入院給付金等受取額を差引いた金額が戻る。未受取の場合は払込保険料全額返還",
+            "premium_waiver_on_three_major": true
+          },
+          "optional_riders": [
+            "健康還付特則",
+            "特定疾病保険料払込免除特則",
+            "先進医療特約"
+          ],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": true,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "company_id": "A003",
+      "company_name": "メットライフ生命",
+      "official_url": "https://www.metlife.co.jp",
+      "product_list_url": "https://www.metlife.co.jp/lf1/ahplf1/cr_LIST.html",
+      "news_urls": [
+        "https://www.metlife.co.jp/about/info/"
+      ],
+      "scraped_at": "2026-06-04T00:00:00",
+      "security_incidents": [],
+      "plans": [
+        {
+          "plan_id": "A003_P01",
+          "plan_name": "サニーガーデンEX",
+          "formal_name": null,
+          "detail_url": "https://www.metlife.co.jp/products/fx/spwlwc/",
+          "rate_url": "https://www.metlife.co.jp/lf1/ahp664/p664_08.html",
+          "fx_rate_url": "https://www.metlife.co.jp/lf1/ahp664/p664_09.html",
+          "category": ["外貨建", "終身保険", "積立"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "WEB見積り誘導のため公式固定値なし"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": true,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "fx_rates": {
+            "applicable_period": "2026-06-01/2026-06-15",
+            "USD_JPY": null,
+            "AUD_JPY": null,
+            "fx_rate_note": "為替レート未確定（2026-06-04時点）"
+          },
+          "accumulation_rates": {
+            "applicable_period": "2026-06-01/2026-06-15",
+            "regular_payment_course": {
+              "USD": 0.0465,
+              "AUD": 0.0440
+            },
+            "target_setting": {
+              "USD": 0.0465,
+              "AUD": 0.0440
+            },
+            "target_setting_regular_payment_rate": {
+              "USD": 0.0300,
+              "AUD": 0.0300
+            },
+            "accumulation_increase_course": {
+              "USD": 0.0466,
+              "AUD": 0.0441
+            }
+          },
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査"
+            }
+          ]
+        },
+        {
+          "plan_id": "A003_P02",
+          "plan_name": "ビー ウィズ ユー プラスII",
+          "formal_name": null,
+          "detail_url": "https://www.metlife.co.jp/lf1/ahp770/08.html",
+          "category": ["円建", "外貨建", "年金", "積立"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "詳細未取得"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "currency_options": ["JPY", "USD"],
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査（一覧のみ取得）"
+            }
+          ]
+        },
+        {
+          "plan_id": "A003_P03",
+          "plan_name": "外貨建個人年金（一覧）",
+          "formal_name": null,
+          "detail_url": null,
+          "category": ["外貨建", "個人年金"],
+          "note": "一覧のみ取得。個別商品: レグルスIV / レグルスIII / レグルスII / レグルス / シリウス",
+          "product_lineup": ["レグルスIV", "レグルスIII", "レグルスII", "レグルス", "シリウス"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "詳細未取得"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査（一覧のみ取得）"
+            }
+          ]
+        },
+        {
+          "plan_id": "A003_P04",
+          "plan_name": "変額個人年金（一覧）",
+          "formal_name": null,
+          "detail_url": null,
+          "category": ["変額", "個人年金"],
+          "note": "一覧のみ取得。個別商品: もうもらえて一生涯 / 北斗七星II / 北斗七星",
+          "product_lineup": ["もうもらえて一生涯", "北斗七星II", "北斗七星"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "詳細未取得"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 1.0,
+          "tsi_status": "TRUSTED",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 1.0,
+              "reason": "Perplexity公式ページ調査（一覧のみ取得）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "company_id": "A004",
+      "company_name": "三井住友海上プライマリー生命",
+      "official_url": "https://www.ms-primary.com",
+      "product_list_url": "https://www.ms-primary.com/customer/rate/",
+      "news_urls": [
+        "https://www.ms-primary.com/news/ir/2026/",
+        "https://www.ms-primary.com/news/ir/2025/"
+      ],
+      "scraped_at": "2026-06-04T00:00:00",
+      "security_incidents": [
+        {
+          "date": "2025-06-03",
+          "title": "委託先保険代理店における情報流出の可能性（第一報）",
+          "url": "https://www.ms-primary.com/news/ir/2025/",
+          "severity": "MEDIUM",
+          "tsi_impact": -0.1
+        },
+        {
+          "date": "2025-08-29",
+          "title": "委託先保険代理店における情報流出の可能性（第三報）",
+          "url": "https://www.ms-primary.com/news/ir/2025/",
+          "severity": "MEDIUM",
+          "tsi_impact": -0.1
+        },
+        {
+          "date": "2026-02-26",
+          "title": "出向先の内部情報の持ち出しについて",
+          "url": "https://www.ms-primary.com/news/ir/2026/",
+          "severity": "HIGH",
+          "tsi_impact": -0.15
+        }
+      ],
+      "recent_news": [
+        {"date": "2026-05-29", "title": "お客さま第一の業務運営に関する方針 2025年度取組み状況"},
+        {"date": "2026-05-20", "title": "2025年度決算のお知らせ"},
+        {"date": "2026-04-23", "title": "SBI新生銀行口座振替追加"},
+        {"date": "2026-03-31", "title": "新通貨選択生存保障重視型年金『みのり充実』販売開始"},
+        {"date": "2026-03-31", "title": "変額保険『いろどる、みらい』改定"},
+        {"date": "2026-02-24", "title": "変額個人年金保険『私のしあわせねんきん』発売"},
+        {"date": "2025-10-10", "title": "新通貨選択生存保障重視型年金『みのり充実』代理店販売開始"},
+        {"date": "2025-09-30", "title": "やさしさ、つなぐ2 改定"}
+      ],
+      "plans": [
+        {
+          "plan_id": "A004_P01",
+          "plan_name": "あしたも充実2",
+          "product_id": "3V",
+          "formal_name": null,
+          "detail_url": "https://msp.ms-primary.com/g/RateList.do?product_id=3V",
+          "category": ["外貨建", "個人年金", "平準払"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "WEB見積り誘導のため公式固定値なし"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "accumulation_rates": {
+            "applicable_date": "2026-07-01",
+            "USD": {
+              "10yr": 0.0364,
+              "over_10yr": 0.0441
+            },
+            "AUD": {
+              "10yr": 0.0431,
+              "over_10yr": 0.0475
+            }
+          },
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 0.65,
+          "tsi_status": "CAUTION",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 0.65,
+              "reason": "Perplexity公式ページ調査。セキュリティインシデント3件反映（-0.10, -0.10, -0.15）"
+            }
+          ]
+        },
+        {
+          "plan_id": "A004_P02",
+          "plan_name": "あしたのゆとり",
+          "product_id": "4C",
+          "formal_name": null,
+          "detail_url": "https://msp.ms-primary.com/g/RateList.do?product_id=4C",
+          "category": ["外貨建", "個人年金"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "WEB見積り誘導のため公式固定値なし"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "accumulation_rates": {
+            "applicable_date": "2026-07-01",
+            "USD": {
+              "10yr": 0.0364,
+              "over_10yr": 0.0441
+            },
+            "AUD": {
+              "10yr": 0.0431,
+              "over_10yr": 0.0475
+            }
+          },
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 0.65,
+          "tsi_status": "CAUTION",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 0.65,
+              "reason": "Perplexity公式ページ調査。セキュリティインシデント3件反映（-0.10, -0.10, -0.15）"
+            }
+          ]
+        },
+        {
+          "plan_id": "A004_P03",
+          "plan_name": "定額年金（外貨建・生存保障重視型）",
+          "product_id": "57",
+          "formal_name": null,
+          "detail_url": "https://msp.ms-primary.com/g/RateList.do?product_id=57",
+          "category": ["外貨建", "個人年金", "一時払", "生存保障重視型"],
+          "monthly_premium": {
+            "M_30_5000": null,
+            "M_40_5000": null,
+            "M_50_5000": null,
+            "F_30_5000": null,
+            "F_40_5000": null,
+            "F_50_5000": null,
+            "note": "一時払商品のため月払保険料なし"
+          },
+          "coverage": {
+            "hospitalization_daily": false,
+            "hospitalization_initial_10days": false,
+            "lump_sum_hospitalization": false,
+            "surgery_benefit": false,
+            "advanced_medical": false,
+            "cancer_lump_sum": false,
+            "three_major_disease_lump_sum": false,
+            "cancer_specific_treatment_limit": null,
+            "death": null,
+            "nursing_care": false,
+            "discharge_benefit": false,
+            "asset_formation": true,
+            "no_surrender_value": false
+          },
+          "accumulation_rates": {
+            "applicable_period": "2026-05-25/2026-06-07",
+            "USD": {
+              "min": 0.0360,
+              "max": 0.0410
+            },
+            "AUD": {
+              "min": 0.0400,
+              "max": 0.0481
+            }
+          },
+          "optional_riders": [],
+          "conditions": {
+            "age_min": null,
+            "age_max": null,
+            "health_screening": null,
+            "告知items": null
+          },
+          "tsi": 0.65,
+          "tsi_status": "CAUTION",
+          "last_verified": "2026-06-04",
+          "next_check_due": "2026-06-18",
+          "tsi_log": [
+            {
+              "date": "2026-06-04",
+              "score": 0.65,
+              "reason": "Perplexity公式ページ調査。セキュリティインシデント3件反映（-0.10, -0.10, -0.15）"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
