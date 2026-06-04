@@ -4,10 +4,14 @@ MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
-import json, csv, hashlib, datetime, re, sqlite3, unicodedata
+import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os
 from pathlib import Path
 from flask import Flask, request
 from flask_cors import CORS
+
+MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
+if not MOCKA_ENDPOINT:
+    print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
 
 BASE           = Path(r"C:\Users\sirok\MoCKA")
 OVERVIEW_PATH  = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
