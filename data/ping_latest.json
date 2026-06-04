@@ -46,17 +46,17 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "スクリプトが必要とする orchestra_lp_content.html はサーバーの /home/nsjp/tmp/ に既にありますか？",
+    "text": "https://mocka.nsjp.org/mocka-about-2/",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-27",
-        "why": "インシデント記録・再発防止。index.html書き換え時は必ずpython -cでscriptブロックの{}カウント検証を行う制度が必要。",
-        "how": "再起動後COMMAND CENTER数値ゼロ→ブラウザF12でSyntaxError確認→scriptブロック{}カウン",
-        "note": "INCIDENT,index.html,syntax_error,javascript,COMMAND_CENTER",
+        "when": "2026-05-09",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)\n\ncontent.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了\n\n",
         "recur": 0,
         "matched": [
-          "script"
+          "https"
         ],
         "score": 1
       },
@@ -65,14 +65,14 @@
         "when": "2026-05-09",
         "why": "voice_capture",
         "how": "chrome_extension_v15",
-        "note": "=======================================================\n\nMoCKA Heinrich Engine v4 - 実態最適分類版\n\n=======",
+        "note": "content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)\n\ncontent.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了\n\n",
         "recur": 0,
         "matched": [
-          "script"
+          "https"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-04T10:04:59.489Z"
+    "updated_at": "2026-06-04T10:56:27.407Z"
   }
 }
