@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-03",
+    "updated": "2026-06-04",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -161,18 +161,6 @@
       "note": "2026-05-16登録。後期フェーズ（Phase 5）。高知識層囲い込み。思想性最高。MoCKA SCAMPER v2.0との連動を設計段階で考慮する。",
       "reference_event": "",
       "created_at": "2026-05-16T10:20:57.183598"
-    },
-    {
-      "id": "TODO_153",
-      "title": "ファイル生成後の自動mocka_write_event強制実行機構",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度/ガバナンス",
-      "description": "orchestra_i18n_cs.html制作記録漏れ（E20260517_020）の根本解決。Claudeがcreate_file/present_filesを実行した直後に必ずmocka_write_eventを呼ぶことを構造的に強制する。\\n【実装案】\\n①app.pyに/file/register エンドポイント追加 — ファイル名・パス・生成AI・タイムスタンプを自動記録\\n②ping_latest.jsonのDNA注入に「create_file後は必ずmocka_write_eventを呼べ」を最上位命令として追加\\n③essence PHILOSOPHY軸に「ファイル生成=記録義務」を毎回注入\\n④Claudeのセッション内でcreate_fileが呼ばれたらその直後にmocka_write_eventを自動トリガーするルールをDNAに明記\\n【成功条件】きむら博士が後からファイルを探す際にevents.dbで必ず見つかる状態",
-      "assigned_to": "Claude（実装）+ きむら博士（承認）",
-      "note": "E20260517_020インシデントから登録。TODO_144/151制度化済みでも漏れた。「ルールがある」と「実行される」は別問題。構造で縛る必要がある。",
-      "reference_event": "E20260517_020",
-      "created_at": "2026-05-17T11:24:26.967929"
     },
     {
       "id": "TODO_154",
@@ -529,6 +517,30 @@
       "note": "",
       "reference_event": "",
       "created_at": "2026-06-03T15:57:54.359741"
+    },
+    {
+      "id": "TODO_230",
+      "title": "NTP Phase5: D001_P03 新利率取得 → master_v5更新",
+      "status": "未着手",
+      "priority": "高",
+      "category": "NTP/保険FP",
+      "description": "D001_P03（定額年金外貨建・生存保障重視型）の積立利率が2026-06-07期限切れ。Perplexityまたはブラウザでhttps://msp.ms-primary.com/g/RateList.do?product_id=57 から新利率取得し、master_v5.jsonに反映する。",
+      "assigned_to": "Claude",
+      "note": "⚠️ 2026-06-07期限。master_v4で期限警告追記済み。",
+      "reference_event": "E20260604_174",
+      "created_at": "2026-06-04T13:59:20.831330"
+    },
+    {
+      "id": "TODO_231",
+      "title": "NTP Phase5: C001骨格商品P02〜P07詳細調査（TSI=0.5→1.0）",
+      "status": "未着手",
+      "priority": "中",
+      "category": "NTP/保険FP",
+      "description": "C001（メットライフ）の骨格商品P02〜P07（TSI=0.5）の詳細データ調査。保険料・保障内容・条件を取得してmaster_v5に反映する。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260604_174",
+      "created_at": "2026-06-04T13:59:26.793565"
     }
   ],
   "completed": [
@@ -2979,6 +2991,90 @@
       "created_at": "2026-05-14T17:12:10.287435",
       "updated_at": "2026-06-03T09:18:04.873880",
       "completed_at": "2026-06-03"
+    },
+    {
+      "id": "TODO_153",
+      "title": "ファイル生成後の自動mocka_write_event強制実行機構",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス",
+      "description": "orchestra_i18n_cs.html制作記録漏れ（E20260517_020）の根本解決。Claudeがcreate_file/present_filesを実行した直後に必ずmocka_write_eventを呼ぶことを構造的に強制する。\\n【実装案】\\n①app.pyに/file/register エンドポイント追加 — ファイル名・パス・生成AI・タイムスタンプを自動記録\\n②ping_latest.jsonのDNA注入に「create_file後は必ずmocka_write_eventを呼べ」を最上位命令として追加\\n③essence PHILOSOPHY軸に「ファイル生成=記録義務」を毎回注入\\n④Claudeのセッション内でcreate_fileが呼ばれたらその直後にmocka_write_eventを自動トリガーするルールをDNAに明記\\n【成功条件】きむら博士が後からファイルを探す際にevents.dbで必ず見つかる状態",
+      "assigned_to": "Claude（実装）+ きむら博士（承認）",
+      "note": "2026-06-04完了。①app.py /file/register エンドポイント追加 ②tools/mocka_auto_record.py PostToolUseフックスクリプト作成 ③.claude/settings.local.json PostToolUse hooks設定でClaude Code統合。Edit/Write/NotebookEdit後に自動発火。",
+      "reference_event": "E20260517_020",
+      "created_at": "2026-05-17T11:24:26.967929",
+      "updated_at": "2026-06-04T10:26:52.615981",
+      "completed_at": "2026-06-04"
+    },
+    {
+      "id": "TODO_225",
+      "title": "NTP Phase4: TSIヘルスチェッカー実装（vasAI移植）",
+      "status": "完了",
+      "priority": "中",
+      "category": "NTP/保険FP",
+      "description": "vasAI の TSI モジュールを NTP/src/health/tsi_checker.py に移植。劣化ロジック（14日-0.2/28日-0.2/42日-0.3）・ステータス判定（TRUSTED/WARNING/DANGER/DEAD）・ヘルスレポート生成を実装。",
+      "assigned_to": "Claude",
+      "note": "NTP Phase4-B完了。10/10 PASS。E20260604_174。",
+      "reference_event": "E20260604_162",
+      "created_at": "2026-06-04T13:41:18.237986",
+      "updated_at": "2026-06-04T13:59:02.328144",
+      "completed_at": "2026-06-04"
+    },
+    {
+      "id": "TODO_226",
+      "title": "NTP Phase4: 類似度マッチングエンジン実装",
+      "status": "完了",
+      "priority": "中",
+      "category": "NTP/保険FP",
+      "description": "顧客属性×保険マスターの類似度マッチングエンジン実装。完全一致型スコアリングから類似度型に変更。FPが「この顧客に近い商品群」を抽出できるようにする。",
+      "assigned_to": "Claude",
+      "note": "NTP Phase4-C完了。14/14 PASS。E20260604_174。",
+      "reference_event": "E20260604_162",
+      "created_at": "2026-06-04T13:41:23.253270",
+      "updated_at": "2026-06-04T13:59:05.003815",
+      "completed_at": "2026-06-04"
+    },
+    {
+      "id": "TODO_227",
+      "title": "NTP: D001_P03 積立利率更新（2026-06-07期限切れ）",
+      "status": "完了",
+      "priority": "高",
+      "category": "NTP/保険FP",
+      "description": "D001_P03（定額年金外貨建・生存保障重視型）の積立利率が2026-06-07で期限切れ。Perplexityで再取得してmaster_v4のD001_P03を更新する。URL: https://msp.ms-primary.com/g/RateList.do?product_id=57",
+      "assigned_to": "Claude",
+      "note": "利率確認・期限警告追記完了。⚠️2026-06-07期限で新利率取得→master_v5更新が必要。",
+      "reference_event": "E20260604_162",
+      "created_at": "2026-06-04T13:41:30.277063",
+      "updated_at": "2026-06-04T13:59:08.258770",
+      "completed_at": "2026-06-04"
+    },
+    {
+      "id": "TODO_228",
+      "title": "NTP Phase4: UI改修（58商品対応・DEAD/WARNING表示）",
+      "status": "完了",
+      "priority": "低",
+      "category": "NTP/保険FP",
+      "description": "UIを58商品対応に改修。比較表・スコアリング表示・DEAD商品の非表示・WARNING商品の警告表示を実装。index.htmlをサンプルデータから master_v4.json 読み込みに切り替え。",
+      "assigned_to": "Claude",
+      "note": "UI改修完了。DEAD除外・WARNING表示・動的カウント。E20260604_174。",
+      "reference_event": "E20260604_162",
+      "created_at": "2026-06-04T13:41:35.574223",
+      "updated_at": "2026-06-04T13:59:11.167307",
+      "completed_at": "2026-06-04"
+    },
+    {
+      "id": "TODO_229",
+      "title": "NTP: git push リモートへ（PlanningCaliber + NTP）",
+      "status": "完了",
+      "priority": "高",
+      "category": "NTP/保険FP",
+      "description": "MoCKA PlanningCaliberおよびNTPリポジトリをリモート（GitHub）にプッシュする。対象: C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\ntp_insurance\\ および X:\\down\\NTP\\",
+      "assigned_to": "Claude",
+      "note": "NTP=77d0656・PlanningCaliber AUTO_SEAL済。E20260604_174。",
+      "reference_event": "E20260604_162",
+      "created_at": "2026-06-04T13:41:40.943966",
+      "updated_at": "2026-06-04T13:59:13.887844",
+      "completed_at": "2026-06-04"
     }
   ],
   "orchestra_handoff": {
