@@ -1682,6 +1682,49 @@ def receive_report():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
+@app.route('/file/register', methods=['POST'])
+def file_register():
+    """TODO_153実装: ファイル生成後の自動mocka_write_event強制実行エンドポイント。
+    Claude Code PostToolUseフックまたはツールから呼ばれる。
+    """
+    import urllib.request as _ur
+    try:
+        data = request.get_json(force=True) or {}
+        file_path  = data.get("file_path", "")
+        tool_name  = data.get("tool_name", "unknown")
+        author     = data.get("author", "Claude")
+        reason     = data.get("reason", "")
+        lines_after = data.get("lines_after")
+
+        if not file_path:
+            return jsonify({"status": "error", "message": "file_path required"}), 400
+
+        fname = file_path.replace("\\", "/").split("/")[-1]
+        title = f"CHANGE_DONE: {tool_name} → {fname}"
+        desc_parts = [f"ファイル: {file_path}", f"ツール: {tool_name}"]
+        if reason:
+            desc_parts.append(f"理由: {reason}")
+        if lines_after is not None:
+            desc_parts.append(f"行数: {lines_after}")
+        desc_parts.append(f"timestamp: {datetime.now().isoformat()}")
+        description = " | ".join(desc_parts)
+
+        payload = json.dumps({
+            "title": title, "description": description,
+            "tags": f"auto_hook,{tool_name},file_register",
+            "author": author, "why_purpose": "TODO_153: ファイル生成=記録義務",
+            "how_trigger": "PostToolUse hook / /file/register",
+        }).encode("utf-8")
+        req_obj = _ur.Request(
+            "http://localhost:5002/agent/mocka_write_event",
+            data=payload, headers={"Content-Type": "application/json"}, method="POST"
+        )
+        with _ur.urlopen(req_obj, timeout=3) as r:
+            result = json.loads(r.read())
+        return jsonify({"status": "ok", "event_id": result.get("event_id"), "file": fname}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 @app.route('/ngrok/status')
 def ngrok_status():
     import requests as req

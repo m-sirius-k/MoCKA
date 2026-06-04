@@ -20,8 +20,8 @@
     "detail": "ok"
   },
   "mcp_schema_hash": {
-    "ok": true,
-    "detail": "変更なし (hash: 8032ba1d6571ddf6)"
+    "ok": false,
+    "detail": "ハッシュ変更検出!\n                          前回: 8032ba1d6571ddf6\n                          今回: 4379663671f3c8ae"
   },
   "relay_dom_selector": {
     "ok": false,
