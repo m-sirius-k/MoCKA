@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path("C:/Users/sirok/MoCKA/interface")))
 from router import MoCKARouter
 
-PING_PATH = Path("C:/Users/sirok/MoCKA/data/storage/infield/PACKET/ping_latest.json")
+PING_PATH = Path("C:/Users/sirok/MoCKA/PlanningCaliber/fp/ping_latest.json")
 
 def essence_to_share():
     # ping_latest.jsonを読む

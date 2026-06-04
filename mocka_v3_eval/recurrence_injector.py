@@ -1,7 +1,7 @@
 ﻿import os, json, sys
 from datetime import datetime
 
-INFIELD_DIR = r"C:\Users\sirok\MoCKA\data\storage\infield\PACKET"
+INFIELD_DIR = r"C:\Users\sirok\MoCKA\PlanningCaliber\fp"
 LOG_PATH = r"C:\Users\sirok\MoCKA\data\recurrence_injection_log.json"
 
 def inject(packet: dict, source: str = "manual") -> dict:
