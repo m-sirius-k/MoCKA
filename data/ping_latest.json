@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-04T17:31:39.761191",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "https://mocka.nsjp.org/mocka-about-2/",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-09",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)\n\ncontent.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了\n\n",
-        "recur": 0,
-        "matched": [
-          "https"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-09",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "content.js:4 [MOCKA] 自律監視プロトコル v15 起動 (user_voice ON)\n\ncontent.js:26 [MOCKA] 送信ボタンにuser_voiceフック完了\n\n",
-        "recur": 0,
-        "matched": [
-          "https"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-04T10:56:27.407Z"
-  }
+  "generated_at": "2026-06-05T08:14:57.535204"
 }
