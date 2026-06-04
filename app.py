@@ -1899,8 +1899,8 @@ def public_status():
             "get_intent": "/get_intent/<ai_name> (GET)",
             "pattern_score": "/pattern/score (GET)",
         },
-        "mcp": {"url": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp"},
-        "ngrok": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev",
+        "mcp": {"url": f"{os.environ.get('MOCKA_ENDPOINT', 'http://localhost:5002')}/mcp"},
+        "ngrok": os.environ.get("MOCKA_ENDPOINT", ""),
         "appointed_ai": ["Claude","Gemini","GPT","Copilot","Perplexity"],
     }
     return jsonify(result)

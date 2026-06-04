@@ -36,8 +36,12 @@ import sqlite3
 DB_PATH       = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
 PACKET_PATH   = Path("C:/Users/sirok/MoCKA/data/ping_latest.json")
 OVERVIEW_PATH = Path("C:/Users/sirok/MOCKA_OVERVIEW.json")
+import os
 import urllib.request
-NGROK_URL = "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp"
+_MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
+if not _MOCKA_ENDPOINT:
+    print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
+NGROK_URL = f"{_MOCKA_ENDPOINT}/mcp" if _MOCKA_ENDPOINT else "http://localhost:5002/mcp"
 
 def check_ngrok_status():
     try:
