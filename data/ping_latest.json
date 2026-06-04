@@ -46,33 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "プライマリー生命の積立利率ページと各商品の照会URLが取得できました。このサイトのURLスキーマは https://msp.ms-primary.com/g/R",
+    "text": "エラー: マスターデータが読み込めていません。APIモードをお試しください。APIサーバー確認 or ローカルモードへ切替",
     "top_events": [
       {
         "verdict": "DANGER",
         "when": "2026-04-15",
         "why": "右クリックメニューからの保存・共有操作",
         "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
         "recur": 0,
         "matched": [
-          "でき"
+          "エラー"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
         "recur": 0,
         "matched": [
-          "でき"
+          "エラー"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-04T00:22:29.494Z"
+    "updated_at": "2026-06-04T05:15:21.702Z"
   }
 }
