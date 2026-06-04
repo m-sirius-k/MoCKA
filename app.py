@@ -1626,7 +1626,7 @@ def get_restore_packet():
     """DNA_v3 Restore Packet を返す。
     restore_packet.json が存在しない場合は get_latest_dna にフォールバックする。"""
     from pathlib import Path
-    PACKET_PATH = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\PACKET\restore_packet.json")
+    PACKET_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\fp\restore_packet.json")
     INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
     inject_mode = "ON"
     if INJECT_FLAG.exists():
