@@ -25,7 +25,10 @@ import os
 import sys
 
 # ========== 設定 ==========
-MCP_URL = "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev"
+_MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
+if not _MOCKA_ENDPOINT:
+    print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
+MCP_URL = _MOCKA_ENDPOINT or "http://localhost:5000"
 LOCAL_URL = "http://localhost:5000"
 CONTEXT_LINES = 5  # 前後何行を記録するか
 

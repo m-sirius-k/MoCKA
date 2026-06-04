@@ -433,7 +433,7 @@ def mcp_endpoint():
 @app.route("/.well-known/oauth-protected-resource", defaults={"subpath": ""})
 @app.route("/.well-known/oauth-protected-resource/<path:subpath>")
 def oauth_resource(subpath):
-    return json.dumps({"resource": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev", "authorization_servers": []}), 200, {"Content-Type": "application/json"}
+    return json.dumps({"resource": MOCKA_ENDPOINT or "https://localhost:5002", "authorization_servers": []}), 200, {"Content-Type": "application/json"}
 
 @app.route("/.well-known/oauth-authorization-server")
 def oauth_server():

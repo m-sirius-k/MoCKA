@@ -4,7 +4,13 @@
 
 import { RecordStore } from '../core/change-record-store.js';
 
-const MOCKA_ENDPOINT = 'https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp';
+const _MOCKA_ENDPOINT_ENV = (typeof process !== 'undefined' && process.env && process.env.MOCKA_ENDPOINT)
+  ? process.env.MOCKA_ENDPOINT
+  : null;
+if (!_MOCKA_ENDPOINT_ENV) {
+  console.error('[MocKABridge] ERROR: 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。');
+}
+const MOCKA_ENDPOINT = _MOCKA_ENDPOINT_ENV ? `${_MOCKA_ENDPOINT_ENV}/mcp` : 'http://localhost:5002/mcp';
 const CONNECT_TIMEOUT_MS = 3000;
 
 // 接続状態キャッシュ（10秒TTL）
