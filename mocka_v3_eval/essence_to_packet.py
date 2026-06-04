@@ -18,7 +18,7 @@ ROOT    = Path(r"C:\Users\sirok\MoCKA")
 ESSENCE = ROOT / "data" / "storage" / "infield" / "ESSENCE"
 RECUR   = ROOT / "data" / "recurrence_registry.csv"
 EVENTS  = ROOT / "data" / "events.csv"
-PACKET  = ROOT / "data" / "storage" / "infield" / "PACKET"
+PACKET  = ROOT / "PlanningCaliber" / "fp"
 PACKET.mkdir(parents=True, exist_ok=True)
 
 # ══════════════════════════════════════════════════════════

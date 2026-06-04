@@ -1,0 +1,48 @@
+{
+  "$schema": "DNA_v3_restore_packet_v1.0",
+  "version": "3.0",
+  "generated_at": "2026-05-28T09:02:46.225Z",
+  "session_context": "残作業確認",
+  "immutable": {
+    "_note": "KERNEL PROTECTED — 上書き不可・削除不可・セッション開始時に必ず先頭注入",
+    "philosophy": [
+      "できないのはやらないからだ",
+      "記録なき作業はMoCKAとして存在しない",
+      "AIを信じるな、システムで縛れ"
+    ],
+    "forbidden": [
+      "PowerShell環境でPythonコードを直接実行させない",
+      "ファイル編集はcreate_fileのみ（bash heredoc禁止）",
+      "PHL記録なき変更を行わない",
+      "関連ファイル照合なしの全文書き換えを行わない"
+    ],
+    "values": [
+      "違和感は次の発明のシード",
+      "失敗は資産になる",
+      "判断根拠を必ず残す"
+    ]
+  },
+  "restore_5points": {
+    "1_personality": "[TODO_154] 全文書き換え前に関連ファイルを必ず照合せよ。app.py変更時はindex.htmlも読む。index.html変更時はapp.pyも読む。照合なしの書き換えはMoCKA検証原則違反。\n[PHL-TOP TODO_151] 記録対象は全作業。MoCKAコア・planningcaliber・sirius-lab・外部サービス操作（Store/Gumroad/GitHub）、全て",
+    "2_current_goal": [
+      {
+        "todo_id": "TODO_144",
+        "title": "ファイル変更前後の強制記録制度 — 変更着手前INCIDENT・完了後FIX記録を必須化",
+        "priority": "最高"
+      },
+      {
+        "todo_id": "TODO_147",
+        "title": "Relay — 会話自動引き継ぎChrome拡張 開発",
+        "priority": "最高"
+      },
+      {
+        "todo_id": "TODO_153",
+        "title": "ファイル生成後の自動mocka_write_event強制実行機構",
+        "priority": "最高"
+      }
+    ],
+    "3_active_work": "[UPDATED]  (watchdog) / [OPERATION]  (pipeline) / [INCIDENT]  (pipeline) / [OPERATION]  (pipeline) / [OPERATION]  (pipeline) / [cli] generation (interface/)",
+    "4_tensions": [],
+    "5_recent_decisions": []
+  }
+}
