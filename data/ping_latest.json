@@ -15,11 +15,6 @@
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "top_todos": [
     {
-      "id": "TODO_153",
-      "title": "ファイル生成後の自動mocka_write_event強制実行機構",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_154",
       "title": "全文書き換え時の関連ファイル整合性確認を必須化",
       "priority": "最高"
@@ -38,41 +33,12 @@
       "id": "TODO_195",
       "title": "PHI OS v1.0 実機テスト — chrome://extensions読み込み・Restore Packet注入確認",
       "priority": "最高"
+    },
+    {
+      "id": "TODO_221",
+      "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
+      "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-04T08:31:09.647814",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "エラー: マスターデータが読み込めていません。APIモードをお試しください。APIサーバー確認 or ローカルモードへ切替",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
-        "recur": 0,
-        "matched": [
-          "エラー"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-30",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
-        "recur": 0,
-        "matched": [
-          "エラー"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-04T05:15:21.702Z"
-  }
+  "generated_at": "2026-06-04T17:08:42.619340"
 }
