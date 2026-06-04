@@ -371,11 +371,13 @@ def run(target: str = None):
             "tic,health_check,health_fail",
         )
     else:
-        write_event(
-            "HEALTH_OK: ヘルスチェック全件正常",
-            f"必須{total}件PASS @ {now_str}",
-            "tic,health_check,health_ok",
-        )
+        count = _increment_health_ok_count()
+        if count % HEALTH_OK_INTERVAL == 1:
+            write_event(
+                "HEALTH_OK: ヘルスチェック全件正常",
+                f"必須{total}件PASS @ {now_str} (累計{count}回目)",
+                "tic,health_check,health_ok",
+            )
 
     return entry
 
