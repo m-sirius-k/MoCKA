@@ -26,6 +26,23 @@ HEALTH_LOG    = TIC_DIR / "health_log.jsonl"
 HASH_STORE    = TIC_DIR / "mcp_schema_hash.json"
 PREV_QUEUE    = Path("C:/Users/sirok/MoCKA/data/prevention_queue.json")
 MCP_URL       = "http://localhost:5002/agent/mocka_write_event"
+HEALTH_OK_INTERVAL = 30  # HEALTH_OK は 30 回に 1 回だけ記録する
+_health_ok_counter_file = TIC_DIR / "health_ok_counter.txt"
+
+def _get_health_ok_count() -> int:
+    try:
+        return int(_health_ok_counter_file.read_text(encoding="utf-8").strip())
+    except Exception:
+        return 0
+
+def _increment_health_ok_count() -> int:
+    n = _get_health_ok_count() + 1
+    try:
+        _health_ok_counter_file.parent.mkdir(parents=True, exist_ok=True)
+        _health_ok_counter_file.write_text(str(n), encoding="utf-8")
+    except Exception:
+        pass
+    return n
 
 GREEN = "\033[92m"
 RED   = "\033[91m"
