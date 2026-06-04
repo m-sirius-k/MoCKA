@@ -15,32 +15,31 @@
     --text: #1e2a3a;
     --text-muted: #6b7a90;
     --success: #2e7d32;
-    --warning: #e65100;
+    --warning-color: #e65100;
+    --danger-color: #c62828;
+    --dead-color: #78909c;
     --radius: 10px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', 'Noto Sans JP', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; }
 
   header {
-    background: var(--primary);
-    color: white;
-    padding: 14px 28px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    background: var(--primary); color: white;
+    padding: 14px 28px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   header h1 { font-size: 20px; font-weight: 700; letter-spacing: 1px; }
   header .sub { font-size: 12px; opacity: 0.75; margin-top: 2px; }
+  .master-badge {
+    background: rgba(255,255,255,0.2); border-radius: 20px;
+    padding: 4px 14px; font-size: 12px; white-space: nowrap;
+  }
+  .master-badge .total-count { font-weight: 700; font-size: 15px; }
 
   .api-bar {
-    background: #f0f4ff;
-    border-bottom: 1px solid var(--border);
-    padding: 8px 28px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
+    background: #f0f4ff; border-bottom: 1px solid var(--border);
+    padding: 8px 28px; display: flex; align-items: center; gap: 10px; font-size: 12px;
   }
   .api-bar label { color: var(--text-muted); }
   .api-bar input { border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; width: 220px; font-size: 12px; }
@@ -57,11 +56,9 @@
   .form-row label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
   .form-row input[type=number], .form-row select {
     width: 100%; border: 1px solid var(--border); border-radius: 6px;
-    padding: 8px 10px; font-size: 14px; color: var(--text);
-    background: white;
+    padding: 8px 10px; font-size: 14px; color: var(--text); background: white;
   }
   .form-row input:focus, .form-row select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 2px rgba(26,79,138,0.15); }
-
   .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .checkbox-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
@@ -69,87 +66,93 @@
     display: flex; align-items: center; gap: 6px;
     background: #f0f4ff; border: 1px solid var(--border);
     border-radius: 20px; padding: 5px 12px; cursor: pointer;
-    font-size: 12px; font-weight: 500;
-    transition: all 0.15s;
+    font-size: 12px; font-weight: 500; transition: all 0.15s;
   }
   .checkbox-group input[type=checkbox] { accent-color: var(--primary); }
-  .checkbox-group label:has(input:checked) {
-    background: var(--primary); color: white; border-color: var(--primary);
-  }
+  .checkbox-group label:has(input:checked) { background: var(--primary); color: white; border-color: var(--primary); }
 
   .btn-search {
     width: 100%; padding: 13px; background: var(--accent);
     color: white; border: none; border-radius: var(--radius);
     font-size: 16px; font-weight: 700; cursor: pointer;
-    margin-top: 8px; transition: background 0.2s;
-    letter-spacing: 1px;
+    margin-top: 8px; transition: background 0.2s; letter-spacing: 1px;
   }
   .btn-search:hover { background: #c94d25; }
   .btn-search:disabled { background: #ccc; cursor: not-allowed; }
 
-  .results-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-  .results-header h2 { font-size: 15px; color: var(--primary); }
-  .count-badge { background: var(--primary); color: white; border-radius: 20px; padding: 2px 12px; font-size: 12px; }
-
   .product-card {
     border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 16px; margin-bottom: 12px;
-    transition: box-shadow 0.15s;
+    padding: 16px; margin-bottom: 12px; transition: box-shadow 0.15s;
+    background: white;
   }
   .product-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
   .product-card.rank-1 { border-color: #ffa000; background: #fffde7; }
   .product-card.rank-2 { border-color: #9e9e9e; }
   .product-card.rank-3 { border-color: #8d6e63; }
 
-  .product-header { display: flex; justify-content: space-between; align-items: flex-start; }
-  .product-name { font-size: 15px; font-weight: 700; color: var(--primary); }
+  .product-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .product-name { font-size: 15px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .product-insurer { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
   .score-badge {
     background: var(--primary); color: white;
     border-radius: 8px; padding: 4px 12px;
-    font-size: 18px; font-weight: 700;
-    white-space: nowrap;
+    font-size: 18px; font-weight: 700; white-space: nowrap;
   }
   .score-badge.high { background: #2e7d32; }
   .score-badge.mid { background: #e65100; }
+  .score-badge.low { background: #9e9e9e; }
+
+  /* TSI バッジ */
+  .tsi-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    border-radius: 10px; padding: 2px 8px; font-size: 10px; font-weight: 700;
+    white-space: nowrap;
+  }
+  .tsi-trusted { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+  .tsi-warning { background: #fff3e0; color: #e65100; border: 1px solid #ffcc80; }
+  .tsi-danger  { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+  .tsi-dead    { background: #eceff1; color: #546e7a; border: 1px solid #b0bec5; text-decoration: line-through; }
 
   .coverage-tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
-  .tag {
-    background: #e8edf5; color: var(--primary);
-    border-radius: 12px; padding: 3px 10px; font-size: 11px; font-weight: 600;
-  }
+  .tag { background: #e8edf5; color: var(--primary); border-radius: 12px; padding: 3px 10px; font-size: 11px; font-weight: 600; }
+  .tag.new { background: #e8f5e9; color: var(--success); border: 1px solid #a5d6a7; }
 
   .reason-list { list-style: none; margin: 8px 0; }
   .reason-list li { font-size: 12px; padding: 2px 0; }
   .reason-list li::before { content: "✓ "; color: var(--success); font-weight: 700; }
-  .warn-list li::before { content: "⚠ "; color: var(--warning); }
-  .warn-list li { color: var(--warning); }
+  .warn-list li::before { content: "⚠ "; color: var(--warning-color); }
+  .warn-list li { color: var(--warning-color); }
 
   .empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); }
   .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 
-  .mode-toggle {
-    display: flex; gap: 8px; margin-bottom: 16px;
-  }
+  .mode-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
   .mode-btn {
     flex: 1; padding: 8px; border: 2px solid var(--border);
     border-radius: 8px; background: white; cursor: pointer;
-    font-size: 12px; font-weight: 600; color: var(--text-muted);
-    transition: all 0.15s;
+    font-size: 12px; font-weight: 600; color: var(--text-muted); transition: all 0.15s;
   }
   .mode-btn.active { border-color: var(--primary); background: var(--primary); color: white; }
 
   .offline-note {
     background: #fff3e0; border: 1px solid #ffe0b2;
     border-radius: 8px; padding: 10px 14px;
-    font-size: 12px; color: #bf360c; margin-bottom: 14px;
-    display: none;
+    font-size: 12px; color: #bf360c; margin-bottom: 14px; display: none;
   }
   .offline-note.show { display: block; }
 
-  @media (max-width: 900px) {
-    main { grid-template-columns: 1fr; }
+  .results-meta {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
   }
+  .results-meta h2 { font-size: 15px; color: var(--primary); }
+  .count-info { display: flex; gap: 8px; align-items: center; }
+  .count-badge { background: var(--primary); color: white; border-radius: 20px; padding: 2px 12px; font-size: 12px; }
+  .count-total { color: var(--text-muted); font-size: 12px; }
+
+  .premium-info { font-size: 12px; color: var(--text-muted); margin-top: 8px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .premium-info .price { color: var(--primary); font-weight: 700; }
+
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -157,7 +160,11 @@
 <header>
   <div>
     <h1>NTP 保険プランニングツール</h1>
-    <div class="sub">FP向け 保険比較・プランニング支援システム</div>
+    <div class="sub">FP向け 保険比較・プランニング支援システム (master v4.0)</div>
+  </div>
+  <div class="master-badge">
+    <span class="total-count" id="totalCount">-</span>
+    <span> 商品収録中</span>
   </div>
 </header>
 
@@ -170,7 +177,6 @@
 </div>
 
 <main>
-  <!-- 左パネル: 入力フォーム -->
   <div>
     <div class="card">
       <h2>被保険者情報</h2>
@@ -181,7 +187,7 @@
       </div>
 
       <div class="offline-note" id="offlineNote">
-        ⚠ APIサーバー未接続のため、ブラウザ内エンジンで動作中（サンプルデータ使用）
+        ⚠ APIサーバー未接続 - master_v4.json をブラウザ内エンジンで処理中
       </div>
 
       <div class="form-row-2">
@@ -245,12 +251,13 @@
         <label>希望保障内容（複数選択可）</label>
         <div class="checkbox-group">
           <label><input type="checkbox" value="death"> 死亡保障</label>
-          <label><input type="checkbox" value="medical" checked> 医療</label>
+          <label><input type="checkbox" value="hospitalization" checked> 医療・入院</label>
           <label><input type="checkbox" value="cancer" checked> がん</label>
-          <label><input type="checkbox" value="critical_illness"> 重大疾病</label>
+          <label><input type="checkbox" value="lump_sum"> 一時金</label>
           <label><input type="checkbox" value="disability"> 就業不能</label>
-          <label><input type="checkbox" value="retirement"> 老後・年金</label>
+          <label><input type="checkbox" value="asset_formation"> 資産形成</label>
           <label><input type="checkbox" value="nursing"> 介護</label>
+          <label><input type="checkbox" value="annuity"> 年金</label>
         </div>
       </div>
 
@@ -260,18 +267,149 @@
     </div>
   </div>
 
-  <!-- 右パネル: 結果 -->
   <div>
     <div id="resultsArea">
       <div class="empty-state">
         <div class="icon">📋</div>
         <div>左のフォームを入力して「プランを検索・比較」をクリックしてください</div>
+        <div style="margin-top:8px;font-size:12px;color:#9e9e9e;" id="masterStatus">マスターデータ読み込み中...</div>
       </div>
     </div>
   </div>
 </main>
 
 <script>
+// ────────────────────────────────────────────────────────────
+// マスターデータ管理
+// ────────────────────────────────────────────────────────────
+let masterData = null;
+let allPlans = [];   // {plan, company} 全商品
+let livePlans = [];  // DEAD除外済み
+
+const MASTER_PATH = '../data/insurers/master_20260604_v4.json';
+
+async function loadMaster() {
+  try {
+    const res = await fetch(MASTER_PATH);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    masterData = await res.json();
+    buildPlanIndex();
+    document.getElementById('totalCount').textContent = masterData.total_products;
+    document.getElementById('masterStatus').textContent =
+      'master v' + masterData.version + ' (' + masterData.total_products + '商品収録)';
+  } catch (e) {
+    document.getElementById('masterStatus').textContent =
+      '※ マスターデータ未読み込み (APIモード推奨): ' + e.message;
+  }
+}
+
+function buildPlanIndex() {
+  allPlans = [];
+  for (const company of masterData.companies || []) {
+    for (const plan of company.plans || []) {
+      allPlans.push({ plan, company });
+    }
+  }
+  // DEAD商品を除外したリスト
+  livePlans = allPlans.filter(({plan}) =>
+    !plan.discontinued && plan.tsi_status !== 'DEAD'
+  );
+}
+
+// ────────────────────────────────────────────────────────────
+// ローカル類似度エンジン（Python版を移植）
+// ────────────────────────────────────────────────────────────
+const NEED_COVERAGE_MAP = {
+  hospitalization: ['hospitalization_daily', 'hospitalization_initial_10days'],
+  lump_sum:        ['lump_sum_hospitalization', 'cancer_lump_sum', 'three_major_disease_lump_sum'],
+  death:           ['death'],
+  nursing:         ['nursing_care'],
+  cancer:          ['cancer_lump_sum', 'cancer_monthly_benefit'],
+  asset_formation: ['asset_formation'],
+  disability:      ['disability_income'],
+  annuity:         ['annuity'],
+};
+
+function ageFit(age, plan) {
+  const cond = plan.conditions || {};
+  if (cond.age_min != null && age < cond.age_min) return 0;
+  if (cond.age_max != null && age > cond.age_max) return 0;
+  return 1;
+}
+
+function needMatch(needs, plan) {
+  const cov = plan.coverage || {};
+  if (!Object.keys(cov).length) return 0.3;
+  const wantedKeys = Object.entries(needs).filter(([,v]) => v).map(([k]) => k);
+  if (!wantedKeys.length) return 0.5;
+  let matched = 0;
+  for (const nk of wantedKeys) {
+    const covKeys = NEED_COVERAGE_MAP[nk] || [nk];
+    if (covKeys.some(ck => cov[ck])) matched++;
+  }
+  return matched / wantedKeys.length;
+}
+
+function budgetFit(budget, plan) {
+  if (!budget) return 0.5;
+  const mp = plan.monthly_premium || {};
+  // plans構造（ガードネクスト等）
+  if (mp.plans) {
+    const prices = Object.values(mp.plans).flatMap(p => Object.values(p).filter(v => typeof v === 'number'));
+    if (!prices.length) return 0.5;
+    const minP = Math.min(...prices);
+    return minP <= budget ? 1.0 : Math.max(0, budget / minP);
+  }
+  const prices = Object.entries(mp)
+    .filter(([k, v]) => typeof v === 'number' && !['M_35_1000man_60sai','M_40_1000man'].includes(k))
+    .map(([,v]) => v);
+  if (!prices.length) return 0.5;
+  const minP = Math.min(...prices);
+  return minP <= budget ? 1.0 : Math.max(0, budget / minP);
+}
+
+function tsiQuality(plan) {
+  return Math.min(1.0, Math.max(0.0, plan.tsi || 0.5));
+}
+
+function calcScore(client, plan) {
+  const scores = {
+    age_fit:     ageFit(client.age, plan),
+    need_match:  needMatch(client.needs, plan),
+    budget_fit:  budgetFit(client.budget_monthly, plan),
+    tsi_quality: tsiQuality(plan),
+  };
+  const weights = { age_fit: 0.25, need_match: 0.40, budget_fit: 0.20, tsi_quality: 0.15 };
+  const total = Object.entries(weights).reduce((s, [k, w]) => s + scores[k] * w, 0);
+  return { total: Math.round(total * 1000) / 1000, breakdown: scores };
+}
+
+function runLocalMatch(client, topN = 20) {
+  const results = livePlans.map(({plan, company}) => {
+    const sc = calcScore(client, plan);
+    return {
+      plan_id: plan.plan_id,
+      plan_name: plan.plan_name,
+      company_id: company.company_id,
+      company_name: company.company_name,
+      category: plan.category || [],
+      tsi: plan.tsi,
+      tsi_status: plan.tsi_status,
+      is_new: plan.is_new,
+      monthly_premium: plan.monthly_premium,
+      coverage: plan.coverage || {},
+      detail_url: plan.detail_url,
+      score: Math.round(sc.total * 100),
+      breakdown: sc.breakdown,
+    };
+  });
+  results.sort((a, b) => b.score - a.score);
+  return results.slice(0, topN);
+}
+
+// ────────────────────────────────────────────────────────────
+// API / モード管理
+// ────────────────────────────────────────────────────────────
 let currentMode = 'api';
 
 function setMode(mode) {
@@ -290,20 +428,23 @@ async function checkApiHealth() {
     if (res.ok) {
       const data = await res.json();
       dot.className = 'status-dot ok';
-      txt.textContent = `接続OK (商品数: ${data.products_loaded}件)`;
+      txt.textContent = '接続OK (商品数: ' + data.products_loaded + '件)';
       setMode('api');
     } else {
       throw new Error('HTTP ' + res.status);
     }
   } catch (e) {
     dot.className = 'status-dot err';
-    txt.textContent = `接続失敗 - ローカルモードへ切替`;
+    txt.textContent = '接続失敗 - ローカルモード';
     setMode('local');
   }
 }
 
 function getFormData() {
   const coverages = [...document.querySelectorAll('.checkbox-group input:checked')].map(el => el.value);
+  const needsObj = {};
+  ['hospitalization','lump_sum','death','nursing','cancer','asset_formation','disability','annuity']
+    .forEach(k => needsObj[k] = coverages.includes(k));
   return {
     age: parseInt(document.getElementById('age').value),
     gender: document.getElementById('gender').value,
@@ -314,6 +455,7 @@ function getFormData() {
     has_family: document.getElementById('hasFamily').value === 'true',
     num_dependents: parseInt(document.getElementById('dependents').value),
     desired_coverages: coverages,
+    needs: needsObj,
     occupation_risk: 'low',
   };
 }
@@ -322,9 +464,7 @@ async function searchPlans() {
   const btn = document.getElementById('btnSearch');
   btn.disabled = true;
   btn.textContent = '検索中...';
-
   const data = getFormData();
-
   try {
     if (currentMode === 'api') {
       await searchViaApi(data);
@@ -350,105 +490,163 @@ async function searchViaApi(data) {
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
-    throw new Error(err.detail || `HTTP ${res.status}`);
+    throw new Error(err.detail || 'HTTP ' + res.status);
   }
   const result = await res.json();
-  renderResults(result.results, result.client_summary);
+  renderApiResults(result.results, result.client_summary);
 }
 
-// ローカル簡易エンジン（APIなし時のフォールバック）
 function searchLocally(data) {
-  const sampleProducts = [
-    { id: 'sample_term', insurer_name: '明治安田生命', product_name: '定期保険プレミアム20',
-      type: 'term', coverage_types: ['死亡保障', '重大疾病'],
-      features: ['非喫煙者割引', '健康体割引'], health_requirements: '標準体以上',
-      waiting_period_months: 0, monthly_premium_sample: { 参考: '2,800円〜' }, sum_assured_range: { min: 500, max: 10000, unit: '万円' } },
-    { id: 'sample_medical', insurer_name: '住友生命', product_name: 'Vitality 医療保険',
-      type: 'medical', coverage_types: ['医療', 'がん', '脳卒中', '心筋梗塞'],
-      features: ['Vitality健康増進', '三大疾病一時金'], health_requirements: '告知のみ',
-      waiting_period_months: 3, monthly_premium_sample: { 参考: '2,100円〜' }, sum_assured_range: { min: 5000, max: 20000, unit: '円/日' } },
-    { id: 'sample_cancer', insurer_name: '明治安田生命', product_name: 'がん保険 ベストスタイル',
-      type: 'cancer', coverage_types: ['がん'],
-      features: ['診断一時金', '抗がん剤給付'], health_requirements: '告知のみ・90日待機',
-      waiting_period_months: 3, monthly_premium_sample: { 参考: '1,800円〜' }, sum_assured_range: { min: 100, max: 1000, unit: '万円' } },
-  ];
-
-  const results = sampleProducts.map((p, i) => ({
-    ...p,
-    score: 70 - i * 10,
-    reasons: ['希望保障に合致', 'サンプルデータ表示中'],
-    warnings: i === 0 ? [] : ['APIサーバー接続でより詳細な比較が可能'],
-  }));
-
-  renderResults(results, {
-    age: data.age,
-    gender: data.gender === 'male' ? '男性' : '女性',
-    has_family: data.has_family,
-    budget_monthly: data.budget_monthly,
-  });
+  if (!masterData) {
+    showError('マスターデータが読み込めていません。APIモードをお試しください。');
+    return;
+  }
+  const results = runLocalMatch(data, 20);
+  const totalLive = livePlans.length;
+  const totalAll = allPlans.length;
+  renderLocalResults(results, data, totalLive, totalAll);
 }
 
-function renderResults(results, clientSummary) {
+// ────────────────────────────────────────────────────────────
+// レンダリング
+// ────────────────────────────────────────────────────────────
+function tsiHtml(tsiStatus, tsi) {
+  const map = {
+    'TRUSTED': ['tsi-trusted', '✓ TRUSTED'],
+    'WARNING': ['tsi-warning', '⚠ WARNING'],
+    'DANGER':  ['tsi-danger',  '!! DANGER'],
+    'DEAD':    ['tsi-dead',    '× DEAD'],
+  };
+  const [cls, label] = map[tsiStatus] || ['tsi-warning', tsiStatus];
+  return `<span class="tsi-badge ${cls}">${label} ${(tsi || 0).toFixed(1)}</span>`;
+}
+
+function premiumHtml(mp, age, gender) {
+  if (!mp) return '';
+  const gKey = gender === 'male' ? 'M' : 'F';
+  const keys = [`${gKey}_${age}_5000`, `${gKey}_30_5000`, `${gKey}_40_5000`];
+  for (const k of keys) {
+    if (mp[k]) return `<span class="price">${mp[k].toLocaleString()}円/月〜</span><span>（参考）</span>`;
+  }
+  if (mp.plans) {
+    const allPrices = Object.values(mp.plans).flatMap(p => Object.values(p).filter(v => typeof v === 'number'));
+    if (allPrices.length) return `<span class="price">${Math.min(...allPrices).toLocaleString()}円/月〜</span><span>（最安プラン）</span>`;
+  }
+  return mp.note ? `<span>${mp.note}</span>` : '<span>要見積り</span>';
+}
+
+function renderLocalResults(results, client, totalLive, totalAll) {
   const area = document.getElementById('resultsArea');
-  if (!results || results.length === 0) {
-    area.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div>条件に合う商品が見つかりませんでした</div></div>';
+  const deadCount = totalAll - totalLive;
+
+  const metaHtml = `
+    <div class="results-meta">
+      <h2>検索結果</h2>
+      <div class="count-info">
+        <span class="count-badge">${results.length}件</span>
+        <span class="count-total">${totalAll}商品中 ${totalLive}件表示対象
+          ${deadCount ? `<span style="color:var(--dead-color)"> (DEAD ${deadCount}件除外)</span>` : ''}</span>
+      </div>
+    </div>
+    <div style="background:#e8f4fd;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#1a4f8a;">
+      <b>検索条件:</b> ${client.gender === 'male' ? '男性' : '女性'} ${client.age}歳
+      ${client.has_family ? ' · 家族あり' : ''}
+      ${client.budget_monthly ? ' · 予算 ' + client.budget_monthly.toLocaleString() + '円/月' : ''}
+    </div>`;
+
+  if (!results.length) {
+    area.innerHTML = metaHtml + '<div class="empty-state"><div class="icon">🔍</div><div>条件に合う商品が見つかりませんでした</div></div>';
     return;
   }
 
-  const clientHtml = `<div style="background:#e8f4fd;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#1a4f8a;">
-    <b>検索条件:</b> ${clientSummary.gender} ${clientSummary.age}歳
-    ${clientSummary.has_family ? '・家族あり' : ''}
-    ${clientSummary.budget_monthly ? `・予算 ${clientSummary.budget_monthly.toLocaleString()}円/月` : ''}
-  </div>`;
+  const cardsHtml = results.map((p, i) => {
+    const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
+    const scoreClass = p.score >= 70 ? 'high' : p.score >= 45 ? 'mid' : 'low';
+    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1) + '.';
+    const tags = (p.category || []).map(c => `<span class="tag">${c}</span>`).join('');
+    const newBadge = p.is_new ? '<span class="tag new">NEW</span>' : '';
+    const urlHtml = p.detail_url ? `<a href="${p.detail_url}" target="_blank" style="font-size:11px;color:var(--primary-light);">公式ページ ↗</a>` : '';
+    const prem = premiumHtml(p.monthly_premium, client.age, client.gender);
+
+    return `<div class="product-card ${rankClass}">
+      <div class="product-header">
+        <div style="flex:1;min-width:0;">
+          <div class="product-name">
+            ${rankIcon} ${p.plan_name}
+            ${newBadge}
+            ${tsiHtml(p.tsi_status, p.tsi)}
+          </div>
+          <div class="product-insurer">${p.company_name} [${p.plan_id}]</div>
+        </div>
+        <div class="score-badge ${scoreClass}">${p.score}<span style="font-size:11px">pt</span></div>
+      </div>
+      <div class="coverage-tags">${tags}</div>
+      ${prem ? `<div class="premium-info">${prem}</div>` : ''}
+      <div style="margin-top:10px;display:flex;gap:12px;align-items:center;">
+        ${urlHtml}
+        <span style="font-size:11px;color:var(--text-muted);">
+          適合: age=${p.breakdown.age_fit.toFixed(2)} need=${p.breakdown.need_match.toFixed(2)} budget=${p.breakdown.budget_fit.toFixed(2)} tsi=${p.breakdown.tsi_quality.toFixed(2)}
+        </span>
+      </div>
+    </div>`;
+  }).join('');
+
+  area.innerHTML = metaHtml + cardsHtml;
+}
+
+function renderApiResults(results, clientSummary) {
+  const area = document.getElementById('resultsArea');
+  if (!results || !results.length) {
+    area.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><div>条件に合う商品が見つかりませんでした</div></div>';
+    return;
+  }
+  const metaHtml = `
+    <div class="results-meta">
+      <h2>検索結果 (API)</h2>
+      <div class="count-info">
+        <span class="count-badge">${results.length}件</span>
+      </div>
+    </div>
+    <div style="background:#e8f4fd;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#1a4f8a;">
+      <b>検索条件:</b> ${clientSummary.gender} ${clientSummary.age}歳
+    </div>`;
 
   const cardsHtml = results.map((p, i) => {
     const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : '';
-    const scoreClass = p.score >= 60 ? 'high' : p.score >= 40 ? 'mid' : '';
+    const scoreClass = p.score >= 60 ? 'high' : p.score >= 40 ? 'mid' : 'low';
+    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i+1) + '.';
     const coverageTags = (p.coverage_types || []).map(c => `<span class="tag">${c}</span>`).join('');
     const reasonsHtml = (p.reasons || []).map(r => `<li>${r}</li>`).join('');
     const warnsHtml = (p.warnings || []).map(w => `<li>${w}</li>`).join('');
-    const rankIcon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}.`;
-
     return `<div class="product-card ${rankClass}">
       <div class="product-header">
         <div>
           <div class="product-name">${rankIcon} ${p.product_name}</div>
           <div class="product-insurer">${p.insurer_name}</div>
         </div>
-        <div class="score-badge ${scoreClass}">
-          ${p.score}<span style="font-size:11px">pt</span>
-        </div>
+        <div class="score-badge ${scoreClass}">${p.score}<span style="font-size:11px">pt</span></div>
       </div>
       <div class="coverage-tags">${coverageTags}</div>
       ${reasonsHtml ? `<ul class="reason-list">${reasonsHtml}</ul>` : ''}
       ${warnsHtml ? `<ul class="reason-list warn-list">${warnsHtml}</ul>` : ''}
-      <div style="margin-top:10px;font-size:11px;color:var(--text-muted);display:flex;gap:16px;">
-        <span>保障範囲: ${p.sum_assured_range?.min ?? '-'} 〜 ${p.sum_assured_range?.max ?? '-'} ${p.sum_assured_range?.unit ?? ''}</span>
-        <span>告知: ${p.health_requirements}</span>
-        ${p.waiting_period_months ? `<span>待機: ${p.waiting_period_months}ヶ月</span>` : ''}
-      </div>
     </div>`;
   }).join('');
-
-  area.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-      <h2 style="font-size:15px;color:var(--primary);">検索結果</h2>
-      <span class="count-badge">${results.length}件</span>
-    </div>
-    ${clientHtml}
-    ${cardsHtml}`;
+  area.innerHTML = metaHtml + cardsHtml;
 }
 
 function showError(msg) {
   document.getElementById('resultsArea').innerHTML =
     `<div style="background:#ffebee;border:1px solid #ef9a9a;border-radius:8px;padding:16px;color:#c62828;">
-      <b>エラー:</b> ${msg}<br>
-      <small style="margin-top:6px;display:block;">APIサーバーが起動しているか確認してください。または「ローカルモード」に切り替えてください。</small>
+      <b>エラー:</b> ${msg}
+      <small style="margin-top:6px;display:block;">APIサーバー確認 or ローカルモードへ切替</small>
     </div>`;
 }
 
-// 初期化: APIヘルスチェック
+// ────────────────────────────────────────────────────────────
+// 初期化
+// ────────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
+  loadMaster();
   checkApiHealth();
 });
 </script>
