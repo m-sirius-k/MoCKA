@@ -1,4 +1,4 @@
-﻿
+
 let allMessages = [];
 let currentRole = 'all';
 let currentQuery = '';
@@ -119,16 +119,35 @@ function renderGroupedSessions(messages) {
     const title   = data.title || '(no title)';
     const count   = data.messages.length;
     const date    = data.date;
-    const preview = data.messages.find(m => m.role === 'user')?.content.slice(0, 80) || '';
+    let preview = '';
+    let hitUrl  = null;
+    if (currentQuery) {
+      const q = currentQuery.toLowerCase();
+      const hitMsg = data.messages.find(m => m.content.toLowerCase().includes(q));
+      if (hitMsg) {
+        const idx2  = hitMsg.content.toLowerCase().indexOf(q);
+        const start = Math.max(0, idx2 - 30);
+        const snip  = hitMsg.content.slice(start, idx2 + currentQuery.length + 60);
+        preview = (start > 0 ? '…' : '') + snip + (start + snip.length < hitMsg.content.length ? '…' : '');
+        hitUrl  = hitMsg.url || null;
+      }
+    } else {
+      preview = data.messages.find(m => m.role === 'user')?.content.slice(0, 80) || '';
+      hitUrl  = data.messages[0]?.url || null;
+    }
+    const openBtn = hitUrl
+      ? '<button class="sess-open-btn" data-url="' + escHtml(hitUrl) + '" data-text="' + escHtml((currentQuery || preview).slice(0, 60)) + '">🔗 Open</button>'
+      : '';
     return '<div class="sess-item" data-sid="' + escHtml(sid) + '">' +
       '<div class="sess-header">' +
         '<span class="sess-title">' + highlighted(title) + '</span>' +
         '<span class="sess-badge">' + count + '</span>' +
       '</div>' +
       '<div class="sess-meta">' + escHtml(date) + '</div>' +
-      '<div class="sess-preview">' + highlighted(preview) + (preview.length === 80 ? '…' : '') + '</div>' +
+      '<div class="sess-preview">' + highlighted(preview) + ((!currentQuery && preview.length === 80) ? '…' : '') + '</div>' +
       '<div class="sess-actions">' +
         '<span class="sess-drill">詳細 ›</span>' +
+        openBtn +
         '<button class="sess-insert-btn" data-sid="' + escHtml(sid) + '">⚡ 挿入</button>' +
       '</div>' +
     '</div>';
@@ -140,26 +159,30 @@ function renderGroupedSessions(messages) {
       e.stopPropagation();
       const item = drillBtn.closest('.sess-item');
       const sid = item.dataset.sid;
-      const filtered2 = applyFilters(allMessages);
-      const sessionMsgs = useDate
-        ? filtered2.filter(m => (m.timestamp || '').slice(0, 10) === sid)
-        : filtered2.filter(m => m.session_id === sid);
-      showDetailPopup(sessionMsgs);
+      const f2 = applyFilters(allMessages);
+      const msgs = useDate ? f2.filter(m => (m.timestamp||'').slice(0,10)===sid) : f2.filter(m => m.session_id===sid);
+      showDetailPopup(msgs);
     });
   });
 
-  // sess-item本体クリックは詳細ボタン/挿入ボタン以外を無効化（誤爆防止）
+  // Open chat（セッションカード）
+  list.querySelectorAll('.sess-open-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openChatTab(btn.dataset.url, btn.dataset.text);
+    });
+  });
+
+  // カード本体クリック → ポップアップ
   list.querySelectorAll('.sess-item').forEach(el => {
     el.addEventListener('click', (e) => {
       if (e.target.classList.contains('sess-insert-btn')) return;
       if (e.target.classList.contains('sess-drill')) return;
-      // タイトル等クリックでもポップアップ
+      if (e.target.classList.contains('sess-open-btn')) return;
       const sid = el.dataset.sid;
-      const filtered2 = applyFilters(allMessages);
-      const sessionMsgs = useDate
-        ? filtered2.filter(m => (m.timestamp || '').slice(0, 10) === sid)
-        : filtered2.filter(m => m.session_id === sid);
-      showDetailPopup(sessionMsgs);
+      const f2 = applyFilters(allMessages);
+      const msgs = useDate ? f2.filter(m => (m.timestamp||'').slice(0,10)===sid) : f2.filter(m => m.session_id===sid);
+      showDetailPopup(msgs);
     });
   });
 
@@ -174,103 +197,66 @@ function renderGroupedSessions(messages) {
   });
 }
 
+// ── チャットタブを開いてハイライト ──────────────────────────────────────────────
+function openChatTab(url, hlText) {
+  if (!url) return;
+  chrome.tabs.create({ url, active: true }, (tab) => {
+    if (!hlText) return;
+    const listener = (tabId, info) => {
+      if (tabId !== tab.id || info.status !== 'complete') return;
+      chrome.tabs.onUpdated.removeListener(listener);
+      setTimeout(() => {
+        chrome.tabs.sendMessage(tab.id, { type: 'ORCHESTRA_HIGHLIGHT', text: hlText });
+      }, 1500);
+    };
+    chrome.tabs.onUpdated.addListener(listener);
+  });
+}
+
 // ── 詳細モーダルポップアップ ──────────────────────────────────────────────────
 function showDetailPopup(messages) {
-  // 既存ポップアップ除去
   document.getElementById('orch-detail-popup')?.remove();
-
   const title = messages.find(m => m.role === 'user')?.content.slice(0, 40) || '(no title)';
-
-  const highlighted = (text) => currentQuery
+  const hl2 = (text) => currentQuery
     ? escHtml(text).replace(new RegExp(escRegex(currentQuery), 'gi'), s => '<mark style="background:rgba(232,255,71,0.3);color:#fff;border-radius:2px">' + s + '</mark>')
     : escHtml(text);
-
-  // メッセージHTML生成
   const itemsHtml = messages.map(m => {
-    const timeStr = new Date(m.timestamp).toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const preview = m.content.slice(0, 120);
-    const full    = m.content;
-    // chat URLリンク：url フィールドがあれば使用
+    const timeStr = new Date(m.timestamp).toLocaleString('en', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
     const chatUrl = m.url || null;
+    const hlText  = currentQuery || m.content.slice(0, 60);
     const linkHtml = chatUrl
-      ? `<button class="orch-chat-link" data-url="${escHtml(chatUrl)}" data-text="${escHtml(m.content.slice(0, 60))}" title="チャットを開いてハイライト">🔗 Open chat</button>`
+      ? '<button class="orch-chat-link" data-url="' + escHtml(chatUrl) + '" data-text="' + escHtml(hlText) + '">🔗 Open chat</button>'
       : '';
-    return `<div class="orch-msg-card" data-id="${escHtml(m.id)}">
-      <div class="orch-msg-head">
-        <span class="orch-role ${m.role}">${m.role === 'user' ? 'YOU' : 'AI'}</span>
-        <span class="orch-time">${escHtml(timeStr)}</span>
-        ${linkHtml}
-        <button class="orch-insert" data-id="${escHtml(m.id)}">⚡ 挿入</button>
-      </div>
-      <div class="orch-preview">${highlighted(preview)}${m.content.length > 120 ? '…' : ''}</div>
-      <div class="orch-full">${escHtml(full)}</div>
-    </div>`;
+    return '<div class="orch-msg-card" data-id="' + escHtml(m.id) + '">' +
+      '<div class="orch-msg-head">' +
+        '<span class="orch-role ' + m.role + '">' + (m.role==='user'?'YOU':'AI') + '</span>' +
+        '<span class="orch-time">' + escHtml(timeStr) + '</span>' +
+        linkHtml +
+        '<button class="orch-insert" data-id="' + escHtml(m.id) + '">⚡ 挿入</button>' +
+      '</div>' +
+      '<div class="orch-preview">' + hl2(m.content.slice(0,120)) + (m.content.length>120?'…':'') + '</div>' +
+      '<div class="orch-full">' + escHtml(m.content) + '</div>' +
+    '</div>';
   }).join('');
-
   const popup = document.createElement('div');
   popup.id = 'orch-detail-popup';
-  popup.innerHTML = `
-    <div id="orch-detail-inner">
-      <div id="orch-detail-topbar">
-        <span id="orch-detail-title">${escHtml(title)} <span class="orch-count">${messages.length}</span></span>
-        <button id="orch-detail-close">✕ 閉じる</button>
-      </div>
-      <div id="orch-detail-body">${itemsHtml}</div>
-    </div>`;
-
+  popup.innerHTML = '<div id="orch-detail-inner"><div id="orch-detail-topbar"><span id="orch-detail-title">' + escHtml(title) + ' <span class="orch-count">' + messages.length + '</span></span><button id="orch-detail-close">✕ 閉じる</button></div><div id="orch-detail-body">' + itemsHtml + '</div></div>';
   document.body.appendChild(popup);
-
-  // 閉じる
-  document.getElementById('orch-detail-close').addEventListener('click', () => {
-    popup.remove();
-  });
-  // 背景クリックで閉じる
-  popup.addEventListener('click', (e) => {
-    if (e.target === popup) popup.remove();
-  });
-
-  // Open chat ボタン → タブ開いてハイライト
+  document.getElementById('orch-detail-close').addEventListener('click', () => popup.remove());
+  popup.addEventListener('click', (e) => { if (e.target===popup) popup.remove(); });
   popup.querySelectorAll('.orch-chat-link').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const url      = btn.dataset.url;
-      const hlText   = btn.dataset.text || currentQuery || '';
-      if (!url) return;
-
-      chrome.tabs.create({ url, active: true }, (tab) => {
-        if (!hlText) return;
-        // ページロード完了を待ってからハイライト送信
-        // claude.aiはSPAなのでonUpdated+completeで待機
-        const listener = (tabId, info) => {
-          if (tabId !== tab.id || info.status !== 'complete') return;
-          chrome.tabs.onUpdated.removeListener(listener);
-          // SPAのレンダリング完了を少し待つ
-          setTimeout(() => {
-            chrome.tabs.sendMessage(tab.id, {
-              type: 'ORCHESTRA_HIGHLIGHT',
-              text: hlText,
-            });
-          }, 1500);
-        };
-        chrome.tabs.onUpdated.addListener(listener);
-      });
-    });
+    btn.addEventListener('click', (e) => { e.stopPropagation(); openChatTab(btn.dataset.url, btn.dataset.text); });
   });
-
-  // カード展開（クリックでfull表示）
   popup.querySelectorAll('.orch-msg-card').forEach(card => {
     card.addEventListener('click', (e) => {
       if (e.target.classList.contains('orch-insert') || e.target.classList.contains('orch-chat-link')) return;
       card.classList.toggle('expanded');
     });
   });
-
-  // 挿入ボタン
   popup.querySelectorAll('.orch-insert').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      const id  = btn.dataset.id;
-      const msg = messages.find(m => m.id === id);
+      const msg = messages.find(m => m.id===btn.dataset.id);
       if (msg) insertMessageContext(title, msg);
     });
   });
