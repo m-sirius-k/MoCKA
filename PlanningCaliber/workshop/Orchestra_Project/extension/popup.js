@@ -134,13 +134,32 @@ function renderGroupedSessions(messages) {
     '</div>';
   }).join('');
 
-  // ドリルダウン（date/session どちらのグループキーかをフラグに保存）
+  // 詳細ボタン → モーダルポップアップ
+  list.querySelectorAll('.sess-drill').forEach(drillBtn => {
+    drillBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const item = drillBtn.closest('.sess-item');
+      const sid = item.dataset.sid;
+      const filtered2 = applyFilters(allMessages);
+      const sessionMsgs = useDate
+        ? filtered2.filter(m => (m.timestamp || '').slice(0, 10) === sid)
+        : filtered2.filter(m => m.session_id === sid);
+      showDetailPopup(sessionMsgs);
+    });
+  });
+
+  // sess-item本体クリックは詳細ボタン/挿入ボタン以外を無効化（誤爆防止）
   list.querySelectorAll('.sess-item').forEach(el => {
     el.addEventListener('click', (e) => {
       if (e.target.classList.contains('sess-insert-btn')) return;
-      _drillSessionId = el.dataset.sid;
-      _drillIsDate    = useDate;
-      renderMessages();
+      if (e.target.classList.contains('sess-drill')) return;
+      // タイトル等クリックでもポップアップ
+      const sid = el.dataset.sid;
+      const filtered2 = applyFilters(allMessages);
+      const sessionMsgs = useDate
+        ? filtered2.filter(m => (m.timestamp || '').slice(0, 10) === sid)
+        : filtered2.filter(m => m.session_id === sid);
+      showDetailPopup(sessionMsgs);
     });
   });
 
@@ -151,6 +170,108 @@ function renderGroupedSessions(messages) {
       const sid  = btn.dataset.sid;
       const data = map.get(sid);
       if (data) insertSessionContext(sid, data.title, data.messages);
+    });
+  });
+}
+
+// ── 詳細モーダルポップアップ ──────────────────────────────────────────────────
+function showDetailPopup(messages) {
+  // 既存ポップアップ除去
+  document.getElementById('orch-detail-popup')?.remove();
+
+  const title = messages.find(m => m.role === 'user')?.content.slice(0, 40) || '(no title)';
+
+  const highlighted = (text) => currentQuery
+    ? escHtml(text).replace(new RegExp(escRegex(currentQuery), 'gi'), s => '<mark style="background:rgba(232,255,71,0.3);color:#fff;border-radius:2px">' + s + '</mark>')
+    : escHtml(text);
+
+  // メッセージHTML生成
+  const itemsHtml = messages.map(m => {
+    const timeStr = new Date(m.timestamp).toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const preview = m.content.slice(0, 120);
+    const full    = m.content;
+    // chat URLリンク：url フィールドがあれば使用
+    const chatUrl = m.url || null;
+    const linkHtml = chatUrl
+      ? `<button class="orch-chat-link" data-url="${escHtml(chatUrl)}" data-text="${escHtml(m.content.slice(0, 60))}" title="チャットを開いてハイライト">🔗 Open chat</button>`
+      : '';
+    return `<div class="orch-msg-card" data-id="${escHtml(m.id)}">
+      <div class="orch-msg-head">
+        <span class="orch-role ${m.role}">${m.role === 'user' ? 'YOU' : 'AI'}</span>
+        <span class="orch-time">${escHtml(timeStr)}</span>
+        ${linkHtml}
+        <button class="orch-insert" data-id="${escHtml(m.id)}">⚡ 挿入</button>
+      </div>
+      <div class="orch-preview">${highlighted(preview)}${m.content.length > 120 ? '…' : ''}</div>
+      <div class="orch-full">${escHtml(full)}</div>
+    </div>`;
+  }).join('');
+
+  const popup = document.createElement('div');
+  popup.id = 'orch-detail-popup';
+  popup.innerHTML = `
+    <div id="orch-detail-inner">
+      <div id="orch-detail-topbar">
+        <span id="orch-detail-title">${escHtml(title)} <span class="orch-count">${messages.length}</span></span>
+        <button id="orch-detail-close">✕ 閉じる</button>
+      </div>
+      <div id="orch-detail-body">${itemsHtml}</div>
+    </div>`;
+
+  document.body.appendChild(popup);
+
+  // 閉じる
+  document.getElementById('orch-detail-close').addEventListener('click', () => {
+    popup.remove();
+  });
+  // 背景クリックで閉じる
+  popup.addEventListener('click', (e) => {
+    if (e.target === popup) popup.remove();
+  });
+
+  // Open chat ボタン → タブ開いてハイライト
+  popup.querySelectorAll('.orch-chat-link').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const url      = btn.dataset.url;
+      const hlText   = btn.dataset.text || currentQuery || '';
+      if (!url) return;
+
+      chrome.tabs.create({ url, active: true }, (tab) => {
+        if (!hlText) return;
+        // ページロード完了を待ってからハイライト送信
+        // claude.aiはSPAなのでonUpdated+completeで待機
+        const listener = (tabId, info) => {
+          if (tabId !== tab.id || info.status !== 'complete') return;
+          chrome.tabs.onUpdated.removeListener(listener);
+          // SPAのレンダリング完了を少し待つ
+          setTimeout(() => {
+            chrome.tabs.sendMessage(tab.id, {
+              type: 'ORCHESTRA_HIGHLIGHT',
+              text: hlText,
+            });
+          }, 1500);
+        };
+        chrome.tabs.onUpdated.addListener(listener);
+      });
+    });
+  });
+
+  // カード展開（クリックでfull表示）
+  popup.querySelectorAll('.orch-msg-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      if (e.target.classList.contains('orch-insert') || e.target.classList.contains('orch-chat-link')) return;
+      card.classList.toggle('expanded');
+    });
+  });
+
+  // 挿入ボタン
+  popup.querySelectorAll('.orch-insert').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const id  = btn.dataset.id;
+      const msg = messages.find(m => m.id === id);
+      if (msg) insertMessageContext(title, msg);
     });
   });
 }
@@ -334,10 +455,12 @@ document.getElementById('select-period').addEventListener('change', (e) => {
   renderMessages();
 });
 
-// 2秒ごとに自動更新
+// 2秒ごとに自動更新（詳細ポップアップ表示中はスキップ）
 setInterval(() => {
   loadStats();
-  loadMessages(currentQuery);
+  if (!document.getElementById('orch-detail-popup')) {
+    loadMessages(currentQuery);
+  }
 }, 2000);
 
 // Tab navigation

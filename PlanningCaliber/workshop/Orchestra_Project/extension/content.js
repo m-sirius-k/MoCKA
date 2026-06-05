@@ -261,7 +261,49 @@ function makeDraggable(el, storageKey, defaultRight, defaultBottom) {
       injectSynthesisPrompt(msg.prompt);
       sendResponse({ ok: true });
     }
+
+    if (msg.type === 'ORCHESTRA_HIGHLIGHT') {
+      orchestraHighlight(msg.text);
+      sendResponse({ ok: true });
+    }
   });
+
+  // ── テキスト検索＆ハイライト ────────────────────────────────────────────────
+  function orchestraHighlight(searchText) {
+    if (!searchText) return;
+
+    // CSS Custom Highlight API クリア
+    if (CSS.highlights) CSS.highlights.delete('orch-hl');
+
+    // window.find() でスクロール＆選択状態にする
+    const found = window.find(searchText, false, false, true, false, false, false);
+    if (!found) return;
+
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return;
+    const range = sel.getRangeAt(0).cloneRange();
+    const anchor = range.commonAncestorContainer.parentElement;
+    if (anchor) anchor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // CSS Custom Highlight API でDOM非破壊ハイライト
+    if (CSS.highlights) {
+      const hl = new Highlight(range);
+      CSS.highlights.set('orch-hl', hl);
+      sel.removeAllRanges();
+
+      if (!document.getElementById('orch-hl-style')) {
+        const style = document.createElement('style');
+        style.id = 'orch-hl-style';
+        style.textContent = '::highlight(orch-hl){background:rgba(232,255,71,0.5);color:inherit;}';
+        document.head.appendChild(style);
+      }
+
+      setTimeout(() => {
+        if (CSS.highlights) CSS.highlights.delete('orch-hl');
+      }, 4000);
+    }
+    // ハイライトAPIなくてもスクロールは完了済み
+  }
 
   // ── Status panel ────────────────────────────────────────────────────────────
 
