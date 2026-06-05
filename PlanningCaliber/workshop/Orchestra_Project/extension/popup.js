@@ -115,10 +115,41 @@ function renderGroupedSessions(messages) {
     ? escHtml(text).replace(new RegExp(escRegex(currentQuery), 'gi'), s => '<span class="highlight">' + s + '</span>')
     : escHtml(text);
 
-  list.innerHTML = sessions.map(([sid, data]) => {
-    const title   = data.title || '(no title)';
-    const count   = data.messages.length;
-    const date    = data.date;
+  // 週グループラベルを生成するヘルパー
+  function getWeekLabel(dateStr) {
+    if (!dateStr) return 'Earlier';
+    const now   = new Date();
+    const d     = new Date(dateStr);
+    const diff  = Math.floor((now - d) / 86400000);
+    if (diff < 1)  return 'Today';
+    if (diff < 2)  return 'Yesterday';
+    if (diff < 7)  return 'This week';
+    if (diff < 14) return 'Last week';
+    const weeks = Math.floor(diff / 7);
+    return weeks + ' weeks ago';
+  }
+
+  // セッションに週ラベルを付けてグループ化
+  let lastLabel = null;
+  const rows = [];
+  sessions.forEach(([sid, data]) => {
+    const label = getWeekLabel(data.date);
+    if (label !== lastLabel) {
+      rows.push({ type: 'label', label });
+      lastLabel = label;
+    }
+    rows.push({ type: 'sess', sid, data });
+  });
+
+  list.innerHTML = rows.map(row => {
+    if (row.type === 'label') {
+      const isRecent = row.label === 'Today' || row.label === 'Yesterday' || row.label === 'This week';
+      return '<div class="week-divider' + (isRecent ? ' recent' : '') + '">' + escHtml(row.label) + '</div>';
+    }
+    const { sid, data } = row;
+    const title = data.title || '(no title)';
+    const count = data.messages.length;
+    const date  = data.date;
     let preview = '';
     let hitUrl  = null;
     if (currentQuery) {
@@ -136,19 +167,21 @@ function renderGroupedSessions(messages) {
       hitUrl  = data.messages[0]?.url || null;
     }
     const openBtn = hitUrl
-      ? '<button class="sess-open-btn" data-url="' + escHtml(hitUrl) + '" data-text="' + escHtml((currentQuery || preview).slice(0, 60)) + '">🔗 Open</button>'
+      ? '<button class="sess-open-btn" data-url="' + escHtml(hitUrl) + '" data-text="' + escHtml((currentQuery || preview).slice(0, 60)) + '">Open</button>'
       : '';
     return '<div class="sess-item" data-sid="' + escHtml(sid) + '">' +
-      '<div class="sess-header">' +
+      '<div class="sess-top">' +
         '<span class="sess-title">' + highlighted(title) + '</span>' +
-        '<span class="sess-badge">' + count + '</span>' +
+        '<span class="sess-right">' +
+          '<span class="sess-date">' + escHtml(date) + '</span>' +
+          '<span class="sess-count">' + count + '</span>' +
+        '</span>' +
       '</div>' +
-      '<div class="sess-meta">' + escHtml(date) + '</div>' +
-      '<div class="sess-preview">' + highlighted(preview) + ((!currentQuery && preview.length === 80) ? '…' : '') + '</div>' +
+      '<div class="sess-snippet">' + highlighted(preview) + ((!currentQuery && preview.length === 80) ? '…' : '') + '</div>' +
       '<div class="sess-actions">' +
         '<span class="sess-drill">詳細 ›</span>' +
         openBtn +
-        '<button class="sess-insert-btn" data-sid="' + escHtml(sid) + '">⚡ 挿入</button>' +
+        '<button class="sess-insert-btn" data-sid="' + escHtml(sid) + '">挿入</button>' +
       '</div>' +
     '</div>';
   }).join('');

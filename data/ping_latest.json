@@ -15,6 +15,11 @@
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "top_todos": [
     {
+      "id": "TODO_LB001",
+      "title": "MoCKA Caliber検索品質改善 — キーワード一致羅列から意味ある検索結果へ",
+      "priority": "最高"
+    },
+    {
       "id": "TODO_154",
       "title": "全文書き換え時の関連ファイル整合性確認を必須化",
       "priority": "最高"
@@ -25,20 +30,15 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_164",
-      "title": "PHI OS共通基盤確立 → Relay v2再設計 ロードマップ実行",
+      "id": "TODO_221",
+      "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
       "priority": "最高"
     },
     {
       "id": "TODO_195",
       "title": "PHI OS v1.0 実機テスト — chrome://extensions読み込み・Restore Packet注入確認",
       "priority": "最高"
-    },
-    {
-      "id": "TODO_221",
-      "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
-      "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-05T08:14:57.535204"
+  "generated_at": "2026-06-05T10:32:53.362508"
 }
