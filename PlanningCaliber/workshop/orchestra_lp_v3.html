@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Orchestra — すべてのAIを、指揮する。</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css');
+:root{
+  --ink:#0d0d0d;--paper:#fafaf7;--accent:#1a1a2e;--gold:#c9a84c;--goldf:#f0d98a;
+  --muted:#6b6b6b;--border:#e0ddd6;--card:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;}
+
+/* ── HERO ── */
+.o-hero{padding:90px 24px 72px;text-align:center;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,168,76,.13) 0%,transparent 70%);}
+.o-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,.35);padding:5px 14px;border-radius:100px;margin-bottom:24px;}
+.o-hero h1{font-family:'DM Serif Display',serif;font-size:clamp(36px,7vw,72px);font-weight:400;line-height:1.08;letter-spacing:-.02em;color:var(--accent);max-width:800px;margin:0 auto 18px;}
+.o-hero h1 em{font-style:italic;color:var(--gold);}
+.o-hero-sub{font-size:clamp(15px,2vw,19px);font-weight:300;color:var(--muted);max-width:520px;margin:0 auto 44px;}
+.o-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:8px;text-decoration:none;}
+.btn-s{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--accent);font-size:15px;font-weight:500;padding:13px 26px;border-radius:8px;border:1.5px solid var(--border);text-decoration:none;}
+.o-badges{margin-top:36px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.o-badge{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.o-badge::before{content:'✓';color:var(--gold);font-weight:700;}
+
+/* ── SECTION BASE ── */
+.o-sec{max-width:1060px;margin:0 auto;padding:72px 24px;}
+.o-dark{background:var(--accent);}
+.o-gray{background:#f5f5f0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.sec-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.sec-label.lt{color:var(--goldf);}
+.sec-h{font-family:'DM Serif Display',serif;font-size:clamp(26px,4vw,42px);font-weight:400;line-height:1.15;color:var(--accent);margin-bottom:14px;}
+.sec-h.lt{color:#fff;}
+.sec-p{font-size:16px;font-weight:300;color:var(--muted);max-width:540px;line-height:1.8;}
+.sec-p.lt{color:rgba(255,255,255,.65);}
+
+/* ── POPUP SECTION ── */
+.popup-wrap{display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start;margin-top:48px;}
+@media(max-width:700px){.popup-wrap{grid-template-columns:1fr;}}
+.popup-mock{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);}
+.pm-bar{background:var(--accent);padding:12px 14px;display:flex;align-items:center;gap:8px;}
+.pm-logo{width:22px;height:22px;background:var(--gold);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.pm-title{font-size:13px;font-weight:500;color:#fff;}
+.pm-ver{font-size:10px;color:rgba(255,255,255,.4);margin-left:auto;}
+.pm-body{padding:12px;}
+.pm-stats{display:flex;gap:8px;margin-bottom:10px;}
+.pm-stat{flex:1;background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center;}
+.pm-stat .n{font-size:22px;font-weight:600;color:var(--accent);}
+.pm-stat .l{font-size:10px;color:var(--muted);}
+.pm-search{background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.pm-list{display:flex;flex-direction:column;gap:4px;}
+.pm-item{background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:7px 9px;}
+.pm-item.active{border-color:var(--gold);background:rgba(201,168,76,.06);}
+.pi-t{font-size:11px;font-weight:500;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pi-d{font-size:10px;color:var(--muted);}
+.pi-link{font-size:10px;color:var(--gold);display:flex;align-items:center;gap:3px;margin-top:3px;}
+.popup-feats{display:flex;flex-direction:column;gap:14px;}
+.pf-item{display:flex;align-items:flex-start;gap:14px;background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.pf-icon{font-size:24px;flex-shrink:0;}
+.pf-item strong{font-size:14px;font-weight:600;display:block;margin-bottom:4px;color:var(--accent);}
+.pf-item span{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* ── RIGHT CLICK SECTION ── */
+.rclick-outer{margin-top:48px;}
+.rclick-scene{position:relative;background:#f0ede6;border-radius:14px;padding:24px;display:flex;align-items:flex-start;min-height:230px;}
+.step-pin{position:absolute;background:var(--gold);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;}
+.sp1{top:12px;left:12px;}
+.sp2{top:12px;right:12px;}
+.rclick-text{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;font-size:13px;line-height:1.9;position:relative;}
+.sel-text{background:rgba(201,168,76,.28);border-bottom:2px solid var(--gold);padding:0 3px;font-weight:500;}
+.ctx-menu{position:absolute;left:50%;top:64px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.14);width:210px;z-index:5;}
+.cm-row{padding:9px 14px;font-size:12px;display:flex;align-items:center;gap:8px;color:var(--muted);border-bottom:1px solid var(--border);}
+.cm-row.feat{background:var(--accent);color:#fff;}
+.cm-row.feat .cmi{color:var(--goldf);}
+.cm-row:last-child{border-bottom:none;}
+.cmi{font-size:14px;flex-shrink:0;}
+.cm-new{margin-left:auto;background:var(--gold);color:#fff;font-size:9px;padding:2px 7px;border-radius:100px;font-weight:600;}
+
+/* ── PARALLEL SECTION ── */
+.parallel-wrap{margin-top:48px;}
+.pd-query{text-align:center;margin-bottom:16px;}
+.pd-q-box{display:inline-block;background:var(--accent);color:var(--goldf);padding:12px 24px;border-radius:24px;font-size:14px;font-weight:500;border:1px solid var(--gold);}
+.send-label{text-align:center;font-size:12px;color:var(--gold);letter-spacing:.08em;margin:10px 0;}
+.ai-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px;}
+@media(max-width:600px){.ai-row{grid-template-columns:repeat(3,1fr);}}
+.ai-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center;position:relative;}
+.ai-card .alive{width:8px;height:8px;background:#28c840;border-radius:50%;position:absolute;top:8px;right:8px;}
+.ai-card .an{font-size:12px;font-weight:600;color:#fff;margin-bottom:6px;}
+.ai-card .ab{background:rgba(255,255,255,.08);border-radius:6px;padding:6px;font-size:10px;color:rgba(255,255,255,.6);line-height:1.5;text-align:left;}
+.merge-arrow{text-align:center;font-size:13px;color:var(--gold);margin:6px 0 12px;letter-spacing:.06em;}
+.result-box{background:rgba(201,168,76,.1);border:2px solid var(--gold);border-radius:12px;padding:18px 20px;text-align:center;}
+.rb-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.rb-txt{font-size:14px;font-weight:500;color:#fff;line-height:1.7;}
+
+/* ── INNOVATION BANNER ── */
+.inno-banner{background:#0d0d1a;border:2px solid var(--gold);border-radius:14px;padding:28px 24px;text-align:center;margin-top:32px;}
+.inno-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--goldf);text-transform:uppercase;margin-bottom:8px;}
+.inno-h{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:8px;}
+.inno-p{font-size:13px;color:rgba(255,255,255,.62);line-height:1.85;max-width:520px;margin:0 auto;}
+.inno-p strong{color:var(--goldf);}
+
+/* ── CHAT JUMP SECTION ── */
+.save-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.sv-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;display:flex;align-items:center;gap:14px;}
+.sv-item.hl{border-color:var(--gold);background:rgba(201,168,76,.05);}
+.sv-thumb{width:38px;height:38px;border-radius:8px;background:var(--paper);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sv-info{flex:1;min-width:0;}
+.sv-t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.sv-m{font-size:11px;color:var(--muted);}
+.goto-btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
+
+.jump-banner{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.jb-line{flex:1;height:1px;background:var(--border);}
+.jb-badge{background:var(--gold);color:#fff;font-size:11px;font-weight:600;padding:5px 16px;border-radius:100px;white-space:nowrap;}
+
+/* ブラウザモック */
+.browser{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.b-bar{background:#f0ede6;border-bottom:1px solid var(--border);padding:9px 14px;display:flex;align-items:center;gap:8px;}
+.b-dots{display:flex;gap:5px;}
+.b-dots span{width:10px;height:10px;border-radius:50%;}
+.bd-r{background:#ff5f57;}.bd-y{background:#febc2e;}.bd-g{background:#28c840;}
+.b-url{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:11px;color:var(--muted);flex:1;display:flex;align-items:center;gap:6px;}
+.b-ext{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);color:var(--gold);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap;}
+.scroll-bar-wrap{padding:8px 16px 2px;background:var(--paper);}
+.scroll-track{height:5px;background:var(--border);border-radius:3px;position:relative;}
+.scroll-thumb{position:absolute;top:0;left:62%;width:18%;height:100%;background:var(--gold);border-radius:3px;}
+.scroll-note{font-size:10px;color:var(--gold);text-align:right;padding:2px 0 6px;display:flex;align-items:center;justify-content:flex-end;gap:4px;}
+
+/* チャットレイアウト */
+.chat-layout{display:flex;min-height:360px;}
+.c-sidebar{width:175px;flex-shrink:0;background:#f5f5f0;border-right:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;gap:4px;}
+@media(max-width:640px){.c-sidebar{display:none;}}
+.cs-new{display:flex;align-items:center;gap:6px;padding:7px 9px;font-size:11px;color:var(--muted);border:1px dashed var(--border);border-radius:6px;margin-bottom:4px;}
+.cs-item{padding:7px 9px;border-radius:6px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cs-item.active{background:rgba(201,168,76,.12);color:var(--gold);font-weight:600;border:1px solid rgba(201,168,76,.35);}
+.c-body{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;}
+.msg{display:flex;gap:10px;align-items:flex-start;}
+.msg.u{flex-direction:row-reverse;}
+.av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.av-ai{background:var(--accent);color:var(--goldf);}
+.av-u{background:rgba(201,168,76,.2);color:var(--gold);}
+.bbl{border-radius:10px;padding:9px 13px;font-size:12px;line-height:1.7;max-width:86%;}
+.bbl.ai{background:#f5f5f0;border:1px solid var(--border);}
+.bbl.u{background:var(--accent);color:#fff;}
+.bbl.faded{opacity:.32;}
+.msg-hl{position:relative;}
+.hl-bar{position:absolute;left:-5px;top:0;bottom:0;width:3px;background:var(--gold);border-radius:2px;}
+.bbl.hl{border-color:var(--gold)!important;background:rgba(201,168,76,.08)!important;}
+.hl-pin{display:inline-flex;align-items:center;gap:5px;background:var(--gold);color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;margin-bottom:5px;}
+
+/* ── AI CHIPS ── */
+.ai-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:40px;}
+.ai-chip{background:var(--card);border:1.5px solid var(--border);border-radius:100px;padding:9px 22px;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:7px;}
+.chip-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+
+/* ── HOW IT WORKS ── */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px;}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr;}}
+.step{padding-top:16px;position:relative;}
+.step-n{font-family:'DM Serif Display',serif;font-size:64px;color:rgba(201,168,76,.14);line-height:1;position:absolute;top:-8px;left:-6px;}
+.step-c{position:relative;z-index:1;}
+.step-c h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;}
+.step-c p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
+
+/* ── PRICING ── */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+@media(max-width:760px){.plan-grid{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto;}}
+.plan{border-radius:14px;padding:32px 26px;}
+.plan-free{background:var(--card);border:1.5px solid var(--border);}
+.plan-pro{background:var(--accent);color:#fff;border:1.5px solid transparent;}
+.plan-one{background:#0d0d1a;color:#fff;border:2px solid var(--gold);position:relative;overflow:hidden;}
+.plan-ribbon{position:absolute;top:14px;right:-22px;background:var(--gold);color:#fff;font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;padding:4px 30px;transform:rotate(35deg);}
+.plan-name{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.plan-free .plan-name{color:var(--muted);}
+.plan-price{font-family:'DM Serif Display',serif;font-size:46px;font-weight:400;line-height:1;margin-bottom:4px;}
+.plan-free .plan-price{color:var(--accent);}
+.plan-period{font-size:12px;opacity:.6;margin-bottom:24px;}
+.plan-div{height:1px;background:rgba(255,255,255,.1);margin-bottom:20px;}
+.plan-free .plan-div{background:var(--border);}
+.plan ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.plan li{font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.plan-free li{color:var(--ink);}
+.chk{color:var(--gold);flex-shrink:0;}
+.dim{opacity:.38;}
+.plan-btn{display:block;text-align:center;padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;text-decoration:none;}
+.plan-free .plan-btn{background:var(--accent);color:#fff;}
+.plan-pro .plan-btn,.plan-one .plan-btn{background:rgba(201,168,76,.15);color:var(--goldf);border:1px solid rgba(201,168,76,.4);}
+.plan-note{font-size:12px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.7;}
+
+/* ── FAQ ── */
+.faq-list{margin-top:40px;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.faq-item{padding:22px 26px;border-bottom:1px solid var(--border);background:var(--card);}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-size:15px;font-weight:600;color:var(--accent);margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+.faq-q::before{content:'Q';font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);line-height:1;flex-shrink:0;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.85;padding-left:32px;}
+
+/* ── CTA FOOTER ── */
+.cta-footer{text-align:center;padding:90px 24px;background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(201,168,76,.1) 0%,transparent 70%);}
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<section class="o-hero">
+  <div class="o-eyebrow">mini MoCKA Series — Chrome Extension</div>
+  <h1>すべてのAIを、<em>指揮する</em>。</h1>
+  <p class="o-hero-sub">Orchestraは Claude の会話を記録・整理し、複数のAIに同時に問いを投げかける Chrome 拡張機能です。</p>
+  <div class="o-cta-row">
+    <a class="btn-p" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank" rel="noopener">
+      <i class="ti ti-brand-chrome" aria-hidden="true"></i> Chrome に追加（無料）
+    </a>
+    <a class="btn-s" href="#pricing">料金プランを見る</a>
+  </div>
+  <div class="o-badges">
+    <span class="o-badge">Chrome Web Store 公式掲載</span>
+    <span class="o-badge">Claude / ChatGPT / Gemini 対応</span>
+    <span class="o-badge">ライセンス即時自動配信</span>
+  </div>
+</section>
+
+<!-- ═══ POPUP — 自動保存 ═══ -->
+<section style="border-bottom:1px solid var(--border);">
+  <div class="o-sec">
+    <div class="sec-label">📁 自動保存 — ポップアップ画面</div>
+    <h2 class="sec-h">すべての会話が、ここに残る。</h2>
+    <p class="sec-p">拡張アイコンをクリックするだけ。今日の議論も、昨日のアイデアも、先週の発見も、すぐに呼び出せます。</p>
+    <div class="popup-wrap">
+      <div class="popup-mock">
+        <div class="pm-bar">
+          <div class="pm-logo">🎼</div>
+          <div class="pm-title">Orchestra</div>
+          <div class="pm-ver">v2.1</div>
+        </div>
+        <div class="pm-body">
+          <div class="pm-stats">
+            <div class="pm-stat"><div class="n">247</div><div class="l">保存済み</div></div>
+            <div class="pm-stat"><div class="n">38</div><div class="l">今月</div></div>
+          </div>
+          <div class="pm-search">🔍 キーワード検索...</div>
+          <div class="pm-list">
+            <div class="pm-item active">
+              <div class="pi-t">vasAI アーキテクチャ設計</div>
+              <div class="pi-d">今日 10:32</div>
+              <div class="pi-link">↗ このページへ飛ぶ</div>
+            </div>
+            <div class="pm-item">
+              <div class="pi-t">Orchestra LP コンテンツ作成</div>
+              <div class="pi-d">昨日 14:18</div>
+              <div class="pi-link">↗ このページへ飛ぶ</div>
+            </div>
+            <div class="pm-item">
+              <div class="pi-t">Stripe Webhook 設定方法</div>
+              <div class="pi-d">3日前 09:45</div>
+              <div class="pi-link">↗ このページへ飛ぶ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="popup-feats">
+        <div class="pf-item">
+          <div class="pf-icon">📅</div>
+          <div>
+            <strong>「先週やったよな？」で見つかる時系列管理</strong>
+            <span>すべての会話が日時つきで自動記録。日付・キーワードで絞り込んで、あいまいな記憶でも過去の知見に確実にアクセスできます。</span>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">↗️</div>
+          <div>
+            <strong>「このページへ飛ぶ」でその会話に直行</strong>
+            <span>保存した会話をタップするだけで、claude.ai の該当ページへワンクリックジャンプ。その位置まで自動スクロールして表示されます。</span>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">🔍</div>
+          <div>
+            <strong>会話の「中身」まで全文検索</strong>
+            <span>タイトルだけでなく、会話テキスト全体が検索対象。「あの時 Claude が言っていた内容」を数秒で掘り起こせます。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 右クリック協議 ═══ -->
+<section class="o-gray">
+  <div class="o-sec">
+    <div class="sec-label">🎼 Orchestra 最大の革新 — 並列協議</div>
+    <h2 class="sec-h">選んで、右クリック。それだけ。</h2>
+    <p class="sec-p">気になるテキストを反転させて右クリック → 「Orchestra で協議」。選んだ AI 全員に同時送信され、5人の専門家が一斉に答えます。</p>
+    <div class="rclick-outer">
+      <div class="rclick-scene">
+        <span class="step-pin sp1">① テキストを選択</span>
+        <span class="step-pin sp2">② 右クリック</span>
+        <div class="rclick-text">
+          Claude.ai でいつも通り会話中...<br><br>
+          「次のマーケティング戦略として、
+          <span class="sel-text">SNS広告よりも口コミ施策を優先すべきか？</span>
+          について各AIの意見を聞きたい」
+          <div class="ctx-menu">
+            <div class="cm-row feat">
+              <span class="cmi">🎼</span>
+              Orchestra で協議する
+              <span class="cm-new">AI×5</span>
+            </div>
+            <div class="cm-row"><span class="cmi">📋</span>コピー</div>
+            <div class="cm-row"><span class="cmi">🔍</span>Google で検索</div>
+            <div class="cm-row"><span class="cmi">🔗</span>リンクをコピー</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 並列送信 図解 ═══ -->
+<section class="o-dark" style="border-top:1px solid rgba(255,255,255,.06);">
+  <div class="o-sec">
+    <div class="sec-label lt">⚡ 送信後 — 全 AI が同時に動き出す</div>
+    <h2 class="sec-h lt">5人の専門家に、同時に相談できる。</h2>
+    <p class="sec-p lt">あなたが選んだ AI 全員が、それぞれの視点で自動回答。あなたは待つだけでいい。</p>
+    <div class="parallel-wrap">
+      <div class="pd-query">
+        <div class="pd-q-box">「SNS広告より口コミ施策を優先すべきか？」</div>
+      </div>
+      <div class="send-label">↓ 全 AI に同時送信</div>
+      <div class="ai-row">
+        <div class="ai-card"><div class="alive"></div><div class="an">Claude</div><div class="ab">論理的に整理すると、まずLTVを...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">ChatGPT</div><div class="ab">業界別データでは口コミROIが3.2倍...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">Gemini</div><div class="ab">Google調査ではSNS CPCが上昇中...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">Copilot</div><div class="ab">Microsoft Ads のデータによると...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">Perplexity</div><div class="ab">最新リサーチ（2026 Q1）では...</div></div>
+      </div>
+      <div class="merge-arrow">↓ 全員の回答を比較・統合</div>
+      <div class="result-box">
+        <div class="rb-label">✦ あなたが得られるもの</div>
+        <div class="rb-txt">5つの異なる視点・データ・根拠が一度に揃う。<br>一人の AI では気づけなかった答えが見えてくる。</div>
+      </div>
+      <div class="inno-banner">
+        <div class="inno-tag">Orchestra が革新的な理由</div>
+        <div class="inno-h">AI から「自動で回答を得る」時代へ</div>
+        <div class="inno-p">これまでの AI 活用は「1人に1つ質問する」が常識でした。Orchestra は<strong>複数の AI に同時に問いを投げ、自動で全員の回答を収集</strong>します。あなたは選ぶだけ。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ チャット保存＋ページジャンプ ═══ -->
+<section style="border-bottom:1px solid var(--border);">
+  <div class="o-sec">
+    <div class="sec-label">📍 保存した会話 — ページに飛んでその位置へ</div>
+    <h2 class="sec-h">選んだ瞬間、その会話のその場所へ。</h2>
+    <p class="sec-p">「ページへ」を押すと claude.ai が開き、保存した会話の位置まで自動スクロール＆ハイライト表示。長いチャットでも迷子になりません。</p>
+
+    <div class="save-list" style="margin-top:32px;">
+      <div class="sv-item hl">
+        <div class="sv-thumb">✨</div>
+        <div class="sv-info">
+          <div class="sv-t">マーケティング戦略 SNS vs 口コミ比較</div>
+          <div class="sv-m">先週木曜 · 14分の会話 · Claude</div>
+        </div>
+        <a class="goto-btn" href="#">↗ ページへ</a>
+      </div>
+      <div class="sv-item">
+        <div class="sv-thumb">💻</div>
+        <div class="sv-info">
+          <div class="sv-t">Stripe Webhook Python実装</div>
+          <div class="sv-m">3日前 · 32分の会話 · Claude</div>
+        </div>
+        <a class="goto-btn" href="#">↗ ページへ</a>
+      </div>
+    </div>
+
+    <div class="jump-banner">
+      <div class="jb-line"></div>
+      <div class="jb-badge">↓ claude.ai が開き、この会話の場所へ自動ジャンプ</div>
+      <div class="jb-line"></div>
+    </div>
+
+    <div class="browser">
+      <div class="b-bar">
+        <div class="b-dots"><span class="bd-r"></span><span class="bd-y"></span><span class="bd-g"></span></div>
+        <div class="b-url">🔒 claude.ai/chat/a3f9b2c1... <span class="b-ext">Orchestra で保存済み</span></div>
+      </div>
+      <div class="scroll-bar-wrap">
+        <div class="scroll-track"><div class="scroll-thumb"></div></div>
+        <div class="scroll-note">📍 保存した位置までスクロール済み</div>
+      </div>
+      <div class="chat-layout">
+        <div class="c-sidebar">
+          <div class="cs-new">＋ 新しいチャット</div>
+          <div class="cs-item active">SNS vs 口コミ比較</div>
+          <div class="cs-item">Stripe実装メモ</div>
+          <div class="cs-item">AIES論文推敲</div>
+          <div class="cs-item">vasAI設計</div>
+        </div>
+        <div class="c-body">
+          <div class="msg u">
+            <div class="av av-u">き</div>
+            <div class="bbl u faded">SNSと口コミ、どちらを優先すべきか教えて</div>
+          </div>
+          <div class="msg">
+            <div class="av av-ai">C</div>
+            <div class="bbl ai faded">マーケティング予算の観点から整理します...</div>
+          </div>
+          <div class="msg u">
+            <div class="av av-u">き</div>
+            <div class="bbl u faded">具体的なROIの比較は？</div>
+          </div>
+          <div class="msg msg-hl">
+            <div class="hl-bar"></div>
+            <div class="av av-ai">C</div>
+            <div style="flex:1;">
+              <div class="hl-pin">📍 Orchestra が保存した会話</div>
+              <div class="bbl ai hl">口コミ施策のROIは平均<strong>3.2倍</strong>高い傾向があります。特に初期段階では、SNS広告のCPCが高騰しているため、まず既存顧客の満足度を高めて自然拡散を狙う戦略が有効です。</div>
+            </div>
+          </div>
+          <div class="msg u">
+            <div class="av av-u">き</div>
+            <div class="bbl u">なるほど、具体的な施策を3つ挙げて</div>
+          </div>
+          <div class="msg">
+            <div class="av av-ai">C</div>
+            <div class="bbl ai">① 紹介プログラムの設計　② レビュー収集の自動化　③ コミュニティ形成...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AI ラインナップ ═══ -->
+<section class="o-gray">
+  <div class="o-sec" style="text-align:center;">
+    <div class="sec-label">対応 AI ラインナップ</div>
+    <h2 class="sec-h">5つの AI を、一つの拡張で動かす。</h2>
+    <div class="ai-chips">
+      <div class="ai-chip"><span class="chip-dot"></span>Claude</div>
+      <div class="ai-chip"><span class="chip-dot"></span>ChatGPT</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Gemini</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Copilot</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Perplexity</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Genspark</div>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:var(--muted);">各 AI のアカウントは別途ご用意ください。対応 AI は順次拡張予定。</p>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="o-dark">
+  <div class="o-sec">
+    <div class="sec-label lt">How it works</div>
+    <h2 class="sec-h lt">AIとの対話を「資産」に変える、4ステップ。</h2>
+    <p class="sec-p lt">セットアップは数分。あとはいつも通り Claude を使うだけで、会話が自動で蓄積されていきます。</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-c">
+          <h3>Chrome に追加</h3>
+          <p>Chrome Web Store から Orchestra をインストール。拡張アイコンがブラウザに表示されます。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-c">
+          <h3>Claude で会話開始</h3>
+          <p>いつも通り Claude.ai を開いて会話するだけで、自動で記録が始まります。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-c">
+          <h3>右クリック → 協議</h3>
+          <p>気になるテキストを選択して右クリック。複数 AI が並列で回答します。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-c">
+          <h3>CSV / JSON で持ち出し</h3>
+          <p>蓄積した履歴は CSV / JSON でエクスポートし、外部ツールと連携できます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section style="border-bottom:1px solid var(--border);" id="pricing">
+  <div class="o-sec">
+    <div class="sec-label">Pricing</div>
+    <h2 class="sec-h">シンプルな 3 プラン。</h2>
+    <p class="sec-p">まず無料で試して、必要になったときにアップグレード。すべてのプランでインストールは同じ拡張機能です。</p>
+    <div class="plan-grid">
+      <div class="plan plan-free">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">¥0</div>
+        <div class="plan-period">永久無料</div>
+        <div class="plan-div"></div>
+        <ul>
+          <li><span class="chk">✓</span>会話の自動保存（無制限）</li>
+          <li><span class="chk">✓</span>全文検索・フィルター</li>
+          <li><span class="chk">✓</span>CSV / JSON エクスポート</li>
+          <li><span class="chk dim">—</span><span class="dim">多AI 並列協議</span></li>
+          <li><span class="chk dim">—</span><span class="dim">AI 別タイマー表示</span></li>
+        </ul>
+        <a class="plan-btn" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank" rel="noopener">今すぐ無料で追加</a>
+      </div>
+      <div class="plan plan-pro">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$5</div>
+        <div class="plan-period">/ 月（税別）</div>
+        <div class="plan-div"></div>
+        <ul>
+          <li><span class="chk">✓</span>Free のすべての機能</li>
+          <li><span class="chk">✓</span>多AI 並列協議（5 AI 同時）</li>
+          <li><span class="chk">✓</span>AI 別カウントダウンタイマー</li>
+          <li><span class="chk">✓</span>協議プロンプトカスタマイズ</li>
+          <li><span class="chk">✓</span>メールサポート</li>
+        </ul>
+        <a class="plan-btn" href="#cta">Pro にアップグレード</a>
+      </div>
+      <div class="plan plan-one">
+        <div class="plan-ribbon">LAUNCH EDITION</div>
+        <div class="plan-name">One</div>
+        <div class="plan-price">$8</div>
+        <div class="plan-period">/ 月（通常 $10）</div>
+        <div class="plan-div"></div>
+        <ul>
+          <li><span class="chk">✓</span>Pro のすべての機能</li>
+          <li><span class="chk">✓</span>mini MoCKA 全製品アクセス</li>
+          <li><span class="chk">✓</span>Relay（会話自動引き継ぎ）</li>
+          <li><span class="chk">✓</span>PHI-OS（セッション記憶復元）</li>
+          <li><span class="chk">✓</span>優先サポート</li>
+        </ul>
+        <a class="plan-btn" href="#cta">One にアップグレード</a>
+      </div>
+    </div>
+    <p class="plan-note">One の $8 は先着 500 名限定のローンチ価格です。枠が埋まり次第、$10/月 に移行します。<br>価格変更後も、既存ユーザーには変更前の価格が継続適用されます。</p>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section>
+  <div class="o-sec">
+    <div class="sec-label">FAQ</div>
+    <h2 class="sec-h">よくある質問。</h2>
+    <p class="sec-p">導入前によくいただく質問をまとめました。その他のご質問はメールでお問い合わせください。</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">無料プランと Pro の違いは何ですか？</div>
+        <div class="faq-a">無料プランでは会話の保存・検索・エクスポートが使えます。Pro ではこれに加えて、多AI 並列協議と AI 別タイマー機能、協議プロンプトのカスタマイズ、メールサポートが利用できます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">ライセンスキーはいつ届きますか？</div>
+        <div class="faq-a">Stripe での購入完了後、自動システムが即時に noreply@nsjp.org からライセンスキーを送信します。通常 1 分以内に届きます。迷惑メールフォルダもご確認ください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">会話データはどこに保存されますか？</div>
+        <div class="faq-a">すべてのデータはお使いの Chrome ブラウザのローカルストレージに保存されます。外部サーバーへの送信は一切ありません。バックアップが必要な場合は CSV / JSON エクスポートをご利用ください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">One プランの「$8」はいつまでですか？</div>
+        <div class="faq-a">先着 500 名限定の特別価格です。枠がなくなり次第、通常価格の $10/月 に移行します。価格変更後も、既存ユーザーには変更前の価格が継続適用されます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">チーム利用や複数ライセンスは可能ですか？</div>
+        <div class="faq-a">現時点では 1 ライセンス = 1 ブラウザを想定しています。チーム向けのボリュームライセンスや管理機能については、今後のアップデートでの提供を検討しています。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FOOTER ═══ -->
+<section class="cta-footer" id="cta">
+  <div class="o-sec" style="text-align:center;max-width:720px;">
+    <div class="sec-label">Get started</div>
+    <h2 class="sec-h">AIとの対話を、今日から「資産」に。</h2>
+    <p class="sec-p" style="margin:0 auto 28px;">保存する。検索する。検証する。再利用する。<br>Orchestra は、あなたと AI の対話を「一度きりの会話」から「積み上がる知識資産」へ変えます。</p>
+    <div class="o-cta-row" style="justify-content:center;">
+      <a class="btn-p" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank" rel="noopener">
+        <i class="ti ti-brand-chrome" aria-hidden="true"></i> 無料で始める
+      </a>
+      <a class="btn-s" href="#pricing">プランを比較する</a>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
