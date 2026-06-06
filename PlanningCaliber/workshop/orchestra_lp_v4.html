@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title id="doc-title">Orchestra — すべてのAIを、指揮する。</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css');
+:root{
+  --ink:#0d0d0d;--paper:#fafaf7;--accent:#1a1a2e;--gold:#c9a84c;--goldf:#f0d98a;
+  --muted:#6b6b6b;--border:#e0ddd6;--card:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Outfit',sans-serif;color:var(--ink);background:var(--paper);line-height:1.6;}
+
+/* ── HERO ── */
+.o-hero{padding:90px 24px 72px;text-align:center;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(201,168,76,.13) 0%,transparent 70%);}
+.o-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,.35);padding:5px 14px;border-radius:100px;margin-bottom:24px;}
+.o-hero h1{font-family:'DM Serif Display',serif;font-size:clamp(36px,7vw,72px);font-weight:400;line-height:1.08;letter-spacing:-.02em;color:var(--accent);max-width:800px;margin:0 auto 18px;}
+.o-hero h1 em{font-style:italic;color:var(--gold);}
+.o-hero-sub{font-size:clamp(15px,2vw,19px);font-weight:300;color:var(--muted);max-width:520px;margin:0 auto 44px;}
+.o-cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-p{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:14px 28px;border-radius:8px;text-decoration:none;}
+.btn-s{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--accent);font-size:15px;font-weight:500;padding:13px 26px;border-radius:8px;border:1.5px solid var(--border);text-decoration:none;}
+.o-badges{margin-top:36px;display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.o-badge{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.o-badge::before{content:'✓';color:var(--gold);font-weight:700;}
+
+/* ── SECTION BASE ── */
+.o-sec{max-width:1060px;margin:0 auto;padding:72px 24px;}
+.o-dark{background:var(--accent);}
+.o-gray{background:#f5f5f0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.sec-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;}
+.sec-label.lt{color:var(--goldf);}
+.sec-h{font-family:'DM Serif Display',serif;font-size:clamp(26px,4vw,42px);font-weight:400;line-height:1.15;color:var(--accent);margin-bottom:14px;}
+.sec-h.lt{color:#fff;}
+.sec-p{font-size:16px;font-weight:300;color:var(--muted);max-width:540px;line-height:1.8;}
+.sec-p.lt{color:rgba(255,255,255,.65);}
+
+/* ── POPUP SECTION ── */
+.popup-wrap{display:grid;grid-template-columns:240px 1fr;gap:32px;align-items:start;margin-top:48px;}
+@media(max-width:700px){.popup-wrap{grid-template-columns:1fr;}}
+.popup-mock{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.08);}
+.pm-bar{background:var(--accent);padding:12px 14px;display:flex;align-items:center;gap:8px;}
+.pm-logo{width:22px;height:22px;background:var(--gold);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;}
+.pm-title{font-size:13px;font-weight:500;color:#fff;}
+.pm-ver{font-size:10px;color:rgba(255,255,255,.4);margin-left:auto;}
+.pm-body{padding:12px;}
+.pm-stats{display:flex;gap:8px;margin-bottom:10px;}
+.pm-stat{flex:1;background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:8px;text-align:center;}
+.pm-stat .n{font-size:22px;font-weight:600;color:var(--accent);}
+.pm-stat .l{font-size:10px;color:var(--muted);}
+.pm-search{background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.pm-list{display:flex;flex-direction:column;gap:4px;}
+.pm-item{background:var(--paper);border:1px solid var(--border);border-radius:6px;padding:7px 9px;}
+.pm-item.active{border-color:var(--gold);background:rgba(201,168,76,.06);}
+.pi-t{font-size:11px;font-weight:500;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pi-d{font-size:10px;color:var(--muted);}
+.pi-link{font-size:10px;color:var(--gold);display:flex;align-items:center;gap:3px;margin-top:3px;}
+.popup-feats{display:flex;flex-direction:column;gap:14px;}
+.pf-item{display:flex;align-items:flex-start;gap:14px;background:var(--paper);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.pf-icon{font-size:24px;flex-shrink:0;}
+.pf-item strong{font-size:14px;font-weight:600;display:block;margin-bottom:4px;color:var(--accent);}
+.pf-item span{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* ── RIGHT CLICK SECTION ── */
+.rclick-outer{margin-top:48px;}
+.rclick-scene{position:relative;background:#f0ede6;border-radius:14px;padding:24px;display:flex;align-items:flex-start;min-height:230px;}
+.step-pin{position:absolute;background:var(--gold);color:#fff;font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;}
+.sp1{top:12px;left:12px;}
+.sp2{top:12px;right:12px;}
+.rclick-text{flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px;font-size:13px;line-height:1.9;position:relative;}
+.sel-text{background:rgba(201,168,76,.28);border-bottom:2px solid var(--gold);padding:0 3px;font-weight:500;}
+.ctx-menu{position:absolute;left:50%;top:64px;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:0 6px 28px rgba(0,0,0,.14);width:210px;z-index:5;}
+.cm-row{padding:9px 14px;font-size:12px;display:flex;align-items:center;gap:8px;color:var(--muted);border-bottom:1px solid var(--border);}
+.cm-row.feat{background:var(--accent);color:#fff;}
+.cm-row.feat .cmi{color:var(--goldf);}
+.cm-row:last-child{border-bottom:none;}
+.cmi{font-size:14px;flex-shrink:0;}
+.cm-new{margin-left:auto;background:var(--gold);color:#fff;font-size:9px;padding:2px 7px;border-radius:100px;font-weight:600;}
+
+/* ── PARALLEL SECTION ── */
+.parallel-wrap{margin-top:48px;}
+.pd-query{text-align:center;margin-bottom:16px;}
+.pd-q-box{display:inline-block;background:var(--accent);color:var(--goldf);padding:12px 24px;border-radius:24px;font-size:14px;font-weight:500;border:1px solid var(--gold);}
+.send-label{text-align:center;font-size:12px;color:var(--gold);letter-spacing:.08em;margin:10px 0;}
+.ai-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px;}
+@media(max-width:600px){.ai-row{grid-template-columns:repeat(3,1fr);}}
+.ai-card{background:#1a1a2e;border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:12px 8px;text-align:center;position:relative;}
+.ai-card .alive{width:8px;height:8px;background:#28c840;border-radius:50%;position:absolute;top:8px;right:8px;}
+.ai-card .an{font-size:12px;font-weight:600;color:#fff;margin-bottom:6px;}
+.ai-card .ab{background:rgba(255,255,255,.08);border-radius:6px;padding:6px;font-size:10px;color:rgba(255,255,255,.75);line-height:1.5;text-align:left;}
+.merge-arrow{text-align:center;font-size:13px;color:var(--gold);margin:6px 0 12px;letter-spacing:.06em;}
+.result-box{background:rgba(201,168,76,.1);border:2px solid var(--gold);border-radius:12px;padding:18px 20px;text-align:center;}
+.rb-label{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px;}
+.rb-txt{font-size:14px;font-weight:500;color:#fff;line-height:1.7;}
+
+/* ── INNOVATION BANNER ── */
+.inno-banner{background:#0d0d1a;border:2px solid var(--gold);border-radius:14px;padding:28px 24px;text-align:center;margin-top:32px;}
+.inno-tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.14em;color:var(--goldf);text-transform:uppercase;margin-bottom:8px;}
+.inno-h{font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:8px;}
+.inno-p{font-size:13px;color:rgba(255,255,255,.62);line-height:1.85;max-width:520px;margin:0 auto;}
+.inno-p strong{color:var(--goldf);}
+
+/* ── CHAT JUMP SECTION ── */
+.save-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.sv-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:13px 16px;display:flex;align-items:center;gap:14px;}
+.sv-item.hl{border-color:var(--gold);background:rgba(201,168,76,.05);}
+.sv-thumb{width:38px;height:38px;border-radius:8px;background:var(--paper);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sv-info{flex:1;min-width:0;}
+.sv-t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;}
+.sv-m{font-size:11px;color:var(--muted);}
+.goto-btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
+
+.jump-banner{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.jb-line{flex:1;height:1px;background:var(--border);}
+.jb-badge{background:var(--gold);color:#fff;font-size:11px;font-weight:600;padding:5px 16px;border-radius:100px;white-space:nowrap;}
+
+/* ブラウザモック */
+.browser{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.07);}
+.b-bar{background:#f0ede6;border-bottom:1px solid var(--border);padding:9px 14px;display:flex;align-items:center;gap:8px;}
+.b-dots{display:flex;gap:5px;}
+.b-dots span{width:10px;height:10px;border-radius:50%;}
+.bd-r{background:#ff5f57;}.bd-y{background:#febc2e;}.bd-g{background:#28c840;}
+.b-url{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:4px 12px;font-size:11px;color:var(--muted);flex:1;display:flex;align-items:center;gap:6px;}
+.b-ext{background:rgba(201,168,76,.15);border:1px solid rgba(201,168,76,.4);color:var(--gold);font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;white-space:nowrap;}
+.scroll-bar-wrap{padding:8px 16px 2px;background:var(--paper);}
+.scroll-track{height:5px;background:var(--border);border-radius:3px;position:relative;}
+.scroll-thumb{position:absolute;top:0;left:62%;width:18%;height:100%;background:var(--gold);border-radius:3px;}
+.scroll-note{font-size:10px;color:var(--gold);text-align:right;padding:2px 0 6px;display:flex;align-items:center;justify-content:flex-end;gap:4px;}
+
+/* チャットレイアウト */
+.chat-layout{display:flex;min-height:360px;}
+.c-sidebar{width:175px;flex-shrink:0;background:#f5f5f0;border-right:1px solid var(--border);padding:10px 8px;display:flex;flex-direction:column;gap:4px;}
+@media(max-width:640px){.c-sidebar{display:none;}}
+.cs-new{display:flex;align-items:center;gap:6px;padding:7px 9px;font-size:11px;color:var(--muted);border:1px dashed var(--border);border-radius:6px;margin-bottom:4px;}
+.cs-item{padding:7px 9px;border-radius:6px;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cs-item.active{background:rgba(201,168,76,.12);color:var(--gold);font-weight:600;border:1px solid rgba(201,168,76,.35);}
+.c-body{flex:1;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;}
+.msg{display:flex;gap:10px;align-items:flex-start;}
+.msg.u{flex-direction:row-reverse;}
+.av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;}
+.av-ai{background:var(--accent);color:var(--goldf);}
+.av-u{background:rgba(201,168,76,.2);color:var(--gold);}
+.bbl{border-radius:10px;padding:9px 13px;font-size:12px;line-height:1.7;max-width:86%;}
+.bbl.ai{background:#f5f5f0;border:1px solid var(--border);}
+.bbl.u{background:var(--accent);color:#fff;}
+.bbl.faded{opacity:.32;}
+.msg-hl{position:relative;}
+.hl-bar{position:absolute;left:-5px;top:0;bottom:0;width:3px;background:var(--gold);border-radius:2px;}
+.bbl.hl{border-color:var(--gold)!important;background:rgba(201,168,76,.08)!important;}
+.hl-pin{display:inline-flex;align-items:center;gap:5px;background:var(--gold);color:#fff;font-size:10px;font-weight:600;padding:3px 10px;border-radius:100px;margin-bottom:5px;}
+
+/* ── AI CHIPS ── */
+.ai-chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:40px;}
+.ai-chip{background:var(--card);border:1.5px solid var(--border);border-radius:100px;padding:9px 22px;font-size:13px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:7px;}
+.chip-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
+
+/* ── HOW IT WORKS ── */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px;}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr;}}
+.step{padding-top:16px;position:relative;}
+.step-n{font-family:'DM Serif Display',serif;font-size:64px;color:rgba(201,168,76,.14);line-height:1;position:absolute;top:-8px;left:-6px;}
+.step-c{position:relative;z-index:1;}
+.step-c h3{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;}
+.step-c p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.7;}
+
+/* ── PRICING ── */
+.plan-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px;}
+@media(max-width:760px){.plan-grid{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto;}}
+.plan{border-radius:14px;padding:32px 26px;}
+.plan-free{background:var(--card);border:1.5px solid var(--border);}
+.plan-pro{background:var(--accent);color:#fff;border:1.5px solid transparent;}
+.plan-one{background:#0d0d1a;color:#fff;border:2px solid var(--gold);position:relative;overflow:hidden;}
+.plan-ribbon{position:absolute;top:14px;right:-22px;background:var(--gold);color:#fff;font-family:'DM Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.08em;padding:4px 30px;transform:rotate(35deg);}
+.plan-name{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;}
+.plan-free .plan-name{color:var(--muted);}
+.plan-price{font-family:'DM Serif Display',serif;font-size:46px;font-weight:400;line-height:1;margin-bottom:4px;}
+.plan-free .plan-price{color:var(--accent);}
+.plan-period{font-size:12px;opacity:.6;margin-bottom:24px;}
+.plan-div{height:1px;background:rgba(255,255,255,.1);margin-bottom:20px;}
+.plan-free .plan-div{background:var(--border);}
+.plan ul{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:28px;}
+.plan li{font-size:13px;display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.plan-free li{color:var(--ink);}
+.chk{color:var(--gold);flex-shrink:0;}
+.dim{opacity:.38;}
+.plan-btn{display:block;text-align:center;padding:12px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;border:none;text-decoration:none;}
+.plan-free .plan-btn{background:var(--accent);color:#fff;}
+.plan-pro .plan-btn,.plan-one .plan-btn{background:rgba(201,168,76,.15);color:var(--goldf);border:1px solid rgba(201,168,76,.4);}
+.plan-note{font-size:12px;color:var(--muted);text-align:center;margin-top:20px;line-height:1.7;}
+
+/* ── FAQ ── */
+.faq-list{margin-top:40px;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.faq-item{padding:22px 26px;border-bottom:1px solid var(--border);background:var(--card);}
+.faq-item:last-child{border-bottom:none;}
+.faq-q{font-size:15px;font-weight:600;color:var(--accent);margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;}
+.faq-q::before{content:'Q';font-family:'DM Serif Display',serif;font-size:20px;color:var(--gold);line-height:1;flex-shrink:0;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.85;padding-left:32px;}
+
+/* ── CTA FOOTER ── */
+.cta-footer{text-align:center;padding:90px 24px;background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(201,168,76,.1) 0%,transparent 70%);}
+</style>
+</head>
+<body>
+<!-- 言語バー -->
+<div id="lang-bar" style="position:fixed;top:14px;right:18px;z-index:9999;display:flex;gap:5px;background:rgba(10,10,20,.85);backdrop-filter:blur(10px);padding:5px 8px;border-radius:100px;border:1px solid rgba(201,168,76,.35);">
+  <button class="lb active" onclick="setLang('ja')" style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px;border:none;cursor:pointer;background:#c9a84c;color:#1a1a1a;">日</button>
+  <button class="lb" onclick="setLang('en')" style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.5);">EN</button>
+  <button class="lb" onclick="setLang('zh')" style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.5);">中</button>
+  <button class="lb" onclick="setLang('ko')" style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.5);">한</button>
+  <button class="lb" onclick="setLang('es')" style="font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:4px 10px;border-radius:100px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.5);">ES</button>
+</div>
+
+
+<!-- ═══ HERO ═══ -->
+<section class="o-hero">
+  <div class="o-eyebrow" id="t-eyebrow">mini MoCKA Series — Chrome Extension</div>
+  <h1 id="t-h1">すべてのAIを、<em>指揮する</em>。</h1>
+  <p class="o-hero-sub" id="t-hero-sub">Orchestraは Claude の会話を記録・整理し、複数のAIに同時に問いを投げかける Chrome 拡張機能です。</p>
+  <div class="o-cta-row">
+    <a class="btn-p" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank" rel="noopener" id="t-btn-free">
+      <i class="ti ti-brand-chrome" aria-hidden="true"></i> Chrome に追加（無料）
+    </a>
+    <a class="btn-s" href="#pricing" id="t-btn-plan">料金プランを見る</a>
+  </div>
+  <div class="o-badges">
+    <span class="o-badge" id="t-badge1">Chrome Web Store 公式掲載</span>
+    <span class="o-badge" id="t-badge2">Claude / ChatGPT / Gemini 対応</span>
+    <span class="o-badge" id="t-badge3">ライセンス即時自動配信</span>
+  </div>
+</section>
+
+<!-- ═══ POPUP — 自動保存 ═══ -->
+<section style="border-bottom:1px solid var(--border);">
+  <div class="o-sec">
+    <div class="sec-label" id="t-lbl-save">📁 自動保存 — ポップアップ画面</div>
+    <h2 class="sec-h" id="t-h-save">すべての会話が、ここに残る。</h2>
+    <p class="sec-p" id="t-p-save">拡張アイコンをクリックするだけ。今日の議論も、昨日のアイデアも、先週の発見も、すぐに呼び出せます。</p>
+    <div class="popup-wrap">
+      <div class="popup-mock">
+        <div class="pm-bar">
+          <div class="pm-logo">🎼</div>
+          <div class="pm-title">Orchestra</div>
+          <div class="pm-ver">v2.1</div>
+        </div>
+        <div class="pm-body">
+          <div class="pm-stats">
+            <div class="pm-stat"><div class="n">247</div><div class="l" id="t-saved">保存済み</div></div>
+            <div class="pm-stat"><div class="n">38</div><div class="l" id="t-thismonth">今月</div></div>
+          </div>
+          <div class="pm-search">🔍 <span id="t-search-ph">キーワード検索...</span></div>
+          <div class="pm-list">
+            <div class="pm-item active">
+              <div class="pi-t">vasAI アーキテクチャ設計</div>
+              <div class="pi-d" id="t-today">今日 10:32</div>
+              <div class="pi-link" id="t-flylink">↗ このページへ飛ぶ</div>
+            </div>
+            <div class="pm-item">
+              <div class="pi-t">Orchestra LP コンテンツ作成</div>
+              <div class="pi-d" id="t-yesterday">昨日 14:18</div>
+              <div class="pi-link" id="t-flylink2">↗ このページへ飛ぶ</div>
+            </div>
+            <div class="pm-item">
+              <div class="pi-t">Stripe Webhook 設定方法</div>
+              <div class="pi-d" id="t-3days">3日前 09:45</div>
+              <div class="pi-link">↗ このページへ飛ぶ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="popup-feats">
+        <div class="pf-item">
+          <div class="pf-icon">📅</div>
+          <div>
+            <strong id="t-pf1h">「先週やったよな？」で見つかる時系列管理</strong>
+            <span id="t-pf1p">すべての会話が日時つきで自動記録。日付・キーワードで絞り込んで、あいまいな記憶でも過去の知見に確実にアクセスできます。</span>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">↗️</div>
+          <div>
+            <strong id="t-pf2h">「このページへ飛ぶ」でその会話に直行</strong>
+            <span id="t-pf2p">保存した会話をタップするだけで、claude.ai の該当ページへワンクリックジャンプ。その位置まで自動スクロールして表示されます。</span>
+          </div>
+        </div>
+        <div class="pf-item">
+          <div class="pf-icon">🔍</div>
+          <div>
+            <strong id="t-pf3h">会話の「中身」まで全文検索</strong>
+            <span id="t-pf3p">タイトルだけでなく、会話テキスト全体が検索対象。「あの時 Claude が言っていた内容」を数秒で掘り起こせます。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 右クリック協議 ═══ -->
+<section class="o-gray">
+  <div class="o-sec">
+    <div class="sec-label" id="t-lbl-rclick">🎼 Orchestra 最大の革新 — 並列協議</div>
+    <h2 class="sec-h" id="t-h-rclick">選んで、右クリック。それだけ。</h2>
+    <p class="sec-p" id="t-p-rclick">気になるテキストを反転させて右クリック → 「Orchestra で協議」。選んだ AI 全員に同時送信され、5人の専門家が一斉に答えます。</p>
+    <div class="rclick-outer">
+      <div class="rclick-scene">
+        <span class="step-pin sp1" id="t-step1pin">① テキストを選択</span>
+        <span class="step-pin sp2" id="t-step2pin">② 右クリック</span>
+        <div class="rclick-text">
+          <span id="t-rclick-pre">Claude.ai でいつも通り会話中...<br><br>「次のマーケティング戦略として、</span>
+          <span class="sel-text" id="t-sel-text">SNS広告よりも口コミ施策を優先すべきか？</span>
+          <span id="t-rclick-post">について各AIの意見を聞きたい」</span>
+          <div class="ctx-menu">
+            <div class="cm-row feat">
+              <span class="cmi">🎼</span>
+              <span id="t-ctx-feat">Orchestra で協議する</span>
+              <span class="cm-new">AI×5</span>
+            </div>
+            <div class="cm-row"><span class="cmi">📋</span><span id="t-ctx-copy">コピー</span></div>
+            <div class="cm-row"><span class="cmi">🔍</span><span id="t-ctx-search">Google で検索</span></div>
+            <div class="cm-row"><span class="cmi">🔗</span><span id="t-ctx-link">リンクをコピー</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 並列送信 図解 ═══ -->
+<section class="o-dark" style="border-top:1px solid rgba(255,255,255,.06);">
+  <div class="o-sec">
+    <div class="sec-label lt" id="t-lbl-parallel">⚡ 送信後 — 全 AI が同時に動き出す</div>
+    <h2 class="sec-h lt" id="t-h-parallel">5人の専門家に、同時に相談できる。</h2>
+    <p class="sec-p lt" id="t-p-parallel">あなたが選んだ AI 全員が、それぞれの視点で自動回答。あなたは待つだけでいい。</p>
+    <div class="parallel-wrap">
+      <div class="pd-query">
+        <div class="pd-q-box" id="t-kwq">「SNS広告より口コミ施策を優先すべきか？」</div>
+      </div>
+      <div class="send-label" id="t-kw-lbl-send">↓ 全 AI に同時送信</div>
+      <div class="ai-row">
+        <div class="ai-card"><div class="alive"></div><div class="an">Claude</div><div class="ab" id="t-ab-claude">論理的に整理すると、まずLTVを...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">ChatGPT</div><div class="ab" id="t-ab-chatgpt">業界別データでは口コミROIが3.2倍...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">Gemini</div><div class="ab" id="t-ab-gemini">Google調査ではSNS CPCが上昇中...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">Copilot</div><div class="ab" id="t-ab-copilot">Microsoft Ads のデータによると...</div></div>
+        <div class="ai-card"><div class="alive"></div><div class="an">Perplexity</div><div class="ab" id="t-ab-perplexity">最新リサーチ（2026 Q1）では...</div></div>
+      </div>
+      <div class="merge-arrow" id="t-kw-lbl-merge">↓ 全員の回答を比較・統合</div>
+      <div class="result-box">
+        <div class="rb-label" id="t-kw-result-lbl">✦ あなたが得られるもの</div>
+        <div class="rb-txt" id="t-kw-result-txt">5つの異なる視点・データ・根拠が一度に揃う。<br>一人の AI では気づけなかった答えが見えてくる。</div>
+      </div>
+      <div class="inno-banner">
+        <div class="inno-tag" id="t-inno-tag">Orchestra が革新的な理由</div>
+        <div class="inno-h" id="t-inno-h">AI から「自動で回答を得る」時代へ</div>
+        <div class="inno-p" id="t-inno-p">これまでの AI 活用は「1人に1つ質問する」が常識でした。Orchestra は<strong>複数の AI に同時に問いを投げ、自動で全員の回答を収集</strong>します。あなたは選ぶだけ。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ チャット保存＋ページジャンプ ═══ -->
+<section style="border-bottom:1px solid var(--border);">
+  <div class="o-sec">
+    <div class="sec-label" id="t-lbl-jump">📍 保存した会話 — ページに飛んでその位置へ</div>
+    <h2 class="sec-h" id="t-h-jump">選んだ瞬間、その会話のその場所へ。</h2>
+    <p class="sec-p" id="t-p-jump">「ページへ」を押すと claude.ai が開き、保存した会話の位置まで自動スクロール＆ハイライト表示。長いチャットでも迷子になりません。</p>
+
+    <div class="save-list" style="margin-top:32px;">
+      <div class="sv-item hl">
+        <div class="sv-thumb">✨</div>
+        <div class="sv-info">
+          <div class="sv-t" id="t-sv1t">マーケティング戦略 SNS vs 口コミ比較</div>
+          <div class="sv-m" id="t-sv1m">先週木曜 · 14分の会話 · Claude</div>
+        </div>
+        <a class="goto-btn" href="#" id="t-goto-btn">↗ ページへ</a>
+      </div>
+      <div class="sv-item">
+        <div class="sv-thumb">💻</div>
+        <div class="sv-info">
+          <div class="sv-t" id="t-sv2t">Stripe Webhook Python実装</div>
+          <div class="sv-m" id="t-sv2m">3日前 · 32分の会話 · Claude</div>
+        </div>
+        <a class="goto-btn" href="#">↗ ページへ</a>
+      </div>
+    </div>
+
+    <div class="jump-banner">
+      <div class="jb-line"></div>
+      <div class="jb-badge" id="t-jump-banner">↓ claude.ai が開き、この会話の場所へ自動ジャンプ</div>
+      <div class="jb-line"></div>
+    </div>
+
+    <div class="browser">
+      <div class="b-bar">
+        <div class="b-dots"><span class="bd-r"></span><span class="bd-y"></span><span class="bd-g"></span></div>
+        <div class="b-url">🔒 claude.ai/chat/a3f9b2c1... <span class="b-ext" id="t-b-ext">Orchestra で保存済み</span></div>
+      </div>
+      <div class="scroll-bar-wrap">
+        <div class="scroll-track"><div class="scroll-thumb"></div></div>
+        <div class="scroll-note" id="t-scroll-note">📍 保存した位置までスクロール済み</div>
+      </div>
+      <div class="chat-layout">
+        <div class="c-sidebar">
+          <div class="cs-new" id="t-new-chat">＋ 新しいチャット</div>
+          <div class="cs-item active" id="t-cs1">SNS vs 口コミ比較</div>
+          <div class="cs-item" id="t-cs2">Stripe実装メモ</div>
+          <div class="cs-item" id="t-cs3">AIES論文推敲</div>
+          <div class="cs-item" id="t-cs4">vasAI設計</div>
+        </div>
+        <div class="c-body">
+          <div class="msg u">
+            <div class="av av-u">き</div>
+            <div class="bbl u faded" id="t-chat1">SNSと口コミ、どちらを優先すべきか教えて</div>
+          </div>
+          <div class="msg">
+            <div class="av av-ai">C</div>
+            <div class="bbl ai faded" id="t-chat2">マーケティング予算の観点から整理します...</div>
+          </div>
+          <div class="msg u">
+            <div class="av av-u">き</div>
+            <div class="bbl u faded" id="t-chat3">具体的なROIの比較は？</div>
+          </div>
+          <div class="msg msg-hl">
+            <div class="hl-bar"></div>
+            <div class="av av-ai">C</div>
+            <div style="flex:1;">
+              <div class="hl-pin" id="t-hl-pin">📍 Orchestra が保存した会話</div>
+              <div class="bbl ai hl" id="t-chat4">口コミ施策のROIは平均<strong>3.2倍</strong>高い傾向があります。特に初期段階では、SNS広告のCPCが高騰しているため、まず既存顧客の満足度を高めて自然拡散を狙う戦略が有効です。</div>
+            </div>
+          </div>
+          <div class="msg u">
+            <div class="av av-u">き</div>
+            <div class="bbl u" id="t-chat5">なるほど、具体的な施策を3つ挙げて</div>
+          </div>
+          <div class="msg">
+            <div class="av av-ai">C</div>
+            <div class="bbl ai" id="t-chat6">① 紹介プログラムの設計　② レビュー収集の自動化　③ コミュニティ形成...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ AI ラインナップ ═══ -->
+<section class="o-gray">
+  <div class="o-sec" style="text-align:center;">
+    <div class="sec-label" id="t-lbl-ai">対応 AI ラインナップ</div>
+    <h2 class="sec-h" id="t-h-ai">5つの AI を、一つの拡張で動かす。</h2>
+    <div class="ai-chips">
+      <div class="ai-chip"><span class="chip-dot"></span>Claude</div>
+      <div class="ai-chip"><span class="chip-dot"></span>ChatGPT</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Gemini</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Copilot</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Perplexity</div>
+      <div class="ai-chip"><span class="chip-dot"></span>Genspark</div>
+    </div>
+    <p style="margin-top:20px;font-size:13px;color:var(--muted);" id="t-p-ai">各 AI のアカウントは別途ご用意ください。対応 AI は順次拡張予定。</p>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="o-dark">
+  <div class="o-sec">
+    <div class="sec-label lt" id="t-lbl-how">How it works</div>
+    <h2 class="sec-h lt" id="t-h-how">AIとの対話を「資産」に変える、4ステップ。</h2>
+    <p class="sec-p lt" id="t-p-how">セットアップは数分。あとはいつも通り Claude を使うだけで、会話が自動で蓄積されていきます。</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">1</div>
+        <div class="step-c">
+          <h3 id="t-step1h">Chrome に追加</h3>
+          <p id="t-step1p">Chrome Web Store から Orchestra をインストール。拡張アイコンがブラウザに表示されます。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">2</div>
+        <div class="step-c">
+          <h3 id="t-step2h">Claude で会話開始</h3>
+          <p id="t-step2p">いつも通り Claude.ai を開いて会話するだけで、自動で記録が始まります。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">3</div>
+        <div class="step-c">
+          <h3 id="t-step3h">右クリック → 協議</h3>
+          <p id="t-step3p">気になるテキストを選択して右クリック。複数 AI が並列で回答します。</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-n">4</div>
+        <div class="step-c">
+          <h3 id="t-step4h">CSV / JSON で持ち出し</h3>
+          <p id="t-step4p">蓄積した履歴は CSV / JSON でエクスポートし、外部ツールと連携できます。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRICING ═══ -->
+<section style="border-bottom:1px solid var(--border);" id="pricing">
+  <div class="o-sec">
+    <div class="sec-label" id="t-lbl-price">Pricing</div>
+    <h2 class="sec-h" id="t-h-price">シンプルな 3 プラン。</h2>
+    <p class="sec-p" id="t-p-price">まず無料で試して、必要になったときにアップグレード。すべてのプランでインストールは同じ拡張機能です。</p>
+    <div class="plan-grid">
+      <div class="plan plan-free">
+        <div class="plan-name" id="t-name-free">Free</div>
+        <div class="plan-price" id="t-price-free">¥0</div>
+        <div class="plan-regular"> </div>
+        <div class="plan-period" id="t-period-free">永久無料</div>
+        <div class="plan-div"></div>
+        <ul>
+          <li><span class="chk">✓</span><span id="t-pf1">会話の自動保存（無制限）</span></li>
+          <li><span class="chk">✓</span><span id="t-pf2">全文検索・フィルター</span></li>
+          <li><span class="chk">✓</span><span id="t-pf3">CSV / JSON エクスポート</span></li>
+          <li><span class="chk dim">—</span><span class="dim" id="t-pf4">多AI 並列協議</span></li>
+          <li><span class="chk dim">—</span><span class="dim" id="t-pf5">AI 別タイマー表示</span></li>
+        </ul>
+        <a class="plan-btn" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank" rel="noopener" id="t-btn-free2">今すぐ無料で追加</a>
+      </div>
+      <div class="plan plan-pro">
+        <div class="plan-name" id="t-name-pro">Pro</div>
+        <div class="plan-price">$5</div>
+        <div class="plan-regular"> </div>
+        <div class="plan-period" id="t-period-pro">/ 月（税別）</div>
+        <div class="plan-div"></div>
+        <ul>
+          <li><span class="chk">✓</span><span id="t-pp1">Free のすべての機能</span></li>
+          <li><span class="chk">✓</span><span id="t-pp2">多AI 並列協議（5 AI 同時）</span></li>
+          <li><span class="chk">✓</span><span id="t-pp3">AI 別カウントダウンタイマー</span></li>
+          <li><span class="chk">✓</span><span id="t-pp4">協議プロンプトカスタマイズ</span></li>
+          <li><span class="chk">✓</span><span id="t-pp5">メールサポート</span></li>
+        </ul>
+        <a class="plan-btn" href="#cta" id="t-btn-pro">Pro にアップグレード</a>
+      </div>
+      <div class="plan plan-one">
+        <div class="plan-ribbon" id="t-ribbon">LAUNCH EDITION</div>
+        <div class="plan-name" id="t-name-one">One</div>
+        <div class="plan-price">$8</div>
+        <div class="plan-regular" id="t-regular-one">通常 $10 / 月</div>
+        <div class="plan-period" id="t-period-one">/ 月（先着500名限定価格）</div>
+        <div class="plan-div"></div>
+        <ul>
+          <li><span class="chk">✓</span><span id="t-po1">Pro のすべての機能</span></li>
+          <li><span class="chk">✓</span><span id="t-po2">mini MoCKA 全製品アクセス</span></li>
+          <li><span class="chk">✓</span><span id="t-po3">Relay（会話自動引き継ぎ）</span></li>
+          <li><span class="chk">✓</span><span id="t-po4">PHI-OS（セッション記憶復元）</span></li>
+          <li><span class="chk">✓</span><span id="t-po5">優先サポート</span></li>
+        </ul>
+        <a class="plan-btn" href="#cta" id="t-btn-one">One にアップグレード</a>
+      </div>
+    </div>
+    <p class="plan-note" id="t-plan-note">One の $8 は先着 500 名限定のローンチ価格です。枠が埋まり次第、通常価格の <strong>$10 / 月</strong> に移行します。価格変更後も、既存ユーザーには変更前の価格が継続適用されます。</p>
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section>
+  <div class="o-sec">
+    <div class="sec-label" id="t-lbl-faq">FAQ</div>
+    <h2 class="sec-h" id="t-h-faq">よくある質問。</h2>
+    <p class="sec-p" id="t-p-faq">導入前によくいただく質問をまとめました。その他のご質問はメールでお問い合わせください。</p>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" id="t-fq1">無料プランと Pro の違いは何ですか？</div>
+        <div class="faq-a" id="t-fa1">無料プランでは会話の保存・検索・エクスポートが使えます。Pro ではこれに加えて、多AI 並列協議と AI 別タイマー機能、協議プロンプトのカスタマイズ、メールサポートが利用できます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" id="t-fq2">ライセンスキーはいつ届きますか？</div>
+        <div class="faq-a" id="t-fa2">Stripe での購入完了後、自動システムが即時に noreply@nsjp.org からライセンスキーを送信します。通常 1 分以内に届きます。迷惑メールフォルダもご確認ください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" id="t-fq3">会話データはどこに保存されますか？</div>
+        <div class="faq-a" id="t-fa3">すべてのデータはお使いの Chrome ブラウザのローカルストレージに保存されます。外部サーバーへの送信は一切ありません。バックアップが必要な場合は CSV / JSON エクスポートをご利用ください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" id="t-fq4">One プランの「$8」はいつまでですか？</div>
+        <div class="faq-a" id="t-fa4">先着 500 名限定の特別価格です。枠がなくなり次第、通常価格の $10/月 に移行します。価格変更後も、既存ユーザーには変更前の価格が継続適用されます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" id="t-fq5">チーム利用や複数ライセンスは可能ですか？</div>
+        <div class="faq-a" id="t-fa5">現時点では 1 ライセンス = 1 ブラウザを想定しています。チーム向けのボリュームライセンスや管理機能については、今後のアップデートでの提供を検討しています。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CTA FOOTER ═══ -->
+<section class="cta-footer" id="cta">
+  <div class="o-sec" style="text-align:center;max-width:720px;">
+    <div class="sec-label" id="t-lbl-cta">Get started</div>
+    <h2 class="sec-h" id="t-h-cta">AIとの対話を、今日から「資産」に。</h2>
+    <p class="sec-p" style="margin:0 auto 28px;" id="t-p-cta">保存する。検索する。検証する。再利用する。<br>Orchestra は、あなたと AI の対話を「一度きりの会話」から「積み上がる知識資産」へ変えます。</p>
+    <div class="o-cta-row" style="justify-content:center;">
+      <a class="btn-p" href="https://chromewebstore.google.com/detail/aollpclhdmcaocbahnakiacfhafamllo" target="_blank" rel="noopener">
+        <i class="ti ti-brand-chrome" aria-hidden="true"></i> 無料で始める
+      </a>
+      <a class="btn-s" href="#pricing">プランを比較する</a>
+    </div>
+  </div>
+</section>
+
+<script>
+function kwTab(id,el){document.querySelectorAll('.kw-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.kw-pane').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('kw-'+id).classList.add('active');}
+const T={"ja": {"html_lang": "ja", "title": "Orchestra — すべてのAIを、指揮する。", "eyebrow": "mini MoCKA Series — Chrome Extension", "h1": "すべてのAIを、<em>指揮する</em>。", "hero_sub": "Orchestraは Claude の会話を記録・整理し、複数のAIに同時に問いを投げかける Chrome 拡張機能です。", "btn_free": "Chrome に追加（無料）", "btn_plan": "料金プランを見る", "badge1": "Chrome Web Store 公式掲載", "badge2": "Claude / ChatGPT / Gemini 対応", "badge3": "ライセンス即時自動配信", "lbl_save": "📁 自動保存 — ポップアップ画面", "h_save": "すべての会話が、ここに残る。", "p_save": "拡張アイコンをクリックするだけ。今日の議論も、昨日のアイデアも、先週の発見も、すぐに呼び出せます。", "saved": "保存済み", "thismonth": "今月", "search_ph": "キーワード検索...", "today": "今日 10:32", "yesterday": "昨日 14:18", "days3": "3日前 09:45", "flylink": "↗ このページへ飛ぶ", "pf1h": "「先週やったよな？」で見つかる時系列管理", "pf1p": "すべての会話が日時つきで自動記録。日付・キーワードで絞り込んで、あいまいな記憶でも過去の知見に確実にアクセスできます。", "pf2h": "「このページへ飛ぶ」でその会話に直行", "pf2p": "保存した会話をタップするだけで、claude.ai の該当ページへワンクリックジャンプ。その位置まで自動スクロールして表示されます。", "pf3h": "会話の「中身」まで全文検索", "pf3p": "タイトルだけでなく、会話テキスト全体が検索対象。「あの時 Claude が言っていた内容」を数秒で掘り起こせます。", "lbl_rclick": "🎼 Orchestra 最大の革新 — 並列協議", "h_rclick": "選んで、右クリック。それだけ。", "p_rclick": "気になるテキストを反転させて右クリック → 「Orchestra で協議」。選んだ AI 全員に同時送信され、5人の専門家が一斉に答えます。", "step1pin": "① テキストを選択", "step2pin": "② 右クリック", "sel_text": "SNS広告よりも口コミ施策を優先すべきか？", "ctx_feat": "Orchestra で協議する", "ctx_copy": "コピー", "ctx_search": "Google で検索", "ctx_link": "リンクをコピー", "rclick_pre": "Claude.ai でいつも通り会話中...<br><br>「次のマーケティング戦略として、", "rclick_post": "について各AIの意見を聞きたい」", "lbl_parallel": "⚡ 実際の動作 — 回答が並ぶ・送信先を設定する", "h_parallel": "5人の専門家に、同時に相談できる。", "p_parallel": "誰に送るかを自分で設定。各 AI がそれぞれの視点で自動回答。あなたは待つだけでいい。", "kwtab1": "送信 → 各AIの回答", "kwtab2": "⚙ 設定 — 送信先・速度", "kwq": "「SNS広告より口コミ施策を優先すべきか？」", "kw_lbl_send": "↓ チェックした5つのAIに同時送信", "kw_lbl_merge": "↓ 全員の回答を比較・統合", "kw_result_lbl": "✦ あなたが得られるもの", "kw_result_txt": "5つの異なる視点・データ・根拠が一度に揃う。<br>一人の AI では気づけなかった答えが見えてくる。", "inno_tag": "Orchestra が革新的な理由", "inno_h": "AI から「自動で回答を得る」時代へ", "inno_p": "これまでの AI 活用は「1人に1つ質問する」が常識でした。Orchestra は<strong>複数の AI に同時に問いを投げ、自動で全員の回答を収集</strong>します。あなたは選ぶだけ。", "ab_claude": "論理的には口コミのLTV貢献度が高い。<strong>まず顧客満足度の測定</strong>が先決です。", "ab_chatgpt": "業界別データでは口コミROIが<strong>平均3.2倍</strong>。Van Westendorpで価格感度測定を推奨。", "ab_gemini": "2025年Google調査：<strong>口コミ採用企業の67%</strong>が利益率向上。SNS CPC は上昇傾向。", "ab_copilot": "Microsoft Ads：<strong>紹介プログラムCPA</strong>はSNS広告の40%以下の事例多数。", "ab_perplexity": "HBR最新論文（2026 Q1）：<strong>コンジョイント分析</strong>が価値測定で最も精度が高いと結論。", "em_lib": "ライブラリ", "em_set": "⚙ 設定", "em_notice": "右クリック操作の前に、<strong>各AIサービスへ事前にログイン</strong>してください。<br>ChatGPT / Gemini / Perplexity / Copilot / Genspark", "em_dest_title": "◆ 送信先 AI（右クリックで共通適用）", "em_hint": "チェックしたAIが送り先になります。右クリック → Orchestra から操作できます。", "em_speed_title": "◎ 応答待機時間", "em_speed_lbl": "送信後、AIの読み込みを待つ時間", "sk_slow": "遅い 5.0s", "sk_fast": "0.8s 早い", "em_warn": "エラーが多い場合・海外AIは「遅い」側に設定してください", "sf1h": "送信先AIを自由に選ぶ", "sf1p": "使いたいAIだけにチェック。3つに絞ることも、全5つに送ることも自由。", "sf2h": "回線速度に合わせて調整", "sf2p": "回線が速い環境なら0.8〜1.0秒。不安定な環境や海外AIには3〜5秒に設定すると安定。", "sf3h": "Share モードで一時的に絞り込み", "sf3p": "右クリック時に Share モードを選ぶと、その場で送信先AIを一時変更できます。", "sf4h": "事前ログインが必要", "sf4p": "Orchestraは各AIのブラウザ画面に自動入力する仕組みです。使う前にログインが必要。", "lbl_jump": "📍 保存した会話 — ページに飛んでその位置へ", "h_jump": "選んだ瞬間、その会話のその場所へ。", "p_jump": "「ページへ」を押すと claude.ai が開き、保存した会話の位置まで自動スクロール＆ハイライト表示。長いチャットでも迷子になりません。", "sv1t": "マーケティング戦略 SNS vs 口コミ比較", "sv1m": "先週木曜 · 14分の会話 · Claude", "sv2t": "Stripe Webhook Python実装", "sv2m": "3日前 · 32分の会話 · Claude", "goto_btn": "↗ ページへ", "jump_banner": "↓ claude.ai が開き、この会話の場所へ自動ジャンプ", "b_ext": "Orchestra で保存済み", "scroll_note": "📍 保存した位置までスクロール済み", "new_chat": "＋ 新しいチャット", "cs1": "SNS vs 口コミ比較", "cs2": "Stripe実装メモ", "cs3": "AIES論文推敲", "cs4": "vasAI設計", "chat1": "SNSと口コミ、どちらを優先すべきか教えて", "chat2": "マーケティング予算の観点から整理します...", "chat3": "具体的なROIの比較は？", "chat4": "口コミ施策のROIは平均<strong>3.2倍</strong>高い傾向があります。特に初期段階では、SNS広告のCPCが高騰しているため、まず既存顧客の満足度を高めて自然拡散を狙う戦略が有効です。", "chat5": "なるほど、具体的な施策を3つ挙げて", "chat6": "① 紹介プログラムの設計　② レビュー収集の自動化　③ コミュニティ形成...", "hl_pin": "📍 Orchestra が保存した会話", "lbl_ai": "対応 AI ラインナップ", "h_ai": "5つの AI を、一つの拡張で動かす。", "p_ai": "各 AI のアカウントは別途ご用意ください。対応 AI は順次拡張予定。", "lbl_how": "How it works", "h_how": "AIとの対話を「資産」に変える、4ステップ。", "p_how": "セットアップは数分。あとはいつも通り Claude を使うだけで、会話が自動で蓄積されていきます。", "step1h": "Chrome に追加", "step1p": "Chrome Web Store から Orchestra をインストール。拡張アイコンがブラウザに表示されます。", "step2h": "Claude で会話開始", "step2p": "いつも通り Claude.ai を開いて会話するだけで、自動で記録が始まります。", "step3h": "右クリック → 協議", "step3p": "気になるテキストを選択して右クリック。複数 AI が並列で回答します。", "step4h": "CSV / JSON で持ち出し", "step4p": "蓄積した履歴は CSV / JSON でエクスポートし、外部ツールと連携できます。", "lbl_price": "Pricing", "h_price": "シンプルな 3 プラン。", "p_price": "まず無料で試して、必要になったときにアップグレード。すべてのプランでインストールは同じ拡張機能です。", "name_free": "Free", "price_free": "¥0", "period_free": "永久無料", "pf1": "会話の自動保存（無制限）", "pf2": "全文検索・フィルター", "pf3": "CSV / JSON エクスポート", "pf4": "多AI 並列協議", "pf5": "AI 別タイマー表示", "btn_free2": "今すぐ無料で追加", "name_pro": "Pro", "period_pro": "/ 月（税別）", "pp1": "Free のすべての機能", "pp2": "多AI 並列協議（5 AI 同時）", "pp3": "AI 別カウントダウンタイマー", "pp4": "協議プロンプトカスタマイズ", "pp5": "メールサポート", "btn_pro": "Pro にアップグレード", "name_one": "One", "regular_one": "通常 $10 / 月", "period_one": "/ 月（先着500名限定価格）", "ribbon": "LAUNCH EDITION", "po1": "Pro のすべての機能", "po2": "mini MoCKA 全製品アクセス", "po3": "Relay（会話自動引き継ぎ）", "po4": "PHI-OS（セッション記憶復元）", "po5": "優先サポート", "btn_one": "One にアップグレード", "plan_note": "One の $8 は先着 500 名限定のローンチ価格です。枠が埋まり次第、通常価格の <strong>$10 / 月</strong> に移行します。価格変更後も、既存ユーザーには変更前の価格が継続適用されます。", "lbl_faq": "FAQ", "h_faq": "よくある質問。", "p_faq": "導入前によくいただく質問をまとめました。その他のご質問はメールでお問い合わせください。", "fq1": "無料プランと Pro の違いは何ですか？", "fa1": "無料プランでは会話の保存・検索・エクスポートが使えます。Pro ではこれに加えて、多AI 並列協議と AI 別タイマー機能、協議プロンプトのカスタマイズ、メールサポートが利用できます。", "fq2": "ライセンスキーはいつ届きますか？", "fa2": "Stripe での購入完了後、自動システムが即時に noreply@nsjp.org からライセンスキーを送信します。通常 1 分以内に届きます。迷惑メールフォルダもご確認ください。", "fq3": "会話データはどこに保存されますか？", "fa3": "すべてのデータはお使いの Chrome ブラウザのローカルストレージに保存されます。外部サーバーへの送信は一切ありません。バックアップが必要な場合は CSV / JSON エクスポートをご利用ください。", "fq4": "One プランの「$8」はいつまでですか？", "fa4": "先着 500 名限定の特別価格です。枠がなくなり次第、通常価格の $10/月 に移行します。価格変更後も、既存ユーザーには変更前の価格が継続適用されます。", "fq5": "チーム利用や複数ライセンスは可能ですか？", "fa5": "現時点では 1 ライセンス = 1 ブラウザを想定しています。チーム向けのボリュームライセンスや管理機能については、今後のアップデートでの提供を検討しています。", "lbl_cta": "Get started", "h_cta": "AIとの対話を、今日から「資産」に。", "p_cta": "保存する。検索する。検証する。再利用する。<br>Orchestra は、あなたと AI の対話を「一度きりの会話」から「積み上がる知識資産」へ変えます。", "cta_free": "無料で始める", "cta_plan": "プランを比較する"}, "en": {"html_lang": "en", "title": "Orchestra — Conduct All Your AIs.", "eyebrow": "mini MoCKA Series — Chrome Extension", "h1": "Conduct all your AIs, <em>at once</em>.", "hero_sub": "Orchestra saves your Claude conversations and sends any text to multiple AIs simultaneously — with one right-click.", "btn_free": "Add to Chrome (Free)", "btn_plan": "See pricing", "badge1": "Listed on Chrome Web Store", "badge2": "Claude / ChatGPT / Gemini ready", "badge3": "Instant license delivery", "lbl_save": "📁 Auto-save — Pop-up screen", "h_save": "All your conversations, saved here.", "p_save": "Just click the extension icon. Today's discussion, yesterday's ideas, last week's discoveries — all instantly accessible.", "saved": "Saved", "thismonth": "This month", "search_ph": "Search keywords...", "today": "Today 10:32", "yesterday": "Yesterday 14:18", "days3": "3 days ago 09:45", "flylink": "↗ Jump to this page", "pf1h": "Find it with 'did we do that last week?' — Timeline", "pf1p": "Every conversation is auto-recorded with date and time. Filter by date or keyword to access past insights reliably.", "pf2h": "Jump straight to that conversation", "pf2p": "Tap a saved conversation to jump directly to the claude.ai page. Auto-scrolls to the exact position.", "pf3h": "Full-text search inside conversations", "pf3p": "Not just titles — the entire conversation text is searchable. Dig up what Claude said in seconds.", "lbl_rclick": "🎼 Orchestra's biggest innovation — Parallel deliberation", "h_rclick": "Select, right-click. That's it.", "p_rclick": "Highlight any text, right-click → 'Deliberate with Orchestra'. Sent simultaneously to all selected AIs — 5 experts answer at once.", "step1pin": "① Select text", "step2pin": "② Right-click", "sel_text": "should we prioritize word-of-mouth over SNS ads?", "ctx_feat": "Deliberate with Orchestra", "ctx_copy": "Copy", "ctx_search": "Search Google", "ctx_link": "Copy link", "rclick_pre": "Chatting on Claude.ai as usual...<br><br>\"As our next marketing strategy,", "rclick_post": "— I'd like to hear each AI's opinion\"", "lbl_parallel": "⚡ In action — answers side by side, configure destinations", "h_parallel": "Consult 5 experts simultaneously.", "p_parallel": "You decide who to send to. Each AI auto-responds with its own perspective. Just wait.", "kwtab1": "Send → AI Answers", "kwtab2": "⚙ Settings", "kwq": "\"Should we prioritize word-of-mouth over SNS ads?\"", "kw_lbl_send": "↓ Sent simultaneously to all 5 checked AIs", "kw_lbl_merge": "↓ Compare & consolidate all answers", "kw_result_lbl": "✦ What you get", "kw_result_txt": "5 different perspectives, data, and rationales — all at once.<br>Discover answers no single AI could have given you.", "inno_tag": "Why Orchestra is revolutionary", "inno_h": "The era of getting AI answers — automatically", "inno_p": "Until now, using AI meant asking one at a time. Orchestra <strong>sends your query to multiple AIs simultaneously and collects all answers automatically</strong>. You just choose.", "ab_claude": "Logically, WOM has higher LTV impact. <strong>Measuring customer satisfaction first</strong> is key.", "ab_chatgpt": "Industry data: WOM ROI is <strong>3.2× higher on average</strong>. Van Westendorp test recommended.", "ab_gemini": "Google 2025: <strong>67% of WOM adopters</strong> reported improved margins. SNS CPC rising.", "ab_copilot": "Microsoft Ads: <strong>referral program CPA</strong> under 40% of SNS ad costs in many cases.", "ab_perplexity": "HBR 2026 Q1: <strong>conjoint analysis</strong> is the most accurate value measurement method.", "em_lib": "Library", "em_set": "⚙ Settings", "em_notice": "Before using right-click features, <strong>log in to each AI service</strong> first.<br>ChatGPT / Gemini / Perplexity / Copilot / Genspark", "em_dest_title": "◆ Destination AIs (applied to all right-clicks)", "em_hint": "Checked AIs become the send targets. Right-click → Orchestra to operate.", "em_speed_title": "◎ Response wait time", "em_speed_lbl": "Time to wait for AI to load after sending", "sk_slow": "Slow 5.0s", "sk_fast": "0.8s Fast", "em_warn": "If errors occur frequently, set to the 'Slow' side", "sf1h": "Choose your AI targets freely", "sf1p": "Check only the AIs you want. Narrow to 3 or send to all 5. Change anytime.", "sf2h": "Adjust for connection speed", "sf2p": "Fast connection: 0.8–1.0s. Unstable or overseas AIs: set 3–5s for stable operation.", "sf3h": "Share mode for targeted deep-dives", "sf3p": "When right-clicking, choose Share mode to temporarily change the destination AI.", "sf4h": "Pre-login required", "sf4p": "Orchestra auto-inputs into each AI's browser screen. Log in to each AI service before use.", "lbl_jump": "📍 Saved conversations — jump to the exact position", "h_jump": "The moment you choose, you're there.", "p_jump": "Press 'Go to page' to open claude.ai and auto-scroll to the exact saved position with highlight.", "sv1t": "Marketing strategy: WOM vs SNS", "sv1m": "Last Thursday · 14 min conversation · Claude", "sv2t": "Stripe Webhook Python implementation", "sv2m": "3 days ago · 32 min conversation · Claude", "goto_btn": "↗ Go to page", "jump_banner": "↓ claude.ai opens and auto-jumps to this conversation", "b_ext": "Saved by Orchestra", "scroll_note": "📍 Scrolled to saved position", "new_chat": "+ New chat", "cs1": "WOM vs SNS", "cs2": "Stripe impl notes", "cs3": "AIES paper", "cs4": "vasAI design", "chat1": "Which should we prioritize: WOM or SNS ads?", "chat2": "Let me organize this from a marketing budget perspective...", "chat3": "What about a specific ROI comparison?", "chat4": "WOM ROI tends to be <strong>3.2× higher</strong> on average. Early-stage SNS ad CPCs are rising, so focusing on customer satisfaction for organic growth is effective.", "chat5": "Got it — list 3 specific tactics", "chat6": "① Design a referral program　② Automate review collection　③ Build a community...", "hl_pin": "📍 Conversation saved by Orchestra", "lbl_ai": "Supported AI lineup", "h_ai": "Control 5 AIs with one extension.", "p_ai": "Separate accounts for each AI required. More AIs coming soon.", "lbl_how": "How it works", "h_how": "4 steps to turn AI conversations into assets.", "p_how": "Setup takes minutes. Then just use Claude as usual — conversations accumulate automatically.", "step1h": "Add to Chrome", "step1p": "Install Orchestra from Chrome Web Store. The extension icon appears in your browser.", "step2h": "Start a Claude conversation", "step2p": "Open claude.ai and chat as usual. Orchestra automatically starts recording.", "step3h": "Right-click → Deliberate", "step3p": "Select text and right-click. Multiple AIs respond in parallel.", "step4h": "Export CSV / JSON", "step4p": "Export accumulated history in CSV / JSON and connect with external tools.", "lbl_price": "Pricing", "h_price": "Simple 3 plans.", "p_price": "Try free first, upgrade when you need it. All plans use the same extension.", "name_free": "Free", "price_free": "$0", "period_free": "Forever free", "pf1": "Auto-save conversations (unlimited)", "pf2": "Full-text search & filters", "pf3": "CSV / JSON export", "pf4": "Multi-AI parallel deliberation", "pf5": "Per-AI timer display", "btn_free2": "Add for free now", "name_pro": "Pro", "period_pro": "/ month (excl. tax)", "pp1": "All Free features", "pp2": "Multi-AI deliberation (5 AIs)", "pp3": "Per-AI countdown timer", "pp4": "Custom deliberation prompts", "pp5": "Email support", "btn_pro": "Upgrade to Pro", "name_one": "One", "regular_one": "Regular $10 / month", "period_one": "/ month (first 500 only)", "ribbon": "LAUNCH EDITION", "po1": "All Pro features", "po2": "All mini MoCKA products", "po3": "Relay (auto conversation handoff)", "po4": "PHI-OS (session memory restore)", "po5": "Priority support", "btn_one": "Upgrade to One", "plan_note": "The $8 price for One is a launch offer for the first 500 users. After that, it reverts to the regular price of <strong>$10 / month</strong>. Existing users keep their price.", "lbl_faq": "FAQ", "h_faq": "Frequently asked questions.", "p_faq": "Common questions before getting started. For other inquiries, contact us by email.", "fq1": "What's the difference between Free and Pro?", "fa1": "Free includes conversation saving, search, and export. Pro adds multi-AI deliberation, per-AI timer, custom prompts, and email support.", "fq2": "When will I receive my license key?", "fa2": "After completing your Stripe purchase, the system immediately sends a license key from noreply@nsjp.org. Usually arrives within 1 minute. Check your spam folder too.", "fq3": "Where is my conversation data stored?", "fa3": "All data is stored in your Chrome browser's local storage. Nothing is sent to external servers. Use CSV / JSON export for backups.", "fq4": "How long is the $8 price for One?", "fa4": "It's a special price for the first 500 users. Once full, it moves to the regular $10/month. Existing users keep their current price.", "fq5": "Can I use it for a team or multiple licenses?", "fa5": "Currently designed as 1 license = 1 browser. We're considering volume licensing and team management features for future updates.", "lbl_cta": "Get started", "h_cta": "Turn your AI conversations into assets, starting today.", "p_cta": "Save. Search. Verify. Reuse.<br>Orchestra transforms your AI conversations from one-off chats into a growing knowledge asset.", "cta_free": "Start for Free", "cta_plan": "Compare plans"}, "zh": {"html_lang": "zh", "title": "Orchestra — 指挥所有AI。", "eyebrow": "mini MoCKA Series — Chrome 扩展", "h1": "指挥所有AI，<em>同时</em>。", "hero_sub": "Orchestra 保存您的 Claude 对话，并通过一次右键点击，将任意文本同时发送给多个AI。", "btn_free": "添加到Chrome（免费）", "btn_plan": "查看定价", "badge1": "Chrome 应用商店官方收录", "badge2": "支持 Claude / ChatGPT / Gemini", "badge3": "即时自动发送许可证", "lbl_save": "📁 自动保存 — 弹出界面", "h_save": "所有对话，都在这里。", "p_save": "只需点击扩展图标。今天的讨论、昨天的想法、上周的发现，随时可以调出。", "saved": "已保存", "thismonth": "本月", "search_ph": "关键词搜索...", "today": "今天 10:32", "yesterday": "昨天 14:18", "days3": "3天前 09:45", "flylink": "↗ 跳转到此页面", "pf1h": "用\"上周做过吧？\"找到它 — 时间轴管理", "pf1p": "所有对话都自动记录日期和时间。按日期或关键词筛选，即使记忆模糊也能找到。", "pf2h": "直接跳转到那次对话", "pf2p": "点击已保存的对话即可一键跳转到 claude.ai 的相应页面，自动滚动到准确位置。", "pf3h": "在对话内容中全文搜索", "pf3p": "不只是标题，整个对话文本都是搜索对象。几秒内找到 Claude 说过的内容。", "lbl_rclick": "🎼 Orchestra 最大的革新 — 并行协议", "h_rclick": "选择，右键。就这样。", "p_rclick": "反转选中感兴趣的文本，右键→「Orchestra 协议」。同时发送给所有选中的AI，5位专家一起回答。", "step1pin": "① 选择文本", "step2pin": "② 右键点击", "sel_text": "应该优先考虑口碑营销而非SNS广告吗？", "ctx_feat": "用 Orchestra 协议", "ctx_copy": "复制", "ctx_search": "Google 搜索", "ctx_link": "复制链接", "rclick_pre": "正在Claude.ai上正常对话...<br><br>「作为下一步营销战略，", "rclick_post": "，想听听各AI的意见」", "lbl_parallel": "⚡ 实际操作 — 答案并排，配置发送目标", "h_parallel": "同时咨询5位专家。", "p_parallel": "自己设置发送给谁。每个AI自动从各自角度回答。您只需等待。", "kwtab1": "发送 → AI回答", "kwtab2": "⚙ 设置", "kwq": "「应该优先考虑口碑营销而非SNS广告吗？」", "kw_lbl_send": "↓ 同时发送给5个已选中的AI", "kw_lbl_merge": "↓ 比较并整合所有回答", "kw_result_lbl": "✦ 您将获得", "kw_result_txt": "5种不同的视角、数据和依据一次性汇聚。<br>发现单个AI无法给出的答案。", "inno_tag": "Orchestra 的革命性之处", "inno_h": "自动从AI获取答案的新时代", "inno_p": "过去使用AI意味着逐个询问。Orchestra <strong>同时向多个AI发送问题，自动收集所有回答</strong>。您只需选择。", "ab_claude": "逻辑上口碑的LTV贡献度更高。<strong>首先测量客户满意度</strong>是关键。", "ab_chatgpt": "行业数据显示口碑ROI<strong>平均高3.2倍</strong>。推荐Van Westendorp价格敏感度测试。", "ab_gemini": "谷歌2025年：<strong>67%的口碑采用企业</strong>报告利润率提升。SNS CPC呈上升趋势。", "ab_copilot": "Microsoft Ads：<strong>推荐计划CPA</strong>低于SNS广告成本40%的案例众多。", "ab_perplexity": "HBR 2026 Q1：<strong>联合分析</strong>是价值测量精度最高的方法。", "em_lib": "资料库", "em_set": "⚙ 设置", "em_notice": "使用右键功能前，请先<strong>登录各AI服务</strong>。<br>ChatGPT / Gemini / Perplexity / Copilot / Genspark", "em_dest_title": "◆ 目标AI（右键时统一应用）", "em_hint": "已勾选的AI将成为发送目标。右键 → Orchestra 进行操作。", "em_speed_title": "◎ 响应等待时间", "em_speed_lbl": "发送后等待AI加载的时间", "sk_slow": "慢速 5.0s", "sk_fast": "0.8s 快速", "em_warn": "如果频繁出错，请设置为\"慢速\"一侧", "sf1h": "自由选择目标AI", "sf1p": "只勾选您想使用的AI。可缩减至3个，也可发送给全部5个。随时更改。", "sf2h": "根据网速调整", "sf2p": "网速快时设0.8〜1.0秒。网络不稳定或海外AI时设3〜5秒可稳定运行。", "sf3h": "Share模式针对性深入研究", "sf3p": "右键时选择Share模式，可临时更改目标AI。", "sf4h": "需要提前登录", "sf4p": "Orchestra自动输入到各AI的浏览器界面。使用前需要登录各AI服务。", "lbl_jump": "📍 已保存的对话 — 跳转到准确位置", "h_jump": "选择的瞬间，就到那个对话的那个位置。", "p_jump": "按「前往页面」即可打开 claude.ai，自动滚动到已保存的位置并高亮显示。", "sv1t": "营销策略：口碑 vs SNS", "sv1m": "上周四 · 14分钟对话 · Claude", "sv2t": "Stripe Webhook Python实现", "sv2m": "3天前 · 32分钟对话 · Claude", "goto_btn": "↗ 前往页面", "jump_banner": "↓ claude.ai 打开并自动跳转到此对话", "b_ext": "已由 Orchestra 保存", "scroll_note": "📍 已滚动到保存位置", "new_chat": "＋ 新建对话", "cs1": "口碑 vs SNS", "cs2": "Stripe实现笔记", "cs3": "AIES论文", "cs4": "vasAI设计", "chat1": "口碑和SNS广告，哪个应该优先？", "chat2": "让我从营销预算的角度来整理...", "chat3": "具体的ROI比较呢？", "chat4": "口碑营销的ROI平均高出<strong>3.2倍</strong>。初期阶段SNS广告CPC上涨，专注于提高客户满意度以实现自然传播的策略更有效。", "chat5": "明白了，请列举3个具体措施", "chat6": "① 设计推荐计划　② 自动化评价收集　③ 建立社区...", "hl_pin": "📍 Orchestra 保存的对话", "lbl_ai": "支持的AI阵容", "h_ai": "用一个扩展程序操控5个AI。", "p_ai": "各AI账号需单独准备。支持的AI将持续增加。", "lbl_how": "使用方法", "h_how": "将AI对话变为资产的4步骤。", "p_how": "设置只需几分钟。之后正常使用Claude，对话就会自动积累。", "step1h": "添加到Chrome", "step1p": "从Chrome应用商店安装Orchestra。扩展图标出现在浏览器中。", "step2h": "开始Claude对话", "step2p": "正常打开claude.ai对话，自动开始记录。", "step3h": "右键 → 协议", "step3p": "选择文本后右键点击。多个AI并行回答。", "step4h": "CSV / JSON导出", "step4p": "积累的历史以CSV / JSON导出，可与外部工具联动。", "lbl_price": "定价", "h_price": "简单的3个方案。", "p_price": "先免费试用，需要时再升级。所有方案使用相同的扩展程序。", "name_free": "免费版", "price_free": "$0", "period_free": "永久免费", "pf1": "对话自动保存（无限制）", "pf2": "全文搜索・过滤", "pf3": "CSV / JSON 导出", "pf4": "多AI并行协议", "pf5": "AI独立计时器", "btn_free2": "立即免费添加", "name_pro": "专业版", "period_pro": "/ 月（不含税）", "pp1": "免费版所有功能", "pp2": "多AI并行协议（同时5个AI）", "pp3": "AI独立倒计时计时器", "pp4": "自定义协议提示词", "pp5": "邮件支持", "btn_pro": "升级到专业版", "name_one": "全合一版", "regular_one": "通常 $10 / 月", "period_one": "/ 月（前500名限定价格）", "ribbon": "首发限定", "po1": "专业版所有功能", "po2": "mini MoCKA全产品访问", "po3": "Relay（会话自动交接）", "po4": "PHI-OS（会话记忆恢复）", "po5": "优先支持", "btn_one": "升级到全合一版", "plan_note": "$8的价格是前500名用户的首发限定价格。名额满后恢复通常价格 <strong>$10 / 月</strong>。价格变更后，现有用户继续享受原价格。", "lbl_faq": "常见问题", "h_faq": "常见问题解答。", "p_faq": "整理了开始使用前的常见问题。其他问题请通过邮件联系我们。", "fq1": "免费版和专业版有什么区别？", "fa1": "免费版提供对话保存、搜索和导出功能。专业版还增加了多AI并行协议、AI独立计时器、自定义提示词和邮件支持。", "fq2": "许可证密钥什么时候到达？", "fa2": "完成Stripe购买后，系统立即从noreply@nsjp.org发送许可证密钥。通常1分钟内到达。请也检查垃圾邮件文件夹。", "fq3": "对话数据存储在哪里？", "fa3": "所有数据存储在您的Chrome浏览器本地存储中。不会发送到外部服务器。需要备份时请使用CSV / JSON导出。", "fq4": "\"$8\"的价格持续到什么时候？", "fa4": "这是前500名的特别价格。名额用完后恢复通常价格$10/月。价格变更后，现有用户继续享受原价格。", "fq5": "可以团队使用或多个许可证吗？", "fa5": "目前设计为1个许可证=1个浏览器。团队批量许可证和管理功能正在考虑未来更新中提供。", "lbl_cta": "开始使用", "h_cta": "从今天起，将AI对话变为资产。", "p_cta": "保存。搜索。验证。再利用。<br>Orchestra 将您与AI的对话从\"一次性聊天\"变为\"不断积累的知识资产\"。", "cta_free": "免费开始", "cta_plan": "比较方案"}, "ko": {"html_lang": "ko", "title": "Orchestra — 모든 AI를 지휘하다.", "eyebrow": "mini MoCKA Series — Chrome 확장 프로그램", "h1": "모든 AI를, <em>지휘하다</em>.", "hero_sub": "Orchestra는 Claude 대화를 저장·정리하고, 단 한 번의 우클릭으로 여러 AI에 동시에 질문을 보냅니다.", "btn_free": "Chrome에 추가（무료）", "btn_plan": "요금제 보기", "badge1": "Chrome 웹 스토어 공식 등록", "badge2": "Claude / ChatGPT / Gemini 지원", "badge3": "라이선스 즉시 자동 발송", "lbl_save": "📁 자동 저장 — 팝업 화면", "h_save": "모든 대화가, 여기에 남는다.", "p_save": "확장 아이콘을 클릭하기만 하면 됩니다. 오늘의 토론도, 어제의 아이디어도, 지난주의 발견도 즉시 불러올 수 있습니다.", "saved": "저장됨", "thismonth": "이번 달", "search_ph": "키워드 검색...", "today": "오늘 10:32", "yesterday": "어제 14:18", "days3": "3일 전 09:45", "flylink": "↗ 이 페이지로 이동", "pf1h": "\"지난주에 했잖아?\"로 찾는 시간순 관리", "pf1p": "모든 대화가 날짜와 시간 포함으로 자동 기록됩니다. 날짜·키워드로 좁혀 모호한 기억으로도 과거 인사이트에 접근 가능.", "pf2h": "그 대화로 바로 이동", "pf2p": "저장된 대화를 탭하면 claude.ai의 해당 페이지로 원클릭 점프. 정확한 위치까지 자동 스크롤.", "pf3h": "대화 내용까지 전문 검색", "pf3p": "제목뿐만 아니라 대화 텍스트 전체가 검색 대상. Claude가 말한 내용을 몇 초 만에 찾아낼 수 있습니다.", "lbl_rclick": "🎼 Orchestra의 최대 혁신 — 병렬 협의", "h_rclick": "선택하고, 우클릭. 그뿐.", "p_rclick": "원하는 텍스트를 드래그하고 우클릭 → 「Orchestra로 협의」. 선택한 AI 전원에 동시 전송, 5명의 전문가가 일제히 답변.", "step1pin": "① 텍스트 선택", "step2pin": "② 우클릭", "sel_text": "SNS 광고보다 구전 마케팅을 우선해야 할까요?", "ctx_feat": "Orchestra로 협의", "ctx_copy": "복사", "ctx_search": "Google에서 검색", "ctx_link": "링크 복사", "rclick_pre": "Claude.ai에서 평소처럼 대화 중...<br><br>「다음 마케팅 전략으로,", "rclick_post": "에 대해 각 AI의 의견을 듣고 싶습니다」", "lbl_parallel": "⚡ 실제 동작 — 답변이 나란히, 전송 대상 설정", "h_parallel": "5명의 전문가에게 동시에 상담.", "p_parallel": "누구에게 보낼지 직접 설정. 각 AI가 각자의 관점으로 자동 답변. 기다리기만 하면 됩니다.", "kwtab1": "전송 → AI 답변", "kwtab2": "⚙ 설정", "kwq": "\"SNS 광고보다 구전 마케팅을 우선해야 할까요?\"", "kw_lbl_send": "↓ 체크한 5개 AI에 동시 전송", "kw_lbl_merge": "↓ 모든 답변 비교 및 통합", "kw_result_lbl": "✦ 당신이 얻는 것", "kw_result_txt": "5가지 다른 관점·데이터·근거가 한 번에 모입니다.<br>단일 AI로는 알 수 없었던 답을 발견하세요.", "inno_tag": "Orchestra가 혁신적인 이유", "inno_h": "AI로부터 자동으로 답변을 받는 시대로", "inno_p": "지금까지 AI 활용은 \"한 명에게 하나씩 질문\"이 상식이었습니다. Orchestra는 <strong>여러 AI에 동시에 질문을 보내고, 자동으로 모든 답변을 수집</strong>합니다. 당신은 선택만 하면 됩니다.", "ab_claude": "논리적으로 구전의 LTV 기여도가 높습니다. <strong>먼저 고객 만족도 측정</strong>이 선결 과제.", "ab_chatgpt": "업계 데이터: 구전 ROI가 <strong>평균 3.2배</strong> 높습니다. Van Westendorp 테스트 추천.", "ab_gemini": "구글 2025년: <strong>구전 채택 기업의 67%</strong>가 이익률 향상 보고. SNS CPC 상승 추세.", "ab_copilot": "Microsoft Ads: <strong>추천 프로그램 CPA</strong>가 SNS 광고의 40% 이하인 사례 다수.", "ab_perplexity": "HBR 2026 Q1: <strong>컨조인트 분석</strong>이 가치 측정 정확도 최고.", "em_lib": "라이브러리", "em_set": "⚙ 설정", "em_notice": "우클릭 기능을 사용하기 전에 <strong>각 AI 서비스에 미리 로그인</strong>해 주세요.<br>ChatGPT / Gemini / Perplexity / Copilot / Genspark", "em_dest_title": "◆ 전송 대상 AI（우클릭 시 공통 적용）", "em_hint": "체크된 AI가 전송 대상이 됩니다. 우클릭 → Orchestra에서 조작 가능.", "em_speed_title": "◎ 응답 대기 시간", "em_speed_lbl": "전송 후 AI 로딩을 기다리는 시간", "sk_slow": "느림 5.0s", "sk_fast": "0.8s 빠름", "em_warn": "오류가 자주 발생하면 \"느림\" 쪽으로 설정하세요", "sf1h": "전송 대상 AI를 자유롭게 선택", "sf1p": "원하는 AI에만 체크. 3개로 줄이거나 5개 전부에 보내는 것도 자유.", "sf2h": "회선 속도에 맞게 조정", "sf2p": "빠른 환경: 0.8〜1.0초. 불안정하거나 해외 AI는 3〜5초로 설정하면 안정적으로 동작.", "sf3h": "Share 모드로 일시적으로 좁히기", "sf3p": "우클릭 시 Share 모드를 선택하면 그 자리에서 전송 대상 AI를 일시 변경.", "sf4h": "사전 로그인 필요", "sf4p": "Orchestra는 각 AI의 브라우저 화면에 자동 입력하는 방식. 사용 전에 로그인이 필요.", "lbl_jump": "📍 저장된 대화 — 정확한 위치로 이동", "h_jump": "선택한 순간, 그 대화의 그 위치로.", "p_jump": "\"페이지로\" 버튼을 누르면 claude.ai가 열리고 저장된 위치까지 자동 스크롤 & 하이라이트 표시.", "sv1t": "마케팅 전략: 구전 vs SNS", "sv1m": "지난 목요일 · 14분 대화 · Claude", "sv2t": "Stripe Webhook Python 구현", "sv2m": "3일 전 · 32분 대화 · Claude", "goto_btn": "↗ 페이지로", "jump_banner": "↓ claude.ai가 열리고 이 대화의 위치로 자동 점프", "b_ext": "Orchestra로 저장됨", "scroll_note": "📍 저장된 위치까지 스크롤 완료", "new_chat": "＋ 새 채팅", "cs1": "구전 vs SNS", "cs2": "Stripe 구현 메모", "cs3": "AIES 논문", "cs4": "vasAI 설계", "chat1": "구전과 SNS 광고, 어느 쪽을 우선해야 하나요?", "chat2": "마케팅 예산 관점에서 정리해 드리겠습니다...", "chat3": "구체적인 ROI 비교는요?", "chat4": "구전 마케팅 ROI는 평균 <strong>3.2배</strong> 높은 경향이 있습니다. 초기 단계에서는 SNS 광고 CPC가 상승 중이라 고객 만족도 향상을 통한 자연 확산 전략이 효과적입니다.", "chat5": "알겠습니다, 구체적인 시책 3가지를 들어주세요", "chat6": "① 추천 프로그램 설계　② 리뷰 수집 자동화　③ 커뮤니티 형성...", "hl_pin": "📍 Orchestra가 저장한 대화", "lbl_ai": "지원 AI 라인업", "h_ai": "하나의 확장 프로그램으로 5개의 AI를 조작.", "p_ai": "각 AI 계정은 별도로 준비해주세요. 지원 AI는 순차적으로 확대 예정.", "lbl_how": "사용 방법", "h_how": "AI 대화를 \"자산\"으로 만드는 4단계.", "p_how": "설정은 몇 분이면 충분. 그 후에는 평소처럼 Claude를 사용하기만 하면 대화가 자동으로 쌓입니다.", "step1h": "Chrome에 추가", "step1p": "Chrome 웹 스토어에서 Orchestra를 설치. 확장 아이콘이 브라우저에 표시됩니다.", "step2h": "Claude 대화 시작", "step2p": "평소처럼 Claude.ai를 열어 대화하기만 하면 자동으로 기록이 시작됩니다.", "step3h": "우클릭 → 협의", "step3p": "원하는 텍스트를 선택하고 우클릭. 여러 AI가 병렬로 답변합니다.", "step4h": "CSV / JSON으로 내보내기", "step4p": "축적된 이력을 CSV / JSON으로 내보내 외부 도구와 연동 가능.", "lbl_price": "요금제", "h_price": "간단한 3가지 플랜.", "p_price": "먼저 무료로 사용해보고, 필요할 때 업그레이드. 모든 플랜에서 설치하는 확장 프로그램은 동일합니다.", "name_free": "무료", "price_free": "$0", "period_free": "영구 무료", "pf1": "대화 자동 저장（무제한）", "pf2": "전문 검색·필터", "pf3": "CSV / JSON 내보내기", "pf4": "다중 AI 병렬 협의", "pf5": "AI별 타이머 표시", "btn_free2": "지금 무료로 추가", "name_pro": "프로", "period_pro": "/ 월（세금 별도）", "pp1": "무료 플랜의 모든 기능", "pp2": "다중 AI 병렬 협의（5개 AI 동시）", "pp3": "AI별 카운트다운 타이머", "pp4": "협의 프롬프트 커스터마이즈", "pp5": "이메일 지원", "btn_pro": "Pro로 업그레이드", "name_one": "올인원", "regular_one": "정가 $10 / 월", "period_one": "/ 월（선착순 500명 한정가격）", "ribbon": "출시 한정", "po1": "프로 플랜의 모든 기능", "po2": "mini MoCKA 전 제품 액세스", "po3": "Relay（대화 자동 인계）", "po4": "PHI-OS（세션 기억 복원）", "po5": "우선 지원", "btn_one": "One으로 업그레이드", "plan_note": "$8 가격은 선착순 500명 한정 출시 가격입니다. 자리가 차면 정가 <strong>$10 / 월</strong>로 이동합니다. 가격 변경 후에도 기존 사용자는 현재 가격이 유지됩니다.", "lbl_faq": "자주 묻는 질문", "h_faq": "자주 묻는 질문.", "p_faq": "시작하기 전에 자주 받는 질문을 정리했습니다. 기타 문의는 이메일로 연락해주세요.", "fq1": "무료 플랜과 Pro의 차이는 무엇인가요?", "fa1": "무료 플랜에서는 대화 저장, 검색, 내보내기를 사용할 수 있습니다. Pro에서는 다중 AI 병렬 협의, AI별 타이머, 프롬프트 커스터마이즈, 이메일 지원이 추가됩니다.", "fq2": "라이선스 키는 언제 도착하나요?", "fa2": "Stripe 결제 완료 후 자동 시스템이 즉시 noreply@nsjp.org에서 라이선스 키를 발송합니다. 보통 1분 이내에 도착합니다. 스팸 폴더도 확인해주세요.", "fq3": "대화 데이터는 어디에 저장되나요?", "fa3": "모든 데이터는 Chrome 브라우저의 로컬 스토리지에 저장됩니다. 외부 서버로의 전송은 일절 없습니다. 백업이 필요한 경우 CSV / JSON 내보내기를 이용해주세요.", "fq4": "\"$8\" 가격은 언제까지인가요?", "fa4": "선착순 500명 한정 특별 가격입니다. 자리가 차면 정가 $10/월로 이동합니다. 가격 변경 후에도 기존 사용자는 현재 가격이 유지됩니다.", "fq5": "팀 사용이나 복수 라이선스는 가능한가요?", "fa5": "현재는 1 라이선스 = 1 브라우저를 상정하고 있습니다. 팀용 볼륨 라이선스와 관리 기능은 향후 업데이트에서 제공을 검토 중입니다.", "lbl_cta": "시작하기", "h_cta": "오늘부터 AI 대화를 \"자산\"으로.", "p_cta": "저장한다. 검색한다. 검증한다. 재활용한다.<br>Orchestra는 당신과 AI의 대화를 \"일회성 채팅\"에서 \"쌓여가는 지식 자산\"으로 바꿉니다.", "cta_free": "무료로 시작", "cta_plan": "플랜 비교"}, "es": {"html_lang": "es", "title": "Orchestra — Dirige todas tus IAs.", "eyebrow": "mini MoCKA Series — Extensión de Chrome", "h1": "Dirige todas tus IAs, <em>a la vez</em>.", "hero_sub": "Orchestra guarda tus conversaciones de Claude y envía cualquier texto a múltiples IAs simultáneamente con un solo clic derecho.", "btn_free": "Añadir a Chrome (Gratis)", "btn_plan": "Ver planes", "badge1": "En Chrome Web Store oficial", "badge2": "Compatible con Claude / ChatGPT / Gemini", "badge3": "Licencia enviada al instante", "lbl_save": "📁 Guardado automático — Pantalla emergente", "h_save": "Todas tus conversaciones, guardadas aquí.", "p_save": "Solo haz clic en el ícono de la extensión. La discusión de hoy, las ideas de ayer, los descubrimientos de la semana pasada — todo al alcance inmediato.", "saved": "Guardadas", "thismonth": "Este mes", "search_ph": "Buscar palabras clave...", "today": "Hoy 10:32", "yesterday": "Ayer 14:18", "days3": "Hace 3 días 09:45", "flylink": "↗ Ir a esta página", "pf1h": "Encuéntralo con '¿lo hicimos la semana pasada?' — Vista cronológica", "pf1p": "Todas las conversaciones se registran automáticamente con fecha y hora. Filtra por fecha o palabra clave para acceder a insights pasados.", "pf2h": "Salta directamente a esa conversación", "pf2p": "Toca una conversación guardada para ir directamente a la página de claude.ai. Se desplaza automáticamente a la posición exacta.", "pf3h": "Búsqueda de texto completo en las conversaciones", "pf3p": "No solo títulos — todo el texto de la conversación es buscable. Encuentra lo que dijo Claude en segundos.", "lbl_rclick": "🎼 La mayor innovación de Orchestra — Deliberación paralela", "h_rclick": "Selecciona, clic derecho. Eso es todo.", "p_rclick": "Resalta cualquier texto, clic derecho → «Deliberar con Orchestra». Enviado simultáneamente a todas las IAs seleccionadas — 5 expertos responden a la vez.", "step1pin": "① Seleccionar texto", "step2pin": "② Clic derecho", "sel_text": "¿deberíamos priorizar el boca a boca sobre los anuncios en redes?", "ctx_feat": "Deliberar con Orchestra", "ctx_copy": "Copiar", "ctx_search": "Buscar en Google", "ctx_link": "Copiar enlace", "rclick_pre": "Chateando en Claude.ai como siempre...<br><br>«Como próxima estrategia de marketing,", "rclick_post": "— me gustaría escuchar la opinión de cada IA»", "lbl_parallel": "⚡ En acción — respuestas en paralelo, configurar destinos", "h_parallel": "Consulta a 5 expertos simultáneamente.", "p_parallel": "Tú decides a quién enviar. Cada IA responde automáticamente con su propia perspectiva. Solo espera.", "kwtab1": "Enviar → Respuestas de las IAs", "kwtab2": "⚙ Configuración", "kwq": "\"¿Deberíamos priorizar el boca a boca sobre los anuncios en redes?\"", "kw_lbl_send": "↓ Enviado simultáneamente a las 5 IAs seleccionadas", "kw_lbl_merge": "↓ Comparar e integrar todas las respuestas", "kw_result_lbl": "✦ Lo que obtienes", "kw_result_txt": "5 perspectivas, datos y argumentos diferentes — todos a la vez.<br>Descubre respuestas que ninguna IA por sí sola podría darte.", "inno_tag": "Por qué Orchestra es revolucionario", "inno_h": "La era de obtener respuestas de la IA automáticamente", "inno_p": "Hasta ahora, usar IA significaba preguntar a una a la vez. Orchestra <strong>envía tu consulta a múltiples IAs simultáneamente y recoge todas sus respuestas automáticamente</strong>. Tú solo eliges.", "ab_claude": "Lógicamente, el boca a boca tiene mayor impacto en LTV. <strong>Medir la satisfacción del cliente primero</strong> es clave.", "ab_chatgpt": "Datos de la industria: el ROI del boca a boca es <strong>3,2× mayor en promedio</strong>. Se recomienda el test de Van Westendorp.", "ab_gemini": "Google 2025: <strong>67% de las empresas</strong> que adoptaron boca a boca reportaron mejora en márgenes.", "ab_copilot": "Microsoft Ads: <strong>CPA del programa de referidos</strong> bajo el 40% del coste de anuncios en muchos casos.", "ab_perplexity": "HBR 2026 Q1: el <strong>análisis conjunto</strong> es el método más preciso para medir el valor.", "em_lib": "Biblioteca", "em_set": "⚙ Configuración", "em_notice": "Antes de usar las funciones de clic derecho, <strong>inicia sesión en cada servicio de IA</strong> primero.<br>ChatGPT / Gemini / Perplexity / Copilot / Genspark", "em_dest_title": "◆ IAs de destino (aplicado a todos los clics derechos)", "em_hint": "Las IAs marcadas serán los destinos de envío. Clic derecho → Orchestra para operar.", "em_speed_title": "◎ Tiempo de espera de respuesta", "em_speed_lbl": "Tiempo de espera para que la IA cargue tras el envío", "sk_slow": "Lento 5.0s", "sk_fast": "0.8s Rápido", "em_warn": "Si ocurren errores frecuentes, configura en el lado 'Lento'", "sf1h": "Elige tus IAs objetivo libremente", "sf1p": "Marca solo las IAs que quieres usar. Reduce a 3 o envía a las 5. Cambia cuando quieras.", "sf2h": "Ajusta según tu velocidad de conexión", "sf2p": "Conexión rápida: 0,8–1,0s. Inestable o IAs en el extranjero: configura 3–5s para un funcionamiento estable.", "sf3h": "Modo Share para profundizar en temas concretos", "sf3p": "Al hacer clic derecho, elige el modo Share para cambiar temporalmente la IA destino.", "sf4h": "Inicio de sesión previo requerido", "sf4p": "Orchestra introduce texto automáticamente en la pantalla del navegador de cada IA. Necesitas iniciar sesión antes de usarlo.", "lbl_jump": "📍 Conversaciones guardadas — salta a la posición exacta", "h_jump": "En el momento que eliges, estás allí.", "p_jump": "Pulsa 'Ir a página' para abrir claude.ai y desplazarse automáticamente hasta la posición guardada con resaltado.", "sv1t": "Estrategia de marketing: boca a boca vs SNS", "sv1m": "Jueves pasado · 14 min · Claude", "sv2t": "Implementación Python de Stripe Webhook", "sv2m": "Hace 3 días · 32 min · Claude", "goto_btn": "↗ Ir a página", "jump_banner": "↓ claude.ai se abre y salta automáticamente a esta conversación", "b_ext": "Guardado por Orchestra", "scroll_note": "📍 Desplazado a la posición guardada", "new_chat": "+ Nueva conversación", "cs1": "Boca a boca vs SNS", "cs2": "Notas Stripe", "cs3": "Paper AIES", "cs4": "Diseño vasAI", "chat1": "¿Qué deberíamos priorizar: boca a boca o anuncios en redes?", "chat2": "Déjame organizar esto desde la perspectiva del presupuesto de marketing...", "chat3": "¿Y una comparación específica del ROI?", "chat4": "El ROI del boca a boca tiende a ser <strong>3,2×</strong> más alto en promedio. Con los CPCs de anuncios en redes aumentando, enfocarse en la satisfacción del cliente para el crecimiento orgánico es efectivo.", "chat5": "Entendido — lista 3 tácticas específicas", "chat6": "① Diseñar un programa de referidos　② Automatizar la recopilación de reseñas　③ Construir una comunidad...", "hl_pin": "📍 Conversación guardada por Orchestra", "lbl_ai": "IAs compatibles", "h_ai": "Controla 5 IAs con una extensión.", "p_ai": "Se requieren cuentas separadas para cada IA. Más IAs próximamente.", "lbl_how": "Cómo funciona", "h_how": "4 pasos para convertir conversaciones de IA en activos.", "p_how": "La configuración tarda minutos. Luego solo usa Claude como siempre — las conversaciones se acumulan automáticamente.", "step1h": "Añadir a Chrome", "step1p": "Instala Orchestra desde Chrome Web Store. El ícono de la extensión aparece en tu navegador.", "step2h": "Inicia una conversación de Claude", "step2p": "Abre claude.ai y chatea como siempre. Orchestra empieza a grabar automáticamente.", "step3h": "Clic derecho → Deliberar", "step3p": "Selecciona texto y haz clic derecho. Múltiples IAs responden en paralelo.", "step4h": "Exportar CSV / JSON", "step4p": "Exporta el historial acumulado en CSV / JSON y conéctalo con herramientas externas.", "lbl_price": "Precios", "h_price": "3 planes simples.", "p_price": "Prueba gratis primero, actualiza cuando lo necesites. Todos los planes usan la misma extensión.", "name_free": "Gratis", "price_free": "$0", "period_free": "Siempre gratis", "pf1": "Guardado automático de conversaciones (ilimitado)", "pf2": "Búsqueda de texto completo y filtros", "pf3": "Exportación CSV / JSON", "pf4": "Deliberación paralela multi-IA", "pf5": "Temporizador por IA", "btn_free2": "Añadir gratis ahora", "name_pro": "Pro", "period_pro": "/ mes (sin IVA)", "pp1": "Todas las funciones de Gratis", "pp2": "Deliberación multi-IA (5 IAs)", "pp3": "Temporizador cuenta regresiva por IA", "pp4": "Prompts de deliberación personalizados", "pp5": "Soporte por email", "btn_pro": "Actualizar a Pro", "name_one": "Todo en uno", "regular_one": "Precio regular $10 / mes", "period_one": "/ mes (primeros 500 únicamente)", "ribbon": "EDICIÓN LANZAMIENTO", "po1": "Todas las funciones de Pro", "po2": "Todos los productos mini MoCKA", "po3": "Relay (transferencia automática)", "po4": "PHI-OS (restauración de memoria)", "po5": "Soporte prioritario", "btn_one": "Actualizar a One", "plan_note": "El precio de $8 para One es una oferta de lanzamiento para los primeros 500 usuarios. Después vuelve al precio regular de <strong>$10 / mes</strong>. Los usuarios existentes mantienen su precio.", "lbl_faq": "Preguntas frecuentes", "h_faq": "Preguntas frecuentes.", "p_faq": "Preguntas comunes antes de empezar. Para otras consultas, contáctanos por email.", "fq1": "¿Cuál es la diferencia entre Gratis y Pro?", "fa1": "El plan Gratis incluye guardar conversaciones, buscar y exportar. Pro añade deliberación multi-IA, temporizador por IA, prompts personalizados y soporte por email.", "fq2": "¿Cuándo recibiré mi clave de licencia?", "fa2": "Tras completar el pago en Stripe, el sistema envía inmediatamente una clave de licencia desde noreply@nsjp.org. Normalmente llega en menos de 1 minuto. Revisa también tu carpeta de spam.", "fq3": "¿Dónde se almacenan los datos de mis conversaciones?", "fa3": "Todos los datos se almacenan en el almacenamiento local de tu navegador Chrome. No se envía nada a servidores externos. Usa la exportación CSV / JSON para copias de seguridad.", "fq4": "¿Hasta cuándo dura el precio de $8 para One?", "fa4": "Es un precio especial para los primeros 500 usuarios. Cuando se agoten, pasa al precio regular de $10/mes. Los usuarios existentes mantienen su precio actual.", "fq5": "¿Se puede usar en equipo o con múltiples licencias?", "fa5": "Actualmente está diseñado como 1 licencia = 1 navegador. Estamos considerando licencias por volumen y funciones de gestión de equipos para futuras actualizaciones.", "lbl_cta": "Empezar", "h_cta": "Convierte tus conversaciones de IA en activos, hoy.", "p_cta": "Guarda. Busca. Verifica. Reutiliza.<br>Orchestra transforma tus conversaciones de IA de chats únicos en un activo de conocimiento en crecimiento.", "cta_free": "Empezar gratis", "cta_plan": "Comparar planes"}};
+
+function s(id,v,html){const e=document.getElementById(id);if(!e)return;html?e.innerHTML=v:e.textContent=v;}
+function setLang(lang){
+  const t=T[lang];
+  document.documentElement.lang=t.html_lang;
+  document.getElementById('doc-title').textContent=t.title;
+  document.querySelectorAll('.lb').forEach(b=>{
+    const map={ja:'日',en:'EN',zh:'中',ko:'한',es:'ES'};
+    b.style.background=map[lang]===b.textContent.trim()?'#c9a84c':'transparent';
+    b.style.color=map[lang]===b.textContent.trim()?'#1a1a1a':'rgba(255,255,255,.5)';
+  });
+  s('t-eyebrow',t.eyebrow);s('t-h1',t.h1,true);s('t-hero-sub',t.hero_sub);
+  s('t-btn-free',`<i class="ti ti-brand-chrome" aria-hidden="true"></i> ${t.btn_free}`,true);
+  s('t-btn-plan',t.btn_plan);
+  s('t-badge1',t.badge1);s('t-badge2',t.badge2);s('t-badge3',t.badge3);
+  s('t-lbl-save',t.lbl_save);s('t-h-save',t.h_save);s('t-p-save',t.p_save);
+  s('t-saved',t.saved);s('t-thismonth',t.thismonth);s('t-search-ph',t.search_ph);
+  s('t-today',t.today);s('t-yesterday',t.yesterday);s('t-3days',t.days3);
+  s('t-flylink',t.flylink);s('t-flylink2',t.flylink);s('t-flylink3',t.flylink);
+  s('t-pf1h',t.pf1h);s('t-pf1p',t.pf1p);s('t-pf2h',t.pf2h);s('t-pf2p',t.pf2p);
+  s('t-pf3h',t.pf3h);s('t-pf3p',t.pf3p);
+  s('t-lbl-rclick',t.lbl_rclick);s('t-h-rclick',t.h_rclick);s('t-p-rclick',t.p_rclick);
+  s('t-step1pin',t.step1pin);s('t-step2pin',t.step2pin);
+  s('t-sel-text',t.sel_text);
+  s('t-ctx-feat',t.ctx_feat);s('t-ctx-copy',t.ctx_copy);
+  s('t-ctx-search',t.ctx_search);s('t-ctx-link',t.ctx_link);
+  s('t-rclick-pre',t.rclick_pre,true);s('t-rclick-post',t.rclick_post);
+  s('t-lbl-parallel',t.lbl_parallel);s('t-h-parallel',t.h_parallel);s('t-p-parallel',t.p_parallel);
+  s('t-kwtab1',t.kwtab1);s('t-kwtab2',t.kwtab2);
+  s('t-kwq',t.kwq);s('t-kw-lbl-send',t.kw_lbl_send);s('t-kw-lbl-merge',t.kw_lbl_merge);
+  s('t-kw-result-lbl',t.kw_result_lbl);s('t-kw-result-txt',t.kw_result_txt,true);
+  s('t-inno-tag',t.inno_tag);s('t-inno-h',t.inno_h);s('t-inno-p',t.inno_p,true);
+  s('t-ab-claude',t.ab_claude,true);s('t-ab-chatgpt',t.ab_chatgpt,true);
+  s('t-ab-gemini',t.ab_gemini,true);s('t-ab-copilot',t.ab_copilot,true);
+  s('t-ab-perplexity',t.ab_perplexity,true);
+  s('t-em-lib',t.em_lib);s('t-em-set',t.em_set);
+  s('t-em-notice',t.em_notice,true);s('t-em-dest-title',t.em_dest_title);
+  s('t-em-hint',t.em_hint);s('t-em-speed-title',t.em_speed_title);
+  s('t-em-speed-lbl',t.em_speed_lbl);s('t-sk-slow',t.sk_slow);s('t-sk-fast',t.sk_fast);
+  s('t-em-warn',t.em_warn);
+  s('t-sf1h',t.sf1h);s('t-sf1p',t.sf1p);s('t-sf2h',t.sf2h);s('t-sf2p',t.sf2p);
+  s('t-sf3h',t.sf3h);s('t-sf3p',t.sf3p);s('t-sf4h',t.sf4h);s('t-sf4p',t.sf4p);
+  s('t-lbl-jump',t.lbl_jump);s('t-h-jump',t.h_jump);s('t-p-jump',t.p_jump);
+  s('t-sv1t',t.sv1t);s('t-sv1m',t.sv1m);s('t-sv2t',t.sv2t);s('t-sv2m',t.sv2m);
+  s('t-goto-btn',t.goto_btn);s('t-goto-btn2',t.goto_btn);
+  s('t-jump-banner',t.jump_banner);s('t-b-ext',t.b_ext);
+  s('t-scroll-note',t.scroll_note);s('t-new-chat',t.new_chat);
+  s('t-cs1',t.cs1);s('t-cs2',t.cs2);s('t-cs3',t.cs3);s('t-cs4',t.cs4);
+  s('t-chat1',t.chat1);s('t-chat2',t.chat2);s('t-chat3',t.chat3);
+  s('t-chat4',t.chat4,true);s('t-chat5',t.chat5);s('t-chat6',t.chat6);
+  s('t-hl-pin',t.hl_pin);
+  s('t-lbl-ai',t.lbl_ai);s('t-h-ai',t.h_ai);s('t-p-ai',t.p_ai);
+  s('t-lbl-how',t.lbl_how);s('t-h-how',t.h_how);s('t-p-how',t.p_how);
+  s('t-step1h',t.step1h);s('t-step1p',t.step1p);
+  s('t-step2h',t.step2h);s('t-step2p',t.step2p);
+  s('t-step3h',t.step3h);s('t-step3p',t.step3p);
+  s('t-step4h',t.step4h);s('t-step4p',t.step4p);
+  s('t-lbl-price',t.lbl_price);s('t-h-price',t.h_price);s('t-p-price',t.p_price);
+  s('t-name-free',t.name_free);s('t-price-free',t.price_free);s('t-period-free',t.period_free);
+  s('t-pf1',t.pf1);s('t-pf2',t.pf2);s('t-pf3',t.pf3);s('t-pf4',t.pf4);s('t-pf5',t.pf5);
+  s('t-btn-free2',t.btn_free2);
+  s('t-name-pro',t.name_pro);s('t-period-pro',t.period_pro);
+  s('t-pp1',t.pp1);s('t-pp2',t.pp2);s('t-pp3',t.pp3);s('t-pp4',t.pp4);s('t-pp5',t.pp5);
+  s('t-btn-pro',t.btn_pro);
+  s('t-name-one',t.name_one);s('t-regular-one',t.regular_one);s('t-period-one',t.period_one);
+  s('t-ribbon',t.ribbon);
+  s('t-po1',t.po1);s('t-po2',t.po2);s('t-po3',t.po3);s('t-po4',t.po4);s('t-po5',t.po5);
+  s('t-btn-one',t.btn_one);s('t-plan-note',t.plan_note,true);
+  s('t-lbl-faq',t.lbl_faq);s('t-h-faq',t.h_faq);s('t-p-faq',t.p_faq);
+  s('t-fq1',t.fq1);s('t-fa1',t.fa1);s('t-fq2',t.fq2);s('t-fa2',t.fa2);
+  s('t-fq3',t.fq3);s('t-fa3',t.fa3);s('t-fq4',t.fq4);s('t-fa4',t.fa4);
+  s('t-fq5',t.fq5);s('t-fa5',t.fa5);
+  s('t-lbl-cta',t.lbl_cta);s('t-h-cta',t.h_cta);s('t-p-cta',t.p_cta,true);
+  s('t-cta-free',t.cta_free);s('t-cta-plan',t.cta_plan);
+}
+
+document.addEventListener('DOMContentLoaded',()=>setLang('ja'));
+</script>
+</body>
+</html>
