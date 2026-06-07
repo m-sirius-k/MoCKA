@@ -354,24 +354,24 @@ def execute_tool(name, args):
             try:
                 if category:
                     rows = con.execute(
-                        """SELECT event_id, "when" AS when_ts, title, short_summary, free_note
+                        """SELECT event_id, when_ts, title, short_summary, free_note
                            FROM events
                            WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
                                   OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
                                   OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
                                   OR free_note LIKE ?)
-                           ORDER BY "when" DESC LIMIT ?""",
+                           ORDER BY when_ts DESC LIMIT ?""",
                         (f"%{category}%", limit)
                     ).fetchall()
                 else:
                     rows = con.execute(
-                        """SELECT event_id, "when" AS when_ts, title, short_summary, free_note
+                        """SELECT event_id, when_ts, title, short_summary, free_note
                            FROM events
                            WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
                                   OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
                                   OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
                                   OR title LIKE '%CLAIM%')
-                           ORDER BY "when" DESC LIMIT ?""",
+                           ORDER BY when_ts DESC LIMIT ?""",
                         (limit,)
                     ).fetchall()
                 result = [dict(r) for r in rows]
