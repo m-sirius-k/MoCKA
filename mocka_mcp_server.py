@@ -347,6 +347,98 @@ def execute_tool(name, args):
             auto_log(name, args, h[:16])
             return json.dumps(result, ensure_ascii=False)
 
+        elif name == "mocka_get_incidents":
+            category = args.get("category", "")
+            limit = int(args.get("limit", 20))
+            con = _get_db()
+            try:
+                if category:
+                    rows = con.execute(
+                        """SELECT event_id, "when" AS when_ts, title, short_summary, free_note
+                           FROM events
+                           WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
+                                  OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
+                                  OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
+                                  OR free_note LIKE ?)
+                           ORDER BY "when" DESC LIMIT ?""",
+                        (f"%{category}%", limit)
+                    ).fetchall()
+                else:
+                    rows = con.execute(
+                        """SELECT event_id, "when" AS when_ts, title, short_summary, free_note
+                           FROM events
+                           WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
+                                  OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
+                                  OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
+                                  OR title LIKE '%CLAIM%')
+                           ORDER BY "when" DESC LIMIT ?""",
+                        (limit,)
+                    ).fetchall()
+                result = [dict(r) for r in rows]
+            finally:
+                con.close()
+            auto_log(name, args, f"{len(result)} incidents")
+            return json.dumps({"incidents": result, "count": len(result)}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_guidelines":
+            guidelines_path = BASE / "data" / "guidelines.json"
+            if not guidelines_path.exists():
+                return json.dumps({"error": "guidelines.json not found", "path": str(guidelines_path)}, ensure_ascii=False)
+            data = json.loads(guidelines_path.read_text(encoding="utf-8-sig"))
+            top = data[:20] if isinstance(data, list) else data
+            total = len(data) if isinstance(data, list) else 1
+            auto_log(name, args, f"guidelines loaded total={total}")
+            return json.dumps({"guidelines": top, "total": total}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_command_center":
+            import urllib.request
+            results = {}
+            endpoints = {
+                "loop_status": "http://localhost:5000/loop/status",
+                "risk": "http://localhost:5000/risk/recommendation",
+                "heinrich": "http://localhost:5000/heinrich/status",
+            }
+            for ep_name, url in endpoints.items():
+                try:
+                    with urllib.request.urlopen(url, timeout=3) as resp:
+                        results[ep_name] = json.loads(resp.read().decode("utf-8"))
+                except Exception as e:
+                    results[ep_name] = {"error": str(e)}
+            auto_log(name, args, "command center fetched")
+            return json.dumps(results, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_check_utf8":
+            filepath = args.get("filepath", "")
+            p = Path(filepath)
+            if not p.exists():
+                return json.dumps({"ok": False, "error": f"File not found: {filepath}"}, ensure_ascii=False)
+            raw = p.read_bytes()
+            result = {
+                "filepath": filepath,
+                "size_bytes": len(raw),
+                "has_bom": raw[:3] == b'\xef\xbb\xbf',
+                "ok": True,
+                "issues": []
+            }
+            if result["has_bom"]:
+                result["issues"].append("BOM detected (U+FEFF at start)")
+                result["ok"] = False
+            try:
+                text = raw.decode("utf-8")
+                result["encoding"] = "utf-8"
+                result["line_count"] = text.count('\n')
+            except UnicodeDecodeError as e:
+                result["ok"] = False
+                result["encoding"] = "NOT UTF-8"
+                result["issues"].append(f"UTF-8 decode error at byte {e.start}: {e.reason}")
+                try:
+                    raw.decode("cp932")
+                    result["issues"].append("File appears to be cp932 encoded")
+                except Exception:
+                    result["issues"].append("Cannot decode as cp932 either")
+            auto_log(name, args, f"utf8 check ok={result['ok']}")
+            return json.dumps(result, ensure_ascii=False, indent=2)
+
         elif name == "mocka_get_command_center":
             try:
                 import urllib.request
