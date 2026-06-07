@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-06",
+    "updated": "2026-06-07",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -25,8 +25,9 @@
       "category": "MoCKAコア/caliber/検索",
       "description": "mocka_searchがキーワード一致の羅列を返しており意味がない。SQLiteのFTS（全文検索）またはスコアリングロジックを改善し、関連度の高い結果を上位に返すようにする。",
       "assigned_to": "Claude",
-      "note": "LB_001由来。引き継ぎパケット2026-06-04",
-      "created_at": "2026-06-05T00:00:00"
+      "note": "対象はmocka_mcp_server.pyの検索ロジック。user_voiceのfree_note（引き継ぎパケット全文）がノイズとしてヒット。修正方針: user_voice除外 + free_note検索対象外（案C）。3セッション持ち越し中・未着手。",
+      "created_at": "2026-06-05T00:00:00",
+      "updated_at": "2026-06-07T09:41:29.347957"
     },
     {
       "id": "TODO_LB002",
@@ -164,14 +165,15 @@
     {
       "id": "TODO_221",
       "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "最高",
       "category": "Web/WordPress/miniMoCKA",
       "description": "Orchestraは本番Stripe稼働中なのにLP未整備。最優先で投入する。コンテンツ: ①キャッチコピー+概要 ②Free/Pro/One料金プラン表 ③Stripeペイメントリンク埋め込み ④インストール方法 ⑤基本操作説明 ⑥Q&A。既存orchestra_i18n_cs.htmlのコンテンツを流用・WordPressに最適化。",
       "assigned_to": "Claude（コンテンツ生成）+ きむら博士（投入）",
-      "note": "",
+      "note": "orchestra_lp_v4.html（5言語対応）生成済み・WP-CLIでpage_id=61に投入試みたがTheme CSS干渉で未確定。投入手順まで完了・最終確認待ち。",
       "reference_event": "",
-      "created_at": "2026-06-03T15:57:36.763582"
+      "created_at": "2026-06-03T15:57:36.763582",
+      "updated_at": "2026-06-07T09:41:20.541465"
     },
     {
       "id": "TODO_160",
@@ -438,18 +440,6 @@
       "note": "一時停止。再開指示待ち。",
       "reference_event": "",
       "created_at": "2026-06-06T14:53:20.918597"
-    },
-    {
-      "id": "TODO_245",
-      "title": "Orchestra v1.1.0: 30日トライアル実装→ストア申請",
-      "status": "未着手",
-      "priority": "高",
-      "category": "mini-MoCKA",
-      "description": "Googleアカウント紐付けトライアル機能実装。TASK1(CF Workers) → TASK2(trial.js) → TASK3(manifest) → TASK4(UI) → ストアアップロード。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "",
-      "created_at": "2026-06-06T15:01:58.589695"
     }
   ],
   "completed": [
@@ -3282,6 +3272,20 @@
       "created_at": "2026-06-06T14:20:09.347400",
       "updated_at": "2026-06-06T14:37:58.905568",
       "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_245",
+      "title": "Orchestra v1.1.0: 30日トライアル実装→ストア申請",
+      "status": "完了",
+      "priority": "高",
+      "category": "mini-MoCKA",
+      "description": "Googleアカウント紐付けトライアル機能実装。TASK1(CF Workers) → TASK2(trial.js) → TASK3(manifest) → TASK4(UI) → ストアアップロード。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06完了。TASK1(CF Worker: /api/trial/start, /api/trial/status) TASK2(trial.js: TrialManager・OAuth認証・KVキャッシュ) TASK3(manifest.json: identity権限・OAuth2 client_id追加) TASK4(popup.html: trial-bannerバナーUI) TASK5(orchestra-v1.1.0.zip生成・CWS審査提出済み)。wrangler deployとCWS審査結果待ち。",
+      "reference_event": "",
+      "created_at": "2026-06-06T15:01:58.589695",
+      "updated_at": "2026-06-07T09:33:19.614167",
+      "completed_at": "2026-06-07"
     }
   ],
   "orchestra_handoff": {
