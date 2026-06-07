@@ -1,0 +1,16 @@
+{
+  "adapter_id": "OA-005",
+  "name": "GitHub Pages",
+  "enabled": false,
+  "auth": {
+    "method": "github_token",
+    "token": ""
+  },
+  "repo": {
+    "owner": "",
+    "name": "",
+    "branch": "main",
+    "content_path": "content/"
+  },
+  "health_check_interval_min": 120
+}

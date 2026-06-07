@@ -872,3 +872,94 @@ chrome.runtime.onMessage.addListener((msg) => {
     }
   });
 })();
+
+// ── Trial Banner ─────────────────────────────────────────────────────────────
+(function initTrialBanner() {
+  if (typeof TrialManager === 'undefined') return;
+
+  const banner    = document.getElementById('trial-banner');
+  const titleEl   = document.getElementById('trial-banner-title');
+  const subEl     = document.getElementById('trial-banner-sub');
+  const daysEl    = document.getElementById('trial-days-display');
+  const startBtn  = document.getElementById('trial-start-btn');
+  if (!banner || !startBtn) return;
+
+  async function refreshBanner() {
+    const info = await TrialManager.check().catch(() => ({ access: 'free', source: 'free' }));
+
+    // Proライセンス保持者はバナー非表示
+    if (info.access === 'pro' || info.access === 'one') {
+      banner.classList.remove('visible');
+      return;
+    }
+
+    if (info.access === 'trial') {
+      // トライアル進行中
+      banner.classList.add('visible');
+      banner.classList.remove('expired');
+      titleEl.textContent = 'Pro Trial Active';
+      titleEl.classList.remove('expired-text');
+      subEl.textContent = 'AI Share & Collab are unlocked during trial';
+      daysEl.style.display = 'block';
+      daysEl.innerHTML = `${info.days_left}<span>days left</span>`;
+      startBtn.style.display = 'none';
+      return;
+    }
+
+    if (info.trial_status === 'expired') {
+      // トライアル期限切れ
+      banner.classList.add('visible', 'expired');
+      titleEl.textContent = 'Trial Expired';
+      titleEl.classList.add('expired-text');
+      subEl.textContent = 'Upgrade to keep AI Share & Collab features';
+      daysEl.style.display = 'none';
+      startBtn.textContent = 'Upgrade →';
+      startBtn.style.display = '';
+      startBtn.onclick = () => {
+        const navSettings = document.getElementById('nav-settings');
+        if (navSettings) navSettings.click();
+      };
+      return;
+    }
+
+    // none: まだトライアル未使用
+    banner.classList.add('visible');
+    banner.classList.remove('expired');
+    titleEl.textContent = 'Try Pro free for 30 days';
+    titleEl.classList.remove('expired-text');
+    subEl.textContent = 'Unlock AI Share & Collab — no credit card required';
+    daysEl.style.display = 'none';
+    startBtn.textContent = 'Start Trial';
+    startBtn.style.display = '';
+    startBtn.onclick = handleStartTrial;
+  }
+
+  async function handleStartTrial() {
+    startBtn.disabled = true;
+    startBtn.textContent = 'Signing in…';
+    try {
+      const result = await TrialManager.startTrial();
+      if (result.ok) {
+        startBtn.textContent = '✓ Started!';
+        setTimeout(refreshBanner, 800);
+      } else if (result.error === 'already_used') {
+        startBtn.disabled = false;
+        await refreshBanner();
+      } else if (result.error === 'oauth_failed') {
+        startBtn.disabled = false;
+        startBtn.textContent = 'Start Trial';
+        subEl.textContent = 'Sign in with Google to activate trial';
+      } else {
+        startBtn.disabled = false;
+        startBtn.textContent = 'Try again';
+        subEl.textContent = 'Could not connect. Please check your connection.';
+      }
+    } catch (e) {
+      startBtn.disabled = false;
+      startBtn.textContent = 'Start Trial';
+    }
+  }
+
+  startBtn.onclick = handleStartTrial;
+  refreshBanner();
+})();

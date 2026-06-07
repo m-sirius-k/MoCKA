@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR-OS Command Center</title>
+<style>
+/* ── Reset & Variables ─────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #070d14;
+  --bg2:      #0d1520;
+  --surface:  #111c2b;
+  --surface2: #172234;
+  --border:   #1e2f45;
+  --border2:  #243648;
+  --text:     #cdd9e5;
+  --muted:    #6b8099;
+  --accent:   #4fa3ff;
+  --accent2:  #1a6fff;
+  --green:    #3dba6c;
+  --yellow:   #d4a017;
+  --red:      #e54b4b;
+  --purple:   #9b72f0;
+  --teal:     #2ab9a8;
+  --glow:     rgba(79,163,255,.12);
+  --radius:   10px;
+  --font:     'Segoe UI', 'Hiragino Sans', system-ui, sans-serif;
+}
+
+/* ── Base ──────────────────────────────── */
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13.5px;
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── Scrollbar ─────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track  { background: var(--bg2); }
+::-webkit-scrollbar-thumb  { background: var(--border2); border-radius: 4px; }
+
+/* ── Layout ────────────────────────────── */
+.shell { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ───────────────────────────── */
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 22px 20px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .logo-mark {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.sidebar-logo .logo-sub {
+  font-size: 10px;
+  color: var(--muted);
+}
+.nav-section { padding: 16px 12px 8px; }
+.nav-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding: 0 8px 6px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .15s;
+  margin-bottom: 2px;
+  user-select: none;
+}
+.nav-item:hover { background: var(--surface); color: var(--text); }
+.nav-item.active {
+  background: linear-gradient(90deg, rgba(79,163,255,.15), transparent);
+  color: var(--accent);
+  border-left: 2px solid var(--accent);
+}
+.nav-icon { font-size: 15px; width: 20px; text-align: center; }
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+}
+.sidebar-footer .ver { color: var(--accent); font-weight: 600; }
+
+/* ── Main Area ──────────────────────────── */
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ── Top Bar ────────────────────────────── */
+.topbar {
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 15px; font-weight: 600; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.topbar-time {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: monospace;
+}
+
+/* ── Content ────────────────────────────── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+}
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* ── Cards ──────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+/* ── Stat Cards ─────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.stat-card.accent::before  { background: var(--accent); }
+.stat-card.green::before   { background: var(--green); }
+.stat-card.yellow::before  { background: var(--yellow); }
+.stat-card.purple::before  { background: var(--purple); }
+
+.stat-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; font-weight: 600; letter-spacing: .5px; }
+.stat-value { font-size: 30px; font-weight: 700; line-height: 1; }
+.stat-value.accent { color: var(--accent); }
+.stat-value.green  { color: var(--green); }
+.stat-value.yellow { color: var(--yellow); }
+.stat-value.purple { color: var(--purple); }
+.stat-sub   { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* ── Grid layouts ────────────────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.grid-6-4 { display: grid; grid-template-columns: 6fr 4fr; gap: 14px; margin-bottom: 14px; }
+
+/* ── Tables ─────────────────────────────── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left;
+  padding: 9px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  vertical-align: middle;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+code { font-family: monospace; font-size: 12px; color: var(--accent); }
+
+/* ── Badges ──────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.b-green  { background: rgba(61,186,108,.15); color: var(--green); }
+.b-blue   { background: rgba(79,163,255,.15); color: var(--accent); }
+.b-yellow { background: rgba(212,160,23,.15); color: var(--yellow); }
+.b-red    { background: rgba(229,75,75,.15);  color: var(--red); }
+.b-gray   { background: rgba(107,128,153,.12);color: var(--muted); }
+.b-purple { background: rgba(155,114,240,.15);color: var(--purple); }
+.b-teal   { background: rgba(42,185,168,.15); color: var(--teal); }
+
+/* ── Status Dot ──────────────────────────── */
+.dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+.dot-green  { background: var(--green);  box-shadow: 0 0 6px var(--green); }
+.dot-gray   { background: var(--muted); }
+.dot-red    { background: var(--red);    box-shadow: 0 0 6px var(--red); }
+.dot-yellow { background: var(--yellow); }
+
+/* ── Buttons ─────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--accent);
+  color: #020c17;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity .15s;
+}
+.btn:hover { opacity: .85; }
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none;
+  border: 1px solid var(--border2);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: 7px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-ghost:hover { background: var(--surface2); }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+
+/* ── Score Bar ────────────────────────────── */
+.score-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.score-track {
+  flex: 1;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.score-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .4s ease;
+}
+
+/* ── Adapter Row ─────────────────────────── */
+.adapter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.adapter-row:last-child { border-bottom: none; }
+.adapter-info { display: flex; flex-direction: column; gap: 2px; }
+.adapter-name { font-weight: 600; display: flex; align-items: center; }
+.adapter-id   { font-size: 11px; color: var(--muted); font-family: monospace; }
+.adapter-meta { display: flex; align-items: center; gap: 12px; }
+
+/* ── Alert ────────────────────────────────── */
+.alert-list { display: flex; flex-direction: column; gap: 0; }
+.alert-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.alert-item:last-child { border-bottom: none; }
+.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.alert-body { flex: 1; }
+.alert-msg  { font-size: 13px; }
+.alert-time { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* ── Score Distribution ───────────────────── */
+.score-dist-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+.score-dist-row:last-child { border-bottom: none; }
+.score-dist-label { flex: 1; font-size: 12px; color: var(--muted); }
+.score-dist-track {
+  width: 120px;
+  height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.score-dist-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width .5s ease;
+}
+.score-dist-count { font-size: 13px; font-weight: 600; width: 24px; text-align: right; }
+
+/* ── Empty ────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  color: var(--muted);
+  padding: 40px 20px;
+  font-size: 13px;
+}
+.empty-icon { font-size: 28px; margin-bottom: 8px; }
+
+/* ── Publish Grid ─────────────────────────── */
+.pub-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+/* ── Pipeline Viz ─────────────────────────── */
+.pipeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 20px 0;
+}
+.pipe-step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+.pipe-step::after {
+  content: '→';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-60%);
+  color: var(--muted);
+  font-size: 16px;
+}
+.pipe-step:last-child::after { display: none; }
+.pipe-box {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 12px 8px;
+  margin: 0 14px;
+}
+.pipe-icon { font-size: 20px; }
+.pipe-name { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+/* ── Glow effects ─────────────────────────── */
+.glow-accent { text-shadow: 0 0 20px rgba(79,163,255,.4); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<!-- ══ Sidebar ═══════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">PR-OS</div>
+    <div class="logo-sub">Command Center v1.0</div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">メイン</div>
+    <div class="nav-item active" onclick="goto('dashboard',this)">
+      <span class="nav-icon">◈</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="goto('knowledge',this)">
+      <span class="nav-icon">◧</span> Knowledge Board
+    </div>
+    <div class="nav-item" onclick="goto('publish',this)">
+      <span class="nav-icon">◉</span> Publish Manager
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">システム</div>
+    <div class="nav-item" onclick="goto('adapters',this)">
+      <span class="nav-icon">⬡</span> Adapters (TSI)
+    </div>
+    <div class="nav-item" onclick="goto('aigate',this)">
+      <span class="nav-icon">◈</span> AI Gate
+    </div>
+    <div class="nav-item" onclick="goto('scheduler',this)">
+      <span class="nav-icon">◷</span> Scheduler
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">分析・改善</div>
+    <div class="nav-item" onclick="goto('analytics',this)">
+      <span class="nav-icon">◎</span> Analytics
+    </div>
+    <div class="nav-item" onclick="goto('rewriter',this)">
+      <span class="nav-icon">✦</span> AI Rewriter
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    MoCKA PlanningCaliber<br>
+    <span class="ver">Phase 1 Complete</span>
+  </div>
+</aside>
+
+<!-- ══ Main Area ══════════════════════════════ -->
+<div class="main-area">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">Dashboard</div>
+    <div class="topbar-actions">
+      <div class="topbar-time" id="clock"></div>
+      <button class="btn-ghost btn-sm" onclick="refreshAll()">↻ 更新</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── Dashboard ───────────────────────── -->
+    <div id="pane-dashboard" class="tab-pane active">
+      <div class="stats-grid">
+        <div class="stat-card accent">
+          <div class="stat-label">Knowledge Sources</div>
+          <div class="stat-value accent" id="s-total">0</div>
+          <div class="stat-sub">全KS数</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Confirmed</div>
+          <div class="stat-value green" id="s-confirmed">0</div>
+          <div class="stat-sub">確定済み原本</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Published</div>
+          <div class="stat-value yellow" id="s-published">0</div>
+          <div class="stat-sub">全媒体公開合計</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Pending Approval</div>
+          <div class="stat-value purple" id="s-pending">0</div>
+          <div class="stat-sub">手動承認待ち</div>
+        </div>
+      </div>
+
+      <div class="grid-6-4">
+        <!-- 最近のKS -->
+        <div class="card">
+          <div class="card-title">最近の Knowledge Source</div>
+          <div id="recent-ks">
+            <div class="empty-state"><div class="empty-icon">◧</div>まだKnowledge Sourceがありません</div>
+          </div>
+        </div>
+
+        <!-- AI Gate パイプライン -->
+        <div class="card">
+          <div class="card-title">AI Gate パイプライン</div>
+          <div class="pipeline">
+            <div class="pipe-step">
+              <div class="pipe-box"><div class="pipe-icon">✍</div><div class="pipe-name">Input</div></div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-box"><div class="pipe-icon">✦</div><div class="pipe-name">Proofread</div></div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-box"><div class="pipe-icon">⬡</div><div class="pipe-name">Integrity</div></div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-box"><div class="pipe-icon">◈</div><div class="pipe-name">Score</div></div>
+            </div>
+            <div class="pipe-step">
+              <div class="pipe-box"><div class="pipe-icon">◉</div><div class="pipe-name">KS_NNN</div></div>
+            </div>
+          </div>
+
+          <div class="card-title" style="margin-top:16px">スコア分布</div>
+          <div id="score-dist">
+            <div class="score-dist-row">
+              <div class="score-dist-label">優良 0.9〜1.0</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd-excellent" style="width:0%;background:var(--green)"></div></div>
+              <div class="score-dist-count" id="sc-excellent">0</div>
+            </div>
+            <div class="score-dist-row">
+              <div class="score-dist-label">良好 0.8〜0.9</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd-good" style="width:0%;background:var(--accent)"></div></div>
+              <div class="score-dist-count" id="sc-good">0</div>
+            </div>
+            <div class="score-dist-row">
+              <div class="score-dist-label">要確認 0.6〜0.8</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd-review" style="width:0%;background:var(--yellow)"></div></div>
+              <div class="score-dist-count" id="sc-review">0</div>
+            </div>
+            <div class="score-dist-row">
+              <div class="score-dist-label">要修正 &lt;0.6</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd-reject" style="width:0%;background:var(--red)"></div></div>
+              <div class="score-dist-count" id="sc-reject">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alert Panel -->
+      <div class="card">
+        <div class="card-title">Alert Panel</div>
+        <div class="alert-list" id="alert-list">
+          <div class="alert-item">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-body">
+              <div class="alert-msg">Adapter未設定: WordPress / X / Instagram / GitHub Pages / Newsletter</div>
+              <div class="alert-time">各 adapters/*/config.json の api_endpoint・auth を設定してください</div>
+            </div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon">✅</div>
+            <div class="alert-body">
+              <div class="alert-msg">PR-OS Phase 1 構築完了 — AI Gate・Knowledge Store・WordPress Adapter・Command Center 実装済み</div>
+              <div class="alert-time">2026-06-06</div>
+            </div>
+          </div>
+          <div class="alert-item">
+            <div class="alert-icon">✅</div>
+            <div class="alert-body">
+              <div class="alert-msg">X (Twitter) Adapter・Instagram Adapter・Scheduler 実装完了</div>
+              <div class="alert-time">2026-06-06</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Knowledge Board ──────────────────── -->
+    <div id="pane-knowledge" class="tab-pane">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:15px;font-weight:600">Knowledge Board</div>
+        <div style="display:flex;gap:8px">
+          <select id="ks-filter" onchange="renderKS()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:7px;font-size:12px">
+            <option value="">すべてのステータス</option>
+            <option value="confirmed">confirmed</option>
+            <option value="draft">draft</option>
+            <option value="pending_approval">pending_approval</option>
+            <option value="rejected">rejected</option>
+          </select>
+          <button class="btn-ghost btn-sm" onclick="renderKS()">↻</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>タイトル</th><th>ステータス</th>
+                <th>スコア</th><th>カテゴリ</th><th>作成日</th><th>配信状況</th>
+              </tr>
+            </thead>
+            <tbody id="ks-tbody">
+              <tr><td colspan="7" class="empty-state">読み込み中…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Publish Manager ──────────────────── -->
+    <div id="pane-publish" class="tab-pane">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:15px;font-weight:600">Publish Manager</div>
+        <button class="btn-ghost btn-sm" onclick="renderPublish()">↻</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th><th>タイトル</th>
+                <th>WordPress</th><th>X</th><th>Instagram</th>
+                <th>GitHub Pages</th><th>Newsletter</th>
+              </tr>
+            </thead>
+            <tbody id="pub-tbody">
+              <tr><td colspan="7" class="empty-state">確定済みKSがありません</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Adapters (TSI) ───────────────────── -->
+    <div id="pane-adapters" class="tab-pane">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:15px;font-weight:600">Adapter Health — TSI Monitor</div>
+        <button class="btn-ghost btn-sm" onclick="alert('TSI実行はPhase 3で実装予定です。\npython pros.py health で確認できます。')">ヘルスチェック実行</button>
+      </div>
+      <div class="card">
+        <div id="adapter-list">
+          <!-- OA-001 -->
+          <div class="adapter-row">
+            <div class="adapter-info">
+              <div class="adapter-name"><span class="dot dot-gray"></span>WordPress</div>
+              <div class="adapter-id">OA-001 · adapters/wordpress/config.json</div>
+            </div>
+            <div class="adapter-meta">
+              <span class="badge b-gray">disabled</span>
+              <span style="font-size:11px;color:var(--muted)">REST API v2</span>
+            </div>
+          </div>
+          <!-- OA-002 -->
+          <div class="adapter-row">
+            <div class="adapter-info">
+              <div class="adapter-name"><span class="dot dot-gray"></span>X (Twitter)</div>
+              <div class="adapter-id">OA-002 · adapters/x_twitter/config.json</div>
+            </div>
+            <div class="adapter-meta">
+              <span class="badge b-gray">disabled</span>
+              <span style="font-size:11px;color:var(--muted)">API v2 · スレッド対応</span>
+            </div>
+          </div>
+          <!-- OA-003 -->
+          <div class="adapter-row">
+            <div class="adapter-info">
+              <div class="adapter-name"><span class="dot dot-gray"></span>Instagram</div>
+              <div class="adapter-id">OA-003 · adapters/instagram/config.json</div>
+            </div>
+            <div class="adapter-meta">
+              <span class="badge b-gray">disabled</span>
+              <span style="font-size:11px;color:var(--muted)">Graph API v19</span>
+            </div>
+          </div>
+          <!-- OA-005 -->
+          <div class="adapter-row">
+            <div class="adapter-info">
+              <div class="adapter-name"><span class="dot dot-gray"></span>GitHub Pages</div>
+              <div class="adapter-id">OA-005 · adapters/github_pages/config.json</div>
+            </div>
+            <div class="adapter-meta">
+              <span class="badge b-gray">disabled</span>
+              <span style="font-size:11px;color:var(--muted)">Phase 4</span>
+            </div>
+          </div>
+          <!-- OA-006 -->
+          <div class="adapter-row">
+            <div class="adapter-info">
+              <div class="adapter-name"><span class="dot dot-gray"></span>Newsletter</div>
+              <div class="adapter-id">OA-006 · adapters/newsletter/config.json</div>
+            </div>
+            <div class="adapter-meta">
+              <span class="badge b-gray">disabled</span>
+              <span style="font-size:11px;color:var(--muted)">Phase 4</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px" class="card">
+        <div class="card-title">有効化手順</div>
+        <div style="color:var(--muted);font-size:13px;line-height:2">
+          1. 各 <code>adapters/*/config.json</code> を開く<br>
+          2. <code>"enabled": true</code> に変更<br>
+          3. <code>api_endpoint</code> と <code>auth</code> を記入<br>
+          4. <code>python pros.py health</code> で接続確認
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AI Gate ───────────────────────────── -->
+    <div id="pane-aigate" class="tab-pane">
+      <div style="font-size:15px;font-weight:600;margin-bottom:16px">AI Gate</div>
+      <div class="grid-2" style="margin-bottom:14px">
+        <div class="card">
+          <div class="card-title">処理キュー</div>
+          <div class="empty-state"><div class="empty-icon">◈</div>現在処理中のジョブはありません<br>
+          <code style="font-size:11px;margin-top:8px;display:block">python pros.py submit "タイトル" file.md</code></div>
+        </div>
+        <div class="card">
+          <div class="card-title">品質スコア分布</div>
+          <div id="score-dist-2">
+            <div class="score-dist-row">
+              <div class="score-dist-label">優良 0.9〜1.0</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-excellent" style="width:0%;background:var(--green)"></div></div>
+              <div class="score-dist-count" id="sc2-excellent">0</div>
+            </div>
+            <div class="score-dist-row">
+              <div class="score-dist-label">良好 0.8〜0.9</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-good" style="width:0%;background:var(--accent)"></div></div>
+              <div class="score-dist-count" id="sc2-good">0</div>
+            </div>
+            <div class="score-dist-row">
+              <div class="score-dist-label">要確認 0.6〜0.8</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-review" style="width:0%;background:var(--yellow)"></div></div>
+              <div class="score-dist-count" id="sc2-review">0</div>
+            </div>
+            <div class="score-dist-row">
+              <div class="score-dist-label">要修正 &lt;0.6</div>
+              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-reject" style="width:0%;background:var(--red)"></div></div>
+              <div class="score-dist-count" id="sc2-reject">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">品質スコア基準</div>
+        <table>
+          <thead><tr><th>スコア</th><th>判定</th><th>処理</th></tr></thead>
+          <tbody>
+            <tr><td><span class="badge b-green">0.9〜1.0</span></td><td>優良</td><td>自動確定</td></tr>
+            <tr><td><span class="badge b-blue">0.8〜0.9</span></td><td>良好</td><td>自動確定（ログ記録）</td></tr>
+            <tr><td><span class="badge b-yellow">0.6〜0.8</span></td><td>要確認</td><td>きむら博士へ通知 → 手動承認</td></tr>
+            <tr><td><span class="badge b-red">&lt;0.6</span></td><td>要修正</td><td>ドラフト差し戻し</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── Scheduler ─────────────────────────── -->
+    <div id="pane-scheduler" class="tab-pane">
+      <div style="font-size:15px;font-weight:600;margin-bottom:16px">Scheduler — 予約配信キュー</div>
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card accent">
+          <div class="stat-label">Total Jobs</div>
+          <div class="stat-value accent" id="q-total">0</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Pending</div>
+          <div class="stat-value yellow" id="q-pending">0</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Done</div>
+          <div class="stat-value green" id="q-done">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Failed</div>
+          <div class="stat-value" id="q-failed" style="color:var(--red)">0</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Job ID</th><th>KS ID</th><th>Adapter</th><th>配信予定</th><th>ステータス</th><th>作成日</th></tr>
+            </thead>
+            <tbody id="queue-tbody">
+              <tr><td colspan="6" class="empty-state">
+                <div class="empty-icon">◷</div>
+                予約ジョブがありません<br>
+                <code style="font-size:11px;margin-top:8px;display:block">python pros.py schedule KS_001 wordpress 2026-06-10T10:00:00+09:00</code>
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+      <!-- ── Analytics ────────────────────────── -->
+    <div id="pane-analytics" class="tab-pane">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="font-size:15px;font-weight:600">Google Analytics 4</div>
+        <span class="badge b-gray" id="ga-status-badge">未設定</span>
+      </div>
+
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
+        <div class="stat-card accent">
+          <div class="stat-label">Sessions</div>
+          <div class="stat-value accent" id="ga-sessions">—</div>
+          <div class="stat-sub" id="ga-days-label">過去30日</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Page Views</div>
+          <div class="stat-value green" id="ga-pageviews">—</div>
+          <div class="stat-sub">ページビュー</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-label">Bounce Rate</div>
+          <div class="stat-value yellow" id="ga-bounce">—</div>
+          <div class="stat-sub">直帰率</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-label">Avg Duration</div>
+          <div class="stat-value purple" id="ga-duration">—</div>
+          <div class="stat-sub">平均滞在時間</div>
+        </div>
+      </div>
+
+      <div class="card" id="ga-setup-card">
+        <div class="card-title">GA4 設定手順</div>
+        <div style="color:var(--muted);font-size:13px;line-height:2.2">
+          1. <a href="https://console.cloud.google.com/" style="color:var(--accent)" target="_blank">Google Cloud Console</a> でサービスアカウントを作成<br>
+          2. <code>Google Analytics Data API</code> を有効化<br>
+          3. GA4 プロパティにサービスアカウントを閲覧者として追加<br>
+          4. 認証情報JSONをダウンロード<br>
+          5. <code>python pros.py setup-ga &lt;property_id&gt; &lt;creds.json&gt;</code> を実行<br>
+          6. <code>pip install google-analytics-data</code> でライブラリをインストール
+        </div>
+      </div>
+    </div>
+
+    <!-- ── AI Rewriter ───────────────────────── -->
+    <div id="pane-rewriter" class="tab-pane">
+      <div style="font-size:15px;font-weight:600;margin-bottom:16px">AI Rewriter — 改善提案エンジン</div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="card-title">改善ルール</div>
+        <table>
+          <thead><tr><th>優先度</th><th>カテゴリ</th><th>条件</th><th>提案内容</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="badge b-red">High</span></td>
+              <td>engagement</td>
+              <td>直帰率 &gt; 70%</td>
+              <td>冒頭3文で価値明示・見出し追加・内部リンク</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-red">High</span></td>
+              <td>length</td>
+              <td>平均滞在 &lt; 30秒</td>
+              <td>本文充実（1,000文字以上）・動画・画像追加</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-yellow">Medium</span></td>
+              <td>SEO</td>
+              <td>PV &lt; 50</td>
+              <td>タイトルにキーワード明示・メタ最適化</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-yellow">Medium</span></td>
+              <td>SEO</td>
+              <td>新規ユーザー 0</td>
+              <td>ロングテールKW追加・SNS拡散</td>
+            </tr>
+            <tr>
+              <td><span class="badge b-green">Low</span></td>
+              <td>engagement</td>
+              <td>PV&gt;200 &amp; 直帰&lt;40% &amp; 滞在&gt;2分</td>
+              <td>関連シリーズ展開・ニュースレター再配信</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title">KS別改善提案</div>
+        <div id="rewriter-content">
+          <div class="empty-state">
+            <div class="empty-icon">✦</div>
+            GA4が設定されると自動で改善提案が生成されます<br>
+            <code style="font-size:11px;margin-top:8px;display:block">python pros.py report</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main-area -->
+</div><!-- /shell -->
+
+<script src="dashboard.js"></script>
+</body>
+</html>
