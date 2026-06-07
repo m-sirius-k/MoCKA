@@ -427,6 +427,30 @@
       "note": "くろこへ実装指示済み（E20260607_041）。Phase5（TODO_250）完了後に着手。",
       "reference_event": "E20260607_041",
       "created_at": "2026-06-07T14:54:18.808510"
+    },
+    {
+      "id": "TODO_255",
+      "title": "index.html v6.1 → C:\\Users\\sirok\\MoCKA\\templates\\ に配置・動作確認",
+      "status": "未着手",
+      "priority": "高",
+      "category": "UI/COMMAND CENTER",
+      "description": "X:\\downにDLしたindex.htmlをC:\\Users\\sirok\\MoCKA\\templates\\index.html（またはstatic/index.html）に上書きコピー。localhost:5000で動作確認。確認項目: (1)全パネル表示 (2)SCАMPERモード選択→展開 (3)デバッグログ出力 (4)サーバー接続ランプ",
+      "assigned_to": "きむら博士",
+      "note": "E20260607_060。X:\\downからコピー後にapp.py再起動不要(静的ファイル)。",
+      "reference_event": "E20260607_060",
+      "created_at": "2026-06-07T16:26:36.535961"
+    },
+    {
+      "id": "TODO_256",
+      "title": "MoCKA-START.bat v2 配置・起動確認",
+      "status": "未着手",
+      "priority": "高",
+      "category": "UI/COMMAND CENTER",
+      "description": "MoCKA-START.bat v2を C:\\Users\\sirok\\MoCKA\\MoCKA-START.bat に上書き。変更点: TIC/Cloudflare/git→バックグラウンド並列化、SEO-OS/HEALTH/BEEをWTタブに統合、MECAB wait 3→1秒、WT→ブラウザ wait 4→2秒。配置後に一度手動実行して全タブが正常起動することを確認。",
+      "assigned_to": "きむら博士",
+      "note": "E20260607_060。X:\\downからコピー。既存BATのバックアップ推奨。",
+      "reference_event": "E20260607_060",
+      "created_at": "2026-06-07T16:26:43.849607"
     }
   ],
   "completed": [

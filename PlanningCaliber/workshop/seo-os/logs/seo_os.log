@@ -2977,3 +2977,18 @@
 2026-06-07 16:04:03,111 [INFO] [Bootstrap] Worker初期化完了
 2026-06-07 16:04:03,456 [WARNING]  * Debugger is active!
 2026-06-07 16:04:03,478 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 16:09:19,865 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 16:09:19,878 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 16:09:19,882 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 16:09:19,890 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 16:09:19,896 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 16:09:19,896 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 16:09:19,917 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 16:09:19,950 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 16:09:19,971 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 16:09:19,971 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 16:09:19,972 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 16:09:19,972 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 16:09:20,038 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-07 16:09:20,039 [INFO] [33mPress CTRL+C to quit[0m
