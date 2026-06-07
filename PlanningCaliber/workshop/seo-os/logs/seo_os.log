@@ -2962,3 +2962,18 @@
 2026-06-07 15:55:53,166 [WARNING]  * Debugger is active!
 2026-06-07 15:55:53,184 [INFO]  * Debugger PIN: 568-089-845
 2026-06-07 16:03:59,652 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 16:03:59,703 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 16:04:03,079 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 16:04:03,079 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 16:04:03,079 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 16:04:03,086 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 16:04:03,087 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 16:04:03,087 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 16:04:03,103 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 16:04:03,103 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 16:04:03,111 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 16:04:03,111 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 16:04:03,111 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 16:04:03,111 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 16:04:03,456 [WARNING]  * Debugger is active!
+2026-06-07 16:04:03,478 [INFO]  * Debugger PIN: 568-089-845
