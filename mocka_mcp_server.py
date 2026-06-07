@@ -130,7 +130,22 @@ def search_events(query):
     # CSV廃止済み → SQLite参照
     q = query.lower()
     rows = _db_read_events()
-    return [r for r in rows if any(q in str(v).lower() for v in r.values())]
+    PRIMARY_FIELDS = ["title", "short_summary", "why_purpose", "who_actor", "what_type", "how_trigger"]
+    scored = []
+    for r in rows:
+        score = 0
+        for f in PRIMARY_FIELDS:
+            val = str(r.get(f, "")).lower()
+            if q in val:
+                score += 10
+                if val.startswith(q):
+                    score += 5
+        if r.get("what_type") == "user_voice":
+            score = max(0, score - 8)
+        if score > 0:
+            scored.append((score, r))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [r for _, r in scored[:30]]
 
 def search_knowledge_gate(query):
     q = query.lower()
