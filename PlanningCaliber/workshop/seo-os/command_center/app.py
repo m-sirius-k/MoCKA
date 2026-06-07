@@ -1,4 +1,4 @@
-import sys, os, sqlite3
+﻿import sys, os, sqlite3
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from flask import Flask, render_template, request, jsonify
@@ -199,4 +199,4 @@ def api_worker_stats():
     return jsonify(stats)
 
 if __name__ == "__main__":
-    app.run(port=8750, debug=True)
+    app.run(port=8750, debug=True, use_reloader=False)
