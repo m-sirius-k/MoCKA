@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-07T09:47:15.939576"
+  "generated_at": "2026-06-07T09:47:15.939576",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "何も書いてない　\n\n\n\n\n\n\n\n\"background\": {\n\n\"service_worker\": \"background.js\"",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-07",
+        "why": "再発#1: MATAKA",
+        "how": "またか！ボタン",
+        "note": "hash=e8b6971e9e8cff2d|who=claude|pattern=かたれ！　この新しいchatで　すでに　10のα　10設問の答え書いてあるわ！　ばかなのか？",
+        "recur": 0,
+        "matched": [
+          "書い"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-08",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[hint] ちょっとあなたと話したい！ この論文は　本質的に　[AIとの協業　パートナーシップ]なんです！ 礼儀/作法/なり振る舞い/　自分の行動と発言に責任を持たせるような Claude君も良くあ",
+        "recur": 0,
+        "matched": [
+          "書い"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-07T00:54:02.374Z"
+  }
 }
