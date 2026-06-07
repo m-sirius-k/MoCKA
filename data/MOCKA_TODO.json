@@ -1,8 +1,8 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-05",
-    "updated_by": "Claude Code（きむら博士指示）",
+    "updated": "2026-06-06",
+    "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
       "backup": "A:/MOCKA_TODO.json"
@@ -344,18 +344,6 @@
       "created_at": "2026-06-03T15:57:48.306562"
     },
     {
-      "id": "TODO_230",
-      "title": "NTP Phase5: D001_P03 新利率取得 → master_v5更新",
-      "status": "未着手",
-      "priority": "高",
-      "category": "NTP/保険FP",
-      "description": "D001_P03（定額年金外貨建・生存保障重視型）の積立利率が2026-06-07期限切れ。Perplexityまたはブラウザでhttps://msp.ms-primary.com/g/RateList.do?product_id=57 から新利率取得し、master_v5.jsonに反映する。",
-      "assigned_to": "Claude",
-      "note": "⚠️ 2026-06-07期限。master_v4で期限警告追記済み。",
-      "reference_event": "E20260604_174",
-      "created_at": "2026-06-04T13:59:20.831330"
-    },
-    {
       "id": "TODO_231",
       "title": "NTP Phase5: C001骨格商品P02〜P07詳細調査（TSI=0.5→1.0）",
       "status": "未着手",
@@ -378,6 +366,90 @@
       "note": "AIES 2026提出（5/21）後に着手。TODO_054完了後。",
       "reference_event": "",
       "created_at": "2026-05-01T10:59:55.477108"
+    },
+    {
+      "id": "TODO_236",
+      "title": "PR-OS Phase 2 完了",
+      "status": "完了",
+      "priority": "高",
+      "category": "PR-OS / Phase 2",
+      "description": "X (Twitter) Adapter・Instagram Adapter・Scheduler実装。pros.py CLIエントリーポイント。base_adapter.py抽象基底クラスでアーキテクチャ整備。Command Center UI完全刷新。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完了。全テスト通過。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:15:51.540280"
+    },
+    {
+      "id": "TODO_239",
+      "title": "PR-OS: 各Adapter認証情報設定（WordPress優先）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "PR-OS",
+      "description": "各Adapterのconfig.jsonにWordPress/X/Instagram等の実際のAPI認証情報を設定する。credentials空欄を埋めてAdapterを稼働状態にする。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:20:04.671440"
+    },
+    {
+      "id": "TODO_241",
+      "title": "PR-OS Phase4: MoCKA Command Center統合",
+      "status": "未着手",
+      "priority": "低",
+      "category": "PR-OS",
+      "description": "PR-OS Command CenterをMoCKA既存Command Centerと統合。mocka_events.dbへの公開後フィードバック記録・双方向データフロー完成。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:20:13.628642"
+    },
+    {
+      "id": "TODO_242",
+      "title": "PR-OS: WordPress認証情報設定→実動テスト",
+      "status": "未着手",
+      "priority": "高",
+      "category": "PR-OS",
+      "description": "adapters/wordpress/config.jsonにcredentials（URL/user/app_password）を設定。python pros.py submit で実際にmocka.nsjp.orgへ投稿通しテスト。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:38:03.372496"
+    },
+    {
+      "id": "TODO_243",
+      "title": "PR-OS: mocka_bridge.py MoCKA統合動作確認",
+      "status": "未着手",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "mocka_bridge.pyの双方向統合を実稼働確認。mocka_write_event→AI Gate受付ログ、公開後フィードバック→mocka_events.db記録のフロー検証。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:38:08.091811"
+    },
+    {
+      "id": "TODO_244",
+      "title": "PR-OS: Phase4再開（WordPress認証→実動テスト→MoCKA統合確認）",
+      "status": "保留",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "2026-06-06時点でコード全完成。残作業はTODO_242（WordPress credentials設定）→TODO_243（mocka_bridge動作確認）のみ。再開時はここから。",
+      "assigned_to": "Claude",
+      "note": "一時停止。再開指示待ち。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:53:20.918597"
+    },
+    {
+      "id": "TODO_245",
+      "title": "Orchestra v1.1.0: 30日トライアル実装→ストア申請",
+      "status": "未着手",
+      "priority": "高",
+      "category": "mini-MoCKA",
+      "description": "Googleアカウント紐付けトライアル機能実装。TASK1(CF Workers) → TASK2(trial.js) → TASK3(manifest) → TASK4(UI) → ストアアップロード。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-06T15:01:58.589695"
     }
   ],
   "completed": [
@@ -3098,6 +3170,118 @@
       "created_at": "2026-06-04T13:41:40.943966",
       "updated_at": "2026-06-04T13:59:13.887844",
       "completed_at": "2026-06-04"
+    },
+    {
+      "id": "TODO_230",
+      "title": "NTP Phase5: D001_P03 新利率取得 → master_v5更新",
+      "status": "完了",
+      "priority": "高",
+      "category": "NTP/保険FP",
+      "description": "D001_P03（定額年金外貨建・生存保障重視型）の積立利率が2026-06-07期限切れ。Perplexityまたはブラウザでhttps://msp.ms-primary.com/g/RateList.do?product_id=57 から新利率取得し、master_v5.jsonに反映する。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完了。フォルダ構造・初期ファイル全配置済み。",
+      "reference_event": "E20260604_174",
+      "created_at": "2026-06-04T13:59:20.831330",
+      "updated_at": "2026-06-06T11:09:33.836765",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_232",
+      "title": "AI Gate 基本校正エンジン実装",
+      "status": "完了",
+      "priority": "高",
+      "category": "PR-OS / Phase 1",
+      "description": "ai_gate/proofreader.py・integrity_check.py・optimizer.py の実装。品質スコア0.8閾値での自動確定ロジック含む。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完了。proofreader.py / integrity_check.py / optimizer.py / gate.py 実装済み。スコアリング・KS発番・自動確定ロジック含む。",
+      "reference_event": "",
+      "created_at": "2026-06-06T11:09:44.083792",
+      "updated_at": "2026-06-06T14:01:02.439705",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_233",
+      "title": "WordPress Adapter 実装",
+      "status": "完了",
+      "priority": "高",
+      "category": "PR-OS / Phase 1",
+      "description": "adapters/wordpress/ にOA-001実装。convert/publish/schedule/health_check/get_analyticsメソッド。Application Password認証。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完了。wp_adapter.py 実装済み。convert/publish/schedule/health_check/get_analytics メソッド、md_to_html変換含む。",
+      "reference_event": "",
+      "created_at": "2026-06-06T11:09:47.391774",
+      "updated_at": "2026-06-06T14:01:03.836790",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_234",
+      "title": "PR-OS Command Center UI 作成（Phase 1）",
+      "status": "完了",
+      "priority": "中",
+      "category": "PR-OS / Phase 1",
+      "description": "command_center/index.html + dashboard.js + api.js。Knowledge Board・Publish Manager・Adapter Health・Alert Panelの基本UI。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完了。command_center/index.html + dashboard.js 実装済み。Dashboard/Knowledge Board/Publish Manager/Adapters/AI Gate タブ構成。",
+      "reference_event": "",
+      "created_at": "2026-06-06T11:09:49.459742",
+      "updated_at": "2026-06-06T14:01:05.081159",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_235",
+      "title": "TSI ヘルスモニター設計",
+      "status": "完了",
+      "priority": "中",
+      "category": "PR-OS / Phase 3",
+      "description": "各Output AdapterのAPI接続状態・最終投稿時刻・エラーログ・レート制限・出先変更検知を定期チェックするTSI（Technical Status Inspector）設計",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完了。scheduler/tsi.py実装。全5Adapter対応。アラートエンジン(4ルール)・変化検知・consecutive_failures管理。tsi_log.json永続化。",
+      "reference_event": "",
+      "created_at": "2026-06-06T11:09:52.280768",
+      "updated_at": "2026-06-06T14:30:29.636945",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_238",
+      "title": "PR-OS Phase2: TSIヘルスモニター実装",
+      "status": "完了",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "各Output AdapterのAPIヘルスを定期チェック。接続状態・最終成功時刻・エラーログ・レート制限・出先変更検知を監視する。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06 完全完成。38テスト全通過。Command Center http://localhost:8740 稼働中。MoCKA Bridge・Daemon・setup.bat・全Adapter実装済み。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:19:59.838379",
+      "updated_at": "2026-06-06T14:37:09.315569",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_237",
+      "title": "PR-OS Phase2: Google Analytics連携実装",
+      "status": "完了",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "analytics/ga_connector.py 実装。投稿後パフォーマンス収集・KSレコードへのフィードバック記録。",
+      "assigned_to": "Claude",
+      "note": "analytics/ga_connector.py GA4 Data API+キャッシュ実装済み。rewriter.py 5ルール改善提案エンジンも完成。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:19:54.634936",
+      "updated_at": "2026-06-06T14:37:52.716326",
+      "completed_at": "2026-06-06"
+    },
+    {
+      "id": "TODO_240",
+      "title": "PR-OS Phase3: 残Adapter本実装（X/Instagram/GitHub Pages/Newsletter）",
+      "status": "完了",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "X/Instagram/GitHub Pages/NewsletterのAdapterをスタブから本実装へ。各APIの認証フローと変換ロジックを完成させる。",
+      "assigned_to": "Claude",
+      "note": "全5媒体Adapter実装済み。X:スレッド自動分割 / Instagram:キャプション+ハッシュタグ / GitHub Pages:Jekyll/Hugo対応 / Newsletter:Mailchimp/Brevo。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:20:09.347400",
+      "updated_at": "2026-06-06T14:37:58.905568",
+      "completed_at": "2026-06-06"
     }
   ],
   "orchestra_handoff": {
