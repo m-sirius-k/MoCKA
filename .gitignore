@@ -29,3 +29,9 @@ archive/ledger_old/
 
 # ����p�X�A�[�J�C�u
 archive/ledger_old/
+
+# SEO-OS logs
+PlanningCaliber/workshop/seo-os/logs/
+PlanningCaliber/workshop/seo-os/data/jobs.db
+PlanningCaliber/workshop/seo-os/data/artifacts/
+PlanningCaliber/workshop/seo-os/.pytest_cache/

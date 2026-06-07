@@ -74,8 +74,10 @@ class PipelineEngine:
                 continue
 
             if kind == "capability":
-                cap    = step.get("capability","")
-                worker = request_capability(cap)
+                cap       = step.get("capability","")
+                selection = step.get("selection","priority")
+                worker    = request_capability(cap, tag="prod",
+                                                strategy=selection)
 
                 if not worker:
                     if step.get("required", True):

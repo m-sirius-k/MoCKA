@@ -76,6 +76,39 @@ def init():
         state       TEXT DEFAULT 'ready',
         updated_at  TEXT
     );
+    CREATE TABLE IF NOT EXISTS worker_metrics (
+        worker_name          TEXT PRIMARY KEY,
+        success_count        INTEGER DEFAULT 0,
+        failure_count        INTEGER DEFAULT 0,
+        avg_duration_ms      REAL    DEFAULT 0.0,
+        last_success         TEXT,
+        last_failure         TEXT,
+        consecutive_failures INTEGER DEFAULT 0,
+        updated_at           TEXT
+    );
+    CREATE TABLE IF NOT EXISTS decision_ledger (
+        id                TEXT PRIMARY KEY,
+        timestamp         TEXT NOT NULL,
+        pipeline          TEXT,
+        capability        TEXT NOT NULL,
+        strategy          TEXT NOT NULL,
+        selected_worker   TEXT NOT NULL,
+        candidate_workers TEXT,
+        selection_reason  TEXT,
+        job_id            TEXT,
+        operator          TEXT DEFAULT 'system',
+        outcome           TEXT
+    );
+    CREATE TABLE IF NOT EXISTS decision_policy (
+        id          TEXT PRIMARY KEY,
+        name        TEXT UNIQUE NOT NULL,
+        capability  TEXT,
+        rule_type   TEXT NOT NULL,
+        rule_value  TEXT NOT NULL,
+        enabled     INTEGER DEFAULT 1,
+        created_at  TEXT,
+        note        TEXT
+    );
     CREATE TABLE IF NOT EXISTS audit_log (
         id        TEXT PRIMARY KEY,
         job_id    TEXT,

@@ -11,15 +11,26 @@ class CapabilityRegistry:
     _lock = threading.Lock()
 
     @classmethod
-    def register(cls, capability: str, worker_cls) -> None:
+    def register(cls, capability: str,
+                 worker_cls,
+                 version: str = None) -> None:
+        """
+        version指定時は "capability:version" でも登録。
+        例: register("publish_blog", WordPressV2Worker, "v2")
+        → "publish_blog" と "publish_blog:v2" の両方に登録
+        """
         with cls._lock:
-            if capability not in cls._registry:
-                cls._registry[capability] = []
-            names = [w.__name__ for w in cls._registry[capability]]
-            if worker_cls.__name__ not in names:
-                cls._registry[capability].append(worker_cls)
-                info(f"[Registry] 登録: {capability} "
-                     f"← {worker_cls.__name__}")
+            for key in ([capability] +
+                        ([f"{capability}:{version}"]
+                         if version else [])):
+                if key not in cls._registry:
+                    cls._registry[key] = []
+                names = [w.__name__
+                         for w in cls._registry[key]]
+                if worker_cls.__name__ not in names:
+                    cls._registry[key].append(worker_cls)
+                    info(f"[Registry] 登録: {key} "
+                         f"← {worker_cls.__name__}")
 
     @classmethod
     def get(cls, capability: str) -> list:

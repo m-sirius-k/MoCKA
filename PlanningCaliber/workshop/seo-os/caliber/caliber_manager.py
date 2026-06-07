@@ -1,7 +1,14 @@
 import importlib, os, glob
 from caliber.capability_registry import CapabilityRegistry
 from caliber.lifecycle_manager import LifecycleManager
+from caliber.selection_strategy import select
+from caliber.performance_ledger import PerformanceLedger
+from caliber.decision_ledger import DecisionLedger
+from caliber.decision_policy import DecisionPolicyEngine
+from caliber import bootstrap
 from kernel.logger import info, warn, error
+
+ledger = PerformanceLedger()
 
 PLUGIN_DIR = os.path.join(os.path.dirname(__file__),
                            "../plugins")
@@ -19,34 +26,41 @@ def _load_plugins() -> None:
             warn(f"[Caliber] plugin読み込み失敗: {name} / {e}")
 
 def request_capability(capability: str,
-                       tag: str = "prod"):
+                       tag: str = "prod",
+                       strategy: str = "priority",
+                       job_id: str = ""):
     """
     Capabilityを満たす最適Workerを返す。
-    選択基準（Phase4）:
-      1. Capability一致
+    選択基準（Phase5）:
+      1. Capability一致（バージョン指定可: "publish_blog:v2"）
       2. tag_filter（staging/prod）
-      3. health_check（稼働確認）
-      4. priority（低いほど優先）
+      3. health_check（稼働確認）/ 連続失敗チェック
+      4. selection strategy（priority / balanced / fastest /
+                             highest_success / lowest_cost）
     """
-    _load_plugins()
-
-    # workers/ 配下の標準Workerも自動登録対象に含める
-    try:
-        importlib.import_module("workers.wordpress_worker")
-        importlib.import_module("workers.sftp_worker")
-    except Exception:
-        pass
+    bootstrap.initialize()
 
     lm = LifecycleManager()
-    candidates = CapabilityRegistry.get(capability)
 
-    if not candidates:
+    # Capability Versioning対応: "publish_blog:v2" → base="publish_blog", version="v2"
+    base_cap = capability.split(":")[0]
+    version  = capability.split(":")[1] if ":" in capability else None
+    raw = CapabilityRegistry.get(capability)
+    if not raw and version:
+        raw = CapabilityRegistry.get(base_cap)
+
+    if not raw:
         warn(f"[Caliber] {capability} を満たすWorkerなし")
         return None
 
-    scored = []
-    for cls in candidates:
+    candidates = []
+    for cls in raw:
         worker = cls()
+
+        # バージョンフィルタ
+        if version and hasattr(worker, "version"):
+            if not worker.version.startswith(version):
+                continue
 
         if tag not in worker.tags:
             continue
@@ -54,6 +68,11 @@ def request_capability(capability: str,
         state = lm.get_state(worker.name)
         if state in ("offline", "maintenance"):
             warn(f"[Caliber] {worker.name} は {state} → スキップ")
+            continue
+
+        if ledger.is_degraded(worker.name):
+            warn(f"[Caliber] {worker.name} 連続失敗 → スキップ/offline")
+            lm.set_state(worker.name, "offline")
             continue
 
         try:
@@ -66,18 +85,52 @@ def request_capability(capability: str,
             warn(f"[Caliber] {worker.name} health_check失敗")
             continue
 
-        scored.append((worker.priority, worker))
+        candidates.append(worker)
 
-    if not scored:
+    candidates = DecisionPolicyEngine().apply(
+        candidates, capability, ledger)
+
+    if not candidates:
         error(f"[Caliber] {capability} / tag={tag} "
               f"で有効なWorkerなし")
         return None
 
-    scored.sort(key=lambda x: x[0])
-    chosen = scored[0][1]
+    chosen = select(candidates, strategy)
     lm.set_state(chosen.name, "busy")
+
+    # 選択理由を構造化して記録（Decision Ledger）
+    try:
+        reason = {
+            "strategy":   strategy,
+            "tag":        tag,
+            "candidates": [
+                {
+                    "name":         c.name,
+                    "priority":     c.priority,
+                    "success_rate": round(
+                        ledger.success_rate(c.name), 3),
+                    "avg_ms":       round(
+                        ledger.get(c.name)["avg_duration_ms"], 1),
+                    "state":        lm.get_state(c.name)
+                }
+                for c in candidates
+            ],
+            "selected_score": {
+                "priority":     chosen.priority,
+                "success_rate": round(
+                    ledger.success_rate(chosen.name), 3),
+                "avg_ms":       round(
+                    ledger.get(chosen.name)["avg_duration_ms"], 1)
+            }
+        }
+        DecisionLedger().record(
+            capability, strategy, chosen,
+            candidates, reason, job_id)
+    except Exception:
+        pass
+
     info(f"[Caliber] {capability} → {chosen.name} "
-         f"(priority={chosen.priority})")
+         f"(strategy={strategy})")
     return chosen
 
 def release_worker(worker_name: str) -> None:
@@ -85,12 +138,7 @@ def release_worker(worker_name: str) -> None:
     info(f"[Caliber] {worker_name} → ready")
 
 def list_capabilities() -> dict:
-    _load_plugins()
-    try:
-        importlib.import_module("workers.wordpress_worker")
-        importlib.import_module("workers.sftp_worker")
-    except Exception:
-        pass
+    bootstrap.initialize()
     return CapabilityRegistry.all_capabilities()
 
 def get_worker_stats(conn) -> list:

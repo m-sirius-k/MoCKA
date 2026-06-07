@@ -47,9 +47,14 @@ class BaseWorker(ABC):
                         status, started_at,
                         artifact="", error="", retry=0):
         finished = datetime.now().isoformat()
-        duration = int((datetime.fromisoformat(finished) -
-                        datetime.fromisoformat(started_at))
-                       .total_seconds() * 1000)
+        try:
+            duration = int(
+                (datetime.fromisoformat(finished) -
+                 datetime.fromisoformat(started_at)
+                ).total_seconds() * 1000)
+        except Exception:
+            duration = 0
+
         conn = sqlite3.connect(DB_PATH)
         conn.execute("""
             INSERT INTO worker_history
@@ -62,3 +67,21 @@ class BaseWorker(ABC):
               finished, duration, artifact, error, retry))
         conn.commit()
         conn.close()
+
+        # Performance Ledger自動記録
+        try:
+            from caliber.performance_ledger import PerformanceLedger
+            pl = PerformanceLedger()
+            if status == "done":
+                pl.record_success(self.name, duration)
+            else:
+                pl.record_failure(self.name)
+        except Exception:
+            pass
+
+        # Lifecycle → ready に戻す
+        try:
+            from caliber.lifecycle_manager import LifecycleManager
+            LifecycleManager().set_state(self.name, "ready")
+        except Exception:
+            pass

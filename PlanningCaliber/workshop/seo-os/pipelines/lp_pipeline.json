@@ -4,7 +4,7 @@
   "steps": [
     {"order": 1, "type": "gate", "on_fail": "reject"},
     {"order": 2, "type": "policy", "policy": "lp_policy"},
-    {"order": 3, "type": "capability", "capability": "upload_html", "required": false},
-    {"order": 4, "type": "capability", "capability": "publish_lp", "required": false}
+    {"order": 3, "type": "capability", "capability": "upload_html", "selection": "balanced", "required": false},
+    {"order": 4, "type": "capability", "capability": "publish_lp", "selection": "highest_success", "required": false}
   ]
 }
