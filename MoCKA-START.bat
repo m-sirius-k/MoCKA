@@ -44,3 +44,5 @@ start "HEALTH" cmd /k "cd /d C:\Users\sirok\MoCKA && python interface/health_che
 
 REM β Ecology 毎朝スキャン
 start "BEE" cmd /k "cd /d C:\Users\sirok\MoCKA && python structural/bee.py --daily && pause"
+
+start "SEO-OS" cmd /k "cd /d C:\Users\sirok\MoCKA\PlanningCaliber\workshop\seo-os\command_center && python app.py"
