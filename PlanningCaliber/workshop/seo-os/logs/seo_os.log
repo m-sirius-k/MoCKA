@@ -2930,3 +2930,18 @@
 2026-06-07 15:53:17,626 [WARNING]  * Debugger is active!
 2026-06-07 15:53:17,643 [INFO]  * Debugger PIN: 568-089-845
 2026-06-07 15:53:32,556 [INFO]  * Detected change in 'C:\\Users\\sirok\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\\LocalCache\\local-packages\\Python313\\site-packages\\firebase_admin\\credentials.py', reloading
+2026-06-07 15:53:32,695 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:53:33,176 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:53:33,176 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:53:33,177 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:53:33,177 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:53:33,177 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:53:33,178 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:53:33,179 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:53:33,180 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:53:33,180 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:53:33,180 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:53:33,180 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:53:33,181 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:53:33,221 [WARNING]  * Debugger is active!
+2026-06-07 15:53:33,240 [INFO]  * Debugger PIN: 568-089-845
