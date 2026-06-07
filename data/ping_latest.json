@@ -15,11 +15,6 @@
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "top_todos": [
     {
-      "id": "TODO_LB001",
-      "title": "MoCKA Caliber検索品質改善 — キーワード一致羅列から意味ある検索結果へ",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_154",
       "title": "全文書き換え時の関連ファイル整合性確認を必須化",
       "priority": "最高"
@@ -35,44 +30,15 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_195",
-      "title": "PHI OS v1.0 実機テスト — chrome://extensions読み込み・Restore Packet注入確認",
+      "id": "TODO_254",
+      "title": "SEO-OS Phase6 — Decision Ledger・Explain API・Simulation Mode・MoCKA Bridge実装",
       "priority": "最高"
+    },
+    {
+      "id": "TODO_CALIBER_EXPAND_001",
+      "title": "MoCKA Caliber2.01にCOMMAND CENTER・SPP/PHL・インシデント履歴参照ツールを追加",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-06-07T09:47:15.939576",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "何も書いてない　\n\n\n\n\n\n\n\n\"background\": {\n\n\"service_worker\": \"background.js\"",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-07",
-        "why": "再発#1: MATAKA",
-        "how": "またか！ボタン",
-        "note": "hash=e8b6971e9e8cff2d|who=claude|pattern=かたれ！　この新しいchatで　すでに　10のα　10設問の答え書いてあるわ！　ばかなのか？",
-        "recur": 0,
-        "matched": [
-          "書い"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-08",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] ちょっとあなたと話したい！ この論文は　本質的に　[AIとの協業　パートナーシップ]なんです！ 礼儀/作法/なり振る舞い/　自分の行動と発言に責任を持たせるような Claude君も良くあ",
-        "recur": 0,
-        "matched": [
-          "書い"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-07T00:54:02.374Z"
-  }
+  "generated_at": "2026-06-07T15:51:38.764204"
 }

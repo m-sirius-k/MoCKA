@@ -2594,3 +2594,211 @@
 2026-06-07 15:29:00,458 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:00] "GET /api/jobs HTTP/1.1" 200 -
 2026-06-07 15:29:06,612 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:06] "GET /api/decision-policy HTTP/1.1" 200 -
 2026-06-07 15:29:23,548 [INFO] [PHIOSBridge] 監査記録: EPHIOS_DEC_20260607_152923
+2026-06-07 15:29:30,460 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:30] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:29:30,460 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:30] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:29:30,461 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:30] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:29:30,463 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:30] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:29:30,463 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:30] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:29:30,465 [INFO] 127.0.0.1 - - [07/Jun/2026 15:29:30] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:30:45,448 [INFO] 127.0.0.1 - - [07/Jun/2026 15:30:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:30:45,449 [INFO] 127.0.0.1 - - [07/Jun/2026 15:30:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:30:45,450 [INFO] 127.0.0.1 - - [07/Jun/2026 15:30:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:30:45,453 [INFO] 127.0.0.1 - - [07/Jun/2026 15:30:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:30:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:30:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:30:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:30:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:31:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:31:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:31:45,463 [INFO] 127.0.0.1 - - [07/Jun/2026 15:31:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:31:45,467 [INFO] 127.0.0.1 - - [07/Jun/2026 15:31:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:31:45,470 [INFO] 127.0.0.1 - - [07/Jun/2026 15:31:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:31:45,473 [INFO] 127.0.0.1 - - [07/Jun/2026 15:31:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:31:45,477 [INFO] 127.0.0.1 - - [07/Jun/2026 15:31:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:32:45,451 [INFO] 127.0.0.1 - - [07/Jun/2026 15:32:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:32:45,451 [INFO] 127.0.0.1 - - [07/Jun/2026 15:32:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:32:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:32:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:32:45,457 [INFO] 127.0.0.1 - - [07/Jun/2026 15:32:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:32:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:32:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:32:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:32:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:33:45,448 [INFO] 127.0.0.1 - - [07/Jun/2026 15:33:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:33:45,451 [INFO] 127.0.0.1 - - [07/Jun/2026 15:33:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:33:45,453 [INFO] 127.0.0.1 - - [07/Jun/2026 15:33:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:33:45,453 [INFO] 127.0.0.1 - - [07/Jun/2026 15:33:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:33:45,454 [INFO] 127.0.0.1 - - [07/Jun/2026 15:33:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:33:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:33:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:34:45,458 [INFO] 127.0.0.1 - - [07/Jun/2026 15:34:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:34:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:34:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:34:45,460 [INFO] 127.0.0.1 - - [07/Jun/2026 15:34:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:34:45,469 [INFO] 127.0.0.1 - - [07/Jun/2026 15:34:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:34:45,479 [INFO] 127.0.0.1 - - [07/Jun/2026 15:34:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:34:45,487 [INFO] 127.0.0.1 - - [07/Jun/2026 15:34:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:35:45,451 [INFO] 127.0.0.1 - - [07/Jun/2026 15:35:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:35:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:35:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:35:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:35:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:35:45,457 [INFO] 127.0.0.1 - - [07/Jun/2026 15:35:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:35:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:35:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:35:45,461 [INFO] 127.0.0.1 - - [07/Jun/2026 15:35:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:36:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:36:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:36:45,463 [INFO] 127.0.0.1 - - [07/Jun/2026 15:36:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:36:45,466 [INFO] 127.0.0.1 - - [07/Jun/2026 15:36:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:36:45,466 [INFO] 127.0.0.1 - - [07/Jun/2026 15:36:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:36:45,471 [INFO] 127.0.0.1 - - [07/Jun/2026 15:36:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:36:45,473 [INFO] 127.0.0.1 - - [07/Jun/2026 15:36:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:37:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:37:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:37:45,458 [INFO] 127.0.0.1 - - [07/Jun/2026 15:37:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:37:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:37:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:37:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:37:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:37:45,461 [INFO] 127.0.0.1 - - [07/Jun/2026 15:37:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:37:45,461 [INFO] 127.0.0.1 - - [07/Jun/2026 15:37:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:38:45,477 [INFO] 127.0.0.1 - - [07/Jun/2026 15:38:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:38:45,482 [INFO] 127.0.0.1 - - [07/Jun/2026 15:38:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:38:45,483 [INFO] 127.0.0.1 - - [07/Jun/2026 15:38:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:38:45,484 [INFO] 127.0.0.1 - - [07/Jun/2026 15:38:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:38:45,487 [INFO] 127.0.0.1 - - [07/Jun/2026 15:38:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:38:45,488 [INFO] 127.0.0.1 - - [07/Jun/2026 15:38:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:39:45,454 [INFO] 127.0.0.1 - - [07/Jun/2026 15:39:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:39:45,455 [INFO] 127.0.0.1 - - [07/Jun/2026 15:39:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:39:45,456 [INFO] 127.0.0.1 - - [07/Jun/2026 15:39:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:39:45,458 [INFO] 127.0.0.1 - - [07/Jun/2026 15:39:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:39:45,462 [INFO] 127.0.0.1 - - [07/Jun/2026 15:39:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:39:45,464 [INFO] 127.0.0.1 - - [07/Jun/2026 15:39:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:40:45,458 [INFO] 127.0.0.1 - - [07/Jun/2026 15:40:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:40:45,459 [INFO] 127.0.0.1 - - [07/Jun/2026 15:40:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:40:45,461 [INFO] 127.0.0.1 - - [07/Jun/2026 15:40:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:40:45,463 [INFO] 127.0.0.1 - - [07/Jun/2026 15:40:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:40:45,467 [INFO] 127.0.0.1 - - [07/Jun/2026 15:40:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:40:45,468 [INFO] 127.0.0.1 - - [07/Jun/2026 15:40:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:41:45,485 [INFO] 127.0.0.1 - - [07/Jun/2026 15:41:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:41:45,487 [INFO] 127.0.0.1 - - [07/Jun/2026 15:41:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:41:45,495 [INFO] 127.0.0.1 - - [07/Jun/2026 15:41:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:41:45,505 [INFO] 127.0.0.1 - - [07/Jun/2026 15:41:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:41:45,507 [INFO] 127.0.0.1 - - [07/Jun/2026 15:41:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:41:45,516 [INFO] 127.0.0.1 - - [07/Jun/2026 15:41:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:42:45,473 [INFO] 127.0.0.1 - - [07/Jun/2026 15:42:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:42:45,475 [INFO] 127.0.0.1 - - [07/Jun/2026 15:42:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:42:45,477 [INFO] 127.0.0.1 - - [07/Jun/2026 15:42:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:42:45,489 [INFO] 127.0.0.1 - - [07/Jun/2026 15:42:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:42:45,495 [INFO] 127.0.0.1 - - [07/Jun/2026 15:42:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:42:45,498 [INFO] 127.0.0.1 - - [07/Jun/2026 15:42:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:43:45,464 [INFO] 127.0.0.1 - - [07/Jun/2026 15:43:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:43:45,469 [INFO] 127.0.0.1 - - [07/Jun/2026 15:43:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:43:45,471 [INFO] 127.0.0.1 - - [07/Jun/2026 15:43:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:43:45,473 [INFO] 127.0.0.1 - - [07/Jun/2026 15:43:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:43:45,475 [INFO] 127.0.0.1 - - [07/Jun/2026 15:43:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:43:45,475 [INFO] 127.0.0.1 - - [07/Jun/2026 15:43:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:44:02,473 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\extension\\generate_icons.py.tmp.6932.d2aad2c9ebe1', reloading
+2026-06-07 15:44:02,542 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:44:03,002 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:44:03,002 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:44:03,002 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:44:03,003 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:44:03,003 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:44:03,003 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:44:03,004 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:44:03,005 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:44:03,005 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:44:03,005 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:44:03,005 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:44:03,005 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:44:03,054 [WARNING]  * Debugger is active!
+2026-06-07 15:44:03,073 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:44:19,052 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\fractions.py', reloading
+2026-06-07 15:44:19,111 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:44:19,557 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:44:19,557 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:44:19,557 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:44:19,558 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:44:19,558 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:44:19,558 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:44:19,559 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:44:19,559 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:44:19,560 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:44:19,560 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:44:19,560 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:44:19,560 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:44:19,601 [WARNING]  * Debugger is active!
+2026-06-07 15:44:19,617 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:44:45,466 [INFO] 127.0.0.1 - - [07/Jun/2026 15:44:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:44:45,468 [INFO] 127.0.0.1 - - [07/Jun/2026 15:44:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:44:45,469 [INFO] 127.0.0.1 - - [07/Jun/2026 15:44:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:44:45,474 [INFO] 127.0.0.1 - - [07/Jun/2026 15:44:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:44:45,474 [INFO] 127.0.0.1 - - [07/Jun/2026 15:44:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:44:45,475 [INFO] 127.0.0.1 - - [07/Jun/2026 15:44:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:45:45,497 [INFO] 127.0.0.1 - - [07/Jun/2026 15:45:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:45:45,497 [INFO] 127.0.0.1 - - [07/Jun/2026 15:45:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:45:45,498 [INFO] 127.0.0.1 - - [07/Jun/2026 15:45:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:45:45,499 [INFO] 127.0.0.1 - - [07/Jun/2026 15:45:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:45:45,499 [INFO] 127.0.0.1 - - [07/Jun/2026 15:45:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:45:45,500 [INFO] 127.0.0.1 - - [07/Jun/2026 15:45:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:46:45,476 [INFO] 127.0.0.1 - - [07/Jun/2026 15:46:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:46:45,479 [INFO] 127.0.0.1 - - [07/Jun/2026 15:46:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:46:45,481 [INFO] 127.0.0.1 - - [07/Jun/2026 15:46:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:46:45,483 [INFO] 127.0.0.1 - - [07/Jun/2026 15:46:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:46:45,487 [INFO] 127.0.0.1 - - [07/Jun/2026 15:46:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:46:45,491 [INFO] 127.0.0.1 - - [07/Jun/2026 15:46:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:47:45,502 [INFO] 127.0.0.1 - - [07/Jun/2026 15:47:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:47:45,505 [INFO] 127.0.0.1 - - [07/Jun/2026 15:47:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:47:45,507 [INFO] 127.0.0.1 - - [07/Jun/2026 15:47:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:47:45,517 [INFO] 127.0.0.1 - - [07/Jun/2026 15:47:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:47:45,518 [INFO] 127.0.0.1 - - [07/Jun/2026 15:47:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:47:45,519 [INFO] 127.0.0.1 - - [07/Jun/2026 15:47:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:48:05,641 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:05] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:48:35,339 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:35] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:48:36,401 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:36] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:48:36,404 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:36] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:48:36,409 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:36] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:48:36,410 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:36] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:48:36,410 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:36] "GET /api/jobs?status=running HTTP/1.1" 200 -
+2026-06-07 15:48:36,411 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:36] "GET /api/jobs?status=failed HTTP/1.1" 200 -
+2026-06-07 15:48:45,484 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 15:48:45,485 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:48:45,486 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 15:48:45,486 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 15:48:45,487 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 15:48:45,491 [INFO] 127.0.0.1 - - [07/Jun/2026 15:48:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 15:49:20,817 [INFO] 127.0.0.1 - - [07/Jun/2026 15:49:20] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 15:52:52,589 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:52,592 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:52,593 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:52,602 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:52,604 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:52,606 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:52,760 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:52,761 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:52,858 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:52,860 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:52,861 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:52,861 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:52,915 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-07 15:52:52,915 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-07 15:52:52,926 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:52:53,341 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:53,342 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:53,342 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:53,343 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:53,343 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:53,343 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:53,345 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:53,345 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:53,345 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:53,346 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:53,346 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:53,346 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:53,421 [WARNING]  * Debugger is active!
+2026-06-07 15:52:53,447 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:52:55,675 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\__init__.py', reloading
+2026-06-07 15:52:55,763 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:52:56,273 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:56,273 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:56,273 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:56,274 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:56,274 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:56,275 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:56,276 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:56,277 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:56,278 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:56,278 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:56,279 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:56,279 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:56,316 [WARNING]  * Debugger is active!
+2026-06-07 15:52:56,395 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:52:56,915 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\constants.py', reloading

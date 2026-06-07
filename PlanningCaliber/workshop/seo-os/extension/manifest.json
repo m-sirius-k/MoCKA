@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "SEO-OS Command Center",
+  "version": "1.0.0",
+  "description": "MoCKA SEO-OS — Capability駆動 Publishing Command Center",
+  "permissions": [
+    "storage",
+    "notifications"
+  ],
+  "host_permissions": [
+    "http://localhost:8750/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16":  "icons/icon16.png",
+      "48":  "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "SEO-OS Command Center"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16":  "icons/icon16.png",
+    "48":  "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
