@@ -1,0 +1,34 @@
+{
+  "wordpress": {
+    "enabled": true,
+    "version": "1.0.0",
+    "capabilities": ["publish_blog", "publish_lp"],
+    "endpoint": null,
+    "priority": 1,
+    "note": "WordPress REST API経由投稿"
+  },
+  "sftp": {
+    "enabled": true,
+    "version": "1.0.0",
+    "capabilities": ["upload_html", "upload_asset"],
+    "endpoint": null,
+    "priority": 2,
+    "note": "Sakura VPS SFTP配置"
+  },
+  "x": {
+    "enabled": false,
+    "version": "0.1.0",
+    "capabilities": ["post_x", "schedule_x"],
+    "endpoint": null,
+    "priority": 3,
+    "note": "X（Twitter）投稿 Phase4実装予定"
+  },
+  "instagram": {
+    "enabled": false,
+    "version": "0.1.0",
+    "capabilities": ["post_instagram"],
+    "endpoint": null,
+    "priority": 4,
+    "note": "Instagram投稿 Phase4実装予定"
+  }
+}

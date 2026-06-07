@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEO-OS Command Center</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background:#0a0a1a; color:#e2e8f0; font-family:'DM Sans',sans-serif; }
+  .card { background:#12122a; border:1px solid #2d2d5e; border-radius:12px; }
+  .btn-approve { background:#16a34a; }
+  .btn-reject  { background:#dc2626; }
+  .btn-new     { background:#c9a84c; color:#0a0a1a; font-weight:700; }
+  .badge-pending  { background:#854d0e; color:#fde68a; }
+  .badge-approved { background:#14532d; color:#86efac; }
+  .badge-done     { background:#1e3a5f; color:#93c5fd; }
+  .badge-rejected { background:#450a0a; color:#fca5a5; }
+  .dot-on  { color:#22c55e; }
+  .dot-off { color:#6b7280; }
+</style>
+</head>
+<body class="min-h-screen p-6">
+
+<div class="flex justify-between items-center mb-6">
+  <div>
+    <h1 class="text-2xl font-bold text-yellow-400">SEO-OS Command Center</h1>
+    <p class="text-slate-400 text-sm">Sirius Lab Publishing Infrastructure</p>
+  </div>
+  <button onclick="openNewJob()"
+    class="btn-new px-5 py-2 rounded-lg text-sm">
+    ＋ NEW JOB
+  </button>
+</div>
+
+<div class="grid grid-cols-4 gap-4 mb-6" id="stats"></div>
+
+<div class="flex gap-2 mb-4">
+  <button onclick="setTab('pending')"
+    id="tab-pending"
+    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-yellow-900 text-yellow-300">
+    承認待ち
+  </button>
+  <button onclick="setTab('approved')"
+    id="tab-approved"
+    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300">
+    承認済み
+  </button>
+  <button onclick="setTab('done')"
+    id="tab-done"
+    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300">
+    完了
+  </button>
+  <button onclick="setTab('rejected')"
+    id="tab-rejected"
+    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300">
+    却下
+  </button>
+  <button onclick="setTab('caliber')"
+    id="tab-caliber"
+    class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-800 text-slate-300">
+    ⚙️ Caliber
+  </button>
+</div>
+
+<div id="job-list" class="space-y-3 mb-8"></div>
+
+<div id="caliber-panel" class="hidden mb-8">
+  <div class="card p-4 mb-4">
+    <h2 class="text-sm font-bold text-yellow-400 mb-3">CAPABILITY REGISTRY</h2>
+    <div id="cap-list" class="space-y-2 text-sm"></div>
+  </div>
+  <div class="card p-4">
+    <h2 class="text-sm font-bold text-yellow-400 mb-3">WORKER LIFECYCLE</h2>
+    <div id="lifecycle-list" class="space-y-2 text-sm"></div>
+  </div>
+</div>
+
+<div class="card p-4">
+  <h2 class="text-sm font-bold text-slate-400 mb-3">WORKER STATUS</h2>
+  <div id="worker-status" class="flex gap-6 text-sm"></div>
+</div>
+
+<div id="modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+  <div class="card p-6 w-full max-w-lg">
+    <h2 class="text-lg font-bold text-yellow-400 mb-4">新規 Job 作成</h2>
+    <div class="space-y-3">
+      <input id="f-title" placeholder="タイトル（例: Orchestra LP公開）"
+        class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm">
+      <select id="f-type" class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm">
+        <option value="lp">LP公開</option>
+        <option value="blog">ブログ記事</option>
+        <option value="bot">BOT投稿</option>
+        <option value="important">重要案件</option>
+      </select>
+      <input id="f-target" placeholder="投稿先（wordpress / sftp / x / instagram）"
+        class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm">
+      <select id="f-priority" class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm">
+        <option value="1">優先度1（最高）</option>
+        <option value="2">優先度2</option>
+        <option value="3" selected>優先度3（通常）</option>
+        <option value="4">優先度4</option>
+        <option value="5">優先度5（低）</option>
+      </select>
+      <select id="f-ai_draft" class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm">
+        <option value="0">博士起草（要承認）</option>
+        <option value="1">AI生成（Policy合格で自動）</option>
+      </select>
+      <textarea id="f-note" placeholder="メモ・補足"
+        class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm h-20"></textarea>
+    </div>
+    <div class="flex gap-3 mt-4">
+      <button onclick="submitJob()"
+        class="btn-approve px-4 py-2 rounded-lg text-sm font-bold flex-1">
+        作成
+      </button>
+      <button onclick="closeModal()"
+        class="bg-slate-700 px-4 py-2 rounded-lg text-sm flex-1">
+        キャンセル
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="reject-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+  <div class="card p-6 w-full max-w-md">
+    <h2 class="text-lg font-bold text-red-400 mb-4">却下理由</h2>
+    <textarea id="reject-reason" placeholder="却下理由を入力"
+      class="w-full bg-slate-800 rounded-lg px-3 py-2 text-sm h-24 mb-4"></textarea>
+    <div class="flex gap-3">
+      <button onclick="submitReject()"
+        class="btn-reject px-4 py-2 rounded-lg text-sm font-bold flex-1">
+        却下する
+      </button>
+      <button onclick="closeRejectModal()"
+        class="bg-slate-700 px-4 py-2 rounded-lg text-sm flex-1">
+        キャンセル
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentTab = "pending";
+let rejectTargetId = null;
+
+async function load() {
+  const [pending, approved, done, rejected, all] = await Promise.all([
+    fetch("/api/jobs?status=pending").then(r=>r.json()),
+    fetch("/api/jobs?status=approved").then(r=>r.json()),
+    fetch("/api/jobs?status=done").then(r=>r.json()),
+    fetch("/api/jobs?status=rejected").then(r=>r.json()),
+    fetch("/api/jobs").then(r=>r.json())
+  ]);
+
+  document.getElementById("stats").innerHTML = `
+    <div class="card p-4 text-center">
+      <div class="text-2xl font-bold text-yellow-400">${pending.length}</div>
+      <div class="text-xs text-slate-400 mt-1">承認待ち</div>
+    </div>
+    <div class="card p-4 text-center">
+      <div class="text-2xl font-bold text-green-400">${approved.length}</div>
+      <div class="text-xs text-slate-400 mt-1">承認済み</div>
+    </div>
+    <div class="card p-4 text-center">
+      <div class="text-2xl font-bold text-blue-400">${done.length}</div>
+      <div class="text-xs text-slate-400 mt-1">完了</div>
+    </div>
+    <div class="card p-4 text-center">
+      <div class="text-2xl font-bold text-slate-400">${all.length}</div>
+      <div class="text-xs text-slate-400 mt-1">総案件</div>
+    </div>
+  `;
+
+  const map = {pending, approved, done, rejected};
+  renderJobs(map[currentTab] || []);
+}
+
+function renderJobs(jobs) {
+  const el = document.getElementById("job-list");
+  if (!jobs.length) {
+    el.innerHTML = '<div class="text-slate-500 text-sm text-center py-8">案件なし</div>';
+    return;
+  }
+  el.innerHTML = jobs.map(j => `
+    <div class="card p-4">
+      <div class="flex justify-between items-start mb-2">
+        <div>
+          <span class="text-xs text-slate-500 mr-2">${j.id}</span>
+          <span class="badge-${j.status} text-xs px-2 py-0.5 rounded-full">${j.status}</span>
+          ${j.ai_draft ? '<span class="ml-2 text-xs text-purple-400">🤖 AI生成</span>' : '<span class="ml-2 text-xs text-yellow-400">✍️ 博士起草</span>'}
+        </div>
+        <span class="text-xs text-slate-500">P${j.priority}</span>
+      </div>
+      <div class="font-bold text-white mb-1">${j.title}</div>
+      <div class="text-xs text-slate-400 mb-3">
+        ${j.type} → ${j.target || '-'} | ${j.created_at ? j.created_at.slice(0,16) : ''}
+        ${j.note ? '<br>📝 ' + j.note : ''}
+      </div>
+      ${j.status === 'pending' ? `
+        <div class="flex gap-2">
+          <button onclick="approve('${j.id}')"
+            class="btn-approve px-3 py-1 rounded text-xs font-bold">承認</button>
+          <button onclick="openReject('${j.id}')"
+            class="btn-reject px-3 py-1 rounded text-xs font-bold">却下</button>
+        </div>
+      ` : ''}
+      ${j.status === 'approved' ? `
+        <div class="mt-2">
+          <button onclick="runJob('${j.id}')"
+            class="bg-blue-700 px-3 py-1 rounded text-xs font-bold">▶ 実行</button>
+          <div id="progress-${j.id}" class="mt-2 hidden">
+            <div class="text-xs text-slate-400 mb-1">Pipeline実行中...</div>
+            <div class="w-full bg-slate-700 rounded-full h-2">
+              <div id="bar-${j.id}"
+                class="bg-blue-500 h-2 rounded-full transition-all"
+                style="width:0%"></div>
+            </div>
+            <div id="step-${j.id}" class="text-xs text-slate-400 mt-1">0 / 0</div>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `).join("");
+}
+
+function setTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll(".tab-btn").forEach(b => {
+    b.className = b.className.replace("bg-yellow-900 text-yellow-300","bg-slate-800 text-slate-300");
+  });
+  const active = document.getElementById(`tab-${tab}`);
+  if(active) active.className = active.className.replace("bg-slate-800 text-slate-300","bg-yellow-900 text-yellow-300");
+
+  document.getElementById("job-list").classList.toggle("hidden", tab === "caliber");
+  document.getElementById("caliber-panel").classList.toggle("hidden", tab !== "caliber");
+
+  if (tab === "caliber") loadCaliber();
+  else load();
+}
+
+async function loadCaliber() {
+  const [caps, lc] = await Promise.all([
+    fetch("/api/caliber/capabilities").then(r=>r.json()),
+    fetch("/api/caliber/lifecycle").then(r=>r.json())
+  ]);
+
+  document.getElementById("cap-list").innerHTML =
+    Object.entries(caps).map(([cap, workers]) =>
+      `<div class="flex justify-between items-center bg-slate-800 rounded px-3 py-2">
+        <span class="text-yellow-300">${cap}</span>
+        <span class="text-slate-400">${workers.join(", ")}</span>
+      </div>`
+    ).join("") || '<div class="text-slate-500">なし</div>';
+
+  const stateColor = {
+    ready:       "text-green-400",
+    busy:        "text-yellow-400",
+    offline:     "text-red-400",
+    maintenance: "text-slate-400"
+  };
+  document.getElementById("lifecycle-list").innerHTML =
+    lc.map(w =>
+      `<div class="flex justify-between items-center bg-slate-800 rounded px-3 py-2">
+        <span class="${stateColor[w.state]||''}">● ${w.name}</span>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-slate-400">${w.state}</span>
+          ${w.state !== 'ready' ?
+            `<button onclick="recoverWorker('${w.name}')"
+               class="bg-slate-600 px-2 py-0.5 rounded text-xs">復帰</button>`
+            : ''}
+        </div>
+      </div>`
+    ).join("") || '<div class="text-slate-500">登録なし</div>';
+}
+
+async function recoverWorker(name) {
+  await fetch(`/api/caliber/recover/${name}`, {method:"POST"});
+  loadCaliber();
+}
+
+async function approve(id) {
+  await fetch(`/api/jobs/${id}/approve`, {method:"POST"});
+  load();
+}
+
+function openReject(id) {
+  rejectTargetId = id;
+  document.getElementById("reject-modal").classList.remove("hidden");
+}
+
+async function submitReject() {
+  const reason = document.getElementById("reject-reason").value;
+  await fetch(`/api/jobs/${rejectTargetId}/reject`, {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({reason})
+  });
+  closeRejectModal();
+  load();
+}
+
+function closeRejectModal() {
+  document.getElementById("reject-modal").classList.add("hidden");
+  document.getElementById("reject-reason").value = "";
+  rejectTargetId = null;
+}
+
+function openNewJob() {
+  document.getElementById("modal").classList.remove("hidden");
+}
+
+function closeModal() {
+  document.getElementById("modal").classList.add("hidden");
+}
+
+async function submitJob() {
+  const body = {
+    title:    document.getElementById("f-title").value,
+    type:     document.getElementById("f-type").value,
+    target:   document.getElementById("f-target").value,
+    priority: document.getElementById("f-priority").value,
+    ai_draft: document.getElementById("f-ai_draft").value,
+    note:     document.getElementById("f-note").value,
+  };
+  await fetch("/api/jobs", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body: JSON.stringify(body)
+  });
+  closeModal();
+  load();
+}
+
+async function runJob(id) {
+  const prog = document.getElementById(`progress-${id}`);
+  prog.classList.remove("hidden");
+
+  const res = await fetch(`/api/jobs/${id}/run`, {method:"POST"});
+  const result = await res.json();
+
+  if (result.reason === "human_gate") {
+    document.getElementById(`step-${id}`).textContent =
+      "⏸ Policy: 博士承認待ち";
+    load();
+    return;
+  }
+
+  const timer = setInterval(async () => {
+    const r = await fetch(`/api/pipeline/${id}`);
+    const p = await r.json();
+    if (!p.total_steps) return;
+
+    const pct = Math.round((p.current_step / p.total_steps) * 100);
+    document.getElementById(`bar-${id}`).style.width = pct + "%";
+
+    const icon = {
+      running: "⚙️", done: "✅",
+      failed: "❌", paused: "⏸"
+    }[p.status] || "⚙️";
+
+    document.getElementById(`step-${id}`).textContent =
+      `${icon} ${p.current_step} / ${p.total_steps}`;
+
+    if (["done","failed","paused"].includes(p.status)) {
+      clearInterval(timer);
+      load();
+    }
+  }, 1000);
+}
+
+async function loadHealth() {
+  const res = await fetch("/api/health");
+  const data = await res.json();
+  const statusMap = {
+    "ready":    '<span class="dot-on">●</span>',
+    "disabled": '<span class="dot-off">●</span>',
+    "error":    '<span class="text-red-400">●</span>',
+    "unknown":  '<span class="text-yellow-400">●</span>'
+  };
+  document.getElementById("worker-status").innerHTML =
+    Object.entries(data).map(([name, info]) =>
+      `<span>${statusMap[info.status] || statusMap.unknown} ${name}</span>`
+    ).join("");
+}
+
+setInterval(load, 30000);
+setInterval(loadHealth, 60000);
+load();
+loadHealth();
+</script>
+</body>
+</html>

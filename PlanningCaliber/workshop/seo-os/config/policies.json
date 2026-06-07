@@ -1,0 +1,14 @@
+{
+  "lp_policy": {
+    "seo_score_min": 80,
+    "auto_approve": false
+  },
+  "blog_policy": {
+    "seo_score_min": 70,
+    "auto_approve": false
+  },
+  "bot_policy": {
+    "seo_score_min": 60,
+    "auto_approve": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "blog_pipeline",
+  "description": "ブログ記事Pipeline",
+  "steps": [
+    {"order":1,"type":"gate","on_fail":"reject"},
+    {"order":2,"type":"policy","policy":"blog_policy"},
+    {"order":3,"type":"capability","capability":"publish_blog","required":true}
+  ]
+}

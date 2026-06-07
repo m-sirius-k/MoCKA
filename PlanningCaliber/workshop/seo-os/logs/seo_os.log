@@ -1,0 +1,782 @@
+2026-06-07 11:45:54,646 [WARNING]  * Debugger is active!
+2026-06-07 11:45:54,663 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:45:59,978 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\job_engine.py', reloading
+2026-06-07 11:46:00,521 [WARNING]  * Debugger is active!
+2026-06-07 11:46:00,542 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:46:01,479 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\job_engine.py', reloading
+2026-06-07 11:46:02,012 [WARNING]  * Debugger is active!
+2026-06-07 11:46:02,027 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:46:02,577 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\job_engine.py', reloading
+2026-06-07 11:46:03,117 [WARNING]  * Debugger is active!
+2026-06-07 11:46:03,135 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:46:05,785 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 11:46:06,347 [WARNING]  * Debugger is active!
+2026-06-07 11:46:06,363 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:46:07,345 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 11:46:07,876 [WARNING]  * Debugger is active!
+2026-06-07 11:46:07,891 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:46:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:46:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:46:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 11:46:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:46:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 11:46:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:46:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 11:46:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:46:45,541 [INFO] 127.0.0.1 - - [07/Jun/2026 11:46:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:47:03,591 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-07 11:47:03,591 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-07 11:47:03,604 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:47:04,082 [WARNING]  * Debugger is active!
+2026-06-07 11:47:04,099 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:47:07,317 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:07] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:47:07,593 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:07] "GET /api/capabilities HTTP/1.1" 200 -
+2026-06-07 11:47:18,622 [INFO] [JOB] 作成: J20260607_CB0089 / Phase1.5 Test
+2026-06-07 11:47:18,780 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:18] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:47:24,222 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:24] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:47:24,528 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:24] "GET / HTTP/1.1" 200 -
+2026-06-07 11:47:24,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:24] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:47:24,541 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:24] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:47:24,542 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:24] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:47:25,052 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:25] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:47:25,372 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:25] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:47:25,377 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:25] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:47:25,412 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:25] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:47:25,412 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:25] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:47:25,415 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:47:55,534 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:55] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:47:55,535 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:55] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:47:55,535 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:55] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:47:55,536 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:55] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:47:55,543 [INFO] 127.0.0.1 - - [07/Jun/2026 11:47:55] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:48:25,222 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:25] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:48:25,536 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:25] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:48:25,537 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:48:25,537 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:25] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:48:25,537 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:25] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:48:25,538 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:25] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:48:55,524 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:55] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:48:55,524 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:55] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:48:55,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:55] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:48:55,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:55] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:48:55,526 [INFO] 127.0.0.1 - - [07/Jun/2026 11:48:55] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:49:25,213 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:25] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:49:25,531 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:49:25,532 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:25] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:49:25,533 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:25] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:49:25,536 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:25] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:49:25,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:25] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:49:55,512 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:55] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:49:55,512 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:55] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:49:55,513 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:55] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:49:55,513 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:55] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:49:55,514 [INFO] 127.0.0.1 - - [07/Jun/2026 11:49:55] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:50:25,216 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:25] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:50:25,528 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:50:25,530 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:25] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:50:25,530 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:25] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:50:25,531 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:25] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:50:25,533 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:25] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:50:55,529 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:55] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:50:55,530 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:55] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:50:55,530 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:55] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:50:55,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:55] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:50:55,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:50:55] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:51:03,583 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\data\\init_db.py', reloading
+2026-06-07 11:51:03,583 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\data\\init_db.py', reloading
+2026-06-07 11:51:03,664 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:04,508 [WARNING]  * Debugger is active!
+2026-06-07 11:51:04,524 [WARNING]  * Debugger is active!
+2026-06-07 11:51:04,528 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:04,546 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:05,936 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\__init__.py.tmp.6932.ccd1dabe2088', reloading
+2026-06-07 11:51:05,937 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\__init__.py.tmp.6932.ccd1dabe2088', reloading
+2026-06-07 11:51:06,006 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:06,561 [WARNING]  * Debugger is active!
+2026-06-07 11:51:06,562 [WARNING]  * Debugger is active!
+2026-06-07 11:51:06,587 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:06,588 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:11,108 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py.tmp.6932.461c6fbde084', reloading
+2026-06-07 11:51:11,108 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py.tmp.6932.461c6fbde084', reloading
+2026-06-07 11:51:11,176 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:11,712 [WARNING]  * Debugger is active!
+2026-06-07 11:51:11,716 [WARNING]  * Debugger is active!
+2026-06-07 11:51:11,731 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:11,738 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:18,008 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py.tmp.6932.b889eaae47c0', reloading
+2026-06-07 11:51:18,008 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py.tmp.6932.b889eaae47c0', reloading
+2026-06-07 11:51:18,071 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:18,582 [WARNING]  * Debugger is active!
+2026-06-07 11:51:18,583 [WARNING]  * Debugger is active!
+2026-06-07 11:51:18,601 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:18,604 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:25,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:51:25,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:25] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:51:25,528 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:25] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:51:25,528 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:25] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:51:25,529 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:25] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:51:25,529 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:25] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:51:31,544 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\scheduler.py.tmp.6932.4e0632602134', reloading
+2026-06-07 11:51:31,610 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:32,125 [WARNING]  * Debugger is active!
+2026-06-07 11:51:32,126 [WARNING]  * Debugger is active!
+2026-06-07 11:51:32,145 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:32,146 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:36,923 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\queue_manager.py.tmp.6932.c8b627194d4f', reloading
+2026-06-07 11:51:36,923 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\queue_manager.py.tmp.6932.c8b627194d4f', reloading
+2026-06-07 11:51:36,981 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:37,479 [WARNING]  * Debugger is active!
+2026-06-07 11:51:37,488 [WARNING]  * Debugger is active!
+2026-06-07 11:51:37,496 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:37,507 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:42,377 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\sftp_worker.py.tmp.6932.3fddf5d91f41', reloading
+2026-06-07 11:51:42,378 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\sftp_worker.py.tmp.6932.3fddf5d91f41', reloading
+2026-06-07 11:51:42,441 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:42,953 [WARNING]  * Debugger is active!
+2026-06-07 11:51:42,965 [WARNING]  * Debugger is active!
+2026-06-07 11:51:42,973 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:42,985 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:46,298 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\wordpress_worker.py.tmp.6932.3450a1bc8f36', reloading
+2026-06-07 11:51:46,298 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\wordpress_worker.py.tmp.6932.3450a1bc8f36', reloading
+2026-06-07 11:51:46,358 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:46,881 [WARNING]  * Debugger is active!
+2026-06-07 11:51:46,886 [WARNING]  * Debugger is active!
+2026-06-07 11:51:46,901 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:46,904 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:51:55,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:55] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:51:55,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:55] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:51:55,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:55] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:51:55,526 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:55] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:51:55,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:51:55] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:51:59,406 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 11:51:59,406 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 11:51:59,407 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py.tmp.6932.3c372ea2c361', reloading
+2026-06-07 11:51:59,477 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:51:59,984 [WARNING]  * Debugger is active!
+2026-06-07 11:51:59,984 [WARNING]  * Debugger is active!
+2026-06-07 11:52:00,004 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:52:00,005 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:52:04,856 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 11:52:04,858 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 11:52:04,974 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:52:05,518 [WARNING]  * Debugger is active!
+2026-06-07 11:52:05,519 [WARNING]  * Debugger is active!
+2026-06-07 11:52:05,534 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:52:05,535 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:52:25,526 [INFO] 127.0.0.1 - - [07/Jun/2026 11:52:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:52:25,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:52:25] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:52:25,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:52:25] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:52:25,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:52:25] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:52:25,528 [INFO] 127.0.0.1 - - [07/Jun/2026 11:52:25] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:52:25,528 [INFO] 127.0.0.1 - - [07/Jun/2026 11:52:25] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:52:26,094 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase2.py.tmp.6932.750a047b4998', reloading
+2026-06-07 11:52:26,094 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase2.py.tmp.6932.750a047b4998', reloading
+2026-06-07 11:52:26,158 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:52:26,672 [WARNING]  * Debugger is active!
+2026-06-07 11:52:26,674 [WARNING]  * Debugger is active!
+2026-06-07 11:52:26,689 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:52:26,691 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:53:23,653 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-07 11:53:23,654 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-07 11:53:23,667 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:53:24,156 [WARNING]  * Debugger is active!
+2026-06-07 11:53:24,179 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:53:25,783 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:25] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:53:27,462 [INFO] [JOB] 作成: J20260607_4F7A56 / E2E Run Test
+2026-06-07 11:53:27,641 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:27] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:53:45,218 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:53:45,537 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:53:45,538 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:53:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:53:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 11:53:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:54:37,227 [INFO] [JOB] 承認: J20260607_4F7A56 by きむら博士
+2026-06-07 11:54:37,448 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:37] "POST /api/jobs/J20260607_4F7A56/approve HTTP/1.1" 200 -
+2026-06-07 11:54:37,743 [INFO] [Scheduler] Job取得: J20260607_4F7A56 / E2E Run Test
+2026-06-07 11:54:38,451 [INFO] [Scheduler] Step 1/2: upload_html
+2026-06-07 11:54:38,861 [INFO] [Caliber] upload_html → SFTPWorker を選択
+2026-06-07 11:54:38,861 [INFO] [SFTP] 実行: J20260607_4F7A56 → orchestra
+2026-06-07 11:54:39,033 [INFO] [Scheduler] Step 1 完了: https://mocka.nsjp.org/lp/orchestra
+2026-06-07 11:54:39,033 [INFO] [Scheduler] Step 2/2: publish_lp
+2026-06-07 11:54:39,225 [INFO] [Caliber] publish_lp → WordPressWorker を選択
+2026-06-07 11:54:39,225 [INFO] [WordPress] 実行: J20260607_4F7A56 / E2E Run Test
+2026-06-07 11:54:39,447 [INFO] [Scheduler] Step 2 完了: https://mocka.nsjp.org/?p=7A56
+2026-06-07 11:54:39,615 [INFO] [Scheduler] Job完了: J20260607_4F7A56
+2026-06-07 11:54:39,616 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:39] "POST /api/jobs/J20260607_4F7A56/run HTTP/1.1" 200 -
+2026-06-07 11:54:41,959 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:41] "GET /api/pipeline/J20260607_4F7A56 HTTP/1.1" 200 -
+2026-06-07 11:54:42,240 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:42] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:54:42,534 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:42] "GET /api/worker/stats HTTP/1.1" 200 -
+2026-06-07 11:54:45,563 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:54:45,568 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:54:45,568 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:54:45,570 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:54:45,571 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:54:45,573 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:54:47,180 [INFO] [JOB] 作成: J20260607_2CB074 / UI Button Test
+2026-06-07 11:54:47,417 [INFO] 127.0.0.1 - - [07/Jun/2026 11:54:47] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:55:23,333 [INFO] [JOB] 承認: J20260607_2CB074 by きむら博士
+2026-06-07 11:55:23,605 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:23] "POST /api/jobs/J20260607_2CB074/approve HTTP/1.1" 200 -
+2026-06-07 11:55:27,154 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET / HTTP/1.1" 200 -
+2026-06-07 11:55:27,656 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:55:27,656 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:55:27,960 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:55:27,961 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:55:27,961 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:55:27,962 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:27] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:55:43,107 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:43] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:55:43,112 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:43] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:55:43,113 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:43] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:55:43,119 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:43] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:55:43,120 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:43] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:55:49,158 [INFO] [Scheduler] Job取得: J20260607_2CB074 / UI Button Test
+2026-06-07 11:55:49,924 [INFO] [Scheduler] Step 1/2: upload_html
+2026-06-07 11:55:50,135 [INFO] [Caliber] upload_html → SFTPWorker を選択
+2026-06-07 11:55:50,135 [INFO] [SFTP] 実行: J20260607_2CB074 → orchestra
+2026-06-07 11:55:50,346 [INFO] [Scheduler] Step 1 完了: https://mocka.nsjp.org/lp/orchestra
+2026-06-07 11:55:50,346 [INFO] [Scheduler] Step 2/2: publish_lp
+2026-06-07 11:55:50,556 [INFO] [Caliber] publish_lp → WordPressWorker を選択
+2026-06-07 11:55:50,556 [INFO] [WordPress] 実行: J20260607_2CB074 / UI Button Test
+2026-06-07 11:55:50,772 [INFO] [Scheduler] Step 2 完了: https://mocka.nsjp.org/?p=B074
+2026-06-07 11:55:50,981 [INFO] [Scheduler] Job完了: J20260607_2CB074
+2026-06-07 11:55:50,981 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:50] "POST /api/jobs/J20260607_2CB074/run HTTP/1.1" 200 -
+2026-06-07 11:55:52,543 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:52] "GET /api/pipeline/J20260607_2CB074 HTTP/1.1" 200 -
+2026-06-07 11:55:52,796 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:52] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:55:52,872 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:52] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:55:52,872 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:52] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:55:52,873 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:52] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:55:52,873 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:52] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:55:58,222 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:58] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:55:58,532 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:58] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:55:58,533 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:58] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:55:58,533 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:58] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:55:58,534 [INFO] 127.0.0.1 - - [07/Jun/2026 11:55:58] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:56:05,192 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:05] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:56:05,193 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:05] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:56:05,194 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:05] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:56:05,194 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:05] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:56:05,195 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:05] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:56:28,209 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:28] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:56:28,517 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:28] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:56:28,517 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:28] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:56:28,518 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:28] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:56:28,519 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:28] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:56:28,527 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:28] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:56:58,520 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:58] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:56:58,520 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:58] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:56:58,520 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:58] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:56:58,521 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:58] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:56:58,521 [INFO] 127.0.0.1 - - [07/Jun/2026 11:56:58] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:57:28,211 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:28] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:57:28,524 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:28] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:57:28,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:28] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:57:28,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:28] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:57:28,526 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:28] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:57:28,532 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:28] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:57:58,519 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:58] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:57:58,519 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:58] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:57:58,520 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:58] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:57:58,520 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:58] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:57:58,520 [INFO] 127.0.0.1 - - [07/Jun/2026 11:57:58] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:58:28,211 [INFO] 127.0.0.1 - - [07/Jun/2026 11:58:28] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:58:28,516 [INFO] 127.0.0.1 - - [07/Jun/2026 11:58:28] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:58:28,517 [INFO] 127.0.0.1 - - [07/Jun/2026 11:58:28] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:58:28,517 [INFO] 127.0.0.1 - - [07/Jun/2026 11:58:28] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:58:28,518 [INFO] 127.0.0.1 - - [07/Jun/2026 11:58:28] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:58:28,518 [INFO] 127.0.0.1 - - [07/Jun/2026 11:58:28] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:59:28,512 [INFO] 127.0.0.1 - - [07/Jun/2026 11:59:28] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 11:59:34,370 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\__init__.py.tmp.6932.f4215994f539', reloading
+2026-06-07 11:59:34,370 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\__init__.py.tmp.6932.f4215994f539', reloading
+2026-06-07 11:59:34,371 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\__init__.py.tmp.6932.f4215994f539', reloading
+2026-06-07 11:59:34,443 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:59:35,003 [WARNING]  * Debugger is active!
+2026-06-07 11:59:35,012 [WARNING]  * Debugger is active!
+2026-06-07 11:59:35,012 [WARNING]  * Debugger is active!
+2026-06-07 11:59:35,026 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:35,032 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:35,035 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:40,529 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\ai_gate.py.tmp.6932.cb4a3a7062c7', reloading
+2026-06-07 11:59:40,529 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\ai_gate.py.tmp.6932.cb4a3a7062c7', reloading
+2026-06-07 11:59:40,529 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\ai_gate.py.tmp.6932.cb4a3a7062c7', reloading
+2026-06-07 11:59:40,608 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:59:40,612 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:59:41,131 [WARNING]  * Debugger is active!
+2026-06-07 11:59:41,138 [WARNING]  * Debugger is active!
+2026-06-07 11:59:41,146 [WARNING]  * Debugger is active!
+2026-06-07 11:59:41,151 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:41,157 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:41,168 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:45,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:59:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 11:59:45,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:59:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 11:59:45,525 [INFO] 127.0.0.1 - - [07/Jun/2026 11:59:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 11:59:45,526 [INFO] 127.0.0.1 - - [07/Jun/2026 11:59:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 11:59:45,526 [INFO] 127.0.0.1 - - [07/Jun/2026 11:59:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 11:59:46,294 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\policy_engine.py.tmp.6932.6453253e0317', reloading
+2026-06-07 11:59:46,294 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\policy_engine.py.tmp.6932.6453253e0317', reloading
+2026-06-07 11:59:46,295 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\gate\\policy_engine.py.tmp.6932.6453253e0317', reloading
+2026-06-07 11:59:46,371 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:59:46,371 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 11:59:47,026 [WARNING]  * Debugger is active!
+2026-06-07 11:59:47,044 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:47,161 [WARNING]  * Debugger is active!
+2026-06-07 11:59:47,176 [WARNING]  * Debugger is active!
+2026-06-07 11:59:47,180 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 11:59:47,195 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:06,588 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\pipeline_engine.py.tmp.6932.2669f85603d1', reloading
+2026-06-07 12:00:06,588 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\pipeline_engine.py.tmp.6932.2669f85603d1', reloading
+2026-06-07 12:00:06,669 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:07,240 [WARNING]  * Debugger is active!
+2026-06-07 12:00:07,242 [WARNING]  * Debugger is active!
+2026-06-07 12:00:07,242 [WARNING]  * Debugger is active!
+2026-06-07 12:00:07,261 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:07,264 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:11,583 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\artifact_manager.py.tmp.6932.78b2da11d010', reloading
+2026-06-07 12:00:11,583 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\artifact_manager.py.tmp.6932.78b2da11d010', reloading
+2026-06-07 12:00:11,584 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\kernel\\artifact_manager.py.tmp.6932.78b2da11d010', reloading
+2026-06-07 12:00:11,657 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:11,658 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:12,266 [WARNING]  * Debugger is active!
+2026-06-07 12:00:12,268 [WARNING]  * Debugger is active!
+2026-06-07 12:00:12,283 [WARNING]  * Debugger is active!
+2026-06-07 12:00:12,299 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:12,304 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:12,308 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:20,287 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:00:20,287 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:00:20,287 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:00:20,361 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:20,363 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:20,924 [WARNING]  * Debugger is active!
+2026-06-07 12:00:20,941 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:20,957 [WARNING]  * Debugger is active!
+2026-06-07 12:00:20,958 [WARNING]  * Debugger is active!
+2026-06-07 12:00:20,975 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:20,978 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:22,637 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:00:22,637 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:00:22,713 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:22,719 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:23,271 [WARNING]  * Debugger is active!
+2026-06-07 12:00:23,272 [WARNING]  * Debugger is active!
+2026-06-07 12:00:23,280 [WARNING]  * Debugger is active!
+2026-06-07 12:00:23,292 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:23,300 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:28,517 [INFO] 127.0.0.1 - - [07/Jun/2026 12:00:28] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:00:40,953 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase3.py.tmp.6932.ab694b33e01b', reloading
+2026-06-07 12:00:41,033 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:41,033 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:00:41,592 [WARNING]  * Debugger is active!
+2026-06-07 12:00:41,593 [WARNING]  * Debugger is active!
+2026-06-07 12:00:41,611 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:41,615 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:41,616 [WARNING]  * Debugger is active!
+2026-06-07 12:00:41,633 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:00:45,527 [INFO] 127.0.0.1 - - [07/Jun/2026 12:00:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:00:45,528 [INFO] 127.0.0.1 - - [07/Jun/2026 12:00:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:00:45,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:00:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:00:45,528 [INFO] 127.0.0.1 - - [07/Jun/2026 12:00:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:00:45,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:00:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:01:28,211 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:28] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:01:35,136 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-07 12:01:35,136 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-07 12:01:35,148 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:01:35,623 [WARNING]  * Debugger is active!
+2026-06-07 12:01:35,649 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:01:38,999 [INFO] [JOB] 作成: J20260607_732769 / LP HumanGate Test
+2026-06-07 12:01:39,183 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:39] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:01:45,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:01:45,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:01:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:01:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:01:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:01:48,173 [INFO] [JOB] 承認: J20260607_732769 by きむら博士
+2026-06-07 12:01:48,369 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:48] "POST /api/jobs/J20260607_732769/approve HTTP/1.1" 200 -
+2026-06-07 12:01:48,656 [INFO] [Pipeline] 開始: J20260607_732769 / lp_pipeline (4steps)
+2026-06-07 12:01:48,997 [INFO] [Pipeline] Step 1/4: type=gate
+2026-06-07 12:01:49,143 [INFO] [AIGate] J20260607_732769 score=75 passed=False
+2026-06-07 12:01:49,446 [ERROR] [Pipeline] 失敗: J20260607_732769 / AI Gate不合格: {'passed': False, 'score': 75, 'details': {'html_valid': True, 'has_ogp': True, 'responsive': True, 'min_length': False}}
+2026-06-07 12:01:49,446 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:49] "POST /api/jobs/J20260607_732769/run HTTP/1.1" 200 -
+2026-06-07 12:01:49,731 [INFO] 127.0.0.1 - - [07/Jun/2026 12:01:49] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:02:03,230 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\http\\cookiejar.py', reloading
+2026-06-07 12:02:03,229 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\http\\cookiejar.py', reloading
+2026-06-07 12:02:03,330 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:02:03,336 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:02:03,337 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:02:03,914 [WARNING]  * Debugger is active!
+2026-06-07 12:02:03,926 [WARNING]  * Debugger is active!
+2026-06-07 12:02:03,930 [WARNING]  * Debugger is active!
+2026-06-07 12:02:03,934 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:02:03,936 [WARNING]  * Debugger is active!
+2026-06-07 12:02:03,947 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:02:03,952 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:02:03,958 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:02:05,533 [INFO] [JOB] 作成: J20260607_999AA3 / LP HumanGate Test2
+2026-06-07 12:02:05,798 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:05] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:02:08,052 [INFO] [JOB] 承認: J20260607_999AA3 by きむら博士
+2026-06-07 12:02:08,267 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:08] "POST /api/jobs/J20260607_999AA3/approve HTTP/1.1" 200 -
+2026-06-07 12:02:10,314 [INFO] [Pipeline] 開始: J20260607_999AA3 / lp_pipeline (4steps)
+2026-06-07 12:02:10,647 [INFO] [Pipeline] Step 1/4: type=gate
+2026-06-07 12:02:10,866 [INFO] [AIGate] J20260607_999AA3 score=100 passed=True
+2026-06-07 12:02:10,866 [INFO] [Pipeline] Step 2/4: type=policy
+2026-06-07 12:02:11,033 [INFO] [Policy] J20260607_999AA3 → human_gate / 博士承認待ち
+2026-06-07 12:02:11,365 [INFO] [Pipeline] human_gate: J20260607_999AA3
+2026-06-07 12:02:11,366 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:11] "POST /api/jobs/J20260607_999AA3/run HTTP/1.1" 200 -
+2026-06-07 12:02:14,413 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:14] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:02:26,000 [INFO] [JOB] 作成: J20260607_848D63 / Bot Auto Test
+2026-06-07 12:02:26,461 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:26] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:02:28,687 [INFO] [JOB] 承認: J20260607_848D63 by きむら博士
+2026-06-07 12:02:28,928 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:28] "POST /api/jobs/J20260607_848D63/approve HTTP/1.1" 200 -
+2026-06-07 12:02:30,981 [INFO] [Pipeline] 開始: J20260607_848D63 / bot_pipeline (4steps)
+2026-06-07 12:02:31,408 [INFO] [Pipeline] Step 1/4: type=gate
+2026-06-07 12:02:31,602 [INFO] [AIGate] J20260607_848D63 score=100 passed=True
+2026-06-07 12:02:31,602 [INFO] [Pipeline] Step 2/4: type=policy
+2026-06-07 12:02:31,793 [INFO] [Policy] J20260607_848D63 → auto_deploy / AI生成・Policy合格・自動公開
+2026-06-07 12:02:31,794 [INFO] [Pipeline] auto_deploy: J20260607_848D63
+2026-06-07 12:02:31,794 [INFO] [Pipeline] Step 3/4: type=capability
+2026-06-07 12:02:31,983 [WARNING] [Caliber] post_x を満たすWorkerなし
+2026-06-07 12:02:31,983 [WARNING] [Pipeline] post_x スキップ
+2026-06-07 12:02:31,983 [INFO] [Pipeline] Step 4/4: type=capability
+2026-06-07 12:02:32,178 [WARNING] [Caliber] post_instagram を満たすWorkerなし
+2026-06-07 12:02:32,178 [WARNING] [Pipeline] post_instagram スキップ
+2026-06-07 12:02:32,370 [INFO] [Pipeline] 完了: J20260607_848D63
+2026-06-07 12:02:32,370 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:32] "POST /api/jobs/J20260607_848D63/run HTTP/1.1" 200 -
+2026-06-07 12:02:35,416 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:35] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:02:45,547 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:02:45,548 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:02:45,549 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:02:45,550 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:02:45,550 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:02:45,552 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:02:53,292 [INFO] [JOB] 作成: J20260607_AE4793 / LP Reject Test
+2026-06-07 12:02:53,556 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:53] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:02:55,793 [INFO] [JOB] 承認: J20260607_AE4793 by きむら博士
+2026-06-07 12:02:56,060 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:56] "POST /api/jobs/J20260607_AE4793/approve HTTP/1.1" 200 -
+2026-06-07 12:02:58,122 [INFO] [Pipeline] 開始: J20260607_AE4793 / lp_pipeline (4steps)
+2026-06-07 12:02:58,592 [INFO] [Pipeline] Step 1/4: type=gate
+2026-06-07 12:02:58,860 [INFO] [AIGate] J20260607_AE4793 score=0 passed=False
+2026-06-07 12:02:59,265 [ERROR] [Pipeline] 失敗: J20260607_AE4793 / AI Gate不合格: {'passed': False, 'score': 0, 'details': {'html_valid': False, 'has_ogp': False, 'responsive': False, 'min_length': False}}
+2026-06-07 12:02:59,265 [INFO] 127.0.0.1 - - [07/Jun/2026 12:02:59] "POST /api/jobs/J20260607_AE4793/run HTTP/1.1" 200 -
+2026-06-07 12:03:02,312 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:02] "GET /api/jobs?status=failed HTTP/1.1" 200 -
+2026-06-07 12:03:04,346 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:04] "GET /api/artifacts/J20260607_848D63 HTTP/1.1" 200 -
+2026-06-07 12:03:43,498 [INFO] [JOB] 作成: J20260607_46EE1A / Blog Auto Test
+2026-06-07 12:03:43,525 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:43] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:03:45,527 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:03:45,528 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:03:45,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:03:45,531 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:03:45,541 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:03:45,543 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:03:45,586 [INFO] [JOB] 承認: J20260607_46EE1A by きむら博士
+2026-06-07 12:03:45,611 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:45] "POST /api/jobs/J20260607_46EE1A/approve HTTP/1.1" 200 -
+2026-06-07 12:03:47,674 [INFO] [Pipeline] 開始: J20260607_46EE1A / blog_pipeline (3steps)
+2026-06-07 12:03:47,713 [INFO] [Pipeline] Step 1/3: type=gate
+2026-06-07 12:03:47,733 [INFO] [AIGate] J20260607_46EE1A score=100 passed=True
+2026-06-07 12:03:47,733 [INFO] [Pipeline] Step 2/3: type=policy
+2026-06-07 12:03:47,755 [INFO] [Policy] J20260607_46EE1A → human_gate / 博士承認待ち
+2026-06-07 12:03:47,797 [INFO] [Pipeline] human_gate: J20260607_46EE1A
+2026-06-07 12:03:47,798 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:47] "POST /api/jobs/J20260607_46EE1A/run HTTP/1.1" 200 -
+2026-06-07 12:03:50,861 [INFO] 127.0.0.1 - - [07/Jun/2026 12:03:50] "GET /api/artifacts/J20260607_46EE1A HTTP/1.1" 200 -
+2026-06-07 12:04:17,598 [INFO] [JOB] 作成: J20260607_25EEF4 / Artifact Save Test
+2026-06-07 12:04:17,652 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:17] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:04:19,729 [INFO] [JOB] 承認: J20260607_25EEF4 by きむら博士
+2026-06-07 12:04:19,797 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:19] "POST /api/jobs/J20260607_25EEF4/approve HTTP/1.1" 200 -
+2026-06-07 12:04:21,838 [INFO] [Pipeline] 開始: J20260607_25EEF4 / _artifact_test (1steps)
+2026-06-07 12:04:21,925 [INFO] [Pipeline] Step 1/1: type=capability
+2026-06-07 12:04:21,972 [INFO] [Caliber] publish_blog → WordPressWorker を選択
+2026-06-07 12:04:21,972 [INFO] [WordPress] 実行: J20260607_25EEF4 / Artifact Save Test
+2026-06-07 12:04:22,112 [INFO] [Pipeline] 完了: J20260607_25EEF4
+2026-06-07 12:04:22,112 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:22] "POST /api/jobs/J20260607_25EEF4/run HTTP/1.1" 200 -
+2026-06-07 12:04:25,175 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:25] "GET /api/artifacts/J20260607_25EEF4 HTTP/1.1" 200 -
+2026-06-07 12:04:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:04:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:04:45,541 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:04:45,542 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:04:45,542 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:04:45,544 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:04:54,940 [INFO] [JOB] 作成: J20260607_31BA83 / UI Step Icon Test
+2026-06-07 12:04:55,031 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:55] "POST /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:04:57,153 [INFO] [JOB] 承認: J20260607_31BA83 by きむら博士
+2026-06-07 12:04:57,248 [INFO] 127.0.0.1 - - [07/Jun/2026 12:04:57] "POST /api/jobs/J20260607_31BA83/approve HTTP/1.1" 200 -
+2026-06-07 12:05:01,407 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:01] "GET / HTTP/1.1" 200 -
+2026-06-07 12:05:01,409 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:01] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:05:01,956 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:01] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:05:01,957 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:01] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:05:01,957 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:01] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:05:01,958 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:01] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:05:02,267 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:05:02,267 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:02] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:05:22,887 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:22] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:05:22,888 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:22] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:05:22,889 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:22] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:05:22,890 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:22] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:05:22,897 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:22] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:05:32,210 [INFO] [Pipeline] 開始: J20260607_31BA83 / lp_pipeline (4steps)
+2026-06-07 12:05:32,474 [INFO] [Pipeline] Step 1/4: type=gate
+2026-06-07 12:05:32,599 [INFO] [AIGate] J20260607_31BA83 score=100 passed=True
+2026-06-07 12:05:32,600 [INFO] [Pipeline] Step 2/4: type=policy
+2026-06-07 12:05:32,694 [INFO] [Policy] J20260607_31BA83 → human_gate / 博士承認待ち
+2026-06-07 12:05:32,887 [INFO] [Pipeline] human_gate: J20260607_31BA83
+2026-06-07 12:05:32,888 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:32] "POST /api/jobs/J20260607_31BA83/run HTTP/1.1" 200 -
+2026-06-07 12:05:33,219 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:05:33,219 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:05:33,220 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:05:33,221 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:05:33,234 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:05:33,465 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:05:33,541 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:05:33,543 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:05:33,546 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:05:33,550 [INFO] 127.0.0.1 - - [07/Jun/2026 12:05:33] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:06:02,226 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:02] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:06:02,536 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:06:02,537 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:02] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:06:02,537 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:02] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:06:02,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:02] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:06:02,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:02] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:06:32,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:32] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:06:32,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:32] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:06:32,531 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:32] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:06:32,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:32] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:06:32,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:06:32] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:07:02,221 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:02] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:07:02,536 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:07:02,536 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:02] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:07:02,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:02] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:07:02,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:02] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:07:02,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:02] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:07:32,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:32] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:07:32,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:32] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:07:32,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:32] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:07:32,531 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:32] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:07:32,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:07:32] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:08:02,226 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:02] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:08:02,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:02] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:08:02,533 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:02] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:08:02,533 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:08:02,533 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:02] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:08:02,536 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:02] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:08:45,528 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:08:45,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:08:45,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:08:45,531 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:08:45,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:08:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:09:02,218 [INFO] 127.0.0.1 - - [07/Jun/2026 12:09:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:09:45,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:09:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:09:45,529 [INFO] 127.0.0.1 - - [07/Jun/2026 12:09:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:09:45,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:09:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:09:45,530 [INFO] 127.0.0.1 - - [07/Jun/2026 12:09:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:09:45,534 [INFO] 127.0.0.1 - - [07/Jun/2026 12:09:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:10:02,218 [INFO] 127.0.0.1 - - [07/Jun/2026 12:10:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:10:45,525 [INFO] 127.0.0.1 - - [07/Jun/2026 12:10:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:10:45,531 [INFO] 127.0.0.1 - - [07/Jun/2026 12:10:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:10:45,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:10:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:10:45,532 [INFO] 127.0.0.1 - - [07/Jun/2026 12:10:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:10:45,533 [INFO] 127.0.0.1 - - [07/Jun/2026 12:10:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:11:02,608 [INFO] 127.0.0.1 - - [07/Jun/2026 12:11:02] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:11:20,472 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\capability_registry.py.tmp.6932.a8c9606c9463', reloading
+2026-06-07 12:11:20,472 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\capability_registry.py.tmp.6932.a8c9606c9463', reloading
+2026-06-07 12:11:20,473 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\capability_registry.py.tmp.6932.a8c9606c9463', reloading
+2026-06-07 12:11:20,472 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\capability_registry.py.tmp.6932.a8c9606c9463', reloading
+2026-06-07 12:11:20,573 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:20,582 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:20,589 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:21,274 [WARNING]  * Debugger is active!
+2026-06-07 12:11:21,287 [WARNING]  * Debugger is active!
+2026-06-07 12:11:21,292 [WARNING]  * Debugger is active!
+2026-06-07 12:11:21,305 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:21,315 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:21,316 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:21,362 [WARNING]  * Debugger is active!
+2026-06-07 12:11:21,381 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:28,146 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\lifecycle_manager.py.tmp.6932.438fb5777625', reloading
+2026-06-07 12:11:28,148 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\lifecycle_manager.py.tmp.6932.438fb5777625', reloading
+2026-06-07 12:11:28,150 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\lifecycle_manager.py.tmp.6932.438fb5777625', reloading
+2026-06-07 12:11:28,153 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\lifecycle_manager.py.tmp.6932.438fb5777625', reloading
+2026-06-07 12:11:28,262 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:28,277 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:28,281 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:29,278 [WARNING]  * Debugger is active!
+2026-06-07 12:11:29,286 [WARNING]  * Debugger is active!
+2026-06-07 12:11:29,306 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:29,311 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:29,327 [WARNING]  * Debugger is active!
+2026-06-07 12:11:29,340 [WARNING]  * Debugger is active!
+2026-06-07 12:11:29,358 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:29,361 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:34,065 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\x_worker.py.tmp.6932.a9d4ce8aa698', reloading
+2026-06-07 12:11:34,065 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\x_worker.py.tmp.6932.a9d4ce8aa698', reloading
+2026-06-07 12:11:34,065 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\x_worker.py.tmp.6932.a9d4ce8aa698', reloading
+2026-06-07 12:11:34,065 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\x_worker.py.tmp.6932.a9d4ce8aa698', reloading
+2026-06-07 12:11:34,151 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:34,151 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:34,152 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:34,745 [WARNING]  * Debugger is active!
+2026-06-07 12:11:34,763 [WARNING]  * Debugger is active!
+2026-06-07 12:11:34,763 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:34,764 [WARNING]  * Debugger is active!
+2026-06-07 12:11:34,786 [WARNING]  * Debugger is active!
+2026-06-07 12:11:34,787 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:34,789 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:34,806 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:36,621 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\instagram_worker.py.tmp.6932.ec999a18fe7f', reloading
+2026-06-07 12:11:36,621 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\instagram_worker.py.tmp.6932.ec999a18fe7f', reloading
+2026-06-07 12:11:36,621 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\instagram_worker.py.tmp.6932.ec999a18fe7f', reloading
+2026-06-07 12:11:36,621 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\plugins\\instagram_worker.py.tmp.6932.ec999a18fe7f', reloading
+2026-06-07 12:11:36,711 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:36,712 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:37,302 [WARNING]  * Debugger is active!
+2026-06-07 12:11:37,303 [WARNING]  * Debugger is active!
+2026-06-07 12:11:37,306 [WARNING]  * Debugger is active!
+2026-06-07 12:11:37,311 [WARNING]  * Debugger is active!
+2026-06-07 12:11:37,327 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:37,327 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:37,330 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 12:11:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:11:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 12:11:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:11:45,541 [INFO] 127.0.0.1 - - [07/Jun/2026 12:11:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:11:45,542 [INFO] 127.0.0.1 - - [07/Jun/2026 12:11:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:11:45,543 [INFO] 127.0.0.1 - - [07/Jun/2026 12:11:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:11:46,014 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py', reloading
+2026-06-07 12:11:46,014 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py', reloading
+2026-06-07 12:11:46,014 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py', reloading
+2026-06-07 12:11:46,015 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py.tmp.6932.e687b21e0071', reloading
+2026-06-07 12:11:46,015 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\workers\\base_worker.py.tmp.6932.e687b21e0071', reloading
+2026-06-07 12:11:46,119 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:46,121 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:46,126 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:11:46,676 [WARNING]  * Debugger is active!
+2026-06-07 12:11:46,691 [WARNING]  * Debugger is active!
+2026-06-07 12:11:46,693 [WARNING]  * Debugger is active!
+2026-06-07 12:11:46,697 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:46,705 [WARNING]  * Debugger is active!
+2026-06-07 12:11:46,710 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:46,713 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:11:46,726 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:00,678 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py', reloading
+2026-06-07 12:12:00,678 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py', reloading
+2026-06-07 12:12:00,679 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py.tmp.6932.706fcfa9fc25', reloading
+2026-06-07 12:12:00,679 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py', reloading
+2026-06-07 12:12:00,679 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\caliber\\caliber_manager.py.tmp.6932.706fcfa9fc25', reloading
+2026-06-07 12:12:00,777 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:00,778 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:00,779 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:01,359 [WARNING]  * Debugger is active!
+2026-06-07 12:12:01,377 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:01,395 [WARNING]  * Debugger is active!
+2026-06-07 12:12:01,395 [WARNING]  * Debugger is active!
+2026-06-07 12:12:01,405 [WARNING]  * Debugger is active!
+2026-06-07 12:12:01,417 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:01,418 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:01,425 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:07,824 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\data\\init_db.py', reloading
+2026-06-07 12:12:07,825 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\data\\init_db.py', reloading
+2026-06-07 12:12:07,825 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\data\\init_db.py', reloading
+2026-06-07 12:12:07,825 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\data\\init_db.py', reloading
+2026-06-07 12:12:07,928 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:07,933 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:07,934 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:08,705 [WARNING]  * Debugger is active!
+2026-06-07 12:12:08,709 [WARNING]  * Debugger is active!
+2026-06-07 12:12:08,712 [WARNING]  * Debugger is active!
+2026-06-07 12:12:08,729 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:08,736 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:08,739 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:08,740 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:11,784 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:12:11,787 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:12:11,789 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:12:11,789 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:12:11,937 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:11,941 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:11,944 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:12,516 [WARNING]  * Debugger is active!
+2026-06-07 12:12:12,519 [WARNING]  * Debugger is active!
+2026-06-07 12:12:12,546 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:12,551 [WARNING]  * Debugger is active!
+2026-06-07 12:12:12,555 [WARNING]  * Debugger is active!
+2026-06-07 12:12:12,573 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:12,577 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:12,578 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:17,994 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:12:17,994 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\command_center\\app.py', reloading
+2026-06-07 12:12:18,111 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:18,112 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:18,138 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:12:18,815 [WARNING]  * Debugger is active!
+2026-06-07 12:12:18,821 [WARNING]  * Debugger is active!
+2026-06-07 12:12:18,843 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:18,843 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:18,845 [WARNING]  * Debugger is active!
+2026-06-07 12:12:18,862 [WARNING]  * Debugger is active!
+2026-06-07 12:12:18,865 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:18,884 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:12:45,546 [INFO] 127.0.0.1 - - [07/Jun/2026 12:12:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:12:45,550 [INFO] 127.0.0.1 - - [07/Jun/2026 12:12:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:12:45,558 [INFO] 127.0.0.1 - - [07/Jun/2026 12:12:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:12:45,563 [INFO] 127.0.0.1 - - [07/Jun/2026 12:12:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:12:45,564 [INFO] 127.0.0.1 - - [07/Jun/2026 12:12:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:12:45,564 [INFO] 127.0.0.1 - - [07/Jun/2026 12:12:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:13:45,550 [INFO] 127.0.0.1 - - [07/Jun/2026 12:13:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:13:45,550 [INFO] 127.0.0.1 - - [07/Jun/2026 12:13:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:13:45,551 [INFO] 127.0.0.1 - - [07/Jun/2026 12:13:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:13:45,552 [INFO] 127.0.0.1 - - [07/Jun/2026 12:13:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:13:45,552 [INFO] 127.0.0.1 - - [07/Jun/2026 12:13:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:13:45,558 [INFO] 127.0.0.1 - - [07/Jun/2026 12:13:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:14:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 12:14:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:14:45,544 [INFO] 127.0.0.1 - - [07/Jun/2026 12:14:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:14:45,545 [INFO] 127.0.0.1 - - [07/Jun/2026 12:14:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:14:45,546 [INFO] 127.0.0.1 - - [07/Jun/2026 12:14:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:14:45,547 [INFO] 127.0.0.1 - - [07/Jun/2026 12:14:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:14:45,547 [INFO] 127.0.0.1 - - [07/Jun/2026 12:14:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:15:05,475 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase4.py.tmp.6932.31525e00d9cc', reloading
+2026-06-07 12:15:05,475 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase4.py.tmp.6932.31525e00d9cc', reloading
+2026-06-07 12:15:05,475 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase4.py.tmp.6932.31525e00d9cc', reloading
+2026-06-07 12:15:05,475 [INFO]  * Detected change in 'C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\seo-os\\tests\\test_phase4.py.tmp.6932.31525e00d9cc', reloading
+2026-06-07 12:15:05,570 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:15:05,571 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:15:05,572 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 12:15:06,184 [WARNING]  * Debugger is active!
+2026-06-07 12:15:06,186 [WARNING]  * Debugger is active!
+2026-06-07 12:15:06,189 [WARNING]  * Debugger is active!
+2026-06-07 12:15:06,192 [WARNING]  * Debugger is active!
+2026-06-07 12:15:06,211 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:15:06,211 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:15:06,214 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:15:06,218 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 12:15:45,536 [INFO] 127.0.0.1 - - [07/Jun/2026 12:15:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:15:45,538 [INFO] 127.0.0.1 - - [07/Jun/2026 12:15:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:15:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 12:15:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:15:45,539 [INFO] 127.0.0.1 - - [07/Jun/2026 12:15:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:15:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 12:15:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:15:45,540 [INFO] 127.0.0.1 - - [07/Jun/2026 12:15:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:16:45,542 [INFO] 127.0.0.1 - - [07/Jun/2026 12:16:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:16:45,542 [INFO] 127.0.0.1 - - [07/Jun/2026 12:16:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:16:45,543 [INFO] 127.0.0.1 - - [07/Jun/2026 12:16:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:16:45,544 [INFO] 127.0.0.1 - - [07/Jun/2026 12:16:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:16:45,544 [INFO] 127.0.0.1 - - [07/Jun/2026 12:16:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:16:45,546 [INFO] 127.0.0.1 - - [07/Jun/2026 12:16:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:17:45,547 [INFO] 127.0.0.1 - - [07/Jun/2026 12:17:45] "GET /api/health HTTP/1.1" 200 -
+2026-06-07 12:17:45,547 [INFO] 127.0.0.1 - - [07/Jun/2026 12:17:45] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-07 12:17:45,548 [INFO] 127.0.0.1 - - [07/Jun/2026 12:17:45] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-07 12:17:45,548 [INFO] 127.0.0.1 - - [07/Jun/2026 12:17:45] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-07 12:17:45,548 [INFO] 127.0.0.1 - - [07/Jun/2026 12:17:45] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-07 12:17:45,549 [INFO] 127.0.0.1 - - [07/Jun/2026 12:17:45] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-07 12:18:15,443 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 12:18:15,451 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 12:18:15,451 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 12:18:15,452 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 12:18:15,452 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 12:18:15,453 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 12:18:15,453 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 12:18:15,453 [INFO] 127.0.0.1 - - [07/Jun/2026 12:18:15] "GET /api/caliber/capabilities HTTP/1.1" 200 -
+2026-06-07 12:18:17,501 [INFO] 127.0.0.1 - - [07/Jun/2026 12:18:17] "GET /api/caliber/lifecycle HTTP/1.1" 200 -
+2026-06-07 12:18:19,644 [INFO] [Lifecycle] x → ready
+2026-06-07 12:18:19,644 [INFO] [Lifecycle] x 手動復帰 → ready
+2026-06-07 12:18:19,644 [INFO] 127.0.0.1 - - [07/Jun/2026 12:18:19] "POST /api/caliber/recover/x HTTP/1.1" 200 -
+2026-06-07 12:18:21,690 [INFO] 127.0.0.1 - - [07/Jun/2026 12:18:21] "GET /api/caliber/lifecycle HTTP/1.1" 200 -
+2026-06-07 12:18:33,115 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 12:18:33,116 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 12:18:33,116 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 12:18:33,117 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 12:18:33,117 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 12:18:33,118 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 12:18:33,118 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 12:18:33,235 [INFO] [Lifecycle] x → busy
+2026-06-07 12:18:33,235 [INFO] [Caliber] post_x → x (priority=3)
