@@ -2802,3 +2802,67 @@
 2026-06-07 15:52:56,316 [WARNING]  * Debugger is active!
 2026-06-07 15:52:56,395 [INFO]  * Debugger PIN: 568-089-845
 2026-06-07 15:52:56,915 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\constants.py', reloading
+2026-06-07 15:52:57,013 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:52:57,487 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:57,487 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:57,487 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:57,488 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:57,488 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:57,489 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:57,490 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:57,490 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:57,492 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:57,493 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:57,493 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:57,493 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:57,540 [WARNING]  * Debugger is active!
+2026-06-07 15:52:57,560 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:52:57,787 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\base_futures.py', reloading
+2026-06-07 15:52:57,878 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:52:58,339 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:58,339 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:58,339 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:58,340 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:58,340 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:58,340 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:58,343 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:58,343 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:58,344 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:58,344 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:58,344 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:58,344 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:58,384 [WARNING]  * Debugger is active!
+2026-06-07 15:52:58,405 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:52:58,647 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\sslproto.py', reloading
+2026-06-07 15:52:58,763 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:52:59,165 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:59,166 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:59,166 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:59,166 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:59,166 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:59,167 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:59,169 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:59,169 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:59,169 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:59,169 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:59,170 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:59,170 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:59,209 [WARNING]  * Debugger is active!
+2026-06-07 15:52:59,226 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:52:59,333 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\queues.py', reloading
+2026-06-07 15:52:59,378 [INFO]  * Restarting with watchdog (windowsapi)
+2026-06-07 15:52:59,775 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-07 15:52:59,776 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-07 15:52:59,776 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-07 15:52:59,777 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-07 15:52:59,777 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-07 15:52:59,777 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-07 15:52:59,778 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-07 15:52:59,779 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-07 15:52:59,779 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-07 15:52:59,779 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-07 15:52:59,780 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-07 15:52:59,780 [INFO] [Bootstrap] Worker初期化完了
+2026-06-07 15:52:59,821 [WARNING]  * Debugger is active!
+2026-06-07 15:52:59,839 [INFO]  * Debugger PIN: 568-089-845
+2026-06-07 15:52:59,900 [INFO]  * Detected change in 'C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.13_3.13.3568.0_x64__qbz5n2kfra8p0\\Lib\\asyncio\\selector_events.py', reloading
