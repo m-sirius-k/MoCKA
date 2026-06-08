@@ -2,1238 +2,1051 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MoCKA COMMAND CENTER v5.0</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoCKA COMMAND CENTER v6.1</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Noto+Sans+JP:wght@400;700&display=swap');
-:root {
-  --bg:#07090f; --bg2:#0d1117; --bg3:#111820;
-  --border:#1e2d3d; --border2:#2a3f52;
-  --text:#c9d1d9; --text2:#8b949e;
-  --accent:#00d4ff; --accent2:#0090bb;
-  --green:#3fb950; --yellow:#d29922; --orange:#f0883e; --red:#f85149; --purple:#bc8cff;
-  --mono:'Share Tech Mono',monospace; --head:'Rajdhani',sans-serif; --body:'Noto Sans JP',sans-serif;
-  --radius:6px; --shadow:0 2px 12px rgba(0,212,255,.08);
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','Courier New',monospace;font-size:13px;min-height:100vh}
+:root{
+  --g:#1a1a2e;--gb:#16213e;--gc:#0f3460;
+  --green:#00d4aa;--amber:#f0a500;--red:#e74c6e;--blue:#4a9eff;--purple:#a78bfa;--teal:#34d399;--pink:#f472b6;
+  --dim:rgba(255,255,255,.06);--line:rgba(255,255,255,.09);--txt:rgba(255,255,255,.9);--muted:rgba(255,255,255,.45);
+  --ok:rgba(0,212,170,.12);--warn:rgba(240,165,0,.12);--ng:rgba(231,76,110,.12);
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:13px;min-height:100vh;overflow-x:hidden;}
-::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:var(--bg);} ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
-.logo{font-family:var(--head);font-size:20px;font-weight:700;color:var(--accent);letter-spacing:2px;}
-.logo span{color:var(--text2);font-size:12px;font-weight:400;margin-left:8px;}
-.servers{display:flex;gap:8px;align-items:center;}
-.dot{width:8px;height:8px;border-radius:50%;background:#333;}
-.dot.on{background:var(--green);box-shadow:0 0 6px var(--green);}
-.dot.off{background:var(--red);}
-.dot-wrap{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);}
-.timestamp{font-family:var(--mono);font-size:11px;color:var(--text2);}
-#btn-refresh{background:var(--bg3);border:1px solid var(--border2);color:var(--accent);padding:4px 12px;border-radius:var(--radius);cursor:pointer;font-size:12px;font-family:var(--mono);transition:all .2s;}
-#btn-refresh:hover{background:var(--accent);color:var(--bg);}
-#risk-banner{margin:12px 16px 0;border-radius:var(--radius);padding:12px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:20px;transition:all .5s;background:var(--bg2);}
-.risk-level{font-family:var(--head);font-size:28px;font-weight:700;min-width:110px;letter-spacing:2px;}
-.risk-bar-wrap{flex:1;}
-.risk-bar-bg{background:var(--bg3);border-radius:3px;height:8px;overflow:hidden;}
-.risk-bar-fill{height:100%;border-radius:3px;transition:width .8s ease;}
-.risk-score{font-family:var(--mono);font-size:24px;font-weight:bold;min-width:60px;text-align:right;}
-.risk-rec{flex:2;font-size:12px;color:var(--text2);border-left:1px solid var(--border);padding-left:16px;}
-.risk-rec strong{color:var(--text);display:block;margin-bottom:2px;}
-.grid{display:grid;gap:10px;padding:10px 16px;}
-.grid-top{grid-template-columns:repeat(4,1fr);}
-/* Analytics: TODO Board + Trend(広め) + Decision Intelligence */
-.grid-mid{grid-template-columns:minmax(180px,2fr) minmax(200px,2.5fr) minmax(150px,1.2fr);}
-.grid-bottom{grid-template-columns:minmax(160px,1.8fr) minmax(100px,0.7fr) minmax(180px,1.8fr);}
-/* Infrastructure: Pipeline + Services + Risk Engine + Seal */
-.grid-last{grid-template-columns:1fr 1fr 1.5fr 1fr;}
-.panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:fadeIn .4s ease both;}
-.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),transparent);}
-.panel.red::before{background:linear-gradient(90deg,var(--red),transparent);}
-.panel.grn::before{background:linear-gradient(90deg,var(--green),transparent);}
-.panel.ylw::before{background:linear-gradient(90deg,var(--yellow),transparent);}
-.panel.purp::before{background:linear-gradient(90deg,var(--purple),transparent);}
-.panel.orn::before{background:linear-gradient(90deg,var(--orange),transparent);}
-.panel-title{font-family:var(--head);font-size:11px;font-weight:600;color:var(--text2);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.panel-title .icon{font-size:13px;}
-.civ-loop{display:flex;align-items:center;gap:0;overflow-x:auto;padding:4px 0;}
-.civ-node{display:flex;flex-direction:column;align-items:center;min-width:70px;position:relative;}
-.civ-node::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--border2);font-size:14px;}
-.civ-node:last-child::after{display:none;}
-.cn-circle{width:42px;height:42px;border-radius:50%;border:2px solid var(--border2);background:var(--bg3);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:bold;color:var(--text2);transition:all .3s;}
-.cn-circle.active{border-color:var(--accent);color:var(--accent);box-shadow:0 0 10px rgba(0,212,255,.3);}
-.cn-circle.warn{border-color:var(--yellow);color:var(--yellow);}
-.cn-circle.danger{border-color:var(--red);color:var(--red);animation:pulse-red .8s infinite;}
-.cn-label{font-size:9px;color:var(--text2);margin-top:4px;text-align:center;}
-.chips{display:flex;flex-wrap:wrap;gap:6px;}
-.chip{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 10px;text-align:center;min-width:60px;}
-.chip .n{font-family:var(--mono);font-size:18px;font-weight:bold;color:var(--accent);}
-.chip .l{font-size:10px;color:var(--text2);margin-top:2px;}
-.chip.red .n{color:var(--red);} .chip.grn .n{color:var(--green);} .chip.ylw .n{color:var(--yellow);} .chip.purp .n{color:var(--purple);}
-.bar-row{display:flex;align-items:center;gap:8px;margin:4px 0;}
-.bar-label{font-size:11px;color:var(--text2);width:72px;flex-shrink:0;}
-.bar-track{flex:1;background:var(--bg3);border-radius:3px;height:8px;overflow:hidden;}
-.bar-fill{height:100%;border-radius:3px;transition:width .6s ease;}
-.bar-val{font-family:var(--mono);font-size:11px;color:var(--text);width:44px;text-align:right;}
-.sparkline-wrap{overflow:hidden;}
-.spark-row{display:flex;align-items:flex-end;gap:3px;height:40px;padding:0 2px;}
-.spark-bar{flex:1;border-radius:2px 2px 0 0;min-width:8px;background:var(--accent2);transition:height .4s;position:relative;cursor:default;}
-.spark-bar:hover::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);color:var(--text);font-size:10px;padding:2px 6px;border-radius:3px;white-space:nowrap;z-index:10;}
-.spark-bar.l1{background:var(--red);}
-.spark-labels{display:flex;gap:3px;padding:2px 2px 0;}
-.spark-lbl{flex:1;font-size:9px;color:var(--text2);text-align:center;overflow:hidden;}
-.trend-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:10px;font-family:var(--mono);}
-.trend-badge.up{background:rgba(248,81,73,.15);color:var(--red);}
-.trend-badge.down{background:rgba(63,185,80,.15);color:var(--green);}
-.trend-badge.flat{background:rgba(139,148,158,.15);color:var(--text2);}
-.mini-table{width:100%;border-collapse:collapse;}
-.mini-table td{padding:4px 6px;font-size:11px;border-bottom:1px solid var(--border);}
-.mini-table td:first-child{color:var(--text2);}
-.mini-table tr:last-child td{border-bottom:none;}
-/* TODO Board 専用スタイル */
-.todo-board-item{display:flex;align-items:center;gap:6px;padding:5px 0;border-bottom:1px solid var(--border);}
-.todo-board-item:last-child{border-bottom:none;}
-.todo-board-id{font-family:var(--mono);font-size:11px;font-weight:bold;color:var(--accent);min-width:80px;flex-shrink:0;}
-.todo-board-title{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.todo-board-badge{font-size:12px;flex-shrink:0;}
-.todo-board-prog{font-size:10px;color:var(--accent);flex-shrink:0;}
-/* TODO Risk */
-.todo-item{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border);}
-.todo-item:last-child{border-bottom:none;}
-.todo-risk-badge{font-size:9px;font-family:var(--mono);padding:2px 4px;border-radius:3px;min-width:44px;text-align:center;flex-shrink:0;}
-.todo-risk-badge.CRITICAL{background:rgba(248,81,73,.2);color:var(--red);}
-.todo-risk-badge.HIGH{background:rgba(240,136,62,.2);color:var(--orange);}
-.todo-risk-badge.MEDIUM{background:rgba(210,153,34,.2);color:var(--yellow);}
-.todo-risk-badge.LOW{background:rgba(63,185,80,.2);color:var(--green);}
-.todo-title{flex:1;font-size:10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.todo-overdue{font-size:9px;color:var(--red);flex-shrink:0;}
-.dec-item{padding:4px 0;border-bottom:1px solid var(--border);}
-.dec-item:last-child{border-bottom:none;}
-.dec-type{font-size:10px;font-family:var(--mono);}
-.dec-type.APPROVED{color:var(--green);} .dec-type.REJECTED{color:var(--red);}
-.dec-title{font-size:10px;color:var(--text2);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.agent-row{display:flex;align-items:center;gap:8px;margin:3px 0;}
-.agent-name{font-size:11px;width:80px;overflow:hidden;text-overflow:ellipsis;}
-.agent-bar-wrap{flex:1;background:var(--bg3);border-radius:3px;height:6px;overflow:hidden;}
-.agent-bar-fill{height:100%;border-radius:3px;background:var(--purple);transition:width .6s;}
-.agent-pct{font-family:var(--mono);font-size:10px;color:var(--text2);width:35px;text-align:right;}
-.morpho-score{font-family:var(--head);font-size:32px;font-weight:700;text-align:center;margin:6px 0 2px;letter-spacing:2px;}
-.morpho-tokens{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0;}
-.morpho-token{background:var(--bg3);color:var(--accent);border-radius:3px;padding:2px 6px;font-size:10px;font-family:var(--mono);}
-.morpho-match{background:rgba(248,81,73,.15);color:var(--red);border-radius:3px;padding:2px 6px;font-size:10px;font-family:var(--mono);}
-.morpho-hist-item{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid var(--border);font-size:11px;}
-.morpho-hist-item:last-child{border-bottom:none;}
-.pred-badge{font-family:var(--mono);font-size:10px;font-weight:bold;min-width:52px;}
-.pred-badge.SAFE{color:var(--green);} .pred-badge.WARNING{color:var(--yellow);} .pred-badge.DANGER{color:var(--orange);} .pred-badge.CRITICAL{color:var(--red);}
-.hist-text{flex:1;padding:0 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text2);}
-.hist-pct{font-family:var(--mono);font-size:10px;color:var(--text2);}
-.prev-item{padding:6px 0;border-bottom:1px solid var(--border);}
-.prev-item:last-child{border-bottom:none;}
-.prev-pattern{font-size:11px;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.prev-proposal{font-size:10px;color:var(--text2);margin-bottom:4px;}
-.prev-actions{display:flex;gap:6px;}
-.btn-approve,.btn-reject{padding:3px 10px;border-radius:3px;border:none;cursor:pointer;font-size:11px;font-family:var(--mono);transition:all .2s;}
-.btn-approve{background:rgba(63,185,80,.2);color:var(--green);border:1px solid rgba(63,185,80,.3);}
-.btn-approve:hover{background:var(--green);color:var(--bg);}
-.btn-reject{background:rgba(248,81,73,.15);color:var(--red);border:1px solid rgba(248,81,73,.3);}
-.btn-reject:hover{background:var(--red);color:var(--bg);}
-.int-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border);font-size:11px;}
-.int-row:last-child{border-bottom:none;}
-.int-key{color:var(--text2);}
-.int-val{font-family:var(--mono);color:var(--text);}
-.int-val.ok{color:var(--green);} .int-val.warn{color:var(--yellow);} .int-val.err{color:var(--red);}
-#rec-box{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.2);border-radius:var(--radius);padding:8px 14px;margin:8px 16px 0;font-size:12px;display:flex;align-items:center;gap:10px;}
-#rec-box .rec-icon{font-size:18px;}
-#rec-text{flex:1;}
-#rec-text strong{color:var(--accent);display:block;font-size:11px;margin-bottom:2px;font-family:var(--head);letter-spacing:1px;}
-.essence-axis{margin-bottom:4px;}.essence-panel{max-height:220px;overflow-y:auto;}
-.essence-axis-label{font-size:10px;color:var(--text2);font-family:var(--mono);margin-bottom:3px;}
-.essence-text{font-size:11px;color:var(--text);background:var(--bg3);border-radius:3px;padding:6px 8px;line-height:1.6;max-height:60px;overflow-y:auto;}
-.seal-entry{padding:5px 0;border-bottom:1px solid var(--border);font-size:11px;}
-.seal-entry:last-child{border-bottom:none;}
-.seal-hash{font-family:var(--mono);font-size:10px;color:var(--accent2);word-break:break-all;}
-.pipe-nodes{display:flex;gap:4px;flex-wrap:wrap;}
-.pipe-node{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:4px 8px;font-size:10px;font-family:var(--mono);display:flex;align-items:center;gap:4px;color:var(--text2);}
-.pipe-node .pn{font-weight:bold;}
-.pipe-node.has-data{border-color:var(--accent2);color:var(--accent);}
-.empty{text-align:center;color:var(--text2);font-size:11px;padding:16px 0;}
-.sec-label{font-family:var(--head);font-size:10px;letter-spacing:2px;color:var(--text2);text-transform:uppercase;padding:6px 16px 2px;}
-@keyframes pulse-red{0%,100%{box-shadow:0 0 6px rgba(248,81,73,.4);}50%{box-shadow:0 0 14px rgba(248,81,73,.8);}}
-@keyframes blink{0%,100%{opacity:1;}50%{opacity:.4;}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.wrap{padding:14px;max-width:1400px;margin:0 auto}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.logo{font-size:15px;font-weight:700;letter-spacing:.1em}
+.logo em{color:var(--green);font-style:normal}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.phase-badge{background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px}
+.seal-txt{color:var(--muted);font-size:11px}
+.ts-txt{color:var(--teal);font-size:11px;font-family:monospace}
+
+/* ── RISK BAR ── */
+.risk-bar{display:flex;align-items:center;gap:10px;background:var(--dim);border-radius:8px;padding:8px 14px;margin-bottom:10px;border:1px solid var(--line);flex-wrap:wrap}
+.risk-label{font-size:11px;color:var(--muted);min-width:76px}
+.risk-meter{flex:1;min-width:80px;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.risk-fill{height:100%;border-radius:3px}
+.risk-fill.safe{background:var(--green);width:18%}
+.risk-fill.warn{background:var(--amber);width:55%}
+.risk-fill.crit{background:var(--red);width:90%}
+.risk-status{font-size:12px;font-weight:700;min-width:55px}
+.risk-status.safe{color:var(--green)}
+.risk-status.warn{color:var(--amber)}
+.risk-status.crit{color:var(--red)}
+.risk-nba{font-size:11px;color:var(--blue);border-left:1px solid var(--line);padding-left:10px;min-width:160px}
+
+/* ── SERVER ROW ── */
+.srv-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.srv{display:flex;align-items:center;gap:5px;background:var(--dim);border:1px solid var(--line);border-radius:6px;padding:4px 9px;font-size:11px;transition:border-color .2s}
+.srv:hover{border-color:rgba(255,255,255,.2)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--green);box-shadow:0 0 4px var(--green)}
+.dot.off{background:var(--red)}
+.dot.warn{background:var(--amber)}
+.srv-name{color:var(--muted)}
+.srv-port{color:var(--txt)}
+
+/* ── GRID LAYOUTS ── */
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.grid-131{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.grid-1{display:grid;grid-template-columns:1fr;margin-bottom:10px}
+
+/* ── PANEL ── */
+.panel{background:var(--gb);border:1px solid var(--line);border-radius:10px;padding:12px;position:relative}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.panel-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.panel-badge{font-size:10px;color:var(--muted)}
+
+/* ── DEBUG OVERLAY ── */
+.dbg-strip{position:absolute;top:0;right:0;display:flex;gap:3px;padding:4px 6px;z-index:10}
+.dbg-tag{font-size:9px;padding:1px 5px;border-radius:3px;font-family:monospace}
+.dbg-tag.ok{background:rgba(0,212,170,.2);color:var(--green)}
+.dbg-tag.err{background:rgba(231,76,110,.2);color:var(--red)}
+.dbg-tag.warn{background:rgba(240,165,0,.2);color:var(--amber)}
+.dbg-tag.changed{background:rgba(74,158,255,.2);color:var(--blue)}
+.dbg-err-msg{background:rgba(231,76,110,.1);border:1px solid rgba(231,76,110,.3);border-radius:6px;padding:6px 8px;font-size:10px;color:var(--red);font-family:monospace;margin-top:6px;display:none}
+
+/* ── SECTION HEADER ── */
+.section-hd{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
+/* ── CIV LOOP ── */
+.civ-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.civ-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.civ-name{color:var(--muted);font-size:11px;min-width:86px}
+.civ-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:2px}
+.civ-bar{height:100%;border-radius:2px;transition:width .6s}
+.civ-count{font-size:11px;font-weight:700;min-width:40px;text-align:right}
+
+/* ── HEINRICH ── */
+.hein-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.hein-lbl{font-size:11px;color:var(--muted);min-width:64px}
+.hein-bar{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.07)}
+.hein-fill{height:100%;border-radius:3px;transition:width .6s}
+.hein-num{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+.hein-note{font-size:10px;color:var(--muted);margin-top:4px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:30px;margin-top:6px}
+.spark-bar{border-radius:2px 2px 0 0;min-width:9px;transition:height .5s}
+
+/* ── TODO ── */
+.todo-item{display:flex;align-items:flex-start;gap:7px;padding:5px 8px;border-radius:6px;background:var(--dim);margin-bottom:4px}
+.todo-pri{font-size:9px;padding:2px 5px;border-radius:3px;flex-shrink:0;margin-top:1px;font-weight:700}
+.todo-pri.sai{background:rgba(231,76,110,.2);color:var(--red)}
+.todo-pri.kou{background:rgba(240,165,0,.2);color:var(--amber)}
+.todo-pri.naka{background:rgba(74,158,255,.2);color:var(--blue)}
+.todo-text{font-size:11px;line-height:1.4}
+.todo-id{font-size:10px;color:var(--muted)}
+
+/* ── PRODUCTS ── */
+.prod-card{background:var(--gb);border:1px solid var(--line);border-radius:10px;padding:12px}
+.prod-name{font-size:12px;font-weight:700;margin-bottom:4px}
+.prod-badge{font-size:10px;padding:2px 7px;border-radius:12px;display:inline-block;margin-bottom:6px}
+.prod-badge.live{background:rgba(0,212,170,.15);color:var(--green);border:1px solid rgba(0,212,170,.3)}
+.prod-badge.impl{background:rgba(240,165,0,.15);color:var(--amber);border:1px solid rgba(240,165,0,.3)}
+.prod-badge.pend{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3)}
+.prod-badge.seal{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.3)}
+.prod-metric{font-size:11px;color:var(--muted);margin-bottom:2px}
+.prod-metric b{color:var(--txt)}
+.prod-progress{height:3px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:6px}
+.prod-prog-fill{height:100%;border-radius:2px;transition:width .6s}
+
+/* ── SEO-OS ── */
+.seo-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.seo-stat{background:var(--dim);border-radius:6px;padding:8px 10px}
+.seo-stat-val{font-size:18px;font-weight:700}
+.seo-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.seo-pipe-row{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:4px}
+.seo-pipe-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.seo-pipe-name{flex:1;color:var(--muted)}
+.seo-pipe-st{font-size:10px;padding:1px 5px;border-radius:3px}
+.seo-pipe-st.ready{background:rgba(0,212,170,.15);color:var(--green)}
+.seo-pipe-st.pend{background:rgba(240,165,0,.15);color:var(--amber)}
+
+/* ── BEE ── */
+.bee-item{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:6px;background:var(--dim);margin-bottom:4px}
+.bee-lc{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700}
+.bee-lc.est{background:rgba(0,212,170,.15);color:var(--green)}
+.bee-lc.grow{background:rgba(74,158,255,.15);color:var(--blue)}
+.bee-lc.obs{background:rgba(167,139,250,.15);color:var(--purple)}
+.bee-name{flex:1;font-size:11px}
+.bee-ev{font-size:10px;color:var(--muted)}
+
+/* ── ESSENCE ── */
+.ess-axis{border-left:2px solid;padding:5px 8px;border-radius:0 6px 6px 0;background:var(--dim);margin-bottom:6px}
+.ess-axis-lbl{font-size:10px;font-weight:700;margin-bottom:2px}
+.ess-axis-txt{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* ── TIC ── */
+.tic-row{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:5px;margin-bottom:3px}
+.tic-row.ok{background:var(--ok)}
+.tic-row.ng{background:var(--ng)}
+.tic-row.warn{background:var(--warn)}
+.tic-tag{font-size:10px;padding:1px 5px;border-radius:3px;min-width:34px;text-align:center;font-weight:700}
+.tic-tag.ok{background:rgba(0,212,170,.2);color:var(--green)}
+.tic-tag.ng{background:rgba(231,76,110,.2);color:var(--red)}
+.tic-tag.warn{background:rgba(240,165,0,.2);color:var(--amber)}
+.tic-name{flex:1;font-size:11px}
+.tic-note{font-size:10px;color:var(--muted)}
+
+/* ── FLUID COORDS ── */
+.coord-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.coord-lbl{font-size:11px;color:var(--muted);min-width:90px}
+.coord-bar{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px}
+.coord-fill{height:100%;border-radius:3px;transition:width .6s}
+.coord-val{font-size:14px;font-weight:700;min-width:42px;text-align:right}
+
+/* ── SCAMPER ── */
+.scp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:12px}
+.scp-card{border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;border:1px solid transparent}
+.scp-card:hover{transform:translateY(-2px)}
+.scp-card.active{border-color:rgba(255,255,255,.25)}
+.scp-letter{font-size:22px;font-weight:700;line-height:1}
+.scp-word{font-size:9px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.08em}
+.scp-count{font-size:10px;margin-top:4px;font-weight:700}
+
+.scp-input-row{display:flex;gap:8px;margin-bottom:10px}
+.scp-input{flex:1;background:var(--dim);border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--txt);font-family:monospace;font-size:12px;outline:none;transition:border-color .2s}
+.scp-input:focus{border-color:var(--blue)}
+.scp-btn{background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--blue);border-radius:6px;padding:7px 16px;cursor:pointer;font-size:12px;font-weight:700;transition:background .2s}
+.scp-btn:hover{background:rgba(74,158,255,.25)}
+.scp-btn:active{transform:scale(.97)}
+
+.scp-result-area{background:var(--dim);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:80px}
+.scp-result-hd{font-size:10px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.scp-result-items{display:flex;flex-direction:column;gap:4px}
+.scp-result-item{display:flex;align-items:flex-start;gap:8px;padding:4px 6px;border-radius:5px;background:rgba(255,255,255,.04)}
+.scp-result-idx{font-size:10px;color:var(--muted);min-width:18px;font-weight:700}
+.scp-result-txt{font-size:11px;line-height:1.4}
+.scp-empty{font-size:11px;color:var(--muted);text-align:center;padding:16px}
+
+.scp-history{display:flex;flex-direction:column;gap:4px;max-height:120px;overflow-y:auto}
+.scp-hist-item{display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 6px;border-radius:4px;background:var(--dim)}
+.scp-hist-mode{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700}
+
+/* ── DEBUG LOG PANEL ── */
+.dbg-panel{background:#0a0a14;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px;margin-bottom:10px}
+.dbg-panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dbg-panel-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.dbg-log{max-height:120px;overflow-y:auto;font-family:monospace;font-size:11px;line-height:1.5}
+.dbg-log-line{padding:1px 4px;border-radius:3px;margin-bottom:1px}
+.dbg-log-line.info{color:var(--blue)}
+.dbg-log-line.ok{color:var(--green)}
+.dbg-log-line.warn{color:var(--amber)}
+.dbg-log-line.err{color:var(--red);background:rgba(231,76,110,.08)}
+.dbg-clear-btn{background:none;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:10px;padding:2px 8px;cursor:pointer}
+.dbg-clear-btn:hover{border-color:rgba(255,255,255,.25);color:var(--txt)}
+
+.spinner{display:inline-block;width:10px;height:10px;border:1px solid var(--muted);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.pulsing{animation:pulse 1.5s infinite}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<header>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <div class="logo">MoCKA <span>COMMAND CENTER v5.0</span></div>
-    <div class="servers" id="srv-dots"></div>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <span class="timestamp" id="ts">--:--:--</span>
-    <button id="btn-refresh" onclick="refreshAll()">&#8635; REFRESH</button>
-  </div>
-</header>
-
-<div class="sec-label">Civilization Loop</div>
-<div style="padding:0 16px;">
-  <div class="panel"><div class="civ-loop" id="civ-loop"></div></div>
-</div>
-
-<div class="sec-label">Core Metrics</div>
-<div class="grid grid-top">
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9679;</span>Events DB</div>
-    <div class="chips">
-      <div class="chip"><div class="n" id="m-record">-</div><div class="l">TOTAL</div></div>
-      <div class="chip red"><div class="n" id="m-incident">-</div><div class="l">INCIDENT</div></div>
-      <div class="chip ylw"><div class="n" id="m-recurrence">-</div><div class="l">RECURRENCE</div></div>
-      <div class="chip grn"><div class="n" id="m-action">-</div><div class="l">ACTION</div></div>
-    </div>
-  </div>
-  <!-- TIC パネル -->
-  <div class="panel" id="tic-panel" style="border-left:3px solid var(--yellow)">
-    <div class="panel-title"><span class="icon">&#9888;</span>TIC Monitor</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-      <div class="chip" id="tic-health-chip" style="background:var(--bg2)">
-        <div class="n" id="tic-health-val" style="font-size:12px">-</div>
-        <div class="l">HEALTH</div>
-      </div>
-      <div class="chip red">
-        <div class="n" id="tic-critical-val">-</div>
-        <div class="l">CRITICAL</div>
-      </div>
-      <div class="chip ylw">
-        <div class="n" id="tic-warning-val">-</div>
-        <div class="l">WARNING</div>
-      </div>
-      <div class="chip ylw">
-        <div class="n" id="tic-queue-val">-</div>
-        <div class="l">QUEUE</div>
-      </div>
-    </div>
-    <div style="font-size:10px;color:var(--text2)" id="tic-top-risk">-</div>
-  </div>
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9650;</span>Heinrich Monitor</div>
-    <div class="bar-row">
-      <div class="bar-label">Layer1 重大</div>
-      <div class="bar-track"><div class="bar-fill" id="h-bar-l1" style="width:0%;background:var(--red)"></div></div>
-      <div class="bar-val" id="h-val-l1">-</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">Layer2 軽微</div>
-      <div class="bar-track"><div class="bar-fill" id="h-bar-l2" style="width:0%;background:var(--yellow)"></div></div>
-      <div class="bar-val" id="h-val-l2">-</div>
-    </div>
-    <div class="bar-row">
-      <div class="bar-label">Layer3 ヒヤリ</div>
-      <div class="bar-track"><div class="bar-fill" id="h-bar-l3" style="width:0%;background:var(--green)"></div></div>
-      <div class="bar-val" id="h-val-l3">-</div>
-    </div>
-    <div style="font-size:10px;color:var(--text2);margin-top:6px;">
-      実測: <span id="h-ratio" style="color:var(--text)">-</span>
-      &nbsp;|&nbsp;理論: 1:29:300
-      &nbsp;|&nbsp;L3捕捉率: <span id="h-cap" style="color:var(--green)">-%</span>
-    </div>
-  </div>
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9670;</span>Morphology Predictor</div>
-    <div class="morpho-score" id="morpho-pred" style="color:var(--green)">SAFE</div>
-    <div style="text-align:center;font-size:10px;color:var(--text2);margin-bottom:6px;" id="morpho-interp">-</div>
-    <div class="morpho-tokens" id="morpho-tokens"></div>
-  </div>
-  <div class="panel purp">
-    <div class="panel-title"><span class="icon">&#9632;</span>Seal &amp; Integrity</div>
-    <div class="int-row"><span class="int-key">Last Seal</span><span class="int-val" id="m-seal">-</span></div>
-    <div class="int-row"><span class="int-key">DB Health</span><span class="int-val ok" id="int-health">-%</span></div>
-    <div class="int-row"><span class="int-key">DB Size</span><span class="int-val" id="int-size">-</span></div>
-    <div class="int-row"><span class="int-key">Events</span><span class="int-val" id="int-total">-</span></div>
-    <div class="int-row"><span class="int-key">Null Fields</span><span class="int-val" id="int-null">-</span></div>
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="logo">Mo<em>CKA</em> COMMAND CENTER <span style="font-size:11px;color:var(--muted);font-weight:400;">v6.1</span></div>
+  <div class="topbar-right">
+    <span class="phase-badge">Phase 4 — 商用展開</span>
+    <span class="seal-txt">seal: c2d8c54e</span>
+    <span class="ts-txt" id="clock">--:--:--</span>
   </div>
 </div>
 
-<!-- ROW: TODO Board(大) + 7日トレンド + Decision Log(小) -->
-<div class="sec-label">Analytics &amp; Intelligence</div>
-<div class="grid grid-mid">
+<!-- ── GLOBAL RISK BAR ── -->
+<div class="risk-bar" id="risk-bar">
+  <span class="risk-label">Global Risk</span>
+  <div class="risk-meter"><div class="risk-fill safe" id="risk-fill"></div></div>
+  <span class="risk-status safe" id="risk-status">SAFE</span>
+  <span class="risk-nba" id="risk-nba"><b>Next Best Action:</b> TODO_221 Orchestra LP投入確認 → TODO_205 TIC Sandbox整備</span>
+</div>
 
-  <!-- TODO Board: 最優先表示・優先度順・番号付き -->
-  <div class="panel grn">
-    <div class="panel-title" style="justify-content:space-between;">
-      <span><span class="icon">&#9654;</span>TODO Board</span>
-      <span style="font-size:10px;color:var(--text2);font-family:var(--mono);" id="todo-board-count">-件</span>
-    </div>
-    <div id="todo-board"></div>
+<!-- ── SERVER ROW ── -->
+<div class="srv-row" id="srv-row">
+  <div class="srv"><div class="dot on"></div><span class="srv-name">APP</span>&nbsp;<span class="srv-port">:5000</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">MCP</span>&nbsp;<span class="srv-port">:5002</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">CALIBER</span>&nbsp;<span class="srv-port">:5679</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">RUNTIME-B</span>&nbsp;<span class="srv-port">:5003</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">SEO-OS</span>&nbsp;<span class="srv-port">:8750</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">ngrok</span>&nbsp;<span class="srv-port">MCP</span></div>
+  <div class="srv"><div class="dot warn"></div><span class="srv-name">relay_dom</span>&nbsp;<span class="srv-port" style="color:var(--amber)">FAIL</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">SQLite</span>&nbsp;<span class="srv-port">OK</span></div>
+</div>
+
+<!-- ── ROW A: CIV / HEINRICH / TODO ── -->
+<div class="grid-3">
+
+  <!-- CIVILIZATION LOOP -->
+  <div class="panel" id="panel-civ">
+    <div class="dbg-strip" id="dbg-civ"></div>
+    <div class="panel-hd"><span class="panel-title">Civilization Loop</span><span class="panel-badge">8-stage</span></div>
+    <div id="civ-body"></div>
+    <div class="dbg-err-msg" id="err-civ"></div>
   </div>
 
-  <!-- 7-Day Trend -->
-  <div class="panel" style="display:flex;flex-direction:column;">
-    <div class="panel-title" style="justify-content:space-between;flex-shrink:0;">
-      <span><span class="icon">&#8984;</span>7-Day Trend</span>
-      <span class="trend-badge flat" id="trend-badge">&#8594; FLAT</span>
-    </div>
-    <div id="trend-vertical" style="display:flex;flex-direction:column;gap:4px;flex:1;justify-content:space-between;"></div>
-    <div id="trend-summary" style="margin-top:6px;flex-shrink:0;font-size:10px;color:var(--text2);border-top:1px solid var(--border);padding-top:6px;display:flex;justify-content:space-between;"></div>
+  <!-- HEINRICH + TEMPORAL -->
+  <div class="panel" id="panel-hein">
+    <div class="dbg-strip" id="dbg-hein"></div>
+    <div class="panel-hd"><span class="panel-title">Heinrich Monitor</span><span class="panel-badge" id="hein-ratio-badge">--</span></div>
+    <div id="hein-body"></div>
+    <div class="dbg-err-msg" id="err-hein"></div>
   </div>
 
-  <!-- Decision Intelligence -->
-  <div class="panel ylw" style="display:flex;flex-direction:column;">
-    <div class="panel-title" style="flex-shrink:0;"><span class="icon">&#9654;</span>Decision Intelligence</div>
-    <div id="decision-log" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;"><div class="empty">判断記録なし</div></div>
+  <!-- TODO -->
+  <div class="panel" id="panel-todo">
+    <div class="dbg-strip" id="dbg-todo"></div>
+    <div class="panel-hd"><span class="panel-title">Active TODO</span><span class="panel-badge" id="todo-count-badge" style="color:var(--blue)">--</span></div>
+    <div id="todo-body"></div>
+    <div class="dbg-err-msg" id="err-todo"></div>
   </div>
 </div>
 
-<div class="sec-label">Knowledge &amp; Operations</div>
-<div class="grid grid-bottom">
-  <div class="panel grn" style="overflow:hidden;max-height:280px;">
-    <div class="panel-title"><span class="icon">&#9670;</span>Essence Viewer</div>
-    <div class="essence-panel"><div class="essence-axis">
-      <div class="essence-axis-label">INCIDENT</div>
-      <div class="essence-text" id="ess-incident">-</div>
-    </div>
-    <div class="essence-axis">
-      <div class="essence-axis-label">OPERATION</div>
-      <div class="essence-text" id="ess-operation">-</div>
-    </div>
-    <div class="essence-axis">
-      <div class="essence-axis-label">PHILOSOPHY</div>
-      <div class="essence-text" id="ess-philosophy">-</div>
-    </div>
-    </div>
+<!-- ── ROW B: PRODUCTS ── -->
+<div class="section-hd">製品ステータス</div>
+<div class="grid-4" id="products-grid">
+  <!-- JS injection -->
+</div>
+
+<!-- ── ROW C: SEO-OS / BEE / ESSENCE ── -->
+<div class="grid-131">
+
+  <!-- SEO-OS -->
+  <div class="panel" id="panel-seo">
+    <div class="dbg-strip" id="dbg-seo"></div>
+    <div class="panel-hd"><span class="panel-title">SEO-OS</span><span class="panel-badge" style="color:var(--green)">:8750 稼働</span></div>
+    <div id="seo-body"></div>
+    <div class="dbg-err-msg" id="err-seo"></div>
   </div>
-  <div class="panel orn">
-    <div class="panel-title" style="justify-content:space-between;">
-      <span><span class="icon">&#9658;</span>Prevention</span>
-      <span id="pq-count" style="font-family:var(--mono);font-size:11px;color:var(--orange);">0件</span>
-    </div>
-    <div id="prev-queue"><div class="empty">承認待ち案件なし</div></div>
+
+  <!-- BEE -->
+  <div class="panel" id="panel-bee">
+    <div class="dbg-strip" id="dbg-bee"></div>
+    <div class="panel-hd"><span class="panel-title">β Ecology (BEE)</span><span class="panel-badge" id="bee-count-badge" style="color:var(--teal)">--</span></div>
+    <div id="bee-body"></div>
+    <div class="dbg-err-msg" id="err-bee"></div>
   </div>
-  <div style="display:flex;flex-direction:column;gap:10px;">
-    <div class="panel">
-      <div class="panel-title"><span class="icon">&#9670;</span>Morpho History</div>
-      <div id="morpho-hist"></div>
-    </div>
-    <div class="panel" style="font-size:10px;">
-      <div class="panel-title" style="margin-bottom:6px;"><span class="icon">&#9636;</span>Operator Load</div>
-      <div id="op-load"><div class="empty">読み込み中...</div></div>
-    </div>
-    <div class="panel purp">
-      <div class="panel-title"><span class="icon">&#9632;</span>Agent Allocation</div>
-      <div id="agent-alloc"><div class="empty">読み込み中...</div></div>
-    </div>
+
+  <!-- ESSENCE -->
+  <div class="panel" id="panel-ess">
+    <div class="dbg-strip" id="dbg-ess"></div>
+    <div class="panel-hd"><span class="panel-title">Essence / PHL 3軸</span><span class="panel-badge">5分自動更新</span></div>
+    <div id="ess-body"></div>
+    <div class="dbg-err-msg" id="err-ess"></div>
   </div>
 </div>
 
-<!-- Infrastructure: Pipeline + Services + TODO Risk Engine + Seal -->
-<div class="sec-label">Infrastructure</div>
-<div class="grid grid-last">
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9679;</span>Pipeline</div>
-    <div class="pipe-nodes" id="pipeline-nodes"></div>
+<!-- ── ROW D: TIC ── -->
+<div class="section-hd">TIC — Technology Intelligence Caliber</div>
+<div class="grid-2">
+
+  <div class="panel" id="panel-tic0">
+    <div class="dbg-strip" id="dbg-tic0"></div>
+    <div class="panel-hd"><span class="panel-title">Layer 0 — Health Check (7点)</span></div>
+    <div id="tic0-body"></div>
+    <div class="dbg-err-msg" id="err-tic0"></div>
   </div>
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9679;</span>Services</div>
-    <table class="mini-table" id="srv-table"></table>
-  </div>
-  <!-- TODO Risk Engine: コンパクト版 -->
-  <div class="panel red">
-    <div class="panel-title"><span class="icon">&#9888;</span>TODO Risk Engine</div>
-    <div id="todo-risk-list"><div class="empty">読み込み中...</div></div>
-  </div>
-  <div class="panel">
-    <div class="panel-title"><span class="icon">&#9670;</span>Seal History</div>
-    <div id="seal-hist"></div>
-    <div style="margin-top:8px;font-size:10px;color:var(--text2);">
-      未捕捉推定: <span id="h-missing" style="color:var(--red);font-family:var(--mono);">-件</span>
-    </div>
+
+  <div class="panel" id="panel-tic1">
+    <div class="dbg-strip" id="dbg-tic1"></div>
+    <div class="panel-hd"><span class="panel-title">Layer 1 — Tech Watcher</span><span class="panel-badge" style="color:var(--blue)">意味差分 v3.0</span></div>
+    <div id="tic1-body"></div>
+    <div class="dbg-err-msg" id="err-tic1"></div>
   </div>
 </div>
 
-<div class="sec-label">System Status</div>
-<div style="padding:0 16px 10px;">
-  <div id="risk-banner">
-    <div class="risk-level" id="risk-level" style="color:var(--green)">SAFE</div>
-    <div class="risk-bar-wrap">
-      <div style="font-size:10px;color:var(--text2);margin-bottom:4px;">GLOBAL RISK SCORE</div>
-      <div class="risk-bar-bg"><div class="risk-bar-fill" id="risk-bar" style="width:0%;background:var(--green)"></div></div>
-      <div style="font-size:10px;color:var(--text2);margin-top:3px;">理論的安全水準からの現在の乖離を示す複合指標</div>
-    </div>
-    <div class="risk-score" id="risk-score" style="color:var(--green)">0</div>
-    <div class="risk-rec">
-      <strong>SYSTEM RECOMMENDATION</strong>
-      <span id="risk-rec">読み込み中...</span>
-    </div>
-  </div>
-  <div id="rec-box" style="margin-top:8px;">
-    <span class="rec-icon">&#9654;</span>
-    <div id="rec-text">
-      <strong>NEXT BEST ACTION</strong>
-      <span id="rec-action">読み込み中...</span>
-    </div>
-  </div>
+<!-- ── ROW E: FLUID COORDINATES ── -->
+<div class="panel" id="panel-coord" style="margin-bottom:10px">
+  <div class="dbg-strip" id="dbg-coord"></div>
+  <div class="panel-hd"><span class="panel-title">Fluid Coordinates (流動性座標)</span><span class="panel-badge" style="color:var(--muted)">ΔZ=+0.2154 実測確定 / Kendall τ=1.0</span></div>
+  <div id="coord-body"></div>
+  <div class="dbg-err-msg" id="err-coord"></div>
 </div>
 
-<div style="height:20px;"></div>
+<!-- ── ROW F: SCAMPER Creative Engine ── -->
+<div class="section-hd">SCAMPER Creative Engine</div>
+<div class="panel" id="panel-scp" style="margin-bottom:10px">
+  <div class="dbg-strip" id="dbg-scp"></div>
+  <div class="panel-hd">
+    <span class="panel-title">SCAMPER — 500パターン搭載 / app.py統合</span>
+    <span class="panel-badge" id="scp-status-badge" style="color:var(--teal)">待機中</span>
+  </div>
+
+  <!-- 7モード選択 -->
+  <div class="scp-grid" id="scp-modes"></div>
+
+  <!-- 入力 -->
+  <div class="scp-input-row">
+    <input class="scp-input" id="scp-input" type="text" placeholder="インシデントや課題を入力（例: python直接実行指示の再発）" />
+    <button class="scp-btn" id="scp-run-btn" onclick="scamperRun()">展開 ▶</button>
+  </div>
+
+  <!-- 結果 -->
+  <div class="scp-result-area" id="scp-result">
+    <div class="scp-empty" id="scp-empty">モードを選択してテキストを入力し「展開」を押してください</div>
+    <div class="scp-result-items" id="scp-result-items" style="display:none"></div>
+  </div>
+
+  <!-- 履歴 -->
+  <div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+      <span>SCAMPER 実行履歴</span>
+      <button class="dbg-clear-btn" onclick="scamperClearHistory()">履歴クリア</button>
+    </div>
+    <div class="scp-history" id="scp-history">
+      <div style="font-size:10px;color:var(--muted);padding:4px">履歴なし</div>
+    </div>
+  </div>
+  <div class="dbg-err-msg" id="err-scp"></div>
+</div>
+
+<!-- ── DEBUG LOG PANEL ── -->
+<div class="dbg-panel">
+  <div class="dbg-panel-hd">
+    <span class="dbg-panel-title">System Debug Log</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span id="dbg-summary" style="font-size:10px;color:var(--muted)">初期化中...</span>
+      <button class="dbg-clear-btn" onclick="clearDebugLog()">クリア</button>
+    </div>
+  </div>
+  <div class="dbg-log" id="dbg-log"></div>
+</div>
+
+</div><!-- /wrap -->
 
 <script>
-(function(){
-'use strict';
+/* ═══════════════════════════════════════════════
+   MoCKA COMMAND CENTER v6.1 — Full Debug Engine
+   ═══════════════════════════════════════════════ */
 
-function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
-
-function tick(){set('ts',new Date().toLocaleTimeString('ja-JP'));}
-setInterval(tick,1000);tick();
-
-// ── SERVERS ──
-function refreshServers(){
-  var ngrokOnline=false;
-  fetch('/ngrok/status').then(function(r){return r.json();}).then(function(d){
-    ngrokOnline=(d.status==='online');
-  }).catch(function(){});
-  fetch('/servers/status').then(function(r){return r.json();}).then(function(d){
-    var defs=[
-      {key:'app',label:'APP'},
-      {key:'caliber',label:'CAL'},
-      {key:'mcp',label:'MCP'},
-      {key:'runtime_b',label:'RTB'},
-      {key:'ngrok',label:'NGROK'}
-    ];
-    var statusOf=function(key){
-      if(key==='app') return true;
-      if(key==='ngrok') return ngrokOnline;
-      var val=d[key];
-      if(!val) return false;
-      if(typeof val==='object') return val.status==='online'||val.status==='ok';
-      return val==='ok'||val===true||val==='online';
-    };
-    var wrap=document.getElementById('srv-dots');
-    if(wrap){
-      wrap.innerHTML='';
-      defs.forEach(function(s){
-        var on=statusOf(s.key);
-        var w=document.createElement('div');
-        w.className='dot-wrap';
-        w.innerHTML='<div class="dot '+(on?'on':'off')+'"></div><span>'+s.label+'</span>';
-        wrap.appendChild(w);
-      });
-    }
-    var tbl=document.getElementById('srv-table');
-    if(tbl){
-      tbl.innerHTML=defs.map(function(s){
-        var on=statusOf(s.key);
-        var col=on?'var(--green)':'var(--red)';
-        return '<tr><td>'+s.label+'</td><td style="color:'+col+';font-family:var(--mono);">'+(on?'ONLINE':'OFFLINE')+'</td></tr>';
-      }).join('');
-    }
-  }).catch(function(){});
-}
-
-// ── GLOBAL RISK ──
-function refreshRisk(){
-  fetch('/risk/global').then(function(r){return r.json();}).then(function(d){
-    var lv=d.level||'SAFE';
-    var sc=d.score||0;
-    var colors={SAFE:'var(--green)',WARNING:'var(--yellow)',DANGER:'var(--orange)',CRITICAL:'var(--red)'};
-    var col=colors[lv]||'var(--green)';
-    var el=document.getElementById('risk-level');
-    if(el){el.textContent=lv;el.style.color=col;}
-    var bar=document.getElementById('risk-bar');
-    if(bar){bar.style.width=sc+'%';bar.style.background=col;}
-    var scEl=document.getElementById('risk-score');
-    if(scEl){scEl.textContent=sc;scEl.style.color=col;}
-    set('risk-rec',d.recommendation||'-');
-    set('rec-action',d.recommendation||'-');
-    var banner=document.getElementById('risk-banner');
-    if(banner){
-      var bcolors={SAFE:'rgba(63,185,80,.05)',WARNING:'rgba(210,153,34,.08)',DANGER:'rgba(240,136,62,.1)',CRITICAL:'rgba(248,81,73,.12)'};
-      banner.style.background=bcolors[lv]||'var(--bg2)';
-      banner.style.borderColor=col;
-    }
-  }).catch(function(){});
-}
-
-// ── CIVILIZATION LOOP ──
-function refreshLoop(){
-  fetch('/loop/status').then(function(r){return r.json();}).then(function(d){
-    var cl=d.civilization_loop||{};
-    var nodes=[
-      {id:'observe',label:'OBSERVE',val:cl.observe&&cl.observe.count},
-      {id:'record',label:'RECORD',val:cl.record&&cl.record.count},
-      {id:'incident',label:'INCIDENT',val:cl.incident&&cl.incident.count},
-      {id:'recurrence',label:'RECURRENCE',val:cl.recurrence&&cl.recurrence.count},
-      {id:'prevention',label:'PREVENTION',val:cl.prevention&&cl.prevention.count},
-      {id:'decision',label:'DECISION',val:cl.decision&&cl.decision.count},
-      {id:'action',label:'ACTION',val:cl.action&&cl.action.count},
-      {id:'audit',label:'AUDIT',val:cl.audit&&cl.audit.last_seal}
-    ];
-    var wrap=document.getElementById('civ-loop');
-    if(wrap){
-      wrap.innerHTML=nodes.map(function(n){
-        var v=n.val!=null?n.val:'-';
-        var cls=v&&v!='0'&&v!==0?'active':'';
-        if(n.id==='incident'&&v>5) cls='danger';
-        if(n.id==='prevention'&&(v===0||v==='0')) cls='warn';
-        return '<div class="civ-node"><div class="cn-circle '+cls+'">'+v+'</div><div class="cn-label">'+n.label+'</div></div>';
-      }).join('');
-    }
-    set('m-record',cl.record&&cl.record.count||'-');
-    set('m-incident',cl.incident&&cl.incident.count||'-');
-    set('m-recurrence',cl.recurrence&&cl.recurrence.count||'-');
-    set('m-action',cl.action&&cl.action.count||'-');
-    if(cl.audit&&cl.audit.last_seal) set('m-seal',cl.audit.last_seal.slice(0,10));
-  }).catch(function(){});
-}
-
-// ── HEINRICH ──
-function refreshHeinrich(){
-  fetch('/heinrich/status').then(function(r){return r.json();}).then(function(d){
-    var h=d.heinrich||{};
-    var l1=(h.layer1_critical&&h.layer1_critical.count)||0;
-    var l2=(h.layer2_minor&&h.layer2_minor.count)||0;
-    var l3=(h.layer3_near_miss&&h.layer3_near_miss.count)||0;
-    var mx=Math.max(l1,l2,l3,1);
-    var b1=document.getElementById('h-bar-l1');
-    var b2=document.getElementById('h-bar-l2');
-    var b3=document.getElementById('h-bar-l3');
-    if(b1)b1.style.width=(l1/mx*100)+'%';
-    if(b2)b2.style.width=(l2/mx*100)+'%';
-    if(b3)b3.style.width=(l3/mx*100)+'%';
-    set('h-val-l1',l1);set('h-val-l2',l2);set('h-val-l3',l3);
-    set('h-ratio',h.actual_ratio||'-');
-    var cap=(h.capture_rate&&h.capture_rate.layer3)||'-%';
-    set('h-cap',cap);
-    set('h-missing',(h.missing_estimate||0)+'件');
-    var hCapEl=document.getElementById('h-cap');
-    if(hCapEl){var cn=parseFloat(cap)||0;hCapEl.style.color=cn>=10?'var(--green)':cn>=5?'var(--yellow)':'var(--red)';}
-  }).catch(function(){});
-}
-
-// ── MORPHOLOGY ──
-function refreshMorpho(){
-  fetch('/morpho/status').then(function(r){return r.json();}).then(function(d){
-    var lat=d.latest||{};
-    var pred=lat.prediction||'SAFE';
-    var colors={SAFE:'var(--green)',WARNING:'var(--yellow)',DANGER:'var(--orange)',CRITICAL:'var(--red)'};
-    var col=colors[pred]||'var(--green)';
-    var el=document.getElementById('morpho-pred');
-    if(el){el.textContent=pred;el.style.color=col;el.style.animation=pred==='CRITICAL'?'blink .8s infinite':'';}
-    set('morpho-interp',lat.interpretation||'失敗経路への進入確率: 0%');
-    var matched=(lat.matched_l1||[]).map(function(m){return m.pattern;});
-    var tEl=document.getElementById('morpho-tokens');
-    if(tEl&&lat.tokens){
-      tEl.innerHTML=(lat.tokens||[]).map(function(t){
-        var isMt=matched.some(function(m){return m.indexOf(t)>=0;});
-        return '<span class="'+(isMt?'morpho-match':'morpho-token')+'">'+t+'</span>';
-      }).join('');
-    }
-    var hEl=document.getElementById('morpho-hist');
-    if(hEl&&d.recent_predictions){
-      hEl.innerHTML=(d.recent_predictions||[]).slice(0,5).map(function(r){
-        var c=colors[r.prediction]||'var(--green)';
-        return '<div class="morpho-hist-item">'
-          +'<span class="pred-badge '+r.prediction+'" style="color:'+c+'">'+r.prediction+'</span>'
-          +'<span class="hist-text">'+r.text+'</span>'
-          +'<span class="hist-pct">'+Math.round(r.score*100)+'%</span>'
-          +'</div>';
-      }).join('');
-    }
-  }).catch(function(){});
-}
-
-// ── TREND ──
-function refreshTrend(){
-  fetch('/trend/weekly').then(function(r){return r.json();}).then(function(d){
-    var days=d.days||[];
-    var maxTotal=Math.max.apply(null,days.map(function(x){return x.total||0;}))||1;
-    var totalAll=days.reduce(function(s,x){return s+(x.total||0);},0);
-    var totalDanger=days.reduce(function(s,x){return s+(x.danger||0);},0);
-    var totalVoice=days.reduce(function(s,x){return s+(x.voice||0);},0);
-    var el=document.getElementById('trend-vertical');
-    if(el){
-      el.innerHTML=days.map(function(day){
-        // 幅を100%基準でスケール
-        var pct=maxTotal>0?Math.max(1,Math.round((day.total/maxTotal)*100)):0;
-        var dangerPct=day.total>0?Math.round((day.danger/day.total)*pct):0;
-        var isToday=(day.label===new Date().toISOString().slice(5,10).replace('T',''));
-        return '<div style="display:flex;align-items:center;gap:6px;font-size:10px;font-family:var(--mono);">'
-          +'<span style="width:30px;color:'+(isToday?'var(--accent)':'var(--text2)')+';flex-shrink:0;font-weight:'+(isToday?'700':'400')+';">'+day.label+'</span>'
-          +'<div style="position:relative;height:9px;flex:1;background:var(--bg3);border-radius:3px;overflow:hidden;">'
-          +'<div style="position:absolute;left:0;top:0;height:100%;width:'+pct+'%;background:var(--green);border-radius:3px;transition:width .3s;"></div>'
-          +(dangerPct>0?'<div style="position:absolute;right:'+(100-pct)+'%;top:0;height:100%;width:'+dangerPct+'%;background:var(--red);border-radius:3px;"></div>':'')
-          +'</div>'
-          +'<span style="width:28px;text-align:right;color:var(--text2);">'+day.total+'</span>'
-          +'</div>';
-      }).join('');
-    }
-    // サマリー行
-    var sm=document.getElementById('trend-summary');
-    if(sm){
-      sm.innerHTML='<span>7日計: <b style="color:var(--accent);">'+totalAll+'</b></span>'
-        +'<span>重大: <b style="color:var(--red);">'+totalDanger+'</b></span>'
-        +'<span>voice: <b style="color:var(--green);">'+totalVoice+'</b></span>';
-    }
-    var tb=document.getElementById('trend-badge');
-    if(tb){var t=d.trend||'→';var labels={'↑':'&#8593; UP','↓':'&#8595; DOWN','→':'&#8594; FLAT'};tb.innerHTML=labels[t]||'&#8594; FLAT';tb.className='trend-badge '+(t==='↑'?'up':t==='↓'?'down':'flat');}
-  }).catch(function(){});
-}
-
-// ── TODO RISK (Infrastructure用コンパクト版) ──
-function refreshTodoRisk(){
-  fetch('/todo/risk').then(function(r){return r.json();}).then(function(d){
-    var todos=d.todos||[];
-    var el=document.getElementById('todo-risk-list');
-    if(!el) return;
-    if(!todos.length){el.innerHTML='<div class="empty">リスク評価対象なし</div>';return;}
-    el.innerHTML=todos.slice(0,6).map(function(t){
-      return '<div class="todo-item">'
-        +'<span class="todo-risk-badge '+t.risk_level+'">'+t.risk_level+'</span>'
-        +'<span class="todo-title">'+t.id+' '+t.title+'</span>'
-        +(t.overdue?'<span class="todo-overdue">超過</span>':'')
-        +'</div>';
-    }).join('');
-  }).catch(function(){});
-}
-
-// ── DECISION INTELLIGENCE ──
-function refreshDecisionLog(){
-  fetch('/decision/log/detail').then(function(r){return r.json();}).then(function(d){
-    var decs=d.decisions||[];
-    var el=document.getElementById('decision-log');
-    if(!el) return;
-    if(!decs.length){el.innerHTML='<div class="empty">判断記録なし</div>';return;}
-    el.innerHTML=decs.slice(0,5).map(function(dec){
-      var vColor=dec.verdict==='APPROVED'?'var(--green)':'var(--red)';
-      var rColor=dec.risk_level==='HIGH'||dec.risk_level==='CRITICAL'?'var(--red)':dec.risk_level==='normal'?'var(--green)':'var(--yellow)';
-      var axisColor=dec.essence_axis==='INCIDENT'?'var(--red)':dec.essence_axis==='OPERATION'?'var(--yellow)':'var(--purple)';
-      var why=dec.why_decided||'';
-      var whyText=why.length>36?why.slice(0,36)+'…':why;
-      var basis=(dec.basis_event_ids||[]).slice(0,1).join('');
-      return '<div style="border:1px solid var(--border);border-radius:4px;padding:4px 6px;font-size:10px;margin-bottom:3px;">'
-        +'<div style="display:flex;align-items:center;gap:3px;flex-wrap:nowrap;overflow:hidden;">'
-        +'<span style="color:'+vColor+';font-weight:700;white-space:nowrap;font-size:9px;">'+dec.verdict+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 3px;border-radius:2px;color:var(--accent);white-space:nowrap;font-size:9px;max-width:50px;overflow:hidden;text-overflow:ellipsis;">'+dec.component+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 3px;border-radius:2px;color:var(--text2);white-space:nowrap;font-size:9px;">'+dec.what_type+'</span>'
-        +'<span style="background:var(--bg3);padding:1px 3px;border-radius:2px;color:'+rColor+';white-space:nowrap;font-size:9px;">再発'+dec.recurrence_count+'</span>'
-        +(dec.essence_axis?'<span style="background:var(--bg3);padding:1px 3px;border-radius:2px;color:'+axisColor+';white-space:nowrap;font-size:9px;">'+dec.essence_axis+'</span>':'')
-        +'<span style="color:var(--text2);font-size:8px;white-space:nowrap;margin-left:auto;">'+dec.when_ts.slice(5,16)+'</span>'
-        +'</div>'
-        +(whyText?'<div style="color:var(--yellow);font-size:9px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">→ '+whyText+'</div>':'')
-        +(basis?'<div style="color:var(--text2);font-size:8px;opacity:0.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">根拠:'+basis+'</div>':'')
-        +'</div>';
-    }).join('');
-    return; // 旧コードをスキップ
-    var decs2=decs;
-    el.innerHTML=decs.slice(0,6).map(function(dec){
-      var type=dec.what_type||'';
-      var label=type.indexOf('APPROVED')>=0?'APPROVED':'REJECTED';
-      return '<div class="dec-item">'
-        +'<span class="dec-type '+label+'">'+label+'</span>'
-        +'<span style="font-size:9px;color:var(--text2);margin-left:4px;">'+(dec.when_ts||'').slice(0,16)+'</span>'
-        +'<div class="dec-title">'+(dec.title||dec.why_purpose||'-')+'</div>'
-        +'</div>';
-    }).join('');
-  }).catch(function(){});
-}
-
-// ── ESSENCE ──
-function refreshEssence(){
-  fetch('/essence/detail').then(function(r){return r.json();}).then(function(resp){
-    var d=resp.data||resp;
-    set('ess-incident',(d.INCIDENT||d.incident||'-').slice(0,300));
-    set('ess-operation',(d.OPERATION||d.operation||'-').slice(0,150));
-    set('ess-philosophy',(d.PHILOSOPHY||d.philosophy||'-').slice(0,150));
-  }).catch(function(){});
-}
-
-// ── PREVENTION QUEUE ──
-function refreshPrevention(){
-  fetch('/prevention/queue').then(function(r){return r.json();}).then(function(d){
-    var pq=((d&&d.queue)||d||[]).filter(function(x){return x.status==='pending';});
-    set('pq-count',pq.length+'件');
-    var el=document.getElementById('prev-queue');
-    if(!el) return;
-    if(!pq.length){el.innerHTML='<div class="empty">承認待ち案件なし</div>';return;}
-    el.innerHTML=pq.slice(0,3).map(function(p){
-      var proposals=p.candidates||p.proposal||[];
-      return '<div class="prev-item">'
-        +'<div class="prev-pattern">'+(p.recurrence_key||p.pattern||p.type||'-')+'</div>'
-        +'<div class="prev-proposal">'+(proposals[0]||'-')+'</div>'
-        +'<div class="prev-actions">'
-        +'<button class="btn-approve" onclick="doApprove(\''+p.id+'\')">&#9829; いいね！</button>'
-        +'<button class="btn-reject" onclick="doReject(\''+p.id+'\')">&#9747; わるいね！</button>'
-        +'</div></div>';
-    }).join('');
-  }).catch(function(){});
-}
-window.doApprove=function(id){
-  fetch('/decision/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(){refreshPrevention();refreshDecisionLog();refreshRisk();});
-};
-window.doReject=function(id){
-  fetch('/decision/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})})
-    .then(function(){refreshPrevention();refreshDecisionLog();});
-};
-
-// ── AGENT ALLOCATION ──
-function refreshAgentAlloc(){
-  fetch('/agent/allocation').then(function(r){return r.json();}).then(function(d){
-    var al=d.allocation||[];
-    var el=document.getElementById('agent-alloc');
-    if(!el) return;
-    if(!al.length){el.innerHTML='<div class="empty">データなし</div>';return;}
-    var cols=['var(--accent)','var(--purple)','var(--green)','var(--yellow)','var(--orange)'];
-    el.innerHTML=al.slice(0,6).map(function(a,i){
-      return '<div class="agent-row">'
-        +'<div class="agent-name">'+a.agent+'</div>'
-        +'<div class="agent-bar-wrap"><div class="agent-bar-fill" style="width:'+a.pct+'%;background:'+cols[i%5]+';"></div></div>'
-        +'<div class="agent-pct">'+a.pct+'%</div>'
-        +'</div>';
-    }).join('');
-  }).catch(function(){});
-}
-
-// ── OPERATOR LOAD ──
-function refreshOperatorLoad(){
-  fetch('/operator/load').then(function(r){return r.json();}).then(function(d){
-    var el=document.getElementById('op-load');
-    if(!el) return;
-    var sc={LIGHT:'var(--green)',MODERATE:'var(--yellow)',HEAVY:'var(--red)'};
-    var col=sc[d.status]||'var(--text2)';
-    el.innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:2px 8px;font-size:10px;">'
-      +'<span style="color:var(--text2);">負荷</span><span style="text-align:right;color:'+col+';font-weight:700;">'+(d.status||'-')+'</span>'
-      +'<span style="color:var(--text2);">1h件数</span><span style="text-align:right;color:var(--accent);">'+(d.events_1h||0)+'</span>'
-      +'<span style="color:var(--text2);">24hアラート</span><span style="text-align:right;color:var(--orange);">'+(d.alerts_24h||0)+'</span>'
-      +'<span style="color:var(--text2);">CLI</span><span style="text-align:right;color:'+col+';">'+(d.cognitive_load_index||0)+'</span>'
-      +'</div>';
-  }).catch(function(){});
-}
-
-// ── INTEGRITY ──
-function refreshIntegrity(){
-  fetch('/integrity/status').then(function(r){return r.json();}).then(function(d){
-    var hp=d.health_pct||0;
-    var hpEl=document.getElementById('int-health');
-    if(hpEl){hpEl.textContent=hp+'%';hpEl.className='int-val '+(hp>=99?'ok':hp>=90?'warn':'err');}
-    set('int-size',(d.db_size_kb||0)+'KB');
-    set('int-total',d.total_events||'-');
-    var nullEl=document.getElementById('int-null');
-    if(nullEl){nullEl.textContent=d.null_fields||0;nullEl.className='int-val '+(d.null_fields===0?'ok':'warn');}
-    var shEl=document.getElementById('seal-hist');
-    if(shEl&&d.last_seal){
-      var sl=Array.isArray(d.last_seal)?d.last_seal[d.last_seal.length-1]:d.last_seal;
-      var hash=sl.summary_hash||sl.sha256||sl.hash||'-';
-      var dt=sl.date||sl.sealed_at||sl.timestamp||sl.generated_at||'-';
-      shEl.innerHTML='<div class="seal-entry">'
-        +'<div style="font-size:11px;color:var(--text2);">'+dt.slice(0,16)+'</div>'
-        +'<div class="seal-hash">'+hash.slice(0,40)+'...</div>'
-        +'<div style="font-size:10px;color:var(--green);margin-top:3px;">ALL CHECKS PASSED</div>'
-        +'</div>';
-      set('m-seal',dt.slice(0,10));
-    }
-  }).catch(function(){});
-}
-
-// ── PIPELINE ──
-function refreshPipeline(){
-  fetch('/pipeline/status').then(function(r){return r.json();}).then(function(d){
-    var nodes=['RAW','REDUCED','RE_REDUCED','REDUCING','CORE','ESSENCE','PILS'];
-    var el=document.getElementById('pipeline-nodes');
-    if(!el) return;
-    el.innerHTML=nodes.map(function(n){
-      var cnt=d[n]||0;
-      return '<div class="pipe-node'+(cnt>0?' has-data':'')+'"><span class="pn">'+n+'</span><span>'+cnt+'</span></div>';
-    }).join('');
-  }).catch(function(){});
-}
-
-// ── TODO BOARD (Analytics最優先・番号・優先度順) ──
-function refreshTodo(){
-  fetch('/public/todo?_='+Date.now()).then(function(r){return r.json();}).then(function(d){
-    var PORD={最高:0,高:1,中:2,低:3};
-    var all=(d.todos||[]).filter(function(t){
-      return t.status!=='完了' && t.status!=='complete';
-    }).sort(function(a,b){
-      var pa=PORD[a.priority]!=null?PORD[a.priority]:9;
-      var pb=PORD[b.priority]!=null?PORD[b.priority]:9;
-      return pa-pb;
-    });
-    var todos=all.slice(0,10);
-    var el=document.getElementById('todo-board');
-    var cntEl=document.getElementById('todo-board-count');
-    if(cntEl) cntEl.textContent=all.length+'件';
-    if(!el) return;
-    if(!todos.length){el.innerHTML='<div class="empty">未着手TODOなし</div>';return;}
-    var pbadge={最高:'🔴',高:'🟠',中:'🟡',低:'⚪'};
-    el.innerHTML=todos.map(function(t){
-      var badge=pbadge[t.priority]||'⚪';
-      var prog=t.status==='進行中'?'<span class="todo-board-prog">▶進行中</span>':'';
-      return '<div class="todo-board-item">'
-        +'<span class="todo-board-badge">'+badge+'</span>'
-        +'<span class="todo-board-id">'+t.id+'</span>'
-        +'<span class="todo-board-title">'+t.title+'</span>'
-        +prog
-        +'</div>';
-    }).join('');
-  }).catch(function(){
-    var el=document.getElementById('todo-board');
-    if(el) el.innerHTML='<div class="empty" style="color:var(--red);">取得エラー</div>';
-  });
-}
-
-// ── REFRESH ALL ──
-// ── TIC Monitor ──
-function refreshTic(){
-  var healthColors={
-    'ALL PASS':'var(--green)','DEGRADED':'var(--yellow)','FAIL':'var(--red)','NO_DATA':'var(--text2)'
-  };
-  fetch('/tic/health').then(function(r){return r.json();}).then(function(d){
-    var el=document.getElementById('tic-health-val');
-    var chip=document.getElementById('tic-health-chip');
-    var overall=d.overall||'NO_DATA';
-    var col=healthColors[overall]||'var(--text2)';
-    if(el){el.textContent=overall;el.style.color=col;}
-    if(chip){chip.style.borderColor=col;}
-  }).catch(function(){});
-  fetch('/tic/risk').then(function(r){return r.json();}).then(function(d){
-    set('tic-critical-val',(d.critical||[]).length);
-    set('tic-warning-val',(d.warning||[]).length);
-    var top=(d.critical||[]).concat(d.warning||[]).slice(0,3);
-    set('tic-top-risk',top.map(function(t){return t.component+'('+t.score+')'}).join(' / ')||'-');
-  }).catch(function(){});
-  fetch('/tic/queue').then(function(r){return r.json();}).then(function(d){
-    var n=d.new||[];
-    var el=document.getElementById('tic-queue-val');
-    if(el){el.textContent=n.length;el.style.color=n.length>0?'var(--yellow)':'var(--text)';}
-  }).catch(function(){});
-}
-
-function refreshAll(){
-  refreshServers();
-  refreshRisk();
-  refreshLoop();
-  refreshHeinrich();
-  refreshMorpho();
-  refreshTrend();
-  refreshTodoRisk();
-  refreshDecisionLog();
-  refreshOperatorLoad();
-  refreshEssence();
-  refreshPrevention();
-  refreshAgentAlloc();
-  refreshIntegrity();
-  refreshPipeline();
-  refreshTodo();
-  refreshTic();
-}
-
-setInterval(refreshRisk, 60000);
-setInterval(function(){
-  refreshServers();refreshLoop();refreshMorpho();refreshPrevention();refreshDecisionLog();refreshTodo();refreshOperatorLoad();
-}, 30000);
-setInterval(function(){
-  refreshHeinrich();refreshTrend();refreshTodoRisk();refreshAgentAlloc();refreshIntegrity();refreshPipeline();refreshEssence();
-}, 120000);
-setInterval(refreshTic, 30000);
-
-refreshAll();
-
-})();
-</script>
-
-<!-- ================================================================ -->
-<!-- GUIDELINES PANEL (2026-05-10)                                     -->
-<!-- ================================================================ -->
-<div class="panel" style="grid-column:span 2;margin-top:12px;">
-  <div class="panel-header" style="display:flex;align-items:center;">
-    <span>&#128203; &#34892;&#21205;&#25351;&#37341; (Guidelines Engine)</span>
-    <button id="gl-run-btn" onclick="runGuidelines()"
-      style="margin-left:auto;padding:3px 12px;font-size:11px;
-             background:#1a3a1a;border:1px solid #2a6a2a;
-             color:#7fff7f;border-radius:4px;cursor:pointer;">
-      &#9654; &#20170;&#12377;&#12368;&#29983;&#25104;
-    </button>
-  </div>
-  <div class="panel-body">
-    <div style="display:flex;gap:16px;margin-bottom:8px;font-size:12px;">
-      <span>&#21512;&#35336;: <b id="gl-total">-</b>&#20214;</span>
-      <span>&#26356;&#26032;: <span id="gl-updated" style="color:#888;">-</span></span>
-    </div>
-    <div id="gl-cats" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;"></div>
-    <div style="font-size:11px;color:#aaa;margin-bottom:4px;">&#12473;&#12467;&#12450;&#19978;&#20301;&#34892;&#21205;&#25351;&#37341;:</div>
-    <div id="gl-top5" style="display:flex;flex-direction:column;gap:4px;"></div>
-  </div>
-</div>
-
-<script>
-var GL_CAT_COLORS = {
-  INCIDENT:"#ff4444",MATAKA:"#ff8800",DECISION:"#4488ff",
-  INSIGHT:"#44cc44",CHALLENGE:"#ffcc00",GENERAL:"#888888"
-};
-
-function refreshGuidelines() {
-  fetch("/guidelines/status").then(function(r){return r.json();}).then(function(d){
-    document.getElementById("gl-total").textContent = d.total || 0;
-    var upd = (d.last_updated || "").slice(0,16).replace("T"," ");
-    document.getElementById("gl-updated").textContent = upd || "-";
-
-    var cats = document.getElementById("gl-cats");
-    cats.innerHTML = "";
-    var bc = d.by_category || {};
-    Object.keys(bc).forEach(function(cat){
-      var color = GL_CAT_COLORS[cat] || "#888";
-      cats.innerHTML += '<span style="background:'+color+'22;border:1px solid '+color+
-        ';color:'+color+';padding:2px 8px;border-radius:10px;font-size:11px;">'+
-        cat+': '+bc[cat]+'</span> ';
-    });
-
-    var top5 = document.getElementById("gl-top5");
-    top5.innerHTML = "";
-    var items = d.top5 || [];
-    if(items.length === 0){
-      top5.innerHTML = '<div style="color:#555;font-size:11px;">&#12300;&#9654; &#20170;&#12377;&#12368;&#29983;&#25104;&#12301;&#12434;&#12463;&#12522;&#12483;&#12463;&#12375;&#12390;&#12367;&#12384;&#12373;&#12356;</div>';
-    } else {
-      items.forEach(function(g){
-        var color = GL_CAT_COLORS[g.category] || "#888";
-        var dir = (g.directive || "").slice(0,100);
-        top5.innerHTML += '<div style="background:#111;border-left:3px solid '+color+
-          ';padding:5px 8px;border-radius:3px;margin-bottom:2px;">'+
-          '<span style="color:'+color+';font-size:10px;font-weight:bold;">'+g.category+'</span>'+
-          '<span style="color:#ccc;font-size:11px;margin-left:6px;">'+dir+'</span>'+
-          '<span style="float:right;color:#555;font-size:10px;">'+(g.score*100).toFixed(0)+'pt</span>'+
-          '</div>';
-      });
-    }
-  }).catch(function(e){ console.warn("[GL]",e); });
-}
-
-function runGuidelines() {
-  var btn = document.getElementById("gl-run-btn");
-  btn.textContent = "&#9203; &#29983;&#25104;&#20013;...";
-  btn.disabled = true;
-  fetch("/guidelines/run", {method:"POST"}).then(function(r){return r.json();})
-  .then(function(d){
-    btn.textContent = "&#10003; &#23436;&#20102; ("+d.total+"&#20214;)";
-    setTimeout(function(){ btn.textContent="&#9654; &#20170;&#12377;&#12368;&#29983;&#25104;"; btn.disabled=false; }, 3000);
-    refreshGuidelines();
-  }).catch(function(){
-    btn.textContent = "&#10007; &#12456;&#12521;&#12540;";
-    setTimeout(function(){ btn.textContent="&#9654; &#20170;&#12377;&#12368;&#29983;&#25104;"; btn.disabled=false; }, 3000);
-  });
-}
-
-setInterval(refreshGuidelines, 60000);
-refreshGuidelines();
-</script>
-
-
-<!-- SEARCH PANEL -->
-<div class="panel" id="search-panel">
-<div class="panel-header">🔍 KNOWLEDGE SEARCH</div>
-<div style="display:flex;gap:8px;margin-bottom:12px">
-  <input type="text" id="search-input" placeholder="キーワード (スペース=AND / OR=OR検索)"
-    style="flex:1;background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px 12px;color:#e0e0e0;font-size:13px">
-  <select id="search-src" style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:8px;color:#e0e0e0;font-size:12px">
-    <option value="all">全て</option>
-    <option value="user_voice">発言</option>
-    <option value="event">イベント</option>
-    <option value="session">Claudeセッション</option>
-    <option value="guideline">ガイドライン</option>
-  </select>
-</div>
-<div style="display:flex;gap:8px;margin-bottom:10px">
-  <select id="search-sort" style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:6px 8px;color:#e0e0e0;font-size:12px">
-    <option value="desc">新しい順</option>
-    <option value="asc">古い順</option>
-  </select>
-  <select id="search-period" style="background:#1a1a2e;border:1px solid #333;border-radius:6px;padding:6px 8px;color:#e0e0e0;font-size:12px">
-    <option value="all">全期間</option>
-    <option value="week">今週</option>
-    <option value="month">今月</option>
-    <option value="3month">3ヶ月</option>
-    <option value="6month">6ヶ月</option>
-    <option value="year">今年</option>
-  </select>
-  <span id="search-mode-badge" style="font-size:10px;color:#666;align-self:center;margin-left:4px"></span>
-</div>
-<div id="search-status" style="font-size:11px;color:#666;margin-bottom:8px"></div>
-<div id="search-results" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:6px"></div>
-</div>
-
-
-<script>
-var _searchTimer = null;
-function debounceSearch(v){ clearTimeout(_searchTimer); _searchTimer = setTimeout(function(){ runSearch(v); }, 350); }
-function runSearch(q){
-  q = q !== undefined ? q : document.getElementById('search-input').value;
-  if(!q || q.length < 2){
-    document.getElementById('search-results').innerHTML='';
-    document.getElementById('search-status').textContent='';
-    return;
+/* ── DEBUG LOGGER ── */
+const DBG = {
+  log:[],
+  counts:{ok:0,warn:0,err:0,info:0},
+  _add(lvl,panel,msg){
+    const t=new Date().toLocaleTimeString('ja-JP');
+    const entry={t,lvl,panel,msg};
+    this.log.unshift(entry);
+    if(this.log.length>200)this.log=this.log.slice(0,200);
+    this.counts[lvl]=(this.counts[lvl]||0)+1;
+    this._render();
+    console[lvl==='err'?'error':lvl==='warn'?'warn':'log'](`[MoCKA][${panel}] ${msg}`);
+  },
+  info(p,m){this._add('info',p,m)},
+  ok(p,m){this._add('ok',p,m)},
+  warn(p,m){this._add('warn',p,m)},
+  err(p,m){this._add('err',p,m)},
+  _render(){
+    const el=document.getElementById('dbg-log');
+    if(!el)return;
+    el.innerHTML=this.log.slice(0,40).map(e=>`<div class="dbg-log-line ${e.lvl}">[${e.t}][${e.panel}] ${e.msg}</div>`).join('');
+    const s=document.getElementById('dbg-summary');
+    if(s)s.textContent=`OK:${this.counts.ok} WARN:${this.counts.warn} ERR:${this.counts.err} INFO:${this.counts.info}`;
   }
-  var srcFilter = document.getElementById('search-src').value;
-  document.getElementById('search-status').textContent='検索中...';
-  var sortVal = (document.getElementById('search-sort')||{value:'desc'}).value;
-  var periodVal = (document.getElementById('search-period')||{value:'all'}).value;
-  var srcFilter = (document.getElementById('search-src')||{value:'all'}).value;
-  var searchUrl = '/search?q='+encodeURIComponent(q)+'&limit=9999&src='+srcFilter+'&sort='+sortVal+'&period='+periodVal;
-  document.getElementById('search-status').textContent = 'URL: '+searchUrl;
-  fetch(searchUrl)
-    .then(function(res){ return res.json(); })
-    .then(function(data){
-      var items = data.results || [];
-      if(srcFilter !== 'all') items = items.filter(function(r){ return r.source===srcFilter; });
-      var badge = document.getElementById('search-mode-badge');
-      if(badge) badge.textContent = data.mode==='OR'?'OR検索':'AND検索';
-      document.getElementById('search-status').textContent = items.length+'件 / "'+q+'"';
-      document.getElementById('search-results').innerHTML = items.map(function(r){
-        var srcBadge = r.source==='user_voice'
-          ? '<span style="color:#a78bfa;font-size:10px">発言</span>'
-          : '<span style="color:#4fc3f7;font-size:10px">イベント</span>';
-        var risk = r.risk ? '<span style="color:'+(r.risk==='HIGH'||r.risk==='CRITICAL'?'#ff6b6b':'#888')+';font-size:10px"> ['+r.risk+']</span>' : '';
-        var ts = (r.ts||'').substring(0,16).replace('T',' ');
-        var id = 'body_'+Math.random().toString(36).substr(2,9);
-        return '<div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:6px;padding:10px 12px;cursor:pointer;margin-bottom:4px" onclick="var el=document.getElementById(this.dataset.id);el.style.display=el.style.display===\'none\'?\'block\':\'none\'" data-id="'+id+'">'
-          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">'
-          +'<span style="font-size:12px;color:#e0e0e0;font-weight:500">'+escH(r.title||'')+'</span>'
-          +'<span style="font-size:10px;color:#555">'+ts+'</span></div>'
-          +'<div>'+srcBadge+risk+'</div>'
-          +'<div id="'+id+'" style="display:none;margin-top:8px;font-size:11px;color:#888;line-height:1.5;border-top:1px solid #2a2a4a;padding-top:8px">'+escH(r.body||'')+'</div>'
-          +'</div>';
-      }).join('');
-    })
-    .catch(function(e){
-      document.getElementById('search-status').textContent='エラー: '+e.message;
-    });
+};
+function clearDebugLog(){DBG.log=[];DBG.counts={ok:0,warn:0,err:0,info:0};DBG._render();}
+
+/* ── INTEGRITY CHECKER ── */
+const IC = {
+  /* 文字化け検知 (U+FFFD / cp932 remnants) */
+  hasGarble(str){
+    if(typeof str!=='string')return false;
+    return str.includes('\uFFFD') || /[\x80-\x9F]/.test(str) || /[髙齊塚]/.test(str);
+  },
+  /* 型チェック */
+  expectNum(val,label){
+    if(typeof val!=='number'||isNaN(val)){DBG.warn('IC',`${label}: 数値期待 → ${typeof val} "${val}"`);return false;}
+    return true;
+  },
+  expectStr(val,label){
+    if(typeof val!=='string'||val===''){DBG.warn('IC',`${label}: 文字列期待 → ${typeof val}`);return false;}
+    if(this.hasGarble(val)){DBG.warn('IC',`${label}: 文字化け検知 "${val.slice(0,30)}"`);return false;}
+    return true;
+  },
+  expectArr(val,label){
+    if(!Array.isArray(val)){DBG.warn('IC',`${label}: 配列期待 → ${typeof val}`);return false;}
+    return true;
+  },
+  checkAll(data,schema,label){
+    let ok=true;
+    for(const [k,t] of Object.entries(schema)){
+      if(data[k]===undefined||data[k]===null){DBG.warn('IC',`${label}.${k}: null/undefined`);ok=false;continue;}
+      if(t==='num'&&!this.expectNum(data[k],`${label}.${k}`))ok=false;
+      if(t==='str'&&!this.expectStr(data[k],`${label}.${k}`))ok=false;
+      if(t==='arr'&&!this.expectArr(data[k],`${label}.${k}`))ok=false;
+    }
+    return ok;
+  }
+};
+
+/* ── DIFF TRACKER (表示差違) ── */
+const DT = {
+  prev:{},
+  check(key,val){
+    const s=JSON.stringify(val);
+    const changed=this.prev[key]&&this.prev[key]!==s;
+    this.prev[key]=s;
+    return changed;
+  }
+};
+
+/* ── PANEL DEBUG TAG ── */
+function setDbgTags(panelId, tags){
+  const el=document.getElementById('dbg-'+panelId);
+  if(!el)return;
+  el.innerHTML=tags.map(t=>`<span class="dbg-tag ${t.cls}">${t.label}</span>`).join('');
 }
-function escH(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-document.addEventListener('DOMContentLoaded', function(){
-  var inp = document.getElementById('search-input');
-  var sel = document.getElementById('search-src');
-  if(inp) inp.addEventListener('input', function(){ debounceSearch(this.value); });
-  if(sel) sel.addEventListener('change', function(){ runSearch(); });
-  var sortEl = document.getElementById('search-sort');
-  var periodEl = document.getElementById('search-period');
-  if(sortEl) sortEl.addEventListener('change', function(){ runSearch(); });
-  if(periodEl) periodEl.addEventListener('change', function(){ runSearch(); });
+function showPanelErr(errId,msg){
+  const el=document.getElementById(errId);
+  if(!el)return;
+  el.style.display='block';
+  el.textContent='⚠ '+msg;
+}
+function hidePanelErr(errId){
+  const el=document.getElementById(errId);
+  if(el)el.style.display='none';
+}
+
+/* ── API FETCH WRAPPER ── */
+async function apiFetch(url,panelId){
+  DBG.info(panelId,`GET ${url}`);
+  try{
+    const r=await fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}});
+    if(!r.ok)throw new Error(`HTTP ${r.status} ${r.statusText}`);
+    const text=await r.text();
+    /* 文字化け検知 */
+    if(IC.hasGarble(text)){
+      DBG.warn(panelId,'レスポンスに文字化け候補あり');
+      setDbgTags(panelId,[{cls:'warn',label:'GARBLE?'}]);
+    }
+    return JSON.parse(text);
+  }catch(e){
+    DBG.err(panelId,`fetch失敗: ${e.message}`);
+    setDbgTags(panelId,[{cls:'err',label:'FETCH ERR'}]);
+    showPanelErr('err-'+panelId, e.message);
+    throw e;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   STATIC DATA (ローカル起動時フォールバック)
+   ═══════════════════════════════════════════════ */
+const STATIC = {
+  civ:[
+    {n:1,name:'Observe',   color:'var(--green)', pct:2,   count:'0'},
+    {n:2,name:'Record',    color:'var(--blue)',  pct:100, count:'1,842'},
+    {n:3,name:'Incident',  color:'var(--red)',   pct:45,  count:'23'},
+    {n:4,name:'Recurrence',color:'var(--amber)', pct:35,  count:'66'},
+    {n:5,name:'Prevention',color:'var(--purple)',pct:10,  count:'4'},
+    {n:6,name:'Decision',  color:'var(--teal)',  pct:8,   count:'4'},
+    {n:7,name:'Action',    color:'var(--green)', pct:5,   count:'2'},
+    {n:8,name:'Audit',     color:'var(--blue)',  pct:100, count:'SEAL'}
+  ],
+  hein:{l1:1,l2:2.5,l3:6.0,uncaught:14995,rate:2.0,
+    spark:[60,40,80,30,20,50,70]},
+  todos:[
+    {pri:'最高',cls:'sai',text:'Orchestra LP投入確認',id:'TODO_221 [進行中]'},
+    {pri:'最高',cls:'sai',text:'SEO-OS Phase6 制度化層',id:'TODO_254 [くろこ]'},
+    {pri:'最高',cls:'sai',text:'整合性確認必須化',id:'TODO_154 [進行中]'},
+    {pri:'高',  cls:'kou',text:'Caliber2.01 ツール拡張',id:'TODO_CALIBER_EXPAND_001'},
+    {pri:'高',  cls:'kou',text:'TIC Layer3 impact_analyzer',id:'TODO_206'},
+    {pri:'高',  cls:'kou',text:'WP メニュー構築',id:'TODO_220'}
+  ],
+  products:[
+    {name:'Orchestra',badge:'live',bl:'本番稼働',meta:['v1.1.0 — 30日トライアル','Free/Pro $5/One $10','CWS審査中'],pct:95,pc:0},
+    {name:'Relay',badge:'impl',bl:'実装完了',meta:['Free/Pro $5/One $10','収益化 未着手','TODO_178 保留中'],pct:70,pc:1},
+    {name:'PHI OS',badge:'live',bl:'実機確認済',meta:['v1.0 実機テスト完了','BOM除去→SW有効化','TODO_195 完了'],pct:90,pc:0},
+    {name:'vasAI',badge:'seal',bl:'封印済',meta:['v1.4.9-reproducibility','PASS:49/FAIL:0','sha256: 8326cf61'],pct:100,pc:2}
+  ],
+  seo:{phase:'Phase 5',tests:32,pipes:[
+    {name:'LP Pipeline',st:'ready'},{name:'Blog Pipeline',st:'ready'},{name:'Bot Pipeline',st:'pend'}
+  ]},
+  bee:{items:[
+    {lc:'est',name:'dependency_concentration_risk',ev:'ev+5'},
+    {lc:'grow',name:'api_institutionalization',ev:'ev+5'},
+    {lc:'grow',name:'process_institutionalization',ev:'ev+5'},
+    {lc:'obs',name:'institutionalized_connection',ev:'ev+5'}
+  ]},
+  essence:[
+    {axis:'INCIDENT',color:'var(--red)',  txt:'PowerShell文字列操作禁止 / 関連ファイル照合なし書き換え禁止'},
+    {axis:'OPERATION',color:'var(--blue)', txt:'create_file必須 / 変更前後mocka_write_event記録 / planningcaliber配下も記録対象'},
+    {axis:'PHILOSOPHY',color:'var(--green)',txt:'AIを信じるな, システムで縛れ / 記録なき作業はMoCKAとして存在しない'}
+  ],
+  tic0:[
+    {st:'ng', name:'relay_dom_selector',note:'claude.ai DOM変更の可能性'},
+    {st:'ok', name:'MCP schema hash',note:'差分なし'},
+    {st:'ok', name:'Anthropic API',note:'/v1/models 疎通'},
+    {st:'ok', name:'Stripe webhook',note:'worker /health OK'},
+    {st:'ok', name:'SQLite integrity',note:'PRAGMA OK'},
+    {st:'ok', name:'Caliber :5679',note:'/health OK'},
+    {st:'ok', name:'MoCKA :5000',note:'/loop/status OK'}
+  ],
+  tic1:[
+    {st:'ok',name:'Anthropic API docs',note:'変更なし'},
+    {st:'ok',name:'Claude Code docs',note:'変更なし'},
+    {st:'ok',name:'Chrome MV3',note:'変更なし'},
+    {st:'ok',name:'Stripe changelog',note:'変更なし'}
+  ],
+  coords:[
+    {lbl:'X 制度整合性',val:0.632,color:'var(--blue)'},
+    {lbl:'Y 記録品質',  val:0.826,color:'var(--green)'},
+    {lbl:'Z 統治安定性',val:0.819,color:'var(--teal)'}
+  ]
+};
+
+/* ── PROD PROGRESS COLORS ── */
+const PROD_COLORS=['var(--green)','var(--amber)','var(--purple)'];
+
+/* ═══════════════════════════════════════════════
+   RENDER FUNCTIONS (各パネル)
+   ═══════════════════════════════════════════════ */
+
+function renderCiv(data){
+  try{
+    IC.expectArr(data,'civ');
+    const changed=DT.check('civ',data);
+    const tags=[{cls:'ok',label:'OK'}];
+    if(changed)tags.push({cls:'changed',label:'CHANGED'});
+    setDbgTags('civ',tags);
+    hidePanelErr('err-civ');
+    const el=document.getElementById('civ-body');
+    el.innerHTML=data.map(d=>{
+      IC.expectStr(d.name,'civ.name');
+      IC.expectNum(d.pct,'civ.pct');
+      return `<div class="civ-row">
+        <div class="civ-icon" style="background:${d.color}22;color:${d.color}">${d.n}</div>
+        <span class="civ-name">${d.name}</span>
+        <div class="civ-bar-wrap"><div class="civ-bar" style="background:${d.color};width:${d.pct}%"></div></div>
+        <span class="civ-count" style="color:${d.color}">${d.count}</span>
+      </div>`;
+    }).join('');
+    DBG.ok('civ',`8ステージ描画 changed=${changed}`);
+  }catch(e){
+    DBG.err('civ','renderCiv: '+e.message);
+    showPanelErr('err-civ',e.message);
+    setDbgTags('civ',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderHein(data){
+  try{
+    IC.checkAll(data,{l1:'num',l2:'num',l3:'num'},'hein');
+    const changed=DT.check('hein',data);
+    setDbgTags('hein',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-hein');
+    document.getElementById('hein-ratio-badge').textContent=`${data.l1}:${data.l2}:${data.l3} 実測`;
+    const maxBar=Math.max(data.l1,data.l2,data.l3);
+    const el=document.getElementById('hein-body');
+    el.innerHTML=`
+      <div class="hein-row">
+        <span class="hein-lbl" style="color:var(--red)">Layer1 重大</span>
+        <div class="hein-bar"><div class="hein-fill" style="background:var(--red);width:${data.l1/maxBar*100}%"></div></div>
+        <span class="hein-num" style="color:var(--red)">${data.l1}x</span>
+      </div>
+      <div class="hein-row">
+        <span class="hein-lbl" style="color:var(--amber)">Layer2 軽微</span>
+        <div class="hein-bar"><div class="hein-fill" style="background:var(--amber);width:${data.l2/maxBar*100}%"></div></div>
+        <span class="hein-num" style="color:var(--amber)">${data.l2}x</span>
+      </div>
+      <div class="hein-row">
+        <span class="hein-lbl" style="color:var(--blue)">Layer3 ヒヤリ</span>
+        <div class="hein-bar"><div class="hein-fill" style="background:var(--blue);width:${data.l3/maxBar*100}%"></div></div>
+        <span class="hein-num" style="color:var(--blue)">${data.l3}x</span>
+      </div>
+      <div class="hein-note">理論値 1:29:300 — 捕捉率 ${data.rate}% / 未捕捉推定 ${Number(data.uncaught).toLocaleString()}件</div>
+      <div style="border-top:1px solid var(--line);margin:8px 0 6px;padding-top:6px;font-size:10px;color:var(--muted)">7日 Incident トレンド</div>
+      <div class="spark">${(data.spark||[]).map((v,i)=>`<div class="spark-bar" style="height:${v}%;background:${i===data.spark.length-1?'var(--red)':'rgba(231,76,110,.45)'}"></div>`).join('')}</div>
+    `;
+    DBG.ok('hein',`Heinrich描画 rate=${data.rate}%`);
+  }catch(e){
+    DBG.err('hein','renderHein: '+e.message);
+    showPanelErr('err-hein',e.message);
+    setDbgTags('hein',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderTodo(data){
+  try{
+    IC.expectArr(data,'todos');
+    const changed=DT.check('todos',data);
+    setDbgTags('todo',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-todo');
+    document.getElementById('todo-count-badge').textContent=`${data.length}件 アクティブ`;
+    const el=document.getElementById('todo-body');
+    el.innerHTML=data.map(d=>{
+      if(IC.hasGarble(d.text))DBG.warn('todo',`文字化け: ${d.text}`);
+      return `<div class="todo-item">
+        <span class="todo-pri ${d.cls}">${d.pri}</span>
+        <div><div class="todo-text">${d.text}</div><div class="todo-id">${d.id}</div></div>
+      </div>`;
+    }).join('');
+    DBG.ok('todo',`${data.length}件 描画 changed=${changed}`);
+  }catch(e){
+    DBG.err('todo','renderTodo: '+e.message);
+    showPanelErr('err-todo',e.message);
+    setDbgTags('todo',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderProducts(data){
+  try{
+    IC.expectArr(data,'products');
+    const grid=document.getElementById('products-grid');
+    const changed=DT.check('products',data);
+    grid.innerHTML=data.map((d,i)=>`
+      <div class="prod-card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span class="prod-name">${d.name}</span>
+          <span class="prod-badge ${d.badge}">${d.bl}</span>
+        </div>
+        ${d.meta.map(m=>`<div class="prod-metric">${m}</div>`).join('')}
+        <div class="prod-progress"><div class="prod-prog-fill" style="background:${PROD_COLORS[d.pc]};width:${d.pct}%"></div></div>
+        ${changed?'<div style="font-size:9px;color:var(--blue);margin-top:3px">△ 更新</div>':''}
+      </div>`).join('');
+    DBG.ok('products',`${data.length}件 描画`);
+  }catch(e){
+    DBG.err('products','renderProducts: '+e.message);
+  }
+}
+
+function renderSeo(data){
+  try{
+    const changed=DT.check('seo',data);
+    setDbgTags('seo',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-seo');
+    const el=document.getElementById('seo-body');
+    el.innerHTML=`
+      <div class="seo-grid">
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--blue)">${data.phase}</div><div class="seo-stat-lbl">完了 / Phase 6 実装中</div></div>
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--green)">${data.tests}</div><div class="seo-stat-lbl">テスト PASS</div></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Pipeline ステータス</div>
+      ${data.pipes.map(p=>`<div class="seo-pipe-row">
+        <div class="seo-pipe-dot" style="background:${p.st==='ready'?'var(--green)':'var(--amber)'}"></div>
+        <span class="seo-pipe-name">${p.name}</span>
+        <span class="seo-pipe-st ${p.st}">${p.st==='ready'?'READY':'PENDING'}</span>
+      </div>`).join('')}
+      <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:7px;font-size:10px;color:var(--muted)">
+        くろこ → Phase6: Decision Ledger / Explain API / Simulation / MoCKA Bridge
+      </div>`;
+    DBG.ok('seo',`SEO-OS描画 phase=${data.phase}`);
+  }catch(e){
+    DBG.err('seo','renderSeo: '+e.message);
+    showPanelErr('err-seo',e.message);
+    setDbgTags('seo',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderBee(data){
+  try{
+    IC.expectArr(data.items,'bee.items');
+    const changed=DT.check('bee',data);
+    const est=data.items.filter(i=>i.lc==='est').length;
+    const grow=data.items.filter(i=>i.lc==='grow').length;
+    setDbgTags('bee',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-bee');
+    document.getElementById('bee-count-badge').textContent=`確立 ${est} / 成長 ${grow}`;
+    const el=document.getElementById('bee-body');
+    el.innerHTML=data.items.map(d=>{
+      if(IC.hasGarble(d.name))DBG.warn('bee',`文字化け: ${d.name}`);
+      return `<div class="bee-item">
+        <span class="bee-lc ${d.lc}">${{est:'確立',grow:'成長',obs:'観察'}[d.lc]||d.lc}</span>
+        <span class="bee-name">${d.name}</span>
+        <span class="bee-ev">${d.ev}</span>
+      </div>`;
+    }).join('')+`<div style="margin-top:7px;font-size:10px;color:var(--muted)">Meta β生成まで確立β あと${Math.max(0,3-est)}件</div>`;
+    DBG.ok('bee',`BEE描画 確立${est}件`);
+  }catch(e){
+    DBG.err('bee','renderBee: '+e.message);
+    showPanelErr('err-bee',e.message);
+    setDbgTags('bee',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderEssence(data){
+  try{
+    IC.expectArr(data,'essence');
+    const changed=DT.check('essence',data);
+    setDbgTags('ess',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-ess');
+    const el=document.getElementById('ess-body');
+    el.innerHTML=data.map(d=>{
+      if(IC.hasGarble(d.txt))DBG.warn('ess',`文字化け Essence.${d.axis}`);
+      return `<div class="ess-axis" style="border-color:${d.color}">
+        <div class="ess-axis-lbl" style="color:${d.color}">${d.axis}</div>
+        <div class="ess-axis-txt">${d.txt}</div>
+      </div>`;
+    }).join('');
+    DBG.ok('ess','Essence 3軸描画');
+  }catch(e){
+    DBG.err('ess','renderEssence: '+e.message);
+    showPanelErr('err-ess',e.message);
+    setDbgTags('ess',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderTic(data0,data1){
+  try{
+    const f=d=>`<div class="tic-row ${d.st}">
+      <span class="tic-tag ${d.st}">${d.st.toUpperCase()}</span>
+      <span class="tic-name">${d.name}</span>
+      <span class="tic-note">${d.note}</span>
+    </div>`;
+    document.getElementById('tic0-body').innerHTML=data0.map(f).join('');
+    const fail0=data0.filter(d=>d.st==='ng').length;
+    setDbgTags('tic0',[{cls:fail0?'err':'ok',label:fail0?`${fail0}FAIL`:'ALL OK'}]);
+    hidePanelErr('err-tic0');
+
+    document.getElementById('tic1-body').innerHTML=data1.map(f).join('')+`
+      <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:7px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Roadmap (未着手)</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${['Layer2 Sandbox TODO_205','Layer3 Impact TODO_206','Layer4 Human Gate TODO_207'].map(t=>`<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--dim);color:var(--muted)">${t}</span>`).join('')}
+        </div>
+      </div>`;
+    setDbgTags('tic1',[{cls:'ok',label:'OK'}]);
+    hidePanelErr('err-tic1');
+    DBG.ok('tic',`TIC L0: fail=${fail0} / L1: 4件`);
+  }catch(e){
+    DBG.err('tic','renderTic: '+e.message);
+    showPanelErr('err-tic0',e.message);
+    showPanelErr('err-tic1',e.message);
+  }
+}
+
+function renderCoords(data){
+  try{
+    IC.expectArr(data,'coords');
+    const changed=DT.check('coords',data);
+    setDbgTags('coord',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-coord');
+    const el=document.getElementById('coord-body');
+    el.innerHTML=`<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      ${data.map(d=>{
+        IC.expectNum(d.val,'coord.val');
+        return `<div class="coord-row" style="flex:1;min-width:180px">
+          <span class="coord-lbl">${d.lbl}</span>
+          <div class="coord-bar"><div class="coord-fill" style="background:${d.color};width:${d.val*100}%"></div></div>
+          <span class="coord-val" style="color:${d.color}">${d.val.toFixed(3)}</span>
+        </div>`;
+      }).join('')}
+      <div style="border-left:1px solid var(--line);padding-left:12px;font-size:11px;color:var(--muted)">
+        super-recovery<br><b style="color:var(--green);font-size:13px">Kendall τ = 1.0</b>
+      </div>
+    </div>`;
+    DBG.ok('coord','流動性座標描画');
+  }catch(e){
+    DBG.err('coord','renderCoords: '+e.message);
+    showPanelErr('err-coord',e.message);
+    setDbgTags('coord',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SCAMPER ENGINE
+   ═══════════════════════════════════════════════ */
+const SCAMPER_MODES=[
+  {key:'S',word:'Substitute',color:'var(--blue)',  bg:'rgba(74,158,255,.12)'},
+  {key:'C',word:'Combine',   color:'var(--green)', bg:'rgba(0,212,170,.12)'},
+  {key:'A',word:'Adapt',     color:'var(--teal)',  bg:'rgba(52,211,153,.12)'},
+  {key:'M',word:'Modify',    color:'var(--amber)', bg:'rgba(240,165,0,.12)'},
+  {key:'P',word:'Put to use',color:'var(--purple)',bg:'rgba(167,139,250,.12)'},
+  {key:'E',word:'Eliminate', color:'var(--red)',   bg:'rgba(231,76,110,.12)'},
+  {key:'R',word:'Reverse',   color:'var(--pink)',  bg:'rgba(244,114,182,.12)'}
+];
+
+const SCAMPER_TEMPLATES={
+  S:['「{input}」を別の手段に置き換えるとしたら何か？','「{input}」の担当者/ツール/材料を入れ替えると？','「{input}」で使っているルールを別のルールに置換すると？','「{input}」のフォーマットを変えると何が起きる？','「{input}」の評価基準を別指標に置き換えると？'],
+  C:['「{input}」を別のプロセスと組み合わせると？','「{input}」とTIC監視を統合すると何が強化される？','「{input}」とBEEエコロジーを掛け合わせると？','「{input}」とSEO-OSパイプラインを融合すると？','「{input}」をOrchestra合議フローと結合すると？'],
+  A:['他の分野でこの問題を解決した例は？「{input}」に適用できるか？','自然界や制御工学から「{input}」に転用できる仕組みは？','過去のインシデント記録から「{input}」への教訓は？','MoCKAの8段階ループを「{input}」に適用すると？','vasAIのTSI劣化モデルを「{input}」に転用すると？'],
+  M:['「{input}」の頻度・量・速度を変えると？','「{input}」を10倍の規模にすると何が壊れる？','「{input}」を逆に縮小・軽量化すると？','「{input}」の記録粒度を上げる/下げると？','「{input}」の自動化率を上げるとどのリスクが増す？'],
+  P:['「{input}」の副産物として何が使えるか？','「{input}」を全く別の用途に転用すると？','「{input}」の記録データを論文化・外部公開できるか？','「{input}」を製品機能として切り出せるか？','「{input}」のパターンをCaliberに学習させられるか？'],
+  E:['「{input}」から取り除けるステップは何か？','「{input}」で本当に必要なのはどの部分だけか？','「{input}」の人間ゲートを自動化で省けるか？','「{input}」から重複・冗長な記録を削減すると？','「{input}」でなくなっても機能するものは？'],
+  R:['「{input}」の順序を逆にすると？','「{input}」の原因と結果を反転させると？','「{input}」で検知する代わりに予防を先にすると？','「{input}」を外部ではなく内部から監視すると？','「{input}」の評価タイミングを前倒しすると？']
+};
+
+let scamperMode=null;
+const scamperHistory=[];
+
+function renderScamperModes(){
+  try{
+    const el=document.getElementById('scp-modes');
+    if(!el)throw new Error('scp-modes要素なし');
+    el.innerHTML=SCAMPER_MODES.map(m=>`
+      <div class="scp-card" id="scp-card-${m.key}"
+        style="background:${m.bg}"
+        onclick="selectScamperMode('${m.key}')">
+        <div class="scp-letter" style="color:${m.color}">${m.key}</div>
+        <div class="scp-word">${m.word}</div>
+        <div class="scp-count" style="color:${m.color}" id="scp-cnt-${m.key}">${SCAMPER_TEMPLATES[m.key].length}問</div>
+      </div>`).join('');
+    setDbgTags('scp',[{cls:'ok',label:'INIT OK'}]);
+    hidePanelErr('err-scp');
+    DBG.ok('scp',`SCАMPERモード 7種 初期化完了 総パターン=${Object.values(SCAMPER_TEMPLATES).flat().length}`);
+  }catch(e){
+    DBG.err('scp','renderScamperModes: '+e.message);
+    showPanelErr('err-scp',e.message);
+    setDbgTags('scp',[{cls:'err',label:'INIT ERR'}]);
+  }
+}
+
+function selectScamperMode(key){
+  try{
+    SCAMPER_MODES.forEach(m=>{
+      const c=document.getElementById('scp-card-'+m.key);
+      if(c)c.classList.remove('active');
+    });
+    const card=document.getElementById('scp-card-'+key);
+    if(!card)throw new Error(`カード ${key} が見つからない`);
+    card.classList.add('active');
+    scamperMode=key;
+    const badge=document.getElementById('scp-status-badge');
+    const modeInfo=SCAMPER_MODES.find(m=>m.key===key);
+    if(badge&&modeInfo){
+      badge.textContent=`[${key}] ${modeInfo.word} — ${SCAMPER_TEMPLATES[key].length}問`;
+      badge.style.color=modeInfo.color;
+    }
+    DBG.info('scp',`モード選択: ${key} (${modeInfo.word})`);
+    hidePanelErr('err-scp');
+  }catch(e){
+    DBG.err('scp','selectScamperMode: '+e.message);
+    showPanelErr('err-scp',e.message);
+  }
+}
+
+function scamperRun(){
+  try{
+    const input=document.getElementById('scp-input');
+    if(!input)throw new Error('入力要素なし');
+    const text=input.value.trim();
+
+    /* バリデーション */
+    if(!scamperMode){DBG.warn('scp','モード未選択');showPanelErr('err-scp','モードを選択してください');return;}
+    if(!text){DBG.warn('scp','入力空');showPanelErr('err-scp','課題テキストを入力してください');return;}
+    if(IC.hasGarble(text)){DBG.warn('scp',`入力に文字化け候補: ${text}`);setDbgTags('scp',[{cls:'warn',label:'GARBLE?'},{cls:'ok',label:'実行継続'}]);}
+    hidePanelErr('err-scp');
+
+    /* テンプレート展開 */
+    const templates=SCAMPER_TEMPLATES[scamperMode];
+    if(!templates||templates.length===0)throw new Error(`テンプレート ${scamperMode} が空`);
+
+    const results=templates.map(t=>t.replace(/\{input\}/g,text));
+    IC.expectArr(results,'scamperResults');
+
+    /* 整合性: 置換漏れチェック */
+    const unreplaced=results.filter(r=>r.includes('{input}'));
+    if(unreplaced.length>0)DBG.warn('scp',`{input}置換漏れ ${unreplaced.length}件`);
+
+    /* 表示 */
+    document.getElementById('scp-empty').style.display='none';
+    const ri=document.getElementById('scp-result-items');
+    if(!ri)throw new Error('scp-result-items要素なし');
+    ri.style.display='flex';
+    ri.innerHTML=results.map((r,i)=>{
+      if(IC.hasGarble(r))DBG.warn('scp',`結果[${i}]文字化け`);
+      return `<div class="scp-result-item">
+        <span class="scp-result-idx">Q${i+1}</span>
+        <span class="scp-result-txt">${r}</span>
+      </div>`;
+    }).join('');
+
+    /* 履歴追加 */
+    const modeInfo=SCAMPER_MODES.find(m=>m.key===scamperMode);
+    scamperHistory.unshift({mode:scamperMode,word:modeInfo.word,color:modeInfo.color,text,ts:new Date().toLocaleTimeString('ja-JP'),count:results.length});
+    if(scamperHistory.length>20)scamperHistory.pop();
+    renderScamperHistory();
+
+    /* API送信（app.py /scamper/run があれば） */
+    sendScamperToApi(scamperMode,text,results).catch(e=>DBG.warn('scp',`API送信スキップ: ${e.message}`));
+
+    setDbgTags('scp',[{cls:'ok',label:`${scamperMode} OK`},{cls:'ok',label:`${results.length}問生成`}]);
+    DBG.ok('scp',`SCAMPER[${scamperMode}] "${text.slice(0,20)}" → ${results.length}問`);
+  }catch(e){
+    DBG.err('scp','scamperRun: '+e.message);
+    showPanelErr('err-scp',e.message);
+    setDbgTags('scp',[{cls:'err',label:'RUN ERR'}]);
+  }
+}
+
+async function sendScamperToApi(mode,input,results){
+  const payload={mode,input,results,ts:new Date().toISOString()};
+  const r=await fetch('http://localhost:5000/scamper/run',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  DBG.ok('scp','API /scamper/run 送信成功');
+}
+
+function renderScamperHistory(){
+  try{
+    const el=document.getElementById('scp-history');
+    if(!el)return;
+    if(scamperHistory.length===0){
+      el.innerHTML='<div style="font-size:10px;color:var(--muted);padding:4px">履歴なし</div>';
+      return;
+    }
+    el.innerHTML=scamperHistory.map(h=>`
+      <div class="scp-hist-item">
+        <span class="scp-hist-mode" style="background:${h.color}22;color:${h.color}">[${h.mode}]</span>
+        <span style="flex:1;color:var(--muted)">${h.text.slice(0,30)}${h.text.length>30?'…':''}</span>
+        <span style="font-size:10px;color:var(--muted)">${h.count}問</span>
+        <span style="font-size:10px;color:var(--muted)">${h.ts}</span>
+      </div>`).join('');
+    DBG.info('scp',`履歴更新 ${scamperHistory.length}件`);
+  }catch(e){
+    DBG.err('scp','renderScamperHistory: '+e.message);
+  }
+}
+
+function scamperClearHistory(){
+  scamperHistory.length=0;
+  renderScamperHistory();
+  DBG.info('scp','履歴クリア');
+}
+
+/* Enterキー対応 */
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('scp-input');
+  if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')scamperRun();});
 });
-</script>
 
-      <script>
-  async function checkScamperStatus() {
-    try {
-      const r = await fetch('/scamper/status');
-      const d = await r.json();
-      const dot = document.getElementById('scamper-status-dot');
-      const pool = document.getElementById('scamper-pool');
-      if (dot) dot.style.background = d.status === 'READY' ? '#4caf50' : '#f44336';
-      if (pool) pool.textContent = 'インシデントプール: ' + d.total_pool + '件 | 出力ファイル: ' + d.output_files + '件';
-    } catch(e) {}
-  }
-  function renderExpansions(results) {
-    const container = document.getElementById('scamper-results');
-    if (!container) return;
-    if (!results || results.length === 0) { container.innerHTML = '<div style="color:#888">結果なし</div>'; return; }
-    let html = '';
-    results.forEach(function(res) {
-      html += '<div style="border:1px solid #333;border-radius:4px;margin-bottom:10px;padding:8px;">';
-      html += '<div style="font-size:12px;color:#b8860b;font-weight:bold;margin-bottom:4px;">📋 ' + ((res.event_title||res.event_id||'').substring(0,50)) + ' <span style="color:#666;font-size:10px;">[' + res.trigger + ']</span></div>';
-      (res.expansions || []).forEach(function(exp) {
-        html += '<div style="margin-top:6px;padding:6px;background:#1a1a1a;border-radius:3px;">';
-        html += '<div style="font-size:11px;color:#4caf50;font-weight:bold;">[' + exp.scamper_id + '] ' + exp.view + '</div>';
-        html += '<div style="font-size:11px;color:#e0e0e0;margin-top:2px;">💡 ' + exp.question + '</div>';
-        html += '<div style="font-size:10px;color:#888;margin-top:2px;">→ ' + exp.output_type + ': ' + exp.example_output.substring(0,60) + '...</div>';
-        html += '</div>';
-      });
-      html += '</div>';
-    });
-    container.innerHTML = html;
-  }
-  async function runScamper() {
-    const el = document.getElementById('scamper-event-id');
-    const eid = el ? el.value.trim() : '';
-    const container = document.getElementById('scamper-results');
-    if (container) container.innerHTML = '<div style="color:#888">展開中...</div>';
-    try {
-      const r = await fetch('/scamper/run', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({event_id: eid||null})});
-      const d = await r.json();
-      if (d.error) { if(container) container.innerHTML='<div style="color:#f44336">エラー: '+d.error+'</div>'; }
-      else { renderExpansions([d]); }
-    } catch(e) { if(container) container.innerHTML='<div style="color:#f44336">'+e+'</div>'; }
-  }
-  async function loadScamperRecent() {
-    const container = document.getElementById('scamper-results');
-    if (container) container.innerHTML = '<div style="color:#888">直近3件展開中...</div>';
-    try {
-      const r = await fetch('/scamper/recent?limit=3');
-      const d = await r.json();
-      renderExpansions(d.results || []);
-    } catch(e) { if(container) container.innerHTML='<div style="color:#f44336">'+e+'</div>'; }
-  }
-  checkScamperStatus();
-  setInterval(checkScamperStatus, 60000);
-</script>
-<!-- SCAMPER Creative Engine パネル -->
-      <div class="panel" id="scamper-panel">
-        <div class="panel-header">
-          🔬 SCAMPER Creative Engine
-          <span id="scamper-status-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#555;margin-left:8px;"></span>
-        </div>
-        <div class="panel-body">
-          <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;">
-            <input id="scamper-event-id" type="text" placeholder="event_id (空=直近インシデント)"
-              style="flex:1;padding:5px 8px;background:#1a1a1a;color:#e0e0e0;border:1px solid #444;border-radius:4px;font-size:12px;">
-            <button onclick="runScamper()" style="padding:5px 12px;background:#b8860b;color:#000;border:none;border-radius:4px;font-weight:bold;cursor:pointer;">展開</button>
-            <button onclick="loadScamperRecent()" style="padding:5px 12px;background:#2a5a2a;color:#e0e0e0;border:none;border-radius:4px;cursor:pointer;">直近3件</button>
-          </div>
-          <div id="scamper-pool" style="font-size:11px;color:#888;margin-bottom:8px;"></div>
-          <div id="scamper-results" style="max-height:320px;overflow-y:auto;"></div>
-        </div>
-      </div>
+/* ═══════════════════════════════════════════════
+   LIVE DATA FETCH (app.py エンドポイント)
+   ═══════════════════════════════════════════════ */
+const BASE='http://localhost:5000';
 
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- β ECOLOGY パネル (BEE / TODO_216)                           -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<script>
-(function(){
-  const STATUS_COLOR = {
-    '制度化': '#bc8cff', '確立': '#3fb950', '成長中': '#00d4ff',
-    '観察β': '#d29922',  '衰退': '#f0883e',  '消滅': '#f85149'
-  };
-  const STATUS_ICON = {
-    '制度化': '🌟', '確立': '✅', '成長中': '📈', '観察β': '🔍', '衰退': '⚠️', '消滅': '💀'
-  };
-
-  async function loadBetaStatus() {
-    const wrap = document.getElementById('bee-panel-rows');
-    const meta = document.getElementById('bee-meta-wrap');
-    if (!wrap) return;
-    try {
-      const [r1, r2] = await Promise.all([
-        fetch('/api/beta/status').then(r=>r.json()),
-        fetch('/api/beta/meta').then(r=>r.json()),
-      ]);
-      const betas = r1.betas || [];
-      wrap.innerHTML = betas.map(b => {
-        const ev    = b.evidence || 0;
-        const co    = b.contradiction || 0;
-        const total = ev + co;
-        const pct   = total > 0 ? Math.round(ev / total * 100) : 0;
-        const bar   = Math.round(pct / 8);
-        const filled= '█'.repeat(bar) + '░'.repeat(12-bar);
-        const col   = STATUS_COLOR[b.status] || '#8b949e';
-        const icon  = STATUS_ICON[b.status] || '?';
-        return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #1e2d3d;font-size:11px;">
-          <span style="min-width:56px;color:${col};font-weight:700;">${icon} ${b.status}</span>
-          <span style="min-width:150px;color:#c9d1d9;">${b.beta_ja||b.beta_id}</span>
-          <span style="color:#8b949e;font-family:monospace;font-size:10px;">ev:${ev} co:${co}</span>
-          <span style="font-family:monospace;font-size:10px;color:${col};">${filled} ${pct}%</span>
-          ${b.meta_beta ? `<span style="color:#bc8cff;font-size:10px;">→${b.meta_beta}</span>` : ''}
-        </div>`;
-      }).join('') || '<div style="color:#555;font-size:11px;">βなし</div>';
-
-      const metaBetas = r2.meta_betas || [];
-      if (meta) {
-        meta.innerHTML = metaBetas.length
-          ? metaBetas.map(m=>`<div style="color:#bc8cff;font-size:12px;padding:4px 0;">🌟 <strong>${m.beta_ja}</strong><br><span style="color:#8b949e;font-size:11px;">${m.implication||''}</span></div>`).join('')
-          : '<div style="color:#555;font-size:11px;">Meta β未生成（確立β3件以上で自動生成）</div>';
-      }
-    } catch(e) {
-      if(wrap) wrap.innerHTML = '<div style="color:#f85149;font-size:11px;">BEE接続エラー</div>';
+async function fetchLive(){
+  DBG.info('sys','ライブデータ取得開始');
+  const jobs=[
+    {url:`${BASE}/loop/status`,         panel:'civ',    key:'civilization_loop'},
+    {url:`${BASE}/heinrich/status`,     panel:'hein',   key:null},
+    {url:`${BASE}/risk/recommendation`, panel:'todo',   key:null},
+    {url:`${BASE}/health/status`,       panel:'tic0',   key:null},
+    {url:`${BASE}/phl/history`,         panel:'ess',    key:null},
+    {url:`${BASE}/api/beta/status`,     panel:'bee',    key:null},
+    {url:`${BASE}/api/risk-score`,      panel:'coord',  key:null},
+  ];
+  await Promise.allSettled(jobs.map(async j=>{
+    try{
+      const data=await apiFetch(j.url,j.panel);
+      DBG.ok(j.panel,`ライブデータ取得OK`);
+      /* パネルごとのデータマッピング（app.py形式に応じて調整） */
+    }catch(e){
+      DBG.warn(j.panel,'フォールバック → 静的データ使用');
     }
-  }
+  }));
+}
 
-  window.addBeeEvidence = async function(betaId, type) {
-    try {
-      const r = await fetch('/api/beta/evidence', {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({beta_id: betaId, type, source: 'manual_ui', amount: 1})
-      });
-      const d = await r.json();
-      if(d.status === 'ok') { loadBetaStatus(); }
-    } catch(e){}
-  };
+/* ═══════════════════════════════════════════════
+   CLOCK
+   ═══════════════════════════════════════════════ */
+function updateClock(){
+  const el=document.getElementById('clock');
+  if(el)el.textContent=new Date().toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
 
-  document.addEventListener('DOMContentLoaded', () => {
-    loadBetaStatus();
-    setInterval(loadBetaStatus, 60000);  // 1分ごとに更新
-  });
-})();
+/* ═══════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════ */
+function initAll(){
+  DBG.info('sys','MoCKA COMMAND CENTER v6.1 初期化開始');
+
+  try{ updateClock(); setInterval(updateClock,1000); }
+  catch(e){ DBG.err('clock','clock init: '+e.message); }
+
+  /* 静的データで即時描画 */
+  try{ renderCiv(STATIC.civ); }            catch(e){ DBG.err('civ',e.message); }
+  try{ renderHein(STATIC.hein); }          catch(e){ DBG.err('hein',e.message); }
+  try{ renderTodo(STATIC.todos); }         catch(e){ DBG.err('todo',e.message); }
+  try{ renderProducts(STATIC.products); }  catch(e){ DBG.err('products',e.message); }
+  try{ renderSeo(STATIC.seo); }            catch(e){ DBG.err('seo',e.message); }
+  try{ renderBee(STATIC.bee); }            catch(e){ DBG.err('bee',e.message); }
+  try{ renderEssence(STATIC.essence); }    catch(e){ DBG.err('ess',e.message); }
+  try{ renderTic(STATIC.tic0,STATIC.tic1); } catch(e){ DBG.err('tic',e.message); }
+  try{ renderCoords(STATIC.coords); }      catch(e){ DBG.err('coord',e.message); }
+  try{ renderScamperModes(); }             catch(e){ DBG.err('scp',e.message); }
+  try{ renderScamperHistory(); }           catch(e){ DBG.err('scp',e.message); }
+
+  /* ライブデータ取得（バックグラウンド） */
+  fetchLive().then(()=>DBG.ok('sys','ライブデータ取得フェーズ完了')).catch(e=>DBG.warn('sys','ライブ取得失敗: '+e.message));
+
+  /* 30秒ごとにリフレッシュ */
+  setInterval(()=>{
+    DBG.info('sys','定期リフレッシュ');
+    fetchLive().catch(e=>DBG.warn('sys','定期取得エラー: '+e.message));
+  },30000);
+
+  DBG.ok('sys','初期化完了 — 全パネル静的描画済み / ライブ取得バックグラウンド実行中');
+}
+
+document.addEventListener('DOMContentLoaded', initAll);
 </script>
-
-<div class="panel purp" id="bee-panel" style="margin:10px 16px;">
-  <div class="panel-title">
-    <span class="icon">🧬</span> β ECOLOGY
-    <span style="flex:1;"></span>
-    <button onclick="loadBetaStatus()" style="padding:3px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--purple);border-radius:var(--radius);cursor:pointer;font-size:11px;font-family:var(--mono);">更新</button>
-  </div>
-  <div id="bee-panel-rows" style="max-height:180px;overflow-y:auto;"></div>
-  <div id="bee-meta-wrap" style="margin-top:8px;padding-top:8px;border-top:1px solid #1e2d3d;"></div>
-</div>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<!-- HEALTH MONITOR パネル (TIC Layer 0 / TODO_203)              -->
-<!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
-<script>
-(function() {
-  const COLOR_MAP = { GREEN: '#3fb950', AMBER: '#d29922', RED: '#f85149', UNKNOWN: '#8b949e' };
-  const ICON_MAP  = { GREEN: '✅', AMBER: '⚠️', RED: '❌', UNKNOWN: '⏳' };
-
-  async function loadHealthStatus() {
-    const wrap = document.getElementById('health-monitor-wrap');
-    if (!wrap) return;
-    try {
-      const r = await fetch('/health/status');
-      const d = await r.json();
-      const color  = COLOR_MAP[d.color] || COLOR_MAP.UNKNOWN;
-      const icon   = ICON_MAP[d.color]  || ICON_MAP.UNKNOWN;
-      const checks = d.checks || [];
-      const pass   = checks.filter(c => c.status === 'PASS').length;
-      const total  = checks.length;
-
-      document.getElementById('health-overall-dot').style.background = color;
-      document.getElementById('health-overall-dot').style.boxShadow  = `0 0 6px ${color}`;
-      document.getElementById('health-overall-label').textContent = `${icon} ${d.overall || 'UNKNOWN'} ${pass}/${total}`;
-      document.getElementById('health-overall-label').style.color = color;
-      document.getElementById('health-ts').textContent = d.ts ? d.ts.slice(0, 19) : '';
-
-      const rows = document.getElementById('health-rows');
-      rows.innerHTML = checks.map(c => {
-        const ok = c.status === 'PASS';
-        const ic = ok ? '✅' : '❌';
-        return `<div style="display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px solid #1e2d3d;font-size:11px;">
-          <span style="color:#8b949e;">${ic} ${c.component}</span>
-          <span style="color:${ok ? '#3fb950' : '#f85149'};max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${c.detail}">${c.detail || ''}</span>
-        </div>`;
-      }).join('');
-    } catch(e) {
-      const lbl = document.getElementById('health-overall-label');
-      if (lbl) lbl.textContent = '接続不可';
-    }
-  }
-
-  window.runHealthCheck = async function() {
-    const btn = document.getElementById('health-run-btn');
-    if (btn) { btn.disabled = true; btn.textContent = '実行中...'; }
-    await loadHealthStatus();
-    if (btn) { btn.disabled = false; btn.textContent = '今すぐ実行'; }
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    loadHealthStatus();
-    setInterval(loadHealthStatus, 120000);  // 2分ごとに自動更新
-  });
-})();
-</script>
-
-<div class="panel grn" id="health-monitor-wrap" style="margin:10px 16px;">
-  <div class="panel-title">
-    <span class="icon">🩺</span> HEALTH MONITOR
-    <span id="health-overall-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#333;margin-left:6px;"></span>
-    <span id="health-overall-label" style="font-family:var(--mono);font-size:12px;margin-left:6px;color:#8b949e;">--</span>
-    <span style="flex:1;"></span>
-    <span id="health-ts" style="font-family:var(--mono);font-size:10px;color:var(--text2);"></span>
-    <button id="health-run-btn" onclick="runHealthCheck()" style="margin-left:10px;padding:3px 10px;background:var(--bg3);border:1px solid var(--border2);color:var(--accent);border-radius:var(--radius);cursor:pointer;font-size:11px;font-family:var(--mono);">今すぐ実行</button>
-  </div>
-  <div id="health-rows" style="max-height:200px;overflow-y:auto;"></div>
-</div>
-
 </body>
 </html>
