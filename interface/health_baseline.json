@@ -1,7 +1,7 @@
 {
   "mocka_server": {
-    "ok": false,
-    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
+    "ok": true,
+    "detail": "200 OK"
   },
   "caliber_pipeline": {
     "ok": true,
@@ -25,6 +25,6 @@
   },
   "relay_dom_selector": {
     "ok": false,
-    "detail": "エラー: timed out"
+    "detail": "Relay: last_ping なし（claude.aiタブ未オープン、または拡張未起動）"
   }
 }
