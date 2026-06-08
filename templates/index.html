@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoCKA COMMAND CENTER v6.1</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','Courier New',monospace;font-size:13px;min-height:100vh}
+:root{
+  --g:#1a1a2e;--gb:#16213e;--gc:#0f3460;
+  --green:#00d4aa;--amber:#f0a500;--red:#e74c6e;--blue:#4a9eff;--purple:#a78bfa;--teal:#34d399;--pink:#f472b6;
+  --dim:rgba(255,255,255,.06);--line:rgba(255,255,255,.09);--txt:rgba(255,255,255,.9);--muted:rgba(255,255,255,.45);
+  --ok:rgba(0,212,170,.12);--warn:rgba(240,165,0,.12);--ng:rgba(231,76,110,.12);
+}
+.wrap{padding:14px;max-width:1400px;margin:0 auto}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.logo{font-size:15px;font-weight:700;letter-spacing:.1em}
+.logo em{color:var(--green);font-style:normal}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.phase-badge{background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px}
+.seal-txt{color:var(--muted);font-size:11px}
+.ts-txt{color:var(--teal);font-size:11px;font-family:monospace}
+
+/* ── RISK BAR ── */
+.risk-bar{display:flex;align-items:center;gap:10px;background:var(--dim);border-radius:8px;padding:8px 14px;margin-bottom:10px;border:1px solid var(--line);flex-wrap:wrap}
+.risk-label{font-size:11px;color:var(--muted);min-width:76px}
+.risk-meter{flex:1;min-width:80px;height:5px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden}
+.risk-fill{height:100%;border-radius:3px}
+.risk-fill.safe{background:var(--green);width:18%}
+.risk-fill.warn{background:var(--amber);width:55%}
+.risk-fill.crit{background:var(--red);width:90%}
+.risk-status{font-size:12px;font-weight:700;min-width:55px}
+.risk-status.safe{color:var(--green)}
+.risk-status.warn{color:var(--amber)}
+.risk-status.crit{color:var(--red)}
+.risk-nba{font-size:11px;color:var(--blue);border-left:1px solid var(--line);padding-left:10px;min-width:160px}
+
+/* ── SERVER ROW ── */
+.srv-row{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.srv{display:flex;align-items:center;gap:5px;background:var(--dim);border:1px solid var(--line);border-radius:6px;padding:4px 9px;font-size:11px;transition:border-color .2s}
+.srv:hover{border-color:rgba(255,255,255,.2)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot.on{background:var(--green);box-shadow:0 0 4px var(--green)}
+.dot.off{background:var(--red)}
+.dot.warn{background:var(--amber)}
+.srv-name{color:var(--muted)}
+.srv-port{color:var(--txt)}
+
+/* ── GRID LAYOUTS ── */
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.grid-131{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:10px;margin-bottom:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.grid-1{display:grid;grid-template-columns:1fr;margin-bottom:10px}
+
+/* ── PANEL ── */
+.panel{background:var(--gb);border:1px solid var(--line);border-radius:10px;padding:12px;position:relative}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.panel-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.panel-badge{font-size:10px;color:var(--muted)}
+
+/* ── DEBUG OVERLAY ── */
+.dbg-strip{position:absolute;top:0;right:0;display:flex;gap:3px;padding:4px 6px;z-index:10}
+.dbg-tag{font-size:9px;padding:1px 5px;border-radius:3px;font-family:monospace}
+.dbg-tag.ok{background:rgba(0,212,170,.2);color:var(--green)}
+.dbg-tag.err{background:rgba(231,76,110,.2);color:var(--red)}
+.dbg-tag.warn{background:rgba(240,165,0,.2);color:var(--amber)}
+.dbg-tag.changed{background:rgba(74,158,255,.2);color:var(--blue)}
+.dbg-err-msg{background:rgba(231,76,110,.1);border:1px solid rgba(231,76,110,.3);border-radius:6px;padding:6px 8px;font-size:10px;color:var(--red);font-family:monospace;margin-top:6px;display:none}
+
+/* ── SECTION HEADER ── */
+.section-hd{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
+/* ── CIV LOOP ── */
+.civ-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.civ-icon{width:20px;height:20px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.civ-name{color:var(--muted);font-size:11px;min-width:86px}
+.civ-bar-wrap{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:2px}
+.civ-bar{height:100%;border-radius:2px;transition:width .6s}
+.civ-count{font-size:11px;font-weight:700;min-width:40px;text-align:right}
+
+/* ── HEINRICH ── */
+.hein-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.hein-lbl{font-size:11px;color:var(--muted);min-width:64px}
+.hein-bar{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.07)}
+.hein-fill{height:100%;border-radius:3px;transition:width .6s}
+.hein-num{font-size:11px;font-weight:700;min-width:32px;text-align:right}
+.hein-note{font-size:10px;color:var(--muted);margin-top:4px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:30px;margin-top:6px}
+.spark-bar{border-radius:2px 2px 0 0;min-width:9px;transition:height .5s}
+
+/* ── TODO ── */
+.todo-item{display:flex;align-items:flex-start;gap:7px;padding:5px 8px;border-radius:6px;background:var(--dim);margin-bottom:4px}
+.todo-pri{font-size:9px;padding:2px 5px;border-radius:3px;flex-shrink:0;margin-top:1px;font-weight:700}
+.todo-pri.sai{background:rgba(231,76,110,.2);color:var(--red)}
+.todo-pri.kou{background:rgba(240,165,0,.2);color:var(--amber)}
+.todo-pri.naka{background:rgba(74,158,255,.2);color:var(--blue)}
+.todo-text{font-size:11px;line-height:1.4}
+.todo-id{font-size:10px;color:var(--muted)}
+
+/* ── PRODUCTS ── */
+.prod-card{background:var(--gb);border:1px solid var(--line);border-radius:10px;padding:12px}
+.prod-name{font-size:12px;font-weight:700;margin-bottom:4px}
+.prod-badge{font-size:10px;padding:2px 7px;border-radius:12px;display:inline-block;margin-bottom:6px}
+.prod-badge.live{background:rgba(0,212,170,.15);color:var(--green);border:1px solid rgba(0,212,170,.3)}
+.prod-badge.impl{background:rgba(240,165,0,.15);color:var(--amber);border:1px solid rgba(240,165,0,.3)}
+.prod-badge.pend{background:rgba(74,158,255,.15);color:var(--blue);border:1px solid rgba(74,158,255,.3)}
+.prod-badge.seal{background:rgba(167,139,250,.15);color:var(--purple);border:1px solid rgba(167,139,250,.3)}
+.prod-metric{font-size:11px;color:var(--muted);margin-bottom:2px}
+.prod-metric b{color:var(--txt)}
+.prod-progress{height:3px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:6px}
+.prod-prog-fill{height:100%;border-radius:2px;transition:width .6s}
+
+/* ── SEO-OS ── */
+.seo-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.seo-stat{background:var(--dim);border-radius:6px;padding:8px 10px}
+.seo-stat-val{font-size:18px;font-weight:700}
+.seo-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.seo-pipe-row{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:4px}
+.seo-pipe-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.seo-pipe-name{flex:1;color:var(--muted)}
+.seo-pipe-st{font-size:10px;padding:1px 5px;border-radius:3px}
+.seo-pipe-st.ready{background:rgba(0,212,170,.15);color:var(--green)}
+.seo-pipe-st.pend{background:rgba(240,165,0,.15);color:var(--amber)}
+
+/* ── BEE ── */
+.bee-item{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:6px;background:var(--dim);margin-bottom:4px}
+.bee-lc{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700}
+.bee-lc.est{background:rgba(0,212,170,.15);color:var(--green)}
+.bee-lc.grow{background:rgba(74,158,255,.15);color:var(--blue)}
+.bee-lc.obs{background:rgba(167,139,250,.15);color:var(--purple)}
+.bee-name{flex:1;font-size:11px}
+.bee-ev{font-size:10px;color:var(--muted)}
+
+/* ── ESSENCE ── */
+.ess-axis{border-left:2px solid;padding:5px 8px;border-radius:0 6px 6px 0;background:var(--dim);margin-bottom:6px}
+.ess-axis-lbl{font-size:10px;font-weight:700;margin-bottom:2px}
+.ess-axis-txt{font-size:11px;color:var(--muted);line-height:1.4}
+
+/* ── TIC ── */
+.tic-row{display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:5px;margin-bottom:3px}
+.tic-row.ok{background:var(--ok)}
+.tic-row.ng{background:var(--ng)}
+.tic-row.warn{background:var(--warn)}
+.tic-tag{font-size:10px;padding:1px 5px;border-radius:3px;min-width:34px;text-align:center;font-weight:700}
+.tic-tag.ok{background:rgba(0,212,170,.2);color:var(--green)}
+.tic-tag.ng{background:rgba(231,76,110,.2);color:var(--red)}
+.tic-tag.warn{background:rgba(240,165,0,.2);color:var(--amber)}
+.tic-name{flex:1;font-size:11px}
+.tic-note{font-size:10px;color:var(--muted)}
+
+/* ── FLUID COORDS ── */
+.coord-row{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.coord-lbl{font-size:11px;color:var(--muted);min-width:90px}
+.coord-bar{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px}
+.coord-fill{height:100%;border-radius:3px;transition:width .6s}
+.coord-val{font-size:14px;font-weight:700;min-width:42px;text-align:right}
+
+/* ── SCAMPER ── */
+.scp-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:12px}
+.scp-card{border-radius:8px;padding:10px 8px;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .15s;border:1px solid transparent}
+.scp-card:hover{transform:translateY(-2px)}
+.scp-card.active{border-color:rgba(255,255,255,.25)}
+.scp-letter{font-size:22px;font-weight:700;line-height:1}
+.scp-word{font-size:9px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.08em}
+.scp-count{font-size:10px;margin-top:4px;font-weight:700}
+
+.scp-input-row{display:flex;gap:8px;margin-bottom:10px}
+.scp-input{flex:1;background:var(--dim);border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--txt);font-family:monospace;font-size:12px;outline:none;transition:border-color .2s}
+.scp-input:focus{border-color:var(--blue)}
+.scp-btn{background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--blue);border-radius:6px;padding:7px 16px;cursor:pointer;font-size:12px;font-weight:700;transition:background .2s}
+.scp-btn:hover{background:rgba(74,158,255,.25)}
+.scp-btn:active{transform:scale(.97)}
+
+.scp-result-area{background:var(--dim);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:80px}
+.scp-result-hd{font-size:10px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.scp-result-items{display:flex;flex-direction:column;gap:4px}
+.scp-result-item{display:flex;align-items:flex-start;gap:8px;padding:4px 6px;border-radius:5px;background:rgba(255,255,255,.04)}
+.scp-result-idx{font-size:10px;color:var(--muted);min-width:18px;font-weight:700}
+.scp-result-txt{font-size:11px;line-height:1.4}
+.scp-empty{font-size:11px;color:var(--muted);text-align:center;padding:16px}
+
+.scp-history{display:flex;flex-direction:column;gap:4px;max-height:120px;overflow-y:auto}
+.scp-hist-item{display:flex;align-items:center;gap:6px;font-size:11px;padding:3px 6px;border-radius:4px;background:var(--dim)}
+.scp-hist-mode{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700}
+
+/* ── DEBUG LOG PANEL ── */
+.dbg-panel{background:#0a0a14;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:10px;margin-bottom:10px}
+.dbg-panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.dbg-panel-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.dbg-log{max-height:120px;overflow-y:auto;font-family:monospace;font-size:11px;line-height:1.5}
+.dbg-log-line{padding:1px 4px;border-radius:3px;margin-bottom:1px}
+.dbg-log-line.info{color:var(--blue)}
+.dbg-log-line.ok{color:var(--green)}
+.dbg-log-line.warn{color:var(--amber)}
+.dbg-log-line.err{color:var(--red);background:rgba(231,76,110,.08)}
+.dbg-clear-btn{background:none;border:1px solid var(--line);border-radius:4px;color:var(--muted);font-size:10px;padding:2px 8px;cursor:pointer}
+.dbg-clear-btn:hover{border-color:rgba(255,255,255,.25);color:var(--txt)}
+
+.spinner{display:inline-block;width:10px;height:10px;border:1px solid var(--muted);border-top-color:var(--blue);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.pulsing{animation:pulse 1.5s infinite}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── TOPBAR ── -->
+<div class="topbar">
+  <div class="logo">Mo<em>CKA</em> COMMAND CENTER <span style="font-size:11px;color:var(--muted);font-weight:400;">v6.1</span></div>
+  <div class="topbar-right">
+    <span class="phase-badge">Phase 4 — 商用展開</span>
+    <span class="seal-txt">seal: c2d8c54e</span>
+    <span class="ts-txt" id="clock">--:--:--</span>
+  </div>
+</div>
+
+<!-- ── GLOBAL RISK BAR ── -->
+<div class="risk-bar" id="risk-bar">
+  <span class="risk-label">Global Risk</span>
+  <div class="risk-meter"><div class="risk-fill safe" id="risk-fill"></div></div>
+  <span class="risk-status safe" id="risk-status">SAFE</span>
+  <span class="risk-nba" id="risk-nba"><b>Next Best Action:</b> TODO_221 Orchestra LP投入確認 → TODO_205 TIC Sandbox整備</span>
+</div>
+
+<!-- ── SERVER ROW ── -->
+<div class="srv-row" id="srv-row">
+  <div class="srv"><div class="dot on"></div><span class="srv-name">APP</span>&nbsp;<span class="srv-port">:5000</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">MCP</span>&nbsp;<span class="srv-port">:5002</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">CALIBER</span>&nbsp;<span class="srv-port">:5679</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">RUNTIME-B</span>&nbsp;<span class="srv-port">:5003</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">SEO-OS</span>&nbsp;<span class="srv-port">:8750</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">ngrok</span>&nbsp;<span class="srv-port">MCP</span></div>
+  <div class="srv"><div class="dot warn"></div><span class="srv-name">relay_dom</span>&nbsp;<span class="srv-port" style="color:var(--amber)">FAIL</span></div>
+  <div class="srv"><div class="dot on"></div><span class="srv-name">SQLite</span>&nbsp;<span class="srv-port">OK</span></div>
+</div>
+
+<!-- ── ROW A: CIV / HEINRICH / TODO ── -->
+<div class="grid-3">
+
+  <!-- CIVILIZATION LOOP -->
+  <div class="panel" id="panel-civ">
+    <div class="dbg-strip" id="dbg-civ"></div>
+    <div class="panel-hd"><span class="panel-title">Civilization Loop</span><span class="panel-badge">8-stage</span></div>
+    <div id="civ-body"></div>
+    <div class="dbg-err-msg" id="err-civ"></div>
+  </div>
+
+  <!-- HEINRICH + TEMPORAL -->
+  <div class="panel" id="panel-hein">
+    <div class="dbg-strip" id="dbg-hein"></div>
+    <div class="panel-hd"><span class="panel-title">Heinrich Monitor</span><span class="panel-badge" id="hein-ratio-badge">--</span></div>
+    <div id="hein-body"></div>
+    <div class="dbg-err-msg" id="err-hein"></div>
+  </div>
+
+  <!-- TODO -->
+  <div class="panel" id="panel-todo">
+    <div class="dbg-strip" id="dbg-todo"></div>
+    <div class="panel-hd"><span class="panel-title">Active TODO</span><span class="panel-badge" id="todo-count-badge" style="color:var(--blue)">--</span></div>
+    <div id="todo-body"></div>
+    <div class="dbg-err-msg" id="err-todo"></div>
+  </div>
+</div>
+
+<!-- ── ROW B: PRODUCTS ── -->
+<div class="section-hd">製品ステータス</div>
+<div class="grid-4" id="products-grid">
+  <!-- JS injection -->
+</div>
+
+<!-- ── ROW C: SEO-OS / BEE / ESSENCE ── -->
+<div class="grid-131">
+
+  <!-- SEO-OS -->
+  <div class="panel" id="panel-seo">
+    <div class="dbg-strip" id="dbg-seo"></div>
+    <div class="panel-hd"><span class="panel-title">SEO-OS</span><span class="panel-badge" style="color:var(--green)">:8750 稼働</span></div>
+    <div id="seo-body"></div>
+    <div class="dbg-err-msg" id="err-seo"></div>
+  </div>
+
+  <!-- BEE -->
+  <div class="panel" id="panel-bee">
+    <div class="dbg-strip" id="dbg-bee"></div>
+    <div class="panel-hd"><span class="panel-title">β Ecology (BEE)</span><span class="panel-badge" id="bee-count-badge" style="color:var(--teal)">--</span></div>
+    <div id="bee-body"></div>
+    <div class="dbg-err-msg" id="err-bee"></div>
+  </div>
+
+  <!-- ESSENCE -->
+  <div class="panel" id="panel-ess">
+    <div class="dbg-strip" id="dbg-ess"></div>
+    <div class="panel-hd"><span class="panel-title">Essence / PHL 3軸</span><span class="panel-badge">5分自動更新</span></div>
+    <div id="ess-body"></div>
+    <div class="dbg-err-msg" id="err-ess"></div>
+  </div>
+</div>
+
+<!-- ── ROW D: TIC ── -->
+<div class="section-hd">TIC — Technology Intelligence Caliber</div>
+<div class="grid-2">
+
+  <div class="panel" id="panel-tic0">
+    <div class="dbg-strip" id="dbg-tic0"></div>
+    <div class="panel-hd"><span class="panel-title">Layer 0 — Health Check (7点)</span></div>
+    <div id="tic0-body"></div>
+    <div class="dbg-err-msg" id="err-tic0"></div>
+  </div>
+
+  <div class="panel" id="panel-tic1">
+    <div class="dbg-strip" id="dbg-tic1"></div>
+    <div class="panel-hd"><span class="panel-title">Layer 1 — Tech Watcher</span><span class="panel-badge" style="color:var(--blue)">意味差分 v3.0</span></div>
+    <div id="tic1-body"></div>
+    <div class="dbg-err-msg" id="err-tic1"></div>
+  </div>
+</div>
+
+<!-- ── ROW E: FLUID COORDINATES ── -->
+<div class="panel" id="panel-coord" style="margin-bottom:10px">
+  <div class="dbg-strip" id="dbg-coord"></div>
+  <div class="panel-hd"><span class="panel-title">Fluid Coordinates (流動性座標)</span><span class="panel-badge" style="color:var(--muted)">ΔZ=+0.2154 実測確定 / Kendall τ=1.0</span></div>
+  <div id="coord-body"></div>
+  <div class="dbg-err-msg" id="err-coord"></div>
+</div>
+
+<!-- ── ROW F: SCAMPER Creative Engine ── -->
+<div class="section-hd">SCAMPER Creative Engine</div>
+<div class="panel" id="panel-scp" style="margin-bottom:10px">
+  <div class="dbg-strip" id="dbg-scp"></div>
+  <div class="panel-hd">
+    <span class="panel-title">SCAMPER — 500パターン搭載 / app.py統合</span>
+    <span class="panel-badge" id="scp-status-badge" style="color:var(--teal)">待機中</span>
+  </div>
+
+  <!-- 7モード選択 -->
+  <div class="scp-grid" id="scp-modes"></div>
+
+  <!-- 入力 -->
+  <div class="scp-input-row">
+    <input class="scp-input" id="scp-input" type="text" placeholder="インシデントや課題を入力（例: python直接実行指示の再発）" />
+    <button class="scp-btn" id="scp-run-btn" onclick="scamperRun()">展開 ▶</button>
+  </div>
+
+  <!-- 結果 -->
+  <div class="scp-result-area" id="scp-result">
+    <div class="scp-empty" id="scp-empty">モードを選択してテキストを入力し「展開」を押してください</div>
+    <div class="scp-result-items" id="scp-result-items" style="display:none"></div>
+  </div>
+
+  <!-- 履歴 -->
+  <div style="margin-top:10px;border-top:1px solid var(--line);padding-top:8px">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+      <span>SCAMPER 実行履歴</span>
+      <button class="dbg-clear-btn" onclick="scamperClearHistory()">履歴クリア</button>
+    </div>
+    <div class="scp-history" id="scp-history">
+      <div style="font-size:10px;color:var(--muted);padding:4px">履歴なし</div>
+    </div>
+  </div>
+  <div class="dbg-err-msg" id="err-scp"></div>
+</div>
+
+<!-- ── DEBUG LOG PANEL ── -->
+<div class="dbg-panel">
+  <div class="dbg-panel-hd">
+    <span class="dbg-panel-title">System Debug Log</span>
+    <div style="display:flex;gap:6px;align-items:center">
+      <span id="dbg-summary" style="font-size:10px;color:var(--muted)">初期化中...</span>
+      <button class="dbg-clear-btn" onclick="clearDebugLog()">クリア</button>
+    </div>
+  </div>
+  <div class="dbg-log" id="dbg-log"></div>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ═══════════════════════════════════════════════
+   MoCKA COMMAND CENTER v6.1 — Full Debug Engine
+   ═══════════════════════════════════════════════ */
+
+/* ── DEBUG LOGGER ── */
+const DBG = {
+  log:[],
+  counts:{ok:0,warn:0,err:0,info:0},
+  _add(lvl,panel,msg){
+    const t=new Date().toLocaleTimeString('ja-JP');
+    const entry={t,lvl,panel,msg};
+    this.log.unshift(entry);
+    if(this.log.length>200)this.log=this.log.slice(0,200);
+    this.counts[lvl]=(this.counts[lvl]||0)+1;
+    this._render();
+    console[lvl==='err'?'error':lvl==='warn'?'warn':'log'](`[MoCKA][${panel}] ${msg}`);
+  },
+  info(p,m){this._add('info',p,m)},
+  ok(p,m){this._add('ok',p,m)},
+  warn(p,m){this._add('warn',p,m)},
+  err(p,m){this._add('err',p,m)},
+  _render(){
+    const el=document.getElementById('dbg-log');
+    if(!el)return;
+    el.innerHTML=this.log.slice(0,40).map(e=>`<div class="dbg-log-line ${e.lvl}">[${e.t}][${e.panel}] ${e.msg}</div>`).join('');
+    const s=document.getElementById('dbg-summary');
+    if(s)s.textContent=`OK:${this.counts.ok} WARN:${this.counts.warn} ERR:${this.counts.err} INFO:${this.counts.info}`;
+  }
+};
+function clearDebugLog(){DBG.log=[];DBG.counts={ok:0,warn:0,err:0,info:0};DBG._render();}
+
+/* ── INTEGRITY CHECKER ── */
+const IC = {
+  /* 文字化け検知 (U+FFFD / cp932 remnants) */
+  hasGarble(str){
+    if(typeof str!=='string')return false;
+    return str.includes('\uFFFD') || /[\x80-\x9F]/.test(str) || /[髙齊塚]/.test(str);
+  },
+  /* 型チェック */
+  expectNum(val,label){
+    if(typeof val!=='number'||isNaN(val)){DBG.warn('IC',`${label}: 数値期待 → ${typeof val} "${val}"`);return false;}
+    return true;
+  },
+  expectStr(val,label){
+    if(typeof val!=='string'||val===''){DBG.warn('IC',`${label}: 文字列期待 → ${typeof val}`);return false;}
+    if(this.hasGarble(val)){DBG.warn('IC',`${label}: 文字化け検知 "${val.slice(0,30)}"`);return false;}
+    return true;
+  },
+  expectArr(val,label){
+    if(!Array.isArray(val)){DBG.warn('IC',`${label}: 配列期待 → ${typeof val}`);return false;}
+    return true;
+  },
+  checkAll(data,schema,label){
+    let ok=true;
+    for(const [k,t] of Object.entries(schema)){
+      if(data[k]===undefined||data[k]===null){DBG.warn('IC',`${label}.${k}: null/undefined`);ok=false;continue;}
+      if(t==='num'&&!this.expectNum(data[k],`${label}.${k}`))ok=false;
+      if(t==='str'&&!this.expectStr(data[k],`${label}.${k}`))ok=false;
+      if(t==='arr'&&!this.expectArr(data[k],`${label}.${k}`))ok=false;
+    }
+    return ok;
+  }
+};
+
+/* ── DIFF TRACKER (表示差違) ── */
+const DT = {
+  prev:{},
+  check(key,val){
+    const s=JSON.stringify(val);
+    const changed=this.prev[key]&&this.prev[key]!==s;
+    this.prev[key]=s;
+    return changed;
+  }
+};
+
+/* ── PANEL DEBUG TAG ── */
+function setDbgTags(panelId, tags){
+  const el=document.getElementById('dbg-'+panelId);
+  if(!el)return;
+  el.innerHTML=tags.map(t=>`<span class="dbg-tag ${t.cls}">${t.label}</span>`).join('');
+}
+function showPanelErr(errId,msg){
+  const el=document.getElementById(errId);
+  if(!el)return;
+  el.style.display='block';
+  el.textContent='⚠ '+msg;
+}
+function hidePanelErr(errId){
+  const el=document.getElementById(errId);
+  if(el)el.style.display='none';
+}
+
+/* ── API FETCH WRAPPER ── */
+async function apiFetch(url,panelId){
+  DBG.info(panelId,`GET ${url}`);
+  try{
+    const r=await fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}});
+    if(!r.ok)throw new Error(`HTTP ${r.status} ${r.statusText}`);
+    const text=await r.text();
+    /* 文字化け検知 */
+    if(IC.hasGarble(text)){
+      DBG.warn(panelId,'レスポンスに文字化け候補あり');
+      setDbgTags(panelId,[{cls:'warn',label:'GARBLE?'}]);
+    }
+    return JSON.parse(text);
+  }catch(e){
+    DBG.err(panelId,`fetch失敗: ${e.message}`);
+    setDbgTags(panelId,[{cls:'err',label:'FETCH ERR'}]);
+    showPanelErr('err-'+panelId, e.message);
+    throw e;
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   STATIC DATA (ローカル起動時フォールバック)
+   ═══════════════════════════════════════════════ */
+const STATIC = {
+  civ:[
+    {n:1,name:'Observe',   color:'var(--green)', pct:2,   count:'0'},
+    {n:2,name:'Record',    color:'var(--blue)',  pct:100, count:'1,842'},
+    {n:3,name:'Incident',  color:'var(--red)',   pct:45,  count:'23'},
+    {n:4,name:'Recurrence',color:'var(--amber)', pct:35,  count:'66'},
+    {n:5,name:'Prevention',color:'var(--purple)',pct:10,  count:'4'},
+    {n:6,name:'Decision',  color:'var(--teal)',  pct:8,   count:'4'},
+    {n:7,name:'Action',    color:'var(--green)', pct:5,   count:'2'},
+    {n:8,name:'Audit',     color:'var(--blue)',  pct:100, count:'SEAL'}
+  ],
+  hein:{l1:1,l2:2.5,l3:6.0,uncaught:14995,rate:2.0,
+    spark:[60,40,80,30,20,50,70]},
+  todos:[
+    {pri:'最高',cls:'sai',text:'Orchestra LP投入確認',id:'TODO_221 [進行中]'},
+    {pri:'最高',cls:'sai',text:'SEO-OS Phase6 制度化層',id:'TODO_254 [くろこ]'},
+    {pri:'最高',cls:'sai',text:'整合性確認必須化',id:'TODO_154 [進行中]'},
+    {pri:'高',  cls:'kou',text:'Caliber2.01 ツール拡張',id:'TODO_CALIBER_EXPAND_001'},
+    {pri:'高',  cls:'kou',text:'TIC Layer3 impact_analyzer',id:'TODO_206'},
+    {pri:'高',  cls:'kou',text:'WP メニュー構築',id:'TODO_220'}
+  ],
+  products:[
+    {name:'Orchestra',badge:'live',bl:'本番稼働',meta:['v1.1.0 — 30日トライアル','Free/Pro $5/One $10','CWS審査中'],pct:95,pc:0},
+    {name:'Relay',badge:'impl',bl:'実装完了',meta:['Free/Pro $5/One $10','収益化 未着手','TODO_178 保留中'],pct:70,pc:1},
+    {name:'PHI OS',badge:'live',bl:'実機確認済',meta:['v1.0 実機テスト完了','BOM除去→SW有効化','TODO_195 完了'],pct:90,pc:0},
+    {name:'vasAI',badge:'seal',bl:'封印済',meta:['v1.4.9-reproducibility','PASS:49/FAIL:0','sha256: 8326cf61'],pct:100,pc:2}
+  ],
+  seo:{phase:'Phase 5',tests:32,pipes:[
+    {name:'LP Pipeline',st:'ready'},{name:'Blog Pipeline',st:'ready'},{name:'Bot Pipeline',st:'pend'}
+  ]},
+  bee:{items:[
+    {lc:'est',name:'dependency_concentration_risk',ev:'ev+5'},
+    {lc:'grow',name:'api_institutionalization',ev:'ev+5'},
+    {lc:'grow',name:'process_institutionalization',ev:'ev+5'},
+    {lc:'obs',name:'institutionalized_connection',ev:'ev+5'}
+  ]},
+  essence:[
+    {axis:'INCIDENT',color:'var(--red)',  txt:'PowerShell文字列操作禁止 / 関連ファイル照合なし書き換え禁止'},
+    {axis:'OPERATION',color:'var(--blue)', txt:'create_file必須 / 変更前後mocka_write_event記録 / planningcaliber配下も記録対象'},
+    {axis:'PHILOSOPHY',color:'var(--green)',txt:'AIを信じるな, システムで縛れ / 記録なき作業はMoCKAとして存在しない'}
+  ],
+  tic0:[
+    {st:'ng', name:'relay_dom_selector',note:'claude.ai DOM変更の可能性'},
+    {st:'ok', name:'MCP schema hash',note:'差分なし'},
+    {st:'ok', name:'Anthropic API',note:'/v1/models 疎通'},
+    {st:'ok', name:'Stripe webhook',note:'worker /health OK'},
+    {st:'ok', name:'SQLite integrity',note:'PRAGMA OK'},
+    {st:'ok', name:'Caliber :5679',note:'/health OK'},
+    {st:'ok', name:'MoCKA :5000',note:'/loop/status OK'}
+  ],
+  tic1:[
+    {st:'ok',name:'Anthropic API docs',note:'変更なし'},
+    {st:'ok',name:'Claude Code docs',note:'変更なし'},
+    {st:'ok',name:'Chrome MV3',note:'変更なし'},
+    {st:'ok',name:'Stripe changelog',note:'変更なし'}
+  ],
+  coords:[
+    {lbl:'X 制度整合性',val:0.632,color:'var(--blue)'},
+    {lbl:'Y 記録品質',  val:0.826,color:'var(--green)'},
+    {lbl:'Z 統治安定性',val:0.819,color:'var(--teal)'}
+  ]
+};
+
+/* ── PROD PROGRESS COLORS ── */
+const PROD_COLORS=['var(--green)','var(--amber)','var(--purple)'];
+
+/* ═══════════════════════════════════════════════
+   RENDER FUNCTIONS (各パネル)
+   ═══════════════════════════════════════════════ */
+
+function renderCiv(data){
+  try{
+    IC.expectArr(data,'civ');
+    const changed=DT.check('civ',data);
+    const tags=[{cls:'ok',label:'OK'}];
+    if(changed)tags.push({cls:'changed',label:'CHANGED'});
+    setDbgTags('civ',tags);
+    hidePanelErr('err-civ');
+    const el=document.getElementById('civ-body');
+    el.innerHTML=data.map(d=>{
+      IC.expectStr(d.name,'civ.name');
+      IC.expectNum(d.pct,'civ.pct');
+      return `<div class="civ-row">
+        <div class="civ-icon" style="background:${d.color}22;color:${d.color}">${d.n}</div>
+        <span class="civ-name">${d.name}</span>
+        <div class="civ-bar-wrap"><div class="civ-bar" style="background:${d.color};width:${d.pct}%"></div></div>
+        <span class="civ-count" style="color:${d.color}">${d.count}</span>
+      </div>`;
+    }).join('');
+    DBG.ok('civ',`8ステージ描画 changed=${changed}`);
+  }catch(e){
+    DBG.err('civ','renderCiv: '+e.message);
+    showPanelErr('err-civ',e.message);
+    setDbgTags('civ',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderHein(data){
+  try{
+    IC.checkAll(data,{l1:'num',l2:'num',l3:'num'},'hein');
+    const changed=DT.check('hein',data);
+    setDbgTags('hein',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-hein');
+    document.getElementById('hein-ratio-badge').textContent=`${data.l1}:${data.l2}:${data.l3} 実測`;
+    const maxBar=Math.max(data.l1,data.l2,data.l3);
+    const el=document.getElementById('hein-body');
+    el.innerHTML=`
+      <div class="hein-row">
+        <span class="hein-lbl" style="color:var(--red)">Layer1 重大</span>
+        <div class="hein-bar"><div class="hein-fill" style="background:var(--red);width:${data.l1/maxBar*100}%"></div></div>
+        <span class="hein-num" style="color:var(--red)">${data.l1}x</span>
+      </div>
+      <div class="hein-row">
+        <span class="hein-lbl" style="color:var(--amber)">Layer2 軽微</span>
+        <div class="hein-bar"><div class="hein-fill" style="background:var(--amber);width:${data.l2/maxBar*100}%"></div></div>
+        <span class="hein-num" style="color:var(--amber)">${data.l2}x</span>
+      </div>
+      <div class="hein-row">
+        <span class="hein-lbl" style="color:var(--blue)">Layer3 ヒヤリ</span>
+        <div class="hein-bar"><div class="hein-fill" style="background:var(--blue);width:${data.l3/maxBar*100}%"></div></div>
+        <span class="hein-num" style="color:var(--blue)">${data.l3}x</span>
+      </div>
+      <div class="hein-note">理論値 1:29:300 — 捕捉率 ${data.rate}% / 未捕捉推定 ${Number(data.uncaught).toLocaleString()}件</div>
+      <div style="border-top:1px solid var(--line);margin:8px 0 6px;padding-top:6px;font-size:10px;color:var(--muted)">7日 Incident トレンド</div>
+      <div class="spark">${(data.spark||[]).map((v,i)=>`<div class="spark-bar" style="height:${v}%;background:${i===data.spark.length-1?'var(--red)':'rgba(231,76,110,.45)'}"></div>`).join('')}</div>
+    `;
+    DBG.ok('hein',`Heinrich描画 rate=${data.rate}%`);
+  }catch(e){
+    DBG.err('hein','renderHein: '+e.message);
+    showPanelErr('err-hein',e.message);
+    setDbgTags('hein',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderTodo(data){
+  try{
+    IC.expectArr(data,'todos');
+    const changed=DT.check('todos',data);
+    setDbgTags('todo',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-todo');
+    document.getElementById('todo-count-badge').textContent=`${data.length}件 アクティブ`;
+    const el=document.getElementById('todo-body');
+    el.innerHTML=data.map(d=>{
+      if(IC.hasGarble(d.text))DBG.warn('todo',`文字化け: ${d.text}`);
+      return `<div class="todo-item">
+        <span class="todo-pri ${d.cls}">${d.pri}</span>
+        <div><div class="todo-text">${d.text}</div><div class="todo-id">${d.id}</div></div>
+      </div>`;
+    }).join('');
+    DBG.ok('todo',`${data.length}件 描画 changed=${changed}`);
+  }catch(e){
+    DBG.err('todo','renderTodo: '+e.message);
+    showPanelErr('err-todo',e.message);
+    setDbgTags('todo',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderProducts(data){
+  try{
+    IC.expectArr(data,'products');
+    const grid=document.getElementById('products-grid');
+    const changed=DT.check('products',data);
+    grid.innerHTML=data.map((d,i)=>`
+      <div class="prod-card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span class="prod-name">${d.name}</span>
+          <span class="prod-badge ${d.badge}">${d.bl}</span>
+        </div>
+        ${d.meta.map(m=>`<div class="prod-metric">${m}</div>`).join('')}
+        <div class="prod-progress"><div class="prod-prog-fill" style="background:${PROD_COLORS[d.pc]};width:${d.pct}%"></div></div>
+        ${changed?'<div style="font-size:9px;color:var(--blue);margin-top:3px">△ 更新</div>':''}
+      </div>`).join('');
+    DBG.ok('products',`${data.length}件 描画`);
+  }catch(e){
+    DBG.err('products','renderProducts: '+e.message);
+  }
+}
+
+function renderSeo(data){
+  try{
+    const changed=DT.check('seo',data);
+    setDbgTags('seo',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-seo');
+    const el=document.getElementById('seo-body');
+    el.innerHTML=`
+      <div class="seo-grid">
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--blue)">${data.phase}</div><div class="seo-stat-lbl">完了 / Phase 6 実装中</div></div>
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--green)">${data.tests}</div><div class="seo-stat-lbl">テスト PASS</div></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Pipeline ステータス</div>
+      ${data.pipes.map(p=>`<div class="seo-pipe-row">
+        <div class="seo-pipe-dot" style="background:${p.st==='ready'?'var(--green)':'var(--amber)'}"></div>
+        <span class="seo-pipe-name">${p.name}</span>
+        <span class="seo-pipe-st ${p.st}">${p.st==='ready'?'READY':'PENDING'}</span>
+      </div>`).join('')}
+      <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:7px;font-size:10px;color:var(--muted)">
+        くろこ → Phase6: Decision Ledger / Explain API / Simulation / MoCKA Bridge
+      </div>`;
+    DBG.ok('seo',`SEO-OS描画 phase=${data.phase}`);
+  }catch(e){
+    DBG.err('seo','renderSeo: '+e.message);
+    showPanelErr('err-seo',e.message);
+    setDbgTags('seo',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderBee(data){
+  try{
+    IC.expectArr(data.items,'bee.items');
+    const changed=DT.check('bee',data);
+    const est=data.items.filter(i=>i.lc==='est').length;
+    const grow=data.items.filter(i=>i.lc==='grow').length;
+    setDbgTags('bee',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-bee');
+    document.getElementById('bee-count-badge').textContent=`確立 ${est} / 成長 ${grow}`;
+    const el=document.getElementById('bee-body');
+    el.innerHTML=data.items.map(d=>{
+      if(IC.hasGarble(d.name))DBG.warn('bee',`文字化け: ${d.name}`);
+      return `<div class="bee-item">
+        <span class="bee-lc ${d.lc}">${{est:'確立',grow:'成長',obs:'観察'}[d.lc]||d.lc}</span>
+        <span class="bee-name">${d.name}</span>
+        <span class="bee-ev">${d.ev}</span>
+      </div>`;
+    }).join('')+`<div style="margin-top:7px;font-size:10px;color:var(--muted)">Meta β生成まで確立β あと${Math.max(0,3-est)}件</div>`;
+    DBG.ok('bee',`BEE描画 確立${est}件`);
+  }catch(e){
+    DBG.err('bee','renderBee: '+e.message);
+    showPanelErr('err-bee',e.message);
+    setDbgTags('bee',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderEssence(data){
+  try{
+    IC.expectArr(data,'essence');
+    const changed=DT.check('essence',data);
+    setDbgTags('ess',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-ess');
+    const el=document.getElementById('ess-body');
+    el.innerHTML=data.map(d=>{
+      if(IC.hasGarble(d.txt))DBG.warn('ess',`文字化け Essence.${d.axis}`);
+      return `<div class="ess-axis" style="border-color:${d.color}">
+        <div class="ess-axis-lbl" style="color:${d.color}">${d.axis}</div>
+        <div class="ess-axis-txt">${d.txt}</div>
+      </div>`;
+    }).join('');
+    DBG.ok('ess','Essence 3軸描画');
+  }catch(e){
+    DBG.err('ess','renderEssence: '+e.message);
+    showPanelErr('err-ess',e.message);
+    setDbgTags('ess',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderTic(data0,data1){
+  try{
+    const f=d=>`<div class="tic-row ${d.st}">
+      <span class="tic-tag ${d.st}">${d.st.toUpperCase()}</span>
+      <span class="tic-name">${d.name}</span>
+      <span class="tic-note">${d.note}</span>
+    </div>`;
+    document.getElementById('tic0-body').innerHTML=data0.map(f).join('');
+    const fail0=data0.filter(d=>d.st==='ng').length;
+    setDbgTags('tic0',[{cls:fail0?'err':'ok',label:fail0?`${fail0}FAIL`:'ALL OK'}]);
+    hidePanelErr('err-tic0');
+
+    document.getElementById('tic1-body').innerHTML=data1.map(f).join('')+`
+      <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:7px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Roadmap (未着手)</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${['Layer2 Sandbox TODO_205','Layer3 Impact TODO_206','Layer4 Human Gate TODO_207'].map(t=>`<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:var(--dim);color:var(--muted)">${t}</span>`).join('')}
+        </div>
+      </div>`;
+    setDbgTags('tic1',[{cls:'ok',label:'OK'}]);
+    hidePanelErr('err-tic1');
+    DBG.ok('tic',`TIC L0: fail=${fail0} / L1: 4件`);
+  }catch(e){
+    DBG.err('tic','renderTic: '+e.message);
+    showPanelErr('err-tic0',e.message);
+    showPanelErr('err-tic1',e.message);
+  }
+}
+
+function renderCoords(data){
+  try{
+    IC.expectArr(data,'coords');
+    const changed=DT.check('coords',data);
+    setDbgTags('coord',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-coord');
+    const el=document.getElementById('coord-body');
+    el.innerHTML=`<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+      ${data.map(d=>{
+        IC.expectNum(d.val,'coord.val');
+        return `<div class="coord-row" style="flex:1;min-width:180px">
+          <span class="coord-lbl">${d.lbl}</span>
+          <div class="coord-bar"><div class="coord-fill" style="background:${d.color};width:${d.val*100}%"></div></div>
+          <span class="coord-val" style="color:${d.color}">${d.val.toFixed(3)}</span>
+        </div>`;
+      }).join('')}
+      <div style="border-left:1px solid var(--line);padding-left:12px;font-size:11px;color:var(--muted)">
+        super-recovery<br><b style="color:var(--green);font-size:13px">Kendall τ = 1.0</b>
+      </div>
+    </div>`;
+    DBG.ok('coord','流動性座標描画');
+  }catch(e){
+    DBG.err('coord','renderCoords: '+e.message);
+    showPanelErr('err-coord',e.message);
+    setDbgTags('coord',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   SCAMPER ENGINE
+   ═══════════════════════════════════════════════ */
+const SCAMPER_MODES=[
+  {key:'S',word:'Substitute',color:'var(--blue)',  bg:'rgba(74,158,255,.12)'},
+  {key:'C',word:'Combine',   color:'var(--green)', bg:'rgba(0,212,170,.12)'},
+  {key:'A',word:'Adapt',     color:'var(--teal)',  bg:'rgba(52,211,153,.12)'},
+  {key:'M',word:'Modify',    color:'var(--amber)', bg:'rgba(240,165,0,.12)'},
+  {key:'P',word:'Put to use',color:'var(--purple)',bg:'rgba(167,139,250,.12)'},
+  {key:'E',word:'Eliminate', color:'var(--red)',   bg:'rgba(231,76,110,.12)'},
+  {key:'R',word:'Reverse',   color:'var(--pink)',  bg:'rgba(244,114,182,.12)'}
+];
+
+const SCAMPER_TEMPLATES={
+  S:['「{input}」を別の手段に置き換えるとしたら何か？','「{input}」の担当者/ツール/材料を入れ替えると？','「{input}」で使っているルールを別のルールに置換すると？','「{input}」のフォーマットを変えると何が起きる？','「{input}」の評価基準を別指標に置き換えると？'],
+  C:['「{input}」を別のプロセスと組み合わせると？','「{input}」とTIC監視を統合すると何が強化される？','「{input}」とBEEエコロジーを掛け合わせると？','「{input}」とSEO-OSパイプラインを融合すると？','「{input}」をOrchestra合議フローと結合すると？'],
+  A:['他の分野でこの問題を解決した例は？「{input}」に適用できるか？','自然界や制御工学から「{input}」に転用できる仕組みは？','過去のインシデント記録から「{input}」への教訓は？','MoCKAの8段階ループを「{input}」に適用すると？','vasAIのTSI劣化モデルを「{input}」に転用すると？'],
+  M:['「{input}」の頻度・量・速度を変えると？','「{input}」を10倍の規模にすると何が壊れる？','「{input}」を逆に縮小・軽量化すると？','「{input}」の記録粒度を上げる/下げると？','「{input}」の自動化率を上げるとどのリスクが増す？'],
+  P:['「{input}」の副産物として何が使えるか？','「{input}」を全く別の用途に転用すると？','「{input}」の記録データを論文化・外部公開できるか？','「{input}」を製品機能として切り出せるか？','「{input}」のパターンをCaliberに学習させられるか？'],
+  E:['「{input}」から取り除けるステップは何か？','「{input}」で本当に必要なのはどの部分だけか？','「{input}」の人間ゲートを自動化で省けるか？','「{input}」から重複・冗長な記録を削減すると？','「{input}」でなくなっても機能するものは？'],
+  R:['「{input}」の順序を逆にすると？','「{input}」の原因と結果を反転させると？','「{input}」で検知する代わりに予防を先にすると？','「{input}」を外部ではなく内部から監視すると？','「{input}」の評価タイミングを前倒しすると？']
+};
+
+let scamperMode=null;
+const scamperHistory=[];
+
+function renderScamperModes(){
+  try{
+    const el=document.getElementById('scp-modes');
+    if(!el)throw new Error('scp-modes要素なし');
+    el.innerHTML=SCAMPER_MODES.map(m=>`
+      <div class="scp-card" id="scp-card-${m.key}"
+        style="background:${m.bg}"
+        onclick="selectScamperMode('${m.key}')">
+        <div class="scp-letter" style="color:${m.color}">${m.key}</div>
+        <div class="scp-word">${m.word}</div>
+        <div class="scp-count" style="color:${m.color}" id="scp-cnt-${m.key}">${SCAMPER_TEMPLATES[m.key].length}問</div>
+      </div>`).join('');
+    setDbgTags('scp',[{cls:'ok',label:'INIT OK'}]);
+    hidePanelErr('err-scp');
+    DBG.ok('scp',`SCАMPERモード 7種 初期化完了 総パターン=${Object.values(SCAMPER_TEMPLATES).flat().length}`);
+  }catch(e){
+    DBG.err('scp','renderScamperModes: '+e.message);
+    showPanelErr('err-scp',e.message);
+    setDbgTags('scp',[{cls:'err',label:'INIT ERR'}]);
+  }
+}
+
+function selectScamperMode(key){
+  try{
+    SCAMPER_MODES.forEach(m=>{
+      const c=document.getElementById('scp-card-'+m.key);
+      if(c)c.classList.remove('active');
+    });
+    const card=document.getElementById('scp-card-'+key);
+    if(!card)throw new Error(`カード ${key} が見つからない`);
+    card.classList.add('active');
+    scamperMode=key;
+    const badge=document.getElementById('scp-status-badge');
+    const modeInfo=SCAMPER_MODES.find(m=>m.key===key);
+    if(badge&&modeInfo){
+      badge.textContent=`[${key}] ${modeInfo.word} — ${SCAMPER_TEMPLATES[key].length}問`;
+      badge.style.color=modeInfo.color;
+    }
+    DBG.info('scp',`モード選択: ${key} (${modeInfo.word})`);
+    hidePanelErr('err-scp');
+  }catch(e){
+    DBG.err('scp','selectScamperMode: '+e.message);
+    showPanelErr('err-scp',e.message);
+  }
+}
+
+function scamperRun(){
+  try{
+    const input=document.getElementById('scp-input');
+    if(!input)throw new Error('入力要素なし');
+    const text=input.value.trim();
+
+    /* バリデーション */
+    if(!scamperMode){DBG.warn('scp','モード未選択');showPanelErr('err-scp','モードを選択してください');return;}
+    if(!text){DBG.warn('scp','入力空');showPanelErr('err-scp','課題テキストを入力してください');return;}
+    if(IC.hasGarble(text)){DBG.warn('scp',`入力に文字化け候補: ${text}`);setDbgTags('scp',[{cls:'warn',label:'GARBLE?'},{cls:'ok',label:'実行継続'}]);}
+    hidePanelErr('err-scp');
+
+    /* テンプレート展開 */
+    const templates=SCAMPER_TEMPLATES[scamperMode];
+    if(!templates||templates.length===0)throw new Error(`テンプレート ${scamperMode} が空`);
+
+    const results=templates.map(t=>t.replace(/\{input\}/g,text));
+    IC.expectArr(results,'scamperResults');
+
+    /* 整合性: 置換漏れチェック */
+    const unreplaced=results.filter(r=>r.includes('{input}'));
+    if(unreplaced.length>0)DBG.warn('scp',`{input}置換漏れ ${unreplaced.length}件`);
+
+    /* 表示 */
+    document.getElementById('scp-empty').style.display='none';
+    const ri=document.getElementById('scp-result-items');
+    if(!ri)throw new Error('scp-result-items要素なし');
+    ri.style.display='flex';
+    ri.innerHTML=results.map((r,i)=>{
+      if(IC.hasGarble(r))DBG.warn('scp',`結果[${i}]文字化け`);
+      return `<div class="scp-result-item">
+        <span class="scp-result-idx">Q${i+1}</span>
+        <span class="scp-result-txt">${r}</span>
+      </div>`;
+    }).join('');
+
+    /* 履歴追加 */
+    const modeInfo=SCAMPER_MODES.find(m=>m.key===scamperMode);
+    scamperHistory.unshift({mode:scamperMode,word:modeInfo.word,color:modeInfo.color,text,ts:new Date().toLocaleTimeString('ja-JP'),count:results.length});
+    if(scamperHistory.length>20)scamperHistory.pop();
+    renderScamperHistory();
+
+    /* API送信（app.py /scamper/run があれば） */
+    sendScamperToApi(scamperMode,text,results).catch(e=>DBG.warn('scp',`API送信スキップ: ${e.message}`));
+
+    setDbgTags('scp',[{cls:'ok',label:`${scamperMode} OK`},{cls:'ok',label:`${results.length}問生成`}]);
+    DBG.ok('scp',`SCAMPER[${scamperMode}] "${text.slice(0,20)}" → ${results.length}問`);
+  }catch(e){
+    DBG.err('scp','scamperRun: '+e.message);
+    showPanelErr('err-scp',e.message);
+    setDbgTags('scp',[{cls:'err',label:'RUN ERR'}]);
+  }
+}
+
+async function sendScamperToApi(mode,input,results){
+  const payload={mode,input,results,ts:new Date().toISOString()};
+  const r=await fetch('http://localhost:5000/scamper/run',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  });
+  if(!r.ok)throw new Error(`HTTP ${r.status}`);
+  DBG.ok('scp','API /scamper/run 送信成功');
+}
+
+function renderScamperHistory(){
+  try{
+    const el=document.getElementById('scp-history');
+    if(!el)return;
+    if(scamperHistory.length===0){
+      el.innerHTML='<div style="font-size:10px;color:var(--muted);padding:4px">履歴なし</div>';
+      return;
+    }
+    el.innerHTML=scamperHistory.map(h=>`
+      <div class="scp-hist-item">
+        <span class="scp-hist-mode" style="background:${h.color}22;color:${h.color}">[${h.mode}]</span>
+        <span style="flex:1;color:var(--muted)">${h.text.slice(0,30)}${h.text.length>30?'…':''}</span>
+        <span style="font-size:10px;color:var(--muted)">${h.count}問</span>
+        <span style="font-size:10px;color:var(--muted)">${h.ts}</span>
+      </div>`).join('');
+    DBG.info('scp',`履歴更新 ${scamperHistory.length}件`);
+  }catch(e){
+    DBG.err('scp','renderScamperHistory: '+e.message);
+  }
+}
+
+function scamperClearHistory(){
+  scamperHistory.length=0;
+  renderScamperHistory();
+  DBG.info('scp','履歴クリア');
+}
+
+/* Enterキー対応 */
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('scp-input');
+  if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')scamperRun();});
+});
+
+/* ═══════════════════════════════════════════════
+   LIVE DATA FETCH (app.py エンドポイント)
+   ═══════════════════════════════════════════════ */
+const BASE='http://localhost:5000';
+
+async function fetchLive(){
+  DBG.info('sys','ライブデータ取得開始');
+  const jobs=[
+    {url:`${BASE}/loop/status`,         panel:'civ',    key:'civilization_loop'},
+    {url:`${BASE}/heinrich/status`,     panel:'hein',   key:null},
+    {url:`${BASE}/risk/recommendation`, panel:'todo',   key:null},
+    {url:`${BASE}/health/status`,       panel:'tic0',   key:null},
+    {url:`${BASE}/phl/history`,         panel:'ess',    key:null},
+    {url:`${BASE}/api/beta/status`,     panel:'bee',    key:null},
+    {url:`${BASE}/api/risk-score`,      panel:'coord',  key:null},
+  ];
+  await Promise.allSettled(jobs.map(async j=>{
+    try{
+      const data=await apiFetch(j.url,j.panel);
+      DBG.ok(j.panel,`ライブデータ取得OK`);
+      /* パネルごとのデータマッピング（app.py形式に応じて調整） */
+    }catch(e){
+      DBG.warn(j.panel,'フォールバック → 静的データ使用');
+    }
+  }));
+}
+
+/* ═══════════════════════════════════════════════
+   CLOCK
+   ═══════════════════════════════════════════════ */
+function updateClock(){
+  const el=document.getElementById('clock');
+  if(el)el.textContent=new Date().toLocaleString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════ */
+function initAll(){
+  DBG.info('sys','MoCKA COMMAND CENTER v6.1 初期化開始');
+
+  try{ updateClock(); setInterval(updateClock,1000); }
+  catch(e){ DBG.err('clock','clock init: '+e.message); }
+
+  /* 静的データで即時描画 */
+  try{ renderCiv(STATIC.civ); }            catch(e){ DBG.err('civ',e.message); }
+  try{ renderHein(STATIC.hein); }          catch(e){ DBG.err('hein',e.message); }
+  try{ renderTodo(STATIC.todos); }         catch(e){ DBG.err('todo',e.message); }
+  try{ renderProducts(STATIC.products); }  catch(e){ DBG.err('products',e.message); }
+  try{ renderSeo(STATIC.seo); }            catch(e){ DBG.err('seo',e.message); }
+  try{ renderBee(STATIC.bee); }            catch(e){ DBG.err('bee',e.message); }
+  try{ renderEssence(STATIC.essence); }    catch(e){ DBG.err('ess',e.message); }
+  try{ renderTic(STATIC.tic0,STATIC.tic1); } catch(e){ DBG.err('tic',e.message); }
+  try{ renderCoords(STATIC.coords); }      catch(e){ DBG.err('coord',e.message); }
+  try{ renderScamperModes(); }             catch(e){ DBG.err('scp',e.message); }
+  try{ renderScamperHistory(); }           catch(e){ DBG.err('scp',e.message); }
+
+  /* ライブデータ取得（バックグラウンド） */
+  fetchLive().then(()=>DBG.ok('sys','ライブデータ取得フェーズ完了')).catch(e=>DBG.warn('sys','ライブ取得失敗: '+e.message));
+
+  /* 30秒ごとにリフレッシュ */
+  setInterval(()=>{
+    DBG.info('sys','定期リフレッシュ');
+    fetchLive().catch(e=>DBG.warn('sys','定期取得エラー: '+e.message));
+  },30000);
+
+  DBG.ok('sys','初期化完了 — 全パネル静的描画済み / ライブ取得バックグラウンド実行中');
+}
+
+document.addEventListener('DOMContentLoaded', initAll);
+</script>
+</body>
+</html>

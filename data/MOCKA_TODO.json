@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-07",
+    "updated": "2026-06-08",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -28,66 +28,6 @@
       "note": "LB_002由来。本修正作業で対応済み。",
       "created_at": "2026-06-05T00:00:00",
       "completed_at": "2026-06-05"
-    },
-    {
-      "id": "TODO_CALIBER_EXPAND_001",
-      "title": "MoCKA Caliber2.01にCOMMAND CENTER・SPP/PHL・インシデント履歴参照ツールを追加",
-      "status": "未着手",
-      "priority": "高",
-      "category": "MoCKA開発",
-      "description": "Claude CodeがMoCKAの全知識にアクセスできるよう、Caliber2.01サーバーに以下のツールを追加する：1) mocka_get_command_center（COMMAND CENTER 5000件参照）2) mocka_search_incidents（インシデント履歴検索）3) mocka_get_phl（PHL設計原則参照）4) mocka_get_spp（SPP原則参照）。これによりClaude CodeがMoCKA執行官として動けるようになる。",
-      "assigned_to": "きむら博士",
-      "note": "",
-      "reference_event": "",
-      "created_at": "2026-05-20T09:26:05.621988"
-    },
-    {
-      "id": "TODO_154",
-      "title": "全文書き換え時の関連ファイル整合性確認を必須化",
-      "status": "進行中",
-      "priority": "最高",
-      "category": "制度/ガバナンス",
-      "description": "全文書き換え時の必須プロトコル確立。\n【ルール】\n①変更対象ファイルの全文を読む\n②関連ファイル（app.py↔index.html等）を全て読んで照合する\n③整合性確認後に書き換え実行\n④書き換え後に再度整合性確認\n⑤mocka_write_eventで変更前後の状態を記録\n\n【違反の定義】\n関連ファイルを読まずに全文書き換えを実行すること＝MoCKA検証原則違反\n\n【背景】\nきむら博士が全文書き換えを命じる理由は「整合性保証」のため。しかしClaudeが関連ファイルを照合せずに再生成すると「パッチ方式の全文書き換え」になりMoCKAの精神に違反する。incident_pool/total_pool不一致バグ（E20260517_021）がその証拠。",
-      "assigned_to": "Claude（執行）",
-      "note": "E20260517_021バグ → きむら博士指摘 → 制度化。関連ファイル照合なしの全文書き換えは禁止。",
-      "reference_event": "E20260517_021",
-      "created_at": "2026-05-17T11:35:46.898947"
-    },
-    {
-      "id": "TODO_155",
-      "title": "ファイル生成UTF-8強制 — bash heredocによるJS/PY生成を全面禁止・create_fileのみ使用",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度/ガバナンス",
-      "description": "ClaudeがJavaScript/Pythonファイルを生成する際のUTF-8完全保証。\n【禁止】bash_toolでのecho/heredoc/cat経由ファイル生成（cp932混入リスク）\n【必須】create_fileツールのみ使用（UTF-8保証）\n【確認】生成後にSelect-String等でcp932文字が混入していないことを確認\n【背景】E20260519_007: Relay content.jsがcp932混入で正規表現全滅→毎回1時間のデバッグ損失",
-      "assigned_to": "Claude（執行）",
-      "note": "",
-      "reference_event": "E20260519_007",
-      "created_at": "2026-05-19T09:45:50.727650"
-    },
-    {
-      "id": "TODO_217",
-      "title": "change-tracker PostToolUse:Edit 自動フック連携 — beforeChange/afterChange自動発火",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度/ガバナンス/change-tracker",
-      "description": "現在はbeforeChange/afterChangeを手動呼び出し運用。Claude CodeのPostToolUse:Edit（またはPreToolUse:Edit）フックと連携し、Editツール実行前後に自動でchange-trackerを発火させる。TODO_153（ファイル生成後の自動mocka_write強制）との統合も検討。完成すれば記録漏れがゼロになる構造的保証が完成する。",
-      "assigned_to": "Claude（実装）+ きむら博士（承認）",
-      "note": "TODO_144完了時の残課題①。TODO_153と統合候補。",
-      "reference_event": "E20260603_068",
-      "created_at": "2026-06-03T09:19:15.745223"
-    },
-    {
-      "id": "TODO_218",
-      "title": "mocka-bridge.js MOCKA_ENDPOINT 恒久URL化 — Sakura VPS移行後に差し替え",
-      "status": "未着手",
-      "priority": "低",
-      "category": "インフラ/change-tracker",
-      "description": "mocka-bridge.jsのMOCKA_ENDPOINT定数がngrok URLをハードコード。ngrok URLが変わるたびに手動更新が必要。Sakura VPS移行（MCP 24時間化）完了後に恒久URLに差し替える。または環境変数/設定ファイル化で管理を楽にする。",
-      "assigned_to": "きむら博士（Sakura VPS移行完了後）",
-      "note": "TODO_144完了時の残課題②。Sakura VPS移行完了後に即対応。",
-      "reference_event": "E20260603_068",
-      "created_at": "2026-06-03T09:19:21.697362"
     },
     {
       "id": "TODO_139",
@@ -3436,6 +3376,90 @@
       "created_at": "2026-06-07T11:25:35.709935",
       "updated_at": "2026-06-07T14:54:11.065211",
       "completed_at": "2026-06-07"
+    },
+    {
+      "id": "TODO_154",
+      "title": "全文書き換え時の関連ファイル整合性確認を必須化",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス",
+      "description": "全文書き換え時の必須プロトコル確立。\n【ルール】\n①変更対象ファイルの全文を読む\n②関連ファイル（app.py↔index.html等）を全て読んで照合する\n③整合性確認後に書き換え実行\n④書き換え後に再度整合性確認\n⑤mocka_write_eventで変更前後の状態を記録\n\n【違反の定義】\n関連ファイルを読まずに全文書き換えを実行すること＝MoCKA検証原則違反\n\n【背景】\nきむら博士が全文書き換えを命じる理由は「整合性保証」のため。しかしClaudeが関連ファイルを照合せずに再生成すると「パッチ方式の全文書き換え」になりMoCKAの精神に違反する。incident_pool/total_pool不一致バグ（E20260517_021）がその証拠。",
+      "assigned_to": "Claude（執行）",
+      "note": "2026-06-08 くろこ実装完了。CLAUDE.md起動プロトコル新規作成(C:\\Users\\sirok\\MoCKA\\.claude\\CLAUDE.md)。変更前後記録プロトコルをCLAUDE.mdに明文化・強制化。CHANGE_START=E20260608_024 / CHANGE_DONE=E20260608_026。",
+      "reference_event": "E20260517_021",
+      "created_at": "2026-05-17T11:35:46.898947",
+      "updated_at": "2026-06-08T08:59:11.575092",
+      "completed_at": "2026-06-08"
+    },
+    {
+      "id": "TODO_155",
+      "title": "ファイル生成UTF-8強制 — bash heredocによるJS/PY生成を全面禁止・create_fileのみ使用",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス",
+      "description": "ClaudeがJavaScript/Pythonファイルを生成する際のUTF-8完全保証。\n【禁止】bash_toolでのecho/heredoc/cat経由ファイル生成（cp932混入リスク）\n【必須】create_fileツールのみ使用（UTF-8保証）\n【確認】生成後にSelect-String等でcp932文字が混入していないことを確認\n【背景】E20260519_007: Relay content.jsがcp932混入で正規表現全滅→毎回1時間のデバッグ損失",
+      "assigned_to": "Claude（執行）",
+      "note": "2026-06-08 くろこ実装完了。mocka_check_utf8ツールをCalibr2.01に追加(execute_tool dispatch方式で適応実装)。正常ファイル/BOMファイル両判定PASS。CLAUDE.mdに「bashでのファイル生成禁止・check_utf8必須」を明文化。CHANGE_DONE=E20260608_026。",
+      "reference_event": "E20260519_007",
+      "created_at": "2026-05-19T09:45:50.727650",
+      "updated_at": "2026-06-08T08:59:16.534246",
+      "completed_at": "2026-06-08"
+    },
+    {
+      "id": "TODO_CALIBER_EXPAND_001",
+      "title": "MoCKA Caliber2.01にCOMMAND CENTER・SPP/PHL・インシデント履歴参照ツールを追加",
+      "status": "完了",
+      "priority": "高",
+      "category": "MoCKA開発",
+      "description": "Claude CodeがMoCKAの全知識にアクセスできるよう、Caliber2.01サーバーに以下のツールを追加する：1) mocka_get_command_center（COMMAND CENTER 5000件参照）2) mocka_search_incidents（インシデント履歴検索）3) mocka_get_phl（PHL設計原則参照）4) mocka_get_spp（SPP原則参照）。これによりClaude CodeがMoCKA執行官として動けるようになる。",
+      "assigned_to": "きむら博士",
+      "note": "2026-06-08 くろこ実装完了。4ツール追加: mocka_get_incidents(OK)/mocka_get_guidelines(OK)/mocka_get_command_center(OK)/mocka_check_utf8(OK)。@mcp.tool()方式ではなくFLASK+TOOLS配列+execute_tool()dispatch方式に適応実装。when_tsカラム名修正済み。全テストPASS。残: port:5002再起動→きむら博士実施要。CHANGE_DONE=E20260608_026。",
+      "reference_event": "",
+      "created_at": "2026-05-20T09:26:05.621988",
+      "updated_at": "2026-06-08T08:59:22.654698",
+      "completed_at": "2026-06-08"
+    },
+    {
+      "id": "TODO_257",
+      "title": "health_check.py mcp_schema_hash — 正規変更後の自動store更新機構",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/TIC/health",
+      "description": "check_file_hash()はハッシュ不一致時にHASH_STORE(data/tic/mcp_schema_hash.json)を自動更新せず即FAILを返す設計のため、mocka_mcp_server.pyの正規変更後は毎回手動でHASH_STOREを修正しなければならない。再発リスクが高い。\n\n【対策案】\n①CHANGE_DONEイベント検知時にmocka_mcp_server.pyのハッシュを自動再計算してHASH_STOREを更新するスクリプト追加\n②またはhealth_check.pyに--accept-changeオプションを追加（意図的変更として承認しstoreを更新）\n③またはCLAUDE.mdの「mocka_mcp_server.py変更後の手順」にHASH_STORE更新コマンドを明記\n\n【最小解】③から着手。コマンド1行をCLAUDE.mdに追記するだけで再発防止になる。\n\n【根本原因イベント】E20260608_038",
+      "assigned_to": "Claude（実装）",
+      "note": "2026-06-08 くろこ実装完了。①CLAUDE.mdにHASH_STORE更新コマンド+--accept-change案内追記。②health_check.pyに_accept_mcp_schema_change()+--accept-changeオプション追加。統合テスト: 1バイト変更→FAIL→--accept-change→PASS→元に戻す→PASS 全確認済み。CHANGE_START=E20260608_039/CHANGE_DONE=E20260608_041。",
+      "reference_event": "E20260608_038",
+      "created_at": "2026-06-08T09:05:50.625162",
+      "updated_at": "2026-06-08T09:12:00.140624",
+      "completed_at": "2026-06-08"
+    },
+    {
+      "id": "TODO_217",
+      "title": "change-tracker PostToolUse:Edit 自動フック連携 — beforeChange/afterChange自動発火",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/ガバナンス/change-tracker",
+      "description": "現在はbeforeChange/afterChangeを手動呼び出し運用。Claude CodeのPostToolUse:Edit（またはPreToolUse:Edit）フックと連携し、Editツール実行前後に自動でchange-trackerを発火させる。TODO_153（ファイル生成後の自動mocka_write強制）との統合も検討。完成すれば記録漏れがゼロになる構造的保証が完成する。",
+      "assigned_to": "Claude（実装）+ きむら博士（承認）",
+      "note": "2026-06-08 くろこ実装完了。mocka_auto_record.py強化(CHANGE_DONE統一タイトル/auto_record.log/cp932クラッシュバグ修正)。settings.local.jsonにMultiEdit追加。実動作確認: E20260608_045(Edit)/E20260608_047(MultiEdit)。CLAUDE.md追記。6/6 PASS。CHANGE_DONE=E20260608_048。",
+      "reference_event": "E20260603_068",
+      "created_at": "2026-06-03T09:19:15.745223",
+      "updated_at": "2026-06-08T10:01:40.822509",
+      "completed_at": "2026-06-08"
+    },
+    {
+      "id": "TODO_218",
+      "title": "mocka-bridge.js MOCKA_ENDPOINT 恒久URL化 — Sakura VPS移行後に差し替え",
+      "status": "完了",
+      "priority": "低",
+      "category": "インフラ/change-tracker",
+      "description": "mocka-bridge.jsのMOCKA_ENDPOINT定数がngrok URLをハードコード。ngrok URLが変わるたびに手動更新が必要。Sakura VPS移行（MCP 24時間化）完了後に恒久URLに差し替える。または環境変数/設定ファイル化で管理を楽にする。",
+      "assigned_to": "きむら博士（Sakura VPS移行完了後）",
+      "note": "2026-06-08 くろこ実装完了。mocka_config.json作成(.claude/mocka_config.json)。mocka-bridge.js修正: 優先順位=環境変数→設定ファイル→localhost既定値。ngrok再起動時はmocka_config.jsonの1箇所を書き換えるだけで全体反映。Sakura VPS移行後に恒久URLへ差し替え。CHANGE_DONE=E20260608_048。",
+      "reference_event": "E20260603_068",
+      "created_at": "2026-06-03T09:19:21.697362",
+      "updated_at": "2026-06-08T10:01:45.867945",
+      "completed_at": "2026-06-08"
     }
   ],
   "orchestra_handoff": {
