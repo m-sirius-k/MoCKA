@@ -400,5 +400,10 @@ def run(target: str = None):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MoCKA TIC Health Check")
     parser.add_argument("--component", help="単体チェック対象コンポーネント名")
+    parser.add_argument("--accept-change", action="store_true",
+                        help="現在のmcp_schema_hashをHASH_STOREに書き込んで承認する")
     args = parser.parse_args()
-    run(target=args.component)
+    if args.accept_change:
+        _accept_mcp_schema_change()
+    else:
+        run(target=args.component)
