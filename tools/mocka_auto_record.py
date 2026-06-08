@@ -18,6 +18,7 @@ import os
 import urllib.request
 import urllib.error
 import datetime
+from pathlib import Path
 
 LOCAL_MCP   = "http://localhost:5002/agent/mocka_write_event"
 LOCAL_APP   = "http://localhost:5000/file/register"
@@ -54,6 +55,8 @@ def _extract_file_path(tool_name: str, tool_input: dict) -> str:
         return tool_input.get("file_path", "")
     if tool_name == "NotebookEdit":
         return tool_input.get("notebook_path", "")
+    if tool_name == "MultiEdit":
+        return tool_input.get("file_path", "")
     return tool_input.get("file_path", tool_input.get("path", ""))
 
 
