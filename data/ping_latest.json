@@ -15,16 +15,6 @@
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "top_todos": [
     {
-      "id": "TODO_154",
-      "title": "全文書き換え時の関連ファイル整合性確認を必須化",
-      "priority": "最高"
-    },
-    {
-      "id": "TODO_155",
-      "title": "ファイル生成UTF-8強制 — bash heredocによるJS/PY生成を全面禁止・create_fileのみ使用",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_221",
       "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
       "priority": "最高"
@@ -35,10 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_CALIBER_EXPAND_001",
-      "title": "MoCKA Caliber2.01にCOMMAND CENTER・SPP/PHL・インシデント履歴参照ツールを追加",
+      "id": "TODO_139",
+      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
+      "priority": "高"
+    },
+    {
+      "id": "TODO_207",
+      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
+      "priority": "高"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-08T08:26:12.949891"
+  "generated_at": "2026-06-08T17:28:55.463188"
 }
