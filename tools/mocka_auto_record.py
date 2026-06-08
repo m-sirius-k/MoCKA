@@ -24,7 +24,19 @@ LOCAL_APP   = "http://localhost:5000/file/register"
 _ENDPOINT   = os.environ.get("MOCKA_ENDPOINT", "")
 REMOTE_MCP  = f"{_ENDPOINT}/agent/mocka_write_event" if _ENDPOINT else ""
 
-WATCH_TOOLS = {"Write", "Edit", "NotebookEdit"}
+LOG_PATH    = Path(__file__).resolve().parent / "auto_record.log"
+
+WATCH_TOOLS = {"Write", "Edit", "NotebookEdit", "MultiEdit"}
+
+
+def _log(line: str):
+    """記録の成否をローカルログに残す（サーバー落ち時の追跡用、作業はブロックしない）"""
+    try:
+        ts = datetime.datetime.now().isoformat()
+        with open(LOG_PATH, "a", encoding="utf-8") as f:
+            f.write(f"[{ts}] {line}\n")
+    except Exception:
+        pass
 
 def _post(url: str, payload: bytes, timeout: int = 3) -> dict:
     req = urllib.request.Request(
