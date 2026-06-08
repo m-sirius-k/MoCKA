@@ -3,14 +3,30 @@
 // PHI-OS統合時にリアルタイム送信。未接続時は RecordStore にフォールバック。
 
 import { RecordStore } from '../core/change-record-store.js';
+import fs from 'node:fs';
+
+// TODO_218: ngrok URLはmocka_config.jsonに集約。再起動時はそのファイル1箇所を直すだけでよい。
+const _CONFIG_PATH = 'C:/Users/sirok/MoCKA/.claude/mocka_config.json';
+
+function _readConfigEndpoint() {
+  try {
+    const raw = fs.readFileSync(_CONFIG_PATH, 'utf-8');
+    const cfg = JSON.parse(raw);
+    return cfg.mcp_endpoint || null;
+  } catch {
+    return null;
+  }
+}
 
 const _MOCKA_ENDPOINT_ENV = (typeof process !== 'undefined' && process.env && process.env.MOCKA_ENDPOINT)
   ? process.env.MOCKA_ENDPOINT
   : null;
-if (!_MOCKA_ENDPOINT_ENV) {
-  console.error('[MocKABridge] ERROR: 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。');
+const _MOCKA_ENDPOINT_CONFIG = _MOCKA_ENDPOINT_ENV ? null : _readConfigEndpoint();
+const _RESOLVED_ENDPOINT = _MOCKA_ENDPOINT_ENV || _MOCKA_ENDPOINT_CONFIG;
+if (!_RESOLVED_ENDPOINT) {
+  console.error('[MocKABridge] ERROR: MOCKA_ENDPOINT が未設定です（環境変数にも .claude/mocka_config.json にもありません）。.env.example を参照して設定してください。');
 }
-const MOCKA_ENDPOINT = _MOCKA_ENDPOINT_ENV ? `${_MOCKA_ENDPOINT_ENV}/mcp` : 'http://localhost:5002/mcp';
+const MOCKA_ENDPOINT = _RESOLVED_ENDPOINT ? `${_RESOLVED_ENDPOINT}/mcp` : 'http://localhost:5002/mcp';
 const CONNECT_TIMEOUT_MS = 3000;
 
 // 接続状態キャッシュ（10秒TTL）

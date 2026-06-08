@@ -27,6 +27,13 @@ REMOTE_MCP  = f"{_ENDPOINT}/agent/mocka_write_event" if _ENDPOINT else ""
 
 LOG_PATH    = Path(__file__).resolve().parent / "auto_record.log"
 
+# Windows cp932コンソールでのUnicodeEncodeError防止（PostToolUseフックを落とさない）
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 WATCH_TOOLS = {"Write", "Edit", "NotebookEdit", "MultiEdit"}
 
 

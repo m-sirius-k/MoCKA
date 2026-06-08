@@ -73,6 +73,26 @@ print('HASH_STORE更新完了:', h)
 
 または `python health_check.py --accept-change` でも同等の更新が可能。
 
+### 【自動記録】PostToolUse フック（TODO_217）
+
+Edit/Write/MultiEdit/NotebookEdit実行後、PostToolUseフックが自動的に
+`tools/mocka_auto_record.py` を発火し、`CHANGE_DONE: {tool_name} → {filename}`
+としてevents.dbへ自動記録する（手動でmocka_write_eventを呼ぶ必要はない）。
+
+* MoCKAサーバー（localhost:5002）が落ちている場合のみ、記録は送信されず
+  `tools/auto_record.log` にOFFLINEとして記録される。作業自体はブロックされない。
+* その場合は手動で `mocka_write_event(CHANGE_DONE...)` を実行して補完すること。
+
+サーバー確認:
+```
+curl http://localhost:5002/health
+```
+
+ログ確認:
+```
+tools/auto_record.log
+```
+
 ### MoCKAの三要素（絶対に忘れるな）
 
 * Structure（構造）: システムで縛る。信頼しない
