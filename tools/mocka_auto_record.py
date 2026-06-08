@@ -97,7 +97,7 @@ def main():
     payload = json.dumps({
         "title":       title,
         "description": description,
-        "tags":        f"auto_hook,{tool_name},post_tool_use",
+        "tags":        f"auto_record,posttooluse,change_done,{tool_name}",
         "author":      "Claude",
         "why_purpose": "TODO_153: ファイル生成=記録義務",
         "how_trigger": "PostToolUse hook",
@@ -109,13 +109,16 @@ def main():
             result = _post(url, payload)
             eid = result.get("event_id", "?")
             print(f"[mocka_auto_record] OK {eid} — {fname}", flush=True)
+            _log(f"OK event_id={eid} tool={tool_name} file={file_path} url={url}")
             sent = True
             break
         except Exception as e:
             print(f"[mocka_auto_record] WARN {url}: {e}", flush=True)
+            _log(f"WARN url={url} tool={tool_name} file={file_path} error={e}")
 
     if not sent:
         print(f"[mocka_auto_record] OFFLINE — {fname} (全エンドポイント失敗)", flush=True)
+        _log(f"OFFLINE tool={tool_name} file={file_path} (記録未送信・作業は継続)")
 
     sys.exit(0)
 
