@@ -53,6 +53,26 @@ mocka_get_incidents(category="INTEGRITY_VIOLATION")
 mocka_get_incidents(category="MATAKA")
 ```
 
+### 【追記】mocka_mcp_server.py 変更後の必須手順
+
+mocka_mcp_server.py を変更した場合、CHANGE_DONE の前に必ず以下を実行すること:
+
+```powershell
+python -c "
+import hashlib, json
+from pathlib import Path
+content = Path('C:/Users/sirok/MoCKA/mocka_mcp_server.py').read_bytes()
+h = hashlib.sha256(content).hexdigest()[:16]
+p = Path('C:/Users/sirok/MoCKA/data/tic/mcp_schema_hash.json')
+d = json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+d['hash'] = h
+p.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding='utf-8')
+print('HASH_STORE更新完了:', h)
+"
+```
+
+または `python health_check.py --accept-change` でも同等の更新が可能。
+
 ### MoCKAの三要素（絶対に忘れるな）
 
 * Structure（構造）: システムで縛る。信頼しない

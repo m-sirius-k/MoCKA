@@ -299,6 +299,21 @@ def append_health_log(results: list, overall: str):
 
 # ── メイン ──
 
+def _accept_mcp_schema_change():
+    """現在のmocka_mcp_server.pyのハッシュをHASH_STOREに書き込んで承認する"""
+    cfg = HEALTH_CHECKS["mcp_schema_hash"]
+    path = Path(cfg["path"])
+    store_path = Path(cfg["hash_store"])
+    h = hashlib.sha256(path.read_bytes()).hexdigest()[:16]
+    store_path.parent.mkdir(parents=True, exist_ok=True)
+    store_path.write_text(
+        json.dumps({"path": str(path), "hash": h, "updated": datetime.datetime.now().isoformat()},
+                   ensure_ascii=False, indent=2),
+        encoding="utf-8",
+    )
+    print(f"HASH_STORE更新完了: {h}")
+
+
 def run(target: str = None):
     checks = {k: v for k, v in HEALTH_CHECKS.items() if target is None or k == target}
     now_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
