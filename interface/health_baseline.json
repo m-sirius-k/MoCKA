@@ -1,30 +1,6 @@
 {
-  "mocka_server": {
-    "ok": true,
-    "detail": "200 OK"
-  },
-  "caliber_pipeline": {
-    "ok": true,
-    "detail": "200 OK"
-  },
-  "anthropic_api": {
-    "ok": true,
-    "detail": "401 (疎通確認OK)"
-  },
-  "stripe_worker": {
-    "ok": true,
-    "detail": "200 OK"
-  },
-  "sqlite_integrity": {
-    "ok": true,
-    "detail": "ok"
-  },
   "mcp_schema_hash": {
-    "ok": true,
-    "detail": "変更なし (hash: c8918100bdb02e32)"
-  },
-  "relay_dom_selector": {
     "ok": false,
-    "detail": "Relay: last_ping なし（claude.aiタブ未オープン、または拡張未起動）"
+    "detail": "ハッシュ変更検出!\n                          前回: c8918100bdb02e32\n                          今回: 7d69b82a53900212"
   }
 }

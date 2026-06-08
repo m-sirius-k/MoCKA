@@ -586,4 +586,4 @@ def agent_call(tool_name):
 if __name__ == "__main__":
     print("MoCKA MCP Server v1.5.0 -- http://localhost:5002/mcp")
     print(f"Tools: {len(TOOLS)}")
-    app.run(host="0.0.0.0", port=5002, debug=False)
+    app.run(host="0.0.0.0", port=5002, debug=False) 
