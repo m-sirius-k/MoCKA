@@ -15,7 +15,7 @@ CORS(app)
 
 builder = ContextBuilder()
 
-DB_PATH = Path(__file__).parent.parent / "data" / "mocka_events.db"
+DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
 DATA_DIR = Path(__file__).parent.parent / "data"
 
 
@@ -58,17 +58,21 @@ def get_last_event():
     try:
         conn = sqlite3.connect(str(DB_PATH))
         cur  = conn.cursor()
+        # 正: when_ts / short_summary  (when_time / description は誤カラム名)
         cur.execute(
-            "SELECT event_id, title, description, when_time, tags "
-            "FROM events ORDER BY when_time DESC LIMIT 1"
+            "SELECT event_id, title, short_summary, when_ts, what_type "
+            "FROM events ORDER BY when_ts DESC LIMIT 1"
         )
         row = cur.fetchone()
         conn.close()
         if not row:
             return jsonify({}), 404
         return jsonify({
-            "id": row[0], "title": row[1],
-            "description": row[2], "when": row[3], "tags": row[4],
+            "id":            row[0],
+            "title":         row[1],
+            "short_summary": row[2],
+            "when":          row[3],
+            "what_type":     row[4],
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -88,15 +92,15 @@ def get_summary():
 @app.route("/api/v1/health")
 def health():
     return jsonify({
-        "status": "ok",
+        "status":  "ok",
         "service": "MoCKA Gateway",
         "version": "1.1",
-        "port": 5010,
-        "time": datetime.now(timezone.utc).isoformat(),
+        "port":    5010,
+        "time":    datetime.now(timezone.utc).isoformat(),
     })
 
 
-# ---------- POST endpoints ----------
+# ---------- POST endpoint ----------
 
 @app.route("/api/v1/event", methods=["POST"])
 def post_event():
@@ -104,38 +108,57 @@ def post_event():
     if not data:
         return jsonify({"error": "JSON body required"}), 400
 
-    actor = data.get("actor", {})
+    actor  = data.get("actor", {})
     vendor = actor.get("vendor", "Unknown")
     model  = actor.get("model", "")
     source = actor.get("source", "Direct")
 
-    title       = data.get("title", "")
-    description = data.get("description", "")
-    tags_raw    = data.get("tags", [])
-    tags = ",".join(tags_raw) if isinstance(tags_raw, list) else str(tags_raw)
+    title         = data.get("title", "").strip()
+    short_summary = data.get("description", "").strip()   # リクエスト側はdescription可
+    tags_raw      = data.get("tags", [])
+    tags_str      = ",".join(tags_raw) if isinstance(tags_raw, list) else str(tags_raw)
 
-    if not title or not description:
-        return jsonify({"error": "title and description are required"}), 400
+    if not title:
+        return jsonify({"error": "title is required"}), 400
 
     try:
         conn = sqlite3.connect(str(DB_PATH))
         cur  = conn.cursor()
 
         cur.execute("SELECT COUNT(*) FROM events")
-        count = cur.fetchone()[0]
-        now   = datetime.now(timezone.utc)
+        count    = cur.fetchone()[0]
+        now      = datetime.now(timezone.utc)
         event_id = f"E{now.strftime('%Y%m%d')}_{count+1:03d}"
 
-        author = f"{vendor}/{model}" if model else vendor
+        # who_actor = "vendor/model" 形式で格納
+        # ai_actor  = source（Orchestra等）
+        # タグ専用カラムなし → what_type に gateway_event を、free_note にタグを格納
+        who_actor = f"{vendor}/{model}" if model else vendor
 
         cur.execute(
-            "INSERT INTO events (event_id, title, description, when_time, tags, author) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            (event_id, title, description, now.isoformat(), tags, author)
+            """INSERT INTO events
+               (event_id, title, short_summary, when_ts,
+                who_actor, ai_actor, what_type, free_note,
+                where_component, lifecycle_phase, why_purpose)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                event_id,
+                title,
+                short_summary,
+                now.isoformat(),
+                who_actor,
+                source,
+                "gateway_event",
+                tags_str,
+                "gateway",
+                "in_operation",
+                data.get("why_purpose", "multi_ai_record"),
+            )
         )
         conn.commit()
         conn.close()
         return jsonify({"status": "ok", "event_id": event_id}), 201
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
