@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-08",
+    "updated": "2026-06-09",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -98,10 +98,10 @@
       "category": "Web/WordPress/miniMoCKA",
       "description": "Orchestraは本番Stripe稼働中なのにLP未整備。最優先で投入する。コンテンツ: ①キャッチコピー+概要 ②Free/Pro/One料金プラン表 ③Stripeペイメントリンク埋め込み ④インストール方法 ⑤基本操作説明 ⑥Q&A。既存orchestra_i18n_cs.htmlのコンテンツを流用・WordPressに最適化。",
       "assigned_to": "Claude（コンテンツ生成）+ きむら博士（投入）",
-      "note": "orchestra_lp_v4.html（5言語対応）生成済み・WP-CLIでpage_id=61に投入試みたがTheme CSS干渉で未確定。投入手順まで完了・最終確認待ち。",
+      "note": "6/7: orchestra_lp_v4.html投入・page-orchestra.phpカスタムテンプレート作成済み。ThemeCSS干渉でmax-width未解決継続。6/9: くろこがSSH前にローカル実行する誤りが発生→KUROKO修正指示書生成。次回SSH正確手順で再試行。",
       "reference_event": "",
       "created_at": "2026-06-03T15:57:36.763582",
-      "updated_at": "2026-06-07T09:41:20.541465"
+      "updated_at": "2026-06-09T17:19:57.275561"
     },
     {
       "id": "TODO_160",
@@ -215,14 +215,15 @@
     {
       "id": "TODO_220",
       "title": "mocka.nsjp.org — WordPress メニュー構築（ヘッダーナビ）",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "高",
       "category": "Web/WordPress",
       "description": "WP-CLIで固定ページ12ページ作成完了済み。次はWordPress管理画面でメニューを組む。外観→メニュー→メインメニュー新規作成。Home/MoCKA/vasAI/mini MoCKA(子:Orchestra/Relay/PHI-OS/Memory)/Research/Verificationの構成。プライマリメニューに設定。",
       "assigned_to": "きむら博士（WordPress管理画面）",
-      "note": "",
+      "note": "6/7: WP-CLIでメニュー10項目作成済み（menu_1・menu_mobile）。slugに-2サフィックス問題修正済み。ただし管理画面での最終確認・調整が未実施。",
       "reference_event": "",
-      "created_at": "2026-06-03T15:57:28.901019"
+      "created_at": "2026-06-03T15:57:28.901019",
+      "updated_at": "2026-06-09T17:20:02.090854"
     },
     {
       "id": "TODO_222",
@@ -283,18 +284,6 @@
       "note": "AIES 2026提出（5/21）後に着手。TODO_054完了後。",
       "reference_event": "",
       "created_at": "2026-05-01T10:59:55.477108"
-    },
-    {
-      "id": "TODO_236",
-      "title": "PR-OS Phase 2 完了",
-      "status": "完了",
-      "priority": "高",
-      "category": "PR-OS / Phase 2",
-      "description": "X (Twitter) Adapter・Instagram Adapter・Scheduler実装。pros.py CLIエントリーポイント。base_adapter.py抽象基底クラスでアーキテクチャ整備。Command Center UI完全刷新。",
-      "assigned_to": "Claude",
-      "note": "2026-06-06 完了。全テスト通過。",
-      "reference_event": "",
-      "created_at": "2026-06-06T14:15:51.540280"
     },
     {
       "id": "TODO_239",
@@ -367,6 +356,54 @@
       "note": "くろこへ実装指示済み（E20260607_041）。Phase5（TODO_250）完了後に着手。",
       "reference_event": "E20260607_041",
       "created_at": "2026-06-07T14:54:18.808510"
+    },
+    {
+      "id": "TODO_258",
+      "title": "MoCKA 多AI接続アーキテクチャ — Phase1 Orchestraコンテキスト注入",
+      "status": "未着手",
+      "priority": "高",
+      "category": "アーキテクチャ",
+      "description": "Orchestra合議プロンプト先頭にMoCKA contextを自動付加。MoCKA Public REST API（GET /api/context）からOVERVIEW+essence取得してGPT/Gemini/Perplexity/Copilotへ配信。情報格差解消が目的。",
+      "assigned_to": "Claude",
+      "note": "E20260609_549。仕様書: MoCKA_MultiAI_Connection_Spec_v1.md。技術質問書を各AIに提出後着手。",
+      "reference_event": "E20260609_549",
+      "created_at": "2026-06-09T17:26:42.534579"
+    },
+    {
+      "id": "TODO_259",
+      "title": "MoCKA 多AI接続アーキテクチャ — Phase2 REST API公開（Cloudflare Workers）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "アーキテクチャ",
+      "description": "Cloudflare WorkersにMoCKA Public REST APIを追加。GET /api/context（OVERVIEW+essence）、GET /api/todo、POST /api/event（HMAC認証必須）。全AIがHTTP/JSONで利用可能に。",
+      "assigned_to": "Claude",
+      "note": "E20260609_549。TODO_258完了後着手。技術質問書回答後に仕様確定。",
+      "reference_event": "E20260609_549",
+      "created_at": "2026-06-09T17:26:48.449292"
+    },
+    {
+      "id": "TODO_266",
+      "title": "Cloudflare Tunnel 恒久化 — Named Tunnel設定",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Cloudflare",
+      "description": "現在の一時URL(pharmacy-governing-whale-two.trycloudflare.com)はPC再起動で変わる。cloudflaredのNamed Tunnel設定で固定URLに変更する。mocka-gateway.nsjpkimura-mocka.workers.dev等の固定サブドメインに紐付け。",
+      "assigned_to": "Claude",
+      "note": "E20260609_10418。Gateway Phase3完了後の残課題。",
+      "reference_event": "",
+      "created_at": "2026-06-09T20:28:44.749865"
+    },
+    {
+      "id": "TODO_267",
+      "title": "Copilot Studio Custom Connector登録 — openapi.yaml使用",
+      "status": "保留",
+      "priority": "中",
+      "category": "Copilot",
+      "description": "openapi.yamlを使ってCopilot Studio Custom Connectorを手動登録する。TODO_266(Named Tunnel恒久化)完了後に実施。固定URLが確定してからOpenAPI定義を登録。",
+      "assigned_to": "Claude",
+      "note": "E20260609_10418。TODO_266完了が前提条件。",
+      "reference_event": "",
+      "created_at": "2026-06-09T20:28:49.895445"
     }
   ],
   "completed": [
@@ -3464,6 +3501,62 @@
       "created_at": "2026-06-07T16:26:43.849607",
       "updated_at": "2026-06-08T10:08:11.907147",
       "completed_at": "2026-06-08"
+    },
+    {
+      "id": "TODO_236",
+      "title": "PR-OS Phase 2 完了",
+      "status": "完了",
+      "priority": "高",
+      "category": "PR-OS / Phase 2",
+      "description": "X (Twitter) Adapter・Instagram Adapter・Scheduler実装。pros.py CLIエントリーポイント。base_adapter.py抽象基底クラスでアーキテクチャ整備。Command Center UI完全刷新。",
+      "assigned_to": "Claude",
+      "note": "2026-06-06完了確認済み（過去チャット照合）。X/Instagram Adapter・Scheduler実装・pros.py CLIエントリーポイント完成。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:15:51.540280",
+      "updated_at": "2026-06-09T17:19:51.611550",
+      "completed_at": "2026-06-09"
+    },
+    {
+      "id": "TODO_260",
+      "title": "Orchestra v2 — Context Bridge（全AIプロンプト自動注入）",
+      "status": "完了",
+      "priority": "高",
+      "category": "Orchestra",
+      "description": "合議開始前にGET /api/contextを呼び出し、全AIタブのプロンプト先頭にMoCKA Contextブロックを自動付加。GPT/Gemini/Perplexity/Copilotへの情報格差を即日解消。有料API不使用。工数0.5日。",
+      "assigned_to": "Claude",
+      "note": "2026-06-09完了。gateway.py(port:5010)+context_builder.py+auth.py骨格+Orchestra Context Bridge実装。E20260609_10418。",
+      "reference_event": "",
+      "created_at": "2026-06-09T18:59:08.464710",
+      "updated_at": "2026-06-09T20:28:31.318046",
+      "completed_at": "2026-06-09"
+    },
+    {
+      "id": "TODO_261",
+      "title": "Caliber 2.02 — MultiAI Gateway REST APIエンドポイント追加",
+      "status": "完了",
+      "priority": "高",
+      "category": "Caliber",
+      "description": "mocka_mcp_server.py（port:5002）にREST APIエンドポイントを追加。GET /api/context /api/summary /api/todo /api/essence /api/phase /api/last_event / POST /api/event（HMAC認証）。既存TOOLS配列+execute_tool()に追記するだけ。新サーバー不要。Caliber 2.02として正式versioning。",
+      "assigned_to": "Claude",
+      "note": "2026-06-09完了。REST APIエンドポイント追加(/api/v1/context /summary /todo /phase /essence /last_event /event)。HMAC+nonce+timestamp Replay Attack防止実装済み。",
+      "reference_event": "",
+      "created_at": "2026-06-09T18:59:15.025641",
+      "updated_at": "2026-06-09T20:28:35.123375",
+      "completed_at": "2026-06-09"
+    },
+    {
+      "id": "TODO_262",
+      "title": "Cloudflare Workers — mocka-api固定エンドポイント公開",
+      "status": "完了",
+      "priority": "高",
+      "category": "Cloudflare",
+      "description": "既存orchestra-license.workers.devを拡張しmocka-api.workers.devとして固定URLを公開。GET /api/context等の読み取りエンドポイント。ngrokのような一時URLではなくPerplexity/CopilotがいつでもGETできる固定エンドポイント。Free tier内。HMAC認証はライセンス発行と同仕組み流用。",
+      "assigned_to": "Claude",
+      "note": "2026-06-09完了。cloudflare/worker.js + wrangler.toml作成。一時URL: pharmacy-governing-whale-two.trycloudflare.com。残課題: Named Tunnel恒久化が必要(PC再起動でURL変わる)。",
+      "reference_event": "",
+      "created_at": "2026-06-09T18:59:21.834933",
+      "updated_at": "2026-06-09T20:28:38.876032",
+      "completed_at": "2026-06-09"
     }
   ],
   "orchestra_handoff": {
