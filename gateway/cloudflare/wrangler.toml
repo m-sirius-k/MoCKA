@@ -1,0 +1,6 @@
+name = "mocka-api"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+MOCKA_BACKEND_URL = "https://pharmacy-governing-whale-two.trycloudflare.com"
