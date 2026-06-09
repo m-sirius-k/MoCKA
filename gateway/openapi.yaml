@@ -1,0 +1,255 @@
+openapi: "3.0.3"
+info:
+  title: MoCKA Gateway API
+  description: |
+    MoCKA Multi-AI Gateway — Copilot Studio Custom Connector 登録用OpenAPI定義。
+    全AIがMoCKAの知識基盤にアクセス・記録できるREST APIを提供する。
+  version: "1.1"
+  contact:
+    name: MoCKA Project
+    email: nsjpkimura@gmail.com
+
+servers:
+  - url: https://mocka-api.nsjpkimura-mocka.workers.dev
+    description: Production (Cloudflare Workers)
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-MoCKA-Key
+
+  schemas:
+    Context:
+      type: object
+      properties:
+        phase:
+          type: string
+          description: MoCKAの現在フェーズ
+        goal:
+          type: string
+          description: 直近の最優先目標
+        last_decision:
+          type: string
+          description: 最新の意思決定内容
+        active_todo:
+          type: array
+          items:
+            $ref: "#/components/schemas/Todo"
+        essence_summary:
+          type: string
+          description: MoCKA本質サマリー（compact除く）
+        recent_events:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    Todo:
+      type: object
+      properties:
+        id:       { type: string }
+        title:    { type: string }
+        priority: { type: string, enum: [最高, 高, 中, 低] }
+        status:   { type: string }
+
+    Event:
+      type: object
+      properties:
+        id:            { type: string }
+        title:         { type: string }
+        short_summary: { type: string }
+        when:          { type: string, format: date-time }
+        what_type:     { type: string }
+
+    Meta:
+      type: object
+      properties:
+        version:      { type: string }
+        mode:         { type: string, enum: [compact, standard, extended] }
+        generated_at: { type: string, format: date-time }
+        size_bytes:   { type: integer }
+
+    Actor:
+      type: object
+      required: [vendor, source]
+      properties:
+        vendor:  { type: string, example: OpenAI }
+        model:   { type: string, example: GPT-5.5 }
+        version: { type: string }
+        runtime: { type: string, example: ChatGPT }
+        source:  { type: string, example: Orchestra }
+
+    EventRequest:
+      type: object
+      required: [title, description, actor, timestamp, nonce, request_id]
+      properties:
+        title:       { type: string, maxLength: 100 }
+        description: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        actor:
+          $ref: "#/components/schemas/Actor"
+        request_id:
+          type: string
+          format: uuid
+          description: UUIDv4 — 重複防止
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO8601 UTC — ±5分以内のみ受付
+        nonce:
+          type: string
+          description: 16バイトランダムHex — 10分間有効
+        hmac_sig:
+          type: string
+          description: HMAC-SHA256署名（任意）
+
+    Health:
+      type: object
+      properties:
+        status:  { type: string }
+        service: { type: string }
+        version: { type: string }
+        port:    { type: integer }
+        time:    { type: string, format: date-time }
+
+paths:
+  /api/v1/health:
+    get:
+      operationId: getHealth
+      summary: Gateway死活確認
+      description: 認証不要のヘルスチェック
+      security: []
+      responses:
+        "200":
+          description: 正常
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Health" }
+
+  /api/v1/phase:
+    get:
+      operationId: getPhase
+      summary: 現在フェーズ取得
+      description: 認証不要。MoCKAの現在フェーズのみ返す。
+      security: []
+      responses:
+        "200":
+          description: フェーズ情報
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  phase: { type: string }
+
+  /api/v1/context:
+    get:
+      operationId: getContext
+      summary: MoCKAコンテキスト取得
+      description: |
+        AIプロンプトに注入するMoCKAの現在状態を返す。
+        mode パラメータで情報量を制御できる。
+      parameters:
+        - name: mode
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [compact, standard, extended]
+            default: standard
+          description: compact（〜2KB）/ standard（〜8KB）/ extended（〜50KB）
+      responses:
+        "200":
+          description: コンテキスト情報
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Context" }
+        "401":
+          description: APIキー未指定
+
+  /api/v1/todo:
+    get:
+      operationId: getTodo
+      summary: アクティブTODO取得
+      responses:
+        "200":
+          description: TODOリスト
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  active_todo:
+                    type: array
+                    items: { $ref: "#/components/schemas/Todo" }
+
+  /api/v1/essence:
+    get:
+      operationId: getEssence
+      summary: MoCKA本質（lever_essence）取得
+      responses:
+        "200":
+          description: Essence JSON
+
+  /api/v1/last_event:
+    get:
+      operationId: getLastEvent
+      summary: 最新イベント1件取得
+      responses:
+        "200":
+          description: 最新イベント
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Event" }
+
+  /api/v1/summary:
+    get:
+      operationId: getSummary
+      summary: 200字圧縮サマリー取得
+      description: Orchestra注入用。phase + goal + last_decisionを200字以内で返す。
+      responses:
+        "200":
+          description: サマリー
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary: { type: string, maxLength: 200 }
+
+  /api/v1/event:
+    post:
+      operationId: postEvent
+      summary: イベント記録
+      description: |
+        MoCKAにイベントを書き込む。
+        actor構造体必須。request_id + nonce + timestampでReplay Attack防止。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/EventRequest" }
+      responses:
+        "201":
+          description: 記録成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:   { type: string }
+                  event_id: { type: string }
+        "400":
+          description: バリデーションエラー
+        "401":
+          description: 認証失敗（APIキー / timestamp超過）
+        "409":
+          description: nonce重複（Replay Attack検出）
