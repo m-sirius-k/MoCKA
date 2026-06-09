@@ -20,8 +20,8 @@
     "detail": "ok"
   },
   "mcp_schema_hash": {
-    "ok": true,
-    "detail": "変更なし (hash: c8918100bdb02e32)"
+    "ok": false,
+    "detail": "例外: Expecting value: line 1 column 1 (char 0)"
   },
   "relay_dom_selector": {
     "ok": false,
