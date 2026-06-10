@@ -42,36 +42,34 @@ class ConnectorCaliber:
             self._record_event(ai, query, result)
             return jsonify(result)
 
+        @app.route('/api/v1/index', methods=['POST'])
+        def connector_index():
+            data = request.get_json(silent=True) or {}
+            try:
+                index = MoCKAIndex(
+                    who=data.get('who', ''),
+                    what=data.get('what', ''),
+                    why=data.get('why', ''),
+                    where=data.get('where', ''),
+                    how=data.get('how', ''),
+                    tags=data.get('tags', ''),
+                    session_id=data.get('session_id', ''),
+                )
+                event_id = IndexWriter(str(self.db_path)).write(index)
+                return jsonify({'event_id': event_id, 'status': 'ok'})
+            except Exception as e:
+                return jsonify({'error': str(e)}), 500
+
     def _record_event(self, ai, query, result):
         try:
-            conn = sqlite3.connect(str(self.db_path))
-            cur = conn.cursor()
-            cur.execute("SELECT COUNT(*) FROM events")
-            count = cur.fetchone()[0]
-            now = datetime.now(timezone.utc)
-            event_id = f"E{now.strftime('%Y%m%d')}_{count+1:03d}"
-
-            cur.execute(
-                """INSERT INTO events
-                   (event_id, title, short_summary, when_ts,
-                    who_actor, ai_actor, what_type, free_note,
-                    where_component, lifecycle_phase, why_purpose)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-                (
-                    event_id,
-                    f"connector_query: {ai}",
-                    (query or "")[:200],
-                    now.isoformat(),
-                    ai,
-                    "connector_caliber",
-                    "connector_query",
-                    "",
-                    "connector_caliber",
-                    "in_operation",
-                    "connector_caliber_v1_auto_record",
-                )
+            index = MoCKAIndex(
+                who=ai,
+                what=f'connector_query: {(query or "")[:80]}',
+                why='AIからのMoCKAコンテキスト取得',
+                where='Connector Caliber v1.0',
+                how='connector_query API',
+                tags=f'connector,{ai}',
             )
-            conn.commit()
-            conn.close()
+            return IndexWriter(str(self.db_path)).write(index)
         except Exception:
             pass
