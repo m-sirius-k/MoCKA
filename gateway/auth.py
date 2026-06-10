@@ -16,7 +16,7 @@ DB_PATH      = Path(__file__).parent.parent / "data" / "mocka_events.db"
 NONCE_TTL    = 600          # 10分（秒）
 TIMESTAMP_MARGIN = 300      # ±5分（秒）
 
-PUBLIC_PATHS = {"/api/v1/phase", "/api/v1/health"}
+PUBLIC_PATHS = {"/api/v1/phase", "/api/v1/health", "/api/v1/connector/health"}
 HMAC_PATHS   = {"/api/v1/event"}   # POST のみ HMAC 検証
 
 
