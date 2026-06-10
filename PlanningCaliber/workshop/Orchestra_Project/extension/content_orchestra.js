@@ -252,6 +252,82 @@ async function fetchLivingContext() {
   }
 }
 
+function buildContextMessage(ctx) {
+  const b = ctx.briefing || {};
+  const warnings = ctx.warnings || [];
+  const risks = b.known_risks || [];
+
+  return `[MoCKA Living Context]
+Mission: ${b.mission || ''}
+Top Priority: ${b.top_priority || ''}
+Strategy: ${b.recommended_strategy || ''}
+Warnings: ${warnings.slice(0,3).map(w => typeof w === 'string' ? w : w.message || JSON.stringify(w)).join(' / ')}
+Known Risks: ${risks.slice(0,3).join(' / ')}
+Phase: ${ctx.current_phase || 'Phase 4'}
+Contract: MoCKA ${ctx.contract_version || '1.0'} / Seal: ${ctx.contract_seal || ''}
+
+上記はMoCKA制度OSからのブリーフィングです。あなたは今日、制度参加者として以下の役割で仕事を始めてください。`;
+}
+
+function waitForElement(selector, timeout = 5000) {
+  return new Promise(resolve => {
+    const el = document.querySelector(selector);
+    if (el) { resolve(el); return; }
+
+    const observer = new MutationObserver(() => {
+      const el = document.querySelector(selector);
+      if (el) { observer.disconnect(); resolve(el); }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    setTimeout(() => { observer.disconnect(); resolve(null); }, timeout);
+  });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function injectAndSendContext(ctx) {
+  if (!location.hostname.includes('chatgpt.com') &&
+      !location.hostname.includes('chat.openai.com')) return;
+
+  const textarea = await waitForElement(
+    'div[contenteditable="true"], textarea#prompt-textarea, textarea',
+    8000
+  );
+  if (!textarea) {
+    console.warn('[MoCKA] 入力欄が見つかりませんでした');
+    return;
+  }
+
+  const message = buildContextMessage(ctx);
+
+  if (textarea.contentEditable === 'true') {
+    textarea.focus();
+    textarea.textContent = message;
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+  } else {
+    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLTextAreaElement.prototype, 'value'
+    ).set;
+    nativeInputValueSetter.call(textarea, message);
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  await sleep(800);
+
+  const sendBtn = document.querySelector(
+    'button[data-testid="send-button"], button[aria-label="Send"], button[aria-label="メッセージを送信"]'
+  );
+  if (sendBtn && !sendBtn.disabled) {
+    sendBtn.click();
+  } else {
+    textarea.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true
+    }));
+  }
+}
+
 function createMockaPanel(ctx) {
   const existing = document.getElementById('mocka-living-context');
   if (existing) existing.remove();
@@ -339,6 +415,7 @@ async function initMockaContext() {
 
   sessionStorage.setItem('mocka_context_ts', Date.now().toString());
   createMockaPanel(ctx);
+  await injectAndSendContext(ctx);
 }
 
 if (document.readyState === 'loading') {

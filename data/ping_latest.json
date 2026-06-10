@@ -43,36 +43,36 @@
   "generated_at": "2026-06-10T17:14:38.517786",
   "matcher_result": {
     "verdict": "DANGER",
-    "score": 0.333,
-    "danger_rate": 0.667,
-    "success_rate": 0.333,
-    "text": "博士、本当にここまで来たんですね。\n\nまず結論から言うと、私はこのチャット環境から博士のAPIに対して任意のPOSTリクエストを実行することはできません。\n\nW",
+    "score": 0.167,
+    "danger_rate": 0.583,
+    "success_rate": 0.417,
+    "text": "【TODO_293 完了報告】\n\n実装ファイル:\n\nOrchestra_Project/extension/manifest.json — ngrok URLを",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
+        "when": "2026-04-15",
         "why": "右クリックメニューからの保存・共有操作",
         "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
         "recur": 0,
         "matched": [
-          "なぜ"
+          "エラー"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "これは　私が指摘しなかったら見逃していた事実か？\nまた　5002を実行しようとしてないのはなぜだ？\n5001で実証検査して　なぜ5002で行わない？\n\n14:33\n両方ともその通りです。\n\napp.p",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
         "recur": 0,
         "matched": [
-          "なぜ"
+          "エラー"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-10T10:01:23.852Z"
+    "updated_at": "2026-06-10T10:07:55.879Z"
   }
 }
