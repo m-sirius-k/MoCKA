@@ -108,10 +108,12 @@ def session_start():
         response["progress"] = _progress()
 
     if mode == "full":
+        from reflection_engine import get_recent_reflections
         response["recent_events"] = _recent_events(20)
         response["essence"] = _essence()
         response["guidelines_top10"] = _guidelines_top10()
         response["capability_registry"] = _capability_registry()
+        response["recent_reflections"] = get_recent_reflections(limit=3)
         response["warning"] = "full mode: token cost high"
 
     eid = db.get_next_event_id()
