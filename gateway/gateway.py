@@ -14,6 +14,11 @@ from flask_cors import CORS
 
 from context_builder import ContextBuilder
 from auth import require_api_key
+import auth as auth_module
+from connector_caliber import ConnectorCaliber
+import adapter_gpt
+import adapter_gemini
+import adapter_copilot
 
 app = Flask(__name__)
 CORS(app)
@@ -22,6 +27,14 @@ builder = ContextBuilder()
 
 DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
 DATA_DIR = Path(__file__).parent.parent / "data"
+
+connector = ConnectorCaliber(
+    db_path=DB_PATH,
+    context_builder=builder,
+    auth=auth_module,
+    adapters={'gpt': adapter_gpt, 'gemini': adapter_gemini, 'copilot': adapter_copilot},
+)
+connector.register(app)
 
 
 @app.before_request
