@@ -40,5 +40,39 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-10T08:57:48.495968"
+  "generated_at": "2026-06-10T08:57:48.495968",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -0.455,
+    "danger_rate": 0.273,
+    "success_rate": 0.727,
+    "text": "一番重要なのは Test3\n\nここは\n\n\n\n指示書\n↓\n\n/ask を呼ぶ\n\nとなっています。\n\nしかし実装は\n\n\n\n/api/v1/*\n\nだけです。\n\nつまり",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-10",
+        "why": "",
+        "how": "",
+        "note": "実装完了,Layer0,Layer1,Layer2,essence,ping,DNA_v2,commit",
+        "recur": 0,
+        "matched": [
+          "essence"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-11",
+        "why": "",
+        "how": "",
+        "note": "LOOP,essence,ロードマップ,設計",
+        "recur": 0,
+        "matched": [
+          "essence"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-10T00:54:45.539Z"
+  }
 }
