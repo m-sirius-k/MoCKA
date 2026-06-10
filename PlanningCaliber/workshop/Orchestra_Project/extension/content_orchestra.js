@@ -255,18 +255,84 @@ async function fetchLivingContext() {
 function buildContextMessage(ctx) {
   const b = ctx.briefing || {};
   const warnings = ctx.warnings || [];
-  const risks = b.known_risks || [];
+  const risks = (b.known_risks || []).slice(0, 3);
+  const todos = ctx.top_todo || [];
+  const mentor = ctx.mentor_package || {};
+  const snapshot = mentor.institution_memory_snapshot || {};
 
-  return `[MoCKA Living Context]
-Mission: ${b.mission || ''}
-Top Priority: ${b.top_priority || ''}
-Strategy: ${b.recommended_strategy || ''}
-Warnings: ${warnings.slice(0,3).map(w => typeof w === 'string' ? w : w.message || JSON.stringify(w)).join(' / ')}
-Known Risks: ${risks.slice(0,3).join(' / ')}
-Phase: ${ctx.current_phase || 'Phase 4'}
-Contract: MoCKA ${ctx.contract_version || '1.0'} / Seal: ${ctx.contract_seal || ''}
+  const projectBlock = `
+[PROJECT STATUS]
+Project       : MoCKA ${ctx.contract_version || '1.0'}
+Phase         : ${(ctx.current_phase || 'Phase 4').substring(0, 40)}
+Current Branch: main
+Last Verified : ${ctx.contract_seal ? '2026-06-10 / seal:' + ctx.contract_seal : ''}
+Active TODOs  : ${snapshot.active_todos || '?'}
+Total Events  : ${snapshot.total_events || '?'}
+Blockers      : ${warnings.filter(w => {
+    const msg = typeof w === 'string' ? w : (w.message || '');
+    return msg.toLowerCase().includes('block') || msg.toLowerCase().includes('fail');
+  }).length}
+Open Incidents: ${warnings.filter(w => {
+    const msg = typeof w === 'string' ? w : (w.message || '');
+    return msg.toLowerCase().includes('incident') || msg.toLowerCase().includes('active');
+  }).length}
+`.trim();
 
-上記はMoCKA制度OSからのブリーフィングです。あなたは今日、制度参加者として以下の役割で仕事を始めてください。`;
+  const roleBlock = `
+[ROLES]
+ChatGPT : 監査官（設計・制度審査）
+Claude  : 制度書記官・実装調整官
+Codex   : 実装官（大規模バッチ）
+Gemini  : 調査官（情報収集）
+`.trim();
+
+  const priorityBlock = todos.slice(0, 3).map((t, i) =>
+    `${i + 1}. [${t.priority || '?'}] ${t.title || t.id}`
+  ).join('\n');
+
+  const riskBlock = risks.length > 0
+    ? risks.map(r => `⚠ ${r}`).join('\n')
+    : '（なし）';
+
+  const warnBlock = warnings.length > 0
+    ? warnings.slice(0, 3).map(w =>
+        typeof w === 'string' ? `• ${w}` : `• ${w.message || JSON.stringify(w)}`
+      ).join('\n')
+    : '（なし）';
+
+  const strategyBlock = b.recommended_strategy
+    ? b.recommended_strategy.substring(0, 200)
+    : '';
+
+  return `━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ MoCKA Living Context
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+${projectBlock}
+
+${roleBlock}
+
+[MISSION]
+${b.mission || ''}
+
+[TOP PRIORITY]
+${priorityBlock}
+
+[KNOWN RISKS]
+${riskBlock}
+
+[WARNINGS]
+${warnBlock}
+
+[STRATEGY]
+${strategyBlock}
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+上記はMoCKA制度OSからの自動ブリーフィングです。
+あなたは「監査官（R01）」として、この文脈を前提に応答してください。
+制度原則: Not AI-to-AI. AI-to-Institution.
+Reasoning with a living institution.
+━━━━━━━━━━━━━━━━━━━━━━━━`;
 }
 
 function waitForElement(selector, timeout = 5000) {
@@ -334,6 +400,8 @@ function createMockaPanel(ctx) {
 
   const briefing = ctx.briefing || {};
   const warnings = ctx.warnings || [];
+  const mentor = ctx.mentor_package || {};
+  const snap = mentor.institution_memory_snapshot || {};
 
   const panel = document.createElement('div');
   panel.id = 'mocka-living-context';
@@ -362,6 +430,23 @@ function createMockaPanel(ctx) {
         ⚡ MoCKA Living Context
       </span>
       <button id="mocka-close" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">✕</button>
+    </div>
+
+    <div style="margin-bottom:12px">
+      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">PROJECT</div>
+      <div style="color:#e8e6f0;font-size:12px;line-height:1.8">
+        MoCKA ${ctx.contract_version || '1.0'} · Phase 4<br>
+        Active TODOs: ${snap.active_todos || '?'} ·
+        Events: ${snap.total_events || '?'}<br>
+        Seal: ${ctx.contract_seal || ''}
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">ROLES</div>
+      <div style="color:#e8e6f0;font-size:12px;line-height:1.8">
+        GPT: 監査官 · Claude: 制度書記官<br>
+        Codex: 実装官 · Gemini: 調査官
+      </div>
     </div>
 
     ${briefing.mission ? `
