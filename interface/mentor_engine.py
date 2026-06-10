@@ -121,6 +121,52 @@ def get_mentor_package(role: str, scope: str, ai_id: str) -> dict:
     }
 
 
+_STRATEGY_BY_ROLE = {
+    "R01": "top_todoの最優先項目から着手し、ファイル変更前後でmocka_write_event(CHANGE_START/CHANGE_DONE)を必ず記録すること。",
+    "R02": "設計提案・TODO依存関係をレビューし、known_risksに該当する変更には特に注意してリスク分析コメントを残すこと。",
+}
+
+
+def _institution_focus() -> str:
+    try:
+        conn = db._get_conn()
+        row = conn.execute(
+            "SELECT content FROM essence WHERE axis = 'PHILOSOPHY' ORDER BY rowid DESC LIMIT 1"
+        ).fetchone()
+        conn.close()
+        if row and row["content"]:
+            return row["content"][:200]
+    except Exception:
+        pass
+    return "記録なき作業はMoCKAとして存在しない（Structure / Record / Verification）"
+
+
+def generate_briefing(role: str, scope: str, mentor_data: dict) -> dict:
+    from handshake import CURRENT_PHASE, OPEN_ISSUES, _get_top_todo
+
+    top_todo = _get_top_todo(1)
+    top_priority = top_todo[0]["title"] if top_todo else "アクティブなTODOなし"
+
+    mission = f"{CURRENT_PHASE}において、最優先TODO「{top_priority}」を進めること。"
+
+    risk_prediction = mentor_data.get("risk_prediction", {})
+    high_risk_areas = risk_prediction.get("high_risk_areas", [])[:3]
+    known_risks = [area["mitigation"] for area in high_risk_areas]
+    known_risks += OPEN_ISSUES
+
+    strategy = _STRATEGY_BY_ROLE.get(role, _STRATEGY_BY_ROLE["R01"])
+    if known_risks:
+        strategy += f" 特に注意: {known_risks[0]}"
+
+    return {
+        "mission": mission,
+        "top_priority": top_priority,
+        "known_risks": known_risks,
+        "institution_focus": _institution_focus(),
+        "recommended_strategy": strategy,
+    }
+
+
 @mentor_bp.route('/mentor', methods=['GET'])
 def mentor():
     role = request.args.get("role", "R01")
