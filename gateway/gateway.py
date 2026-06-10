@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# MoCKA AI Connector Framework v1
+# Role: AI Adapter Layer (MoCKA AI Architecture v2.0)
+# Port: 5010 | Internal connector - NOT for public exposure
+# Connects: GPT/Gemini/Copilot -> MoCKA MCP (port:5002)
+# ref: E20260610_010 / TODO_268
 import json
 import sqlite3
 from datetime import datetime, timezone
