@@ -353,8 +353,7 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Relay_Project/extension/content.js (v4.6) のINPUT_SELECTORS / SEND_BUTTON_SELECTORS /
-// setInputValue() を流用（実績のあるchatgpt.com入力・送信処理）
+// Relay_Project/extension/content.js (v4.6) のINPUT_SELECTORS / setInputValue() を流用
 const MOCKA_INPUT_SELECTORS = [
   'div[contenteditable="true"][data-testid="composer-input"]',
   'div[contenteditable="true"].ProseMirror',
@@ -362,21 +361,6 @@ const MOCKA_INPUT_SELECTORS = [
   'textarea#prompt-textarea',
   'textarea',
 ];
-
-const MOCKA_SEND_BUTTON_SELECTORS = [
-  'button[data-testid="send-button"]',
-  'button[aria-label="Send message"]',
-  'button[aria-label="メッセージを送信"]',
-  'button[type="submit"]',
-];
-
-function mockaFindSendButton() {
-  for (const sel of MOCKA_SEND_BUTTON_SELECTORS) {
-    const el = document.querySelector(sel);
-    if (el) return el;
-  }
-  return null;
-}
 
 // Relay_Project/extension/content.js の setInputValue() を流用
 function mockaSetInputValue(el, text) {
@@ -424,20 +408,16 @@ async function injectAndSendContext(ctx) {
 
   await sleep(800);
 
-  const sendBtn = mockaFindSendButton();
-  console.log('[MoCKA] 送信ボタン:', sendBtn, sendBtn ? `disabled=${sendBtn.disabled}` : '');
-
-  if (sendBtn && !sendBtn.disabled) {
-    sendBtn.click();
-    console.log('[MoCKA] 送信ボタンをクリックしました');
-  } else {
-    for (const type of ['keydown', 'keypress', 'keyup']) {
-      input.dispatchEvent(new KeyboardEvent(type, {
-        key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true
-      }));
-    }
-    console.log('[MoCKA] Enterキーイベント(keydown/keypress/keyup)を発火しました（フォールバック）');
-  }
+  input.dispatchEvent(new KeyboardEvent('keydown', {
+    key: 'Enter',
+    code: 'Enter',
+    keyCode: 13,
+    which: 13,
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+  }));
+  console.log('[MoCKA] Enter keydownを発火しました');
 }
 
 function createMockaPanel(ctx) {
