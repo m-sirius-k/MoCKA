@@ -66,7 +66,7 @@ def _applicable_guidelines(limit: int = 10) -> list[dict]:
 
 
 def _institution_memory_snapshot() -> dict:
-    from handshake import CURRENT_PHASE, _get_top_todo
+    from handshake import CURRENT_PHASE, CONTRACT_SEAL, _get_top_todo
 
     todo_path = Path(db.MOCKA_ROOT) / "data" / "MOCKA_TODO.json"
     active_todos = 0
@@ -76,10 +76,22 @@ def _institution_memory_snapshot() -> dict:
     except Exception:
         pass
 
+    try:
+        conn = db._get_conn()
+        guidelines_count = conn.execute(
+            "SELECT COUNT(*) FROM guidelines_reviewed WHERE verdict='KEEP'"
+        ).fetchone()[0]
+        conn.close()
+    except Exception:
+        guidelines_count = 0
+
     return {
         "total_events": db.count_events(),
         "active_todos": active_todos,
+        "guidelines_count": guidelines_count,
         "current_phase": CURRENT_PHASE,
+        "last_seal": CONTRACT_SEAL,
+        "last_updated": datetime.now(JST).strftime("%Y-%m-%d"),
         "top_todo": _get_top_todo(3),
     }
 
