@@ -1,7 +1,7 @@
 'use strict';
-// Relay v4.6 ? content.js
+// Relay v4.6 — content.js
 // Fix v4.1: Extension context invalidated guard + CSP Google Fonts removed
-// Fix v4.2: Smart handoff ? invisible inject on first send (not pasted into input)
+// Fix v4.2: Smart handoff — invisible inject on first send (not pasted into input)
 
 const CONFIG = {
   TURN_WARN:     20,
@@ -24,7 +24,7 @@ const SEND_BUTTON_SELECTORS = [
   'button[type="submit"]',
 ];
 
-// TODO patterns ? priority order
+// TODO patterns — priority order
 const EN_PATTERNS = [
   /^\[RELAY_TODO\]\s*(.+)/i,
   /^-\s*\[\s*\]\s*(.+)/,
@@ -33,7 +33,7 @@ const EN_PATTERNS = [
 
 const JA_PATTERNS = [
   /^(?:TODO|タスク|作業|対応|修正|追加|確認)\s*[:：]\s*(.+)/,
-  /^[・?]\s*(.{15,})/,
+  /^[・•]\s*(.{15,})/,
   /^(\d+[.)]\s*.{15,})/,
 ];
 
@@ -293,7 +293,7 @@ function processMessage(el, id) {
 
   detectAndSetWorkMode(text);
   updateBadge();
-  console.log('[Relay] Turn', turnCount, '? tokens ~', tokens);
+  console.log('[Relay] Turn', turnCount, '— tokens ~', tokens);
 }
 
 function estimateTokens(text) {
@@ -335,7 +335,7 @@ function estimateActualTokens() {
 
   // ── 言語係数 ──────────────────────────────────────────────
   // 日本語文字（ひらがな・カタカナ・漢字）の比率を計算
-  const jpChars = (allText.match(/[?-?]/g) || []).length;
+  const jpChars = (allText.match(/[぀-鿿]/g) || []).length;
   const jpRatio = jpChars / totalChars;
 
   // 係数定義（実測ベース）
@@ -411,7 +411,7 @@ function extractTodos(text) {
     if (trimmed.length < 15 || trimmed.length > 200) continue;
 
     // Reject high symbol density (likely code)
-    const symbols = (trimmed.match(/[^a-zA-Z0-9?-?\s\-:.,]/g) || []).length;
+    const symbols = (trimmed.match(/[^a-zA-Z0-9぀-龯\s\-:.,]/g) || []).length;
     if (symbols / trimmed.length > 0.30) continue;
 
     // ★ Reject: Relay引き継ぎブロックの区切り・ヘッダー行
@@ -426,10 +426,10 @@ function extractTodos(text) {
     if (/^(?:ターン数|作業|未完了TODO)\s*[:：]/.test(trimmed)) continue;
     // ★ Reject: MoCKA形式の完了報告行 (TODO_xxx完了, LB_xxx完了, _170完了 等)
     if (/(?:TODO[_-]?\d+|LB[_-]?\d+|_\d+)\s*(?:[（(].*?[)）])?\s*[:：]?\s*.*(?:完了|done|finished)/i.test(trimmed)) continue;
-    // ★ Reject: _数字（?）形式の引き継ぎ行全般
+    // ★ Reject: _数字（〜）形式の引き継ぎ行全般
     if (/^_\d+[（(【]/.test(trimmed)) continue;
-    // ★ Reject: ?? ? → 等の記号付き注釈行
-    if (/^(?:→|→\s*??|→\s*?|??|?)/.test(trimmed)) continue;
+    // ★ Reject: 🚫 ✅ → 等の記号付き注釈行
+    if (/^(?:→|→\s*🚫|→\s*✅|🚫|✅)/.test(trimmed)) continue;
     // ★ Reject: 日付+完了パターン
     if (/20\d\d[-\/]\d\d[-\/]\d\d.*完了/.test(trimmed)) continue;
     // ★ Reject: 表組みの行
@@ -451,9 +451,9 @@ function extractTodos(text) {
     if (/^#\s+[→]/.test(trimmed)) continue;
     // ★ Reject: × 数字（補正係数的な記述）
     if (/^[×x]\s*\d/.test(trimmed)) continue;
-    // ★ Reject: 数字+ = ? のような計算式行
+    // ★ Reject: 数字+ = 〜 のような計算式行
     if (/^\d+[\+\-\*\/]\s*\d/.test(trimmed)) continue;
-    // ★ Reject: 番号付きリスト行（1. 2. 3. 形式 ? 手順・説明文の誤爆防止）
+    // ★ Reject: 番号付きリスト行（1. 2. 3. 形式 — 手順・説明文の誤爆防止）
     if (/^\d+\.\s+.{5,}/.test(trimmed)) continue;
     // ★ Reject: **太字** マークダウン見出し的な行
     if (/^\*\*[^*]+\*\*[：:]\s*/.test(trimmed)) continue;
@@ -556,7 +556,7 @@ function showDensityNotification(type) {
     TOPIC_SHIFT:  '話題が大きく変わりました。前のトピックを引き継いでおきましょう',
   };
   const color = type === 'HIGH_DENSITY' ? '#ef4444' : '#f59e0b';
-  const icon  = type === 'HIGH_DENSITY' ? '??' : '??';
+  const icon  = type === 'HIGH_DENSITY' ? '🔴' : '🟡';
 
   const overlay = document.createElement('div');
   overlay.id = 'relay-density-notify';
@@ -576,7 +576,7 @@ function showDensityNotification(type) {
       ${MESSAGES[type]}
     </div>
     <div style="display:flex;gap:10px;justify-content:center;">
-      <button id="relay-density-handoff" style="background:#0369a1;border:1px solid #38bdf8;border-radius:8px;color:#38bdf8;font-size:12px;font-weight:700;padding:9px 18px;cursor:pointer;font-family:inherit;">? 引き継ぎを準備</button>
+      <button id="relay-density-handoff" style="background:#0369a1;border:1px solid #38bdf8;border-radius:8px;color:#38bdf8;font-size:12px;font-weight:700;padding:9px 18px;cursor:pointer;font-family:inherit;">⚡ 引き継ぎを準備</button>
       <button id="relay-density-dismiss" style="background:transparent;border:1px solid #334155;border-radius:8px;color:#64748b;font-size:12px;padding:9px 18px;cursor:pointer;font-family:inherit;">後で</button>
     </div>`;
   document.body.appendChild(overlay);
@@ -671,7 +671,7 @@ function showTurnWarning() {
   ].join(';');
 
   overlay.innerHTML = `
-    <div style="font-size:22px;margin-bottom:8px;color:#f59e0b;">?</div>
+    <div style="font-size:22px;margin-bottom:8px;color:#f59e0b;">⚠</div>
     <div style="color:#f59e0b;font-size:14px;font-weight:700;margin-bottom:8px;">
       20ターン到達
     </div>
@@ -683,7 +683,7 @@ function showTurnWarning() {
         background:#0369a1;border:1px solid #38bdf8;border-radius:8px;
         color:#38bdf8;font-size:12px;font-weight:700;padding:9px 18px;
         cursor:pointer;font-family:inherit;
-      ">? 引き継ぎを準備</button>
+      ">⚡ 引き継ぎを準備</button>
       <button id="relay-warn-dismiss" style="
         background:transparent;border:1px solid #334155;border-radius:8px;
         color:#64748b;font-size:12px;padding:9px 18px;
@@ -715,7 +715,7 @@ async function prepareInvisibleHandoff() {
   // 二重注入防止フラグ確認
   const injCheck = await chrome.storage.local.get(['relay_injected']);
   if (injCheck.relay_injected) {
-    console.log('[Relay] Already injected ? skip');
+    console.log('[Relay] Already injected — skip');
     return;
   }
 
@@ -747,7 +747,7 @@ async function prepareInvisibleHandoff() {
   }
 
   if (!packet) {
-    console.log('[Relay] No handoff packet ? clean start');
+    console.log('[Relay] No handoff packet — clean start');
     return;
   }
 
@@ -755,7 +755,7 @@ async function prepareInvisibleHandoff() {
   await chrome.storage.local.set({ relay_injected: true });
 
   // テキストボックスが出現するまで最大5秒待ってから即入力
-  console.log('[Relay] Handoff packet ready ? waiting for input box...');
+  console.log('[Relay] Handoff packet ready — waiting for input box...');
   injectWhenReady(packet, 0);
 }
 
@@ -773,7 +773,7 @@ function injectWhenReady(packet, attempts) {
     pendingHandoff  = packet;
     sendIntercepted = false;
     showBadgeReady();
-    console.log('[Relay] Input not found ? fallback to send-intercept mode');
+    console.log('[Relay] Input not found — fallback to send-intercept mode');
     waitForSendButton();
     return;
   }
@@ -893,18 +893,18 @@ function createBadge() {
       <div class="relay-dot"></div>
       <div class="relay-metric-row">
         <span class="relay-metric-lbl">CPI</span>
-        <span class="relay-cpi-val">?</span>
+        <span class="relay-cpi-val">—</span>
       </div>
       <div class="relay-metric-row">
         <span class="relay-metric-lbl">TOK</span>
-        <span class="relay-tok-val">?</span>
+        <span class="relay-tok-val">—</span>
       </div>
       <span class="relay-cpi-label">正常</span>
     </div>
     <div class="relay-turns">T:0</div>
   `;
 
-  badgeEl.title = 'Relay ? クリックで引き継ぎ注入';
+  badgeEl.title = 'Relay — クリックで引き継ぎ注入';
   badgeEl.addEventListener('click', handleBadgeClick);
 
   document.body.appendChild(badgeEl);
@@ -960,7 +960,7 @@ function makeDraggable(el, storageKey, defaultRight, defaultBottom) {
       if (isDragging && isExtensionAlive()) {
         try {
           chrome.storage.local.set({ [storageKey]: { left: parseInt(el.style.left), top: parseInt(el.style.top) } });
-        } catch (e) { /* extension context invalidated ? 無視 */ }
+        } catch (e) { /* extension context invalidated — 無視 */ }
       }
     };
     document.addEventListener('mousemove', onMove);
@@ -1116,7 +1116,7 @@ async function handleBadgeClick() {
 
     if (!packet) {
       showBadgeFlash('warn');
-      console.log('[Relay] Badge click ? no handoff data');
+      console.log('[Relay] Badge click — no handoff data');
       return;
     }
 
@@ -1166,7 +1166,7 @@ function updateBadge() {
 
     // CPI
     const cpi = s.cpi || 0;
-    if (cpiValEl) cpiValEl.textContent = cpi > 0 ? cpi.toFixed(2) : '?';
+    if (cpiValEl) cpiValEl.textContent = cpi > 0 ? cpi.toFixed(2) : '—';
 
     // CPI ラベル + 色
     if (cpiLblEl) {
@@ -1192,7 +1192,7 @@ function updateBadge() {
     if (tokEl) {
       tokEl.textContent = tok >= 1000
         ? (tok / 1000).toFixed(1) + 'K'
-        : tok > 0 ? tok.toString() : '?';
+        : tok > 0 ? tok.toString() : '—';
     }
   }).catch(() => {});
 }
@@ -1200,7 +1200,7 @@ function updateBadge() {
 function showBadgeReady() {
   if (!badgeEl) return;
   badgeEl.classList.add('handoff-ready');
-  badgeEl.title = 'Relay ? 引き継ぎ準備完了 (送信時に自動注入)';
+  badgeEl.title = 'Relay — 引き継ぎ準備完了 (送信時に自動注入)';
   const dot = badgeEl.querySelector('.relay-dot');
   if (dot) dot.className = 'relay-dot ready';
 }
@@ -1256,7 +1256,7 @@ function hashText(str) {
   return (h >>> 0).toString(36);
 }
 
-// ─── Intent Engine v4.0 ? Claude API自然言語判定 ────────────────────────────
+// ─── Intent Engine v4.0 — Claude API自然言語判定 ────────────────────────────
 // 正規表現廃止。Claudeが「TODO登録/完了/一覧/無関係」を判定する。
 // ストレスなし自然言語操作: 「これ覚えといて」「3番消して」「片付けたリスト見せて」等
 // ※ 引き継ぎ注入ロジックには一切触れない
@@ -1335,7 +1335,7 @@ function hashText(str) {
     if (!isExtensionAlive()) return;
     const what = (intent.what || '').trim();
     if (!what || what.length < 5) {
-      showIntentToast('? TODOの内容を取得できませんでした', '#f59e0b');
+      showIntentToast('⚠ TODOの内容を取得できませんでした', '#f59e0b');
       return;
     }
     await safeSendMessage({
@@ -1346,8 +1346,8 @@ function hashText(str) {
       source: 'voice_ai',
     });
     const msg = intent.why
-      ? `?? TODO登録\nWHAT: ${what.slice(0,50)}\nWHY: ${intent.why.slice(0,50)}`
-      : `?? TODO登録\n${what.slice(0,60)}`;
+      ? `📌 TODO登録\nWHAT: ${what.slice(0,50)}\nWHY: ${intent.why.slice(0,50)}`
+      : `📌 TODO登録\n${what.slice(0,60)}`;
     showIntentToast(msg);
   }
 
@@ -1357,8 +1357,8 @@ function hashText(str) {
     try {
       const res   = await safeSendMessage({ type: 'RELAY_GET_TODO_LIST' });
       const todos = res?.todos || [];
-      if (!todos.length) { showIntentToast('?? 未完了TODOはありません', '#475569'); return; }
-      const lines = ['?? 未完了TODO:'];
+      if (!todos.length) { showIntentToast('📋 未完了TODOはありません', '#475569'); return; }
+      const lines = ['📋 未完了TODO:'];
       todos.slice(0, 8).forEach(t => {
         const why = t.why ? ` (${t.why.slice(0,20)})` : '';
         lines.push(`  ${t.id}: ${t.text.slice(0,40)}${why}`);
@@ -1374,14 +1374,14 @@ function hashText(str) {
     try {
       if (intent.type === 'single' && intent.num != null) {
         const res = await safeSendMessage({ type: 'RELAY_COMPLETE_BY_NUM', num: intent.num });
-        if (res?.ok) showIntentToast(`? LB_${String(intent.num).padStart(3,'0')} 完了`);
+        if (res?.ok) showIntentToast(`✓ LB_${String(intent.num).padStart(3,'0')} 完了`);
         else showIntentToast(`LB_${String(intent.num).padStart(3,'0')} が見つかりません`, '#f59e0b');
       } else if (intent.type === 'range' && intent.from != null && intent.to != null) {
         const res = await safeSendMessage({ type: 'RELAY_COMPLETE_RANGE', from: intent.from, to: intent.to });
-        showIntentToast(`? LB_${String(intent.from).padStart(3,'0')} ? LB_${String(intent.to).padStart(3,'0')} 完了 (${res?.count || 0}件)`);
+        showIntentToast(`✓ LB_${String(intent.from).padStart(3,'0')} 〜 LB_${String(intent.to).padStart(3,'0')} 完了 (${res?.count || 0}件)`);
       } else if (intent.type === 'complete_all') {
         const res = await safeSendMessage({ type: 'RELAY_COMPLETE_ALL' });
-        showIntentToast(`? 全TODO完了 (${res?.count || 0}件)`);
+        showIntentToast(`✓ 全TODO完了 (${res?.count || 0}件)`);
       }
     } catch(e) { console.error('[Relay Intent] handleComplete error:', e); }
   }
@@ -1399,7 +1399,7 @@ function hashText(str) {
     const text = (input.innerText || input.value || '').trim();
     if (!text || text.length < 2) return;
 
-    // 軽量フィルタ ? TODO操作の匂いがなければスキップ
+    // 軽量フィルタ — TODO操作の匂いがなければスキップ
     if (!mightBeIntent(text)) return;
 
     if (_classifying) return;
@@ -1407,7 +1407,7 @@ function hashText(str) {
 
     setTimeout(async () => {
       try {
-        showIntentToast('?? …', '#475569', 8000);
+        showIntentToast('🤔 …', '#475569', 8000);
 
         // 現在のTODOリスト取得
         const res   = await safeSendMessage({ type: 'RELAY_GET_TODO_LIST' });
@@ -1420,7 +1420,7 @@ function hashText(str) {
         document.querySelectorAll('[data-relay-toast]').forEach(el => el.remove());
 
         if (!intent || intent.type === 'none') {
-          // TODO操作ではなかった ? 何もしない（通常送信）
+          // TODO操作ではなかった — 何もしない（通常送信）
         } else if (intent.type === 'list') {
           await showTodoList();
         } else if (intent.type === 'add') {
@@ -1441,7 +1441,7 @@ function hashText(str) {
 
 })();
 
-// ─── Manual TODO ? 選択テキスト右クリック (半自動) ───────────────────────────
+// ─── Manual TODO — 選択テキスト右クリック (半自動) ───────────────────────────
 // テキスト選択後Ctrl+Shift+T でTODO登録
 // ※ 右クリックはmanifest.jsonのcontextMenusで対応、ここではキーショートカット
 
@@ -1459,11 +1459,11 @@ function hashText(str) {
       safeSendMessage({ type: 'RELAY_GET_TODO_LIST' }).then(res => {
         const todos = res?.todos || [];
         if (!todos.length) {
-          showManualToast('?? 未完了TODOはありません', '#475569');
+          showManualToast('📋 未完了TODOはありません', '#475569');
           return;
         }
         const lines = todos.slice(0, 6).map(t => `${t.id}: ${t.text.slice(0,45)}`);
-        showManualToast('?? ' + lines.join('\n'), '#0f172a');
+        showManualToast('📋 ' + lines.join('\n'), '#0f172a');
       }).catch(() => {});
       return;
     }
@@ -1474,7 +1474,7 @@ function hashText(str) {
     }
 
     safeSendMessage({ type: 'RELAY_ADD_TODO', text, source: 'manual' }).then(() => {
-      showManualToast(`?? TODO登録: ${text.slice(0, 50)}${text.length > 50 ? '…' : ''}`);
+      showManualToast(`📌 TODO登録: ${text.slice(0, 50)}${text.length > 50 ? '…' : ''}`);
     }).catch(() => {});
 
     e.preventDefault();
