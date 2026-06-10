@@ -43,36 +43,24 @@
   "generated_at": "2026-06-10T17:14:38.517786",
   "matcher_result": {
     "verdict": "DANGER",
-    "score": -0.195,
-    "danger_rate": 0.403,
-    "success_rate": 0.597,
-    "text": "博士、ぜひ確認したかったのですが、このチャット環境からは任意の外部APIへPOST/GETして実際のレスポンスを取得することはできません。\n\n今回Web経由で確",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "きむら博士承認 / 今すぐ行け　　ちょっと笑ったわ！　ユーモアのセンスも良くなったか？",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
+        "when": "2026-06-10",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "きむら博士承認 / 今すぐ行け　　ちょっと笑ったわ！　ユーモアのセンスも良くなったか？",
         "recur": 0,
         "matched": [
-          "失敗"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-17",
-        "why": "根本原因記録・再発防止・次のAIへの引き継ぎ",
-        "how": "きむら博士による重大インシデント宣言",
-        "note": "INCIDENT,CRITICAL,データ欠損,Chrome拡張,収集失敗,Claude迷走",
-        "recur": 0,
-        "matched": [
-          "失敗"
+          "行け"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-10T09:46:05.275Z"
+    "updated_at": "2026-06-10T09:51:49.760Z"
   }
 }

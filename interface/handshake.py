@@ -103,6 +103,8 @@ def handshake():
     from prediction_engine import get_active_warnings
     from mentor_engine import get_mentor_package, generate_briefing
 
+    mentor_package = get_mentor_package(role, scope, ai_id)["mentor_package"]
+
     response = {
         "handshake": "READY",
         "contract_version": CONTRACT_VERSION,
