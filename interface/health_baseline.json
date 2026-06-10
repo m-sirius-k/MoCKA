@@ -1,7 +1,7 @@
 {
   "mocka_server": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: timed out"
   },
   "caliber_pipeline": {
     "ok": true,
