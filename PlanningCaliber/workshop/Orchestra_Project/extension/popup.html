@@ -1,12 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Orchestra</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;800&display=swap');
-
   :root {
     --bg:       #0d0d0f;
     --surface:  #141417;
@@ -29,14 +27,14 @@
     overflow-y: auto;
     background: var(--bg);
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 13px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
   }
 
-  /* サイドパネル時: 幅・高さ制限を解除 */
+  /* Side panel mode: full width on narrow viewports */
   @media (min-width: 200px) and (max-width: 450px) {
     body {
       width: 100% !important;
@@ -92,7 +90,7 @@
   }
   .stat:last-child { border-right: none; }
   .stat-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 18px;
     font-weight: 600;
     color: var(--accent);
@@ -120,7 +118,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 11px;
     padding: 6px 10px;
     outline: none;
@@ -134,7 +132,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 10px;
     font-weight: 600;
     padding: 6px 10px;
@@ -204,7 +202,7 @@
     margin-bottom: 5px;
   }
   .role-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 9px;
     font-weight: 600;
     padding: 2px 6px;
@@ -224,13 +222,13 @@
     border: 1px solid rgba(71,212,255,0.25);
   }
   .msg-time {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 10px;
     color: #9a9aaa;
     flex: 1;
   }
   .msg-session {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 8px;
     color: var(--muted);
     background: var(--bg);
@@ -257,7 +255,7 @@
     max-height: 200px;
     overflow-y: auto;
     white-space: pre-wrap;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     display: none;
   }
   .msg-item.expanded .msg-preview { display: none; }
@@ -281,7 +279,7 @@
     padding: 6px 12px;
     background: var(--surface);
     border-top: 1px solid var(--border);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 9px;
     color: var(--muted);
     display: flex;
@@ -314,7 +312,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius);
     color: var(--text);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 10px;
     font-weight: 600;
     padding: 5px 8px;
@@ -325,7 +323,7 @@
   .select-box:hover, .select-box:focus { border-color: var(--accent); }
   .highlight { background: rgba(232,255,71,0.2); border-radius: 2px; }
 
-  /* ── 週区切りラベル ── */
+  /* ���� �T��؂胉�x�� ���� */
   .week-divider {
     font-size: 9px;
     font-weight: 700;
@@ -345,7 +343,7 @@
   }
   .week-divider.recent { color: rgba(232,255,71,0.45); }
 
-  /* ── セッションカード ── */
+  /* ���� �Z�b�V�����J�[�h ���� */
   .sess-item {
     border-radius: var(--radius);
     margin-bottom: 3px;
@@ -363,7 +361,7 @@
   .sess-item:hover .sess-actions { opacity: 1; }
   .sess-item:hover .sess-snippet  { color: #555568; }
 
-  /* タイトル行（上段） */
+  /* �^�C�g���s�i��i�j */
   .sess-top {
     display: flex;
     align-items: baseline;
@@ -386,12 +384,12 @@
     flex-shrink: 0;
   }
   .sess-date {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 9px;
     color: #3a3a4a;
   }
   .sess-count {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 9px;
     color: #3a3a4a;
     background: #1c1c22;
@@ -400,7 +398,7 @@
     padding: 1px 5px;
   }
 
-  /* スニペット（薄く・邪魔しない） */
+  /* �X�j�y�b�g�i�����E�ז����Ȃ��j */
   .sess-snippet {
     font-size: 11px;
     color: #30303e;
@@ -412,7 +410,7 @@
     transition: color 0.15s;
   }
 
-  /* アクションボタン（ホバーで出現） */
+  /* �A�N�V�����{�^���i�z�o�[�ŏo���j */
   .sess-actions {
     opacity: 0;
     transition: opacity 0.15s;
@@ -435,7 +433,7 @@
     border: 1px solid #252530;
     border-radius: 3px;
     color: #55555f;
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 9px;
     font-weight: 700;
     padding: 2px 7px;
@@ -472,7 +470,7 @@
     border: 1px solid var(--border);
     border-radius: 3px;
     color: var(--accent);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 9px;
     font-weight: 700;
     padding: 2px 7px;
@@ -549,12 +547,12 @@
   .plan-row-name.accent { color: var(--accent); }
   .plan-row-name.gold { color: #c9a84c; }
   .plan-row-desc { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.5; }
-  .plan-row-price { font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .plan-row-price { font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
   .plan-row-price.gold { color: #c9a84c; }
   .plan-btn {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); color: var(--muted);
-    font-family: "Syne", sans-serif; font-size: 9px; font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 9px; font-weight: 600;
     padding: 5px 10px; cursor: pointer; text-decoration: none;
     display: inline-block; letter-spacing: 0.3px; transition: all 0.12s; white-space: nowrap;
   }
@@ -577,7 +575,7 @@
     flex: 1;
     background: var(--bg); border: 1px solid var(--border);
     border-radius: var(--radius); color: var(--text);
-    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace; font-size: 11px;
     padding: 6px 10px; outline: none; transition: border-color 0.15s;
   }
   .license-input:focus { border-color: var(--accent); }
@@ -606,7 +604,7 @@
     letter-spacing: 0.3px;
   }
   .wait-slider-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 11px;
     font-weight: 600;
     color: var(--accent);
@@ -757,13 +755,13 @@
     font-weight: 600;
     vertical-align: middle;
   }
-  /* Free状態 */
+  /* Free��� */
   .action-btn.locked {
     opacity: 0.45;
     cursor: default;
   }
   .action-btn.locked:hover { color: var(--muted); background: transparent; }
-  /* Pro解放 */
+  /* Pro��� */
   .action-btn.pro-feature.unlocked {
     color: var(--accent);
   }
@@ -776,7 +774,7 @@
     border: 1px solid rgba(232,255,71,0.3);
     color: var(--accent);
   }
-  /* One解放 */
+  /* One��� */
   .action-btn.one-feature.unlocked {
     color: #c9a84c;
   }
@@ -790,7 +788,7 @@
     color: #c9a84c;
   }
 
-  /* ── 詳細モーダルポップアップ ── */
+  /* ���� �ڍ׃��[�_���|�b�v�A�b�v ���� */
   #orch-detail-popup {
     position: fixed;
     inset: 0;
@@ -834,7 +832,7 @@
     text-overflow: ellipsis;
   }
   #orch-detail-title .orch-count {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 10px;
     background: rgba(71,212,255,0.15);
     color: var(--accent2);
@@ -848,7 +846,7 @@
     border: 1px solid var(--border);
     border-radius: 4px;
     color: var(--muted);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 10px;
     font-weight: 700;
     padding: 4px 10px;
@@ -889,7 +887,7 @@
     flex-wrap: wrap;
   }
   .orch-role {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 9px;
     font-weight: 600;
     padding: 2px 6px;
@@ -907,7 +905,7 @@
     border: 1px solid rgba(71,212,255,0.25);
   }
   .orch-time {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 10px;
     color: #9a9aaa;
     flex: 1;
@@ -931,7 +929,7 @@
     border: 1px solid var(--border);
     border-radius: 3px;
     color: var(--accent);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 9px;
     font-weight: 700;
     padding: 2px 7px;
@@ -962,7 +960,7 @@
     max-height: 240px;
     overflow-y: auto;
     white-space: pre-wrap;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     display: none;
   }
   .orch-msg-card.expanded .orch-preview { display: none; }
@@ -1000,7 +998,7 @@
   }
   .one-feature .tooltip-title { color: #c9a84c; }
 
-  /* ── TRIAL BANNER ── */
+  /* ���� TRIAL BANNER ���� */
   #trial-banner {
     display: none;
     align-items: center;
@@ -1021,7 +1019,7 @@
   .trial-text-main.expired-text { color: #ff6b6b; }
   .trial-text-sub { font-size: 9px; color: var(--muted); margin-top: 1px; }
   .trial-days {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
     font-size: 16px;
     font-weight: 600;
     color: var(--accent);
@@ -1035,7 +1033,7 @@
     border: 1px solid rgba(232,255,71,0.35);
     border-radius: 4px;
     color: var(--accent);
-    font-family: 'Syne', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     font-size: 10px;
     font-weight: 700;
     padding: 5px 12px;
@@ -1052,7 +1050,7 @@
 <body>
 
 <div class="header">
-  <div class="logo">◈</div>
+  <div class="logo">?</div>
   <div class="header-title">ORCHESTRA<span class="plan-badge" id="header-plan-badge"></span></div><button id="btn-sidepanel" title="Open as Side Panel" style="background:none;border:1px solid #444;border-radius:4px;color:#8a8a9a;cursor:pointer;font-size:10px;padding:3px 8px;flex-shrink:0" >&#x25A3; Side</button>
 </div>
 
@@ -1060,10 +1058,10 @@
 
 <!-- TRIAL BANNER (shown only to Free users without active Pro license) -->
 <div id="trial-banner">
-  <div class="trial-icon">🎁</div>
+  <div class="trial-icon">??</div>
   <div class="trial-text">
     <div class="trial-text-main" id="trial-banner-title">Try Pro free for 30 days</div>
-    <div class="trial-text-sub" id="trial-banner-sub">Unlock AI Share & Collab — no credit card required</div>
+    <div class="trial-text-sub" id="trial-banner-sub">Unlock AI Share & Collab ? no credit card required</div>
   </div>
   <div class="trial-days" id="trial-days-display" style="display:none"></div>
   <button class="trial-start-btn" id="trial-start-btn">Start Trial</button>
@@ -1072,48 +1070,48 @@
 <!-- ACTION BAR: Pro/One features -->
 <div class="action-bar" id="action-bar">
   <div class="action-btn pro-feature locked" id="action-share" title="">
-    <span class="action-label">🤝 AI Share<span class="action-plan">Pro</span></span>
+    <span class="action-label">?? AI Share<span class="action-plan">Pro</span></span>
     <div class="tooltip">
-      <div class="tooltip-title">🤝 AI Share — Pro</div>
+      <div class="tooltip-title">?? AI Share ? Pro</div>
       Send this conversation to 5 AIs simultaneously.<br>
       Get diverse perspectives in one click.
     </div>
   </div>
   <div class="action-btn one-feature locked" id="action-collab" title="">
-    <span class="action-label">⚡ AI Collab<span class="action-plan">One</span></span>
+    <span class="action-label">? AI Collab<span class="action-plan">One</span></span>
     <div class="tooltip">
-      <div class="tooltip-title">⚡ AI Collab — One</div>
+      <div class="tooltip-title">? AI Collab ? One</div>
       Fully autonomous multi-AI orchestration.<br>
-      No clicks needed — runs completely local.
+      No clicks needed ? runs completely local.
     </div>
   </div>
 </div>
 
 <div class="nav-tabs">
-  <div class="nav-tab active" id="nav-main" data-tab="main">◈ Library</div>
-  <div class="nav-tab" id="nav-settings" data-tab="settings">⚙ Settings</div>
+  <div class="nav-tab active" id="nav-main" data-tab="main">? Library</div>
+  <div class="nav-tab" id="nav-settings" data-tab="settings">? Settings</div>
 </div>
 <div class="main-panel" id="main-panel">
 <div class="stats-bar">
   <div class="stat">
-    <div class="stat-val" id="stat-total">—</div>
+    <div class="stat-val" id="stat-total">?</div>
     <div class="stat-label">Messages</div>
   </div>
   <div class="stat">
-    <div class="stat-val" id="stat-sessions">—</div>
+    <div class="stat-val" id="stat-sessions">?</div>
     <div class="stat-label">Sessions</div>
   </div>
   <div class="stat">
-    <div class="stat-val" id="stat-showing">—</div>
+    <div class="stat-val" id="stat-showing">?</div>
     <div class="stat-label">Showing</div>
   </div>
 </div>
 
 <div class="toolbar">
   <input class="search-box" type="text" id="search" placeholder="Search messages...">
-  <button class="btn primary" id="btn-export-csv">↓ CSV</button>
-  <button class="btn" id="btn-export-json">↓ JSON</button>
-  <button class="btn danger" id="btn-clear">✕</button>
+  <button class="btn primary" id="btn-export-csv">�� CSV</button>
+  <button class="btn" id="btn-export-json">�� JSON</button>
+  <button class="btn danger" id="btn-clear">?</button>
 </div>
 
 <div class="filter-tabs">
@@ -1138,14 +1136,14 @@
 
 <div class="message-list" id="message-list">
   <div class="empty-state">
-    <div class="empty-icon">◈</div>
-    <div class="empty-text">Loading…</div>
+    <div class="empty-icon">?</div>
+    <div class="empty-text">Loading�c</div>
   </div>
 </div>
 
 <div class="status-bar">
   <div class="status-dot"></div>
-  <span id="status-text">Monitoring claude.ai • Local only • No data leaves your device</span>
+  <span id="status-text">Monitoring claude.ai ? Local only ? No data leaves your device</span>
 </div>
 
 
@@ -1156,7 +1154,7 @@
 
   <!-- LOGIN NOTICE -->
   <div class="settings-section">
-    <div class="settings-section-title" data-i18n="loginNoticeTitle">⚠ Before you start</div>
+    <div class="settings-section-title" data-i18n="loginNoticeTitle">? Before you start</div>
     <div class="settings-note" style="color:var(--accent);line-height:1.8">
       <span data-i18n="loginNoticeBody">Please log in to each AI service before using Share / Orchestrate:</span>
       <span style="color:var(--muted);font-size:9px">ChatGPT / Gemini / Perplexity / Copilot / Genspark</span>
@@ -1165,41 +1163,41 @@
 
   <!-- AI TARGET SELECTOR -->
   <div class="settings-section">
-    <div class="settings-section-title" data-i18n="orchestraSectionTitle">◈ Orchestra — Send-to AI (right-click menu)</div>
+    <div class="settings-section-title" data-i18n="orchestraSectionTitle">? Orchestra ? Send-to AI (right-click menu)</div>
     <div class="ai-targets" id="ai-targets">
       <div class="ai-target-row checked" data-ai="ChatGPT">
-        <div class="ai-target-check">✓</div>
+        <div class="ai-target-check">?</div>
         <div class="ai-target-name">ChatGPT</div>
         <div class="ai-target-note">chatgpt.com</div>
       </div>
       <div class="ai-target-row checked" data-ai="Gemini">
-        <div class="ai-target-check">✓</div>
+        <div class="ai-target-check">?</div>
         <div class="ai-target-name">Gemini</div>
         <div class="ai-target-note">gemini.google.com</div>
       </div>
       <div class="ai-target-row checked" data-ai="Perplexity">
-        <div class="ai-target-check">✓</div>
+        <div class="ai-target-check">?</div>
         <div class="ai-target-name">Perplexity</div>
         <div class="ai-target-note">perplexity.ai</div>
       </div>
       <div class="ai-target-row checked" data-ai="Copilot">
-        <div class="ai-target-check">✓</div>
+        <div class="ai-target-check">?</div>
         <div class="ai-target-name">Copilot</div>
         <div class="ai-target-note">copilot.microsoft.com</div>
       </div>
       <div class="ai-target-row checked" data-ai="Genspark">
-        <div class="ai-target-check">✓</div>
+        <div class="ai-target-check">?</div>
         <div class="ai-target-name">Genspark</div>
         <div class="ai-target-note">genspark.ai</div>
       </div>
     </div>
     <div class="targets-note">
-      <span data-i18n="targetsNote">Checked AIs receive Save / Send / Orchestrate actions. Right-click → ◈ Orchestra to operate.</span>
+      <span data-i18n="targetsNote">Checked AIs receive Save / Send / Orchestrate actions. Right-click �� ? Orchestra to operate.</span>
     </div>
-    <!-- 応答待機時間スライダー -->
+    <!-- �����ҋ@���ԃX���C�_�[ -->
     <div class="wait-slider-section">
       <div class="wait-slider-label">
-        <span class="wait-slider-title" data-i18n="waitSliderTitle">⏱ Response wait time</span>
+        <span class="wait-slider-title" data-i18n="waitSliderTitle">? Response wait time</span>
         <span class="wait-slider-val" id="wait-slider-display">Standard (2.0s)</span>
       </div>
       <div class="wait-slider-track">
@@ -1211,7 +1209,7 @@
             <span style="font-size:8px;color:var(--muted)">4.5</span>
             <span style="font-size:8px;color:var(--muted)">4.0</span>
             <span style="font-size:8px;color:var(--muted)">3.0</span>
-            <span style="font-size:8px;color:var(--accent);font-weight:bold" title="デフォルト">▼2.0</span>
+            <span style="font-size:8px;color:var(--accent);font-weight:bold" title="�f�t�H���g">��2.0</span>
             <span style="font-size:8px;color:var(--muted)">1.8</span>
             <span style="font-size:8px;color:var(--muted)">1.5</span>
             <span style="font-size:8px;color:var(--muted)">1.2</span>
@@ -1221,7 +1219,7 @@
         </div>
         <span class="wait-slider-edge"><span data-i18n="waitFast">Fast</span><br><span style="font-size:9px;color:var(--muted)">0.8s</span></span>
       </div>
-      <div class="wait-slider-hint" data-i18n="waitSliderHint">⚠ If errors occur frequently, move the slider toward Slow.</div>
+      <div class="wait-slider-hint" data-i18n="waitSliderHint">? If errors occur frequently, move the slider toward Slow.</div>
     </div>
   </div>
 
@@ -1234,12 +1232,12 @@
           Free
           <span id="plan-active-badge" style="background:rgba(232,255,71,0.1);border:1px solid rgba(232,255,71,0.3);border-radius:3px;font-size:9px;color:var(--accent);padding:1px 6px;margin-left:4px">ACTIVE</span>
         </div>
-        <div class="plan-row-desc" id="plan-desc-display">Save &amp; search conversations · CSV/JSON export · No time limit</div>
+        <div class="plan-row-desc" id="plan-desc-display">Save &amp; search conversations �E CSV/JSON export �E No time limit</div>
       </div>
       <div class="plan-row-price" id="plan-price-display">$0</div>
     </div>
     <div id="plan-expiry-display" style="display:none;font-size:11px;margin-top:6px;padding:4px 8px;border-radius:4px;background:rgba(255,255,255,0.05)"></div>
-    <div class="settings-note" id="plan-note-display">The Free plan is fully functional — no features are locked, no nudges to upgrade.<br>Orchestra works completely out of the box, forever, at no cost.</div>
+    <div class="settings-note" id="plan-note-display">The Free plan is fully functional ? no features are locked, no nudges to upgrade.<br>Orchestra works completely out of the box, forever, at no cost.</div>
   </div>
 
   <!-- LICENSE KEY INPUT -->
@@ -1255,42 +1253,42 @@
 
   <!-- UPGRADE OPTIONS -->
   <div class="settings-section">
-    <div class="settings-section-title">Upgrade — makes it even more powerful</div>
+    <div class="settings-section-title">Upgrade ? makes it even more powerful</div>
 
     <div class="plan-row">
       <div class="plan-row-info">
         <div class="plan-row-name accent">Orchestra Pro</div>
-        <div class="plan-row-desc">5 AI parallel Orchestration · assign roles · one right-click to launch</div>
+        <div class="plan-row-desc">5 AI parallel Orchestration �E assign roles �E one right-click to launch</div>
       </div>
       <div class="plan-row-price">$5/mo</div>
-      <a href="https://buy.stripe.com/3cI8wPgW910TfUG02P2ZO02" target="_blank" class="plan-btn primary">Get Pro →</a>
+      <a href="https://buy.stripe.com/3cI8wPgW910TfUG02P2ZO02" target="_blank" class="plan-btn primary">Get Pro ��</a>
     </div>
 
     <div class="plan-row">
       <div class="plan-row-info">
-        <div class="plan-row-name accent">Pro → One Upgrade</div>
+        <div class="plan-row-name accent">Pro �� One Upgrade</div>
         <div class="plan-row-desc">Already on Pro? Pay only the difference to unlock full autonomy</div>
       </div>
       <div class="plan-row-price">+$5/mo</div>
-      <a href="https://buy.stripe.com/8x2dR95drdNFgYK02P2ZO03" target="_blank" class="plan-btn">Upgrade →</a>
+      <a href="https://buy.stripe.com/8x2dR95drdNFgYK02P2ZO03" target="_blank" class="plan-btn">Upgrade ��</a>
     </div>
 
     <div class="plan-row">
       <div class="plan-row-info">
         <div class="plan-row-name gold">Orchestra One</div>
-        <div class="plan-row-desc">Everything · No API key · Fully autonomous · 100% local</div>
+        <div class="plan-row-desc">Everything �E No API key �E Fully autonomous �E 100% local</div>
       </div>
       <div class="plan-row-price gold">$10/mo</div>
-      <a href="https://buy.stripe.com/dRmcN535j5h9bEq7vh2ZO00" target="_blank" class="plan-btn">Get One →</a>
+      <a href="https://buy.stripe.com/dRmcN535j5h9bEq7vh2ZO00" target="_blank" class="plan-btn">Get One ��</a>
     </div>
 
     <div class="plan-row">
       <div class="plan-row-info">
-        <div class="plan-row-name gold">One Launch Edition <span class="launch-badge-s">🎉 20% OFF</span></div>
-        <div class="plan-row-desc">Same as One · Lock in $8/mo for life · 500 copies only</div>
+        <div class="plan-row-name gold">One Launch Edition <span class="launch-badge-s">?? 20% OFF</span></div>
+        <div class="plan-row-desc">Same as One �E Lock in $8/mo for life �E 500 copies only</div>
       </div>
       <div class="plan-row-price gold">$8/mo</div>
-      <a href="https://buy.stripe.com/aFa5kDfS5dNF4bYdTF2ZO01" target="_blank" class="plan-btn gold-btn">Get Launch →</a>
+      <a href="https://buy.stripe.com/aFa5kDfS5dNF4bYdTF2ZO01" target="_blank" class="plan-btn gold-btn">Get Launch ��</a>
     </div>
   </div>
 
@@ -1299,8 +1297,8 @@
     <div class="settings-section-title">About</div>
     <div class="plan-row" style="flex-direction:column;align-items:flex-start;gap:4px">
       <div class="plan-row-name">Orchestra</div>
-      <div class="plan-row-desc">100% local · No server · No tracking · No API keys stored<br>Uninstall = all data gone · Your conversations stay yours.</div>
-      <a href="https://m-sirius-k.github.io/sirius-lab/" target="_blank" class="plan-btn" style="margin-top:6px">Website →</a>
+      <div class="plan-row-desc">100% local �E No server �E No tracking �E No API keys stored<br>Uninstall = all data gone �E Your conversations stay yours.</div>
+      <a href="https://m-sirius-k.github.io/sirius-lab/" target="_blank" class="plan-btn" style="margin-top:6px">Website ��</a>
     </div>
   </div>
 
