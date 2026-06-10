@@ -23,7 +23,8 @@
     "https://gemini.google.com/*",
     "https://www.perplexity.ai/*",
     "https://copilot.microsoft.com/*",
-    "https://www.genspark.ai/*"
+    "https://www.genspark.ai/*",
+    "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/*"
   ],
   "content_scripts": [
     {

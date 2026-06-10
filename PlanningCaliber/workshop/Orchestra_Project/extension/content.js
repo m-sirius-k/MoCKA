@@ -457,3 +457,130 @@ function makeDraggable(el, storageKey, defaultRight, defaultBottom) {
   }
 
 })();
+
+// ─── MoCKA Living Context 自動注入（TODO_293） ───────────────────────
+const MOCKA_HANDSHAKE_URL =
+  'https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/api/handshake';
+
+const MOCKA_ROLE_MAP = {
+  'chatgpt.com': 'R01',
+  'chat.openai.com': 'R01',
+  'claude.ai': 'R02',
+};
+
+async function fetchLivingContext() {
+  const role = MOCKA_ROLE_MAP[location.hostname] || 'R01';
+  try {
+    const res = await fetch(MOCKA_HANDSHAKE_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ai_id: location.hostname.includes('claude') ? 'claude' : 'gpt-4o',
+        role,
+        scope: 'mocka',
+        contract_version: '1.0'
+      })
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) {
+    console.warn('[MoCKA] Handshake failed:', e);
+    return null;
+  }
+}
+
+function createMockaPanel(ctx) {
+  const existing = document.getElementById('mocka-living-context');
+  if (existing) existing.remove();
+
+  const briefing = ctx.briefing || {};
+  const warnings = ctx.warnings || [];
+
+  const panel = document.createElement('div');
+  panel.id = 'mocka-living-context';
+  panel.style.cssText = `
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: #1a1a2e;
+    color: #e8e6f0;
+    border: 1px solid #533483;
+    border-radius: 12px;
+    padding: 16px;
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    z-index: 999999;
+    box-shadow: 0 4px 24px rgba(83,52,131,0.4);
+  `;
+
+  panel.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span style="font-size:14px;font-weight:600;color:#a78bfa">
+        ⚡ MoCKA Living Context
+      </span>
+      <button id="mocka-close" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">✕</button>
+    </div>
+
+    ${briefing.mission ? `
+    <div style="margin-bottom:12px">
+      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">MISSION</div>
+      <div style="color:#e8e6f0">${briefing.mission}</div>
+    </div>` : ''}
+
+    ${briefing.top_priority ? `
+    <div style="margin-bottom:12px">
+      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">TOP PRIORITY</div>
+      <div style="color:#fbbf24">${briefing.top_priority}</div>
+    </div>` : ''}
+
+    ${briefing.recommended_strategy ? `
+    <div style="margin-bottom:12px">
+      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">STRATEGY</div>
+      <div style="color:#e8e6f0">${briefing.recommended_strategy}</div>
+    </div>` : ''}
+
+    ${warnings.length > 0 ? `
+    <div style="margin-bottom:12px">
+      <div style="color:#ef4444;font-size:11px;font-weight:600;margin-bottom:4px">⚠ WARNINGS</div>
+      ${warnings.map(w => `<div style="color:#fca5a5;margin-bottom:4px">• ${typeof w === 'string' ? w : JSON.stringify(w)}</div>`).join('')}
+    </div>` : ''}
+
+    ${(briefing.known_risks||[]).length > 0 ? `
+    <div style="margin-bottom:12px">
+      <div style="color:#f59e0b;font-size:11px;font-weight:600;margin-bottom:4px">KNOWN RISKS</div>
+      ${briefing.known_risks.slice(0,3).map(r => `<div style="color:#fcd34d;margin-bottom:4px">• ${r}</div>`).join('')}
+    </div>` : ''}
+
+    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #533483;color:#666;font-size:11px">
+      MoCKA ${ctx.contract_version || '1.0'} · ${ctx.current_phase ? ctx.current_phase.substring(0,30)+'...' : 'Phase 4'}
+    </div>
+  `;
+
+  document.body.appendChild(panel);
+  document.getElementById('mocka-close').onclick = () => panel.remove();
+}
+
+async function initMockaContext() {
+  if (!['chatgpt.com','chat.openai.com','claude.ai']
+      .some(h => location.hostname.includes(h))) return;
+
+  const cached = sessionStorage.getItem('mocka_context_ts');
+  if (cached && Date.now() - parseInt(cached) < 3600000) return;
+
+  const ctx = await fetchLivingContext();
+  if (!ctx || ctx.handshake !== 'READY') return;
+
+  sessionStorage.setItem('mocka_context_ts', Date.now().toString());
+  createMockaPanel(ctx);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMockaContext);
+} else {
+  setTimeout(initMockaContext, 1500);
+}
+// ─────────────────────────────────────────────────────────────────────
