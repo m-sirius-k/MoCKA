@@ -2,10 +2,9 @@
 # Connector Caliber v1.0
 # Role: gateway/ を MoCKA Caliber層として位置づける
 # ref: E20260610_017
-import sqlite3
-from datetime import datetime, timezone
-
 from flask import jsonify, request
+
+from mocka_index_writer import MoCKAIndex, IndexWriter
 
 CALIBER_ID = 'connector_caliber_v1'
 
