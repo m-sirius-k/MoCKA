@@ -25,29 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_139",
-      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
-      "priority": "高"
+      "id": "TODO_280",
+      "title": "Institution Contract 設計 — 全参加者共通の制度参加契約（GPT最重要提案）",
+      "priority": "最高"
     },
     {
-      "id": "TODO_207",
-      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
-      "priority": "高"
+      "id": "TODO_285",
+      "title": "MoCKA 3層アーキテクチャ正式定義 — Constitution / Institution / Operation",
+      "priority": "最高"
     },
     {
-      "id": "TODO_206",
-      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
-      "priority": "高"
+      "id": "TODO_290",
+      "title": "Context Composer 実装 — Reflection/Prediction/Mentor統合working_context生成",
+      "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-10T17:14:38.517786",
-  "matcher_result": {
-    "verdict": "NEUTRAL",
-    "score": 0,
-    "danger_rate": 0,
-    "success_rate": 0,
-    "text": "Uncaught (in promise) TypeError: Cannot read properties of null (reading 'map')\n",
-    "top_events": [],
-    "updated_at": "2026-06-10T10:27:07.634Z"
-  }
+  "generated_at": "2026-06-11T08:39:09.763297"
 }
