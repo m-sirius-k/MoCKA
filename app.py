@@ -48,9 +48,15 @@ CORS(app, origins="*", supports_credentials=True)
 from interface.ai_session import ai_session_bp
 from interface.handshake import handshake_bp
 from interface.dashboard import dashboard_bp
+from interface.reflection_engine import reflection_bp
+from interface.prediction_engine import prediction_bp
+from interface.mentor_engine import mentor_bp
 app.register_blueprint(ai_session_bp)
 app.register_blueprint(handshake_bp)
 app.register_blueprint(dashboard_bp)
+app.register_blueprint(reflection_bp)
+app.register_blueprint(prediction_bp)
+app.register_blueprint(mentor_bp)
 
 # ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)
