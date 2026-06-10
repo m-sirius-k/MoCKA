@@ -100,6 +100,9 @@ def handshake():
     session_id = _next_session_id()
     now = datetime.now(JST)
 
+    from prediction_engine import get_active_warnings
+    from mentor_engine import get_mentor_package
+
     response = {
         "handshake": "READY",
         "contract_version": CONTRACT_VERSION,
@@ -121,6 +124,8 @@ def handshake():
         "open_issues": OPEN_ISSUES,
         "pending_review": [],
         "recent_decisions": [],
+        "warnings": get_active_warnings(),
+        "mentor_package": get_mentor_package(role, scope, ai_id)["mentor_package"],
         "session_id": session_id,
         "timestamp": now.isoformat(),
     }
