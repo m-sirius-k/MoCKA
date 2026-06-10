@@ -20,8 +20,8 @@
     "detail": "ok"
   },
   "mcp_schema_hash": {
-    "ok": true,
-    "detail": "変更なし (hash: c8918100bdb02e32)"
+    "ok": false,
+    "detail": "ハッシュ変更検出!\n                          前回: c8918100bdb02e32\n                          今回: 298b177c0858f617"
   },
   "relay_dom_selector": {
     "ok": false,
