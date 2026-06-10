@@ -6,7 +6,8 @@ MoCKA Memory Caliber -- MCP Server
 
 import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os
 from pathlib import Path
-from flask import Flask, request
+import requests
+from flask import Flask, request, Response
 from flask_cors import CORS
 
 MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
