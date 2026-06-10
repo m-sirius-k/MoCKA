@@ -44,6 +44,14 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app, origins="*", supports_credentials=True)
 
+# AI Session / Handshake / Dashboard (TODO_282 / TODO_283)
+from interface.ai_session import ai_session_bp
+from interface.handshake import handshake_bp
+from interface.dashboard import dashboard_bp
+app.register_blueprint(ai_session_bp)
+app.register_blueprint(handshake_bp)
+app.register_blueprint(dashboard_bp)
+
 # ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)
 # ============================================================
