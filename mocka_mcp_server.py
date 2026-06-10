@@ -555,6 +555,29 @@ def oauth_server():
 def register():
     return json.dumps({"client_id": "mocka-mcp", "client_secret": "none"}), 200, {"Content-Type": "application/json"}
 
+@app.route("/api/<path:subpath>", methods=["GET", "POST", "PUT", "DELETE"])
+def proxy_to_app(subpath):
+    """port5000 (app.py / Living Memory API) へのリバースプロキシ（TODO_291）"""
+    target_url = f"http://localhost:5000/api/{subpath}"
+
+    try:
+        resp = requests.request(
+            method=request.method,
+            url=target_url,
+            headers={k: v for k, v in request.headers if k.lower() != 'host'},
+            json=request.get_json(silent=True),
+            params=request.args,
+            timeout=10,
+        )
+        return Response(
+            resp.content,
+            status=resp.status_code,
+            content_type=resp.headers.get('Content-Type', 'application/json'),
+        )
+    except Exception as e:
+        return json.dumps({"error": f"proxy error: {str(e)}"}, ensure_ascii=False), 502, {"Content-Type": "application/json"}
+
+
 @app.route("/health")
 def health():
     rows = _db_read_events()
