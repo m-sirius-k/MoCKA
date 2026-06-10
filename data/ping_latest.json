@@ -43,36 +43,36 @@
   "generated_at": "2026-06-10T08:57:48.495968",
   "matcher_result": {
     "verdict": "SUCCESS",
-    "score": -0.455,
-    "danger_rate": 0.273,
-    "success_rate": 0.727,
-    "text": "一番重要なのは Test3\n\nここは\n\n\n\n指示書\n↓\n\n/ask を呼ぶ\n\nとなっています。\n\nしかし実装は\n\n\n\n/api/v1/*\n\nだけです。\n\nつまり",
+    "score": 0.0,
+    "danger_rate": 0.5,
+    "success_rate": 0.5,
+    "text": "## 4-3. 報告フォーマット — Index Writer v1.0\n\n| 項目 | 内容 |\n\n|---|---|\n\n| Test 1 (CLI書き込み)",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-10",
-        "why": "",
-        "how": "",
-        "note": "実装完了,Layer0,Layer1,Layer2,essence,ping,DNA_v2,commit",
+        "when": "2026-04-17",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "powershell\n\n```powershell\npython \"C:\\Users\\sirok\\batch_ecol2.py\"\n```\n\n実行してください。走らせながら明日の自動化設計を始めます。\n",
         "recur": 0,
         "matched": [
-          "essence"
+          "events.db"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "",
-        "how": "",
-        "note": "LOOP,essence,ロードマップ,設計",
+        "when": "2026-04-17",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "```powershell\nprint(f\"\\n完了: 成功={success} スキップ={skip}\")\n\"@ | Out-File -FilePath \"C:\\Users\\sirok\\batch",
         "recur": 0,
         "matched": [
-          "essence"
+          "events.db"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-10T00:54:45.539Z"
+    "updated_at": "2026-06-10T02:28:58.708Z"
   }
 }
