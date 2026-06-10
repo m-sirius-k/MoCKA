@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-09",
+    "updated": "2026-06-10",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -384,14 +384,15 @@
     {
       "id": "TODO_266",
       "title": "Cloudflare Tunnel 恒久化 — Named Tunnel設定",
-      "status": "未着手",
+      "status": "保留",
       "priority": "高",
       "category": "Cloudflare",
       "description": "現在の一時URL(pharmacy-governing-whale-two.trycloudflare.com)はPC再起動で変わる。cloudflaredのNamed Tunnel設定で固定URLに変更する。mocka-gateway.nsjpkimura-mocka.workers.dev等の固定サブドメインに紐付け。",
       "assigned_to": "Claude",
-      "note": "E20260609_10418。Gateway Phase3完了後の残課題。",
+      "note": "2026-06-10: AI Architecture v2.0確定によりCloudflare Tunnel恒久化は優先度を下げる。nsjp.org NS移行後に再検討。当面はAI Connector Framework（TODO_268）を先行させる。ref:E20260610_010",
       "reference_event": "",
-      "created_at": "2026-06-09T20:28:44.749865"
+      "created_at": "2026-06-09T20:28:44.749865",
+      "updated_at": "2026-06-10T09:33:43.266782"
     },
     {
       "id": "TODO_267",
@@ -404,6 +405,102 @@
       "note": "E20260609_10418。TODO_266完了が前提条件。",
       "reference_event": "",
       "created_at": "2026-06-09T20:28:49.895445"
+    },
+    {
+      "id": "TODO_268",
+      "title": "AI Connector Framework v1 確立 — gateway.py転用・ChatGPT Actions疎通テスト",
+      "status": "未着手",
+      "priority": "高",
+      "category": "アーキテクチャ",
+      "description": "gateway.py（port:5010）+ adapter_gpt/gemini/copilot を「公開Gateway」から「AI Connector Framework v1」として再定義。MoCKA MCPへの各AI固有差異を吸収するアダプター層として確立。ChatGPT Custom Actions → MoCKA MCP疎通テストを含む。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_010",
+      "created_at": "2026-06-10T09:33:38.463221"
+    },
+    {
+      "id": "TODO_269",
+      "title": "Perplexity Connector 実装 — adapter_perplexity.py",
+      "status": "未着手",
+      "priority": "中",
+      "category": "Connector Framework",
+      "description": "MoCKA Connector Framework v1.0 として Perplexity 用アダプターを追加。情報収集・ソース収集・一次調査役割に特化した connector。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_017",
+      "created_at": "2026-06-10T09:55:09.591941"
+    },
+    {
+      "id": "TODO_270",
+      "title": "Genspark Connector 実装 — adapter_genspark.py",
+      "status": "未着手",
+      "priority": "中",
+      "category": "Connector Framework",
+      "description": "MoCKA Connector Framework v1.0 として Genspark 用アダプターを追加。レポート・比較・情報整理役割に特化した connector。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_017",
+      "created_at": "2026-06-10T09:55:13.639347"
+    },
+    {
+      "id": "TODO_271",
+      "title": "PHI-OS プロセス管理統合 — PID管理・Restart自動化",
+      "status": "未着手",
+      "priority": "中",
+      "category": "PHI-OS",
+      "description": "MoCKA-START.batのプロセス管理をPHI-OSへ移管。PID管理・終了管理・Restart管理を実装。stale process問題の恒久解決。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_10449",
+      "created_at": "2026-06-10T10:37:24.919076"
+    },
+    {
+      "id": "TODO_272",
+      "title": "AI Capability Registry 実装 — Connector Framework v2.0 Phase1",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Connector Framework",
+      "description": "各AIの得意分野（ChatGPT:推論統合/Perplexity:Web調査/Gemini:マルチモーダル/Copilot:コード/Genspark:レポート）をMoCKAが管理するRegistryを実装。AI名でなく能力で接続先選択できるようにする。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_10449",
+      "created_at": "2026-06-10T10:37:29.964145"
+    },
+    {
+      "id": "TODO_273",
+      "title": "Connector Router 実装 — Connector Framework v2.0 Phase2",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Connector Framework",
+      "description": "connector_query→Connector Router→各Adapter(GPT/Gemini/Copilot/Perplexity/Genspark Worker)のルーティング層実装。PHI-OSが担当AI決定ロジックを保持。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_10449",
+      "created_at": "2026-06-10T10:37:35.567451"
+    },
+    {
+      "id": "TODO_274",
+      "title": "Institution Log 拡張 — Connector Framework v2.0 Phase3",
+      "status": "未着手",
+      "priority": "中",
+      "category": "Connector Framework",
+      "description": "events.dbのconnector記録を拡張。担当AI・参照コンテキスト・実行時間・成否・次回再利用可否まで保存。AI横断の監査・分析・最適化を可能にする。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_10449",
+      "created_at": "2026-06-10T10:37:39.869089"
+    },
+    {
+      "id": "TODO_275",
+      "title": "Lifecycle Manager 実装 — Index起点の自動制度循環エンジン",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Connector Framework",
+      "description": "Indexを起点としてMoCKA全体を自動起動する制度エンジン。Index作成→events.db→Memory更新/Essence候補生成/Relay候補生成/TODO抽出/Audit生成。GPT提言(E20260610_10462)。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260610_10462",
+      "created_at": "2026-06-10T11:29:20.559948"
     }
   ],
   "completed": [
