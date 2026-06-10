@@ -1,0 +1,13 @@
+{
+  "institution_focus": "[PHL-TOP E20260516_023] きむら博士がAIを使って行った全ての作業を記録する。ファイル・Project・AI種別を問わない。記録なき作業はMoCKAとして存在しない。\n[PHL-TOP E20260516_023] Claude/Gemini/GPT/Perplexity/Copilot全AIの全インタラクションが記録対象。作業完了時に必ずmocka_write_eventで",
+  "known_risks": [
+    "router/save: 過去44回再発。同種の操作を行う前に履歴を確認すること。",
+    "router/collaboration: 過去14回再発。同種の操作を行う前に履歴を確認すること。",
+    "router/share: 過去7回再発。同種の操作を行う前に履歴を確認すること。",
+    "relay_dom_selector_fail: health_check.pyがFAIL判定中",
+    "tic_tech_watcher_noise: 動的コンテンツ誤検知リスク"
+  ],
+  "mission": "Phase 4: 商用製品展開フェーズにおいて、最優先TODO「mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）」を進めること。",
+  "recommended_strategy": "top_todoの最優先項目から着手し、ファイル変更前後でmocka_write_event(CHANGE_START/CHANGE_DONE)を必ず記録すること。 特に注意: router/save: 過去44回再発。同種の操作を行う前に履歴を確認すること。",
+  "top_priority": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）"
+}
