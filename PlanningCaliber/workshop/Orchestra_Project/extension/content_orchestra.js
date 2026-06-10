@@ -357,21 +357,33 @@ async function injectAndSendContext(ctx) {
   if (!location.hostname.includes('chatgpt.com') &&
       !location.hostname.includes('chat.openai.com')) return;
 
+  console.log('[MoCKA] injectAndSendContext: start');
+
   const textarea = await waitForElement(
-    'div[contenteditable="true"], textarea#prompt-textarea, textarea',
+    '#prompt-textarea, div[contenteditable="true"], textarea',
     8000
   );
   if (!textarea) {
-    console.warn('[MoCKA] 入力欄が見つかりませんでした');
+    console.warn('[MoCKA] 入力欄が見つかりませんでした（#prompt-textarea / contenteditable / textarea）');
     return;
   }
+  console.log('[MoCKA] 入力欄を検出:', textarea.tagName, textarea.id, 'contentEditable=', textarea.contentEditable);
 
   const message = buildContextMessage(ctx);
 
-  if (textarea.contentEditable === 'true') {
+  if (textarea.isContentEditable) {
     textarea.focus();
-    textarea.textContent = message;
-    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    // ChatGPTのProseMirrorエディタはtextContent直接代入では内部state更新されないため
+    // execCommand('insertText')で実際のキー入力相当のイベントを発火させる
+    document.execCommand('selectAll', false, undefined);
+    const inserted = document.execCommand('insertText', false, message);
+    console.log('[MoCKA] execCommand insertText result =', inserted);
+
+    if (!inserted || textarea.textContent.trim() === '') {
+      // フォールバック: textContent直接代入 + input/beforeinputイベント
+      textarea.textContent = message;
+      textarea.dispatchEvent(new InputEvent('input', { bubbles: true, data: message, inputType: 'insertText' }));
+    }
   } else {
     const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
       window.HTMLTextAreaElement.prototype, 'value'
@@ -380,17 +392,23 @@ async function injectAndSendContext(ctx) {
     textarea.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
+  console.log('[MoCKA] 入力欄の現在のテキスト長:', (textarea.textContent || textarea.value || '').length);
+
   await sleep(800);
 
   const sendBtn = document.querySelector(
     'button[data-testid="send-button"], button[aria-label="Send"], button[aria-label="メッセージを送信"]'
   );
+  console.log('[MoCKA] 送信ボタン:', sendBtn, 'disabled=', sendBtn && sendBtn.disabled);
+
   if (sendBtn && !sendBtn.disabled) {
     sendBtn.click();
+    console.log('[MoCKA] send-buttonをクリックしました');
   } else {
     textarea.dispatchEvent(new KeyboardEvent('keydown', {
       key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true
     }));
+    console.log('[MoCKA] Enterキーイベントを発火しました（フォールバック）');
   }
 }
 
@@ -496,7 +514,11 @@ async function initMockaContext() {
   if (cached && Date.now() - parseInt(cached) < 3600000) return;
 
   const ctx = await fetchLivingContext();
-  if (!ctx || ctx.handshake !== 'READY') return;
+  if (!ctx || ctx.handshake !== 'READY') {
+    console.warn('[MoCKA] handshake失敗またはREADYでない:', ctx);
+    return;
+  }
+  console.log('[MoCKA] handshake READY. パネル表示+自動送信を開始します');
 
   sessionStorage.setItem('mocka_context_ts', Date.now().toString());
   createMockaPanel(ctx);
