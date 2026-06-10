@@ -353,107 +353,91 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+// Relay_Project/extension/content.js (v4.6) のINPUT_SELECTORS / SEND_BUTTON_SELECTORS /
+// setInputValue() を流用（実績のあるchatgpt.com入力・送信処理）
+const MOCKA_INPUT_SELECTORS = [
+  'div[contenteditable="true"][data-testid="composer-input"]',
+  'div[contenteditable="true"].ProseMirror',
+  'div[contenteditable="true"]',
+  'textarea#prompt-textarea',
+  'textarea',
+];
+
+const MOCKA_SEND_BUTTON_SELECTORS = [
+  'button[data-testid="send-button"]',
+  'button[aria-label="Send message"]',
+  'button[aria-label="メッセージを送信"]',
+  'button[type="submit"]',
+];
+
+function mockaFindSendButton() {
+  for (const sel of MOCKA_SEND_BUTTON_SELECTORS) {
+    const el = document.querySelector(sel);
+    if (el) return el;
+  }
+  return null;
+}
+
+// Relay_Project/extension/content.js の setInputValue() を流用
+function mockaSetInputValue(el, text) {
+  el.focus();
+
+  if (el.isContentEditable) {
+    const sel = window.getSelection();
+    const rng = document.createRange();
+    rng.selectNodeContents(el);
+    sel.removeAllRanges();
+    sel.addRange(rng);
+
+    const ok = document.execCommand('insertText', false, text);
+    if (!ok) {
+      el.innerText = text;
+      el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true }));
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    return;
+  }
+
+  const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
+  const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value').set;
+  nativeSetter.call(el, text);
+  el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true }));
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
 async function injectAndSendContext(ctx) {
   if (!location.hostname.includes('chatgpt.com') &&
       !location.hostname.includes('chat.openai.com')) return;
 
   console.log('[MoCKA] injectAndSendContext: start');
 
-  const textarea = await waitForElement(
-    '#prompt-textarea, div[contenteditable="true"], textarea',
-    8000
-  );
-  if (!textarea) {
-    console.warn('[MoCKA] 入力欄が見つかりませんでした（#prompt-textarea / contenteditable / textarea）');
+  const input = await waitForElement(MOCKA_INPUT_SELECTORS.join(', '), 8000);
+  if (!input) {
+    console.warn('[MoCKA] 入力欄が見つかりませんでした');
     return;
   }
-  console.log('[MoCKA] 入力欄を検出:', textarea.tagName, textarea.id, 'contentEditable=', textarea.contentEditable);
+  console.log('[MoCKA] 入力欄を検出:', input.tagName, input.id, 'contentEditable=', input.contentEditable);
 
   const message = buildContextMessage(ctx);
-
-  if (textarea.isContentEditable) {
-    textarea.focus();
-    // ChatGPTのProseMirrorエディタはtextContent直接代入では内部state更新されないため
-    // execCommand('insertText')で実際のキー入力相当のイベントを発火させる
-    document.execCommand('selectAll', false, undefined);
-    const inserted = document.execCommand('insertText', false, message);
-    console.log('[MoCKA] execCommand insertText result =', inserted);
-
-    if (!inserted || textarea.textContent.trim() === '') {
-      // フォールバック: textContent直接代入 + input/beforeinputイベント
-      textarea.textContent = message;
-      textarea.dispatchEvent(new InputEvent('input', { bubbles: true, data: message, inputType: 'insertText' }));
-    }
-  } else {
-    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
-      window.HTMLTextAreaElement.prototype, 'value'
-    ).set;
-    nativeInputValueSetter.call(textarea, message);
-    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-  }
-
-  console.log('[MoCKA] 入力欄の現在のテキスト長:', (textarea.textContent || textarea.value || '').length);
+  mockaSetInputValue(input, message);
+  console.log('[MoCKA] 入力欄の現在のテキスト長:', (input.textContent || input.value || '').length);
 
   await sleep(800);
 
-  const SEND_BTN_SELECTORS = [
-    'button[data-testid="send-button"]',
-    '#composer-submit-button',
-    'button[data-testid="composer-send-button"]',
-    'button[aria-label="Send prompt"]',
-    'button[aria-label="Send message"]',
-    'button[aria-label="Send"]',
-    'button[aria-label="メッセージを送信"]',
-    'button[aria-label="送信"]',
-  ];
-
-  function findSendButton() {
-    for (const sel of SEND_BTN_SELECTORS) {
-      const el = document.querySelector(sel);
-      if (el) return el;
-    }
-    // フォーム内のsubmitボタンを最終フォールバックとして探す
-    const form = textarea.closest('form');
-    if (form) {
-      const submitBtn = form.querySelector('button[type="submit"]');
-      if (submitBtn) return submitBtn;
-    }
-    return null;
-  }
-
-  let sendBtn = null;
-  // 動的レンダリング待ち: 最大5回(600ms間隔)リトライ
-  for (let i = 0; i < 5; i++) {
-    sendBtn = findSendButton();
-    console.log(`[MoCKA] 送信ボタン探索 ${i + 1}/5:`, sendBtn,
-      sendBtn ? `disabled=${sendBtn.disabled}` : '');
-    if (sendBtn && !sendBtn.disabled) break;
-    await sleep(600);
-  }
+  const sendBtn = mockaFindSendButton();
+  console.log('[MoCKA] 送信ボタン:', sendBtn, sendBtn ? `disabled=${sendBtn.disabled}` : '');
 
   if (sendBtn && !sendBtn.disabled) {
     sendBtn.click();
     console.log('[MoCKA] 送信ボタンをクリックしました');
-    return;
+  } else {
+    for (const type of ['keydown', 'keypress', 'keyup']) {
+      input.dispatchEvent(new KeyboardEvent(type, {
+        key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true
+      }));
+    }
+    console.log('[MoCKA] Enterキーイベント(keydown/keypress/keyup)を発火しました（フォールバック）');
   }
-
-  console.warn('[MoCKA] 送信ボタンが見つからない/disabled。フォールバックを試行します');
-
-  // フォールバック1: form.requestSubmit()
-  const form = textarea.closest('form');
-  if (form && typeof form.requestSubmit === 'function') {
-    form.requestSubmit();
-    console.log('[MoCKA] form.requestSubmit()を実行しました');
-    return;
-  }
-
-  // フォールバック2: Enterキーイベント一式（keydown/keypress/keyup）
-  for (const type of ['keydown', 'keypress', 'keyup']) {
-    textarea.dispatchEvent(new KeyboardEvent(type, {
-      key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true
-    }));
-  }
-  console.log('[MoCKA] Enterキーイベント(keydown/keypress/keyup)を発火しました（最終フォールバック）');
 }
 
 function createMockaPanel(ctx) {
