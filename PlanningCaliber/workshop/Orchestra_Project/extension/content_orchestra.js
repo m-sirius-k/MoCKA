@@ -396,20 +396,64 @@ async function injectAndSendContext(ctx) {
 
   await sleep(800);
 
-  const sendBtn = document.querySelector(
-    'button[data-testid="send-button"], button[aria-label="Send"], button[aria-label="メッセージを送信"]'
-  );
-  console.log('[MoCKA] 送信ボタン:', sendBtn, 'disabled=', sendBtn && sendBtn.disabled);
+  const SEND_BTN_SELECTORS = [
+    'button[data-testid="send-button"]',
+    '#composer-submit-button',
+    'button[data-testid="composer-send-button"]',
+    'button[aria-label="Send prompt"]',
+    'button[aria-label="Send message"]',
+    'button[aria-label="Send"]',
+    'button[aria-label="メッセージを送信"]',
+    'button[aria-label="送信"]',
+  ];
+
+  function findSendButton() {
+    for (const sel of SEND_BTN_SELECTORS) {
+      const el = document.querySelector(sel);
+      if (el) return el;
+    }
+    // フォーム内のsubmitボタンを最終フォールバックとして探す
+    const form = textarea.closest('form');
+    if (form) {
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) return submitBtn;
+    }
+    return null;
+  }
+
+  let sendBtn = null;
+  // 動的レンダリング待ち: 最大5回(600ms間隔)リトライ
+  for (let i = 0; i < 5; i++) {
+    sendBtn = findSendButton();
+    console.log(`[MoCKA] 送信ボタン探索 ${i + 1}/5:`, sendBtn,
+      sendBtn ? `disabled=${sendBtn.disabled}` : '');
+    if (sendBtn && !sendBtn.disabled) break;
+    await sleep(600);
+  }
 
   if (sendBtn && !sendBtn.disabled) {
     sendBtn.click();
-    console.log('[MoCKA] send-buttonをクリックしました');
-  } else {
-    textarea.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'Enter', code: 'Enter', keyCode: 13, bubbles: true
-    }));
-    console.log('[MoCKA] Enterキーイベントを発火しました（フォールバック）');
+    console.log('[MoCKA] 送信ボタンをクリックしました');
+    return;
   }
+
+  console.warn('[MoCKA] 送信ボタンが見つからない/disabled。フォールバックを試行します');
+
+  // フォールバック1: form.requestSubmit()
+  const form = textarea.closest('form');
+  if (form && typeof form.requestSubmit === 'function') {
+    form.requestSubmit();
+    console.log('[MoCKA] form.requestSubmit()を実行しました');
+    return;
+  }
+
+  // フォールバック2: Enterキーイベント一式（keydown/keypress/keyup）
+  for (const type of ['keydown', 'keypress', 'keyup']) {
+    textarea.dispatchEvent(new KeyboardEvent(type, {
+      key: 'Enter', code: 'Enter', keyCode: 13, which: 13, bubbles: true, cancelable: true
+    }));
+  }
+  console.log('[MoCKA] Enterキーイベント(keydown/keypress/keyup)を発火しました（最終フォールバック）');
 }
 
 function createMockaPanel(ctx) {
