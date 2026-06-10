@@ -5,33 +5,33 @@ cd /d C:\Users\sirok\MoCKA
 echo MoCKA Starting...
 
 REM ============================================================
-REM [PHASE 1] •À—ñƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆ—
-REM  ping_generator / UTF-8ƒ`ƒFƒbƒN / TIC / CloudFlare / git ‚Í‘S•”•À—ñ
+REM [PHASE 1] ï¿½ï¿½ï¿½ï¿½oï¿½bï¿½Nï¿½Oï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½
+REM  ping_generator / UTF-8ï¿½`ï¿½Fï¿½bï¿½N / TIC / CloudFlare / git ï¿½Í‘Sï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 REM ============================================================
 echo [PHASE 1] Background jobs launching...
 
-REM ping_generatoriDNA’“ü€”õj
+REM ping_generatorï¿½iDNAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½j
 start /B "" python interface\ping_generator.py
 
-REM UTF-8 mandate checkiƒGƒ‰[Žž‚Ì‚ÝŒx•\Ž¦E‹N“®‚ÍƒuƒƒbƒN‚µ‚È‚¢j
+REM UTF-8 mandate checkï¿½iï¿½Gï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ì‚ÝŒxï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½Eï¿½Nï¿½ï¿½ï¿½Íƒuï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½È‚ï¿½ï¿½j
 start /B "" cmd /c "python check_utf8_mandate.py || echo [WARN] UTF-8 check FAILED"
 
-REM TIC: tech_watcher ¨ risk_scorer ’¼—ñi‘O’iˆË‘¶‚ ‚èjƒoƒbƒNƒOƒ‰ƒEƒ“ƒh
+REM TIC: tech_watcher ï¿½ï¿½ risk_scorer ï¿½ï¿½ï¿½ï¿½iï¿½Oï¿½iï¿½Ë‘ï¿½ï¿½ï¿½ï¿½ï¿½jï¿½oï¿½bï¿½Nï¿½Oï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½h
 start /B "" cmd /c "python interface\tech_watcher.py && python interface\risk_scorer.py"
 
-REM Cloudflare sync + git push ƒoƒbƒNƒOƒ‰ƒEƒ“ƒh
+REM Cloudflare sync + git push ï¿½oï¿½bï¿½Nï¿½Oï¿½ï¿½ï¿½Eï¿½ï¿½ï¿½h
 start /B "" cmd /c "python PlanningCaliber\workshop\mocka-cloudflare\export_for_cloudflare.py && git add data\MOCKA_OVERVIEW.json data\MOCKA_TODO.json data\lever_essence.json data\events_latest.json >nul 2>&1 && git diff --cached --quiet || git commit -m \"data: sync %DATE% %TIME%\" && git push origin main"
 
 REM ============================================================
-REM [PHASE 2] Comet (Perplexity) ‹N“®
+REM [PHASE 2] Comet (Perplexity) ï¿½Nï¿½ï¿½
 REM ============================================================
 taskkill /F /IM comet.exe /T >nul 2>&1
 timeout /t 2 /nobreak > nul
 start "" "C:\Users\sirok\AppData\Local\Perplexity\Comet\Application\comet.exe" --remote-debugging-port=9222
 
 REM ============================================================
-REM [PHASE 3] Windows Terminal ƒ^ƒuŒQ ˆêŠ‡‹N“®
-REM  MeCab ¨ 1•bŒã‚É‘Sƒ^ƒu‚ðˆê‹C‚É open
+REM [PHASE 3] Windows Terminal ï¿½^ï¿½uï¿½Q ï¿½êŠ‡ï¿½Nï¿½ï¿½
+REM  MeCab ï¿½ï¿½ 1ï¿½bï¿½ï¿½É‘Sï¿½^ï¿½uï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ open
 REM ============================================================
 start "" wt new-tab --title "MoCKA-MECAB" --tabColor "#2d2d5f" wsl -e bash -c "python3 /home/m_kimura/mecab_service.py"
 timeout /t 1 /nobreak > nul
@@ -41,6 +41,7 @@ wt -w 0 ^
 ; new-tab --title "MoCKA-MCP"       --tabColor "#5f1e3a" cmd /k "cd /d C:\Users\sirok\MoCKA && python mocka_mcp_server.py" ^
 ; new-tab --title "MoCKA-NGROK"     --tabColor "#3a1e5f" cmd /k "ngrok start mocka_mcp" ^
 ; new-tab --title "MoCKA-CALIBER"   --tabColor "#1e3a5f" cmd /k "cd /d C:\Users\sirok\MoCKA\caliber\chat_pipeline && python mocka_caliber_server.py" ^
+; new-tab --title "MoCKA-CONNECTOR" --tabColor "#3a5f1e" cmd /k "cd /d C:\Users\sirok\MoCKA\gateway && python gateway.py" ^
 ; new-tab --title "MoCKA-RUNTIME-B" --tabColor "#5f3a00" cmd /k "cd /d C:\Users\sirok\MoCKA\runtime_b && mocka_runtime_b.exe" ^
 ; new-tab --title "MoCKA-SEO-OS"    --tabColor "#5f3a1e" cmd /k "cd /d C:\Users\sirok\MoCKA\PlanningCaliber\workshop\seo-os\command_center && python app.py" ^
 ; new-tab --title "MoCKA-WORK"                           cmd /k "cd /d C:\Users\sirok\MoCKA" ^
@@ -49,7 +50,7 @@ wt -w 0 ^
 ; new-tab --title "BEE-DAILY"       --tabColor "#005f5f" cmd /k "cd /d C:\Users\sirok\MoCKA && timeout /t 5 /nobreak > nul && python structural/bee.py --daily && pause"
 
 REM ============================================================
-REM [PHASE 4] ƒuƒ‰ƒEƒU‹N“®iWT‹N“®Š®—¹‚Ü‚Å2•b‘Ò‚Âj
+REM [PHASE 4] ï¿½uï¿½ï¿½ï¿½Eï¿½Uï¿½Nï¿½ï¿½ï¿½iWTï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½2ï¿½bï¿½Ò‚Âj
 REM ============================================================
 timeout /t 2 /nobreak > nul
 start "" http://localhost:5000
