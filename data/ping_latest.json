@@ -40,5 +40,41 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-10T17:14:38.517786"
+  "generated_at": "2026-06-10T17:14:38.517786",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.294,
+    "danger_rate": 0.647,
+    "success_rate": 0.353,
+    "text": "【TODO_287/288/289 完了報告】\n\n実装ファイル:\n\ninterface/reflection_engine.py\n\ninterface/pred",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "=======================================================\nMoCKA policy_generator.py Day4\n制度改善候補 生成 + H",
+        "recur": 0,
+        "matched": [
+          "再発",
+          "interface/"
+        ],
+        "score": 2
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "==================================================\npolicy_gen2.py — 制度改善候補生成\n=======================",
+        "recur": 0,
+        "matched": [
+          "再発",
+          "interface/"
+        ],
+        "score": 2
+      }
+    ],
+    "updated_at": "2026-06-10T09:41:56.810Z"
+  }
 }
