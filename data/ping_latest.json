@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T12:20:16.388126",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.846,
-    "danger_rate": 0.077,
-    "success_rate": 0.923,
-    "text": "あれ？　MOCKAからなんか届かなかった？　さっきまで上に履歴みたいにあったけど　いまない\n\nはい、見えています。\n\nただし、現在このチャットには、先ほど表示さ",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-29",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[save] import os os.makedirs('output', exist_ok=True)  # Create comprehensive project proposal docum",
-        "recur": 0,
-        "matched": [
-          "届か"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": ". Google Keyが消えた\n\n* どこで： `C:\\Users\\sirok\\MoCKA` 配下（Gitリポジトリの管理圏内）で消えました。\n* どうして： 14:50の「クリーンアップ（clea",
-        "recur": 0,
-        "matched": [
-          "届か"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-11T03:59:13.216Z"
-  }
+  "generated_at": "2026-06-11T13:05:03.725143"
 }
