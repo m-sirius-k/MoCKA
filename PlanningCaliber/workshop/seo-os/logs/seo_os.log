@@ -3198,3 +3198,33 @@
 2026-06-11 09:47:53,123 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:8750
 2026-06-11 09:47:53,124 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-11 11:48:25,393 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-11 11:48:25,394 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-11 11:48:25,394 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-11 11:48:25,403 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-11 11:48:25,403 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-11 11:48:25,404 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-11 11:48:25,422 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-11 11:48:25,422 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-11 11:48:25,434 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-11 11:48:25,434 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-11 11:48:25,434 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-11 11:48:25,435 [INFO] [Bootstrap] Worker初期化完了
+2026-06-11 11:48:25,984 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-11 11:48:25,996 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-11 12:20:22,296 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-11 12:20:22,296 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-11 12:20:22,297 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-11 12:20:22,305 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-11 12:20:22,305 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-11 12:20:22,305 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-11 12:20:22,359 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-11 12:20:22,360 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-11 12:20:22,368 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-11 12:20:22,385 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-11 12:20:22,389 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-11 12:20:22,390 [INFO] [Bootstrap] Worker初期化完了
+2026-06-11 12:20:22,480 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-11 12:20:22,488 [INFO] [33mPress CTRL+C to quit[0m

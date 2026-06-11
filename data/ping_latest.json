@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T11:48:14.424296",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.481,
-    "danger_rate": 0.259,
-    "success_rate": 0.741,
-    "text": "GPT [MoCKA] autoInject: fetch Living Context...\n\ncontent_orchestra.js:479 [MoCKA",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-30",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "PS C:\\Users\\sirok\\MoCKA> python C:\\Users\\sirok\\MoCKA\\tools\\mocka_perplexity_v02.py\n(node:7804) [DEP0",
-        "recur": 0,
-        "matched": [
-          "見つから"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-03",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "event_id           : EN8N_20260403_024832_CLAU\nextraction_preview : このテキストから抽出できる最も重要な構造的洞察は以下の3点です：",
-        "recur": 0,
-        "matched": [
-          "見つから"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-11T02:55:50.724Z"
-  }
+  "generated_at": "2026-06-11T12:20:16.388126"
 }
