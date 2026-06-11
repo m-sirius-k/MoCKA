@@ -2354,21 +2354,22 @@ def relay_status():
 
 @app.route('/health/status', methods=['GET'])
 def health_status():
-    """TIC Layer 0 — health_check.py の最新結果を返す"""
-    import importlib.util as _ilu
+    """TIC Layer 0 — health_log.jsonl の最新行をキャッシュとして返す"""
+    import json as _json
     from pathlib import Path as _Path
     try:
-        _spec = _ilu.spec_from_file_location(
-            'health_check',
-            str(_Path(__file__).parent / 'interface' / 'health_check.py')
-        )
-        _hc = _ilu.module_from_spec(_spec)
-        _spec.loader.exec_module(_hc)
-        result = _hc.run(target=None)
-        # overall 判定
-        fail_count = result.get('fail_count', 0)
-        overall    = result.get('overall', 'UNKNOWN')
-        color      = 'GREEN' if overall == 'ALL PASS' else ('AMBER' if 'PARTIAL' in overall or 'DEGRADED' in overall else 'RED')
+        log_path = _Path('C:/Users/sirok/MoCKA/data/tic/health_log.jsonl')
+        last_line = None
+        with open(log_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if line:
+                    last_line = line
+        if not last_line:
+            return jsonify({'status': 'error', 'overall': 'UNKNOWN', 'color': 'RED', 'error': 'no log'}), 500
+        result = _json.loads(last_line)
+        overall = result.get('overall', 'UNKNOWN')
+        color   = 'GREEN' if overall == 'ALL PASS' else ('AMBER' if 'PARTIAL' in overall or 'DEGRADED' in overall else 'RED')
         return jsonify({
             'status': 'ok',
             'overall': overall,
@@ -2377,6 +2378,7 @@ def health_status():
             'ts': result.get('timestamp', ''),
         })
     except Exception as e:
+        return jsonify({'status': 'error', 'overall': 'UNKNOWN', 'color': 'RED', 'error': str(e)}), 500
         return jsonify({'status': 'error', 'overall': 'UNKNOWN', 'color': 'RED', 'error': str(e)}), 500
 
 
