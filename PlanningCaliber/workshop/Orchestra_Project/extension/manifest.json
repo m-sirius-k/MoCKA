@@ -15,7 +15,10 @@
   ],
   "oauth2": {
     "client_id": "399433086819-nt3hcjcpkrcfmbf705bk7lhdap8hdv9r.apps.googleusercontent.com",
-    "scopes": ["openid", "email"]
+    "scopes": [
+      "openid",
+      "email"
+    ]
   },
   "host_permissions": [
     "https://claude.ai/*",
@@ -24,7 +27,8 @@
     "https://www.perplexity.ai/*",
     "https://copilot.microsoft.com/*",
     "https://www.genspark.ai/*",
-    "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/*"
+    "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/*",
+    "http://localhost:5000/*"
   ],
   "content_scripts": [
     {
