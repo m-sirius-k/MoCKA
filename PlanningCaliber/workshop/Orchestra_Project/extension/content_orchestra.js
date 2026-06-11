@@ -67,18 +67,11 @@ function dispatchReactInputEvents(el, text, inputType = 'insertText') {
 }
 
 function setTextareaValue(el, text) {
-  const nativeSetter = Object.getOwnPropertyDescriptor(
-    window.HTMLTextAreaElement.prototype,
-    'value'
-  )?.set;
-
-  if (nativeSetter) {
-    nativeSetter.call(el, text);
-  } else {
-    el.value = text;
-  }
-
-  dispatchReactInputEvents(el, text);
+  // ChatGPT: nativeSetterではtextContentが更新されずボタンが出現しない
+  // execCommand方式でReact内部stateも更新する
+  el.focus();
+  document.execCommand('selectAll', false, null);
+  document.execCommand('insertText', false, text);
 }
 
 function setContentEditableValue(el, text) {
