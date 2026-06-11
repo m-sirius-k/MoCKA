@@ -1,4 +1,4 @@
-/ Orchestra - content_orchestra.js
+﻿/ Orchestra - content_orchestra.js
 // Handles prompt injection and response capture for external AI services
 // Injected into: ChatGPT / Gemini / Perplexity / Copilot
 
@@ -404,4 +404,24 @@ async function injectAndSendContext(ctx) {
     }));
   }
   console.log('[MoCKA] 送信処理完了');
+}
+// ── 起動 ──────────────────────────────────────────────────────────────────────
+async function mockaAutoInject() {
+  if (!location.hostname.includes('chatgpt.com') &&
+      !location.hostname.includes('chat.openai.com')) return;
+
+  console.log('[MoCKA] autoInject: fetch Living Context...');
+  const ctx = await fetchLivingContext();
+  if (!ctx) {
+    console.warn('[MoCKA] Living Context 取得失敗 — localhost:5000 起動確認');
+    return;
+  }
+  console.log('[MoCKA] Living Context 取得成功:', Object.keys(ctx));
+  await injectAndSendContext(ctx);
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => setTimeout(mockaAutoInject, 2000));
+} else {
+  setTimeout(mockaAutoInject, 2000);
 }
