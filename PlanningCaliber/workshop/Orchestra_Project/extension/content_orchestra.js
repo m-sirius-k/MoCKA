@@ -1,4 +1,4 @@
-﻿/ Orchestra - content_orchestra.js
+// Orchestra - content_orchestra.js
 // Handles prompt injection and response capture for external AI services
 // Injected into: ChatGPT / Gemini / Perplexity / Copilot
 
@@ -47,33 +47,79 @@ function findElement(selectors) {
   return null;
 }
 
-function injectText(el, text) {
-  el.focus();
-
-  const isEditable = el.contentEditable === 'true' || el.tagName === 'DIV';
-
-  if (isEditable) {
-    el.innerHTML = '';
-    // execCommand keeps React/framework state in sync
-    document.execCommand('selectAll', false, null);
-    document.execCommand('delete', false, null);
-    document.execCommand('insertText', false, text);
-    el.dispatchEvent(new InputEvent('input', { bubbles: true, data: text, inputType: 'insertText' }));
-  } else {
-    // textarea: use native setter to bypass React synthetic event wrapping
-    const nativeSetter = Object.getOwnPropertyDescriptor(
-      window.HTMLTextAreaElement.prototype, 'value'
-    )?.set;
-    if (nativeSetter) {
-      nativeSetter.call(el, text);
-    } else {
-      el.value = text;
-    }
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
+function createInputEvent(text, inputType = 'insertText') {
+  try {
+    return new InputEvent('input', {
+      bubbles: true,
+      cancelable: true,
+      composed: true,
+      data: text,
+      inputType,
+    });
+  } catch (_) {
+    return new Event('input', { bubbles: true, cancelable: true });
   }
 }
 
+function dispatchReactInputEvents(el, text, inputType = 'insertText') {
+  el.dispatchEvent(createInputEvent(text, inputType));
+  el.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+}
+
+function setTextareaValue(el, text) {
+  const nativeSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLTextAreaElement.prototype,
+    'value'
+  )?.set;
+
+  if (nativeSetter) {
+    nativeSetter.call(el, text);
+  } else {
+    el.value = text;
+  }
+
+  dispatchReactInputEvents(el, text);
+}
+
+function setContentEditableValue(el, text) {
+  let inserted = false;
+
+  try {
+    el.focus();
+    document.execCommand('selectAll', false, null);
+    document.execCommand('delete', false, null);
+    inserted = document.execCommand('insertText', false, text);
+  } catch (e) {
+    console.warn('[MoCKA] execCommand insertText failed:', e);
+  }
+
+  const currentText = (el.innerText || el.textContent || '').trim();
+  if (!inserted || currentText.length === 0) {
+    el.textContent = text;
+    dispatchReactInputEvents(el, text);
+    return;
+  }
+
+  dispatchReactInputEvents(el, text);
+}
+
+function injectText(el, text) {
+  el.focus();
+
+  if (el instanceof HTMLTextAreaElement || el.tagName === 'TEXTAREA') {
+    setTextareaValue(el, text);
+    return;
+  }
+
+  const isEditable = el.isContentEditable || el.contentEditable === 'true' || el.tagName === 'DIV';
+
+  if (isEditable) {
+    setContentEditableValue(el, text);
+  } else {
+    el.textContent = text;
+    dispatchReactInputEvents(el, text);
+  }
+}
 function isGenerating(config) {
   return config.stopSelectors.some(sel => {
     try { return !!document.querySelector(sel); } catch (_) { return false; }
@@ -356,23 +402,29 @@ function sleep(ms) {
 // Relay_Project/extension/content.js (v4.6) のINPUT_SELECTORS / setInputValue() を流用
 const MOCKA_INPUT_SELECTORS = [
   'div[contenteditable="true"][data-testid="composer-input"]',
+  'div[contenteditable="true"][id="prompt-textarea"]',
   'div[contenteditable="true"].ProseMirror',
   'div[contenteditable="true"]',
   'textarea#prompt-textarea',
   'textarea',
 ];
 
-// Relay_Project/extension/content.js の setInputValue() を流用
 function mockaSetInputValue(el, text) {
   el.focus();
-  el.textContent = '';
-  document.execCommand('insertText', false, text);
-  if (!el.textContent) {
-    el.textContent = text;
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-  }
-}
 
+  if (el instanceof HTMLTextAreaElement || el.tagName === 'TEXTAREA') {
+    setTextareaValue(el, text);
+    return;
+  }
+
+  if (el.isContentEditable || el.contentEditable === 'true') {
+    setContentEditableValue(el, text);
+    return;
+  }
+
+  el.textContent = text;
+  dispatchReactInputEvents(el, text);
+}
 async function injectAndSendContext(ctx) {
   if (!location.hostname.includes('chatgpt.com') &&
       !location.hostname.includes('chat.openai.com')) return;
@@ -420,8 +472,18 @@ async function mockaAutoInject() {
   await injectAndSendContext(ctx);
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => setTimeout(mockaAutoInject, 2000));
-} else {
-  setTimeout(mockaAutoInject, 2000);
+function scheduleMockaAutoInject() {
+  const start = () => setTimeout(() => {
+    mockaAutoInject().catch(e => console.error('[MoCKA] autoInject failed:', e));
+  }, 2000);
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start, { once: true });
+  } else {
+    start();
+  }
 }
+
+scheduleMockaAutoInject();
+
+
