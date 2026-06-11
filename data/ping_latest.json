@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T12:20:16.388126"
+  "generated_at": "2026-06-11T12:20:16.388126",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "ちょっとまて！　確かに右クリックして　協業選択するわ\n\n\n\n\nでもそれって　gptに対しては　何もせず　ブラウザー開いて　特定ページに行き　認証受けて　　そのま",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-01",
+        "why": "Phase5陷茨ｽｨ鬯・・蟯ｼ髫ｱ讎奇ｽｮ蝠ASSED",
+        "how": "cli",
+        "note": "manual_save",
+        "recur": 0,
+        "matched": [
+          "manual"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-01",
+        "why": "verify test",
+        "how": "cli",
+        "note": "manual_save",
+        "recur": 0,
+        "matched": [
+          "manual"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-11T03:51:00.850Z"
+  }
 }

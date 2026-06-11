@@ -1,4 +1,4 @@
-// Orchestra - content_orchestra.js
+﻿// Orchestra - content_orchestra.js
 // Handles prompt injection and response capture for external AI services
 // Injected into: ChatGPT / Gemini / Perplexity / Copilot
 
@@ -439,29 +439,40 @@ async function injectAndSendContext(ctx) {
   mockaSetInputValue(input, message);
   await sleep(600);
   console.log('[MoCKA] 入力欄の現在のテキスト長:', (input.textContent || input.value || '').length);
-  const sendBtn = document.querySelector(
-    'button[data-testid="send-button"], ' +
-    'button[aria-label="Send prompt"], ' +
-    'button[aria-label="Send message"]'
-  );
-  await sleep(300);
-  const enterEventInit = {
-    key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
-    bubbles: true, cancelable: true, composed: true, shiftKey: false,
-  };
+  const sendBtn = document.querySelector('.composer-submit-button-color');
+  // MutationObserver: disabled=falseになるまで最大2秒待つ
+  await new Promise(resolve => {
+    if (sendBtn && !sendBtn.disabled) { resolve(); return; }
+    const obs = new MutationObserver(() => {
+      if (sendBtn && !sendBtn.disabled) { obs.disconnect(); resolve(); }
+    });
+    if (sendBtn) obs.observe(sendBtn, { attributes: true, attributeFilter: ['disabled'] });
+    setTimeout(() => { obs.disconnect(); resolve(); }, 2000);
+  });
+
+  function fireClick(btn) {
+    ['pointerdown','mousedown','pointerup','mouseup','click'].forEach(type => {
+      btn.dispatchEvent(new MouseEvent(type, {
+        bubbles: true, cancelable: true, composed: true,
+        buttons: 1, button: 0,
+      }));
+    });
+  }
+
   if (sendBtn && !sendBtn.disabled) {
-    console.log('[MoCKA] 送信ボタン有効化を確認。Enter送信します');
-    input.dispatchEvent(new KeyboardEvent('keydown', enterEventInit));
-    input.dispatchEvent(new KeyboardEvent('keyup', enterEventInit));
-    await sleep(500);
+    console.log('[MoCKA] 送信: pointerdown→mousedown→pointerup→mouseup→click');
+    fireClick(sendBtn);
+    await sleep(600);
+    // form.requestSubmit() フォールバック
     if (!sendBtn.disabled) {
-      console.log('[MoCKA] Enter送信後も送信ボタンが有効なためclickにフォールバック');
-      sendBtn.click();
+      console.log('[MoCKA] フォールバック: form.requestSubmit()');
+      const form = input.closest('form');
+      if (form) {
+        try { form.requestSubmit(); } catch(e) { console.warn('[MoCKA] requestSubmit失敗:', e); }
+      }
     }
   } else {
-    console.log('[MoCKA] 送信ボタンが見つからないためEnterにフォールバック');
-    input.dispatchEvent(new KeyboardEvent('keydown', enterEventInit));
-    input.dispatchEvent(new KeyboardEvent('keyup', enterEventInit));
+    console.warn('[MoCKA] 送信ボタンが見つからないか無効のまま');
   }
   console.log('[MoCKA] 送信処理完了');
 }
