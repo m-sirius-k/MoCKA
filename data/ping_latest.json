@@ -46,35 +46,33 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "私ならまず確認すること\n\n送信直前で\n\n\n\nconsole.log(inputEl.innerText);\nconsole.log(inputEl.textCo",
+    "text": "5766\n\nVM498:10 クリック前 innerText: テスト送信\n\nVM498:13 クリック後500ms innerText:",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-04",
+        "when": "2026-04-20",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "router 再発タイプ別:   save                 53件   collaboration        17件   share                7件 PS C:",
+        "note": "PS C:\\Users\\sirok> netstat -ano | findstr :5002\n  TCP    0.0.0.0:5002           0.0.0.0:0           ",
         "recur": 0,
         "matched": [
-          "見え",
-          "data/"
+          "5766"
         ],
-        "score": 2
+        "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-29",
+        "when": "2026-06-11",
         "why": "voice_capture",
-        "how": "export_import",
-        "note": "いまの会話と取得できた公開情報だけでは、「私が実際にあなたの環境で稼働させた」とは断言できません。\nただし、公開情報からは MoCKA と MoCKA-KNOWLEDGE-GATE が、決定論的なガバ",
+        "how": "chrome_extension_v15",
+        "note": "5766\n\nVM498:10 クリック前 innerText: テスト送信\n\nVM498:13 クリック後500ms innerText:",
         "recur": 0,
         "matched": [
-          "見え",
-          "data/"
+          "5766"
         ],
-        "score": 2
+        "score": 1
       }
     ],
-    "updated_at": "2026-06-11T04:25:48.596Z"
+    "updated_at": "2026-06-11T05:07:24.478Z"
   }
 }

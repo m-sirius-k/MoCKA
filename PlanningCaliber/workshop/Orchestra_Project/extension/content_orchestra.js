@@ -77,23 +77,13 @@ function setTextareaValue(el, text) {
 function setContentEditableValue(el, text) {
   el.focus();
 
-  // ① React __reactProps 経由でstate直接更新
-  const reactPropsKey = Object.keys(el).find(k => k.startsWith('__reactProps'));
-  if (reactPropsKey) {
-    const props = el[reactPropsKey];
-    if (props.onInput) {
-      props.onInput({ target: { textContent: text, innerText: text }, currentTarget: el });
-    }
-    if (props.onChange) {
-      props.onChange({ target: { value: text, textContent: text }, currentTarget: el });
-    }
-    console.log('[MoCKA] reactProps found, onInput:', !!props.onInput, 'onChange:', !!props.onChange);
-  } else {
-    console.warn('[MoCKA] __reactProps not found — fallback to DOM only');
-  }
+  // ① 既存テキストを全選択して削除
+  document.execCommand('selectAll', false, null);
+  document.execCommand('delete', false, null);
 
-  // ② DOM書き込み
-  el.textContent = text;
+  // ② execCommand('insertText') でProseMirror内部stateごと更新
+  const ok = document.execCommand('insertText', false, text);
+  console.log('[MoCKA] execCommand insertText:', ok, 'length:', el.innerText.length);
 
   // ③ カーソルを末尾へ
   const range = document.createRange();
@@ -103,21 +93,11 @@ function setContentEditableValue(el, text) {
   sel.removeAllRanges();
   sel.addRange(range);
 
-  // ④ イベントシーケンス
-  el.dispatchEvent(new InputEvent('beforeinput', {
-    bubbles: true, cancelable: true,
-    inputType: 'insertText', data: text,
-  }));
-  el.dispatchEvent(new InputEvent('input', {
-    bubbles: true, cancelable: true,
-    inputType: 'insertText', data: text,
-  }));
-  el.dispatchEvent(new Event('selectionchange', { bubbles: true }));
+  // ④ keyup でComposerの送信可能状態をトリガー
   el.dispatchEvent(new KeyboardEvent('keyup', { key: 'a', bubbles: true }));
 
-  console.log('[MoCKA] setContentEditable done, length:', el.textContent.length);
+  console.log('[MoCKA] setContentEditable done, length:', el.innerText.length);
   console.log('[MoCKA] activeElement match:', document.activeElement === el);
-  console.log('[MoCKA] selection length:', window.getSelection()?.toString()?.length);
 }
 
 function injectText(el, text) {
@@ -410,6 +390,28 @@ function waitForElement(selector, timeout = 5000) {
     observer.observe(document.body, { childList: true, subtree: true });
     setTimeout(() => { observer.disconnect(); resolve(null); }, timeout);
   });
+}
+
+// __reactPropsが存在する入力欄が安定するまで待つ
+async function waitForReactInput(selectors, timeout = 10000) {
+  const start = Date.now();
+  while (Date.now() - start < timeout) {
+    for (const sel of selectors) {
+      try {
+        const el = document.querySelector(sel);
+        if (el) {
+          const hasProps = Object.keys(el).some(k => k.startsWith('__reactProps'));
+          if (hasProps) {
+            console.log('[MoCKA] reactProps確認済み要素を取得:', el.tagName, el.id);
+            return el;
+          }
+        }
+      } catch (_) {}
+    }
+    await sleep(200);
+  }
+  console.warn('[MoCKA] waitForReactInput: タイムアウト');
+  return null;
 }
 
 function sleep(ms) {
