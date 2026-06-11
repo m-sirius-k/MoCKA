@@ -21,6 +21,7 @@ def create_app() -> Flask:
     from api.routes.shadow_routes import bp as shadow_bp
     from api.routes.evidence_routes import bp as evidence_bp
     from api.routes.phi_routes import bp as phi_bp
+    from api.routes.phios_routes import bp as phios_bp
 
     app.register_blueprint(health_bp)
     app.register_blueprint(events_bp)
@@ -30,6 +31,7 @@ def create_app() -> Flask:
     app.register_blueprint(shadow_bp)
     app.register_blueprint(evidence_bp)
     app.register_blueprint(phi_bp)
+    app.register_blueprint(phios_bp)
 
     from api.state import init_app_state
     with app.app_context():
