@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T13:05:03.725143",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "5766\n\nVM498:10 クリック前 innerText: テスト送信\n\nVM498:13 クリック後500ms innerText:",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-20",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "PS C:\\Users\\sirok> netstat -ano | findstr :5002\n  TCP    0.0.0.0:5002           0.0.0.0:0           ",
-        "recur": 0,
-        "matched": [
-          "5766"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-06-11",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "5766\n\nVM498:10 クリック前 innerText: テスト送信\n\nVM498:13 クリック後500ms innerText:",
-        "recur": 0,
-        "matched": [
-          "5766"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-11T05:07:24.478Z"
-  }
+  "generated_at": "2026-06-11T14:12:18.215782"
 }
