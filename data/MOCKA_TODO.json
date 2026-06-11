@@ -634,6 +634,30 @@
       "note": "対応済み: .gitignore追加・git rm --cached完了。残作業はsealスクリプトへのチェック組み込み。",
       "reference_event": "E20260611_386",
       "created_at": "2026-06-11T14:57:27.065921"
+    },
+    {
+      "id": "TODO_296",
+      "title": "health_check.py — .envファイルのBOM検知を監視対象に追加",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/TIC/health",
+      "description": "health_check.pyの監視対象に.envファイルのBOMチェックを追加する。症状: .envが存在するのにMOCKA_ENDPOINTがNoneになる。原因: BOM付きUTF-8でpython-dotenvがキーを認識しない。対策: check_env_bom()関数を実装し、BOM検知時はHEALTH_FAILとしてprevention_queueに投入する。",
+      "assigned_to": "Claude",
+      "note": "くろこ修復報告(2026-06-11)で発覚。.envのBOMがMOCKA_ENDPOINTをNone化していた実例。",
+      "reference_event": "E20260611_481",
+      "created_at": "2026-06-11T16:29:42.692334"
+    },
+    {
+      "id": "TODO_297",
+      "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/TIC/watch",
+      "description": "watch_sources.jsonに登録されたURLのHTTPステータスを定期チェックする機能をtech_watcherに追加する。現状は差分検知のみで「URLが廃止されて404/SSL失敗になっている」状態を能動的には検知できない。check_url_alive()を実装し、接続失敗が連続3回でTECH_WATCH_URL_DEADイベントを記録しprevention_queueに投入する。",
+      "assigned_to": "Claude",
+      "note": "spec.modelcontextprotocol.ioドメイン廃止をくろこが修復(2026-06-11)。TIC初の廃止URL検知実例。能動的URL死活監視が必要。",
+      "reference_event": "E20260611_481",
+      "created_at": "2026-06-11T16:29:50.848462"
     }
   ],
   "completed": [
@@ -3913,6 +3937,34 @@
       "created_at": "2026-06-10T19:11:38.586085",
       "updated_at": "2026-06-10T19:18:41.797654",
       "completed_at": "2026-06-10"
+    },
+    {
+      "id": "TODO_298",
+      "title": "PHI-OS ingest() → mocka_write_event接続実装",
+      "status": "完了",
+      "priority": "最高",
+      "category": "PHI-OS",
+      "description": "PHI-OSのingest()呼び出し時にmocka_write_eventを自動発火する実装。制度義務。PHI-OS-SPEC-001 原則②準拠。node_id命名規則: phi-os-{layer}-{product}-{instance}。実装先: PlanningCaliber/workshop/phi-os/",
+      "assigned_to": "Claude",
+      "note": "phi_os.py: PHIOS.ingest()実装、mocka_write_event(PHI_OS_INGEST)に必ず記録、未記録はFORBIDDEN(PHIOSError)。実機検証済み。E20260611_494",
+      "reference_event": "E20260611_487",
+      "created_at": "2026-06-11T17:26:42.351537",
+      "updated_at": "2026-06-11T17:37:08.099824",
+      "completed_at": "2026-06-11"
+    },
+    {
+      "id": "TODO_299",
+      "title": "PHI-OS ⇄ vasAI 双方向ループ実装",
+      "status": "完了",
+      "priority": "最高",
+      "category": "PHI-OS",
+      "description": "PHI-OS ⇄ vasAI双方向ループ実装。終了条件: feedback.status=='STABLE' または MAX_LOOP_COUNT=3超過でLOOP_LIMIT_REACHED記録。再投入時view_type='fusion'固定。PHI-OS-SPEC-001 原則③・5.2準拠。",
+      "assigned_to": "Claude",
+      "note": "phi_os.py: sync('vasai')双方向ループ実装、vasAI側/phios/feedback新設。STABLE/LOOP_LIMIT_REACHED(MAX=3)/HALTを実機検証済み。E20260611_494",
+      "reference_event": "E20260611_487",
+      "created_at": "2026-06-11T17:26:48.329220",
+      "updated_at": "2026-06-11T17:37:10.822102",
+      "completed_at": "2026-06-11"
     }
   ],
   "orchestra_handoff": {
