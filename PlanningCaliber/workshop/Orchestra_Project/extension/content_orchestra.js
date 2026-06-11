@@ -67,11 +67,11 @@ function dispatchReactInputEvents(el, text, inputType = 'insertText') {
 }
 
 function setTextareaValue(el, text) {
-  // ChatGPT: nativeSetterではtextContentが更新されずボタンが出現しない
-  // execCommand方式でReact内部stateも更新する
+  // ChatGPT: execCommand方式でReact内部stateも更新する
   el.focus();
   document.execCommand('selectAll', false, null);
-  document.execCommand('insertText', false, text);
+  const ok = document.execCommand('insertText', false, text);
+  console.log('[MoCKA] setTextareaValue execCommand result:', ok, 'length:', el.value.length);
 }
 
 function setContentEditableValue(el, text) {
