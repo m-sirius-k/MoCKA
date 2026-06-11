@@ -484,18 +484,15 @@ async function injectAndSendContext(ctx) {
 
   const btnReady = sendBtn && !sendBtn.disabled && sendBtn.getAttribute('aria-disabled') !== 'true';
   if (btnReady) {
-    console.log('[MoCKA] 送信: pointerdown→mousedown→pointerup→mouseup→click');
-    fireClick(sendBtn);
+    // 送信直前にfocusを確実に戻す（execCommandはfocus必須）
+    input.focus();
+    await sleep(100);
+    console.log('[MoCKA] 送信直前 activeElement:', document.activeElement?.id);
+    console.log('[MoCKA] 送信直前 innerText長:', input.innerText.length);
+    sendBtn.click();
     await sleep(600);
-    // フォールバック: まだボタンが有効なら送信されていない可能性
-    const stillReady = !sendBtn.disabled && sendBtn.getAttribute('aria-disabled') !== 'true';
-    if (stillReady) {
-      console.log('[MoCKA] フォールバック: form.requestSubmit()');
-      const form = input.closest('form');
-      if (form) {
-        try { form.requestSubmit(); } catch(e) { console.warn('[MoCKA] requestSubmit失敗:', e); }
-      }
-    }
+    const sentOk = input.innerText.length === 0;
+    console.log('[MoCKA] 送信結果:', sentOk ? 'SUCCESS' : 'FAIL（テキスト残存）');
   } else {
     console.warn('[MoCKA] 送信ボタンが見つからないか無効のまま', { sendBtn, disabled: sendBtn?.disabled, ariaDisabled: sendBtn?.getAttribute('aria-disabled') });
   }
