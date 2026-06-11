@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";import{S as o}from"./SandboxBridge-DRZv5s8E.js";import{B as r}from"./MessageBridge-CIIrx_vi.js";import"./Logger-6dX7gwFJ.js";import"./index.esm-BbZeTit-.js";let i;const n=async()=>{i=new o(window,r.Offscreen),await i.init()};n();

@@ -1570,6 +1570,7 @@ function groupBySession(messages, query) {
         message_count:  0,
         matched_count:  0,
         snippet:        '',
+        snippets:       [], // 複数ヒット箇所
         messages:       [],
       });
     }
@@ -1577,21 +1578,34 @@ function groupBySession(messages, query) {
     sess.message_count++;
     sess.messages.push(msg);
 
-    // タイトル：最初のuserメッセージ先頭50文字
+    // タイトル：最初のuserメッセージ先頭80文字
     if (!sess.title && msg.role === 'user') {
-      sess.title = (msg.content || '').slice(0, 50).replace(/\n/g, ' ');
+      sess.title = (msg.content || '').slice(0, 80).replace(/\n/g, ' ');
     }
 
-    // スニペット：クエリ周辺50文字
+    // スニペット：文境界で切り出し・前後150文字・最大3箇所
     if (msg.content && msg.content.toLowerCase().includes(q)) {
       sess.matched_count++;
-      if (!sess.snippet) {
+      if (sess.snippets.length < 3) {
         const idx = msg.content.toLowerCase().indexOf(q);
-        const start = Math.max(0, idx - 30);
-        const end   = Math.min(msg.content.length, idx + q.length + 50);
-        sess.snippet = (start > 0 ? '…' : '') +
-          msg.content.slice(start, end).replace(/\n/g, ' ') +
+
+        // 前方の文境界（改行または句点）を探す
+        const beforeNL = msg.content.lastIndexOf('\n', Math.max(0, idx - 1));
+        const start = (beforeNL !== -1 && idx - beforeNL < 150)
+          ? beforeNL + 1
+          : Math.max(0, idx - 80);
+
+        // 後方の文境界（改行または句点）を探す
+        const afterNL = msg.content.indexOf('\n', idx + q.length);
+        const end = (afterNL !== -1 && afterNL - idx < 150)
+          ? afterNL
+          : Math.min(msg.content.length, idx + q.length + 80);
+
+        const snip = (start > 0 ? '…' : '') +
+          msg.content.slice(start, end).replace(/\n/g, ' ').trim() +
           (end < msg.content.length ? '…' : '');
+
+        sess.snippets.push(snip);
       }
     }
   });
@@ -1601,7 +1615,9 @@ function groupBySession(messages, query) {
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 20)
     .map(s => {
-      // messagesは不要なのでサイズ削減
+      // snippetsを結合してsnippetに格納
+      s.snippet = s.snippets.join(' ／ ');
+      delete s.snippets;
       delete s.messages;
       return s;
     });

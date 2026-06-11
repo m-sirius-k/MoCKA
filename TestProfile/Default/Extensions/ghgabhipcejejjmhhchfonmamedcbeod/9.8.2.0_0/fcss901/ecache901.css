@@ -1,0 +1,2 @@
+/* Click&Clean for Google Chrome - HOTCLEANER.COM - Copyright (c) 2024 Mixesoft. All Rights Reserved. */
+:host,:root,html,body,button{margin:0;padding:0;border:0;overflow:hidden}button{display:block;width:21px;height:21px;background:#f1f1f1 url('../fimg901/del.png') center no-repeat;border:0;outline:0;cursor:pointer}button:disabled{background-color:#f44336;background-image:url('../fimg901/wipe.gif')}

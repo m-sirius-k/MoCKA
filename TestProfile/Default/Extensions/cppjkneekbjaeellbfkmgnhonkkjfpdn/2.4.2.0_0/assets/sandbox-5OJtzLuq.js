@@ -1,0 +1,1 @@
+import"./modulepreload-polyfill-B5Qt9EMX.js";import"./index.esm-BbZeTit-.js";import{l as r,c,E as o}from"./Logger-6dX7gwFJ.js";r.info(c.magenta(`Sandbox: Loading checkout url: ${o.resources.checkoutUrl}`)),window.location.href=o.resources.checkoutUrl;
