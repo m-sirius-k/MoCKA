@@ -223,7 +223,7 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
 
 // ─── MoCKA Living Context 自動注入（TODO_293） ───────────────────────
 const MOCKA_HANDSHAKE_URL =
-  'https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/api/handshake';
+  'http://localhost:5000/api/handshake';
 
 const MOCKA_ROLE_MAP = {
   'chatgpt.com': 'R01',
