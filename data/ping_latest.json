@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T09:47:43.158961"
+  "generated_at": "2026-06-11T09:47:43.158961",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -0.224,
+    "danger_rate": 0.388,
+    "success_rate": 0.612,
+    "text": "chrome://extensions → Orchestra → 完全に削除\n→ Chromeを完全終了（タスクマネージャーで確認）\n→ Chrome再起動\n",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "ここで相談です！　今作成したファイルは　これからも追加や更新されていくファイルや構成に関して\nchatが重くなり新規chatを開いた場合　あなたは　過去の関連性も状況も忘れてしまいますよね？\n\nそのた",
+        "recur": 0,
+        "matched": [
+          "読み込む"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-04",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "なんか　それをやったら何をするスクリプトか\n* 指定したログテキスト（例：`session.txt`）を読み込む。\n* その中に以下8ステージのキーワードが含まれているかをチェックする。\n   * O",
+        "recur": 0,
+        "matched": [
+          "読み込む"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-11T00:54:33.707Z"
+  }
 }
