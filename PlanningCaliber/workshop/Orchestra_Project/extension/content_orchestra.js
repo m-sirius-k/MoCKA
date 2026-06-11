@@ -1,4 +1,4 @@
-// Orchestra - content_orchestra.js
+﻿// Orchestra - content_orchestra.js
 // Handles prompt injection and response capture for external AI services
 // Injected into: ChatGPT / Gemini / Perplexity / Copilot
 
@@ -365,177 +365,43 @@ const MOCKA_INPUT_SELECTORS = [
 // Relay_Project/extension/content.js の setInputValue() を流用
 function mockaSetInputValue(el, text) {
   el.focus();
-
-  if (el.isContentEditable) {
-    const sel = window.getSelection();
-    const rng = document.createRange();
-    rng.selectNodeContents(el);
-    sel.removeAllRanges();
-    sel.addRange(rng);
-
-    const ok = document.execCommand('insertText', false, text);
-    if (!ok) {
-      el.innerText = text;
-      el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true }));
-      el.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-    return;
+  el.textContent = '';
+  document.execCommand('insertText', false, text);
+  if (!el.textContent) {
+    el.textContent = text;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
   }
-
-  const proto = el.tagName === 'TEXTAREA' ? window.HTMLTextAreaElement.prototype : window.HTMLInputElement.prototype;
-  const nativeSetter = Object.getOwnPropertyDescriptor(proto, 'value').set;
-  nativeSetter.call(el, text);
-  el.dispatchEvent(new InputEvent('input', { bubbles: true, cancelable: true }));
-  el.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
 async function injectAndSendContext(ctx) {
   if (!location.hostname.includes('chatgpt.com') &&
       !location.hostname.includes('chat.openai.com')) return;
-
   console.log('[MoCKA] injectAndSendContext: start');
-
   const input = await waitForElement(MOCKA_INPUT_SELECTORS.join(', '), 8000);
   if (!input) {
     console.warn('[MoCKA] 入力欄が見つかりませんでした');
     return;
   }
   console.log('[MoCKA] 入力欄を検出:', input.tagName, input.id, 'contentEditable=', input.contentEditable);
-
   const message = buildContextMessage(ctx);
   mockaSetInputValue(input, message);
+  await sleep(600);
   console.log('[MoCKA] 入力欄の現在のテキスト長:', (input.textContent || input.value || '').length);
-
-  await sleep(800);
-
-  input.dispatchEvent(new KeyboardEvent('keydown', {
-    key: 'Enter',
-    code: 'Enter',
-    keyCode: 13,
-    which: 13,
-    bubbles: true,
-    cancelable: true,
-    composed: true,
-  }));
-  console.log('[MoCKA] Enter keydownを発火しました');
-}
-
-function createMockaPanel(ctx) {
-  const existing = document.getElementById('mocka-living-context');
-  if (existing) existing.remove();
-
-  const briefing = ctx.briefing || {};
-  const warnings = ctx.warnings || [];
-  const mentor = ctx.mentor_package || {};
-  const snap = mentor.institution_memory_snapshot || {};
-
-  const panel = document.createElement('div');
-  panel.id = 'mocka-living-context';
-  panel.style.cssText = `
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    width: 320px;
-    max-height: 80vh;
-    overflow-y: auto;
-    background: #1a1a2e;
-    color: #e8e6f0;
-    border: 1px solid #533483;
-    border-radius: 12px;
-    padding: 16px;
-    font-family: -apple-system, sans-serif;
-    font-size: 13px;
-    line-height: 1.6;
-    z-index: 999999;
-    box-shadow: 0 4px 24px rgba(83,52,131,0.4);
-  `;
-
-  panel.innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <span style="font-size:14px;font-weight:600;color:#a78bfa">
-        ⚡ MoCKA Living Context
-      </span>
-      <button id="mocka-close" style="background:none;border:none;color:#888;cursor:pointer;font-size:16px">✕</button>
-    </div>
-
-    <div style="margin-bottom:12px">
-      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">PROJECT</div>
-      <div style="color:#e8e6f0;font-size:12px;line-height:1.8">
-        MoCKA ${ctx.contract_version || '1.0'} · Phase 4<br>
-        Active TODOs: ${snap.active_todos || '?'} ·
-        Events: ${snap.total_events || '?'}<br>
-        Seal: ${ctx.contract_seal || ''}
-      </div>
-    </div>
-    <div style="margin-bottom:12px">
-      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">ROLES</div>
-      <div style="color:#e8e6f0;font-size:12px;line-height:1.8">
-        GPT: 監査官 · Claude: 制度書記官<br>
-        Codex: 実装官 · Gemini: 調査官
-      </div>
-    </div>
-
-    ${briefing.mission ? `
-    <div style="margin-bottom:12px">
-      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">MISSION</div>
-      <div style="color:#e8e6f0">${briefing.mission}</div>
-    </div>` : ''}
-
-    ${briefing.top_priority ? `
-    <div style="margin-bottom:12px">
-      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">TOP PRIORITY</div>
-      <div style="color:#fbbf24">${briefing.top_priority}</div>
-    </div>` : ''}
-
-    ${briefing.recommended_strategy ? `
-    <div style="margin-bottom:12px">
-      <div style="color:#7c6fcd;font-size:11px;font-weight:600;margin-bottom:4px">STRATEGY</div>
-      <div style="color:#e8e6f0">${briefing.recommended_strategy}</div>
-    </div>` : ''}
-
-    ${warnings.length > 0 ? `
-    <div style="margin-bottom:12px">
-      <div style="color:#ef4444;font-size:11px;font-weight:600;margin-bottom:4px">⚠ WARNINGS</div>
-      ${warnings.map(w => `<div style="color:#fca5a5;margin-bottom:4px">• ${typeof w === 'string' ? w : JSON.stringify(w)}</div>`).join('')}
-    </div>` : ''}
-
-    ${(briefing.known_risks||[]).length > 0 ? `
-    <div style="margin-bottom:12px">
-      <div style="color:#f59e0b;font-size:11px;font-weight:600;margin-bottom:4px">KNOWN RISKS</div>
-      ${briefing.known_risks.slice(0,3).map(r => `<div style="color:#fcd34d;margin-bottom:4px">• ${r}</div>`).join('')}
-    </div>` : ''}
-
-    <div style="margin-top:12px;padding-top:12px;border-top:1px solid #533483;color:#666;font-size:11px">
-      MoCKA ${ctx.contract_version || '1.0'} · ${ctx.current_phase ? ctx.current_phase.substring(0,30)+'...' : 'Phase 4'}
-    </div>
-  `;
-
-  document.body.appendChild(panel);
-  document.getElementById('mocka-close').onclick = () => panel.remove();
-}
-
-async function initMockaContext() {
-  if (!['chatgpt.com','chat.openai.com','claude.ai']
-      .some(h => location.hostname.includes(h))) return;
-
-  const cached = sessionStorage.getItem('mocka_context_ts');
-  if (cached && Date.now() - parseInt(cached) < 3600000) return;
-
-  const ctx = await fetchLivingContext();
-  if (!ctx || ctx.handshake !== 'READY') {
-    console.warn('[MoCKA] handshake失敗またはREADYでない:', ctx);
-    return;
+  const sendBtn = document.querySelector(
+    'button[data-testid="send-button"], ' +
+    'button[aria-label="Send prompt"], ' +
+    'button[aria-label="Send message"]'
+  );
+  await sleep(300);
+  if (sendBtn && !sendBtn.disabled) {
+    console.log('[MoCKA] 送信ボタンをclickします');
+    sendBtn.click();
+  } else {
+    console.log('[MoCKA] 送信ボタンが見つからないためEnterにフォールバック');
+    input.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+      bubbles: true, cancelable: true, composed: true, shiftKey: false,
+    }));
   }
-  console.log('[MoCKA] handshake READY. パネル表示+自動送信を開始します');
-
-  sessionStorage.setItem('mocka_context_ts', Date.now().toString());
-  createMockaPanel(ctx);
-  await injectAndSendContext(ctx);
+  console.log('[MoCKA] 送信処理完了');
 }
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initMockaContext);
-} else {
-  setTimeout(initMockaContext, 1500);
-}
-// ─────────────────────────────────────────────────────────────────────
