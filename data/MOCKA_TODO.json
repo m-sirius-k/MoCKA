@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-10",
+    "updated": "2026-06-11",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -622,6 +622,18 @@
       "reference_event": "E20260610_10514",
       "created_at": "2026-06-10T18:42:17.994630",
       "updated_at": "2026-06-10T19:01:40.791696"
+    },
+    {
+      "id": "TODO_295",
+      "title": "再発防止: AUTO_SEAL前のTestProfile/混入チェック制度化",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "SECURITY",
+      "description": "AUTO_SEAL_50EVTがChromeテスト用TestProfile/を丸ごとcommitしGitHub Secret Scanningに検知されたインシデント(E20260611_386)の再発防止。sealスクリプトにpre-commitフックまたは事前チェックを組み込み、TestProfile/Cache/Default/等の混入を自動検知・阻止する制度を確立する。",
+      "assigned_to": "きむら博士",
+      "note": "対応済み: .gitignore追加・git rm --cached完了。残作業はsealスクリプトへのチェック組み込み。",
+      "reference_event": "E20260611_386",
+      "created_at": "2026-06-11T14:57:27.065921"
     }
   ],
   "completed": [
