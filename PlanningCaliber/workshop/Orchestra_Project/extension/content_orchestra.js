@@ -394,12 +394,10 @@ function sleep(ms) {
 
 // Relay_Project/extension/content.js (v4.6) のINPUT_SELECTORS / setInputValue() を流用
 const MOCKA_INPUT_SELECTORS = [
-  'div[contenteditable="true"][data-testid="composer-input"]',
   'div[contenteditable="true"][id="prompt-textarea"]',
   'div[contenteditable="true"].ProseMirror',
+  'div[contenteditable="true"][data-testid="composer-input"]',
   'div[contenteditable="true"]',
-  'textarea#prompt-textarea',
-  'textarea',
 ];
 
 function mockaSetInputValue(el, text) {
