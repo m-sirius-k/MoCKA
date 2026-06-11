@@ -1,5 +1,0 @@
-// Click&Clean for Google Chrome - HOTCLEANER.COM - Copyright (c) 2024 Mixesoft. All Rights Reserved.
-// Minified by Google Closure Compiler 20240317
-'use strict';
-try{const b=window,l=function(a){console.info(a)}.call,{Event:m,Audio:n,innerWidth:p,innerHeight:q,outerWidth:r,outerHeight:t,setTimeout:u,screen:{availWidth:v},JSON:{stringify:e},chrome:{runtime:{sendMessage:f},windows:{getAll:w,getCurrent:x,remove:g,update:y}}}=b,z=l.bind(HTMLMediaElement.prototype.play),B=async function(){var a=await x();let c=a.id;if("popup"==a.type){await y(c,{top:21,left:v-321,width:300+(r-p),height:8+(t-q),focused:!0});a=await f(e({id:0,v:c}));let h=await w({});for(let d=0,
-A=h.length;d<A;d++){let k=h[d];k.id!=c&&await g(k.id)}await f(e({id:18}));if(a)try{z(new n("fimg901/erased.ogg"))}catch(d){}u(()=>{g(c)},1100)}else window.history.pushState("",null,"/unauthorized"),document.body.textContent="Please run from the Click&Clean Menu."};b.addEventListener("DOMContentLoaded",a=>{a instanceof m&&a.isTrusted&&B()},!1);b.addEventListener("contextmenu",a=>{a.preventDefault()},!1)}catch(b){console.info(b)};
