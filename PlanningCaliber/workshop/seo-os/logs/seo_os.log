@@ -3160,3 +3160,26 @@
 2026-06-11 09:07:43,211 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:8750
 2026-06-11 09:07:43,212 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-11 09:21:38,517 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-11 09:21:38,531 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-11 09:21:38,532 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-11 09:21:38,724 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-11 09:21:38,726 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-11 09:21:38,727 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-11 09:21:38,805 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-11 09:21:38,807 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-11 09:21:38,884 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-11 09:21:38,885 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-11 09:21:38,886 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-11 09:21:38,888 [INFO] [Bootstrap] Worker初期化完了
+2026-06-11 09:21:38,972 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-11 09:21:38,973 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-11 09:22:14,114 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET / HTTP/1.1" 200 -
+2026-06-11 09:22:14,707 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-11 09:22:14,715 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET /api/health HTTP/1.1" 200 -
+2026-06-11 09:22:14,715 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-11 09:22:14,716 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-11 09:22:14,717 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET /api/jobs?status=rejected HTTP/1.1" 200 -
+2026-06-11 09:22:14,717 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:14] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-11 09:22:15,062 [INFO] 127.0.0.1 - - [11/Jun/2026 09:22:15] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -

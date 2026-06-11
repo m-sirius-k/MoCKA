@@ -1,4 +1,4 @@
-﻿// Orchestra - content_orchestra.js
+/ Orchestra - content_orchestra.js
 // Handles prompt injection and response capture for external AI services
 // Injected into: ChatGPT / Gemini / Perplexity / Copilot
 
