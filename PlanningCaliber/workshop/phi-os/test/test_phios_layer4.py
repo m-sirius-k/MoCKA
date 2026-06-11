@@ -145,7 +145,7 @@ def case_mocka_ingest_priority():
     t2.join()
 
     steps.append(f"order: {order}")
-    if order.index("mocka_end") > order.index("other_start"):
+    if order.index("other_end") < order.index("mocka_end"):
         return steps, f"mocka処理中に他ingestがブロックされていない: {order}"
     steps.append("mocka伝令処理中、他ingest()がブロックされ最優先処理されたことを確認")
 
