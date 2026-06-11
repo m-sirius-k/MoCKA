@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T13:05:03.725143"
+  "generated_at": "2026-06-11T13:05:03.725143",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.333,
+    "danger_rate": 0.667,
+    "success_rate": 0.333,
+    "text": "テスト送信\n\n受信しました。\n\nこの「テスト送信」が届いたということは、このチャットでは通常の入力・送信は正常に動作しています。\n\n一方で、MoCKA経由の自動",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-29",
+        "why": "再発#1: MATAKA",
+        "how": "またか！ボタン",
+        "note": "hash=5e03854949b5a279|who=claude|pattern=問題はPowerShellのテストコマンドだけでした。",
+        "recur": 0,
+        "matched": [
+          "問題は"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-04",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「テスト：協業動作確認2...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【ChatGPT】\n協業動作確認テスト2：応答記録\n1. 試験目的\n\n本試験は、MoC",
+        "recur": 0,
+        "matched": [
+          "問題は"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-11T04:11:34.093Z"
+  }
 }

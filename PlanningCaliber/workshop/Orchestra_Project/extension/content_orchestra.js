@@ -75,25 +75,19 @@ function setTextareaValue(el, text) {
 }
 
 function setContentEditableValue(el, text) {
-  let inserted = false;
-
-  try {
-    el.focus();
-    document.execCommand('selectAll', false, null);
-    document.execCommand('delete', false, null);
-    inserted = document.execCommand('insertText', false, text);
-  } catch (e) {
-    console.warn('[MoCKA] execCommand insertText failed:', e);
-  }
-
-  const currentText = (el.innerText || el.textContent || '').trim();
-  if (!inserted || currentText.length === 0) {
-    el.textContent = text;
-    dispatchReactInputEvents(el, text);
-    return;
-  }
-
-  dispatchReactInputEvents(el, text);
+  el.focus();
+  // まずクリア
+  document.execCommand('selectAll', false, null);
+  document.execCommand('delete', false, null);
+  // ClipboardEvent paste方式でReact内部stateを更新
+  const dt = new DataTransfer();
+  dt.setData('text/plain', text);
+  const pasted = el.dispatchEvent(new ClipboardEvent('paste', {
+    clipboardData: dt,
+    bubbles: true,
+    cancelable: true,
+  }));
+  console.log('[MoCKA] paste dispatched:', pasted, 'textLength:', (el.textContent||'').length);
 }
 
 function injectText(el, text) {
