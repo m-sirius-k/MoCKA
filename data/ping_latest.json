@@ -40,5 +40,14 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T14:30:27.939919"
+  "generated_at": "2026-06-11T14:30:27.939919",
+  "matcher_result": {
+    "verdict": "NEUTRAL",
+    "score": 0,
+    "danger_rate": 0,
+    "success_rate": 0,
+    "text": "接続状況監査報告（MoCKA連携状態）\n\n1. 結論\n\n現時点で確認できるのは、「MoCKAが外部システムとして実行接続された状態」ではなく、 MoCKA制度情",
+    "top_events": [],
+    "updated_at": "2026-06-11T05:37:05.237Z"
+  }
 }
