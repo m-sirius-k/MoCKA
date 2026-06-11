@@ -4,8 +4,8 @@
     "detail": "200 OK"
   },
   "caliber_pipeline": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "anthropic_api": {
     "ok": true,
