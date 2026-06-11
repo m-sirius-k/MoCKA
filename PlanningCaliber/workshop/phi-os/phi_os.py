@@ -6,8 +6,12 @@ TODO_298: ingest() -> mocka_write_event 接続
 TODO_299: vasAI 双方向ループ実装
 """
 import json
+import threading
 import urllib.request
 import urllib.error
+
+from phi_os_state import PHIOSState
+from phi_os_view import ViewEngine, ViewError
 
 MOCKA_MCP_URL = "http://localhost:5002/agent/mocka_write_event"
 VASAI_FEEDBACK_URL = "http://localhost:6000/phios/feedback"
@@ -30,8 +34,20 @@ class PHIOS:
       phi-os-mini-orchestra-001
     """
 
-    def __init__(self, layer: str, product: str, instance: str = "001"):
-        self.node_id = f"phi-os-{layer}-{product}-{instance}"
+    def __init__(self, layer: str, product: str, instance: str = "001", enable_state: bool = True):
+        self._node_id = f"phi-os-{layer}-{product}-{instance}"
+        self.state = PHIOSState(self._node_id) if enable_state else None
+        self.view_engine = ViewEngine(self.state) if self.state is not None else None
+        # mockaからの伝令(ingest('mocka', ...))を最優先処理するためのlock(5章5.1)
+        self._ingest_lock = threading.Lock()
+
+    @property
+    def node_id(self) -> str:
+        return self._node_id
+
+    @node_id.setter
+    def node_id(self, value):
+        raise AttributeError("node_id は初期化時に固定され、再代入できません(PHI-OS-SPEC-001第3章)")
 
     # ------------------------------------------------------------------
     # TODO_298: ingest() -> mocka_write_event 接続
@@ -42,39 +58,54 @@ class PHIOS:
 
         記録なしの ingest() は FORBIDDEN。
         記録に失敗した場合は PHIOSError を送出し、呼び出し元に処理中断を返す。
-        """
-        description = json.dumps(
-            {"source": source, "payload": payload}, ensure_ascii=False
-        )
-        try:
-            self._write_event(
-                title=f"PHI_OS_INGEST: {source}",
-                description=description,
-                tags="phi_os_ingest",
-                why_purpose=f"PHI-OS ingest({source})",
-                how_trigger=f"{self.node_id}.ingest",
-            )
-        except Exception as e:
-            self._handle_error("INGEST_FAIL", {"source": source, "error": str(e)})
-            raise PHIOSError(
-                f"ingest({source}) は記録に失敗したため FORBIDDEN: {e}"
-            ) from e
 
-        return {"node_id": self.node_id, "source": source, "recorded": True}
+        source == 'mocka'(神の伝令)はlockを保持して処理する間、
+        他のingest()呼び出しをブロックし最優先で処理する(5章5.1)。
+        """
+        with self._ingest_lock:
+            description = json.dumps(
+                {"source": source, "payload": payload}, ensure_ascii=False
+            )
+            try:
+                self._write_event(
+                    title=f"PHI_OS_INGEST: {source}",
+                    description=description,
+                    tags="phi_os_ingest",
+                    why_purpose=f"PHI-OS ingest({source})",
+                    how_trigger=f"{self.node_id}.ingest",
+                )
+            except Exception as e:
+                self._handle_error("INGEST_FAIL", {"source": source, "error": str(e)})
+                raise PHIOSError(
+                    f"ingest({source}) は記録に失敗したため FORBIDDEN: {e}"
+                ) from e
+
+            if self.state is not None:
+                self.state.append_raw(source, payload)
+
+            return {"node_id": self.node_id, "source": source, "recorded": True}
 
     # ------------------------------------------------------------------
     # 4章 / 5.2: generate_view('fusion')
     # ------------------------------------------------------------------
-    def generate_view(self, view_type: str, payload: dict) -> dict:
+    def generate_view(self, view_type: str, payload: dict = None) -> dict:
         """
-        再投入用のviewを生成する。
+        6章準拠: ViewEngineで4視点(default/risk/fusion/timeline)を生成する。
 
-        5.2準拠: 再投入後の view_type は常に 'fusion' 固定。
+        5.2準拠: vasAI再投入後の view_type は常に 'fusion' 固定。
+        view_type不明の場合は PHIOSError(UNKNOWN_VIEW_TYPE) を送出する。
         """
-        view = dict(payload)
-        view["view_type"] = view_type
-        view["node_id"] = self.node_id
-        return view
+        payload = payload or {}
+        if self.view_engine is None:
+            view = dict(payload)
+            view["view_type"] = view_type
+            view["node_id"] = self.node_id
+            return view
+
+        try:
+            return self.view_engine.generate(view_type, payload)
+        except ViewError as e:
+            raise PHIOSError(str(e)) from e
 
     # ------------------------------------------------------------------
     # TODO_299: vasAI 双方向ループ実装

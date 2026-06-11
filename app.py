@@ -2298,6 +2298,16 @@ def health_check():
     return jsonify({'status': 'ok', 'port': 5000})
 
 
+@app.route('/api/living-context')
+def living_context():
+    """PHI-OS Layer4(phi_os_poller.py)向け: mocka本体の現在状態スタブ(5章5.1)。"""
+    return jsonify({
+        'current_phase': CURRENT_PHASE if 'CURRENT_PHASE' in globals() else 'unknown',
+        'timestamp': datetime.now().isoformat(),
+        'source': 'mocka',
+    })
+
+
 # ── Relay 生存確認 ────────────────────────────────────────────────────────────
 
 import pathlib as _pathlib

@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-11T17:59:44.307481"
+  "generated_at": "2026-06-11T17:59:44.307481",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.2,
+    "danger_rate": 0.6,
+    "success_rate": 0.4,
+    "text": "Layer2テスト 12/12 PASS (100%)で記録完了（E20260611_515）。\n\n実装・修正サマリ:\n\ntest_phios_layer2.p",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-11T09:03:07.950Z"
+  }
 }
