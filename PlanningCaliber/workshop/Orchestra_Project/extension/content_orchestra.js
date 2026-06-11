@@ -76,18 +76,48 @@ function setTextareaValue(el, text) {
 
 function setContentEditableValue(el, text) {
   el.focus();
-  // まずクリア
-  document.execCommand('selectAll', false, null);
-  document.execCommand('delete', false, null);
-  // ClipboardEvent paste方式でReact内部stateを更新
-  const dt = new DataTransfer();
-  dt.setData('text/plain', text);
-  const pasted = el.dispatchEvent(new ClipboardEvent('paste', {
-    clipboardData: dt,
-    bubbles: true,
-    cancelable: true,
+
+  // ① React __reactProps 経由でstate直接更新
+  const reactPropsKey = Object.keys(el).find(k => k.startsWith('__reactProps'));
+  if (reactPropsKey) {
+    const props = el[reactPropsKey];
+    if (props.onInput) {
+      props.onInput({ target: { textContent: text, innerText: text }, currentTarget: el });
+    }
+    if (props.onChange) {
+      props.onChange({ target: { value: text, textContent: text }, currentTarget: el });
+    }
+    console.log('[MoCKA] reactProps found, onInput:', !!props.onInput, 'onChange:', !!props.onChange);
+  } else {
+    console.warn('[MoCKA] __reactProps not found — fallback to DOM only');
+  }
+
+  // ② DOM書き込み
+  el.textContent = text;
+
+  // ③ カーソルを末尾へ
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  range.collapse(false);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  // ④ イベントシーケンス
+  el.dispatchEvent(new InputEvent('beforeinput', {
+    bubbles: true, cancelable: true,
+    inputType: 'insertText', data: text,
   }));
-  console.log('[MoCKA] paste dispatched:', pasted, 'textLength:', (el.textContent||'').length);
+  el.dispatchEvent(new InputEvent('input', {
+    bubbles: true, cancelable: true,
+    inputType: 'insertText', data: text,
+  }));
+  el.dispatchEvent(new Event('selectionchange', { bubbles: true }));
+  el.dispatchEvent(new KeyboardEvent('keyup', { key: 'a', bubbles: true }));
+
+  console.log('[MoCKA] setContentEditable done, length:', el.textContent.length);
+  console.log('[MoCKA] activeElement match:', document.activeElement === el);
+  console.log('[MoCKA] selection length:', window.getSelection()?.toString()?.length);
 }
 
 function injectText(el, text) {
@@ -424,15 +454,21 @@ async function injectAndSendContext(ctx) {
   mockaSetInputValue(input, message);
   await sleep(600);
   console.log('[MoCKA] 入力欄の現在のテキスト長:', (input.textContent || input.value || '').length);
-  const sendBtn = document.querySelector('.composer-submit-button-color');
-  // MutationObserver: disabled=falseになるまで最大2秒待つ
+  console.log('[MoCKA] innerText先頭80:', input.innerText?.substring(0, 80));
+  console.log('[MoCKA] activeElement:', document.activeElement?.tagName, document.activeElement?.id);
+  const sendBtn = document.querySelector('.composer-submit-button-color')
+    || document.querySelector('button[data-testid="send-button"]')
+    || document.querySelector('button[aria-label="Send prompt"]');
+  console.log('[MoCKA] sendBtn disabled:', sendBtn?.disabled, 'aria-disabled:', sendBtn?.getAttribute('aria-disabled'));
+  // MutationObserver: disabled/aria-disabledがfalseになるまで最大3秒待つ
   await new Promise(resolve => {
-    if (sendBtn && !sendBtn.disabled) { resolve(); return; }
+    const isReady = () => sendBtn && !sendBtn.disabled && sendBtn.getAttribute('aria-disabled') !== 'true';
+    if (isReady()) { resolve(); return; }
     const obs = new MutationObserver(() => {
-      if (sendBtn && !sendBtn.disabled) { obs.disconnect(); resolve(); }
+      if (isReady()) { obs.disconnect(); resolve(); }
     });
-    if (sendBtn) obs.observe(sendBtn, { attributes: true, attributeFilter: ['disabled'] });
-    setTimeout(() => { obs.disconnect(); resolve(); }, 2000);
+    if (sendBtn) obs.observe(sendBtn, { attributes: true, attributeFilter: ['disabled', 'aria-disabled'] });
+    setTimeout(() => { obs.disconnect(); resolve(); }, 3000);
   });
 
   function fireClick(btn) {
@@ -444,12 +480,14 @@ async function injectAndSendContext(ctx) {
     });
   }
 
-  if (sendBtn && !sendBtn.disabled) {
+  const btnReady = sendBtn && !sendBtn.disabled && sendBtn.getAttribute('aria-disabled') !== 'true';
+  if (btnReady) {
     console.log('[MoCKA] 送信: pointerdown→mousedown→pointerup→mouseup→click');
     fireClick(sendBtn);
     await sleep(600);
-    // form.requestSubmit() フォールバック
-    if (!sendBtn.disabled) {
+    // フォールバック: まだボタンが有効なら送信されていない可能性
+    const stillReady = !sendBtn.disabled && sendBtn.getAttribute('aria-disabled') !== 'true';
+    if (stillReady) {
       console.log('[MoCKA] フォールバック: form.requestSubmit()');
       const form = input.closest('form');
       if (form) {
@@ -457,7 +495,7 @@ async function injectAndSendContext(ctx) {
       }
     }
   } else {
-    console.warn('[MoCKA] 送信ボタンが見つからないか無効のまま');
+    console.warn('[MoCKA] 送信ボタンが見つからないか無効のまま', { sendBtn, disabled: sendBtn?.disabled, ariaDisabled: sendBtn?.getAttribute('aria-disabled') });
   }
   console.log('[MoCKA] 送信処理完了');
 }

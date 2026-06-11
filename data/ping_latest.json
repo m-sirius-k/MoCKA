@@ -46,33 +46,35 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "## 引き継ぎパケット [Relay Free]\n\n**いつ**: 2026-06-11 12:21 (0ターン)\n\n**何を**: 2. 検索結果がキーワード",
+    "text": "私ならまず確認すること\n\n送信直前で\n\n\n\nconsole.log(inputEl.innerText);\nconsole.log(inputEl.textCo",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-05",
+        "when": "2026-04-04",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "==================================================\nMoCKA deviation_classifier.py Day2\n逸脱分類 + recurre",
+        "note": "router 再発タイプ別:   save                 53件   collaboration        17件   share                7件 PS C:",
         "recur": 0,
         "matched": [
-          "ズレ"
+          "見え",
+          "data/"
         ],
-        "score": 1
+        "score": 2
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-31",
+        "when": "2026-03-29",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "以下は「README構造を確認しました。  最適な挿入位置はここです：  英語版の ## What is M...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "note": "いまの会話と取得できた公開情報だけでは、「私が実際にあなたの環境で稼働させた」とは断言できません。\nただし、公開情報からは MoCKA と MoCKA-KNOWLEDGE-GATE が、決定論的なガバ",
         "recur": 0,
         "matched": [
-          "ズレ"
+          "見え",
+          "data/"
         ],
-        "score": 1
+        "score": 2
       }
     ],
-    "updated_at": "2026-06-11T04:24:01.977Z"
+    "updated_at": "2026-06-11T04:25:48.596Z"
   }
 }
