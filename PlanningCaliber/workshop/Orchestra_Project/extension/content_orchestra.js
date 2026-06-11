@@ -445,15 +445,23 @@ async function injectAndSendContext(ctx) {
     'button[aria-label="Send message"]'
   );
   await sleep(300);
+  const enterEventInit = {
+    key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
+    bubbles: true, cancelable: true, composed: true, shiftKey: false,
+  };
   if (sendBtn && !sendBtn.disabled) {
-    console.log('[MoCKA] 送信ボタンをclickします');
-    sendBtn.click();
+    console.log('[MoCKA] 送信ボタン有効化を確認。Enter送信します');
+    input.dispatchEvent(new KeyboardEvent('keydown', enterEventInit));
+    input.dispatchEvent(new KeyboardEvent('keyup', enterEventInit));
+    await sleep(500);
+    if (!sendBtn.disabled) {
+      console.log('[MoCKA] Enter送信後も送信ボタンが有効なためclickにフォールバック');
+      sendBtn.click();
+    }
   } else {
     console.log('[MoCKA] 送信ボタンが見つからないためEnterにフォールバック');
-    input.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'Enter', code: 'Enter', keyCode: 13, which: 13,
-      bubbles: true, cancelable: true, composed: true, shiftKey: false,
-    }));
+    input.dispatchEvent(new KeyboardEvent('keydown', enterEventInit));
+    input.dispatchEvent(new KeyboardEvent('keyup', enterEventInit));
   }
   console.log('[MoCKA] 送信処理完了');
 }
@@ -485,5 +493,6 @@ function scheduleMockaAutoInject() {
 }
 
 scheduleMockaAutoInject();
+
 
 
