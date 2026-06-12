@@ -46,33 +46,33 @@
     "score": 0.0,
     "danger_rate": 0.5,
     "success_rate": 0.5,
-    "text": "Push完了 (c788a1332..96387cc13)。",
+    "text": "Phase 2 安定化確認・FP更新完了報告\n\nsafe_boot(full=True): Boot complete ✅\n\nsafe_boot(full=Fa",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "TODO_022完全完了の証跡記録",
-        "how": "",
-        "note": "TODO_022,completed,essence,pipeline,content.js",
+        "when": "2026-03-29",
+        "why": "",
+        "how": "manual_click",
+        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
         "recur": 0,
         "matched": [
-          "complete"
+          "record"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-18",
-        "why": "旧アーキテクチャの残骸データをNo-Token方式で処理。lever_essence.json更新完了。",
-        "how": "きむら博士がPowerShellでraw_processor.pyを実行。",
-        "note": "OPERATION,NO_TOKEN,RAW_PROCESSED,COMPLETE",
+        "when": "2026-04-26",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[save] Related Work — 具体的な文章案 Prior work on AI governance has largely focused on two approaches: exp",
         "recur": 0,
         "matched": [
-          "complete"
+          "record"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-12T08:36:39.243Z"
+    "updated_at": "2026-06-12T11:00:10.849Z"
   }
 }

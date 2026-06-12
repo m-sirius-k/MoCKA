@@ -67,3 +67,13 @@ def is_revision_update(event_type: str) -> bool:
         if event_type in cat_events:
             return bool(cat_events[event_type].get("revision_increment", False))
     return False
+
+
+def get_severity(event_type: str) -> str:
+    """event_typeのseverityを返す（未定義は"info"）"""
+    category = get_category(event_type)
+    if category is None:
+        return "info"
+    data = load_taxonomy()
+    definition = data.get("events", {}).get(category, {}).get(event_type, {})
+    return definition.get("severity", "info")

@@ -14,6 +14,7 @@ from ise.taxonomy_validator import (
     validate_event_type,
     get_category,
     is_revision_update,
+    get_severity,
     VALID_CATEGORIES,
 )
 
@@ -37,5 +38,6 @@ __all__ = [
     "is_valid_event_type",
     "get_category",
     "is_revision_update",
+    "get_severity",
     "VALID_CATEGORIES",
 ]
