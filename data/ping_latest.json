@@ -43,36 +43,36 @@
   "generated_at": "2026-06-12T09:11:23.165352",
   "matcher_result": {
     "verdict": "SUCCESS",
-    "score": 0.0,
-    "danger_rate": 0.5,
-    "success_rate": 0.5,
-    "text": "Phase 2 安定化確認・FP更新完了報告\n\nsafe_boot(full=True): Boot complete ✅\n\nsafe_boot(full=Fa",
+    "score": -0.318,
+    "danger_rate": 0.341,
+    "success_rate": 0.659,
+    "text": "GPT総合監査（Phase 2 → Phase 3 v1.1）\n\n結論\n\nMoCKAは「意味駆動OSの最小成立状態」に到達した\n\n1. 構造評価（重要）\n\n現在",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
+        "when": "2026-04-16",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
         "recur": 0,
         "matched": [
-          "record"
+          "持つ"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-26",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[save] Related Work — 具体的な文章案 Prior work on AI governance has largely focused on two approaches: exp",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "MoCKA流動性座標理論 実装移行報告書（公文書）\n第1章 総論（到達点の定義）\n本報告は、これまでの検討を踏まえ、MoCKAにおける判定理論が 静的二値判定から流動性座標モデルへ移行したことを正式に",
         "recur": 0,
         "matched": [
-          "record"
+          "持つ"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-12T11:00:10.849Z"
+    "updated_at": "2026-06-12T11:11:47.717Z"
   }
 }
