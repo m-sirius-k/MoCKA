@@ -102,14 +102,35 @@ def api_explain(capability):
     return jsonify(ExplainEngine().explain(
         capability, strategy))
 
+@app.route("/api/explain/<job_id>")
+def api_explain_job(job_id):
+    return jsonify(ExplainEngine().explain_job(job_id))
+
 @app.route("/api/simulate", methods=["POST"])
 def api_simulate():
-    d        = request.json or {}
+    d = request.json or {}
+    if "pipeline_id" in d or "content_sample" in d:
+        return jsonify(SimulationEngine().dry_run(
+            d.get("pipeline_id", "lp_pipeline"),
+            d.get("content_sample", "")))
     pipeline = d.get("pipeline","lp_pipeline")
     strategy = d.get("strategy","priority")
     job      = d.get("job", {"title":"simulation"})
     return jsonify(SimulationEngine().simulate(
         pipeline, job, strategy))
+
+@app.route("/api/mocka/event", methods=["POST"])
+def api_mocka_event():
+    from mocka.mocka_bridge import MoCKABridge
+    payload = request.json or {}
+    return jsonify(MoCKABridge().forward_event(payload))
+
+@app.route("/api/mocka/context")
+def api_mocka_context():
+    from mocka.mocka_bridge import MoCKABridge
+    role = request.args.get("role", "ai_claude")
+    mode = request.args.get("mode", "full")
+    return jsonify(MoCKABridge().get_context(role, mode))
 
 @app.route("/api/decisions")
 def api_decisions():

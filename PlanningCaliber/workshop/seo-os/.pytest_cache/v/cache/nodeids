@@ -48,5 +48,19 @@
   "tests/test_phase7.py::test_disable_policy",
   "tests/test_phase7.py::test_policy_filters_candidate",
   "tests/test_phase7.py::test_replay_returns_structure",
-  "tests/test_phase7.py::test_replay_unknown_id"
+  "tests/test_phase7.py::test_replay_unknown_id",
+  "tests/test_phase8.py::test_dry_run_basic_shape",
+  "tests/test_phase8.py::test_dry_run_unknown_pipeline",
+  "tests/test_phase8.py::test_dry_run_with_content_scores",
+  "tests/test_phase8.py::test_explain_job_found",
+  "tests/test_phase8.py::test_explain_job_returns_required_keys",
+  "tests/test_phase8.py::test_explain_job_unknown",
+  "tests/test_phase8.py::test_forward_event_failure",
+  "tests/test_phase8.py::test_forward_event_success",
+  "tests/test_phase8.py::test_get_context_failure",
+  "tests/test_phase8.py::test_get_context_success",
+  "tests/test_phase8.py::test_route_explain_job",
+  "tests/test_phase8.py::test_route_mocka_context",
+  "tests/test_phase8.py::test_route_mocka_event",
+  "tests/test_phase8.py::test_route_simulate_dry_run"
 ]

@@ -117,6 +117,48 @@ class SimulationEngine:
                 f"❌ 実行不可 — {len(warnings)}件の問題あり")
         }
 
+    def dry_run(self, pipeline_id: str,
+                content_sample: str = "") -> dict:
+        """
+        POST /api/simulate (新形式): {pipeline_id, content_sample}
+        Workerを実際には実行せず、どのWorkerが選ばれ
+        どのPolicy checkが走るかをドライランする。
+        戻り値: {would_run, would_block, estimated_score}
+        """
+        from gate.ai_gate import AIGate
+
+        result = self.simulate(pipeline_id,
+                                {"title": "dry_run",
+                                 "content": content_sample,
+                                 "type": "blog"},
+                                "priority")
+
+        would_run = [
+            f"{s['capability']} -> {s['worker']}"
+            for s in result["steps"]
+            if s.get("type") == "capability" and s.get("status") == "ok"
+        ] + [
+            f"{s['type']}: {s.get('note', '')}"
+            for s in result["steps"]
+            if s.get("type") in ("gate", "policy")
+        ]
+
+        would_block = list(result["warnings"])
+
+        estimated_score = 0
+        if content_sample:
+            gate_result = AIGate().check(
+                {"content": content_sample, "type": "blog", "id": "dry_run"},
+                "blog_policy")
+            estimated_score = gate_result["score"]
+
+        return {
+            "pipeline_id": pipeline_id,
+            "would_run": would_run,
+            "would_block": would_block,
+            "estimated_score": estimated_score,
+        }
+
     def _load(self, name: str) -> list:
         path = os.path.join(PIPELINE_DIR, f"{name}.json")
         if not os.path.exists(path):

@@ -1,5 +1,7 @@
 import json
-from caliber.decision_ledger import DecisionLedger
+import sqlite3
+import os
+from caliber.decision_ledger import DecisionLedger, DB_PATH
 from caliber.performance_ledger import PerformanceLedger
 from caliber.lifecycle_manager import LifecycleManager
 from caliber.capability_registry import CapabilityRegistry
@@ -84,6 +86,61 @@ class ExplainEngine:
                 capability, strategy,
                 recommended, candidates)
         }
+
+    def explain_job(self, job_id: str) -> dict:
+        """
+        GET /api/explain/<job_id>
+        指定Jobについて「なぜそのWorkerが選ばれたか」を返す。
+        {job_id, worker_chosen, reason, alternatives_considered,
+         policy_checks, score}
+        """
+        dl = DecisionLedger()
+        rows = dl.all(limit=1000)
+        job_rows = [r for r in rows if r.get("job_id") == job_id]
+        job_rows.sort(key=lambda r: r["timestamp"], reverse=True)
+
+        if not job_rows:
+            return {
+                "job_id": job_id,
+                "worker_chosen": None,
+                "reason": {},
+                "alternatives_considered": [],
+                "policy_checks": [],
+                "score": None,
+                "note": f"Decision Ledgerに job_id={job_id} の記録がありません",
+            }
+
+        latest = job_rows[0]
+        try:
+            reason = json.loads(latest.get("selection_reason", "{}"))
+        except Exception:
+            reason = {}
+        try:
+            alternatives = json.loads(latest.get("candidate_workers", "[]"))
+        except Exception:
+            alternatives = []
+
+        return {
+            "job_id": job_id,
+            "worker_chosen": latest.get("selected_worker"),
+            "reason": reason,
+            "alternatives_considered": alternatives,
+            "policy_checks": self._policy_checks(job_id),
+            "score": reason.get("score"),
+        }
+
+    def _policy_checks(self, job_id: str) -> list:
+        if not os.path.exists(DB_PATH):
+            return []
+        conn = sqlite3.connect(DB_PATH)
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute(
+            "SELECT action, actor, detail, timestamp FROM audit_log "
+            "WHERE job_id=? ORDER BY timestamp",
+            (job_id,)
+        ).fetchall()
+        conn.close()
+        return [dict(r) for r in rows]
 
     def _build_text(self, capability, strategy,
                     recommended, candidates) -> str:
