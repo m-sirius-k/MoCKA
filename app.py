@@ -3720,6 +3720,13 @@ def ise_state_machine():
             for current, nexts in TRANSITIONS.items()
         },
     }), 200
+
+
+@app.route("/api/ise/ledger", methods=["GET"])
+def ise_ledger():
+    from ise.decision_ledger import read_ledger, verify_chain
+    ok, msg = verify_chain()
+    return jsonify({"ok": ok, "message": msg, "entries": read_ledger()})
 # ── ISE エンドポイント ここまで ───────────────────────────────
 
 
