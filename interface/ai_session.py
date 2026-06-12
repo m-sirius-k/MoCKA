@@ -102,18 +102,26 @@ def session_start():
         "open_issues": OPEN_ISSUES,
     }
 
-    if mode in ("resume", "full"):
+    if mode in ("resume", "full", "legacy"):
         response["recent_decisions"] = []
         response["pending_review"] = []
         response["progress"] = _progress()
 
-    if mode == "full":
+    if mode == "legacy":
         from reflection_engine import get_recent_reflections
         response["recent_events"] = _recent_events(20)
         response["essence"] = _essence()
         response["guidelines_top10"] = _guidelines_top10()
         response["capability_registry"] = _capability_registry()
         response["recent_reflections"] = get_recent_reflections(limit=3)
+        response["warning"] = "legacy mode: token cost high"
+
+    if mode == "full":
+        from context_composer import ContextComposer
+        composed = ContextComposer().compose(role=role, mode=mode, ai_id=role, scope=scope)
+        response["working_context"] = composed["working_context"]
+        response["generated_at"] = composed["generated_at"]
+        response["expires_in_seconds"] = composed["expires_in_seconds"]
         response["warning"] = "full mode: token cost high"
 
     eid = db.get_next_event_id()
