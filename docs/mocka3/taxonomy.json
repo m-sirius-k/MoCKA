@@ -1,26 +1,102 @@
 {
-  "version": "1.0",
+  "version": "1.1",
+  "status": "FROZEN",
   "created": "2026-06-12",
+  "sealed_by": "E20260612_091",
   "categories": {
-    "state_change": {
-      "description": "制度状態の変化を記録するイベント",
-      "examples": ["knock", "ack", "state_update"],
+    "state_transition": {
+      "description": "ISEのstate遷移そのものを記録する",
+      "examples": ["STATE_INIT", "STATE_DEGRADED", "STATE_RECOVERED"],
       "severity_range": ["info", "warning"]
     },
+    "state_operation": {
+      "description": "ファイル変更・revision更新など操作ログを記録する",
+      "examples": ["CHANGE_START", "CHANGE_DONE", "REVISION_UPDATE"],
+      "severity_range": ["info"]
+    },
     "audit": {
-      "description": "監査・検証イベント",
-      "examples": ["seal", "verify", "snapshot"],
+      "description": "制度整合性の検証・封印を記録する",
+      "examples": ["SEAL", "VERIFY", "SNAPSHOT"],
       "severity_range": ["info", "critical"]
     },
     "lifecycle": {
-      "description": "AIセッションのライフサイクルイベント",
-      "examples": ["session_start", "session_end", "handshake"],
+      "description": "AIセッション開始・終了・Handshakeを記録する",
+      "examples": ["SESSION_START", "SESSION_END", "HANDSHAKE"],
       "severity_range": ["info", "warning"]
     },
     "incident": {
-      "description": "インシデント・異常検知",
-      "examples": ["violation", "drift", "timeout"],
+      "description": "制度違反・異常・タイムアウトを記録する",
+      "examples": ["VIOLATION", "TIMEOUT", "DRIFT"],
       "severity_range": ["warning", "critical"]
+    },
+    "knowledge": {
+      "description": "Event Ledgerへの書き込み・検索・継承を記録する",
+      "examples": ["EVENT_WRITE", "EVENT_SEARCH", "KNOWLEDGE_EVOLVE"],
+      "severity_range": ["info"]
+    },
+    "governance": {
+      "description": "Authority委譲・Commission発行・Revokeを記録する",
+      "examples": ["COMMISSION", "AUTHORITY_DELEGATE", "AUTHORITY_REVOKE"],
+      "severity_range": ["info", "critical"]
     }
+  },
+  "events": {
+    "state_transition": {
+      "STATE_INIT":      { "description": "ISE初期化",                "revision_increment": false, "ise_transition": "INITIALIZING -> ACTIVE" },
+      "STATE_DEGRADED":  { "description": "異常によるDEGRADED遷移",     "revision_increment": true,  "ise_transition": "ACTIVE -> DEGRADED" },
+      "STATE_RECOVERED": { "description": "ACTIVE復帰",                "revision_increment": true,  "ise_transition": "DEGRADED -> ACTIVE" },
+      "STATE_SUSPENDED": { "description": "停止",                      "revision_increment": true,  "ise_transition": "ACTIVE -> SUSPENDED" },
+      "STATE_SEALED":    { "description": "封印（終端）",               "revision_increment": false, "ise_transition": "-> SEALED" }
+    },
+    "state_operation": {
+      "STATE_CHANGE":    { "description": "汎用state変化記録",         "revision_increment": true,  "owner": "state_builder.py" },
+      "CHANGE_START":    { "description": "ファイル変更開始",           "revision_increment": false, "owner": "human/AI" },
+      "CHANGE_DONE":     { "description": "ファイル変更完了",           "revision_increment": false, "owner": "human/AI" },
+      "REVISION_UPDATE": { "description": "revision手動更新",          "revision_increment": true,  "owner": "state_builder.py" }
+    },
+    "audit": {
+      "SEAL":          { "description": "mocka-seal実行・封印",        "revision_increment": false, "owner": "mocka-seal" },
+      "VERIFY":        { "description": "verify_all実行",             "revision_increment": false, "owner": "verify_all" },
+      "VERIFY_CHAIN":  { "description": "Decision Ledgerチェーン検証", "revision_increment": false, "owner": "decision_ledger.py" },
+      "SNAPSHOT":      { "description": "snapshot保存",               "revision_increment": false, "owner": "snapshot_manager.py" },
+      "SNAPSHOT_LOAD": { "description": "snapshot復元",               "revision_increment": true,  "owner": "snapshot_manager.py" },
+      "AUDIT_REPORT":  { "description": "外部監査レポート受領",         "revision_increment": false, "owner": null }
+    },
+    "lifecycle": {
+      "SESSION_START":  { "description": "チャットセッション開始",      "revision_increment": false, "owner": "handshake.py" },
+      "SESSION_END":    { "description": "チャットセッション終了",      "revision_increment": false, "owner": null },
+      "HANDSHAKE":      { "description": "AI認証・能力宣言",           "revision_increment": false, "owner": "handshake.py" },
+      "HANDSHAKE_FAIL": { "description": "認証失敗",                  "revision_increment": false, "owner": "handshake.py" },
+      "KNOCK":          { "description": "ISE knock受信",             "revision_increment": false, "owner": "ise/" },
+      "ACK":            { "description": "ISE ACK応答",               "revision_increment": false, "owner": "ise/" },
+      "FP_WRITE":       { "description": "引き継ぎパケット書き出し",     "revision_increment": false, "owner": null },
+      "FP_READ":        { "description": "引き継ぎパケット読み込み",     "revision_increment": false, "owner": null }
+    },
+    "incident": {
+      "INCIDENT":  { "description": "汎用インシデント",          "severity": "warning",  "owner": "router.py" },
+      "VIOLATION": { "description": "制度違反検知",              "severity": "critical", "owner": "verify_all" },
+      "TIMEOUT":   { "description": "AI応答タイムアウト",         "severity": "warning",  "owner": "adapter/" },
+      "DRIFT":     { "description": "制度整合性のドリフト検知",    "severity": "warning",  "owner": "fluid_connector.py" },
+      "BOM_ERROR": { "description": "BOMエンコーディングエラー",   "severity": "warning",  "owner": "health_check.py" }
+    },
+    "knowledge": {
+      "EVENT_WRITE":      { "description": "mocka_write_event実行",         "revision_increment": false, "owner": "mocka_mcp_server.py" },
+      "EVENT_SEARCH":     { "description": "mocka_search実行",              "revision_increment": false, "owner": "mocka_mcp_server.py" },
+      "CALIBER_PROCESS":  { "description": "Caliber処理実行",               "revision_increment": false, "owner": "/api/caliber/" },
+      "KNOWLEDGE_EVOLVE": { "description": "知識進化（Learning Engine）",    "revision_increment": false, "owner": "learning_engine/" },
+      "TAXONOMY_UPDATE":  { "description": "Taxonomy更新（append-only）",   "revision_increment": false, "owner": "taxonomy.json" }
+    },
+    "governance": {
+      "COMMISSION":        { "description": "Commission発行",                "severity": "info",     "owner": "ise/" },
+      "COMMISSION_DONE":   { "description": "Commission完了",                "severity": "info",     "owner": "ise/" },
+      "COMMISSION_FAIL":   { "description": "Commission失敗",                "severity": "warning",  "owner": "ise/" },
+      "AUTHORITY_DELEGATE":{ "description": "Authority委譲",                 "severity": "info",     "owner": "governance" },
+      "AUTHORITY_REVOKE":  { "description": "Authority取り消し（制御行為）", "severity": "critical", "owner": "governance" },
+      "ROLE_ASSIGN":       { "description": "AIロール割り当て",              "severity": "info",     "owner": "governance" }
+    }
+  },
+  "changelog": {
+    "1.0": "初版（6カテゴリ・36イベント）",
+    "1.1": "state_changeをstate_transition/state_operationに分離し、incident:REVOKEをgovernance:AUTHORITY_REVOKEに統合（7カテゴリ・37イベント）"
   }
 }

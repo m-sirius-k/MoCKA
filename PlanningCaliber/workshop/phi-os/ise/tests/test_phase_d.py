@@ -52,7 +52,7 @@ def test_taxonomy_has_required_categories():
     with open(_TAXONOMY_PATH, encoding="utf-8") as f:
         data = json.load(f)
     categories = data["categories"]
-    for cat in ("state_change", "audit", "lifecycle", "incident"):
+    for cat in ("state_transition", "state_operation", "audit", "lifecycle", "incident"):
         assert cat in categories
         assert "description" in categories[cat]
         assert "examples" in categories[cat]
@@ -62,7 +62,7 @@ def test_taxonomy_has_required_categories():
 def test_taxonomy_version():
     with open(_TAXONOMY_PATH, encoding="utf-8") as f:
         data = json.load(f)
-    assert data["version"] == "1.0"
+    assert data["version"] == "1.1"
 
 
 # ── Version Policy ─────────────────────────────────────────────

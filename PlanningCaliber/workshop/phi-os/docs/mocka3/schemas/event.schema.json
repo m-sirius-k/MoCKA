@@ -29,6 +29,19 @@
       "type": "string",
       "description": "カンマ区切りのタグ。change_start/change_done等を含む"
     },
+    "category": {
+      "type": "string",
+      "description": "Event Taxonomy v1.1 のカテゴリ",
+      "enum": [
+        "state_transition",
+        "state_operation",
+        "audit",
+        "lifecycle",
+        "incident",
+        "knowledge",
+        "governance"
+      ]
+    },
     "author": {
       "type": "string",
       "description": "イベント作成者（AI識別子）"
