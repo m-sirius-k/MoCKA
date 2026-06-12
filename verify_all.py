@@ -22,6 +22,7 @@ def main() -> int:
     run_step("chaos_gate", [sys.executable, str(ROOT / "governance" / "chaos_gate.py")])
     run_step("anchor_interface", [sys.executable, str(ROOT / "governance" / "verify_anchor_interface.py")])
     run_step("external_audit_report_interface", [sys.executable, str(ROOT / "governance" / "verify_external_audit_report.py")])
+    run_step("taxonomy_integrity", [sys.executable, str(ROOT / "governance" / "verify_taxonomy_integrity.py")])
 
     if (ROOT / "verify.manifest_resolver.py").exists():
         run_step("manifest_resolver", [sys.executable, str(ROOT / "verify.manifest_resolver.py")])

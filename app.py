@@ -3729,6 +3729,22 @@ def ise_ledger():
     return jsonify({"ok": ok, "message": msg, "entries": read_ledger()})
 
 
+@app.route("/api/ise/taxonomy", methods=["GET"])
+def ise_taxonomy():
+    """Event Taxonomy v1.1 を返す（読み取り専用）"""
+    from ise.taxonomy_validator import load_taxonomy
+    taxonomy = load_taxonomy()
+    total_events = sum(len(v) for v in taxonomy.get("events", {}).values())
+    return jsonify({
+        "ok": True,
+        "version": taxonomy.get("version"),
+        "status": taxonomy.get("status"),
+        "category_count": len(taxonomy.get("categories", {})),
+        "event_count": total_events,
+        "data": taxonomy,
+    }), 200
+
+
 @app.route("/api/verification/verify", methods=["GET"])
 def verification_verify():
     """Decision Ledgerのチェーン整合性をVerification v1経由で検証する"""

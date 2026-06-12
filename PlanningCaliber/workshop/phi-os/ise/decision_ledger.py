@@ -5,7 +5,13 @@ import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
 
+from .taxonomy_validator import get_category
+
 LEDGER_PATH = Path("data/ise/decision_ledger.jsonl")
+
+# Decision Ledgerへの記録が許される Taxonomy v1.1 カテゴリ。
+# "incident" はタイムアウト等の異常記録のため許可（既存運用との後方互換）。
+ALLOWED_DECISION_CATEGORIES = {"governance", "audit", "state_transition", "incident"}
 
 
 def _hash(entry: dict) -> str:
@@ -21,6 +27,13 @@ def append_decision(
     reason: str,
     prev_hash: str = ""
 ) -> dict:
+    category = get_category(decision_type)
+    if category is not None and category not in ALLOWED_DECISION_CATEGORIES:
+        raise ValueError(
+            f"decision_type '{decision_type}' belongs to category '{category}'. "
+            f"Must be one of: {ALLOWED_DECISION_CATEGORIES}"
+        )
+
     entry = {
         "ts": datetime.now(timezone.utc).isoformat(),
         "type": decision_type,

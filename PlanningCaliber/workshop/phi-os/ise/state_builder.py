@@ -2,6 +2,7 @@
 from __future__ import annotations
 from .schema import InstitutionState, CURRENT_SCHEMA_VERSION
 from .state_provider import StateProvider
+from .taxonomy_validator import validate_event_type, is_revision_update, get_category
 
 
 def build_state(provider: StateProvider) -> InstitutionState:
@@ -21,3 +22,22 @@ def build_state(provider: StateProvider) -> InstitutionState:
         decision_ledger_rev = provider.get_decision_revision(),
         guideline_revision  = provider.get_guideline_revision(),
     )
+
+
+def emit_event(event_type: str, **kwargs) -> dict:
+    """
+    Event Taxonomy v1.1 検証付きのイベント発行記述子を生成する。
+    Pure Function（副作用なし）。実際の書き込み・revision更新は
+    呼び出し側（revision_manager等）が responsibility を持つ。
+
+    戻り値: {"event_type", "category", "revision_increment", ...kwargs}
+    """
+    if not validate_event_type(event_type):
+        raise ValueError(f"Unknown event_type: '{event_type}'. Must be defined in taxonomy v1.1")
+
+    return {
+        "event_type": event_type,
+        "category": get_category(event_type),
+        "revision_increment": is_revision_update(event_type),
+        **kwargs,
+    }
