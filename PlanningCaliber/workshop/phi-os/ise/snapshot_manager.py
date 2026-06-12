@@ -21,10 +21,13 @@ def _utcnow() -> datetime:
 
 def should_create_snapshot(current_rev: int,
                             last_snapshot_rev: int,
-                            last_snapshot_time: datetime) -> bool:
-    """どちらか早い方でスナップショットを生成する"""
-    rev_exceeded  = (current_rev - last_snapshot_rev) >= SNAPSHOT_REVISION_THRESHOLD
-    time_exceeded = (_utcnow() - last_snapshot_time).total_seconds() >= SNAPSHOT_TIME_THRESHOLD_HOURS * 3600
+                            last_snapshot_time: datetime | None) -> bool:
+    """どちらか早い方でスナップショットを生成する。last_snapshot_time=Noneは未生成扱い"""
+    rev_exceeded = (current_rev - last_snapshot_rev) >= SNAPSHOT_REVISION_THRESHOLD
+    if last_snapshot_time is None:
+        time_exceeded = True
+    else:
+        time_exceeded = (_utcnow() - last_snapshot_time).total_seconds() >= SNAPSHOT_TIME_THRESHOLD_HOURS * 3600
     return rev_exceeded or time_exceeded
 
 
@@ -94,6 +97,32 @@ def _rotate_generations(snapshots_dir: Path):
     all_snaps = _list_snapshots(snapshots_dir)
     for rev, path in all_snaps[SNAPSHOT_MAX_GENERATIONS * 2:]:
         path.unlink()
+
+
+def save_snapshot(state_dict: dict, revision: int, snapshots_dir: Path):
+    """
+    dict形式のStateをスナップショットとして保存する（指示書互換API）。
+    最新 SNAPSHOT_MAX_GENERATIONS 件は非圧縮、それより古い世代はgzip圧縮する。
+    """
+    snapshots_dir.mkdir(parents=True, exist_ok=True)
+    snap_path = snapshots_dir / f"snapshot_R{revision}.json"
+    with open(snap_path, "w", encoding="utf-8") as f:
+        json.dump(state_dict, f, ensure_ascii=False, indent=2)
+    _rotate_generations(snapshots_dir)
+
+
+def load_snapshot(revision: int, snapshots_dir: Path) -> dict | None:
+    """指定Revisionのスナップショットを読み込む（gzip対応・指示書互換API）"""
+    path    = snapshots_dir / f"snapshot_R{revision}.json"
+    gz_path = snapshots_dir / f"snapshot_R{revision}.json.gz"
+
+    if path.exists():
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    if gz_path.exists():
+        with gzip.open(gz_path, "rt", encoding="utf-8") as f:
+            return json.load(f)
+    return None
 
 
 def maybe_create_snapshot(state: InstitutionState, snapshots_dir: Path) -> Path | None:

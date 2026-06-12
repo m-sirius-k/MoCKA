@@ -301,6 +301,28 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   </div>
 </div>
 
+<!-- ── ROW C2: ISE (Institution State Engine) ── -->
+<div class="section-hd">ISE — Institution State Engine</div>
+<div class="grid-2">
+
+  <!-- Institution Domain -->
+  <div class="panel" id="panel-ise-state">
+    <div class="dbg-strip" id="dbg-ise-state"></div>
+    <div class="panel-hd"><span class="panel-title">Institution Domain — State</span><span class="panel-badge" id="ise-state-badge">--</span></div>
+    <div id="ise-state-body"></div>
+    <div class="dbg-err-msg" id="err-ise-state"></div>
+  </div>
+
+  <!-- AI Runtime Domain -->
+  <div class="panel" id="panel-ise-sessions">
+    <div class="dbg-strip" id="dbg-ise-sessions"></div>
+    <div class="panel-hd"><span class="panel-title">AI Runtime Domain — Sessions</span><span class="panel-badge" id="ise-sessions-badge">--</span></div>
+    <div id="ise-sessions-body"></div>
+    <div class="dbg-err-msg" id="err-ise-sessions"></div>
+  </div>
+
+</div>
+
 <!-- ── ROW D: TIC ── -->
 <div class="section-hd">TIC — Technology Intelligence Caliber</div>
 <div class="grid-2">
@@ -750,6 +772,52 @@ function renderEssence(data){
   }
 }
 
+function renderISEState(data){
+  try{
+    hidePanelErr('err-ise-state');
+    document.getElementById('ise-state-badge').textContent=`R${data.revision}`;
+    const w=(data.warnings||[]);
+    const t=(data.todos||[]).slice(0,5);
+    const el=document.getElementById('ise-state-body');
+    el.innerHTML=`
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">
+        Phase ${data.project?.phase ?? '--'} / hash ${(data.state_hash||'').slice(0,12)}... / ${data.generated_at||''}
+      </div>
+      <div style="font-size:11px;margin-bottom:6px">${(data.project?.mission||'').slice(0,80)}</div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Warnings: ${w.length}件</div>
+      <div style="font-size:10px;color:var(--muted)">Top TODO:</div>
+      ${t.map(d=>`<div class="todo-item"><span class="todo-pri">${d.priority}</span><div><div class="todo-text">${d.title}</div><div class="todo-id">${d.id}</div></div></div>`).join('')}
+    `;
+    DBG.ok('ise-state',`Institution State revision=${data.revision}`);
+  }catch(e){
+    DBG.err('ise-state','renderISEState: '+e.message);
+    showPanelErr('err-ise-state',e.message);
+    setDbgTags('ise-state',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
+function renderISESessions(data){
+  try{
+    hidePanelErr('err-ise-sessions');
+    const sessions=data.ai_sessions||{};
+    const ids=Object.keys(sessions);
+    document.getElementById('ise-sessions-badge').textContent=`${ids.length} AI`;
+    const el=document.getElementById('ise-sessions-body');
+    el.innerHTML=ids.map(id=>{
+      const s=sessions[id];
+      return `<div class="todo-item">
+        <span class="todo-pri">R${s.last_revision}</span>
+        <div><div class="todo-text">${id} — ${s.role} (${s.trust_level})</div><div class="todo-id">last_knock: ${s.last_knock||'--'}</div></div>
+      </div>`;
+    }).join('') || `<div style="font-size:11px;color:var(--muted)">登録AIなし</div>`;
+    DBG.ok('ise-sessions',`AI Session State ${ids.length}件`);
+  }catch(e){
+    DBG.err('ise-sessions','renderISESessions: '+e.message);
+    showPanelErr('err-ise-sessions',e.message);
+    setDbgTags('ise-sessions',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
 function renderTic(data0,data1){
   try{
     const f=d=>`<div class="tic-row ${d.st}">
@@ -992,12 +1060,16 @@ async function fetchLive(){
     {url:`${BASE}/phl/history`,         panel:'ess',    key:null},
     {url:`${BASE}/api/beta/status`,     panel:'bee',    key:null},
     {url:`${BASE}/api/risk-score`,      panel:'coord',  key:null},
+    {url:`${BASE}/api/ise/state`,       panel:'ise-state',    key:null},
+    {url:`${BASE}/api/ise/status`,      panel:'ise-sessions', key:null},
   ];
   await Promise.allSettled(jobs.map(async j=>{
     try{
       const data=await apiFetch(j.url,j.panel);
       DBG.ok(j.panel,`ライブデータ取得OK`);
       /* パネルごとのデータマッピング（app.py形式に応じて調整） */
+      if(j.panel==='ise-state')    renderISEState(data);
+      if(j.panel==='ise-sessions') renderISESessions(data);
     }catch(e){
       DBG.warn(j.panel,'フォールバック → 静的データ使用');
     }
@@ -1033,6 +1105,8 @@ function initAll(){
   try{ renderCoords(STATIC.coords); }      catch(e){ DBG.err('coord',e.message); }
   try{ renderScamperModes(); }             catch(e){ DBG.err('scp',e.message); }
   try{ renderScamperHistory(); }           catch(e){ DBG.err('scp',e.message); }
+  try{ document.getElementById('ise-state-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }    catch(e){}
+  try{ document.getElementById('ise-sessions-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }catch(e){}
 
   /* ライブデータ取得（バックグラウンド） */
   fetchLive().then(()=>DBG.ok('sys','ライブデータ取得フェーズ完了')).catch(e=>DBG.warn('sys','ライブ取得失敗: '+e.message));

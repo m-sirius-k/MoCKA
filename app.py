@@ -3670,6 +3670,43 @@ def ise_ai_sessions():
         for k, v in _ise_session_store.all().items()
     }
     return jsonify({"ai_registry": sessions}), 200
+
+
+@app.route("/api/ise/panel", methods=["GET"])
+def ise_panel():
+    """COMMAND CENTER ISEパネル用データ"""
+    if not _ISE_AVAILABLE:
+        return jsonify({"status": "error"}), 503
+
+    state_path = _ISE_DATA_DIR / "current_state.json"
+    state_data = {}
+    if state_path.exists():
+        import json as _json
+        with open(state_path, encoding="utf-8") as f:
+            state_data = _json.load(f)
+
+    sessions = {
+        k: {
+            "last_revision": v.last_revision,
+            "role":          v.role,
+            "trust_level":   v.trust_level,
+            "last_knock":    v.last_knock,
+            "in_sync":       v.last_revision == state_data.get("revision", -1),
+        }
+        for k, v in _ise_session_store.all().items()
+    }
+
+    return jsonify({
+        "institution_domain": {
+            "revision":      state_data.get("revision", 0),
+            "state_version": state_data.get("state_version", 1),
+            "state_hash":    state_data.get("state_hash", "")[:12] + "...",
+            "generated_at":  state_data.get("generated_at", ""),
+            "todo_count":    len(state_data.get("todos", [])),
+            "warning_count": len(state_data.get("warnings", [])),
+        },
+        "ai_runtime_domain": sessions,
+    }), 200
 # ── ISE エンドポイント ここまで ───────────────────────────────
 
 
