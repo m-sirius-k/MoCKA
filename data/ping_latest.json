@@ -42,37 +42,37 @@
   ],
   "generated_at": "2026-06-12T09:11:23.165352",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": 0.0,
-    "danger_rate": 0.5,
-    "success_rate": 0.5,
-    "text": "ISE Phase C v2の差分実装が完了しました。\n\n実装内容:\n\nprovider_chain.py: 例外耐性・重複排除・mission判定付きで再実装",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "E20260612_076",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
+        "when": "2026-06-12",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "## 中間報告\n\n| TODO | 状態 | Event ID |\n\n|------|------|----------|\n\n| TODO_295 | 完了（前回対応済み） | E20260612_0",
         "recur": 0,
         "matched": [
-          "app.py"
+          "20260612"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-11",
-        "why": "events.csvへの書き込み経路を完全UTF-8に統一し台帳汚染を防ぐ",
-        "how": "TODO_018着手→collect関数抽出→根本原因特定→fix_apppy.py実行→確認",
-        "note": "TODO_018,bugfix,encoding,utf-8,app.py,collect",
+        "when": "2026-06-12",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "## 完了報告\n\n| TODO | Event ID |\n\n|------|----------|\n\n| TODO_286 | E20260612_017 |\n\n| TODO_290 | E20260",
         "recur": 0,
         "matched": [
-          "app.py"
+          "20260612"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-12T05:20:59.363Z"
+    "updated_at": "2026-06-12T05:55:11.943Z"
   }
 }

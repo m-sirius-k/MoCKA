@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Commission",
+  "description": "InstitutionがAIに発行する委任状。AI Adapterはこれを受け取り実行する",
+  "type": "object",
+  "required": ["commission_id", "ai_id", "capability", "task", "issued_at"],
+  "properties": {
+    "commission_id": {
+      "type": "string",
+      "description": "委任状の一意識別子"
+    },
+    "ai_id": {
+      "type": "string",
+      "description": "委任先AIの識別子（Claude/GPT/Gemini/Copilot 等）"
+    },
+    "capability": {
+      "type": "string",
+      "description": "委任に必要なCapability。CAP_STATE_READ 等"
+    },
+    "task": {
+      "type": "string",
+      "description": "実行すべきタスクの説明"
+    },
+    "required_trust_level": {
+      "type": "string",
+      "enum": ["trial", "trusted", "verified"],
+      "description": "この委任を受けるために必要なTrust Level"
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "委任状発行日時（ISO8601）"
+    },
+    "expires_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "委任状の有効期限。nullの場合は無期限"
+    }
+  }
+}

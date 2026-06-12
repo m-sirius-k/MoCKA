@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ACK",
+  "description": "AIがCommission実行結果を返すための応答構造。/api/ise/ack のペイロード",
+  "type": "object",
+  "required": ["ai_id", "commission_id", "status", "result"],
+  "properties": {
+    "ai_id": {
+      "type": "string",
+      "description": "応答するAIの識別子"
+    },
+    "commission_id": {
+      "type": "string",
+      "description": "対応するCommissionの識別子"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["ok", "error", "partial"],
+      "description": "実行結果のステータス"
+    },
+    "result": {
+      "type": "object",
+      "description": "実行結果の本体。タスクごとに自由形式"
+    },
+    "revision": {
+      "type": "integer",
+      "description": "ACK送信時にAIが認識しているInstitution Stateのrevision"
+    },
+    "responded_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "応答日時（ISO8601）"
+    }
+  }
+}

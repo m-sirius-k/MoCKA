@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Handshake",
+  "description": "Handshake Protocol。/api/handshake のペイロードと応答構造",
+  "type": "object",
+  "required": ["request", "response"],
+  "properties": {
+    "request": {
+      "type": "object",
+      "required": ["ai_id", "capabilities"],
+      "properties": {
+        "ai_id": {
+          "type": "string",
+          "description": "Handshakeを行うAIの識別子"
+        },
+        "capabilities": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "AIが宣言する能力リスト。CAP_STATE_READ 等。嘘をついてはならない"
+        },
+        "role": {
+          "type": "string",
+          "description": "AIが申告する役割（Article準拠）"
+        }
+      }
+    },
+    "response": {
+      "type": "object",
+      "required": ["status", "trust_level"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["ok", "error"],
+          "description": "Handshake結果"
+        },
+        "trust_level": {
+          "type": "string",
+          "enum": ["trial", "trusted", "verified"],
+          "description": "Institutionが付与するTrust Level"
+        },
+        "session_id": {
+          "type": "string",
+          "description": "発行されたセッションID"
+        },
+        "top_todos": {
+          "type": "array",
+          "items": { "type": "object" },
+          "description": "Handshake時に提示される優先TODO一覧"
+        }
+      }
+    }
+  }
+}

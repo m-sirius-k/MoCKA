@@ -1,0 +1,132 @@
+openapi: 3.0.3
+info:
+  title: MoCKA 3.0 — Adapter / Verification / Knowledge API
+  description: >
+    Phase 2で固定するインターフェースのうち、未実装（設計済み）のAPI群。
+    既存のISE API（/api/ise/*, /api/handshake）は対象外。
+  version: "1.0"
+
+paths:
+  /api/adapter/{ai_id}/commission:
+    post:
+      summary: 指定AIにCommission（委任状）を発行する
+      parameters:
+        - name: ai_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 委任先AIの識別子（Claude/GPT/Gemini/Copilot等）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/commission.schema.json'
+      responses:
+        '200':
+          description: Commissionが受理された
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: object
+                  error:
+                    type: string
+        '403':
+          description: Trust LevelまたはCapability不足により拒否
+
+  /api/adapter/{ai_id}/ack:
+    post:
+      summary: 指定AIからCommission実行結果(ACK)を受け取る
+      parameters:
+        - name: ai_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: './schemas/ack.schema.json'
+      responses:
+        '200':
+          description: ACKが記録された
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: object
+                  error:
+                    type: string
+
+  /api/verification/verify:
+    post:
+      summary: Decision LedgerのSHA-256チェーンを外部から検証する
+      description: >
+        decision_ledger.verify_chain() のREST API化。
+        ISEに依存せず独立して動作する。
+      responses:
+        '200':
+          description: 検証結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      verified:
+                        type: boolean
+                      message:
+                        type: string
+                      entry_count:
+                        type: integer
+                  error:
+                    type: string
+
+  /api/knowledge/search:
+    post:
+      summary: Knowledge Repositoryに対する検索
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [query]
+              properties:
+                query:
+                  type: string
+                top_k:
+                  type: integer
+                  default: 5
+      responses:
+        '200':
+          description: 検索結果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  error:
+                    type: string

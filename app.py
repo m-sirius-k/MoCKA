@@ -3727,6 +3727,16 @@ def ise_ledger():
     from ise.decision_ledger import read_ledger, verify_chain
     ok, msg = verify_chain()
     return jsonify({"ok": ok, "message": msg, "entries": read_ledger()})
+
+
+@app.route("/api/verification/verify", methods=["GET"])
+def verification_verify():
+    """Decision Ledgerのチェーン整合性をVerification v1経由で検証する"""
+    try:
+        from verification.verify_api import verify
+        return jsonify({"ok": True, "data": verify(), "error": None}), 200
+    except Exception as _e:
+        return jsonify({"ok": False, "data": None, "error": str(_e)}), 500
 # ── ISE エンドポイント ここまで ───────────────────────────────
 
 
