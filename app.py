@@ -3707,6 +3707,19 @@ def ise_panel():
         },
         "ai_runtime_domain": sessions,
     }), 200
+
+
+@app.route("/api/ise/state_machine", methods=["GET"])
+def ise_state_machine():
+    """ISE State Machine v1 の状態・遷移定義を返す"""
+    from ise.state_machine import ISEState, TRANSITIONS
+    return jsonify({
+        "states": [s.value for s in ISEState],
+        "transitions": {
+            current.value: [n.value for n in nexts]
+            for current, nexts in TRANSITIONS.items()
+        },
+    }), 200
 # ── ISE エンドポイント ここまで ───────────────────────────────
 
 

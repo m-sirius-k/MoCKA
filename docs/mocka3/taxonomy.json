@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "created": "2026-06-12",
+  "categories": {
+    "state_change": {
+      "description": "制度状態の変化を記録するイベント",
+      "examples": ["knock", "ack", "state_update"],
+      "severity_range": ["info", "warning"]
+    },
+    "audit": {
+      "description": "監査・検証イベント",
+      "examples": ["seal", "verify", "snapshot"],
+      "severity_range": ["info", "critical"]
+    },
+    "lifecycle": {
+      "description": "AIセッションのライフサイクルイベント",
+      "examples": ["session_start", "session_end", "handshake"],
+      "severity_range": ["info", "warning"]
+    },
+    "incident": {
+      "description": "インシデント・異常検知",
+      "examples": ["violation", "drift", "timeout"],
+      "severity_range": ["warning", "critical"]
+    }
+  }
+}

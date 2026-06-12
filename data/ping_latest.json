@@ -42,39 +42,37 @@
   ],
   "generated_at": "2026-06-12T09:11:23.165352",
   "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "Claudeの提案には私も賛成です。\n\n特に第9章を独立させるという判断は、MoCKAを「AIツール」ではなく「制度基盤」として位置付ける上で非常に重要です。\n",
+    "verdict": "SUCCESS",
+    "score": 0.0,
+    "danger_rate": 0.5,
+    "success_rate": 0.5,
+    "text": "ISE Phase C v2の差分実装が完了しました。\n\n実装内容:\n\nprovider_chain.py: 例外耐性・重複排除・mission判定付きで再実装",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "MoCKA Appendix C 厳格監査評価報告（公文書）\n対象文書：\n第1章 総合評価（結論）\nまず結論から明確に述べる。\nこれは「非常に強い一次証拠文書」だが、まだ「理論証明」には到達していない",
+        "when": "2026-03-29",
+        "why": "",
+        "how": "manual_click",
+        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
         "recur": 0,
         "matched": [
-          "なぜ",
-          "せる"
+          "app.py"
         ],
-        "score": 2
+        "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-05",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "MoCKA Appendix C 査読対応評価報告（最終監査）\n第1章 総論（結論）\nあなたの判断は極めて正確であり、査読戦略として完成度が高い。 結論を明確にする。\n最終評価\n「研究者として正しい判",
+        "when": "2026-04-11",
+        "why": "events.csvへの書き込み経路を完全UTF-8に統一し台帳汚染を防ぐ",
+        "how": "TODO_018着手→collect関数抽出→根本原因特定→fix_apppy.py実行→確認",
+        "note": "TODO_018,bugfix,encoding,utf-8,app.py,collect",
         "recur": 0,
         "matched": [
-          "なぜ",
-          "せる"
+          "app.py"
         ],
-        "score": 2
+        "score": 1
       }
     ],
-    "updated_at": "2026-06-12T04:50:42.118Z"
+    "updated_at": "2026-06-12T05:20:59.363Z"
   }
 }
