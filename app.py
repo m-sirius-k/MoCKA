@@ -3584,6 +3584,95 @@ def tic_watcher_status():
     except Exception as e:
         return jsonify({'status': 'error', 'error': str(e)}), 500
 
+# ── ISE エンドポイント ────────────────────────────────────────
+import sys as _sys
+from pathlib import Path as _Path
+
+_ISE_DIR      = _Path(__file__).parent / "PlanningCaliber" / "workshop" / "phi-os" / "ise"
+_ISE_DATA_DIR = _ISE_DIR / "data"
+_ISE_DATA_DIR.mkdir(parents=True, exist_ok=True)
+(_ISE_DATA_DIR / "snapshots").mkdir(exist_ok=True)
+
+if str(_ISE_DIR.parent) not in _sys.path:
+    _sys.path.insert(0, str(_ISE_DIR.parent))
+
+try:
+    from ise.ai_session_state import AISessionStore
+    from ise.sync_protocol    import ISESyncProtocol
+    from ise.revision_manager import RevisionStore
+
+    _ise_session_store = AISessionStore(_ISE_DATA_DIR / "ai_session_state.json")
+    _ise_sync          = ISESyncProtocol(
+        state_path    = _ISE_DATA_DIR / "current_state.json",
+        snapshots_dir = _ISE_DATA_DIR / "snapshots",
+        session_store = _ise_session_store,
+    )
+    _ISE_AVAILABLE = True
+except Exception as _e:
+    _ISE_AVAILABLE = False
+    print(f"[ISE] import failed: {_e}")
+
+
+@app.route("/api/ise/knock", methods=["POST"])
+def ise_knock():
+    if not _ISE_AVAILABLE:
+        return jsonify({"status": "error", "reason": "ISE not available"}), 503
+    payload  = request.get_json(force=True) or {}
+    response = _ise_sync.handle_knock(payload)
+    status   = 200 if response.get("status") == "ok" else 403
+    return jsonify(response), status
+
+
+@app.route("/api/ise/ack", methods=["POST"])
+def ise_ack():
+    if not _ISE_AVAILABLE:
+        return jsonify({"status": "error", "reason": "ISE not available"}), 503
+    payload  = request.get_json(force=True) or {}
+    response = _ise_sync.handle_ack(payload)
+    return jsonify(response), 200
+
+
+@app.route("/api/ise/state", methods=["GET"])
+def ise_state():
+    if not _ISE_AVAILABLE:
+        return jsonify({"status": "error", "reason": "ISE not available"}), 503
+    state_path = _ISE_DATA_DIR / "current_state.json"
+    if not state_path.exists():
+        return jsonify({"status": "error", "reason": "state_not_found"}), 404
+    import json as _json
+    with open(state_path, encoding="utf-8") as f:
+        return jsonify(_json.load(f)), 200
+
+
+@app.route("/api/ise/status", methods=["GET"])
+def ise_status():
+    if not _ISE_AVAILABLE:
+        return jsonify({"status": "error", "reason": "ISE not available"}), 503
+    sessions = {
+        k: {"last_revision": v.last_revision,
+            "role": v.role,
+            "trust_level": v.trust_level,
+            "last_knock": v.last_knock}
+        for k, v in _ise_session_store.all().items()
+    }
+    return jsonify({"status": "ok", "ai_sessions": sessions}), 200
+
+
+@app.route("/api/ise/ai_sessions", methods=["GET"])
+def ise_ai_sessions():
+    if not _ISE_AVAILABLE:
+        return jsonify({"status": "error", "reason": "ISE not available"}), 503
+    sessions = {
+        k: {"last_revision": v.last_revision,
+            "role": v.role,
+            "trust_level": v.trust_level,
+            "last_knock": v.last_knock}
+        for k, v in _ise_session_store.all().items()
+    }
+    return jsonify({"ai_registry": sessions}), 200
+# ── ISE エンドポイント ここまで ───────────────────────────────
+
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
