@@ -42,37 +42,37 @@
   ],
   "generated_at": "2026-06-12T09:11:23.165352",
   "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "E20260612_076",
+    "verdict": "SUCCESS",
+    "score": 0.0,
+    "danger_rate": 0.5,
+    "success_rate": 0.5,
+    "text": "MoCKA 3.0 実装ロードマップ Phase 3〜5 完了しました。\n\nPhase 3: verification/adapter/knowledge_re",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-06-12",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "## 中間報告\n\n| TODO | 状態 | Event ID |\n\n|------|------|----------|\n\n| TODO_295 | 完了（前回対応済み） | E20260612_0",
+        "when": "2026-04-11",
+        "why": "arXiv endorsement待ちの間にGitHub public repoで先行権のタイムスタンプを確保する",
+        "how": "arXiv endorsement壁→GitHub先行権戦略に切り替え→mocka-publicにPDF push完了",
+        "note": "先行権,GitHub,preprint,論文,v8,TODO_021,歴史的",
         "recur": 0,
         "matched": [
-          "20260612"
+          "Git"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-06-12",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "## 完了報告\n\n| TODO | Event ID |\n\n|------|----------|\n\n| TODO_286 | E20260612_017 |\n\n| TODO_290 | E20260",
+        "when": "2026-04-11",
+        "why": "MoCKAの全革新概念を国際学術プレプリントとして権利確定し商用展開の完全な基盤を作る",
+        "how": "完璧主義方針→7本生成→PDF変換→Zenodo投稿→GitHub push→全完了",
+        "note": "歴史的,TN1,TN2,TN3,TN4,TN5,TN6,TN7,Zenodo,GitHub,権利確定,完了",
         "recur": 0,
         "matched": [
-          "20260612"
+          "Git"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-12T05:55:11.943Z"
+    "updated_at": "2026-06-12T06:13:01.192Z"
   }
 }
