@@ -46,33 +46,35 @@
     "score": 1.0,
     "danger_rate": 1.0,
     "success_rate": 0.0,
-    "text": "総合評価\n\n評価：A+（実装品質 98/100）\n\n設計思想と実装の乖離がほとんどありません。\n\n特に評価したい点は、\n\nPure Function化\n\nAI ",
+    "text": "Claudeの提案には私も賛成です。\n\n特に第9章を独立させるという判断は、MoCKAを「AIツール」ではなく「制度基盤」として位置付ける上で非常に重要です。\n",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "MoCKA Appendix C 厳格監査評価報告（公文書）\n対象文書：\n第1章 総合評価（結論）\nまず結論から明確に述べる。\nこれは「非常に強い一次証拠文書」だが、まだ「理論証明」には到達していない",
         "recur": 0,
         "matched": [
-          "あり"
+          "なぜ",
+          "せる"
         ],
-        "score": 1
+        "score": 2
       },
       {
         "verdict": "DANGER",
-        "when": "2026-04-15",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "MoCKA Appendix C 査読対応評価報告（最終監査）\n第1章 総論（結論）\nあなたの判断は極めて正確であり、査読戦略として完成度が高い。 結論を明確にする。\n最終評価\n「研究者として正しい判",
         "recur": 0,
         "matched": [
-          "あり"
+          "なぜ",
+          "せる"
         ],
-        "score": 1
+        "score": 2
       }
     ],
-    "updated_at": "2026-06-12T01:16:04.298Z"
+    "updated_at": "2026-06-12T04:50:42.118Z"
   }
 }

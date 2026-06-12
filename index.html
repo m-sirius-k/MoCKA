@@ -323,6 +323,27 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
 
 </div>
 
+<!-- ISE パネル (v1.3 Phase C 統合パネル) -->
+<div class="panel" id="panel-ise">
+  <h3>⚙ ISE — Institution State Engine</h3>
+  <div style="display:flex;gap:16px;flex-wrap:wrap;">
+    <!-- Institution Domain -->
+    <div style="flex:1;min-width:200px;">
+      <div style="font-size:11px;opacity:.6;margin-bottom:4px;">INSTITUTION DOMAIN</div>
+      <div id="ise-revision"   style="font-size:13px;">Revision: —</div>
+      <div id="ise-hash"       style="font-size:11px;opacity:.7;">Hash: —</div>
+      <div id="ise-todos"      style="font-size:13px;margin-top:4px;">TODOs: —</div>
+      <div id="ise-warnings"   style="font-size:13px;">Warnings: —</div>
+      <div id="ise-updated"    style="font-size:11px;opacity:.7;">Updated: —</div>
+    </div>
+    <!-- AI Runtime Domain -->
+    <div style="flex:1;min-width:200px;">
+      <div style="font-size:11px;opacity:.6;margin-bottom:4px;">AI RUNTIME DOMAIN</div>
+      <div id="ise-ai-list"    style="font-size:12px;line-height:1.8;">—</div>
+    </div>
+  </div>
+</div>
+
 <!-- ── ROW D: TIC ── -->
 <div class="section-hd">TIC — Technology Intelligence Caliber</div>
 <div class="grid-2">
@@ -1121,6 +1142,38 @@ function initAll(){
 }
 
 document.addEventListener('DOMContentLoaded', initAll);
+</script>
+
+<script>
+(function() {
+  function refreshISE() {
+    fetch('/api/ise/panel')
+      .then(r => r.json())
+      .then(d => {
+        const inst = d.institution_domain || {};
+        const ai   = d.ai_runtime_domain  || {};
+        document.getElementById('ise-revision').textContent =
+          'Revision: ' + (inst.revision ?? '—');
+        document.getElementById('ise-hash').textContent =
+          'Hash: ' + (inst.state_hash || '—');
+        document.getElementById('ise-todos').textContent =
+          'TODOs: ' + (inst.todo_count ?? '—') + ' 件';
+        document.getElementById('ise-warnings').textContent =
+          'Warnings: ' + (inst.warning_count ?? '—') + ' 件';
+        document.getElementById('ise-updated').textContent =
+          'Updated: ' + (inst.generated_at
+            ? inst.generated_at.replace('T',' ').slice(0,19) + ' UTC'
+            : '—');
+        const rows = Object.entries(ai).map(([id, s]) =>
+          `${s.in_sync ? '🟢' : '🔴'} ${id} Rev.${s.last_revision} [${s.role}]`
+        ).join('<br>');
+        document.getElementById('ise-ai-list').innerHTML = rows || '（接続なし）';
+      })
+      .catch(() => {});
+  }
+  refreshISE();
+  setInterval(refreshISE, 30000);
+})();
 </script>
 </body>
 </html>
