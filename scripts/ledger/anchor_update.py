@@ -16,6 +16,32 @@ ANCHOR_PATHS = [
 ]
 CALC_SCRIPT = ROOT / "governance" / "calc_summary_hash.py"
 
+PRE_COMMIT_FORBIDDEN = [
+    "TestProfile/",
+    "Default/Cache/",
+    "chrome_debug/",
+    ".env",
+    "secrets/",
+]
+
+def check_staged_files():
+    """git add済みファイルに禁止パターンが含まれていないか確認"""
+    result = subprocess.run(
+        ["git", "diff", "--cached", "--name-only"],
+        capture_output=True, text=True, cwd=ROOT
+    )
+    staged = result.stdout.splitlines()
+    violations = []
+    for f in staged:
+        for forbidden in PRE_COMMIT_FORBIDDEN:
+            if forbidden.lower() in f.lower():
+                violations.append(f)
+    if violations:
+        print(f"[SEAL BLOCKED] forbidden pattern detected: {violations}")
+        print("Run 'git rm --cached <file>' to exclude it, then retry.")
+        sys.exit(1)
+    print(f"[SEAL OK] staged {len(staged)} file(s), no forbidden patterns")
+
 def run(cmd):
     r = subprocess.run(cmd, capture_output=True, encoding="utf-8", errors="replace")
     return r.stdout.strip(), r.returncode
@@ -38,6 +64,7 @@ def main():
 
     # 1. 変更をコミット
     run(["git", "add", "-A"])
+    check_staged_files()
     out, code = run(["git", "commit", "-m", msg])
     print(out if out else "nothing to commit")
 

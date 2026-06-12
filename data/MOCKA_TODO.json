@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-11",
+    "updated": "2026-06-12",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -551,30 +551,6 @@
       "created_at": "2026-06-10T17:29:18.867906"
     },
     {
-      "id": "TODO_280",
-      "title": "Institution Contract 設計 — 全参加者共通の制度参加契約（GPT最重要提案）",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度設計",
-      "description": "Institution Contract：人間・AI・Connector・Worker全参加者が従う「参加契約」。何を読める/書ける/提案できる/承認できる/削除できる/監査対象になるかをAI種別に依存しない共通ルールとして定義。GPT最重要提案。AIごとの特別実装を減らし制度統一を実現する。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260610_10480",
-      "created_at": "2026-06-10T17:29:25.375585"
-    },
-    {
-      "id": "TODO_281",
-      "title": "Institution Contract v2.0 — Permission/Trust/Scope/Handshake拡張",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度設計",
-      "description": "Institution Contract v1.0のCapabilityをPermission（権限）とCapability（能力）に分離。Trust Level制度（Trial/Verified/Institution Certified/Critical Operation Allowed）の追加。Session Scope定義。Observation Modeの追加。Institution Handshakeプロトコルの実装。Contract v2.0として確定。",
-      "assigned_to": "Claude",
-      "note": "GPT提案E20260610_10482より。v1.0のE20260610_10481をベースに拡張。",
-      "reference_event": "E20260610_10482",
-      "created_at": "2026-06-10T17:41:58.445255"
-    },
-    {
       "id": "TODO_284",
       "title": "Knowledge Diff API — Guideline/Essence/Registry差分取得エンドポイント",
       "status": "未着手",
@@ -585,55 +561,6 @@
       "note": "",
       "reference_event": "E20260610_10482",
       "created_at": "2026-06-10T17:42:16.945918"
-    },
-    {
-      "id": "TODO_285",
-      "title": "MoCKA 3層アーキテクチャ正式定義 — Constitution / Institution / Operation",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度設計",
-      "description": "GPT提言による3層アーキテクチャの正式定義。Layer1 Constitution / Layer2 Institution / Layer3 Operation の3層構造をMoCKA制度文書として確定。Institution Runtimeという概念の確立。Handshake → Institution Session Establishmentへの意味的昇格。",
-      "assigned_to": "Claude",
-      "note": "E20260610_10500より。Institution Contract v2.0（TODO_281）と連携。",
-      "reference_event": "E20260610_10500",
-      "created_at": "2026-06-10T18:17:06.205759"
-    },
-    {
-      "id": "TODO_286",
-      "title": "Commission Registry 実装 — Role（資格）と Commission（任務）の分離",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度設計",
-      "description": "Commission概念の実装。Role（継続的資格）とCommission（期間限定任務）を分離。Commission ID形式：Commission_{YYYYMMDD}-{対象}-{内容}。例：Commission_20260610-Relay-Recovery。Role→Commission→Session→Execution→Auditの5段階フローをHandshake APIに統合。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260610_10500",
-      "created_at": "2026-06-10T18:17:11.833663"
-    },
-    {
-      "id": "TODO_290",
-      "title": "Context Composer 実装 — Reflection/Prediction/Mentor統合working_context生成",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "Institutional Cognition",
-      "description": "GPT提言：Reflection/Prediction/Mentor/Institutionを一つのworking_contextへ統合するContext Composer実装。Handshakeの戻り値をmentor_package+warningsから「working_context」に昇格。Priority/Objectives/Known Risks/Relevant Decisions/Institution Rules/Applicable Templates/Past Failures/Recommended Strategyを一括提供。AIはこれを読んで即推論開始できる。GET /api/context/compose エンドポイント。ai_session.pyのmode=fullをContext Composer出力で置き換え。",
-      "assigned_to": "Claude",
-      "note": "GPT最終提言E20260610_10542より。Institution Context Packageとして定義。decision_historyフィールドを追加仕様に含める。",
-      "reference_event": "E20260610_10514",
-      "created_at": "2026-06-10T18:42:17.994630",
-      "updated_at": "2026-06-10T19:01:40.791696"
-    },
-    {
-      "id": "TODO_295",
-      "title": "再発防止: AUTO_SEAL前のTestProfile/混入チェック制度化",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "SECURITY",
-      "description": "AUTO_SEAL_50EVTがChromeテスト用TestProfile/を丸ごとcommitしGitHub Secret Scanningに検知されたインシデント(E20260611_386)の再発防止。sealスクリプトにpre-commitフックまたは事前チェックを組み込み、TestProfile/Cache/Default/等の混入を自動検知・阻止する制度を確立する。",
-      "assigned_to": "きむら博士",
-      "note": "対応済み: .gitignore追加・git rm --cached完了。残作業はsealスクリプトへのチェック組み込み。",
-      "reference_event": "E20260611_386",
-      "created_at": "2026-06-11T14:57:27.065921"
     },
     {
       "id": "TODO_296",
@@ -3965,6 +3892,90 @@
       "created_at": "2026-06-11T17:26:48.329220",
       "updated_at": "2026-06-11T17:37:10.822102",
       "completed_at": "2026-06-11"
+    },
+    {
+      "id": "TODO_295",
+      "title": "再発防止: AUTO_SEAL前のTestProfile/混入チェック制度化",
+      "status": "完了",
+      "priority": "最高",
+      "category": "SECURITY",
+      "description": "AUTO_SEAL_50EVTがChromeテスト用TestProfile/を丸ごとcommitしGitHub Secret Scanningに検知されたインシデント(E20260611_386)の再発防止。sealスクリプトにpre-commitフックまたは事前チェックを組み込み、TestProfile/Cache/Default/等の混入を自動検知・阻止する制度を確立する。",
+      "assigned_to": "きむら博士",
+      "note": "anchor_update.pyにcheck_staged_files()追加。seal直前にTestProfile/等の禁止パターンをブロック。動作確認済み。",
+      "reference_event": "E20260611_386",
+      "created_at": "2026-06-11T14:57:27.065921",
+      "updated_at": "2026-06-12T09:03:22.205009",
+      "completed_at": "2026-06-12"
+    },
+    {
+      "id": "TODO_285",
+      "title": "MoCKA 3層アーキテクチャ正式定義 — Constitution / Institution / Operation",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度設計",
+      "description": "GPT提言による3層アーキテクチャの正式定義。Layer1 Constitution / Layer2 Institution / Layer3 Operation の3層構造をMoCKA制度文書として確定。Institution Runtimeという概念の確立。Handshake → Institution Session Establishmentへの意味的昇格。",
+      "assigned_to": "Claude",
+      "note": "docs/INSTITUTION_ARCHITECTURE.md + docs/CONSTITUTION.md作成、data/institution/作成済み",
+      "reference_event": "E20260610_10500",
+      "created_at": "2026-06-10T18:17:06.205759",
+      "updated_at": "2026-06-12T09:05:09.434047",
+      "completed_at": "2026-06-12"
+    },
+    {
+      "id": "TODO_280",
+      "title": "Institution Contract 設計 — 全参加者共通の制度参加契約（GPT最重要提案）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度設計",
+      "description": "Institution Contract：人間・AI・Connector・Worker全参加者が従う「参加契約」。何を読める/書ける/提案できる/承認できる/削除できる/監査対象になるかをAI種別に依存しない共通ルールとして定義。GPT最重要提案。AIごとの特別実装を減らし制度統一を実現する。",
+      "assigned_to": "Claude",
+      "note": "institution_contract_v1.json作成",
+      "reference_event": "E20260610_10480",
+      "created_at": "2026-06-10T17:29:25.375585",
+      "updated_at": "2026-06-12T09:05:12.688344",
+      "completed_at": "2026-06-12"
+    },
+    {
+      "id": "TODO_281",
+      "title": "Institution Contract v2.0 — Permission/Trust/Scope/Handshake拡張",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度設計",
+      "description": "Institution Contract v1.0のCapabilityをPermission（権限）とCapability（能力）に分離。Trust Level制度（Trial/Verified/Institution Certified/Critical Operation Allowed）の追加。Session Scope定義。Observation Modeの追加。Institution Handshakeプロトコルの実装。Contract v2.0として確定。",
+      "assigned_to": "Claude",
+      "note": "institution_contract_v2.json作成(trust_levels/session_scope/handshake_protocol追加)",
+      "reference_event": "E20260610_10482",
+      "created_at": "2026-06-10T17:41:58.445255",
+      "updated_at": "2026-06-12T09:05:15.682887",
+      "completed_at": "2026-06-12"
+    },
+    {
+      "id": "TODO_286",
+      "title": "Commission Registry 実装 — Role（資格）と Commission（任務）の分離",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度設計",
+      "description": "Commission概念の実装。Role（継続的資格）とCommission（期間限定任務）を分離。Commission ID形式：Commission_{YYYYMMDD}-{対象}-{内容}。例：Commission_20260610-Relay-Recovery。Role→Commission→Session→Execution→Auditの5段階フローをHandshake APIに統合。",
+      "assigned_to": "Claude",
+      "note": "commission_registry.json + commission_manager.py実装、app.pyにblueprint登録。サーバー再起動後に動作確認要。",
+      "reference_event": "E20260610_10500",
+      "created_at": "2026-06-10T18:17:11.833663",
+      "updated_at": "2026-06-12T09:08:26.069778",
+      "completed_at": "2026-06-12"
+    },
+    {
+      "id": "TODO_290",
+      "title": "Context Composer 実装 — Reflection/Prediction/Mentor統合working_context生成",
+      "status": "完了",
+      "priority": "最高",
+      "category": "Institutional Cognition",
+      "description": "GPT提言：Reflection/Prediction/Mentor/Institutionを一つのworking_contextへ統合するContext Composer実装。Handshakeの戻り値をmentor_package+warningsから「working_context」に昇格。Priority/Objectives/Known Risks/Relevant Decisions/Institution Rules/Applicable Templates/Past Failures/Recommended Strategyを一括提供。AIはこれを読んで即推論開始できる。GET /api/context/compose エンドポイント。ai_session.pyのmode=fullをContext Composer出力で置き換え。",
+      "assigned_to": "Claude",
+      "note": "context_composer.py実装、app.pyにblueprint登録、ai_session.pyのmode=fullを置き換え(mode=legacyで旧動作保持)。standalone smoke test OK。サーバー再起動後にAPI動作確認要。",
+      "reference_event": "E20260610_10514",
+      "created_at": "2026-06-10T18:42:17.994630",
+      "updated_at": "2026-06-12T09:09:49.955978",
+      "completed_at": "2026-06-12"
     }
   ],
   "orchestra_handoff": {
