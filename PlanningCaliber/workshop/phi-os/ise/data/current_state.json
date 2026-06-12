@@ -1,0 +1,244 @@
+{
+  "state_version": 1,
+  "project": {
+    "phase": 4,
+    "mission": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
+    "priority": []
+  },
+  "warnings": [],
+  "todos": [
+    {
+      "id": "TODO_139",
+      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_207",
+      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_205",
+      "title": "TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_221",
+      "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
+      "priority": "最高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_160",
+      "title": "Orchestra — CSV/JSON export正規化（3種exportProfile）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_171",
+      "title": "Orchestra Phase4 — JS難読化ビルドパイプライン",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_166",
+      "title": "Orchestra合議 — UIブロッカー対策（プリフライトチェック実装）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_161",
+      "title": "Orchestra — 販売品質耐久性6要素実装",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_150",
+      "title": "Prism — モード切替思考深化Chrome拡張 開発",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_220",
+      "title": "mocka.nsjp.org — WordPress メニュー構築（ヘッダーナビ）",
+      "priority": "高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_222",
+      "title": "mocka.nsjp.org — トップページ（Sirius Labブランドハブ）コンテンツ投入",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_224",
+      "title": "mocka.nsjp.org — インデックスON + Rank Mathサイトマップ送信",
+      "priority": "低",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_223",
+      "title": "mocka.nsjp.org — /vasai コンテンツ投入（製品紹介シンプル版）",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_231",
+      "title": "NTP Phase5: C001骨格商品P02〜P07詳細調査（TSI=0.5→1.0）",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_122",
+      "title": "MoCKA Go移行 — app.pyをGoに段階的置換",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_239",
+      "title": "PR-OS: 各Adapter認証情報設定（WordPress優先）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_241",
+      "title": "PR-OS Phase4: MoCKA Command Center統合",
+      "priority": "低",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_242",
+      "title": "PR-OS: WordPress認証情報設定→実動テスト",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_243",
+      "title": "PR-OS: mocka_bridge.py MoCKA統合動作確認",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_254",
+      "title": "SEO-OS Phase6 — Decision Ledger・Explain API・Simulation Mode・MoCKA Bridge実装",
+      "priority": "最高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_258",
+      "title": "MoCKA 多AI接続アーキテクチャ — Phase1 Orchestraコンテキスト注入",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_259",
+      "title": "MoCKA 多AI接続アーキテクチャ — Phase2 REST API公開（Cloudflare Workers）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_268",
+      "title": "AI Connector Framework v1 確立 — gateway.py転用・ChatGPT Actions疎通テスト",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_269",
+      "title": "Perplexity Connector 実装 — adapter_perplexity.py",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_270",
+      "title": "Genspark Connector 実装 — adapter_genspark.py",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_271",
+      "title": "PHI-OS プロセス管理統合 — PID管理・Restart自動化",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_272",
+      "title": "AI Capability Registry 実装 — Connector Framework v2.0 Phase1",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_273",
+      "title": "Connector Router 実装 — Connector Framework v2.0 Phase2",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_274",
+      "title": "Institution Log 拡張 — Connector Framework v2.0 Phase3",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_275",
+      "title": "Lifecycle Manager 実装 — Index起点の自動制度循環エンジン",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_276",
+      "title": "AI Capability Registry 制度設計 — AI別権限・能力・制約の正式定義",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_277",
+      "title": "AI Role Registry 実装 — 制度上の役職定義（監査官・設計者・レビュー担当等）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_278",
+      "title": "Proposal Schema + Decision Ledger 実装 — AI提案フォーマット固定化と採用/却下記録",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_279",
+      "title": "Context Package API 実装 — セッション開始時一括取得エンドポイント",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_284",
+      "title": "Knowledge Diff API — Guideline/Essence/Registry差分取得エンドポイント",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_296",
+      "title": "health_check.py — .envファイルのBOM検知を監視対象に追加",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_297",
+      "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
+      "priority": "中",
+      "status": "未着手"
+    }
+  ],
+  "decision_ledger_rev": 4,
+  "guideline_revision": 0,
+  "revision": 1,
+  "state_hash": "eb6910c81897933af16f3ae2cb6f97c528e861cf6990507957e3063a508d89b8",
+  "generated_at": "2026-06-12T01:22:53.990812+00:00"
+}

@@ -42,37 +42,37 @@
   ],
   "generated_at": "2026-06-12T09:11:23.165352",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": 0.032,
-    "danger_rate": 0.516,
-    "success_rate": 0.484,
-    "text": "ISE Phase B 完了\n\n新規作成: diff_generator.py, sync_protocol.py, ai_session_state.py, ",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "総合評価\n\n評価：A+（実装品質 98/100）\n\n設計思想と実装の乖離がほとんどありません。\n\n特に評価したい点は、\n\nPure Function化\n\nAI ",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "SERVER STATUS\n● APP :5000 ONLINE\n● CALIBER :5679 ONLINE\n● MCP :5002 OFFLINE\n● NGROK OFFLINE\nMCP TOOL",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
         "recur": 0,
         "matched": [
-          "MCP tool"
+          "あり"
         ],
         "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-06-11",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "The entry already exists — manifest.json already has content_orchestra.js registered for chatgpt.com",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
         "recur": 0,
         "matched": [
-          "MCP tool"
+          "あり"
         ],
         "score": 1
       }
     ],
-    "updated_at": "2026-06-12T01:12:13.233Z"
+    "updated_at": "2026-06-12T01:16:04.298Z"
   }
 }

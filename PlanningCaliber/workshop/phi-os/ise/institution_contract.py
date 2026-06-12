@@ -1,11 +1,23 @@
 # institution_contract.py
 from __future__ import annotations
-import hmac, hashlib, time
+import hmac, hashlib, time, os
+from pathlib import Path
 from dataclasses import dataclass
+from dotenv import load_dotenv
 from .capability_table import is_capability_valid, is_trust_sufficient
 from .ai_session_state import AISessionStore
 
-HMAC_SECRET = b"MOCKA_ISE_SECRET_CHANGE_IN_PRODUCTION"
+# MoCKAルートの .env を読み込む（ise/../../../../.env）
+load_dotenv(Path(__file__).resolve().parents[4] / ".env")
+
+HMAC_KEY_ID = os.getenv("PHI_OS_HMAC_KEY_ID", "KID-001")
+HMAC_SECRET = os.getenv("PHI_OS_HMAC_SECRET", "").encode()
+if not HMAC_SECRET:
+    raise RuntimeError(
+        "PHI_OS_HMAC_SECRET が設定されていません。"
+        ".envに PHI_OS_HMAC_SECRET=<secret> を設定してください。"
+    )
+
 REPLAY_WINDOW_SEC = 300   # 5分以内のリクエストのみ受け付ける
 
 @dataclass
