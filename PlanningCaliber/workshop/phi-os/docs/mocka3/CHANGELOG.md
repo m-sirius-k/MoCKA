@@ -59,3 +59,64 @@
   統一は将来のリファクタリング項目として記録する。
 - **テストカバレッジ**: `ise/tests/` 配下 86件すべてpass。
   Phase A〜E (61件) + Phase 4統合試験 (25件)。
+
+## Phase 2追加: PHI-OS core/registry分離・EventPipeline・Adapter v0・Ledger単一化・ExecutionGate
+
+「Phase 2 実装チェックリスト『絶対に事故らない実装順』」(ref E20260612_103/104,
+GPT条件「Boot Sequenceに最低保証モードを追加」) に基づく5ステップ実装。
+
+- **命名上の変更点（重要）**: 指示書では新パッケージ名として `phi_os` が
+  指定されていたが、phi-os直下には既に `phi_os.py`（`PHIOS`/`PHIOSError`を
+  定義する既存単一ファイルモジュール、`test/test_phios_layer1〜4.py`が
+  `from phi_os import PHIOS, PHIOSError`で依存）が存在する。
+  同名の `phi_os/` パッケージディレクトリを作成すると、sys.pathの解決順序により
+  既存の `phi_os.py` がシャドーイングされ、既存テスト4件がimportエラーで
+  collectionエラーになることが判明したため、新パッケージ名を
+  **`phios`（アンダースコアなし）** に変更した。内部参照
+  (`from phi_os.xxx import` 等) もすべて `phios.xxx` に統一済み。
+
+- **STEP1: core/registry分離**
+  - `phios/registry/taxonomy.py` — Event Taxonomy v1.1への読み取り専用ラッパー
+    (`get_taxonomy`, `is_valid_event`, `get_category`, `is_revision_update`等)。
+    書き込みメソッドなし。
+  - `phios/registry/rules.py` — `FORBIDDEN_OPERATIONS`,
+    `ALLOWED_DECISION_CATEGORIES`, `BOOT_SEQUENCE` の静的定数定義。
+  - `phios/boot.py` — `safe_boot(full: bool)`。
+    `full=True`はフルゲート起動、`full=False`は最低保証モード
+    (taxonomy + registryのみ保証) として動作。
+
+- **STEP2: EventPipeline**
+  - `phios/core/event_pipeline.py` — `EventPipeline`(シングルトン`pipeline`)。
+    `emit()` が validate → enrich → persist → audit の単一経路を構成。
+  - `ise/state_builder.py` の `emit_event()` は `pipeline.emit()` を
+    呼び出すだけの薄い窓口に変更。
+
+- **STEP3: Adapter v0**
+  - `phios/adapter/mock_adapter.py` — `MockAdapter`（`AIAdapter`実装、
+    safe_bootの最低保証として常時登録）。
+  - `phios/adapter/openai_adapter.py` — `OpenAIAdapter` v0
+    （実APIは呼ばない。`execute()`内で将来呼び出す拡張ポイントのみ）。
+  - `phios/core/adapter_manager.py` — Adapterのプロセス内レジストリ
+    (`register`/`get`/`list_adapters`/`reset`)。
+
+- **STEP4: EventLedger単一ソース化**
+  - `phios/ledger_gate.py` — `rebuild_state_from_ledger()`（Decision Ledgerから
+    revisionを再計算）, `verify_ledger_is_source_of_truth()`
+    （`decision_ledger.verify_chain()`の薄いラッパー）。
+  - `decision_ledger`/`snapshot_manager`/`state_provider`（既存の読み取り専用
+    レガシーDBアクセス）以外にDB直接書き込みが存在しないことをテストで確認。
+
+- **STEP5: ExecutionGate**
+  - `phios/core/execution_gate.py` — `gate_check()`（`verify_all.py`を
+    MoCKAルートで`subprocess`実行し`ALL CHECKS PASSED`を確認）、
+    `require_gate`デコレータ（ゲート失敗時に`RuntimeError`）。
+
+- 新規テスト: `test_phi_os_separation.py`(6), `test_event_pipeline.py`(7),
+  `test_adapter_v0.py`(7), `test_ledger_single_source.py`(4),
+  `test_execution_gate.py`(4) — 計28件追加。
+- pytest結果: **131 passed** (Phase 5完了時点103件 + 28件)。
+- `safe_boot(full=True)` / `safe_boot(full=False)` ともに
+  `[PHI-OS] Boot complete.` を出力して正常終了することを確認。
+- `verify_all.py` 9ステップ ALL CHECKS PASSED を確認。
+- registry層（`phios.registry.taxonomy`）には書き込みメソッドが存在せず、
+  書き込み試行は不可能であることを確認。
