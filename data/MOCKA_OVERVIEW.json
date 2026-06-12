@@ -117,10 +117,10 @@
   },
   "governance": {
     "latest_seal": {
-      "commit": "0f5185082",
-      "planningcaliber_commit": "0f5185082",
-      "date": "2026-06-12",
-      "status": "ALL CHECKS PASSED / Phase 2 stable baseline"
+      "commit": "c2d8c54e",
+      "date": "2026-06-01",
+      "planningcaliber_commit": "18be5ea",
+      "status": "ALL CHECKS PASSED"
     },
     "write_policy": "Phase18以降: コアシステムファイルへの書き込みは人間ゲート承認必須（ChatGPT上書きインシデント対応）",
     "file_edit_rule": "全AIインタラクションの記録義務。きむら博士がAIを使って行った全ての作業をmocka_write_eventで記録する。対象: ファイル作成・変更・設計・判断・生成物完成・外部サービス提出・登録・却下。フォルダ・Project・AIの種別を問わない。【明示的適用範囲】① MoCKAコアファイル（C:\\Users\\sirok\\MoCKA\\配下）② planningcaliber製品資産（C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\配下）③ sirius-lab製品資産（C:\\Users\\sirok\\MoCKA\\sirius-lab\\配下）④ 外部サービス操作（Chrome Web Store・Gumroad・GitHub・EasyChair等への提出・登録・設定変更）⑤ 設計・判断・合議結果（採用・却下の意思決定も記録対象）記録なき作業はMoCKAとして存在しない。（E20260516_023・TODO_151確定）",
@@ -406,7 +406,7 @@
       "TODO_171: Orchestra JS難読化"
     ]
   },
-  "current_phase": "Phase 4 + MoCKA 3.0 Phase 2完了 / stable baseline（131 passed）",
+  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
   "products": {
     "orchestra": {
       "status": "本番稼働中",
