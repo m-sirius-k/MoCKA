@@ -13,7 +13,7 @@ import argparse
 from pathlib import Path
 
 # 同一ディレクトリのモジュールをimport
-sys.path.insert(0, str(Path(__file__).parent.parent / "structural"))
+sys.path.insert(0, str(Path(__file__).parent))
 
 def run_phase1():
     print("\n" + "="*50)

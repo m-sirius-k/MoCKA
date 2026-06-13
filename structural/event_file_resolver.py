@@ -20,8 +20,8 @@ from pathlib import Path
 
 REPO_ROOT      = Path(r"C:\Users\sirok\MoCKA")
 MOCKA_DB       = REPO_ROOT / "data" / "mocka_events.db"
-REPO_INDEX     = REPO_ROOT / "mocka_3" / "repository_index.json"
-OUTPUT_PATH    = REPO_ROOT / "mocka_3" / "event_file_map.json"
+REPO_INDEX     = REPO_ROOT / "structural" / "repository_index.json"
+OUTPUT_PATH    = REPO_ROOT / "structural" / "event_file_map.json"
 
 # ============================================================
 # ファイル名・シンボルの抽出パターン

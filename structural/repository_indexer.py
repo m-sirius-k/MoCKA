@@ -37,7 +37,7 @@ IGNORE_DIRS  = {".git", "node_modules", "__pycache__", ".pytest_cache", "TestPro
 IGNORE_EXTS  = {".pyc", ".pyo", ".log", ".db-wal", ".db-shm"}
 MAX_FILE_MB  = 50  # これ以上は内容ハッシュをスキップ
 
-OUTPUT_PATH  = REPO_ROOT / "mocka_3" / "repository_index.json"
+OUTPUT_PATH  = REPO_ROOT / "structural" / "repository_index.json"
 
 # ============================================================
 # ユーティリティ
