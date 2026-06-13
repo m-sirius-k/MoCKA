@@ -383,6 +383,47 @@ MoCKA's core flow becomes: **Semantic (meaning) → Decision (judgment)
 (control)**. See [SELF_AUDIT_LAYER.md](SELF_AUDIT_LAYER.md) for
 details.
 
+### Feedback Loop & Adaptive Decision (Phase 3-2)
+
+A non-destructive feedback layer that turns Self-Audit's `AuditReport`s
+into weight-adjustment and improvement proposals for Decision, Memory,
+and (lightly) Semantic. Turns MoCKA from "a system that evaluates" into
+"a system that improves" — without ever auto-applying anything.
+
+Absolute prohibitions: no automatic code modification, no Governance
+changes, no execution-logic changes, no immediate/automatic apply, no
+Memory deletion. Every `FeedbackProposal` keeps
+`requires_governance_check = True`.
+
+- `feedback_registry.py` — `target_layer`/`feedback_type` classification
+  per Self-Audit check, severity-based confidence/priority rules, and
+  `SAFETY_CONSTRAINTS`
+- `feedback_model.py` — `FeedbackProposal` / `FeedbackBatch`
+- `weight_optimizer.py` — weight-adjustment proposals (Decision
+  priority/risk weights, Memory relevance/recency weights, Semantic
+  intent-confidence thresholds)
+- `decision_tuner.py` — risk-scoring correction, priority redistribution,
+  and rationale-structure proposals
+- `memory_reinforcer.py` — reinforce success patterns, decay low-value
+  memories (never delete), adjust reuse-frequency weighting
+- `semantic_adjuster.py` — intent-classification and context-completion
+  proposals (suggestion only, no implementation change)
+- `feedback_engine.py` — classifies `AuditReport` issues and dispatches
+  to the modules above; Governance-layer issues are excluded (no
+  backflow)
+- `feedback_pipeline.py` — runs `AuditPipeline` → `FeedbackEngine` →
+  read-only Governance validation, labeling proposals
+  `pending_governance_review` or `blocked`
+
+```bash
+python feedback/feedback_integration_test.py
+python feedback/feedback_weight_test.py
+python feedback/feedback_safety_test.py
+```
+
+See [FEEDBACK_LOOP.md](FEEDBACK_LOOP.md) for the full design, including
+the future Self-Learning concept.
+
 ---
 
 ## Verification Status
@@ -872,6 +913,44 @@ python self_audit/audit_feedback_test.py
 これにより MoCKA の中核フローは **Semantic(意味) → Decision(判断) →
 Memory(継続) → Self-Audit(評価) → Governance(制御)** となる。
 詳細は [SELF_AUDIT_LAYER.md](SELF_AUDIT_LAYER.md) を参照。
+
+### Feedback Loop & Adaptive Decision (Phase 3-2)
+
+Self-Audit Layerの`AuditReport`を入力として、Decision/Memory/
+Semantic(軽微)向けの重み調整案・改善提案(`FeedbackProposal`)を
+生成する非破壊フィードバック層。「評価するシステム」から
+「改善するシステム」へ進化させるが、いかなる自動適用も行わない。
+
+絶対禁止: 自動コード修正・Governance変更・実行ロジック変更・
+即時反映(自動適用)・Memory削除。すべての`FeedbackProposal`は
+`requires_governance_check = True`を保持する。
+
+- `feedback_registry.py` — Self-Auditのcheckごとの
+  `target_layer`/`feedback_type`分類、severityベースの
+  confidence/priorityルール、`SAFETY_CONSTRAINTS`
+- `feedback_model.py` — `FeedbackProposal` / `FeedbackBatch`
+- `weight_optimizer.py` — Decision(priority/risk重み)、
+  Memory(relevance/recency重み)、Semantic(intent confidence
+  threshold)の重み調整案
+- `decision_tuner.py` — risk scoring補正・priority再配分・
+  rationale構造改善の提案
+- `memory_reinforcer.py` — 成功パターン強化・低価値記憶の減衰
+  (削除はしない)・再利用頻度補正の提案
+- `semantic_adjuster.py` — intent分類精度・context補完の改善提案
+  (提案のみ、実装変更なし)
+- `feedback_engine.py` — `AuditReport`のissueを分類し各モジュールへ
+  委譲。Governance Layerのissueは対象外(逆流禁止)
+- `feedback_pipeline.py` — `AuditPipeline` → `FeedbackEngine` →
+  読み取り専用Governance検証を実行し、`pending_governance_review`/
+  `blocked`を付与
+
+```bash
+python feedback/feedback_integration_test.py
+python feedback/feedback_weight_test.py
+python feedback/feedback_safety_test.py
+```
+
+詳細・将来のSelf-Learning構想は [FEEDBACK_LOOP.md](FEEDBACK_LOOP.md) を参照。
 
 ---
 
