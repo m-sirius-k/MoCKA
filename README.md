@@ -424,6 +424,52 @@ python feedback/feedback_safety_test.py
 See [FEEDBACK_LOOP.md](FEEDBACK_LOOP.md) for the full design, including
 the future Self-Learning concept.
 
+### Self-Learning Kernel (Phase 4-1)
+
+The "final gateway for self-evolution": converts Feedback Loop's
+`FeedbackProposal`s into weight-update actions and applies them to
+MoCKA's internal state through a strict three-stage structure —
+**Validation → Learning Queue → Kernel Update** — turning MoCKA from
+"a system that proposes improvements" into "a system whose
+improvements are reflected in internal state".
+
+> This is the most dangerous layer in MoCKA. Design principle:
+> *learning must always be delayed and always verified.*
+
+Absolute prohibitions: no automatic code modification, no immediate
+learning reflection (queue is mandatory), no Governance bypass, no
+destructive updates, no unlimited parameter changes.
+
+- `learning_registry.py` — allowed learning targets
+  (`decision.priority_weights` / `risk_weights` /
+  `rationale_weight_bias`, `memory.*`, `semantic.*`), `PARAM_BOUNDS`,
+  `MAX_DELTA`, `RISK_INCREASE_LIMIT`, stability/rollback constants
+- `learning_state.py` — `LearningState` (frozen dataclass) holding the
+  shadow weight-state
+- `weight_state_store.py` — JSON persistence + `apply_delta()` /
+  `rollback()` with bounds clipping and history
+- `learning_model.py` — `LearningAction` / `ValidationResult` /
+  `LearningUpdate`
+- `update_validator.py` — safety checks: Governance compliance, allowed
+  target, max-delta, bounds, risk-increase limit, stability score
+- `learning_engine.py` — converts `FeedbackProposal` →
+  `LearningAction` via `LEARNING_PARAM_MAP`
+- `learning_queue.py` — JSON-persisted queue
+  (`pending`/`approved`/`rejected`/`applied`/`rolled_back`)
+- `learning_applier.py` — applies only `approved` updates when
+  `governance_status == "PASS"`
+- `learning_pipeline.py` — `run()` (Feedback → Learning → Queue, no
+  auto-apply), `approve_and_apply()`, `rollback()`
+
+```bash
+python learning_kernel/learning_integration_test.py
+python learning_kernel/learning_safety_test.py
+python learning_kernel/learning_queue_test.py
+```
+
+See [LEARNING_KERNEL.md](LEARNING_KERNEL.md) for the full design,
+including rollback design and the future autonomous-evolution concept.
+
 ---
 
 ## Verification Status
@@ -951,6 +997,50 @@ python feedback/feedback_safety_test.py
 ```
 
 詳細・将来のSelf-Learning構想は [FEEDBACK_LOOP.md](FEEDBACK_LOOP.md) を参照。
+
+### Self-Learning Kernel (Phase 4-1)
+
+MoCKAの「自己進化の最終ゲートウェイ」。Feedback Loopの
+`FeedbackProposal`を「学習アクション」へ変換し、
+**Validation → Learning Queue → Kernel Update**の三段階適用構造を
+通じて内部状態(重みパラメータ)へ反映する。「改善提案を出すシステム」
+から「改善が内部状態に反映されるシステム」へ進化させる層である。
+
+> MoCKAの中で最も危険性が高い層。設計原則は一つ:
+> 「学習は必ず遅延され、必ず検証されること」。
+
+絶対禁止: 自動コード書き換え・即時学習反映(キュー経由必須)・
+Governanceバイパス・破壊的更新・無制限パラメータ変更。
+
+- `learning_registry.py` — 学習対象パラメータ
+  (`decision.priority_weights`/`risk_weights`/`rationale_weight_bias`、
+  `memory.*`、`semantic.*`)、`PARAM_BOUNDS`、`MAX_DELTA`、
+  `RISK_INCREASE_LIMIT`、stability/rollback定数
+- `learning_state.py` — shadow weight-stateを保持する`LearningState`
+  (frozen dataclass)
+- `weight_state_store.py` — JSON永続化 + `apply_delta()`/`rollback()`
+  (範囲クリッピング・履歴管理)
+- `learning_model.py` — `LearningAction`/`ValidationResult`/
+  `LearningUpdate`
+- `update_validator.py` — Governance準拠・許可対象・最大変化量・
+  範囲・risk上昇防止・stabilityスコアの検証
+- `learning_engine.py` — `LEARNING_PARAM_MAP`による
+  `FeedbackProposal` → `LearningAction`変換
+- `learning_queue.py` — JSON永続化されたキュー
+  (`pending`/`approved`/`rejected`/`applied`/`rolled_back`)
+- `learning_applier.py` — `governance_status == "PASS"`時のみ
+  `approved`なUpdateを適用
+- `learning_pipeline.py` — `run()`(Feedback → Learning → Queue、
+  自動適用なし)、`approve_and_apply()`、`rollback()`
+
+```bash
+python learning_kernel/learning_integration_test.py
+python learning_kernel/learning_safety_test.py
+python learning_kernel/learning_queue_test.py
+```
+
+詳細・rollback設計・将来の自律進化構想は
+[LEARNING_KERNEL.md](LEARNING_KERNEL.md) を参照。
 
 ---
 
