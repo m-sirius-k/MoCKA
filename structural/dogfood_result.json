@@ -1,0 +1,787 @@
+{
+  "summary": {
+    "total_calls": 110,
+    "bypassed": 0,
+    "fatal_errors": 0,
+    "write_calls": 11,
+    "write_aborted": 0,
+    "dry_run_false_positive_rate": 0.0,
+    "checklist_fail_count": 0,
+    "thinking_mode_distribution": {
+      "implementation": 99,
+      "emergency": 11
+    }
+  },
+  "log": [
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_overview",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_todo",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_essence",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_guidelines",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_incidents",
+      "allowed": true,
+      "mode": "emergency",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_search",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_list_events",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_read_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_get_command_center",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    },
+    {
+      "tool": "mocka_write_event",
+      "allowed": true,
+      "mode": "implementation",
+      "checklist_ok": true,
+      "aborts": []
+    }
+  ]
+}
