@@ -257,6 +257,30 @@ python structural/governance_audit_check.py
 Any change to `structural/` must pass `governance_regression.py` with
 `Overall PASS` before merging. See [QUALITY_GATE.md](QUALITY_GATE.md).
 
+### Semantic Layer (Phase 2-1)
+
+An independent layer that gives MoCKA the ability to understand
+**intent, context, and meaning** — separate from Governance Layer's
+safety/policy/execution responsibilities.
+
+- `semantic_registry.py` — single source of truth for 10 intent
+  categories (information retrieval, design, implementation, fix,
+  audit, verification, record, comparison, summary, planning)
+- `intent_classifier.py` — classifies text into ranked intent
+  candidates with confidence scores
+- `context_analyzer.py` — summarizes phase / active task / recent
+  events / conversation flow into meaning only (no judgment)
+- `semantic_pipeline.py` — single entry point producing a unified
+  `SemanticResult` (intent, confidence, context summary, related
+  topics, recommended action)
+
+```bash
+python semantic/semantic_integration_test.py
+```
+
+`SemanticResult` is designed to be consumed as-is by a future Decision
+Layer. See [SEMANTIC_LAYER.md](SEMANTIC_LAYER.md) for details.
+
 ---
 
 ## Verification Status
@@ -635,6 +659,26 @@ python structural/governance_audit_check.py
 
 `structural/`への変更は、マージ前に`governance_regression.py`が
 `Overall PASS`となることを必須条件とする。詳細は [QUALITY_GATE.md](QUALITY_GATE.md)。
+
+### Semantic Layer (Phase 2-1)
+
+Governance Layerの安全性・制度・実行可否とは独立に、「意図・文脈・意味」
+を理解するための層。
+
+- `semantic_registry.py` — 意味カテゴリ10種(情報取得・設計・実装・修正・
+  監査・検証・記録・比較・要約・計画)を一元管理
+- `intent_classifier.py` — テキストを確信度付きの複数Intent候補に分類
+- `context_analyzer.py` — phase/active_task/直前イベント/会話の流れを
+  判断せず意味情報のみに変換
+- `semantic_pipeline.py` — 統一出力`SemanticResult`(intent/confidence/
+  context_summary/related_topics/recommended_action)を生成する単一窓口
+
+```bash
+python semantic/semantic_integration_test.py
+```
+
+`SemanticResult`は将来のDecision Layerがそのまま入力として利用できる
+構造になっている。詳細は [SEMANTIC_LAYER.md](SEMANTIC_LAYER.md) を参照。
 
 ---
 
