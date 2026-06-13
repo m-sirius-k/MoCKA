@@ -310,6 +310,40 @@ MoCKA now forms a 3-layer decision core: **Semantic (meaning) →
 Decision (judgment) → Governance (control)**. See
 [DECISION_LAYER.md](DECISION_LAYER.md) for details.
 
+### Memory Layer (Phase 2-3)
+
+An independent layer that gives MoCKA continuity — persisting
+`DecisionResult`s and surfacing relevant past decisions back into
+Semantic/Decision processing. Manages four memory types: **episodic**
+(decisions/events), **semantic** (concepts/registry knowledge),
+**procedural** (pipeline/flow), and **skill** (reusable success
+patterns).
+
+- `memory_store.py` — append-only JSON store (`data/memory_store.json`)
+  with per-type retention policies
+- `memory_index.py` — intent / tag / time / similarity indexes (simple
+  keyword-based similarity)
+- `memory_writer.py` — turns `DecisionResult` / event logs into
+  `MemoryEntry`
+- `memory_retriever.py` — ranked retrieval by intent, tags, query, or
+  recency (`relevance_score` 0-1)
+- `memory_context_builder.py` — builds `EnrichedContext` (past
+  decisions, success/failure patterns, related topics) for a given
+  intent
+- `memory_pipeline.py` — single entry point chaining Semantic →
+  Memory recall → Decision → Memory write
+
+```bash
+python memory/memory_integration_test.py
+python memory/memory_retrieval_test.py
+python memory/memory_consistency_test.py
+```
+
+MoCKA now forms a 4-layer core: **Semantic (meaning) → Decision
+(judgment) → Memory (continuity) → Governance (control)**, moving from
+single-shot intelligence to continuous intelligence. See
+[MEMORY_LAYER.md](MEMORY_LAYER.md) for details.
+
 ---
 
 ## Verification Status
@@ -735,6 +769,35 @@ python decision/decision_integration_test.py
 これにより MoCKA は **Semantic(意味) → Decision(判断) →
 Governance(制御)** の3層構造の意思決定コアを完成させた。詳細は
 [DECISION_LAYER.md](DECISION_LAYER.md) を参照。
+
+### Memory Layer (Phase 2-3)
+
+Decision Layerの判断(`DecisionResult`)を持続させ、過去の記憶を
+Semantic/Decisionへ還元する独立層。4種の記憶(エピソード記憶/意味記憶/
+手続き記憶/技能記憶)を統合管理する。
+
+- `memory_store.py` — 追記型JSONストレージ(`data/memory_store.json`)、
+  memory_type別の保存ポリシーを適用
+- `memory_index.py` — intent/tag/time/類似度(簡易キーワード一致)の
+  4種インデックス
+- `memory_writer.py` — `DecisionResult`/イベントログを`MemoryEntry`に変換
+- `memory_retriever.py` — intent/tags/query/recencyによる
+  ランキング検索(`relevance_score` 0-1)
+- `memory_context_builder.py` — 指定Intentの過去履歴から
+  `EnrichedContext`(過去Decision/成功・失敗パターン/関連トピック)を構築
+- `memory_pipeline.py` — Semantic → Memory再現 → Decision → Memory記録
+  を連結する単一窓口
+
+```bash
+python memory/memory_integration_test.py
+python memory/memory_retrieval_test.py
+python memory/memory_consistency_test.py
+```
+
+これにより MoCKA は **Semantic(意味) → Decision(判断) →
+Memory(継続) → Governance(制御)** の4層構造を完成させ、
+「単発知能」から「継続知能」へ進化した。詳細は
+[MEMORY_LAYER.md](MEMORY_LAYER.md) を参照。
 
 ---
 
