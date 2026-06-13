@@ -205,6 +205,58 @@ MoCKA operates under a binding governance charter.
 - `schema.py` — unified schema across all components
 - `verify_all.py` — governance verification engine
 
+### Governance Layer (GL1-7) — v1.1 Baseline
+
+MoCKA 3.0's reasoning/execution pipeline is governed by seven Governance
+Layers (GL1-7), connected to the Caliber MCP server through a single
+`governance_pipeline.py` entry point (`before_tool()` / `after_tool()`).
+
+| Layer | Role |
+|---|---|
+| GL1 | Repository Grounding — refreshes repo root / branch state |
+| GL2 | Working Memory — persists current task/event/repository |
+| GL3 | Thinking Mode — detects mode (word-boundary keyword matching) |
+| GL4 | Knowledge Mass — ranks candidates by context relevance |
+| GL5 | Consensus — multi-model agreement / convergence |
+| GL6 | Reasoning Governance — Pre-Answer Checklist, enforced in `allowed` |
+| GL7 | Execution Governance — Dry Run + Default Deny for non-read-only tools |
+
+**Guarantees (v1.1 Baseline):**
+- **Fail Closed** — if governance is unavailable or `before_tool()` raises,
+  all tools except `READ_ONLY_TOOLS` are blocked (`GL_FAIL_CLOSED`).
+- **Default Deny** — any tool not in `READ_ONLY_TOOLS` (10 verified
+  read-only tools) is subject to GL7 Dry Run, including unknown future tools.
+- **Pipeline coverage** — `/mcp` and `/agent/<tool_name>` both route through
+  `execute_tool()` → `before_tool()`.
+
+See [GOVERNANCE_BASELINE.md](GOVERNANCE_BASELINE.md) and
+[structural/GL_AUDIT_REPORT.md](structural/GL_AUDIT_REPORT.md) for details.
+
+#### Quality Assurance Flow
+
+Run all three checks (Integration Test → Dogfood → Audit) with one command:
+
+```bash
+python structural/governance_regression.py
+```
+
+This generates `structural/GOVERNANCE_REGRESSION_SUMMARY.md` and exits
+non-zero on any FAIL. The individual steps can also be run separately:
+
+```bash
+# 1. GL1-7 integration test (14 checks)
+python structural/gl_integration_test.py
+
+# 2. Dogfooding — 110 simulated MCP tool calls
+python structural/dogfood_run.py
+
+# 3. Audit — verifies v1.1 invariants stay intact
+python structural/governance_audit_check.py
+```
+
+Any change to `structural/` must pass `governance_regression.py` with
+`Overall PASS` before merging. See [QUALITY_GATE.md](QUALITY_GATE.md).
+
 ---
 
 ## Verification Status
@@ -531,6 +583,58 @@ MoCKAは拘束力を持つガバナンス憲章に基づいて動作します。
 - `main_loop` — すべての操作の単一エントリポイント
 - `schema.py` — 全コンポーネント共通スキーマ
 - `verify_all.py` — ガバナンス検証エンジン
+
+### ガバナンスレイヤー (GL1-7) — v1.1 Baseline
+
+MoCKA 3.0の推論・実行パイプラインは、GL1〜GL7の7つのGovernance Layerに
+よって統制されている。すべて `governance_pipeline.py` の単一窓口
+（`before_tool()` / `after_tool()`）経由でCaliber MCPサーバーに接続される。
+
+| Layer | 役割 |
+|---|---|
+| GL1 | Repository Grounding — リポジトリroot/branch状態の更新 |
+| GL2 | Working Memory — 現在のtask/event/repositoryを保持 |
+| GL3 | Thinking Mode — 単語境界マッチによるモード判定 |
+| GL4 | Knowledge Mass — コンテキスト適合度による候補ランキング |
+| GL5 | Consensus — 複数モデルの合意・収束 |
+| GL6 | Reasoning Governance — Pre-Answer Checklistを`allowed`に反映 |
+| GL7 | Execution Governance — Dry Run + 非read-only toolのDefault Deny |
+
+**保証内容 (v1.1 Baseline):**
+- **Fail Closed** — governance未初期化または`before_tool()`例外時、
+  `READ_ONLY_TOOLS`以外の全toolは`GL_FAIL_CLOSED`で実行停止する。
+- **Default Deny** — `READ_ONLY_TOOLS`（確認済み読み取り専用10種）に
+  含まれない全tool（将来追加される未知のtool含む）はGL7 Dry Run対象。
+- **Pipeline経由率100%** — `/mcp`・`/agent/<tool_name>`いずれも
+  `execute_tool()` → `before_tool()`を経由する。
+
+詳細は [GOVERNANCE_BASELINE.md](GOVERNANCE_BASELINE.md) および
+[structural/GL_AUDIT_REPORT.md](structural/GL_AUDIT_REPORT.md) を参照。
+
+#### 品質保証フロー
+
+Integration Test → Dogfood → Audit をワンコマンドで実行する:
+
+```bash
+python structural/governance_regression.py
+```
+
+`structural/GOVERNANCE_REGRESSION_SUMMARY.md`が生成され、いずれかが
+FAILした場合は非ゼロで終了する。個別実行も可能:
+
+```bash
+# 1. GL1-7統合テスト (14項目)
+python structural/gl_integration_test.py
+
+# 2. Dogfooding — MCP tool呼び出し110回シミュレーション
+python structural/dogfood_run.py
+
+# 3. Audit — v1.1の不変条件が維持されているか検証
+python structural/governance_audit_check.py
+```
+
+`structural/`への変更は、マージ前に`governance_regression.py`が
+`Overall PASS`となることを必須条件とする。詳細は [QUALITY_GATE.md](QUALITY_GATE.md)。
 
 ---
 
