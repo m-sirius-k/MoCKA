@@ -21,8 +21,8 @@ from pathlib import Path
 
 REPO_ROOT       = Path(r"C:\Users\sirok\MoCKA")
 MOCKA_DB        = REPO_ROOT / "data" / "mocka_events.db"
-EVENT_FILE_MAP  = REPO_ROOT / "mocka_3" / "event_file_map.json"
-OUTPUT_PATH     = REPO_ROOT / "mocka_3" / "state_reconstructor_output.json"
+EVENT_FILE_MAP  = REPO_ROOT / "data" / "mocka" / "event_file_map.json"
+OUTPUT_PATH     = REPO_ROOT / "data" / "mocka" / "state_reconstructor_output.json"
 
 # ============================================================
 # 状態抽出パターン定義
