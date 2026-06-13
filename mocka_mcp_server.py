@@ -4,11 +4,20 @@ MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
-import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os
+import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys
 from pathlib import Path
 import requests
 from flask import Flask, request, Response
 from flask_cors import CORS
+
+# GL1~GL7 Governance Pipeline (MoCKA 3.0)
+sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
+try:
+    from governance_pipeline import GovernancePipeline
+    _governance = GovernancePipeline()
+except Exception as _gov_err:
+    print(f"[WARN] Governance Pipeline unavailable: {_gov_err}", flush=True)
+    _governance = None
 
 MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not MOCKA_ENDPOINT:
@@ -227,6 +236,18 @@ TOOLS = [
 
 def execute_tool(name, args):
     try:
+        if _governance is not None:
+            try:
+                decision = _governance.before_tool(name, args)
+                if not decision.allowed:
+                    return json.dumps({
+                        "error": "GL7_EXECUTION_BLOCKED",
+                        "reason": decision.reason,
+                        "thinking_mode": decision.thinking_mode,
+                    }, ensure_ascii=False)
+            except Exception as _gov_call_err:
+                print(f"[WARN] Governance before_tool failed: {_gov_call_err}", flush=True)
+
         if name == "mocka_get_overview":
             if not OVERVIEW_PATH.exists(): return json.dumps({"error": f"not found: {OVERVIEW_PATH}"})
             result = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8-sig"))
