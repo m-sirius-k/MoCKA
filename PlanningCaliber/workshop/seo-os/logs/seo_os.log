@@ -3429,3 +3429,18 @@
 2026-06-13 09:30:31,583 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:8750
 2026-06-13 09:30:31,584 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-13 09:32:54,247 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-13 09:32:54,249 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-13 09:32:54,257 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-13 09:32:54,259 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-13 09:32:54,259 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-13 09:32:54,260 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-13 09:32:54,261 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-13 09:32:54,261 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-13 09:32:54,262 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-13 09:32:54,262 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-13 09:32:54,262 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-13 09:32:54,262 [INFO] [Bootstrap] Worker初期化完了
+2026-06-13 09:32:54,328 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-13 09:32:54,328 [INFO] [33mPress CTRL+C to quit[0m

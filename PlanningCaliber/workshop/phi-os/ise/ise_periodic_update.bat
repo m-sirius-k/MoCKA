@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 REM ISE Institution State periodic update
 REM Called from MoCKA-START.bat via start /B
 :loop
