@@ -128,12 +128,6 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_254",
-      "title": "SEO-OS Phase6 — Decision Ledger・Explain API・Simulation Mode・MoCKA Bridge実装",
-      "priority": "最高",
-      "status": "進行中"
-    },
-    {
       "id": "TODO_258",
       "title": "MoCKA 多AI接続アーキテクチャ — Phase1 Orchestraコンテキスト注入",
       "priority": "高",
@@ -234,11 +228,77 @@
       "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
       "priority": "中",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_301",
+      "title": "Event Taxonomy v1 策定",
+      "priority": "最高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_302",
+      "title": "データライフサイクル v1 策定",
+      "priority": "最高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_303",
+      "title": "State Machine v1 策定",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_304",
+      "title": "Version Policy v1 策定",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_305",
+      "title": "Decision Ledger 正式スキーマ v1 実装",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_306",
+      "title": "モジュール成熟モデル v1 実装",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_307",
+      "title": "Prompt Compiler v1 実装",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_308",
+      "title": "SCAMPER Engine PHI-OS統合",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_309",
+      "title": "Fluid Coordinate Theory ISE接続設計",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_310",
+      "title": "Knowledge Evolution Engine 設計・実装",
+      "priority": "低",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_311",
+      "title": "知識ライフサイクル自動化エンジン",
+      "priority": "低",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 1,
-  "state_hash": "eb6910c81897933af16f3ae2cb6f97c528e861cf6990507957e3063a508d89b8",
-  "generated_at": "2026-06-12T04:50:37.331267+00:00"
+  "revision": 2,
+  "state_hash": "5434e3d93717a9d4270e9477e7b3b04cb42506e6232a79d9741d1d0ce4676b56",
+  "generated_at": "2026-06-13T00:28:23.369460+00:00"
 }
