@@ -5,36 +5,25 @@ cd /d C:\Users\sirok\MoCKA
 echo MoCKA Starting...
 
 REM ============================================================
-REM [PHASE 1] ����o�b�N�O���E���h����
-REM  ping_generator / UTF-8�`�F�b�N / TIC / CloudFlare / git �͑S������
+REM [PHASE 1] Background jobs
 REM ============================================================
 echo [PHASE 1] Background jobs launching...
 
-REM ping_generator�iDNA���������j
 start /B "" python interface\ping_generator.py
-
-REM UTF-8 mandate check�i�G���[���̂݌x���\���E�N���̓u���b�N���Ȃ��j
 start /B "" cmd /c "python check_utf8_mandate.py || echo [WARN] UTF-8 check FAILED"
-
-REM TIC: tech_watcher �� risk_scorer ����i�O�i�ˑ�����j�o�b�N�O���E���h
 start /B "" cmd /c "python interface\tech_watcher.py && python interface\risk_scorer.py"
-
-REM ISE: Institution State periodic update (every 5 min, background loop)
 start /B "" cmd /c "cd /d C:\Users\sirok\MoCKA && PlanningCaliber\workshop\phi-os\ise\ise_periodic_update.bat"
-
-REM Cloudflare sync + git push �o�b�N�O���E���h
 start /B "" cmd /c "python PlanningCaliber\workshop\mocka-cloudflare\export_for_cloudflare.py && git add data\MOCKA_OVERVIEW.json data\MOCKA_TODO.json data\lever_essence.json data\events_latest.json >nul 2>&1 && git diff --cached --quiet || git commit -m "auto sync" && git push origin main"
 
 REM ============================================================
-REM [PHASE 2] Comet (Perplexity) �N��
+REM [PHASE 2] Comet
 REM ============================================================
 taskkill /F /IM comet.exe /T >nul 2>&1
 timeout /t 2 /nobreak > nul
 start "" "C:\Users\sirok\AppData\Local\Perplexity\Comet\Application\comet.exe" --remote-debugging-port=9222
 
 REM ============================================================
-REM [PHASE 3] Windows Terminal �^�u�Q �ꊇ�N��
-REM  MeCab �� 1�b��ɑS�^�u����C�� open
+REM [PHASE 3] Windows Terminal tabs
 REM ============================================================
 start "" wt new-tab --title "MoCKA-MECAB" --tabColor "#2d2d5f" wsl -e bash -c "python3 /home/m_kimura/mecab_service.py"
 timeout /t 1 /nobreak > nul
@@ -53,7 +42,7 @@ wt -w 0 ^
 ; new-tab --title "BEE-DAILY"       --tabColor "#005f5f" cmd /k "cd /d C:\Users\sirok\MoCKA && timeout /t 5 /nobreak > nul && python structural/bee.py --daily && pause"
 
 REM ============================================================
-REM [PHASE 4] �u���E�U�N���iWT�N�������܂�2�b�҂j
+REM [PHASE 4] Browser
 REM ============================================================
 timeout /t 2 /nobreak > nul
 start "" http://localhost:5000
