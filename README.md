@@ -281,6 +281,35 @@ python semantic/semantic_integration_test.py
 `SemanticResult` is designed to be consumed as-is by a future Decision
 Layer. See [SEMANTIC_LAYER.md](SEMANTIC_LAYER.md) for details.
 
+### Decision Layer (Phase 2-2)
+
+An independent layer that turns "meaning" (`SemanticResult`) into
+"intermediate decisions" — selection, priority, and risk evaluation.
+Decision Layer never executes anything (non-destructive) and always
+hands off the final call to Governance Layer.
+
+- `decision_registry.py` — maps each of the 10 intents to an
+  `action_profile` (read_heavy / write_heavy / verification_first /
+  analysis_heavy), a default action, alternatives, and scoring weights
+- `priority_scorer.py` — scores candidates 0-1 across intent
+  importance, context strength, dependency, urgency, and intent clarity
+- `risk_analyzer.py` — scores risk 0-1 across base risk, governance
+  violation likelihood, unknown-behavior risk, and context uncertainty,
+  plus a `risk_factors` list
+- `decision_engine.py` — assembles a `DecisionResult` (selected_action,
+  alternatives, priority_score, risk_score, confidence, rationale,
+  `required_governance_check=True`)
+- `decision_pipeline.py` — single entry point chaining
+  `SemanticPipeline` → `DecisionEngine`
+
+```bash
+python decision/decision_integration_test.py
+```
+
+MoCKA now forms a 3-layer decision core: **Semantic (meaning) →
+Decision (judgment) → Governance (control)**. See
+[DECISION_LAYER.md](DECISION_LAYER.md) for details.
+
 ---
 
 ## Verification Status
@@ -679,6 +708,33 @@ python semantic/semantic_integration_test.py
 
 `SemanticResult`は将来のDecision Layerがそのまま入力として利用できる
 構造になっている。詳細は [SEMANTIC_LAYER.md](SEMANTIC_LAYER.md) を参照。
+
+### Decision Layer (Phase 2-2)
+
+「意味」(`SemanticResult`)を「中間意思決定」(選択・優先・リスク評価)
+へ変換する独立層。Decision Layerは実行を行わず(非破壊)、最終判断は
+常にGovernance Layerへ引き渡す。
+
+- `decision_registry.py` — 10種のIntentごとにaction_profile
+  (read_heavy/write_heavy/verification_first/analysis_heavy)・既定アクション・
+  代替アクション・評価重みを定義
+- `priority_scorer.py` — Intent重要度・コンテキスト強度・依存関係・
+  緊急度・意図明確度の5軸からpriority_score(0-1)を算出
+- `risk_analyzer.py` — 副作用リスク・Governance違反可能性・未知動作可能性・
+  Context不確実性の4軸からrisk_score(0-1)とrisk_factorsを算出
+- `decision_engine.py` — `DecisionResult`(selected_action/alternatives/
+  priority_score/risk_score/confidence/rationale/
+  `required_governance_check=True`)を組み立てるコア
+- `decision_pipeline.py` — `SemanticPipeline` → `DecisionEngine` を
+  連結する単一窓口
+
+```bash
+python decision/decision_integration_test.py
+```
+
+これにより MoCKA は **Semantic(意味) → Decision(判断) →
+Governance(制御)** の3層構造の意思決定コアを完成させた。詳細は
+[DECISION_LAYER.md](DECISION_LAYER.md) を参照。
 
 ---
 
