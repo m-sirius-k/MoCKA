@@ -344,6 +344,45 @@ MoCKA now forms a 4-layer core: **Semantic (meaning) → Decision
 single-shot intelligence to continuous intelligence. See
 [MEMORY_LAYER.md](MEMORY_LAYER.md) for details.
 
+### Self-Audit Layer (Phase 3-1)
+
+An independent evaluation layer that audits the outputs of the
+Semantic, Decision, Memory, and Governance layers and produces
+non-executing improvement feedback. Governed by three principles:
+**non-execution** (evaluation/analysis/suggestions only), **layer
+separation** (Self-Audit never performs meaning-generation,
+decision-making, or execution), and **no backflow** (Self-Audit never
+writes back into Decision or Governance — only "improvement
+suggestions").
+
+- `audit_registry.py` — score thresholds, severity definitions, and
+  per-layer check items (`priority妥当性`/`risk整合性`/`rationale一貫性`
+  for Decision, `再利用性`/`一貫性`/`ノイズ率` for Memory,
+  `意図分類精度`/`context補完妥当性` for Semantic, `Fail Closed維持`/
+  `bypass検出`/`異常ログ` for Governance)
+- `audit_model.py` — `Issue` / `AuditReport` / `ImprovementSuggestion` /
+  `PrioritizedAction`
+- `audit_analyzer.py` — per-layer, read-only evaluation producing
+  `(score, issues, strengths)`
+- `improvement_scorer.py` — scores suggestions 0-1 from impact, risk
+  reduction, frequency, and system-wide ripple effect
+- `feedback_generator.py` — generates `improvement_suggestions` and
+  `prioritized_actions` (no automatic fixes, no automatic execution)
+- `audit_engine.py` — combines Analyzer + FeedbackGenerator into an
+  `AuditReport`
+- `audit_pipeline.py` — single entry point auditing all four layers
+
+```bash
+python self_audit/audit_integration_test.py
+python self_audit/audit_consistency_test.py
+python self_audit/audit_feedback_test.py
+```
+
+MoCKA's core flow becomes: **Semantic (meaning) → Decision (judgment)
+→ Memory (continuity) → Self-Audit (evaluation) → Governance
+(control)**. See [SELF_AUDIT_LAYER.md](SELF_AUDIT_LAYER.md) for
+details.
+
 ---
 
 ## Verification Status
@@ -798,6 +837,41 @@ python memory/memory_consistency_test.py
 Memory(継続) → Governance(制御)** の4層構造を完成させ、
 「単発知能」から「継続知能」へ進化した。詳細は
 [MEMORY_LAYER.md](MEMORY_LAYER.md) を参照。
+
+### Self-Audit Layer (Phase 3-1)
+
+Semantic/Decision/Memory/Governanceの各層の出力を評価し、非実行の
+改善提案を生成する独立層。以下3原則に従う: **非実行原則**
+(評価・分析・改善提案生成のみ)、**層分離維持**(Self-Auditは意味生成・
+意思決定・実行を行わない)、**逆流禁止**(Decision/Governanceへの
+書き込みは行わず、出力は常に「改善提案」のみ)。
+
+- `audit_registry.py` — スコア閾値・severity定義・層別チェック項目
+  (Decision: `priority妥当性`/`risk整合性`/`rationale一貫性`、
+  Memory: `再利用性`/`一貫性`/`ノイズ率`、
+  Semantic: `意図分類精度`/`context補完妥当性`、
+  Governance: `Fail Closed維持`/`bypass検出`/`異常ログ`)
+- `audit_model.py` — `Issue` / `AuditReport` / `ImprovementSuggestion` /
+  `PrioritizedAction`
+- `audit_analyzer.py` — 各層を読み取り専用で評価し
+  `(score, issues, strengths)` を算出
+- `improvement_scorer.py` — 影響度/リスク低減効果/頻度/波及性から
+  改善提案を0-1でスコアリング
+- `feedback_generator.py` — `improvement_suggestions`/
+  `prioritized_actions`を生成(自動修正・自動実行は行わない)
+- `audit_engine.py` — Analyzer + FeedbackGeneratorを統合し
+  `AuditReport`を生成
+- `audit_pipeline.py` — 4層を統合的に評価する単一窓口
+
+```bash
+python self_audit/audit_integration_test.py
+python self_audit/audit_consistency_test.py
+python self_audit/audit_feedback_test.py
+```
+
+これにより MoCKA の中核フローは **Semantic(意味) → Decision(判断) →
+Memory(継続) → Self-Audit(評価) → Governance(制御)** となる。
+詳細は [SELF_AUDIT_LAYER.md](SELF_AUDIT_LAYER.md) を参照。
 
 ---
 
