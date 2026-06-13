@@ -1,0 +1,282 @@
+﻿{
+  "generated_at": "2026-06-13T09:17:43",
+  "event_range": {
+    "from": "E20260611_343",
+    "to": "E20260613_015"
+  },
+  "events_analyzed": 611,
+  "state_signals": {
+    "router": {
+      "save": [
+        "E20260611_384",
+        "E20260611_484",
+        "E20260612_036"
+      ],
+      "share": [
+        "E20260611_484"
+      ],
+      "collaboration": [
+        "E20260611_484"
+      ]
+    },
+    "security": {
+      "api_key": [
+        "E20260611_386",
+        "E20260611_387",
+        "E20260612_009",
+        "E20260613_011",
+        "E20260613_012",
+        "E20260613_013",
+        "E20260613_014"
+      ],
+      "git_leak": [
+        "E20260611_386",
+        "E20260611_388",
+        "E20260611_390",
+        "E20260612_012"
+      ]
+    },
+    "search": {
+      "caliber_search": [
+        "E20260612_034",
+        "E20260612_076",
+        "E20260613_015"
+      ],
+      "primary_fields": [
+        "E20260613_015"
+      ],
+      "search_scope": [
+        "E20260613_015"
+      ],
+      "search_quality": [
+        "E20260613_015"
+      ]
+    },
+    "ui": {
+      "ui_change": [
+        "E20260612_039",
+        "E20260612_065",
+        "E20260612_066",
+        "E20260612_098",
+        "E20260612_101"
+      ]
+    }
+  },
+  "file_changes": [],
+  "timeline": [
+    {
+      "event_id": "E20260611_384",
+      "title": "接続状況監査報告（MoCKA連携状態）\n\n1. 結論\n\n現時点で確認できるのは、「MoCKAが外部システムとして実行接続",
+      "signals": {
+        "router": [
+          "save"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260611_386",
+      "title": "INCIDENT: Google API Key漏洩 — TestProfile/ git混入",
+      "signals": {
+        "security": [
+          "api_key",
+          "git_leak"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260611_387",
+      "title": "INCIDENT対応完了: Google API Key漏洩 — 全封じ込め確認",
+      "signals": {
+        "security": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260611_388",
+      "title": "INCIDENT2: service_account.json git混入 — mocka-pythonbridgeロー",
+      "signals": {
+        "security": [
+          "git_leak"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260611_390",
+      "title": "再発防止制度化: トップレベル.gitignoreによる秘密鍵ブロック強化",
+      "signals": {
+        "security": [
+          "git_leak"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260611_484",
+      "title": "ちなみにさっき作った　GPT向けの方が鮮度があって　内容充実してるわ\n\n━━━━━━━━━━━━━━━━━━━━━━━━",
+      "signals": {
+        "router": [
+          "save",
+          "share",
+          "collaboration"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_009",
+      "title": "Gemini APIキー「mockagemini」削除 — セキュリティ対処完了",
+      "signals": {
+        "security": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_012",
+      "title": "CHANGE_DONE: anchor_update.py にseal前TestProfile混入チェック追加",
+      "signals": {
+        "security": [
+          "git_leak"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_034",
+      "title": "CHANGE_DONE: SEO-OS Phase6補完 — Decision Ledger/Explain/Simul",
+      "signals": {
+        "search": [
+          "caliber_search"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_036",
+      "title": "私の結論\n\nISEは「データ同期」ではなく「制度状態同期」と定義します。\n\nつまり、同期対象は「AIの判断に影響するもの",
+      "signals": {
+        "router": [
+          "save"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_039",
+      "title": "CHANGE_DONE: ISE Phase A 実装完了",
+      "signals": {
+        "ui": [
+          "ui_change"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_065",
+      "title": "CHANGE_START: ISE Phase E 監査・統治層 実装着手",
+      "signals": {
+        "ui": [
+          "ui_change"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_066",
+      "title": "CHANGE_DONE: ISE Phase E 監査・統治層 実装完了",
+      "signals": {
+        "ui": [
+          "ui_change"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_076",
+      "title": "CHANGE_DONE: MoCKA3.0企画書 付録(Appendix A-D)執筆完了",
+      "signals": {
+        "search": [
+          "caliber_search"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_098",
+      "title": "DESIGN: ISE × Taxonomy v1.1 統合指示書起草完了",
+      "signals": {
+        "ui": [
+          "ui_change"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260612_101",
+      "title": "CHANGE_DONE: ISE × Event Taxonomy v1.1 統合完了",
+      "signals": {
+        "ui": [
+          "ui_change"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260613_011",
+      "title": "Restrict unrestricted keys to maintain service continuity.\n\n",
+      "signals": {
+        "security": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260613_012",
+      "title": "SECURITY_ACTION: Gemini APIキー（2026年1月取得・無制限）削除完了",
+      "signals": {
+        "security": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260613_013",
+      "title": "INCIDENT: くろこ調査不足 / セキュリティ記録を「なし」と誤報告",
+      "signals": {
+        "security": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260613_014",
+      "title": "INCIDENT: seal/引き継ぎ経路にセキュリティインシデント状態が乗っていない — 設計欠陥",
+      "signals": {
+        "security": [
+          "api_key"
+        ]
+      }
+    },
+    {
+      "event_id": "E20260613_015",
+      "title": "INCIDENT: Orchestra検索品質劣化 — chatに飛ぶボタン追加更新以降に全件検索不能",
+      "signals": {
+        "search": [
+          "primary_fields",
+          "search_scope",
+          "caliber_search",
+          "search_quality"
+        ]
+      }
+    }
+  ],
+  "summary": [
+    "PRIMARY_FIELDS変更: イベント ['E20260613_015'] で検索対象フィールドが再定義された可能性",
+    "検索品質劣化シグナル: イベント ['E20260613_015'] で検索劣化が報告された",
+    "Router変更: ['save', 'share', 'collaboration'] が影響を受けた可能性"
+  ],
+  "p1_diagnosis": {
+    "trigger_event": "E20260611_343",
+    "trigger_title": "content_orchestra.js v5 — 送信直前focus再取得・sendBtn.click()単純化",
+    "hypothesis": [
+      "execCommand/focus/sendBtnの再実装時に検索系イベントハンドラが再バインドされた",
+      "PRIMARY_FIELDSが再初期化されて検索スコープが縮小した",
+      "chatに飛ぶボタン追加によるrouting状態の変化が検索制約に波及した"
+    ],
+    "state_before": "全件検索・正確な保存が動作していた",
+    "state_after": "キーワード一致の羅列のみ。昨日のイベントすら検索でヒットしない",
+    "next_action": "content_orchestra.jsのsearch関連イベントハンドラを直接確認する",
+    "git_needed": false,
+    "note": "コミットハッシュは不要。イベント索引から起点特定済み。"
+  }
+}

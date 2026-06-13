@@ -131,7 +131,7 @@ def search_events(query):
     # CSV廃止済み → SQLite参照
     q = query.lower()
     rows = _db_read_events()
-    PRIMARY_FIELDS = ["title", "short_summary", "why_purpose", "who_actor", "what_type", "how_trigger"]
+    PRIMARY_FIELDS = ["title", "short_summary", "description", "free_note", "why_purpose", "who_actor", "what_type", "how_trigger"]
     scored = []
     for r in rows:
         score = 0
