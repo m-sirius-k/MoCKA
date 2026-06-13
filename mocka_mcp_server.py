@@ -13,11 +13,16 @@ from flask_cors import CORS
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
 sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
 try:
-    from governance_pipeline import GovernancePipeline
+    from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
     _governance = GovernancePipeline()
 except Exception as _gov_err:
-    print(f"[WARN] Governance Pipeline unavailable: {_gov_err}", flush=True)
+    print(f"[ERROR] Governance Pipeline unavailable (Fail Closed for governed tools): {_gov_err}", flush=True)
     _governance = None
+    READ_ONLY_TOOLS = {
+        "mocka_get_overview", "mocka_get_essence", "mocka_get_todo", "mocka_list_events",
+        "mocka_read_event", "mocka_search", "mocka_get_incidents", "mocka_get_guidelines",
+        "mocka_get_command_center", "mocka_check_utf8",
+    }
 
 MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not MOCKA_ENDPOINT:
@@ -236,7 +241,15 @@ TOOLS = [
 
 def execute_tool(name, args):
     try:
-        if _governance is not None:
+        if _governance is None:
+            # Fail Closed: Governance Pipeline自体が初期化できていない場合、
+            # READ_ONLY_TOOLS以外は安全側で実行を停止する。
+            if name not in READ_ONLY_TOOLS:
+                return json.dumps({
+                    "error": "GL_FAIL_CLOSED",
+                    "reason": "Governance Pipeline unavailable; governed tool blocked",
+                }, ensure_ascii=False)
+        else:
             try:
                 decision = _governance.before_tool(name, args)
                 if not decision.allowed:
@@ -246,7 +259,14 @@ def execute_tool(name, args):
                         "thinking_mode": decision.thinking_mode,
                     }, ensure_ascii=False)
             except Exception as _gov_call_err:
-                print(f"[WARN] Governance before_tool failed: {_gov_call_err}", flush=True)
+                # Fail Closed: before_tool()自体が例外を投げた場合も
+                # READ_ONLY_TOOLS以外は安全側で実行を停止する。
+                print(f"[ERROR] Governance before_tool failed (Fail Closed): {_gov_call_err}", flush=True)
+                if name not in READ_ONLY_TOOLS:
+                    return json.dumps({
+                        "error": "GL_FAIL_CLOSED",
+                        "reason": f"before_tool() raised: {_gov_call_err}",
+                    }, ensure_ascii=False)
 
         if name == "mocka_get_overview":
             if not OVERVIEW_PATH.exists(): return json.dumps({"error": f"not found: {OVERVIEW_PATH}"})

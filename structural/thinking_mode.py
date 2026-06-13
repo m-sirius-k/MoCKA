@@ -83,7 +83,7 @@ class ThinkingModeEngine:
 
         for mode, keywords in _MODE_KEYWORDS:
             for kw in keywords:
-                if re.search(re.escape(kw.lower()), text):
+                if re.search(r"\b" + re.escape(kw.lower()) + r"\b", text):
                     return mode
 
         return ThinkingMode.IMPLEMENTATION

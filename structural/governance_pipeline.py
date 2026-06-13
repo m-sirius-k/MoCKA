@@ -24,7 +24,22 @@ from thinking_mode import ThinkingModeEngine, ThinkingMode
 from reasoning_governance import ReasoningGovernanceEngine
 from execution_governance import ExecutionGovernanceEngine
 
-# Repositoryへ書き込みを行う(=GL7 dry runの対象とする)tool名
+# Default Deny: 読み取り専用と確認済みのtoolのみGL7 Dry Run検査を免除する。
+# このリストに含まれないtool(未知のtoolを含む)は既定でGL7 Dry Run対象=governed。
+READ_ONLY_TOOLS = {
+    "mocka_get_overview",
+    "mocka_get_essence",
+    "mocka_get_todo",
+    "mocka_list_events",
+    "mocka_read_event",
+    "mocka_search",
+    "mocka_get_incidents",
+    "mocka_get_guidelines",
+    "mocka_get_command_center",
+    "mocka_check_utf8",
+}
+
+# 後方互換のため維持(governance_pipeline外部から書き込み系tool集合として参照される場合がある)
 WRITE_TOOLS = {
     "mocka_write_event",
     "mocka_add_todo",
@@ -81,7 +96,8 @@ class GovernancePipeline:
         checklist = self.reasoning.enforce_pre_answer_checklist()
 
         aborts = []
-        if tool_name in WRITE_TOOLS:
+        if tool_name not in READ_ONLY_TOOLS:
+            # Default Deny: READ_ONLY_TOOLS以外(未知のtoolを含む)は全てGL7 Dry Run対象。
             # scope = 現在のリポジトリ直下全ディレクトリ。
             # 既存の未関連dirty state(バックグラウンド自動同期)をabort対象にせず、
             # GL7のnew_directory_detected/grounding_not_completed/件数異常のみを有効にする。
@@ -93,8 +109,14 @@ class GovernancePipeline:
             })
             aborts = approval.dry_run.aborts
 
-        allowed = not aborts
-        reason = "ok" if allowed else f"GL7 abort: {aborts}"
+        allowed = (not aborts) and checklist.ok
+        if aborts:
+            reason = f"GL7 abort: {aborts}"
+        elif not checklist.ok:
+            reason = f"GL6 pre-answer checklist failed: missing={checklist.missing}"
+        else:
+            reason = "ok"
+
         return GovernanceDecision(
             allowed=allowed,
             reason=reason,

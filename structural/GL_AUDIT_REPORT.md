@@ -103,5 +103,47 @@
 
 ---
 
-**Event記録**: (本報告書commit後に記録)
-**Commit Hash**: (本報告書commit時に記録)
+## v1.1 実施記録
+
+| # | 内容 | 実施内容 |
+|---|---|---|
+| 1 (Critical) | Fail Closed化 | `mocka_mcp_server.py`: `_governance is None`または`before_tool()`例外時、`READ_ONLY_TOOLS`以外は`GL_FAIL_CLOSED`で実行停止。`READ_ONLY_TOOLS`は`_governance=None`時にフォールバック定義を保持し、独立して機能する |
+| 2 (High) | GL6接続 | `governance_pipeline.py`: `allowed = (not aborts) and checklist.ok`。checklist不合格時は`reason`に`missing`を記載 |
+| 3 (High) | GL3単語境界化 | `thinking_mode.py`: `detect_mode()`を`\bkw\b`の正規表現に変更。`mocka_get_incidents`はimplementationと正しく判定されることを確認(dogfooding再実行で emergency誤判定 11件→0件) |
+| 4 (Medium) | GL7 Default Deny | `governance_pipeline.py`: `WRITE_TOOLS`(許可リスト)を廃止し`READ_ONLY_TOOLS`(10種、確認済み読み取り専用)を新設。これに含まれない全tool(未知のtoolを含む)がGL7 Dry Run対象となる |
+| 5 (Low) | Pipeline境界の文書化 | 本節に記載。下記「Pipeline境界の設計・保証範囲」を参照 |
+
+### Pipeline境界の設計・保証範囲
+
+**保証される経路**:
+- `/mcp` (`mcp_endpoint`) と `/agent/<tool_name>` (`agent_call`) はいずれも
+  `execute_tool()`を経由し、`execute_tool()`先頭の`before_tool()`(Fail Closed込み)
+  を必ず通過する。これがMoCKA Caliberの正式なTool実行経路である。
+
+**保証されない経路(設計上の既知の境界)**:
+- `mocka_mcp_server`モジュールを直接importし、`_db_write_event()`/`save_todo()`/
+  `next_event_id()`等の内部ヘルパー関数を直接呼び出すコード(単体テスト・
+  デバッグスクリプト等)は`execute_tool()`を経由しないため、GL1~GL7は適用されない。
+- `/api/<subpath>`は別アプリ(port 5000)へのHTTPプロキシであり、MoCKA Caliberの
+  Tool実行系には属さない(Governance対象外であることが正しい設計)。
+
+**レビュー指針**: 内部ヘルパーへ直接アクセスするコードを新規に書く場合、
+それがMoCKAの正式なTool実行経路の代替として使われないこと(=本番のClaude/Agent
+からの呼び出しは必ず`/mcp`または`/agent/<tool_name>`経由であること)を
+レビュー時に確認する。
+
+---
+
+## 再検証結果
+
+`structural/gl_integration_test.py`: 14/14 PASS（v1.1適用後も全項目PASS）
+`structural/dogfood_run.py`: total=110, bypassed=0, fatal_errors=0,
+write_aborted=0/11, checklist_fail=0, thinking_mode_distribution={"implementation": 110}
+(emergency誤判定 11件→0件、項目3修正の効果を確認)
+
+**総合判定(v1.1適用後)**: PASS
+
+---
+
+**Event記録**: E20260613_067 (監査), 後続コミットでv1.1実施Eventを記録
+**Commit Hash**: 18f6cc71a (監査), 後続コミットでv1.1実施分を記録
