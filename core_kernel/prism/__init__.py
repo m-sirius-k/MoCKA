@@ -21,11 +21,14 @@ from .models import (
     Observation,
     SemanticAnnotation,
 )
+from .provider import CAPABILITY_COGNITION, PrismProvider
 from .version import PRISM_VERSION
 
 __all__ = [
     "PrismAnalyzer",
     "AnalysisResult",
+    "PrismProvider",
+    "CAPABILITY_COGNITION",
     "PrismError",
     "InvalidEventError",
     "PipelineError",
