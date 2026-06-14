@@ -23,6 +23,12 @@ def _dumps(value) -> str:
     return json.dumps(value, default=_json_default, ensure_ascii=False)
 
 
+def _dumps_strict(value) -> str:
+    """Base層(events.payload)用。型変換フォールバックを行わず、
+    JSON互換でない値はエラーとして検出する(Rawデータの歪曲防止)。"""
+    return json.dumps(value, ensure_ascii=False)
+
+
 class SQLiteStore:
     def __init__(self, db_path=DEFAULT_DB_PATH):
         self.db_path = db_path
@@ -66,7 +72,7 @@ class SQLiteStore:
                 event.session_id,
                 event.event_type,
                 event.timestamp,
-                _dumps(event.payload),
+                _dumps_strict(event.payload),
             ),
         )
 

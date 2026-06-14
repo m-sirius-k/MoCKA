@@ -193,3 +193,33 @@ def test_replay_session_unknown_returns_empty():
     replay = ReplayEngine(store=store)
 
     assert replay.replay_session("no-such-session") == []
+
+
+def test_save_event_rejects_non_json_payload_instead_of_stringifying():
+    """events.payload(Base層)は意味変換(str化)せず、非JSON互換値はエラーとする。"""
+    store = _store()
+
+    class Unserializable:
+        pass
+
+    bad_event = _event(payload={"obj": Unserializable()})
+
+    try:
+        store.save_event(bad_event)
+        assert False, "expected TypeError for non-JSON payload"
+    except TypeError:
+        pass
+
+
+def test_save_execution_and_output_still_tolerate_dataclasses():
+    """executions/outputs(Meaning層由来)はdataclass/非JSON値のフォールバックを維持。"""
+    store = _store()
+    engine = OrchestraEngine(store=store)
+
+    inner_event = _event(payload={"x": 1})
+
+    def node(ctx):
+        return {"echo": ctx["event"]}
+
+    engine.register_node("root", node)
+    engine.on_event(_event(payload={"target_node": "root", "ref": inner_event.event_id}))
