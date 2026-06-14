@@ -14,6 +14,8 @@ from .event_bus import EventBus
 from .execution_graph import ExecutionGraph
 from .orchestra_engine import OrchestraEngine
 from .orchestrator_api import emit_event, engine, register_node
+from .persistence.sqlite_store import SQLiteStore
+from .replay_engine import ReplayEngine
 from .session_state import SessionState
 from .types import Event
 
@@ -23,6 +25,8 @@ __all__ = [
     "ExecutionGraph",
     "EventBus",
     "OrchestraEngine",
+    "SQLiteStore",
+    "ReplayEngine",
     "engine",
     "emit_event",
     "register_node",
