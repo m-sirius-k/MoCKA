@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-12",
+    "updated": "2026-06-14",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -705,6 +705,42 @@
       "note": "",
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:16:15.904679"
+    },
+    {
+      "id": "TODO_312",
+      "title": "p-DERS論文 — AIES 2026正式投稿",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "論文",
+      "description": "p-DERS論文をAIES 2026に正式投稿する。EasyChair経由。匿名提出。Zenodo DOI: https://zenodo.org/records/20686662",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-14T16:21:10.936995"
+    },
+    {
+      "id": "TODO_313",
+      "title": "p-DERS論文 — ベンチマークデータ追加（Camera-Ready用）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "論文",
+      "description": "Local Invariant Gateのレイテンシ計測、悪意ある遷移の検出率（n=1000以上）、エージェント数スケーリング実験、既存手法との比較表をCamera-Ready版に追加する",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-14T16:21:17.364708"
+    },
+    {
+      "id": "TODO_314",
+      "title": "p-DERS — GitHubにRustプロトタイプ公開",
+      "status": "未着手",
+      "priority": "中",
+      "category": "開発",
+      "description": "p-DERSのRustプロトタイプをGitHubに公開する。SiriusLab組織アカウント配下。READMEにZenodo DOIとAIES論文へのリンクを記載",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "",
+      "created_at": "2026-06-14T16:21:26.511160"
     }
   ],
   "completed": [
