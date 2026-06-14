@@ -32,14 +32,17 @@ class PrismBridge:
     でのみ行う。PHI-OS自身は書き込みロジックを持たない。
     """
 
-    def __init__(self, memory_adapter=None):
+    def __init__(self, memory_adapter=None, relay=None):
         """
         Args:
             memory_adapter: phios_integration.adapters.JsonMemoryAdapter等
                 (MemoryWriterInterface実装、省略可)
+            relay: relay_core.SessionRelay (省略可)。
+                Relayは「経路追加」のみであり、PHI-OSはRelayを制御しない。
         """
         self._provider = None
         self._memory = memory_adapter
+        self._relay = relay
 
     # ------------------------------------------------------------------
     # 初期化
@@ -137,6 +140,32 @@ class PrismBridge:
         if self._memory is None:
             return []
         return self._memory.query(predicate)
+
+    # ------------------------------------------------------------------
+    # Relay (経路追加のみ。PHI-OSはRelayを制御しない)
+    # ------------------------------------------------------------------
+
+    def relay_create_session(self, session_id: str):
+        """Relayにセッションを作成する(設定されていない場合はNone)。"""
+        if self._relay is None:
+            return None
+        return self._relay.create_session(session_id)
+
+    def relay_append_context(self, session_id: str, context):
+        """Relayのセッションへ、解析結果のContextを追加する。
+
+        memory_adapter同様、PHI-OS自身は集約ロジックを持たず、
+        SessionRelayへの経路を提供するのみ。
+        """
+        if self._relay is None:
+            return None
+        return self._relay.append_context(session_id, context)
+
+    def relay_get_session(self, session_id: str):
+        """Relayのセッションスナップショットを取得する(設定されていない場合はNone)。"""
+        if self._relay is None:
+            return None
+        return self._relay.get_session(session_id)
 
     def _ensure_initialized(self):
         if self._provider is None:
