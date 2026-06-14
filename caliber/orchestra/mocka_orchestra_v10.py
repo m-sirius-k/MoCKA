@@ -5,11 +5,53 @@ import time
 import sys
 import json
 import os
+import uuid
+from datetime import datetime, timezone
 
 MODE = sys.argv[2] if len(sys.argv) > 2 else "orchestra"
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
 
 CHAT_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chat_urls.json")
+CONFIG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orchestra_config.json")
+EVENTS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orchestra_events.jsonl")
+
+DEFAULT_CONFIG = {
+    "event_enabled": True,
+    "emit_event": False,
+    "session_id": None
+}
+
+def load_config():
+    """Extension Layer設定を読み込む。ファイルが無ければStandalone既定値。"""
+    config = dict(DEFAULT_CONFIG)
+    if os.path.exists(CONFIG_FILE):
+        try:
+            with open(CONFIG_FILE, encoding="utf-8") as f:
+                config.update(json.load(f))
+        except Exception:
+            pass
+    return config
+
+CONFIG = load_config()
+SESSION_ID = CONFIG.get("session_id") or str(uuid.uuid4())
+
+def emit_event(event_type, payload):
+    """emit_event=falseの場合は完全に無効（Standalone動作に影響しない）"""
+    if not (CONFIG.get("event_enabled") and CONFIG.get("emit_event")):
+        return
+    event = {
+        "id": str(uuid.uuid4()),
+        "session_id": SESSION_ID,
+        "source": "orchestra",
+        "type": event_type,
+        "payload": payload,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+    try:
+        with open(EVENTS_FILE, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event, ensure_ascii=False) + "\n")
+    except Exception as e:
+        print(f"[event] 出力失敗（無視）: {e}")
 
 def load_chat_urls():
     if os.path.exists(CHAT_URLS_FILE):
@@ -94,6 +136,7 @@ async def run_chatgpt(context):
 
     result = await wait_for_completion(get_text, "ChatGPT")
     save_chat_url("ChatGPT", page.url)
+    emit_event("ai_response", {"ai_name": "ChatGPT", "raw": result, "page_url": page.url})
     print(f"[ChatGPT] 完了 ({status})")
     return "ChatGPT", result
 
@@ -134,6 +177,7 @@ async def run_perplexity(context):
 
     result = await wait_for_completion(get_text, "Perplexity")
     save_chat_url("Perplexity", page.url)
+    emit_event("ai_response", {"ai_name": "Perplexity", "raw": result, "page_url": page.url})
     print(f"[Perplexity] 完了")
     return "Perplexity", result
 
@@ -160,6 +204,7 @@ async def run_gemini(context):
 
     result = await wait_for_completion(get_text, "Gemini")
     save_chat_url("Gemini", page.url)
+    emit_event("ai_response", {"ai_name": "Gemini", "raw": result, "page_url": page.url})
     print(f"[Gemini] 完了 ({status})")
     return "Gemini", result
 
@@ -179,6 +224,7 @@ async def run_copilot(context):
 
     result = await wait_for_completion(get_text, "Copilot")
     save_chat_url("Copilot", page.url)
+    emit_event("ai_response", {"ai_name": "Copilot", "raw": result, "page_url": page.url})
     print(f"[Copilot] 完了 ({status})")
     return "Copilot", result
 
@@ -218,8 +264,10 @@ async def main():
             box = claude_page.get_by_role("textbox").first
             await box.click()
             await box.fill(integrate_prompt)
+            emit_event("session_update", {"mode": MODE, "elapsed_sec": elapsed, "ai_count": len(results), "status": "integrated"})
             print(f"\n[完了] {elapsed:.1f}秒 — Claude1のchat欄に配置済み。確認後にEnterを押してください。")
         else:
+            emit_event("session_update", {"mode": MODE, "elapsed_sec": elapsed, "ai_count": len(results), "status": "shared"})
             print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
 
 asyncio.run(main())
