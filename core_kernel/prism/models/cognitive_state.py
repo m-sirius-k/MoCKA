@@ -7,6 +7,8 @@ MoCKA Core Kernel — prism.models.cognitive_state
 
 from dataclasses import dataclass, field
 
+from .schema_version import PRISM_OUTPUT_SCHEMA_VERSION
+
 
 class CognitiveStateValue:
     """CognitiveState.state の候補値。"""
@@ -28,6 +30,7 @@ class CognitiveState:
     confidence: float
     reason: str = ""
     metadata: dict = field(default_factory=dict)
+    version: str = PRISM_OUTPUT_SCHEMA_VERSION
 
     def to_dict(self) -> dict:
         return {
@@ -35,4 +38,5 @@ class CognitiveState:
             "confidence": self.confidence,
             "reason": self.reason,
             "metadata": dict(self.metadata),
+            "version": self.version,
         }

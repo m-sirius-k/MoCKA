@@ -8,6 +8,8 @@ MoCKA Core Kernel — prism.models.semantic_annotation
 
 from dataclasses import dataclass, field
 
+from .schema_version import PRISM_OUTPUT_SCHEMA_VERSION
+
 
 @dataclass(frozen=True)
 class SemanticAnnotation:
@@ -20,6 +22,7 @@ class SemanticAnnotation:
     confidence: float
     explanation: str = ""
     metadata: dict = field(default_factory=dict)
+    version: str = PRISM_OUTPUT_SCHEMA_VERSION
 
     def to_dict(self) -> dict:
         return {
@@ -30,4 +33,5 @@ class SemanticAnnotation:
             "confidence": self.confidence,
             "explanation": self.explanation,
             "metadata": dict(self.metadata),
+            "version": self.version,
         }

@@ -9,6 +9,7 @@ from .context import Context
 from .observation import Observation
 from .semantic_annotation import SemanticAnnotation
 from .cognitive_state import CognitiveState, CognitiveStateValue
+from .schema_version import PRISM_OUTPUT_SCHEMA_VERSION
 
 __all__ = [
     "Context",
@@ -16,4 +17,5 @@ __all__ = [
     "SemanticAnnotation",
     "CognitiveState",
     "CognitiveStateValue",
+    "PRISM_OUTPUT_SCHEMA_VERSION",
 ]

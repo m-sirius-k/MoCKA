@@ -8,6 +8,8 @@ MoCKA Core Kernel — prism.models.context
 
 from dataclasses import dataclass, field
 
+from .schema_version import PRISM_OUTPUT_SCHEMA_VERSION
+
 
 @dataclass(frozen=True)
 class Context:
@@ -21,6 +23,7 @@ class Context:
     relationships: tuple = field(default_factory=tuple)  # CorrelationEngineの出力
     system_state: dict = field(default_factory=dict)     # Lifecycle等のRead Onlyスナップショット
     metadata: dict = field(default_factory=dict)
+    version: str = PRISM_OUTPUT_SCHEMA_VERSION
 
     def to_dict(self) -> dict:
         return {
@@ -32,4 +35,5 @@ class Context:
             "relationships": list(self.relationships),
             "system_state": dict(self.system_state),
             "metadata": dict(self.metadata),
+            "version": self.version,
         }

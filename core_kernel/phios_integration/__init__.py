@@ -8,10 +8,23 @@ MoCKA Core Kernel — phios_integration
   PHI-OSは本モジュール経由で取得した認知結果を保持・返却するのみ。
 """
 
+from .error_info import ErrorInfo
 from .exceptions import (
     EventValidationError,
     PhiosIntegrationError,
     ProviderNotInitializedError,
+)
+from .external_interfaces import (
+    MemoryWriterInterface,
+    OrchestraNotifierInterface,
+    RelayAdapterInterface,
+)
+from .output_contract import (
+    STATUS_ERROR,
+    STATUS_OK,
+    build_error_response,
+    build_success_response,
+    from_bridge_result,
 )
 from .prism_bridge import PrismBridge
 
@@ -20,4 +33,13 @@ __all__ = [
     "PhiosIntegrationError",
     "ProviderNotInitializedError",
     "EventValidationError",
+    "ErrorInfo",
+    "STATUS_OK",
+    "STATUS_ERROR",
+    "build_success_response",
+    "build_error_response",
+    "from_bridge_result",
+    "MemoryWriterInterface",
+    "RelayAdapterInterface",
+    "OrchestraNotifierInterface",
 ]

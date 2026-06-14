@@ -36,6 +36,7 @@ def test_semantic_annotation_to_dict_round_trip():
         "confidence": 0.9,
         "explanation": "説明",
         "metadata": {"k": "v"},
+        "version": "1.0",
     }
 
 
@@ -107,6 +108,7 @@ def test_observation_to_dict_round_trip():
         "recommendation": "特になし",
         "risk_level": "low",
         "metadata": {"cognitive_state": "STABLE"},
+        "version": "1.0",
     }
 
 
@@ -143,6 +145,7 @@ def test_cognitive_state_to_dict_round_trip():
         "confidence": 0.95,
         "reason": "安定",
         "metadata": {"categories": ["lifecycle"]},
+        "version": "1.0",
     }
 
 
