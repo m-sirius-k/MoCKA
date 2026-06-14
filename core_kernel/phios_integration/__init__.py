@@ -14,7 +14,12 @@ from .exceptions import (
     PhiosIntegrationError,
     ProviderNotInitializedError,
 )
-from .adapters import NoOpMemoryAdapter, NoOpOrchestraAdapter, NoOpRelayAdapter
+from .adapters import (
+    JsonMemoryAdapter,
+    NoOpMemoryAdapter,
+    NoOpOrchestraAdapter,
+    NoOpRelayAdapter,
+)
 from .external_interfaces import (
     MemoryWriterInterface,
     OrchestraAdapterInterface,
@@ -43,6 +48,7 @@ __all__ = [
     "MemoryWriterInterface",
     "RelayAdapterInterface",
     "OrchestraAdapterInterface",
+    "JsonMemoryAdapter",
     "NoOpMemoryAdapter",
     "NoOpRelayAdapter",
     "NoOpOrchestraAdapter",

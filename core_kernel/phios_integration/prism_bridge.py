@@ -26,10 +26,20 @@ from .exceptions import EventValidationError, ProviderNotInitializedError
 
 
 class PrismBridge:
-    """PHI-OSからPrismProviderを呼び出すためのBridge。"""
+    """PHI-OSからPrismProviderを呼び出すためのBridge。
 
-    def __init__(self):
+    Memoryへのアクセスは、保持するmemory adapter(JsonMemoryAdapter等)経由
+    でのみ行う。PHI-OS自身は書き込みロジックを持たない。
+    """
+
+    def __init__(self, memory_adapter=None):
+        """
+        Args:
+            memory_adapter: phios_integration.adapters.JsonMemoryAdapter等
+                (MemoryWriterInterface実装、省略可)
+        """
         self._provider = None
+        self._memory = memory_adapter
 
     # ------------------------------------------------------------------
     # 初期化
@@ -95,6 +105,38 @@ class PrismBridge:
             return {"status": "error", "error": str(exc), "error_type": "validation_error"}
         except PrismError as exc:
             return {"status": "error", "error": str(exc), "error_type": "prism_error"}
+
+    # ------------------------------------------------------------------
+    # Memory (Adapter経由のみ)
+    # ------------------------------------------------------------------
+
+    def save_analysis(self, bridge_result: dict, session_id: str = None) -> dict:
+        """analyze_event/analyze_eventsの成功結果をMemoryへ保存する。
+
+        memory adapterが設定されていない場合、または bridge_result が
+        エラーの場合は何もせず "status": "error" を返す
+        (PHI-OS全体は停止させない)。
+        """
+        if self._memory is None:
+            return {"status": "error", "error": "memory adapterが設定されていません", "error_type": "memory_not_configured"}
+
+        if bridge_result.get("status") != "ok":
+            return {"status": "error", "error": "保存対象の解析結果がありません", "error_type": "no_result"}
+
+        record = self._memory.write_analysis(bridge_result["result"], session_id=session_id)
+        return {"status": "ok", "record": record}
+
+    def load_memory(self, entity_id: str):
+        """Memoryからidを指定してレコードを取得する(Adapter経由)。"""
+        if self._memory is None:
+            return None
+        return self._memory.load(entity_id)
+
+    def query_memory(self, predicate=None) -> list:
+        """Memoryからpredicateに一致するレコードを取得する(Adapter経由)。"""
+        if self._memory is None:
+            return []
+        return self._memory.query(predicate)
 
     def _ensure_initialized(self):
         if self._provider is None:

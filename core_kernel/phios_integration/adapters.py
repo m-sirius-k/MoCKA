@@ -8,11 +8,14 @@ MoCKA Core Kernel — phios_integration.adapters
   将来の実装(File IO/DB/実通信/実行エンジン接続)へのHookとしてのみ存在する。
 """
 
+from core_kernel.memory_core import MemoryStore
+
 from .external_interfaces import (
     MemoryWriterInterface,
     OrchestraAdapterInterface,
     RelayAdapterInterface,
 )
+from .output_contract import _to_serializable
 
 
 class NoOpMemoryAdapter(MemoryWriterInterface):
@@ -26,6 +29,51 @@ class NoOpMemoryAdapter(MemoryWriterInterface):
 
     def write_observation(self, observation) -> None:
         return None
+
+
+class JsonMemoryAdapter(MemoryWriterInterface):
+    """MemoryStore(JSON file / in-memory)を介した最小永続化Adapter。
+
+    Prism出力(AnalysisResult/Context/Observation/CognitiveState)を
+    MemoryRecord構造へ変換してMemoryStoreへ保存する。
+
+    外部DB/Redis/Network通信/LLM/Workflow制御は行わない。
+    PHI-OSはこのAdapter経由でのみMemoryへアクセスする。
+    """
+
+    def __init__(self, path=None, store: MemoryStore = None):
+        """
+        Args:
+            path: JSONファイルのパス(省略時はin-memory fallback)
+            store: 既存のMemoryStoreを直接指定する場合(省略可)
+        """
+        self._store = store if store is not None else MemoryStore(path=path)
+
+    # ------------------------------------------------------------------
+    # MemoryWriterInterface実装
+    # ------------------------------------------------------------------
+
+    def write_analysis(self, result, session_id: str = None) -> dict:
+        return self._store.save("analysis_result", _to_serializable(result), session_id=session_id)
+
+    def write_context(self, context, session_id: str = None) -> dict:
+        return self._store.save("context", _to_serializable(context), session_id=session_id)
+
+    def write_observation(self, observation, session_id: str = None) -> dict:
+        return self._store.save("observation", _to_serializable(observation), session_id=session_id)
+
+    # ------------------------------------------------------------------
+    # 読み取りAPI(PHI-OSはこの経路でのみ参照する)
+    # ------------------------------------------------------------------
+
+    def load(self, entity_id: str):
+        return self._store.load(entity_id)
+
+    def query(self, predicate=None) -> list:
+        return self._store.query(predicate)
+
+    def list(self, session_id: str) -> list:
+        return self._store.list(session_id)
 
 
 class NoOpRelayAdapter(RelayAdapterInterface):
