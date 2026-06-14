@@ -12,12 +12,12 @@ class CognitiveStateValue:
     """CognitiveState.state の候補値。"""
 
     STABLE = "STABLE"
+    UNSTABLE = "UNSTABLE"
     UNCERTAIN = "UNCERTAIN"
     INCOMPLETE = "INCOMPLETE"
     CONFLICT = "CONFLICT"
-    LEARNING = "LEARNING"
 
-    ALL = (STABLE, UNCERTAIN, INCOMPLETE, CONFLICT, LEARNING)
+    ALL = (STABLE, UNSTABLE, UNCERTAIN, INCOMPLETE, CONFLICT)
 
 
 @dataclass(frozen=True)

@@ -90,6 +90,7 @@ def test_observation_to_dict_round_trip():
         observation_id="obs-1",
         timestamp="2026-01-01T00:00:00Z",
         confidence=0.8,
+        finding="特に問題なし",
         evidence_event_ids=("evt-1",),
         recommendation="特になし",
         risk_level="low",
@@ -101,6 +102,7 @@ def test_observation_to_dict_round_trip():
         "observation_id": "obs-1",
         "timestamp": "2026-01-01T00:00:00Z",
         "confidence": 0.8,
+        "finding": "特に問題なし",
         "evidence_event_ids": ["evt-1"],
         "recommendation": "特になし",
         "risk_level": "low",
@@ -114,6 +116,7 @@ def test_observation_defaults():
         timestamp="2026-01-01T00:00:00Z",
         confidence=0.5,
     )
+    assert observation.finding == ""
     assert observation.evidence_event_ids == ()
     assert observation.recommendation == ""
     assert observation.risk_level == "unknown"
@@ -122,7 +125,7 @@ def test_observation_defaults():
 
 def test_cognitive_state_value_constants():
     assert CognitiveStateValue.ALL == (
-        "STABLE", "UNCERTAIN", "INCOMPLETE", "CONFLICT", "LEARNING",
+        "STABLE", "UNSTABLE", "UNCERTAIN", "INCOMPLETE", "CONFLICT",
     )
 
 

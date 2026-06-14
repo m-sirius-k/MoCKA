@@ -93,6 +93,55 @@ def test_analyzer_analyze_many_events():
     assert isinstance(result.context, Context)
 
 
+def test_pipeline_multi_category_is_unstable():
+    pipeline = PrismPipeline()
+    event1 = _make_event(event_type="change_start", source_module="orchestra")
+    event2 = _make_event(event_type="context_capture", source_module="orchestra")
+
+    result = pipeline.run([event1, event2])
+
+    assert result.cognitive_state.state == "UNSTABLE"
+    assert result.observation.risk_level == "medium"
+    assert result.observation.finding
+
+
+def test_pipeline_unknown_events_are_uncertain():
+    pipeline = PrismPipeline()
+    event1 = _make_event(event_type="totally_unknown_type")
+    event2 = _make_event(event_type="another_unknown_type")
+
+    result = pipeline.run([event1, event2])
+
+    assert result.cognitive_state.state == "UNCERTAIN"
+
+
+def test_pipeline_circular_causality_is_conflict():
+    pipeline = PrismPipeline()
+    event1 = _make_event(event_type="change_start", source_module="orchestra")
+    event2 = _make_event(
+        event_type="change_done",
+        source_module="orchestra",
+        metadata={"caused_by_event_id": event1["event_id"]},
+    )
+    # event1がevent2に起因する、という循環関係を追加する
+    event1["metadata"] = {"caused_by_event_id": event2["event_id"]}
+
+    result = pipeline.run([event1, event2])
+
+    assert result.cognitive_state.state == "CONFLICT"
+    assert result.observation.risk_level == "high"
+
+
+def test_pipeline_timestamp_correlation():
+    pipeline = PrismPipeline()
+    event1 = _make_event(event_type="change_start", source_module="a")
+    event2 = _make_event(event_type="change_done", source_module="b", timestamp=event1["timestamp"])
+
+    result = pipeline.run([event1, event2])
+
+    assert any(r["type"] == "timestamp" for r in result.context.relationships)
+
+
 def test_analyzer_public_api_surface():
     analyzer = PrismAnalyzer()
     public_methods = {

@@ -18,6 +18,7 @@ class Observation:
     observation_id: str
     timestamp: str
     confidence: float
+    finding: str = ""
     evidence_event_ids: tuple = field(default_factory=tuple)
     recommendation: str = ""
     risk_level: str = "unknown"
@@ -28,6 +29,7 @@ class Observation:
             "observation_id": self.observation_id,
             "timestamp": self.timestamp,
             "confidence": self.confidence,
+            "finding": self.finding,
             "evidence_event_ids": list(self.evidence_event_ids),
             "recommendation": self.recommendation,
             "risk_level": self.risk_level,

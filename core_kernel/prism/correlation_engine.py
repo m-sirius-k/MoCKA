@@ -15,6 +15,10 @@ MoCKA Core Kernel — prism.correlation_engine
   本Engineは読み取り専用であり、Core Kernel/Eventの書き込みは行わない。
 """
 
+from datetime import datetime, timezone
+
+_TIMESTAMP_PROXIMITY_SECONDS = 5.0
+
 
 class CorrelationEngine:
     """複数Event間の関係性を抽出する。"""
@@ -34,11 +38,50 @@ class CorrelationEngine:
         relationships = []
 
         relationships.extend(self._correlate_session(events))
+        relationships.extend(self._correlate_timestamp(events))
         relationships.extend(self._correlate_source(events))
         relationships.extend(self._correlate_event_id_refs(events))
         relationships.extend(self._correlate_causality(events))
 
         return tuple(relationships)
+
+    @staticmethod
+    def _parse_timestamp(value):
+        if not value:
+            return None
+        try:
+            text = value.replace("Z", "+00:00") if value.endswith("Z") else value
+            dt = datetime.fromisoformat(text)
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt
+        except ValueError:
+            return None
+
+    def _correlate_timestamp(self, events):
+        """timestampが近接しているEvent間に "timestamp" relationshipを生成する。"""
+        relationships = []
+        timed_events = []
+        for event in events:
+            ts = self._parse_timestamp(event.get("timestamp"))
+            if ts is not None:
+                timed_events.append((ts, event))
+
+        timed_events.sort(key=lambda pair: pair[0])
+
+        for i in range(len(timed_events) - 1):
+            ts_a, event_a = timed_events[i]
+            ts_b, event_b = timed_events[i + 1]
+            delta = (ts_b - ts_a).total_seconds()
+            if delta <= _TIMESTAMP_PROXIMITY_SECONDS:
+                relationships.append({
+                    "type": "timestamp",
+                    "from": event_a.get("event_id", ""),
+                    "to": event_b.get("event_id", ""),
+                    "detail": f"timestamp差={delta:.3f}s",
+                })
+
+        return relationships
 
     @staticmethod
     def _correlate_session(events):
