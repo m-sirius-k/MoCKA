@@ -68,7 +68,7 @@ function buildSessionMap(messages) {
     if (!map.has(key)) map.set(key, { messages: [], title: '', date: '', latestTs: '' });
     const s = map.get(key);
     s.messages.push(m);
-    if (!s.title && m.role === 'user') s.title = m.content.slice(0, 30).replace(/\n/g, ' ');
+    if (!s.title && m.role === 'user') s.title = m.content;
     if (!s.date && m.timestamp)        s.date = m.timestamp.slice(0, 10);
     if (!m.timestamp || m.timestamp > s.latestTs) s.latestTs = m.timestamp || '';
   });
@@ -163,7 +163,7 @@ function renderGroupedSessions(messages) {
         hitUrl  = hitMsg.url || null;
       }
     } else {
-      preview = data.messages.find(m => m.role === 'user')?.content.slice(0, 80) || '';
+      preview = data.messages.find(m => m.role === 'user')?.content || '';
       hitUrl  = data.messages[0]?.url || null;
     }
     const openBtn = hitUrl
@@ -177,7 +177,7 @@ function renderGroupedSessions(messages) {
           '<span class="sess-count">' + count + '</span>' +
         '</span>' +
       '</div>' +
-      '<div class="sess-snippet">' + highlighted(preview) + ((!currentQuery && preview.length === 80) ? '…' : '') + '</div>' +
+      '<div class="sess-snippet">' + highlighted(preview) + '</div>' +
       '<div class="sess-actions">' +
         '<span class="sess-drill">詳細 ›</span>' +
         openBtn +
@@ -314,16 +314,14 @@ function renderSessionDetail(messages) {
 
   const items = messages.map(m => {
     const timeStr = new Date(m.timestamp).toLocaleString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-    const preview = m.content.slice(0, 100);
-    const full    = m.content;
+    const full = m.content;
     return '<div class="msg-item" data-id="' + m.id + '">' +
       '<div class="msg-header">' +
         '<span class="role-badge ' + m.role + '">' + (m.role === 'user' ? 'YOU' : 'AI') + '</span>' +
         '<span class="msg-time">' + timeStr + '</span>' +
         '<button class="msg-insert-btn" data-id="' + escHtml(m.id) + '">⚡ 挿入</button>' +
       '</div>' +
-      '<div class="msg-preview">' + highlighted(preview) + (m.content.length > 100 ? '…' : '') + '</div>' +
-      '<div class="msg-full">' + escHtml(full) + '</div>' +
+      '<div class="msg-full">' + highlighted(full) + '</div>' +
     '</div>';
   }).join('');
 
@@ -332,13 +330,6 @@ function renderSessionDetail(messages) {
   document.getElementById('drill-back')?.addEventListener('click', () => {
     _drillSessionId = null;
     renderMessages();
-  });
-
-  list.querySelectorAll('.msg-item').forEach(el => {
-    el.addEventListener('click', (e) => {
-      if (e.target.classList.contains('msg-insert-btn')) return;
-      el.classList.toggle('expanded');
-    });
   });
 
   list.querySelectorAll('.msg-insert-btn').forEach(btn => {
