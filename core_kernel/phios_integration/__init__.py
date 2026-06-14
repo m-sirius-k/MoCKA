@@ -14,9 +14,10 @@ from .exceptions import (
     PhiosIntegrationError,
     ProviderNotInitializedError,
 )
+from .adapters import NoOpMemoryAdapter, NoOpOrchestraAdapter, NoOpRelayAdapter
 from .external_interfaces import (
     MemoryWriterInterface,
-    OrchestraNotifierInterface,
+    OrchestraAdapterInterface,
     RelayAdapterInterface,
 )
 from .output_contract import (
@@ -41,5 +42,8 @@ __all__ = [
     "from_bridge_result",
     "MemoryWriterInterface",
     "RelayAdapterInterface",
-    "OrchestraNotifierInterface",
+    "OrchestraAdapterInterface",
+    "NoOpMemoryAdapter",
+    "NoOpRelayAdapter",
+    "NoOpOrchestraAdapter",
 ]
