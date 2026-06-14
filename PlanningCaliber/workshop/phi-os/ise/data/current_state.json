@@ -294,11 +294,29 @@
       "title": "知識ライフサイクル自動化エンジン",
       "priority": "低",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_312",
+      "title": "p-DERS論文 — AIES 2026正式投稿",
+      "priority": "最高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_313",
+      "title": "p-DERS論文 — ベンチマークデータ追加（Camera-Ready用）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_314",
+      "title": "p-DERS — GitHubにRustプロトタイプ公開",
+      "priority": "中",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 2,
-  "state_hash": "5434e3d93717a9d4270e9477e7b3b04cb42506e6232a79d9741d1d0ce4676b56",
-  "generated_at": "2026-06-13T22:17:05.526809+00:00"
+  "revision": 3,
+  "state_hash": "99d052662de2eceaf41a599dfd4a5f817c7fcd07cfe6e4aa1774dde0ca68a54e",
+  "generated_at": "2026-06-14T23:11:27.134370+00:00"
 }
