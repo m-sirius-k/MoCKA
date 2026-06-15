@@ -28,6 +28,7 @@ from risk_scorer import calc_score, rank, FREQ_SCORE, SUBST_SCORE, blast_score, 
 from graph_loader import load_edges, get_impacts
 import root_cause_engine
 import trend_engine
+from prediction_engine import run_tic_prediction
 
 MAP_PATH      = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
 OVERRIDE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/override_metadata.json")
@@ -394,6 +395,36 @@ def _load_root_causes_today() -> dict:
     return causes
 
 
+def print_prediction(results: list, trends_today: dict):
+    pred_results = run_tic_prediction()
+
+    insufficient = [r for r in pred_results if r["status"] == "INSUFFICIENT_DATA"]
+    if insufficient:
+        print("=" * 50)
+        print("  Prediction")
+        print("=" * 50)
+        for r in pred_results:
+            print(
+                f"  {r['component']:<14} : Waiting for sufficient history "
+                f"({r['trace_count']:>2} / {r['required']})"
+            )
+        print("=" * 50)
+        print()
+    else:
+        print("=" * 50)
+        print(f"  Prediction  ({pred_results[0]['days_ahead']} days ahead)")
+        print("=" * 50)
+        for r in pred_results:
+            trend = trends_today.get(r["component"], {}).get("trend", "")
+            arrow = "▲" if trend == "INCREASING" else ("▼" if trend == "IMPROVING" else "")
+            print(
+                f"  {r['component']:<14} : {r['predicted_score']}  "
+                f"(confidence: {int(r['confidence'] * 100)}%)  {arrow} {trend}"
+            )
+        print("=" * 50)
+        print()
+
+
 def print_todays_focus(results: list, changes: dict, edges: list, trends_today: dict):
     root_causes = _load_root_causes_today()
 
@@ -496,6 +527,8 @@ def run():
 
     root_cause_engine.run()
     print_todays_focus(results, changes, edges, trends_today)
+
+    print_prediction(results, trends_today)
 
     save_history(results)
 
