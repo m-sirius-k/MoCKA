@@ -40,5 +40,39 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-15T16:46:36.369134"
+  "generated_at": "2026-06-15T16:46:36.369134",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "承認条件\n\n1. State と Storage を分離\n\n現在は状態と保存先が一体になっています。\n\n例：\n\nState: Rejected\n\nStorage",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-15T07:51:05.334Z"
+  }
 }
