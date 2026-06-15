@@ -575,19 +575,6 @@
       "created_at": "2026-06-11T16:29:50.848462"
     },
     {
-      "id": "TODO_306",
-      "title": "モジュール成熟モデル v1 実装",
-      "status": "DONE",
-      "priority": "中",
-      "category": "実装",
-      "description": "Idea→Prototype→Experimental→Caliber→Verified→Official→Core→Deprecatedの8段階。各モジュールにmaturity_levelフィールド追加。COMMAND CENTERに成熟度表示追加。Caliber昇格自動チェック機構。",
-      "assigned_to": "くろこ",
-      "note": "",
-      "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:49.934044",
-      "updated_at": "2026-06-15T17:11:24.421365"
-    },
-    {
       "id": "TODO_307",
       "title": "Prompt Compiler v1 実装",
       "status": "DONE",
@@ -4260,6 +4247,20 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:44.968266",
       "updated_at": "2026-06-15T17:08:19.088916",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_306",
+      "title": "モジュール成熟モデル v1 実装",
+      "status": "完了",
+      "priority": "中",
+      "category": "実装",
+      "description": "Idea→Prototype→Experimental→Caliber→Verified→Official→Core→Deprecatedの8段階。各モジュールにmaturity_levelフィールド追加。COMMAND CENTERに成熟度表示追加。Caliber昇格自動チェック機構。",
+      "assigned_to": "くろこ",
+      "note": "MODULE_MATURITY_MODEL_v1.md v1.0.0。M0〜M5定義・7軸評価・昇格降格条件・現行モジュール一覧。E20260615_120。くろこ実装。",
+      "reference_event": "E20260612_057",
+      "created_at": "2026-06-12T14:15:49.934044",
+      "updated_at": "2026-06-15T19:07:39.539157",
       "completed_at": "2026-06-15"
     }
   ],
