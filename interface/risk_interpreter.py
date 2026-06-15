@@ -27,6 +27,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8")
 from risk_scorer import calc_score, rank, FREQ_SCORE, SUBST_SCORE, blast_score, RESET
 from graph_loader import load_edges, get_impacts
 import root_cause_engine
+import trend_engine
 
 MAP_PATH      = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
 OVERRIDE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/override_metadata.json")
@@ -355,6 +356,25 @@ def print_todays_changes(events_today: list):
     }
 
 
+def _load_trends_today() -> dict:
+    today_str = datetime.date.today().isoformat()
+    trends = {}
+    if not trend_engine.TREND_HISTORY_PATH.exists():
+        return trends
+    with open(trend_engine.TREND_HISTORY_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except Exception:
+                continue
+            if entry.get("date") == today_str:
+                trends[entry["component"]] = entry
+    return trends
+
+
 def _load_root_causes_today() -> dict:
     today_str = datetime.date.today().isoformat()
     causes = {}
@@ -374,7 +394,7 @@ def _load_root_causes_today() -> dict:
     return causes
 
 
-def print_todays_focus(results: list, changes: dict, edges: list):
+def print_todays_focus(results: list, changes: dict, edges: list, trends_today: dict):
     root_causes = _load_root_causes_today()
 
     print("=" * 50)
@@ -392,6 +412,16 @@ def print_todays_focus(results: list, changes: dict, edges: list):
             comp, prev, score = changes["up_items"][0]
             r = next(x for x in results if x["component"] == comp)
             print(f"  Risk increased: {comp}  {prev} → {score} (+{score - prev})")
+
+            trend_entry = trends_today.get(comp)
+            if trend_entry and len(trend_entry.get("scores", [])) >= 2:
+                slope = trend_entry["slope"]
+                sign  = "+" if slope >= 0 else ""
+                print(
+                    f"  Trend: {trend_entry['trend']} (slope: {sign}{slope}, "
+                    f"信頼度: {int(trend_entry['confidence'] * 100)}%)"
+                )
+
             print(f"  Reason: {r['why']}")
 
             affected = get_impacts(comp, edges)
@@ -438,6 +468,9 @@ def run():
     changes = print_todays_changes(events_today)
     print_trace_log(events_today)
 
+    trend_engine.run()
+    trends_today = _load_trends_today()
+
     width = max(len(r["component"]) for r in results)
     edges = load_edges()
     print("=" * 70)
@@ -447,15 +480,22 @@ def run():
         d = diff_str(r["score"], prev_scores.get(r["component"]))
         impacts = get_impacts(r["component"], edges)
         impact_str = f"  → {', '.join(impacts)}" if impacts else ""
+
+        trend_entry = trends_today.get(r["component"])
+        if trend_entry and len(trend_entry.get("scores", [])) >= 2:
+            trend_str = trend_entry["trend"]
+        else:
+            trend_str = "---"
+
         print(
             f"  {r['component']:<{width}}  {r['_color']}{r['score']:>3} {d:<8}{RESET} "
-            f"[{r['rank']:<8}]{RESET}  {r['why']}{impact_str}"
+            f"[{r['rank']:<8}]{RESET}  [{trend_str:<10}]  {r['why']}{impact_str}"
         )
     print("=" * 70)
     print()
 
     root_cause_engine.run()
-    print_todays_focus(results, changes, edges)
+    print_todays_focus(results, changes, edges, trends_today)
 
     save_history(results)
 
