@@ -2,7 +2,7 @@
 
 **Document ID**: EVENT_FOUNDATION_v1  
 **Version**: 1.0.1  
-**Status**: Draft — Pending きむら博士 Approval  
+**Status**: Active  
 **Created**: 2026-06-15  
 **Reference Event**: E20260615_032  
 
@@ -445,6 +445,10 @@ REJECTEDとなったレコードは削除しない（P3）。
 ---
 
 ## Appendix B: 変更履歴
+
+| Version | Status | Date |
+|---------|--------|------|
+| 1.0.1 | Active | 2026-06-15 |
 
 | バージョン | 日付 | 変更内容 |
 |-----------|------|----------|

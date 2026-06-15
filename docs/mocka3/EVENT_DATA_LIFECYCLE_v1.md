@@ -2,7 +2,7 @@
 
 **Document ID**: EVENT_DATA_LIFECYCLE_v1  
 **Version**: 1.0.0  
-**Status**: Approved  
+**Status**: Active  
 **Created**: 2026-06-15  
 **Depends On**: EVENT_FOUNDATION_v1.md (v1.0.1)  
 **Reference Event**: E20260615_032  
@@ -348,6 +348,12 @@ EVENT_DATA_LIFECYCLE_v1.md（本仕様）
 ---
 
 ## Appendix B: 変更履歴
+
+| バージョン | 日付 | 変更内容 |
+|-----------|------|----------|
+| Version | Status | Date |
+|---------|--------|------|
+| 1.0.0 | Active | 2026-06-15 |
 
 | バージョン | 日付 | 変更内容 |
 |-----------|------|----------|
