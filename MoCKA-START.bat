@@ -46,3 +46,8 @@ REM [PHASE 4] Browser
 REM ============================================================
 timeout /t 2 /nobreak > nul
 start "" http://localhost:5000
+
+REM ============================================================
+REM [PHASE 5] TIC Risk Dashboard
+REM ============================================================
+start /B "" cmd /c "cd /d C:\Users\sirok\MoCKA && python interface\risk_interpreter.py"
