@@ -25,6 +25,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8")
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 from risk_scorer import calc_score, rank, FREQ_SCORE, SUBST_SCORE, blast_score, RESET
+from graph_loader import load_edges, get_impacts
 
 MAP_PATH      = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
 OVERRIDE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/override_metadata.json")
@@ -405,14 +406,17 @@ def run():
     print_trace_log(events_today)
 
     width = max(len(r["component"]) for r in results)
+    edges = load_edges()
     print("=" * 70)
     print(f"  Today's Technical Risk Summary  {today}")
     print("=" * 70)
     for r in results:
         d = diff_str(r["score"], prev_scores.get(r["component"]))
+        impacts = get_impacts(r["component"], edges)
+        impact_str = f"  → {', '.join(impacts)}" if impacts else ""
         print(
             f"  {r['component']:<{width}}  {r['_color']}{r['score']:>3} {d:<8}{RESET} "
-            f"[{r['rank']:<8}]{RESET}  {r['why']}"
+            f"[{r['rank']:<8}]{RESET}  {r['why']}{impact_str}"
         )
     print("=" * 70)
     print()
