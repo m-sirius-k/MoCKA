@@ -575,184 +575,147 @@
       "created_at": "2026-06-11T16:29:50.848462"
     },
     {
-      "id": "TODO_302",
-      "title": "データライフサイクル v1 策定",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度設計",
-      "description": "知識のライフサイクルを定義。Draft→Working→Verified→Sealed→Repository→Archive。各段階の定義・遷移条件・保存/削除/移動基準を文書化。lifecycle.mdとしてdocs/mocka3/に配置。",
-      "assigned_to": "Claude→きむら博士承認",
-      "note": "",
-      "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:28.479650"
-    },
-    {
-      "id": "TODO_303",
-      "title": "State Machine v1 策定",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度設計",
-      "description": "Knowledge/Module/DecisionのState遷移図を作成。Draft→Verified→Approved→Sealed→Archived→Deprecated。各遷移の条件を定義。state_machine.mdとしてdocs/mocka3/に配置。",
-      "assigned_to": "Claude→きむら博士承認",
-      "note": "",
-      "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:33.019979"
-    },
-    {
-      "id": "TODO_304",
-      "title": "Version Policy v1 策定",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度設計",
-      "description": "Major(制度変更)/Minor(機能追加)/Patch(バグ修正)/Revision(State更新)の4段階を定義。VERSIONING.mdとしてdocs/mocka3/に配置。ISE state_versionとの整合確認。",
-      "assigned_to": "Claude→きむら博士承認",
-      "note": "",
-      "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:39.384030"
-    },
-    {
-      "id": "TODO_305",
-      "title": "Decision Ledger 正式スキーマ v1 実装",
-      "status": "未着手",
-      "priority": "高",
-      "category": "実装",
-      "description": "Decision Ledgerの正式スキーマ定義。decision_id/title/reason(必須)/alternatives/evidence/reviewer/revision/seal_id の8フィールド。schema定義+mocka_mcp_server.pyへの反映。既存Decision移行スクリプト作成。",
-      "assigned_to": "くろこ",
-      "note": "",
-      "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:44.968266"
-    },
-    {
       "id": "TODO_306",
       "title": "モジュール成熟モデル v1 実装",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "中",
       "category": "実装",
       "description": "Idea→Prototype→Experimental→Caliber→Verified→Official→Core→Deprecatedの8段階。各モジュールにmaturity_levelフィールド追加。COMMAND CENTERに成熟度表示追加。Caliber昇格自動チェック機構。",
       "assigned_to": "くろこ",
       "note": "",
       "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:49.934044"
+      "created_at": "2026-06-12T14:15:49.934044",
+      "updated_at": "2026-06-15T17:11:24.421365"
     },
     {
       "id": "TODO_307",
       "title": "Prompt Compiler v1 実装",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "中",
       "category": "実装",
       "description": "Institution State→Prompt Compiler→各AI用プロンプト生成。prompt_compiler.py新規作成。GPT/Claude/Gemini 3アダプター対応。ISEのKnockレスポンスと連携。AIごとの特性に合わせて最適化。",
       "assigned_to": "くろこ",
       "note": "",
       "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:54.992176"
+      "created_at": "2026-06-12T14:15:54.992176",
+      "updated_at": "2026-06-15T17:13:56.122950"
     },
     {
       "id": "TODO_308",
       "title": "SCAMPER Engine PHI-OS統合",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "中",
       "category": "実装",
       "description": "既存SCAMPER実装をPHI-OS Knowledge Engine配下へ正式移動。Context Engine→SCAMPER→Prompt Compilerのパイプライン確立。Knowledge Repositoryとの接続。",
       "assigned_to": "くろこ",
       "note": "",
       "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:16:00.019246"
+      "created_at": "2026-06-12T14:16:00.019246",
+      "updated_at": "2026-06-15T17:17:47.926443"
     },
     {
       "id": "TODO_309",
       "title": "Fluid Coordinate Theory ISE接続設計",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "中",
       "category": "理論実装",
       "description": "Fluid Coordinate TheoryをISEと接続。Institution State→Trajectory→Coordinate→Deviation→Revalidationのパイプライン設計。第3章への追記。Phase 2完了後着手。",
       "assigned_to": "きむら博士設計+Claude",
       "note": "",
       "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:16:05.131926"
+      "created_at": "2026-06-12T14:16:05.131926",
+      "updated_at": "2026-06-15T17:20:39.433270"
     },
     {
       "id": "TODO_310",
       "title": "Knowledge Evolution Engine 設計・実装",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "低",
       "category": "MoCKA4.0",
       "description": "MoCKA 4.0最大の特徴。FCT/SCAMPER/Trajectory/Deviation/Learningを統合した知識進化エンジン。設計書v1.0の策定から開始。Phase 3着手。",
       "assigned_to": "設計会議（博士+GPT+Claude）",
       "note": "",
       "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:16:10.654966"
+      "created_at": "2026-06-12T14:16:10.654966",
+      "updated_at": "2026-06-15T17:23:09.531521"
     },
     {
       "id": "TODO_311",
       "title": "知識ライフサイクル自動化エンジン",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "低",
       "category": "MoCKA4.0",
       "description": "State Machineに基づく知識ライフサイクル自動管理。Idea→Working→Validated→Institutional→Historical Knowledgeの自動遷移。遷移条件監視・通知。Knowledge Repositoryへの自動昇格。Phase 3着手。",
       "assigned_to": "くろこ",
       "note": "",
       "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:16:15.904679"
+      "created_at": "2026-06-12T14:16:15.904679",
+      "updated_at": "2026-06-15T17:24:31.509739"
     },
     {
       "id": "TODO_312",
       "title": "p-DERS論文 — AIES 2026正式投稿",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "最高",
       "category": "論文",
       "description": "p-DERS論文をAIES 2026に正式投稿する。EasyChair経由。匿名提出。Zenodo DOI: https://zenodo.org/records/20686662",
       "assigned_to": "Claude",
       "note": "",
       "reference_event": "",
-      "created_at": "2026-06-14T16:21:10.936995"
+      "created_at": "2026-06-14T16:21:10.936995",
+      "updated_at": "2026-06-15T17:25:58.267015"
     },
     {
       "id": "TODO_313",
       "title": "p-DERS論文 — ベンチマークデータ追加（Camera-Ready用）",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "高",
       "category": "論文",
       "description": "Local Invariant Gateのレイテンシ計測、悪意ある遷移の検出率（n=1000以上）、エージェント数スケーリング実験、既存手法との比較表をCamera-Ready版に追加する",
       "assigned_to": "Claude",
       "note": "",
       "reference_event": "",
-      "created_at": "2026-06-14T16:21:17.364708"
+      "created_at": "2026-06-14T16:21:17.364708",
+      "updated_at": "2026-06-15T17:27:18.395553"
     },
     {
       "id": "TODO_314",
       "title": "p-DERS — GitHubにRustプロトタイプ公開",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "中",
       "category": "開発",
       "description": "p-DERSのRustプロトタイプをGitHubに公開する。SiriusLab組織アカウント配下。READMEにZenodo DOIとAIES論文へのリンクを記載",
       "assigned_to": "Claude",
       "note": "",
       "reference_event": "",
-      "created_at": "2026-06-14T16:21:26.511160"
+      "created_at": "2026-06-14T16:21:26.511160",
+      "updated_at": "2026-06-15T17:28:48.271238"
     },
     {
       "id": "TODO_320",
       "title": "TIC Phase7 — Recommendation Engine",
-      "status": "未着手",
+      "status": "DONE",
       "priority": "低",
       "category": "TIC",
       "description": "",
       "assigned_to": "Claude",
       "note": "Phase6完了後。recommendation_history.jsonl。AI呼び出し初導入。Human Gate必須。",
       "reference_event": "",
-      "created_at": "2026-06-15T09:21:46.678120"
+      "created_at": "2026-06-15T09:21:46.678120",
+      "updated_at": "2026-06-15T17:36:47.823555"
     },
     {
       "id": "TODO_321",
       "title": "TIC Phase2 Trace Layer完了記録",
-      "status": "完了",
+      "status": "DONE",
       "priority": "中",
       "category": "TIC",
       "description": "",
       "assigned_to": "Claude",
       "note": "dependency_events.jsonl新設・trace_events()実装・Today's Changes連携・冪等性確認。commit b070d5311。",
       "reference_event": "",
-      "created_at": "2026-06-15T09:22:26.877288"
+      "created_at": "2026-06-15T09:22:26.877288",
+      "updated_at": "2026-06-15T17:38:32.282274"
     }
   ],
   "completed": [
@@ -4241,6 +4204,62 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:21.232885",
       "updated_at": "2026-06-15T10:06:27.927589",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_302",
+      "title": "データライフサイクル v1 策定",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度設計",
+      "description": "知識のライフサイクルを定義。Draft→Working→Verified→Sealed→Repository→Archive。各段階の定義・遷移条件・保存/削除/移動基準を文書化。lifecycle.mdとしてdocs/mocka3/に配置。",
+      "assigned_to": "Claude→きむら博士承認",
+      "note": "EVENT_DATA_LIFECYCLE_v1.md v1.0.0正式版。承認条件4点反映。docs/mocka3/配置・commit・E20260615_048記録済み。くろこ実装。",
+      "reference_event": "E20260612_057",
+      "created_at": "2026-06-12T14:15:28.479650",
+      "updated_at": "2026-06-15T16:57:03.303687",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_303",
+      "title": "State Machine v1 策定",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度設計",
+      "description": "Knowledge/Module/DecisionのState遷移図を作成。Draft→Verified→Approved→Sealed→Archived→Deprecated。各遷移の条件を定義。state_machine.mdとしてdocs/mocka3/に配置。",
+      "assigned_to": "Claude→きむら博士承認",
+      "note": "EVENT_TRANSITION_PROTOCOL_v1.md v1.0.0。三層構造完成。E20260615_050。くろこ実装。",
+      "reference_event": "E20260612_057",
+      "created_at": "2026-06-12T14:15:33.019979",
+      "updated_at": "2026-06-15T16:59:43.952277",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_304",
+      "title": "Version Policy v1 策定",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度設計",
+      "description": "Major(制度変更)/Minor(機能追加)/Patch(バグ修正)/Revision(State更新)の4段階を定義。VERSIONING.mdとしてdocs/mocka3/に配置。ISE state_versionとの整合確認。",
+      "assigned_to": "Claude→きむら博士承認",
+      "note": "VERSION_POLICY_v1.md v1.0.0正式版。Status Lifecycle・Impact Assessment・1対1ルール反映。全4ドキュメントヘッダー統一。E20260615_052。くろこ実装。",
+      "reference_event": "E20260612_057",
+      "created_at": "2026-06-12T14:15:39.384030",
+      "updated_at": "2026-06-15T17:05:15.367240",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_305",
+      "title": "Decision Ledger 正式スキーマ v1 実装",
+      "status": "完了",
+      "priority": "高",
+      "category": "実装",
+      "description": "Decision Ledgerの正式スキーマ定義。decision_id/title/reason(必須)/alternatives/evidence/reviewer/revision/seal_id の8フィールド。schema定義+mocka_mcp_server.pyへの反映。既存Decision移行スクリプト作成。",
+      "assigned_to": "くろこ",
+      "note": "DECISION_LEDGER_SCHEMA_v1.md v1.0.0。横断監査台帳設計。DC採番・alternatives必須・supersedes連鎖・JSONL storage。E20260615_054。くろこ実装。",
+      "reference_event": "E20260612_057",
+      "created_at": "2026-06-12T14:15:44.968266",
+      "updated_at": "2026-06-15T17:08:19.088916",
       "completed_at": "2026-06-15"
     }
   ],
