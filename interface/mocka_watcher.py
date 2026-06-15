@@ -1,4 +1,4 @@
-"""
+﻿"""
 MoCKA Watcher - Firestore intent_queue監視。60秒ごとにpollingしてstatus=完了を検知。
 検知したらdata/watcher_queue/にJSONを出力。
 """
