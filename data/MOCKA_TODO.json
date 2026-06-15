@@ -575,18 +575,6 @@
       "created_at": "2026-06-11T16:29:50.848462"
     },
     {
-      "id": "TODO_301",
-      "title": "Event Taxonomy v1 策定",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度設計",
-      "description": "events.dbの全イベント型を正式定義。カテゴリ: LIFECYCLE/DECISION/AUDIT/INCIDENT/SYSTEM。型ごとの必須フィールド定義。taxonomy.jsonとしてdocs/mocka3/に配置。mocka_write_eventのバリデーションに反映。",
-      "assigned_to": "Claude→きむら博士承認",
-      "note": "",
-      "reference_event": "E20260612_057",
-      "created_at": "2026-06-12T14:15:21.232885"
-    },
-    {
       "id": "TODO_302",
       "title": "データライフサイクル v1 策定",
       "status": "未着手",
@@ -743,16 +731,28 @@
       "created_at": "2026-06-14T16:21:26.511160"
     },
     {
-      "id": "TODO_315",
-      "title": "TIC Risk Score 5W1H拡張（risk_interpreter.py）",
-      "status": "進行中",
+      "id": "TODO_320",
+      "title": "TIC Phase7 — Recommendation Engine",
+      "status": "未着手",
+      "priority": "低",
+      "category": "TIC",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "Phase6完了後。recommendation_history.jsonl。AI呼び出し初導入。Human Gate必須。",
+      "reference_event": "",
+      "created_at": "2026-06-15T09:21:46.678120"
+    },
+    {
+      "id": "TODO_321",
+      "title": "TIC Phase2 Trace Layer完了記録",
+      "status": "完了",
       "priority": "中",
-      "category": "制度/TIC/risk_scorer",
-      "description": "risk_scorer.pyのスコアに5W1H（why/where/when/who/so_what/now_what）的な説明可能性を付与する拡張。Phase1としてrisk_interpreter.py + override_metadata.jsonを実装し、決定論的なwhy列とoverride有効期限管理を追加（risk_scorer.pyのcalc_score本体は無変更）。Phase2(dependency_events.jsonl等によるイベントトレース層)以降は未着手。",
-      "assigned_to": "Claude（実装）",
-      "note": "Phase1完了: risk_interpreter.py + override_metadata.json実装。why列11件表示確認。E20260615_013。Phase2(dependency_events.jsonl)は保留。",
-      "reference_event": "E20260615_013",
-      "created_at": "2026-06-15T09:09:22.751690"
+      "category": "TIC",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "dependency_events.jsonl新設・trace_events()実装・Today's Changes連携・冪等性確認。commit b070d5311。",
+      "reference_event": "",
+      "created_at": "2026-06-15T09:22:26.877288"
     }
   ],
   "completed": [
@@ -4158,6 +4158,90 @@
       "created_at": "2026-06-07T14:54:18.808510",
       "updated_at": "2026-06-12T09:33:29.115429",
       "completed_at": "2026-06-12"
+    },
+    {
+      "id": "TODO_315",
+      "title": "TIC Risk Score 5W1H拡張（risk_interpreter.py）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/TIC/risk_scorer",
+      "description": "risk_scorer.pyのスコアに5W1H（why/where/when/who/so_what/now_what）的な説明可能性を付与する拡張。Phase1としてrisk_interpreter.py + override_metadata.jsonを実装し、決定論的なwhy列とoverride有効期限管理を追加（risk_scorer.pyのcalc_score本体は無変更）。Phase2(dependency_events.jsonl等によるイベントトレース層)以降は未着手。",
+      "assigned_to": "Claude（実装）",
+      "note": "Phase1+2/3完了。risk_interpreter.py: why列・差分(▲▼=)・SYSTEM STATUS・Today's Changes・Today's Focus実装。MoCKA-START.bat組み込み。commit dfeac0042。E20260615_013。",
+      "reference_event": "E20260615_013",
+      "created_at": "2026-06-15T09:09:22.751690",
+      "updated_at": "2026-06-15T09:18:09.741795",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_316",
+      "title": "TIC Phase3 — Dependency Graph Layer（dependency_graph.jsonl）",
+      "status": "完了",
+      "priority": "中",
+      "category": "TIC",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "Phase3完了。dependency_graph.jsonl（17エッジ）+ graph_loader.py実装。commit 9ab2365ca。E20260615_025。",
+      "reference_event": "",
+      "created_at": "2026-06-15T09:21:28.898226",
+      "updated_at": "2026-06-15T09:27:36.071069",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_317",
+      "title": "TIC Phase4 — Root Cause Layer（root_cause.jsonl）",
+      "status": "完了",
+      "priority": "中",
+      "category": "TIC",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "Phase4完了。root_cause_engine.py新設。cause_chain/confidence/冪等append実装。commit 3fa2c0aa0。E20260615_026。",
+      "reference_event": "",
+      "created_at": "2026-06-15T09:21:33.152440",
+      "updated_at": "2026-06-15T09:33:24.599543",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_318",
+      "title": "TIC Phase5 — Trend Layer（trend_history.jsonl）",
+      "status": "完了",
+      "priority": "低",
+      "category": "TIC",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "Phase5完了。trend_engine.py新設（純粋Python最小二乗法）。INCREASING/IMPROVING/STABLE分類。Risk Summary トレンド列追加。commit 8586cf782。E20260615_027。",
+      "reference_event": "",
+      "created_at": "2026-06-15T09:21:37.585731",
+      "updated_at": "2026-06-15T09:38:09.308370",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_319",
+      "title": "TIC Phase6 — Prediction Engine",
+      "status": "完了",
+      "priority": "低",
+      "category": "TIC",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "TIC Phase6 Prediction Pipeline skeleton実装完了。commit: ac62d6531。prediction/パッケージ新設・facade統合・TODO_288無傷。E20260615_030記録済み。",
+      "reference_event": "",
+      "created_at": "2026-06-15T09:21:42.433558",
+      "updated_at": "2026-06-15T09:45:14.458411",
+      "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_301",
+      "title": "Event Taxonomy v1 策定",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度設計",
+      "description": "events.dbの全イベント型を正式定義。カテゴリ: LIFECYCLE/DECISION/AUDIT/INCIDENT/SYSTEM。型ごとの必須フィールド定義。taxonomy.jsonとしてdocs/mocka3/に配置。mocka_write_eventのバリデーションに反映。",
+      "assigned_to": "Claude→きむら博士承認",
+      "note": "EVENT_FOUNDATION_v1.md v1.0.1 完成・きむら博士承認済み（E20260615_033）。docs/mocka3/配置・git commit待ち。Taxonomy本体はEVENT_TAXONOMY_v1.mdとして独立（TODO_301-D継続）。",
+      "reference_event": "E20260612_057",
+      "created_at": "2026-06-12T14:15:21.232885",
+      "updated_at": "2026-06-15T10:06:27.927589",
+      "completed_at": "2026-06-15"
     }
   ],
   "orchestra_handoff": {
