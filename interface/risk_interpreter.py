@@ -26,6 +26,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8")
 
 from risk_scorer import calc_score, rank, FREQ_SCORE, SUBST_SCORE, blast_score, RESET
 from graph_loader import load_edges, get_impacts
+import root_cause_engine
 
 MAP_PATH      = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
 OVERRIDE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/override_metadata.json")
@@ -354,7 +355,28 @@ def print_todays_changes(events_today: list):
     }
 
 
-def print_todays_focus(results: list, changes: dict):
+def _load_root_causes_today() -> dict:
+    today_str = datetime.date.today().isoformat()
+    causes = {}
+    if not root_cause_engine.ROOT_CAUSE_PATH.exists():
+        return causes
+    with open(root_cause_engine.ROOT_CAUSE_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except Exception:
+                continue
+            if entry.get("date") == today_str:
+                causes[entry["component"]] = entry
+    return causes
+
+
+def print_todays_focus(results: list, changes: dict, edges: list):
+    root_causes = _load_root_causes_today()
+
     print("=" * 50)
     print("  Today's Focus")
     print("=" * 50)
@@ -371,6 +393,17 @@ def print_todays_focus(results: list, changes: dict):
             r = next(x for x in results if x["component"] == comp)
             print(f"  Risk increased: {comp}  {prev} → {score} (+{score - prev})")
             print(f"  Reason: {r['why']}")
+
+            affected = get_impacts(comp, edges)
+            if affected:
+                print(f"  Affected: {', '.join(affected)}")
+
+            cause = root_causes.get(comp)
+            if cause:
+                print(f"  Root Cause: {cause['reason']}")
+                print(f"  Cause Chain: {' → '.join(cause['cause_chain'])}")
+                print(f"  Confidence: {cause['confidence']}")
+
             print(f"  Recommended action: {comp} の最新仕様変更を確認してください")
         else:
             crit = next((x for x in results if x["rank"] == "CRITICAL"), results[0])
@@ -421,7 +454,8 @@ def run():
     print("=" * 70)
     print()
 
-    print_todays_focus(results, changes)
+    root_cause_engine.run()
+    print_todays_focus(results, changes, edges)
 
     save_history(results)
 
