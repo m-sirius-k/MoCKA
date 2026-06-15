@@ -1,0 +1,51 @@
+{
+  "constraint_layer_id": "PRE_CONSTRAINT_LAYER_v1",
+  "version": "1.0.0",
+  "status": "fixed",
+  "source_spec": "docs/architecture/PRE_CONSTRAINT_ARCHITECTURE_v1.md",
+  "immutable": true,
+  "amendment_policy": "new_version_branch_only_no_overwrite",
+  "layers": {
+    "pre_constraint_layer": {
+      "role": "fixed_initial_specification",
+      "mutable": false
+    },
+    "execution_layer": {
+      "role": "execution",
+      "depends_on": "pre_constraint_layer",
+      "rule": "execution_must_satisfy_all_active_constraints"
+    },
+    "compression_layer": {
+      "role": "post_processing_reduction_only",
+      "forbidden_actions": [
+        "modify_pre_constraint_layer",
+        "overwrite_pre_constraint_layer"
+      ]
+    }
+  },
+  "integration_rules": [
+    "pre_constraint_layer_is_change_forbidden_fixed_initial_spec",
+    "execution_layer_must_depend_on_pre_constraint_layer",
+    "compression_layer_is_post_process_reduction_only",
+    "spec_changes_require_new_version_branch_no_overwrite"
+  ],
+  "linked_structures": {
+    "shadow_execution_layer": {
+      "relation": "operational_mode_within_execution_layer",
+      "note": "shadow_Movement (degraded operation, 75% function retention)"
+    },
+    "audit_verification_layer": {
+      "relation": "enforces_constraint_conformance_check",
+      "note": "governance/verify_*.py ALL CHECKS PASSED"
+    },
+    "planningcaliber_experiment_loop": {
+      "relation": "experiment_side_boundary",
+      "note": "free experimentation under fixed pre_constraint_layer"
+    },
+    "mocka_promotion_model": {
+      "relation": "promotion_stages_p0_to_p4",
+      "note": "pre_constraint_layer invariant across all promotion stages"
+    }
+  },
+  "active_constraints": []
+}
