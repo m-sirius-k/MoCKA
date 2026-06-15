@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-14",
+    "updated": "2026-06-15",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -741,6 +741,18 @@
       "note": "",
       "reference_event": "",
       "created_at": "2026-06-14T16:21:26.511160"
+    },
+    {
+      "id": "TODO_315",
+      "title": "TIC Risk Score 5W1H拡張（risk_interpreter.py）",
+      "status": "進行中",
+      "priority": "中",
+      "category": "制度/TIC/risk_scorer",
+      "description": "risk_scorer.pyのスコアに5W1H（why/where/when/who/so_what/now_what）的な説明可能性を付与する拡張。Phase1としてrisk_interpreter.py + override_metadata.jsonを実装し、決定論的なwhy列とoverride有効期限管理を追加（risk_scorer.pyのcalc_score本体は無変更）。Phase2(dependency_events.jsonl等によるイベントトレース層)以降は未着手。",
+      "assigned_to": "Claude（実装）",
+      "note": "Phase1完了: risk_interpreter.py + override_metadata.json実装。why列11件表示確認。E20260615_013。Phase2(dependency_events.jsonl)は保留。",
+      "reference_event": "E20260615_013",
+      "created_at": "2026-06-15T09:09:22.751690"
     }
   ],
   "completed": [
