@@ -29,6 +29,7 @@ from risk_scorer import calc_score, rank, FREQ_SCORE, SUBST_SCORE, blast_score, 
 MAP_PATH      = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
 OVERRIDE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/override_metadata.json")
 HISTORY_PATH  = Path("C:/Users/sirok/MoCKA/data/tic/risk_history.jsonl")
+EVENTS_PATH   = Path("C:/Users/sirok/MoCKA/data/tic/dependency_events.jsonl")
 HEALTH_LOG    = Path("C:/Users/sirok/MoCKA/data/tic/health_log.jsonl")
 WATCHER_QUEUE = Path("C:/Users/sirok/MoCKA/data/watcher_queue")
 MOCKA_ROOT    = Path("C:/Users/sirok/MoCKA")
@@ -167,6 +168,94 @@ def diff_str(curr: int, prev) -> str:
     return f"(▼{delta})"
 
 
+# ── Phase2: Trace Layer ──────────────────────────────────────────────────────
+
+def _load_events_today() -> list:
+    today_str = datetime.date.today().isoformat()
+    if not EVENTS_PATH.exists():
+        return []
+    out = []
+    with open(EVENTS_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entry = json.loads(line)
+            except Exception:
+                continue
+            if entry.get("date") == today_str:
+                out.append(entry)
+    return out
+
+
+def trace_events(results: list, prev_scores: dict) -> list:
+    """前日比でスコア変化があったコンポーネントを dependency_events.jsonl に記録する。
+    同日・同コンポーネントの記録が既にある場合は冪等性のためスキップする。"""
+    today_str  = datetime.date.today().isoformat()
+    existing   = _load_events_today()
+    done_comps = {e["component"] for e in existing}
+    seq        = len(existing)
+
+    new_entries = []
+    for r in results:
+        comp = r["component"]
+        if comp in done_comps:
+            continue
+        prev = prev_scores.get(comp)
+        if prev is None:
+            continue
+        delta = r["score"] - prev
+        if delta == 0:
+            continue
+
+        rank_prev, _ = rank(prev)
+        rank_new     = r["rank"]
+
+        seq += 1
+        entry = {
+            "event_id":     f"DE_{today_str.replace('-', '')}_{seq:03d}",
+            "date":         today_str,
+            "component":    comp,
+            "prev_score":   prev,
+            "new_score":    r["score"],
+            "delta":        delta,
+            "rank_prev":    rank_prev,
+            "rank_new":     rank_new,
+            "rank_changed": rank_prev != rank_new,
+            "source":       "risk_interpreter",
+            "verified":     False,
+        }
+        new_entries.append(entry)
+
+    if new_entries:
+        EVENTS_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(EVENTS_PATH, "a", encoding="utf-8") as f:
+            for entry in new_entries:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+    return existing + new_entries
+
+
+def print_trace_log(events_today: list):
+    print("=" * 50)
+    print("  Trace Log  (本日)")
+    print("=" * 50)
+    if not events_today:
+        print("  No changes detected.")
+    else:
+        width = max(len(e["component"]) for e in events_today)
+        for e in events_today:
+            d = e["delta"]
+            d_str = f"▲+{d}" if d > 0 else f"▼{d}"
+            print(
+                f"  {e['component']:<{width}}  {e['prev_score']:>3} → {e['new_score']:>3}  "
+                f"({d_str})  {e['rank_prev']} → {e['rank_new']}"
+            )
+    print("=" * 50)
+    print()
+
+
 # ── Phase2: SYSTEM STATUS ──────────────────────────────────────────────────
 
 def system_status() -> list:
@@ -225,45 +314,43 @@ def print_system_status(checks: list):
 
 # ── Phase3: Today's Changes / Today's Focus ─────────────────────────────────
 
-def print_todays_changes(results: list, prev_scores: dict):
-    new_critical = 0
-    risk_up      = 0
-    risk_down    = 0
-    up_items     = []
-
-    for r in results:
-        comp  = r["component"]
-        score = r["score"]
-        prev  = prev_scores.get(comp)
-
-        if prev is None:
-            if r["rank"] == "CRITICAL":
-                new_critical += 1
-            continue
-
-        if score > prev:
-            risk_up += 1
-            up_items.append((comp, prev, score))
-        elif score < prev:
-            risk_down += 1
+def print_todays_changes(events_today: list):
+    new_critical_events = [e for e in events_today
+                            if e["rank_changed"] and e["rank_new"] == "CRITICAL"]
+    risk_up_events   = [e for e in events_today if e["delta"] > 0]
+    risk_down_events = [e for e in events_today if e["delta"] < 0]
+    rank_changed     = [e for e in events_today if e["rank_changed"]]
 
     print("=" * 50)
     print("  Today's Changes")
     print("=" * 50)
-    print(f"  NEW Critical : {new_critical}")
-    if up_items:
-        comp, prev, score = up_items[0]
-        extra = f"  ({comp} {prev}→{score})"
+
+    if new_critical_events:
+        e = new_critical_events[0]
+        extra = f"  ({e['component']} {e['rank_prev']}→{e['rank_new']})"
     else:
         extra = ""
-    print(f"  Risk Up      : {risk_up}{extra}")
-    print(f"  Risk Down    : {risk_down}")
-    print(f"  DOM Changes  : 0")
+    print(f"  NEW Critical : {len(new_critical_events)}{extra}")
+
+    if risk_up_events:
+        e = risk_up_events[0]
+        extra = f"  ({e['component']} {e['prev_score']}→{e['new_score']} +{e['delta']})"
+    else:
+        extra = ""
+    print(f"  Risk Up      : {len(risk_up_events)}{extra}")
+
+    print(f"  Risk Down    : {len(risk_down_events)}")
+    print(f"  Rank Changed : {len(rank_changed)}")
     print("=" * 50)
     print()
 
-    return {"new_critical": new_critical, "risk_up": risk_up,
-            "risk_down": risk_down, "up_items": up_items}
+    up_items = [(e["component"], e["prev_score"], e["new_score"]) for e in risk_up_events]
+    return {
+        "new_critical": len(new_critical_events),
+        "risk_up":      len(risk_up_events),
+        "risk_down":    len(risk_down_events),
+        "up_items":     up_items,
+    }
 
 
 def print_todays_focus(results: list, changes: dict):
@@ -313,7 +400,9 @@ def run():
     print()
     print_system_status(system_status())
 
-    changes = print_todays_changes(results, prev_scores)
+    events_today = trace_events(results, prev_scores)
+    changes = print_todays_changes(events_today)
+    print_trace_log(events_today)
 
     width = max(len(r["component"]) for r in results)
     print("=" * 70)
