@@ -37,6 +37,10 @@ FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
 AUTO_LOG_CSV   = BASE / "data" / "claude_sessions.csv"
 DB_PATH        = BASE / "data" / "mocka_events.db"
 
+# [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ設定
+GATE_URL    = "http://localhost:5000/api/gate/event"
+SESSION_ID  = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
 # ============================================================
 # SQLite接続ヘルパー（文字化け防御ゲート付き）
 # ============================================================
@@ -356,34 +360,66 @@ def execute_tool(name, args):
             return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
 
         elif name == "mocka_write_event":
-            # CSV廃止済み → SQLite直接書き込み（文字化け防御ゲート通過）
-            eid = next_event_id()
-            ts  = datetime.datetime.now().isoformat()
-            row = {f: "" for f in EVENTS_FIELDS}
-            row["event_id"]        = eid
-            row["when"]            = ts
-            # [PHI-OS GATE v1 2026-06-16] who_actor必須化 — デフォルト'Claude'廃止
+            # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ経由で書き込む
             _actor = args.get("author", "")
             if not _actor or _actor == "Claude":
                 raise ValueError(
                     "who_actor is required. "
                     "Use exact model name e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"
                 )
-            row["who_actor"]       = _actor
-            row["what_type"]       = "claude_mcp"
-            row["where_component"] = "mcp_caliber"
-            row["where_path"]      = "mocka_mcp_server.py"
-            row["why_purpose"]     = args.get("why_purpose", "")
-            row["how_trigger"]     = args.get("how_trigger", "")
-            row["title"]           = args.get("title", "")
-            row["short_summary"]   = args.get("description", "")
-            row["free_note"]       = args.get("tags", "")
-            row["lifecycle_phase"] = "in_operation"
-            row["risk_level"]      = "normal"
-            row["channel_type"]    = "mcp"
-            ok = _db_write_event(row)
-            auto_log(name, args, f"written {eid} db={'ok' if ok else 'error'}")
-            return json.dumps({"status": "ok" if ok else "error", "event_id": eid, "when": ts, "storage": "sqlite"}, ensure_ascii=False)
+            _desc = args.get("description", "")
+            _title = args.get("title", "")
+            gate_payload = {
+                "who_actor":       _actor,
+                "who_role":        "executor",
+                "who_session":     SESSION_ID,
+                "what_type":       "claude_mcp",
+                "what_title":      _title,
+                "where_path":      "mocka_mcp_server.py",
+                "where_component": "mcp_caliber",
+                "why_purpose":     args.get("why_purpose", "") or _desc[:80] or _title,
+                "how_trigger":     args.get("how_trigger", "") or "mcp_tool_call",
+                "after_state":     _desc[:200] or _title,
+                "description":     _desc,
+                "tags":            args.get("tags", ""),
+            }
+            try:
+                r = requests.post(GATE_URL, json=gate_payload, timeout=5)
+                if r.status_code == 201:
+                    body = r.json()
+                    eid  = body.get("event_id", "?")
+                    auto_log(name, args, f"GATE written {eid} event_source=live")
+                    return json.dumps({"status": "ok", "event_id": eid,
+                                       "when": datetime.datetime.now().isoformat(),
+                                       "storage": "gate/sqlite"}, ensure_ascii=False)
+                else:
+                    # GATEがエラーを返した場合 — rejectedとして呼び出し元に返す
+                    auto_log(name, args, f"GATE rejected {r.status_code}: {r.text[:80]}")
+                    return json.dumps({"status": "gate_rejected", "errors": r.json().get("errors", []),
+                                       "gate_status": r.status_code}, ensure_ascii=False)
+            except requests.exceptions.ConnectionError:
+                # GATEが落ちている場合のフォールバック — SQLite直接書き込み
+                eid = next_event_id()
+                ts  = datetime.datetime.now().isoformat()
+                row = {f: "" for f in EVENTS_FIELDS}
+                row["event_id"]        = eid
+                row["when"]            = ts
+                row["who_actor"]       = _actor
+                row["what_type"]       = "claude_mcp"
+                row["where_component"] = "mcp_caliber"
+                row["where_path"]      = "mocka_mcp_server.py"
+                row["why_purpose"]     = gate_payload["why_purpose"]
+                row["how_trigger"]     = gate_payload["how_trigger"]
+                row["title"]           = _title
+                row["short_summary"]   = _desc
+                row["free_note"]       = args.get("tags", "") + "|event_source=fallback"
+                row["lifecycle_phase"] = "in_operation"
+                row["risk_level"]      = "normal"
+                row["channel_type"]    = "mcp"
+                ok = _db_write_event(row)
+                auto_log(name, args, f"GATE offline fallback {eid} db={'ok' if ok else 'error'}")
+                return json.dumps({"status": "ok" if ok else "error", "event_id": eid,
+                                   "when": ts, "storage": "fallback/sqlite"}, ensure_ascii=False)
 
         elif name == "mocka_seal":
             # CSV廃止済み → SQLite全件JSONハッシュ
