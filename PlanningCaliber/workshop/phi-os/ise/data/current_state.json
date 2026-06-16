@@ -230,15 +230,27 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_322",
-      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
-      "priority": "最高",
+      "id": "TODO_323",
+      "title": "PHI-OS Gate — DB直接書き込み検知トリガー実装（Gate強制性強化）",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_324",
+      "title": "PHI-OS 定期監査スクリプト — Gate経由率・Direct Write・Actor未設定の継続検証",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_325",
+      "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
+      "priority": "高",
       "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 7,
-  "state_hash": "cb2ff4ba63fef05afd11a684320626b150f97f1c79407adb83f9441f317ee245",
-  "generated_at": "2026-06-16T06:30:24.577668+00:00"
+  "revision": 8,
+  "state_hash": "b7ffb5e3d94432e462b4f772b34b9dec554bba99222d58c07256a87d1830f62d",
+  "generated_at": "2026-06-16T06:31:05.344940+00:00"
 }
