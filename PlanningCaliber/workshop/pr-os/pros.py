@@ -139,6 +139,27 @@ def cmd_show(args):
     _sep()
 
 
+def _load_confirmed_text(ks_id: str) -> str:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "knowledge_store", "confirmed", f"{ks_id}.md")
+    with open(path, encoding="utf-8") as f:
+        return f.read()
+
+
+def _run_seo_center(rec: dict, text: str, force_type: str = None):
+    """SEO-CENTERを通してSEOResultを返す（WordPress向け）"""
+    from seo_center.seo_center import SEOCenter
+    center = SEOCenter()
+    return center.process(
+        title          = rec["title"],
+        confirmed_text = text,
+        tags           = rec.get("tags", []),
+        category       = rec.get("category", ""),
+        summary        = rec.get("ai_gate_log", {}).get("summary"),
+        force_type     = force_type,
+    )
+
+
 def cmd_publish(args):
     from knowledge_store.ks_manager import get_record, update_publish_status
     ks_id = args.ks_id
@@ -147,22 +168,75 @@ def cmd_publish(args):
         print(C.r(f"  [Error] {ks_id} は confirmed ではありません (status={rec['status']})"))
         sys.exit(1)
 
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        "knowledge_store", "confirmed", f"{ks_id}.md")
-    with open(path, encoding="utf-8") as f:
-        text = f.read()
+    text    = _load_confirmed_text(ks_id)
+    adapter = _get_adapter(args.adapter)
 
-    adapter   = _get_adapter(args.adapter)
-    converted = adapter.convert(rec, text)
-    result    = adapter.publish(converted)
+    # WordPress は SEO-CENTER を通す
+    use_seo = args.adapter == "wordpress" and not getattr(args, "no_seo", False)
+    if use_seo:
+        seo = _run_seo_center(rec, text)
+        print(f"  {C.c('[SEO]')} ContentType: {seo.content_type} / Score: {C.b(str(seo.seo_score))}")
+        print(f"  {C.c('[SEO]')} Slug: {seo.slug}")
+        print(f"  {C.c('[SEO]')} Description: {seo.description[:80]}{'…' if len(seo.description) > 80 else ''}")
+        converted = adapter.convert(rec, text, seo_result=seo)
+    else:
+        converted = adapter.convert(rec, text)
+
+    result = adapter.publish(converted)
 
     if result.success:
         update_publish_status(ks_id, args.adapter, "published")
+        from mocka_bridge import feedback_publish
+        feedback_publish(ks_id, args.adapter, True, result.url)
         print(C.g(f"  [OK] Published: {ks_id} → {args.adapter}"))
         if result.url: print(f"       URL: {C.b(result.url)}")
     else:
+        from mocka_bridge import feedback_publish
+        feedback_publish(ks_id, args.adapter, False)
         print(C.r(f"  [NG] Failed: {result.error}"))
         sys.exit(1)
+
+
+def cmd_seo(args):
+    """SEO-CENTER単体実行: KSのSEO分析レポートを表示"""
+    from knowledge_store.ks_manager import get_record
+    ks_id = args.ks_id
+    rec   = get_record(ks_id)
+    text  = _load_confirmed_text(ks_id)
+
+    print(f"\n  {C.BOLD}SEO-CENTER 分析{C.RESET}")
+    _sep()
+
+    seo = _run_seo_center(rec, text, force_type=getattr(args, "type", None))
+
+    print(f"  KS ID        : {C.c(ks_id)}")
+    print(f"  ContentType  : {C.b(seo.content_type)}")
+    print(f"  Intent       : {seo.intent}")
+    print(f"  Targets      : {C.g(', '.join(seo.targets))}")
+    print(f"  Routing      : {C.dim(seo.routing_reason)}")
+    _sep()
+    print(f"  SEO Score    : {_score_str(seo.seo_score)}")
+    for k, v in seo.score_breakdown.items():
+        bar = "█" * int(v * 50)
+        print(f"    {k:<20} {v:.3f}  {C.dim(bar)}")
+    _sep()
+    print(f"  Slug         : {seo.slug}")
+    print(f"  Description  : {seo.description}")
+    _sep()
+
+    if getattr(args, "html", False):
+        print(f"\n  {C.BOLD}生成HTML (先頭1000文字){C.RESET}")
+        _sep()
+        print(seo.html[:1000])
+        _sep()
+
+    if getattr(args, "route", False):
+        print(f"\n  {C.BOLD}配信先 (Distribution Router){C.RESET}")
+        _sep()
+        for t in seo.targets:
+            print(f"    → {C.g(t)}")
+        _sep()
+    print()
 
 
 def cmd_schedule(args):
@@ -384,8 +458,15 @@ def main():
     s = sub.add_parser("show",    help="KS詳細")
     s.add_argument("ks_id")
 
-    s = sub.add_parser("publish", help="即時公開")
+    s = sub.add_parser("publish", help="即時公開（WordPressはSEO-CENTER自動適用）")
     s.add_argument("ks_id"); s.add_argument("adapter", choices=ADAPTERS)
+    s.add_argument("--no-seo", action="store_true", help="SEO-CENTERをスキップ（WordPress）")
+
+    s = sub.add_parser("seo",    help="SEO-CENTER分析レポート")
+    s.add_argument("ks_id")
+    s.add_argument("--type", default="", help="コンテンツタイプ強制指定 (technical/thought/announcement/research/strategic)")
+    s.add_argument("--html", action="store_true", help="生成HTMLを表示")
+    s.add_argument("--route", action="store_true", help="配信先を表示")
 
     s = sub.add_parser("schedule",help="予約配信")
     s.add_argument("ks_id"); s.add_argument("adapter", choices=ADAPTERS)
@@ -432,7 +513,7 @@ def main():
         "report":   cmd_report,   "setup-ga":  cmd_setup_ga,
         "daemon":   cmd_daemon,   "bridge":    cmd_bridge,
         "sync":     cmd_sync,     "ingest":    cmd_ingest,
-        "test":     cmd_test,
+        "test":     cmd_test,     "seo":       cmd_seo,
     }
     dispatch[args.cmd](args)
 

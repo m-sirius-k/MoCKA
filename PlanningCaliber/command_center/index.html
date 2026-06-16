@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PlanningCaliber — 制度OS統合管理ダッシュボード</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg0:    #0d1117;
+      --bg1:    #161b22;
+      --bg2:    #1c2128;
+      --border: #30363d;
+      --text0:  #e6edf3;
+      --text1:  #8b949e;
+      --text2:  #6e7681;
+      --blue:   #58a6ff;
+      --green:  #3fb950;
+      --yellow: #d29922;
+      --orange: #f0883e;
+      --purple: #8957e5;
+      --red:    #f85149;
+      --cyan:   #39d3f2;
+    }
+
+    body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; background: var(--bg0); color: var(--text0); height: 100vh; overflow: hidden; font-size: 13px; }
+
+    /* ── Layout ─────────────────── */
+    .layout { display: grid; grid-template-columns: 220px 1fr; height: 100vh; }
+
+    /* ── Sidebar ─────────────────── */
+    .sidebar { background: var(--bg1); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+
+    .sidebar-logo { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo .logo-title { font-size: 15px; font-weight: 700; color: var(--blue); letter-spacing: -0.3px; }
+    .sidebar-logo .logo-sub   { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+    .sidebar-nav { padding: 10px 8px; flex: 1; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 6px; cursor: pointer;
+      color: var(--text1); font-size: 13px; margin-bottom: 2px;
+      transition: background .15s;
+    }
+    .nav-item:hover { background: var(--bg2); color: var(--text0); }
+    .nav-item.active { background: #1f6feb33; color: var(--blue); font-weight: 600; }
+    .nav-item .nav-icon { width: 16px; text-align: center; font-size: 14px; }
+    .nav-sub { font-size: 11px; color: var(--text2); }
+
+    .sidebar-info { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text2); }
+    .sidebar-info div { margin-bottom: 3px; }
+
+    /* ── Main ─────────────────────── */
+    .main { display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── Header ─────────────────── */
+    .header {
+      background: var(--bg1); border-bottom: 1px solid var(--border);
+      padding: 10px 20px; display: flex; align-items: center; gap: 16px;
+      flex-shrink: 0;
+    }
+    .header-title { flex: 1; }
+    .header-title h1 { font-size: 15px; font-weight: 700; }
+    .header-title p  { font-size: 11px; color: var(--text1); margin-top: 2px; }
+    .header-status {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 5px 12px; border-radius: 6px; font-size: 12px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .header-sync { font-size: 11px; color: var(--text1); }
+    .btn-sync {
+      background: var(--blue); color: #000; border: none; padding: 6px 14px;
+      border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .btn-dark {
+      background: var(--bg2); border: 1px solid var(--border); color: var(--text0);
+      padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
+    }
+
+    /* ── Content ─────────────────── */
+    .content { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+    /* ── Metric Cards ─────────────── */
+    .metric-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .metric-card {
+      background: var(--bg1); border: 1px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; display: flex; align-items: center; gap: 12px;
+    }
+    .metric-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .metric-icon.blue   { background: #1f6feb33; }
+    .metric-icon.purple { background: #8957e533; }
+    .metric-icon.green  { background: #3fb95033; }
+    .metric-icon.yellow { background: #d2992233; }
+    .metric-icon.cyan   { background: #39d3f233; }
+    .metric-body .label { font-size: 11px; color: var(--text1); }
+    .metric-body .value { font-size: 22px; font-weight: 700; color: var(--text0); line-height: 1.2; }
+    .metric-body .delta { font-size: 11px; margin-top: 2px; }
+    .delta.pos { color: var(--green); }
+    .delta.neg { color: var(--red); }
+    .delta.neu { color: var(--text2); }
+
+    /* ── Two-column Row ──────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ── Panel ─────────────────── */
+    .panel { background: var(--bg1); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .panel-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+    .panel-header h3 { font-size: 13px; font-weight: 600; }
+    .btn-sm { background: var(--bg2); border: 1px solid var(--border); color: var(--text1); padding: 4px 10px; border-radius: 5px; font-size: 11px; cursor: pointer; }
+
+    /* ── Flow Map ─────────────── */
+    .flow-map { display: flex; align-items: center; gap: 0; padding: 16px; }
+    .flow-node {
+      flex: 1; text-align: center; background: var(--bg2);
+      border: 1px solid var(--border); border-radius: 8px; padding: 12px 8px;
+      position: relative;
+    }
+    .flow-node .fn-label { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    .flow-node .fn-sub   { font-size: 10px; color: var(--text1); margin-bottom: 8px; }
+    .flow-node .fn-count { font-size: 22px; font-weight: 700; }
+    .flow-node.workshop  { border-color: var(--blue);   color: var(--blue);   }
+    .flow-node.caliber   { border-color: var(--yellow);  color: var(--yellow); }
+    .flow-node.candidates{ border-color: var(--purple);  color: var(--purple); }
+    .flow-node.specs     { border-color: var(--green);   color: var(--green);  }
+    .flow-node.mocka     { border-color: var(--cyan);    color: var(--cyan);   }
+    .flow-arrow { color: var(--border); font-size: 18px; padding: 0 6px; flex-shrink: 0; }
+
+    /* ── Caliber Table ─────────── */
+    .caliber-table { width: 100%; }
+    .caliber-table td { padding: 9px 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .caliber-table tr:last-child td { border-bottom: none; }
+    .score-bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .score-bar-bg { flex: 1; height: 6px; background: var(--bg2); border-radius: 3px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #f0883e, #d29922); }
+    .score-val { font-size: 12px; font-weight: 600; width: 38px; text-align: right; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .badge.specs      { background: #3fb95033; color: var(--green); border: 1px solid var(--green); }
+    .badge.candidates { background: #8957e533; color: var(--purple); border: 1px solid var(--purple); }
+    .badge.workshop   { background: #1f6feb33; color: var(--blue); border: 1px solid var(--blue); }
+
+    /* ── Event Log ─────────────── */
+    .event-list { }
+    .event-item { display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-bottom: 1px solid var(--border); }
+    .event-item:last-child { border-bottom: none; }
+    .event-icon { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .event-icon.caliber  { background: #d2992220; color: var(--yellow); }
+    .event-icon.publish  { background: #1f6feb20; color: var(--blue); }
+    .event-icon.update   { background: #3fb95020; color: var(--green); }
+    .event-icon.test     { background: #8957e520; color: var(--purple); }
+    .event-icon.new      { background: #39d3f220; color: var(--cyan); }
+    .event-text { flex: 1; font-size: 12px; }
+    .event-score { font-size: 11px; font-weight: 700; color: var(--yellow); background: #d2992220; padding: 1px 6px; border-radius: 3px; }
+    .event-time { font-size: 11px; color: var(--text2); flex-shrink: 0; }
+
+    /* ── Distribution ──────────── */
+    .dist-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 14px 16px; }
+    .dist-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+    .dist-icon { font-size: 26px; margin-bottom: 6px; }
+    .dist-name { font-size: 11px; color: var(--text1); margin-bottom: 6px; }
+    .dist-count { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+    .dist-detail { font-size: 10px; color: var(--text2); line-height: 1.6; }
+    .dist-rate { font-size: 11px; font-weight: 600; color: var(--green); margin-top: 4px; }
+
+    /* ── Chart ─────────────────── */
+    .chart-wrap { padding: 10px 16px 14px; }
+    .chart-legend { display: flex; gap: 16px; margin-bottom: 8px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text1); }
+    .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    /* ── Quick Actions ──────────── */
+    .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding: 12px 16px; }
+    .quick-btn {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 7px;
+      padding: 10px 12px; cursor: pointer; display: flex; align-items: center; gap: 9px;
+      transition: border-color .15s;
+    }
+    .quick-btn:hover { border-color: var(--blue); }
+    .quick-btn .q-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .quick-btn .q-title { font-size: 12px; font-weight: 600; }
+    .quick-btn .q-sub   { font-size: 10px; color: var(--text2); margin-top: 1px; }
+    .q-icon.blue  { background: #1f6feb33; }
+    .q-icon.yellow{ background: #d2992233; }
+    .q-icon.green { background: #3fb95033; }
+    .q-icon.purple{ background: #8957e533; }
+    .q-icon.cyan  { background: #39d3f233; }
+    .q-icon.orange{ background: #f0883e33; }
+    .q-icon.gray  { background: #30363d50; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ────────────────────────── -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-title">🔬 PlanningCaliber</div>
+      <div class="logo-sub">Command Center</div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <div><div>ダッシュボード</div><div class="nav-sub">Overview</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📁</span>
+        <div><div>プロジェクト管理</div><div class="nav-sub">Projects</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⚖️</span>
+        <div><div>Caliber評価</div><div class="nav-sub">Caliber Scoring</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🧪</span>
+        <div><div>ワークショップ</div><div class="nav-sub">Workshops</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⭐</span>
+        <div><div>候補管理</div><div class="nav-sub">Candidates</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📋</span>
+        <div><div>仕様管理</div><div class="nav-sub">Specs</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📡</span>
+        <div><div>PR-OS配信</div><div class="nav-sub">PR Distribution</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📊</span>
+        <div><div>アナリティクス</div><div class="nav-sub">Analytics</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📜</span>
+        <div><div>イベントログ</div><div class="nav-sub">Event Logs</div></div>
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <div><div>設定</div><div class="nav-sub">Settings</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-info">
+      <div>SYSTEM INFO</div>
+      <div>PlanningCaliber v1.0.0</div>
+      <div>OS: Windows 11</div>
+      <div>Python: 3.11.0</div>
+    </div>
+  </div>
+
+  <!-- ── Main ──────────────────────────── -->
+  <div class="main">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header-title">
+        <h1>制度OS統合管理ダッシュボード</h1>
+        <p>PlanningCaliber 全体を可視化・制御する中枢システム</p>
+      </div>
+      <div class="header-status">
+        <div class="dot"></div>
+        MoCKA接続: <strong style="color:var(--green)">ONLINE</strong>
+      </div>
+      <div class="header-sync" id="lastSync">最終同期: 2026-06-17 21:45:32</div>
+      <button class="btn-sync" onclick="doSync()">🔄 同期実行</button>
+      <button class="btn-dark">🌙 ダークモード</button>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- Metric Cards -->
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-icon blue">🧪</div>
+          <div class="metric-body">
+            <div class="label">ワークショップ中</div>
+            <div class="value" id="m-workshop">13</div>
+            <div class="delta pos">+2 今週</div>
+            <div class="label" style="margin-top:2px">プロジェクト</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon purple">⭐</div>
+          <div class="metric-body">
+            <div class="label">候補プロジェクト</div>
+            <div class="value" id="m-candidates">3</div>
+            <div class="delta pos">+1 今週</div>
+            <div class="label" style="margin-top:2px">プロジェクト</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon green">🛡️</div>
+          <div class="metric-body">
+            <div class="label">仕様確定 (specs)</div>
+            <div class="value" id="m-specs">0</div>
+            <div class="delta neu">±0 今週</div>
+            <div class="label" style="margin-top:2px">プロジェクト</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon yellow">📈</div>
+          <div class="metric-body">
+            <div class="label">平均Caliberスコア</div>
+            <div class="value" id="m-score">0.750</div>
+            <div class="delta neg">-0.02 前回比</div>
+            <div class="label" style="margin-top:2px">全プロジェクト</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon cyan">📡</div>
+          <div class="metric-body">
+            <div class="label">本日配信数</div>
+            <div class="value" id="m-posts">4</div>
+            <div class="delta pos">+4 本日</div>
+            <div class="label" style="margin-top:2px">投稿</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flow Map + Caliber Table -->
+      <div class="two-col">
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>プロジェクト構成マップ</h3>
+            <button class="btn-sm">詳細表示</button>
+          </div>
+          <div class="flow-map">
+            <div class="flow-node workshop">
+              <div class="fn-label">workshop</div>
+              <div class="fn-sub">実験中</div>
+              <div class="fn-count">13件</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node caliber">
+              <div class="fn-label">Caliber評価</div>
+              <div class="fn-sub">評価中</div>
+              <div class="fn-count">13件</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node candidates">
+              <div class="fn-label">candidates</div>
+              <div class="fn-sub">候補</div>
+              <div class="fn-count">3件</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node specs">
+              <div class="fn-label">specs</div>
+              <div class="fn-sub">仕様確定</div>
+              <div class="fn-count">0件</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node mocka">
+              <div class="fn-label">MoCKA本体</div>
+              <div class="fn-sub">統合済み</div>
+              <div class="fn-count">—</div>
+            </div>
+          </div>
+          <div style="padding: 0 16px 12px; font-size:10px; color:var(--text2); text-align:center">
+            ↑ フィードバック・改善 &nbsp;／&nbsp; 再実験ループ
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>Caliber評価サマリー</h3>
+            <button class="btn-sm">詳細レポート</button>
+          </div>
+          <table class="caliber-table">
+            <tr>
+              <td style="color:var(--text1);font-size:11px">プロジェクト</td>
+              <td style="color:var(--text1);font-size:11px">スコア</td>
+              <td style="color:var(--text1);font-size:11px">評価</td>
+              <td style="color:var(--text1);font-size:11px">最終評価日</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">PR-OS</td>
+              <td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:75%"></div></div><span class="score-val">0.750</span></div></td>
+              <td><span class="badge candidates">candidates</span></td>
+              <td style="color:var(--text2)">2026-06-17</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">SEO-OS</td>
+              <td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:68%"></div></div><span class="score-val">0.680</span></div></td>
+              <td><span class="badge candidates">candidates</span></td>
+              <td style="color:var(--text2)">2026-06-15</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">vasAI_Project</td>
+              <td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:61%"></div></div><span class="score-val">0.610</span></div></td>
+              <td><span class="badge workshop">workshop</span></td>
+              <td style="color:var(--text2)">2026-06-14</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Phi-OS</td>
+              <td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:59%"></div></div><span class="score-val">0.590</span></div></td>
+              <td><span class="badge workshop">workshop</span></td>
+              <td style="color:var(--text2)">2026-06-14</td>
+            </tr>
+            <tr>
+              <td style="font-weight:600">Orchestra_Project</td>
+              <td><div class="score-bar-wrap"><div class="score-bar-bg"><div class="score-bar-fill" style="width:70%"></div></div><span class="score-val">0.700</span></div></td>
+              <td><span class="badge candidates">candidates</span></td>
+              <td style="color:var(--text2)">2026-06-13</td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Event Log + Distribution -->
+      <div class="two-col">
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>最新イベントログ</h3>
+            <button class="btn-sm">全て表示</button>
+          </div>
+          <div class="event-list" id="eventList">
+            <div class="event-item">
+              <div class="event-icon caliber">⚖️</div>
+              <div class="event-text">PR-OS プロジェクトがCaliber評価されました</div>
+              <span class="event-score">0.750</span>
+              <span class="event-time">21:41:22</span>
+            </div>
+            <div class="event-item">
+              <div class="event-icon publish">📡</div>
+              <div class="event-text">KS_20260617_0004 を WordPress に配信しました</div>
+              <span class="event-time">21:35:10</span>
+            </div>
+            <div class="event-item">
+              <div class="event-icon update">🔄</div>
+              <div class="event-text">SEO-CENTER モジュールが更新されました</div>
+              <span class="event-time">21:20:45</span>
+            </div>
+            <div class="event-item">
+              <div class="event-icon test">✅</div>
+              <div class="event-text">Phi-OS 意味処理テストが完了しました</div>
+              <span class="event-time">20:55:33</span>
+            </div>
+            <div class="event-item">
+              <div class="event-icon new">✨</div>
+              <div class="event-text">新規プロジェクト workshop/memory を作成しました</div>
+              <span class="event-time">20:33:11</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>配信状況（PR-OS）</h3>
+            <button class="btn-sm">全て表示</button>
+          </div>
+          <div class="dist-grid">
+            <div class="dist-card">
+              <div class="dist-icon">🔷</div>
+              <div class="dist-name">WordPress</div>
+              <div class="dist-count" style="color:var(--blue)">12</div>
+              <div class="dist-detail">公開: 8 / 下書き: 4<br>成功: 12 / 失敗: 0</div>
+              <div class="dist-rate">成功率: 100%</div>
+            </div>
+            <div class="dist-card">
+              <div class="dist-icon">✖️</div>
+              <div class="dist-name">X (Twitter)</div>
+              <div class="dist-count" style="color:var(--text0)">28</div>
+              <div class="dist-detail">成功: 27 / 失敗: 1<br>&nbsp;</div>
+              <div class="dist-rate" style="color:var(--yellow)">成功率: 96%</div>
+            </div>
+            <div class="dist-card">
+              <div class="dist-icon">📸</div>
+              <div class="dist-name">Instagram</div>
+              <div class="dist-count" style="color:var(--purple)">15</div>
+              <div class="dist-detail">成功: 15 / 失敗: 0<br>&nbsp;</div>
+              <div class="dist-rate">成功率: 100%</div>
+            </div>
+            <div class="dist-card">
+              <div class="dist-icon">🐙</div>
+              <div class="dist-name">GitHub Pages</div>
+              <div class="dist-count" style="color:var(--green)">7</div>
+              <div class="dist-detail">成功: 7 / 失敗: 0<br>&nbsp;</div>
+              <div class="dist-rate">成功率: 100%</div>
+            </div>
+            <div class="dist-card">
+              <div class="dist-icon">📧</div>
+              <div class="dist-name">Newsletter</div>
+              <div class="dist-count" style="color:var(--cyan)">3</div>
+              <div class="dist-detail">成功: 3 / 失敗: 0<br>&nbsp;</div>
+              <div class="dist-rate">成功率: 100%</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Chart + Quick Actions -->
+      <div class="two-col">
+
+        <div class="panel">
+          <div class="panel-header">
+            <h3>今週のアクティビティ</h3>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-legend">
+              <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>実験</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--yellow)"></div>評価</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>配信</div>
+              <div class="legend-item"><div class="legend-dot" style="background:var(--purple)"></div>イベント</div>
+            </div>
+            <svg viewBox="0 0 500 130" width="100%" style="overflow:visible">
+              <!-- Grid lines -->
+              <line x1="0" y1="20"  x2="500" y2="20"  stroke="#30363d" stroke-width="0.5"/>
+              <line x1="0" y1="50"  x2="500" y2="50"  stroke="#30363d" stroke-width="0.5"/>
+              <line x1="0" y1="80"  x2="500" y2="80"  stroke="#30363d" stroke-width="0.5"/>
+              <line x1="0" y1="110" x2="500" y2="110" stroke="#30363d" stroke-width="0.5"/>
+              <!-- Labels -->
+              <text x="30"  y="125" fill="#6e7681" font-size="9" text-anchor="middle">06/11</text>
+              <text x="113" y="125" fill="#6e7681" font-size="9" text-anchor="middle">06/12</text>
+              <text x="196" y="125" fill="#6e7681" font-size="9" text-anchor="middle">06/13</text>
+              <text x="279" y="125" fill="#6e7681" font-size="9" text-anchor="middle">06/14</text>
+              <text x="362" y="125" fill="#6e7681" font-size="9" text-anchor="middle">06/15</text>
+              <text x="445" y="125" fill="#6e7681" font-size="9" text-anchor="middle">06/16</text>
+              <!-- 実験 (blue) -->
+              <polyline points="30,90 113,75 196,70 279,60 362,45 445,30"
+                fill="none" stroke="#58a6ff" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="30"  cy="90" r="3" fill="#58a6ff"/>
+              <circle cx="113" cy="75" r="3" fill="#58a6ff"/>
+              <circle cx="196" cy="70" r="3" fill="#58a6ff"/>
+              <circle cx="279" cy="60" r="3" fill="#58a6ff"/>
+              <circle cx="362" cy="45" r="3" fill="#58a6ff"/>
+              <circle cx="445" cy="30" r="3" fill="#58a6ff"/>
+              <!-- 評価 (yellow) -->
+              <polyline points="30,100 113,95 196,88 279,80 362,72 445,55"
+                fill="none" stroke="#d29922" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="30"  cy="100" r="3" fill="#d29922"/>
+              <circle cx="113" cy="95"  r="3" fill="#d29922"/>
+              <circle cx="196" cy="88"  r="3" fill="#d29922"/>
+              <circle cx="279" cy="80"  r="3" fill="#d29922"/>
+              <circle cx="362" cy="72"  r="3" fill="#d29922"/>
+              <circle cx="445" cy="55"  r="3" fill="#d29922"/>
+              <!-- 配信 (green) -->
+              <polyline points="30,108 113,105 196,100 279,95 362,85 445,70"
+                fill="none" stroke="#3fb950" stroke-width="2" stroke-linejoin="round"/>
+              <circle cx="30"  cy="108" r="3" fill="#3fb950"/>
+              <circle cx="113" cy="105" r="3" fill="#3fb950"/>
+              <circle cx="196" cy="100" r="3" fill="#3fb950"/>
+              <circle cx="279" cy="95"  r="3" fill="#3fb950"/>
+              <circle cx="362" cy="85"  r="3" fill="#3fb950"/>
+              <circle cx="445" cy="70"  r="3" fill="#3fb950"/>
+              <!-- イベント (purple) -->
+              <polyline points="30,103 113,98 196,94 279,88 362,78 445,65"
+                fill="none" stroke="#8957e5" stroke-width="2" stroke-linejoin="round" stroke-dasharray="4,3"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h3>クイックアクション</h3></div>
+          <div class="quick-grid">
+            <div class="quick-btn" onclick="alert('新規プロジェクト作成（workshop追加）')">
+              <div class="q-icon blue">➕</div>
+              <div><div class="q-title">新規プロジェクト作成</div><div class="q-sub">workshopに追加</div></div>
+            </div>
+            <div class="quick-btn" onclick="alert('Caliber評価実行')">
+              <div class="q-icon yellow">⚖️</div>
+              <div><div class="q-title">Caliber評価実行</div><div class="q-sub">プロジェクトを評価</div></div>
+            </div>
+            <div class="quick-btn" onclick="doSync()">
+              <div class="q-icon green">🔄</div>
+              <div><div class="q-title">イベント同期</div><div class="q-sub">MoCKAと同期</div></div>
+            </div>
+            <div class="quick-btn" onclick="alert('レポート生成')">
+              <div class="q-icon purple">📊</div>
+              <div><div class="q-title">レポート生成</div><div class="q-sub">各種レポート</div></div>
+            </div>
+            <div class="quick-btn" onclick="alert('PR-OS配信')">
+              <div class="q-icon cyan">📡</div>
+              <div><div class="q-title">PR-OS配信</div><div class="q-sub">手動配信を実行</div></div>
+            </div>
+            <div class="quick-btn" onclick="alert('テンプレート生成')">
+              <div class="q-icon orange">📄</div>
+              <div><div class="q-title">テンプレート生成</div><div class="q-sub">新規プロジェクト用</div></div>
+            </div>
+            <div class="quick-btn" onclick="alert('バックアップ')">
+              <div class="q-icon blue">☁️</div>
+              <div><div class="q-title">バックアップ</div><div class="q-sub">データを保護</div></div>
+            </div>
+            <div class="quick-btn" onclick="alert('システム設定')">
+              <div class="q-icon gray">⚙️</div>
+              <div><div class="q-title">システム設定</div><div class="q-sub">各種設定を変更</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<script>
+  // ── 同期ボタン ────────────────────────────────
+  function doSync() {
+    const el = document.getElementById('lastSync');
+    const now = new Date();
+    const ts  = now.getFullYear() + '-'
+              + String(now.getMonth()+1).padStart(2,'0') + '-'
+              + String(now.getDate()).padStart(2,'0') + ' '
+              + String(now.getHours()).padStart(2,'0') + ':'
+              + String(now.getMinutes()).padStart(2,'0') + ':'
+              + String(now.getSeconds()).padStart(2,'0');
+    el.textContent = '最終同期: ' + ts;
+
+    // イベントログに追記
+    const list = document.getElementById('eventList');
+    const item = document.createElement('div');
+    item.className = 'event-item';
+    item.innerHTML = `
+      <div class="event-icon update">🔄</div>
+      <div class="event-text">MoCKA同期を実行しました</div>
+      <span class="event-time">${ts.split(' ')[1]}</span>`;
+    list.insertBefore(item, list.firstChild);
+    if (list.children.length > 6) list.removeChild(list.lastChild);
+  }
+
+  // ── ナビゲーション ────────────────────────────
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.addEventListener('click', function() {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // ── 時刻自動更新 ──────────────────────────────
+  setInterval(() => {
+    // 1分ごとに同期日時を「n分前」表示に変更（省略）
+  }, 60000);
+</script>
+
+</body>
+</html>

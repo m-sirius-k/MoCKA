@@ -40,5 +40,39 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-17T07:14:58.459988"
+  "generated_at": "2026-06-17T07:14:58.459988",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "現在がこれです　どこまで有意義に自動化できるか？　また登録するサイトは？\n\nティックトックやインスタその他　Ai業界　研究者　経営層　など様々な所にアプローチし",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-27",
+        "why": "「クレームね・インシデントね」→記録→essence自動反映の全自動フローを実現。DECISIONはNORMAL自動・HIGH以上のみHuman Gate。",
+        "how": "",
+        "note": "auto_gate,essence_chain,TODO_046,TODO_084,app.py,完了",
+        "recur": 0,
+        "matched": [
+          "auto"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-27",
+        "why": "",
+        "how": "",
+        "note": "SESSION_COMPLETE,COMMAND_CENTER,v4.0,auto_gate,essence_chain",
+        "recur": 0,
+        "matched": [
+          "auto"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-16T22:26:57.713Z"
+  }
 }

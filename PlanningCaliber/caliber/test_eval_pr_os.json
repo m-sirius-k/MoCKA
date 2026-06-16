@@ -1,0 +1,11 @@
+{
+  "project": "pr-os",
+  "notes": "SEO-CENTER実装完了（2026-06-17）。WordPress / X / GitHub対応。MoCKA bridge統合済み。",
+  "scores": {
+    "reproducibility":   0.75,
+    "structure_clarity": 0.85,
+    "stability":         0.70,
+    "extensibility":     0.80,
+    "external_impact":   0.65
+  }
+}
