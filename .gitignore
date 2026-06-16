@@ -43,3 +43,7 @@ core_kernel/orchestra/data/
 # ローカル管理専用（識別子・運用ファイル類 / GitHub非公開）
 # 制度的決定: E20260616_094 / 2026-06-16 きむら博士承認
 docs/internal/
+
+# 大容量辞書データ（GitHub 100MB制限超過 / ローカル管理）
+docs/reference/semantic_dictionary/raw/all_terms.json
+docs/reference/semantic_dictionary/raw/all_terms.md

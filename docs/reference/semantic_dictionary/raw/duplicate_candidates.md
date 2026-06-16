@@ -1,0 +1,6215 @@
+# 重複候補
+
+- ESS / SSSS → 同一概念の可能性
+- _Curve / _Curves → 同一概念の可能性
+- A-F / a-f → 同一概念の可能性
+- A-Fa / a-fA → 同一概念の可能性
+- A-Z / a-z → 同一概念の可能性
+- A-Za / a-zA → 同一概念の可能性
+- A-Za-z / a-zA-Z → 同一概念の可能性
+- ABCD / ABCDE → 同一概念の可能性
+- ABI / abi → 同一概念の可能性
+- ABL / ABLE → 同一概念の可能性
+- ABORT / aborts → 同一概念の可能性
+- AbortThread → 同一概念の可能性
+- AbstractDistribution → 同一概念の可能性
+- AbstractProvider → 同一概念の可能性
+- AbstractResolver → 同一概念の可能性
+- AbstractSandbox → 同一概念の可能性
+- ACC / ACCESS → 同一概念の可能性
+- ACCEPT_ENCODING / Accept-Encoding / accept-encoding → 同一概念の可能性
+- accept_signed_payload → 同一概念の可能性
+- ACK / ack → 同一概念の可能性
+- ACM / ACME → 同一概念の可能性
+- ACT / ACTS / act → 同一概念の可能性
+- ACTION / ACTIONS / Action → 同一概念の可能性
+- ActionResult → 同一概念の可能性
+- ACTIVE → 同一概念の可能性
+- ACTIVATE / activate → 同一概念の可能性
+- ACTOR / Actor / actor → 同一概念の可能性
+- AdaCore-doc / adacore-doc → 同一概念の可能性
+- adapter-id / adapter_id → 同一概念の可能性
+- adapter-name / adapter_name → 同一概念の可能性
+- ADD / ADDS / add → 同一概念の可能性
+- add_column / add_columns → 同一概念の可能性
+- add_dict_to_cookiejar → 同一概念の可能性
+- add_ext_suffix_39 → 同一概念の可能性
+- add_find_links → 同一概念の可能性
+- add_header / add_headers → 同一概念の可能性
+- add_include_dir → 同一概念の可能性
+- add_library_dir → 同一概念の可能性
+- add_license_files → 同一概念の可能性
+- add_link_object → 同一概念の可能性
+- add_missing_heading → 同一概念の可能性
+- add_named_requirement → 同一概念の可能性
+- add_ngrok_header → 同一概念の可能性
+- add_option / add_options → 同一概念の可能性
+- add_parse_action → 同一概念の可能性
+- add_runtime_library_dir → 同一概念の可能性
+- add_stderr_logger → 同一概念の可能性
+- add_target_python_options → 同一概念の可能性
+- add_tests_ascii → 同一概念の可能性
+- add_tests_hex → 同一概念の可能性
+- add_tests_sp800_108_counter → 同一概念の可能性
+- add_trusted_host → 同一概念の可能性
+- add_unnamed_requirement → 同一概念の可能性
+- add_unredirected_header → 同一概念の可能性
+- address_in_network → 同一概念の可能性
+- adjacent_tmp_file → 同一概念の可能性
+- AdjacentTempDirectory → 同一概念の可能性
+- adjust_key_parity → 同一概念の可能性
+- adjust_line_length → 同一概念の可能性
+- Adobe-Display-PostScript / adobe-display-postscript → 同一概念の可能性
+- Adobe-Glyph / adobe-glyph → 同一概念の可能性
+- Adobe-Utopia / adobe-utopia → 同一概念の可能性
+- AEAD → 同一概念の可能性
+- AES128_GCM → 同一概念の可能性
+- AES256_GCM → 同一概念の可能性
+- AES-SIV / AES_SIV → 同一概念の可能性
+- AFTER / after → 同一概念の可能性
+- AGE / AGEE / age → 同一概念の可能性
+- AGENT / AGENTS → 同一概念の可能性
+- aggressive_tree_merge → 同一概念の可能性
+- agreement_score → 同一概念の可能性
+- AIE / AIES → 同一概念の可能性
+- ai-chip / ai-chips → 同一概念の可能性
+- AI_ID / ai_id → 同一概念の可能性
+- AI Orchestration Threat Model / AI_ORCHESTRATION_THREAT_MODEL → 同一概念の可能性
+- AI-SHARE / AI_SHARE / ai-share → 同一概念の可能性
+- AI-SHARE-LOGS / ai_share_logs → 同一概念の可能性
+- AI_TARGETS / ai-targets → 同一概念の可能性
+- AID / AIDE / AIDS → 同一概念の可能性
+- ALERT / ALERTS → 同一概念の可能性
+- ALIA / alias → 同一概念の可能性
+- align_to_mmap → 同一概念の可能性
+- AlignmentDiff → 同一概念の可能性
+- ALIVE / alive → 同一概念の可能性
+- ALL / all → 同一概念の可能性
+- all_intent_keys → 同一概念の可能性
+- all_memory_types → 同一概念の可能性
+- all-releases / all_releases → 同一概念の可能性
+- all_target_types → 同一概念の可能性
+- ALLOWED / allowed → 同一概念の可能性
+- ALLOWED_FAIL_KINDS / allowed_fail_kinds → 同一概念の可能性
+- allowed_gai_family → 同一概念の可能性
+- ALPHANUM / alphanums → 同一概念の可能性
+- AlreadyInstalledCandidate → 同一概念の可能性
+- alternate / alternates → 同一概念の可能性
+- altz_to_utctz_str → 同一概念の可能性
+- ALWAYS_ENABLED_FEATURES / always_enabled_features → 同一概念の可能性
+- AmbiguousObjectName → 同一概念の可能性
+- AMD-newlib / amd-newlib → 同一概念の可能性
+- AML-glslang / aml-glslang → 同一概念の可能性
+- AnalysisResult → 同一概念の可能性
+- ANALYTICS / Analytics → 同一概念の可能性
+- ANALYZE / analyze → 同一概念の可能性
+- analyze_and_extract → 同一概念の可能性
+- analyze_event / analyze_events → 同一概念の可能性
+- analyze_p1_orchestra_search_degradation → 同一概念の可能性
+- AnalyzerInterface → 同一概念の可能性
+- ANCHOR_ID / anchor-id → 同一概念の可能性
+- ANCHOR_PATH / ANCHOR_PATHS → 同一概念の可能性
+- ANDROID / Android → 同一概念の可能性
+- ANIMATIONEND / AnimationEnd → 同一概念の可能性
+- ANIMATIONITERATION / AnimationIteration → 同一概念の可能性
+- ANIMATIONSTART / AnimationStart → 同一概念の可能性
+- ANN / ANNE → 同一概念の可能性
+- AnnotatedItem → 同一概念の可能性
+- AnnotatedMeta → 同一概念の可能性
+- annual_income_man → 同一概念の可能性
+- AnsiDecoder → 同一概念の可能性
+- ANT / ANTE → 同一概念の可能性
+- AnthropicAdapter → 同一概念の可能性
+- ANTLR-PD / antlr-pd → 同一概念の可能性
+- ANTLR-PD-fallback / antlr-pd-fallback → 同一概念の可能性
+- any-OSI / any-osi → 同一概念の可能性
+- any-OSI-perl-modules / any-osi-perl-modules → 同一概念の可能性
+- APE / APS → 同一概念の可能性
+- API / APIS → 同一概念の可能性
+- api_context_compose → 同一概念の可能性
+- API_KEY / api-key → 同一概念の可能性
+- APPDATA / AppData → 同一概念の可能性
+- APPDIRS / AppDirs → 同一概念の可能性
+- APPEND / append → 同一概念の可能性
+- append_evaluation_queue → 同一概念の可能性
+- append_health_log → 同一概念の可能性
+- append_nest_to_list → 同一概念の可能性
+- Append-only / append-only → 同一概念の可能性
+- AppEngineManager → 同一概念の可能性
+- AppEnginePlatformError → 同一概念の可能性
+- AppEnginePlatformWarning → 同一概念の可能性
+- APPLIED / applied → 同一概念の可能性
+- APPLY / apply → 同一概念の可能性
+- apply_audit_schema_v1 → 同一概念の可能性
+- apply_auto_actions → 同一概念の可能性
+- apply_delta_data → 同一概念の可能性
+- apply_normalize_rules → 同一概念の可能性
+- apply_patch / apply_patches → 同一概念の可能性
+- ApplyResult → 同一概念の可能性
+- APPROVE / approve → 同一概念の可能性
+- ApprovalResult → 同一概念の可能性
+- ApprovalRule → 同一概念の可能性
+- approve_and_apply → 同一概念の可能性
+- APPROVED / approved → 同一概念の可能性
+- ARCHITECTURE / Architecture → 同一概念の可能性
+- ARCHITECTURE_DIAGRAM / Architecture Diagrams → 同一概念の可能性
+- ARCHIVE / archive → 同一概念の可能性
+- ARCHIVE_PROOF / archive-proof → 同一概念の可能性
+- archive_re_reduced → 同一概念の可能性
+- ARCHIVED → 同一概念の可能性
+- ArchiveInfo → 同一概念の可能性
+- ArgumentsInvalidError → 同一概念の可能性
+- ARM / Arm → 同一概念の可能性
+- ART / ARTS → 同一概念の可能性
+- ARTIFACT / ARTIFACTS / Artifact / Artifacts → 同一概念の可能性
+- artifact_id / artifact_ids → 同一概念の可能性
+- ARTIFACT_TYPE / ARTIFACT_TYPES → 同一概念の可能性
+- Artificial Civilization Layer Model / artificial_civilization_layer_model → 同一概念の可能性
+- Artistic-dist / artistic-dist → 同一概念の可能性
+- as_base_candidate → 同一概念の可能性
+- ASK / ASKS / ask → 同一概念の可能性
+- ask-input / ask_input → 同一概念の可能性
+- ask_path_exists → 同一概念の可能性
+- ASM / ASME → 同一概念の可能性
+- Aspell-RU / aspell-ru → 同一概念の可能性
+- assert_header_parsing → 同一概念の可能性
+- assert_key_active → 同一概念の可能性
+- assert_no_path_traversal → 同一概念の可能性
+- assert_source_matches_version → 同一概念の可能性
+- assert_string_list → 同一概念の可能性
+- assert_vasai_direction → 同一概念の可能性
+- ASSISTANT_MESSAGE / assistant-message → 同一概念の可能性
+- assure_data_present → 同一概念の可能性
+- assure_directory_exists → 同一概念の可能性
+- Asterisk-exception / asterisk-exception → 同一概念の可能性
+- Asterisk-linking-protocols-exception / asterisk-linking-protocols-exception → 同一概念の可能性
+- ASWF-Digital-Assets / aswf-digital-assets → 同一概念の可能性
+- AsyncContextManager → 同一概念の可能性
+- AsyncGenerator → 同一概念の可能性
+- AtLineStart → 同一概念の可能性
+- atomic_write_text → 同一概念の可能性
+- AtStringStart → 同一概念の可能性
+- AUDIT / audit → 同一概念の可能性
+- AUDIT_DECISION / audit_decision → 同一概念の可能性
+- audit_decision_layer → 同一概念の可能性
+- audit_governance_layer → 同一概念の可能性
+- audit_memory_layer → 同一概念の可能性
+- audit_seal_manual → 同一概念の可能性
+- audit_semantic_layer → 同一概念の可能性
+- AuditAnalyzer → 同一概念の可能性
+- AuditEngine → 同一概念の可能性
+- AuditEventDerived → 同一概念の可能性
+- AuditEventInput → 同一概念の可能性
+- AuditLogger → 同一概念の可能性
+- AuditPipeline → 同一概念の可能性
+- AuditRecord / AuditRecords → 同一概念の可能性
+- AuditReport → 同一概念の可能性
+- AuditResult → 同一概念の可能性
+- AuditSink → 同一概念の可能性
+- AuditStore → 同一概念の可能性
+- AuditWriter → 同一概念の可能性
+- AUTH → 同一概念の可能性
+- auth_header_value / auth_header_values → 同一概念の可能性
+- AUTH_PSK → 同一概念の可能性
+- AuthBase → 同一概念の可能性
+- AUTHOR / AUTHORS / author → 同一概念の可能性
+- Author-email / author-email → 同一概念の可能性
+- Authority → 同一概念の可能性
+- AuthorityConflictError → 同一概念の可能性
+- AuthorityManager → 同一概念の可能性
+- AuthorityType → 同一概念の可能性
+- AUTO / auto → 同一概念の可能性
+- AUTO-ADDED / auto-added → 同一概念の可能性
+- AUTO_APPROVE / auto-approve / auto_approve → 同一概念の可能性
+- AUTO_APPROVED / Auto-approved → 同一概念の可能性
+- auto_audit_loop → 同一概念の可能性
+- auto_complete_paths → 同一概念の可能性
+- AUTO_DELETE / auto-delete → 同一概念の可能性
+- Auto-detect / auto-detect → 同一概念の可能性
+- AUTO_GATE / Auto-Gate → 同一概念の可能性
+- Auto-inject / auto-inject → 同一概念の可能性
+- Auto-populate / auto-populate → 同一概念の可能性
+- auto_process_loop → 同一概念の可能性
+- auto_reject_critical → 同一概念の可能性
+- Auto-Repair / auto-repair → 同一概念の可能性
+- auto_rich_repr → 同一概念の可能性
+- Auto-save / auto-save → 同一概念の可能性
+- Auto-scrolls / auto-scroll → 同一概念の可能性
+- auto_update_essence_from_mataka → 同一概念の可能性
+- Auto-Winding / Auto-winding → 同一概念の可能性
+- Autoconf-exception / autoconf-exception → 同一概念の可能性
+- Autoconf-exception-generic / autoconf-exception-generic → 同一概念の可能性
+- Autoconf-exception-macro / autoconf-exception-macro → 同一概念の可能性
+- AVG / avg → 同一概念の可能性
+- AzureProvider → 同一概念の可能性
+- BEE / BESS → 同一概念の可能性
+- B-A / b-a → 同一概念の可能性
+- BAS / BASS → 同一概念の可能性
+- back-end / back-ends → 同一概念の可能性
+- BACKEND / Backend / backends → 同一概念の可能性
+- BackendUnavailable → 同一概念の可能性
+- BACKOFF_MAX → 同一概念の可能性
+- BACKUP / backup → 同一概念の可能性
+- BACKUP_DIR / backup_dir → 同一概念の可能性
+- Backward compatibility / Backward-compatibility / backward compatibility / backward-compatibility → 同一概念の可能性
+- Backwards-compatibility / backwards-compatibility → 同一概念の可能性
+- Backwards-compatible / backwards-compatible → 同一概念の可能性
+- BAD / BADE → 同一概念の可能性
+- BadCommand → 同一概念の可能性
+- BadMagicError → 同一概念の可能性
+- BadMetadata → 同一概念の可能性
+- BadName → 同一概念の可能性
+- BadObject → 同一概念の可能性
+- BadObjectType → 同一概念の可能性
+- BALANCED_MODE → 同一概念の可能性
+- BAN / BANE → 同一概念の可能性
+- BAR / BARE / BARS / Bar / bar / bare → 同一概念の可能性
+- BarColumn → 同一概念の可能性
+- BASE → 同一概念の可能性
+- BASE_EXEC_PREFIX / base_exec_prefix → 同一概念の可能性
+- BaseAdapter → 同一概念の可能性
+- BaseCache → 同一概念の可能性
+- BaseConfigurator → 同一概念の可能性
+- BaseDistribution → 同一概念の可能性
+- BaseEntryPoint → 同一概念の可能性
+- BaseEnvironment → 同一概念の可能性
+- BaseHeuristic → 同一概念の可能性
+- BaseIndexEntry → 同一概念の可能性
+- BaseIndexEntryHelper → 同一概念の可能性
+- BaselineCollector → 同一概念の可能性
+- BasePath → 同一概念の可能性
+- BaseProvider → 同一概念の可能性
+- BaseProxy → 同一概念の可能性
+- BaseReporter → 同一概念の可能性
+- BaseResolver → 同一概念の可能性
+- BaseSpecifier → 同一概念の可能性
+- BaseWorker → 同一概念の可能性
+- BasicMultilingualPlane → 同一概念の可能性
+- BAT / BATE → 同一概念の可能性
+- BATCH / batch → 同一概念の可能性
+- bcrypt-Solar-Designer / bcrypt-solar-designer → 同一概念の可能性
+- bech32_create_checksum → 同一概念の可能性
+- bech32_hrp_expand → 同一概念の可能性
+- bech32_verify_checksum → 同一概念の可能性
+- BEE_DAILY_SCAN / bee_daily_scan → 同一概念の可能性
+- BEFORE / before → 同一概念の可能性
+- before_and_after → 同一概念の可能性
+- BELL / bell → 同一概念の可能性
+- BEOPEN / BeOpen → 同一概念の可能性
+- BEST / best → 同一概念の可能性
+- Best-effort / best-effort → 同一概念の可能性
+- BestCandidateResult → 同一概念の可能性
+- BestVersionAlreadyInstalled → 同一概念の可能性
+- BetaEcologyEngine → 同一概念の可能性
+- BetterRotatingFileHandler → 同一概念の可能性
+- BID / BIDE → 同一概念の可能性
+- bin_sha_from_filename → 同一概念の可能性
+- BinaryOp → 同一概念の可能性
+- BIND / bind → 同一概念の可能性
+- BindingEngine → 同一概念の可能性
+- BindingError → 同一概念の可能性
+- BindingResult → 同一概念の可能性
+- BindingStatus → 同一概念の可能性
+- Bison-exception / bison-exception → 同一概念の可能性
+- BIT / BITE / BITS → 同一概念の可能性
+- BitcoinBlockHeaderAttestation → 同一概念の可能性
+- BitcoinMessage → 同一概念の可能性
+- Bitstream-Charter / bitstream-charter → 同一概念の可能性
+- Bitstream-Vera / bitstream-vera → 同一概念の可能性
+- BlameEntry → 同一概念の可能性
+- BLOB / BLOBS / Blob / blobs → 同一概念の可能性
+- BlobFilter → 同一概念の可能性
+- Block-Size / block-size → 同一概念の可能性
+- BlockChainingTests → 同一概念の可能性
+- BLOCKED / blocked → 同一概念の可能性
+- BlockingLockFile → 同一概念の可能性
+- BlockSizeTest → 同一概念の可能性
+- BOD / BODE → 同一概念の可能性
+- BodyNotHttplibCompatible → 同一概念の可能性
+- Boehm-GC / boehm-gc → 同一概念の可能性
+- Boehm-GC-without-fee / boehm-gc-without-fee → 同一概念の可能性
+- BOM / BOMS → 同一概念の可能性
+- BON / BONE → 同一概念の可能性
+- BOOM / boom → 同一概念の可能性
+- Bootloader-exception / bootloader-exception → 同一概念の可能性
+- BPE / BPS → 同一概念の可能性
+- BRANCH / BRANCHES / branch / branches → 同一概念の可能性
+- BRANCH_PATH / branch_path → 同一概念の可能性
+- break_args_options → 同一概念の可能性
+- BREAK-EVEN / Break-Even / Break-even / break-even → 同一概念の可能性
+- break-word / break-words → 同一概念の可能性
+- Brian-Gladman / brian-gladman → 同一概念の可能性
+- BridgeError → 同一概念の可能性
+- BrokenPipeError → 同一概念の可能性
+- BrokenRepr → 同一概念の可能性
+- BrokenStdoutLoggingError → 同一概念の可能性
+- BrotliDecoder → 同一概念の可能性
+- BSD-Advertising-Acknowledgement / bsd-advertising-acknowledgement → 同一概念の可能性
+- BSD-Attribution-HPND-disclaimer / bsd-attribution-hpnd-disclaimer → 同一概念の可能性
+- BSD-Inferno-Nettverk / bsd-inferno-nettverk → 同一概念の可能性
+- BSD-Protection / bsd-protection → 同一概念の可能性
+- BSD-Source-beginning-file / bsd-source-beginning-file → 同一概念の可能性
+- BSD-Source-Code / bsd-source-code → 同一概念の可能性
+- BSD-Systemics / bsd-systemics → 同一概念の可能性
+- BUS / BUSS → 同一概念の可能性
+- buffer → 同一概念の可能性
+- BufferFull → 同一概念の可能性
+- BufferOverflowTest → 同一概念の可能性
+- BUG / BUGS → 同一概念の可能性
+- BUILD / build → 同一概念の可能性
+- build_and_install → 同一概念の可能性
+- build_cause_chain → 同一概念の可能性
+- build-clib / build_clib → 同一概念の可能性
+- build_connection_pool_key_attributes → 同一概念の可能性
+- build-constraint / build_constraints → 同一概念の可能性
+- build_coverage_matrix → 同一概念の可能性
+- build_digest_header → 同一概念の可能性
+- BUILD_ENV / build-env → 同一概念の可能性
+- build_error_response → 同一概念の可能性
+- build_extension / build_extensions → 同一概念の可能性
+- build_for_compact → 同一概念の可能性
+- build_for_gemini → 同一概念の可能性
+- build_for_gpt → 同一概念の可能性
+- build_governance_loop_definition → 同一概念の可能性
+- build_incident_essence → 同一概念の可能性
+- build_iter_view → 同一概念の可能性
+- build_layer_definitions → 同一概念の可能性
+- build_merkle_tree_from_txs → 同一概念の可能性
+- build_merkle_tree_from_txids → 同一概念の可能性
+- build_module / build_modules → 同一概念の可能性
+- build_operation_essence → 同一概念の可能性
+- build_package_data → 同一概念の可能性
+- build_philosophy_essence → 同一概念の可能性
+- build_post_data → 同一概念の可能性
+- build_schema_diff → 同一概念の可能性
+- build-script / build-scripts / build_scripts → 同一概念の可能性
+- build_signed_bytes → 同一概念の可能性
+- build_success_response → 同一概念の可能性
+- build_trace_graph → 同一概念の可能性
+- build_tracker_id → 同一概念の可能性
+- build_url_from_netloc → 同一概念の可能性
+- build_vault_packet_logic → 同一概念の可能性
+- build_witness_merkle_tree_from_txs → 同一概念の可能性
+- BuildBackendHookCaller → 同一概念の可能性
+- BuildDependencyInstallError → 同一概念の可能性
+- BuildEnvironment → 同一概念の可能性
+- BuildEnvironmentInstaller → 同一概念の可能性
+- by_group_and_name → 同一概念の可能性
+- BYPASS / ByPass → 同一概念の可能性
+- bypass_compiler_fixup → 同一概念の可能性
+- BYTE / BYTES / bytes → 同一概念の可能性
+- Byte-compile / byte-compile / byte_compile → 同一概念の可能性
+- Byte-compilation / byte-compilation → 同一概念の可能性
+- Byte-compiled / byte-compiled → 同一概念の可能性
+- Byte-compiling / byte-compiling → 同一概念の可能性
+- ByteArrayTest / ByteArrayTests → 同一概念の可能性
+- bytes_to_long → 同一概念の可能性
+- BytesDeserializationContext → 同一概念の可能性
+- BytesSerializationContext → 同一概念の可能性
+- BytesSerializer → 同一概念の可能性
+- C32 → 同一概念の可能性
+- C64 → 同一概念の可能性
+- C-UDA / c-uda → 同一概念の可能性
+- ca-bundle / ca-bundles → 同一概念の可能性
+- ca_bundle_info → 同一概念の可能性
+- Cache / cache → 同一概念の可能性
+- Cache-Control / cache-control → 同一概念の可能性
+- cache_from_source → 同一概念の可能性
+- CacheablePageContent → 同一概念の可能性
+- CacheCommand → 同一概念の可能性
+- CacheControl → 同一概念の可能性
+- CacheControlAdapter → 同一概念の可能性
+- CacheController → 同一概念の可能性
+- cached_cell_len → 同一概念の可能性
+- CacheEntry → 同一概念の可能性
+- CacheError → 同一概念の可能性
+- CAG / CAGE → 同一概念の可能性
+- calc_break_even → 同一概念の可能性
+- calc_merkle_root → 同一概念の可能性
+- calc_rate_local → 同一概念の可能性
+- calc_witness_merkle_root → 同一概念の可能性
+- calc_Z / calc_z → 同一概念の可能性
+- Caldera-no-preamble / caldera-no-preamble → 同一概念の可能性
+- CALIBER / Caliber → 同一概念の可能性
+- CALIBER_PROCESS / caliber_process → 同一概念の可能性
+- CALL / call → 同一概念の可能性
+- CALL_AI_STUB / call_ai_stub → 同一概念の可能性
+- call_vcs_version → 同一概念の可能性
+- call_write_event → 同一概念の可能性
+- CallableRemoteProgress → 同一概念の可能性
+- CallbackFileWrapper → 同一概念の可能性
+- CAM / CAME → 同一概念の可能性
+- CAN / CANE → 同一概念の可能性
+- can_parse_next → 同一概念の可能性
+- CANCEL / cancel → 同一概念の可能性
+- CANDIDATES / Candidate / candidate / candidates → 同一概念の可能性
+- CandidateEvaluator → 同一概念の可能性
+- CandidatePreferences → 同一概念の可能性
+- canonic_data_files → 同一概念の可能性
+- canonic_package_data → 同一概念の可能性
+- canonical_json_bytes → 同一概念の可能性
+- canonicalize_json_str → 同一概念の可能性
+- canonicalize_license_expression → 同一概念の可能性
+- cant_write_to_target → 同一概念の可能性
+- CAPABILITY / capability → 同一概念の可能性
+- CapabilityRegistry → 同一概念の可能性
+- CAPTURE / Capture / capture → 同一概念の可能性
+- CaptureError → 同一概念の可能性
+- CAR / CARE → 同一概念の可能性
+- CARD / CARDS → 同一概念の可能性
+- CARRIAGE_RETURN → 同一概念の可能性
+- CASE / CASES → 同一概念の可能性
+- case_append_only_violation → 同一概念の可能性
+- case_empty_body → 同一概念の可能性
+- Case-insensitive / case-insensitive → 同一概念の可能性
+- case_invalid_json → 同一概念の可能性
+- case_large_payload → 同一概念の可能性
+- case_layer2_regression → 同一概念の可能性
+- case_missing_decision_id → 同一概念の可能性
+- case_mocka_ingest_priority → 同一概念の可能性
+- case_node_id_immutable → 同一概念の可能性
+- case_normal_continue → 同一概念の可能性
+- case_normal_stable → 同一概念の可能性
+- case_null_fields → 同一概念の可能性
+- case_phios_ingest → 同一概念の可能性
+- case_phios_sync_invalid_target → 同一概念の可能性
+- case_phios_sync_loop_limit → 同一概念の可能性
+- case_phios_sync_stable → 同一概念の可能性
+- case_poll_failure_continues → 同一概念の可能性
+- case_poll_success_ingest → 同一概念の可能性
+- case_restart_survival → 同一概念の可能性
+- Case-sensitive / case-sensitive → 同一概念の可能性
+- case_type_error_decision_id → 同一概念の可能性
+- case_unknown_view_type → 同一概念の可能性
+- case_view_cache_invalidate → 同一概念の可能性
+- case_view_default → 同一概念の可能性
+- case_view_fusion_merge_and_diff → 同一概念の可能性
+- case_view_risk_high_density → 同一概念の可能性
+- case_view_timeline → 同一概念の可能性
+- CaseInsensitiveDict → 同一概念の可能性
+- CaselessKeyword → 同一概念の可能性
+- CaselessLiteral → 同一概念の可能性
+- cat_then_unary_op → 同一概念の可能性
+- CATEGORY / Category / category → 同一概念の可能性
+- CAUTION → 同一概念の可能性
+- CbcMode → 同一概念の可能性
+- CbcTests → 同一概念の可能性
+- CC-BY / cc-by → 同一概念の可能性
+- CC-BY-NC / cc-by-nc → 同一概念の可能性
+- CC-BY-NC-ND / cc-by-nc-nd → 同一概念の可能性
+- CC-BY-NC-SA / cc-by-nc-sa → 同一概念の可能性
+- CC-BY-ND / cc-by-nd → 同一概念の可能性
+- CC-BY-SA / cc-by-sa → 同一概念の可能性
+- CC-PDDC / cc-pddc → 同一概念の可能性
+- CC-PDM / cc-pdm → 同一概念の可能性
+- CC-SA / cc-sa → 同一概念の可能性
+- CcmMode → 同一概念の可能性
+- CcmTests → 同一概念の可能性
+- CDLA-Permissive / cdla-permissive → 同一概念の可能性
+- CDLA-Sharing / cdla-sharing → 同一概念の可能性
+- CECILL-B / cecill-b → 同一概念の可能性
+- CECILL-C / cecill-c → 同一概念の可能性
+- CELL / cells → 同一概念の可能性
+- CENTER / center → 同一概念の可能性
+- CERN-OHL / cern-ohl → 同一概念の可能性
+- CERN-OHL-S / cern-ohl-s → 同一概念の可能性
+- CERN-OHL-P / cern-ohl-p → 同一概念の可能性
+- CERN-OHL-W / cern-ohl-w → 同一概念の可能性
+- CERT_CHAIN_CONTEXT → 同一概念の可能性
+- CERT_CHAIN_ELEMENT → 同一概念の可能性
+- CERT_CHAIN_ENGINE_CONFIG / cert_chain_engine_config → 同一概念の可能性
+- CERT_CHAIN_PARA → 同一概念の可能性
+- CERT_CHAIN_POLICY_PARA → 同一概念の可能性
+- CERT_CHAIN_POLICY_STATUS → 同一概念の可能性
+- CERT_CONTEXT → 同一概念の可能性
+- CERT_ENHKEY_USAGE / cert_enhkey_usage → 同一概念の可能性
+- CERT_SIMPLE_CHAIN → 同一概念の可能性
+- cert_store_stats → 同一概念の可能性
+- CERT_TRUST_STATUS → 同一概念の可能性
+- CERT_USAGE_MATCH / cert_usage_match → 同一概念の可能性
+- CertificateError → 同一概念の可能性
+- CERTIFICATION → 同一概念の可能性
+- CfbMode → 同一概念の可能性
+- CfbTests → 同一概念の可能性
+- CGAL-linking-exception / cgal-linking-exception → 同一概念の可能性
+- CHACHA20 / ChaCha20 → 同一概念の可能性
+- CHACHA20_POLY1305 → 同一概念の可能性
+- ChaCha20Cipher → 同一概念の可能性
+- ChaCha20Poly1305Cipher → 同一概念の可能性
+- ChaCha20Poly1305Tests → 同一概念の可能性
+- ChaCha20Test → 同一概念の可能性
+- CHAIN / chain → 同一概念の可能性
+- ChainMap → 同一概念の可能性
+- CHANGE / CHANGES → 同一概念の可能性
+- CHANGE_DONE → 同一概念の可能性
+- change_root / change_roots → 同一概念の可能性
+- CHANGE_START → 同一概念の可能性
+- CHANGED / changed → 同一概念の可能性
+- ChangeTracker → 同一概念の可能性
+- CHAR / Char → 同一概念の可能性
+- CharsNotIn → 同一概念の可能性
+- CHECK / CHECKS / check → 同一概念の可能性
+- check_abort_conditions → 同一概念の可能性
+- check_against_chunks → 同一概念の可能性
+- check_against_file → 同一概念の可能性
+- check_against_path → 同一概念の可能性
+- check_and_trigger_essence_update → 同一概念の可能性
+- check_archive_formats → 同一概念の可能性
+- check_authority_duplication → 同一概念の可能性
+- check_binding_disconnected → 同一概念の可能性
+- check_broken_egg_info → 同一概念の可能性
+- check_build_constraints → 同一概念の可能性
+- check_caliber_health → 同一概念の可能性
+- check_config_h → 同一概念の可能性
+- check_date_consistency → 同一概念の可能性
+- check_default_index → 同一概念の可能性
+- check_dist_restriction → 同一概念の可能性
+- check_entry_points → 同一概念の可能性
+- check_event_invalid_generation → 同一概念の可能性
+- check_extensions_list → 同一概念の可能性
+- check_external_imports → 同一概念の可能性
+- check_externally_managed → 同一概念の可能性
+- check_file_hash → 同一概念の可能性
+- check_first_requirement_in_file → 同一概念の可能性
+- check_gate_bypass → 同一概念の可能性
+- check_header_validity → 同一概念の可能性
+- check_http_get → 同一概念の可能性
+- check_hyphen_ok → 同一概念の可能性
+- check_if_exists → 同一概念の可能性
+- check_initial_combiner → 同一概念の可能性
+- check_install_conflicts → 同一概念の可能性
+- check_institution_missing → 同一概念の可能性
+- check_invalid_constraint_type → 同一概念の可能性
+- check_layer1_constraints → 同一概念の可能性
+- check_library_list → 同一概念の可能性
+- check_list_path_option → 同一概念の可能性
+- check_ngrok_status → 同一概念の可能性
+- check_package / check_packages → 同一概念の可能性
+- check_package_data → 同一概念の可能性
+- check_package_set → 同一概念の可能性
+- check_path_owner → 同一概念の可能性
+- check_project_names → 同一概念の可能性
+- check_pth_processing → 同一概念の可能性
+- check_relay_dom → 同一概念の可能性
+- check_release_control_exclusive → 同一概念の可能性
+- check_requires_python → 同一概念の可能性
+- check_site_dir → 同一概念の可能性
+- check_test_suite → 同一概念の可能性
+- check_undefined_meaning → 同一概念の可能性
+- check_unsafe_options → 同一概念の可能性
+- check_unsafe_protocols → 同一概念の可能性
+- check_url_placeholders → 同一概念の可能性
+- check_version_conflict → 同一概念の可能性
+- check_version_consistency → 同一概念の可能性
+- check_watcher_health → 同一概念の可能性
+- CheckBlock → 同一概念の可能性
+- CheckBlockError → 同一概念の可能性
+- CheckBlockHeader → 同一概念の可能性
+- CheckBlockHeaderError → 同一概念の可能性
+- CheckCommand → 同一概念の可能性
+- CHECKER / CHECKERS → 同一概念の可能性
+- CHECKLIST / checklist → 同一概念の可能性
+- ChecklistResult → 同一概念の可能性
+- CheckoutError → 同一概念の可能性
+- CheckParity → 同一概念の可能性
+- CheckProofOfWork → 同一概念の可能性
+- CheckProofOfWorkError → 同一概念の可能性
+- CheckTransaction → 同一概念の可能性
+- CheckTransactionError → 同一概念の可能性
+- ChildPath → 同一概念の可能性
+- children → 同一概念の可能性
+- CHOICE / choice → 同一概念の可能性
+- CHUNK / CHUNKS → 同一概念の可能性
+- CHUNK_SIZE / chunk-size → 同一概念の可能性
+- ChunkedEncodingError → 同一概念の可能性
+- CipherSelfTest → 同一概念の可能性
+- CipherStreamingSelfTest → 同一概念の可能性
+- CJK → 同一概念の可能性
+- CLAIM / claim / claims → 同一概念の可能性
+- CLAIM_VS_TRUTH / claim_vs_truth → 同一概念の可能性
+- ClassNotFound → 同一概念の可能性
+- Classpath-exception / classpath-exception → 同一概念の可能性
+- Claude-code / claude-code → 同一概念の可能性
+- Claude-sonnet / claude-sonnet → 同一概念の可能性
+- Clause-acknowledgment / clause-acknowledgment → 同一概念の可能性
+- Clause-acpica / clause-acpica → 同一概念の可能性
+- Clause-Attribution / clause-attribution → 同一概念の可能性
+- Clause-Clear / clause-clear → 同一概念の可能性
+- Clause-Darwin / clause-darwin → 同一概念の可能性
+- Clause-first-lines / clause-first-lines → 同一概念の可能性
+- Clause-flex / clause-flex → 同一概念の可能性
+- Clause-FreeBSD / clause-freebsd → 同一概念の可能性
+- Clause-HP / clause-hp → 同一概念の可能性
+- Clause-LBNL / clause-lbnl → 同一概念の可能性
+- Clause-Modification / clause-modification → 同一概念の可能性
+- Clause-NetBSD / clause-netbsd → 同一概念の可能性
+- Clause-No-Military-License / clause-no-military-license → 同一概念の可能性
+- Clause-No-Nuclear-License / clause-no-nuclear-license → 同一概念の可能性
+- Clause-No-Nuclear-Warranty / clause-no-nuclear-warranty → 同一概念の可能性
+- Clause-Open-MPI / clause-open-mpi → 同一概念の可能性
+- Clause-Patent / clause-patent → 同一概念の可能性
+- Clause-pkgconf-disclaimer / clause-pkgconf-disclaimer → 同一概念の可能性
+- Clause-Shortened / clause-shortened → 同一概念の可能性
+- Clause-Sun / clause-sun → 同一概念の可能性
+- Clause-UC / clause-uc → 同一概念の可能性
+- Clause-Views / clause-views → 同一概念の可能性
+- CLEAN / clean → 同一概念の可能性
+- clear_and_remove_cached_zip_archive_directory_data → 同一概念の可能性
+- clear_meta_and_links → 同一概念の可能性
+- clear_safe_mode → 同一概念の可能性
+- CLI → 同一概念の可能性
+- click_by_imag / click_by_image → 同一概念の可能性
+- CLIENT / client → 同一概念の可能性
+- client-cert / client_cert → 同一概念の可能性
+- ClientProfile → 同一概念の可能性
+- ClientProfileRequest → 同一概念の可能性
+- CLISP-exception / clisp-exception → 同一概念の可能性
+- CLONE / clone → 同一概念の可能性
+- CLOSED / closed → 同一概念の可能性
+- ClosedPoolError → 同一概念の可能性
+- CloseMatch → 同一概念の可能性
+- ClosureReport → 同一概念の可能性
+- CLUSTERS / cluster → 同一概念の可能性
+- CMAC → 同一概念の可能性
+- cmd_setup_ga → 同一概念の可能性
+- cmd_tip_reselect → 同一概念の可能性
+- CMP / cmp → 同一概念の可能性
+- CMU-Mach / cmu-mach → 同一概念の可能性
+- CMU-Mach-nodoc / cmu-mach-nodoc → 同一概念の可能性
+- CNRI-Jython / cnri-jython → 同一概念の可能性
+- CNRI-Python / cnri-python → 同一概念の可能性
+- CNRI-Python-GPL-Compatible / cnri-python-gpl-compatible → 同一概念の可能性
+- co-authors / co_authors → 同一概念の可能性
+- Co-occurrence / co-occurrence → 同一概念の可能性
+- CODE_OF_CONDUCT / Code of Conduct → 同一概念の可能性
+- CodeStateEntry → 同一概念の可能性
+- CodeTagFilter → 同一概念の可能性
+- CognitiveState → 同一概念の可能性
+- CognitiveStateEngine → 同一概念の可能性
+- CognitiveStateValue → 同一概念の可能性
+- COL / col → 同一概念の可能性
+- COLLABORATE / collaborate → 同一概念の可能性
+- COLLECT / collect → 同一概念の可能性
+- collect_root_requirements → 同一概念の可能性
+- collect_streams_at_offset → 同一概念の可能性
+- CollectedRootRequirements → 同一概念の可能性
+- CollectedSources → 同一概念の可能性
+- COLOR_SYSTEMS / color_system → 同一概念の可能性
+- ColorBox → 同一概念の可能性
+- ColorParseError → 同一概念の可能性
+- ColorSystem → 同一概念の可能性
+- ColorTriplet → 同一概念の可能性
+- ColorType → 同一概念の可能性
+- COLUMN / COLUMNS / Column / Columns / column → 同一概念の可能性
+- ColumnSplitter → 同一概念の可能性
+- COM / COME → 同一概念の可能性
+- Combine / combine → 同一概念の可能性
+- Combined-Work-Exception / combined-work-exception → 同一概念の可能性
+- Comma-Separated / comma-separated → 同一概念の可能性
+- COMMAND / COMMANDS / Command → 同一概念の可能性
+- COMMAND_CENTER / Command Center → 同一概念の可能性
+- Command-line / command-line → 同一概念の可能性
+- CommandContextMixIn → 同一概念の可能性
+- CommandError → 同一概念の可能性
+- CommandSpec → 同一概念の可能性
+- COMMENT / COMMENTS → 同一概念の可能性
+- COMMIT / Commit / commit → 同一概念の可能性
+- COMMIT_ID / commit-id / commit_id → 同一概念の可能性
+- Commit-ish / commit-ish → 同一概念の可能性
+- CommitmentNotFoundError → 同一概念の可能性
+- CommitRecord / CommitRecords → 同一概念の可能性
+- COMMITTED → 同一概念の可能性
+- COMMITTER / committer → 同一概念の可能性
+- Community-Spec / community-spec → 同一概念の可能性
+- compact_from_uint256 → 同一概念の可能性
+- CompareBigEndian → 同一概念の可能性
+- COMPARISON / comparison → 同一概念の可能性
+- COMPAT → 同一概念の可能性
+- CompatibilityFiles → 同一概念の可能性
+- CompileError → 同一概念の可能性
+- COMPLETED / completed → 同一概念の可能性
+- CompleteDirs → 同一概念の可能性
+- CompletionCommand → 同一概念の可能性
+- COMPLIANCE_ASSESSMENT → 同一概念の可能性
+- ComplianceEngine → 同一概念の可能性
+- ComplianceLevel → 同一概念の可能性
+- ComplianceRecord → 同一概念の可能性
+- ComplianceResult → 同一概念の可能性
+- ComplianceViolation → 同一概念の可能性
+- ComplianceViolationError → 同一概念の可能性
+- COMPLIANT → 同一概念の可能性
+- compress_for_output_listing → 同一概念の可能性
+- compress_for_rename → 同一概念の可能性
+- compressed_bytes_read → 同一概念の可能性
+- COMPRESSION / compression → 同一概念の可能性
+- compute_best_candidate → 同一概念の可能性
+- compute_chain_hash → 同一概念の可能性
+- compute_event_id → 同一概念の可能性
+- compute_state_hash → 同一概念の可能性
+- compute_telemetry_snapshot_hash → 同一概念の可能性
+- COND-B / COND_B → 同一概念の可能性
+- CONDENSE / condense → 同一概念の可能性
+- condense_from_text → 同一概念の可能性
+- CONDITION / CONDITIONS → 同一概念の可能性
+- condition_as_parse_action → 同一概念の可能性
+- confidence_for_severity → 同一概念の可能性
+- CONFIG / Config / config → 同一概念の可能性
+- CONFIG_FILE / config-files / config_file → 同一概念の可能性
+- config-reader / config_reader → 同一概念の可能性
+- ConfigDiscovery → 同一概念の可能性
+- ConfigHandler → 同一概念の可能性
+- ConfigMetadataHandler → 同一概念の可能性
+- ConfigOptionParser → 同一概念の可能性
+- ConfigOptionsHandler → 同一概念の可能性
+- ConfigParser / ConfigParsers → 同一概念の可能性
+- ConfigStore → 同一概念の可能性
+- CONFIGURATION / Configuration → 同一概念の可能性
+- configuration_to_dict → 同一概念の可能性
+- ConfigurationCommand → 同一概念の可能性
+- ConfigurationError → 同一概念の可能性
+- ConfigurationFileCouldNotBeLoaded → 同一概念の可能性
+- configure_tempdir_registry → 同一概念の可能性
+- ConfiguredBuildBackendHookCaller → 同一概念の可能性
+- CONFLICT / CONFLICTS / Conflict / conflicts → 同一概念の可能性
+- Conflict Taxonomy / conflict-taxonomy → 同一概念の可能性
+- ConflictCause → 同一概念の可能性
+- ConflictCluster → 同一概念の可能性
+- CONNECT / connect → 同一概念の可能性
+- connect_with_next_base → 同一概念の可能性
+- CONNECTED / connected → 同一概念の可能性
+- CONNECTION / connection → 同一概念の可能性
+- connection_from_context → 同一概念の可能性
+- connection_from_host → 同一概念の可能性
+- connection_from_pool_key → 同一概念の可能性
+- connection_from_url → 同一概念の可能性
+- connection_requires_http_tunnel → 同一概念の可能性
+- ConnectionError → 同一概念の可能性
+- ConnectionPool → 同一概念の可能性
+- ConnectorCaliber → 同一概念の可能性
+- ConnectTimeout → 同一概念の可能性
+- ConnectTimeoutError / ConnectTimeoutErrors → 同一概念の可能性
+- Consensus-correct / consensus-correct → 同一概念の可能性
+- Consensus-critical / consensus-critical → 同一概念の可能性
+- ConsensusEngine → 同一概念の可能性
+- ConsensusResult → 同一概念の可能性
+- ConsistencyQueue → 同一概念の可能性
+- ConsistencyScoreResult → 同一概念の可能性
+- Console / console → 同一概念の可能性
+- CONSOLE_CURSOR_INFO → 同一概念の可能性
+- CONSOLE_SCREEN_BUFFER_INFO / console_screen_buffer_info → 同一概念の可能性
+- ConsoleDimensions → 同一概念の可能性
+- ConsoleError → 同一概念の可能性
+- ConsoleOptions → 同一概念の可能性
+- ConsoleRenderable → 同一概念の可能性
+- ConsoleThreadLocals → 同一概念の可能性
+- CONSTANTS / Constants → 同一概念の可能性
+- CONSTRAINT / Constraint / constraints → 同一概念の可能性
+- constraint_satisfaction_report → 同一概念の可能性
+- ConstraintViolation → 同一概念の可能性
+- construct_package_dir → 同一概念の可能性
+- contain / contains → 同一概念の可能性
+- CONTAINER / Container → 同一概念の可能性
+- Content-Disposition / content-disposition → 同一概念の可能性
+- Content-Encoding / content-encoding → 同一概念の可能性
+- Content-Length / Content-length / content-length → 同一概念の可能性
+- CONTENT_TRANSFER_ENCODING / Content-Transfer-Encoding → 同一概念の可能性
+- Content-Type / Content-Types / Content-type / content-type / content_type → 同一概念の可能性
+- ContentChecker → 同一概念の可能性
+- ContentDecodingError → 同一概念の可能性
+- CONTEXT / CONTEXTS / Context / context → 同一概念の可能性
+- ContextAnalyzer → 同一概念の可能性
+- ContextBuilder → 同一概念の可能性
+- ContextComposer → 同一概念の可能性
+- ContextEngine → 同一概念の可能性
+- ContextSummary → 同一概念の可能性
+- ContextualVersionConflict → 同一概念の可能性
+- CONTRACT → 同一概念の可能性
+- ContractError → 同一概念の可能性
+- ContractRegistry → 同一概念の可能性
+- ContractResult → 同一概念の可能性
+- CONTRIBUTING / Contributing → 同一概念の可能性
+- CONTROL / Control / control → 同一概念の可能性
+- CONTROL_ACTION → 同一概念の可能性
+- ControlAction → 同一概念の可能性
+- ControlDecision → 同一概念の可能性
+- ControlPolicyEngine → 同一概念の可能性
+- ControlType → 同一概念の可能性
+- convert_path / convert_paths → 同一概念の可能性
+- convert_to_date → 同一概念の可能性
+- convert_to_datetime → 同一概念の可能性
+- ConverterState → 同一概念の可能性
+- ConvertingDict → 同一概念の可能性
+- ConvertingList → 同一概念の可能性
+- ConvertingTuple → 同一概念の可能性
+- CookieConflictError → 同一概念の可能性
+- cookiejar_from_dict → 同一概念の可能性
+- COORD / COORDS → 同一概念の可能性
+- COPI / COPIES → 同一概念の可能性
+- COPY / copy → 同一概念の可能性
+- copy_directory_permissions → 同一概念の可能性
+- copy_extensions_to_source → 同一概念の可能性
+- copy_file / copy_files → 同一概念の可能性
+- copy_files_globbed → 同一概念の可能性
+- copy_metadata_to → 同一概念の可能性
+- Copy-pasted / copy-pasted → 同一概念の可能性
+- copy_token_to_repeater → 同一概念の可能性
+- CORE / CORS → 同一概念の可能性
+- CoreChainParams → 同一概念の可能性
+- CoreMainParams → 同一概念の可能性
+- CoreRegTestParams → 同一概念の可能性
+- CoreSigNetParams → 同一概念の可能性
+- CoreTestNetParams → 同一概念の可能性
+- Cornell-Lossless-JPEG / cornell-lossless-jpeg → 同一概念の可能性
+- CorrelationEngine → 同一概念の可能性
+- COUNT / count → 同一概念の可能性
+- count_field_parse_action → 同一概念の可能性
+- count_new_events → 同一概念の可能性
+- COUNTER / CounTer / Counter → 同一概念の可能性
+- CounterTests → 同一概念の可能性
+- CoverageMatrix → 同一概念の可能性
+- CREATE / create → 同一概念の可能性
+- create_bound_method → 同一概念の可能性
+- create_dict_rule → 同一概念の可能性
+- create_event_context → 同一概念の可能性
+- create_freeze_manifest → 同一概念の可能性
+- create_from_tree → 同一概念の可能性
+- create_home_path → 同一概念の可能性
+- create_list_rule → 同一概念の可能性
+- create_main_parser → 同一概念の可能性
+- create_os_error_message → 同一概念の可能性
+- create_pack_object_header → 同一概念の可能性
+- create_package_set_from_installed → 同一概念の可能性
+- create_path_file → 同一概念の可能性
+- create_proxy_ssl_context → 同一概念の可能性
+- create_ref_keys_ed25519 → 同一概念の可能性
+- create_ref_keys_ed448 → 同一概念の可能性
+- create_ref_keys_p192 → 同一概念の可能性
+- create_ref_keys_p224 → 同一概念の可能性
+- create_ref_keys_p256 → 同一概念の可能性
+- create_ref_keys_p384 → 同一概念の可能性
+- create_ref_keys_p521 → 同一概念の可能性
+- create_ref_keys_x25519 → 同一概念の可能性
+- create_ref_keys_x448 → 同一概念の可能性
+- create_static_lib → 同一概念の可能性
+- create_string_buffer → 同一概念の可能性
+- create_test_txs → 同一概念の可能性
+- create_unbound_method → 同一概念の可能性
+- create_urllib3_context → 同一概念の可能性
+- create_vendor_txt_map → 同一概念の可能性
+- Credential / Credentials → 同一概念の可能性
+- creds_by_repository → 同一概念の可能性
+- CRITICAL → 同一概念の可能性
+- Cross-Agent / Cross-agent / cross-agent → 同一概念の可能性
+- cross_audit_check → 同一概念の可能性
+- cross_audit_list → 同一概念の可能性
+- cross_audit_report → 同一概念の可能性
+- cross_audit_submit → 同一概念の可能性
+- cross_audit_task → 同一概念の可能性
+- Cross-Layer / Cross-layer / cross-layer → 同一概念の可能性
+- CRYPTO / crypto → 同一概念の可能性
+- CryptOp → 同一概念の可能性
+- cryptsetup-OpenSSL-exception / cryptsetup-openssl-exception → 同一概念の可能性
+- csv_io_kwargs → 同一概念の可能性
+- CSV_NOT_FOUND / csv_not_found → 同一概念の可能性
+- CtrMode → 同一概念の可能性
+- CtrTests → 同一概念の可能性
+- CUE / CUS → 同一概念の可能性
+- CUA-OPL / cua-opl → 同一概念の可能性
+- CUB / CUBE → 同一概念の可能性
+- CUR / CURE → 同一概念の可能性
+- CURRENT / current → 同一概念の可能性
+- current_is_x86 → 同一概念の可能性
+- current_revision → 同一概念の可能性
+- currently_rebasing_on → 同一概念の可能性
+- CURSOR_BACKWARD → 同一概念の可能性
+- CURSOR_DOWN → 同一概念の可能性
+- CURSOR_FORWARD → 同一概念の可能性
+- CURSOR_MOVE_TO → 同一概念の可能性
+- CURSOR_MOVE_TO_COLUMN → 同一概念の可能性
+- CURSOR_UP → 同一概念の可能性
+- CURVE / curve → 同一概念の可能性
+- CustomOptionParser → 同一概念の可能性
+- CUT / CUTS → 同一概念の可能性
+- CVE / CVS → 同一概念の可能性
+- CWD / cwd → 同一概念の可能性
+- CYCLE / CYCLES / cycles → 同一概念の可能性
+- CyclicDependencyError → 同一概念の可能性
+- CythonLexer → 同一概念の可能性
+- DEE / DES / DSS / DSSS → 同一概念の可能性
+- D-FSL / d-fsl → 同一概念の可能性
+- DAD / DADE → 同一概念の可能性
+- DAM / DAME → 同一概念の可能性
+- DAMAGE / DAMAGES → 同一概念の可能性
+- DAN / DANE → 同一概念の可能性
+- DAR / DARE → 同一概念の可能性
+- dash-separated / dash_separated → 同一概念の可能性
+- DASHBOARD / dashboard → 同一概念の可能性
+- DashboardSnapshot → 同一概念の可能性
+- DAT / DATE / DATES → 同一概念の可能性
+- DATA / data → 同一概念の可能性
+- data_scheme_file_maker → 同一概念の可能性
+- data_since_bookmark → 同一概念の可能性
+- DATABASE / DataBase / databases → 同一概念の可能性
+- datetime_to_header → 同一概念の可能性
+- DAY / DAYS → 同一概念の可能性
+- DB_NOT_FOUND / db_not_found → 同一概念の可能性
+- DB_PATH / db_path → 同一概念の可能性
+- DEBUG / debug → 同一概念の可能性
+- DebugActions → 同一概念の可能性
+- DebugCommand → 同一概念の可能性
+- DECIDE / decide → 同一概念の可能性
+- decide_from_semantic → 同一概念の可能性
+- decide_user_install → 同一概念の可能性
+- DECISION / Decision / decisions → 同一概念の可能性
+- Decision-before-action / decision-before-action → 同一概念の可能性
+- DECISION_FILE / decision-file → 同一概念の可能性
+- DECISION_LAYER / Decision Layer / Decision-layer → 同一概念の可能性
+- decision_ledger_rev → 同一概念の可能性
+- decision-log / decision_log → 同一概念の可能性
+- DECISION_SAMPLE_CASES / decision_sample_cases → 同一概念の可能性
+- decision_weight_adjustment → 同一概念の可能性
+- DecisionEngine → 同一概念の可能性
+- DecisionLearningState → 同一概念の可能性
+- DecisionLedger → 同一概念の可能性
+- DecisionPacket → 同一概念の可能性
+- DecisionPipeline → 同一概念の可能性
+- DecisionPolicyEngine → 同一概念の可能性
+- DecisionProfile → 同一概念の可能性
+- DecisionRecord → 同一概念の可能性
+- DecisionReplayer → 同一概念の可能性
+- DecisionResult → 同一概念の可能性
+- DecisionRule → 同一概念の可能性
+- DecisionStatus → 同一概念の可能性
+- DecisionSynthesizer → 同一概念の可能性
+- DecisionTuner → 同一概念の可能性
+- DECLARATION / Declaration → 同一概念の可能性
+- decode_op_n → 同一概念の可能性
+- DecodeError → 同一概念の可能性
+- DecompressMemMapReader → 同一概念の可能性
+- DECRYPT / decrypt → 同一概念の可能性
+- DECRYPT_AND_VERIFY / decrypt_and_verify → 同一概念の可能性
+- deduce_helpful_msg → 同一概念の可能性
+- deep-dive / deep-dives → 同一概念の可能性
+- DEFAULT / DEFAULTS / default → 同一概念の可能性
+- DEFAULT_KEYWORD_CHARS / default_keyword_chars → 同一概念の可能性
+- DEFAULT_METHOD_WHITELIST → 同一概念の可能性
+- DEFAULT_PORT / DEFAULT_PORTS → 同一概念の可能性
+- DEFAULT_REDIRECT_HEADERS_BLACKLIST → 同一概念の可能性
+- default_subprocess_runner → 同一概念の可能性
+- DEFAULT_TIMEOUT / default-timeout → 同一概念の可能性
+- DEFAULT_USER_AGENT / default_user_agent → 同一概念の可能性
+- DefaultProvider → 同一概念の可能性
+- DefaultStateProvider → 同一概念の可能性
+- DEFINED → 同一概念の可能性
+- DEFINITION / Definitions → 同一概念の可能性
+- DeflateDecoder → 同一概念の可能性
+- DegradationController → 同一概念の可能性
+- DegradationState → 同一概念の可能性
+- DEGRADED / degraded → 同一概念の可能性
+- DegradedStatus → 同一概念の可能性
+- DelegatingLexer → 同一概念の可能性
+- delegation_event_id → 同一概念の可能性
+- DELETE / delete → 同一概念の可能性
+- delete-files / delete_file → 同一概念の可能性
+- delta_chunk_apply → 同一概念の可能性
+- delta_list_apply → 同一概念の可能性
+- delta_list_slice → 同一概念の可能性
+- DeltaApplyReader → 同一概念の可能性
+- DeltaChunk / DeltaChunks → 同一概念の可能性
+- DeltaChunkList → 同一概念の可能性
+- DEPENDENCY_GROUP / dependency-group / dependency-groups → 同一概念の可能性
+- DependencyGraph → 同一概念の可能性
+- DependencyGroupInclude → 同一概念の可能性
+- DependencyGroupResolver → 同一概念の可能性
+- DependencyWarning / DependencyWarnings → 同一概念の可能性
+- DeploymentCertificate → 同一概念の可能性
+- DeploymentCertifier → 同一概念の可能性
+- DEPRECATED / Deprecated / deprecated → 同一概念の可能性
+- DEPRECATED_DEFAULT → 同一概念の可能性
+- DeprecatedList → 同一概念の可能性
+- DeprecatedTuple → 同一概念の可能性
+- DER / DERS → 同一概念の可能性
+- DerBitString → 同一概念の可能性
+- DerBitStringTests → 同一概念の可能性
+- DerBoolean → 同一概念の可能性
+- DerBooleanTests → 同一概念の可能性
+- DerInteger → 同一概念の可能性
+- DerIntegerTests → 同一概念の可能性
+- derive_rotation_from_registry → 同一概念の可能性
+- DeriveTest → 同一概念の可能性
+- DerNull → 同一概念の可能性
+- DerNullTests → 同一概念の可能性
+- DerObject → 同一概念の可能性
+- DerObjectId → 同一概念の可能性
+- DerObjectIdTests → 同一概念の可能性
+- DerObjectTests → 同一概念の可能性
+- DerOctetString → 同一概念の可能性
+- DerOctetStringTests → 同一概念の可能性
+- DerSequence → 同一概念の可能性
+- DerSequenceTests → 同一概念の可能性
+- DerSetOf → 同一概念の可能性
+- DerSetOfTests → 同一概念の可能性
+- DESCRIPTION / description → 同一概念の可能性
+- Description-Content-Type / description-content-type / description_content_type → 同一概念の可能性
+- DeserializationContext → 同一概念の可能性
+- DeserializationError → 同一概念の可能性
+- DeserializationExtraDataError → 同一概念の可能性
+- deserialize_ascii_armored_timestamp → 同一概念の可能性
+- deserialize_from_tag → 同一概念の可能性
+- DeserializeError → 同一概念の可能性
+- DESIGN → 同一概念の可能性
+- DetachedTimestampFile → 同一概念の可能性
+- DETAIL / DETAILS / detail / details → 同一概念の可能性
+- detect_breakeven_point → 同一概念の可能性
+- detect_co_occurrence → 同一概念の可能性
+- detect_conflict / detect_conflicts → 同一概念の可能性
+- detect_duplicate_binding → 同一概念の可能性
+- detect_legacy_windows → 同一概念の可能性
+- determine_resolver_variant → 同一概念の可能性
+- deterministically_nonce_stamp → 同一概念の可能性
+- DeterministicDsaSigScheme → 同一概念の可能性
+- DEV / dev → 同一概念の可能性
+- DevelopInstaller → 同一概念の可能性
+- DFS / dfs → 同一概念の可能性
+- DgLexer → 同一概念の可能性
+- DHE / DHS → 同一概念の可能性
+- DIAGNOSTICS / Diagnostics → 同一概念の可能性
+- DiagnosticPipError → 同一概念の可能性
+- DICT / Dict → 同一概念の可能性
+- dict_from_cookiejar → 同一概念の可能性
+- Dict-like / dict-like → 同一概念の可能性
+- dict_to_sequence → 同一概念の可能性
+- DictCache → 同一概念の可能性
+- DictStack → 同一概念の可能性
+- DIFF / DIFFS / Diff / diff → 同一概念の可能性
+- DiffConstants → 同一概念の可能性
+- DiffIndex → 同一概念の可能性
+- DIGEST / digest → 同一概念の可能性
+- Digia-Qt-LGPL-exception / digia-qt-lgpl-exception → 同一概念の可能性
+- DigiRule-FOSS-exception / digirule-foss-exception → 同一概念の可能性
+- DIME / dim → 同一概念の可能性
+- DIN / DINE → 同一概念の可能性
+- DIR / DIRE → 同一概念の可能性
+- Direct-Drive / direct-drive → 同一概念の可能性
+- direct_url_as_pep440_direct_reference → 同一概念の可能性
+- direct_url_for_editable → 同一概念の可能性
+- direct_url_from_link → 同一概念の可能性
+- DirectedGraph → 同一概念の可能性
+- DirectorySandbox → 同一概念の可能性
+- DirectoryUrlHashUnsupported → 同一概念の可能性
+- DirectUrl → 同一概念の可能性
+- DirectUrlValidationError → 同一概念の可能性
+- DirInfo → 同一概念の可能性
+- DISABLE_ALT_SCREEN → 同一概念の可能性
+- disable_check_hostname → 同一概念の可能性
+- disable_importlib_metadata_finder → 同一概念の可能性
+- disable_info_traces → 同一概念の可能性
+- disable-pip-version-check / disable_pip_version_check → 同一概念の可能性
+- disable_stdlib_finder → 同一概念の可能性
+- Discrepancy Types / discrepancy_type → 同一概念の可能性
+- DIST / dist → 同一概念の可能性
+- dist_from_wheel_url → 同一概念の可能性
+- dist-info / dist_info → 同一概念の可能性
+- dist-info-dir / dist_info_dir → 同一概念の可能性
+- DistDeprecationWarning → 同一概念の可能性
+- DistInfoDistribution → 同一概念の可能性
+- DistlibException → 同一概念の可能性
+- DISTRIBUTION / Distribution / distribution / distributions → 同一概念の可能性
+- DistributionFinder / DistributionFinders → 同一概念の可能性
+- DistributionMetadata → 同一概念の可能性
+- DistributionNotFound → 同一概念の可能性
+- distributions_from_metadata → 同一概念の可能性
+- distro_release_attr → 同一概念の可能性
+- distro_release_info → 同一概念の可能性
+- distros_for_filename → 同一概念の可能性
+- distros_for_location → 同一概念の可能性
+- distros_for_url → 同一概念の可能性
+- DistutilsArgError → 同一概念の可能性
+- DistutilsByteCompileError → 同一概念の可能性
+- DistutilsClassError → 同一概念の可能性
+- DistutilsError → 同一概念の可能性
+- DistutilsExecError → 同一概念の可能性
+- DistutilsFileError → 同一概念の可能性
+- DistutilsGetoptError → 同一概念の可能性
+- DistutilsInternalError → 同一概念の可能性
+- DistutilsLoader → 同一概念の可能性
+- DistutilsMetaFinder → 同一概念の可能性
+- DistutilsModuleError → 同一概念の可能性
+- DistutilsOptionError → 同一概念の可能性
+- DistutilsPlatformError → 同一概念の可能性
+- DistutilsSetupError → 同一概念の可能性
+- DistutilsTemplateError → 同一概念の可能性
+- DL-DE-BY / dl-de-by → 同一概念の可能性
+- DL-DE-ZERO / dl-de-zero → 同一概念の可能性
+- DOE / DOES / DOS → 同一概念の可能性
+- do_egg_install → 同一概念の可能性
+- do_install_data → 同一概念の可能性
+- do_tag_or_attestation → 同一概念の可能性
+- DOC / DOCS / doc → 同一概念の可能性
+- DocBook-DTD / docbook-dtd → 同一概念の可能性
+- DocBook-Schema / docbook-schema → 同一概念の可能性
+- DocBook-Stylesheet / docbook-stylesheet → 同一概念の可能性
+- DocBook-XML / docbook-xml → 同一概念の可能性
+- DOCUMENT / DOCUMENTS → 同一概念の可能性
+- document_lexers_overview → 同一概念の可能性
+- DOES_NOT_EXIST / does-not-exist / does_not_exist → 同一概念の可能性
+- DOM / DOME → 同一概念の可能性
+- DOMAIN / domain → 同一概念の可能性
+- DON / DONE / done → 同一概念の可能性
+- DOT / DOTE / dot → 同一概念の可能性
+- Dot-separated / dot-separated → 同一概念の可能性
+- DOUBLE / double → 同一概念の可能性
+- Download-URL / download-url → 同一概念の可能性
+- DownloadColumn → 同一概念の可能性
+- DownloadCommand → 同一概念の可能性
+- DREAM / DREAMS → 同一概念の可能性
+- DRIFT → 同一概念の可能性
+- DriftDetector → 同一概念の可能性
+- DriftEvent / DriftEvents → 同一概念の可能性
+- DriftFinding → 同一概念の可能性
+- DriftSeverity → 同一概念の可能性
+- DriftSummary → 同一概念の可能性
+- DriftType → 同一概念の可能性
+- DriftVector → 同一概念の可能性
+- Drop-in / drop-in → 同一概念の可能性
+- DRY-RUN / DRY_RUN / Dry-run / dry-run / dry_run → 同一概念の可能性
+- dry_run_aborts → 同一概念の可能性
+- DryRunResult → 同一概念の可能性
+- DsaKey → 同一概念の可能性
+- DssSigScheme → 同一概念の可能性
+- DST / dst → 同一概念の可能性
+- Dual-Layer / Dual-layer → 同一概念の可能性
+- Dual-path / dual-path → 同一概念の可能性
+- DummyConnection → 同一概念の可能性
+- DummyStream → 同一概念の可能性
+- DummyWorker → 同一概念の可能性
+- dump / dumps → 同一概念の可能性
+- dump_option_dicts → 同一概念の可能性
+- DUN / DUNE → 同一概念の可能性
+- DuplicateBindingError → 同一概念の可能性
+- DURATION / duration → 同一概念の可能性
+- E-mail / e-mail → 同一概念の可能性
+- EACH / Each → 同一概念の可能性
+- EachItem → 同一概念の可能性
+- easy-install / easy_install → 同一概念の可能性
+- EasyInstallDeprecationWarning → 同一概念の可能性
+- EaxMode → 同一概念の可能性
+- EaxTests → 同一概念の可能性
+- EcbMode → 同一概念の可能性
+- EccKey → 同一概念の可能性
+- EccPoint → 同一概念の可能性
+- ECDH / ECDHE → 同一概念の可能性
+- ECDH_Tests / ecdh_test → 同一概念の可能性
+- ecdh_test_rev → 同一概念の可能性
+- EcLib → 同一概念の可能性
+- eCos-exception / ecos-exception → 同一概念の可能性
+- EDGE / EDGES / Edge / edges → 同一概念の可能性
+- edit_file_batch → 同一概念の可能性
+- editable → 同一概念の可能性
+- editable_project_location → 同一概念の可能性
+- editable_sanity_check → 同一概念の可能性
+- EditableCandidate → 同一概念の可能性
+- EditablePartial → 同一概念の可能性
+- EditableStrategy → 同一概念の可能性
+- EGG-INFO / egg-info / egg_info → 同一概念の可能性
+- egg_info_for_url → 同一概念の可能性
+- Egg-link / egg-link → 同一概念の可能性
+- egg_link_name / egg_link_names → 同一概念の可能性
+- egg_link_path_from_location → 同一概念の可能性
+- egg_link_path_from_sys_path → 同一概念の可能性
+- EGG_NAME / egg_name → 同一概念の可能性
+- EggInfoDeprecationWarning → 同一概念の可能性
+- EggInfoDistribution → 同一概念の可能性
+- EggMetadata → 同一概念の可能性
+- EggProvider → 同一概念の可能性
+- EIGHT_BIT → 同一概念の可能性
+- ELEMENT / elements → 同一概念の可能性
+- ElementState → 同一概念の可能性
+- ElGamalKey → 同一概念の可能性
+- ElGamalTest → 同一概念の可能性
+- EMERGENCY → 同一概念の可能性
+- EMIT / emit → 同一概念の可能性
+- EMIT_EVENTS / emit_event → 同一概念の可能性
+- EMOJI / Emoji → 同一概念の可能性
+- EMPTY / Empty / empty → 同一概念の可能性
+- EmptyPoolError → 同一概念の可能性
+- EmptyProvider → 同一概念の可能性
+- en-US / en-us → 同一概念の可能性
+- enable_all_warnings → 同一概念の可能性
+- ENABLE_ALT_SCREEN → 同一概念の可能性
+- enable_debug_on_named_expressions → 同一概念の可能性
+- enable_left_recursion → 同一概念の可能性
+- ENABLED / enabled → 同一概念の可能性
+- ENCODE / encode → 同一概念の可能性
+- encode_multipart_formdata → 同一概念の可能性
+- encode_op_n → 同一概念の可能性
+- encode_op_pushdata → 同一概念の可能性
+- ENCODING / encoding → 同一概念の可能性
+- EncodingPolicyViolation → 同一概念の可能性
+- ENCRYPT / encrypt → 同一概念の可能性
+- ENCRYPT_AND_DIGEST / encrypt_and_digest → 同一概念の可能性
+- END / ENDS / end → 同一概念の可能性
+- END_GROUP / end-group → 同一概念の可能性
+- End-of-file / end-of-file → 同一概念の可能性
+- end-of-packet / end_of_packet → 同一概念の可能性
+- ending_with_one → 同一概念の可能性
+- EndOfText → 同一概念の可能性
+- enforce_pre_answer_checklist → 同一概念の可能性
+- ENGINE / ENGINES → 同一概念の可能性
+- ENGLISH / English → 同一概念の可能性
+- english_to_key → 同一概念の可能性
+- EnrichedContext → 同一概念の可能性
+- ensure_audit_ledger_table → 同一概念の可能性
+- ensure_build_location → 同一概念の可能性
+- ensure_dir / ensure_dirs → 同一概念の可能性
+- ensure_dreams_structur / ensure_dreams_structure → 同一概念の可能性
+- ensure_events_csv → 同一概念の可能性
+- ensure_has_source_dir → 同一概念の可能性
+- ensure_key_revocation → 同一概念の可能性
+- ensure_local_distutils → 同一概念の可能性
+- ensure_pristine_source_checkout → 同一概念の可能性
+- ensure_schema_versions → 同一概念の可能性
+- ensure_string_list → 同一概念の可能性
+- EnsurePackagesDiscovered → 同一概念の可能性
+- enter-degraded / enter_degraded → 同一概念の可能性
+- enter_degraded_mode → 同一概念の可能性
+- entropy → 同一概念の可能性
+- Entry-points / entry-point / entry-points / entry_points → 同一概念の可能性
+- ENTRYPOINT / EntryPoint / EntryPoints → 同一概念の可能性
+- ENUM / enum → 同一概念の可能性
+- ENV_VAR / env-var → 同一概念の可能性
+- ENVIRONMENT / Environment / environment → 同一概念の可能性
+- EnvironmentError / EnvironmentErrors → 同一概念の可能性
+- EnvironmentInfo → 同一概念の可能性
+- EPHEM_WHEEL_CACHE / ephem-wheel-cache → 同一概念の可能性
+- EphemWheelCache → 同一概念の可能性
+- EPOCH / epoch → 同一概念の可能性
+- erase_end_of_line → 同一概念の可能性
+- ERASE_IN_LINE → 同一概念の可能性
+- erase_start_of_line → 同一概念の可能性
+- ERR_ / err-ess → 同一概念の可能性
+- ERROR / ERRORS / error / errors → 同一概念の可能性
+- ERROR_CODE / error-codes → 同一概念の可能性
+- ErrorInfo → 同一概念の可能性
+- ErrorToken → 同一概念の可能性
+- escape_control_codes → 同一概念の可能性
+- escape_re_range_char → 同一概念の可能性
+- essence_auto_loop → 同一概念の可能性
+- essence_to_packet → 同一概念の可能性
+- EssenceCondenser → 同一概念の可能性
+- EssenceDirectParser → 同一概念の可能性
+- ETA → 同一概念の可能性
+- EthereumBlockHeaderAttestation → 同一概念の可能性
+- Ethics-in-practice / ethics-in-practice → 同一概念の可能性
+- EvalScript → 同一概念の可能性
+- EvalScriptError → 同一概念の可能性
+- evaluate_link / evaluate_links → 同一概念の可能性
+- evaluate_result_file → 同一概念の可能性
+- EVENT / Event → 同一概念の可能性
+- EVENT_CONTENT_JSON / event_content_json → 同一概念の可能性
+- Event-driven / event-driven → 同一概念の可能性
+- EVENT_FILE_MAP / event_file_map → 同一概念の可能性
+- EVENT_ID / Event-ID / event_id / event_ids → 同一概念の可能性
+- event_to_doc → 同一概念の可能性
+- EVENT_TYPE / EVENT_TYPES / event-type / event_type → 同一概念の可能性
+- EventBus → 同一概念の可能性
+- EventContext → 同一概念の可能性
+- EventContract → 同一概念の可能性
+- EventDef → 同一概念の可能性
+- EventMixin → 同一概念の可能性
+- EventPayload → 同一概念の可能性
+- EventPipeline → 同一概念の可能性
+- events_for_layer → 同一概念の可能性
+- events_for_request → 同一概念の可能性
+- EVENTS_PATH / events-path → 同一概念の可能性
+- events_to_patterns → 同一概念の可能性
+- EventStreamCollector → 同一概念の可能性
+- EventType → 同一概念の可能性
+- EventTypeRegistry → 同一概念の可能性
+- EventValidationError → 同一概念の可能性
+- EVIDENCE / Evidence / evidence → 同一概念の可能性
+- Evidence-based / evidence-based → 同一概念の可能性
+- Evidence-hit / evidence-hit → 同一概念の可能性
+- EvidenceBundle → 同一概念の可能性
+- EvidenceLedger → 同一概念の可能性
+- EVIL_ATTACKER_KEY / evil-attacker-key → 同一概念の可能性
+- EVOLVE / evolve → 同一概念の可能性
+- ex-PM / ex-pm → 同一概念の可能性
+- EXCEPTION / EXCEPTIONS / exceptions → 同一概念の可能性
+- ExceptionGroup → 同一概念の可能性
+- ExceptionModulus → 同一概念の可能性
+- ExceptionSaver → 同一概念の可能性
+- ExceptionTrap → 同一概念の可能性
+- ExceptionWordUnicode → 同一概念の可能性
+- EXCLUDE / exclude → 同一概念の可能性
+- exclude_data_files → 同一概念の可能性
+- exclude-package-data / exclude_package_data → 同一概念の可能性
+- exclude-source-files / exclude_source_files → 同一概念の可能性
+- ExcludeLoggerFilter → 同一概念の可能性
+- exe_to_egg → 同一概念の可能性
+- EXEC_PREFIX / exec-prefix → 同一概念の可能性
+- EXECUTE / execute → 同一概念の可能性
+- ExecutablePlan → 同一概念の可能性
+- ExecutableStep → 同一概念の可能性
+- ExecutionContext → 同一概念の可能性
+- ExecutionGovernanceEngine → 同一概念の可能性
+- ExecutionGraph → 同一概念の可能性
+- ExecutionResult → 同一概念の可能性
+- EXECUTORS / Executor → 同一概念の可能性
+- EXISTS / exists → 同一概念の可能性
+- exists-action / exists_action → 同一概念の可能性
+- exit_cacert_ctx → 同一概念の可能性
+- exit-degraded / exit_degraded → 同一概念の可能性
+- exit_degraded_mode → 同一概念の可能性
+- EXP_ / EXP_E → 同一概念の可能性
+- expand_env_variables → 同一概念の可能性
+- expand_makefile_vars → 同一概念の可能性
+- expand_path / expand_paths → 同一概念の可能性
+- expected_str_addr / expected_str_address → 同一概念の可能性
+- ExpectedState → 同一概念の可能性
+- EXPERIMENT / Experiments → 同一概念の可能性
+- ExpiresAfter → 同一概念の可能性
+- EXPLAIN / explain → 同一概念の可能性
+- ExplainEngine → 同一概念の可能性
+- ExplicitRequirement → 同一概念の可能性
+- EXPORT / EXPORTS / export → 同一概念の可能性
+- EXPORT_CSV / Export-Csv → 同一概念の可能性
+- export_for_l5 → 同一概念の可能性
+- export_to_essence → 同一概念の可能性
+- ExportEntry → 同一概念の可能性
+- EXT / ext → 同一概念の可能性
+- extend_left_to → 同一概念の可能性
+- extend_right_to → 同一概念の可能性
+- ExtendedRegexLexer → 同一概念の可能性
+- EXTENSIONS / Extension → 同一概念の可能性
+- EXTERNALLY-MANAGED / externally-managed → 同一概念の可能性
+- ExternallyManagedEnvironment → 同一概念の可能性
+- EXTRA / EXTRAS / extras → 同一概念の可能性
+- extra-index-url / extra_index_url / extra_index_urls → 同一概念の可能性
+- extract_bitstring_from_spki → 同一概念の可能性
+- extract_by_key → 同一概念の可能性
+- extract_chain_from_tip → 同一概念の可能性
+- extract_cookies_to_jar → 同一概念の可能性
+- extract_event_blocks → 同一概念の可能性
+- extract_from_dir → 同一概念の可能性
+- extract_from_event / extract_from_events → 同一概念の可能性
+- extract_from_file → 同一概念の可能性
+- extract_from_ssl → 同一概念の可能性
+- extract_from_text → 同一概念の可能性
+- extract_from_urllib3 → 同一概念の可能性
+- extract_incident_chain → 同一概念の可能性
+- extract_into_diagram → 同一概念の可能性
+- extract_meta_beta → 同一概念の可能性
+- extract_python_terms → 同一概念の可能性
+- extract_regex_terms → 同一概念の可能性
+- extract_semantic_fingerprint → 同一概念の可能性
+- extract_sig_from_git_commit → 同一概念の可能性
+- extract_state_signals → 同一概念の可能性
+- extract_url_id → 同一概念の可能性
+- extract_wininst_cfg → 同一概念の可能性
+- extract_zipped_paths → 同一概念の可能性
+- extraction-filters / extraction_filter → 同一概念の可能性
+- ExtractionError → 同一概念の可能性
+- ExtraData → 同一概念の可能性
+- ExtraEnviron → 同一概念の可能性
+- ExtrasCandidate → 同一概念の可能性
+- ExtType → 同一概念の可能性
+- Fa-f / fA-F → 同一概念の可能性
+- FACT / FACTS → 同一概念の可能性
+- Factory / factory → 同一概念の可能性
+- FAD / FADE → 同一概念の可能性
+- FAIL / fail → 同一概念の可能性
+- fail_if_divisible_by → 同一概念の可能性
+- FAIL_KIND / Fail-Kind → 同一概念の可能性
+- FailedToPrepareCandidate → 同一概念の可能性
+- FAILURE → 同一概念の可能性
+- FailureContainmentRegistry → 同一概念の可能性
+- FakeBitcoinProxy → 同一概念の可能性
+- FakeBitcoinProxyException → 同一概念の可能性
+- FakeBitcoinProxyTestCase → 同一概念の可能性
+- FALLBACK / fallback → 同一概念の可能性
+- FallbackResult → 同一概念の可能性
+- FancyGetopt → 同一概念の可能性
+- FAST_FORWARD / Fast-forward / fast-forward / fast-forwards → 同一概念の可能性
+- FastLookup → 同一概念の可能性
+- FastPath → 同一概念の可能性
+- FAT / FATE → 同一概念の可能性
+- FATAL / fatal → 同一概念の可能性
+- Fawkes-Runtime-exception / fawkes-runtime-exception → 同一概念の可能性
+- FDK-AAC / fdk-aac → 同一概念の可能性
+- FEED / feed → 同一概念の可能性
+- FEEDBACK / FeedBack / feedback → 同一概念の可能性
+- FEEDBACK_LOOP / feedback-loop → 同一概念の可能性
+- FeedbackBatch → 同一概念の可能性
+- FeedbackEngine → 同一概念の可能性
+- FeedbackGenerator → 同一概念の可能性
+- FeedbackPipeline → 同一概念の可能性
+- FeedbackProposal / FeedbackProposals → 同一概念の可能性
+- FeedbackType → 同一概念の可能性
+- Ferguson-Twofish / ferguson-twofish → 同一概念の可能性
+- Ferrofluid-Based / ferrofluid-based → 同一概念の可能性
+- FETCH / fetch → 同一概念の可能性
+- fetch_all_rows → 同一概念の可能性
+- fetch_build_egg / fetch_build_eggs → 同一概念の可能性
+- fetch_event / fetch_events → 同一概念の可能性
+- fetch_event_range → 同一概念の可能性
+- fetch_governance_decisions → 同一概念の可能性
+- fetch_living_context → 同一概念の可能性
+- fetch_single_event → 同一概念の可能性
+- FetchInfo → 同一概念の可能性
+- FIELD / FIELDS / fields → 同一概念の可能性
+- FIG / FIGS → 同一概念の可能性
+- FILE / FILES / File / file / files → 同一概念の可能性
+- File-based / file-based → 同一概念の可能性
+- file-chain-length / file_chain_length → 同一概念の可能性
+- file_contents_ro → 同一概念の可能性
+- file_contents_ro_filepath → 同一概念の可能性
+- file-info / file_info → 同一概念の可能性
+- File-like / file-like → 同一概念の可能性
+- file-like-object / file-like-objects → 同一概念の可能性
+- FILE_NOT_FOUND / file_not_found → 同一概念の可能性
+- file_ns_handler → 同一概念の可能性
+- File-object / file-object → 同一概念の可能性
+- file-path / file_path → 同一概念の可能性
+- FILE_PATTERN / FILE_PATTERNS → 同一概念の可能性
+- FILE_STATUS / file-status → 同一概念の可能性
+- FileCache → 同一概念の可能性
+- FileCreator → 同一概念の可能性
+- FileHash → 同一概念の可能性
+- FileList → 同一概念の可能性
+- FileMetadata → 同一概念の可能性
+- FileModeWarning / FileModeWarnings → 同一概念の可能性
+- FileName / filename → 同一概念の可能性
+- FileOperator → 同一概念の可能性
+- FileProxy → 同一概念の可能性
+- FileReader → 同一概念の可能性
+- FileSizeColumn → 同一概念の可能性
+- FilesystemWheel → 同一概念の可能性
+- Fill-in / fill-in → 同一概念の可能性
+- FillConsoleOutputAttribute → 同一概念の可能性
+- FillConsoleOutputCharacter → 同一概念の可能性
+- filter_unallowed_hashes → 同一概念の可能性
+- FIN / FINE → 同一概念の可能性
+- FINAL / final → 同一概念の可能性
+- FINAL_CHAIN_HASH / final-chain-hash / final_chain_hash → 同一概念の可能性
+- finalize_package_data → 同一概念の可能性
+- FIND / find → 同一概念の可能性
+- find_all_candidates → 同一概念の可能性
+- find_all_modules → 同一概念の可能性
+- find_audit_writer → 同一概念の可能性
+- find_best_candidate → 同一概念の可能性
+- find_config_files → 同一概念の可能性
+- find_data_files → 同一概念の可能性
+- find_eggs_in_zip → 同一概念の可能性
+- find_event_file → 同一概念の可能性
+- find_events_csv → 同一概念の可能性
+- find_external_links → 同一概念の可能性
+- find_filter_class → 同一概念の可能性
+- find_first_remote_branch → 同一概念の可能性
+- find_formatter_class → 同一概念の可能性
+- find_hash_url_fragment → 同一概念の可能性
+- find_in_parent → 同一概念の可能性
+- find_institution_of → 同一概念の可能性
+- find_legacy_editables → 同一概念の可能性
+- find_lexer_class → 同一概念の可能性
+- find_lexer_class_by_name → 同一概念の可能性
+- find_lexer_class_for_filename → 同一概念の可能性
+- find_library_file → 同一概念の可能性
+- find-links / find_links → 同一概念の可能性
+- find_module / find_modules → 同一概念の可能性
+- find_most_preferred_tag → 同一概念の可能性
+- find_on_path → 同一概念の可能性
+- find_package_modules → 同一概念の可能性
+- find_package_path → 同一概念の可能性
+- find_parent_package → 同一概念の可能性
+- find_path_to_project_root_from_repo_root → 同一概念の可能性
+- find_plugin_filters → 同一概念の可能性
+- find_plugin_formatters → 同一概念の可能性
+- find_plugin_lexers → 同一概念の可能性
+- find_plugin_styles → 同一概念の可能性
+- find_programdata_vs_vers → 同一概念の可能性
+- find_public_key → 同一概念の可能性
+- find_reg_vs_vers → 同一概念の可能性
+- find_submodule_git_dir → 同一概念の可能性
+- find_tip_from_regenesis → 同一概念の可能性
+- find_worktree_git_dir → 同一概念の可能性
+- FindAndDelete → 同一概念の可能性
+- finder_for_path → 同一概念の可能性
+- FIP / FIPS → 同一概念の可能性
+- FipsDsaSigScheme → 同一概念の可能性
+- FipsEcDsaSigScheme → 同一概念の可能性
+- FIR / FIRE → 同一概念の可能性
+- FIRST_LINE_RE / first_line_re → 同一概念の可能性
+- FIT / FITS / fit → 同一概念の可能性
+- FIV / FIVE → 同一概念の可能性
+- fix_help_options → 同一概念の可能性
+- FIX_REQUIRED / fix_required → 同一概念の可能性
+- fix_sf_url → 同一概念の可能性
+- fixup_namespace_packages → 同一概念の可能性
+- FLAG / Flags → 同一概念の可能性
+- FlatLayoutModuleFinder → 同一概念の可能性
+- FlatLayoutPackageFinder → 同一概念の可能性
+- FlexibleSha1Writer → 同一概念の可能性
+- FLO / FLOSS → 同一概念の可能性
+- FloatPrompt → 同一概念の可能性
+- FLTK-exception / fltk-exception → 同一概念の可能性
+- flush_to_index → 同一概念の可能性
+- FOE / FOSS → 同一概念の可能性
+- FoldedCase → 同一概念の可能性
+- Follow-up / follow-up → 同一概念の可能性
+- FollowedBy → 同一概念の可能性
+- Font-exception / font-exception → 同一概念の可能性
+- FOO / Foo / foo → 同一概念の可能性
+- FooSerializable → 同一概念の可能性
+- for backward compatibility / for backward-compatibility → 同一概念の可能性
+- ForbiddenBySafeModeError → 同一概念の可能性
+- FORCE_COLOR / force-color → 同一概念の可能性
+- force_map_handle_removal_win → 同一概念の可能性
+- force-reinstall / force_reinstall → 同一概念の可能性
+- FORMAT / format → 同一概念の可能性
+- format_command_args → 同一概念の可能性
+- format_directory_size → 同一概念の可能性
+- format_file_size → 同一概念の可能性
+- format_for_abspath → 同一概念の可能性
+- format_for_columns → 同一概念の可能性
+- format_for_error → 同一概念の可能性
+- format_for_human → 同一概念の可能性
+- format_for_intranet → 同一概念の可能性
+- format_for_json → 同一概念の可能性
+- format_full_version → 同一概念の可能性
+- format_header_param_html5 → 同一概念の可能性
+- format_header_param_rfc2231 → 同一概念の可能性
+- format_inline_array → 同一概念の可能性
+- format_inline_table → 同一概念の可能性
+- format_key_part → 同一概念の可能性
+- format_option_strings → 同一概念の可能性
+- FormatControl → 同一概念の可能性
+- FormatError → 同一概念の可能性
+- FORMATTERS / Formatter → 同一概念の可能性
+- FoundCandidates → 同一概念の可能性
+- FREE / FRS → 同一概念の可能性
+- FRAME / Frame / frames → 同一概念の可能性
+- frame_file_is_setup → 同一概念の可能性
+- FrameworkDir32 → 同一概念の可能性
+- FrameworkDir64 → 同一概念の可能性
+- FrameworkVersion32 → 同一概念の可能性
+- FrameworkVersion64 → 同一概念の可能性
+- Free-form / free-form → 同一概念の可能性
+- FreeBSD-DOC / freebsd-doc → 同一概念の可能性
+- FREEZE / freeze → 同一概念の可能性
+- FreezableDefaultDict → 同一概念の可能性
+- FreezeCommand → 同一概念の可能性
+- from_bridge_result → 同一概念の可能性
+- from_class_name → 同一概念の可能性
+- From jaraco.functools 3.3 / from jaraco.functools 3.3 → 同一概念の可能性
+- from_key_val_list → 同一概念の可能性
+- from_metadata_file_contents → 同一概念の可能性
+- from_path / from_paths → 同一概念の可能性
+- from_secret_bytes → 同一概念の可能性
+- from_unix_nano → 同一概念の可能性
+- FrozenRequirement → 同一概念の可能性
+- fs_get_all → 同一概念の可能性
+- FSFAP-no-warranty-disclaimer / fsfap-no-warranty-disclaimer → 同一概念の可能性
+- full_validation_evidence → 同一概念の可能性
+- FULLY_COMPLIANT → 同一概念の可能性
+- FUM / FUME → 同一概念の可能性
+- FUNC / func → 同一概念の可能性
+- FunctionFilter → 同一概念の可能性
+- FUTURE / Future → 同一概念の可能性
+- FxTools → 同一概念の可能性
+- GAE / GAS → 同一概念の可能性
+- GAG / GAGE → 同一概念の可能性
+- GAL / GALE → 同一概念の可能性
+- GAM / GAME → 同一概念の可能性
+- Game-Programming-Gems / game-programming-gems → 同一概念の可能性
+- GATE / Gate → 同一概念の可能性
+- GateId → 同一概念の可能性
+- GateRegistry → 同一概念の可能性
+- GateResult → 同一概念の可能性
+- GateStatus → 同一概念の可能性
+- GateValidationError → 同一概念の可能性
+- GCC-exception / gcc-exception → 同一概念の可能性
+- GCD / gcd → 同一概念の可能性
+- GcmMode → 同一概念の可能性
+- GcmTests → 同一概念の可能性
+- GCR-docs / gcr-docs → 同一概念の可能性
+- GEMINI / Gemini → 同一概念の可能性
+- gen_lib_options → 同一概念の可能性
+- gen_preprocess_options → 同一概念の可能性
+- gen_table_chunks → 同一概念の可能性
+- GeneralProxyError → 同一概念の可能性
+- generate_audit_report → 同一概念の可能性
+- generate_baseline_report → 同一概念の可能性
+- generate_candidate_event_id_inputs → 同一概念の可能性
+- generate_free_handoff_packet → 同一概念の可能性
+- generate_guideline_id → 同一概念の可能性
+- generate_institutional_report → 同一概念の可能性
+- generate_intelligence_report → 同一概念の可能性
+- generate_new_key_pems → 同一概念の可能性
+- generate_operation_report → 同一概念の可能性
+- generate_orchestra_key → 同一概念の可能性
+- generate_prioritized_actions → 同一概念の可能性
+- generate_probable_prime → 同一概念の可能性
+- generate_probable_safe_prime → 同一概念の可能性
+- generate_relay_key → 同一概念の可能性
+- generate_result_template → 同一概念の可能性
+- generate_system_prefix → 同一概念の可能性
+- GET / GETS / get → 同一概念の可能性
+- get_abi3_suffix → 同一概念の可能性
+- get_active_key_id → 同一概念の可能性
+- get_active_private_key_path → 同一概念の可能性
+- get_active_todos → 同一概念の可能性
+- get_active_warnings → 同一概念の可能性
+- get_affected_by → 同一概念の可能性
+- get-all / get_all → 同一概念の可能性
+- get_all_bindings → 同一概念の可能性
+- get_all_filters → 同一概念の可能性
+- get_all_formatters → 同一概念の可能性
+- get_all_known_words → 同一概念の可能性
+- get_all_lexers → 同一概念の可能性
+- get_all_styles → 同一概念の可能性
+- get_allowed_formats → 同一概念の可能性
+- get_ansi_codes → 同一概念の可能性
+- get_applicable_candidates → 同一概念の可能性
+- get_approval_rules → 同一概念の可能性
+- get_archive_files → 同一概念の可能性
+- get_attr_name → 同一概念の可能性
+- get_auth_from_url → 同一概念の可能性
+- get_auth_info → 同一概念の可能性
+- get_author_email → 同一概念の可能性
+- get_available_package_versions → 同一概念の可能性
+- get_backend_for_dir → 同一概念の可能性
+- get_backend_for_scheme → 同一概念の可能性
+- get_background_style → 同一概念の可能性
+- get_backoff_time → 同一概念の可能性
+- get_base_rev_args → 同一概念の可能性
+- get_best_invocation_for_this_pip → 同一概念の可能性
+- get_best_invocation_for_this_python → 同一概念の可能性
+- get_bin_prefix → 同一概念の可能性
+- get_bin_user → 同一概念の可能性
+- get_bool_opt → 同一概念の可能性
+- get_build_architecture → 同一概念の可能性
+- get_build_platform → 同一概念の可能性
+- get_build_version → 同一概念の可能性
+- get_by_capability → 同一概念の可能性
+- get_c_string → 同一概念の可能性
+- get_ca_certs → 同一概念の可能性
+- get_cache_base → 同一概念の可能性
+- get_cache_dir → 同一概念の可能性
+- get_cache_entry → 同一概念の可能性
+- get_cache_info → 同一概念の可能性
+- get_cache_path → 同一概念の可能性
+- get_caliber_id → 同一概念の可能性
+- get_candidate_lookup → 同一概念の可能性
+- get_chain_hash → 同一概念の可能性
+- get_character_cell_size → 同一概念の可能性
+- get_choice_opt → 同一概念の可能性
+- get_cmdline_options → 同一概念の可能性
+- get_code / get_codes → 同一概念の可能性
+- get_color_distance → 同一概念の可能性
+- get_command_class → 同一概念の可能性
+- get_command_list → 同一概念の可能性
+- get_command_name → 同一概念の可能性
+- get_command_obj → 同一概念の可能性
+- get_command_packages → 同一概念の可能性
+- get_config_h_filename → 同一概念の可能性
+- get_config_path → 同一概念の可能性
+- get_config_var / get_config_vars → 同一概念の可能性
+- get_configuration_files → 同一概念の可能性
+- get_connect_duration → 同一概念の可能性
+- get_connection_with_tls_context → 同一概念の可能性
+- get_console_script_specs → 同一概念の可能性
+- get_contact_email → 同一概念の可能性
+- Get-Content / get-content → 同一概念の可能性
+- get_context_for_copilot → 同一概念の可能性
+- get_cookie_header → 同一概念の可能性
+- get_csv_rows_for_installed → 同一概念の可能性
+- get_current_branch → 同一概念の可能性
+- get_current_context → 同一概念の可能性
+- get_current_mode → 同一概念の可能性
+- get_current_style → 同一概念の可能性
+- get_data_files → 同一概念の可能性
+- get_data_files_without_manifest → 同一概念の可能性
+- get_decision_chain → 同一概念の可能性
+- get_decision_profile → 同一概念の可能性
+- get_decision_revision → 同一概念の可能性
+- get_default_cache → 同一概念の可能性
+- get_default_columns → 同一概念の可能性
+- get_default_compiler → 同一概念の可能性
+- get_default_environment → 同一概念の可能性
+- get_default_proxy → 同一概念の可能性
+- get_default_session → 同一概念の可能性
+- get_default_values → 同一概念の可能性
+- get_diff_since → 同一概念の可能性
+- get_directory_distribution → 同一概念の可能性
+- get_dist_canonical_name → 同一概念の可能性
+- get_dist_info → 同一概念の可能性
+- get_dist_to_uninstall → 同一概念の可能性
+- get_download_progress_renderer → 同一概念の可能性
+- get_download_url → 同一概念の可能性
+- get_due_jobs → 同一概念の可能性
+- get_ecdh_key → 同一概念の可能性
+- get_egg_cache_dir → 同一概念の可能性
+- get_encoding_from_headers → 同一概念の可能性
+- get_encodings_from_content → 同一概念の可能性
+- get_enriched_context → 同一概念の可能性
+- get_entry_info → 同一概念の可能性
+- get_entry_map → 同一概念の可能性
+- get_environ_proxies → 同一概念の可能性
+- get_environ_vars → 同一概念の可能性
+- get_ephem_path_for_link → 同一概念の可能性
+- get_event_id → 同一概念の可能性
+- get_exe_prefixes → 同一概念の可能性
+- get_existing_columns → 同一概念の可能性
+- get_existing_files → 同一概念の可能性
+- get_export_entry → 同一概念の可能性
+- get_export_symbols → 同一概念の可能性
+- get_ext_filename → 同一概念の可能性
+- get_ext_fullname → 同一概念の可能性
+- get_ext_fullpath → 同一概念の可能性
+- get_ext_outputs → 同一概念の可能性
+- get_file_content → 同一概念の可能性
+- get_file_list → 同一概念の可能性
+- get_file_to_edit → 同一概念の可能性
+- get_file_url → 同一概念の可能性
+- get_filetype_from_buffer → 同一概念の可能性
+- get_filetype_from_line → 同一概念の可能性
+- get_filter_by_name → 同一概念の可能性
+- get_finalized_command → 同一概念の可能性
+- get_fixed_prng → 同一概念の可能性
+- get_for_gate → 同一概念の可能性
+- get_formatted_file_tags → 同一概念の可能性
+- get_formatted_locations → 同一概念の可能性
+- get_formatter_by_name → 同一概念の可能性
+- get_formatter_for_filename → 同一概念の可能性
+- get_frozen_object → 同一概念の可能性
+- get_full_dna → 同一概念の可能性
+- get_full_session → 同一概念の可能性
+- get_full_url → 同一概念の可能性
+- get_git_changed_files → 同一概念の可能性
+- get_git_version → 同一概念の可能性
+- get_guideline_revision → 同一概念の可能性
+- get_hash_module → 同一概念の可能性
+- get_host_platform → 同一概念の可能性
+- get_html_style → 同一概念の可能性
+- get_http_url → 同一概念の可能性
+- get_impact / get_impacts → 同一概念の可能性
+- get_index_urls_locations → 同一概念の可能性
+- get_info_location → 同一概念の可能性
+- get_input / get_inputs → 同一概念の可能性
+- get_install_candidate → 同一概念の可能性
+- get_install_progress_renderer → 同一概念の可能性
+- get_install_requirement → 同一概念の可能性
+- get_installation_error → 同一概念の可能性
+- get_installation_order → 同一概念の可能性
+- get_installed_distribution → 同一概念の可能性
+- get_int_opt → 同一概念の可能性
+- get_job / get_jobs → 同一概念の可能性
+- get_key_state → 同一概念の可能性
+- get_keyring_provider → 同一概念の可能性
+- get_ks_performance → 同一概念の可能性
+- get_last_chain_hash → 同一概念の可能性
+- get_last_event → 同一概念の可能性
+- get_last_snapshot_info → 同一概念の可能性
+- get_latest_dna → 同一概念の可能性
+- get_latest_hash → 同一概念の可能性
+- get_latest_tip → 同一概念の可能性
+- get_layer_checks → 同一概念の可能性
+- get_level_text → 同一概念の可能性
+- get_lexer_by_name → 同一概念の可能性
+- get_lexer_for_filename → 同一概念の可能性
+- get_lexer_for_mimetype → 同一概念の可能性
+- get_lib_location_guesses → 同一概念の可能性
+- get_library_names → 同一概念の可能性
+- get_line_length → 同一概念の可能性
+- get_line_parser → 同一概念の可能性
+- get_list_opt → 同一概念の可能性
+- get_long_description → 同一概念の可能性
+- get_macosx_target_ver → 同一概念の可能性
+- get_macosx_target_ver_from_syscfg → 同一概念の可能性
+- get_maintainer_email → 同一概念の可能性
+- get_major_minor_version → 同一概念の可能性
+- get_makefile_filename → 同一概念の可能性
+- get_max_version → 同一概念の可能性
+- get_medical_records → 同一概念の可能性
+- get_mentor_package → 同一概念の可能性
+- get_message_start → 同一概念の可能性
+- get_metadata_distribution → 同一概念の可能性
+- get_metadata_lines → 同一概念の可能性
+- get_metadata_version → 同一概念の可能性
+- get_module_constant → 同一概念の可能性
+- get_module_from_module_name → 同一概念の可能性
+- get_module_outfile → 同一概念の可能性
+- get_msvc_paths → 同一概念の可能性
+- get_mv_ro → 同一概念の可能性
+- get_mv_rw → 同一概念の可能性
+- get_netloc_and_auth → 同一概念の可能性
+- get_netrc_auth → 同一概念の可能性
+- get_new_headers → 同一概念の可能性
+- get_next_event_id → 同一概念の可能性
+- get_not_required → 同一概念の可能性
+- get_object_data → 同一概念の可能性
+- get_object_header → 同一概念の可能性
+- get_object_type_by_name → 同一概念の可能性
+- get_object_types_mro → 同一概念の可能性
+- get_object_types_mro_as_strings → 同一概念の可能性
+- get_option_dict → 同一概念の可能性
+- get_option_order → 同一概念の可能性
+- get_or_create_nest → 同一概念の可能性
+- get_ordered_args → 同一概念の可能性
+- get_origin_req_host → 同一概念の可能性
+- get_output_mapping → 同一概念の可能性
+- get_package_data → 同一概念の可能性
+- get_package_dir → 同一概念の可能性
+- get_param_bounds → 同一概念の可能性
+- get_param_mapping → 同一概念の可能性
+- get_path_completion_type → 同一概念の可能性
+- get_path_for_link → 同一概念の可能性
+- get_path_uid → 同一概念の可能性
+- get_phl_directive → 同一概念の可能性
+- get_pip_version → 同一概念の可能性
+- get_pkg_info_revision → 同一概念の可能性
+- get_plain_headed_box → 同一概念の可能性
+- get_platform / get_platforms → 同一概念の可能性
+- get_prev_chain_hash → 同一概念の可能性
+- get_prev_hash → 同一概念の可能性
+- get_prev_id → 同一概念の可能性
+- get_process_umask → 同一概念の可能性
+- get_project_data → 同一概念の可能性
+- get_project_status → 同一概念の可能性
+- get_project_structure → 同一概念の可能性
+- get_proxy_peername → 同一概念の可能性
+- get_proxy_sockname → 同一概念の可能性
+- get_python_inc → 同一概念の可能性
+- get_python_lib → 同一概念の可能性
+- get_python_version → 同一概念の可能性
+- get_queue_status → 同一概念の可能性
+- get_raw_buffer → 同一概念の可能性
+- get_raw_ecdh_key → 同一概念の可能性
+- get_raw_privkey → 同一概念の可能性
+- get_recent_incidents → 同一概念の可能性
+- get_recent_reflections → 同一概念の可能性
+- get_recorded_changes → 同一概念の可能性
+- get_recurrence_context → 同一概念の可能性
+- get_redirect_location → 同一概念の可能性
+- get_redirect_target → 同一概念の可能性
+- get_rel_path → 同一概念の可能性
+- get_remote_call_options → 同一概念の可能性
+- get_remote_url → 同一概念の可能性
+- get_renderable / get_renderables → 同一概念の可能性
+- get_repository_index → 同一概念の可能性
+- get_repository_root → 同一概念の可能性
+- get_requirement / get_requirements → 同一概念の可能性
+- get_requirement_revision → 同一概念の可能性
+- get_requires_for_build_editable → 同一概念の可能性
+- get_requires_for_build_sdist → 同一概念の可能性
+- get_requires_for_build_wheel → 同一概念の可能性
+- get_resource_filename → 同一概念の可能性
+- get_resource_reader → 同一概念の可能性
+- get_resource_stream → 同一概念の可能性
+- get_resource_string → 同一概念の可能性
+- get_resources_dests → 同一概念の可能性
+- get_retention_policy → 同一概念の可能性
+- get_retry_after → 同一概念の可能性
+- get_reviewed_indices → 同一概念の可能性
+- get_revision_sha → 同一概念の可能性
+- get_risk_prediction → 同一概念の可能性
+- get_row_style → 同一概念の可能性
+- get_runnable_pip → 同一概念の可能性
+- get_sanitised_resp_msg → 同一概念の可能性
+- get_schema_version → 同一概念の可能性
+- get_schema_version_row → 同一概念の可能性
+- get_score_series → 同一概念の可能性
+- get_score_series_for → 同一概念の可能性
+- get_script_args → 同一概念の可能性
+- get_script_filenames → 同一概念の可能性
+- get_script_header → 同一概念の可能性
+- GET_SESSION / get_session → 同一概念の可能性
+- get_similar_commands → 同一概念の可能性
+- get_site_dirs → 同一概念の可能性
+- get_sorted_tags → 同一概念の可能性
+- get_source_files → 同一概念の可能性
+- get_src_prefix → 同一概念の可能性
+- get_src_requirement → 同一概念の可能性
+- get_stage_counts → 同一概念の可能性
+- GET_STATS / get_state / get_stats → 同一概念の可能性
+- get_style_at_offset → 同一概念の可能性
+- get_style_by_name → 同一概念の可能性
+- get_style_defs → 同一概念の可能性
+- get_style_for_token → 同一概念の可能性
+- get_sub_commands → 同一概念の可能性
+- get_subj_alt_name → 同一概念の可能性
+- get_supported_platform → 同一概念の可能性
+- get_svg_style → 同一概念の可能性
+- get_system_prompt_snippet → 同一概念の可能性
+- get_table_column → 同一概念の可能性
+- get_tag_random → 同一概念の可能性
+- get_task_report → 同一概念の可能性
+- get_text_at → 同一概念の可能性
+- get_tip_event_id → 同一概念の可能性
+- get_tokens_unprocessed → 同一概念の可能性
+- get_top_pages → 同一概念の可能性
+- get_topological_weights → 同一概念の可能性
+- get_traffic_sources → 同一概念の可能性
+- get_tree_icon → 同一概念の可能性
+- get_type_hints → 同一概念の可能性
+- get_unbound_function → 同一概念の可能性
+- get_unicode_from_response → 同一概念の可能性
+- get_unpatched_class → 同一概念の可能性
+- get_unpatched_function → 同一概念の可能性
+- get_unsorted_tags → 同一概念の可能性
+- get-url / get_url → 同一概念の可能性
+- get_url_rev_and_auth → 同一概念の可能性
+- get_url_rev_options → 同一概念の可能性
+- get_user_id → 同一概念の可能性
+- get_value / get_values → 同一概念の可能性
+- get_values_in_config → 同一概念の可能性
+- get_vcs_version → 同一概念の可能性
+- get_vendor_version_from_module → 同一概念の可能性
+- get_version / get_versions → 同一概念の可能性
+- get_version_sort_key → 同一概念の可能性
+- get_wheel_cache_entry → 同一概念の可能性
+- get_wheel_distribution → 同一概念の可能性
+- get_win_folder_from_env_vars → 同一概念の可能性
+- get_win_folder_from_registry → 同一概念の可能性
+- get_win_folder_if_csidl_name_not_env_var → 同一概念の可能性
+- get_win_folder_via_ctypes → 同一概念の可能性
+- get_win_launcher → 同一概念の可能性
+- get_windows_console_features → 同一概念の可能性
+- get_witness_commitment_index → 同一概念の可能性
+- get_worker_stats → 同一概念の可能性
+- get_working_memory → 同一概念の可能性
+- get_working_tree → 同一概念の可能性
+- GetBytes / getbytes → 同一概念の可能性
+- GetConsoleCursorInfo → 同一概念の可能性
+- GetConsoleMode → 同一概念の可能性
+- GetConsoleScreenBufferInfo → 同一概念の可能性
+- GetHash → 同一概念の可能性
+- getheader / getheaders → 同一概念の可能性
+- GetLegacySigOpCount → 同一概念の可能性
+- GetSigOpCount → 同一概念の可能性
+- GetStdHandle → 同一概念の可能性
+- GetTxid → 同一概念の可能性
+- GetWeight → 同一概念の可能性
+- GIT / Git → 同一概念の可能性
+- git_diff_summary → 同一概念の可能性
+- GIT_DIR / git-dir → 同一概念の可能性
+- git_extract_command → 同一概念の可能性
+- git-status / git_status → 同一概念の可能性
+- git_working_dir → 同一概念の可能性
+- GitCommandError → 同一概念の可能性
+- GitCommandNotFound → 同一概念の可能性
+- GitConfigParser → 同一概念の可能性
+- GitError → 同一概念の可能性
+- GitHubPagesAdapter → 同一概念の可能性
+- GitTreeTimestamper → 同一概念の可能性
+- glibc_version_string → 同一概念の可能性
+- glibc_version_string_confstr → 同一概念の可能性
+- glibc_version_string_ctypes → 同一概念の可能性
+- GLOB / glob → 同一概念の可能性
+- glob_to_re → 同一概念の可能性
+- global-exclude / global_exclude → 同一概念の可能性
+- global-include / global_include → 同一概念の可能性
+- global_tempdir_manager → 同一概念の可能性
+- Gmsh-exception / gmsh-exception → 同一概念の可能性
+- GNAT-exception / gnat-exception → 同一概念の可能性
+- GNOME-examples-exception / gnome-examples-exception → 同一概念の可能性
+- GNU-compiler-exception / gnu-compiler-exception → 同一概念の可能性
+- GOAL / GOALS → 同一概念の可能性
+- GobbleFilter → 同一概念の可能性
+- GOOD / GOODS → 同一概念の可能性
+- GoodData-CL / gooddata-cl → 同一概念の可能性
+- GoToColumn → 同一概念の可能性
+- GotUnsupportedOperation → 同一概念の可能性
+- GOVERNANCE / Governance → 同一概念の可能性
+- GOVERNANCE_LAYER / Governance Layer / Governance-layer → 同一概念の可能性
+- governance_loop_definition → 同一概念の可能性
+- GovernanceDecision → 同一概念の可能性
+- GovernanceEvent / GovernanceEvents → 同一概念の可能性
+- GovernancePipeline → 同一概念の可能性
+- GovernanceRuntime → 同一概念の可能性
+- GovernanceRuntimeRecord → 同一概念の可能性
+- GPL-CC / gpl-cc → 同一概念の可能性
+- Graphics-Gems / graphics-gems → 同一概念の可能性
+- grok_environment_error → 同一概念の可能性
+- GroundingResult → 同一概念の可能性
+- GROUP / Group / group / groups → 同一概念の可能性
+- group_by_session → 同一概念の可能性
+- GStreamer-exception / gstreamer-exception → 同一概念の可能性
+- GUARD / guard → 同一概念の可能性
+- guard_before_signature → 同一概念の可能性
+- guard_side_effect → 同一概念の可能性
+- GuardedPipelineResult → 同一概念の可能性
+- GuardResult → 同一概念の可能性
+- guess_content_type → 同一概念の可能性
+- guess_decode_from_terminal → 同一概念の可能性
+- guess_json_utf → 同一概念の可能性
+- guess_lexer_for_filename → 同一概念の可能性
+- GzipDecoder → 同一概念の可能性
+- GzipDecoderState → 同一概念の可能性
+- HAL / HALE → 同一概念の可能性
+- Half-Open / half-open → 同一概念の可能性
+- HAN / HANS → 同一概念の可能性
+- HANDLE / handle → 同一概念の可能性
+- handle_common_options → 同一概念の可能性
+- handle_display_options → 同一概念の可能性
+- handle_extra_path → 同一概念の可能性
+- handle_function_call → 同一概念の可能性
+- handle_mutual_excludes → 同一概念の可能性
+- handle_null_entries → 同一概念の可能性
+- handle_option_line → 同一概念の可能性
+- handle_pip_version_check → 同一概念の可能性
+- handle_process_output → 同一概念の可能性
+- handle_requirement_line → 同一概念の可能性
+- HANDOFF_READY / handoff-ready → 同一概念の可能性
+- HANDSHAKE / handshake → 同一概念の可能性
+- HARD-CODED / Hard-coded / hard-coded → 同一概念の可能性
+- has_c_libraries → 同一概念の可能性
+- has_canonical_pushes → 同一概念の可能性
+- has_constraint_or_critical → 同一概念の可能性
+- has_contents_for → 同一概念の可能性
+- has-data / has_data → 同一概念の可能性
+- has_data_files → 同一概念の可能性
+- has_event_type → 同一概念の可能性
+- has_ext_modules → 同一概念の可能性
+- has_hash_options → 同一概念の可能性
+- has_header / has_headers → 同一概念の可能性
+- has_leading_dir → 同一概念の可能性
+- has_one_of → 同一概念の可能性
+- has_pure_modules → 同一概念の可能性
+- has_separate_working_tree → 同一概念の可能性
+- HASH / HASHES / Hash / Hashes / hash / hashes → 同一概念の可能性
+- Hash-linked / hash-linked → 同一概念の可能性
+- hash_signed_commit → 同一概念の可能性
+- hash_signed_commit_old → 同一概念の可能性
+- hash_then_or → 同一概念の可能性
+- HashChecker → 同一概念の可能性
+- HashCommand → 同一概念の可能性
+- HashDigestSizeSelfTest → 同一概念の可能性
+- HashError / HashErrors → 同一概念の可能性
+- HashMismatch → 同一概念の可能性
+- HashMissing → 同一概念の可能性
+- HashSelfTest → 同一概念の可能性
+- HashUnpinned → 同一概念の可能性
+- HAT / HATE → 同一概念の可能性
+- have_aes_ni → 同一概念の可能性
+- HAY / HAYS → 同一概念の可能性
+- header_store_parse → 同一概念の可能性
+- HeaderParsingError → 同一概念の可能性
+- headless_camel_case → 同一概念の可能性
+- HEALTH / health → 同一概念の可能性
+- HEALTH_CHECKS / health-check / health_check → 同一概念の可能性
+- HealthResponse → 同一概念の可能性
+- HealthResult → 同一概念の可能性
+- HEALTHY / healthy → 同一概念の可能性
+- HelpCommand → 同一概念の可能性
+- HER / HERE / HERS → 同一概念の可能性
+- HEX / hex → 同一概念の可能性
+- HFE / HFS → 同一概念の可能性
+- HIS / HISS → 同一概念の可能性
+- HID / HIDE → 同一概念の可能性
+- HiddenText → 同一概念の可能性
+- HIDE_CURSOR / hide_cursor → 同一概念の可能性
+- hide-value / hide_value → 同一概念の可能性
+- HIGH → 同一概念の可能性
+- High-Level / High-level / high-level → 同一概念の可能性
+- highlight → 同一概念の可能性
+- HISTORY / history → 同一概念の可能性
+- HKDF → 同一概念の可能性
+- HMAC → 同一概念の可能性
+- HOLDER / HOLDERS / holder → 同一概念の可能性
+- HOME / home → 同一概念の可能性
+- Home-page / home-page → 同一概念の可能性
+- HOOK / HOOKS → 同一概念の可能性
+- HookExecutionError → 同一概念の可能性
+- HookMissing → 同一概念の可能性
+- HOST / host → 同一概念の可能性
+- HostChangedError → 同一概念の可能性
+- HOSTNAME / hostname → 同一概念の可能性
+- hostname_checks_common_name → 同一概念の可能性
+- HOW / HOWE / how → 同一概念の可能性
+- HPND-DEC / hpnd-dec → 同一概念の可能性
+- HPND-doc / hpnd-doc → 同一概念の可能性
+- HPND-doc-sell / hpnd-doc-sell → 同一概念の可能性
+- HPND-export-US / hpnd-export-us → 同一概念の可能性
+- HPND-export-US-acknowledgement / hpnd-export-us-acknowledgement → 同一概念の可能性
+- HPND-export-US-modify / hpnd-export-us-modify → 同一概念の可能性
+- HPND-Fenneberg-Livingston / hpnd-fenneberg-livingston → 同一概念の可能性
+- HPND-INRIA-IMAG / hpnd-inria-imag → 同一概念の可能性
+- HPND-Intel / hpnd-intel → 同一概念の可能性
+- HPND-Kevlin-Henney / hpnd-kevlin-henney → 同一概念の可能性
+- HPND-Markus-Kuhn / hpnd-markus-kuhn → 同一概念の可能性
+- HPND-merchantability-variant / hpnd-merchantability-variant → 同一概念の可能性
+- HPND-MIT-disclaimer / hpnd-mit-disclaimer → 同一概念の可能性
+- HPND-Netrek / hpnd-netrek → 同一概念の可能性
+- HPND-Pbmplus / hpnd-pbmplus → 同一概念の可能性
+- HPND-sell-MIT-disclaimer-xserver / hpnd-sell-mit-disclaimer-xserver → 同一概念の可能性
+- HPND-sell-regexpr / hpnd-sell-regexpr → 同一概念の可能性
+- HPND-sell-variant / hpnd-sell-variant → 同一概念の可能性
+- HPND-sell-variant-MIT-disclaimer / hpnd-sell-variant-mit-disclaimer → 同一概念の可能性
+- HPND-sell-variant-MIT-disclaimer-rev / hpnd-sell-variant-mit-disclaimer-rev → 同一概念の可能性
+- HPND-UC / hpnd-uc → 同一概念の可能性
+- HPND-UC-export-US / hpnd-uc-export-us → 同一概念の可能性
+- HSH_TD → 同一概念の可能性
+- html_doctype_matches → 同一概念の可能性
+- HTTP / HTTPS → 同一概念の可能性
+- HTTP_VERSION_NOT_SUPPORTED / http_version_not_supported → 同一概念の可能性
+- HUG / HUGE → 同一概念の可能性
+- Human Approval Gate / human_approval_gate → 同一概念の可能性
+- HUMAN_GATE_OVERRIDES / human_gate_overrides → 同一概念の可能性
+- Human-Readable / Human-readable / human-readable → 同一概念の可能性
+- IEE / IEEE / IES → 同一概念の可能性
+- I386 → 同一概念の可能性
+- IBM-pibs / ibm-pibs → 同一概念の可能性
+- ICE / ICES / ICS → 同一概念の可能性
+- identify_python_interpreter → 同一概念の可能性
+- IDI / IDIS → 同一概念の可能性
+- IDL / IDLE → 同一概念の可能性
+- idna-encode / idna_encode → 同一概念の可能性
+- IEC-Code-Components-EULA / iec-code-components-eula → 同一概念の可能性
+- IGNORE / ignore → 同一概念の可能性
+- ignore-requires-python / ignore_requires_python → 同一概念の可能性
+- IGNORED / ignored → 同一概念の可能性
+- IJG-short / ijg-short → 同一概念の可能性
+- Ill-formed / ill-formed → 同一概念の可能性
+- IMAG / IMAGE → 同一概念の可能性
+- ImmutableSerializable → 同一概念の可能性
+- IMPACT / Impact → 同一概念の可能性
+- IMPACT_LEVEL / IMPACT_LEVELS → 同一概念の可能性
+- IMPLEMENTATION / Implementation → 同一概念の可能性
+- IMPORT_OK / import_ok → 同一概念の可能性
+- import_openssh_private_generic → 同一概念の可能性
+- import_private_key → 同一概念の可能性
+- import_public_key → 同一概念の可能性
+- import_x25519_private_key → 同一概念の可能性
+- import_x25519_public_key → 同一概念の可能性
+- import_x448_private_key → 同一概念の可能性
+- import_x448_public_key → 同一概念の可能性
+- ImportKeyFromX509Cert → 同一概念の可能性
+- ImportKeyTests → 同一概念の可能性
+- ImprovementScorer → 同一概念の可能性
+- ImprovementSuggestion → 同一概念の可能性
+- In-field / in-field → 同一概念の可能性
+- In-line / in-line → 同一概念の可能性
+- In-memory / in-memory → 同一概念の可能性
+- In-place / in-place → 同一概念の可能性
+- In-process / in-process → 同一概念の可能性
+- IN_PROGRESS → 同一概念の可能性
+- in_site_packages → 同一概念の可能性
+- INCIDENT / INCIDENTS → 同一概念の可能性
+- include → 同一概念の可能性
+- include-group / include_group → 同一概念の可能性
+- include-package-data / include_package_data → 同一概念の可能性
+- IncompleteDownloadError → 同一概念の可能性
+- IncompleteRead → 同一概念の可能性
+- INCONSISTENCIES / inconsistencies → 同一概念の可能性
+- InconsistentCandidate → 同一概念の可能性
+- increment_client_count → 同一概念の可能性
+- IncrementalDecoder → 同一概念の可能性
+- IncrementalEncoder → 同一概念の可能性
+- IndentedBlock / IndentedBlocks / indentedBlock → 同一概念の可能性
+- IndentedRenderable → 同一概念の可能性
+- IndentingFormatter → 同一概念の可能性
+- Independent-modules-exception / independent-modules-exception → 同一概念の可能性
+- INDEX / index → 同一概念の可能性
+- index-url / index_urls → 同一概念の可能性
+- IndexCommand → 同一概念の可能性
+- IndexContent → 同一概念の可能性
+- IndexEntry → 同一概念の可能性
+- IndexFile → 同一概念の可能性
+- IndexGroupCommand → 同一概念の可能性
+- IndexObject → 同一概念の可能性
+- IndexWriter → 同一概念の可能性
+- infer_chain_hash_rule → 同一概念の可能性
+- infer_event_id_rule → 同一概念の可能性
+- infer_work_description → 同一概念の可能性
+- INFIELD → 同一概念の可能性
+- InfinityType → 同一概念の可能性
+- INFO / info → 同一概念の可能性
+- info_at_index → 同一概念の可能性
+- Info-ZIP / info-zip → 同一概念の可能性
+- InfoCommon → 同一概念の可能性
+- InfoDict → 同一概念の可能性
+- InformationOnly → 同一概念の可能性
+- INGEST / ingest → 同一概念の可能性
+- ingest_from_event → 同一概念の可能性
+- ingest_from_file → 同一概念の可能性
+- INIT / init → 同一概念の可能性
+- init_app_state → 同一概念の可能性
+- init_audit_db → 同一概念の可能性
+- init_per_thread_state → 同一概念の可能性
+- INITIALIZE / initialize → 同一概念の可能性
+- INITIALIZING → 同一概念の可能性
+- inject_and_submit → 同一概念の可能性
+- inject_into_ssl → 同一概念の可能性
+- inject_into_urllib3 → 同一概念の可能性
+- inject_to_essence → 同一概念の可能性
+- inline_literals_using → 同一概念の可能性
+- InMemoryBackend → 同一概念の可能性
+- InMemoryMetadata → 同一概念の可能性
+- Inner-Net / inner-net → 同一概念の可能性
+- InprocessBuildEnvironmentInstaller → 同一概念の可能性
+- INPUT_SELECTOR / INPUT_SELECTORS → 同一概念の可能性
+- InputComps → 同一概念の可能性
+- InputSnapshot → 同一概念の可能性
+- InsecureCacheControlAdapter → 同一概念の可能性
+- InsecurePlatformWarning → 同一概念の可能性
+- InsecureRequestWarning → 同一概念の可能性
+- INSERT / insert → 同一概念の可能性
+- insert_key_rotation_event → 同一概念の可能性
+- insert_option_group → 同一概念の可能性
+- INSERT_ROW / INSERT_ROWS → 同一概念の可能性
+- Inspect / inspect → 同一概念の可能性
+- InspectCommand → 同一概念の可能性
+- InstagramAdapter → 同一概念の可能性
+- InstagramWorker → 同一概念の可能性
+- INSTALL / install → 同一概念の可能性
+- install_as_egg → 同一概念の可能性
+- install-data / install_data → 同一概念の可能性
+- install_egg / install_eggs → 同一概念の可能性
+- install_egg_info → 同一概念の可能性
+- install_egg_scripts → 同一概念の可能性
+- install_for_development → 同一概念の可能性
+- install_given_reqs → 同一概念の可能性
+- install-headers / install_headers → 同一概念の可能性
+- install-lib / install_lib → 同一概念の可能性
+- install_req_drop_extras → 同一概念の可能性
+- install_req_extend_extras → 同一概念の可能性
+- install_req_from_editable → 同一概念の可能性
+- install_req_from_line → 同一概念の可能性
+- install_req_from_link_and_ireq → 同一概念の可能性
+- install_req_from_parsed_requirement → 同一概念の可能性
+- install_req_from_req_string → 同一概念の可能性
+- install-script / install-scripts / install_script / install_scripts → 同一概念の可能性
+- install-step / install-steps → 同一概念の可能性
+- install_warning_logger → 同一概念の可能性
+- install_wrapper_scripts → 同一概念の可能性
+- InstallationCandidate / InstallationCandidates → 同一概念の可能性
+- InstallationError / InstallationErrors → 同一概念の可能性
+- InstallationReport → 同一概念の可能性
+- InstallationResult → 同一概念の可能性
+- InstallationSubprocessError → 同一概念の可能性
+- InstallCommand → 同一概念の可能性
+- installed_as_egg → 同一概念の可能性
+- installed_by_distutils → 同一概念の可能性
+- INSTALLED_FILES / installed-files → 同一概念の可能性
+- installed_packages_summary → 同一概念の可能性
+- installed_with_dist_info → 同一概念の可能性
+- installed_with_setuptools_egg_info → 同一概念の可能性
+- InstalledDistribution → 同一概念の可能性
+- INSTALLER / Installer / installer → 同一概念の可能性
+- InstallRequirement / InstallRequirements → 同一概念の可能性
+- InstallWheelBuildError → 同一概念の可能性
+- INSTITUTION / Institution → 同一概念の可能性
+- Institution-level / institution-level → 同一概念の可能性
+- InstitutionRegistry → 同一概念の可能性
+- InstitutionResolutionError → 同一概念の可能性
+- InstitutionRuntime → 同一概念の可能性
+- InstitutionRuntimeError → 同一概念の可能性
+- InstitutionState → 同一概念の可能性
+- InsurerInfo → 同一概念の可能性
+- INTEGER / Integers → 同一概念の可能性
+- IntegerBase → 同一概念の可能性
+- IntegerCustom → 同一概念の可能性
+- IntegerNative → 同一概念の可能性
+- IntegrityResult → 同一概念の可能性
+- Intel-ACPI / intel-acpi → 同一概念の可能性
+- intelligence_report_to_dict → 同一概念の可能性
+- IntelligenceReport → 同一概念の可能性
+- INTENT / INTENTS → 同一概念の可能性
+- INTENT-RECEIVED / INTENT_RECEIVED → 同一概念の可能性
+- intent_schema_version → 同一概念の可能性
+- INTENT_THRESHOLD_ADJUSTMENT / intent_threshold_adjustment → 同一概念の可能性
+- intent_to_add → 同一概念の可能性
+- IntentCandidate → 同一概念の可能性
+- IntentClassifier → 同一概念の可能性
+- IntentDefinition → 同一概念の可能性
+- IntentMatch → 同一概念の可能性
+- Inter-product / inter-product → 同一概念の可能性
+- InteractiveSpinner → 同一概念の可能性
+- INTERNAL_SERVER_ERROR / internal_server_error → 同一概念の可能性
+- interpret_distro_name → 同一概念の可能性
+- InterpretedDrift → 同一概念の可能性
+- InterpretedEvent → 同一概念の可能性
+- IntPrompt → 同一概念の可能性
+- intranges_from_list → 同一概念の可能性
+- IntVar → 同一概念の可能性
+- inv_struct_001_genesis_unique → 同一概念の可能性
+- inv_struct_002_tip_reachable → 同一概念の可能性
+- inv_struct_003_branch_classification_not_null → 同一概念の可能性
+- inv_struct_004_quarantine_not_tip → 同一概念の可能性
+- INVALID → 同一概念の可能性
+- invalid_unless_false → 同一概念の可能性
+- InvalidAddressOrKeyError → 同一概念の可能性
+- InvalidBase58Error → 同一概念の可能性
+- InvalidChunkLength → 同一概念の可能性
+- InvalidCodepoint → 同一概念の可能性
+- InvalidCodepointContext → 同一概念の可能性
+- InvalidEggFragment → 同一概念の可能性
+- InvalidEventError → 同一概念の可能性
+- InvalidGitRepositoryError → 同一概念の可能性
+- InvalidHeader → 同一概念の可能性
+- InvalidInstalledPackage → 同一概念の可能性
+- InvalidLicenseExpression → 同一概念の可能性
+- InvalidMarker → 同一概念の可能性
+- InvalidMetadata → 同一概念の可能性
+- InvalidName → 同一概念の可能性
+- InvalidParameterError → 同一概念の可能性
+- InvalidPyProjectBuildRequires → 同一概念の可能性
+- InvalidRequirement → 同一概念の可能性
+- InvalidResponse → 同一概念の可能性
+- InvalidSchema → 同一概念の可能性
+- InvalidSchemeCombination → 同一概念の可能性
+- InvalidSdistFilename → 同一概念の可能性
+- InvalidSpecifier → 同一概念の可能性
+- InvalidVersion → 同一概念の可能性
+- InvalidWheel → 同一概念の可能性
+- InvalidWheelFilename → 同一概念の可能性
+- INVARIANTS → 同一概念の可能性
+- InWarmupError → 同一概念の可能性
+- ION / IONS → 同一概念の可能性
+- ipy_display_traceback → 同一概念の可能性
+- ipy_excepthook_closure → 同一概念の可能性
+- ipy_show_traceback → 同一概念の可能性
+- IRE / IRS → 同一概念の可能性
+- is_64_bit → 同一概念の可能性
+- is_allowed_target → 同一概念の可能性
+- is_alt_screen → 同一概念の可能性
+- is_appengine_sandbox → 同一概念の可能性
+- is_archive_file → 同一概念の可能性
+- is_breaking_change → 同一概念の可能性
+- is_capability_valid → 同一概念の可能性
+- is_commit_id_equal → 同一概念の可能性
+- is_connection_dropped → 同一概念の可能性
+- is_console_interactive → 同一概念の可能性
+- is_current_version → 同一概念の可能性
+- is_cygwin_git → 同一概念の可能性
+- is_data_scheme_path → 同一概念の可能性
+- is_dir_path → 同一概念の可能性
+- is_dumb_terminal → 同一概念の可能性
+- is_entrypoint_wrapper → 同一概念の可能性
+- is_equal_canonical_sha → 同一概念の可能性
+- is_existing_dir → 同一概念の可能性
+- is_feedback_target → 同一概念の可能性
+- is_fp_closed → 同一概念の可能性
+- is_from_cache → 同一概念の可能性
+- is_gate_valid → 同一概念の可能性
+- is_git_dir → 同一概念の可能性
+- is_hash_allowed → 同一概念の可能性
+- is_immutable_rev_checkout → 同一概念の可能性
+- is_installable_dir → 同一概念の可能性
+- is_ipv4_address → 同一概念の可能性
+- is_libsec256k1_available → 同一概念の可能性
+- is_local_appengine → 同一概念の可能性
+- is_local_editable → 同一概念の可能性
+- is_loose_object → 同一概念の可能性
+- is_native_int → 同一概念の可能性
+- is_normalized_name → 同一概念の可能性
+- is_object_one_of_types → 同一概念の可能性
+- is_osx_framework → 同一概念の可能性
+- is_perfect_square → 同一概念の可能性
+- is_permanent_redirect → 同一概念の可能性
+- is_point_at_infinity → 同一概念の可能性
+- is_prod_appengine → 同一概念の可能性
+- is_prod_appengine_mvms → 同一概念の可能性
+- is_purge_eligible → 同一概念の可能性
+- is_push_only → 同一概念の可能性
+- is_python_script → 同一概念の可能性
+- is_repository_directory → 同一概念の可能性
+- is_response_to_head → 同一概念の可能性
+- is_revision_update → 同一概念の可能性
+- is_risk_weight → 同一概念の可能性
+- is_safe_mode → 同一概念の可能性
+- is_same_host → 同一概念の可能性
+- is_satisfied_by → 同一概念の可能性
+- is_script_scheme_path → 同一概念の可能性
+- is_secure_origin → 同一概念の可能性
+- is_simple_req → 同一概念の可能性
+- is_small_int → 同一概念の可能性
+- is_string_sequence → 同一概念の可能性
+- is_suitable_inline_table → 同一概念の可能性
+- is_supported_version → 同一概念の可能性
+- is_symlink_target_in_tar → 同一概念の可能性
+- is_system_defined → 同一概念の可能性
+- is_terminal → 同一概念の可能性
+- is_timestamp_complete → 同一概念の可能性
+- is_token_subtype → 同一概念の可能性
+- is_trust_sufficient → 同一概念の可能性
+- is_unicode_scalar_value → 同一概念の可能性
+- is_unmerged_blob → 同一概念の可能性
+- is_valid → 同一概念の可能性
+- is_valid_category → 同一概念の可能性
+- is_valid_cidr → 同一概念の可能性
+- is_valid_event → 同一概念の可能性
+- is_valid_event_type → 同一概念の可能性
+- is_valid_id → 同一概念の可能性
+- is_valid_object → 同一概念の可能性
+- is_valid_pylock_path → 同一概念の可能性
+- is_valid_stream → 同一概念の可能性
+- is_valid_token → 同一概念の可能性
+- is_version_line → 同一概念の可能性
+- is_wheel_from_cache → 同一概念の可能性
+- is_within_directory → 同一概念の可能性
+- is_witness_scriptpubkey → 同一概念の可能性
+- is_witness_v0_keyhash → 同一概念の可能性
+- is_witness_v0_nested_keyhash → 同一概念の可能性
+- is_witness_v0_nested_scripthash → 同一概念の可能性
+- is_witness_v0_scripthash → 同一概念の可能性
+- is_writeable_buffer → 同一概念の可能性
+- ISC-Veillard / isc-veillard → 同一概念の可能性
+- iso_utc_now → 同一概念の可能性
+- IsolationReport → 同一概念の可能性
+- IsRelevantAndUpdate → 同一概念の可能性
+- ISSUE / ISSUES / Issue / issue / issues → 同一概念の可能性
+- IsWithinSizeConstraints → 同一概念の可能性
+- iter_all_distributions → 同一概念の可能性
+- iter_cache_dirs → 同一概念の可能性
+- iter_cache_paths → 同一概念の可能性
+- iter_change_type → 同一概念の可能性
+- iter_config_dirs → 同一概念の可能性
+- iter_config_files → 同一概念の可能性
+- iter_config_paths → 同一概念の可能性
+- iter_data_dirs → 同一概念の可能性
+- iter_data_paths → 同一概念の可能性
+- iter_declared_entries → 同一概念の可能性
+- iter_distribution_names → 同一概念の可能性
+- iter_distutils_script_names → 同一概念の可能性
+- iter_entry_points → 同一概念の可能性
+- iter_field_objects → 同一概念の可能性
+- iter_index_candidate_infos → 同一概念の可能性
+- iter_installed_distributions → 同一概念の可能性
+- iter_packages_latest_infos → 同一概念の可能性
+- iter_parent / iter_parents → 同一概念の可能性
+- iter_provided_extras → 同一概念の可能性
+- iter_raw_dependencies → 同一概念の可能性
+- iter_rich_args → 同一概念の可能性
+- iter_runtime_dirs → 同一概念の可能性
+- iter_runtime_paths → 同一概念の可能性
+- iter_scripts_to_remove → 同一概念の可能性
+- iter_secure_origins → 同一概念の可能性
+- IterableClassWatcher → 同一概念の可能性
+- IterableList → 同一概念の可能性
+- IterableObj → 同一概念の可能性
+- Iterator / iterator → 同一概念の可能性
+- IteratorMapping → 同一概念の可能性
+- jack-o-lantern / jack_o_lantern → 同一概念の可能性
+- JAD / JADE → 同一概念の可能性
+- JAG / JAGS → 同一概念の可能性
+- JAN / JANE → 同一概念の可能性
+- JIE / JIS → 同一概念の可能性
+- JOB / JOBS → 同一概念の可能性
+- JOIN / join → 同一概念の可能性
+- Join-Path / join_path → 同一概念の可能性
+- join_path_native → 同一概念の可能性
+- JPL-image / jpl-image → 同一概念の可能性
+- JSON / json → 同一概念の可能性
+- json_compatible_key → 同一概念の可能性
+- JSON-LD / json-ld → 同一概念の可能性
+- JsonMemoryAdapter → 同一概念の可能性
+- JsonSchemaDefinitionException → 同一概念の可能性
+- JsonSchemaException → 同一概念の可能性
+- JsonSchemaValueException → 同一概念の可能性
+- JUN / JUNE → 同一概念の可能性
+- JupyterMixin → 同一概念の可能性
+- JupyterRenderable → 同一概念の可能性
+- JUT / JUTE → 同一概念の可能性
+- K12_XOF → 同一概念の可能性
+- KangarooTwelveTest → 同一概念の可能性
+- KAT / KATE → 同一概念の可能性
+- KDF / kdf → 同一概念の可能性
+- KeccakTest → 同一概念の可能性
+- KeccakVectors → 同一概念の可能性
+- Keep-Alive / keep-alive → 同一概念の可能性
+- keep-egg-info / keep_egg_info → 同一概念の可能性
+- KEY / KEYS / key / keys → 同一概念の可能性
+- KEY_ID / key-id → 同一概念の可能性
+- key_id_from_pubkey_pem → 同一概念の可能性
+- key_to_english → 同一概念の可能性
+- key-value / key-values → 同一概念の可能性
+- key_value_rule → 同一概念の可能性
+- KeyLength → 同一概念の可能性
+- keyring-provider / keyring_provider → 同一概念の可能性
+- KeyRingBaseProvider → 同一概念の可能性
+- KeyRingCliProvider → 同一概念の可能性
+- KeyRingNullProvider → 同一概念の可能性
+- KeyRingPythonProvider → 同一概念の可能性
+- KEYWORDS / Keyword → 同一概念の可能性
+- KeywordCaseFilter → 同一概念の可能性
+- KiCad-libraries-exception / kicad-libraries-exception → 同一概念の可能性
+- KIT / KITE → 同一概念の可能性
+- KnockRequest → 同一概念の可能性
+- KNOWLEDGE → 同一概念の可能性
+- KNOWLEDGE-GATE / KNOWLEDGE_GATE / Knowledge-Gate / knowledge-gate → 同一概念の可能性
+- KnowledgeMassEngine → 同一概念の可能性
+- KnowledgeRepository → 同一概念の可能性
+- Knuth-CTAN / knuth-ctan → 同一概念の可能性
+- ks-id / ks_id → 同一概念の可能性
+- kw-tab / kw-tabs → 同一概念の可能性
+- LEE / LESS → 同一概念の可能性
+- LAC / LACE → 同一概念の可能性
+- LAM / LAME → 同一概念の可能性
+- LANG / LANGS → 同一概念の可能性
+- LANGUAGE / Language → 同一概念の可能性
+- LanguageDetector → 同一概念の可能性
+- LAST / last → 同一概念の可能性
+- LAST_AI_RESULT / last_ai_result → 同一概念の可能性
+- LAST_CHAIN_HASH / last_chain_hash → 同一概念の可能性
+- LAST_EVENT_ID / last_event_id → 同一概念の可能性
+- Last-Modified / last-modified → 同一概念の可能性
+- last_post_at → 同一概念の可能性
+- LastModified → 同一概念の可能性
+- LATEST_CHAIN_HASH / latest_chain_hash → 同一概念の可能性
+- LAW / LAWS → 同一概念の可能性
+- LAY / LAYS → 同一概念の可能性
+- LAYER / layer / layers → 同一概念の可能性
+- LAYER_ENTER → 同一概念の可能性
+- LAYER_EXIT → 同一概念の可能性
+- LayerHealth → 同一概念の可能性
+- LayerSnapshot → 同一概念の可能性
+- LAYOUT / LAYOUTS / Layout → 同一概念の可能性
+- LayoutError → 同一概念の可能性
+- LayoutRender → 同一概念の可能性
+- LazyMappingProxy → 同一概念の可能性
+- LazyMixin → 同一概念の可能性
+- LCM / lcm → 同一概念の可能性
+- LearningAction → 同一概念の可能性
+- LearningApplier → 同一概念の可能性
+- LearningEngine → 同一概念の可能性
+- LearningPipeline → 同一概念の可能性
+- LearningQueue → 同一概念の可能性
+- LearningState → 同一概念の可能性
+- LearningUpdate → 同一概念の可能性
+- least_squares_slope → 同一概念の可能性
+- LedgerIntegrityError → 同一概念の可能性
+- LEGACY_EDITABLE / legacy-editable → 同一概念の可能性
+- legacy_windows_render → 同一概念の可能性
+- LegacyDistutilsInstall → 同一概念の可能性
+- LegacySpecifier → 同一概念の可能性
+- LegacyVersion → 同一概念の可能性
+- LegacyWindowsError → 同一概念の可能性
+- LegacyWindowsTerm → 同一概念の可能性
+- LEN / LENS → 同一概念の可能性
+- LENIENT → 同一概念の可能性
+- LET / LETS → 同一概念の可能性
+- LEVEL / level → 同一概念の可能性
+- LEXERS / Lexer / lexer → 同一概念の可能性
+- LexerContext → 同一概念の可能性
+- LexerMeta → 同一概念の可能性
+- LIE / LIES → 同一概念の可能性
+- LibError → 同一概念の可能性
+- LIBRARY / Library → 同一概念の可能性
+- library_dir_option → 同一概念の可能性
+- Libtool-exception / libtool-exception → 同一概念の可能性
+- libutil-David-Nugent / libutil-david-nugent → 同一概念の可能性
+- LIC / LICE → 同一概念の可能性
+- LICENSEE / LICENSES → 同一概念の可能性
+- License-Expression / license-expression → 同一概念の可能性
+- License-File / license-file / license-files → 同一概念の可能性
+- LIFECYCLE / Lifecycle / lifecycle → 同一概念の可能性
+- LifecycleManager → 同一概念の可能性
+- LifecycleStage → 同一概念の可能性
+- LifecycleState → 同一概念の可能性
+- LifoQueue → 同一概念の可能性
+- LIKE / like → 同一概念の可能性
+- LiLiQ-P / liliq-p → 同一概念の可能性
+- LiLiQ-R / liliq-r → 同一概念の可能性
+- LiLiQ-Rplus / liliq-rplus → 同一概念の可能性
+- LIME / LIMS → 同一概念の可能性
+- LIMITED_RELEASE → 同一概念の可能性
+- LIN / LINES / Lines → 同一概念の可能性
+- LinearModel → 同一概念の可能性
+- LineEnd → 同一概念の可能性
+- lineno → 同一概念の可能性
+- LineStart → 同一概念の可能性
+- LINKS / links → 同一概念の可能性
+- LINK_ID / link_id → 同一概念の可能性
+- link_shared_lib → 同一概念の可能性
+- link_shared_object → 同一概念の可能性
+- LinkCandidate → 同一概念の可能性
+- LinkCollector → 同一概念の可能性
+- LinkError → 同一概念の可能性
+- LinkEvaluator → 同一概念の可能性
+- LinkHash → 同一概念の可能性
+- links_to_dynamic → 同一概念の可能性
+- LinksNotSupported → 同一概念の可能性
+- LinkSource → 同一概念の可能性
+- LinkType → 同一概念の可能性
+- Linux-man-pages / linux-man-pages → 同一概念の可能性
+- Linux-man-pages-copyleft / linux-man-pages-copyleft → 同一概念の可能性
+- Linux-man-pages-copyleft-var / linux-man-pages-copyleft-var → 同一概念の可能性
+- Linux-OpenIB / linux-openib → 同一概念の可能性
+- Linux-syscall-note / linux-syscall-note → 同一概念の可能性
+- LinuxDistribution → 同一概念の可能性
+- list_by_decision → 同一概念の可能性
+- list_by_event → 同一概念の可能性
+- list_cache_items → 同一概念の可能性
+- list_config_values → 同一概念の可能性
+- list-style / list_styles → 同一概念の可能性
+- list_test_cases → 同一概念の可能性
+- ListCommand → 同一概念の可能性
+- ListCompat → 同一概念の可能性
+- LitecoinBlockHeaderAttestation → 同一概念の可能性
+- LIVE / Live → 同一概念の可能性
+- LiveError → 同一概念の可能性
+- LiveRender → 同一概念の可能性
+- LLM-fix / llm-fix → 同一概念の可能性
+- LLVM-exception / llvm-exception → 同一概念の可能性
+- LLVM-MIR / llvm-mir → 同一概念の可能性
+- LOS / LOSS → 同一概念の可能性
+- LOAD / load / loads → 同一概念の可能性
+- load_cert_chain → 同一概念の可能性
+- load_chat_input → 同一概念の可能性
+- load_default_certs → 同一概念の可能性
+- load_ed25519_private_key → 同一概念の可能性
+- load_ed25519_public_key_auto → 同一概念の可能性
+- load_entry_point → 同一概念の可能性
+- load_eo_engine → 同一概念の可能性
+- load_events_from_files → 同一概念の可能性
+- load_extract_log → 同一概念の可能性
+- load_formatter_from_file → 同一概念の可能性
+- load_hash_by_name → 同一概念の可能性
+- load_ipython_extension → 同一概念の可能性
+- load_last_event_id → 同一概念の可能性
+- load_launcher_manifest → 同一概念の可能性
+- load_lexer_from_file → 同一概念の可能性
+- load_pr_engine → 同一概念の可能性
+- load_prev_scores → 同一概念の可能性
+- load_private_key → 同一概念の可能性
+- load_public_items → 同一概念の可能性
+- load public key / load_public_key → 同一概念の可能性
+- load_pycryptodome_raw_lib → 同一概念の可能性
+- load_pyproject_toml → 同一概念の可能性
+- load_registry_v2 → 同一概念の可能性
+- load_repo_index → 同一概念の可能性
+- load_session_events → 同一概念の可能性
+- load_success_patterns → 同一概念の可能性
+- LOAD_TEST / load_tests → 同一概念の可能性
+- load_test_vectors → 同一概念の可能性
+- load_test_vectors_wycheproof → 同一概念の可能性
+- load_tip_from_regenesis → 同一概念の可能性
+- load_verify_locations → 同一概念の可能性
+- LOCAL / LOCALE / LOCALES / local / locals → 同一概念の可能性
+- local-snapshots-ok / local_snapshots_ok → 同一概念の可能性
+- LOCALS_MAX_LENGTH / locals_max_length → 同一概念の可能性
+- LOCALS_MAX_STRING / locals_max_string → 同一概念の可能性
+- LocationParseError → 同一概念の可能性
+- LocationValueError → 同一概念の可能性
+- LOCK / LOCKSS → 同一概念の可能性
+- LockCommand → 同一概念の可能性
+- LockFile → 同一概念の可能性
+- LOG / LOGE / LOGS / Log / Logs / log → 同一概念の可能性
+- LOG_FILE / log-file → 同一概念の可能性
+- LOG_LEVEL / log-level → 同一概念の可能性
+- login_and_save → 同一概念の可能性
+- LogRender → 同一概念の可能性
+- Long-Context / Long-context → 同一概念の可能性
+- Long-term / long-term → 同一概念の可能性
+- long_to_bytes → 同一概念の可能性
+- LongTests → 同一概念の可能性
+- looks_like_ci → 同一概念の可能性
+- looks_like_hash → 同一概念の可能性
+- looks_like_xml → 同一概念の可能性
+- Lookup / lookup → 同一概念の可能性
+- LookupDict → 同一概念の可能性
+- loop_first_last → 同一概念の可能性
+- loose_object_header → 同一概念の可能性
+- loose_object_header_info → 同一概念の可能性
+- LooseVersion → 同一概念の可能性
+- LOW / LOWE → 同一概念の可能性
+- Low-level / low-level → 同一概念の可能性
+- LOWER / lower → 同一概念の可能性
+- LPD-document / lpd-document → 同一概念の可能性
+- LSB / Lsb → 同一概念の可能性
+- lsb_release_attr → 同一概念の可能性
+- lsb_release_info → 同一概念の可能性
+- Lucida-Bitmap-Fonts / lucida-bitmap-fonts → 同一概念の可能性
+- LUG / LUGE → 同一概念の可能性
+- LYE / LYS → 同一概念の可能性
+- LZMA-exception / lzma-exception → 同一概念の可能性
+- LZMA-SDK / lzma-sdk → 同一概念の可能性
+- MES / MESS → 同一概念の可能性
+- MAE / MASS / mass → 同一概念の可能性
+- MAC / MACE → 同一概念の可能性
+- MacroExpander → 同一概念の可能性
+- MAD / MADE → 同一概念の可能性
+- MainParams → 同一概念の可能性
+- Maintainer-email / maintainer-email → 同一概念の可能性
+- MAJOR / major → 同一概念の可能性
+- MAJOR_VERSION / major_version → 同一概念の可能性
+- MAKE / MAKES / make → 同一概念の可能性
+- make_address_from_passphrase → 同一概念の可能性
+- make_block_tests → 同一概念の可能性
+- make_blocks_from_blockhashes → 同一概念の可能性
+- make_candidate_evaluator → 同一概念の可能性
+- make_clean_db → 同一概念の可能性
+- make_common_options_arg_parser → 同一概念の可能性
+- make_data_scheme_file → 同一概念の可能性
+- make_distribution_for_install_requirement → 同一概念の可能性
+- make_file / make_files → 同一概念の可能性
+- make_hash_tests → 同一概念の可能性
+- make_html_tags → 同一概念の可能性
+- make_install_req_from_editable → 同一概念の可能性
+- make_install_req_from_link → 同一概念の可能性
+- make_link_evaluator → 同一概念の可能性
+- make_mac_tests → 同一概念の可能性
+- make_memory_file → 同一概念の可能性
+- make_merkle_tree → 同一概念の可能性
+- make_option_group → 同一概念の可能性
+- make_option_lowercase → 同一概念の可能性
+- make_pyproject_path → 同一概念の可能性
+- make_release_tree → 同一概念の可能性
+- make_requirement_from_candidate → 同一概念の可能性
+- make_requirement_preparer → 同一概念の可能性
+- make_requirements_from_spec → 同一概念の可能性
+- make_requires_python_requirement → 同一概念の可能性
+- make_rev_args → 同一概念の可能性
+- make_rev_options → 同一概念の可能性
+- make_root_scheme_file → 同一概念の可能性
+- make_rpc_batch_request_entry → 同一概念の可能性
+- make_safe_parse_float → 同一概念の可能性
+- make_stream_tests → 同一概念の可能性
+- make_target_python → 同一概念の可能性
+- make_tasks_table → 同一概念の可能性
+- make_test_card → 同一概念の可能性
+- make_timestamp_from_block → 同一概念の可能性
+- make_vcs_requirement_url → 同一概念の可能性
+- make_xml_tags → 同一概念の可能性
+- manifest_get_embed_info → 同一概念の可能性
+- manifest_setup_ldargs → 同一概念の可能性
+- MAP / map → 同一概念の可能性
+- Map-Reduce / map_reduce → 同一概念の可能性
+- mapped_memory_size → 同一概念の可能性
+- MapRegion → 同一概念の可能性
+- MapRegionList → 同一概念の可能性
+- MapWindow → 同一概念の可能性
+- MARE / MARS → 同一概念の可能性
+- mark_for_extraction → 同一概念の可能性
+- mark_input_line → 同一概念の可能性
+- mark_rolled_back → 同一概念の可能性
+- MARKDOWN / Markdown → 同一概念の可能性
+- MARKER / Marker / marker → 同一概念の可能性
+- MARKER_EXPR / marker_expr → 同一概念の可能性
+- MARKER_VAR / marker_var → 同一概念の可能性
+- MARKUP / markup → 同一概念の可能性
+- MarkupError → 同一概念の可能性
+- Martin-Birgmeier / martin-birgmeier → 同一概念の可能性
+- MAT / MATE → 同一概念の可能性
+- MATAKA / mataka → 同一概念の可能性
+- MATCH / match / matches → 同一概念の可能性
+- match_only_at_col → 同一概念の可能性
+- match_previous_expr → 同一概念の可能性
+- match_previous_literal → 同一概念の可能性
+- match_to_datetime → 同一概念の可能性
+- match_to_localtime → 同一概念の可能性
+- match_to_number → 同一概念の可能性
+- MatchFirst → 同一概念の可能性
+- MAX_DELTA / max-delta → 同一概念の可能性
+- max_file_handles → 同一概念の可能性
+- max-height / max_height → 同一概念の可能性
+- MAX_LINE_LENGTH / max_line_length → 同一概念の可能性
+- max_mapped_memory_size → 同一概念の可能性
+- max-width / max_width → 同一概念の可能性
+- MaxLevelFilter → 同一概念の可能性
+- MaxOpCountError → 同一概念の可能性
+- MaxRetryError → 同一概念の可能性
+- maybe_create_snapshot → 同一概念の可能性
+- McPhee-slideshow / mcphee-slideshow → 同一概念の可能性
+- md_to_caption → 同一概念の可能性
+- md_to_email_html → 同一概念の可能性
+- md_to_html → 同一概念の可能性
+- md_to_tweet → 同一概念の可能性
+- MEAN / mean → 同一概念の可能性
+- MEANING / Meaning → 同一概念の可能性
+- Meaning-driven / meaning-driven → 同一概念の可能性
+- MeaningClass → 同一概念の可能性
+- MeaningContinuum → 同一概念の可能性
+- MeaningNotFoundError → 同一概念の可能性
+- MeaningRegistry → 同一概念の可能性
+- MeaningStateVector → 同一概念の可能性
+- MECAB / MeCab → 同一概念の可能性
+- MEDIUM → 同一概念の可能性
+- MEM / MEMS → 同一概念の可能性
+- MemoizedZipManifests → 同一概念の可能性
+- MEMORY / Memory → 同一概念の可能性
+- MEMORY_ADAPTER / memory-adapter → 同一概念の可能性
+- MEMORY_LAYER / Memory Layer → 同一概念の可能性
+- memory_weight_adjustment → 同一概念の可能性
+- MemoryContextBuilder → 同一概念の可能性
+- MemoryEntry → 同一概念の可能性
+- MemoryIndex → 同一概念の可能性
+- MemoryLearningState → 同一概念の可能性
+- MemoryPipeline → 同一概念の可能性
+- MemoryRecord → 同一概念の可能性
+- MemoryReinforcer → 同一概念の可能性
+- MemoryRetriever → 同一概念の可能性
+- MemoryStore → 同一概念の可能性
+- MemoryType → 同一概念の可能性
+- MemoryViewTest / MemoryViewTests / MemoryviewTest → 同一概念の可能性
+- MemoryWheel → 同一概念の可能性
+- MemoryWriter → 同一概念の可能性
+- MemoryWriterInterface → 同一概念の可能性
+- MERGE / merge → 同一概念の可能性
+- merge-base / merge_base → 同一概念の可能性
+- merge_environment_settings → 同一概念の可能性
+- MESSAGE / MESSAGES / Message / message → 同一概念の可能性
+- MessageLimitReachedError → 同一概念の可能性
+- MessageTestCase → 同一概念の可能性
+- meta_intent_id → 同一概念の可能性
+- METADATA / Metadata / metadata → 同一概念の可能性
+- Metadata-Version / metadata-version / metadata_version → 同一概念の可能性
+- MetadataFile → 同一概念の可能性
+- MetadataGenerationFailed → 同一概念の可能性
+- MetadataInconsistent → 同一概念の可能性
+- MetadataInvalid → 同一概念の可能性
+- MetadataPathFinder → 同一概念の可能性
+- MetaIntent → 同一概念の可能性
+- MetaParserBuilder → 同一概念の可能性
+- MetaPathFinder / MetaPathFinders → 同一概念の可能性
+- METHOD_NOT_ALLOWED / method_not_allowed → 同一概念の可能性
+- MGF / mgf → 同一概念の可能性
+- MGF1 → 同一概念の可能性
+- MIGRATE / migrate → 同一概念の可能性
+- miller_rabin_test → 同一概念の可能性
+- min-width / min_width → 同一概念の可能性
+- mini-MoCKA / mini-mocka → 同一概念の可能性
+- mini MoCKA Series / mini-mocka-series → 同一概念の可能性
+- MinimalDistribution → 同一概念の可能性
+- MINOR / minor → 同一概念の可能性
+- MIR / MIRE → 同一概念の可能性
+- MIRROR / mirror → 同一概念の可能性
+- MiscTests → 同一概念の可能性
+- MISSING / missing → 同一概念の可能性
+- MissingCallableSuffix → 同一概念の可能性
+- MissingHashes → 同一概念の可能性
+- MissingOpArgumentsError → 同一概念の可能性
+- MissingPyProjectBuildRequires → 同一概念の可能性
+- MissingSchema → 同一概念の可能性
+- MissingStyle → 同一概念の可能性
+- MissingTestVectorException → 同一概念の可能性
+- MISSION / mission → 同一概念の可能性
+- MIT-advertising / mit-advertising → 同一概念の可能性
+- MIT-Click / mit-click → 同一概念の可能性
+- MIT-CMU / mit-cmu → 同一概念の可能性
+- MIT-enna / mit-enna → 同一概念の可能性
+- MIT-feh / mit-feh → 同一概念の可能性
+- MIT-Festival / mit-festival → 同一概念の可能性
+- MIT-Khronos-old / mit-khronos-old → 同一概念の可能性
+- MIT-Modern-Variant / mit-modern-variant → 同一概念の可能性
+- MIT-open-group / mit-open-group → 同一概念の可能性
+- MIT-testregex / mit-testregex → 同一概念の可能性
+- MIT-Wu / mit-wu → 同一概念の可能性
+- mkurl_pypi_url → 同一概念の可能性
+- MOE / MOS / MOSS → 同一概念の可能性
+- MOCKA_API_KEY / MOCKA_API_KEYS → 同一概念の可能性
+- MOCKA_API_SPEC / mocka_api_spec → 同一概念の可能性
+- MoCKA Architecture Overview / mocka_architecture_overview → 同一概念の可能性
+- MOCKA_BRIDGE / mocka-bridge → 同一概念の可能性
+- mocka_calc_hash → 同一概念の可能性
+- MoCKA Civilization Architecture / mocka_civilization_architecture → 同一概念の可能性
+- MoCKA-Core / mocka-core → 同一概念の可能性
+- MOCKA-CORE-PRIVATE / mocka-core-private → 同一概念の可能性
+- MoCKA Ecosystem / mocka-ecosystem → 同一概念の可能性
+- MoCKA Ecosystem Architecture / mocka_ecosystem_architecture → 同一概念の可能性
+- MOCKA_ECOSYSTEM_MAP / mocka_ecosystem_map → 同一概念の可能性
+- mocka-governance-layer / mocka_governance_layer → 同一概念の可能性
+- MOCKA_INFIELD / mocka-infield → 同一概念の可能性
+- MoCKA-KNOWLEDGE / mocka-knowledg → 同一概念の可能性
+- MoCKA-KNOWLEDGE-GATE / mocka-knowledge-gate / mocka_knowledge_gate → 同一概念の可能性
+- MoCKA-MCP / mocka-mcp → 同一概念の可能性
+- mocka_new_event → 同一概念の可能性
+- MOCKA_NODE / mocka-node → 同一概念の可能性
+- mocka-PythonBridg / mocka-PythonBridge / mocka-pythonbridge → 同一概念の可能性
+- MoCKA Runtime / MoCKA-Runtime / mocka-runtime → 同一概念の可能性
+- MoCKA Runtime Loop / mocka_runtime_loop → 同一概念の可能性
+- MOCKA_START / MoCKA-START → 同一概念の可能性
+- MOCKA-SUBMISSION-QA / MoCKA-SUBMISSION-QA → 同一概念の可能性
+- mocka_verify_chain → 同一概念の可能性
+- MoCKABridge / MocKABridge / MockaBridge → 同一概念の可能性
+- MockAdapter → 同一概念の可能性
+- MockProvider → 同一概念の可能性
+- MockRequest → 同一概念の可能性
+- MockResponse → 同一概念の可能性
+- MOD / MODE / Mode / mode → 同一概念の可能性
+- mode_str_to_int → 同一概念の可能性
+- ModeState → 同一概念の可能性
+- MODULE / module → 同一概念の可能性
+- module_from_spec → 同一概念の可能性
+- ModuleFinder → 同一概念の可能性
+- ModuleLoader → 同一概念の可能性
+- ModuleMetadata → 同一概念の可能性
+- ModuleRegistry → 同一概念の可能性
+- MoneyRange → 同一概念の可能性
+- morpho-token / morpho-tokens → 同一概念の可能性
+- morsel_to_cookie → 同一概念の可能性
+- MOVE / MOVS / move → 同一概念の可能性
+- move_cursor_backward → 同一概念の可能性
+- move_cursor_down → 同一概念の可能性
+- move_cursor_forward → 同一概念の可能性
+- move_cursor_to → 同一概念の可能性
+- move_cursor_to_column → 同一概念の可能性
+- move_cursor_up → 同一概念の可能性
+- move_reducing_to_re_reduced → 同一概念の可能性
+- move_to_column → 同一概念の可能性
+- MovedAttribute → 同一概念の可能性
+- MovedModule → 同一概念の可能性
+- MovementStage → 同一概念の可能性
+- MPEG-SSG / mpeg-ssg → 同一概念の可能性
+- MS-LPL / ms-lpl → 同一概念の可能性
+- MS-PL / ms-pl → 同一概念の可能性
+- MS-RL / ms-rl → 同一概念の可能性
+- MSB / Msb → 同一概念の可能性
+- MSG / msg → 同一概念の可能性
+- MSG_BLOCK / msg_block → 同一概念の可能性
+- msg-header / msg_headers → 同一概念の可能性
+- msg_to_json → 同一概念の可能性
+- MSG_TX / msg_tx → 同一概念の可能性
+- MsgSerializable → 同一概念の可能性
+- MsgValueError → 同一概念の可能性
+- msvc14_gen_lib_options → 同一概念の可能性
+- msvc14_get_vc_env → 同一概念の可能性
+- Multi-Agent / Multi-agent / multi-agent → 同一概念の可能性
+- Multi-AI / multi-AI / multi-ai → 同一概念の可能性
+- Multi-byte / multi-byte → 同一概念の可能性
+- Multi-environment / multi-environment → 同一概念の可能性
+- Multi-layer / multi-layer → 同一概念の可能性
+- Multi-Model / Multi-model / multi-model → 同一概念の可能性
+- Multi-Node / Multi-node / multi-node → 同一概念の可能性
+- Multi-Observer / Multi-observer / multi-observer → 同一概念の可能性
+- Multi-Sig / Multi-sig / multi-sig → 同一概念の可能性
+- Multi-signature / multi-signature → 同一概念の可能性
+- MultiDecoder → 同一概念の可能性
+- MultiDomainBasicAuth → 同一概念の可能性
+- MultiplexedPath → 同一概念の可能性
+- MurmurHash3 → 同一概念の可能性
+- must_match_these_tokens → 同一概念の可能性
+- MUTATION / MUTATIONS → 同一概念の可能性
+- MVP / MvPs → 同一概念の可能性
+- MyError → 同一概念の可能性
+- NEE / NESS → 同一概念の可能性
+- n-A / n-a → 同一概念の可能性
+- N-bit / N-bits → 同一概念の可能性
+- N-gram / N-grams → 同一概念の可能性
+- NAME / name / names → 同一概念の可能性
+- name_to_object → 同一概念の可能性
+- NameHighlightFilter → 同一概念の可能性
+- NamespaceReader → 同一概念の可能性
+- nAppend-only / nappend-only → 同一概念の可能性
+- narrow_requirement_selection → 同一概念の可能性
+- nav-tab / nav-tabs → 同一概念の可能性
+- NCBI-PD / ncbi-pd → 同一概念の可能性
+- NCGL-UK / ncgl-uk → 同一概念の可能性
+- Near-miss / near-miss → 同一概念の可能性
+- need_version_info → 同一概念の可能性
+- needs_unpacked_archive → 同一概念の可能性
+- NegativeInfinityType → 同一概念の可能性
+- NestedDict → 同一概念の可能性
+- Net-SNMP / net-snmp → 同一概念の可能性
+- NETFX / NetFx → 同一概念の可能性
+- NetFxSdkDir → 同一概念の可能性
+- NetFxSdkVersion → 同一概念の可能性
+- NETWORK_AUTHENTICATION_REQUIRED / network_authentication_required → 同一概念の可能性
+- NetworkConnectionError → 同一概念の可能性
+- nEvidence-hit / nevidence-hit → 同一概念の可能性
+- NEW / NEWS / new → 同一概念の可能性
+- NEW_CHAIN_HASH / new_chain_hash → 同一概念の可能性
+- new_from_sha → 同一概念の可能性
+- NEW_KEY_ID / new-key-id / new_key_id → 同一概念の可能性
+- new_message_handler → 同一概念の可能性
+- NewConnectionError → 同一概念の可能性
+- newer_pairwise_group → 同一概念の可能性
+- NEWLINE / NewLine → 同一概念の可能性
+- NewsletterAdapter → 同一概念の可能性
+- NEXT / Next / next → 同一概念の可能性
+- next_event_id → 同一概念の可能性
+- next_ks_id → 同一概念の可能性
+- next_memory_id → 同一概念の可能性
+- next_queue_id → 同一概念の可能性
+- NGROK_STATUS / ngrok_status → 同一概念の可能性
+- NIB / NIBS → 同一概念の可能性
+- NIL / NILE → 同一概念の可能性
+- NIST-PD / nist-pd → 同一概念の可能性
+- NIST-PD-fallback / nist-pd-fallback → 同一概念の可能性
+- NIST-Software / nist-software → 同一概念の可能性
+- NistBlockChainingVectors → 同一概念の可能性
+- NistCbcVectors → 同一概念の可能性
+- NistCfbVectors → 同一概念の可能性
+- NistOfbVectors → 同一概念の可能性
+- nLong-term / nlong-term → 同一概念の可能性
+- nMoCKA-Core / nmocka-core → 同一概念の可能性
+- nMoCKA-KNOWLEDGE-GATE / nmocka-knowledge-gate / nmocka_knowledge_gate → 同一概念の可能性
+- nMoCKA-Ledger / nmocka-ledger → 同一概念の可能性
+- nmocka-PythonBridge / nmocka-pythonbridge → 同一概念の可能性
+- nMulti-Agent / nMulti-agent / nmulti-agent → 同一概念の可能性
+- nMulti-node / nmulti-node → 同一概念の可能性
+- nMulti-observer / nmulti-observer → 同一概念の可能性
+- nMulti-Strategy / nmulti-strategy → 同一概念の可能性
+- No-API-key / no_api_key → 同一概念の可能性
+- no-binary / no_binary → 同一概念の可能性
+- no-build-isolation / no_build_isolation → 同一概念の可能性
+- NO_COLOR / no-color → 同一概念の可能性
+- no-default-whitelist / no_default_whitelist → 同一概念の可能性
+- no_escape_re_range_char → 同一概念の可能性
+- no-find-links / no_find_links → 同一概念の可能性
+- NO_INDEX / no-index → 同一概念の可能性
+- no_install_setup_requires → 同一概念の可能性
+- No-op / no-op / no-ops → 同一概念の可能性
+- NO_PING / no-ping → 同一概念の可能性
+- no-python-version-warning / no_python_version_warning → 同一概念の可能性
+- no-RFN / no-rfn → 同一概念の可能性
+- NoAltScreen → 同一概念の可能性
+- NoChange → 同一概念の可能性
+- NOD / NODE / NODES / Node / node / nodes → 同一概念の可能性
+- NoDists → 同一概念の可能性
+- NoEmoji → 同一概念の可能性
+- Nokia-Qt-exception / nokia-qt-exception → 同一概念の可能性
+- NoMatch → 同一概念の可能性
+- NON / NONE → 同一概念の可能性
+- non-ASCII / non-ascii → 同一概念の可能性
+- NON_AUTHORITATIVE_INFORMATION / non_authoritative_information → 同一概念の可能性
+- Non-black-box / non-black-box → 同一概念の可能性
+- NON_COMPLIANT → 同一概念の可能性
+- Non-Delta / non-delta / non-deltas → 同一概念の可能性
+- Non-editable / non-editable → 同一概念の可能性
+- non_empty_lines → 同一概念の可能性
+- Non-event / non-event → 同一概念の可能性
+- Non-file / non-files → 同一概念の可能性
+- non-global / non-globals → 同一概念の可能性
+- Non-Goals / non-goals → 同一概念の可能性
+- Non-interactive / non-interactive → 同一概念の可能性
+- Non-Invasive / non-invasive → 同一概念の可能性
+- Non-Negotiable / Non-negotiables → 同一概念の可能性
+- non-None / non-none → 同一概念の可能性
+- non-NULL / non-null → 同一概念の可能性
+- Non-PEP / non-PEP → 同一概念の可能性
+- non-POSIX / non-posix → 同一概念の可能性
+- Non-printable / non-printable → 同一概念の可能性
+- non-protocol / non-protocols → 同一概念の可能性
+- Non-string / non-string → 同一概念の可能性
+- Non-structural / non-structural → 同一概念の可能性
+- Non-trivial / non-trivial → 同一概念の可能性
+- Non-user / non-user → 同一概念の可能性
+- Non-UTF / non-UTF → 同一概念の可能性
+- NonceTests → 同一概念の可能性
+- NonDataProperty → 同一概念の可能性
+- NoneMetadataError → 同一概念の可能性
+- NonInteractiveSpinner → 同一概念の可能性
+- NoOpBuildEnvironment → 同一概念の可能性
+- NoOpMemoryAdapter → 同一概念の可能性
+- NoOpOrchestraAdapter → 同一概念の可能性
+- NoOpRelayAdapter → 同一概念の可能性
+- norm_and_check → 同一概念の可能性
+- NORMAL → 同一概念の可能性
+- normalize_and_reduce_paths → 同一概念の可能性
+- normalize_event_content → 同一概念の可能性
+- normalize_json_bytes → 同一概念の可能性
+- normalize_project_url_label → 同一概念の可能性
+- normalize_version_info → 同一概念の可能性
+- NORMALIZED / normalized → 同一概念の可能性
+- NoSplitter → 同一概念の可能性
+- NoSuchPathError → 同一概念の可能性
+- NOTE / Notes / notes → 同一概念の可能性
+- NOT_APPLICABLE → 同一概念の可能性
+- not_found_in_index → 同一概念の可能性
+- NotAny → 同一概念の可能性
+- NotRenderableError → 同一概念の可能性
+- NotRequired → 同一概念の可能性
+- nOut-File / nout-file → 同一概念の可能性
+- NoValue → 同一概念の可能性
+- NoWayToWaitForSocketError → 同一概念の可能性
+- NoWitnessData → 同一概念の可能性
+- nPre-push / npre-push → 同一概念の可能性
+- nSelf-Healing / nSelf-healing / nself-healing → 同一概念の可能性
+- nt_quote_arg → 同一概念の可能性
+- nth_or_last → 同一概念の可能性
+- NTIA-PD / ntia-pd → 同一概念の可能性
+- nTop-Level / nTop-level → 同一概念の可能性
+- NULL / null → 同一概念の可能性
+- null_debug_action → 同一概念の可能性
+- null_ns_handler → 同一概念の可能性
+- NULL_TREE → 同一概念の可能性
+- null_wait_for_socket → 同一概念の可能性
+- NullFile → 同一概念の可能性
+- NullFinder → 同一概念の可能性
+- NullHandler → 同一概念の可能性
+- NullHighlighter → 同一概念の可能性
+- NullProvider → 同一概念の可能性
+- NullStream → 同一概念の可能性
+- num_file_handles → 同一概念の可能性
+- num_open_files → 同一概念の可能性
+- NumPyLexer → 同一概念の可能性
+- NYPC_COMET → 同一概念の可能性
+- nZero-trust / nzero-trust → 同一概念の可能性
+- o-badge / o-badges → 同一概念の可能性
+- O-UDA / o-uda → 同一概念の可能性
+- OBJECT / Object / object → 同一概念の可能性
+- Objective-C / objective-c → 同一概念の可能性
+- Objective-J / objective-j → 同一概念の可能性
+- OBSERVE / observe → 同一概念の可能性
+- ObservabilityPipeline → 同一概念の可能性
+- OBSERVATION / Observation → 同一概念の可能性
+- ObservationEngine → 同一概念の可能性
+- ObservationLedger → 同一概念の可能性
+- ObservationLedgerEntry → 同一概念の可能性
+- ObservationRecord / ObservationRecords → 同一概念の可能性
+- ObservedState → 同一概念の可能性
+- Obsoletes-Dist / obsoletes-dist → 同一概念の可能性
+- OCaml-LGPL-linking-exception / ocaml-lgpl-linking-exception → 同一概念の可能性
+- OcbDkgTest → 同一概念の可能性
+- OcbMode → 同一概念の可能性
+- OcbRfc7253Test → 同一概念の可能性
+- OcbTests → 同一概念の可能性
+- OCCT-exception / occt-exception → 同一概念の可能性
+- OCCT-PL / occt-pl → 同一概念の可能性
+- ODC-By / odc-by → 同一概念の可能性
+- OfbMode → 同一概念の可能性
+- OfbTests → 同一概念の可能性
+- OFFSET / offset / offsets → 同一概念の可能性
+- OGDL-Taiwan / ogdl-taiwan → 同一概念の可能性
+- OGL-Canada / ogl-canada → 同一概念の可能性
+- OGL-UK / ogl-uk → 同一概念の可能性
+- OLD / old → 同一概念の可能性
+- old-and-unmanageable / old_and_unmanageable → 同一概念の可能性
+- old-key-id / old_key_id → 同一概念の可能性
+- ONE / ONES / one → 同一概念の可能性
+- on_broken_pipe → 同一概念の可能性
+- on_mataka_event → 同一概念の可能性
+- on_phi_approved → 同一概念の可能性
+- on_phi_rejected → 同一概念の可能性
+- on_validate_error → 同一概念の可能性
+- ONCE / once → 同一概念の可能性
+- One-off / one-off / one-offs → 同一概念の可能性
+- One-Shot / One-shot / one-shot → 同一概念の可能性
+- OneDayCache → 同一概念の可能性
+- OneOrMore → 同一概念の可能性
+- ONLY / only → 同一概念の可能性
+- only-binary / only_binary → 同一概念の可能性
+- only-final / only_final → 同一概念の可能性
+- OnlyOnce → 同一概念の可能性
+- OP_PUBKEY / OP_PUBKEYS → 同一概念の可能性
+- OpAppend → 同一概念の可能性
+- OpArgValueError → 同一概念の可能性
+- OpAssoc → 同一概念の可能性
+- OPCODES_BY_NAME / opcodes_by_name → 同一概念の可能性
+- OPEN / open → 同一概念の可能性
+- open_in_editor → 同一概念の可能性
+- open_rich_spinner → 同一概念の可能性
+- open_text_resource → 同一概念の可能性
+- open_with_auth → 同一概念の可能性
+- OpenJDK-assembly-exception / openjdk-assembly-exception → 同一概念の可能性
+- OpenPgpMode → 同一概念の可能性
+- OpenSSL-standalone / openssl-standalone → 同一概念の可能性
+- OPENTIMESTAMPS / OpenTimestamps → 同一概念の可能性
+- OPERATION / OPERATIONS → 同一概念の可能性
+- Operational-level / operational-level → 同一概念の可能性
+- OpHexlify → 同一概念の可能性
+- OPINION / opinions → 同一概念の可能性
+- OPL-UK / opl-uk → 同一概念の可能性
+- OpPrepend → 同一概念の可能性
+- OpReverse → 同一概念の可能性
+- OpSet → 同一概念の可能性
+- OPT / Opt → 同一概念の可能性
+- OPTIMIZE / optimize → 同一概念の可能性
+- OptimizeResult → 同一概念の可能性
+- OPTIONS / Options / options → 同一概念の可能性
+- option_list_all → 同一概念の可能性
+- OptionDummy → 同一概念の可能性
+- OptionError → 同一概念の可能性
+- OptionParsingError → 同一概念の可能性
+- ORCHESTRA / Orchestra / orchestra → 同一概念の可能性
+- ORCHESTRA_ADAPTER / orchestra-adapter → 同一概念の可能性
+- OrchestraAdapterInterface → 同一概念の可能性
+- OrchestraEngine → 同一概念の可能性
+- OrderedDict → 同一概念の可能性
+- OrderedSet / OrderedSets → 同一概念の可能性
+- ORIG_HEAD / orig_head → 同一概念の可能性
+- origin_req_host → 同一概念の可能性
+- original_text_for → 同一概念の可能性
+- ORPHAN / ORPHANS → 同一概念の可能性
+- ORPHAN_CLASSIFICATION_20260223 → 同一概念の可能性
+- ORPHAN_EVENTS_20260223 → 同一概念の可能性
+- OrphanArtifactError → 同一概念の可能性
+- OrphanPath → 同一概念の可能性
+- os_release_attr → 同一概念の可能性
+- os_release_info → 同一概念の可能性
+- OSET-PL / oset-pl → 同一概念の可能性
+- OST / OSTE → 同一概念の可能性
+- OStream / ostream → 同一概念の可能性
+- OtherKeyType → 同一概念の可能性
+- OTI / OTIS → 同一概念の可能性
+- OUT / OUTS / out → 同一概念の可能性
+- OUT_DIR / out-dir → 同一概念の可能性
+- OUT_REPORT / out-report → 同一概念の可能性
+- OUTFIELD → 同一概念の可能性
+- OutOfData → 同一概念の可能性
+- OUTPUT / Output → 同一概念の可能性
+- OUTPUT_DIR / output-dir → 同一概念の可能性
+- OUTPUT_FILE / output_file → 同一概念の可能性
+- output_package_listing → 同一概念の可能性
+- output_package_listing_columns → 同一概念の可能性
+- OutputAdapter → 同一概念の可能性
+- OutputSnapshot → 同一概念の可能性
+- OVERVIEW / Overview → 同一概念の可能性
+- OWE / OWS → 同一概念の可能性
+- OWN / OWNS → 同一概念の可能性
+- P-curve / P-curves → 同一概念の可能性
+- PACK / pack → 同一概念の可能性
+- pack_array_header → 同一概念の可能性
+- pack_ext_type → 同一概念の可能性
+- pack_map_header → 同一概念の可能性
+- pack_map_pairs → 同一概念の可能性
+- pack_object_at → 同一概念の可能性
+- pack_object_header_info → 同一概念の可能性
+- PACKAGES / Package / package → 同一概念の可能性
+- package-dir / package_dir → 同一概念の可能性
+- PackageArchive → 同一概念の可能性
+- PackageDetails → 同一概念の可能性
+- PackageDirectory → 同一概念の可能性
+- PackageDiscoveryError → 同一概念の可能性
+- PackageFinder → 同一概念の可能性
+- PackageIndex → 同一概念の可能性
+- PackageMetadata → 同一概念の可能性
+- PackageNotFoundError → 同一概念の可能性
+- PackagePath → 同一概念の可能性
+- PackageSdist → 同一概念の可能性
+- PackageVcs → 同一概念の可能性
+- PackageWheel → 同一概念の可能性
+- packed-Refs / packed-refs → 同一概念の可能性
+- PackEntity → 同一概念の可能性
+- PacketMissingError → 同一概念の可能性
+- PacketReader → 同一概念の可能性
+- PacketWriter → 同一概念の可能性
+- PackFile → 同一概念の可能性
+- PackIndexFile → 同一概念の可能性
+- PAD / pad → 同一概念の可能性
+- PaddingProperty → 同一概念の可能性
+- Pager / pager → 同一概念の可能性
+- PagerContext → 同一概念の可能性
+- PANEL / Panel → 同一概念の可能性
+- ParamSpec → 同一概念の可能性
+- ParamSpecArgs → 同一概念の可能性
+- ParamSpecKwargs → 同一概念の可能性
+- parent / parents → 同一概念の可能性
+- parent-commit / parent_commit → 同一概念の可能性
+- PARSE / parse → 同一概念の可能性
+- parse_actor_and_date → 同一概念の可能性
+- parse_basic_str → 同一概念の可能性
+- parse_basic_str_escape → 同一概念の可能性
+- parse_basic_str_escape_multiline → 同一概念の可能性
+- parse_bdist_wininst → 同一概念の可能性
+- parse_cache_control → 同一概念の可能性
+- parse_command_line → 同一概念の可能性
+- parse_config_files → 同一概念の可能性
+- parse_config_h → 同一概念の可能性
+- parse_constraint_files → 同一概念の可能性
+- parse_content_disposition → 同一概念の可能性
+- parse_dependency_groups → 同一概念の可能性
+- parse_dict_header → 同一概念の可能性
+- parse_err_codes → 同一概念の可能性
+- parse_expected_columns → 同一概念の可能性
+- parse_header_links → 同一概念の可能性
+- parse_hex_char → 同一概念の可能性
+- parse_inline_table → 同一概念の可能性
+- parse_invariant_ids → 同一概念の可能性
+- parse_iso_datetime → 同一概念の可能性
+- parse_key_part → 同一概念の可能性
+- parse_key_value_pair → 同一概念の可能性
+- parse_list_header → 同一概念の可能性
+- parse_literal_str → 同一概念の可能性
+- parse_llm_response → 同一概念の可能性
+- parse_multiline_str → 同一概念の可能性
+- parse_name_and_version → 同一概念の可能性
+- parse_name_and_version_from_info_directory → 同一概念の可能性
+- parse_one_line_basic_str → 同一概念の可能性
+- parse_ots_args → 同一概念の可能性
+- parse_req_from_editable → 同一概念の可能性
+- parse_req_from_line → 同一概念の可能性
+- parse_requirement / parse_requirements → 同一概念の可能性
+- parse_requirement_arg → 同一概念の可能性
+- parse_restore_rate → 同一概念の可能性
+- parse_retry_after → 同一概念の可能性
+- parse_rgb_hex → 同一概念の可能性
+- parse_sdist_filename → 同一概念の可能性
+- parse_section_data_files → 同一概念の可能性
+- parse_section_entry_points → 同一概念の可能性
+- parse_section_exclude_package_data → 同一概念の可能性
+- parse_section_extras_require → 同一概念の可能性
+- parse_section_package_data → 同一概念の可能性
+- parse_state_machine_yaml_minimal → 同一概念の可能性
+- parse_string / parse_strings → 同一概念の可能性
+- parse_target_table → 同一概念の可能性
+- parse_wheel_filename → 同一概念の可能性
+- parse_with_tabs → 同一概念の可能性
+- ParseBaseException → 同一概念の可能性
+- ParsedLine → 同一概念の可能性
+- ParsedRequirement → 同一概念の可能性
+- ParseElementEnhance → 同一概念の可能性
+- ParseError → 同一概念の可能性
+- ParseException → 同一概念の可能性
+- ParseExpression → 同一概念の可能性
+- ParseFatalException / ParseFatalExceptions → 同一概念の可能性
+- ParseLinks → 同一概念の可能性
+- PARSER / parser / parsers → 同一概念の可能性
+- ParserElement / ParserElements → 同一概念の可能性
+- ParseResult / ParseResults → 同一概念の可能性
+- ParserSyntaxError → 同一概念の可能性
+- ParseSyntaxException → 同一概念の可能性
+- part0_alpha_critique → 同一概念の可能性
+- part4_kl_divergence → 同一概念の可能性
+- PARTIAL → 同一概念の可能性
+- partial_sha_to_index → 同一概念の可能性
+- partial_to_complete_sha → 同一概念の可能性
+- partial_to_complete_sha_hex → 同一概念の可能性
+- PARTIALLY_COMPLIANT → 同一概念の可能性
+- partition / partitions → 同一概念の可能性
+- PASS1 / pass1 → 同一概念の可能性
+- PASS2 / pass2 → 同一概念の可能性
+- PASSED / passed → 同一概念の可能性
+- Password-Based / password-based → 同一概念の可能性
+- PATCH / PATCHES / patch → 同一概念の可能性
+- patch_for_msvc_specialized_compiler → 同一概念の可能性
+- patch_missing_pkg_info → 同一概念の可能性
+- path_or_fd → 同一概念の可能性
+- path_to_cache_dir → 同一概念の可能性
+- path_to_url → 同一概念の可能性
+- PathDistribution → 同一概念の可能性
+- PathHighlighter → 同一概念の可能性
+- PathMetadata → 同一概念の可能性
+- paths_on_pythonpath → 同一概念の可能性
+- Pathsep-separated / pathsep-separated → 同一概念の可能性
+- PATTERN / PATTERNS → 同一概念の可能性
+- PATTERN_SCORE / pattern_score → 同一概念の可能性
+- PatternEngine → 同一概念の可能性
+- PatternRegistry → 同一概念の可能性
+- PAYLOAD / payload → 同一概念の可能性
+- PBES1 → 同一概念の可能性
+- PBES2 → 同一概念の可能性
+- PbesError → 同一概念の可能性
+- PBKDF1 → 同一概念の可能性
+- PBKDF2 → 同一概念の可能性
+- PC7 / PC7S → 同一概念の可能性
+- PENDING → 同一概念の可能性
+- PendingAttestation / PendingAttestations → 同一概念の可能性
+- PEP440 / pep440 → 同一概念の可能性
+- pep517_backend_reference → 同一概念の可能性
+- Per-AI / per-AI → 同一概念の可能性
+- Per-command / per-command → 同一概念の可能性
+- Percent-encodes / percent-encode → 同一概念の可能性
+- PERFORMANCE_MODE → 同一概念の可能性
+- PerformanceLedger → 同一概念の可能性
+- PersistenceBackend → 同一概念の可能性
+- PHASE / phase → 同一概念の可能性
+- PHASE18 ENTRYPOINT / PHASE18_ENTRYPOINT → 同一概念の可能性
+- phase24_a_audit_note → 同一概念の可能性
+- PHASE_RECORD → 同一概念の可能性
+- PHI_ADAPTER / phi-adapter → 同一概念の可能性
+- PHI-OS / PHI_OS / phi-os → 同一概念の可能性
+- PHI_OS_ERROR / phi_os_error → 同一概念の可能性
+- PHI_OS_EVENT / phi-os-event / phi_os_event / phi_os_events → 同一概念の可能性
+- PHI_OS_INGEST / phi_os_ingest → 同一概念の可能性
+- PHI-OS-SPEC / PHI_OS_SPEC → 同一概念の可能性
+- PHI_OS_STATE_INIT / phi_os_state_init → 同一概念の可能性
+- phi-os-status / phi_os_status → 同一概念の可能性
+- phi-os-test / phi_os_test → 同一概念の可能性
+- PHI_OS_VERSION / phi_os_version → 同一概念の可能性
+- PHI_OS_VIEW / phi_os_view → 同一概念の可能性
+- PHI_SCHEMA_VERSION / phi_schema_version → 同一概念の可能性
+- PHILOSOPHY / Philosophy → 同一概念の可能性
+- PHIOS → 同一概念の可能性
+- PhiosIntegrationError → 同一概念の可能性
+- PhlHarness → 同一概念の可能性
+- pick_event_id_from_value → 同一概念の可能性
+- pick_ledger_table → 同一概念の可能性
+- pick_unit_and_suffix → 同一概念の可能性
+- PIL / PILS → 同一概念の可能性
+- pip_imported_during_build → 同一概念の可能性
+- pip_self_version_check → 同一概念の可能性
+- PipConsole → 同一概念の可能性
+- PipDebuggingReporter → 同一概念の可能性
+- PipDeprecationWarning → 同一概念の可能性
+- pipe-node / pipe-nodes → 同一概念の可能性
+- PIPELINE / Pipeline → 同一概念の可能性
+- PipelineEngine → 同一概念の可能性
+- PipelineError → 同一概念の可能性
+- PipelineResult / PipelineResults → 同一概念の可能性
+- PipError → 同一概念の可能性
+- PipImportRedirectingFinder → 同一概念の可能性
+- PipOption → 同一概念の可能性
+- PipProvider → 同一概念の可能性
+- PipReporter → 同一概念の可能性
+- PipScriptMaker → 同一概念の可能性
+- PipSession → 同一概念の可能性
+- PipXmlrpcTransport → 同一概念の可能性
+- PKG-INFO / PKG_INFO → 同一概念の可能性
+- PkgResourcesDeprecationWarning → 同一概念の可能性
+- PLAN / plan → 同一概念の可能性
+- plan-note → 同一概念の可能性
+- PLANNED → 同一概念の可能性
+- PlanningCaliber / planningcaliber → 同一概念の可能性
+- PlanSearchResponse → 同一概念の可能性
+- PLATFORM / platform → 同一概念の可能性
+- Platform-specific / platform-specific → 同一概念の可能性
+- PlatformInfo → 同一概念の可能性
+- pm-stat / pm-stats → 同一概念の可能性
+- point-at-infinity / point_at_infinity → 同一概念の可能性
+- POINTER_EVENTS / pointer-events → 同一概念の可能性
+- POLICY / policy → 同一概念の可能性
+- POLICY_EVALUATION → 同一概念の可能性
+- PolicyEngine → 同一概念の可能性
+- PolicyEvaluation → 同一概念の可能性
+- PolicyResult → 同一概念の可能性
+- poll_wait_for_socket → 同一概念の可能性
+- PolyForm-Noncommercial / polyform-noncommercial → 同一概念の可能性
+- PolyForm-Small-Business / polyform-small-business → 同一概念の可能性
+- PoolError / PoolErrors → 同一概念の可能性
+- PoolManager / PoolManagers → 同一概念の可能性
+- POP / pop → 同一概念の可能性
+- pop_render_hook → 同一概念の可能性
+- populate_blocks_with_blockheights → 同一概念の可能性
+- position_in_sys_path → 同一概念の可能性
+- PositionToken → 同一概念の可能性
+- POST / post → 同一概念の可能性
+- post_clear_cache → 同一概念の可能性
+- post_clear_cache_if_not_raised → 同一概念の可能性
+- post_event_from_copilot → 同一概念の可能性
+- post_finance_decision → 同一概念の可能性
+- post_handshake_auth → 同一概念の可能性
+- post-INSTALL / post-install → 同一概念の可能性
+- post_manufacturing_action → 同一概念の可能性
+- post_medical_records → 同一概念の可能性
+- Post-release / post-release → 同一概念の可能性
+- post_to_server → 同一概念の可能性
+- post-UNINSTALL / post-uninstall → 同一概念の可能性
+- powershell_write_utf8 → 同一概念の可能性
+- pragma_table_info → 同一概念の可能性
+- Pre-Answer / pre-answer → 同一概念の可能性
+- PRE-COMMIT / pre-commit → 同一概念の可能性
+- pre_execution_check → 同一概念の可能性
+- PRE_FREEZE / pre-freeze → 同一概念の可能性
+- pre-INSTALL / pre-install → 同一概念の可能性
+- Pre-processing / pre-processing → 同一概念の可能性
+- Pre-release / Pre-releases / pre-release / pre-releases → 同一概念の可能性
+- pre-UNINSTALL / pre-uninstall → 同一概念の可能性
+- PrecededBy → 同一概念の可能性
+- prefer-binary / prefer_binary → 同一概念の可能性
+- PREFIX / PREFIXES → 同一概念の可能性
+- prefix_to_dir → 同一概念の可能性
+- prepare_content_length → 同一概念の可能性
+- prepare_distribution_metadata → 同一概念の可能性
+- prepare_editable_requirement → 同一概念の可能性
+- prepare_installed_requirement → 同一概念の可能性
+- prepare_linked_requirement → 同一概念の可能性
+- prepare_linked_requirements_more → 同一概念の可能性
+- prepare_metadata_for_build_editable → 同一概念の可能性
+- prepare_metadata_for_build_wheel → 同一概念の可能性
+- PreparedRequest / PreparedRequests → 同一概念の可能性
+- prepend_scheme_if_needed → 同一概念の可能性
+- PreprocessError → 同一概念の可能性
+- PreRelease / prereleases → 同一概念の可能性
+- PrettyHelpFormatter → 同一概念の可能性
+- PREV_CHAIN_HASH / prev_chain_hash → 同一概念の可能性
+- PREV_QUEUE / prev-queue → 同一概念の可能性
+- PREVENTION → 同一概念の可能性
+- PreviousBuildDirError → 同一概念の可能性
+- PRF / prf → 同一概念の可能性
+- PRINCIPLES / Principles → 同一概念の可能性
+- print_command_list → 同一概念の可能性
+- print_config_file_values → 同一概念の可能性
+- print_dist_installation_info → 同一概念の可能性
+- print_env_var_values → 同一概念の可能性
+- print_result / print_results → 同一概念の可能性
+- print_system_status → 同一概念の可能性
+- print_todays_changes → 同一概念の可能性
+- print_todays_focus → 同一概念の可能性
+- print_trace_log → 同一概念の可能性
+- PrioritizedAction → 同一概念の可能性
+- PRIORITY / priority → 同一概念の可能性
+- priority_for_feedback_type → 同一概念の可能性
+- PriorityScorer → 同一概念の可能性
+- PRISM_ADAPTER / prism-adapter → 同一概念の可能性
+- PrismAnalyzer → 同一概念の可能性
+- PrismBridge → 同一概念の可能性
+- PrismError → 同一概念の可能性
+- PrismPipeline → 同一概念の可能性
+- PrismProvider → 同一概念の可能性
+- PRIVATE / private → 同一概念の可能性
+- PRIVATE_KEY_PATH / private-key-path / private_key_path → 同一概念の可能性
+- PRNG → 同一概念の可能性
+- PRO / PROS → 同一概念の可能性
+- PROCESS / process → 同一概念の可能性
+- process_env_var → 同一概念の可能性
+- process_intranet_request → 同一概念の可能性
+- process_project_url → 同一概念の可能性
+- process_python_str → 同一概念の可能性
+- process_template_line → 同一概念の可能性
+- ProcessStreamAdapter → 同一概念の可能性
+- PROD → 同一概念の可能性
+- PRODUCTS / Products / product → 同一概念の可能性
+- PRODUCT_NAME / product-name → 同一概念の可能性
+- PRODUCTION_ELIGIBLE → 同一概念の可能性
+- ProductionDashboardModel → 同一概念の可能性
+- ProductionModeManager → 同一概念の可能性
+- ProductSummary → 同一概念の可能性
+- ProfilingRegexLexer → 同一概念の可能性
+- ProfilingRegexLexerMeta → 同一概念の可能性
+- PROGRESS / Progress → 同一概念の可能性
+- ProgressBar → 同一概念の可能性
+- ProgressColumn → 同一概念の可能性
+- ProgressSample → 同一概念の可能性
+- PROJECT / project → 同一概念の可能性
+- project_name_to_urls → 同一概念の可能性
+- project_on_sys_path → 同一概念の可能性
+- Project-URL / Project-URLs / project-url → 同一概念の可能性
+- ProjectStatus → 同一概念の可能性
+- PROMPT / PROMPTS / Prompt / prompt → 同一概念の可能性
+- PromptBase → 同一概念の可能性
+- PromptError → 同一概念の可能性
+- PROOF_DB / proof-db → 同一概念の可能性
+- ProofreadResult → 同一概念の可能性
+- ProposalNode → 同一概念の可能性
+- protect_pip_from_modification_on_windows → 同一概念の可能性
+- PROTECTED / protected → 同一概念の可能性
+- PROTOCOL / Protocol / protocol → 同一概念の可能性
+- ProtocolError → 同一概念の可能性
+- ProviderChain → 同一概念の可能性
+- ProviderEmpty → 同一概念の可能性
+- ProviderNotInitializedError → 同一概念の可能性
+- Provides-Dist / provides-dist → 同一概念の可能性
+- Provides-Extra / provides-extra → 同一概念の可能性
+- Proxy / proxy → 同一概念の可能性
+- PROXY_AUTHENTICATION_REQUIRED / proxy_authentication_required → 同一概念の可能性
+- Proxy-Authorization / proxy-authorization → 同一概念の可能性
+- proxy_bypass_registry → 同一概念の可能性
+- proxy_from_url → 同一概念の可能性
+- proxy_manager_for → 同一概念の可能性
+- proxy_to_app → 同一概念の可能性
+- ProxyConnectionError → 同一概念の可能性
+- ProxyError → 同一概念の可能性
+- ProxyManager → 同一概念の可能性
+- ProxySchemeUnknown → 同一概念の可能性
+- ProxySchemeUnsupported → 同一概念の可能性
+- PRUNE / prune → 同一概念の可能性
+- prune_file_list → 同一概念の可能性
+- PS-or-PDF-font-exception / ps-or-pdf-font-exception → 同一概念の可能性
+- pseudo-tempname / pseudo_tempname → 同一概念の可能性
+- PSK → 同一概念の可能性
+- PthDistributions → 同一概念の可能性
+- PUBKEY / PubKey → 同一概念の可能性
+- PUBLIC / public → 同一概念の可能性
+- PUBLIC API / Public API → 同一概念の可能性
+- public-key / public_key → 同一概念の可能性
+- public-key-id / public_key_id → 同一概念の可能性
+- PUBLIC_KEY_PATH / public-key-path / public_key_path → 同一概念の可能性
+- Public-safe / public-safe → 同一概念の可能性
+- public_write_event → 同一概念の可能性
+- PublicKey / publickey → 同一概念の可能性
+- PublishResult → 同一概念の可能性
+- PULL / pull → 同一概念の可能性
+- PURGED → 同一概念の可能性
+- PURPOSE / Purpose → 同一概念の可能性
+- PUSH / push → 同一概念の可能性
+- push_decision_audit → 同一概念の可能性
+- push_failure_to_incident → 同一概念の可能性
+- push_job_completed → 同一概念の可能性
+- push_outcome_to_essence → 同一概念の可能性
+- push_policy_violation → 同一概念の可能性
+- push_reasoning_to_essence → 同一概念の可能性
+- push_render_hook → 同一概念の可能性
+- PushInfo → 同一概念の可能性
+- PushInfoList → 同一概念の可能性
+- PUT / put → 同一概念の可能性
+- pyc_output_path → 同一概念の可能性
+- pyc_source_file_paths → 同一概念の可能性
+- pycryptodome-test-vectors / pycryptodome_test_vectors → 同一概念の可能性
+- PygmentsDoc → 同一概念の可能性
+- PygmentsSyntaxTheme → 同一概念の可能性
+- pylock_from_install_requirements → 同一概念の可能性
+- PylockUnsupportedVersionError → 同一概念の可能性
+- PylockValidationError → 同一概念の可能性
+- PyOpenSSL-backed / pyOpenSSL-backed → 同一概念の可能性
+- pyproject_toml_path → 同一概念の可能性
+- PYTHON / Pythons → 同一概念の可能性
+- python_2_unicode_compatible → 同一概念の可能性
+- python-entrypoint-group / python_entrypoint_group → 同一概念の可能性
+- python-entrypoint-name / python_entrypoint_name → 同一概念の可能性
+- python-entrypoint-reference / python_entrypoint_reference → 同一概念の可能性
+- python-identifier / python_identifier → 同一概念の可能性
+- python-module-name / python_module_name → 同一概念の可能性
+- python-qualified-identifier / python_qualified_identifier → 同一概念の可能性
+- PYTHON_VERSION / python-version → 同一概念の可能性
+- PythonBridg / PythonBridge → 同一概念の可能性
+- PythonConsoleLexer → 同一概念の可能性
+- PythonLexer → 同一概念の可能性
+- PythonTracebackLexer → 同一概念の可能性
+- Qt-GPL-exception / qt-gpl-exception → 同一概念の可能性
+- Qt-LGPL-exception / qt-lgpl-exception → 同一概念の可能性
+- QUEUE / queue → 同一概念の可能性
+- queue_for_human → 同一概念の可能性
+- QueueItem → 同一概念の可能性
+- quiet_subprocess_runner → 同一概念の可能性
+- quote → 同一概念の可能性
+- QUOTED_STRING / quoted-string / quoted-strings → 同一概念の可能性
+- QuotedString → 同一概念の可能性
+- Qwt-exception / qwt-exception → 同一概念の可能性
+- RES / RSS → 同一概念の可能性
+- Rabin-Miller / rabin-miller → 同一概念の可能性
+- RAG / RAGE → 同一概念の可能性
+- railroad_to_html → 同一概念の可能性
+- raise_for_status → 同一概念の可能性
+- raise_if_error → 同一概念の可能性
+- raise_option_error → 同一概念の可能性
+- raise_syntax_error → 同一概念の可能性
+- RaiseOnErrorTokenFilter → 同一概念の可能性
+- RANDOM / random → 同一概念の可能性
+- random_combination_with_replacement → 同一概念の可能性
+- RANK / rank → 同一概念の可能性
+- RAT / RATE → 同一概念の可能性
+- RATE_LIMITS / Rate-limit / rate-limit / rate-limits / rate_limit → 同一概念の可能性
+- rate_limit_remaining → 同一概念の可能性
+- RateLimiter → 同一概念の可能性
+- Rationale / rationale → 同一概念の可能性
+- RationaleRecord → 同一概念の可能性
+- RAW → 同一概念の可能性
+- RawMetadata → 同一概念の可能性
+- RawProxy → 同一概念の可能性
+- RawSignatureHash → 同一概念の可能性
+- RAY / RAYS → 同一概念の可能性
+- re-derive / re-derives → 同一概念の可能性
+- Re-downloading / re-downloading → 同一概念の可能性
+- re-evaluate / re-evaluates → 同一概念の可能性
+- Re-export / re-exports → 同一概念の可能性
+- Re-implementation / re-implementations → 同一概念の可能性
+- Re-invoke / re-invoke → 同一概念の可能性
+- re-read / re-reads → 同一概念の可能性
+- RE_REDUCED_DIR / re_reduced_dir → 同一概念の可能性
+- Re-run / re-run / re-runs → 同一概念の可能性
+- Re-seal / re-seal → 同一概念の可能性
+- reachable_set_from_tip → 同一概念の可能性
+- READ / read → 同一概念の可能性
+- read_all_from_possibly_closed_stream → 同一概念の可能性
+- read_all_schema → 同一概念の可能性
+- read_array_header → 同一概念の可能性
+- read_byte / read_bytes → 同一概念の可能性
+- read_json_file → 同一概念の可能性
+- read_last_event_id_from_db → 同一概念の可能性
+- read_map_header → 同一概念の可能性
+- read_mocka_events → 同一概念の可能性
+- Read-only / read-only / read_only → 同一概念の可能性
+- read_or_stop → 同一概念の可能性
+- read_payload_arg → 同一概念の可能性
+- read_pkg_file → 同一概念の可能性
+- read_setup_file → 同一概念の可能性
+- read_wheel_metadata_file → 同一概念の可能性
+- readable_db_object_path → 同一概念の可能性
+- ReadinessLevel → 同一概念の可能性
+- readline / readlines → 同一概念の可能性
+- README / READMES → 同一概念の可能性
+- ReadTimeout → 同一概念の可能性
+- ReadTimeoutError / ReadTimeoutErrors → 同一概念の可能性
+- READY / ready → 同一概念の可能性
+- Real-time / real-time → 同一概念の可能性
+- Real-world / real-world → 同一概念の可能性
+- REASON / reason / reasons → 同一概念の可能性
+- ReasoningGovernanceEngine → 同一概念の可能性
+- rebuild_state_from_ledger → 同一概念の可能性
+- rebuild_summary_matrix → 同一概念の可能性
+- receive_from_intranet → 同一概念の可能性
+- receive_from_vasai → 同一概念の可能性
+- RecentlyUsedContainer → 同一概念の可能性
+- reconstruct_state_diff → 同一概念の可能性
+- RECORD / record → 同一概念の可能性
+- record_as_written → 同一概念の可能性
+- record_decision_reproducibility → 同一概念の可能性
+- record_download_origin → 同一概念の可能性
+- record_file_change → 同一概念の可能性
+- record_knowledge_recovery → 同一概念の可能性
+- record_memory_retention → 同一概念の可能性
+- record_to_db → 同一概念の可能性
+- RecordedEvent → 同一概念の可能性
+- RecordStore → 同一概念の可能性
+- RECOVER / recover → 同一概念の可能性
+- RECURRENCE → 同一概念の可能性
+- RECURRENCE_WINDOW_DAYS / recurrence_window_days → 同一概念の可能性
+- recurse-submodule / recurse-submodules → 同一概念の可能性
+- RecursionLimitError → 同一概念の可能性
+- recursive-exclude / recursive_exclude → 同一概念の可能性
+- recursive-include / recursive_include → 同一概念の可能性
+- RecursiveGrammarException → 同一概念の可能性
+- redact_auth_from_requirement → 同一概念の可能性
+- redact_auth_from_url → 同一概念の可能性
+- redacted_index_url / redacted_index_urls → 同一概念の可能性
+- RedefiningStaticFieldAsDynamic → 同一概念の可能性
+- RedisCache → 同一概念の可能性
+- REF / refs → 同一概念の可能性
+- REF_DELTA / ref-deltas → 同一概念の可能性
+- REFERENCE / REFERENCES / Reference / References / reference / references → 同一概念の可能性
+- Reference-level / reference-level → 同一概念の可能性
+- RefLog → 同一概念の可能性
+- RefLogEntry → 同一概念の可能性
+- REFRESH / refresh → 同一概念の可能性
+- REG / Reg → 同一概念の可能性
+- REGEX / Regex → 同一概念の可能性
+- regex_opt_inner → 同一概念の可能性
+- RegexHighlighter → 同一概念の可能性
+- RegexLexer → 同一概念の可能性
+- RegexLexerMeta → 同一概念の可能性
+- Region / region → 同一概念の可能性
+- regional_indicator_e / regional_indicator_s → 同一概念の可能性
+- regional_indicator_symbol_letter_e / regional_indicator_symbol_letter_s → 同一概念の可能性
+- register → 同一概念の可能性
+- register_loader_type → 同一概念の可能性
+- register_namespace_handler → 同一概念の可能性
+- register_shadow_listener → 同一概念の可能性
+- REGISTRATION → 同一概念の可能性
+- REGISTRY_UPDATE → 同一概念の可能性
+- RegistryInfo → 同一概念の可能性
+- RegTestParams → 同一概念の可能性
+- REJECT / reject → 同一概念の可能性
+- REJECTED → 同一概念の可能性
+- RELAY / Relay → 同一概念の可能性
+- RELAY_ADAPTER / relay-adapter → 同一概念の可能性
+- relay_append_context → 同一概念の可能性
+- relay_create_session → 同一概念の可能性
+- relay_get_session → 同一概念の可能性
+- relay-license-worker / relay_license_worker → 同一概念の可能性
+- RelayAdapterInterface → 同一概念の可能性
+- RelaySession → 同一概念の可能性
+- RELEASE / release → 同一概念の可能性
+- release_control → 同一概念の可能性
+- RELEASE_NOTES / Release Notes / release-notes → 同一概念の可能性
+- ReleaseControl → 同一概念の可能性
+- ReleaseGate → 同一概念の可能性
+- REMOTE / Remote / remote / remotes → 同一概念の可能性
+- remote-HEAD / remote_head → 同一概念の可能性
+- RemoteCalendar → 同一概念の可能性
+- RemoteNotFoundError → 同一概念の可能性
+- RemoteNotValidError → 同一概念の可能性
+- RemoteProgress → 同一概念の可能性
+- RemoteReference → 同一概念の可能性
+- REMOVE / remove → 同一概念の可能性
+- remove_auth_from_url → 同一概念の可能性
+- remove_bom_and_validate → 同一概念の可能性
+- remove_cache_items → 同一概念の可能性
+- remove_cookie_by_name → 同一概念の可能性
+- remove_nested_packages → 同一概念の可能性
+- remove_password_if_present → 同一概念の可能性
+- RemovedCommandError → 同一概念の可能性
+- RENAME / RENAMES / rename / renames → 同一概念の可能性
+- RENDER / render → 同一概念の可能性
+- Renderables / renderable / renderables → 同一概念の可能性
+- RenderableColumn → 同一概念の可能性
+- RenderHook → 同一概念の可能性
+- REPLACE / replace → 同一概念の可能性
+- replace_cached_zip_archive_directory_data → 同一概念の可能性
+- replace_html_entity → 同一概念の可能性
+- replan-bridge-auto / replan_bridge_auto → 同一概念の可能性
+- REPLAY / replay → 同一概念の可能性
+- replay_by_job → 同一概念の可能性
+- ReplayEngine → 同一概念の可能性
+- REPO / REPOS / Repo → 同一概念の可能性
+- REPO_ROOT / repo-root → 同一概念の可能性
+- REPORT / report → 同一概念の可能性
+- REPORT_FILE / REPORT_FILES → 同一概念の可能性
+- report_is_clean → 同一概念の可能性
+- ReportClaim → 同一概念の可能性
+- ReportClaimSet → 同一概念の可能性
+- ReportTruthState → 同一概念の可能性
+- Repository-relative / repository-relative → 同一概念の可能性
+- Repository Structure / Repository structure → 同一概念の可能性
+- RepositoryDirtyError → 同一概念の可能性
+- RepositoryGroundingEngine → 同一概念の可能性
+- ReprError → 同一概念の可能性
+- REPRESENTATION / REPRESENTATIONS → 同一概念の可能性
+- ReprHighlighter → 同一概念の可能性
+- REPRODUCE_RESULT / reproduce-result → 同一概念の可能性
+- REQ / req → 同一概念の可能性
+- REQ_BUILD / req-build → 同一概念の可能性
+- req_error_context → 同一概念の可能性
+- reqs_for_extra → 同一概念の可能性
+- REQUEST / Request / request → 同一概念の可能性
+- request_encode_body → 同一概念の可能性
+- request_encode_url → 同一概念の可能性
+- REQUEST_END → 同一概念の可能性
+- REQUEST_ENTITY_TOO_LARGE / request_entity_too_large → 同一概念の可能性
+- REQUEST_START → 同一概念の可能性
+- request-uri / request_uri → 同一概念の可能性
+- REQUEST_URI_TOO_LONG / request_uri_too_long → 同一概念の可能性
+- REQUESTED / requested → 同一概念の可能性
+- requested-revision / requested_revision → 同一概念の可能性
+- RequestEncodingMixin → 同一概念の可能性
+- RequestError → 同一概念の可能性
+- RequestException → 同一概念の可能性
+- RequestField → 同一概念の可能性
+- RequestHooksMixin → 同一概念の可能性
+- RequestMethods → 同一概念の可能性
+- RequestModule → 同一概念の可能性
+- RequestsCookieJar → 同一概念の可能性
+- RequestsDependencyWarning → 同一概念の可能性
+- RequestsWarning → 同一概念の可能性
+- REQUIRES / Require / require / requires → 同一概念の可能性
+- require_api_key → 同一概念の可能性
+- require_remote_ref_path → 同一概念の可能性
+- REQUIRED / Required → 同一概念の可能性
+- Required-by / required_by → 同一概念の可能性
+- REQUIREMENT / REQUIREMENTS / Requirement / requirement / requirements → 同一概念の可能性
+- RequirementChange → 同一概念の可能性
+- RequirementCommand → 同一概念の可能性
+- RequirementHistoryStore → 同一概念の可能性
+- RequirementInformation → 同一概念の可能性
+- RequirementParseError → 同一概念の可能性
+- RequirementParts → 同一概念の可能性
+- RequirementPreparer → 同一概念の可能性
+- RequirementResult → 同一概念の可能性
+- requirements-from-script / requirements_from_scripts → 同一概念の可能性
+- requirements_to_install → 同一概念の可能性
+- RequirementsConflicted → 同一概念の可能性
+- RequirementSet → 同一概念の可能性
+- RequirementsFileParseError → 同一概念の可能性
+- RequirementsFileParser → 同一概念の可能性
+- Requires-Dist / requires-dist → 同一概念の可能性
+- Requires-External / requires-external → 同一概念の可能性
+- Requires-Python / requires-python / requires_python → 同一概念の可能性
+- requires_python_mismatch → 同一概念の可能性
+- requires_python_skipped_reasons → 同一概念の可能性
+- RequiresEntry → 同一概念の可能性
+- RequiresPythonCandidate → 同一概念の可能性
+- RequiresPythonRequirement → 同一概念の可能性
+- REROUTE → 同一概念の可能性
+- research-gate-demo / research_gate_demo → 同一概念の可能性
+- RESEARCH_MAP / Research Map → 同一概念の可能性
+- RESET / reset → 同一概念の可能性
+- reset_pyparsing_context → 同一概念の可能性
+- RESOLUTION / Resolution / resolution → 同一概念の可能性
+- ResolutionError → 同一概念の可能性
+- ResolutionImpossible → 同一概念の可能性
+- ResolutionStrategy → 同一概念の可能性
+- ResolutionTooDeep → 同一概念の可能性
+- ResolutionTooDeepError → 同一概念の可能性
+- resolve_audit_dir → 同一概念の可能性
+- resolve_authority_for_gate → 同一概念の可能性
+- resolve_cert_reqs → 同一概念の可能性
+- resolve_db_path → 同一概念の可能性
+- resolve_default_timeout → 同一概念の可能性
+- resolve_egg_link → 同一概念の可能性
+- resolve_expected_state → 同一概念の可能性
+- resolve_observed_state → 同一概念の可能性
+- resolve_public_key_strict → 同一概念の可能性
+- resolve_repo_root → 同一概念の可能性
+- resolve_ssl_version → 同一概念の可能性
+- RESOLVED / resolved → 同一概念の可能性
+- resolved_key_paths → 同一概念の可能性
+- ResolverException → 同一概念の可能性
+- RESOURCE / Resource / resources → 同一概念の可能性
+- ResourceBase → 同一概念の可能性
+- ResourceCache → 同一概念の可能性
+- ResourceContainer → 同一概念の可能性
+- ResourceFinder → 同一概念の可能性
+- ResourceHandle → 同一概念の可能性
+- ResourceManager → 同一概念の可能性
+- ResourceReader → 同一概念の可能性
+- RESPONSE / Response → 同一概念の可能性
+- ResponseError → 同一概念の可能性
+- ResponseNotChunked → 同一概念の可能性
+- RESTORE / restore → 同一概念の可能性
+- RESULT / RESULTS / Result / result / results → 同一概念の可能性
+- RET / ret → 同一概念の可能性
+- RetentionPolicy → 同一概念の可能性
+- RETRY / Retry / retry → 同一概念の可能性
+- RetryError → 同一概念の可能性
+- REUSE_WEIGHT_ADJUSTMENT / reuse_weight_adjustment → 同一概念の可能性
+- rev-parse / rev_parse → 同一概念の可能性
+- REVALIDATION / Revalidation → 同一概念の可能性
+- reveal_command_args → 同一概念の可能性
+- RevisionStore → 同一概念の可能性
+- revoke_key_with_audit_event → 同一概念の可能性
+- RevOptions → 同一概念の可能性
+- RewritePthDistributions → 同一概念の可能性
+- RewriteSuggestion → 同一概念の可能性
+- RGB / rgb → 同一概念の可能性
+- rich_proxied_file → 同一概念の可能性
+- RichCast → 同一概念の可能性
+- RichFormatter → 同一概念の可能性
+- RichHandler → 同一概念の可能性
+- RichPipStreamHandler → 同一概念の可能性
+- RichRenderable → 同一概念の可能性
+- RID / RIDE → 同一概念の可能性
+- Right-click / right-click / right-clicks → 同一概念の可能性
+- right-to-left / right_to_left → 同一概念の可能性
+- RIM / RIME → 同一概念の可能性
+- RIPEMD160 / ripemd160 → 同一概念の可能性
+- RISK / RISKS → 同一概念の可能性
+- Risk Score / risk-score → 同一概念の可能性
+- RiskAnalyzer → 同一概念の可能性
+- RiskLevel → 同一概念の可能性
+- RNG / Rng → 同一概念の可能性
+- ROE / ROSS → 同一概念の可能性
+- ROB / ROBE → 同一概念の可能性
+- ROD / RODE → 同一概念の可能性
+- ROLE / ROLES / rol / role → 同一概念の可能性
+- ROLLBACK / rollback → 同一概念の可能性
+- RonRivestTest → 同一概念の可能性
+- ROOT / root → 同一概念の可能性
+- root_cause_candidate → 同一概念の可能性
+- ROOT_DIR / root-dir → 同一概念の可能性
+- root_scheme_file_maker → 同一概念の可能性
+- root-user-action / root_user_action → 同一概念の可能性
+- RootModule → 同一概念の可能性
+- RootUpdateProgress → 同一概念の可能性
+- ROTATE / rotate → 同一概念の可能性
+- rotation-chain-hash / rotation_chain_hash → 同一概念の可能性
+- round-trip / round-trips / round_trip → 同一概念の可能性
+- RoundResult → 同一概念の可能性
+- RoundtripTest → 同一概念の可能性
+- ROUT / ROUTE / route → 同一概念の可能性
+- RouteResult → 同一概念の可能性
+- ROW / ROWE / ROWS / Row → 同一概念の可能性
+- ROW_COUNT / row_count → 同一概念の可能性
+- RowSplitter → 同一概念の可能性
+- RPM / RPMS → 同一概念の可能性
+- RRDtool-FLOSS-exception / rrdtool-floss-exception → 同一概念の可能性
+- RSA / RSAES → 同一概念の可能性
+- RSA-MD / rsa-md → 同一概念の可能性
+- RsaKey → 同一概念の可能性
+- RUE / RUSS → 同一概念の可能性
+- RUB / RUBE → 同一概念の可能性
+- Ruby-pty / ruby-pty → 同一概念の可能性
+- RULE / RULES / Rule / rule → 同一概念の可能性
+- RULE_EVALUATION → 同一概念の可能性
+- RUN / RUNS / run → 同一概念の可能性
+- run_all_scenarios → 同一概念の可能性
+- run_case_with_response → 同一概念の可能性
+- run_command / run_commands → 同一概念の可能性
+- run_commit_hook → 同一概念の可能性
+- run_compare_mode → 同一概念の可能性
+- run_discrepancy_check → 同一概念の可能性
+- run_e2e_suite → 同一概念の可能性
+- run_for_report → 同一概念の可能性
+- run_full_audit → 同一概念の可能性
+- run_health_check → 同一概念の可能性
+- run_integrity_check → 同一概念の可能性
+- run-length / run_length → 同一概念の可能性
+- run_one_cycle → 同一概念の可能性
+- RUN_ORCHESTRA / run_orchestra → 同一概念の可能性
+- run_p1_analysis → 同一概念の可能性
+- run_pattern_score → 同一概念の可能性
+- run_ping_generator → 同一概念の可能性
+- run_score_mode → 同一概念の可能性
+- run_summary_mode → 同一概念の可能性
+- run_template_mode → 同一概念の可能性
+- run_test / run_tests → 同一概念の可能性
+- run_tic_prediction → 同一概念の可能性
+- runner_with_spinner_message → 同一概念の可能性
+- running_under_virtualenv → 同一概念の可能性
+- RUNTIME / runtime → 同一概念の可能性
+- RUNTIME_AVAILABILITY → 同一概念の可能性
+- runtime_library_dir_option → 同一概念の可能性
+- RuntimeConfig → 同一概念の可能性
+- RuntimeStage → 同一概念の可能性
+- SEE / SEES / SESS → 同一概念の可能性
+- S390 → 同一概念の可能性
+- SAE / SAS → 同一概念の可能性
+- SAFE / safe → 同一概念の可能性
+- SAFE_MODE → 同一概念の可能性
+- safe_parse_float → 同一概念の可能性
+- safe_sys_path_index → 同一概念の可能性
+- safe_write_report → 同一概念の可能性
+- SafeFileCache → 同一概念の可能性
+- SafeTransport → 同一概念の可能性
+- SAG / SAGE → 同一概念の可能性
+- SAL / SALE → 同一概念の可能性
+- SAM / SAME → 同一概念の可能性
+- SAMPLE / SAMPLES / sample → 同一概念の可能性
+- SAN / SANE → 同一概念の可能性
+- SandboxResult → 同一概念の可能性
+- SandboxViolation → 同一概念の可能性
+- SANE-exception / sane-exception → 同一概念の可能性
+- sanitize_content_filename → 同一概念の可能性
+- SanitizerGate → 同一概念の可能性
+- SAVE / save → 同一概念の可能性
+- save_auth_info → 同一概念の可能性
+- save_extract_log → 同一概念の可能性
+- save_last_event_id → 同一概念の可能性
+- save_linked_requirement → 同一概念の可能性
+- save_method_args → 同一概念の可能性
+- save_pkg_resources_state → 同一概念の可能性
+- save_success_patterns → 同一概念の可能性
+- save_to_mocka → 同一概念の可能性
+- save_version_info → 同一概念の可能性
+- SAX-PD / sax-pd → 同一概念の可能性
+- SAY / SAYS → 同一概念の可能性
+- SCAN / scan → 同一概念の可能性
+- scan_egg_link / scan_egg_links → 同一概念の可能性
+- SCANNER / Scanner → 同一概念の可能性
+- ScanningLoader → 同一概念の可能性
+- SCENARIO / SCENARIOS → 同一概念の可能性
+- scenario_js_syntax → 同一概念の可能性
+- scenario_m01_heart → 同一概念の可能性
+- scenario_m02_event_store → 同一概念の可能性
+- scenario_m03_movement → 同一概念の可能性
+- scenario_m04_governance → 同一概念の可能性
+- scenario_m05_prevention → 同一概念の可能性
+- scenario_m06_ledger → 同一概念の可能性
+- scenario_m07_bridge → 同一概念の可能性
+- scenario_m08_load → 同一概念の可能性
+- scenario_m09_servers → 同一概念の可能性
+- scenario_m10_syntax → 同一概念の可能性
+- scenario_p01_cpi_engine → 同一概念の可能性
+- scenario_p01_schema → 同一概念の可能性
+- scenario_p02_breakeven → 同一概念の可能性
+- scenario_p02_messages → 同一概念の可能性
+- scenario_p03_density → 同一概念の可能性
+- scenario_p03_storage_keys → 同一概念の可能性
+- scenario_p04_i18n → 同一概念の可能性
+- scenario_p04_todo_extraction → 同一概念の可能性
+- scenario_p05_lb_id → 同一概念の可能性
+- scenario_p05_manifest → 同一概念の可能性
+- scenario_p06_files → 同一概念の可能性
+- scenario_p06_handoff_packet → 同一概念の可能性
+- scenario_p07_infer_work → 同一概念の可能性
+- scenario_p08_license_format → 同一概念の可能性
+- scenario_p09_vault → 同一概念の可能性
+- scenario_p10_manifest → 同一概念の可能性
+- scenario_p11_js_syntax → 同一概念の可能性
+- SCHEDULER / Scheduler → 同一概念の可能性
+- SCHEME / Scheme / scheme → 同一概念の可能性
+- SCHEMA / SCHEMAS → 同一概念の可能性
+- SCHEMA_VERSION / schema-version → 同一概念の可能性
+- SchemaValidationError → 同一概念の可能性
+- SCOPE / SCOPES / Scope → 同一概念の可能性
+- SCORE / SCORES / score → 同一概念の可能性
+- SCORE_THRESHOLD / SCORE_THRESHOLDS → 同一概念の可能性
+- score_to_severity → 同一概念の可能性
+- ScoredCandidate → 同一概念の可能性
+- ScoredMemory → 同一概念の可能性
+- ScoredProduct → 同一概念の可能性
+- scp-result-item / scp-result-items → 同一概念の可能性
+- Screen / screen → 同一概念の可能性
+- ScreenContext → 同一概念の可能性
+- ScreenUpdate → 同一概念の可能性
+- ScriptFile → 同一概念の可能性
+- ScriptMaker → 同一概念の可能性
+- ScriptWriter → 同一概念の可能性
+- sdist_add_defaults → 同一概念の可能性
+- SdkSetup → 同一概念の可能性
+- SdkTools → 同一概念の可能性
+- SEAL / seal → 同一概念の可能性
+- SEALED → 同一概念の可能性
+- SEARCH / search → 同一概念の可能性
+- search_insurance_plans → 同一概念の可能性
+- search_knowledge_gate → 同一概念の可能性
+- search_packages_info → 同一概念の可能性
+- SearchCommand → 同一概念の可能性
+- SearchScope → 同一概念の可能性
+- SecCertificateRef / SecCertificateRefs → 同一概念の可能性
+- SECRET / SECRETS → 同一概念の可能性
+- SectionConstraint → 同一概念の可能性
+- SecureTransportContext → 同一概念の可能性
+- SecurityConst → 同一概念の可能性
+- SecurityWarning → 同一概念の可能性
+- SEED / seed → 同一概念の可能性
+- SEEK / seek → 同一概念の可能性
+- seekable → 同一概念の可能性
+- SEGMENT / Segment / Segments → 同一概念の可能性
+- SegmentLines → 同一概念の可能性
+- select_wait_for_socket → 同一概念の可能性
+- SelectableGroups → 同一概念の可能性
+- selected_alpn_protocol → 同一概念の可能性
+- selected_npn_protocol → 同一概念の可能性
+- SelectionPreferences → 同一概念の可能性
+- SELECTOR / SELECTORS → 同一概念の可能性
+- SelectParams → 同一概念の可能性
+- Self-Diagnostic / Self-Diagnostics → 同一概念の可能性
+- Self-Evolution / self-evolution → 同一概念の可能性
+- Self-Healing / Self-healing / self-healing → 同一概念の可能性
+- Self-reference / self-reference → 同一概念の可能性
+- Self-test / Self-tests / self-test / self-tests → 同一概念の可能性
+- Self-Winding / self-winding → 同一概念の可能性
+- SelfCheckState → 同一概念の可能性
+- SelfTestError → 同一概念の可能性
+- SelfVerificationEngine → 同一概念の可能性
+- SEMANTIC → 同一概念の可能性
+- semantic_threshold_adjustment → 同一概念の可能性
+- SemanticAdjuster → 同一概念の可能性
+- SemanticAnnotation → 同一概念の可能性
+- SemanticEngine → 同一概念の可能性
+- SemanticLearningState → 同一概念の可能性
+- SemanticPipeline → 同一概念の可能性
+- SemanticResult → 同一概念の可能性
+- SemanticRouter → 同一概念の可能性
+- SEND / send → 同一概念の可能性
+- send_to_vasai → 同一概念の可能性
+- Sendmail-Open-Source / sendmail-open-source → 同一概念の可能性
+- SEO-OS / seo-os → 同一概念の可能性
+- separate-git-dir / separate_git_dir → 同一概念の可能性
+- SeparateBodyBaseCache → 同一概念の可能性
+- SeparateBodyFileCache → 同一概念の可能性
+- SeparatedValues → 同一概念の可能性
+- SequenceView → 同一概念の可能性
+- SerializationContext → 同一概念の可能性
+- SerializationError → 同一概念の可能性
+- SerializationTruncationError → 同一概念の可能性
+- SerializerTypeError → 同一概念の可能性
+- SerializerValueError → 同一概念の可能性
+- SERVER / SERVERS → 同一概念の可能性
+- ServerProxy → 同一概念の可能性
+- SERVICE / SERVICES → 同一概念の可能性
+- SESSION / SESSIONS / Session / session → 同一概念の可能性
+- SESSION_ID / session-id / session_id → 同一概念の可能性
+- SESSION_START / session_start → 同一概念の可能性
+- SessionCommandMixin → 同一概念の可能性
+- SessionRedirectMixin → 同一概念の可能性
+- SessionRelay → 同一概念の可能性
+- SessionState → 同一概念の可能性
+- SET / SETS / set → 同一概念の可能性
+- set_alpn_protocols → 同一概念の可能性
+- set_alt_screen → 同一概念の可能性
+- set_audit_event_id → 同一概念の可能性
+- set_body_from_io → 同一概念の可能性
+- set_cell_size → 同一概念の可能性
+- SET-cookie / Set-Cookie / set-cookie / set_cookie → 同一概念の可能性
+- set_debug_actions → 同一概念の可能性
+- set_default_keyword_chars → 同一概念の可能性
+- set_default_proxy → 同一概念の可能性
+- set_default_verify_paths → 同一概念の可能性
+- set_default_whitespace_chars → 同一概念の可能性
+- set_dirty_and_flush_changes → 同一概念の可能性
+- set_executable / set_executables → 同一概念の可能性
+- set_extracted_file_to_default_mode_plus_executable → 同一概念の可能性
+- set_extraction_path → 同一概念の可能性
+- set_fail_action → 同一概念の可能性
+- set_file_position → 同一概念の可能性
+- set_git_working_dir → 同一概念の可能性
+- set_include_dirs → 同一概念の可能性
+- set_library_dirs → 同一概念の可能性
+- set_link_objects → 同一概念の可能性
+- set_name_value → 同一概念の可能性
+- set_negative_aliases → 同一概念の可能性
+- set_npn_protocols → 同一概念の可能性
+- set_option_table → 同一概念の可能性
+- set_parent_commit → 同一概念の可能性
+- set_parse_action → 同一概念の可能性
+- set_partitions_helper → 同一概念の可能性
+- set_path_env_var → 同一概念の可能性
+- set_persistent_git_options → 同一概念の可能性
+- set_prefer_binary → 同一概念の可能性
+- set_release_control → 同一概念の可能性
+- set_results_name → 同一概念の可能性
+- set_runtime_library_dirs → 同一概念の可能性
+- set_schema_version → 同一概念の可能性
+- set_self_blocking → 同一概念の可能性
+- set_tracking_branch → 同一概念の可能性
+- set_undefined_options → 同一概念の可能性
+- set-url / set_url → 同一概念の可能性
+- set-value / set_value → 同一概念の可能性
+- set_whitespace_chars → 同一概念の可能性
+- SET_WINDOW_TITLE / set_window_title → 同一概念の可能性
+- SetConsoleCursorInfo → 同一概念の可能性
+- SetConsoleCursorPosition → 同一概念の可能性
+- SetConsoleTextAttribute → 同一概念の可能性
+- SetConsoleTitle → 同一概念の可能性
+- SETUP / setUp / setup → 同一概念の可能性
+- setup_py_path → 同一概念の可能性
+- setup_shlib_compiler → 同一概念の可能性
+- SetupRequirementsError → 同一概念の可能性
+- SetuptoolsDeprecationWarning → 同一概念の可能性
+- SEVERITY / Severity / severity → 同一概念の可能性
+- SeverityLevel → 同一概念の可能性
+- SGI-B / sgi-b → 同一概念の可能性
+- SGI-OpenGL / sgi-opengl → 同一概念の可能性
+- SHE / SHS → 同一概念の可能性
+- SHA / SHAS / sha → 同一概念の可能性
+- sha256_file_hex → 同一概念の可能性
+- sha256_hex_bytes → 同一概念の可能性
+- sha256_of_file → 同一概念の可能性
+- sha_to_index → 同一概念の可能性
+- ShadowArtifactError → 同一概念の可能性
+- ShadowMovement → 同一概念の可能性
+- ShadowStatus → 同一概念の可能性
+- SHAKE128_XOF → 同一概念の可能性
+- SHAKE256_XOF → 同一概念の可能性
+- SHARE / share → 同一概念の可能性
+- SHARE_READY / Share-ready / share-ready → 同一概念の可能性
+- shared_object_filename → 同一概念の可能性
+- Shift-JIS / shift-jis → 同一概念の可能性
+- SHIM / shim → 同一概念の可能性
+- Short-circuit / short-circuit → 同一概念の可能性
+- short-cut / short-cuts → 同一概念の可能性
+- short_to_long → 同一概念の可能性
+- should_add_vcs_url_prefix → 同一概念の可能性
+- should_bypass_proxies → 同一概念の可能性
+- should_create_snapshot → 同一概念の可能性
+- should_exclude_prerelease → 同一概念の可能性
+- should_ignore_regular_constraints → 同一概念の可能性
+- should_strip_auth → 同一概念の可能性
+- SHOW / show → 同一概念の可能性
+- show_actual_vendor_versions → 同一概念の可能性
+- SHOW_CURSOR / show_cursor → 同一概念の可能性
+- show_sys_implementation → 同一概念の可能性
+- show_vendor_versions → 同一概念の可能性
+- ShowCommand → 同一概念の可能性
+- side-effect / side-effects / side_effect → 同一概念の可能性
+- SideEffectBlocked → 同一概念の可能性
+- SIG / sig → 同一概念の可能性
+- SIGN / sign → 同一概念の可能性
+- SIGNATURE / signature → 同一概念の可能性
+- signature_to_low_s → 同一概念の可能性
+- SignatureHash → 同一概念の可能性
+- SigNetParams → 同一概念の可能性
+- SignMessage → 同一概念の可能性
+- SilentReporter → 同一概念の可能性
+- simple_html_strip → 同一概念の可能性
+- SimplePath → 同一概念の可能性
+- SimpleReader → 同一概念の可能性
+- SimpleTest → 同一概念の可能性
+- SimpleWheelCache → 同一概念の可能性
+- SimulationDiff → 同一概念の可能性
+- SimulationEngine → 同一概念の可能性
+- SIN / SINE → 同一概念の可能性
+- Single-byte / single-byte → 同一概念の可能性
+- single-line / single_line → 同一概念の可能性
+- Single-Step / single-step → 同一概念の可能性
+- single-version-externally-managed / single_version_externally_managed → 同一概念の可能性
+- SIR / SIRE → 同一概念の可能性
+- SIT / SITE / SITS → 同一概念の可能性
+- site_cache_dir → 同一概念の可能性
+- site_cache_path → 同一概念の可能性
+- site_config_dir / site_config_dirs → 同一概念の可能性
+- site_config_path → 同一概念の可能性
+- site_data_dir → 同一概念の可能性
+- site_data_path → 同一概念の可能性
+- site-package / site-packages → 同一概念の可能性
+- site_packages_writable → 同一概念の可能性
+- site_runtime_dir → 同一概念の可能性
+- site_runtime_path → 同一概念の可能性
+- SivMode → 同一概念の可能性
+- SivTests → 同一概念の可能性
+- size_in_bits → 同一概念の可能性
+- size_in_bytes → 同一概念の可能性
+- SKIP / skip → 同一概念の可能性
+- skip_comments_and_array_ws → 同一概念の可能性
+- skip_nonfatal_checks → 同一概念の可能性
+- skip-slow-tests / skip_slow_tests → 同一概念の可能性
+- SkipTo → 同一概念の可能性
+- SLE / SLES → 同一概念の可能性
+- sleep_for_retry → 同一概念の可能性
+- sliding_ro_buffer → 同一概念の可能性
+- SlidingWindowMapBuffer → 同一概念の可能性
+- SlidingWindowMapManager → 同一概念の可能性
+- slots_to_dict → 同一概念の可能性
+- slow_mocka_ingest → 同一概念の可能性
+- SMAIL-GPL / smail-gpl → 同一概念の可能性
+- SmartPointer → 同一概念の可能性
+- SNAPSHOT / SNAPSHOTS / snapshot → 同一概念の可能性
+- SOCK / SOCKS → 同一概念の可能性
+- SocksiPyConnection / SocksiPyConnectionS → 同一概念の可能性
+- SocksiPyHandler → 同一概念の可能性
+- SOCKSProxyManager → 同一概念の可能性
+- SORT / sort → 同一概念の可能性
+- sort_best_candidate → 同一概念の可能性
+- SOURCE / SOURCES / Source / source / sources → 同一概念の可能性
+- source_blueprint_id → 同一概念の可能性
+- source-chain-hash / source_chain_hash → 同一概念の可能性
+- SOURCE_DATE_EPOCH / source_date_epoch → 同一概念の可能性
+- source-event-id / source_event_id / source_event_ids → 同一概念の可能性
+- source_meta_intent_id → 同一概念の可能性
+- source_node_id → 同一概念の可能性
+- Source-of-Truth / source-of-truth / source_of_truth → 同一概念の可能性
+- SourceDistribution → 同一概念の可能性
+- SPACE / SPACES → 同一概念の可能性
+- space-separated / space_separated → 同一概念の可能性
+- SPEC / SPECS → 同一概念の可能性
+- spec_for_distutils → 同一概念の可能性
+- spec_for_pip → 同一概念の可能性
+- spec_for_sensitive_tests → 同一概念の可能性
+- SPECIFIER / Specifier / specifier → 同一概念の可能性
+- SpecifierRequirement → 同一概念の可能性
+- SpecifierSet / SpecifierSets → 同一概念の可能性
+- SpecifierWithoutExtrasRequirement → 同一概念の可能性
+- SpecLoaderAdapter → 同一概念の可能性
+- SpecPath → 同一概念の可能性
+- SPINNERS / Spinner → 同一概念の可能性
+- SpinnerColumn → 同一概念の可能性
+- SpinnerInterface → 同一概念の可能性
+- split_and_crop_lines → 同一概念の可能性
+- split_auth_from_netloc → 同一概念の可能性
+- split_auth_netloc_from_url → 同一概念の可能性
+- split_leading_dir → 同一概念の可能性
+- SPY / spy → 同一概念の可能性
+- sqlite_table_columns → 同一概念の可能性
+- sqlite_table_exists → 同一概念の可能性
+- SSH-OpenSSH / ssh-openssh → 同一概念の可能性
+- SSH-short / ssh-short → 同一概念の可能性
+- SSL_EXTRA_CERT_CHAIN_POLICY_PARA / ssl_extra_cert_chain_policy_para → 同一概念の可能性
+- ssl_wrap_socket → 同一概念の可能性
+- SSLeay-standalone / ssleay-standalone → 同一概念の可能性
+- STABILITY / stability → 同一概念の可能性
+- STABILITY_THRESHOLD / stability_threshold → 同一概念の可能性
+- Stack / stacks → 同一概念の可能性
+- StackError → 同一概念の可能性
+- STAG / STAGES / stage → 同一概念の可能性
+- StagingWorker → 同一概念の可能性
+- Stand-in / stand-in → 同一概念の可能性
+- STANDARD → 同一概念の可能性
+- StandardML-NJ / standardml-nj → 同一概念の可能性
+- START / start → 同一概念の可能性
+- start_essence_auto_loop → 同一概念の可能性
+- START_GROUP / start-group → 同一概念の可能性
+- STARTED / started → 同一概念の可能性
+- STARTING / starting → 同一概念の可能性
+- StashedUninstallPathSet → 同一概念の可能性
+- STATE / STATES / STATS / State / Stats / state / stats → 同一概念の可能性
+- stat_mode_to_index_mode → 同一概念の可能性
+- state_transition_log → 同一概念の可能性
+- StateProvider → 同一概念の可能性
+- StateTransition → 同一概念の可能性
+- StateViolationError → 同一概念の可能性
+- StaticModule → 同一概念の可能性
+- StaticWindowMapManager → 同一概念の可能性
+- STATUS / Status / status → 同一概念の可能性
+- status-dot / status-dots → 同一概念の可能性
+- STEM / stem → 同一概念の可能性
+- STEP / STEPS / steps → 同一概念の可能性
+- step1_git_incidents → 同一概念の可能性
+- step2_events_extended → 同一概念の可能性
+- step3_z_axis → 同一概念の可能性
+- step4_alpha_timeline → 同一概念の可能性
+- StockKeepingUnit → 同一概念の可能性
+- STOP / stop → 同一概念の可能性
+- STR / STRESS → 同一概念の可能性
+- str_money_value → 同一概念の可能性
+- STRATEGY / strategy → 同一概念の可能性
+- STREAM / stream → 同一概念の可能性
+- stream_at_index → 同一概念の可能性
+- stream_decode_response_unicode → 同一概念の可能性
+- stream_object_data → 同一概念の可能性
+- StreamConsumedError → 同一概念の可能性
+- StreamDeserializationContext → 同一概念の可能性
+- StreamReader → 同一概念の可能性
+- StreamSerializationContext → 同一概念の可能性
+- StreamWrapper → 同一概念の可能性
+- StreamWriter → 同一概念の可能性
+- STRICT → 同一概念の可能性
+- StrictVersion → 同一概念の可能性
+- string_to_tokentype → 同一概念の可能性
+- StringEnd → 同一概念の可能性
+- StringStart → 同一概念の可能性
+- STRIP_CONTROL_CODES / strip_control_codes → 同一概念の可能性
+- strip_html_tags → 同一概念の可能性
+- Stripe-Signature / stripe-signature → 同一概念の可能性
+- StrongRandom → 同一概念の可能性
+- STRUCTURAL → 同一概念の可能性
+- STRUCTURE_INVENTORY_20260223_181903 → 同一概念の可能性
+- STRUCTURE_LOCK_20260223 → 同一概念の可能性
+- STRUCTURE_LOCK_APPEND_20260223 → 同一概念の可能性
+- StrxorTests → 同一概念の可能性
+- style_for_token → 同一概念の可能性
+- Styled / styled → 同一概念の可能性
+- StyleError → 同一概念の可能性
+- StyleMeta → 同一概念の可能性
+- StyleStack → 同一概念の可能性
+- StyleStackError → 同一概念の可能性
+- StyleSyntaxError → 同一概念の可能性
+- sub-command / sub-commands → 同一概念の可能性
+- Sub-elements / sub-element → 同一概念の可能性
+- Sub-group / sub-group → 同一概念の可能性
+- sub-layout / sub-layouts → 同一概念の可能性
+- sub-packet / sub-packets → 同一概念の可能性
+- SubCommand → 同一概念の可能性
+- subdirs_without_files → 同一概念の可能性
+- subdirs_without_wheels → 同一概念の可能性
+- SubjectAltNameWarning → 同一概念の可能性
+- SUBMIT / submit → 同一概念の可能性
+- submit_async_thread → 同一概念の可能性
+- submit_to_caliber → 同一概念の可能性
+- SUBMODULES / Submodule / submodule / submodules → 同一概念の可能性
+- SubmoduleConfigParser → 同一概念の可能性
+- SubprocessBuildEnvironmentInstaller → 同一概念の可能性
+- SubprocessMixin → 同一概念の可能性
+- SubprocessRunner → 同一概念の可能性
+- SubScores → 同一概念の可能性
+- SUBSTITUTE / substitute → 同一概念の可能性
+- SUCCESS / success → 同一概念の可能性
+- success_patterns_to_registry → 同一概念の可能性
+- SUD / SUDS → 同一概念の可能性
+- suffix / suffixes → 同一概念の可能性
+- SUGGESTION / suggestion → 同一概念の可能性
+- SUIT / suit / suite → 同一概念の可能性
+- SUM / SUMS → 同一概念の可能性
+- SUMMARY / summary → 同一概念の可能性
+- Sun-PPP / sun-ppp → 同一概念の可能性
+- support_index_min → 同一概念の可能性
+- SUPPORTED / supported → 同一概念の可能性
+- Supported-Platform / supported-platform → 同一概念の可能性
+- supports_chunked_reads → 同一概念の可能性
+- supports_pyproject_editable → 同一概念の可能性
+- SupportsIndex → 同一概念の可能性
+- SUPPRESS / Suppress / suppress → 同一概念の可能性
+- suppress_known_deprecation → 同一概念の可能性
+- suppressed_cache_errors → 同一概念の可能性
+- SUSPENDED → 同一概念の可能性
+- SWI-exception / swi-exception → 同一概念の可能性
+- Swift-exception / swift-exception → 同一概念の可能性
+- SymbolFilter → 同一概念の可能性
+- SymbolicReference → 同一概念の可能性
+- symmetric_difference_update → 同一概念の可能性
+- SYNC / sync → 同一概念の可能性
+- sync_from_mocka → 同一概念の可能性
+- sync_on_recovery → 同一概念の可能性
+- SyncResult → 同一概念の可能性
+- SyntaxTheme → 同一概念の可能性
+- SYSTEM / SYSTEMS / system → 同一概念の可能性
+- SYSTEM_CORE → 同一概念の可能性
+- SYSTEM_ENV_PROBE / system_env_probe → 同一概念の可能性
+- system_health_score → 同一概念の可能性
+- System-level / system-level → 同一概念の可能性
+- System-wide / system-wide → 同一概念の可能性
+- SystemBlueprint → 同一概念の可能性
+- SystemHealthMonitor → 同一概念の可能性
+- SystemInfo → 同一概念の可能性
+- SystemPager → 同一概念の可能性
+- SystemTimeWarning → 同一概念の可能性
+- TEE / TESS → 同一概念の可能性
+- t-test / t_test → 同一概念の可能性
+- TAB / TABS → 同一概念の可能性
+- TAD / TADS → 同一概念の可能性
+- TAG / Tag / tag / tags → 同一概念の可能性
+- tag_svn_revision → 同一概念の可能性
+- TagObject → 同一概念の可能性
+- TagReference → 同一概念の可能性
+- TAIL / tail → 同一概念の可能性
+- TAKE / take → 同一概念の可能性
+- TAPR-OHL / tapr-ohl → 同一概念の可能性
+- TARGET / TARGETS → 同一概念の可能性
+- target_artifact_id → 同一概念の可能性
+- target_is_x86 → 同一概念の可能性
+- target_layer_range → 同一概念の可能性
+- target_node_id → 同一概念の可能性
+- TargetLayer → 同一概念の可能性
+- TargetPython → 同一概念の可能性
+- TargetType → 同一概念の可能性
+- TASK / Task / tasks → 同一概念の可能性
+- TaskProgressColumn → 同一概念の可能性
+- TCP-wrappers / tcp-wrappers → 同一概念の可能性
+- TDE / TDES → 同一概念の可能性
+- TelemetryAggregator → 同一概念の可能性
+- TelemetryEvent / TelemetryEvents → 同一概念の可能性
+- TELL / tell → 同一概念の可能性
+- TempDirectory → 同一概念の可能性
+- TempDirectoryTypeRegistry → 同一概念の可能性
+- TEMPLATE / TEMPLATES → 同一概念の可能性
+- TemporaryFileSwap → 同一概念の可能性
+- TERM / TERMS → 同一概念の可能性
+- TerminalTheme → 同一概念の可能性
+- TEST / TESTS / test → 同一概念の可能性
+- TEST1 / test1 → 同一概念の可能性
+- TEST2 / test2 → 同一概念の可能性
+- TEST3 / test3 → 同一概念の可能性
+- TEST4 / test4 → 同一概念の可能性
+- TEST5 / test5 → 同一概念の可能性
+- test_1_2 → 同一概念の可能性
+- test_2_bugfix → 同一概念の可能性
+- test_absent_category_defaults_to_not_applicable → 同一概念の可能性
+- test_act_approved → 同一概念の可能性
+- test_act_rejected → 同一概念の可能性
+- test_action_is_plain_object → 同一概念の可能性
+- test_adapter_manager_get_unknown_raises → 同一概念の可能性
+- test_adapter_manager_register → 同一概念の可能性
+- test_add_op → 同一概念の可能性
+- test_add_policy → 同一概念の可能性
+- test_add_scheme → 同一概念の可能性
+- test_aes_128 → 同一概念の可能性
+- test_aes_128_cfb128 → 同一概念の可能性
+- test_aes_128_cfb8 → 同一概念の可能性
+- test_aes_192 → 同一概念の可能性
+- test_aes_192_cfb128 → 同一概念の可能性
+- test_aes_192_cfb8 → 同一概念の可能性
+- test_aes_256 → 同一概念の可能性
+- test_aes_256_cfb128 → 同一概念の可能性
+- test_aes_256_cfb8 → 同一概念の可能性
+- test_age_in_range → 同一概念の可能性
+- test_age_no_limit → 同一概念の可能性
+- test_age_out_of_range_high → 同一概念の可能性
+- test_age_out_of_range_low → 同一概念の可能性
+- test_ai_session_register → 同一概念の可能性
+- test_ai_session_state_does_not_affect_revision → 同一概念の可能性
+- test_ai_session_update_knock → 同一概念の可能性
+- test_all_37_events_interpretable → 同一概念の可能性
+- test_all_7_gates_registered → 同一概念の可能性
+- test_all_capabilities_listed → 同一概念の可能性
+- test_all_invalid_transitions → 同一概念の可能性
+- test_all_layers_present → 同一概念の可能性
+- test_all_pass_yields_pass → 同一概念の可能性
+- test_all_requirements_have_no_missing_links → 同一概念の可能性
+- test_all_scope_present_is_valid → 同一概念の可能性
+- test_all_valid_transitions → 同一概念の可能性
+- test_already_low → 同一概念の可能性
+- test_analyze_event_success → 同一概念の可能性
+- test_analyze_event_validation_failure → 同一概念の可能性
+- test_analyze_event_without_initialization_returns_error → 同一概念の可能性
+- test_analyze_events_empty_input → 同一概念の可能性
+- test_analyze_events_success → 同一概念の可能性
+- test_analyze_events_without_initialization_returns_error → 同一概念の可能性
+- test_analyzer_analyze_many_events → 同一概念の可能性
+- test_analyzer_analyze_single_event → 同一概念の可能性
+- test_analyzer_public_api_surface → 同一概念の可能性
+- test_anthropic_adapter_execute_and_ack → 同一概念の可能性
+- test_anthropic_adapter_handshake → 同一概念の可能性
+- test_append_and_get → 同一概念の可能性
+- test_append_context_auto_creates_session → 同一概念の可能性
+- test_append_context_multiple_times_accumulates → 同一概念の可能性
+- test_append_context_updates_chain_and_event_ids → 同一概念の可能性
+- test_append_invalid_arg → 同一概念の可能性
+- test_append_invalid_msg → 同一概念の可能性
+- test_append_is_append_only → 同一概念の可能性
+- test_approve_job → 同一概念の可能性
+- test_arbitration_correctness → 同一概念の可能性
+- test_arbitrator_resolves_all_types → 同一概念の可能性
+- test_artifact_hash_computed → 同一概念の可能性
+- test_artifact_save_and_verify → 同一概念の可能性
+- test_artifact_validate → 同一概念の可能性
+- test_asn1_encoding → 同一概念の可能性
+- test_assert_eof → 同一概念の可能性
+- test_attestation_comparison → 同一概念の可能性
+- test_audit_record_requires_core_fields → 同一概念の可能性
+- test_audit_report → 同一概念の可能性
+- test_audit_report_is_serializable_and_complete → 同一概念の可能性
+- test_authority_for_event_gate → 同一概念の可能性
+- test_authority_revoke_in_governance → 同一概念の可能性
+- test_auto_register_via_subclass → 同一概念の可能性
+- test_bad_key3 → 同一概念の可能性
+- test_bad_key4 → 同一概念の可能性
+- test_base_worker_interface → 同一概念の可能性
+- test_below_threshold_no_signal → 同一概念の可能性
+- test_block_size → 同一概念の可能性
+- test_block_size_128 → 同一概念の可能性
+- test_block_size_64 → 同一概念の可能性
+- test_blockheight_extensively → 同一概念の可能性
+- test_bloom_create_insert_key → 同一概念の可能性
+- test_bold_italic → 同一概念の可能性
+- test_boot_sequence_order → 同一概念の可能性
+- test_bootstrap_idempotent → 同一概念の可能性
+- test_bootstrap_registers_workers → 同一概念の可能性
+- test_boundary_13days → 同一概念の可能性
+- test_bracket_normalization → 同一概念の可能性
+- test_breakdown_keys → 同一概念の可能性
+- test_bridge_all_37_events → 同一概念の可能性
+- test_bridge_does_not_mutate_registry → 同一概念の可能性
+- test_bridge_load_memory_without_adapter_returns_none → 同一概念の可能性
+- test_bridge_query_memory_via_adapter → 同一概念の可能性
+- test_bridge_query_memory_without_adapter_returns_empty_list → 同一概念の可能性
+- test_bridge_relay_append_context_from_analysis → 同一概念の可能性
+- test_bridge_relay_create_and_get_session → 同一概念の可能性
+- test_bridge_relay_methods_without_relay_return_none → 同一概念の可能性
+- test_bridge_result_does_not_dispatch_anywhere → 同一概念の可能性
+- test_bridge_save_analysis_with_error_result_does_not_save → 同一概念の可能性
+- test_bridge_save_analysis_without_memory_adapter_returns_error → 同一概念の可能性
+- test_bridge_save_and_load_analysis_via_adapter → 同一概念の可能性
+- test_bridge_starts_uninitialized → 同一概念の可能性
+- test_broken_module_flows_fail_to_blocked_audit → 同一概念の可能性
+- test_budget_exceeded → 同一概念の可能性
+- test_budget_none → 同一概念の可能性
+- test_budget_within → 同一概念の可能性
+- test_buffer_limit → 同一概念の可能性
+- test_build_error_response → 同一概念の可能性
+- test_build_event_contains_required_fields → 同一概念の可能性
+- test_build_event_generates_unique_ids → 同一概念の可能性
+- test_build_event_with_optional_fields → 同一概念の可能性
+- test_build_state_is_pure → 同一概念の可能性
+- test_build_state_no_revision → 同一概念の可能性
+- test_build_state_schema_version → 同一概念の可能性
+- test_build_success_response_with_dict_result → 同一概念の可能性
+- test_build_success_response_with_empty_collections → 同一概念の可能性
+- test_build_success_response_with_model_result → 同一概念の可能性
+- test_build_success_response_with_none → 同一概念の可能性
+- test_byte_or_string_passphrase → 同一概念の可能性
+- test_bytearray_mismatch → 同一概念の可能性
+- test_cache_is_derived_only → 同一概念の可能性
+- test_calc_difficulty → 同一概念の可能性
+- test_calc_merkle_root → 同一概念の可能性
+- test_calc_merkle_root_of_empty_block → 同一概念の可能性
+- test_calc_weight → 同一概念の可能性
+- test_caliber_registry → 同一概念の可能性
+- test_can_sign → 同一概念の可能性
+- test_capability_list → 同一概念の可能性
+- test_capability_registry_register_and_lookup → 同一概念の可能性
+- test_capability_registry_snapshot → 同一概念の可能性
+- test_capability_registry_unregister → 同一概念の可能性
+- test_capability_registry_unregister_missing_is_noop → 同一概念の可能性
+- test_capability_tag_filter → 同一概念の可能性
+- test_caption_length → 同一概念の可能性
+- test_cascading_inconsistency_simulation → 同一概念の可能性
+- test_category_count_is_7 → 同一概念の可能性
+- test_ceil_div → 同一概念の可能性
+- test_certificate_generation_fields → 同一概念の可能性
+- test_certification_approved → 同一概念の可能性
+- test_certification_rejected_on_empty_telemetry → 同一概念の可能性
+- test_certification_rejected_on_incident → 同一概念の可能性
+- test_chain_decision_revision_max → 同一概念の可能性
+- test_chain_empty_raises → 同一概念の可能性
+- test_chain_project_status_first_wins → 同一概念の可能性
+- test_chain_todos_merged_no_duplicate → 同一概念の可能性
+- test_chain_warnings_merged → 同一概念の可能性
+- test_change_history_recorded → 同一概念の可能性
+- test_check_recurrence → 同一概念の可能性
+- Test_CheckBlock / test_checkblock → 同一概念の可能性
+- test_checkblock_invalid → 同一概念の可能性
+- test_checkblock_valid → 同一概念の可能性
+- test_claim_vs_truth_conflict → 同一概念の可能性
+- test_clean_module_flows_pass_to_committed_audit → 同一概念の可能性
+- test_clean_text_no_corrections → 同一概念の可能性
+- test_clean_text_passes → 同一概念の可能性
+- test_close_only_packet → 同一概念の可能性
+- test_cognitive_state_to_dict_round_trip → 同一概念の可能性
+- test_cognitive_state_value_constants → 同一概念の可能性
+- test_compressed_curve → 同一概念の可能性
+- test_compressed_writer → 同一概念の可能性
+- test_concurrent_stress_execution → 同一概念の可能性
+- test_config_store_defaults_and_overrides → 同一概念の可能性
+- test_config_store_from_broken_file_uses_defaults → 同一概念の可能性
+- test_config_store_from_file → 同一概念の可能性
+- test_config_store_from_missing_file_uses_defaults → 同一概念の可能性
+- test_confirm_high_score → 同一概念の可能性
+- test_confirm_low_score_rejected → 同一概念の可能性
+- test_confirm_mid_score_pending → 同一概念の可能性
+- test_conflict_clustering → 同一概念の可能性
+- test_conflict_default_interaction → 同一概念の可能性
+- test_conflict_high_impact_priority → 同一概念の可能性
+- test_conflict_stability_priority → 同一概念の可能性
+- test_consistency_score_range → 同一概念の可能性
+- test_constraint_violation_yields_constraint_drift → 同一概念の可能性
+- test_construct_2tuple → 同一概念の可能性
+- test_construct_3tuple → 同一概念の可能性
+- test_construct_4tuple → 同一概念の可能性
+- test_construct_5tuple → 同一概念の可能性
+- test_construct_6tuple → 同一概念の可能性
+- test_construct_bad_key2 → 同一概念の可能性
+- test_construct_bad_key3 → 同一概念の可能性
+- test_construct_bad_key4 → 同一概念の可能性
+- test_construct_bad_key5 → 同一概念の可能性
+- test_construct_bad_key6 → 同一概念の可能性
+- test_construct_error_weak_domain → 同一概念の可能性
+- test_constructor_accepts_blocks → 同一概念の可能性
+- test_context_defaults → 同一概念の可能性
+- test_context_to_dict_round_trip → 同一概念の可能性
+- test_continuum_empty_returns_none → 同一概念の可能性
+- test_continuum_evolution → 同一概念の可能性
+- test_continuum_single_vector → 同一概念の可能性
+- test_contract_allow → 同一概念の可能性
+- test_contract_auto_register_unknown_ai → 同一概念の可能性
+- test_contract_input_validation_fails_missing_field → 同一概念の可能性
+- test_contract_input_validation_fails_wrong_type → 同一概念の可能性
+- test_contract_input_validation_passes → 同一概念の可能性
+- test_contract_registry_rejects_breaking_redefinition → 同一概念の可能性
+- test_contract_trust_insufficient → 同一概念の可能性
+- test_contract_unknown_capability → 同一概念の可能性
+- test_control_feedback_loop_stability_under_repeated_drift → 同一概念の可能性
+- test_conversion_from_bytes → 同一概念の可能性
+- test_conversion_to_bytes → 同一概念の可能性
+- test_conversion_to_int → 同一概念の可能性
+- test_conversion_to_str → 同一概念の可能性
+- test_core_cannot_write_taxonomy → 同一概念の可能性
+- test_core_store_access_is_read_only → 同一概念の可能性
+- test_correction_count → 同一概念の可能性
+- test_corrupt_decrypt → 同一概念の可能性
+- test_corrupted_file_falls_back_to_empty_store → 同一概念の可能性
+- test_coverage_matrix_is_100_percent_with_no_gaps → 同一概念の可能性
+- test_create_event_context → 同一概念の可能性
+- test_create_from_file → 同一概念の可能性
+- test_create_from_string → 同一概念の可能性
+- test_create_insert_serialize → 同一概念の可能性
+- test_create_insert_serialize_with_tweak → 同一概念の可能性
+- test_create_job → 同一概念の可能性
+- test_create_mac → 同一概念の可能性
+- test_create_record → 同一概念の可能性
+- test_create_session → 同一概念の可能性
+- test_create_session_is_idempotent → 同一概念の可能性
+- test_create_snapshot_writes_file → 同一概念の可能性
+- test_critical_auto_rejected → 同一概念の可能性
+- test_critical_event_human_gate_log → 同一概念の可能性
+- test_critical_ops_require_gate → 同一概念の可能性
+- test_current_version_is_supported → 同一概念の可能性
+- test_curve_attribute → 同一概念の可能性
+- test_danger_42days → 同一概念の可能性
+- test_dangling_symlink → 同一概念の可能性
+- test_data_must_be_bytes → 同一概念の可能性
+- test_data_rfc6979_p192 → 同一概念の可能性
+- test_data_rfc6979_p224 → 同一概念の可能性
+- test_data_rfc6979_p256 → 同一概念の可能性
+- test_data_rfc6979_p384 → 同一概念の可能性
+- test_data_rfc6979_p521 → 同一概念の可能性
+- test_dead_product_excluded → 同一概念の可能性
+- test_dead_tsi_zero → 同一概念の可能性
+- test_decide_normal → 同一概念の可能性
+- test_decide_rationale_mentions_selected_proposal → 同一概念の可能性
+- test_decide_selects_highest_scoring_proposal → 同一概念の可能性
+- test_decide_with_constraints_reduces_score → 同一概念の可能性
+- test_decide_with_no_proposals → 同一概念の可能性
+- test_decision_all_returns_list → 同一概念の可能性
+- test_decision_commit_mismatch_is_detected_as_drift → 同一概念の可能性
+- test_decision_field_axes_fixed → 同一概念の可能性
+- test_decision_from_rules_not_code → 同一概念の可能性
+- test_decision_ledger_append → 同一概念の可能性
+- test_decision_ledger_governance_ok → 同一概念の可能性
+- test_decision_ledger_record → 同一概念の可能性
+- test_decision_ledger_tamper_detection → 同一概念の可能性
+- test_decision_ledger_update_outcome → 同一概念の可能性
+- test_decision_ledger_verify_chain → 同一概念の可能性
+- test_decision_ledger_wrong_category_raises → 同一概念の可能性
+- test_decision_packet_execution_status_always_proposed → 同一概念の可能性
+- test_decision_packet_never_has_non_proposed_status → 同一概念の可能性
+- test_decision_record_carries_traceability_ids → 同一概念の可能性
+- test_decision_rules_critical_matches_first → 同一概念の可能性
+- test_decision_rules_fallback_noop → 同一概念の可能性
+- test_decision_rules_immutable → 同一概念の可能性
+- test_decision_rules_match_recover → 同一概念の可能性
+- test_decompress_reader → 同一概念の可能性
+- test_decompress_reader_special_case → 同一概念の可能性
+- test_default_digest_size → 同一概念の可能性
+- test_default_nonce → 同一概念の可能性
+- test_degradation_controller → 同一概念の可能性
+- test_del_does_not_close → 同一概念の可能性
+- test_dependency_isolation → 同一概念の可能性
+- test_dependency_loop_simulation → 同一概念の可能性
+- test_deployment_gate → 同一概念の可能性
+- test_deserialization_failures → 同一概念の可能性
+- test_deserialization_invalid_op_msg → 同一概念の可能性
+- test_deserialization_invalid_op_msg_2 → 同一概念の可能性
+- test_deserialization_trailing_garbage → 同一概念の可能性
+- test_deserialize_too_long → 同一概念の可能性
+- test_detect_conflict_false → 同一概念の可能性
+- test_detect_conflict_true → 同一概念の可能性
+- test_detect_incident_high → 同一概念の可能性
+- test_detect_incident_normal → 同一概念の可能性
+- test_detect_orphan → 同一概念の可能性
+- test_detect_shadow → 同一概念の可能性
+- test_diff_add → 同一概念の可能性
+- test_diff_different_pipelines → 同一概念の可能性
+- test_diff_no_change → 同一概念の可能性
+- test_diff_replace → 同一概念の可能性
+- test_diff_same_pipeline → 同一概念の可能性
+- test_disable_policy → 同一概念の可能性
+- test_discard_attestations → 同一概念の可能性
+- test_discard_suboptimal → 同一概念の可能性
+- test_div_gf2 → 同一概念の可能性
+- test_double_sign_verify_ed25519 → 同一概念の可能性
+- test_double_sign_verify_ed448 → 同一概念の可能性
+- test_drift_injection_simulation_and_control_feedback → 同一概念の可能性
+- test_drop256_decrypt → 同一概念の可能性
+- test_drop256_encrypt → 同一概念の可能性
+- test_dry_run_basic_shape → 同一概念の可能性
+- test_dry_run_unknown_pipeline → 同一概念の可能性
+- test_dry_run_with_content_scores → 同一概念の可能性
+- test_duplicate_connected_raises → 同一概念の可能性
+- test_duplicate_enqueue_raises → 同一概念の可能性
+- test_eiter_encrypt_or_decrypt → 同一概念の可能性
+- test_either_encrypt_or_decrypt → 同一概念の可能性
+- test_emit_known_event_type_ok → 同一概念の可能性
+- test_emit_unknown_event_type_raises → 同一概念の可能性
+- test_empty_password → 同一概念の可能性
+- test_empty_tree → 同一概念の可能性
+- test_empty_write → 同一概念の可能性
+- test_encode_decode → 同一概念の可能性
+- test_encode_decode_op_n → 同一概念の可能性
+- test_encrypt_excludes_decrypt → 同一概念の可能性
+- test_encrypt_verify_exp_pt_len → 同一概念の可能性
+- test_end_to_end_pipeline → 同一概念の可能性
+- test_entropy_range → 同一概念の可能性
+- test_entropy_trend_negative → 同一概念の可能性
+- test_entropy_trend_positive → 同一概念の可能性
+- test_environment_isolation → 同一概念の可能性
+- test_equal_set → 同一概念の可能性
+- test_equality_with_ints → 同一概念の可能性
+- test_error_info_defaults → 同一概念の可能性
+- test_error_info_to_dict_structure → 同一概念の可能性
+- test_error_key_to_english → 同一概念の可能性
+- test_error_params1 → 同一概念の可能性
+- test_evaluate_returns_all_axes → 同一概念の可能性
+- test_even_modulus → 同一概念の可能性
+- test_event_authority_cannot_delegate → 同一概念の可能性
+- test_event_authority_cannot_override_gate → 同一概念の可能性
+- test_event_gate_active → 同一概念の可能性
+- test_event_id_format → 同一概念の可能性
+- test_event_replay → 同一概念の可能性
+- test_event_requires_identity_fields → 同一概念の可能性
+- test_event_source_live → 同一概念の可能性
+- test_event_type_registry_duplicate_register_raises → 同一概念の可能性
+- test_event_type_registry_empty_when_not_preregistered → 同一概念の可能性
+- test_event_type_registry_overwrite → 同一概念の可能性
+- test_event_type_registry_preregisters_known_types → 同一概念の可能性
+- test_event_type_registry_register_new_type → 同一概念の可能性
+- test_every_requirement_appears_in_trace_graph → 同一概念の可能性
+- test_evidence_mismatch_handling → 同一概念の可能性
+- test_exact_match → 同一概念の可能性
+- test_execution_router_fallback → 同一概念の可能性
+- test_executor_adapter_executed → 同一概念の可能性
+- test_executor_error_handled → 同一概念の可能性
+- test_executor_fallback_to_mock → 同一概念の可能性
+- test_executor_noop_not_executed → 同一概念の可能性
+- test_executor_verify_all_executed → 同一概念の可能性
+- test_expected_nr_elements → 同一概念の可能性
+- test_expected_only_integers → 同一概念の可能性
+- test_explain_job_found → 同一概念の可能性
+- test_explain_job_returns_required_keys → 同一概念の可能性
+- test_explain_job_unknown → 同一概念の可能性
+- test_explain_returns_structure → 同一概念の可能性
+- test_explain_text_contains_capability → 同一概念の可能性
+- test_explain_unknown_capability → 同一概念の可能性
+- test_export_openssh → 同一概念の可能性
+- test_export_openssh_compressed → 同一概念の可能性
+- test_export_openssh_uncompressed → 同一概念の可能性
+- test_export_private_pem_clear → 同一概念の可能性
+- test_export_private_pem_encrypted → 同一概念の可能性
+- test_export_private_pkcs8_and_pem_1 → 同一概念の可能性
+- test_export_private_pkcs8_and_pem_2 → 同一概念の可能性
+- test_export_private_pkcs8_clear → 同一概念の可能性
+- test_export_private_pkcs8_encrypted → 同一概念の可能性
+- test_export_public_der → 同一概念の可能性
+- test_export_public_der_compressed → 同一概念の可能性
+- test_export_public_der_uncompressed → 同一概念の可能性
+- test_export_public_pem → 同一概念の可能性
+- test_export_public_pem_compressed → 同一概念の可能性
+- test_export_public_pem_uncompressed → 同一概念の可能性
+- test_export_public_sec1 → 同一概念の可能性
+- test_export_public_sec1_compressed → 同一概念の可能性
+- test_export_public_sec1_uncompressed → 同一概念の可能性
+- test_export_raw → 同一概念の可能性
+- test_export_rfc5915_private_der → 同一概念の可能性
+- test_external_api_emit_and_register_node → 同一概念の可能性
+- test_extra_data → 同一概念の可能性
+- test_fail_if_divisible_by → 同一概念の可能性
+- test_fail_invalid_message → 同一概念の可能性
+- test_failing_domain_or_invalid_validation_is_non_compliant → 同一概念の可能性
+- test_failure_containment_no_cascade → 同一概念の可能性
+- test_failure_correlation_mapping → 同一概念の可能性
+- test_false_fix_detection → 同一概念の可能性
+- test_false_positive_rejection → 同一概念の可能性
+- test_feedback_loop_destabilization → 同一概念の可能性
+- test_ff_d06 → 同一概念の可能性
+- test_ff_d30 → 同一概念の可能性
+- test_ffffff_d01 → 同一概念の可能性
+- test_ffffff_d07 → 同一概念の可能性
+- test_ffffff_d7f → 同一概念の可能性
+- test_ffffffffffff_d0b → 同一概念の可能性
+- test_finance_caliber_id → 同一概念の可能性
+- test_finance_classify → 同一概念の可能性
+- test_finance_format_for_intranet → 同一概念の可能性
+- test_finance_large_tx_high_risk → 同一概念の可能性
+- test_finance_normal_tx → 同一概念の可能性
+- test_finance_send_to_vasai → 同一概念の可能性
+- test_find_institution_of → 同一概念の可能性
+- test_floor_div → 同一概念の可能性
+- test_fluid_connector_all_known_transitions → 同一概念の可能性
+- test_fluid_connector_known_transition → 同一概念の可能性
+- test_fluid_connector_unknown_transition_returns_zero → 同一概念の可能性
+- test_forced_crash_injection → 同一概念の可能性
+- test_forward_event_failure → 同一概念の可能性
+- test_forward_event_success → 同一概念の可能性
+- test_from_bridge_result_empty_events → 同一概念の可能性
+- test_from_bridge_result_error_includes_event_id → 同一概念の可能性
+- test_from_bridge_result_provider_not_initialized → 同一概念の可能性
+- test_from_bridge_result_success → 同一概念の可能性
+- test_from_compact_negative_zero → 同一概念の可能性
+- test_from_compact_zero → 同一概念の可能性
+- test_from_data → 同一概念の可能性
+- test_from_invalid_pubkeys → 同一概念の可能性
+- test_from_uint256 → 同一概念の可能性
+- test_from_valid_pubkey → 同一概念の可能性
+- test_from_vector_roundtrip → 同一概念の可能性
+- test_frontmatter_added → 同一概念の可能性
+- test_frontmatter_removed → 同一概念の可能性
+- test_full_meaning_driven_flow_v1 → 同一概念の可能性
+- test_full_pipeline_connected → 同一概念の可能性
+- test_full_repo_scan_consistency → 同一概念の可能性
+- test_fundrawtransaction_adds_output → 同一概念の可能性
+- test_fundrawtransaction_hex_hash → 同一概念の可能性
+- test_gate_authority_can_override_subordinates → 同一概念の可能性
+- test_gate_authority_cannot_delegate → 同一概念の可能性
+- test_gate_blocks_when_verify_all_fails → 同一概念の可能性
+- test_gate_bot_char_limit → 同一概念の可能性
+- test_gate_bypass_detected → 同一概念の可能性
+- test_gate_fail_empty → 同一概念の可能性
+- test_gate_health → 同一概念の可能性
+- test_gate_pass_lp → 同一概念の可能性
+- test_gate_passes_when_verify_all_ok → 同一概念の可能性
+- test_generate_180 → 同一概念の可能性
+- test_generate_1arg → 同一概念の可能性
+- test_generate_2arg → 同一概念の可能性
+- test_generate_3args → 同一概念の可能性
+- test_generate_blueprint_success → 同一概念の可能性
+- test_generate_error_weak_domain → 同一概念の可能性
+- test_generate_intelligence_report_from_verification → 同一概念の可能性
+- test_generate_prevention → 同一概念の可能性
+- test_generate_prime_bit_size → 同一概念の可能性
+- test_generate_prime_filter → 同一概念の可能性
+- test_generate_safe_prime → 同一概念の可能性
+- test_get_bit → 同一概念の可能性
+- test_get_capabilities → 同一概念の可能性
+- test_get_context_failure → 同一概念の可能性
+- test_get_context_success → 同一概念の可能性
+- test_get_due_jobs → 同一概念の可能性
+- test_get_jobs_pending → 同一概念の可能性
+- test_get_last_snapshot_info_empty → 同一概念の可能性
+- test_get_pending → 同一概念の可能性
+- test_get_scope → 同一概念の可能性
+- test_get_session_creates_and_reuses_session → 同一概念の可能性
+- test_get_session_returns_none_for_unknown → 同一概念の可能性
+- test_get_session_returns_snapshot → 同一概念の可能性
+- test_getblock_returns_transaction_data → 同一概念の可能性
+- test_getblock_with_bytes → 同一概念の可能性
+- test_getblock_with_string → 同一概念の可能性
+- test_getblockcount_many → 同一概念の可能性
+- test_getblockcount_zero → 同一概念の可能性
+- test_getblockhash_many → 同一概念の可能性
+- test_getblockhash_zero → 同一概念の可能性
+- test_getnewaddress_returns_cbitcoinaddress → 同一概念の可能性
+- test_getnewaddress_returns_different_addresses → 同一概念の可能性
+- test_glob_match → 同一概念の可能性
+- test_good_performance_low_priority → 同一概念の可能性
+- test_happy_path → 同一概念の可能性
+- test_has_canonical_pushes → 同一概念の可能性
+- test_has_canonical_pushes_with_invalid_truncated_script → 同一概念の可能性
+- test_hash_chain_valid → 同一概念の可能性
+- test_hash_deterministic → 同一概念の可能性
+- test_hash_excludes_generated_at → 同一概念の可能性
+- test_hash_fd → 同一概念の可能性
+- test_hash_signed_commit → 同一概念の可能性
+- test_hashtag_generation → 同一概念の可能性
+- test_heading_conversion → 同一概念の可能性
+- test_heading_converted_to_brackets → 同一概念の可能性
+- test_hex_digest → 同一概念の可能性
+- test_hex_mac → 同一概念の可能性
+- test_hexlify_msg_length_limits → 同一概念の可能性
+- test_high_bounce_rate → 同一概念の可能性
+- test_high_risk_pending → 同一概念の可能性
+- test_high_s_value → 同一概念の可能性
+- test_higher_confidence_lower_cost_scores_higher → 同一概念の可能性
+- test_hmac_key_id_loaded → 同一概念の可能性
+- test_hmac_secret_loaded_from_env → 同一概念の可能性
+- test_hpke_encap → 同一概念の可能性
+- test_hpke_unseal → 同一概念の可能性
+- test_huge_tree → 同一概念の可能性
+- test_human_approve → 同一概念の可能性
+- test_human_gate_has_gate_origin_event → 同一概念の可能性
+- test_human_gate_has_gate_reason → 同一概念の可能性
+- test_human_gate_not_routable → 同一概念の可能性
+- test_human_reject → 同一概念の可能性
+- test_import_botan_keys → 同一概念の可能性
+- test_import_empty → 同一概念の可能性
+- test_import_failure_detection → 同一概念の可能性
+- test_import_key → 同一概念の可能性
+- test_import_key_ba_mv → 同一概念の可能性
+- test_import_key_windows_cr_lf → 同一概念の可能性
+- test_import_openssh_private_clear → 同一概念の可能性
+- test_import_openssh_private_password → 同一概念の可能性
+- test_import_openssh_public → 同一概念の可能性
+- test_import_pss → 同一概念の可能性
+- test_import_pkcs8_der → 同一概念の可能性
+- test_import_pkcs8_private → 同一概念の可能性
+- test_import_private_pem → 同一概念の可能性
+- test_import_private_pem_encrypted → 同一概念の可能性
+- test_import_private_pem_with_ecparams → 同一概念の可能性
+- test_import_private_pkcs8_clear → 同一概念の可能性
+- test_import_private_pkcs8_encrypted_1 → 同一概念の可能性
+- test_import_private_pkcs8_encrypted_2 → 同一概念の可能性
+- test_import_private_pkcs8_encrypted_3 → 同一概念の可能性
+- test_import_private_pkcs8_in_pem_clear → 同一概念の可能性
+- test_import_private_rfc5915_none → 同一概念の可能性
+- test_import_private_rfc5915_only_0 → 同一概念の可能性
+- test_import_private_rfc5915_only_1 → 同一概念の可能性
+- test_import_public_der → 同一概念の可能性
+- test_import_public_pem → 同一概念の可能性
+- test_import_rfc5915_der → 同一概念の可能性
+- test_import_sec1_compressed → 同一概念の可能性
+- test_import_sec1_uncompressed → 同一概念の可能性
+- test_import_x509_der → 同一概念の可能性
+- test_import_x509_pem → 同一概念の可能性
+- test_importaddress_with_parameters → 同一概念の可能性
+- test_in_memory_backend_basic_operations → 同一概念の可能性
+- test_in_memory_backend_delete_missing_key_is_noop → 同一概念の可能性
+- test_in_memory_fallback_save_and_load → 同一概念の可能性
+- test_in_place_add → 同一概念の可能性
+- test_in_place_left_shift → 同一概念の可能性
+- test_in_place_modulus → 同一概念の可能性
+- test_in_place_mul → 同一概念の可能性
+- test_in_place_right_shift → 同一概念の可能性
+- test_in_place_sub → 同一概念の可能性
+- test_incident_recovery_scenario → 同一概念の可能性
+- test_inconsistency_detection → 同一概念の可能性
+- test_increasing_password_length → 同一概念の可能性
+- test_init_and_equality → 同一概念の可能性
+- test_init_fail → 同一概念の可能性
+- test_init_xy → 同一概念の可能性
+- test_initial_value_bytes_parameter → 同一概念の可能性
+- test_initial_value_parameter → 同一概念の可能性
+- test_initialize_prism_succeeds → 同一概念の可能性
+- test_initialize_prism_with_core_store → 同一概念の可能性
+- test_inplace_addition → 同一概念の可能性
+- test_inplace_exponentiation → 同一概念の可能性
+- test_inplace_inverse → 同一概念の可能性
+- test_institution_missing_detected → 同一概念の可能性
+- test_inter_report_conflict → 同一概念の可能性
+- test_interaction_entropy_is_difference → 同一概念の可能性
+- test_interaction_merges_vectors → 同一概念の可能性
+- test_interaction_preserves_max_impact → 同一概念の可能性
+- test_interaction_preserves_max_urgency → 同一概念の可能性
+- test_interaction_result_normalized → 同一概念の可能性
+- test_interfaces_cannot_be_instantiated_directly → 同一概念の可能性
+- test_internal_caching → 同一概念の可能性
+- test_interpret_drift_known_kinds → 同一概念の可能性
+- test_interpret_drift_unknown_kind_defaults_to_info → 同一概念の可能性
+- test_interpreter_authority_revoke_is_critical → 同一概念の可能性
+- test_interpreter_meaning_keys → 同一概念の可能性
+- test_interpreter_raw_preserved → 同一概念の可能性
+- test_interpreter_seal → 同一概念の可能性
+- test_interpreter_state_change_is_system_impact → 同一概念の可能性
+- test_interpreter_unknown_event_defaults → 同一概念の可能性
+- test_interpreter_violation_is_critical_or_recover → 同一概念の可能性
+- test_intra_report_conflict → 同一概念の可能性
+- test_invalid_base58_exception → 同一概念の可能性
+- test_invalid_bech32_exception → 同一概念の可能性
+- test_invalid_counter_parameter → 同一概念の可能性
+- test_invalid_curve → 同一概念の可能性
+- test_invalid_d → 同一概念の可能性
+- test_invalid_date_detected → 同一概念の可能性
+- test_invalid_decrypt_after_final → 同一概念の可能性
+- test_invalid_decrypt_or_update_after_verify → 同一概念の可能性
+- test_invalid_encrypt_after_final → 同一概念の可能性
+- test_invalid_encrypt_or_update_after_digest → 同一概念の可能性
+- test_invalid_event_id_detected → 同一概念の可能性
+- test_invalid_init_decrypt → 同一概念の可能性
+- test_invalid_init_encrypt → 同一概念の可能性
+- test_invalid_init_encrypt_decrypt_digest_verify → 同一概念の可能性
+- test_invalid_mac → 同一概念の可能性
+- test_invalid_mixing_encrypt_decrypt → 同一概念の可能性
+- test_invalid_multiple_decrypt_and_verify → 同一概念の可能性
+- test_invalid_multiple_encrypt_and_digest → 同一概念の可能性
+- test_invalid_multiple_encrypt_decrypt_without_msg_len → 同一概念の可能性
+- test_invalid_nonce_length → 同一概念の可能性
+- test_invalid_result_value_is_rejected → 同一概念の可能性
+- test_invalid_scripts → 同一概念の可能性
+- test_invalid_seed → 同一概念の可能性
+- test_invalid_transition → 同一概念の可能性
+- test_invalid_transition_sealed → 同一概念の可能性
+- test_invalid_uri_deserialization → 同一概念の可能性
+- test_invalid_validation_dominates_warning → 同一概念の可能性
+- test_is_coinbase → 同一概念の可能性
+- test_is_critical_true → 同一概念の可能性
+- test_is_degraded_after_failures → 同一概念の可能性
+- test_is_final → 同一概念の可能性
+- test_is_negative → 同一概念の可能性
+- test_is_null → 同一概念の可能性
+- test_is_p2sh → 同一概念の可能性
+- test_is_prime → 同一概念の可能性
+- test_is_push_only → 同一概念の可能性
+- test_is_push_only_on_invalid_pushdata → 同一概念の可能性
+- test_is_replayable_false_for_empty_payload → 同一概念の可能性
+- test_is_replayable_false_for_invalid_event → 同一概念の可能性
+- test_is_replayable_true_for_valid_event_with_payload → 同一概念の可能性
+- test_is_singleton → 同一概念の可能性
+- test_is_stable_false → 同一概念の可能性
+- test_is_stable_true → 同一概念の可能性
+- test_is_unspendable → 同一概念の可能性
+- test_is_valid → 同一概念の可能性
+- test_iv_must_be_bytes → 同一概念の可能性
+- test_iv_with_matching_length → 同一概念の可能性
+- test_jacobi_symbol → 同一概念の可能性
+- test_jacobi_symbol_wikipedia → 同一概念の可能性
+- test_joing_scalar_multiply → 同一概念の可能性
+- test_joint_scalar_multiply → 同一概念の可能性
+- test_json_file_structure → 同一概念の可能性
+- test_json_memory_adapter_can_be_constructed_with_existing_store → 同一概念の可能性
+- test_json_memory_adapter_in_memory_write_and_load → 同一概念の可能性
+- test_json_memory_adapter_persists_to_file → 同一概念の可能性
+- test_json_memory_adapter_write_context_and_observation → 同一概念の可能性
+- test_json_persistence_round_trip → 同一概念の可能性
+- Test-Key / test-key → 同一概念の可能性
+- test_knowledge_gate_rejects_system_core → 同一概念の可能性
+- test_knowledge_gate_requires_knowledge_meaning → 同一概念の可能性
+- test_known_adapter_routable → 同一概念の可能性
+- test_known_capability_valid → 同一概念の可能性
+- test_large_1 → 同一概念の可能性
+- test_larger_exponent → 同一概念の可能性
+- test_larger_term → 同一概念の可能性
+- test_layer4_self_redefinition_forbidden → 同一概念の可能性
+- test_learning_drift_suppression → 同一概念の可能性
+- test_ledger_endpoint_200 → 同一概念の可能性
+- test_ledger_is_append_only_and_immutable_per_execution → 同一概念の可能性
+- test_ledger_is_source_of_truth → 同一概念の可能性
+- test_left_encode → 同一概念の可能性
+- test_length_encode → 同一概念の可能性
+- test_less_than → 同一概念の可能性
+- test_less_than_or_equal → 同一概念の可能性
+- test_lifecycle_can_transition → 同一概念の可能性
+- test_lifecycle_invalid_state → 同一概念の可能性
+- test_lifecycle_invalid_transition_raises → 同一概念の可能性
+- test_lifecycle_normal_scenario → 同一概念の可能性
+- test_lifecycle_register_defaults_to_registered → 同一概念の可能性
+- test_lifecycle_register_is_idempotent → 同一概念の可能性
+- test_lifecycle_snapshot → 同一概念の可能性
+- test_lifecycle_stages_defined → 同一概念の可能性
+- test_lifecycle_state_transition → 同一概念の可能性
+- test_lifecycle_unknown_state_raises → 同一概念の可能性
+- test_lifecycle_unregistered_module_raises → 同一概念の可能性
+- test_lifecycle_valid_transition_sequence → 同一概念の可能性
+- test_list_by_session_id → 同一概念の可能性
+- test_list_conversion → 同一概念の可能性
+- test_list_events → 同一概念の可能性
+- test_list_with_filter → 同一概念の可能性
+- test_load_compressed_snapshot → 同一概念の可能性
+- test_load_missing_id_returns_none → 同一概念の可能性
+- test_logger_does_not_recompute_decision → 同一概念の可能性
+- test_logger_records_full_pipeline_trace → 同一概念の可能性
+- test_long_passwords → 同一概念の可能性
+- test_long_run_degradation_simulation_and_dashboard → 同一概念の可能性
+- test_long_text_thread → 同一概念の可能性
+- test_longer_assoc_data_than_declared → 同一概念の可能性
+- test_loopback_128 → 同一概念の可能性
+- test_loopback_64 → 同一概念の可能性
+- test_loopback_p192 → 同一概念の可能性
+- test_loopback_p224 → 同一概念の可能性
+- test_loopback_p256 → 同一概念の可能性
+- test_loopback_p384 → 同一概念の可能性
+- test_loopback_p521 → 同一概念の可能性
+- test_low_duration → 同一概念の可能性
+- test_low_s_value → 同一概念の可能性
+- test_mac_len → 同一概念の可能性
+- test_make_blocks_from_blockhashes → 同一概念の可能性
+- test_make_blocks_from_blockhashes_empty → 同一概念の可能性
+- test_markdown_stripped → 同一概念の可能性
+- test_match_returns_list → 同一概念の可能性
+- test_maybe_create_snapshot_first_time → 同一概念の可能性
+- test_meaning_in_registry_not_code → 同一概念の可能性
+- test_meaning_registry_category_fallback → 同一概念の可能性
+- test_meaning_registry_get_impact_critical → 同一概念の可能性
+- test_meaning_registry_get_impact_system_event → 同一概念の可能性
+- test_meaning_registry_get_intent_seal → 同一概念の可能性
+- test_meaning_registry_get_intent_violation → 同一概念の可能性
+- test_meaning_registry_get_urgency_mapping → 同一概念の可能性
+- test_medical_approval_rules → 同一概念の可能性
+- test_medical_caliber_id → 同一概念の可能性
+- test_medical_classify → 同一概念の可能性
+- test_medical_format_for_intranet → 同一概念の可能性
+- test_medical_full_flow → 同一概念の可能性
+- test_medical_receive_from_intranet → 同一概念の可能性
+- test_medical_send_to_vasai → 同一概念の可能性
+- test_memman_operation → 同一概念の可能性
+- test_memory_adapter_has_no_persistent_state → 同一概念の可能性
+- test_memory_adapter_write_analysis_returns_none → 同一概念の可能性
+- test_memory_adapter_write_context_and_observation_no_side_effects → 同一概念の可能性
+- test_memory_integration_does_not_affect_prism_analysis → 同一概念の可能性
+- test_memory_leak_simulation → 同一概念の可能性
+- test_memory_manager → 同一概念の可能性
+- test_memory_writer_interface_abstract_methods → 同一概念の可能性
+- test_merge_sessions_combines_chains → 同一概念の可能性
+- test_merge_sessions_custom_id → 同一概念の可能性
+- test_merge_sessions_does_not_mutate_originals → 同一概念の可能性
+- test_merge_sessions_with_unknown_session_ignores_it → 同一概念の可能性
+- test_message_chunks → 同一概念の可能性
+- test_message_too_long → 同一概念の可能性
+- test_metadata_auto_generates_uuid → 同一概念の可能性
+- test_metadata_defaults → 同一概念の可能性
+- test_metadata_explicit_uuid_round_trip → 同一概念の可能性
+- test_metadata_round_trip → 同一概念の可能性
+- test_miller_rabin → 同一概念の可能性
+- test_missing_critical_scope_is_invalid → 同一概念の可能性
+- test_missing_implementation_file_is_detected → 同一概念の可能性
+- test_missing_node_yields_critical_drift_and_triggers_reglk → 同一概念の可能性
+- test_missing_non_critical_scope_is_warning → 同一概念の可能性
+- test_missing_packet → 同一概念の可能性
+- test_mock_adapter_ack → 同一概念の可能性
+- test_mock_adapter_execute → 同一概念の可能性
+- test_mock_adapter_handshake → 同一概念の可能性
+- test_mock_metrics_skipped → 同一概念の可能性
+- test_mocka_event_safe → 同一概念の可能性
+- test_models_are_frozen → 同一概念の可能性
+- test_modular_exponentiation → 同一概念の可能性
+- test_module_loader_factory_failure_sets_failed_state → 同一概念の可能性
+- test_module_loader_factory_requires_registered_module → 同一概念の可能性
+- test_module_loader_load_is_cached → 同一概念の可能性
+- test_module_loader_load_success → 同一概念の可能性
+- test_module_loader_load_without_factory_raises → 同一概念の可能性
+- test_module_sandbox_import_boundary → 同一概念の可能性
+- test_more_than → 同一概念の可能性
+- test_more_than_or_equal → 同一概念の可能性
+- test_msg_verack_to_bytes → 同一概念の可能性
+- test_mult_gf2 → 同一概念の可能性
+- test_mult_modulo_bytes → 同一概念の可能性
+- test_multi_layer_contradiction_injection → 同一概念の可能性
+- test_multi_layer_trace_reconstruction → 同一概念の可能性
+- test_multi_report_conflict_detection → 同一概念の可能性
+- test_multi_sub_block_writes → 同一概念の可能性
+- test_multi_sub_packet_read → 同一概念の可能性
+- test_multiple_keys → 同一概念の可能性
+- test_multiply_accumulate → 同一概念の可能性
+- test_name_consistency → 同一概念の可能性
+- test_neg_curve_mismatch → 同一概念の可能性
+- test_neg_psk → 同一概念の可能性
+- test_neg_too_many_private_keys → 同一概念の可能性
+- test_neg_unseal_no_auth_data → 同一概念の可能性
+- test_neg_unseal_wrong_ct → 同一概念の可能性
+- test_neg_unsupported_curve → 同一概念の可能性
+- test_neg_wrong_enc → 同一概念の可能性
+- test_negative_1 → 同一概念の可能性
+- test_negative_2 → 同一概念の可能性
+- test_negative_cases → 同一概念の可能性
+- test_negative_construct → 同一概念の可能性
+- test_negative_eddsa_key → 同一概念の可能性
+- test_negative_unapproved_hashes → 同一概念の可能性
+- test_negative_unknown_modes_encodings → 同一概念の可能性
+- test_negative_zeroes → 同一概念の可能性
+- test_new_domain → 同一概念の可能性
+- test_new_negative → 同一概念の可能性
+- test_new_positive → 同一概念の可能性
+- test_new_positive2 → 同一概念の可能性
+- test_no_conflict_by_default → 同一概念の可能性
+- test_no_conflict_when_aligned → 同一概念の可能性
+- test_no_direct_db_write → 同一概念の可能性
+- test_no_drift_for_current_implementation → 同一概念の可能性
+- test_no_drift_for_matching_execution → 同一概念の可能性
+- test_no_duplicate_frontmatter → 同一概念の可能性
+- test_no_forbidden_imports → 同一概念の可能性
+- test_no_gate_gives_partial → 同一概念の可能性
+- test_no_immediate_apply_or_override → 同一概念の可能性
+- test_no_negative → 同一概念の可能性
+- test_no_revision_on_seal → 同一概念の可能性
+- test_non_ascii_characters → 同一概念の可能性
+- test_non_dict_json_falls_back_to_empty_store → 同一概念の可能性
+- test_non_optimal → 同一概念の可能性
+- test_nonce_attribute → 同一概念の可能性
+- test_nonce_length → 同一概念の可能性
+- test_nonce_must_be_bytes → 同一概念の可能性
+- test_nonce_parameter → 同一概念の可能性
+- test_noop_not_routable → 同一概念の可能性
+- test_normal_auto_approved → 同一概念の可能性
+- test_normalization_zero_total_safe → 同一概念の可能性
+- test_null_encryption_decryption → 同一概念の可能性
+- test_observation_defaults → 同一概念の可能性
+- test_observation_to_dict_round_trip → 同一概念の可能性
+- test_observe_returns_artifact → 同一概念の可能性
+- test_odd_even → 同一概念の可能性
+- test_old_snapshots_compressed → 同一概念の可能性
+- test_on_event_persists_event_to_store → 同一概念の可能性
+- test_on_event_persists_execution_and_output → 同一概念の可能性
+- test_on_event_publishes_to_subscribed_handlers → 同一概念の可能性
+- test_on_event_routes_to_target_node → 同一概念の可能性
+- test_on_event_unknown_node_raises → 同一概念の可能性
+- test_on_event_updates_session_event_log → 同一概念の可能性
+- test_only_one_iv → 同一概念の可能性
+- test_open_close → 同一概念の可能性
+- test_openai_adapter_execute_and_ack → 同一概念の可能性
+- test_openai_adapter_handshake → 同一概念の可能性
+- test_openai_adapter_receive_commission_invalid → 同一概念の可能性
+- test_openai_adapter_receive_commission_valid → 同一概念の可能性
+- test_openai_is_baseline_adapter → 同一概念の可能性
+- test_orchestra_adapter_does_not_execute_anything → 同一概念の可能性
+- test_orchestra_adapter_evaluate_state_is_not_implemented → 同一概念の可能性
+- test_orchestra_adapter_interface_abstract_methods → 同一概念の可能性
+- test_orchestra_adapter_plan_is_not_implemented → 同一概念の可能性
+- test_orchestra_adapter_suggest_actions_is_not_implemented → 同一概念の可能性
+- test_orchestra_has_no_external_state → 同一概念の可能性
+- test_orchestra_module_does_not_reference_other_layers → 同一概念の可能性
+- test_orchestrator_critical_event_goes_to_human_gate → 同一概念の可能性
+- test_orchestrator_noop_event → 同一概念の可能性
+- test_orchestrator_recover_event_delegates → 同一概念の可能性
+- test_orchestrator_result_shape → 同一概念の可能性
+- test_orchestrator_seal_triggers_verify_all → 同一概念の可能性
+- test_orphan_artifact_audit_violation → 同一概念の可能性
+- test_outdated_claim_conflict → 同一概念の可能性
+- test_outdated_report_detection → 同一概念の可能性
+- test_output_bytearray → 同一概念の可能性
+- test_output_incorrect_length → 同一概念の可能性
+- test_output_memoryview → 同一概念の可能性
+- test_output_overlapping_bytearray → 同一概念の可能性
+- test_output_overlapping_memoryview → 同一概念の可能性
+- test_output_param → 同一概念の可能性
+- test_output_param_memoryview → 同一概念の可能性
+- test_output_param_neg → 同一概念の可能性
+- test_output_param_same_buffer → 同一概念の可能性
+- test_output_ro_bytes → 同一概念の可能性
+- test_output_ro_memoryview → 同一概念の可能性
+- test_overall_report_is_pass_with_no_evidence_findings → 同一概念の可能性
+- test_p2sh_p2wpkh_signaturehash → 同一概念の可能性
+- test_p2sh_p2wsh_signaturehash → 同一概念の可能性
+- test_p2wpkh_signaturehash → 同一概念の可能性
+- test_p2wsh_signaturehash1 → 同一概念の可能性
+- test_p2wsh_signaturehash2 → 同一概念の可能性
+- test_pack_64 → 同一概念の可能性
+- test_pack_entity → 同一概念の可能性
+- test_pack_index → 同一概念の可能性
+- test_parity_option2 → 同一概念の可能性
+- test_parity_option3 → 同一概念の可能性
+- test_partial_system_failure → 同一概念の可能性
+- Test-Path / test-path → 同一概念の可能性
+- test_perfect_match → 同一概念の可能性
+- test_perfect_square → 同一概念の可能性
+- test_phi_os_core_degrade_after_start → 同一概念の可能性
+- test_phi_os_core_full_decision_chain_verifies → 同一概念の可能性
+- test_phi_os_core_initial_state → 同一概念の可能性
+- test_phi_os_core_invalid_transition_raises → 同一概念の可能性
+- test_phi_os_core_recover_after_degrade → 同一概念の可能性
+- test_phi_os_core_start_records_decision → 同一概念の可能性
+- test_phi_os_core_start_records_trajectory → 同一概念の可能性
+- test_phi_os_core_start_transitions_to_active → 同一概念の可能性
+- test_pipeline_audit_hook_failure_does_not_block → 同一概念の可能性
+- test_pipeline_circular_causality_is_conflict → 同一概念の可能性
+- test_pipeline_critical_audit_hook → 同一概念の可能性
+- test_pipeline_fixed_stage_order_produces_consistent_result → 同一概念の可能性
+- test_pipeline_invalid_event_raises → 同一概念の可能性
+- test_pipeline_multi_category_is_unstable → 同一概念の可能性
+- test_pipeline_no_revision_on_seal → 同一概念の可能性
+- test_pipeline_produces_all_stage_records → 同一概念の可能性
+- test_pipeline_revision_increment → 同一概念の可能性
+- test_pipeline_run_with_empty_events → 同一概念の可能性
+- test_pipeline_run_with_invalid_event_raises → 同一概念の可能性
+- test_pipeline_run_with_single_event → 同一概念の可能性
+- test_pipeline_single_path_only → 同一概念の可能性
+- test_pipeline_timestamp_correlation → 同一概念の可能性
+- test_pipeline_unknown_events_are_uncertain → 同一概念の可能性
+- test_pipeline_valid_event_ok → 同一概念の可能性
+- test_placeholder_url_detected → 同一概念の可能性
+- test_plugin_x_worker_registered → 同一概念の可能性
+- test_policy_auto_deploy → 同一概念の可能性
+- test_policy_fail_yields_fail_even_with_valid_validation → 同一概念の可能性
+- test_policy_filters_candidate → 同一概念の可能性
+- test_policy_human_gate → 同一概念の可能性
+- test_policy_reject_low_score → 同一概念の可能性
+- test_positive_1 → 同一概念の可能性
+- test_prepend_invalid_arg → 同一概念の可能性
+- test_prepend_invalid_msg → 同一概念の可能性
+- test_priority_ordering → 同一概念の可能性
+- test_prism_analyzer_public_api_only → 同一概念の可能性
+- test_prism_models_are_frozen_and_dataclass → 同一概念の可能性
+- test_prism_models_carry_version_field → 同一概念の可能性
+- test_prism_models_to_dict_includes_version → 同一概念の可能性
+- test_prism_package_imports → 同一概念の可能性
+- test_private_key → 同一概念の可能性
+- test_probable_prime → 同一概念の可能性
+- test_production_mode_manager_safety_default → 同一概念の可能性
+- test_proposal_node_to_dict → 同一概念の可能性
+- test_provided_category_evidence_is_used → 同一概念の可能性
+- test_provider_analyze_many_events → 同一概念の可能性
+- test_provider_analyze_single_event → 同一概念の可能性
+- test_provider_can_be_constructed_without_dependencies → 同一概念の可能性
+- test_provider_chain_default_when_all_empty → 同一概念の可能性
+- test_provider_chain_falls_through_to_next → 同一概念の可能性
+- test_provider_chain_max_revisions → 同一概念の可能性
+- test_provider_get_capabilities_returns_cognition → 同一概念の可能性
+- test_provider_get_version → 同一概念の可能性
+- test_provider_health_check_engine_status_all_present → 同一概念の可能性
+- test_provider_health_check_structure → 同一概念の可能性
+- test_provider_public_api_surface → 同一概念の可能性
+- test_provider_read_only_does_not_mutate_registry → 同一概念の可能性
+- test_provider_with_core_store_registry_and_lifecycle → 同一概念の可能性
+- test_prs_blocked → 同一概念の可能性
+- test_prs_limited_release_band → 同一概念の可能性
+- test_prs_missing_metric_raises → 同一概念の可能性
+- test_prs_production_eligible → 同一概念の可能性
+- test_prune_tree → 同一概念の可能性
+- test_pruning_timestamp → 同一概念の可能性
+- test_ptn_1 → 同一概念の可能性
+- test_ptn_17 → 同一概念の可能性
+- test_ptn_17_2 → 同一概念の可能性
+- test_ptn_17_3 → 同一概念の可能性
+- test_ptn_17_4 → 同一概念の可能性
+- test_ptn_17_5 → 同一概念の可能性
+- test_ptn_17_6 → 同一概念の可能性
+- test_ptn_8191 → 同一概念の可能性
+- test_ptn_8192 → 同一概念の可能性
+- test_ptn_8192_8189 → 同一概念の可能性
+- test_ptn_8192_8190 → 同一概念の可能性
+- test_ptn_c_1 → 同一概念の可能性
+- test_ptn_c_41 → 同一概念の可能性
+- test_ptn_c_41_2 → 同一概念の可能性
+- test_ptn_c_41_3 → 同一概念の可能性
+- test_public_key → 同一概念の可能性
+- test_public_key_derived → 同一概念の可能性
+- test_query_with_predicate → 同一概念の可能性
+- test_query_without_predicate_returns_all → 同一概念の可能性
+- test_queue_and_governance → 同一概念の可能性
+- test_queue_summary → 同一概念の可能性
+- test_random_bits_custom_rng → 同一概念の可能性
+- test_random_exact_bits → 同一概念の可能性
+- test_random_max_bits → 同一概念の可能性
+- test_random_password_and_salt_long_pw → 同一概念の可能性
+- test_random_password_and_salt_short_pw → 同一概念の可能性
+- test_random_range → 同一概念の可能性
+- test_raw_rsa_boundary → 同一概念の可能性
+- test_read_msg_verack → 同一概念の可能性
+- test_recommender_detects_degraded → 同一概念の可能性
+- test_recommender_returns_structure → 同一概念の可能性
+- test_record_carries_identity → 同一概念の可能性
+- test_record_failure_increments → 同一概念の可能性
+- test_record_returns_event_id → 同一概念の可能性
+- test_record_success_increments → 同一概念の可能性
+- test_region_list → 同一概念の可能性
+- test_register_artifact_connected → 同一概念の可能性
+- test_register_artifact_to_institution → 同一概念の可能性
+- test_register_custom_meaning → 同一概念の可能性
+- test_registry_duplicate_register_raises → 同一概念の可能性
+- test_registry_event_type_category → 同一概念の可能性
+- test_registry_export_returns_json_string → 同一概念の可能性
+- test_registry_export_writes_file → 同一概念の可能性
+- test_registry_freeze_allows_reads → 同一概念の可能性
+- test_registry_freeze_blocks_register → 同一概念の可能性
+- test_registry_freeze_blocks_unregister → 同一概念の可能性
+- test_registry_overwrite → 同一概念の可能性
+- test_registry_register_and_get → 同一概念の可能性
+- test_registry_snapshot_structure → 同一概念の可能性
+- test_registry_taxonomy_frozen → 同一概念の可能性
+- test_registry_taxonomy_readonly → 同一概念の可能性
+- test_registry_unknown_category_raises → 同一概念の可能性
+- test_registry_unregister → 同一概念の可能性
+- test_reject_actor → 同一概念の可能性
+- test_reject_actor_legacy → 同一概念の可能性
+- test_reject_job → 同一概念の可能性
+- test_reject_replay → 同一概念の可能性
+- test_reject_session → 同一概念の可能性
+- test_reject_why_purpose → 同一概念の可能性
+- test_relay_adapter_interface_abstract_methods → 同一概念の可能性
+- test_relay_adapter_merge_context_returns_dummy_result → 同一概念の可能性
+- test_relay_adapter_pull_context_returns_none → 同一概念の可能性
+- test_relay_adapter_push_context_returns_none → 同一概念の可能性
+- test_relay_and_memory_are_independent → 同一概念の可能性
+- test_relay_session_not_persisted_anywhere → 同一概念の可能性
+- test_release_gate_allows_when_all_pass → 同一概念の可能性
+- test_release_gate_blocks_on_any_failure → 同一概念の可能性
+- test_release_gate_missing_key_raises → 同一概念の可能性
+- test_replay_required_fields_subset_of_required_fields → 同一概念の可能性
+- test_replay_returns_structure → 同一概念の可能性
+- test_replay_session_reconstructs_events_in_order → 同一概念の可能性
+- test_replay_session_unknown_returns_empty → 同一概念の可能性
+- test_replay_unknown_id → 同一概念の可能性
+- test_report_mismatch_detection → 同一概念の可能性
+- test_report_reality_divergence_extreme → 同一概念の可能性
+- test_require_gate_decorator → 同一概念の可能性
+- test_requirement_change_requires_fields → 同一概念の可能性
+- test_requirement_history_store_roundtrip → 同一概念の可能性
+- test_requires_constraint_policy → 同一概念の可能性
+- test_requires_positive_stability_threshold → 同一概念の可能性
+- test_resolution_generation → 同一概念の可能性
+- test_resolve_default_institution → 同一概念の可能性
+- test_resolve_default_meaning → 同一概念の可能性
+- test_resolve_gate_authority → 同一概念の可能性
+- test_resolve_unknown_raises → 同一概念の可能性
+- TEST_RESULT / test-results → 同一概念の可能性
+- test_return_type → 同一概念の可能性
+- test_returns_one_evaluation_per_category → 同一概念の可能性
+- test_revision_increment_on_state_change → 同一概念の可能性
+- test_revision_increments_on_change → 同一概念の可能性
+- test_revision_stable_when_no_change → 同一概念の可能性
+- test_revoke_not_in_incident → 同一概念の可能性
+- test_rfc7748_1 → 同一概念の可能性
+- test_rfc7748_2 → 同一概念の可能性
+- test_rfc7748_3 → 同一概念の可能性
+- test_right_shift → 同一概念の可能性
+- Test_ripemd160 / test_ripemd160 → 同一概念の可能性
+- test_round_trip → 同一概念の可能性
+- test_route_explain_job → 同一概念の可能性
+- test_route_mocka_context → 同一概念の可能性
+- test_route_mocka_event → 同一概念の可能性
+- test_route_simulate_dry_run → 同一概念の可能性
+- test_router_does_not_execute → 同一概念の可能性
+- test_router_executor_separation → 同一概念の可能性
+- test_rules_forbidden_list → 同一概念の可能性
+- test_run_cycle_8_stages → 同一概念の可能性
+- test_run_cycle_incident → 同一概念の可能性
+- test_run_flows_end_to_end_and_writes_ledger → 同一概念の可能性
+- test_runtime_blocks_commit_on_fail → 同一概念の可能性
+- test_runtime_commits_on_pass_or_warning → 同一概念の可能性
+- test_runtime_safety_guard → 同一概念の可能性
+- test_safe_boot_degraded_mode → 同一概念の可能性
+- test_same_password_and_random_salt → 同一概念の可能性
+- test_same_password_and_salt_increasing_cost_factor → 同一概念の可能性
+- test_save_and_load_snapshot → 同一概念の可能性
+- test_save_event_rejects_non_json_payload_instead_of_stringifying → 同一概念の可能性
+- test_save_execution_and_output_still_tolerate_dataclasses → 同一概念の可能性
+- test_save_with_explicit_record_id_allows_overwrite → 同一概念の可能性
+- test_scalar_multiply → 同一概念の可能性
+- test_scheduler_capability_driven → 同一概念の可能性
+- test_schema_breaking_change_detection → 同一概念の可能性
+- test_score_range → 同一概念の可能性
+- test_script_invalid → 同一概念の可能性
+- test_script_valid → 同一概念の可能性
+- test_seek_tv → 同一概念の可能性
+- test_segment_size_128 → 同一概念の可能性
+- test_segment_size_64 → 同一概念の可能性
+- Test_Segwit / test_segwit → 同一概念の可能性
+- test_semantic_annotation_defaults → 同一概念の可能性
+- test_semantic_annotation_to_dict_round_trip → 同一概念の可能性
+- test_sequential_ids → 同一概念の可能性
+- Test serialization / Test_serialization / test_serialization → 同一概念の可能性
+- test_session_relay_does_not_touch_memory_core → 同一概念の可能性
+- test_session_relay_has_no_persistence_attributes → 同一概念の可能性
+- test_set_fail_if_wrong_message → 同一概念の可能性
+- test_set_result_timestamp → 同一概念の可能性
+- test_several_lengths → 同一概念の可能性
+- test_sftp_worker_execute → 同一概念の可能性
+- test_sha_writer → 同一概念の可能性
+- test_shadow_enter_degraded → 同一概念の可能性
+- test_shadow_exit_degraded → 同一概念の可能性
+- test_shadow_full_status → 同一概念の可能性
+- test_shadow_is_alive → 同一概念の可能性
+- test_shadow_mirror → 同一概念の可能性
+- test_shadow_receives_mocka_events → 同一概念の可能性
+- test_shadow_sync_on_recovery → 同一概念の可能性
+- test_shadow_verify_critical_missing_event → 同一概念の可能性
+- test_shadow_verify_critical_ok → 同一概念の可能性
+- test_short_text_single_tweet → 同一概念の可能性
+- test_shorter_and_longer_plaintext_than_declared → 同一概念の可能性
+- test_shorter_assoc_data_than_expected → 同一概念の可能性
+- test_shorter_ciphertext_than_declared → 同一概念の可能性
+- test_should_create_snapshot_by_revision → 同一概念の可能性
+- test_should_create_snapshot_by_time → 同一概念の可能性
+- test_should_not_snapshot_recent → 同一概念の可能性
+- test_should_snapshot_revision_threshold → 同一概念の可能性
+- test_should_snapshot_time_threshold → 同一概念の可能性
+- test_sign_invalid_hash → 同一概念の可能性
+- test_sign_message_simple → 同一概念の可能性
+- test_sign_message_vectors → 同一概念の可能性
+- test_sign_verify → 同一概念の可能性
+- test_simple_exponentiation → 同一概念の可能性
+- test_simulation_detects_no_worker → 同一概念の可能性
+- test_simulation_lp_pipeline → 同一概念の可能性
+- test_simulation_unknown_pipeline → 同一概念の可能性
+- test_single_sub_packet_read → 同一概念の可能性
+- test_singleton_pattern → 同一概念の可能性
+- test_size / test_sizes → 同一概念の可能性
+- test_size_in_bits → 同一概念の可能性
+- test_size_in_bytes → 同一概念の可能性
+- test_sla_fail → 同一概念の可能性
+- test_sla_pass → 同一概念の可能性
+- test_snapshot_retention_policy → 同一概念の可能性
+- test_snapshot_rotation_compresses_old → 同一概念の可能性
+- test_snapshot_version_increments → 同一概念の可能性
+- test_sorted_by_score → 同一概念の可能性
+- test_special_case_salt → 同一概念の可能性
+- test_sqrt_module → 同一概念の可能性
+- test_stability_bounds → 同一概念の可能性
+- test_stage_counts → 同一概念の可能性
+- test_state_change_removed → 同一概念の可能性
+- test_state_operation_category_exists → 同一概念の可能性
+- test_state_rebuildable_from_ledger → 同一概念の可能性
+- test_state_transition_category_exists → 同一概念の可能性
+- test_status_summary → 同一概念の可能性
+- test_store_is_append_only_and_queryable → 同一概念の可能性
+- test_str_tree → 同一概念の可能性
+- test_strategy_highest_success → 同一概念の可能性
+- test_strategy_priority → 同一概念の可能性
+- test_strategy_unknown_falls_back → 同一概念の可能性
+- test_stress_63 → 同一概念の可能性
+- test_stress_64 → 同一概念の可能性
+- test_stress_65 → 同一概念の可能性
+- test_stress_concurrent_event_streams → 同一概念の可能性
+- test_sub_block_write → 同一概念の可能性
+- test_success_rate_no_history → 同一概念の可能性
+- test_summary_extraction → 同一概念の可能性
+- test_syntax_error_detection → 同一概念の可能性
+- test_synthesize_critical_escalates_to_human_gate → 同一概念の可能性
+- test_synthesize_default_is_noop → 同一概念の可能性
+- test_synthesize_priority_uses_urgency → 同一概念の可能性
+- test_synthesize_reason_format → 同一概念の可能性
+- test_synthesize_recover_delegates_to_mock → 同一概念の可能性
+- test_synthesize_validate_seals_via_verify_all → 同一概念の可能性
+- test_taxonomy_endpoint_200 → 同一概念の可能性
+- test_taxonomy_endpoint_frozen → 同一概念の可能性
+- test_taxonomy_has_required_categories → 同一概念の可能性
+- test_taxonomy_json_exists → 同一概念の可能性
+- test_taxonomy_loaded_via_validator → 同一概念の可能性
+- test_taxonomy_version → 同一概念の可能性
+- test_to_event_content → 同一概念の可能性
+- test_to_vector_critical_event → 同一概念の可能性
+- test_to_vector_local_event → 同一概念の可能性
+- test_to_vector_urgency_normalized → 同一概念の可能性
+- test_tokenize_roundtrip → 同一概念の可能性
+- test_top_n_limit → 同一概念の可能性
+- test_trace_chain_broken_if_events_missing → 同一概念の可能性
+- test_trace_chain_reconstructable → 同一概念の可能性
+- test_trace_graph_is_fully_closed_for_current_implementation → 同一概念の可能性
+- test_trajectory_append → 同一概念の可能性
+- test_tree_with_children → 同一概念の可能性
+- test_tree_with_prefix_matching_blob → 同一概念の可能性
+- test_truncated_packet → 同一概念の可能性
+- test_trust_insufficient → 同一概念の可能性
+- test_trust_sufficient → 同一概念の可能性
+- test_two_events_remain_independently_traceable → 同一概念の可能性
+- test_two_file_tree → 同一概念の可能性
+- test_tx_invalid → 同一概念の可能性
+- test_tx_valid → 同一概念の可能性
+- test_unaffected_layers_marked_unchanged → 同一概念の可能性
+- test_unaligned_data_128 → 同一概念の可能性
+- test_unaligned_data_64 → 同一概念の可能性
+- test_unclassified_meaning_fails_validation → 同一概念の可能性
+- test_undefined_meaning_detected → 同一概念の可能性
+- test_unknown_adapter_fallback_destination → 同一概念の可能性
+- test_unknown_capability_invalid → 同一概念の可能性
+- test_unknown_compliance_domain_is_rejected → 同一概念の可能性
+- test_unknown_institution_gives_orphan → 同一概念の可能性
+- test_unknown_meaning_gives_unknown_status → 同一概念の可能性
+- test_unknown_parameters → 同一概念の可能性
+- test_unknown_version_is_not_supported → 同一概念の可能性
+- test_unvalidated_blueprint_rejected → 同一概念の可能性
+- test_update_after_digest → 同一概念の可能性
+- test_update_after_read → 同一概念の可能性
+- test_update_negative → 同一概念の可能性
+- test_update_publish_status → 同一概念の可能性
+- test_url_appended → 同一概念の可能性
+- test_valid_artifact_is_connected → 同一概念の可能性
+- test_valid_artifact_no_violations → 同一概念の可能性
+- test_valid_empty_packet → 同一概念の可能性
+- test_valid_encrypt_and_digest_decrypt_and_verify → 同一概念の可能性
+- test_valid_event_id_accepted → 同一概念の可能性
+- test_valid_full_path → 同一概念の可能性
+- test_valid_init_digest → 同一概念の可能性
+- test_valid_init_encrypt_decrypt_digest_verify → 同一概念の可能性
+- test_valid_init_update_digest_verify → 同一概念の可能性
+- test_valid_init_verify → 同一概念の可能性
+- test_valid_module_with_certified_is_fully_compliant → 同一概念の可能性
+- test_valid_module_without_certification_is_compliant → 同一概念の可能性
+- test_valid_multiple_digest_or_verify → 同一概念の可能性
+- test_valid_multiple_encrypt_or_decrypt → 同一概念の可能性
+- test_valid_transition → 同一概念の可能性
+- test_valid_transition_initializing_to_active → 同一概念の可能性
+- test_validate_circular_dependency → 同一概念の可能性
+- test_validate_event_bad_types → 同一概念の可能性
+- test_validate_event_built_by_build_event_is_valid → 同一概念の可能性
+- test_validate_event_missing_required_field → 同一概念の可能性
+- test_validate_event_not_a_dict → 同一概念の可能性
+- test_validate_event_unknown_field → 同一概念の可能性
+- test_validate_event_unsupported_version → 同一概念の可能性
+- test_validate_event_with_type_registry → 同一概念の可能性
+- test_validate_event_with_type_registry_known_type → 同一概念の可能性
+- test_validate_gate_for_event_gate → 同一概念の可能性
+- test_validate_gate_wrong_meaning_for_knowledge_gate → 同一概念の可能性
+- test_validate_missing_capability → 同一概念の可能性
+- test_validate_missing_dependency → 同一概念の可能性
+- test_validate_no_modules_is_valid → 同一概念の可能性
+- test_validate_satisfied_capability → 同一概念の可能性
+- test_validate_satisfied_dependency → 同一概念の可能性
+- test_validate_self_dependency_is_circular → 同一概念の可能性
+- test_validator_helpers → 同一概念の可能性
+- test_variable_exponent → 同一概念の可能性
+- test-vector / test-vectors → 同一概念の可能性
+- test_vector_normalization → 同一概念の可能性
+- test_verify_after_decisions → 同一概念の可能性
+- test_verify_all_taxonomy_integrity_step → 同一概念の可能性
+- test_verify_chain_empty → 同一概念の可能性
+- test_verify_chain_with_events → 同一概念の可能性
+- test_verify_detects_tamper → 同一概念の可能性
+- test_verify_empty_ledger → 同一概念の可能性
+- test_verify_mac → 同一概念の可能性
+- test_verify_message_simple → 同一概念の可能性
+- test_verify_message_vectors → 同一概念の可能性
+- test_version_format → 同一概念の可能性
+- test_very_long_data → 同一概念の可能性
+- test_warning_14days → 同一概念の可能性
+- test_warning_28days → 同一概念の可能性
+- test_warning_anywhere_yields_warning_not_fail → 同一概念の可能性
+- test_warning_domain_is_partially_compliant → 同一概念の可能性
+- test_warning_status → 同一概念の可能性
+- test_weak_pem → 同一概念の可能性
+- test_whitespace_normalization → 同一概念の可能性
+- test_wordpress_worker_execute → 同一概念の可能性
+- test_wrap_around → 同一概念の可能性
+- test_writable_dir → 同一概念の可能性
+- test_wrong_length → 同一概念の可能性
+- test_wrong_range → 同一概念の可能性
+- test_x25519_mode_0 → 同一概念の可能性
+- test_x25519_mode_1 → 同一概念の可能性
+- test_x25519_mode_2 → 同一概念の可能性
+- test_x25519_mode_3 → 同一概念の可能性
+- test_zero_1 → 同一概念の可能性
+- test_zero_2 → 同一概念の可能性
+- test_zero_3 → 同一概念の可能性
+- test_zero_base → 同一概念の可能性
+- test_zero_exp → 同一概念の可能性
+- test_zero_modulus → 同一概念の可能性
+- test_zero_term → 同一概念の可能性
+- TestAuthorityManager → 同一概念の可能性
+- TestBase → 同一概念の可能性
+- TestBaseTypes → 同一概念の可能性
+- TestBindingEngine → 同一概念の可能性
+- TestBuf → 同一概念の可能性
+- TestComplianceEngine → 同一概念の可能性
+- TestEccPoint → 同一概念の可能性
+- TestExamples → 同一概念の可能性
+- TestGateRegistry → 同一概念の可能性
+- TestGit → 同一概念の可能性
+- TestImport → 同一概念の可能性
+- TestIncompleteBlocks → 同一概念の可能性
+- TestInstagramAdapter → 同一概念の可能性
+- TestInstitutionRegistry → 同一概念の可能性
+- TestInstitutionRuntime → 同一概念の可能性
+- TestIntegerBase → 同一概念の可能性
+- TestIntegerCustomModexp → 同一概念の可能性
+- TestIntegerInt → 同一概念の可能性
+- TestIntegrityCheck → 同一概念の可能性
+- TESTKEY / TestKey / TestKeys → 同一概念の可能性
+- TestMeaningRegistry → 同一概念の可能性
+- TestModExp → 同一概念の可能性
+- TestModMultiply → 同一概念の可能性
+- TestMultipleBlocks → 同一概念の可能性
+- TestNetParams → 同一概念の可能性
+- TestOptimizer → 同一概念の可能性
+- TestOtherCiphers → 同一概念の可能性
+- TestOutput → 同一概念の可能性
+- TestPack → 同一概念の可能性
+- TestParseResultsAsserts → 同一概念の可能性
+- TestPrimality → 同一概念の可能性
+- TestProofreader → 同一概念の可能性
+- TestPrune → 同一概念の可能性
+- TestRewriter → 同一概念の可能性
+- TestScheduler → 同一概念の可能性
+- TestStream → 同一概念の可能性
+- TestTutorial → 同一概念の可能性
+- TestUnsignedAlert → 同一概念の可能性
+- TestUtils → 同一概念の可能性
+- TestVariableLength → 同一概念の可能性
+- TestVector / TestVectors → 同一概念の可能性
+- TestVectorsGueronKrasnov → 同一概念の可能性
+- TestVectorsPaper → 同一概念の可能性
+- TestVectorsWycheproof → 同一概念の可能性
+- TestVectorsWycheproof2 → 同一概念の可能性
+- TestVectorsX25519Wycheproof → 同一概念の可能性
+- TestVectorsX448Wycheproof → 同一概念の可能性
+- TestWordPressAdapter → 同一概念の可能性
+- Texinfo-exception / texinfo-exception → 同一概念の可能性
+- TextColumn → 同一概念の可能性
+- TextFile → 同一概念の可能性
+- THE / THEE → 同一概念の可能性
+- THEM / Theme → 同一概念の可能性
+- ThemeContext → 同一概念の可能性
+- ThemeStack → 同一概念の可能性
+- ThemeStackError → 同一概念の可能性
+- ThinkingMode → 同一概念の可能性
+- ThinkingModeEngine → 同一概念の可能性
+- THIRD_PARTY / Third-Party / Third-party / third-party → 同一概念の可能性
+- Thread-safe / thread-safe → 同一概念の可能性
+- THRESHOLD / THRESHOLDS → 同一概念の可能性
+- THROTTLE → 同一概念の可能性
+- Time-Series / time-series → 同一概念の可能性
+- TimeAttestation → 同一概念の可能性
+- TimeElapsedColumn → 同一概念の可能性
+- TIMEOUT / Timeout → 同一概念の可能性
+- TimeoutError → 同一概念の可能性
+- TimeoutStateError → 同一概念の可能性
+- TimeRemainingColumn → 同一概念の可能性
+- TIMESTAMP / Timestamp / timestamp / timestamps → 同一概念の可能性
+- TimestampCache → 同一概念の可能性
+- TimestampLog → 同一概念の可能性
+- TimestampLogReader → 同一概念の可能性
+- TimestampLogWriter → 同一概念の可能性
+- TIN / TINE → 同一概念の可能性
+- TIP_EVENT_ID / tip_event_id → 同一概念の可能性
+- to_bin_sha → 同一概念の可能性
+- to_context_dict → 同一概念の可能性
+- to_event_content → 同一概念の可能性
+- to_full_path → 同一概念の可能性
+- to_hex_sha → 同一概念の可能性
+- to_key_val_list → 同一概念の可能性
+- to_native_path_linux → 同一概念の可能性
+- to_native_path_windows → 同一概念の可能性
+- to_native_string → 同一概念の可能性
+- to_progress_instance → 同一概念の可能性
+- to_unix_nano → 同一概念の可能性
+- today_is_later_than → 同一概念の可能性
+- TODO / TODOS / ToDo / todos → 同一概念の可能性
+- TODO_ID / todo-id → 同一概念の可能性
+- TODO_LIST / todo-list → 同一概念の可能性
+- TodoItem → 同一概念の可能性
+- TOKEN / TOKENS / Token → 同一概念の可能性
+- TokenConverter → 同一概念の可能性
+- TokenMergeFilter → 同一概念の可能性
+- tokens_to_spans → 同一概念の可能性
+- TON / TONE → 同一概念の可能性
+- TOO_MANY_REQUESTS / too_many_requests → 同一概念の可能性
+- TOOL / TOOLS → 同一概念の可能性
+- TooManyRedirects → 同一概念の可能性
+- Top-Level / Top-level / top-level → 同一概念の可能性
+- TopdownDeltaChunkList → 同一概念の可能性
+- TOTAL / total → 同一概念の可能性
+- total-count / total_count → 同一概念の可能性
+- TotalFileSizeColumn → 同一概念の可能性
+- TOUCH / touch → 同一概念の可能性
+- ToUnicode → 同一概念の可能性
+- TREE / Tree / tree / trees → 同一概念の可能性
+- TRACE / Trace → 同一概念の可能性
+- trace_basic_info → 同一概念の可能性
+- trace_parse_action → 同一概念の可能性
+- TraceBuilder → 同一概念の可能性
+- TraceGraph → 同一概念の可能性
+- TraceLayer → 同一概念の可能性
+- TraceNode / TraceNodes → 同一概念の可能性
+- TraceObject → 同一概念の可能性
+- TRACK / track → 同一概念の可能性
+- TrailingGarbageError → 同一概念の可能性
+- Transfer-Encoding / transfer-encoding → 同一概念の可能性
+- TransferSpeedColumn → 同一概念の可能性
+- transform_kwarg / transform_kwargs → 同一概念の可能性
+- TransformedHit → 同一概念の可能性
+- TRANSITIONEND / TransitionEnd → 同一概念の可能性
+- translate_to_plan → 同一概念の可能性
+- TraversableIterableObj → 同一概念の可能性
+- TraversableReader → 同一概念の可能性
+- TraversableResources → 同一概念の可能性
+- TraversableResourcesLoader → 同一概念の可能性
+- traverse_tree_recursive → 同一概念の可能性
+- traverse_trees_recursive → 同一概念の可能性
+- tree_entries_from_data → 同一概念の可能性
+- tree-sha / tree-shas → 同一概念の可能性
+- tree_to_stream → 同一概念の可能性
+- TreeModifier → 同一概念の可能性
+- TRIM / trim → 同一概念の可能性
+- trove-classifier / trove-classifiers / trove_classifier → 同一概念の可能性
+- TRUE_STATE / true_state → 同一概念の可能性
+- TRUECOLOR / truecolor → 同一概念の可能性
+- TruncationError → 同一概念の可能性
+- TRUST_LEVELS / trust_level → 同一概念の可能性
+- TRUST_SCOR / TRUST_SCORE / TRUST_SCORES → 同一概念の可能性
+- trusted-host / trusted-hosts / trusted_host / trusted_hosts → 同一概念の可能性
+- TRUTH_RULE / Truth Rule → 同一概念の可能性
+- try_daily_seal → 同一概念の可能性
+- try_sign_ed25519 → 同一概念の可能性
+- TU-Berlin / tu-berlin → 同一概念の可能性
+- TUB / TUBE → 同一概念の可能性
+- TUN / TUNE → 同一概念の可能性
+- TupleHash → 同一概念の可能性
+- TupleHash128Test → 同一概念の可能性
+- TupleHash256Test → 同一概念の可能性
+- TupleHashTest → 同一概念の可能性
+- TURN / TURNS → 同一概念の可能性
+- TYPE / TYPES / type → 同一概念の可能性
+- TYPE_CHECKING / type-checking → 同一概念の可能性
+- TypeAlias → 同一概念の可能性
+- TypeError / TypeErrors → 同一概念の可能性
+- TypeGuard → 同一概念の可能性
+- typing ------------------------------------------------------ / typing------------------------------------------------------- → 同一概念の可能性
+- Typing ---------------------------------------------------------------------- / typing ---------------------------------------------------------------------- → 同一概念の可能性
+- UBDL-exception / ubdl-exception → 同一概念の可能性
+- Ubuntu-font / ubuntu-font → 同一概念の可能性
+- uint256_from_compact → 同一概念の可能性
+- uint256_from_str → 同一概念の可能性
+- uint256_to_shortstr → 同一概念の可能性
+- uint256_to_str → 同一概念の可能性
+- UMich-Merit / umich-merit → 同一概念の可能性
+- UnaryOp → 同一概念の可能性
+- UnboundedMemo → 同一概念の可能性
+- UNCLASSIFIED → 同一概念の可能性
+- UNDEFINED / Undefined → 同一概念の可能性
+- UndefinedComparison → 同一概念の可能性
+- UndefinedEnvironmentName → 同一概念の可能性
+- underscore-separated / underscore_separated → 同一概念の可能性
+- UnequalIterablesError → 同一概念の可能性
+- Unicode-DFS / unicode-dfs → 同一概念の可能性
+- unicode_is_ascii → 同一概念の可能性
+- Unicode-TOU / unicode-tou → 同一概念の可能性
+- UnifiedSnapshot → 同一概念の可能性
+- UNINSTALL / uninstall → 同一概念の可能性
+- UninstallCommand → 同一概念の可能性
+- UninstallMissingRecord → 同一概念の可能性
+- UninstallPathSet → 同一概念の可能性
+- UninstallPthEntries → 同一概念の可能性
+- UNIQUE / unique → 同一概念の可能性
+- unique_in_window → 同一概念の可能性
+- unique_to_each → 同一概念の可能性
+- UNIT / UNITS → 同一概念の可能性
+- Universal-FOSS-exception / universal-foss-exception → 同一概念の可能性
+- UNIX / Unix → 同一概念の可能性
+- UNIX-like / Unix-like → 同一概念の可能性
+- UNIX-style / Unix-style → 同一概念の可能性
+- UNKNOWN → 同一概念の可能性
+- UNKNOWN_VIEW_TYPE / unknown_view_type → 同一概念の可能性
+- UnknownAttestation → 同一概念の可能性
+- UnknownExtra → 同一概念の可能性
+- UnknownFileError → 同一概念の可能性
+- Unlicense-libtelnet / unlicense-libtelnet → 同一概念の可能性
+- Unlicense-libwhirlpool / unlicense-libwhirlpool → 同一概念の可能性
+- UnmergedEntriesError → 同一概念の可能性
+- unpack-and-compile / unpack_and_compile → 同一概念の可能性
+- unpack_vcs_link → 同一概念の可能性
+- unpacked_source_directory → 同一概念の可能性
+- UnpackException → 同一概念の可能性
+- UnpickleableException → 同一概念の可能性
+- unquote_header_value → 同一概念の可能性
+- UnrecognizedFormat → 同一概念の可能性
+- UnrewindableBodyError → 同一概念の可能性
+- UnsafeModeRejected → 同一概念の可能性
+- UnsafeOptionError → 同一概念の可能性
+- UnsafeProtocolError → 同一概念の可能性
+- UnsatisfiableRequirement → 同一概念の可能性
+- UNSUPPORTED_MEDIA_TYPE / unsupported_media_type → 同一概念の可能性
+- UnsupportedEccFeature → 同一概念の可能性
+- UnsupportedExtension → 同一概念の可能性
+- UnsupportedMajorVersion → 同一概念の可能性
+- UnsupportedOperation → 同一概念の可能性
+- UnsupportedPythonVersion → 同一概念の可能性
+- UnsupportedWheel → 同一概念の可能性
+- UP-TO-DATE / UP_TO_DATE / up-to-date → 同一概念の可能性
+- UPDATE / update → 同一概念の可能性
+- update_cached_response → 同一概念の可能性
+- update_dist_caches → 同一概念の可能性
+- update_essence_from_events → 同一概念の可能性
+- update_index_urls → 同一概念の可能性
+- update_institution_state → 同一概念の可能性
+- update_publish_status → 同一概念の可能性
+- update_screen_lines → 同一概念の可能性
+- UpdateProgress → 同一概念の可能性
+- UpdateStatus → 同一概念の可能性
+- UpdateValidator → 同一概念の可能性
+- UpdatingDefaultsHelpFormatter → 同一概念の可能性
+- UpgradePrompt → 同一概念の可能性
+- upload_time_missing → 同一概念の可能性
+- upload_too_late → 同一概念の可能性
+- uploaded-prior-to / uploaded_prior_to → 同一概念の可能性
+- UPSERT / upsert → 同一概念の可能性
+- upsert_schema_version → 同一概念の可能性
+- URL / URLS / Url / url / urls → 同一概念の可能性
+- url_req_space → 同一概念の可能性
+- url_to_file_path → 同一概念の可能性
+- url_to_path → 同一概念の可能性
+- url_without_fragment → 同一概念の可能性
+- UrlWhitelist → 同一概念の可能性
+- URT-RLE / urt-rle → 同一概念の可能性
+- USAGE / usage → 同一概念の可能性
+- use_libsecp256k1_for_signing → 同一概念の可能性
+- use-rpm-opt-flags / use_rpm_opt_flags → 同一概念の可能性
+- USER / USERS → 同一概念の可能性
+- User-Agent / user-agent / user_agent → 同一概念の可能性
+- USER_CACHE_DIR / user_cache_dir → 同一概念の可能性
+- user_cache_path → 同一概念の可能性
+- user_config_dir → 同一概念の可能性
+- user_config_path → 同一概念の可能性
+- user_data_dir → 同一概念の可能性
+- user_data_path → 同一概念の可能性
+- User-Defined / user-defined → 同一概念の可能性
+- user_desktop_dir → 同一概念の可能性
+- user_desktop_path → 同一概念の可能性
+- user_documents_dir → 同一概念の可能性
+- user_documents_path → 同一概念の可能性
+- user_downloads_dir → 同一概念の可能性
+- user_downloads_path → 同一概念の可能性
+- user_log_dir → 同一概念の可能性
+- user_log_path → 同一概念の可能性
+- USER_MESSAGE / user-message → 同一概念の可能性
+- user_music_dir → 同一概念の可能性
+- user_music_path → 同一概念の可能性
+- user_pictures_dir → 同一概念の可能性
+- user_pictures_path → 同一概念の可能性
+- user_runtime_dir → 同一概念の可能性
+- user_runtime_path → 同一概念の可能性
+- USER_SITE / User-site / user-site → 同一概念の可能性
+- user_state_dir → 同一概念の可能性
+- user_state_path → 同一概念の可能性
+- user_videos_dir → 同一概念の可能性
+- user_videos_path → 同一概念の可能性
+- UserInstallationInvalid → 同一概念の可能性
+- USING / using → 同一概念の可能性
+- utc_now_iso → 同一概念の可能性
+- utc_now_z → 同一概念の可能性
+- utctz_to_altz → 同一概念の可能性
+- VAL / VALE → 同一概念の可能性
+- VALID / valid → 同一概念の可能性
+- valid_label_length → 同一概念の可能性
+- valid_string_length → 同一概念の可能性
+- validate_action_for_mode → 同一概念の可能性
+- validate_event_type → 同一概念の可能性
+- validate_hash_stability → 同一概念の可能性
+- validate_license_key_format → 同一概念の可能性
+- validate_meaning_for_gate → 同一概念の可能性
+- validate_or_raise → 同一概念の可能性
+- validate_project_dynamic → 同一概念の可能性
+- validate_reasoning_sequence → 同一概念の可能性
+- VALIDATING → 同一概念の可能性
+- VALIDATION / Validation → 同一概念の可能性
+- ValidationError → 同一概念の可能性
+- ValidationRecord → 同一概念の可能性
+- ValidationResult → 同一概念の可能性
+- VALUE / VALUES / Value / value / values → 同一概念の可能性
+- VARIABLE / VARIABLES / Variable → 同一概念の可能性
+- VarIntSerializer → 同一概念の可能性
+- VarStringSerializer → 同一概念の可能性
+- VASAI_TEST_REPORT / vasai-test-reports → 同一概念の可能性
+- VCS / vcs → 同一概念の可能性
+- vc_for_python → 同一概念の可能性
+- VcsHashUnsupported → 同一概念の可能性
+- VcsInfo → 同一概念の可能性
+- VcsSupport → 同一概念の可能性
+- VectorSerializer → 同一概念の可能性
+- VendorImporter → 同一概念の可能性
+- VERBOSE / verbose → 同一概念の可能性
+- VerboseLogger → 同一概念の可能性
+- VERIFICATION / Verification → 同一概念の可能性
+- VerificationError → 同一概念の可能性
+- VerificationReport → 同一概念の可能性
+- VerificationStatus → 同一概念の可能性
+- VERIFIED → 同一概念の可能性
+- VERIFY / verify → 同一概念の可能性
+- verify_against_blockheader → 同一概念の可能性
+- verify_against_freeze → 同一概念の可能性
+- verify_all_attestations → 同一概念の可能性
+- verify_and_exit → 同一概念の可能性
+- VERIFY_CHAIN / verify_chain → 同一概念の可能性
+- verify_ledger_is_source_of_truth → 同一概念の可能性
+- verify_payload_hash → 同一概念の可能性
+- verify_rows_ed25519 → 同一概念の可能性
+- VerifyAlreadyInChainError → 同一概念の可能性
+- VerifyError → 同一概念の可能性
+- VerifyMessage → 同一概念の可能性
+- VerifyOpFailedError → 同一概念の可能性
+- VerifyRejectedError → 同一概念の可能性
+- VerifyScript → 同一概念の可能性
+- VerifyScriptError → 同一概念の可能性
+- VerifySignature → 同一概念の可能性
+- VerifySignatureError → 同一概念の可能性
+- VERSION / Version / version → 同一概念の可能性
+- Version-aware / version-aware → 同一概念の可能性
+- version_info → 同一概念の可能性
+- version_info_to_nodot → 同一概念の可能性
+- VersionConflict → 同一概念の可能性
+- VersionControl → 同一概念の可能性
+- VersionDict → 同一概念の可能性
+- VERSIONING / Versioning → 同一概念の可能性
+- VersionlessRequirement → 同一概念の可能性
+- VersionPredicate → 同一概念の可能性
+- VerticalCenter → 同一概念の可能性
+- ViewEngine → 同一概念の可能性
+- ViewError → 同一概念の可能性
+- VIOLATION / VIOLATIONS / violations → 同一概念の可能性
+- ViolationSeverity → 同一概念の可能性
+- virtualenv_no_global → 同一概念の可能性
+- VisibleWhitespaceFilter → 同一概念の可能性
+- VISION → 同一概念の可能性
+- VisualStudio / visualstudio → 同一概念の可能性
+- VoidPointer → 同一概念の可能性
+- Vortex-Induced / Vortex-induced → 同一概念の可能性
+- WAD / WADE → 同一概念の可能性
+- WAG / WAGE → 同一概念の可能性
+- WAIT / wait → 同一概念の可能性
+- wait_for_port → 同一概念の可能性
+- wait_for_read → 同一概念の可能性
+- wait_for_response → 同一概念の可能性
+- wait_for_socket → 同一概念の可能性
+- wait_for_write → 同一概念の可能性
+- WAL / WALE → 同一概念の可能性
+- WALK / walk → 同一概念の可能性
+- WARN / warn → 同一概念の可能性
+- warn_dash_deprecation → 同一概念の可能性
+- warn_depends_obsolete → 同一概念の可能性
+- warn_deprecated_options → 同一概念の可能性
+- warn_distutils_present → 同一概念の可能性
+- warn_if_run_as_root → 同一概念の可能性
+- warn_multiple_tokens_in_named_alternation → 同一概念の可能性
+- warn_on_401 → 同一概念の可能性
+- warn_on_match_first_with_lshift_operator → 同一概念の可能性
+- warn_on_mismatching_name → 同一概念の可能性
+- warn_on_multiple_string_args_to_oneof → 同一概念の可能性
+- warn_ungrouped_named_tokens_in_collection → 同一概念の可能性
+- WARNING / WARNINGS / Warning / Warnings / warning / warnings → 同一概念の可能性
+- was_installed_by_pip → 同一概念の可能性
+- WAY / WAYS → 同一概念の可能性
+- WEBKIT / WebKit → 同一概念の可能性
+- WEIGHT_ADJUSTMENT / weight-adjustment → 同一概念の可能性
+- WeightOptimizer → 同一概念の可能性
+- WeightStateStore → 同一概念の可能性
+- Well-known / well-known → 同一概念の可能性
+- WHAT / what → 同一概念の可能性
+- What is MoCKA / what_is_mocka → 同一概念の可能性
+- WHAT_TYPES / what_type → 同一概念の可能性
+- WHEEL / Wheel → 同一概念の可能性
+- wheel_build_tag → 同一概念の可能性
+- WHEEL_DIR / wheel-dir → 同一概念の可能性
+- wheel_dist_info_dir → 同一概念の可能性
+- wheel_root_is_purelib → 同一概念の可能性
+- Wheel-Version / wheel_version → 同一概念の可能性
+- WheelCache → 同一概念の可能性
+- WheelCommand → 同一概念の可能性
+- WheelDistribution → 同一概念の可能性
+- WHEN / when → 同一概念の可能性
+- WHERE / where → 同一概念の可能性
+- WHO / who → 同一概念の可能性
+- WHY / why → 同一概念の可能性
+- Why It Matters / Why it matters → 同一概念の可能性
+- why_was_this_decided → 同一概念の可能性
+- Widget-Workshop / widget-workshop → 同一概念の可能性
+- WIN / WINE → 同一概念の可能性
+- WINDOW / WINDOWS / Windows → 同一概念の可能性
+- WindowCursor → 同一概念の可能性
+- windows_kits_roots → 同一概念の可能性
+- windows-only / windows_only → 同一概念の可能性
+- WindowsCommandSpec → 同一概念の可能性
+- WindowsConsoleFeatures → 同一概念の可能性
+- WindowsCoordinates → 同一概念の可能性
+- WindowsExecutableLauncherWriter → 同一概念の可能性
+- WindowsScriptWriter → 同一概念の可能性
+- WindowsSdkDir → 同一概念の可能性
+- WindowsSdkLastVersion → 同一概念の可能性
+- WindowsSdkVersion → 同一概念の可能性
+- with_cached_index_content → 同一概念の可能性
+- with-GCC-exception / with-gcc-exception → 同一概念の可能性
+- with_indent_guides → 同一概念の可能性
+- with_line_numbers → 同一概念の可能性
+- with_packs_rw → 同一概念の可能性
+- with_project_on_sys_path → 同一概念の可能性
+- with_rw_directory → 同一概念の可能性
+- words → 同一概念の可能性
+- WordEnd → 同一概念の可能性
+- WordPressAdapter → 同一概念の可能性
+- WordPressWorker → 同一概念の可能性
+- WordSet → 同一概念の可能性
+- WordStart → 同一概念の可能性
+- WORK / WORKS → 同一概念の可能性
+- WORKER / worker → 同一概念の可能性
+- WORKING_MEMORY / working_memory → 同一概念の可能性
+- working_tree_dir → 同一概念の可能性
+- WorkingMemoryEngine → 同一概念の可能性
+- WorkingSet → 同一概念の可能性
+- WORKSPACE / WORKSPACES → 同一概念の可能性
+- WorkTreeRepositoryUnsupported → 同一概念の可能性
+- Worst-Case / worst-case → 同一概念の可能性
+- wrap / wraps → 同一概念の可能性
+- wrap_with_fallback → 同一概念の可能性
+- WrappedSocket → 同一概念の可能性
+- WRAPPER / WRAPPERS / wrapper → 同一概念の可能性
+- WRIT / WRITE / write → 同一概念の可能性
+- write_ascii_armored → 同一概念の可能性
+- write_binary_file → 同一概念の可能性
+- write_intelligence_report → 同一概念の可能性
+- write_inventory_record → 同一概念の可能性
+- write_or_delete_file → 同一概念の可能性
+- Write-Output / write_output → 同一概念の可能性
+- write_pkg_file → 同一概念の可能性
+- write_pkg_info → 同一概念の可能性
+- write_safety_flag → 同一概念の可能性
+- write_semantic_concept → 同一概念の可能性
+- write_setup_requirements → 同一概念の可能性
+- write_stream_to_pack → 同一概念の可能性
+- write_text_file → 同一概念の可能性
+- write_toplevel_names → 同一概念の可能性
+- write_tree_from_cache → 同一概念の可能性
+- write_verify_script → 同一概念の可能性
+- WSL / WSLE → 同一概念の可能性
+- WxWindows-exception / wxwindows-exception → 同一概念の可能性
+- X8664 → 同一概念の可能性
+- X-coordinate / x-coordinate → 同一概念の可能性
+- x-R / x-r → 同一概念の可能性
+- x-sas / x-sass → 同一概念の可能性
+- xkeyboard-config-Zinoviev / xkeyboard-config-zinoviev → 同一概念の可能性
+- XMLHTTP / XmlHttp → 同一概念の可能性
+- XOE / XOS → 同一概念の可能性
+- XYZT / XYZTS → 同一概念の可能性
+- YYYY-MM-DD / yyyy-mm-dd → 同一概念の可能性
+- YYYY-MM-DDTHH / yyyy-MM-ddTHH / yyyy-mm-ddThh → 同一概念の可能性
+- Z-score / Z_SCORE / z-score → 同一概念の可能性
+- Zero-length / zero-length → 同一概念の可能性
+- ZeroOrMore → 同一概念の可能性
+- zip_item_is_executable → 同一概念の可能性
+- zip-safe / zip_safe → 同一概念の可能性
+- ZipBackedFile → 同一概念の可能性
+- ZipExtFile → 同一概念の可能性
+- ZipFile → 同一概念の可能性
+- ZipInfo / zipinfo → 同一概念の可能性
+- ZipManifests → 同一概念の可能性
+- ZippedStoreShaWriter → 同一概念の可能性
+- ZipProvider → 同一概念の可能性
+- ZipReader → 同一概念の可能性
+- ZipResourceFinder → 同一概念の可能性
+- ZONE / ZONES → 同一概念の可能性
+- ZoneState → 同一概念の可能性
