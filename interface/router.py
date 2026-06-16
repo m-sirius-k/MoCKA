@@ -140,7 +140,6 @@ def write_safe_csv(row); write_sqlite(row):
         _record_integrity_incident(result, row)
         return None  # 呼び出し元に停止を通知
 
-    os.makedirs(os.path.dirname(EVENTS_CSV), exist_ok=True)
     base = {k:"" for k in FIELDNAMES}
     base.update(row)
     base = {k: safe_value(v) for k,v in base.items()}
@@ -148,12 +147,14 @@ def write_safe_csv(row); write_sqlite(row):
         base["event_id"] = next_event_id()
     if not base["when"]:
         base["when"] = datetime.now().isoformat(timespec="seconds")
-    write_header = not os.path.exists(EVENTS_CSV)
-    with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
-        if write_header:
-            writer.writeheader()
-        writer.writerow(base)
+    # [PHI-OS GATE v1 2026-06-16] CSV書き込み停止 — Single DB(SQLite)のみ
+    # write_header = not os.path.exists(EVENTS_CSV)
+    # with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
+    #     writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
+    #     if write_header:
+    #         writer.writeheader()
+    #     writer.writerow(base)
+    write_sqlite(base)
     return base["event_id"]
 
 def _record_integrity_incident(violation: dict, original_row: dict):
@@ -180,12 +181,14 @@ def _record_integrity_incident(violation: dict, original_row: dict):
         "free_note": f"reason={violation.get('reason')}|field={violation.get('field')}|original_title={str(original_row.get('title',''))[:100]}"
     })
     base = {k: safe_value(v) for k,v in base.items()}
-    write_header = not os.path.exists(EVENTS_CSV)
-    with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
-        if write_header:
-            writer.writeheader()
-        writer.writerow(base)
+    # [PHI-OS GATE v1 2026-06-16] CSV書き込み停止 — Single DB(SQLite)のみ
+    # write_header = not os.path.exists(EVENTS_CSV)
+    # with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
+    #     writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
+    #     if write_header:
+    #         writer.writeheader()
+    #     writer.writerow(base)
+    write_sqlite(base)
     print(f"[INCIDENT_RECORDED] {eid}")
 
 def save(title, summary=""):

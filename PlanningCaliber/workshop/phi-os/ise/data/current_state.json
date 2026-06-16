@@ -228,11 +228,17 @@
       "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
       "priority": "中",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_322",
+      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
+      "priority": "最高",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 6,
-  "state_hash": "90fe9a5e658a178a7bacb014cabe51f8fb0c6ae47dd114189b0356fc7485da69",
-  "generated_at": "2026-06-15T22:54:01.716509+00:00"
+  "revision": 7,
+  "state_hash": "cb2ff4ba63fef05afd11a684320626b150f97f1c79407adb83f9441f317ee245",
+  "generated_at": "2026-06-16T00:10:52.207790+00:00"
 }

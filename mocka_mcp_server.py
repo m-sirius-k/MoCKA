@@ -231,7 +231,7 @@ TOOLS = [
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
-    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description"]}},
+    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description","author"]}},
     {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
@@ -362,7 +362,14 @@ def execute_tool(name, args):
             row = {f: "" for f in EVENTS_FIELDS}
             row["event_id"]        = eid
             row["when"]            = ts
-            row["who_actor"]       = args.get("author", "Claude")
+            # [PHI-OS GATE v1 2026-06-16] who_actor必須化 — デフォルト'Claude'廃止
+            _actor = args.get("author", "")
+            if not _actor or _actor == "Claude":
+                raise ValueError(
+                    "who_actor is required. "
+                    "Use exact model name e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"
+                )
+            row["who_actor"]       = _actor
             row["what_type"]       = "claude_mcp"
             row["where_component"] = "mcp_caliber"
             row["where_path"]      = "mocka_mcp_server.py"

@@ -25,6 +25,11 @@
       "priority": "最高"
     },
     {
+      "id": "TODO_322",
+      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
+      "priority": "最高"
+    },
+    {
       "id": "TODO_139",
       "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
       "priority": "高"
@@ -33,12 +38,7 @@
       "id": "TODO_207",
       "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
       "priority": "高"
-    },
-    {
-      "id": "TODO_206",
-      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
-      "priority": "高"
     }
   ],
-  "generated_at": "2026-06-16T07:54:08.981478"
+  "generated_at": "2026-06-16T09:10:54.181381"
 }
