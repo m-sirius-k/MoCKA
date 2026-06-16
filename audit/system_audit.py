@@ -22,6 +22,7 @@ class SystemAudit:
             "consistency": self._consistency(state),
             "drift":       self._drift(state),
             "status":      self._status(state),
+            "compliance":  self._compliance(),
         }
 
     def _consistency(self, state: Dict[str, Any]) -> str:
@@ -29,8 +30,7 @@ class SystemAudit:
         return "OK" if ok else "INTEGRITY_FAIL"
 
     def _drift(self, state: Dict[str, Any]) -> str:
-        report = generate_report()
-        return report.get("risk", "UNKNOWN")
+        return state.get("drift", "UNKNOWN")
 
     def _status(self, state: Dict[str, Any]) -> str:
         if state.get("stability") == "HIGH":
@@ -38,3 +38,10 @@ class SystemAudit:
         if state.get("stability") == "LOW":
             return "ALERT"
         return "MONITOR"
+
+    def _compliance(self) -> str:
+        """制度適合性: append-only / 非改変 / 記録義務の確認。"""
+        report = generate_report()
+        if report.get("risk") == "HIGH":
+            return "REVIEW_REQUIRED"
+        return "VALID"

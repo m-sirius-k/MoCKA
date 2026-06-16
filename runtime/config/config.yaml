@@ -1,0 +1,12 @@
+phi:
+  low: 0.3
+  high: 0.7
+
+timeline:
+  window: 20
+
+audit:
+  strict: true
+
+runtime:
+  mode: stable
