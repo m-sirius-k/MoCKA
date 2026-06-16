@@ -1,11 +1,11 @@
 {
   "mocka_server": {
-    "ok": false,
-    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
+    "ok": true,
+    "detail": "200 OK"
   },
   "caliber_pipeline": {
-    "ok": false,
-    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
+    "ok": true,
+    "detail": "200 OK"
   },
   "anthropic_api": {
     "ok": true,
@@ -20,8 +20,8 @@
     "detail": "ok"
   },
   "mcp_schema_hash": {
-    "ok": true,
-    "detail": "変更なし (hash: 574c5e3613d20e2e)"
+    "ok": false,
+    "detail": "ハッシュ変更検出!\n                          前回: 574c5e3613d20e2e\n                          今回: a314edcd173ea462"
   },
   "relay_dom_selector": {
     "ok": false,
