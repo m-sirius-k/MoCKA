@@ -25,11 +25,6 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_322",
-      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_139",
       "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
       "priority": "高"
@@ -38,44 +33,12 @@
       "id": "TODO_207",
       "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
       "priority": "高"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-06-16T09:47:26.259591",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 0.583,
-    "danger_rate": 0.792,
-    "success_rate": 0.208,
-    "text": "監査官（R01）として、この結果を**「証拠に基づく最終監査」**として評価します。\n\n最終判定\n\n項目 判定\n\nTEST-01 Gate強制性 条件付き合格\n",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-31",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
-        "recur": 0,
-        "matched": [
-          "失敗",
-          "なぜ",
-          "auto"
-        ],
-        "score": 3
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-03-31",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
-        "recur": 0,
-        "matched": [
-          "失敗",
-          "なぜ"
-        ],
-        "score": 2
-      }
-    ],
-    "updated_at": "2026-06-16T01:12:47.633Z"
-  }
+  "generated_at": "2026-06-16T15:30:32.591550"
 }
