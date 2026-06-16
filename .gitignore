@@ -39,3 +39,7 @@ __pycache__/
 # temp/working files
 *_tmp.json
 core_kernel/orchestra/data/
+
+# ローカル管理専用（識別子・運用ファイル類 / GitHub非公開）
+# 制度的決定: E20260616_094 / 2026-06-16 きむら博士承認
+docs/internal/
