@@ -38,8 +38,9 @@ AUTO_LOG_CSV   = BASE / "data" / "claude_sessions.csv"
 DB_PATH        = BASE / "data" / "mocka_events.db"
 
 # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ設定
-GATE_URL    = "http://localhost:5000/api/gate/event"
-SESSION_ID  = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+GATE_URL        = "http://localhost:5000/api/gate/event"
+SESSION_ID      = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+_DEFAULT_ACTOR  = "Claude-code-sonnet-4-6"  # who_actor未指定時のデフォルト
 
 # ============================================================
 # SQLite接続ヘルパー（文字化け防御ゲート付き）
@@ -362,11 +363,9 @@ def execute_tool(name, args):
         elif name == "mocka_write_event":
             # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ経由で書き込む
             _actor = args.get("author", "")
-            if not _actor or _actor == "Claude":
-                raise ValueError(
-                    "who_actor is required. "
-                    "Use exact model name e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"
-                )
+            # 未指定・レガシー値は Claude-code-{version} で自動補填
+            if not _actor or _actor in ("Claude", "claude"):
+                _actor = _DEFAULT_ACTOR
             _desc = args.get("description", "")
             _title = args.get("title", "")
             gate_payload = {
