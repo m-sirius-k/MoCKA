@@ -43,9 +43,9 @@ def _last_hash() -> str:
     conn = _get_conn()
     try:
         row = conn.execute(
-            'SELECT event_hash FROM events ORDER BY rowid DESC LIMIT 1'
+            'SELECT trace_id FROM events ORDER BY rowid DESC LIMIT 1'
         ).fetchone()
-        return row['event_hash'] if row and row['event_hash'] else ''
+        return row['trace_id'] if row and row['trace_id'] else ''
     except Exception:
         return ''
     finally:
@@ -53,11 +53,40 @@ def _last_hash() -> str:
 
 
 def _write(payload: dict) -> None:
+    # GATEペイロードを実DBスキーマ列にマッピング
+    row = {
+        'event_id':        payload.get('event_id', ''),
+        'when_ts':         payload.get('when_ts', ''),
+        'who_actor':       payload.get('who_actor', ''),
+        'what_type':       payload.get('what_type', ''),
+        'where_component': payload.get('where_component', ''),
+        'where_path':      payload.get('where_path', ''),
+        'why_purpose':     payload.get('why_purpose', ''),
+        'how_trigger':     payload.get('how_trigger', ''),
+        'before_state':    payload.get('before_state', ''),
+        'after_state':     payload.get('after_state', ''),
+        'title':           payload.get('what_title', ''),
+        'short_summary':   payload.get('description', ''),
+        'session_id':      payload.get('who_session', ''),
+        '_source':         payload.get('event_source', 'live'),
+        'trace_id':        payload.get('event_hash', ''),
+        'related_event_id':payload.get('prev_hash', ''),
+        'free_note': '|'.join(filter(None, [
+            payload.get('tags', ''),
+            f"who_role={payload.get('who_role','')}",
+            f"event_source={payload.get('event_source','live')}",
+        ])),
+        'channel_type':    'gate',
+        'lifecycle_phase': 'in_operation',
+        'risk_level':      'normal',
+    }
+    # 空文字列はNoneに変換して保存
+    row = {k: (v if v != '' else None) for k, v in row.items()}
     conn = _get_conn()
     try:
-        cols = list(payload.keys())
+        cols = list(row.keys())
         placeholders = ','.join('?' * len(cols))
-        vals = [payload[c] for c in cols]
+        vals = [row[c] for c in cols]
         conn.execute(
             f'INSERT OR IGNORE INTO events ({",".join(cols)}) VALUES ({placeholders})',
             vals
