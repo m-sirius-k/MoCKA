@@ -1,0 +1,11 @@
+{
+  "archived_at": "2026-06-16T10:07:10.378746",
+  "original_path": "data/events.csv",
+  "archive_path": "archive/legacy/events.csv",
+  "sha256": "31591b2acffc73bdd66a488b55d38a0e30fbb70e827ec93df42b87c1fd2eef3f",
+  "size_bytes": 965532,
+  "lines": 27496,
+  "reason": "Phase 4 DB統合完了。全レコードをdata/mocka_events.dbへ移行済み。CSVは廃止。",
+  "sealed_by": "Claude-code-sonnet-4-6",
+  "doctor_approval": "承認済み"
+}
