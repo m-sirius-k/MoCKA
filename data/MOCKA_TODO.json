@@ -705,16 +705,40 @@
       "updated_at": "2026-06-15T17:38:32.282274"
     },
     {
-      "id": "TODO_322",
-      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
+      "id": "TODO_323",
+      "title": "PHI-OS Gate — DB直接書き込み検知トリガー実装（Gate強制性強化）",
       "status": "未着手",
-      "priority": "最高",
+      "priority": "中",
       "category": "architecture",
-      "description": "E20260616_014 CRITICALを受けた根本修復。唯一解: ALL AI→PHI-OS EVENT GATE→SINGLE DB→derived systems。①CSV廃止 ②SQLite一本化 ③actor強制(AI種別+モデル名必須) ④PHI-OS Gate実装 ⑤直接書き込み禁止 ⑥before/after強制記録(replay可能化)",
-      "assigned_to": "Claude+くろこ",
-      "note": "RISK CLASS:CRITICAL。修正ではなく再統一。博士承認後着手。Reference: E20260616_014",
-      "reference_event": "E20260616_014",
-      "created_at": "2026-06-16T08:22:56.974588"
+      "description": "TEST-01監査指摘対応。SQLite TRIGGERでGATE外からのINSERTを検知し、audit_violationsテーブルに記録+アラート発火。物理的封鎖ではなく「迂回しても即検知」の制度的抑止力を追加。OS権限設定は長期課題。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260616_060",
+      "created_at": "2026-06-16T10:12:30.579264"
+    },
+    {
+      "id": "TODO_324",
+      "title": "PHI-OS 定期監査スクリプト — Gate経由率・Direct Write・Actor未設定の継続検証",
+      "status": "未着手",
+      "priority": "中",
+      "category": "architecture",
+      "description": "Gate経由率・Direct Write件数・Actor未設定件数を定期検証するスクリプト。毎朝health_check.pyに組み込み、異常時はCOMMAND CENTERにアラート表示。「Gate経由率100% / Direct Write 0件 / Actor未設定0件」を継続監査。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260616_060",
+      "created_at": "2026-06-16T10:12:39.269390"
+    },
+    {
+      "id": "TODO_325",
+      "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "architecture",
+      "description": "GPT R01 Priority1指摘。SQLiteファイルへの直接アクセスをPHI-OSプロセスのみに限定。Windows ACLでmocka_events.dbの書き込み権限をPHI-OSサービスアカウントのみに設定。AI/外部スクリプトからの直接SQLite接続を物理的に遮断。Trust Boundary確立。",
+      "assigned_to": "Claude",
+      "note": "GPT R01 Priority1（必須）。TODO_323(Trigger)・TODO_324(定期監査)と合わせてPhase5で実施。",
+      "reference_event": "E20260616_064",
+      "created_at": "2026-06-16T10:13:10.769167"
     }
   ],
   "completed": [
@@ -4274,6 +4298,20 @@
       "created_at": "2026-06-12T14:15:49.934044",
       "updated_at": "2026-06-15T19:07:39.539157",
       "completed_at": "2026-06-15"
+    },
+    {
+      "id": "TODO_322",
+      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
+      "status": "完了",
+      "priority": "最高",
+      "category": "architecture",
+      "description": "E20260616_014 CRITICALを受けた根本修復。唯一解: ALL AI→PHI-OS EVENT GATE→SINGLE DB→derived systems。①CSV廃止 ②SQLite一本化 ③actor強制(AI種別+モデル名必須) ④PHI-OS Gate実装 ⑤直接書き込み禁止 ⑥before/after強制記録(replay可能化)",
+      "assigned_to": "Claude+くろこ",
+      "note": "2026-06-16 Phase1〜4完了。seal: 70998382 ALL CHECKS PASSED。DB: 11,929件。CSV時代終了・GATE単一経路確立・単一真実保証システム成立。E20260616_014→E20260616_059。",
+      "reference_event": "E20260616_014",
+      "created_at": "2026-06-16T08:22:56.974588",
+      "updated_at": "2026-06-16T10:08:48.392067",
+      "completed_at": "2026-06-16"
     }
   ],
   "orchestra_handoff": {
