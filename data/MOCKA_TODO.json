@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-15",
+    "updated": "2026-06-16",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -703,6 +703,18 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:22:26.877288",
       "updated_at": "2026-06-15T17:38:32.282274"
+    },
+    {
+      "id": "TODO_322",
+      "title": "PHI-OS Event Gate 再設計 — Event Fragmentation根本修復・単一真実保証",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "architecture",
+      "description": "E20260616_014 CRITICALを受けた根本修復。唯一解: ALL AI→PHI-OS EVENT GATE→SINGLE DB→derived systems。①CSV廃止 ②SQLite一本化 ③actor強制(AI種別+モデル名必須) ④PHI-OS Gate実装 ⑤直接書き込み禁止 ⑥before/after強制記録(replay可能化)",
+      "assigned_to": "Claude+くろこ",
+      "note": "RISK CLASS:CRITICAL。修正ではなく再統一。博士承認後着手。Reference: E20260616_014",
+      "reference_event": "E20260616_014",
+      "created_at": "2026-06-16T08:22:56.974588"
     }
   ],
   "completed": [
