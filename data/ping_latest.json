@@ -30,49 +30,15 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_330",
-      "title": "Distribution Router v2 — 6軸確率分布モデル実装（GPT監査版）",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_139",
       "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
       "priority": "高"
+    },
+    {
+      "id": "TODO_207",
+      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-06-17T16:50:36.356556",
-  "matcher_result": {
-    "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "cowork て何に使うの？",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-26",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] 形態素解析は「別コンテナ・別サービス」で閉じる  形態素解析そのものは別のコンテナ（例：Alpine + MeCab + fugashi の軽量イメージ）で行い、  出力結果を JSON",
-        "recur": 0,
-        "matched": [
-          "使う"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-05-08",
-        "why": "save/broadcast from command center",
-        "how": "context_menu_click",
-        "note": "[hint] ちょっとあなたと話したい！ この論文は　本質的に　[AIとの協業　パートナーシップ]なんです！ 礼儀/作法/なり振る舞い/　自分の行動と発言に責任を持たせるような Claude君も良くあ",
-        "recur": 0,
-        "matched": [
-          "使う"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-17T07:53:00.182Z"
-  }
+  "generated_at": "2026-06-18T07:26:38.829427"
 }
