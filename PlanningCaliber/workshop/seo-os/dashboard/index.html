@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEO Command Index v3 — Command Center</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070d14;--bg2:#0d1520;--surface:#111c2b;
+  --border:#1e2f45;--text:#cdd9e5;--muted:#6b8099;
+  --accent:#4a9eff;--green:#3dba6c;--amber:#f0a500;--red:#e54b4b;
+  --purple:#9b72f0;--teal:#2ab9a8;--font:'Segoe UI','Hiragino Sans',system-ui,sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13px;min-height:100vh}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:12px}
+.header-title{font-size:15px;font-weight:700;color:var(--accent)}
+.header-sub{font-size:11px;color:var(--muted)}
+.shell{display:grid;grid-template-columns:220px 1fr;height:calc(100vh - 48px);overflow:hidden}
+.sidebar{background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;padding:12px}
+.sidebar-section{margin-bottom:16px}
+.sidebar-label{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;padding:0 4px}
+.cat-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:12px;transition:all .15s}
+.cat-item:hover,.cat-item.active{background:var(--surface);color:var(--text)}
+.cat-count{margin-left:auto;font-size:10px;background:rgba(74,158,255,.15);color:var(--accent);padding:1px 6px;border-radius:10px}
+.main{display:flex;flex-direction:column;overflow:hidden}
+.search-bar{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;gap:8px}
+.search-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:7px 12px;color:var(--text);font-size:13px;outline:none}
+.search-input:focus{border-color:var(--accent)}
+.search-btn{background:var(--accent);color:#fff;border:none;border-radius:6px;padding:7px 16px;cursor:pointer;font-size:12px;font-weight:600}
+.content{flex:1;overflow-y:auto;padding:16px}
+.section-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.cmd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;margin-bottom:16px}
+.cmd-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;cursor:pointer;transition:border-color .15s}
+.cmd-card:hover{border-color:var(--accent)}
+.cmd-id{font-size:11px;color:var(--accent);font-family:monospace;margin-bottom:4px}
+.cmd-desc{font-size:12px;color:var(--muted);line-height:1.4}
+.cmd-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(74,158,255,.1);color:var(--accent)}
+.ctx-panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:16px}
+.ctx-row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border);font-size:11px}
+.ctx-key{color:var(--muted)}
+.ctx-val{color:var(--text);font-family:monospace}
+.tab-bar{display:flex;gap:2px;padding:12px 16px 0;border-bottom:1px solid var(--border)}
+.tab{padding:7px 14px;cursor:pointer;color:var(--muted);font-size:12px;border-radius:6px 6px 0 0;transition:all .15s}
+.tab:hover,.tab.active{background:var(--surface);color:var(--text)}
+.detail-panel{display:none;padding:16px}
+.detail-panel.active{display:block}
+.rec-list{display:flex;flex-direction:column;gap:6px}
+.rec-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:6px;cursor:pointer}
+.rec-source{font-size:10px;padding:1px 6px;border-radius:3px;background:rgba(74,158,255,.15);color:var(--accent)}
+.wf-step{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--bg);border-radius:4px;font-size:11px;font-family:monospace}
+.wf-arrow{color:var(--muted);margin:0 4px}
+#toast{position:fixed;bottom:20px;right:20px;background:#3dba6c;color:#fff;padding:8px 16px;border-radius:6px;font-size:12px;display:none;z-index:100}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-title">SEO Command Index v3</div>
+  <div class="header-sub">PHI-OS Command Center — PlanningCaliber</div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <span id="ctx-phase" style="font-size:11px;color:var(--teal)">Phase --</span>
+    <span id="ctx-events" style="font-size:11px;color:var(--muted)">events: --</span>
+  </div>
+</div>
+
+<div class="tab-bar">
+  <div class="tab active" onclick="switchTab('commands',this)">Commands</div>
+  <div class="tab" onclick="switchTab('search',this)">Search</div>
+  <div class="tab" onclick="switchTab('context',this)">Context</div>
+  <div class="tab" onclick="switchTab('graph',this)">Graph</div>
+  <div class="tab" onclick="switchTab('workflows',this)">Workflows</div>
+  <div class="tab" onclick="switchTab('history',this)">History</div>
+  <div class="tab" onclick="switchTab('audit',this)">Audit</div>
+</div>
+
+<div class="shell">
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Categories</div>
+    <div id="cat-list"></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Top Ranking</div>
+    <div id="ranking-list" style="font-size:11px;color:var(--muted)">loading...</div>
+  </div>
+</div>
+<div class="main">
+  <div class="search-bar">
+    <input id="search-input" class="search-input" placeholder="コマンドを検索... (例: seo, publish, snapshot)" oninput="onSearch()">
+    <button class="search-btn" onclick="onSearch()">Search</button>
+  </div>
+  <div class="content" id="content">
+    <!-- tabs -->
+    <div id="tab-commands" class="detail-panel active">
+      <div class="section-title">All Commands</div>
+      <div id="cmd-list" class="cmd-grid"></div>
+    </div>
+    <div id="tab-search" class="detail-panel">
+      <div class="section-title">Search Results</div>
+      <div id="search-results" class="cmd-grid"></div>
+    </div>
+    <div id="tab-context" class="detail-panel">
+      <div class="section-title">Context Runtime</div>
+      <div id="ctx-body"></div>
+    </div>
+    <div id="tab-graph" class="detail-panel">
+      <div class="section-title">Dependency Graph</div>
+      <div id="graph-body"></div>
+    </div>
+    <div id="tab-workflows" class="detail-panel">
+      <div class="section-title">Workflows</div>
+      <div id="wf-body"></div>
+    </div>
+    <div id="tab-history" class="detail-panel">
+      <div class="section-title">Usage History</div>
+      <div id="history-body"></div>
+    </div>
+    <div id="tab-audit" class="detail-panel">
+      <div class="section-title">Audit Log</div>
+      <div id="audit-body"></div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="toast">OK</div>
+
+<script>
+const API = "/api/v3";
+let allCmds = [], currentCat = null;
+
+async function init(){
+  await loadCategories();
+  await loadCommands();
+  await loadContext();
+  await loadRanking();
+  await loadGraph();
+  await loadWorkflows();
+}
+
+async function loadCategories(){
+  const r = await fetch(API+"/categories").then(r=>r.json());
+  const el = document.getElementById("cat-list");
+  el.innerHTML = '<div class="cat-item active" onclick="filterCat(null,this)"><span>All</span></div>';
+  r.forEach(c=>{
+    el.innerHTML += `<div class="cat-item" onclick="filterCat('${c.id}',this)">
+      <span>${c.icon||"📁"} ${c.label}</span><span class="cat-count">${c.count}</span></div>`;
+  });
+}
+
+async function loadCommands(cat=null){
+  const url = cat ? API+"/commands?category="+cat : API+"/commands";
+  const r = await fetch(url).then(r=>r.json());
+  allCmds = r.commands||[];
+  renderCommands(allCmds);
+}
+
+function renderCommands(cmds){
+  const el = document.getElementById("cmd-list");
+  el.innerHTML = cmds.map(c=>`
+    <div class="cmd-card" onclick="executeCmd('${c.id}')">
+      <div class="cmd-id">${c.id}</div>
+      <div class="cmd-desc">${c.description}</div>
+      <div class="cmd-tags">${(c.tags||[]).slice(0,4).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+    </div>`).join("");
+}
+
+function filterCat(cat, el){
+  currentCat = cat;
+  document.querySelectorAll(".cat-item").forEach(e=>e.classList.remove("active"));
+  el.classList.add("active");
+  loadCommands(cat);
+}
+
+let searchTimer;
+function onSearch(){
+  clearTimeout(searchTimer);
+  const q = document.getElementById("search-input").value.trim();
+  if(!q){ switchTabById("tab-commands"); return; }
+  switchTabById("tab-search");
+  searchTimer = setTimeout(async()=>{
+    const r = await fetch(API+"/search?q="+encodeURIComponent(q)+(currentCat?"&category="+currentCat:"")).then(r=>r.json());
+    const el = document.getElementById("search-results");
+    el.innerHTML = (r.results||[]).map(sr=>`
+      <div class="cmd-card" onclick="executeCmd('${sr.command.id}')">
+        <div class="cmd-id">${sr.command.id} <span style="color:var(--amber);font-size:10px">${(sr.score*100).toFixed(0)}%</span></div>
+        <div class="cmd-desc">${sr.command.description}</div>
+        <div class="cmd-tags">${(sr.matched_tokens||[]).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+      </div>`).join("")||'<div style="color:var(--muted);padding:20px">No results</div>';
+  }, 200);
+}
+
+async function executeCmd(id){
+  await fetch(API+"/execute",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({command_id:id})});
+  toast("Executed: "+id);
+  loadRanking();
+}
+
+async function loadContext(){
+  const r = await fetch(API+"/context").then(r=>r.json());
+  const phase = r.project?.phase||"--";
+  const events = r.memory?.event_count||0;
+  document.getElementById("ctx-phase").textContent = phase;
+  document.getElementById("ctx-events").textContent = "events: "+events;
+  const el = document.getElementById("ctx-body");
+  const rows = [
+    ["Project", r.project?.project||"--"],
+    ["Phase", phase],
+    ["Events", events],
+    ["Current Task", r.working?.current_task||"--"],
+    ["Next Action", r.working?.next_action||"--"],
+    ["Seal", r.project?.seal||"--"],
+    ["Incidents", (r.project?.open_incidents||[]).length],
+    ["Memory Runtime", r.protocol||"--"],
+  ];
+  el.innerHTML = '<div class="ctx-panel">'+rows.map(([k,v])=>`
+    <div class="ctx-row"><span class="ctx-key">${k}</span><span class="ctx-val">${v}</span></div>`).join("")+"</div>";
+}
+
+async function loadRanking(){
+  const r = await fetch(API+"/ranking").then(r=>r.json());
+  const el = document.getElementById("ranking-list");
+  if(!r.length){el.textContent="no data";return;}
+  el.innerHTML = r.slice(0,5).map((x,i)=>`
+    <div style="padding:4px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="executeCmd('${x.command_id}')">
+      <span style="color:var(--muted)">${i+1}. </span>${x.command_id}
+      <span style="color:var(--amber);float:right">${x.use_count}x</span>
+    </div>`).join("");
+}
+
+async function loadGraph(){
+  const r = await fetch(API+"/graph?format=svg").then(r=>r.text());
+  document.getElementById("graph-body").innerHTML = '<div style="overflow:auto">'+r+'</div>';
+}
+
+async function loadWorkflows(){
+  const r = await fetch(API+"/workflows").then(r=>r.json());
+  const el = document.getElementById("wf-body");
+  el.innerHTML = r.map(w=>`
+    <div style="margin-bottom:12px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px">
+      <div style="font-weight:700;margin-bottom:4px">${w.label}</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">${w.description}</div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:4px">
+        ${w.steps.map((s,i)=>`<span class="wf-step">${s}</span>${i<w.steps.length-1?'<span class="wf-arrow">→</span>':''}`).join("")}
+      </div>
+    </div>`).join("");
+}
+
+async function loadHistory(){
+  const r = await fetch(API+"/history").then(r=>r.json());
+  const el = document.getElementById("history-body");
+  el.innerHTML = r.map(h=>`
+    <div style="display:flex;gap:12px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px">
+      <span style="color:var(--accent);font-family:monospace">${h.command_id}</span>
+      <span style="color:${h.result==='success'?'var(--green)':'var(--red)'}">${h.result}</span>
+      <span style="color:var(--muted);margin-left:auto">${h.logged_at?.slice(0,19)||''}</span>
+    </div>`).join("")||'<div style="color:var(--muted);padding:20px">No history</div>';
+}
+
+async function loadAudit(){
+  const r = await fetch(API+"/audit").then(r=>r.json());
+  const el = document.getElementById("audit-body");
+  el.innerHTML = r.map(a=>`
+    <div style="display:flex;gap:12px;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px">
+      <span style="color:var(--amber)">${a.action}</span>
+      <span style="color:var(--muted)">${JSON.stringify(a.payload).slice(0,60)}</span>
+      <span style="color:var(--muted);margin-left:auto">${a.logged_at?.slice(0,19)||''}</span>
+    </div>`).join("")||'<div style="color:var(--muted);padding:20px">No audit log</div>';
+}
+
+function switchTab(name, el){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".detail-panel").forEach(p=>p.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById("tab-"+name).classList.add("active");
+  if(name==="history") loadHistory();
+  if(name==="audit") loadAudit();
+}
+
+function switchTabById(id){
+  document.querySelectorAll(".detail-panel").forEach(p=>p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  document.querySelectorAll(".tab").forEach((t,i)=>{
+    const names=["commands","search","context","graph","workflows","history","audit"];
+    t.classList.toggle("active", "tab-"+names[i]===id);
+  });
+}
+
+function toast(msg){
+  const el=document.getElementById("toast");
+  el.textContent=msg;el.style.display="block";
+  setTimeout(()=>el.style.display="none",2000);
+}
+
+init();
+setInterval(loadContext, 30000);
+</script>
+</body>
+</html>
