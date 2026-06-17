@@ -208,19 +208,132 @@ class HTMLGenerator:
         return html
 
     def generate_json_ld(self, seo_result: "SEOResult") -> dict:
-        """JSON-LD構造化データを生成"""
+        """
+        MoCKA標準 JSON-LD 機械公文書を生成する。
+
+        位置づけ: HTML=Presentation Layer / JSON-LD=Machine Knowledge Layer
+        対象読者: Google ではなく LLM・AIエージェント向けの「事実契約書」。
+        構成: Article（記事本体） + ClaimReview（主張記録） + FAQPage（Q&A抽出）
+        """
         date_str = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-        return {
-            "@context": "https://schema.org",
-            "@type": "Article",
-            "headline": seo_result.title,
-            "description": seo_result.description,
-            "author": {
-                "@type": "Organization",
-                "name": "MoCKA PR-OS"
-            },
-            "datePublished": date_str,
-            "keywords": ", ".join(seo_result.tags),
-            "articleSection": seo_result.category,
-            "url": ""
+        author_entity = {
+            "@type": "Organization",
+            "name":  "MoCKA PR-OS",
+            "url":   "https://github.com/m-sirius-k/MoCKA"
         }
+
+        # ── Article（記事本体） ─────────────────────────────────
+        article = {
+            "@context":       "https://schema.org",
+            "@type":          "Article",
+            "headline":       seo_result.title,
+            "description":    seo_result.description,
+            "author":         author_entity,
+            "publisher":      author_entity,
+            "datePublished":  date_str,
+            "dateModified":   date_str,
+            "keywords":       ", ".join(seo_result.tags),
+            "articleSection": seo_result.category,
+            "inLanguage":     "ja",
+            "url":            "",
+            # LLM引用最適化フィールド
+            "abstract":       seo_result.description,
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "url":   ""
+            }
+        }
+
+        # ── ClaimReview（主張記録・事実契約書） ─────────────────
+        # 記事タイトルを主要主張として記録する
+        claim_review = {
+            "@context": "https://schema.org",
+            "@type":    "ClaimReview",
+            "claimReviewed": seo_result.title,
+            "author":        author_entity,
+            "datePublished": date_str,
+            "reviewRating": {
+                "@type":       "Rating",
+                "ratingValue": "5",
+                "bestRating":  "5",
+                "worstRating": "1",
+                "alternateName": "Verified"
+            },
+            "itemReviewed": {
+                "@type":       "CreativeWork",
+                "name":        seo_result.title,
+                "description": seo_result.description,
+                "author":      author_entity
+            }
+        }
+
+        # ── FAQPage（Q&A抽出・LLM引用最適化） ───────────────────
+        # 見出しをQ&Aペアとして抽出（LLMが引用しやすい構造）
+        faq_entries = self._extract_faq_pairs(seo_result.confirmed_text)
+        faq_page = None
+        if faq_entries:
+            faq_page = {
+                "@context":   "https://schema.org",
+                "@type":      "FAQPage",
+                "mainEntity": faq_entries
+            }
+
+        # ── MoCKA 機械公文書メタデータ ──────────────────────────
+        mocka_meta = {
+            "mocka_layer":     "Machine Knowledge Layer",
+            "mocka_purpose":   "LLM citation optimization",
+            "content_type":    seo_result.content_type,
+            "distribution":    seo_result.targets,
+            "routing_intent":  seo_result.intent,
+        }
+
+        result = {
+            "article":      article,
+            "claim_review": claim_review,
+            "mocka_meta":   mocka_meta,
+        }
+        if faq_page:
+            result["faq_page"] = faq_page
+
+        return result
+
+    def _extract_faq_pairs(self, text: str) -> list:
+        """
+        Markdownの見出し+直後の段落をFAQ Question/Answerペアに変換する。
+        LLMが記事内容を引用する際の粒度を最適化する。
+        """
+        import re
+        # フロントマター除去
+        body = re.sub(r"^---\n.*?\n---\n?", "", text, flags=re.DOTALL).strip()
+        lines = body.splitlines()
+
+        pairs = []
+        i = 0
+        while i < len(lines):
+            line = lines[i].strip()
+            m = re.match(r"^#{2,4} (.+)$", line)
+            if m:
+                question = m.group(1).strip()
+                # 直後の空行でない行を回答として収集（最大5行）
+                answer_lines = []
+                j = i + 1
+                while j < len(lines) and len(answer_lines) < 5:
+                    l = lines[j].strip()
+                    if re.match(r"^#{1,4} ", l):
+                        break
+                    if l:
+                        answer_lines.append(l)
+                    j += 1
+
+                if answer_lines:
+                    pairs.append({
+                        "@type":          "Question",
+                        "name":           question,
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text":  " ".join(answer_lines)[:500]
+                        }
+                    })
+            i += 1
+
+        return pairs[:10]  # 最大10ペア

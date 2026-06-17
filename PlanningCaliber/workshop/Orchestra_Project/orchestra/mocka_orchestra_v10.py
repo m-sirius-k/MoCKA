@@ -9,6 +9,14 @@ import os
 MODE = sys.argv[2] if len(sys.argv) > 2 else "orchestra"
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
 
+# TODO_258: Orchestra Context Bridge — MoCKAコンテキストをプロンプト先頭に自動注入
+_NO_CONTEXT = "--no-context" in sys.argv
+try:
+    from orchestra_context_bridge import inject_context as _inject_context
+    ENRICHED_PROMPT = PROMPT if _NO_CONTEXT else _inject_context(PROMPT)
+except ImportError:
+    ENRICHED_PROMPT = PROMPT
+
 CHAT_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chat_urls.json")
 
 def load_chat_urls():
@@ -83,7 +91,7 @@ async def get_or_resume_page(context, ai_name, domain, new_url):
 async def run_chatgpt(context):
     page, status = await get_or_resume_page(context, "ChatGPT", "chatgpt.com", "https://chatgpt.com/")
     await page.click("#prompt-textarea", timeout=5000)
-    await page.fill("#prompt-textarea", PROMPT)
+    await page.fill("#prompt-textarea", ENRICHED_PROMPT)
     await asyncio.sleep(1)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
@@ -124,7 +132,7 @@ async def run_perplexity(context):
 
     box = page.get_by_role("textbox").first
     await box.click()
-    await box.fill(PROMPT)
+    await box.fill(ENRICHED_PROMPT)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
 
@@ -149,7 +157,7 @@ async def run_gemini(context):
     print(f"[Gemini] URL確認: {current_url[:60]}")
     box = page.get_by_role("textbox").first
     await box.click()
-    await box.fill(PROMPT)
+    await box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
@@ -167,7 +175,7 @@ async def run_copilot(context):
     page, status = await get_or_resume_page(context, "Copilot", "copilot.microsoft.com", "https://copilot.microsoft.com/")
     box = page.locator("textarea").first
     await box.click()
-    await box.fill(PROMPT)
+    await box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)

@@ -25,7 +25,7 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-ADAPTERS = ["wordpress", "x", "instagram", "github_pages", "newsletter"]
+ADAPTERS = ["wordpress", "x", "instagram", "github_pages", "newsletter", "linkedin"]
 
 # ── ANSI Colors ─────────────────────────────────
 class C:
@@ -75,6 +75,9 @@ def _get_adapter(name: str):
     if n in ("newsletter", "nl"):
         from adapters.newsletter.nl_adapter import NewsletterAdapter
         return NewsletterAdapter()
+    if n in ("linkedin", "li"):
+        from adapters.linkedin.linkedin_adapter import LinkedInAdapter
+        return LinkedInAdapter()
     raise ValueError(f"Unknown adapter: {name}")
 
 

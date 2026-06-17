@@ -36,6 +36,30 @@ ROLE_REGISTRY = {
         "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
         "trust_level": "Verified",
     },
+    "R03": {
+        "name": "Audit Officer",
+        "responsibilities": "イベント台帳・Decision Ledger・Proposal記録の整合性監査。違反検知・インシデント起票。",
+        "capability": {"read": True, "write": False, "propose": True, "approve": False, "delete": False, "seal": False},
+        "trust_level": "Institution Certified",
+    },
+    "R04": {
+        "name": "Architecture Advisor",
+        "responsibilities": "システム設計レビュー・アーキテクチャ整合性確認・長期設計方針の助言。",
+        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+        "trust_level": "Verified",
+    },
+    "R05": {
+        "name": "Incident Analyst",
+        "responsibilities": "インシデント根本原因分析・再発防止策立案・COND実験設計。",
+        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+        "trust_level": "Verified",
+    },
+    "R06": {
+        "name": "Knowledge Curator",
+        "responsibilities": "Essence品質管理・KS記事レビュー・知識グラフ整備・重複検知。",
+        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+        "trust_level": "Verified",
+    },
 }
 
 CURRENT_PHASE = "Phase 4: 商用製品展開フェーズ"

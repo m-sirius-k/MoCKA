@@ -260,12 +260,6 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_328",
-      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
-      "priority": "最高",
-      "status": "未着手"
-    },
-    {
       "id": "TODO_329",
       "title": "Semantic Score Vector実装 — SEO Score(スカラー)→5次元ベクトル化",
       "priority": "高",
@@ -292,7 +286,7 @@
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 9,
-  "state_hash": "67a404d321ec27760b5b29f2c658be023692acae02f6bc8582f69f13d4c9c458",
-  "generated_at": "2026-06-17T07:50:33.374985+00:00"
+  "revision": 10,
+  "state_hash": "82cb9444bad55655fbe74a13b89bc1e17747df9399da5b168d1cc4f07942635c",
+  "generated_at": "2026-06-17T09:55:34.482072+00:00"
 }

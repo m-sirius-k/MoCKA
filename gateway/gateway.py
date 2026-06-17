@@ -19,6 +19,8 @@ from connector_caliber import ConnectorCaliber
 import adapter_gpt
 import adapter_gemini
 import adapter_copilot
+import adapter_perplexity   # TODO_269
+import adapter_genspark     # TODO_270
 
 app = Flask(__name__)
 CORS(app)
@@ -32,7 +34,13 @@ connector = ConnectorCaliber(
     db_path=DB_PATH,
     context_builder=builder,
     auth=auth_module,
-    adapters={'gpt': adapter_gpt, 'gemini': adapter_gemini, 'copilot': adapter_copilot},
+    adapters={
+        'gpt':        adapter_gpt,
+        'gemini':     adapter_gemini,
+        'copilot':    adapter_copilot,
+        'perplexity': adapter_perplexity,   # TODO_269
+        'genspark':   adapter_genspark,     # TODO_270
+    },
 )
 connector.register(app)
 
