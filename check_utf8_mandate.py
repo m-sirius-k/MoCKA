@@ -6,6 +6,10 @@ MoCKA UTF-8 鉄の掟 違反チェッカー
 """
 import os, sys, re
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(r"C:\Users\sirok\MoCKA")
 VIOLATIONS = []

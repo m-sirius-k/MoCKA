@@ -1,5 +1,10 @@
 import json
+import sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 d = Path(r'C:\Users\sirok\MoCKA\data\storage\infield\REDUCING')
 files = sorted(d.glob('*.json'))

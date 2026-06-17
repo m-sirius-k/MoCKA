@@ -2,8 +2,12 @@
 fix_encoding.py
 Copilot収集JSONの文字化け（CP932化け）を修正する
 """
-import json
+import json, sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 SRC  = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW\20260406_001445_ECOL_20260406_001445_COPI.json")
 DEST = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW\COPI_fixed.json")

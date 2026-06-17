@@ -1,5 +1,9 @@
 ﻿import os, json, sys
 from datetime import datetime
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 INFIELD_DIR = r"C:\Users\sirok\MoCKA\PlanningCaliber\fp"
 LOG_PATH = r"C:\Users\sirok\MoCKA\data\recurrence_injection_log.json"

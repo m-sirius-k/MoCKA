@@ -25,11 +25,6 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_328",
-      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
-      "priority": "最高"
-    },
-    {
       "id": "TODO_139",
       "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
       "priority": "高"
@@ -38,7 +33,12 @@
       "id": "TODO_207",
       "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
       "priority": "高"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-06-18T07:26:38.829427"
+  "generated_at": "2026-06-18T08:42:41.624339"
 }

@@ -6,6 +6,11 @@ MoCKA 多角的検証 V1-V6 一括実行
 import csv, json, hashlib, datetime
 from pathlib import Path
 from collections import defaultdict
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT        = Path(r"C:\Users\sirok\MoCKA")
 EVENTS_CSV  = ROOT / "data" / "events.csv"

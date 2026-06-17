@@ -170,18 +170,6 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_328",
-      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
-      "priority": "最高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_333",
-      "title": "CP932/UnicodeEncodeError再発防止 — PYTHONUTF8=1一括適用＋非ASCII装飾記号禁止規約",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
       "id": "TODO_334",
       "title": "TODO_269実機API疎通テスト — Perplexity Connector",
       "priority": "中",
@@ -192,11 +180,29 @@
       "title": "TODO_270実機API疎通テスト — Genspark Connector",
       "priority": "中",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_337",
+      "title": "MoCKA-START.bat BOM（U+FEFF）除去 — CP932汚染防止の副次対応",
+      "priority": "低",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_338",
+      "title": "check_utf8_mandate.py拡張 — print文内非ASCII記号検出＆reconfigure未適用検出の静的チェック化",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_339",
+      "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
+      "priority": "低",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 12,
-  "state_hash": "955f70d0ca5b39f032a22da9ea1632f87dea2fc8001bb1943385f1a06edfce10",
-  "generated_at": "2026-06-17T22:26:36.201096+00:00"
+  "revision": 13,
+  "state_hash": "2b0b7de68b5b7f9f2c0542831aec54a2c4740f4baf887366d8f3f79fd8d8b363",
+  "generated_at": "2026-06-17T23:42:39.641310+00:00"
 }

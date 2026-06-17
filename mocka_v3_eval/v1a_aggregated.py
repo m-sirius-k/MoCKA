@@ -3,8 +3,12 @@
 v1a_aggregated.py
 V1a: GPT連続違反4件を1件に集約して間隔を再計算
 """
-import csv, datetime
+import csv, datetime, sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 EVENTS_CSV  = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
 MOCKA_START = datetime.datetime(2026, 3, 29)

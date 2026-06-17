@@ -3,8 +3,12 @@
 v1_deep_analysis.py
 V1インシデント間隔分析の深掘り
 """
-import csv, datetime
+import csv, datetime, sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 EVENTS_CSV  = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
 MOCKA_START = datetime.datetime(2026, 3, 29)

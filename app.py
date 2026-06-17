@@ -11,6 +11,10 @@ import sys
 import requests
 from datetime import datetime
 from flask import Flask, send_from_directory, jsonify, request
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # --- Pattern Engine v2 ---
 try:
@@ -1889,14 +1893,15 @@ def public_essence():
 def public_events():
     n = int(request.args.get("n", 20))
     try:
-        rows = db_helper.read_events(limit=None)
+        # rowid DESC = 挿入順の逆（最新n件）。when_ts の書式混在問題を回避する
+        rows = db_helper.read_events(limit=n * 3, order="DESC", order_col="rowid")
         clean = []
         for r in rows:
             row = {k: (v if v is not None else "") for k, v in r.items()}
             if row.get("_source") == "csv_migration" and not row.get("title") and not row.get("when_ts"):
                 continue
             clean.append(row)
-        return jsonify({"count": len(clean), "events": clean[-n:], "source": "sqlite"})
+        return jsonify({"count": len(clean), "events": clean[:n], "source": "sqlite"})
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)})
 @app.route("/public/write_event", methods=["POST"])

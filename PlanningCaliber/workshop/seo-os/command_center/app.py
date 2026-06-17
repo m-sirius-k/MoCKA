@@ -1,5 +1,9 @@
 ﻿import sys, os, sqlite3
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 from flask import Flask, render_template, request, jsonify
 from kernel.job_engine import (create_job, approve_job,

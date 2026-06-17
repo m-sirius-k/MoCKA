@@ -5,6 +5,7 @@
 # Connects: GPT/Gemini/Copilot -> MoCKA MCP (port:5002)
 # ref: E20260610_010 / TODO_268
 import json
+import sys
 import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,6 +14,10 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from context_builder import ContextBuilder
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 from auth import require_api_key
 import auth as auth_module
 from connector_caliber import ConnectorCaliber

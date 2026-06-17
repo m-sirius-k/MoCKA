@@ -9,6 +9,10 @@ from pathlib import Path
 import requests
 from flask import Flask, request, Response
 from flask_cors import CORS
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
 sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))

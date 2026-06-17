@@ -1,4 +1,9 @@
+import sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 f = Path(r"C:\Users\sirok\MoCKA\tools\mocka-extension\background.js")
 c = f.read_text(encoding="utf-8")

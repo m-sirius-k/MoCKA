@@ -1,4 +1,9 @@
 import json
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 def _get_alert_pending():
     """prevention_queue.jsonの未承認件数を返す"""

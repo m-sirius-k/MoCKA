@@ -1,6 +1,10 @@
-import json
+import json, sys
 from pathlib import Path
 import datetime
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 TODO_PATH = Path(r'C:\Users\sirok\MOCKA_TODO.json')
 data = json.loads(TODO_PATH.read_text('utf-8'))

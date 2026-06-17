@@ -8,6 +8,11 @@ ARR（補正再発率）・可観測性係数α・相関分析
 import csv, json, hashlib, datetime, math
 from pathlib import Path
 from collections import defaultdict
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT       = Path(r"C:\Users\sirok\MoCKA")
 EVENTS_CSV = ROOT / "data" / "events.csv"

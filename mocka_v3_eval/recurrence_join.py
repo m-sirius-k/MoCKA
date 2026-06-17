@@ -4,9 +4,13 @@ recurrence_join.py
 recurrence_registryとeventsを日時近似で結合し
 正しいCRS・再発パターンを算出する
 """
-import csv, datetime
+import csv, datetime, sys
 from pathlib import Path
 from collections import defaultdict
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT = Path(r"C:\Users\sirok\MoCKA\data")
 

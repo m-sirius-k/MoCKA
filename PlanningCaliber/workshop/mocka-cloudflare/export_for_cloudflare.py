@@ -4,8 +4,12 @@ SQLite の events テーブルを JSON に書き出し、
 OVERVIEW/TODO/lever_essence を data/ にコピーする。
 MoCKA-START.bat から呼び出す。
 """
-import json, sqlite3, shutil
+import json, sqlite3, shutil, sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 MOCKA_ROOT  = Path(r"C:\Users\sirok\MoCKA")
 USER_ROOT   = Path(r"C:\Users\sirok")

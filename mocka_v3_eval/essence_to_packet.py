@@ -11,8 +11,12 @@ ESS ENCEのJSONを「試料パケット（packet.md）」に変換する
 試料パケット構造:
   Theme / Strongest / Failure / Leap(+1) / Challenge(+3) / PING
 """
-import json, datetime, hashlib
+import json, datetime, hashlib, sys
 from pathlib import Path
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT    = Path(r"C:\Users\sirok\MoCKA")
 ESSENCE = ROOT / "data" / "storage" / "infield" / "ESSENCE"

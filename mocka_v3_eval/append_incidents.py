@@ -6,6 +6,11 @@ import csv
 import hashlib
 from pathlib import Path
 from datetime import datetime, timezone
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 EVENTS = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
 

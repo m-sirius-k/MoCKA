@@ -15,6 +15,11 @@ mocka_full_math_analysis.py
 import csv, json, math, hashlib, datetime
 from pathlib import Path
 from collections import defaultdict
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 ROOT       = Path(r"C:\Users\sirok\MoCKA")
 EVENTS_CSV = ROOT / "data" / "events.csv"

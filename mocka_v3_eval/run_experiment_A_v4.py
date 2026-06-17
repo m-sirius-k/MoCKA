@@ -11,6 +11,11 @@ import json
 import hashlib
 import datetime
 from pathlib import Path
+import sys
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 EVENTS_CSV  = Path(r"C:\Users\sirok\MoCKA\data\events.csv")
 OUTPUT_DIR  = Path(r"C:\Users\sirok\MoCKA\data\experiments")

@@ -85,10 +85,14 @@ def read_events(
     what_type: Optional[str] = None,
     risk_level: Optional[str] = None,
     order: str = "DESC",
+    order_col: str = "when_ts",
 ) -> list[dict]:
     """
     イベント読み込み（SQLite優先）
     app.py の csv.DictReader を置き換え
+
+    order_col: ソートカラム。"rowid" を指定すると挿入順でソートされるため
+               when_ts が混在フォーマット（"pipeline" 等）でも正しく最新順になる。
     """
     if not DB_PATH.exists():
         # フォールバック: CSV読み込み
@@ -107,7 +111,9 @@ def read_events(
 
     where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
     limit_sql  = f"LIMIT {limit}" if limit else ""
-    order_sql  = f"ORDER BY when_ts {order}"
+    # order_col に "rowid" を指定すると挿入順ソートになり when_ts 形式混在の影響を受けない
+    safe_col   = order_col if order_col in ("when_ts", "rowid", "event_id") else "when_ts"
+    order_sql  = f"ORDER BY {safe_col} {order}"
 
     sql = f"SELECT * FROM events {where_sql} {order_sql} {limit_sql}"
     rows = [dict(r) for r in conn.execute(sql, params).fetchall()]

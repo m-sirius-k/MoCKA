@@ -4,11 +4,16 @@ MoCKA Watcher - Firestore intent_queue監視。60秒ごとにpollingしてstatus
 """
 import os
 import json
+import sys
 import time
 from pathlib import Path
 from datetime import datetime
 import firebase_admin
 from firebase_admin import credentials, firestore
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # 環境設定（KEY_PATHのデフォルト値を修正）
 KEY_PATH   = os.environ.get("MOCKA_FIREBASE_KEY_PATH",
