@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-17",
+    "updated": "2026-06-18",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -624,30 +624,6 @@
       "updated_at": "2026-06-17T17:32:05.941805"
     },
     {
-      "id": "TODO_328",
-      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "SEO-OS/PR-OS/bridge",
-      "description": "現状のmocka_bridge.pyはfeedback_publish()がMoCKA events.dbに書かない（ローカルJSONLのみ）。MoCKA MCPへのHTTP POST（ngrok経由 localhost:5000/write_event）で投稿成功イベントをevents.dbに永続化する。記録なき作業はMoCKAとして存在しない原則を外部発信まで貫徹する。エンドポイント: POST {MOCKA_ENDPOINT}/write_event。認証: MOCKA_HMAC_SECRETによる署名。",
-      "assigned_to": "くろこ（実装）",
-      "note": "",
-      "reference_event": "E20260617_019",
-      "created_at": "2026-06-17T08:10:47.770075"
-    },
-    {
-      "id": "TODO_333",
-      "title": "CP932/UnicodeEncodeError再発防止 — PYTHONUTF8=1一括適用＋非ASCII装飾記号禁止規約",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度/インシデント対応/encoding",
-      "description": "E20260617_086(発見)→E20260617_088(調査完了)→E20260617_089(INCIDENT登録)を受けた再発防止策。検出229件/92ファイル中、CLI実行系約160件/75ファイルがリスク顕在化しやすい。2026年4月以降少なくとも4回（UV071F3742F1/UV5E3E79C8D7/E20260608_048/E20260617_086）実発生しており、うちE20260608_048はmocka_auto_record.py（PostToolUseフック・記録制度の中核）が無音で落ちていた可能性がある重大事案。\\n\\n【対策（くろこ所感に基づく優先順）】\\n①即効・低コスト: MoCKA-START.batに `set PYTHONUTF8=1` を追加。MoCKA-START.bat経由で起動される全プロセスに一括適用（PYTHONIOENCODING=utf-8より確実、Python3.7+のUTF-8モード）。ただし直接`python xxx.py`実行する開発時ワークフローはカバーできない点に注意。\\n②CLAUDE.mdに「print/logging内は非ASCII装飾記号禁止。矢印は`->`、ダッシュは`-`」を明記。AIがコード生成時に読みやすさのため記号を使う習慣の抑止力。\\n③中長期: 検出件数最多のmocka_v3_eval/（12件等）配下の高頻度実行スクリプトに`sys.stdout.reconfigure(encoding='utf-8', errors='replace')`を個別追加。\\n④保留: check_utf8_mandate.pyを拡張してprint文内の特定文字種を検出する静的チェックへ発展させる案。現状はファイル単位のUTF-8検査のみでprint文内文字種検出に非対応。実装コストありのため①③より優先度を下げる（後続TODOとして別途検討）。\\n\\n既存保護策がinterface/配下の主要エンジン群（heinrich_engine.py/language_matcher.py/matcher_v2.py/v3.py/morphology_engine.py/text_to_5w1h.py）とpros.py/caliber_score.py/bee.py/mocka_auto_record.pyには部分実装済みである一方、検出最多のmocka_v3_eval/・runtime/・scripts/・structural/の多くは無保護という非対称性も併せて記録。",
-      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "E20260617_086→088→089の連鎖から起票。①②は即着手可能（低コスト）。③は対象ファイル多数のため段階実施。④は別TODO化候補として保留。",
-      "reference_event": "E20260617_089",
-      "created_at": "2026-06-17T17:31:01.906881"
-    },
-    {
       "id": "TODO_334",
       "title": "TODO_269実機API疎通テスト — Perplexity Connector",
       "status": "未着手",
@@ -670,6 +646,43 @@
       "note": "E20260617_122の教訓記録（完了報告と実態不一致）を受けて、TODO_270から実機疎通テスト部分を新規TODOとして切り出し。TODO_270自体は本実装完了として完了扱いのまま据え置き。",
       "reference_event": "E20260617_122",
       "created_at": "2026-06-17T19:06:21.003145"
+    },
+    {
+      "id": "TODO_337",
+      "title": "MoCKA-START.bat BOM（U+FEFF）除去 — CP932汚染防止の副次対応",
+      "status": "未着手",
+      "priority": "低",
+      "category": "MoCKAコア/CP932/再発防止",
+      "description": "TODO_333①（MoCKA-START.batへのset PYTHONUTF8=1追加）実施中に発見。MoCKA-START.bat自体に既存のBOM（U+FEFF）が混入している。batファイルのBOMはWindows cmd.exe上では通常無害だが、TODO_333の根本問題（CP932/UnicodeEncodeError再発防止・E20260617_086〜089のインシデント連鎖）と同種のエンコーディング汚染パターンであるため、再発防止の網羅性確保の観点から記録・除去を推奨。\n\n対応: MoCKA-START.batをBOM無しUTF-8（またはASCII）で再保存。過去にPHI-OS background.jsでBOMがService Worker無効化の原因になった事例（TODO_195関連）があるため、同様の無音障害化リスクの観点でも確認価値あり。",
+      "assigned_to": "くろこ",
+      "note": "TODO_333③完了レポートで対象拡大。BOM混入が既存問題として確認されたファイル: MoCKA-START.bat（当初発見分）に加え、check_utf8_mandate.py / app.py / interface/mocka_watcher.py / caliber/chat_pipeline/mocka_caliber_server.py / PlanningCaliber/seo-os/command_center/app.py の計6ファイル（いずれもTier1検証で「BOM(既存)・今回編集により汚染なしを確認」）。除去作業は sed -i '1s/^\\xEF\\xBB\\xBF//' 相当で対応可能。優先度は低のまま（即時の機能影響なし）だが、対象ファイル数が当初の1件から7件に拡大したため範囲更新。",
+      "reference_event": "",
+      "created_at": "2026-06-18T07:47:41.920693",
+      "updated_at": "2026-06-18T08:00:06.106823"
+    },
+    {
+      "id": "TODO_338",
+      "title": "check_utf8_mandate.py拡張 — print文内非ASCII記号検出＆reconfigure未適用検出の静的チェック化",
+      "status": "未着手",
+      "priority": "中",
+      "category": "MoCKAコア/CP932/再発防止",
+      "description": "TODO_333④として保留扱いだった案件を正式TODO化。check_utf8_mandate.pyを拡張し、ファイル単位のUTF-8検査だけでなく、以下を検出する静的チェックへ発展させる：\n①print/logging呼び出し内の非ASCII装飾記号の使用（矢印・絵文字等。②規約で禁止済みだが検出機構がない）\n②sys.stdout.reconfigure未適用の高頻度実行スクリプト検出（③で対応した33ファイル以外の新規スクリプトが将来追加された際の漏れ防止）\n\nまたは別案として、pre_commit_check.pyに「sys.stdout.reconfigure未適用検出ルール」を追加する方式も検討（くろこ所感）。\n\n目的: ①②③の対策が場当たり的にならないよう、新規スクリプト追加時に自動でCP932リスクを検知する仕組みを作り、再発防止を制度化する。",
+      "assigned_to": "くろこ",
+      "note": "TODO_333完了レポート（E20260618_013）の残課題②として起票。TODO_333①②③は2026-06-18完了。④は実装コストありのため当初から後続TODO化候補とされていた。",
+      "reference_event": "",
+      "created_at": "2026-06-18T08:00:19.097652"
+    },
+    {
+      "id": "TODO_339",
+      "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
+      "status": "未着手",
+      "priority": "低",
+      "category": "Chrome拡張/エンドポイント整合",
+      "description": "C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\turn_counter_patch.js:45 が content.js と同じく存在しないエンドポイント /recent_events?n=5 を参照している。/public/events?n=5 に変更する1行修正。content.js（TODO_336/A）と同じ問題だが turn_counter_patch.js は現在の主系ファイルではないため後続対応とした。完了条件: 変更後 mocka_check_utf8 OK + CHANGE_DONE 記録。",
+      "assigned_to": "くろこ",
+      "note": "TODO_336（A修正）の後続対応として切り出し。content.js.bak_relay_mode:372も同じ参照を持つが.bakファイルのため修正不要。",
+      "reference_event": "E20260618_018",
+      "created_at": "2026-06-18T08:41:23.557209"
     }
   ],
   "completed": [
@@ -4467,6 +4480,48 @@
       "created_at": "2026-06-10T11:29:20.559948",
       "updated_at": "2026-06-17T18:54:45.681986",
       "completed_at": "2026-06-17"
+    },
+    {
+      "id": "TODO_333",
+      "title": "CP932/UnicodeEncodeError再発防止 — PYTHONUTF8=1一括適用＋非ASCII装飾記号禁止規約",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/インシデント対応/encoding",
+      "description": "E20260617_086(発見)→E20260617_088(調査完了)→E20260617_089(INCIDENT登録)を受けた再発防止策。検出229件/92ファイル中、CLI実行系約160件/75ファイルがリスク顕在化しやすい。2026年4月以降少なくとも4回（UV071F3742F1/UV5E3E79C8D7/E20260608_048/E20260617_086）実発生しており、うちE20260608_048はmocka_auto_record.py（PostToolUseフック・記録制度の中核）が無音で落ちていた可能性がある重大事案。\\n\\n【対策（くろこ所感に基づく優先順）】\\n①即効・低コスト: MoCKA-START.batに `set PYTHONUTF8=1` を追加。MoCKA-START.bat経由で起動される全プロセスに一括適用（PYTHONIOENCODING=utf-8より確実、Python3.7+のUTF-8モード）。ただし直接`python xxx.py`実行する開発時ワークフローはカバーできない点に注意。\\n②CLAUDE.mdに「print/logging内は非ASCII装飾記号禁止。矢印は`->`、ダッシュは`-`」を明記。AIがコード生成時に読みやすさのため記号を使う習慣の抑止力。\\n③中長期: 検出件数最多のmocka_v3_eval/（12件等）配下の高頻度実行スクリプトに`sys.stdout.reconfigure(encoding='utf-8', errors='replace')`を個別追加。\\n④保留: check_utf8_mandate.pyを拡張してprint文内の特定文字種を検出する静的チェックへ発展させる案。現状はファイル単位のUTF-8検査のみでprint文内文字種検出に非対応。実装コストありのため①③より優先度を下げる（後続TODOとして別途検討）。\\n\\n既存保護策がinterface/配下の主要エンジン群（heinrich_engine.py/language_matcher.py/matcher_v2.py/v3.py/morphology_engine.py/text_to_5w1h.py）とpros.py/caliber_score.py/bee.py/mocka_auto_record.pyには部分実装済みである一方、検出最多のmocka_v3_eval/・runtime/・scripts/・structural/の多くは無保護という非対称性も併せて記録。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "2026-06-18完了。①MoCKA-START.batにPYTHONUTF8=1追加（完了）②CLAUDE.mdに非ASCII装飾記号禁止規約明記（完了）③高頻度実行スクリプトへsys.stdout.reconfigure個別追加（完了・計33ファイル: Tier1=START.bat直接起動系9ファイル全適用＋mocka_mcp_server.pyハッシュ再計算済249917f288fa3951／Tier2=mocka_v3_eval/24ファイル全適用）④静的チェック拡張は後続TODO化のためスコープ外として保留。Tier3/4（scripts/68+・runtime/100+）はPYTHONUTF8=1のカバー範囲内と判断し条件付き様子見（CP932インシデントが当該領域起因で再発した場合にTier3.5として再評価）。記録: E20260618_010〜013。残課題2件を別TODO化（BOM除去・静的チェック拡張）。",
+      "reference_event": "E20260617_089",
+      "created_at": "2026-06-17T17:31:01.906881",
+      "updated_at": "2026-06-18T07:59:38.605395",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_328",
+      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
+      "status": "完了",
+      "priority": "最高",
+      "category": "SEO-OS/PR-OS/bridge",
+      "description": "現状のmocka_bridge.pyはfeedback_publish()がMoCKA events.dbに書かない（ローカルJSONLのみ）。MoCKA MCPへのHTTP POST（ngrok経由 localhost:5000/write_event）で投稿成功イベントをevents.dbに永続化する。記録なき作業はMoCKAとして存在しない原則を外部発信まで貫徹する。エンドポイント: POST {MOCKA_ENDPOINT}/write_event。認証: MOCKA_HMAC_SECRETによる署名。",
+      "assigned_to": "くろこ（実装）",
+      "note": "実機テスト完了(2026-06-18): feedback_publish()→_post_to_gate()→localhost:5002/agent/mocka_write_event→events.db書き込みを確認。書き込まれたevent_id=E20260618_015, who=mocka_bridge_pr_os。設計変更経緯: git commit da8ff2883(2026-06-17)にてTODO_322の単一経路原則に準拠しngrok経由→localhost:5002直接に変更。失敗時リトライキュー追加済み。",
+      "reference_event": "E20260617_019",
+      "created_at": "2026-06-17T08:10:47.770075",
+      "updated_at": "2026-06-18T08:10:02.767933",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_336",
+      "title": "Relay Free 引き継ぎパケット生成ロジック調査 — キーワード羅列化＆古い内容混入の原因特定",
+      "status": "完了",
+      "priority": "高",
+      "category": "製品/Relay/引き継ぎ",
+      "description": "2026-06-17 16:52付でFP（引き継ぎパケット）[Relay Free]が生成されたが、内容が以下2点で異常。①LB_001〜008が「箇条書きの番号＋断片文」のままで要約になっておらず意味をなさない（例: \"2. 検索結果がキーワード一致の羅列で意味がない\"）。②内容自体がTODO_LB001（検索品質改善・6/7完了）・TODO_195（PHI OS実機テスト・6/7完了）・TODO_186〜188（PHI OS設計/core/adapters・6/1完了）など、約10日前に完了済みの古い議題を指している。\n\n調査対象: content.js / background.jsの引き継ぎパケット生成部分（TODO_174で実装したルールベース要約: キーワード抽出＋5W1Hテンプレート埋め込み）。\n\n確認観点:\n1. キーワード抽出ロジックが番号付きリストをそのまま断片として拾っているか（テンプレート整形が機能していない可能性）\n2. relay_handoff_packetの保存タイミングと参照タイミングがズレている可能性（LB_002の文言\"保存場所と参照場所がズレていれば修正する\"が当時のテンプレート文言として残存し、古いセッションデータを参照している懸念）\n3. Service Workerコンソールでrelay_handoff_packetの実際の値と生成元chat_idのタイムスタンプを確認し、古いchatのデータが新しいFPとして再生成されていないか検証",
+      "assigned_to": "くろこ（調査）",
+      "note": "A+B修正完了（2026-06-18）。A: content.js /recent_events->公/public/events。B根本原因: SQLite統合移行時のwhen_ts非ISO混入でORDER BY when_ts DESCが破綻。db_helper.pyにorder_col=\"rowid\"追加、app.py /public/eventsをrowid DESC+limit=n*3に変更。end-to-end確認: E20260618_015取得確認済み。Cの後続（turn_counter_patch.js）はTODO_339として切り出し。",
+      "reference_event": "",
+      "created_at": "2026-06-18T07:33:53.130501",
+      "updated_at": "2026-06-18T08:41:18.178116",
+      "completed_at": "2026-06-18"
     }
   ],
   "orchestra_handoff": {
