@@ -3825,6 +3825,117 @@ def publish_all():
         return jsonify({"status": "error", "error": str(e)}), 500
 # ── Distribution OS v1 ここまで ──────────────────────────────────────────────
 
+# ── Distribution OS v2.0 API ─────────────────────────────────────────────────
+import sys as _sys
+_DIST_ENGINE_PATH = os.path.join(ROOT_DIR, "distribution")
+if _DIST_ENGINE_PATH not in _sys.path:
+    _sys.path.insert(0, ROOT_DIR)
+
+def _get_dist_engine():
+    try:
+        from distribution.engine import DistributionEngine
+        return DistributionEngine()
+    except Exception:
+        return None
+
+@app.route("/api/distribution/publish", methods=["POST"])
+def distribution_publish():
+    try:
+        data = request.json or {}
+        title = data.get("title", "MoCKA Distribution")
+        content = data.get("content", "")
+        destinations = data.get("destinations", [])
+        mode = data.get("mode", "immediate")
+        content_type = data.get("content_type", "Announcement")
+        audience = data.get("audience", ["Developer"])
+        transformer = data.get("transformer", "TECH")
+        language = data.get("language", "ja")
+        priority = data.get("priority", "normal")
+        schedule = data.get("schedule")
+
+        engine = _get_dist_engine()
+        results = {}
+        if engine:
+            from distribution.connectors.base_connector import PublishPayload
+            import datetime as _dt
+            payload = PublishPayload(
+                title=title,
+                content=content,
+                audience=audience,
+                content_type=content_type,
+                mode=mode,
+                language=language,
+            )
+            payload = engine.transform(payload, style=transformer)
+            pub_results = engine.publish(payload, destinations)
+            results = {r.destination: {"status": r.status, "url": r.url, "error": r.error} for r in pub_results}
+        else:
+            # エンジン未ロード時はスタブ応答
+            for dest in destinations:
+                results[dest] = {"status": "DRAFT", "url": None, "error": None}
+
+        append_event({
+            "who_actor": "distribution_os_v2",
+            "what_type": "publish_all",
+            "where_component": "distribution_os",
+            "title": f"[DistributionOS v2] {title}",
+            "short_summary": f"{len(destinations)}媒体配信: mode={mode} type={content_type}",
+            "risk_level": "normal",
+            "channel_type": "api",
+            "lifecycle_phase": "in_operation",
+            "free_note": f"distribution_os_v2|{transformer}|{language}",
+        })
+        return jsonify({"status": "distributed", "results": results, "destinations": destinations})
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+
+
+@app.route("/api/distribution/history", methods=["GET"])
+def distribution_history():
+    try:
+        limit = int(request.args.get("limit", 50))
+        engine = _get_dist_engine()
+        history = engine.get_history(limit) if engine else []
+        return jsonify({"history": history})
+    except Exception as e:
+        return jsonify({"history": [], "error": str(e)})
+
+
+@app.route("/api/distribution/analytics", methods=["GET"])
+def distribution_analytics():
+    try:
+        engine = _get_dist_engine()
+        data = engine.get_analytics() if engine else {}
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
+
+@app.route("/api/distribution/retry", methods=["GET"])
+def distribution_retry():
+    try:
+        engine = _get_dist_engine()
+        queue = engine.get_retry_queue() if engine else []
+        return jsonify({"queue": queue})
+    except Exception as e:
+        return jsonify({"queue": [], "error": str(e)})
+
+
+@app.route("/api/distribution/registry", methods=["GET"])
+def distribution_registry():
+    import yaml, glob
+    reg_dir = os.path.join(ROOT_DIR, "distribution", "registry")
+    registries = {}
+    for f in glob.glob(os.path.join(reg_dir, "*.yaml")):
+        name = os.path.basename(f).replace(".yaml", "")
+        try:
+            with open(f, encoding="utf-8") as fh:
+                registries[name] = yaml.safe_load(fh)
+        except Exception:
+            pass
+    return jsonify({"registry": registries})
+# ── Distribution OS v2 ここまで ──────────────────────────────────────────────
+
 
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")

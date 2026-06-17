@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Distribution Center v2.0 — MoCKA</title>
+<link rel="stylesheet" href="distribution/config/dc.css">
+</head>
+<body>
+<div id="dc-app">
+
+  <!-- ── TOP COMMAND BAR ── -->
+  <header id="dc-topbar">
+    <a href="index.html" id="dc-logo">Mo<em>CKA</em> <span class="dc-logo-sub">Distribution Center</span> <em class="dc-logo-ver">v2.0</em></a>
+    <div id="dc-searchbar">
+      <input type="text" id="dc-search" placeholder="Search posts, channels, campaigns...">
+    </div>
+    <div id="dc-actions">
+      <button class="dc-btn" id="btn-filter">Filter</button>
+      <button class="dc-btn" id="btn-sort">Sort</button>
+      <button class="dc-btn" id="btn-refresh">↻</button>
+      <button class="dc-btn" id="btn-export">Export</button>
+      <button class="dc-btn dc-btn-ai" id="btn-ai">AI Assistant</button>
+      <button class="dc-btn dc-btn-notify" id="btn-notify" aria-label="Notifications">
+        <span id="notify-badge">3</span>
+        <span>🔔</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── BODY ── -->
+  <div id="dc-body">
+
+    <!-- ── LEFT NAVIGATION ── -->
+    <nav id="dc-nav">
+      <div class="dc-nav-section">Distribution</div>
+      <a class="dc-nav-item active" data-panel="dashboard">
+        Dashboard <span class="nav-badge" id="nb-dashboard"></span>
+      </a>
+      <a class="dc-nav-item" data-panel="queue">
+        Queue <span class="nav-badge" id="nb-queue">3</span>
+      </a>
+      <a class="dc-nav-item" data-panel="calendar">Calendar</a>
+
+      <div class="dc-nav-section">Content</div>
+      <a class="dc-nav-item" data-panel="draft">
+        Draft <span class="nav-badge" id="nb-draft">3</span>
+      </a>
+      <a class="dc-nav-item" data-panel="scheduled">
+        Scheduled <span class="nav-badge" id="nb-scheduled">4</span>
+      </a>
+      <a class="dc-nav-item" data-panel="publishing">
+        Publishing <span class="nav-badge nav-badge-live" id="nb-publishing">1</span>
+      </a>
+      <a class="dc-nav-item" data-panel="published">Published</a>
+
+      <div class="dc-nav-section">Issues</div>
+      <a class="dc-nav-item" data-panel="failed">
+        Failed <span class="nav-badge nav-badge-err" id="nb-failed">1</span>
+      </a>
+      <a class="dc-nav-item" data-panel="retry">
+        Retry <span class="nav-badge nav-badge-warn" id="nb-retry">1</span>
+      </a>
+
+      <div class="dc-nav-section">Management</div>
+      <a class="dc-nav-item" data-panel="channels">Channels</a>
+      <a class="dc-nav-item" data-panel="campaigns">Campaigns</a>
+      <a class="dc-nav-item" data-panel="history">History</a>
+
+      <div class="dc-nav-footer">
+        <a href="index.html" class="dc-nav-back">← Command Center</a>
+        <a href="seo_workspace.html" class="dc-nav-back">SEO Workspace →</a>
+      </div>
+    </nav>
+
+    <!-- ── CENTER WORKSPACE ── -->
+    <main id="dc-workspace">
+      <section id="panel-dashboard" class="dc-panel active"></section>
+      <section id="panel-queue"     class="dc-panel"></section>
+      <section id="panel-calendar"  class="dc-panel"></section>
+      <section id="panel-draft"     class="dc-panel"></section>
+      <section id="panel-scheduled" class="dc-panel"></section>
+      <section id="panel-publishing"class="dc-panel"></section>
+      <section id="panel-published" class="dc-panel"></section>
+      <section id="panel-failed"    class="dc-panel"></section>
+      <section id="panel-retry"     class="dc-panel"></section>
+      <section id="panel-channels"  class="dc-panel"></section>
+      <section id="panel-campaigns" class="dc-panel"></section>
+      <section id="panel-history"   class="dc-panel"></section>
+    </main>
+
+    <!-- ── RIGHT INSPECTOR ── -->
+    <aside id="dc-inspector">
+      <div id="inspector-header">
+        <span id="inspector-title">Inspector</span>
+        <button id="inspector-close" aria-label="Close inspector">×</button>
+      </div>
+      <div id="inspector-body">
+        <div class="insp-empty">アイテムを選択してください</div>
+      </div>
+    </aside>
+
+  </div><!-- /#dc-body -->
+
+  <!-- ── BOTTOM STATUS BAR ── -->
+  <footer id="dc-statusbar">
+    <span id="status-channels">Channels: —</span>
+    <span class="status-sep">|</span>
+    <span id="status-queue">Queue: —</span>
+    <span class="status-sep">|</span>
+    <span id="status-today">Today: —</span>
+    <span class="status-sep">|</span>
+    <span id="status-failed">Failed: —</span>
+    <span class="status-sep">|</span>
+    <span id="status-phase">Phase 4 — 商用展開</span>
+    <span id="status-time"></span>
+  </footer>
+
+</div><!-- /#dc-app -->
+
+<script src="distribution/config/dc.js" defer></script>
+</body>
+</html>

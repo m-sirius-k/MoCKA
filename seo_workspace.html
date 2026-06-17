@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoCKA SEO Workspace</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','Courier New',monospace;font-size:13px;min-height:100vh}
+:root{
+  --g:#1a1a2e;--gb:#16213e;--gc:#0f3460;
+  --green:#00d4aa;--amber:#f0a500;--red:#e74c6e;--blue:#4a9eff;--purple:#a78bfa;--teal:#34d399;--pink:#f472b6;
+  --dim:rgba(255,255,255,.06);--line:rgba(255,255,255,.09);--txt:rgba(255,255,255,.9);--muted:rgba(255,255,255,.45);
+  --ok:rgba(0,212,170,.12);--warn:rgba(240,165,0,.12);--ng:rgba(231,76,110,.12);
+}
+.wrap{padding:14px;max-width:1400px;margin:0 auto}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.logo{font-size:15px;font-weight:700;letter-spacing:.1em}
+.logo em{color:var(--green);font-style:normal}
+.topbar-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.back-btn{background:rgba(255,255,255,.06);border:1px solid var(--line);color:rgba(255,255,255,.7);padding:4px 12px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.back-btn:hover{background:rgba(255,255,255,.1)}
+.phase-badge{background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--blue);padding:3px 10px;border-radius:20px;font-size:11px}
+
+/* ── PANEL ── */
+.panel{background:var(--gb);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px}
+.panel-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.panel-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.panel-badge{font-size:10px}
+.section-hd{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+
+/* ── SEO-OS ── */
+.seo-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.seo-stat{background:var(--dim);border-radius:6px;padding:8px 10px}
+.seo-stat-val{font-size:18px;font-weight:700}
+.seo-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.seo-pipe-row{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:4px}
+.seo-pipe-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.seo-pipe-name{flex:1;color:var(--muted)}
+.seo-pipe-st{font-size:10px;padding:1px 5px;border-radius:3px}
+.seo-pipe-st.ready{background:rgba(0,212,170,.15);color:var(--green)}
+.seo-pipe-st.pend{background:rgba(240,165,0,.15);color:var(--amber)}
+
+/* ── GRID ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="topbar">
+  <div class="logo">Mo<em>CKA</em> SEO <span style="font-size:11px;color:var(--muted);font-weight:400;">Workspace</span></div>
+  <div class="topbar-right">
+    <span class="phase-badge">Phase 5 — 実装中</span>
+    <a href="index.html" class="back-btn">← COMMAND CENTER</a>
+  </div>
+</div>
+
+<!-- ── SEO-OS STATUS ── -->
+<div class="section-hd">SEO-OS — Overview</div>
+<div class="panel" id="panel-seo">
+  <div class="panel-hd">
+    <span class="panel-title">SEO-OS</span>
+    <span class="panel-badge" style="color:var(--green)">:8750 稼働</span>
+  </div>
+  <div id="seo-body"></div>
+</div>
+
+<!-- ── TODO_254 ── -->
+<div class="section-hd">Active TODO</div>
+<div class="panel">
+  <div class="panel-hd"><span class="panel-title">SEO-OS Roadmap</span></div>
+  <div style="font-size:11px;line-height:1.8">
+    <div style="color:var(--amber)">■ TODO_254 [くろこ] — SEO-OS Phase6 制度化層</div>
+    <div style="color:var(--muted);padding-left:12px;font-size:10px;margin-top:4px">
+      Phase6: Decision Ledger / Explain API / Simulation / MoCKA Bridge
+    </div>
+  </div>
+</div>
+
+</div><!-- /.wrap -->
+
+<script>
+const STATIC = {
+  seo: {
+    phase: 'Phase 5',
+    tests: 32,
+    pipes: [
+      {name:'LP Pipeline',   st:'ready'},
+      {name:'Blog Pipeline', st:'ready'},
+      {name:'Bot Pipeline',  st:'pend'}
+    ]
+  }
+};
+
+function renderSeo(data) {
+  try {
+    const el = document.getElementById('seo-body');
+    el.innerHTML = `
+      <div class="seo-grid">
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--blue)">${data.phase}</div><div class="seo-stat-lbl">完了 / Phase 6 実装中</div></div>
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--green)">${data.tests}</div><div class="seo-stat-lbl">テスト PASS</div></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Pipeline ステータス</div>
+      ${data.pipes.map(p=>`<div class="seo-pipe-row">
+        <div class="seo-pipe-dot" style="background:${p.st==='ready'?'var(--green)':'var(--amber)'}"></div>
+        <span class="seo-pipe-name">${p.name}</span>
+        <span class="seo-pipe-st ${p.st}">${p.st==='ready'?'READY':'PENDING'}</span>
+      </div>`).join('')}
+      <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:7px;font-size:10px;color:var(--muted)">
+        くろこ → Phase6: Decision Ledger / Explain API / Simulation / MoCKA Bridge
+      </div>`;
+  } catch(e) {
+    document.getElementById('seo-body').textContent = 'ERROR: ' + e.message;
+  }
+}
+
+renderSeo(STATIC.seo);
+</script>
+</body>
+</html>
