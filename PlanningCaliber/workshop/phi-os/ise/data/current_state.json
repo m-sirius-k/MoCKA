@@ -246,11 +246,53 @@
       "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
       "priority": "高",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_326",
+      "title": "SEO-OS Distribution Router v1 — 5軸スコアリング＋temporal_decay統合",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_327",
+      "title": "LinkedIn adapter 新規実装 — 経営層・学術層チャネル確立",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_328",
+      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
+      "priority": "最高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_329",
+      "title": "Semantic Score Vector実装 — SEO Score(スカラー)→5次元ベクトル化",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_330",
+      "title": "Distribution Router v2 — 6軸確率分布モデル実装（GPT監査版）",
+      "priority": "最高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_331",
+      "title": "JSON-LD 機械公文書化 — LLM引用最適化フォーマット実装",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_332",
+      "title": "Semantic Graph + LLM Citation Mode — 「引用される」設計の実装",
+      "priority": "中",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 8,
-  "state_hash": "b7ffb5e3d94432e462b4f772b34b9dec554bba99222d58c07256a87d1830f62d",
-  "generated_at": "2026-06-16T23:49:56.398471+00:00"
+  "revision": 9,
+  "state_hash": "67a404d321ec27760b5b29f2c658be023692acae02f6bc8582f69f13d4c9c458",
+  "generated_at": "2026-06-17T00:42:42.841520+00:00"
 }

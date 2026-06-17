@@ -3759,6 +3759,74 @@ def verification_verify():
 # ── ISE エンドポイント ここまで ───────────────────────────────
 
 
+# ── Distribution OS v1: PR-OS → 4層変換 → 6媒体配信 ─────────────────────────
+def _load_distribution_router():
+    import importlib.util as _ilu
+    spec = _ilu.spec_from_file_location(
+        "distribution.router",
+        Path(ROOT_DIR) / "workshop" / "pr-os" / "distribution" / "router.py"
+    )
+    mod = _ilu.module_from_spec(spec)
+    # パッケージとして認識させるため手動でサブモジュールを登録
+    import sys as _sys
+    pkg_path = str(Path(ROOT_DIR) / "workshop" / "pr-os" / "distribution")
+    pkg_name = "distribution"
+    if pkg_name not in _sys.modules:
+        import types as _types
+        pkg = _types.ModuleType(pkg_name)
+        pkg.__path__ = [pkg_path]
+        pkg.__package__ = pkg_name
+        _sys.modules[pkg_name] = pkg
+    for sub in ["transformer", "templates", "platforms"]:
+        sub_name = f"{pkg_name}.{sub}"
+        if sub_name not in _sys.modules:
+            sub_path = str(Path(pkg_path) / (sub + ".py"))
+            if not _Path_exists(sub_path):
+                sub_path = str(Path(pkg_path) / sub / "__init__.py")
+            sub_spec = _ilu.spec_from_file_location(sub_name, sub_path)
+            sub_mod = _ilu.module_from_spec(sub_spec)
+            _sys.modules[sub_name] = sub_mod
+            sub_spec.loader.exec_module(sub_mod)
+    for plat in ["github", "wordpress", "linkedin", "x", "devto", "substack"]:
+        plat_name = f"{pkg_name}.platforms.{plat}"
+        if plat_name not in _sys.modules:
+            plat_spec = _ilu.spec_from_file_location(
+                plat_name,
+                str(Path(pkg_path) / "platforms" / (plat + ".py"))
+            )
+            plat_mod = _ilu.module_from_spec(plat_spec)
+            _sys.modules[plat_name] = plat_mod
+            plat_spec.loader.exec_module(plat_mod)
+    spec.loader.exec_module(mod)
+    return mod
+
+def _Path_exists(p):
+    return Path(p).exists()
+
+@app.route("/api/action/publish_all", methods=["POST"])
+def publish_all():
+    try:
+        data = request.json or {}
+        content = data.get("content", "PR-OS EVENT SAMPLE")
+        router_mod = _load_distribution_router()
+        result = router_mod.route(content)
+        append_event({
+            "who_actor": "distribution_os",
+            "what_type": "publish_all",
+            "where_component": "pr_os",
+            "title": "[DistributionOS] Publish All 実行",
+            "short_summary": f"6媒体配信完了: {result.get('results', {})}",
+            "risk_level": "normal",
+            "channel_type": "api",
+            "lifecycle_phase": "in_operation",
+            "free_note": "distribution_os_v1|publish_all",
+        })
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
+# ── Distribution OS v1 ここまで ──────────────────────────────────────────────
+
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")

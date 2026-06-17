@@ -344,6 +344,57 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   </div>
 </div>
 
+<!-- ── ROW: Distribution OS ── -->
+<div class="section-hd">Distribution OS — PR-OS 分散発信</div>
+<div class="panel" id="panel-dist-os" style="margin-bottom:10px">
+  <div class="panel-hd">
+    <span class="panel-title">PR-OS → 4層変換 → 6媒体配信</span>
+    <span class="panel-badge" id="dist-os-badge" style="color:var(--muted)">待機中</span>
+  </div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+    <input id="dist-os-content" type="text"
+      style="flex:1;min-width:200px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--fg);font-size:12px"
+      placeholder="配信コンテンツ（空欄でサンプル使用）" />
+    <button class="scp-btn" onclick="publishAll()">Publish All ▶</button>
+  </div>
+  <div id="dist-os-result" style="font-size:11px;color:var(--muted);min-height:24px"></div>
+</div>
+
+<script>
+async function publishAll() {
+  const badge = document.getElementById('dist-os-badge');
+  const result = document.getElementById('dist-os-result');
+  const content = document.getElementById('dist-os-content').value.trim();
+  badge.textContent = '配信中...';
+  badge.style.color = 'var(--blue)';
+  result.textContent = '';
+  try {
+    const body = content ? JSON.stringify({ content }) : '{}';
+    const res = await fetch('/api/action/publish_all', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    });
+    const data = await res.json();
+    if (data.status === 'distributed') {
+      badge.textContent = '配信完了';
+      badge.style.color = 'var(--green)';
+      const lines = Object.entries(data.results || {})
+        .map(([k, v]) => `${k}: ${v}`).join(' | ');
+      result.textContent = lines;
+    } else {
+      badge.textContent = 'エラー';
+      badge.style.color = 'var(--red)';
+      result.textContent = data.error || JSON.stringify(data);
+    }
+  } catch (e) {
+    badge.textContent = 'エラー';
+    badge.style.color = 'var(--red)';
+    result.textContent = e.message;
+  }
+}
+</script>
+
 <!-- ── ROW D: TIC ── -->
 <div class="section-hd">TIC — Technology Intelligence Caliber</div>
 <div class="grid-2">
