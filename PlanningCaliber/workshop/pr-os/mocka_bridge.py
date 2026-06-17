@@ -13,13 +13,27 @@ MoCKAイベントシステム ↔ PR-OS の双方向統合レイヤー
 import json
 import os
 import sys
+import time
 from datetime import datetime, timezone
 from typing import Optional
 
+try:
+    import requests as _requests
+    _REQUESTS_AVAILABLE = True
+except ImportError:
+    _REQUESTS_AVAILABLE = False
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-BRIDGE_LOG = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                          "logs", "mocka_bridge.jsonl")
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+BRIDGE_LOG = os.path.join(_BASE_DIR, "logs", "mocka_bridge.jsonl")
+GATE_RETRY_QUEUE = os.path.join(_BASE_DIR, "data", "gate_retry_queue.jsonl")
+
+# TODO_328: PHI-OS Event Gate経由でMoCKA events.dbへ記録するエンドポイント
+# MCPサーバー(5002) → PHI-OS Gate(5000/api/gate/event) → events.db の単一経路
+MOCKA_MCP_EVENT_ENDPOINT = "http://localhost:5002/agent/mocka_write_event"
+
 
 # ── MoCKA SDK ────────────────────────────────────────
 def _mocka_available() -> bool:
@@ -36,6 +50,86 @@ def _log(event_type: str, data: dict):
     }
     with open(BRIDGE_LOG, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def _log_gate_failure(ks_id: str, adapter: str, error: str):
+    """Gate記録失敗をブリッジログに残す（次回のmocka_get_command_centerで検知可能にする）"""
+    _log("gate_failure", {
+        "ks_id":   ks_id,
+        "adapter": adapter,
+        "error":   error,
+    })
+    print(f"[Bridge] Gate記録失敗(ローカルログ+リトライキュー保存済み): {ks_id} / {adapter} / {error}")
+
+
+def _enqueue_retry(payload: dict):
+    """Gate POST失敗時のpayloadをリトライキューに追記（append-only）"""
+    os.makedirs(os.path.dirname(GATE_RETRY_QUEUE), exist_ok=True)
+    entry = {
+        "retry_id":  f"retry_{int(time.time() * 1000)}",
+        "queued_at": datetime.now(timezone.utc).isoformat(),
+        "sent":      False,
+        "payload":   payload,
+    }
+    with open(GATE_RETRY_QUEUE, "a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+
+def _post_to_gate(payload: dict) -> bool:
+    """PHI-OS Event Gate へHTTP POSTする。成功時True、失敗時False。"""
+    if not _REQUESTS_AVAILABLE:
+        return False
+    try:
+        resp = _requests.post(MOCKA_MCP_EVENT_ENDPOINT, json=payload, timeout=5)
+        resp.raise_for_status()
+        return True
+    except Exception:
+        return False
+
+
+def retry_pending():
+    """
+    リトライキュー内の未送信エントリを再送する。
+    append-only原則に従い、送信済みエントリは削除せず新行として末尾に積む。
+    起動時または定期実行時に呼び出す。
+    """
+    if not os.path.exists(GATE_RETRY_QUEUE):
+        return
+
+    with open(GATE_RETRY_QUEUE, encoding="utf-8") as f:
+        lines = [l.strip() for l in f if l.strip()]
+
+    # retry_id単位で最新行を有効とみなす
+    latest: dict[str, dict] = {}
+    for line in lines:
+        try:
+            entry = json.loads(line)
+            rid = entry.get("retry_id", "")
+            if rid:
+                latest[rid] = entry
+        except json.JSONDecodeError:
+            pass
+
+    pending = [e for e in latest.values() if not e.get("sent")]
+    if not pending:
+        return
+
+    sent_entries = []
+    for entry in pending:
+        if _post_to_gate(entry["payload"]):
+            sent_entries.append({
+                "retry_id": entry["retry_id"],
+                "queued_at": entry["queued_at"],
+                "sent":     True,
+                "sent_at":  datetime.now(timezone.utc).isoformat(),
+                "payload":  entry["payload"],
+            })
+            print(f"[Bridge] リトライ送信成功: {entry['retry_id']}")
+
+    if sent_entries:
+        with open(GATE_RETRY_QUEUE, "a", encoding="utf-8") as f:
+            for e in sent_entries:
+                f.write(json.dumps(e, ensure_ascii=False) + "\n")
 
 
 # ──────────────────────────────────────────────────────
@@ -102,17 +196,12 @@ def feedback_publish(ks_id: str, adapter: str,
                      success: bool, url: Optional[str] = None):
     """
     KS公開結果をMoCKAイベントとして記録する。
-    MoCKAが利用可能な場合は mocka_write_event を呼ぶ。
-    CLI環境ではブリッジログに記録。
+    ローカルJSONL（後方互換）とPHI-OS Event Gate（events.db永続化）の両方に書き込む。
+    Gate到達失敗時はリトライキューに積み、pros.pyには例外を伝播しない。
     """
     status = "published" if success else "failed"
-    event_body = (
-        f"PR-OS 配信結果\n"
-        f"KS ID: {ks_id}\n"
-        f"Adapter: {adapter}\n"
-        f"Status: {status}\n"
-        + (f"URL: {url}\n" if url else "")
-    )
+
+    # 既存処理: ローカルJSONLへの記録（後方互換のため維持）
     _log("feedback_publish", {
         "ks_id":   ks_id,
         "adapter": adapter,
@@ -120,6 +209,24 @@ def feedback_publish(ks_id: str, adapter: str,
         "url":     url,
     })
     print(f"[Bridge] Feedback → MoCKA: {ks_id} / {adapter} / {status}")
+
+    # TODO_328: PHI-OS Event Gate経由でMoCKA events.dbへ永続化
+    gate_payload = {
+        "title": f"feedback_publish: {adapter} / {ks_id} / {status}",
+        "description": (
+            f"KS記事({ks_id})の{adapter}への配信結果。"
+            f"status={status}" + (f" url={url}" if url else "")
+        ),
+        "author":      "mocka_bridge_pr_os",  # 必須・空欄不可（TODO_322 Actor強制準拠）
+        "why_purpose": "distribution_feedback",
+        "how_trigger": "pros_publish",
+        "tags":        f"feedback_publish,{adapter},{status}",
+    }
+
+    if not _post_to_gate(gate_payload):
+        _log_gate_failure(ks_id, adapter,
+                          "Gate POST失敗（requestsなし・タイムアウト・接続エラーのいずれか）")
+        _enqueue_retry(gate_payload)
 
 
 def feedback_score(ks_id: str, score: float, corrections: int):
@@ -226,23 +333,39 @@ def status() -> dict:
                 except Exception:
                     pass
 
-    ingests   = [e for e in log_entries if e.get("event_type") == "ingest"]
-    feedbacks = [e for e in log_entries if e.get("event_type") == "feedback_publish"]
-    errors    = [e for e in log_entries if e.get("event_type") == "error"]
+    ingests      = [e for e in log_entries if e.get("event_type") == "ingest"]
+    feedbacks    = [e for e in log_entries if e.get("event_type") == "feedback_publish"]
+    gate_failures = [e for e in log_entries if e.get("event_type") == "gate_failure"]
+    errors       = [e for e in log_entries if e.get("event_type") == "error"]
+
+    retry_pending_count = 0
+    if os.path.exists(GATE_RETRY_QUEUE):
+        latest: dict = {}
+        with open(GATE_RETRY_QUEUE, encoding="utf-8") as f:
+            for line in f:
+                try:
+                    e = json.loads(line.strip())
+                    rid = e.get("retry_id", "")
+                    if rid:
+                        latest[rid] = e
+                except Exception:
+                    pass
+        retry_pending_count = sum(1 for e in latest.values() if not e.get("sent"))
 
     return {
-        "log_entries":       len(log_entries),
-        "total_ingested":    len(ingests),
-        "total_feedbacks":   len(feedbacks),
-        "total_errors":      len(errors),
-        "last_ingest":       ingests[-1]["ts"] if ingests else None,
-        "last_feedback":     feedbacks[-1]["ts"] if feedbacks else None,
-        "last_processed_id": _get_last_processed_id(),
+        "log_entries":         len(log_entries),
+        "total_ingested":      len(ingests),
+        "total_feedbacks":     len(feedbacks),
+        "total_gate_failures": len(gate_failures),
+        "total_errors":        len(errors),
+        "retry_pending":       retry_pending_count,
+        "last_ingest":         ingests[-1]["ts"] if ingests else None,
+        "last_feedback":       feedbacks[-1]["ts"] if feedbacks else None,
+        "last_processed_id":   _get_last_processed_id(),
     }
 
 
 if __name__ == "__main__":
-    import sys
     if len(sys.argv) >= 2:
         cmd = sys.argv[1]
         if cmd == "status":
@@ -253,8 +376,14 @@ if __name__ == "__main__":
         elif cmd == "ingest-file" and len(sys.argv) >= 3:
             result = ingest_from_file(sys.argv[2])
             print(json.dumps(result, ensure_ascii=False, indent=2))
+        elif cmd == "retry":
+            retry_pending()
+            print("[Bridge] リトライ処理完了")
+        else:
+            print(f"未知のコマンド: {cmd}")
     else:
         print("Usage:")
         print("  python mocka_bridge.py status")
         print("  python mocka_bridge.py sync <mocka_events.db>")
         print("  python mocka_bridge.py ingest-file <file.md>")
+        print("  python mocka_bridge.py retry")

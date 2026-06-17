@@ -767,14 +767,15 @@
     {
       "id": "TODO_328",
       "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
-      "status": "未着手",
+      "status": "done",
       "priority": "最高",
       "category": "SEO-OS/PR-OS/bridge",
       "description": "現状のmocka_bridge.pyはfeedback_publish()がMoCKA events.dbに書かない（ローカルJSONLのみ）。MoCKA MCPへのHTTP POST（ngrok経由 localhost:5000/write_event）で投稿成功イベントをevents.dbに永続化する。記録なき作業はMoCKAとして存在しない原則を外部発信まで貫徹する。エンドポイント: POST {MOCKA_ENDPOINT}/write_event。認証: MOCKA_HMAC_SECRETによる署名。",
       "assigned_to": "くろこ（実装）",
-      "note": "",
+      "note": " [TODO_328完了 2026-06-17] 変更ファイル: pr-os/mocka_bridge.py 132行->389行。feedback_publish()にPHI-OS Gate HTTP POST追加。Gate失敗時はgate_retry_queue.jsonlに追記・retry_pending()で再送。cp932対応済み。実機テスト: E20260617_083確認・record.count 12071->12073増加確認。",
       "reference_event": "E20260617_019",
-      "created_at": "2026-06-17T08:10:47.770075"
+      "created_at": "2026-06-17T08:10:47.770075",
+      "completed_at": "2026-06-17T17:18:12.891340"
     },
     {
       "id": "TODO_329",

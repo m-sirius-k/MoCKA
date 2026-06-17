@@ -1,0 +1,5 @@
+{"ts": "2026-06-17T08:14:34.952385+00:00", "event_type": "feedback_publish", "ks_id": "KS_TEST_TODO328", "adapter": "test_dry_run", "status": "published", "url": "http://example.local/test-todo328"}
+{"ts": "2026-06-17T08:15:57.516723+00:00", "event_type": "feedback_publish", "ks_id": "KS_TEST_TODO328_FAIL", "adapter": "test_dry_run", "status": "failed", "url": null}
+{"ts": "2026-06-17T08:16:01.587764+00:00", "event_type": "gate_failure", "ks_id": "KS_TEST_TODO328_FAIL", "adapter": "test_dry_run", "error": "Gate POST失敗（requestsなし・タイムアウト・接続エラーのいずれか）"}
+{"ts": "2026-06-17T08:16:53.136456+00:00", "event_type": "feedback_publish", "ks_id": "KS_TEST_TODO328_FAIL", "adapter": "test_dry_run", "status": "failed", "url": null}
+{"ts": "2026-06-17T08:16:57.208110+00:00", "event_type": "gate_failure", "ks_id": "KS_TEST_TODO328_FAIL", "adapter": "test_dry_run", "error": "Gate POST失敗（requestsなし・タイムアウト・接続エラーのいずれか）"}
