@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-16",
+    "updated": "2026-06-17",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -739,6 +739,90 @@
       "note": "GPT R01 Priority1（必須）。TODO_323(Trigger)・TODO_324(定期監査)と合わせてPhase5で実施。",
       "reference_event": "E20260616_064",
       "created_at": "2026-06-16T10:13:10.769167"
+    },
+    {
+      "id": "TODO_326",
+      "title": "SEO-OS Distribution Router v1 — 5軸スコアリング＋temporal_decay統合",
+      "status": "未着手",
+      "priority": "高",
+      "category": "SEO-OS/PR-OS",
+      "description": "チャネル×コンテンツの自動振り分けエンジン。5軸（ターゲット層/技術深度/言語/緊急度/チャネル相性）でスコアリングし、temporal_decay（鮮度劣化係数）を掛け合わせて最適配信チャネルを自動決定する。入力: KS記事メタデータ。出力: 配信先チャネル順位リスト＋スケジュール案。seo_center / distribution_router / feedback_publishと連携。",
+      "assigned_to": "Claude（設計）+ くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_019",
+      "created_at": "2026-06-17T08:10:26.712151"
+    },
+    {
+      "id": "TODO_327",
+      "title": "LinkedIn adapter 新規実装 — 経営層・学術層チャネル確立",
+      "status": "未着手",
+      "priority": "高",
+      "category": "SEO-OS/PR-OS/adapter",
+      "description": "経営層・AI governance研究者・学術層へのリーチに最重要チャネル。LinkedIn REST API（OAuth 2.0）でテキスト投稿・記事投稿を実装。base_adapter.py継承。pros.py publish linkedin コマンドで実行可能にする。投稿タイプ: TEXT_POST / ARTICLE（長文）。対象アカウント: きむら博士のLinkedInプロフィール。config.json形式はWordPress adapterに準拠。",
+      "assigned_to": "くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_019",
+      "created_at": "2026-06-17T08:10:38.818597"
+    },
+    {
+      "id": "TODO_328",
+      "title": "mocka_bridge feedback_publish — MoCKA events.db永続化修正",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "SEO-OS/PR-OS/bridge",
+      "description": "現状のmocka_bridge.pyはfeedback_publish()がMoCKA events.dbに書かない（ローカルJSONLのみ）。MoCKA MCPへのHTTP POST（ngrok経由 localhost:5000/write_event）で投稿成功イベントをevents.dbに永続化する。記録なき作業はMoCKAとして存在しない原則を外部発信まで貫徹する。エンドポイント: POST {MOCKA_ENDPOINT}/write_event。認証: MOCKA_HMAC_SECRETによる署名。",
+      "assigned_to": "くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_019",
+      "created_at": "2026-06-17T08:10:47.770075"
+    },
+    {
+      "id": "TODO_329",
+      "title": "Semantic Score Vector実装 — SEO Score(スカラー)→5次元ベクトル化",
+      "status": "未着手",
+      "priority": "高",
+      "category": "SEO-OS/semantic_score",
+      "description": "GPT監査確定。SEO Score 0.73のスカラー値を廃止し5次元Semantic Quality Vectorに置換。S1:意味充足率(Semantic Coverage) / S2:構造整合性(Structure Completeness) / S3:LLM抽出適性(Citation Fitness) / S4:検索適合性(Retrieval Fit) / S5:再利用可能性(Reusability)。出力形式: {s1:0.0-1.0, s2:0.0-1.0, s3:0.0-1.0, s4:0.0-1.0, s5:0.0-1.0}。ai_gate/gate.pyに統合。",
+      "assigned_to": "くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_020",
+      "created_at": "2026-06-17T08:42:03.461698"
+    },
+    {
+      "id": "TODO_330",
+      "title": "Distribution Router v2 — 6軸確率分布モデル実装（GPT監査版）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "SEO-OS/distribution_router",
+      "description": "GPT監査確定。Routerは「ルールベース分類器」ではなく「配信の確率分布を決める意思決定関数」かつ「制度ゲート」。6軸スコアリング: content_type / audience / evidence_density / media_form / citation_fitness / temporal_decay(時間価値・GPT追加提案)。出力: distribution_policy {wordpress:0.0-1.0, x:0.0-1.0, newsletter:0.0-1.0, github_pages:0.0-1.0, llm_index:0.0-1.0}。実装: distribution_router.py新規作成。Semantic Score VectorをRouter入力に接続(TODO_329連携)。",
+      "assigned_to": "くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_020",
+      "created_at": "2026-06-17T08:42:12.817458"
+    },
+    {
+      "id": "TODO_331",
+      "title": "JSON-LD 機械公文書化 — LLM引用最適化フォーマット実装",
+      "status": "未着手",
+      "priority": "高",
+      "category": "SEO-OS/json_ld",
+      "description": "GPT監査確定。JSON-LDはSEO補助ではなく「機械世界への公文書」。Google向けではなくLLM・AIエージェント向けの「事実契約書」として再定義。位置づけ: HTML=Presentation Layer / JSON-LD=Machine Knowledge Layer / Router=Distribution Layer。実装: KS記事生成時にLLM引用最適化JSON-LDを自動付与。Schema.org Article + ClaimReview + FAQPage を組み合わせたMoCKA標準テンプレート作成。",
+      "assigned_to": "くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_020",
+      "created_at": "2026-06-17T08:42:20.451905"
+    },
+    {
+      "id": "TODO_332",
+      "title": "Semantic Graph + LLM Citation Mode — 「引用される」設計の実装",
+      "status": "未着手",
+      "priority": "中",
+      "category": "SEO-OS/semantic_graph",
+      "description": "GPT監査提案。記事=ノード / 主張=エッジ / 引用=重み のSemantic Graph導入。「読まれる」ではなく「引用される」設計。LLM Citation Mode統合: KS記事がLLMに引用される際の最適フォーマット自動付与。RouterのLLM_INDEX出力と連携。将来のAI Agent向けMoCKA知識グラフの基盤。",
+      "assigned_to": "Claude（設計）+ くろこ（実装）",
+      "note": "",
+      "reference_event": "E20260617_020",
+      "created_at": "2026-06-17T08:42:27.748789"
     }
   ],
   "completed": [
