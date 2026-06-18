@@ -42,7 +42,7 @@ function mocka_generate_handoff() {
     Promise.all([
         fetch('http://localhost:5000/public/todo').then(function(r){return r.json();}).catch(function(){return {};}),
         fetch('http://localhost:5000/loop/status').then(function(r){return r.json();}).catch(function(){return {};}),
-        fetch('http://localhost:5000/recent_events?n=5').then(function(r){return r.json();}).catch(function(){return {};})
+        fetch('http://localhost:5000/public/events?n=5').then(function(r){return r.json();}).catch(function(){return {};})
     ]).then(function(results) {
         var todoData   = results[0];
         var loopData   = results[1];

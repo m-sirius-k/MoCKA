@@ -326,8 +326,10 @@ function estimateActualTokens() {
   }
 
   // セレクタ未ヒット時のフォールバック
+  let usedFallback = false;
   if (!allText.trim()) {
     allText = document.body?.textContent || '';
+    usedFallback = true;
   }
 
   const totalChars = allText.length;
@@ -350,7 +352,10 @@ function estimateActualTokens() {
              : jpRatio > 0.2 ? 'mixed'
              : 'english';
 
-  const tokens = Math.round(totalChars * coef);
+  // フォールバック時はUI/nav要素込みのため×0.6で過大推定を補正
+  const FALLBACK_CORRECTION = 0.6;
+  const raw = Math.round(totalChars * coef);
+  const tokens = usedFallback ? Math.round(raw * FALLBACK_CORRECTION) : raw;
   return { tokens, chars: totalChars, jpRatio: Math.round(jpRatio * 100) / 100, mode };
 }
 

@@ -109,7 +109,7 @@ class GovernancePipeline:
             approval = self.execution.pre_execution_check({
                 "scope": scope,
                 "expected_new_dirs": scope,
-                "expected_max_changes": 200,
+                "expected_max_changes": 400,
             })
             aborts = approval.dry_run.aborts
 

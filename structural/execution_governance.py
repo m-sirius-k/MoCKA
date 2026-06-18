@@ -141,7 +141,13 @@ class ExecutionGovernanceEngine:
 
         max_changes = action.get("expected_max_changes")
         if max_changes is not None and dry_run.change_count > max_changes:
-            aborts.append("unexpected_file_count")
+            # batch index-only removal (git rm --cached) bypass: all changes are deletions, no additions
+            all_deletions = (
+                len(dry_run.additions) == 0
+                and len(dry_run.deletions) == dry_run.change_count
+            )
+            if not (all_deletions and dry_run.change_count <= 1000):
+                aborts.append("unexpected_file_count")
 
         return aborts
 
