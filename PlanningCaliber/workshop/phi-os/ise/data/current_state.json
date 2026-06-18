@@ -8,12 +8,6 @@
   "warnings": [],
   "todos": [
     {
-      "id": "TODO_139",
-      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
       "id": "TODO_207",
       "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
       "priority": "高",
@@ -128,42 +122,6 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_271",
-      "title": "PHI-OS プロセス管理統合 — PID管理・Restart自動化",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_284",
-      "title": "Knowledge Diff API — Guideline/Essence/Registry差分取得エンドポイント",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_296",
-      "title": "health_check.py — .envファイルのBOM検知を監視対象に追加",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_297",
-      "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_323",
-      "title": "PHI-OS Gate — DB直接書き込み検知トリガー実装（Gate強制性強化）",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_324",
-      "title": "PHI-OS 定期監査スクリプト — Gate経由率・Direct Write・Actor未設定の継続検証",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
       "id": "TODO_325",
       "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
       "priority": "高",
@@ -182,18 +140,6 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_337",
-      "title": "MoCKA-START.bat BOM（U+FEFF）除去 — CP932汚染防止の副次対応",
-      "priority": "低",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_338",
-      "title": "check_utf8_mandate.py拡張 — print文内非ASCII記号検出＆reconfigure未適用検出の静的チェック化",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
       "id": "TODO_339",
       "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
       "priority": "低",
@@ -206,15 +152,15 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_341",
-      "title": "export_for_cloudflare.py 鮮度ズレ解消 — 正本更新の自動反映またはタイムスタンプ明示",
+      "id": "TODO_344",
+      "title": "GL7 expected_max_changes 見直し — 一括バッチ作業向け閾値調整（現状200）",
       "priority": "中",
       "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 14,
-  "state_hash": "4969c1bbf3d4f6b3375eabd002e55d1c2f0a50aeddb3a122f225a204c50c1138",
-  "generated_at": "2026-06-18T02:07:39.421488+00:00"
+  "revision": 15,
+  "state_hash": "a12d7d719da9133f930bab9b09f7c379f8185418fdca73b430adbea4adc3529a",
+  "generated_at": "2026-06-18T02:37:39.445050+00:00"
 }

@@ -7,7 +7,9 @@
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
       "backup": "A:/MOCKA_TODO.json"
     },
-    "how_to_use": "新しいchatやオーケストラ依頼時にMOCKA_OVERVIEW.jsonと一緒に貼る。TODO_IDを指定して作業を依頼する。"
+    "how_to_use": "新しいchatやオーケストラ依頼時にMOCKA_OVERVIEW.jsonと一緒に貼る。TODO_IDを指定して作業を依頼する。",
+    "rule_廃止_placement": "廃止TODOはcompletedに配置する（statusが廃止でもcompletedに入れる。廃止4件: TODO_276/279/326/LB002はINC-003で移動済み）",
+    "rule_completed_at_format": "completed_atは必ずISO 8601フル形式(YYYY-MM-DDTHH:MM:SS)で記録する。日付のみは不可。"
   },
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay未正式運用・vasAI封印済み）+ MoCKAコア改善フェーズ（Caliber検索品質改善・TIC/BEE/PHI OS実装完了）",
   "server_config": {
@@ -17,30 +19,6 @@
     "ngrok": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev/mcp"
   },
   "todos": [
-    {
-      "id": "TODO_LB002",
-      "title": "MOCKA_TODO.json 保存場所と参照場所のズレ確認・修正",
-      "status": "完了",
-      "priority": "高",
-      "category": "MoCKAコア/インフラ",
-      "description": "本STEP自体がLB_002の実施。完了として登録。",
-      "assigned_to": "Claude",
-      "note": "LB_002由来。本修正作業で対応済み。",
-      "created_at": "2026-06-05T00:00:00",
-      "completed_at": "2026-06-05"
-    },
-    {
-      "id": "TODO_139",
-      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
-      "status": "未着手",
-      "priority": "高",
-      "category": "インフラ/user_voice",
-      "description": "週1回きむら博士がexportファイルをX:\\down\\mocka_import\\に置くだけで全自動処理。watchdogがJSON検知→user_voice_importer.py（human発言抽出・MoCKAフィルタ・DB投入）→essence 3軸自動更新→ping_generator実行→seal。claude export・gpt export両対応。",
-      "assigned_to": "Claude（実装）",
-      "note": "2026-05-12登録。TODO_138と並行実装可能。監視フォルダ: X:\\down\\mocka_import\\",
-      "reference_event": "",
-      "created_at": "2026-05-12T17:47:30.053157"
-    },
     {
       "id": "TODO_207",
       "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
@@ -353,10 +331,10 @@
       "category": "Cloudflare",
       "description": "現在の一時URL(pharmacy-governing-whale-two.trycloudflare.com)はPC再起動で変わる。cloudflaredのNamed Tunnel設定で固定URLに変更する。mocka-gateway.nsjpkimura-mocka.workers.dev等の固定サブドメインに紐付け。",
       "assigned_to": "Claude",
-      "note": "2026-06-10: AI Architecture v2.0確定によりCloudflare Tunnel恒久化は優先度を下げる。nsjp.org NS移行後に再検討。当面はAI Connector Framework（TODO_268）を先行させる。ref:E20260610_010",
+      "note": "2026-06-18 くろこ設定ファイル作成完了。C:\\Users\\sirok\\.cloudflared\\config.yml(ingressテンプレート) + cloudflare\\setup_named_tunnel.bat(手順スクリプト)作成済み。実トンネル作成にはcloudflared tunnel login(ブラウザ認証)が必要。博士手動実施後TUNNEL_IDをconfig.ymlに記入し、MoCKA-START.batのngrok行をcloudflared行に差し替えること。commit e675e3de9",
       "reference_event": "",
       "created_at": "2026-06-09T20:28:44.749865",
-      "updated_at": "2026-06-10T09:33:43.266782"
+      "updated_at": "2026-06-18T11:11:55.538697"
     },
     {
       "id": "TODO_267",
@@ -371,104 +349,6 @@
       "created_at": "2026-06-09T20:28:49.895445"
     },
     {
-      "id": "TODO_271",
-      "title": "PHI-OS プロセス管理統合 — PID管理・Restart自動化",
-      "status": "未着手",
-      "priority": "中",
-      "category": "PHI-OS",
-      "description": "MoCKA-START.batのプロセス管理をPHI-OSへ移管。PID管理・終了管理・Restart管理を実装。stale process問題の恒久解決。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260610_10449",
-      "created_at": "2026-06-10T10:37:24.919076"
-    },
-    {
-      "id": "TODO_276",
-      "title": "AI Capability Registry 制度設計 — AI別権限・能力・制約の正式定義",
-      "status": "廃止（TODO_272へ統合）",
-      "priority": "高",
-      "category": "制度設計",
-      "description": "GPT/Claude/Gemini等AI別にTODO分析・設計レビュー・イベント記録・承認権限・削除権限・自動実行可否をCapabilityとして定義しregistryに登録する制度。GPT提案第1章より。",
-      "assigned_to": "Claude",
-      "note": "2026-06-17 くろこ実機調査・きむら博士承認によりTODO_272（AI Capability Registry実装）に統合。同一概念の「制度設計」と「実装」を分離管理する必要がないと判断。以降はTODO_272側で一括管理する。",
-      "reference_event": "E20260610_10480",
-      "created_at": "2026-06-10T17:28:59.763170",
-      "updated_at": "2026-06-17T18:32:02.287782"
-    },
-    {
-      "id": "TODO_279",
-      "title": "Context Package API 実装 — セッション開始時一括取得エンドポイント",
-      "status": "廃止",
-      "priority": "高",
-      "category": "API設計",
-      "description": "セッション開始時にProject Summary / Current Phase / Top TODO / Recent Events / Known Issues / Guideline / Essenceを一括取得するAPIエンドポイント。GPT提案第8章「Context Package」。毎回個別検索が不要になりトークン効率・作業効率が大幅向上する。",
-      "assigned_to": "Claude",
-      "note": "2026-06-17 くろこ実機調査により完全吸収を確認。interface/context_composer.pyのContextComposer.compose()(L121-163)でTODO_279が要求した全要素（Current Phase/Top TODO/Known Issues/Recent Events/Guideline/Essence）が実装済み。TODO_290のnote「ai_session.pyのmode=fullをContext Composer出力で置き換え」と整合。きむら博士承認により廃止。",
-      "reference_event": "E20260610_10480",
-      "created_at": "2026-06-10T17:29:18.867906",
-      "updated_at": "2026-06-17T18:31:43.948361"
-    },
-    {
-      "id": "TODO_284",
-      "title": "Knowledge Diff API — Guideline/Essence/Registry差分取得エンドポイント",
-      "status": "未着手",
-      "priority": "中",
-      "category": "COMMAND CENTER",
-      "description": "Knowledge Diff API実装。GET /api/diff?since=2026-06-09 でGuideline/Essence/Registry/Capabilityの差分を返却。AIは毎回全体を読み直さず差分のみ取得できる。Institution Memoryの効率化。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260610_10482",
-      "created_at": "2026-06-10T17:42:16.945918"
-    },
-    {
-      "id": "TODO_296",
-      "title": "health_check.py — .envファイルのBOM検知を監視対象に追加",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度/TIC/health",
-      "description": "health_check.pyの監視対象に.envファイルのBOMチェックを追加する。症状: .envが存在するのにMOCKA_ENDPOINTがNoneになる。原因: BOM付きUTF-8でpython-dotenvがキーを認識しない。対策: check_env_bom()関数を実装し、BOM検知時はHEALTH_FAILとしてprevention_queueに投入する。",
-      "assigned_to": "Claude",
-      "note": "くろこ修復報告(2026-06-11)で発覚。.envのBOMがMOCKA_ENDPOINTをNone化していた実例。",
-      "reference_event": "E20260611_481",
-      "created_at": "2026-06-11T16:29:42.692334"
-    },
-    {
-      "id": "TODO_297",
-      "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度/TIC/watch",
-      "description": "watch_sources.jsonに登録されたURLのHTTPステータスを定期チェックする機能をtech_watcherに追加する。現状は差分検知のみで「URLが廃止されて404/SSL失敗になっている」状態を能動的には検知できない。check_url_alive()を実装し、接続失敗が連続3回でTECH_WATCH_URL_DEADイベントを記録しprevention_queueに投入する。",
-      "assigned_to": "Claude",
-      "note": "spec.modelcontextprotocol.ioドメイン廃止をくろこが修復(2026-06-11)。TIC初の廃止URL検知実例。能動的URL死活監視が必要。",
-      "reference_event": "E20260611_481",
-      "created_at": "2026-06-11T16:29:50.848462"
-    },
-    {
-      "id": "TODO_323",
-      "title": "PHI-OS Gate — DB直接書き込み検知トリガー実装（Gate強制性強化）",
-      "status": "未着手",
-      "priority": "中",
-      "category": "architecture",
-      "description": "TEST-01監査指摘対応。SQLite TRIGGERでGATE外からのINSERTを検知し、audit_violationsテーブルに記録+アラート発火。物理的封鎖ではなく「迂回しても即検知」の制度的抑止力を追加。OS権限設定は長期課題。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260616_060",
-      "created_at": "2026-06-16T10:12:30.579264"
-    },
-    {
-      "id": "TODO_324",
-      "title": "PHI-OS 定期監査スクリプト — Gate経由率・Direct Write・Actor未設定の継続検証",
-      "status": "未着手",
-      "priority": "中",
-      "category": "architecture",
-      "description": "Gate経由率・Direct Write件数・Actor未設定件数を定期検証するスクリプト。毎朝health_check.pyに組み込み、異常時はCOMMAND CENTERにアラート表示。「Gate経由率100% / Direct Write 0件 / Actor未設定0件」を継続監査。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260616_060",
-      "created_at": "2026-06-16T10:12:39.269390"
-    },
-    {
       "id": "TODO_325",
       "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
       "status": "未着手",
@@ -479,19 +359,6 @@
       "note": "GPT R01 Priority1（必須）。TODO_323(Trigger)・TODO_324(定期監査)と合わせてPhase5で実施。",
       "reference_event": "E20260616_064",
       "created_at": "2026-06-16T10:13:10.769167"
-    },
-    {
-      "id": "TODO_326",
-      "title": "SEO-OS Distribution Router v1 — 5軸スコアリング＋temporal_decay統合",
-      "status": "廃止",
-      "priority": "高",
-      "category": "SEO-OS/PR-OS",
-      "description": "チャネル×コンテンツの自動振り分けエンジン。5軸（ターゲット層/技術深度/言語/緊急度/チャネル相性）でスコアリングし、temporal_decay（鮮度劣化係数）を掛け合わせて最適配信チャネルを自動決定する。入力: KS記事メタデータ。出力: 配信先チャネル順位リスト＋スケジュール案。seo_center / distribution_router / feedback_publishと連携。",
-      "assigned_to": "Claude（設計）+ くろこ（実装）",
-      "note": "2026-06-17 きむら博士承認により廃止。TODO_330（GPT監査版・確率分布モデル）への思想的・技術的統合のため。差異検証結果（E20260617記録）: ①出力形式が326=ランキングに対し330=確率分布で別物 ②評価軸が326=5軸に対し330=6軸でevidence_density/citation_fitness等のLLM時代特有軸を含みTODO_329と連携 ③326が単純な振り分けエンジンに対し330は「ルールベース分類器ではなく配信の確率分布を決める意思決定関数かつ制度ゲート」という思想転換を伴う後継版。326は実装せず、330のみ着手する。",
-      "reference_event": "E20260617_019",
-      "created_at": "2026-06-17T08:10:26.712151",
-      "updated_at": "2026-06-17T17:32:05.941805"
     },
     {
       "id": "TODO_334",
@@ -518,31 +385,6 @@
       "created_at": "2026-06-17T19:06:21.003145"
     },
     {
-      "id": "TODO_337",
-      "title": "MoCKA-START.bat BOM（U+FEFF）除去 — CP932汚染防止の副次対応",
-      "status": "未着手",
-      "priority": "低",
-      "category": "MoCKAコア/CP932/再発防止",
-      "description": "TODO_333①（MoCKA-START.batへのset PYTHONUTF8=1追加）実施中に発見。MoCKA-START.bat自体に既存のBOM（U+FEFF）が混入している。batファイルのBOMはWindows cmd.exe上では通常無害だが、TODO_333の根本問題（CP932/UnicodeEncodeError再発防止・E20260617_086〜089のインシデント連鎖）と同種のエンコーディング汚染パターンであるため、再発防止の網羅性確保の観点から記録・除去を推奨。\n\n対応: MoCKA-START.batをBOM無しUTF-8（またはASCII）で再保存。過去にPHI-OS background.jsでBOMがService Worker無効化の原因になった事例（TODO_195関連）があるため、同様の無音障害化リスクの観点でも確認価値あり。",
-      "assigned_to": "くろこ",
-      "note": "TODO_333③完了レポートで対象拡大。BOM混入が既存問題として確認されたファイル: MoCKA-START.bat（当初発見分）に加え、check_utf8_mandate.py / app.py / interface/mocka_watcher.py / caliber/chat_pipeline/mocka_caliber_server.py / PlanningCaliber/seo-os/command_center/app.py の計6ファイル（いずれもTier1検証で「BOM(既存)・今回編集により汚染なしを確認」）。除去作業は sed -i '1s/^\\xEF\\xBB\\xBF//' 相当で対応可能。優先度は低のまま（即時の機能影響なし）だが、対象ファイル数が当初の1件から7件に拡大したため範囲更新。",
-      "reference_event": "",
-      "created_at": "2026-06-18T07:47:41.920693",
-      "updated_at": "2026-06-18T08:00:06.106823"
-    },
-    {
-      "id": "TODO_338",
-      "title": "check_utf8_mandate.py拡張 — print文内非ASCII記号検出＆reconfigure未適用検出の静的チェック化",
-      "status": "未着手",
-      "priority": "中",
-      "category": "MoCKAコア/CP932/再発防止",
-      "description": "TODO_333④として保留扱いだった案件を正式TODO化。check_utf8_mandate.pyを拡張し、ファイル単位のUTF-8検査だけでなく、以下を検出する静的チェックへ発展させる：\n①print/logging呼び出し内の非ASCII装飾記号の使用（矢印・絵文字等。②規約で禁止済みだが検出機構がない）\n②sys.stdout.reconfigure未適用の高頻度実行スクリプト検出（③で対応した33ファイル以外の新規スクリプトが将来追加された際の漏れ防止）\n\nまたは別案として、pre_commit_check.pyに「sys.stdout.reconfigure未適用検出ルール」を追加する方式も検討（くろこ所感）。\n\n目的: ①②③の対策が場当たり的にならないよう、新規スクリプト追加時に自動でCP932リスクを検知する仕組みを作り、再発防止を制度化する。",
-      "assigned_to": "くろこ",
-      "note": "TODO_333完了レポート（E20260618_013）の残課題②として起票。TODO_333①②③は2026-06-18完了。④は実装コストありのため当初から後続TODO化候補とされていた。",
-      "reference_event": "",
-      "created_at": "2026-06-18T08:00:19.097652"
-    },
-    {
       "id": "TODO_339",
       "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
       "status": "未着手",
@@ -567,16 +409,40 @@
       "created_at": "2026-06-18T08:48:49.662066"
     },
     {
-      "id": "TODO_341",
-      "title": "export_for_cloudflare.py 鮮度ズレ解消 — 正本更新の自動反映またはタイムスタンプ明示",
+      "id": "TODO_344",
+      "title": "GL7 expected_max_changes 見直し — 一括バッチ作業向け閾値調整（現状200）",
       "status": "未着手",
       "priority": "中",
-      "category": "制度/Cloudflare配信/データ鮮度",
-      "description": "E20260618_028/029の調査で発見。export_for_cloudflare.py（MOCKA_TODO.json/MOCKA_OVERVIEW.json/lever_essence.json/events_latest.jsonをshutil.copy2()でdata/配下にコピーしCloudflare Pagesへ配信する設計）は、MoCKA-START.bat起動時の一度きり実行のため、正本更新後もCloudflare公開版が古いままになる「鮮度のズレ」が恒常的に発生する。確認時点で約12分のズレがあったが、長時間再起動しなければズレはさらに拡大する。\\n\\nTODO_336（Relay Free引き継ぎパケット異常）の根本原因ではなかったが、TODO_336修正後も独立して残る別リスク。Cloudflare公開版を見た外部（Relay利用者・LLM等）が古い情報を参照し続ける可能性がある。\\n\\n対策方針（要設計検討）: ①定期実行化（cron的な仕組み・MoCKA-START.bat以外のタイミングでも実行されるようにする） ②正本更新時にフック経由でexport_for_cloudflare.pyを自動トリガーする（TODO_217のPostToolUseフックと同種の発想） ③公開版に最終更新タイムスタンプを明示し、鮮度を利用者側が確認できるようにする（即効性のある暫定策）。優先順位はくろこの調査・実装時の判断に委ねる。",
+      "category": "制度/GL7/governance_pipeline",
+      "description": "GL7(structural/execution_governance.py L89-146・governance_pipeline.py L112)のexpected_max_changes=200（ハードコード）が、TODO_343のような一括エンコーディング修正バッチ（272ファイル変更）を誤検知でブロックした。E20260618_053で解決済みだが再発防止のため閾値見直しが必要。\n\n検討事項:\n①単純な数値変更（300〜500への引き上げ）で足りるか、②変更内容の質（ロジック変更か単純な行追加か）を見て動的に閾値を変える仕組みにするか、③一括バッチ作業を事前申告する仕組み（事前承認フラグ等）を設けるか、の3方針を比較検討すること。\nGL7の本来の目的（レビューなき大量書き換えの検知）を弱めすぎないよう、安易な数値引き上げだけで済ませない設計判断を推奨。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "2026-06-18 GL7_EXECUTION_BLOCKEDインシデント（E20260618_053で解決記録済み）の再発防止策として登録。くろこの調査時の提案（閾値300〜500への引き上げ）が出発点。",
+      "reference_event": "E20260618_053",
+      "created_at": "2026-06-18T11:14:43.437201"
+    },
+    {
+      "id": "TODO_345",
+      "title": "MOCKA_OVERVIEW.json コンテンツ更新 — meta.updated 2026-06-01停止分の反映",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/ガバナンス/file_hygiene",
+      "description": "E20260618_060の調査で発見。MOCKA_OVERVIEW.json（正本: C:/Users/sirok/MOCKA_OVERVIEW.json）のmeta.updatedが2026-06-01のまま更新停止している。data/へのCloudflareスナップショットコピー自体は正常稼働（export_for_cloudflare.pyによる設計通り）だが、コピー元のコンテンツが古い。\n\n反映すべき主要進捗（6/1〜6/18）:\n- TIC Phase2〜7完了（Dependency Graph/Root Cause/Trend/Prediction Layer）\n- PHI-OS Event Gate確立（CSV廃止・SQLite単一化・11,929件移行）\n- Institution Architecture（Constitution/Institution/Operation 3層）・Institution Contract v2.0\n- Commission Registry・Context Composer・Mentor Engine等のInstitutional Cognition群\n- Connector Framework v2.0（AI Capability Registry/Connector Router/Lifecycle Manager）\n- SEO-OS Phase1〜6完了\n- PR-OS実装（WordPress/X/Instagram/GitHub Pages/Newsletter Adapter）\n- p-DERS論文Zenodo公開・AIES2026投稿完了\n- vasAI v1.4.9 VERIFIED封印\n- CP932/UnicodeEncodeError再発防止策（TODO_333系列）完了\n- docs/mocka3/ 6文書（六層governance）完成\n\n更新後はmeta.updatedを現在日付に更新し、current_phaseもPhase4後半の実態に合わせて見直すこと。",
+      "assigned_to": "くろこ（実装）+ きむら博士（確認）",
+      "note": "",
+      "reference_event": "E20260618_060",
+      "created_at": "2026-06-18T11:39:16.828859"
+    },
+    {
+      "id": "TODO_346",
+      "title": "overview_tmp.json 削除 — 生成元不明の孤立ファイル",
+      "status": "未着手",
+      "priority": "低",
+      "category": "制度/file_hygiene",
+      "description": "E20260618_060の調査で発見。MoCKA/直下にoverview_tmp.json（2026-06-13 16:38:48, 21,955 bytes）が存在し、生成元スクリプトが特定できない孤立した一時ファイル。MOCKA_OVERVIEW.json正本・スナップショットいずれとも別の独立ファイル。実害はないが、削除して掃除しておく。削除前に内容差分を一度確認（万一何らかの実験的生成物であった場合の見落とし防止）。",
       "assigned_to": "くろこ",
-      "note": "E20260618_028(重複ファイル調査)→E20260618_029(調査結果記録)から起票。きむら博士「なおそう！」の判断による。",
-      "reference_event": "E20260618_029",
-      "created_at": "2026-06-18T09:00:02.318983"
+      "note": "",
+      "reference_event": "E20260618_060",
+      "created_at": "2026-06-18T11:39:25.523038"
     }
   ],
   "completed": [
@@ -590,7 +456,8 @@
       "assigned_to": "Claude（実装）",
       "note": "mocka_sender.exe C:\\Users\\sirok\\MoCKA\\tools\\に配置。health:ok/success:ok確認済み。2026-04-28。",
       "reference_event": "",
-      "created_at": "2026-04-28T18:51:04.684800"
+      "created_at": "2026-04-28T18:51:04.684800",
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_117",
@@ -602,7 +469,8 @@
       "assigned_to": "Claude",
       "note": "エージェント総合分析2026-04-30。Decision Explainability。監査トレースの深化。 2026-05-12: why_decided/essence_axis/basis_event_ids追加。表示確認済み。",
       "reference_event": "",
-      "created_at": "2026-04-30T10:06:03.034594"
+      "created_at": "2026-04-30T10:06:03.034594",
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_119",
@@ -614,7 +482,8 @@
       "assigned_to": "Claude",
       "note": "エージェント総合分析2026-04-30。データ生存性・制度完全性の担保。締切超過TODO自動INCIDENT化は即効性高い。 2026-05-12: _auto_incident_overdue()/integrity/monitor全稼働確認。overdue_incidents=4件。 2026-05-12: _auto_incident_overdue()/integrity/monitor稼働確認。overdue_incidents=4件。",
       "reference_event": "",
-      "created_at": "2026-04-30T10:06:36.020357"
+      "created_at": "2026-04-30T10:06:36.020357",
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_120",
@@ -626,7 +495,8 @@
       "assigned_to": "Claude",
       "note": "エージェント総合分析2026-04-30。運用者負荷指標とAIオーケストラ透明性。 2026-05-12: Operator LoadパネルCOMMAND CENTER追加・Agent Allocation横並び・CLI計算式修正完了。",
       "reference_event": "",
-      "created_at": "2026-04-30T10:07:03.540421"
+      "created_at": "2026-04-30T10:07:03.540421",
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_124",
@@ -638,7 +508,8 @@
       "assigned_to": "Claude（実装）",
       "note": "2026-05-01: mocka_strengthen.py適用で実装完了。essence_auto_updater.py v4配置済み。",
       "reference_event": "",
-      "created_at": "2026-05-01T18:48:30.816195"
+      "created_at": "2026-05-01T18:48:30.816195",
+      "completed_at": "2026-05-01T00:00:00"
     },
     {
       "id": "TODO_125",
@@ -650,7 +521,8 @@
       "assigned_to": "Claude（実装）",
       "note": "2026-05-01: essence_auto_updater v4のPING_FORCE_SEC=600で実装済み。",
       "reference_event": "",
-      "created_at": "2026-05-01T18:48:40.600866"
+      "created_at": "2026-05-01T18:48:40.600866",
+      "completed_at": "2026-05-01T00:00:00"
     },
     {
       "id": "TODO_132",
@@ -662,7 +534,8 @@
       "assigned_to": "Claude",
       "note": "2026-05-11: commit 0050056f / git push済み。DANGER時に[MOCKA_ALERT]⚠️ verdict=DANGER score=1.0がDNA先頭に付加される。SAFEは注入しない設計。guidelines_statusのPathエラー(TODO_130残タスク)は別途対応。",
       "reference_event": "",
-      "created_at": "2026-05-11T09:42:27.237432"
+      "created_at": "2026-05-11T09:42:27.237432",
+      "completed_at": "2026-05-11T00:00:00"
     },
     {
       "id": "TODO_133",
@@ -674,7 +547,8 @@
       "assigned_to": "きむら博士（設計・完成）+ Claude（執行官・認識エンド）",
       "note": "MoCKAが初めて「きむら博士の発言をリアルタイムで感知し、自律的にAlertとしてClaudeに届ける」ループを完成させた日。2026-05-11。",
       "reference_event": "",
-      "created_at": "2026-05-11T09:43:42.284250"
+      "created_at": "2026-05-11T09:43:42.284250",
+      "completed_at": "2026-05-11T00:00:00"
     },
     {
       "id": "TODO_142",
@@ -687,7 +561,8 @@
       "note": "2026-06-01 博士承認により廃止。OrchestraはChrome拡張に転換済み。Playwright版EXE化の前提が消滅。",
       "reference_event": "",
       "created_at": "2026-05-13T17:13:25.096736",
-      "updated_at": "2026-06-01T18:29:22.305825"
+      "updated_at": "2026-06-01T18:29:22.305825",
+      "completed_at": "2026-05-13T00:00:00"
     },
     {
       "id": "TODO_164",
@@ -700,7 +575,8 @@
       "note": "2026-06-01 博士承認により廃止。PHI OS core/adapters実装済み（TODO_186〜188完了）、Relay v4.9完成済み。記載内容はすでに完了。",
       "reference_event": "E20260520_022",
       "created_at": "2026-05-20T14:32:12.624842",
-      "updated_at": "2026-06-01T18:29:25.846638"
+      "updated_at": "2026-06-01T18:29:25.846638",
+      "completed_at": "2026-05-20T00:00:00"
     },
     {
       "id": "TODO_167",
@@ -713,7 +589,8 @@
       "note": "2026-05-24: background.jsにgetWaitTime()実装確認済み。スライダーUIはpopup.jsに実装中。CWS審査提出後に仕上げ予定。 2026-05-24完了(CWS審査提出・E2E確認済み)",
       "reference_event": "E20260522_015",
       "created_at": "2026-05-22T11:15:39.264098",
-      "updated_at": "2026-05-24T12:33:03.594449"
+      "updated_at": "2026-05-24T12:33:03.594449",
+      "completed_at": "2026-05-22T00:00:00"
     },
     {
       "id": "TODO_181",
@@ -725,7 +602,8 @@
       "assigned_to": "Claude",
       "note": "2026-05-26: Claude Codeが設計書DESIGN_v1.md通りに実装完了。9ファイル生成・約40KB。ライセンスプレフィックスRLY-→MEM-に修正。文字化け防止全項目実施済み。残課題: アイコン画像未配置など5項目。E20260526_041。",
       "reference_event": "E20260526_038",
-      "created_at": "2026-05-26T18:08:00.664766"
+      "created_at": "2026-05-26T18:08:00.664766",
+      "completed_at": "2026-05-26T00:00:00"
     },
     {
       "id": "TODO_200",
@@ -738,7 +616,8 @@
       "note": "2026-06-01 博士承認により廃止。TIC設計（TODO_204〜208）に完全吸収。重複登録のため閉幕。",
       "reference_event": "E20260601_002",
       "created_at": "2026-06-01T06:37:51.860967",
-      "updated_at": "2026-06-01T18:29:29.826231"
+      "updated_at": "2026-06-01T18:29:29.826231",
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_201",
@@ -751,7 +630,8 @@
       "note": "2026-06-01 博士承認により廃止。TODO_204（TIC Layer 1 tech_watcher）と内容同一。命名違いの重複のため統合閉幕。",
       "reference_event": "E20260601_002",
       "created_at": "2026-06-01T06:38:01.633086",
-      "updated_at": "2026-06-01T18:29:33.513908"
+      "updated_at": "2026-06-01T18:29:33.513908",
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_202",
@@ -764,13 +644,14 @@
       "note": "2026-06-01 博士承認により廃止。TODO_203として独立登録し直し→TODO_203完了済み。空洞化のため閉幕。",
       "reference_event": "E20260601_002",
       "created_at": "2026-06-01T06:38:12.708598",
-      "updated_at": "2026-06-01T18:29:38.404773"
+      "updated_at": "2026-06-01T18:29:38.404773",
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_C001",
       "title": "MCP caliber Phase 1完成",
       "status": "完了",
-      "completed_at": "2026-04-05",
+      "completed_at": "2026-04-05T00:00:00",
       "description": "claude.ai→MCP→mocka_mcp_server.py→events.csv接続。6ツール稼働。自動記録開始",
       "event_ids": [
         "E20260405_001",
@@ -785,7 +666,7 @@
       "id": "TODO_C002",
       "title": "COMMAND CENTERサーバーステータス表示",
       "status": "完了",
-      "completed_at": "2026-04-05",
+      "completed_at": "2026-04-05T00:00:00",
       "description": "localhost:5000のRefreshボタン横にCALIBER:5679とMCP:5002のリアルタイム表示",
       "event_ids": [
         "E20260405_007"
@@ -795,7 +676,7 @@
       "id": "TODO_C003",
       "title": "recurrence_registry誤検知バグ修正",
       "status": "完了",
-      "completed_at": "2026-04-04",
+      "completed_at": "2026-04-04T00:00:00",
       "description": "偽陽性77件→0件。error_rate文字列誤マッチ修正",
       "event_ids": [
         "E20260404_004"
@@ -805,7 +686,7 @@
       "id": "TODO_C004",
       "title": "4AI orchestra + AI SEO最適化",
       "status": "完了",
-      "completed_at": "2026-03-29",
+      "completed_at": "2026-03-29T00:00:00",
       "description": "8リポジトリにllms.txt/llms-ja.txt/統一README追加",
       "event_ids": []
     },
@@ -819,7 +700,7 @@
       "assigned_to": "Claude",
       "note": "router.pyの重複定義（collaborate/share×2）とwhat_type=\"save\"誤記録を修正。MoCKARouter.save()削除、write_safe_csv直接呼び出しに統一。what_type: collaboration/share/recordに分離。53件再発の根本原因解消。",
       "updated_at": "2026-04-05T18:30:14.342109",
-      "completed_at": "2026-04-05"
+      "completed_at": "2026-04-05T00:00:00"
     },
     {
       "id": "TODO_006",
@@ -831,7 +712,7 @@
       "assigned_to": "きむら博士",
       "note": "mocka-seal完了。COMMIT: 6561fc5。ALL CHECKS PASSED。git commitはno changesだったがanchor更新・seal済み。",
       "updated_at": "2026-04-05T18:39:34.607335",
-      "completed_at": "2026-04-05"
+      "completed_at": "2026-04-05T00:00:00"
     },
     {
       "id": "TODO_001",
@@ -843,7 +724,7 @@
       "assigned_to": "きむら博士 or Claude",
       "note": "MOCKA_OVERVIEW.json v2.2生成完了。主な更新: ①server_config（ポート構成確定）②router修正済み記録③fluid_coordinate_theory新規追加④governance最新seal記録⑤paper情報（v5+AppendixC v3）⑥current_issues更新（Z軸低下/pushpending）⑦next_actions整理。ファイルはC:/Users/sirok/MOCKA_OVERVIEW.jsonに上書き保存要。",
       "updated_at": "2026-04-06T07:06:35.325848",
-      "completed_at": "2026-04-06"
+      "completed_at": "2026-04-06T00:00:00"
     },
     {
       "id": "TODO_009",
@@ -855,7 +736,7 @@
       "assigned_to": "Claude",
       "note": "Recovery Rate正式定式化完了。MOCKA_RR_Formula.docx生成。Part1(Section 4用): RR=(1/8)Σsᵢ定義・ΔRR̄=+0.22の数値結果表・callout。Part2(Appendix C用): sᵢⱼ二重添字・集計統計・公理との接続。全数式はCourier Newテキストで表現（Word互換）。",
       "updated_at": "2026-04-06T07:11:58.038570",
-      "completed_at": "2026-04-06"
+      "completed_at": "2026-04-06T00:00:00"
     },
     {
       "id": "TODO_010",
@@ -867,7 +748,7 @@
       "assigned_to": "Claude",
       "note": "Draft v6生成完了。v5からの変更: ①Section 4.1にRR正式定式化(sᵢⱼ/RRⱼ/RR̄/ΔRR̄)追加 ②Section 4.3にΔRR̄列追加 ③Section 4.4に全14セッションのscoring note追加 ④Section 4.5末尾に最小主張太字1文追加 ⑤Appendix C参照セクション追加。Appendix C v3は別ファイルとして添付。",
       "updated_at": "2026-04-06T07:15:57.675305",
-      "completed_at": "2026-04-06"
+      "completed_at": "2026-04-06T00:00:00"
     },
     {
       "id": "TODO_004",
@@ -879,7 +760,7 @@
       "assigned_to": "Claude",
       "note": "完了。87件の再発データは全て制度改善済み: ①save43件/collaboration13件/share6件→router.py修正(commit 6561fc5)で解消 ②INSTRUCTION_IGNORE 4件→Phase18以降人間ゲート必須化で制度化済み。追加実装不要。",
       "updated_at": "2026-04-06T07:17:14.238195",
-      "completed_at": "2026-04-06"
+      "completed_at": "2026-04-06T00:00:00"
     },
     {
       "id": "TODO_008",
@@ -891,7 +772,7 @@
       "assigned_to": "きむら博士 + Claude",
       "note": "15ケース実験完走（5種類×3回）。結果: A=100%/B=25%/C=100%/D=12.5%/E=0%。3段階比較成立: 文書単体0%→AI要約65%→MoCKA制約下100%。E20260406_004に記録。mocka-seal済み。",
       "updated_at": "2026-04-06T07:49:11.950025",
-      "completed_at": "2026-04-06"
+      "completed_at": "2026-04-06T00:00:00"
     },
     {
       "id": "TODO_007",
@@ -903,7 +784,7 @@
       "assigned_to": "Claude",
       "note": "2026-04-07: Draft v7完成。v6からの主要変更: ①Abstract英日両語・正直な限界含む ②新指数ADI/AER/ICS/IRS/CRC/CRS/ARR/MVI追加 ③AER=60%・ADI=40%・ICS=-53.3%をResults追加 ④Z軸逆説（診断技術効果）をSection 5.4で論述 ⑤深夜リスク集中（78%が0-4時）をSection 5.5で実証 ⑥ARR公式（RR×α）をMethodologyに追加 ⑦15セッション実験結果（ΔRR̄=+35pp）をSection 5.6に記載 ⑧Limitations 6項目を表形式で正直に記載 ⑨参考文献16件 ⑩Appendix A（新指数定義）+ Appendix B（実験設計憲章要約）",
       "updated_at": "2026-04-07T09:50:48.898573",
-      "completed_at": "2026-04-07"
+      "completed_at": "2026-04-07T00:00:00"
     },
     {
       "id": "TODO_011",
@@ -924,7 +805,7 @@
       "category": "ドキュメント",
       "description": "2026-04-04に新規発見。architecture/operations/incidents 4ドキュメントが初期構築済み。内容確認と整備",
       "assigned_to": "Claude",
-      "completed_at": "2026-04-11",
+      "completed_at": "2026-04-11T00:00:00",
       "note": "mocka-docs整備完了（ROUTER_API.md・SESSION_PROTOCOL.md更新）E20260411_008"
     },
     {
@@ -935,7 +816,7 @@
       "category": "インフラ",
       "description": "本日の全成果を反映: Draft v7・n=255・Z軸実測値・レバー制御実験・閉ループPhase1完了・試料パケット生成・Recurrence補完。paper欄をv7に更新。",
       "assigned_to": "Claude",
-      "completed_at": "2026-04-11",
+      "completed_at": "2026-04-11T00:00:00",
       "note": "MOCKA_OVERVIEW.json v2.4更新完了 E20260411_006"
     },
     {
@@ -946,7 +827,7 @@
       "category": "ガバナンス",
       "description": "E20260407_001〜009・レバー検証・試料パケット生成・Recurrence補完をgit commitしてmocka-sealで封印。",
       "assigned_to": "きむら博士",
-      "completed_at": "2026-04-11",
+      "completed_at": "2026-04-11T00:00:00",
       "note": "mocka-seal実施済み（本日セッション中に実行）seal:9eee8214"
     },
     {
@@ -957,7 +838,7 @@
       "category": "caliber",
       "description": "planningcaliber/workshop/needle_eye_projectの成果物を評価。ESSENCE_auto.jsonは模擬データのため本体MoCKAには取り込まない。レバー検証コードは採用済み。dynamic_lever_caliber.pyを正式caliberとして登録するか判断が必要。",
       "assigned_to": "きむら博士 + Claude",
-      "completed_at": "2026-04-11",
+      "completed_at": "2026-04-11T00:00:00",
       "note": "Needle Eye Project統合評価完了・dynamic_lever_caliber.py正式caliber登録 E20260411_009"
     },
     {
@@ -967,7 +848,7 @@
       "priority": "高",
       "status": "完了",
       "file": "C:/Users/sirok/planningcaliber/workshop/needle_eye_project/experiments/real_essence_from_raw.json",
-      "completed_at": "2026-04-11",
+      "completed_at": "2026-04-11T00:00:00",
       "note": "ZYXTS定量評価完了・Δtotal=+0.6367・verified:True E20260411_010"
     },
     {
@@ -976,7 +857,7 @@
       "detail": "Chrome拡張→app.py→events.csvの書き込み経路でShift-JIS混入。根本修正要。",
       "priority": "中",
       "status": "完了",
-      "completed_at": "2026-04-11",
+      "completed_at": "2026-04-11T00:00:00",
       "note": "app.py文字化けバグ修正完了（UTF-8統一） E20260411_007"
     },
     {
@@ -989,7 +870,7 @@
       "assigned_to": "Claude",
       "note": "validate_input_integrity()実装完了 E20260411",
       "updated_at": "2026-04-12T12:56:32.978303",
-      "completed_at": "2026-04-12"
+      "completed_at": "2026-04-12T00:00:00"
     },
     {
       "id": "TODO_020",
@@ -1001,7 +882,7 @@
       "assigned_to": "Claude",
       "note": "論文Draft v8・v9生成・Zenodo公開完了 E20260411",
       "updated_at": "2026-04-12T12:56:37.034860",
-      "completed_at": "2026-04-12"
+      "completed_at": "2026-04-12T00:00:00"
     },
     {
       "id": "TODO_013",
@@ -1013,7 +894,7 @@
       "assigned_to": "GPT",
       "note": "trust_score_caliber.py / utils_score.py がMoCKA/interface/およびplanningcaliber/src/に存在確認。実装完了と判定。2026-04-13 Claude確認。",
       "updated_at": "2026-04-13T09:50:59.622277",
-      "completed_at": "2026-04-13"
+      "completed_at": "2026-04-13T00:00:00"
     },
     {
       "id": "TODO_012",
@@ -1025,7 +906,7 @@
       "assigned_to": "Gemini",
       "note": "断絶2は実質解消済み。content.js v14がINJECT_MODE=ONで稼働中。/new→DNA注入・/chat/→essence注入が今セッションで実証済み。background.jsへのpacket同梱は不要と判定。2026-04-13 Claude確認・完了処理。",
       "updated_at": "2026-04-13T09:57:35.684611",
-      "completed_at": "2026-04-13"
+      "completed_at": "2026-04-13T00:00:00"
     },
     {
       "id": "TODO_021",
@@ -1037,7 +918,7 @@
       "assigned_to": "きむら博士 + Claude",
       "note": "PHL単体論文v3をZenodoに投稿。先行権確保完了。2026-04-16。E20260416_006。",
       "updated_at": "2026-04-16T19:11:32.512283",
-      "completed_at": "2026-04-16"
+      "completed_at": "2026-04-16T00:00:00"
     },
     {
       "id": "TODO_034",
@@ -1051,7 +932,7 @@
       "reference_event": "E20260418_026",
       "created_at": "2026-04-18T18:03:43.283197",
       "updated_at": "2026-04-18T18:19:30.452414",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_033",
@@ -1065,7 +946,7 @@
       "reference_event": "E20260418_026",
       "created_at": "2026-04-18T17:47:30.491650",
       "updated_at": "2026-04-18T18:24:45.555231",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_027",
@@ -1079,7 +960,7 @@
       "reference_event": "E20260418_009",
       "created_at": "2026-04-18T12:22:18.064269",
       "updated_at": "2026-04-18T18:57:58.014946",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_023",
@@ -1095,7 +976,7 @@
       "reference_event": "2026-04-17セッション",
       "note": "No-Token Architecture採択により廃止。batch_ecol2.pyはAPIクレジット補充後も再稼働しない。TODO_027承認済み（2026-04-18）。",
       "updated_at": "2026-04-18T18:58:02.256066",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_024",
@@ -1108,7 +989,7 @@
       "depends_on": "TODO_023",
       "note": "No-Token Architecture採択により廃止。watchdog_mocka.pyは新アーキテクチャで再設計予定。TODO_027承認済み（2026-04-18）。",
       "updated_at": "2026-04-18T18:58:05.050854",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_025",
@@ -1121,7 +1002,7 @@
       "reference_event": "E20260418_002 E20260418_003",
       "note": "TODO_028/029として具体化・4原則・4軸定義確定済み。PHLシステムプロンプト見直しはTODO_028/029に統合。2026-04-18完了。",
       "updated_at": "2026-04-18T18:58:48.931928",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_026",
@@ -1135,7 +1016,7 @@
       "reference_event": "E20260418_005",
       "created_at": "2026-04-18T11:06:43.615536",
       "updated_at": "2026-04-18T18:58:52.196558",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_028",
@@ -1149,7 +1030,7 @@
       "reference_event": "E20260418_013",
       "created_at": "2026-04-18T13:09:51.254972",
       "updated_at": "2026-04-18T19:08:23.882752",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_029",
@@ -1163,7 +1044,7 @@
       "reference_event": "E20260418_014",
       "created_at": "2026-04-18T13:10:25.034013",
       "updated_at": "2026-04-18T19:12:55.708066",
-      "completed_at": "2026-04-18"
+      "completed_at": "2026-04-18T00:00:00"
     },
     {
       "id": "TODO_041",
@@ -1177,7 +1058,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T08:54:35.058587",
       "updated_at": "2026-04-19T09:21:39.756740",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_044",
@@ -1191,12 +1072,12 @@
       "reference_event": "",
       "created_at": "2026-04-19T09:54:28.560345",
       "updated_at": "2026-04-19T10:06:56.995543",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_030",
       "title": "MoCKA言語アルゴリズム実装 — 危険信号予測エンジン",
-      "status": "未着手",
+      "status": "完了",
       "priority": "高",
       "category": "language_algorithm",
       "description": "E20260418_015で確定した設計原点を実装。danger_patterns.json（Tier1/2/3語彙定義）+ language_detector.py（組み合わせ出現率による危険度スコアリング）を作成。短文否定を最速トリガーとし、複数パターンの組み合わせでINFO/WARNING/DANGER/CRITICALの4段階を判定。PowerShell/Python環境忘れ・繰り返し質問等の具体的ルールも含む。",
@@ -1205,7 +1086,7 @@
       "reference_event": "E20260418_015",
       "created_at": "2026-04-18T13:30:26.063561",
       "updated_at": "2026-04-19T10:58:53.904986",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_031",
@@ -1219,7 +1100,7 @@
       "reference_event": "E20260418_017",
       "created_at": "2026-04-18T13:50:41.110425",
       "updated_at": "2026-04-19T11:48:54.465905",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_032",
@@ -1233,7 +1114,7 @@
       "reference_event": "E20260418_019",
       "created_at": "2026-04-18T14:20:51.194499",
       "updated_at": "2026-04-19T12:12:54.673294",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_042",
@@ -1247,7 +1128,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T09:54:14.816285",
       "updated_at": "2026-04-19T12:17:55.085521",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_043",
@@ -1261,7 +1142,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T09:54:22.853968",
       "updated_at": "2026-04-19T12:17:59.749162",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_037",
@@ -1275,7 +1156,7 @@
       "reference_event": "",
       "created_at": "2026-04-18T18:52:32.091648",
       "updated_at": "2026-04-19T12:29:21.867157",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_039",
@@ -1289,7 +1170,7 @@
       "reference_event": "",
       "created_at": "2026-04-18T18:52:43.701831",
       "updated_at": "2026-04-19T12:29:25.720311",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_045",
@@ -1303,7 +1184,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T12:18:06.308191",
       "updated_at": "2026-04-19T12:57:26.731259",
-      "completed_at": "2026-04-19"
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_049",
@@ -1317,7 +1198,7 @@
       "reference_event": "E20260419_002",
       "created_at": "2026-04-19T13:57:05.103633",
       "updated_at": "2026-04-21T13:28:34.782505",
-      "completed_at": "2026-04-21"
+      "completed_at": "2026-04-21T00:00:00"
     },
     {
       "id": "TODO_050",
@@ -1331,7 +1212,7 @@
       "reference_event": "E20260419_002",
       "created_at": "2026-04-19T14:12:42.139889",
       "updated_at": "2026-04-21T13:28:39.945243",
-      "completed_at": "2026-04-21"
+      "completed_at": "2026-04-21T00:00:00"
     },
     {
       "id": "TODO_053",
@@ -1345,7 +1226,7 @@
       "reference_event": "",
       "created_at": "2026-04-21T16:39:21.792967",
       "updated_at": "2026-04-21T16:58:26.837831",
-      "completed_at": "2026-04-21"
+      "completed_at": "2026-04-21T00:00:00"
     },
     {
       "id": "TODO_052",
@@ -1359,7 +1240,7 @@
       "reference_event": "E20260421_001",
       "created_at": "2026-04-21T13:28:28.610446",
       "updated_at": "2026-04-21T17:29:43.471193",
-      "completed_at": "2026-04-21"
+      "completed_at": "2026-04-21T00:00:00"
     },
     {
       "id": "TODO_051",
@@ -1373,7 +1254,7 @@
       "reference_event": "",
       "created_at": "2026-04-21T13:13:54.254535",
       "updated_at": "2026-04-21T18:18:33.184379",
-      "completed_at": "2026-04-21"
+      "completed_at": "2026-04-21T00:00:00"
     },
     {
       "id": "TODO_058",
@@ -1387,7 +1268,7 @@
       "reference_event": "MOCKA_10pv10評価セッション 2026-04-24",
       "created_at": "2026-04-24T07:40:20.711025",
       "updated_at": "2026-04-24T07:57:02.479611",
-      "completed_at": "2026-04-24"
+      "completed_at": "2026-04-24T00:00:00"
     },
     {
       "id": "TODO_060",
@@ -1401,7 +1282,7 @@
       "reference_event": "GPT分析セッション 2026-04-24",
       "created_at": "2026-04-24T08:45:44.303351",
       "updated_at": "2026-04-24T08:50:28.550943",
-      "completed_at": "2026-04-24"
+      "completed_at": "2026-04-24T00:00:00"
     },
     {
       "id": "TODO_063",
@@ -1415,7 +1296,7 @@
       "reference_event": "E20260424_002, E20260424_003",
       "created_at": "2026-04-24T09:46:08.769709",
       "updated_at": "2026-04-24T09:48:19.559101",
-      "completed_at": "2026-04-24"
+      "completed_at": "2026-04-24T00:00:00"
     },
     {
       "id": "TODO_064",
@@ -1429,7 +1310,7 @@
       "reference_event": "E20260424_001, E20260424_002, E20260424_003, E20260424_004",
       "created_at": "2026-04-24T10:14:32.936345",
       "updated_at": "2026-04-24T14:18:53.082247",
-      "completed_at": "2026-04-24"
+      "completed_at": "2026-04-24T00:00:00"
     },
     {
       "id": "TODO_066",
@@ -1443,7 +1324,7 @@
       "reference_event": "E20260424_002, E20260424_004",
       "created_at": "2026-04-24T16:58:10.579260",
       "updated_at": "2026-04-24T17:00:34.959780",
-      "completed_at": "2026-04-24"
+      "completed_at": "2026-04-24T00:00:00"
     },
     {
       "id": "TODO_068",
@@ -1457,7 +1338,7 @@
       "reference_event": "E20260424_016",
       "created_at": "2026-04-24T17:42:23.973626",
       "updated_at": "2026-04-25T10:05:00.366908",
-      "completed_at": "2026-04-25"
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_071",
@@ -1471,7 +1352,7 @@
       "reference_event": "TODO_068完了データ",
       "created_at": "2026-04-25T10:08:44.540984",
       "updated_at": "2026-04-25T13:17:23.276135",
-      "completed_at": "2026-04-25"
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_073",
@@ -1485,7 +1366,7 @@
       "reference_event": "",
       "created_at": "2026-04-25T13:56:50.941757",
       "updated_at": "2026-04-25T16:07:28.163784",
-      "completed_at": "2026-04-25"
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_069",
@@ -1499,7 +1380,7 @@
       "reference_event": "E20260424_013",
       "created_at": "2026-04-24T17:42:34.593665",
       "updated_at": "2026-04-25T16:20:09.176218",
-      "completed_at": "2026-04-25"
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_056",
@@ -1513,7 +1394,7 @@
       "reference_event": "",
       "created_at": "2026-04-21T18:26:20.970840",
       "updated_at": "2026-04-25T17:02:39.313457",
-      "completed_at": "2026-04-25"
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_077",
@@ -1527,7 +1408,7 @@
       "reference_event": "E20260426_011",
       "created_at": "2026-04-26T17:06:00.639706",
       "updated_at": "2026-04-27T06:50:17.214017",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_079",
@@ -1541,7 +1422,7 @@
       "reference_event": "E20260426_011",
       "created_at": "2026-04-26T17:30:57.517644",
       "updated_at": "2026-04-27T06:50:22.734149",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_076",
@@ -1555,7 +1436,7 @@
       "reference_event": "E20260426_004",
       "created_at": "2026-04-26T12:49:01.862247",
       "updated_at": "2026-04-27T06:57:30.348856",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_075",
@@ -1569,7 +1450,7 @@
       "reference_event": "E20260426_004",
       "created_at": "2026-04-26T12:43:29.725438",
       "updated_at": "2026-04-27T07:00:51.826269",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_074",
@@ -1583,7 +1464,7 @@
       "reference_event": "E20260426_004",
       "created_at": "2026-04-26T12:32:53.061505",
       "updated_at": "2026-04-27T07:32:25.204665",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_040",
@@ -1595,7 +1476,8 @@
       "assigned_to": "Claude",
       "note": "2026-04-19 きむら博士との合意により確定。",
       "reference_event": "",
-      "created_at": "2026-04-19T08:08:07.929062"
+      "created_at": "2026-04-19T08:08:07.929062",
+      "completed_at": "2026-04-19T00:00:00"
     },
     {
       "id": "TODO_070",
@@ -1607,7 +1489,8 @@
       "assigned_to": "Claude（記録）",
       "note": "2026-04-25発見。Gemini自身がメモリ消去手順書を生成（1〜4層構造：コンテキスト/保存済み情報/アクティビティ履歴/学習オプトアウト）。論文Limitationsに「AIメモリ永続性が実験環境を汚染するリスク」として記載予定。",
       "reference_event": "TODO_068実験実施中",
-      "created_at": "2026-04-25T09:23:24.553894"
+      "created_at": "2026-04-25T09:23:24.553894",
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_072",
@@ -1619,7 +1502,8 @@
       "assigned_to": "Claude（分析）",
       "note": "2026-04-25発見。試行7でDNAパケットのみ投入→受容。試行6では拒否。論文LimitationsおよびSection 6に記載予定。",
       "reference_event": "",
-      "created_at": "2026-04-25T13:28:29.687168"
+      "created_at": "2026-04-25T13:28:29.687168",
+      "completed_at": "2026-04-25T00:00:00"
     },
     {
       "id": "TODO_080",
@@ -1633,7 +1517,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T07:44:29.140827",
       "updated_at": "2026-04-27T07:59:56.306300",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_082",
@@ -1647,7 +1531,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T08:18:32.435213",
       "updated_at": "2026-04-27T08:27:25.037336",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_083",
@@ -1661,7 +1545,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T08:18:41.452547",
       "updated_at": "2026-04-27T08:27:30.462190",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_084",
@@ -1675,7 +1559,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T08:18:49.037087",
       "updated_at": "2026-04-27T08:27:36.067724",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_085",
@@ -1689,7 +1573,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T08:18:58.207342",
       "updated_at": "2026-04-27T08:27:41.646253",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_046",
@@ -1703,7 +1587,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T12:29:33.096537",
       "updated_at": "2026-04-27T09:42:59.203981",
-      "completed_at": "2026-04-27"
+      "completed_at": "2026-04-27T00:00:00"
     },
     {
       "id": "TODO_061",
@@ -1717,7 +1601,7 @@
       "reference_event": "E20260418_029, E20260419_003, E20260420_001",
       "created_at": "2026-04-24T09:13:17.843180",
       "updated_at": "2026-04-28T07:49:08.717435",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_062",
@@ -1731,7 +1615,7 @@
       "reference_event": "E20260424_001",
       "created_at": "2026-04-24T09:34:25.290582",
       "updated_at": "2026-04-28T07:49:15.618896",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_067",
@@ -1745,7 +1629,7 @@
       "reference_event": "E20260424_015",
       "created_at": "2026-04-24T17:13:17.208132",
       "updated_at": "2026-04-28T07:49:21.915128",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_048",
@@ -1759,7 +1643,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T12:35:52.113229",
       "updated_at": "2026-04-28T07:54:07.749445",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_022",
@@ -1772,7 +1656,7 @@
       "reference_event": "E20260414_002",
       "note": "essence 3軸全ON（INCIDENT/OPERATION/PHILOSOPHY）・updated=2026-04-28T07:50:41確認済み。/loop/statusレスポンスにESSENCE_SUMMARY正常収録。2026-04-28クローズ。",
       "updated_at": "2026-04-28T07:54:14.144505",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_086",
@@ -1786,7 +1670,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T08:19:08.488815",
       "updated_at": "2026-04-28T08:03:03.528146",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_047",
@@ -1800,7 +1684,7 @@
       "reference_event": "",
       "created_at": "2026-04-19T12:29:37.831468",
       "updated_at": "2026-04-28T08:11:14.888059",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_035",
@@ -1814,7 +1698,7 @@
       "reference_event": "E20260418_027",
       "created_at": "2026-04-18T18:41:25.546233",
       "updated_at": "2026-04-28T08:17:52.944140",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_036",
@@ -1828,7 +1712,7 @@
       "reference_event": "E20260418_029",
       "created_at": "2026-04-18T18:52:03.314335",
       "updated_at": "2026-04-28T08:21:32.602763",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_081",
@@ -1842,7 +1726,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T08:14:25.069504",
       "updated_at": "2026-04-28T09:26:23.643840",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_078",
@@ -1856,7 +1740,7 @@
       "reference_event": "",
       "created_at": "2026-04-26T17:20:00.304466",
       "updated_at": "2026-04-28T09:29:21.381294",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_087",
@@ -1870,7 +1754,7 @@
       "reference_event": "",
       "created_at": "2026-04-27T12:25:23.465544",
       "updated_at": "2026-04-28T09:29:27.480016",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_088",
@@ -1884,7 +1768,7 @@
       "reference_event": "",
       "created_at": "2026-04-28T09:10:11.610167",
       "updated_at": "2026-04-28T09:29:35.359753",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_089",
@@ -1898,7 +1782,7 @@
       "reference_event": "",
       "created_at": "2026-04-28T12:12:20.782628",
       "updated_at": "2026-04-28T12:17:01.851299",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_059",
@@ -1912,7 +1796,7 @@
       "reference_event": "",
       "created_at": "2026-04-24T08:03:58.736077",
       "updated_at": "2026-04-28T16:53:17.010539",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_057",
@@ -1926,7 +1810,7 @@
       "reference_event": "",
       "created_at": "2026-04-21T18:26:33.085830",
       "updated_at": "2026-04-28T16:54:17.116263",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_090",
@@ -1940,7 +1824,7 @@
       "reference_event": "2026-04-28 essence文字化けインシデント",
       "created_at": "2026-04-28T14:35:26.475559",
       "updated_at": "2026-04-28T17:36:36.000008",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_091",
@@ -1954,7 +1838,7 @@
       "reference_event": "",
       "created_at": "2026-04-28T17:49:59.272151",
       "updated_at": "2026-04-28T18:53:18.739880",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_093",
@@ -1968,7 +1852,7 @@
       "reference_event": "",
       "created_at": "2026-04-28T18:51:13.368451",
       "updated_at": "2026-04-28T19:00:26.679402",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_038",
@@ -1982,7 +1866,7 @@
       "reference_event": "",
       "created_at": "2026-04-18T18:52:38.015325",
       "updated_at": "2026-04-28T19:11:24.752569",
-      "completed_at": "2026-04-28"
+      "completed_at": "2026-04-28T00:00:00"
     },
     {
       "id": "TODO_095",
@@ -1996,7 +1880,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T11:24:30.448656",
       "updated_at": "2026-04-29T11:53:23.032503",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_097",
@@ -2010,7 +1894,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T11:27:44.216711",
       "updated_at": "2026-04-29T11:53:29.123733",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_096",
@@ -2024,7 +1908,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T11:27:34.244008",
       "updated_at": "2026-04-29T15:04:50.164984",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_099",
@@ -2038,7 +1922,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T15:12:13.117143",
       "updated_at": "2026-04-29T15:13:33.940825",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_100",
@@ -2052,7 +1936,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T15:24:14.810474",
       "updated_at": "2026-04-29T15:31:02.006180",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_065",
@@ -2066,7 +1950,7 @@
       "reference_event": "",
       "created_at": "2026-04-24T16:49:12.908688",
       "updated_at": "2026-04-29T15:38:46.160796",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_005",
@@ -2078,7 +1962,7 @@
       "assigned_to": "きむら博士 or Claude",
       "note": "2026-04-29: workshop/candidates/specs/workshop/phl_os/workshop/needle_eye_project フォルダ作成完了。README.md生成・配置。git commit dd368dc。",
       "updated_at": "2026-04-29T15:44:55.662253",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_101",
@@ -2092,7 +1976,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T15:56:19.019205",
       "updated_at": "2026-04-29T19:42:40.804107",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_102",
@@ -2106,7 +1990,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T16:36:22.159150",
       "updated_at": "2026-04-29T19:42:47.582506",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_103",
@@ -2120,7 +2004,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T19:41:53.675684",
       "updated_at": "2026-04-29T19:46:46.229704",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_094",
@@ -2134,7 +2018,7 @@
       "reference_event": "EPHL_20260429_021657_DESI",
       "created_at": "2026-04-29T11:17:18.452530",
       "updated_at": "2026-04-29T19:53:48.390951",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_107",
@@ -2148,7 +2032,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T19:55:27.845117",
       "updated_at": "2026-04-29T20:04:07.910781",
-      "completed_at": "2026-04-29"
+      "completed_at": "2026-04-29T00:00:00"
     },
     {
       "id": "TODO_104",
@@ -2162,7 +2046,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T19:42:04.790289",
       "updated_at": "2026-04-30T07:33:45.258745",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_105",
@@ -2176,7 +2060,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T19:42:17.350243",
       "updated_at": "2026-04-30T07:33:55.075100",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_108",
@@ -2190,7 +2074,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T07:45:41.699466",
       "updated_at": "2026-04-30T08:32:56.698034",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_109",
@@ -2204,7 +2088,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T07:57:13.293038",
       "updated_at": "2026-04-30T08:46:35.831449",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_111",
@@ -2218,7 +2102,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T08:38:39.368092",
       "updated_at": "2026-04-30T08:46:43.073517",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_112",
@@ -2232,7 +2116,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T08:56:28.398857",
       "updated_at": "2026-04-30T08:58:05.015277",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_113",
@@ -2246,7 +2130,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T09:04:26.036870",
       "updated_at": "2026-04-30T09:29:43.426562",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_098",
@@ -2260,7 +2144,7 @@
       "reference_event": "",
       "created_at": "2026-04-29T11:27:53.538385",
       "updated_at": "2026-04-30T09:42:19.981500",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_114",
@@ -2274,7 +2158,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T09:59:57.811838",
       "updated_at": "2026-04-30T10:01:05.140939",
-      "completed_at": "2026-04-30"
+      "completed_at": "2026-04-30T00:00:00"
     },
     {
       "id": "TODO_115",
@@ -2288,7 +2172,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T10:05:38.757335",
       "updated_at": "2026-05-01T08:37:05.076818",
-      "completed_at": "2026-05-01"
+      "completed_at": "2026-05-01T00:00:00"
     },
     {
       "id": "TODO_123",
@@ -2302,7 +2186,7 @@
       "reference_event": "",
       "created_at": "2026-05-01T11:26:56.227113",
       "updated_at": "2026-05-01T18:37:42.833395",
-      "completed_at": "2026-05-01"
+      "completed_at": "2026-05-01T00:00:00"
     },
     {
       "id": "TODO_054",
@@ -2316,7 +2200,7 @@
       "reference_event": "",
       "created_at": "2026-04-21T18:22:33.618479",
       "updated_at": "2026-05-08T18:16:48.884784",
-      "completed_at": "2026-05-08"
+      "completed_at": "2026-05-08T00:00:00"
     },
     {
       "id": "TODO_055",
@@ -2330,7 +2214,7 @@
       "reference_event": "",
       "created_at": "2026-04-21T18:26:10.533769",
       "updated_at": "2026-05-08T18:16:55.674267",
-      "completed_at": "2026-05-08"
+      "completed_at": "2026-05-08T00:00:00"
     },
     {
       "id": "TODO_126",
@@ -2344,7 +2228,7 @@
       "reference_event": "E20260507_001",
       "created_at": "2026-05-07T20:07:42.620270",
       "updated_at": "2026-05-08T18:17:03.119420",
-      "completed_at": "2026-05-08"
+      "completed_at": "2026-05-08T00:00:00"
     },
     {
       "id": "TODO_127",
@@ -2358,7 +2242,7 @@
       "reference_event": "",
       "created_at": "2026-05-08T18:17:12.905652",
       "updated_at": "2026-05-09T12:44:22.099818",
-      "completed_at": "2026-05-09"
+      "completed_at": "2026-05-09T00:00:00"
     },
     {
       "id": "TODO_134",
@@ -2372,7 +2256,7 @@
       "reference_event": "",
       "created_at": "2026-05-11T09:48:03.074821",
       "updated_at": "2026-05-11T10:05:55.488672",
-      "completed_at": "2026-05-11"
+      "completed_at": "2026-05-11T00:00:00"
     },
     {
       "id": "TODO_135",
@@ -2386,7 +2270,7 @@
       "reference_event": "",
       "created_at": "2026-05-11T10:16:22.169668",
       "updated_at": "2026-05-11T15:59:45.203415",
-      "completed_at": "2026-05-11"
+      "completed_at": "2026-05-11T00:00:00"
     },
     {
       "id": "TODO_136",
@@ -2400,7 +2284,7 @@
       "reference_event": "",
       "created_at": "2026-05-11T15:59:55.405807",
       "updated_at": "2026-05-11T16:15:04.765090",
-      "completed_at": "2026-05-11"
+      "completed_at": "2026-05-11T00:00:00"
     },
     {
       "id": "TODO_137",
@@ -2414,7 +2298,7 @@
       "reference_event": "",
       "created_at": "2026-05-11T16:12:48.381391",
       "updated_at": "2026-05-11T16:15:10.628434",
-      "completed_at": "2026-05-11"
+      "completed_at": "2026-05-11T00:00:00"
     },
     {
       "id": "TODO_130",
@@ -2428,7 +2312,7 @@
       "reference_event": "",
       "created_at": "2026-05-10T11:43:25.520333",
       "updated_at": "2026-05-12T08:50:42.594433",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_131",
@@ -2442,7 +2326,7 @@
       "reference_event": "",
       "created_at": "2026-05-10T12:06:42.453471",
       "updated_at": "2026-05-12T08:50:48.562738",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_128",
@@ -2456,7 +2340,7 @@
       "reference_event": "",
       "created_at": "2026-05-09T15:13:45.414373",
       "updated_at": "2026-05-12T09:56:03.645759",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_116",
@@ -2470,7 +2354,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T10:05:50.976281",
       "updated_at": "2026-05-12T10:31:54.917072",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_121",
@@ -2484,7 +2368,7 @@
       "reference_event": "",
       "created_at": "2026-05-01T10:50:03.969364",
       "updated_at": "2026-05-12T11:13:42.853347",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_118",
@@ -2498,7 +2382,7 @@
       "reference_event": "",
       "created_at": "2026-04-30T10:06:21.400634",
       "updated_at": "2026-05-12T13:00:19.180410",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_138",
@@ -2512,7 +2396,7 @@
       "reference_event": "",
       "created_at": "2026-05-12T17:47:20.344201",
       "updated_at": "2026-05-12T17:50:06.010302",
-      "completed_at": "2026-05-12"
+      "completed_at": "2026-05-12T00:00:00"
     },
     {
       "id": "TODO_145",
@@ -2526,7 +2410,7 @@
       "reference_event": "E20260514_054",
       "created_at": "2026-05-14T18:37:19.576920",
       "updated_at": "2026-05-15T10:07:26.996526",
-      "completed_at": "2026-05-15"
+      "completed_at": "2026-05-15T00:00:00"
     },
     {
       "id": "TODO_146",
@@ -2540,7 +2424,7 @@
       "reference_event": "",
       "created_at": "2026-05-16T10:20:16.577909",
       "updated_at": "2026-05-16T10:36:19.006757",
-      "completed_at": "2026-05-16"
+      "completed_at": "2026-05-16T00:00:00"
     },
     {
       "id": "TODO_149",
@@ -2554,7 +2438,7 @@
       "reference_event": "",
       "created_at": "2026-05-16T10:20:47.132013",
       "updated_at": "2026-05-16T11:43:40.455127",
-      "completed_at": "2026-05-16"
+      "completed_at": "2026-05-16T00:00:00"
     },
     {
       "id": "TODO_148",
@@ -2568,7 +2452,7 @@
       "reference_event": "",
       "created_at": "2026-05-16T10:20:38.106929",
       "updated_at": "2026-05-16T11:43:46.630505",
-      "completed_at": "2026-05-16"
+      "completed_at": "2026-05-16T00:00:00"
     },
     {
       "id": "TODO_141",
@@ -2582,7 +2466,7 @@
       "reference_event": "",
       "created_at": "2026-05-13T17:13:14.677149",
       "updated_at": "2026-05-17T09:38:26.061041",
-      "completed_at": "2026-05-17"
+      "completed_at": "2026-05-17T00:00:00"
     },
     {
       "id": "TODO_151",
@@ -2596,7 +2480,7 @@
       "reference_event": "E20260516_021",
       "created_at": "2026-05-16T19:02:11.861523",
       "updated_at": "2026-05-17T09:45:21.085291",
-      "completed_at": "2026-05-17"
+      "completed_at": "2026-05-17T00:00:00"
     },
     {
       "id": "TODO_140",
@@ -2610,7 +2494,7 @@
       "reference_event": "",
       "created_at": "2026-05-12T18:24:54.103069",
       "updated_at": "2026-05-17T11:50:39.177032",
-      "completed_at": "2026-05-17"
+      "completed_at": "2026-05-17T00:00:00"
     },
     {
       "id": "TODO_156",
@@ -2624,7 +2508,7 @@
       "reference_event": "E20260519_020",
       "created_at": "2026-05-19T17:16:28.787206",
       "updated_at": "2026-05-19T17:24:23.035888",
-      "completed_at": "2026-05-19"
+      "completed_at": "2026-05-19T00:00:00"
     },
     {
       "id": "TODO_157",
@@ -2638,7 +2522,7 @@
       "reference_event": "E20260519_020",
       "created_at": "2026-05-19T17:16:40.118240",
       "updated_at": "2026-05-19T17:24:28.918154",
-      "completed_at": "2026-05-19"
+      "completed_at": "2026-05-19T00:00:00"
     },
     {
       "id": "TODO_158",
@@ -2652,7 +2536,7 @@
       "reference_event": "E20260519_020",
       "created_at": "2026-05-19T17:16:51.386860",
       "updated_at": "2026-05-19T17:24:35.631117",
-      "completed_at": "2026-05-19"
+      "completed_at": "2026-05-19T00:00:00"
     },
     {
       "id": "TODO_162",
@@ -2666,7 +2550,7 @@
       "reference_event": "E20260519_020",
       "created_at": "2026-05-19T17:17:32.763659",
       "updated_at": "2026-05-19T17:24:41.501479",
-      "completed_at": "2026-05-19"
+      "completed_at": "2026-05-19T00:00:00"
     },
     {
       "id": "TODO_159",
@@ -2680,7 +2564,7 @@
       "reference_event": "E20260519_020",
       "created_at": "2026-05-19T17:17:01.328570",
       "updated_at": "2026-05-19T17:31:40.467028",
-      "completed_at": "2026-05-19"
+      "completed_at": "2026-05-19T00:00:00"
     },
     {
       "id": "TODO_163",
@@ -2694,7 +2578,7 @@
       "reference_event": "E20260520_017",
       "created_at": "2026-05-20T13:59:03.825247",
       "updated_at": "2026-05-20T15:00:37.810140",
-      "completed_at": "2026-05-20"
+      "completed_at": "2026-05-20T00:00:00"
     },
     {
       "id": "TODO_152",
@@ -2708,7 +2592,7 @@
       "reference_event": "E20260517_015",
       "created_at": "2026-05-17T11:13:17.646157",
       "updated_at": "2026-05-21T17:06:37.907635",
-      "completed_at": "2026-05-21"
+      "completed_at": "2026-05-21T00:00:00"
     },
     {
       "id": "TODO_165",
@@ -2722,7 +2606,7 @@
       "reference_event": "",
       "created_at": "2026-05-21T11:34:03.548115",
       "updated_at": "2026-05-21T17:06:43.608766",
-      "completed_at": "2026-05-21"
+      "completed_at": "2026-05-21T00:00:00"
     },
     {
       "id": "TODO_170",
@@ -2736,7 +2620,7 @@
       "reference_event": "E20260522_029",
       "created_at": "2026-05-22T17:32:01.674614",
       "updated_at": "2026-05-23T18:52:41.182018",
-      "completed_at": "2026-05-23"
+      "completed_at": "2026-05-23T00:00:00"
     },
     {
       "id": "TODO_172",
@@ -2750,7 +2634,7 @@
       "reference_event": "TODO_170完了",
       "created_at": "2026-05-23T18:52:53.082187",
       "updated_at": "2026-05-24T12:32:36.956725",
-      "completed_at": "2026-05-24"
+      "completed_at": "2026-05-24T00:00:00"
     },
     {
       "id": "TODO_168",
@@ -2764,7 +2648,7 @@
       "reference_event": "E20260522_029",
       "created_at": "2026-05-22T17:31:44.359122",
       "updated_at": "2026-05-24T12:32:43.858389",
-      "completed_at": "2026-05-24"
+      "completed_at": "2026-05-24T00:00:00"
     },
     {
       "id": "TODO_169",
@@ -2778,7 +2662,7 @@
       "reference_event": "E20260522_029",
       "created_at": "2026-05-22T17:31:53.458034",
       "updated_at": "2026-05-24T12:32:50.426330",
-      "completed_at": "2026-05-24"
+      "completed_at": "2026-05-24T00:00:00"
     },
     {
       "id": "TODO_143",
@@ -2792,7 +2676,7 @@
       "reference_event": "",
       "created_at": "2026-05-13T17:13:34.107861",
       "updated_at": "2026-05-24T12:32:57.049717",
-      "completed_at": "2026-05-24"
+      "completed_at": "2026-05-24T00:00:00"
     },
     {
       "id": "TODO_173",
@@ -2806,7 +2690,7 @@
       "reference_event": "E20260524_029",
       "created_at": "2026-05-24T16:26:15.499379",
       "updated_at": "2026-05-25T10:11:35.615923",
-      "completed_at": "2026-05-25"
+      "completed_at": "2026-05-25T00:00:00"
     },
     {
       "id": "TODO_174",
@@ -2820,7 +2704,7 @@
       "reference_event": "E20260526_034",
       "created_at": "2026-05-26T17:21:51.786999",
       "updated_at": "2026-05-27T07:27:10.304448",
-      "completed_at": "2026-05-27"
+      "completed_at": "2026-05-27T00:00:00"
     },
     {
       "id": "TODO_175",
@@ -2834,7 +2718,7 @@
       "reference_event": "E20260526_034",
       "created_at": "2026-05-26T17:22:02.453132",
       "updated_at": "2026-05-27T07:50:23.383980",
-      "completed_at": "2026-05-27"
+      "completed_at": "2026-05-27T00:00:00"
     },
     {
       "id": "TODO_177",
@@ -2848,7 +2732,7 @@
       "reference_event": "E20260526_034",
       "created_at": "2026-05-26T17:22:22.655547",
       "updated_at": "2026-05-27T08:35:14.865514",
-      "completed_at": "2026-05-27"
+      "completed_at": "2026-05-27T00:00:00"
     },
     {
       "id": "TODO_194",
@@ -2862,7 +2746,7 @@
       "reference_event": "E20260528_021",
       "created_at": "2026-05-28T17:16:39.091991",
       "updated_at": "2026-05-28T18:05:28.749741",
-      "completed_at": "2026-05-28"
+      "completed_at": "2026-05-28T00:00:00"
     },
     {
       "id": "TODO_193",
@@ -2876,7 +2760,7 @@
       "reference_event": "E20260528_021",
       "created_at": "2026-05-28T17:16:29.784264",
       "updated_at": "2026-05-28T18:05:31.811060",
-      "completed_at": "2026-05-28"
+      "completed_at": "2026-05-28T00:00:00"
     },
     {
       "id": "TODO_192",
@@ -2890,7 +2774,7 @@
       "reference_event": "E20260528_021",
       "created_at": "2026-05-28T17:16:20.495175",
       "updated_at": "2026-05-28T18:05:37.400506",
-      "completed_at": "2026-05-28"
+      "completed_at": "2026-05-28T00:00:00"
     },
     {
       "id": "TODO_191",
@@ -2904,7 +2788,7 @@
       "reference_event": "E20260528_021",
       "created_at": "2026-05-28T17:16:11.978225",
       "updated_at": "2026-05-28T18:05:38.714921",
-      "completed_at": "2026-05-28"
+      "completed_at": "2026-05-28T00:00:00"
     },
     {
       "id": "TODO_190",
@@ -2918,7 +2802,7 @@
       "reference_event": "E20260526_044",
       "created_at": "2026-05-26T19:11:51.502107",
       "updated_at": "2026-05-29T13:57:54.529977",
-      "completed_at": "2026-05-29"
+      "completed_at": "2026-05-29T00:00:00"
     },
     {
       "id": "TODO_189",
@@ -2932,7 +2816,7 @@
       "reference_event": "E20260526_044",
       "created_at": "2026-05-26T19:11:42.115154",
       "updated_at": "2026-05-29T13:57:57.759038",
-      "completed_at": "2026-05-29"
+      "completed_at": "2026-05-29T00:00:00"
     },
     {
       "id": "TODO_196",
@@ -2946,7 +2830,7 @@
       "reference_event": "E20260530_005",
       "created_at": "2026-05-30T15:59:37.120731",
       "updated_at": "2026-05-30T16:01:24.682292",
-      "completed_at": "2026-05-30"
+      "completed_at": "2026-05-30T00:00:00"
     },
     {
       "id": "TODO_198",
@@ -2960,7 +2844,7 @@
       "reference_event": "E20260530_020",
       "created_at": "2026-05-30T17:25:05.399470",
       "updated_at": "2026-05-30T17:26:25.097247",
-      "completed_at": "2026-05-30"
+      "completed_at": "2026-05-30T00:00:00"
     },
     {
       "id": "TODO_199",
@@ -2974,7 +2858,7 @@
       "reference_event": "E20260531_006",
       "created_at": "2026-05-31T08:57:37.921536",
       "updated_at": "2026-05-31T12:07:35.945432",
-      "completed_at": "2026-05-31"
+      "completed_at": "2026-05-31T00:00:00"
     },
     {
       "id": "TODO_210",
@@ -2988,7 +2872,7 @@
       "reference_event": "E20260601_052",
       "created_at": "2026-06-01T08:13:52.539660",
       "updated_at": "2026-06-01T09:03:50.267909",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_211",
@@ -3002,7 +2886,7 @@
       "reference_event": "E20260601_068",
       "created_at": "2026-06-01T17:41:46.989250",
       "updated_at": "2026-06-01T17:48:16.878494",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_212",
@@ -3016,7 +2900,7 @@
       "reference_event": "E20260601_068",
       "created_at": "2026-06-01T17:41:48.076800",
       "updated_at": "2026-06-01T17:48:25.206918",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_213",
@@ -3030,7 +2914,7 @@
       "reference_event": "E20260601_068",
       "created_at": "2026-06-01T17:41:50.118098",
       "updated_at": "2026-06-01T17:48:29.284039",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_216",
@@ -3044,7 +2928,7 @@
       "reference_event": "E20260601_076",
       "created_at": "2026-06-01T17:57:43.174581",
       "updated_at": "2026-06-01T18:06:37.899941",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_214",
@@ -3058,7 +2942,7 @@
       "reference_event": "E20260601_072",
       "created_at": "2026-06-01T17:48:37.948720",
       "updated_at": "2026-06-01T18:08:59.206307",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_203",
@@ -3072,7 +2956,7 @@
       "reference_event": "E20260601_011",
       "created_at": "2026-06-01T07:35:16.070838",
       "updated_at": "2026-06-01T18:11:57.318539",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_176",
@@ -3086,7 +2970,7 @@
       "reference_event": "E20260526_034",
       "created_at": "2026-05-26T17:22:12.392643",
       "updated_at": "2026-06-01T18:11:59.507473",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_147",
@@ -3100,7 +2984,7 @@
       "reference_event": "",
       "created_at": "2026-05-16T10:20:27.298613",
       "updated_at": "2026-06-01T18:12:02.029397",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_186",
@@ -3114,7 +2998,7 @@
       "reference_event": "E20260526_044",
       "created_at": "2026-05-26T19:11:15.059772",
       "updated_at": "2026-06-01T18:12:05.029755",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_187",
@@ -3128,7 +3012,7 @@
       "reference_event": "E20260526_044",
       "created_at": "2026-05-26T19:11:23.822524",
       "updated_at": "2026-06-01T18:12:07.879574",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_188",
@@ -3142,7 +3026,7 @@
       "reference_event": "E20260526_044",
       "created_at": "2026-05-26T19:11:32.481155",
       "updated_at": "2026-06-01T18:12:09.277680",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_208",
@@ -3156,7 +3040,7 @@
       "reference_event": "E20260601_030",
       "created_at": "2026-06-01T07:55:28.112468",
       "updated_at": "2026-06-01T19:07:51.886494",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_204",
@@ -3170,7 +3054,7 @@
       "reference_event": "E20260601_011",
       "created_at": "2026-06-01T07:35:24.722722",
       "updated_at": "2026-06-01T19:07:53.137951",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_215",
@@ -3184,7 +3068,7 @@
       "reference_event": "E20260601_072",
       "created_at": "2026-06-01T17:48:44.004033",
       "updated_at": "2026-06-01T19:07:54.601062",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_197",
@@ -3198,7 +3082,7 @@
       "reference_event": "E20260530_005",
       "created_at": "2026-05-30T15:59:42.936777",
       "updated_at": "2026-06-01T19:08:04.827571",
-      "completed_at": "2026-06-01"
+      "completed_at": "2026-06-01T00:00:00"
     },
     {
       "id": "TODO_144",
@@ -3212,7 +3096,7 @@
       "reference_event": "",
       "created_at": "2026-05-14T17:12:10.287435",
       "updated_at": "2026-06-03T09:18:04.873880",
-      "completed_at": "2026-06-03"
+      "completed_at": "2026-06-03T00:00:00"
     },
     {
       "id": "TODO_153",
@@ -3226,7 +3110,7 @@
       "reference_event": "E20260517_020",
       "created_at": "2026-05-17T11:24:26.967929",
       "updated_at": "2026-06-04T10:26:52.615981",
-      "completed_at": "2026-06-04"
+      "completed_at": "2026-06-04T00:00:00"
     },
     {
       "id": "TODO_225",
@@ -3240,7 +3124,7 @@
       "reference_event": "E20260604_162",
       "created_at": "2026-06-04T13:41:18.237986",
       "updated_at": "2026-06-04T13:59:02.328144",
-      "completed_at": "2026-06-04"
+      "completed_at": "2026-06-04T00:00:00"
     },
     {
       "id": "TODO_226",
@@ -3254,7 +3138,7 @@
       "reference_event": "E20260604_162",
       "created_at": "2026-06-04T13:41:23.253270",
       "updated_at": "2026-06-04T13:59:05.003815",
-      "completed_at": "2026-06-04"
+      "completed_at": "2026-06-04T00:00:00"
     },
     {
       "id": "TODO_227",
@@ -3268,7 +3152,7 @@
       "reference_event": "E20260604_162",
       "created_at": "2026-06-04T13:41:30.277063",
       "updated_at": "2026-06-04T13:59:08.258770",
-      "completed_at": "2026-06-04"
+      "completed_at": "2026-06-04T00:00:00"
     },
     {
       "id": "TODO_228",
@@ -3282,7 +3166,7 @@
       "reference_event": "E20260604_162",
       "created_at": "2026-06-04T13:41:35.574223",
       "updated_at": "2026-06-04T13:59:11.167307",
-      "completed_at": "2026-06-04"
+      "completed_at": "2026-06-04T00:00:00"
     },
     {
       "id": "TODO_229",
@@ -3296,7 +3180,7 @@
       "reference_event": "E20260604_162",
       "created_at": "2026-06-04T13:41:40.943966",
       "updated_at": "2026-06-04T13:59:13.887844",
-      "completed_at": "2026-06-04"
+      "completed_at": "2026-06-04T00:00:00"
     },
     {
       "id": "TODO_230",
@@ -3310,7 +3194,7 @@
       "reference_event": "E20260604_174",
       "created_at": "2026-06-04T13:59:20.831330",
       "updated_at": "2026-06-06T11:09:33.836765",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_232",
@@ -3324,7 +3208,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T11:09:44.083792",
       "updated_at": "2026-06-06T14:01:02.439705",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_233",
@@ -3338,7 +3222,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T11:09:47.391774",
       "updated_at": "2026-06-06T14:01:03.836790",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_234",
@@ -3352,7 +3236,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T11:09:49.459742",
       "updated_at": "2026-06-06T14:01:05.081159",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_235",
@@ -3366,7 +3250,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T11:09:52.280768",
       "updated_at": "2026-06-06T14:30:29.636945",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_238",
@@ -3380,7 +3264,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T14:19:59.838379",
       "updated_at": "2026-06-06T14:37:09.315569",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_237",
@@ -3394,7 +3278,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T14:19:54.634936",
       "updated_at": "2026-06-06T14:37:52.716326",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_240",
@@ -3408,7 +3292,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T14:20:09.347400",
       "updated_at": "2026-06-06T14:37:58.905568",
-      "completed_at": "2026-06-06"
+      "completed_at": "2026-06-06T00:00:00"
     },
     {
       "id": "TODO_245",
@@ -3422,7 +3306,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T15:01:58.589695",
       "updated_at": "2026-06-07T09:33:19.614167",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_LB001",
@@ -3435,7 +3319,7 @@
       "note": "2026-06-07完了。search_events()を全フィールド総当たりからPRIMARY_FIELDS 6フィールド限定+スコアリング+user_voice低優先化に修正。fix_search_events.py適用済み。動作確認OK（CHANGE_DONEで意味あるイベントのみ返却確認）。E20260607_017→019。",
       "created_at": "2026-06-05T00:00:00",
       "updated_at": "2026-06-07T09:51:03.858622",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_195",
@@ -3449,7 +3333,7 @@
       "reference_event": "E20260529_005",
       "created_at": "2026-05-29T08:39:19.088357",
       "updated_at": "2026-06-07T09:56:27.549279",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_246",
@@ -3463,7 +3347,7 @@
       "reference_event": "E20260607_031",
       "created_at": "2026-06-07T11:25:10.819237",
       "updated_at": "2026-06-07T11:42:14.695300",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_247",
@@ -3477,7 +3361,7 @@
       "reference_event": "E20260607_031",
       "created_at": "2026-06-07T11:25:16.914529",
       "updated_at": "2026-06-07T12:23:29.229218",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_248",
@@ -3491,7 +3375,7 @@
       "reference_event": "E20260607_031",
       "created_at": "2026-06-07T11:25:22.890139",
       "updated_at": "2026-06-07T12:23:32.259285",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_249",
@@ -3505,7 +3389,7 @@
       "reference_event": "E20260607_031",
       "created_at": "2026-06-07T11:25:29.325449",
       "updated_at": "2026-06-07T12:23:37.230692",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_251",
@@ -3519,7 +3403,7 @@
       "reference_event": "E20260607_035",
       "created_at": "2026-06-07T11:50:30.636192",
       "updated_at": "2026-06-07T12:23:40.618086",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_252",
@@ -3533,7 +3417,7 @@
       "reference_event": "E20260607_036",
       "created_at": "2026-06-07T11:59:04.877348",
       "updated_at": "2026-06-07T12:23:44.859053",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_253",
@@ -3547,7 +3431,7 @@
       "reference_event": "E20260607_037",
       "created_at": "2026-06-07T12:10:09.782456",
       "updated_at": "2026-06-07T12:23:47.542385",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_250",
@@ -3561,7 +3445,7 @@
       "reference_event": "E20260607_031",
       "created_at": "2026-06-07T11:25:35.709935",
       "updated_at": "2026-06-07T14:54:11.065211",
-      "completed_at": "2026-06-07"
+      "completed_at": "2026-06-07T00:00:00"
     },
     {
       "id": "TODO_154",
@@ -3575,7 +3459,7 @@
       "reference_event": "E20260517_021",
       "created_at": "2026-05-17T11:35:46.898947",
       "updated_at": "2026-06-08T08:59:11.575092",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_155",
@@ -3589,7 +3473,7 @@
       "reference_event": "E20260519_007",
       "created_at": "2026-05-19T09:45:50.727650",
       "updated_at": "2026-06-08T08:59:16.534246",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_CALIBER_EXPAND_001",
@@ -3603,7 +3487,7 @@
       "reference_event": "",
       "created_at": "2026-05-20T09:26:05.621988",
       "updated_at": "2026-06-08T08:59:22.654698",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_257",
@@ -3617,7 +3501,7 @@
       "reference_event": "E20260608_038",
       "created_at": "2026-06-08T09:05:50.625162",
       "updated_at": "2026-06-08T09:12:00.140624",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_217",
@@ -3631,7 +3515,7 @@
       "reference_event": "E20260603_068",
       "created_at": "2026-06-03T09:19:15.745223",
       "updated_at": "2026-06-08T10:01:40.822509",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_218",
@@ -3645,7 +3529,7 @@
       "reference_event": "E20260603_068",
       "created_at": "2026-06-03T09:19:21.697362",
       "updated_at": "2026-06-08T10:01:45.867945",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_255",
@@ -3659,7 +3543,7 @@
       "reference_event": "E20260607_060",
       "created_at": "2026-06-07T16:26:36.535961",
       "updated_at": "2026-06-08T10:08:07.754813",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_256",
@@ -3673,7 +3557,7 @@
       "reference_event": "E20260607_060",
       "created_at": "2026-06-07T16:26:43.849607",
       "updated_at": "2026-06-08T10:08:11.907147",
-      "completed_at": "2026-06-08"
+      "completed_at": "2026-06-08T00:00:00"
     },
     {
       "id": "TODO_236",
@@ -3687,7 +3571,7 @@
       "reference_event": "",
       "created_at": "2026-06-06T14:15:51.540280",
       "updated_at": "2026-06-09T17:19:51.611550",
-      "completed_at": "2026-06-09"
+      "completed_at": "2026-06-09T00:00:00"
     },
     {
       "id": "TODO_260",
@@ -3701,7 +3585,7 @@
       "reference_event": "",
       "created_at": "2026-06-09T18:59:08.464710",
       "updated_at": "2026-06-09T20:28:31.318046",
-      "completed_at": "2026-06-09"
+      "completed_at": "2026-06-09T00:00:00"
     },
     {
       "id": "TODO_261",
@@ -3715,7 +3599,7 @@
       "reference_event": "",
       "created_at": "2026-06-09T18:59:15.025641",
       "updated_at": "2026-06-09T20:28:35.123375",
-      "completed_at": "2026-06-09"
+      "completed_at": "2026-06-09T00:00:00"
     },
     {
       "id": "TODO_262",
@@ -3729,7 +3613,7 @@
       "reference_event": "",
       "created_at": "2026-06-09T18:59:21.834933",
       "updated_at": "2026-06-09T20:28:38.876032",
-      "completed_at": "2026-06-09"
+      "completed_at": "2026-06-09T00:00:00"
     },
     {
       "id": "TODO_282",
@@ -3743,7 +3627,7 @@
       "reference_event": "E20260610_10482",
       "created_at": "2026-06-10T17:42:05.821208",
       "updated_at": "2026-06-10T18:35:29.732606",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_283",
@@ -3757,7 +3641,7 @@
       "reference_event": "E20260610_10482",
       "created_at": "2026-06-10T17:42:11.495758",
       "updated_at": "2026-06-10T18:35:33.443167",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_287",
@@ -3771,7 +3655,7 @@
       "reference_event": "E20260610_10503",
       "created_at": "2026-06-10T18:25:15.843453",
       "updated_at": "2026-06-10T18:35:36.546598",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_288",
@@ -3785,7 +3669,7 @@
       "reference_event": "E20260610_10503",
       "created_at": "2026-06-10T18:25:21.608813",
       "updated_at": "2026-06-10T18:35:39.382357",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_289",
@@ -3799,7 +3683,7 @@
       "reference_event": "E20260610_10503",
       "created_at": "2026-06-10T18:25:29.349177",
       "updated_at": "2026-06-10T18:35:42.642498",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_291",
@@ -3813,7 +3697,7 @@
       "reference_event": "E20260610_10520",
       "created_at": "2026-06-10T18:47:15.213123",
       "updated_at": "2026-06-10T19:00:01.812952",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_292",
@@ -3827,7 +3711,7 @@
       "reference_event": "E20260610_10521",
       "created_at": "2026-06-10T18:49:04.243684",
       "updated_at": "2026-06-10T19:00:05.453949",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_293",
@@ -3841,7 +3725,7 @@
       "reference_event": "E20260610_10549",
       "created_at": "2026-06-10T19:04:03.432434",
       "updated_at": "2026-06-10T19:08:10.669201",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_294",
@@ -3855,7 +3739,7 @@
       "reference_event": "E20260610_10560",
       "created_at": "2026-06-10T19:11:38.586085",
       "updated_at": "2026-06-10T19:18:41.797654",
-      "completed_at": "2026-06-10"
+      "completed_at": "2026-06-10T00:00:00"
     },
     {
       "id": "TODO_298",
@@ -3869,7 +3753,7 @@
       "reference_event": "E20260611_487",
       "created_at": "2026-06-11T17:26:42.351537",
       "updated_at": "2026-06-11T17:37:08.099824",
-      "completed_at": "2026-06-11"
+      "completed_at": "2026-06-11T00:00:00"
     },
     {
       "id": "TODO_299",
@@ -3883,7 +3767,7 @@
       "reference_event": "E20260611_487",
       "created_at": "2026-06-11T17:26:48.329220",
       "updated_at": "2026-06-11T17:37:10.822102",
-      "completed_at": "2026-06-11"
+      "completed_at": "2026-06-11T00:00:00"
     },
     {
       "id": "TODO_295",
@@ -3897,7 +3781,7 @@
       "reference_event": "E20260611_386",
       "created_at": "2026-06-11T14:57:27.065921",
       "updated_at": "2026-06-12T09:03:22.205009",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_285",
@@ -3911,7 +3795,7 @@
       "reference_event": "E20260610_10500",
       "created_at": "2026-06-10T18:17:06.205759",
       "updated_at": "2026-06-12T09:05:09.434047",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_280",
@@ -3925,7 +3809,7 @@
       "reference_event": "E20260610_10480",
       "created_at": "2026-06-10T17:29:25.375585",
       "updated_at": "2026-06-12T09:05:12.688344",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_281",
@@ -3939,7 +3823,7 @@
       "reference_event": "E20260610_10482",
       "created_at": "2026-06-10T17:41:58.445255",
       "updated_at": "2026-06-12T09:05:15.682887",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_286",
@@ -3953,7 +3837,7 @@
       "reference_event": "E20260610_10500",
       "created_at": "2026-06-10T18:17:11.833663",
       "updated_at": "2026-06-12T09:08:26.069778",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_290",
@@ -3967,7 +3851,7 @@
       "reference_event": "E20260610_10514",
       "created_at": "2026-06-10T18:42:17.994630",
       "updated_at": "2026-06-12T09:09:49.955978",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_254",
@@ -3981,7 +3865,7 @@
       "reference_event": "E20260607_041",
       "created_at": "2026-06-07T14:54:18.808510",
       "updated_at": "2026-06-12T09:33:29.115429",
-      "completed_at": "2026-06-12"
+      "completed_at": "2026-06-12T00:00:00"
     },
     {
       "id": "TODO_315",
@@ -3995,7 +3879,7 @@
       "reference_event": "E20260615_013",
       "created_at": "2026-06-15T09:09:22.751690",
       "updated_at": "2026-06-15T09:18:09.741795",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_316",
@@ -4009,7 +3893,7 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:21:28.898226",
       "updated_at": "2026-06-15T09:27:36.071069",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_317",
@@ -4023,7 +3907,7 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:21:33.152440",
       "updated_at": "2026-06-15T09:33:24.599543",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_318",
@@ -4037,7 +3921,7 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:21:37.585731",
       "updated_at": "2026-06-15T09:38:09.308370",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_319",
@@ -4051,7 +3935,7 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:21:42.433558",
       "updated_at": "2026-06-15T09:45:14.458411",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_301",
@@ -4065,7 +3949,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:21.232885",
       "updated_at": "2026-06-15T10:06:27.927589",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_302",
@@ -4079,7 +3963,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:28.479650",
       "updated_at": "2026-06-15T16:57:03.303687",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_303",
@@ -4093,7 +3977,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:33.019979",
       "updated_at": "2026-06-15T16:59:43.952277",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_304",
@@ -4107,7 +3991,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:39.384030",
       "updated_at": "2026-06-15T17:05:15.367240",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_305",
@@ -4121,7 +4005,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:44.968266",
       "updated_at": "2026-06-15T17:08:19.088916",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_306",
@@ -4135,7 +4019,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:49.934044",
       "updated_at": "2026-06-15T19:07:39.539157",
-      "completed_at": "2026-06-15"
+      "completed_at": "2026-06-15T00:00:00"
     },
     {
       "id": "TODO_322",
@@ -4149,7 +4033,7 @@
       "reference_event": "E20260616_014",
       "created_at": "2026-06-16T08:22:56.974588",
       "updated_at": "2026-06-16T10:08:48.392067",
-      "completed_at": "2026-06-16"
+      "completed_at": "2026-06-16T00:00:00"
     },
     {
       "id": "TODO_329",
@@ -4163,7 +4047,7 @@
       "reference_event": "E20260617_020",
       "created_at": "2026-06-17T08:42:03.461698",
       "updated_at": "2026-06-17T17:42:34.739400",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_330",
@@ -4177,7 +4061,7 @@
       "reference_event": "E20260617_020",
       "created_at": "2026-06-17T08:42:12.817458",
       "updated_at": "2026-06-17T17:42:36.870360",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_331",
@@ -4191,7 +4075,7 @@
       "reference_event": "E20260617_020",
       "created_at": "2026-06-17T08:42:20.451905",
       "updated_at": "2026-06-17T17:42:39.708622",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_327",
@@ -4205,7 +4089,7 @@
       "reference_event": "E20260617_019",
       "created_at": "2026-06-17T08:10:38.818597",
       "updated_at": "2026-06-17T17:42:42.825913",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_332",
@@ -4219,7 +4103,7 @@
       "reference_event": "E20260617_020",
       "created_at": "2026-06-17T08:42:27.748789",
       "updated_at": "2026-06-17T17:45:10.880601",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_268",
@@ -4233,7 +4117,7 @@
       "reference_event": "E20260610_010",
       "created_at": "2026-06-10T09:33:38.463221",
       "updated_at": "2026-06-17T18:36:47.225455",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_277",
@@ -4247,7 +4131,7 @@
       "reference_event": "E20260610_10480",
       "created_at": "2026-06-10T17:29:06.417280",
       "updated_at": "2026-06-17T18:36:49.244252",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_272",
@@ -4261,7 +4145,7 @@
       "reference_event": "E20260610_10449",
       "created_at": "2026-06-10T10:37:29.964145",
       "updated_at": "2026-06-17T18:36:51.910365",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_258",
@@ -4275,7 +4159,7 @@
       "reference_event": "E20260609_549",
       "created_at": "2026-06-09T17:26:42.534579",
       "updated_at": "2026-06-17T18:43:03.054764",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_259",
@@ -4289,7 +4173,7 @@
       "reference_event": "E20260609_549",
       "created_at": "2026-06-09T17:26:48.449292",
       "updated_at": "2026-06-17T18:44:49.139464",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_278",
@@ -4303,7 +4187,7 @@
       "reference_event": "E20260610_10480",
       "created_at": "2026-06-10T17:29:12.128332",
       "updated_at": "2026-06-17T18:47:07.712648",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_273",
@@ -4317,7 +4201,7 @@
       "reference_event": "E20260610_10449",
       "created_at": "2026-06-10T10:37:35.567451",
       "updated_at": "2026-06-17T18:48:40.709471",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_269",
@@ -4331,7 +4215,7 @@
       "reference_event": "E20260610_017",
       "created_at": "2026-06-10T09:55:09.591941",
       "updated_at": "2026-06-17T18:50:49.914251",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_270",
@@ -4345,7 +4229,7 @@
       "reference_event": "E20260610_017",
       "created_at": "2026-06-10T09:55:13.639347",
       "updated_at": "2026-06-17T18:51:05.299702",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_274",
@@ -4359,7 +4243,7 @@
       "reference_event": "E20260610_10449",
       "created_at": "2026-06-10T10:37:39.869089",
       "updated_at": "2026-06-17T18:53:12.899543",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_275",
@@ -4373,7 +4257,7 @@
       "reference_event": "E20260610_10462",
       "created_at": "2026-06-10T11:29:20.559948",
       "updated_at": "2026-06-17T18:54:45.681986",
-      "completed_at": "2026-06-17"
+      "completed_at": "2026-06-17T00:00:00"
     },
     {
       "id": "TODO_333",
@@ -4387,7 +4271,7 @@
       "reference_event": "E20260617_089",
       "created_at": "2026-06-17T17:31:01.906881",
       "updated_at": "2026-06-18T07:59:38.605395",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_328",
@@ -4401,7 +4285,7 @@
       "reference_event": "E20260617_019",
       "created_at": "2026-06-17T08:10:47.770075",
       "updated_at": "2026-06-18T08:10:02.767933",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_336",
@@ -4415,7 +4299,7 @@
       "reference_event": "",
       "created_at": "2026-06-18T07:33:53.130501",
       "updated_at": "2026-06-18T08:41:18.178116",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_307",
@@ -4429,7 +4313,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:15:54.992176",
       "updated_at": "2026-06-18T08:52:51.926586",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_308",
@@ -4443,7 +4327,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:16:00.019246",
       "updated_at": "2026-06-18T08:52:58.701028",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_309",
@@ -4457,7 +4341,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:16:05.131926",
       "updated_at": "2026-06-18T08:53:00.476621",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_310",
@@ -4471,7 +4355,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:16:10.654966",
       "updated_at": "2026-06-18T08:53:02.613708",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_311",
@@ -4485,7 +4369,7 @@
       "reference_event": "E20260612_057",
       "created_at": "2026-06-12T14:16:15.904679",
       "updated_at": "2026-06-18T08:53:04.548449",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_312",
@@ -4499,7 +4383,7 @@
       "reference_event": "",
       "created_at": "2026-06-14T16:21:10.936995",
       "updated_at": "2026-06-18T08:53:06.454881",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_313",
@@ -4513,7 +4397,7 @@
       "reference_event": "",
       "created_at": "2026-06-14T16:21:17.364708",
       "updated_at": "2026-06-18T08:53:08.565118",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_314",
@@ -4527,7 +4411,7 @@
       "reference_event": "",
       "created_at": "2026-06-14T16:21:26.511160",
       "updated_at": "2026-06-18T08:53:10.631597",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_320",
@@ -4541,7 +4425,7 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:21:46.678120",
       "updated_at": "2026-06-18T08:53:12.498495",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
     },
     {
       "id": "TODO_321",
@@ -4555,13 +4439,234 @@
       "reference_event": "",
       "created_at": "2026-06-15T09:22:26.877288",
       "updated_at": "2026-06-18T08:53:14.345593",
-      "completed_at": "2026-06-18"
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_341",
+      "title": "export_for_cloudflare.py 鮮度ズレ解消 — 正本更新の自動反映またはタイムスタンプ明示",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/Cloudflare配信/データ鮮度",
+      "description": "E20260618_028/029の調査で発見。export_for_cloudflare.py（MOCKA_TODO.json/MOCKA_OVERVIEW.json/lever_essence.json/events_latest.jsonをshutil.copy2()でdata/配下にコピーしCloudflare Pagesへ配信する設計）は、MoCKA-START.bat起動時の一度きり実行のため、正本更新後もCloudflare公開版が古いままになる「鮮度のズレ」が恒常的に発生する。確認時点で約12分のズレがあったが、長時間再起動しなければズレはさらに拡大する。\\n\\nTODO_336（Relay Free引き継ぎパケット異常）の根本原因ではなかったが、TODO_336修正後も独立して残る別リスク。Cloudflare公開版を見た外部（Relay利用者・LLM等）が古い情報を参照し続ける可能性がある。\\n\\n対策方針（要設計検討）: ①定期実行化（cron的な仕組み・MoCKA-START.bat以外のタイミングでも実行されるようにする） ②正本更新時にフック経由でexport_for_cloudflare.pyを自動トリガーする（TODO_217のPostToolUseフックと同種の発想） ③公開版に最終更新タイムスタンプを明示し、鮮度を利用者側が確認できるようにする（即効性のある暫定策）。優先順位はくろこの調査・実装時の判断に委ねる。",
+      "assigned_to": "くろこ",
+      "note": "案1+案3採用。sync_watch.py（10分周期常駐）新規作成、export_for_cloudflare.pyに_snapshot_at注入追加、START.batを一回限り→常駐デーモンに置き換え。遅延: 数時間→最大10分。git pushはボトルネックなし（元々自動化済み）。案2不採用理由: 1日数百回pushになり過剰。",
+      "reference_event": "E20260618_029",
+      "created_at": "2026-06-18T09:00:02.318983",
+      "updated_at": "2026-06-18T09:02:51.626629",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_342",
+      "title": "mocka_update_todo修正 — statusパラメータ省略時に既存値が空文字上書きされるバグ",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/MCPツール/mocka_mcp_server",
+      "description": "E20260618_033で発見。mocka_update_todoのstatusパラメータを省略してnote等のみ更新しようとすると、既存のstatus値が空文字\"\"に上書きされてしまう。Claude（Chat）がTODO_271のnote追記時に発生させ、即座に検知・「未着手」へ再修正済み（実害は数十秒で復旧）。\\n\\n原因推定: mocka_mcp_server.py側のmocka_update_todo実装で、statusパラメータ未指定時にデフォルト空文字を適用してしまっている可能性。本来はstatus未指定時は既存値を保持（変更しない）べき。\\n\\n修正方針: status未指定時は既存のstatus値をそのまま維持する仕様に改修する。note/priority/assigned_to等の他フィールドも同様に、指定されたフィールドのみ更新し未指定フィールドは既存値を保持する「部分更新（PATCH的）」挙動になっているか確認し、同種の問題がないか横展開確認する。",
+      "assigned_to": "くろこ",
+      "note": "修正完了。E20260618_034〜E20260618_035参照。実機テスト済み。",
+      "reference_event": "E20260618_033",
+      "created_at": "2026-06-18T09:05:21.063792",
+      "updated_at": "2026-06-18T09:13:00.059693",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_338",
+      "title": "check_utf8_mandate.py拡張 — print文内非ASCII記号検出＆reconfigure未適用検出の静的チェック化",
+      "status": "完了",
+      "priority": "中",
+      "category": "MoCKAコア/CP932/再発防止",
+      "description": "TODO_333④として保留扱いだった案件を正式TODO化。check_utf8_mandate.pyを拡張し、ファイル単位のUTF-8検査だけでなく、以下を検出する静的チェックへ発展させる：\n①print/logging呼び出し内の非ASCII装飾記号の使用（矢印・絵文字等。②規約で禁止済みだが検出機構がない）\n②sys.stdout.reconfigure未適用の高頻度実行スクリプト検出（③で対応した33ファイル以外の新規スクリプトが将来追加された際の漏れ防止）\n\nまたは別案として、pre_commit_check.pyに「sys.stdout.reconfigure未適用検出ルール」を追加する方式も検討（くろこ所感）。\n\n目的: ①②③の対策が場当たり的にならないよう、新規スクリプト追加時に自動でCP932リスクを検知する仕組みを作り、再発防止を制度化する。",
+      "assigned_to": "くろこ",
+      "note": "2026-06-18 くろこ実装完了。check_utf8_mandate.pyにRule4(print/logging内非ASCII装飾記号検出) / Rule5(CLI実行系reconfigure未適用検出)を追加。DAEMON_PATTERNS17件を除外定義。BOM除去済み。commit e675e3de9",
+      "reference_event": "",
+      "created_at": "2026-06-18T08:00:19.097652",
+      "updated_at": "2026-06-18T11:11:10.726209",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_343",
+      "title": "CP932対策残作業 — CLI実行系残62ファイルへのreconfigure一括追加",
+      "status": "完了",
+      "priority": "中",
+      "category": "encoding/再発防止/残作業",
+      "description": "TODO_333（CP932/UnicodeEncodeError再発防止）の残作業。E20260617_088調査で検出229件/92ファイルのうちCLI実行系約75ファイルが対象。TODO_333で上位10ファイルは対応完了済み（9件既存保護・1件新規対応）。残り約62ファイル（mocka_v3_eval/・runtime/・structural/・scripts/配下）が未対応のまま残っている。\\n\\n対応方針: 各ファイルの先頭に sys.stdout.reconfigure(encoding='utf-8', errors='replace') を追加する（既存の保護パターンに準拠）。サービス常駐系（約17ファイル、リスク低め）は対象外でよい。コード生成専用スクリプト等、実際にprint/sys.stdout出力がないファイルは対象外と判断してよい（write_condense_worker.pyの判断基準を参考にする）。",
+      "assigned_to": "くろこ",
+      "note": "2026-06-18 くろこ実装完了。mocka_v3_eval/runtime/structural/scripts配下272ファイルにsys.stdout=io.TextIOWrapper(encoding=utf-8)を一括追加。print/sys.stdout出力なし・daemon系は除外。commit e675e3de9",
+      "reference_event": "E20260618_039",
+      "created_at": "2026-06-18T09:19:27.808619",
+      "updated_at": "2026-06-18T11:11:17.442660",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_337",
+      "title": "MoCKA-START.bat BOM（U+FEFF）除去 — CP932汚染防止の副次対応",
+      "status": "完了",
+      "priority": "低",
+      "category": "MoCKAコア/CP932/再発防止",
+      "description": "TODO_333①（MoCKA-START.batへのset PYTHONUTF8=1追加）実施中に発見。MoCKA-START.bat自体に既存のBOM（U+FEFF）が混入している。batファイルのBOMはWindows cmd.exe上では通常無害だが、TODO_333の根本問題（CP932/UnicodeEncodeError再発防止・E20260617_086〜089のインシデント連鎖）と同種のエンコーディング汚染パターンであるため、再発防止の網羅性確保の観点から記録・除去を推奨。\n\n対応: MoCKA-START.batをBOM無しUTF-8（またはASCII）で再保存。過去にPHI-OS background.jsでBOMがService Worker無効化の原因になった事例（TODO_195関連）があるため、同様の無音障害化リスクの観点でも確認価値あり。",
+      "assigned_to": "くろこ",
+      "note": "2026-06-18 くろこ実装完了。BOM除去5件: MoCKA-START.bat/app.py/interface/mocka_watcher.py/caliber/chat_pipeline/mocka_caliber_server.py/PlanningCaliber/seo-os/command_center/app.py。check_utf8_mandate.pyは全体書き換えでBOMなし作成済み。計6件対応。commit e675e3de9",
+      "reference_event": "",
+      "created_at": "2026-06-18T07:47:41.920693",
+      "updated_at": "2026-06-18T11:11:25.231046",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_284",
+      "title": "Knowledge Diff API — Guideline/Essence/Registry差分取得エンドポイント",
+      "status": "完了",
+      "priority": "中",
+      "category": "COMMAND CENTER",
+      "description": "Knowledge Diff API実装。GET /api/diff?since=2026-06-09 でGuideline/Essence/Registry/Capabilityの差分を返却。AIは毎回全体を読み直さず差分のみ取得できる。Institution Memoryの効率化。",
+      "assigned_to": "Claude",
+      "note": "2026-06-18 くろこ実装完了。app.py末尾にGET /api/diff?since=YYYY-MM-DD エンドポイント追加。guideline/essence/registry/capability/todo/sealの各セクション別にイベントを分類して返す。commit e675e3de9",
+      "reference_event": "E20260610_10482",
+      "created_at": "2026-06-10T17:42:16.945918",
+      "updated_at": "2026-06-18T11:11:34.091917",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_296",
+      "title": "health_check.py — .envファイルのBOM検知を監視対象に追加",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/TIC/health",
+      "description": "health_check.pyの監視対象に.envファイルのBOMチェックを追加する。症状: .envが存在するのにMOCKA_ENDPOINTがNoneになる。原因: BOM付きUTF-8でpython-dotenvがキーを認識しない。対策: check_env_bom()関数を実装し、BOM検知時はHEALTH_FAILとしてprevention_queueに投入する。",
+      "assigned_to": "Claude",
+      "note": "2026-06-18 くろこ実装完了。health_check.pyにcheck_env_bom()関数とenv_bomチェック項目を追加。BOM検知時はHEALTH_FAIL扱いでprevention_queue投入。commit e675e3de9",
+      "reference_event": "E20260611_481",
+      "created_at": "2026-06-11T16:29:42.692334",
+      "updated_at": "2026-06-18T11:11:40.640281",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_297",
+      "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/TIC/watch",
+      "description": "watch_sources.jsonに登録されたURLのHTTPステータスを定期チェックする機能をtech_watcherに追加する。現状は差分検知のみで「URLが廃止されて404/SSL失敗になっている」状態を能動的には検知できない。check_url_alive()を実装し、接続失敗が連続3回でTECH_WATCH_URL_DEADイベントを記録しprevention_queueに投入する。",
+      "assigned_to": "Claude",
+      "note": "2026-06-18 くろこ実装完了。tech_watcher.pyにcheck_url_alive()追加。連続3回失敗でTECH_WATCH_URL_DEADイベント記録+prevention_queue投入。run()先頭でURL死活チェックを実行するよう統合済み。commit e675e3de9",
+      "reference_event": "E20260611_481",
+      "created_at": "2026-06-11T16:29:50.848462",
+      "updated_at": "2026-06-18T11:11:47.263386",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_139",
+      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
+      "status": "完了",
+      "priority": "高",
+      "category": "インフラ/user_voice",
+      "description": "週1回きむら博士がexportファイルをX:\\down\\mocka_import\\に置くだけで全自動処理。watchdogがJSON検知→user_voice_importer.py（human発言抽出・MoCKAフィルタ・DB投入）→essence 3軸自動更新→ping_generator実行→seal。claude export・gpt export両対応。",
+      "assigned_to": "Claude（実装）",
+      "note": "2026-06-18 くろこ実装完了。interface/user_voice_importer.py新規作成。watchdogでX:\\down\\mocka_import\\監視→JSON検知→claude/gpt export両対応→human発言抽出→MoCKAキーワードフィルタ→user_voiceテーブルDB投入→ping_generator実行→done/フォルダ移動。commit e675e3de9",
+      "reference_event": "",
+      "created_at": "2026-05-12T17:47:30.053157",
+      "updated_at": "2026-06-18T11:12:03.276144",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_323",
+      "title": "PHI-OS Gate — DB直接書き込み検知トリガー実装（Gate強制性強化）",
+      "status": "完了",
+      "priority": "中",
+      "category": "architecture",
+      "description": "TEST-01監査指摘対応。SQLite TRIGGERでGATE外からのINSERTを検知し、audit_violationsテーブルに記録+アラート発火。物理的封鎖ではなく「迂回しても即検知」の制度的抑止力を追加。OS権限設定は長期課題。",
+      "assigned_to": "Claude",
+      "note": "2026-06-18 くろこ実装完了。phi_os/audit_trigger.py新規作成。audit_violationsテーブル+trg_detect_direct_insert/trg_detect_direct_update SQLiteトリガーをDBにインストール済み。channel_type!='gate'のINSERT/UPDATEを即検知してaudit_violationsに記録。commit e675e3de9",
+      "reference_event": "E20260616_060",
+      "created_at": "2026-06-16T10:12:30.579264",
+      "updated_at": "2026-06-18T11:12:11.318981",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_324",
+      "title": "PHI-OS 定期監査スクリプト — Gate経由率・Direct Write・Actor未設定の継続検証",
+      "status": "完了",
+      "priority": "中",
+      "category": "architecture",
+      "description": "Gate経由率・Direct Write件数・Actor未設定件数を定期検証するスクリプト。毎朝health_check.pyに組み込み、異常時はCOMMAND CENTERにアラート表示。「Gate経由率100% / Direct Write 0件 / Actor未設定0件」を継続監査。",
+      "assigned_to": "Claude",
+      "note": "2026-06-18 くろこ実装完了。health_check.pyにcheck_phi_os_audit()関数とphi_os_auditチェック項目を追加。Gate経由率/DirectWrite 0件/Actor未設定0件を毎朝監査。異常時はFAIL+prevention_queue投入。commit e675e3de9",
+      "reference_event": "E20260616_060",
+      "created_at": "2026-06-16T10:12:39.269390",
+      "updated_at": "2026-06-18T11:12:19.374052",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_271",
+      "title": "PHI-OS プロセス管理統合 — PID管理・Restart自動化",
+      "status": "完了",
+      "priority": "中",
+      "category": "PHI-OS",
+      "description": "MoCKA-START.batのプロセス管理をPHI-OSへ移管。PID管理・終了管理・Restart管理を実装。stale process問題の恒久解決。",
+      "assigned_to": "Claude",
+      "note": "2026-06-18 くろこ実装完了。phi_os/process_manager.py新規作成。MANAGED_PROCESSESにsync_watch.py(TODO_341)含む全プロセス定義。data/phi_os_pids.jsonでPID管理。--start/--stop/--status/--restart対応。psutil未インストール時はtasklist/taskkillにfallback。commit e675e3de9",
+      "reference_event": "E20260610_10449",
+      "created_at": "2026-06-10T10:37:24.919076",
+      "updated_at": "2026-06-18T11:12:26.704754",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_LB002",
+      "title": "MOCKA_TODO.json 保存場所と参照場所のズレ確認・修正",
+      "status": "完了",
+      "priority": "高",
+      "category": "MoCKAコア/インフラ",
+      "description": "本STEP自体がLB_002の実施。完了として登録。",
+      "assigned_to": "Claude",
+      "note": "LB_002由来。本修正作業で対応済み。",
+      "created_at": "2026-06-05T00:00:00",
+      "completed_at": "2026-06-05T00:00:00"
+    },
+    {
+      "id": "TODO_276",
+      "title": "AI Capability Registry 制度設計 — AI別権限・能力・制約の正式定義",
+      "status": "廃止（TODO_272へ統合）",
+      "priority": "高",
+      "category": "制度設計",
+      "description": "GPT/Claude/Gemini等AI別にTODO分析・設計レビュー・イベント記録・承認権限・削除権限・自動実行可否をCapabilityとして定義しregistryに登録する制度。GPT提案第1章より。",
+      "assigned_to": "Claude",
+      "note": "2026-06-17 くろこ実機調査・きむら博士承認によりTODO_272（AI Capability Registry実装）に統合。同一概念の「制度設計」と「実装」を分離管理する必要がないと判断。以降はTODO_272側で一括管理する。",
+      "reference_event": "E20260610_10480",
+      "created_at": "2026-06-10T17:28:59.763170",
+      "updated_at": "2026-06-17T18:32:02.287782",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_279",
+      "title": "Context Package API 実装 — セッション開始時一括取得エンドポイント",
+      "status": "廃止",
+      "priority": "高",
+      "category": "API設計",
+      "description": "セッション開始時にProject Summary / Current Phase / Top TODO / Recent Events / Known Issues / Guideline / Essenceを一括取得するAPIエンドポイント。GPT提案第8章「Context Package」。毎回個別検索が不要になりトークン効率・作業効率が大幅向上する。",
+      "assigned_to": "Claude",
+      "note": "2026-06-17 くろこ実機調査により完全吸収を確認。interface/context_composer.pyのContextComposer.compose()(L121-163)でTODO_279が要求した全要素（Current Phase/Top TODO/Known Issues/Recent Events/Guideline/Essence）が実装済み。TODO_290のnote「ai_session.pyのmode=fullをContext Composer出力で置き換え」と整合。きむら博士承認により廃止。",
+      "reference_event": "E20260610_10480",
+      "created_at": "2026-06-10T17:29:18.867906",
+      "updated_at": "2026-06-17T18:31:43.948361",
+      "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_326",
+      "title": "SEO-OS Distribution Router v1 — 5軸スコアリング＋temporal_decay統合",
+      "status": "廃止",
+      "priority": "高",
+      "category": "SEO-OS/PR-OS",
+      "description": "チャネル×コンテンツの自動振り分けエンジン。5軸（ターゲット層/技術深度/言語/緊急度/チャネル相性）でスコアリングし、temporal_decay（鮮度劣化係数）を掛け合わせて最適配信チャネルを自動決定する。入力: KS記事メタデータ。出力: 配信先チャネル順位リスト＋スケジュール案。seo_center / distribution_router / feedback_publishと連携。",
+      "assigned_to": "Claude（設計）+ くろこ（実装）",
+      "note": "2026-06-17 きむら博士承認により廃止。TODO_330（GPT監査版・確率分布モデル）への思想的・技術的統合のため。差異検証結果（E20260617記録）: ①出力形式が326=ランキングに対し330=確率分布で別物 ②評価軸が326=5軸に対し330=6軸でevidence_density/citation_fitness等のLLM時代特有軸を含みTODO_329と連携 ③326が単純な振り分けエンジンに対し330は「ルールベース分類器ではなく配信の確率分布を決める意思決定関数かつ制度ゲート」という思想転換を伴う後継版。326は実装せず、330のみ着手する。",
+      "reference_event": "E20260617_019",
+      "created_at": "2026-06-17T08:10:26.712151",
+      "updated_at": "2026-06-17T17:32:05.941805",
+      "completed_at": "2026-06-18T00:00:00"
     }
   ],
   "orchestra_handoff": {
     "description": "AI依頼時はTODO_IDを指定して依頼する。このファイルをMOCKA_OVERVIEW.jsonと一緒に貼れば即座に文脈共有できる",
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
-  },
-  "_snapshot_at": "2026-06-18T00:02:30.455565+00:00"
+  }
 }
