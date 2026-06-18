@@ -156,11 +156,17 @@
       "title": "GL7 expected_max_changes 見直し — 一括バッチ作業向け閾値調整（現状200）",
       "priority": "中",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_346",
+      "title": "overview_tmp.json 削除 — 生成元不明の孤立ファイル",
+      "priority": "低",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 15,
-  "state_hash": "a12d7d719da9133f930bab9b09f7c379f8185418fdca73b430adbea4adc3529a",
-  "generated_at": "2026-06-18T02:37:39.445050+00:00"
+  "revision": 18,
+  "state_hash": "e27a18b7c48f1056664eb037d03ad3821423656625ecb6ba1b76a4c05a372e5d",
+  "generated_at": "2026-06-18T02:52:39.544984+00:00"
 }

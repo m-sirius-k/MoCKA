@@ -421,18 +421,6 @@
       "created_at": "2026-06-18T11:14:43.437201"
     },
     {
-      "id": "TODO_345",
-      "title": "MOCKA_OVERVIEW.json コンテンツ更新 — meta.updated 2026-06-01停止分の反映",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度/ガバナンス/file_hygiene",
-      "description": "E20260618_060の調査で発見。MOCKA_OVERVIEW.json（正本: C:/Users/sirok/MOCKA_OVERVIEW.json）のmeta.updatedが2026-06-01のまま更新停止している。data/へのCloudflareスナップショットコピー自体は正常稼働（export_for_cloudflare.pyによる設計通り）だが、コピー元のコンテンツが古い。\n\n反映すべき主要進捗（6/1〜6/18）:\n- TIC Phase2〜7完了（Dependency Graph/Root Cause/Trend/Prediction Layer）\n- PHI-OS Event Gate確立（CSV廃止・SQLite単一化・11,929件移行）\n- Institution Architecture（Constitution/Institution/Operation 3層）・Institution Contract v2.0\n- Commission Registry・Context Composer・Mentor Engine等のInstitutional Cognition群\n- Connector Framework v2.0（AI Capability Registry/Connector Router/Lifecycle Manager）\n- SEO-OS Phase1〜6完了\n- PR-OS実装（WordPress/X/Instagram/GitHub Pages/Newsletter Adapter）\n- p-DERS論文Zenodo公開・AIES2026投稿完了\n- vasAI v1.4.9 VERIFIED封印\n- CP932/UnicodeEncodeError再発防止策（TODO_333系列）完了\n- docs/mocka3/ 6文書（六層governance）完成\n\n更新後はmeta.updatedを現在日付に更新し、current_phaseもPhase4後半の実態に合わせて見直すこと。",
-      "assigned_to": "くろこ（実装）+ きむら博士（確認）",
-      "note": "",
-      "reference_event": "E20260618_060",
-      "created_at": "2026-06-18T11:39:16.828859"
-    },
-    {
       "id": "TODO_346",
       "title": "overview_tmp.json 削除 — 生成元不明の孤立ファイル",
       "status": "未着手",
@@ -4662,6 +4650,20 @@
       "created_at": "2026-06-17T08:10:26.712151",
       "updated_at": "2026-06-17T17:32:05.941805",
       "completed_at": "2026-06-18T00:00:00"
+    },
+    {
+      "id": "TODO_345",
+      "title": "MOCKA_OVERVIEW.json コンテンツ更新 — meta.updated 2026-06-01停止分の反映",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/file_hygiene",
+      "description": "E20260618_060の調査で発見。MOCKA_OVERVIEW.json（正本: C:/Users/sirok/MOCKA_OVERVIEW.json）のmeta.updatedが2026-06-01のまま更新停止している。data/へのCloudflareスナップショットコピー自体は正常稼働（export_for_cloudflare.pyによる設計通り）だが、コピー元のコンテンツが古い。\n\n反映すべき主要進捗（6/1〜6/18）:\n- TIC Phase2〜7完了（Dependency Graph/Root Cause/Trend/Prediction Layer）\n- PHI-OS Event Gate確立（CSV廃止・SQLite単一化・11,929件移行）\n- Institution Architecture（Constitution/Institution/Operation 3層）・Institution Contract v2.0\n- Commission Registry・Context Composer・Mentor Engine等のInstitutional Cognition群\n- Connector Framework v2.0（AI Capability Registry/Connector Router/Lifecycle Manager）\n- SEO-OS Phase1〜6完了\n- PR-OS実装（WordPress/X/Instagram/GitHub Pages/Newsletter Adapter）\n- p-DERS論文Zenodo公開・AIES2026投稿完了\n- vasAI v1.4.9 VERIFIED封印\n- CP932/UnicodeEncodeError再発防止策（TODO_333系列）完了\n- docs/mocka3/ 6文書（六層governance）完成\n\n更新後はmeta.updatedを現在日付に更新し、current_phaseもPhase4後半の実態に合わせて見直すこと。",
+      "assigned_to": "くろこ（実装）+ きむら博士（確認）",
+      "note": "2026-06-18 くろこ実装完了。meta.updated=2026-06-18/version=4.0。10項目全反映: (1)meta更新 (2)current_phase+Institution Architecture/Connector Framework/SEO-OS/PR-OS/PHI-OS Event Gate追記 (3)latest_seal更新(sha256/event_count=12171/date) (4)write_policy+TODO_154/155/333系追記 (5)paper全面更新(AIES2026 Submission282/p-DERS zenodo.20686662) (6)current_issues刷新(解決済み削除・未着手現状反映) (7)session_history 6/16〜6/18追加 (8)next_actions刷新(TODO_207/206/205/325/239/242/266/346) (9)products最新化(PHI-OS完了/Relay保留) (10)新規セクション3件追加(institutional_cognition/connector_framework/seo_pr_os)",
+      "reference_event": "E20260618_060",
+      "created_at": "2026-06-18T11:39:16.828859",
+      "updated_at": "2026-06-18T11:48:28.138131",
+      "completed_at": "2026-06-18"
     }
   ],
   "orchestra_handoff": {
