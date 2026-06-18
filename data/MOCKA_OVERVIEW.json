@@ -7,8 +7,8 @@
       "primary": "C:/Users/sirok/MOCKA_OVERVIEW.json",
       "backup": "A:/MOCKA_OVERVIEW.json"
     },
-    "updated": "2026-06-01",
-    "version": "3.0"
+    "updated": "2026-06-18",
+    "version": "4.0"
   },
   "owner": {
     "name": "nsjp_kimura",
@@ -74,7 +74,7 @@
   },
   "router": {
     "path": "C:/Users/sirok/MoCKA/interface/router.py",
-    "events_csv": "data/events.csv",
+    "events_csv": "data/events.csv（廃止済み・SQLite単一化完了）",
     "orchestra": "tools/mocka_orchestra_v10.py",
     "status": "2026-04-05修正済み（DEPENDENCY_BREAK解消）",
     "fix_summary": "重複定義(collaborate/share×2)解消。what_type='save'誤記録→collaboration/share/recordに分離。MoCKARouter.save()削除。commit 6561fc5",
@@ -117,12 +117,12 @@
   },
   "governance": {
     "latest_seal": {
-      "commit": "c2d8c54e",
-      "date": "2026-06-01",
-      "planningcaliber_commit": "18be5ea",
+      "sha256": "ad98246bef68a9a28f56b40d8b675e2b878b20db42ebec50c525132ea947ea27",
+      "event_count": 12171,
+      "date": "2026-06-18",
       "status": "ALL CHECKS PASSED"
     },
-    "write_policy": "Phase18以降: コアシステムファイルへの書き込みは人間ゲート承認必須（ChatGPT上書きインシデント対応）",
+    "write_policy": "Phase18以降: コアシステムファイルへの書き込みは人間ゲート承認必須（ChatGPT上書きインシデント対応）。TODO_154: 全文書き換え時は関連ファイル整合性確認必須。TODO_155: UTF-8強制（BOM禁止）。TODO_333系: CP932/UnicodeEncodeError再発防止（PYTHONUTF8=1一括適用・非ASCII装飾記号禁止・check_utf8_mandate.py Rule4/5追加済み）。",
     "file_edit_rule": "全AIインタラクションの記録義務。きむら博士がAIを使って行った全ての作業をmocka_write_eventで記録する。対象: ファイル作成・変更・設計・判断・生成物完成・外部サービス提出・登録・却下。フォルダ・Project・AIの種別を問わない。【明示的適用範囲】① MoCKAコアファイル（C:\\Users\\sirok\\MoCKA\\配下）② planningcaliber製品資産（C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\配下）③ sirius-lab製品資産（C:\\Users\\sirok\\MoCKA\\sirius-lab\\配下）④ 外部サービス操作（Chrome Web Store・Gumroad・GitHub・EasyChair等への提出・登録・設定変更）⑤ 設計・判断・合議結果（採用・却下の意思決定も記録対象）記録なき作業はMoCKAとして存在しない。（E20260516_023・TODO_151確定）",
     "verified_working": [
       "COMMAND CENTER v5.0 -> localhost:5000 稼働",
@@ -130,19 +130,25 @@
       "MCP caliber -> localhost:5002 / ngrok経由 稼働",
       "Runtime B (Go) -> localhost:5003 稼働",
       "essence_auto_updater v3 -> 5分間隔自動更新 稼働",
-      "SQLite単一化完了（events.csv完全廃止）",
-      "PHL-OS v2 -> essence連動スコアリング稼働"
+      "SQLite単一化完了（events.csv完全廃止・2026-06-16移行 11929件）",
+      "PHL-OS v2 -> essence連動スコアリング稼働",
+      "PHI-OS Event Gate -> 単一経路保証稼働（TODO_322完了）",
+      "TIC tech_watcher v3.0 -> 意味差分検知稼働（TODO_208完了）",
+      "CP932再発防止策 -> check_utf8_mandate.py Rule4/5・PYTHONUTF8=1適用済み（TODO_333完了）"
     ]
   },
   "paper": {
     "title": "Silence Prohibition Protocol and Persistent History Layer: A Paired Governance Architecture for Trustworthy AI Systems",
-    "current_draft": "mocka_paper_FINAL_v4_20260428.tex（Overleaf管理）",
-    "zenodo_preprint": "DOI: 10.5281/zenodo.19606271（PHL preprint / CC BY-NC 4.0 / 2026-04-16）",
-    "zenodo_main": "DOI: 10.5281/zenodo.19503666 / 10.5281/zenodo.19507632（v8/v9）",
-    "target": "AIES 2026（Malmö）非アーカイバル投稿",
-    "deadlines": {
-      "easychair_abstract": "2026-05-14 AoE",
-      "pdf_submission": "2026-05-21 AoE"
+    "aies2026": {
+      "submission_id": "Submission282",
+      "status": "camera-ready提出済み（AIES 2026 Malmo）",
+      "zenodo_main": "DOI: 10.5281/zenodo.19503666 / 10.5281/zenodo.19507632（v8/v9）",
+      "zenodo_preprint": "DOI: 10.5281/zenodo.19606271（PHL preprint / CC BY-NC 4.0 / 2026-04-16）"
+    },
+    "p_ders": {
+      "title": "Persistent Distributed Event Record System（p-DERS）",
+      "zenodo_doi": "DOI: 10.5281/zenodo.20686662",
+      "status": "公開済み・AIES正式投稿完了"
     },
     "key_results": {
       "n1_primary": 218,
@@ -161,8 +167,7 @@
       "sppFigure_2_drawio.pdf"
     ],
     "anonymized": true,
-    "latex_package": "aaai2026（submissionモード）",
-    "remaining": "EasyChair登録（5/14）・PDF提出（5/21）のみ。5/7着手予定。"
+    "latex_package": "aaai2026（submissionモード）"
   },
   "repositories": {
     "heart": {
@@ -181,7 +186,6 @@
         "main_loop": "runtime/main_loop.py",
         "bridge": "runtime/civilization_bridge.py",
         "orchestra": "tools/mocka_orchestra_v10.py",
-        "events_csv": "data/events.csv（325件以上）",
         "recurrence_csv": "data/recurrence_registry.csv",
         "trajectory_csv": "data/trajectory.csv（新規・流動座標）",
         "mcp_server": "mocka_mcp_server.py（port:5002）",
@@ -269,7 +273,7 @@
       "name": "PHI-OS",
       "path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/phi-os/",
       "role": "Chrome拡張Runtime Layer — 製品間神経系",
-      "status": "v1.0実装完了・実機テスト待ち（TODO_195）"
+      "status": "v1.0実機テスト完了（TODO_195完了）"
     }
   },
   "joints": {
@@ -291,10 +295,11 @@
     }
   },
   "current_issues": {
-    "relay_dom_selector_fail": "[ACTIVE] health_check.pyがrelay_dom_selectorをFAIL判定中。claude.aiのDOM変更またはセレクタ定義ファイルの問題。TIC初検知案件。",
-    "relay_monetization": "[PENDING] Relay Free/Pro/One実装完了だが収益化パイプライン未構築。TODO_178で解決。",
-    "phi_os_test": "[PENDING] PHI OS v1.0実装完了・実機テスト未実施。TODO_195。",
-    "tic_tech_watcher_noise": "[ACTIVE] tech_watcher.pyがHTML全体hashを比較しているため動的コンテンツで誤検知リスク。TODO_208で意味差分検知に改修予定。"
+    "relay_monetization": "[保留] Relay Free/Pro/One実装完了だが収益化パイプライン未構築。TODO_178は保留中。",
+    "cloudflare_tunnel": "[保留] Cloudflare Tunnel恒久化（Named Tunnel）未完了。TODO_266保留中。Copilot Studio Custom Connector登録はTunnel確定後。",
+    "tic_layer2_4": "[未着手] TIC Layer 2（Sandbox/TODO_205）・Layer 3（impact_analyzer/TODO_206）・Layer 4（Human Gate UI/TODO_207）未着手。",
+    "phi_os_trust_boundary": "[未着手] PHI-OS Trust Boundary確立（Windows ACL設定・TODO_325）未着手。",
+    "pr_os_wordpress": "[未着手] PR-OS WordPress認証情報設定→実動テスト（TODO_242）未着手。"
   },
   "session_history": {
     "2026_03_28": [
@@ -376,37 +381,61 @@
       "Structural Intelligence実装（bee/beta_engine/morphology）",
       "TODO棚卸し：廃止5件（博士承認）",
       "OVERVIEW.json v3.0更新（本セッション）"
+    ],
+    "2026_06_16": [
+      "PHI-OS Event Gate確立・単一経路保証（TODO_322完了）",
+      "CSV廃止・SQLite単一化完了（events.csv→events.db / 11929件移行）",
+      "Institution Architecture確立（Constitution/Institution/Operation 3層）",
+      "Connector Framework v2.0設計確定（AI Capability Registry/Router/Lifecycle Manager）"
+    ],
+    "2026_06_17": [
+      "GPT監査によるSemantic Score Vector実装",
+      "Distribution Router v2実装",
+      "LinkedIn adapter実装（PR-OS）",
+      "mocka_bridge.py feedback_publish→events.db書き込み確認（TODO_333系）"
+    ],
+    "2026_06_18": [
+      "CP932再発防止策一連実装（check_utf8_mandate.py Rule4/5・PYTHONUTF8=1・BOM除去6件 / commit e675e3de9）",
+      "INC-001横展開調査・GL7_EXECUTION_BLOCKEDインシデント解決（E20260618_053）",
+      "MOCKA_OVERVIEW.json v4.0更新（TODO_345完了）"
     ]
   },
   "next_actions": {
     "immediate": [
-      "TODO_178: Relay Stripe+CWS+LP作成（Orchestraパイプライン流用）",
-      "TODO_195: PHI OS v1.0 実機テスト（chrome://extensions読み込み・博士5分作業）",
-      "TODO_208: TIC tech_watcher 形骸化防止改修（意味差分検知・relay_dom_selector FAIL修正）"
+      "TODO_207: TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
+      "TODO_206: TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "TODO_205: TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）"
     ],
     "short_term": [
-      "TODO_204: TIC Layer 1 — tech_watcher.py意味差分検知版稼働確認",
-      "TODO_215: β Engine API公開 — /api/beta-extract エンドポイント追加"
+      "TODO_325: PHI-OS Trust Boundary確立（Windows ACL設定）",
+      "TODO_239: PR-OS各Adapter認証情報設定（WordPress優先）",
+      "TODO_242: PR-OS WordPress認証情報設定→実動テスト",
+      "TODO_266: Cloudflare Tunnel恒久化（Named Tunnel設定）",
+      "TODO_346: overview_tmp.json削除（生成元不明の孤立ファイル）"
     ],
     "product_pipeline": [
       "Orchestra: 本番稼働中（Stripe→Cloudflare Workers→Resend）",
-      "Relay: Free/Pro/One実装完了・収益化未着手（TODO_178）",
-      "PHI OS: v1.0実装完了・実機テスト待ち（TODO_195）",
-      "vasAI: v1.4.9 VERIFIED封印済み（GitHub公開済み）"
+      "Relay: Free/Pro/One実装完了・収益化保留（TODO_178）",
+      "PHI OS: v1.0実機テスト完了（TODO_195完了）",
+      "vasAI: v1.4.9 VERIFIED封印済み（GitHub公開済み）",
+      "PR-OS: コード全完成・WordPress credentials設定待ち（TODO_242）"
     ],
     "tic_roadmap": [
-      "Layer 0: health_check.py 稼働中（relay_dom_selector FAIL継続中）",
-      "Layer 1: tech_watcher.py v2.0 稼働中（形骸化防止改修待ち TODO_208）",
-      "Layer 2〜4: Sandbox/impact_analyzer/Human Gate UI（TODO_205〜207）",
-      "Phase 2: Dependency Intelligence（2026-06-15以降・TODO_209）"
+      "Layer 0: health_check.py 稼働中",
+      "Layer 1: tech_watcher.py v3.0 稼働中（意味差分検知・TODO_208完了）",
+      "Layer 2: tech_lab/ Sandbox（TODO_205・未着手）",
+      "Layer 3: impact_analyzer.py（TODO_206・未着手）",
+      "Layer 4: COMMAND CENTER TICパネル（TODO_207・未着手）",
+      "Phase 2: Dependency Intelligence（TODO_209）"
     ],
     "deferred": [
       "TODO_122: MoCKA Go移行（長期・商用安定後）",
       "TODO_150: Prism開発（Phase 5）",
-      "TODO_171: Orchestra JS難読化"
+      "TODO_171: Orchestra JS難読化",
+      "TODO_178: Relay収益化（Stripe+CWS+LP）保留"
     ]
   },
-  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
+  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化保留・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）+ Institution Architecture確立（Constitution/Institution/Operation 3層・Connector Framework v2.0・SEO-OS/PR-OS稼働・PHI-OS Event Gate確立）",
   "products": {
     "orchestra": {
       "status": "本番稼働中",
@@ -416,14 +445,15 @@
       "lp": "orchestra_i18n_cs.html（5言語）"
     },
     "relay": {
-      "status": "実装完了・収益化未着手",
+      "status": "実装完了・収益化保留",
       "plans": "Free(ルールベース) / Pro($5/月・AI要約) / One($10/月・Vault注入)",
       "hmac_prefix": "RLY-P- / RLY-O-",
-      "next": "TODO_178: Stripe+CWS+LP"
+      "next": "TODO_178: 保留中"
     },
     "phi_os": {
-      "status": "v1.0実装完了・実機テスト待ち",
-      "next": "TODO_195"
+      "status": "v1.0実機テスト完了（TODO_195完了）",
+      "event_gate": "単一経路保証稼働（TODO_322完了）",
+      "next": "TODO_325: Trust Boundary確立"
     },
     "memory": {
       "status": "Free実装完了（E20260526_041）",
@@ -432,6 +462,10 @@
     "vasai": {
       "status": "v1.4.9 VERIFIED",
       "url": "https://github.com/m-sirius-k/vasAI"
+    },
+    "pr_os": {
+      "status": "コード全完成・WordPress credentials設定待ち",
+      "next": "TODO_239/242: 認証情報設定→実動テスト"
     },
     "prism": {
       "status": "未着手（Phase 5）"
@@ -456,19 +490,48 @@
       "/api/beta-extract（TODO_215）"
     ]
   },
+  "institutional_cognition": {
+    "description": "MoCKA制度的認知層 — AIが制度を内面化し自律進化する仕組み",
+    "reflection_engine": "過去イベント照合による自己評価（BEE v2.0連携）",
+    "prediction_engine": "パターン検知による将来リスク予測（未実装）",
+    "mentor_engine": "制度進化の合議・Human Gate承認フロー",
+    "status": "Reflection稼働中・Prediction/Mentor未実装"
+  },
+  "connector_framework": {
+    "description": "Connector Framework v2.0 — AI能力の制度的登録・ルーティング・ライフサイクル管理",
+    "ai_capability_registry": "各AIの能力・制約を台帳登録",
+    "distribution_router": "Distribution Router v2実装済み（2026-06-17）",
+    "lifecycle_manager": "Connector登録・廃止・バージョン管理",
+    "status": "v2.0設計確定・Distribution Router v2稼働中"
+  },
+  "seo_pr_os": {
+    "seo_os": {
+      "description": "SEO-OS — 自動SEO最適化OS",
+      "status": "Phase1-6実装完了・稼働中"
+    },
+    "pr_os": {
+      "description": "PR-OS — 自動広報・記事配信OS",
+      "adapters": [
+        "WordPress",
+        "LinkedIn（実装済み）"
+      ],
+      "mocka_bridge": "feedback_publish()→events.db書き込み確認済み（2026-06-18）",
+      "status": "コード全完成・WordPress credentials設定待ち（TODO_242）"
+    }
+  },
   "tic": {
     "description": "Technology Intelligence Caliber — 外部技術変化の4層防衛",
-    "layer0": "health_check.py — 7点モーニングチェック（relay_dom_selector FAIL中）",
-    "layer1": "tech_watcher.py v3.0 — 意味差分検知（TODO_208改修後）",
+    "layer0": "health_check.py — 7点モーニングチェック 稼働中",
+    "layer1": "tech_watcher.py v3.0 — 意味差分検知稼働（TODO_208完了）",
     "layer2": "tech_lab/ Sandbox（TODO_205・未着手）",
     "layer3": "impact_analyzer.py（TODO_206・未着手）",
     "layer4": "COMMAND CENTER TICパネル（TODO_207・未着手）",
-    "phase2": "Dependency Intelligence（2026-06-15以降・TODO_209）",
+    "phase2": "Dependency Intelligence（TODO_209）",
     "paths": {
       "health_check": "interface/health_check.py",
       "tech_watcher": "interface/tech_watcher.py",
       "data": "data/tic/"
     }
   },
-  "_snapshot_at": "2026-06-18T00:02:30.441143+00:00"
+  "_snapshot_at": "2026-06-18T06:34:06.401822+00:00"
 }
