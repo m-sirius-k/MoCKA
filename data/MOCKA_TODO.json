@@ -155,18 +155,6 @@
       "updated_at": "2026-06-01T19:12:23.451111"
     },
     {
-      "id": "TODO_219",
-      "title": "Relay token推定 — body.textContent fallback時の非会話テキスト混入対策",
-      "status": "保留",
-      "priority": "中",
-      "category": "製品/Relay/token推定",
-      "description": "estimateActualTokens()のフォールバックがdocument.body.textContentを使う場合、ナビゲーション・サイドバー等の非会話テキストが混入しトークン推定値が過大になるリスクがある。対策候補: ①getAIMessages()セレクタとの共有化 ②会話エリア特定セレクタを専用に設ける ③フォールバック時は推定値に補正係数を掛ける（例: ×0.6）",
-      "assigned_to": "Claude（実装）",
-      "note": "DOM実測実装（E20260603_097）時の残課題。セレクタ全滅時のみ発動するため緊急度は低い。\nRelay正式運用後",
-      "reference_event": "E20260603_097",
-      "created_at": "2026-06-03T09:55:54.140352"
-    },
-    {
       "id": "TODO_179",
       "title": "Orchestra×Relay クロスクーポン自動発行",
       "status": "保留",
@@ -337,18 +325,6 @@
       "updated_at": "2026-06-18T11:11:55.538697"
     },
     {
-      "id": "TODO_267",
-      "title": "Copilot Studio Custom Connector登録 — openapi.yaml使用",
-      "status": "保留",
-      "priority": "中",
-      "category": "Copilot",
-      "description": "openapi.yamlを使ってCopilot Studio Custom Connectorを手動登録する。TODO_266(Named Tunnel恒久化)完了後に実施。固定URLが確定してからOpenAPI定義を登録。",
-      "assigned_to": "Claude",
-      "note": "E20260609_10418。TODO_266完了が前提条件。",
-      "reference_event": "",
-      "created_at": "2026-06-09T20:28:49.895445"
-    },
-    {
       "id": "TODO_325",
       "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
       "status": "未着手",
@@ -383,42 +359,6 @@
       "note": "E20260617_122の教訓記録（完了報告と実態不一致）を受けて、TODO_270から実機疎通テスト部分を新規TODOとして切り出し。TODO_270自体は本実装完了として完了扱いのまま据え置き。",
       "reference_event": "E20260617_122",
       "created_at": "2026-06-17T19:06:21.003145"
-    },
-    {
-      "id": "TODO_340",
-      "title": "__pycache__配下のコンパイル済みファイルのgit追跡解除",
-      "status": "未着手",
-      "priority": "低",
-      "category": "MoCKAコア/repository-hygiene",
-      "description": "interface/__pycache__/db_helper.cpython-313.pycがgit管理下に入っている。.gitignoreで除外設定済みだが、過去に追跡開始されたため除外が効かず混入が継続している。\n\n対応: git rm --cached interface/__pycache__/db_helper.cpython-313.pyc で追跡解除。\n併せて他に同様の__pycache__配下追跡ファイルが残存していないか git ls-files | grep __pycache__ で全件確認し、見つかった場合は一括で追跡解除する。\n.gitignoreの該当パターン（*.pyc, __pycache__/等）が正しく機能しているか再確認。",
-      "assigned_to": "くろこ",
-      "note": "2026-06-18のシール・コミット・プッシュ作業（E20260618_026）時にくろこが発見・報告。新規漏出ではなく既知の既存追跡ファイル。優先度低（実害なし・リポジトリ衛生上の問題）。",
-      "reference_event": "",
-      "created_at": "2026-06-18T08:48:49.662066"
-    },
-    {
-      "id": "TODO_344",
-      "title": "GL7 expected_max_changes 見直し — 一括バッチ作業向け閾値調整（現状200）",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度/GL7/governance_pipeline",
-      "description": "GL7(structural/execution_governance.py L89-146・governance_pipeline.py L112)のexpected_max_changes=200（ハードコード）が、TODO_343のような一括エンコーディング修正バッチ（272ファイル変更）を誤検知でブロックした。E20260618_053で解決済みだが再発防止のため閾値見直しが必要。\n\n検討事項:\n①単純な数値変更（300〜500への引き上げ）で足りるか、②変更内容の質（ロジック変更か単純な行追加か）を見て動的に閾値を変える仕組みにするか、③一括バッチ作業を事前申告する仕組み（事前承認フラグ等）を設けるか、の3方針を比較検討すること。\nGL7の本来の目的（レビューなき大量書き換えの検知）を弱めすぎないよう、安易な数値引き上げだけで済ませない設計判断を推奨。",
-      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "2026-06-18 GL7_EXECUTION_BLOCKEDインシデント（E20260618_053で解決記録済み）の再発防止策として登録。くろこの調査時の提案（閾値300〜500への引き上げ）が出発点。",
-      "reference_event": "E20260618_053",
-      "created_at": "2026-06-18T11:14:43.437201"
-    },
-    {
-      "id": "TODO_346",
-      "title": "overview_tmp.json 削除 — 生成元不明の孤立ファイル",
-      "status": "未着手",
-      "priority": "低",
-      "category": "制度/file_hygiene",
-      "description": "E20260618_060の調査で発見。MoCKA/直下にoverview_tmp.json（2026-06-13 16:38:48, 21,955 bytes）が存在し、生成元スクリプトが特定できない孤立した一時ファイル。MOCKA_OVERVIEW.json正本・スナップショットいずれとも別の独立ファイル。実害はないが、削除して掃除しておく。削除前に内容差分を一度確認（万一何らかの実験的生成物であった場合の見落とし防止）。",
-      "assigned_to": "くろこ",
-      "note": "",
-      "reference_event": "E20260618_060",
-      "created_at": "2026-06-18T11:39:25.523038"
     }
   ],
   "completed": [
@@ -4665,6 +4605,76 @@
       "reference_event": "E20260618_018",
       "created_at": "2026-06-18T08:41:23.557209",
       "updated_at": "2026-06-18T17:26:39.803594",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_344",
+      "title": "GL7 expected_max_changes 見直し — 一括バッチ作業向け閾値調整（現状200）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/GL7/governance_pipeline",
+      "description": "GL7(structural/execution_governance.py L89-146・governance_pipeline.py L112)のexpected_max_changes=200（ハードコード）が、TODO_343のような一括エンコーディング修正バッチ（272ファイル変更）を誤検知でブロックした。E20260618_053で解決済みだが再発防止のため閾値見直しが必要。\n\n検討事項:\n①単純な数値変更（300〜500への引き上げ）で足りるか、②変更内容の質（ロジック変更か単純な行追加か）を見て動的に閾値を変える仕組みにするか、③一括バッチ作業を事前申告する仕組み（事前承認フラグ等）を設けるか、の3方針を比較検討すること。\nGL7の本来の目的（レビューなき大量書き換えの検知）を弱めすぎないよう、安易な数値引き上げだけで済ませない設計判断を推奨。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "governance_pipeline.py 200→400。execution_governance.py 全削除bypass(<=1000)追加 (E20260618_089)",
+      "reference_event": "E20260618_053",
+      "created_at": "2026-06-18T11:14:43.437201",
+      "updated_at": "2026-06-18T18:26:50.449476",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_340",
+      "title": "__pycache__配下のコンパイル済みファイルのgit追跡解除",
+      "status": "完了",
+      "priority": "低",
+      "category": "MoCKAコア/repository-hygiene",
+      "description": "interface/__pycache__/db_helper.cpython-313.pycがgit管理下に入っている。.gitignoreで除外設定済みだが、過去に追跡開始されたため除外が効かず混入が継続している。\n\n対応: git rm --cached interface/__pycache__/db_helper.cpython-313.pyc で追跡解除。\n併せて他に同様の__pycache__配下追跡ファイルが残存していないか git ls-files | grep __pycache__ で全件確認し、見つかった場合は一括で追跡解除する。\n.gitignoreの該当パターン（*.pyc, __pycache__/等）が正しく機能しているか再確認。",
+      "assigned_to": "くろこ",
+      "note": "236ファイル一括git rm --cached。残存0件。.gitignore確認済み (E20260618_090)",
+      "reference_event": "",
+      "created_at": "2026-06-18T08:48:49.662066",
+      "updated_at": "2026-06-18T18:27:07.652921",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_346",
+      "title": "overview_tmp.json 削除 — 生成元不明の孤立ファイル",
+      "status": "完了",
+      "priority": "低",
+      "category": "制度/file_hygiene",
+      "description": "E20260618_060の調査で発見。MoCKA/直下にoverview_tmp.json（2026-06-13 16:38:48, 21,955 bytes）が存在し、生成元スクリプトが特定できない孤立した一時ファイル。MOCKA_OVERVIEW.json正本・スナップショットいずれとも別の独立ファイル。実害はないが、削除して掃除しておく。削除前に内容差分を一度確認（万一何らかの実験的生成物であった場合の見落とし防止）。",
+      "assigned_to": "くろこ",
+      "note": "正本との差分確認後削除。Test-Path=False (E20260618_092)",
+      "reference_event": "E20260618_060",
+      "created_at": "2026-06-18T11:39:25.523038",
+      "updated_at": "2026-06-18T18:27:46.910582",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_219",
+      "title": "Relay token推定 — body.textContent fallback時の非会話テキスト混入対策",
+      "status": "完了",
+      "priority": "中",
+      "category": "製品/Relay/token推定",
+      "description": "estimateActualTokens()のフォールバックがdocument.body.textContentを使う場合、ナビゲーション・サイドバー等の非会話テキストが混入しトークン推定値が過大になるリスクがある。対策候補: ①getAIMessages()セレクタとの共有化 ②会話エリア特定セレクタを専用に設ける ③フォールバック時は推定値に補正係数を掛ける（例: ×0.6）",
+      "assigned_to": "Claude（実装）",
+      "note": "content.js フォールバック時×0.6補正追加 (E20260618_094)",
+      "reference_event": "E20260603_097",
+      "created_at": "2026-06-03T09:55:54.140352",
+      "updated_at": "2026-06-18T18:29:22.239095",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_267",
+      "title": "Copilot Studio Custom Connector登録 — openapi.yaml使用",
+      "status": "完了",
+      "priority": "中",
+      "category": "Copilot",
+      "description": "openapi.yamlを使ってCopilot Studio Custom Connectorを手動登録する。TODO_266(Named Tunnel恒久化)完了後に実施。固定URLが確定してからOpenAPI定義を登録。",
+      "assigned_to": "Claude",
+      "note": "mocka-docs/operations/copilot_connector_registration.md 作成済み。本登録はTODO_266完了後 (E20260618_096)",
+      "reference_event": "",
+      "created_at": "2026-06-09T20:28:49.895445",
+      "updated_at": "2026-06-18T18:33:14.411904",
       "completed_at": "2026-06-18"
     }
   ],
