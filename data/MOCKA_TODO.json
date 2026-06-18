@@ -385,18 +385,6 @@
       "created_at": "2026-06-17T19:06:21.003145"
     },
     {
-      "id": "TODO_339",
-      "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
-      "status": "未着手",
-      "priority": "低",
-      "category": "Chrome拡張/エンドポイント整合",
-      "description": "C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\turn_counter_patch.js:45 が content.js と同じく存在しないエンドポイント /recent_events?n=5 を参照している。/public/events?n=5 に変更する1行修正。content.js（TODO_336/A）と同じ問題だが turn_counter_patch.js は現在の主系ファイルではないため後続対応とした。完了条件: 変更後 mocka_check_utf8 OK + CHANGE_DONE 記録。",
-      "assigned_to": "くろこ",
-      "note": "TODO_336（A修正）の後続対応として切り出し。content.js.bak_relay_mode:372も同じ参照を持つが.bakファイルのため修正不要。",
-      "reference_event": "E20260618_018",
-      "created_at": "2026-06-18T08:41:23.557209"
-    },
-    {
       "id": "TODO_340",
       "title": "__pycache__配下のコンパイル済みファイルのgit追跡解除",
       "status": "未着手",
@@ -4663,6 +4651,20 @@
       "reference_event": "E20260618_060",
       "created_at": "2026-06-18T11:39:16.828859",
       "updated_at": "2026-06-18T11:48:28.138131",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_339",
+      "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
+      "status": "完了",
+      "priority": "低",
+      "category": "Chrome拡張/エンドポイント整合",
+      "description": "C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\turn_counter_patch.js:45 が content.js と同じく存在しないエンドポイント /recent_events?n=5 を参照している。/public/events?n=5 に変更する1行修正。content.js（TODO_336/A）と同じ問題だが turn_counter_patch.js は現在の主系ファイルではないため後続対応とした。完了条件: 変更後 mocka_check_utf8 OK + CHANGE_DONE 記録。",
+      "assigned_to": "くろこ",
+      "note": "L45 /recent_events?n=5 → /public/events?n=5 修正完了 (E20260618_086)",
+      "reference_event": "E20260618_018",
+      "created_at": "2026-06-18T08:41:23.557209",
+      "updated_at": "2026-06-18T17:26:39.803594",
       "completed_at": "2026-06-18"
     }
   ],
