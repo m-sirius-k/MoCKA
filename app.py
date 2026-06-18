@@ -1,4 +1,4 @@
-﻿import sqlite3
+import sqlite3
 import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
@@ -3940,6 +3940,77 @@ def distribution_registry():
             pass
     return jsonify({"registry": registries})
 # ── Distribution OS v2 ここまで ──────────────────────────────────────────────
+
+
+# ── Knowledge Diff API (TODO_284) ────────────────────────────────────────────
+
+@app.route("/api/diff", methods=["GET"])
+def knowledge_diff():
+    """
+    GET /api/diff?since=YYYY-MM-DD
+    Guideline/Essence/Registry/Capability の差分を返す。
+    AIは毎回全体を読み直さず差分のみ取得できる。
+    """
+    since_str = request.args.get("since", "")
+    if not since_str:
+        return jsonify({"error": "since パラメータ必須 (例: ?since=2026-06-01)"}), 400
+
+    try:
+        from datetime import datetime as _dt
+        since_dt = _dt.fromisoformat(since_str)
+    except ValueError:
+        return jsonify({"error": f"since の形式が不正: {since_str} (YYYY-MM-DD)"}), 400
+
+    result = {"since": since_str, "sections": {}}
+    db_path = os.path.join(ROOT_DIR, "data", "mocka_events.db")
+
+    # Guideline/Essence/Registry/Capability の変化イベントを抽出
+    try:
+        import sqlite3 as _sl
+        con = _sl.connect(db_path)
+        con.row_factory = _sl.Row
+        rows = con.execute(
+            """
+            SELECT event_id, when_ts, what_type, title, short_summary, tags
+            FROM events
+            WHERE (when_ts >= ? OR when IS NOT NULL AND when >= ?)
+              AND (
+                   lower(title) LIKE '%guideline%'
+                OR lower(title) LIKE '%essence%'
+                OR lower(title) LIKE '%registry%'
+                OR lower(title) LIKE '%capability%'
+                OR lower(title) LIKE '%todo%'
+                OR lower(title) LIKE '%seal%'
+                OR lower(title) LIKE '%change_done%'
+              )
+            ORDER BY when_ts ASC
+            """,
+            (since_str, since_str),
+        ).fetchall()
+        con.close()
+        events = [dict(r) for r in rows]
+    except Exception as e:
+        events = []
+        result["db_error"] = str(e)
+
+    # セクション別に分類
+    for section in ("guideline", "essence", "registry", "capability", "todo", "seal"):
+        result["sections"][section] = [
+            e for e in events
+            if section in (e.get("title") or "").lower()
+            or section in (e.get("tags") or "").lower()
+        ]
+    result["sections"]["other"] = [
+        e for e in events
+        if not any(
+            s in (e.get("title") or "").lower()
+            for s in ("guideline", "essence", "registry", "capability", "todo", "seal")
+        )
+    ]
+    result["total_events"] = len(events)
+    return jsonify(result)
+
+# ── Knowledge Diff API ここまで ───────────────────────────────────────────────
 
 
 if __name__ == "__main__":

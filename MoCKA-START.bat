@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 chcp 65001 >nul
 set PYTHONUTF8=1
 cd /d C:\Users\sirok\MoCKA
@@ -14,7 +14,7 @@ start /B "" python interface\ping_generator.py
 start /B "" cmd /c "python check_utf8_mandate.py || echo [WARN] UTF-8 check FAILED"
 start /B "" cmd /c "python interface\tech_watcher.py && python interface\risk_scorer.py"
 start /B "" cmd /c "cd /d C:\Users\sirok\MoCKA && PlanningCaliber\workshop\phi-os\ise\ise_periodic_update.bat"
-start /B "" cmd /c "python PlanningCaliber\workshop\mocka-cloudflare\export_for_cloudflare.py && git add data\MOCKA_OVERVIEW.json data\MOCKA_TODO.json data\lever_essence.json data\events_latest.json >nul 2>&1 && git diff --cached --quiet || git commit -m "auto sync" && git push origin main"
+start /B "" cmd /c "python PlanningCaliber\workshop\mocka-cloudflare\sync_watch.py"
 
 REM ============================================================
 REM [PHASE 2] Comet

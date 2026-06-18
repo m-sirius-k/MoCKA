@@ -1,3 +1,7 @@
+import sys
+import io
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 ﻿# drift_predictor.py
 # Phase5-B2: 連続上昇検知対応
 

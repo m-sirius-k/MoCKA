@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import sys
+import io
+if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 """
 structural/phi_dna_migrate.py — PHI Decision DNA β拡張マイグレーション（TODO_212）
 judgement_reason テーブルに 6カラムを追加する。

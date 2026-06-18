@@ -5,6 +5,7 @@ OVERVIEW/TODO/lever_essence を data/ にコピーする。
 MoCKA-START.bat から呼び出す。
 """
 import json, sqlite3, shutil, sys
+from datetime import datetime, timezone
 from pathlib import Path
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -41,11 +42,23 @@ def export_events():
     out.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"[export] events → {out} ({len(rows)} rows)")
 
+def _inject_snapshot_ts(dst: Path):
+    """コピー後のJSONに _snapshot_at フィールドを注入する（正本は変更しない）"""
+    try:
+        data = json.loads(dst.read_text(encoding='utf-8'))
+        if isinstance(data, dict):
+            data['_snapshot_at'] = datetime.now(timezone.utc).isoformat()
+            dst.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+    except Exception as e:
+        print(f"[snapshot_ts] skip {dst.name}: {e}")
+
+
 def copy_files():
     DATA_OUT.mkdir(parents=True, exist_ok=True)
     for src, dst in COPIES:
         if src.exists():
             shutil.copy2(src, dst)
+            _inject_snapshot_ts(dst)
             print(f"[copy] {src.name} → {dst}")
         else:
             print(f"[skip] not found: {src}")

@@ -198,11 +198,23 @@
       "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
       "priority": "低",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_340",
+      "title": "__pycache__配下のコンパイル済みファイルのgit追跡解除",
+      "priority": "低",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_341",
+      "title": "export_for_cloudflare.py 鮮度ズレ解消 — 正本更新の自動反映またはタイムスタンプ明示",
+      "priority": "中",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 13,
-  "state_hash": "2b0b7de68b5b7f9f2c0542831aec54a2c4740f4baf887366d8f3f79fd8d8b363",
-  "generated_at": "2026-06-17T23:42:39.641310+00:00"
+  "revision": 14,
+  "state_hash": "4969c1bbf3d4f6b3375eabd002e55d1c2f0a50aeddb3a122f225a204c50c1138",
+  "generated_at": "2026-06-18T02:07:39.421488+00:00"
 }

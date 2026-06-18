@@ -1,4 +1,4 @@
-﻿"""
+"""
 mocka_caliber_server.py v5
 APIゼロ化版 - Claude Haiku API呼び出しをローカル処理に完全置き換え
 

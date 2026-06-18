@@ -281,6 +281,54 @@ def classify_change(
         "軽微な変更またはノイズ（バージョン/日付/見出しの実質的変化なし）"
 
 
+# ── URL死活監視 (TODO_297) ───────────────────────────────────────────────────
+
+# 連続失敗カウント管理
+_URL_FAIL_COUNTS: dict = {}
+URL_DEAD_THRESHOLD = 3  # 連続3回失敗でDEAD判定
+
+def check_url_alive(sources: list, hashes: dict) -> list:
+    """
+    watch_sources.jsonのURL死活チェック。
+    接続失敗が連続3回でTECH_WATCH_URL_DEADイベント記録+prevention_queue投入。
+    戻り値: DEAD判定されたsource idのリスト
+    """
+    dead_sources = []
+    for src in sources:
+        sid = src["id"]
+        url = src["url"]
+        try:
+            import urllib.request
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "MoCKA-TIC-Watcher/3.0 AliveCheck"}
+            )
+            with urllib.request.urlopen(req, timeout=10) as r:
+                status = r.status
+            if status < 500:
+                _URL_FAIL_COUNTS[sid] = 0
+                continue
+            # 5xx はサーバーエラーとして失敗カウント
+            raise Exception(f"HTTP {status}")
+        except Exception as e:
+            prev = hashes.get(sid, {})
+            fail_count = prev.get("url_fail_count", 0) + 1
+            hashes.setdefault(sid, {})["url_fail_count"] = fail_count
+            print(f"  [URL   ] {src['name']} fail({fail_count}/{URL_DEAD_THRESHOLD}): {str(e)[:60]}")
+            if fail_count >= URL_DEAD_THRESHOLD:
+                dead_sources.append(sid)
+                write_event(
+                    f"TECH_WATCH_URL_DEAD: {src['name']}",
+                    f"URL死活監視: 連続{fail_count}回接続失敗 url={url} err={str(e)[:80]}",
+                    "tic,tech_watcher,url_dead",
+                )
+                push_prevention(src["name"], f"URL死亡検知 ({fail_count}回連続失敗): {url}", url)
+                print(f"           -> prevention_queue投入 (URL_DEAD)")
+            continue
+        # 接続成功: fail_countリセット
+        hashes.setdefault(sid, {})["url_fail_count"] = 0
+    return dead_sources
+
+
 # ── HTTP 取得 ─────────────────────────────────────────────────────────────────
 
 def fetch_content(url: str) -> tuple:
@@ -420,6 +468,12 @@ def run():
     sources = json.loads(SOURCES_PATH.read_text(encoding="utf-8"))["sources"]
     hashes  = load_hashes()
     now     = datetime.datetime.now().isoformat()
+
+    # URL死活チェック (TODO_297)
+    print()
+    print("  [URL alive check]")
+    check_url_alive(sources, hashes)
+    save_hashes(hashes)
 
     print()
     print("=" * 65)

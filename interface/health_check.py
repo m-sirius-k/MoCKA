@@ -112,6 +112,18 @@ HEALTH_CHECKS = {
         "opportunity":     "ping監視によりRelay稼働状況を定量的に把握できる",
         "beta_candidate":  "institutionalized_connection",
     },
+    "env_bom": {
+        "method": "env_bom",
+        "risk":            ".envのBOM付きUTF-8でMOCKA_ENDPOINTがNone化し全接続失敗する",
+        "opportunity":     "BOM早期検知でエンコーディング起因の無音障害を防止できる",
+        "beta_candidate":  "encoding_policy",
+    },
+    "phi_os_audit": {
+        "method": "phi_os_audit",
+        "risk":            "Gate外からのDB直接書き込みはPHI-OS信頼境界を破壊する",
+        "opportunity":     "Gate経由率100%の継続証明でPHI-OS制度的信頼性を確立できる",
+        "beta_candidate":  "governance_integrity",
+    },
 }
 
 
@@ -174,6 +186,71 @@ def check_file_hash(cfg: dict) -> tuple:
     return True, f"変更なし (hash: {h})"
 
 
+def check_phi_os_audit() -> tuple:
+    """
+    PHI-OS Gate定期監査 (TODO_324)
+    Gate経由率100% / Direct Write 0件 / Actor未設定0件 を継続監視する。
+    """
+    db_path = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
+    if not db_path.exists():
+        return True, "DB not found (skip)"
+    try:
+        con = sqlite3.connect(str(db_path))
+
+        # audit_violationsテーブル存在確認
+        tbl = con.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name='audit_violations'"
+        ).fetchone()
+        if not tbl:
+            con.close()
+            return True, "audit_violations table not yet installed (run: python phi_os/audit_trigger.py --install)"
+
+        new_violations = con.execute(
+            "SELECT COUNT(*) FROM audit_violations WHERE status = 'NEW'"
+        ).fetchone()[0]
+
+        total_events = con.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+        gate_events  = con.execute(
+            "SELECT COUNT(*) FROM events WHERE channel_type = 'gate'"
+        ).fetchone()[0]
+        no_actor = con.execute(
+            "SELECT COUNT(*) FROM events WHERE who_actor IS NULL OR who_actor = ''"
+        ).fetchone()[0]
+        con.close()
+
+        gate_rate = (gate_events / total_events * 100) if total_events > 0 else 100
+        issues = []
+        if new_violations > 0:
+            issues.append(f"Direct Write違反 {new_violations}件")
+        if gate_rate < 95:
+            issues.append(f"Gate経由率 {gate_rate:.1f}% (<95%)")
+        if no_actor > 0:
+            issues.append(f"Actor未設定 {no_actor}件")
+
+        if issues:
+            return False, " | ".join(issues) + f" (total={total_events} gate={gate_rate:.1f}%)"
+        return True, (
+            f"Gate経由率{gate_rate:.1f}% Direct-Write 0件 Actor-OK"
+            f" (total={total_events})"
+        )
+    except Exception as e:
+        return False, f"監査エラー: {e}"
+
+
+def check_env_bom() -> tuple:
+    """
+    .envファイルのBOM（U+FEFF）検知 (TODO_296)
+    BOM付きUTF-8でpython-dotenvがキーを認識せずMOCKA_ENDPOINTがNone化した実例対応。
+    """
+    env_path = Path("C:/Users/sirok/MoCKA/.env")
+    if not env_path.exists():
+        return True, ".env not found (skip)"
+    raw = env_path.read_bytes()
+    if raw.startswith(b'\xef\xbb\xbf'):
+        return False, ".envにBOM検出 (BOM付きUTF-8) -> MOCKA_ENDPOINTがNone化するリスク"
+    return True, ".env BOMなし OK"
+
+
 def check_relay_dom(cfg: dict) -> tuple:
     """Relay拡張の生存確認: app.py /relay/status を参照（last_ping が stale_seconds 以内ならPASS）"""
     import urllib.request
@@ -226,6 +303,10 @@ def run_check(name: str, cfg: dict) -> dict:
             ok, detail = check_file_hash(cfg)
         elif method == "relay_dom":
             ok, detail = check_relay_dom(cfg)
+        elif method == "env_bom":
+            ok, detail = check_env_bom()
+        elif method == "phi_os_audit":
+            ok, detail = check_phi_os_audit()
         else:
             ok, detail = False, f"unknown method: {method}"
     except Exception as e:

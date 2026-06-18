@@ -236,7 +236,7 @@ TOOLS = [
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_todo","description":"MOCKA_TODO.json を返す。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
-    {"name":"mocka_update_todo","description":"TODO_IDのstatusを更新する","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string"},"note":{"type":"string"}},"required":["id","status"]}},
+    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/noteを個別に更新可。未指定フィールドは既存値を保持。completedに移動済みのTODOは対象外。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"}},"required":["id"]}},
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
@@ -326,15 +326,19 @@ def execute_tool(name, args):
         elif name == "mocka_update_todo":
             if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
             todo_id    = args.get("id", "")
-            new_status = args.get("status", "")
+            new_status = args.get("status", "")   # 空文字 = 未指定 → 既存値を保持
             note       = args.get("note", "")
             data = load_todo()
             updated = False
+            effective_status = ""
             for item in data.get("todos", []):
                 if item.get("id") == todo_id:
-                    item["status"] = new_status
-                    if note: item["note"] = note
+                    if new_status:                 # 指定された場合のみ更新（PATCH動作）
+                        item["status"] = new_status
+                    if note:                       # 指定された場合のみ更新（PATCH動作）
+                        item["note"] = note
                     item["updated_at"] = datetime.datetime.now().isoformat()
+                    effective_status = item.get("status", "")
                     if new_status == "完了":
                         item["completed_at"] = datetime.date.today().isoformat()
                         data.setdefault("completed", []).append(item)
@@ -343,8 +347,8 @@ def execute_tool(name, args):
                     break
             if not updated: return json.dumps({"error": f"{todo_id} not found"})
             save_todo(data)
-            auto_log(name, args, f"updated {todo_id} -> {new_status}")
-            return json.dumps({"status": "ok", "id": todo_id, "new_status": new_status}, ensure_ascii=False)
+            auto_log(name, args, f"updated {todo_id} -> {effective_status}")
+            return json.dumps({"status": "ok", "id": todo_id, "new_status": effective_status}, ensure_ascii=False)
 
         elif name == "mocka_list_events":
             events = read_events(int(args.get("n", 20)))
