@@ -266,14 +266,15 @@
     {
       "id": "TODO_241",
       "title": "PR-OS Phase4: MoCKA Command Center統合",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "低",
       "category": "PR-OS",
       "description": "PR-OS Command CenterをMoCKA既存Command Centerと統合。mocka_events.dbへの公開後フィードバック記録・双方向データフロー完成。",
       "assigned_to": "Claude",
-      "note": "",
+      "note": "mocka_bridge E2E経路確認済み。PR-OS UI(localhost:8740)起動にuvicorn未インストールでブロック。pip install uvicorn後に再確認が必要。",
       "reference_event": "",
-      "created_at": "2026-06-06T14:20:13.628642"
+      "created_at": "2026-06-06T14:20:13.628642",
+      "updated_at": "2026-06-18T18:36:30.818391"
     },
     {
       "id": "TODO_242",
@@ -286,18 +287,6 @@
       "note": "",
       "reference_event": "",
       "created_at": "2026-06-06T14:38:03.372496"
-    },
-    {
-      "id": "TODO_243",
-      "title": "PR-OS: mocka_bridge.py MoCKA統合動作確認",
-      "status": "未着手",
-      "priority": "中",
-      "category": "PR-OS",
-      "description": "mocka_bridge.pyの双方向統合を実稼働確認。mocka_write_event→AI Gate受付ログ、公開後フィードバック→mocka_events.db記録のフロー検証。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "",
-      "created_at": "2026-06-06T14:38:08.091811"
     },
     {
       "id": "TODO_244",
@@ -4675,6 +4664,20 @@
       "reference_event": "",
       "created_at": "2026-06-09T20:28:49.895445",
       "updated_at": "2026-06-18T18:33:14.411904",
+      "completed_at": "2026-06-18"
+    },
+    {
+      "id": "TODO_243",
+      "title": "PR-OS: mocka_bridge.py MoCKA統合動作確認",
+      "status": "完了",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "mocka_bridge.pyの双方向統合を実稼働確認。mocka_write_event→AI Gate受付ログ、公開後フィードバック→mocka_events.db記録のフロー検証。",
+      "assigned_to": "Claude",
+      "note": "feedback_publish→_post_to_gate→events.db E2E実証済み。E20260618_098 (E20260618_099)",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:38:08.091811",
+      "updated_at": "2026-06-18T18:36:28.484906",
       "completed_at": "2026-06-18"
     }
   ],
