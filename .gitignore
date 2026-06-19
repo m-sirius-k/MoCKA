@@ -47,3 +47,6 @@ docs/internal/
 # 大容量辞書データ（GitHub 100MB制限超過 / ローカル管理）
 docs/reference/semantic_dictionary/raw/all_terms.json
 docs/reference/semantic_dictionary/raw/all_terms.md
+
+# バックアップファイル（誤コミット防止）
+*.bak_*
