@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-18",
+    "updated": "2026-06-19",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -348,6 +348,18 @@
       "note": "E20260617_122の教訓記録（完了報告と実態不一致）を受けて、TODO_270から実機疎通テスト部分を新規TODOとして切り出し。TODO_270自体は本実装完了として完了扱いのまま据え置き。",
       "reference_event": "E20260617_122",
       "created_at": "2026-06-17T19:06:21.003145"
+    },
+    {
+      "id": "TODO_350",
+      "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
+      "status": "進行中",
+      "priority": "最高",
+      "category": "Relay/MoCKA-Relay統合",
+      "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
+      "assigned_to": "Claude",
+      "note": "Step1完了: MoCKA_Relay_handoff_spec_v1.md確定（##見出し構造による丸ごとブロック除外方式に変更、個別文言パターン依存を廃止）。Step2: 拡張機能要件定義書（4機能の仕様・適用範囲）作成へ。Step3: アンインストール+storage削除。Step4: 仕様書を基準にゼロから再構築。",
+      "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
+      "created_at": "2026-06-19T17:49:53.685053"
     }
   ],
   "completed": [
