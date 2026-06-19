@@ -4,6 +4,8 @@
 // v4.3: LB_001連番TODO番号体系 + RELAY_COMPLETE_BY_NUM / RELAY_GET_TODO_LIST 追加
 // 引き継ぎ機能 (getHandoffPacket / endSession / startSession) は変更なし
 
+importScripts('relay-utils.js');
+
 const KEYS = {
   SESSIONS:        'relay_sessions',
   CURRENT:         'relay_current',
@@ -565,6 +567,37 @@ function inferWorkDescription(todos) {
   return '一般作業';
 }
 
+// ─── Stale Storage Cleaning ───────────────────────────────────────────────────
+
+async function cleanStaleStorage() {
+  const FLAG_KEY = 'relay_stale_cleaned_v1';
+  try {
+    const flagStore = await chrome.storage.local.get(FLAG_KEY);
+    if (flagStore[FLAG_KEY]) return; // already run
+
+    const stored = await chrome.storage.local.get(KEYS.TODOS);
+    const todos  = stored[KEYS.TODOS] || [];
+
+    const activeBefore = todos.filter(t => t.status === 'active').length;
+    let rejectedCount  = 0;
+
+    const cleaned = todos.map(t => {
+      if (t.status === 'active' && !isValidTodoContent(t.text)) {
+        rejectedCount++;
+        return { ...t, status: 'rejected_stale', rejected_at: Date.now() };
+      }
+      return t;
+    });
+
+    const activeAfter = activeBefore - rejectedCount;
+
+    await chrome.storage.local.set({ [KEYS.TODOS]: cleaned, [FLAG_KEY]: true });
+    console.log(`[Relay] cleanStaleStorage: active_before=${activeBefore} rejected_stale=${rejectedCount} active_after=${activeAfter}`);
+  } catch (err) {
+    console.error('[Relay] cleanStaleStorage error:', err);
+  }
+}
+
 // ─── TODO Management (v4.3: LB_001連番) ──────────────────────────────────────
 
 // 次のLB番号を発行する
@@ -734,7 +767,7 @@ async function getHandoffPacket() {
       ...(isPro ? ['relay_logbook_history'] : []),
     ]);
     const current     = stored[KEYS.CURRENT]  || {};
-    const activeTodos = (stored[KEYS.TODOS]   || []).filter(t => t.status === 'active');
+    const activeTodos = (stored[KEYS.TODOS]   || []).filter(t => t.status === 'active' && isValidTodoContent(t.text));
     const sessions    = stored[KEYS.SESSIONS] || [];
     const logHistory  = isPro ? (stored.relay_logbook_history || []) : [];
 
@@ -1305,3 +1338,5 @@ Rules:
       return { error: `Unknown type: ${msg.type}` };
   }
 }
+
+cleanStaleStorage();

@@ -460,6 +460,8 @@ function extractTodos(text) {
     if (/^\d+[\+\-\*\/]\s*\d/.test(trimmed)) continue;
     // ★ Reject: 番号付きリスト行（1. 2. 3. 形式 — 手順・説明文の誤爆防止）
     if (/^\d+\.\s+.{5,}/.test(trimmed)) continue;
+    // ★ Reject: 番号付きリスト行（1) 2) 3) 形式）
+    if (/^\d+\)\s*.{5,}/.test(trimmed)) continue;
     // ★ Reject: **太字** マークダウン見出し的な行
     if (/^\*\*[^*]+\*\*[：:]\s*/.test(trimmed)) continue;
     // ★ Reject: 「いつ」「何を」等のパケットフィールド行
