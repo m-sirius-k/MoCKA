@@ -44,6 +44,12 @@ def _high_risk_areas() -> list[dict]:
     by_component: dict[tuple, dict] = {}
 
     for row in rows:
+        # 自己参照行（同一イベントが自分自身を再発元として記録）を除外
+        if row.get("excluded", "false").lower() == "true":
+            continue
+        if (row.get("current_event_id", "") and
+                row.get("current_event_id") == row.get("original_event_id")):
+            continue
         component = row.get("component", "unknown")
         what_type = row.get("what_type", "unknown")
         key = (component, what_type)
