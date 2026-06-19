@@ -99,7 +99,9 @@ def read_events(
         return _read_events_csv(limit=limit)
 
     conn = _get_conn()
-    where_clauses = []
+    where_clauses = [
+        "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
+    ]
     params = []
 
     if what_type:
@@ -109,7 +111,7 @@ def read_events(
         where_clauses.append("risk_level = ?")
         params.append(risk_level)
 
-    where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
+    where_sql = f"WHERE {' AND '.join(where_clauses)}"
     limit_sql  = f"LIMIT {limit}" if limit else ""
     # order_col に "rowid" を指定すると挿入順ソートになり when_ts 形式混在の影響を受けない
     safe_col   = order_col if order_col in ("when_ts", "rowid", "event_id") else "when_ts"

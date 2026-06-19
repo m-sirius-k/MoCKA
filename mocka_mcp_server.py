@@ -79,10 +79,11 @@ def _db_read_events(n=None):
     try:
         con = _get_db()
         cur = con.cursor()
+        integrity_filter = "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
         if n:
-            cur.execute("SELECT * FROM events ORDER BY rowid DESC LIMIT ?", (n,))
+            cur.execute(f"SELECT * FROM events WHERE {integrity_filter} ORDER BY rowid DESC LIMIT ?", (n,))
         else:
-            cur.execute("SELECT * FROM events ORDER BY rowid")
+            cur.execute(f"SELECT * FROM events WHERE {integrity_filter} ORDER BY rowid")
         cols = [d[0] for d in cur.description]
         rows = []
         for r in cur.fetchall():
@@ -549,10 +550,12 @@ def execute_tool(name, args):
             limit = int(args.get("limit", 10))
             conn = _get_db()
             cur = conn.cursor()
+            integrity_filter = "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
             if query:
                 cur.execute(
                     "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
-                    "WHERE (LOWER(risk_level) IN ('incident','danger','critical','high')) "
+                    f"WHERE {integrity_filter} "
+                    "AND (LOWER(risk_level) IN ('incident','danger','critical','high')) "
                     "AND (title LIKE ? OR short_summary LIKE ? OR event_id LIKE ?) "
                     "ORDER BY when_ts DESC LIMIT ?",
                     (f"%{query}%", f"%{query}%", f"%{query}%", limit)
@@ -560,7 +563,8 @@ def execute_tool(name, args):
             else:
                 cur.execute(
                     "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
-                    "WHERE LOWER(risk_level) IN ('incident','danger','critical','high') "
+                    f"WHERE {integrity_filter} "
+                    "AND LOWER(risk_level) IN ('incident','danger','critical','high') "
                     "ORDER BY when_ts DESC LIMIT ?",
                     (limit,)
                 )
