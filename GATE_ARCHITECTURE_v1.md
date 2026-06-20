@@ -585,6 +585,30 @@ Gate違反とは、以下のいずれかに該当する行為である。
 
 ---
 
+## 第7章 Phase5-2 Event Integrity Frameworkとの対応
+
+Gate Policy（誰がeventsへ書き込めるか）とEvent Integrity（記録後に
+改ざん・欠落が無いか）は独立した検証軸である。詳細はEVENT_INTEGRITY_v1.md
+を参照。対応関係は以下の通り。
+
+| events._source値 | Gate Policy上の分類 | Event Integrityの適用 |
+|---|---|---|
+| live | Gate経由（即時） | sign_event()で署名・チェーン適用（通常経路） |
+| buffered | Gate経由（バッチ） | sign_event()で署名・チェーン適用（通常経路と同一ロジック） |
+| direct_allowed:{channel} | 許可Direct Write（exempt） | db_helper.write_event()経由でsign_event()適用 |
+| direct_violation | 制度違反（violation） | 署名自体は適用される（記録から除外しない）。
+  Gate Policy上は違反として監査されるが、Integrity層は「違反であっても記録の
+  完全性は保証する」という別軸の原則に立つ |
+| legacy / csv_legacy / csv_migration / new / gpt_handoff_20260509 / caliber_server | Gate確立前の歴史的バックログ | `scripts/migrate_event_integrity.py`による遡及署名でのみチェーンに組み込まれる |
+
+**要点:** Integrity層の署名・検証ロジックは`_source`値で分岐しない。
+Gate Policyが「書き込みを許可するか」を決め、Integrityは「許可の有無に
+関わらず、書き込まれた内容が後から改ざんされていないか」を保証する。
+2層は互いに代替不可能であり、両方が揃って初めて
+「全イベントが制度的に管理される」が成立する。
+
+---
+
 ## 付記
 
 本文書はMoCKA Phase 4 制度設計フェーズの成果物として策定された。  

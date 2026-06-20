@@ -52,3 +52,35 @@ def tag_source(channel: str) -> str:
     if is_allowed_direct_channel(channel):
         return f"direct_allowed:{channel}"
     return "direct_violation"
+
+
+# ============================================================
+# Phase5-1.5 Schema Integrity Hardening
+# events._source列のCHECK制約・Schema Auditが参照する単一の真実。
+# SQLite・Python(tag_source)・このリストの3者は常に完全一致させること。
+# ============================================================
+
+# Gate確立後（2026-06-16以降）に新規書き込みされ得る値
+GATE_SOURCE_VALUES = frozenset(
+    {"live", "buffered", "direct_violation"}
+    | {f"direct_allowed:{ch}" for ch in ALLOWED_DIRECT_CHANNELS}
+)
+
+# Gate確立以前の歴史的バックログ専用ラベル（凍結済み・新規書き込み禁止）。
+# data/mocka_events.db移行時(2026-06-16)に実在が確認された値のみを列挙する。
+LEGACY_SOURCE_VALUES = frozenset({
+    "legacy",
+    "csv_legacy",
+    "csv_migration",
+    "new",
+    "gpt_handoff_20260509",
+    "caliber_server",
+})
+
+# CHECK制約・Schema Auditが許可する_source全許可値
+ALLOWED_SOURCE_VALUES = frozenset(GATE_SOURCE_VALUES | LEGACY_SOURCE_VALUES)
+
+
+def is_allowed_source_value(value: str) -> bool:
+    """events._source列の値がGate Policyと一致する許可値かどうかを判定する"""
+    return value in ALLOWED_SOURCE_VALUES

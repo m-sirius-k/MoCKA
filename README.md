@@ -1,4 +1,4 @@
-﻿# MoCKA — Model of Cybernetic Knowledge Architecture
+# MoCKA — Model of Cybernetic Knowledge Architecture
 
 <p align="center">
   <a href="docs/images/mocka_overview.svg">
@@ -469,6 +469,37 @@ python learning_kernel/learning_queue_test.py
 
 See [LEARNING_KERNEL.md](LEARNING_KERNEL.md) for the full design,
 including rollback design and the future autonomous-evolution concept.
+
+---
+
+## Event Integrity Framework (Phase5-2)
+
+Phase5-1/5-1.5 guaranteed that every event passes through the Gate and that
+`events._source` matches Gate Policy (who is allowed to write). Phase5-2 adds
+the complementary guarantee: that recorded events have not been tampered with
+or lost afterward.
+
+- `phi_os/integrity.py` — Event Signature + SHA256 Hash Chain + Verification +
+  Recovery Support (diagnosis only, no auto-repair)
+- `event_signatures` table — 1:1 with `events`, holds `seq`/`previous_hash`/
+  `current_hash`/`signature_version`/`algorithm`
+- `GET /api/integrity/verify`, `GET /api/integrity/diagnose`,
+  `GET /api/integrity/baseline` — Verification API (`phi_os/integrity_routes.py`)
+- `python scripts/verify_integrity.py [--diagnose]` — CLI verification, no
+  Flask server required
+- `python scripts/migrate_event_integrity.py` — backfills signatures for
+  existing events
+- `python scripts/seal_baseline.py [--tag]` — writes
+  `data/integrity_baseline.json` and creates the
+  `mocka-baseline-v1.0-event-integrity` git tag
+
+```bash
+python -m pytest phi_os/tests/test_integrity.py -v
+```
+
+See [EVENT_INTEGRITY_v1.md](EVENT_INTEGRITY_v1.md) for the full design and
+the Gate Policy <-> Integrity correspondence table in
+[GATE_ARCHITECTURE_v1.md](GATE_ARCHITECTURE_v1.md).
 
 ---
 
@@ -1041,6 +1072,28 @@ python learning_kernel/learning_queue_test.py
 
 詳細・rollback設計・将来の自律進化構想は
 [LEARNING_KERNEL.md](LEARNING_KERNEL.md) を参照。
+
+---
+
+## Event Integrity Framework（Phase5-2）
+
+Phase5-1/5-1.5は「全イベントがGateを経由し、_sourceがGate Policyと一致する」
+（誰が書いたか）を保証した。Phase5-2はその先の「記録後に改ざん・欠落が無いか」
+を保証する。
+
+- `phi_os/integrity.py` — Event Signature + SHA256 Hash Chain + Verification +
+  Recovery Support（診断のみ、自動修復は行わない）
+- `event_signatures`テーブル — eventsと1:1。seq/previous_hash/current_hash/
+  signature_version/algorithmを保持
+- `GET /api/integrity/verify`, `/diagnose`, `/baseline` — Verification API
+  （`phi_os/integrity_routes.py`）
+- `python scripts/verify_integrity.py [--diagnose]` — Flask起動不要のCLI検証
+- `python scripts/migrate_event_integrity.py` — 既存イベントへの遡及署名
+- `python scripts/seal_baseline.py [--tag]` — `data/integrity_baseline.json`
+  生成 + `mocka-baseline-v1.0-event-integrity` タグ作成
+
+詳細は[EVENT_INTEGRITY_v1.md](EVENT_INTEGRITY_v1.md)、Gate Policyとの対応表は
+[GATE_ARCHITECTURE_v1.md](GATE_ARCHITECTURE_v1.md)を参照。
 
 ---
 

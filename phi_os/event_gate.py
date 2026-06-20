@@ -3,7 +3,8 @@
 # v2: Local Buffer + async flush対応のbatch ingestion追加（TODO_347）
 from flask import Blueprint, request, jsonify
 from .gate_validator import validate, validate_operational
-import sqlite3, hashlib, json, time, secrets, sys
+from . import integrity
+import sqlite3, time, secrets, sys
 from datetime import datetime, date, timezone
 from pathlib import Path
 
@@ -37,24 +38,6 @@ def _next_event_id() -> str:
     return f'E{d}_{micros_of_day:09d}{secrets.token_hex(2)}'
 
 
-def _hash(payload: dict) -> str:
-    canon = json.dumps(payload, ensure_ascii=False, sort_keys=True)
-    return hashlib.sha256(canon.encode('utf-8')).hexdigest()[:16]
-
-
-def _last_hash() -> str:
-    conn = _get_conn()
-    try:
-        row = conn.execute(
-            'SELECT trace_id FROM events ORDER BY rowid DESC LIMIT 1'
-        ).fetchone()
-        return row['trace_id'] if row and row['trace_id'] else ''
-    except Exception:
-        return ''
-    finally:
-        conn.close()
-
-
 def _write(payload: dict, conn=None) -> None:
     # GATEペイロードを実DBスキーマ列にマッピング
     # title/descriptionはgovernance write(what_title/description)と
@@ -75,8 +58,6 @@ def _write(payload: dict, conn=None) -> None:
         'short_summary':   payload.get('description') or payload.get('short_summary', ''),
         'session_id':      payload.get('who_session') or payload.get('session_id', ''),
         '_source':         payload.get('event_source', 'live'),
-        'trace_id':        payload.get('event_hash', ''),
-        'related_event_id':payload.get('prev_hash', ''),
         'free_note': '|'.join(filter(None, [
             payload.get('tags', '') or payload.get('free_note', ''),
             f"who_role={payload.get('who_role','')}",
@@ -99,6 +80,13 @@ def _write(payload: dict, conn=None) -> None:
         conn.execute(
             f'INSERT OR IGNORE INTO events ({",".join(cols)}) VALUES ({placeholders})',
             vals
+        )
+        # Phase5-2: 署名・ハッシュチェーン適用（trace_id/related_event_idは
+        # 後方互換のためsignatureのcurrent_hash/previous_hashを反映する）
+        sig = integrity.sign_event(conn, row)
+        conn.execute(
+            'UPDATE events SET trace_id = ?, related_event_id = ? WHERE event_id = ?',
+            (sig['current_hash'], sig['previous_hash'], row['event_id'])
         )
         if owns_conn:
             conn.commit()
@@ -131,8 +119,6 @@ def receive_event():
     payload['event_id'] = _next_event_id()
     payload['when_ts'] = datetime.now(timezone.utc).isoformat()
     payload['event_source'] = 'live'
-    payload['event_hash'] = _hash(payload)
-    payload['prev_hash'] = _last_hash()
 
     _write(payload)
 
@@ -181,8 +167,6 @@ def receive_event_batch():
             ev['event_id'] = eid
             ev['when_ts'] = ev.get('when_ts') or ev.get('when') or datetime.now(timezone.utc).isoformat()
             ev['event_source'] = ev.get('event_source', 'buffered')
-            ev['event_hash'] = _hash(ev)
-            ev['prev_hash'] = _last_hash()
 
             _write(ev, conn=conn)
 

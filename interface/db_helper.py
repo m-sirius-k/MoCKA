@@ -16,6 +16,7 @@ import sqlite3
 import csv
 import os
 import re
+import sys
 import time
 import secrets
 from datetime import datetime, timezone
@@ -171,6 +172,17 @@ def write_event(row: dict, channel: str = None) -> bool:
             f"VALUES ({', '.join(['?'] * len(db_row))})",
             list(db_row.values())
         )
+        # Phase5-2: Direct Write経由のイベントも署名・ハッシュチェーン対象にする
+        try:
+            sys.path.insert(0, str(MOCKA_ROOT / "phi_os"))
+            from integrity import sign_event
+            sig = sign_event(conn, db_row)
+            conn.execute(
+                "UPDATE events SET trace_id = ?, related_event_id = ? WHERE event_id = ?",
+                (sig["current_hash"], sig["previous_hash"], db_row["event_id"])
+            )
+        except Exception as e:
+            print(f"[db_helper] integrity署名エラー（イベント書き込みは成功済み）: {e}")
         conn.commit()
         conn.close()
     except Exception as e:

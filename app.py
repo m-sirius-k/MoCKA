@@ -60,6 +60,8 @@ from interface.commission_manager import commission_bp
 from interface.context_composer import context_bp
 # [PHI-OS GATE v1 2026-06-16] Phase 3 — EVENT GATE統合
 from phi_os.event_gate import gate_bp
+# [Phase5-2 2026-06-20] Event Integrity Framework — Verification API統合
+from phi_os.integrity_routes import integrity_bp
 app.register_blueprint(ai_session_bp)
 app.register_blueprint(handshake_bp)
 app.register_blueprint(dashboard_bp)
@@ -69,6 +71,7 @@ app.register_blueprint(mentor_bp)
 app.register_blueprint(commission_bp)
 app.register_blueprint(context_bp)
 app.register_blueprint(gate_bp)
+app.register_blueprint(integrity_bp)
 
 # ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)
@@ -4049,4 +4052,9 @@ if __name__ == "__main__":
     print(f"Directory: {ROOT_DIR}")
     ensure_dirs()
     # ensure_events_csv() → CSV廃止済み。SQLiteはdb_helperが自動初期化。
+    try:
+        from schema_audit import enforce as _schema_audit_enforce
+        _schema_audit_enforce()
+    except Exception as e:
+        print(f"[schema_audit] 起動時チェック失敗（処理は継続）: {e}")
     app.run(host="127.0.0.1", port=5000, debug=False)
