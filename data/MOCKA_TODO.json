@@ -394,9 +394,10 @@
       "category": "Context Runtime/HAB/制度設計",
       "description": "きむら博士とClaude間の合意による歯止め。HABの実体は新規開発物ではなく、既存のContext Runtime+CALIBERを中心とする上位接続層である、という整理が現時点で最も整合的。ただしこれを制度文書（ARCHITECTURE_REGISTRY.json）に固定するのは、Context Runtimeが「生きた制度状態」として運用できることを段階的に確認した後にすべき。\n\n確定順序:\n1. WorkingContext Live Update接続 → 完了(TODO_348)\n2. Snapshot Runtime有効化 → 完了(TODO_348)\n3. Event Runtime本体接続 → 未着手\n4. Context Runtimeの制度的位置づけ監査 → 未着手（3完了後のみ着手可）\n5. HAB正式定義書作成 → 未着手（4完了後のみ着手可）\n6. ARCHITECTURE_REGISTRY更新 → 未着手（5完了後のみ着手可）\n\nリスク: 後続セッション（くろ子/GPT/他AI）が「もう動いているなら定義書だけ先に書いておこう」と前のめりになり、3が未完のまま5・6に着手する可能性がある。これを防ぐためのTODOとして明示登録。",
       "assigned_to": "きむら博士+Claude Chat（制度監査）",
-      "note": "【歯止め】3(Event Runtime本体接続)が完了するまで、5(HAB正式定義書)・6(ARCHITECTURE_REGISTRY更新)には絶対に着手しないこと。",
+      "note": "【歯止め】3(Event Runtime本体接続)が完了するまで、5(HAB正式定義書)・6(ARCHITECTURE_REGISTRY更新)には絶対に着手しないこと。\n\n【2026-06-21 DANGER監査追記】P3着手前にCOMMAND CENTER matcher_resultがverdict=DANGER(score=1.0)を返したため調査実施。詳細はE20260621_940325153cf6f（Decision Record）参照。\n\n確定事項:\n1. DANGERは誤警報ではなく、event_id重複事故(E20260411系)の制度記憶。誤警報率50%(2件中1件)。\n2. P3は危険作業だが禁止ではない。\n3. 触ってはいけない場所=next_event_id()（event_id採番ロジック）。触ってよい場所=既存イベント経路の読取/Context Runtime接続。\n4. P3の受入試験に「当日イベント重複ゼロ確認」を追加すること。次回P3指示書作成時、この4点を必ず反映する。",
       "reference_event": "E20260621_52338111904aa",
-      "created_at": "2026-06-21T07:29:11.545702"
+      "created_at": "2026-06-21T07:29:11.545702",
+      "updated_at": "2026-06-21T07:35:50.453888"
     }
   ],
   "completed": [
@@ -4735,5 +4736,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-20T22:35:24.309813+00:00"
+  "_snapshot_at": "2026-06-20T22:45:28.208236+00:00"
 }
