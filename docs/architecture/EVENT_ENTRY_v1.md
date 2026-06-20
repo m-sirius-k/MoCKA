@@ -42,6 +42,23 @@ migration / restore / recovery）に該当する場合のみ、`db_helper.write_
 であり、Unified Event Entryと同じ整合性保証を提供する。これ以外のDirect Write
 （channel未指定・未許可channel）は `_source='direct_violation'` として監査対象になる。
 
+## Integrity Framework保証範囲（Phase5-2.2）
+
+`events` テーブルの全行は、記録された時期によって3つの層に分かれる。
+監査・障害対応にあたっては、この3層を区別して扱うこと（同一の保証を期待してはならない）。
+
+| 層 | 期間 | 保証内容 | event_signatures |
+|---|---|---|---|
+| **Historical Archive**（Gate導入前） | 〜2026-06-16（`GATE_LAUNCH_DATE`） | 5W1H記録のみ。Validation/Signature/Hash Chainの保証なし。`/api/gate/audit`の`legacy_events`として監査対象外 | 原則なし（11,739件） |
+| **Gate Managed Records**（Gate導入後・Integrity導入前） | 2026-06-16 〜 Phase5-2導入（integrity.sign_event追加）まで | 唯一の保存経路(Gate)を経由した記録であることは保証されるが、署名・ハッシュチェーンは事後付与（`migrate_event_integrity.py`によるバックフィル対象） | 移行時に一括付与済み |
+| **Integrity Protected Records**（Integrity導入後・現行） | Phase5-2導入以降 | Validation→Gate Policy→**Signature→Hash Chain→Integrity Registration**→Commitが書き込み時点で同一トランザクション内に完了。事後バックフィル不要 | 書き込み時に同時生成 |
+
+**例外**: 2026-06-20 08:00〜08:23 UTCの間、Phase5-2.1コード適用後もWindows上の
+旧プロセス残留（後述）により14件のIntegrity Protected Records対象イベントが
+一時的に未署名で記録された。Phase5-2.2で個別バックフィル済み（`data/integrity_baseline.json`
+の`phase5_2_2_targeted_backfill`参照）。これは運用上の一過性の事象であり、
+Integrity Protected Records層の設計保証そのものを変更するものではない。
+
 ## 関連ファイル
 
 - `phi_os/event_gate.py` — `process_event()`（Unified Event Entry本体）

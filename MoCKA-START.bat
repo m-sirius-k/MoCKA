@@ -13,6 +13,21 @@ powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='py
 timeout /t 1 /nobreak > nul
 
 REM ============================================================
+REM [PHASE 0.6] Pre-launch port audit (Phase5-2.2 TODO: prevent
+REM stale process / new process co-listening on same port via
+REM Windows SO_REUSEADDR, which silently routes requests to old
+REM unpatched code after a restart)
+REM ============================================================
+echo [PHASE 0.6] Auditing ports 5000/5002/5679 for stale listeners...
+for %%P in (5000 5002 5679) do (
+  for /f "tokens=5" %%a in ('netstat -ano ^| findstr /R /C:":%%P .*LISTENING"') do (
+    echo [PHASE 0.6] Stopping stale process on port %%P PID=%%a
+    taskkill /F /PID %%a >nul 2>&1
+  )
+)
+timeout /t 1 /nobreak > nul
+
+REM ============================================================
 REM [PHASE 1] Background jobs
 REM ============================================================
 echo [PHASE 1] Background jobs launching...
@@ -50,6 +65,13 @@ wt -w 0 ^
 ; new-tab --title "HEALTH-CHECK"    --tabColor "#5f5f00" cmd /k "cd /d C:\Users\sirok\MoCKA && timeout /t 5 /nobreak > nul && python -X utf8 interface/health_check.py && pause" ^
 ; new-tab --title "BEE-DAILY"       --tabColor "#005f5f" cmd /k "cd /d C:\Users\sirok\MoCKA && timeout /t 5 /nobreak > nul && python -X utf8 structural/bee.py --daily && pause" ^
 ; new-tab --title "LIVING-ROOM"     --tabColor "#3a1e5f" cmd /k "cd /d C:\Users\sirok\MoCKA && python -X utf8 living_room/hub.py"
+
+REM ============================================================
+REM [PHASE 3.5] Post-launch duplicate-PID self-check (Phase5-2.2)
+REM ============================================================
+timeout /t 8 /nobreak > nul
+echo [PHASE 3.5] Verifying no duplicate PIDs on ports 5000/5002/5679...
+powershell -NoProfile -Command "$ports=5000,5002,5679; $dup=$false; foreach($p in $ports){ $owners = Get-NetTCPConnection -LocalPort $p -State Listen -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique; if(($owners | Measure-Object).Count -gt 1){ Write-Host \"[WARN] Port $p has multiple listeners: $($owners -join ',')\"; $dup=$true } }; if(-not $dup){ Write-Host '[OK] No duplicate PIDs detected on 5000/5002/5679' }"
 
 REM ============================================================
 REM [PHASE 4] Browser
