@@ -387,19 +387,6 @@
       "created_at": "2026-06-21T07:28:58.576627"
     },
     {
-      "id": "TODO_349",
-      "title": "[歯止め] HAB正式定義書/ARCHITECTURE_REGISTRY更新はEvent Runtime本体接続完了まで着手禁止",
-      "status": "解除（3完了済み）",
-      "priority": "高",
-      "category": "Context Runtime/HAB/制度設計",
-      "description": "きむら博士とClaude間の合意による歯止め。HABの実体は新規開発物ではなく、既存のContext Runtime+CALIBERを中心とする上位接続層である、という整理が現時点で最も整合的。ただしこれを制度文書（ARCHITECTURE_REGISTRY.json）に固定するのは、Context Runtimeが「生きた制度状態」として運用できることを段階的に確認した後にすべき。\n\n確定順序:\n1. WorkingContext Live Update接続 → 完了(TODO_348)\n2. Snapshot Runtime有効化 → 完了(TODO_348)\n3. Event Runtime本体接続 → 未着手\n4. Context Runtimeの制度的位置づけ監査 → 未着手（3完了後のみ着手可）\n5. HAB正式定義書作成 → 未着手（4完了後のみ着手可）\n6. ARCHITECTURE_REGISTRY更新 → 未着手（5完了後のみ着手可）\n\nリスク: 後続セッション（くろ子/GPT/他AI）が「もう動いているなら定義書だけ先に書いておこう」と前のめりになり、3が未完のまま5・6に着手する可能性がある。これを防ぐためのTODOとして明示登録。",
-      "assigned_to": "きむら博士+Claude Chat（制度監査）",
-      "note": "【5番完了】HAB正式定義書v1.0作成完了。CHANGE_DONE: E20260621_506685020de12 / mocka_seal sha256: a45807bb...\n\n確定内容: HAB = 4層統合ContextRuntime（HAB└ContextRuntimeの親子分割構造は否定）。新規開発要素ゼロ、既存実装(context_runtime.py等)への正式名称付与のみ。責務の境界明確化（event_id採番/CommandCenter/Relay/Orchestraとの区別）・DANGER監査からの不可侵事項(next_event_id())を正式文書に明記済み。\n\n【次工程】6番（ARCHITECTURE_REGISTRY更新）— HAB定義書第8節に2方式の選択肢を記載済み。きむら博士の判断待ち。\n\n【経緯】1(WorkingContext)→2(Snapshot)→3(EventRuntime)→4(制度的位置づけ監査=TODO_352)→5(本HAB定義書)の順で完了。",
-      "reference_event": "E20260621_52338111904aa",
-      "created_at": "2026-06-21T07:29:11.545702",
-      "updated_at": "2026-06-21T08:02:00.920109"
-    },
-    {
       "id": "TODO_351",
       "title": "[完了] P3: Event Runtime本体接続",
       "status": "完了",
@@ -4755,6 +4742,20 @@
       "created_at": "2026-06-21T07:58:19.507818",
       "updated_at": "2026-06-21T08:00:19.810205",
       "completed_at": "2026-06-21"
+    },
+    {
+      "id": "TODO_349",
+      "title": "[歯止め] HAB正式定義書/ARCHITECTURE_REGISTRY更新はEvent Runtime本体接続完了まで着手禁止",
+      "status": "完了",
+      "priority": "高",
+      "category": "Context Runtime/HAB/制度設計",
+      "description": "きむら博士とClaude間の合意による歯止め。HABの実体は新規開発物ではなく、既存のContext Runtime+CALIBERを中心とする上位接続層である、という整理が現時点で最も整合的。ただしこれを制度文書（ARCHITECTURE_REGISTRY.json）に固定するのは、Context Runtimeが「生きた制度状態」として運用できることを段階的に確認した後にすべき。\n\n確定順序:\n1. WorkingContext Live Update接続 → 完了(TODO_348)\n2. Snapshot Runtime有効化 → 完了(TODO_348)\n3. Event Runtime本体接続 → 未着手\n4. Context Runtimeの制度的位置づけ監査 → 未着手（3完了後のみ着手可）\n5. HAB正式定義書作成 → 未着手（4完了後のみ着手可）\n6. ARCHITECTURE_REGISTRY更新 → 未着手（5完了後のみ着手可）\n\nリスク: 後続セッション（くろ子/GPT/他AI）が「もう動いているなら定義書だけ先に書いておこう」と前のめりになり、3が未完のまま5・6に着手する可能性がある。これを防ぐためのTODOとして明示登録。",
+      "assigned_to": "きむら博士+Claude Chat（制度監査）",
+      "note": "【全工程完了】1〜6すべて完了。CHANGE_DONE: E20260621_59456685134e3 / mocka_seal sha256: de2dcf2b...\n\n完成内容:\n1. WorkingContext Live Update接続 → TODO_348\n2. Snapshot Runtime有効化 → TODO_348\n3. Event Runtime本体接続 → TODO_351\n4. Context Runtimeの制度的位置づけ監査 → TODO_352（結論: HAB=4層統合ContextRuntime）\n5. HAB正式定義書v1.0作成 → CHANGE_DONE E20260621_506685020de12\n6. ARCHITECTURE_REGISTRY更新 → projects.MoCKA.componentsにHABを正式追記完了\n\nHABはMoCKA配下の正式コンポーネントとして実装・実証・制度文書化のすべてが完了。次工程はP4(Relay連携)・P5(Orchestra連携)。",
+      "reference_event": "E20260621_52338111904aa",
+      "created_at": "2026-06-21T07:29:11.545702",
+      "updated_at": "2026-06-21T08:20:10.978066",
+      "completed_at": "2026-06-21"
     }
   ],
   "orchestra_handoff": {
@@ -4762,5 +4763,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-20T23:14:01.009393+00:00"
+  "_snapshot_at": "2026-06-20T23:24:04.813015+00:00"
 }
