@@ -1,0 +1,24 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5679
+ * Running on http://192.168.1.3:5679
+Press CTRL+C to quit
+127.0.0.1 - - [20/Jun/2026 16:00:37] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:00:38] "GET /health HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:01:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:01:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:01:16] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:01:16] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:01:27] "POST /process HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:02:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:02:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:02:15] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:02:15] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:03:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:03:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:03:15] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:03:15] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:04:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:04:15] "OPTIONS /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:04:15] "GET /phl/history HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 16:04:15] "GET /phl/history HTTP/1.1" 200 -

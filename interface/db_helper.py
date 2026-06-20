@@ -164,30 +164,6 @@ def write_event(row: dict, channel: str = None) -> bool:
         db_row["_source"] = "direct_violation"
     db_row["_imported_at"] = datetime.now(timezone.utc).isoformat()
 
-    # TEMP-TRACE: remove after investigation
-    try:
-        import traceback, threading, os as _os, json as _json
-        _stack = traceback.extract_stack()
-        _frames = [f"{f.filename}:{f.lineno}:{f.name}" for f in _stack[-8:]]
-        with open(r"C:\Users\sirok\MoCKA\gate_trace_temp.log", "a", encoding="utf-8") as _tf:
-            _tf.write(_json.dumps({
-                "ts": datetime.now(timezone.utc).isoformat(),
-                "pid": _os.getpid(),
-                "thread_ident": threading.get_ident(),
-                "thread_name": threading.current_thread().name,
-                "func": "db_helper.write_event",
-                "_source_value": db_row.get("_source"),
-                "channel_arg": channel,
-                "event_id": db_row.get("event_id"),
-                "where_component": row.get("where_component"),
-                "what_type": row.get("what_type"),
-                "stack": _frames,
-            }, ensure_ascii=False) + "\n")
-            _tf.flush()
-    except Exception:
-        pass
-    # END TEMP-TRACE
-
     try:
         conn = _get_conn()
         conn.execute(
