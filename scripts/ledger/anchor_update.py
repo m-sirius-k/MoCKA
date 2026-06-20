@@ -2,7 +2,7 @@ import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-﻿"""
+"""
 anchor_update.py
 変更をコミット後にanchor_recordを自動更新して再封印する
 使い方: python anchor_update.py "コミットメッセージ"
