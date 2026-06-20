@@ -43,6 +43,8 @@ PACKET_PATH   = Path("C:/Users/sirok/MoCKA/data/ping_latest.json")
 OVERVIEW_PATH = Path("C:/Users/sirok/MOCKA_OVERVIEW.json")
 import os
 import urllib.request
+from dotenv import load_dotenv
+load_dotenv()
 _MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not _MOCKA_ENDPOINT:
     print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)

@@ -2,7 +2,7 @@
   "state_version": 1,
   "project": {
     "phase": 4,
-    "mission": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
+    "mission": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化保留・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）+ Institution Architecture確立（Constitution/Institution/Operation 3層・Connector Framework v2.0・SEO-OS/PR-OS稼働・PHI-OS Event Gate確立）",
     "priority": []
   },
   "warnings": [],
@@ -107,18 +107,12 @@
       "id": "TODO_241",
       "title": "PR-OS Phase4: MoCKA Command Center統合",
       "priority": "低",
-      "status": "未着手"
+      "status": "進行中"
     },
     {
       "id": "TODO_242",
       "title": "PR-OS: WordPress認証情報設定→実動テスト",
       "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_243",
-      "title": "PR-OS: mocka_bridge.py MoCKA統合動作確認",
-      "priority": "中",
       "status": "未着手"
     },
     {
@@ -140,33 +134,15 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_339",
-      "title": "turn_counter_patch.js /recent_events参照修正 — /public/eventsへの置き換え",
-      "priority": "低",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_340",
-      "title": "__pycache__配下のコンパイル済みファイルのgit追跡解除",
-      "priority": "低",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_344",
-      "title": "GL7 expected_max_changes 見直し — 一括バッチ作業向け閾値調整（現状200）",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_346",
-      "title": "overview_tmp.json 削除 — 生成元不明の孤立ファイル",
-      "priority": "低",
-      "status": "未着手"
+      "id": "TODO_350",
+      "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
+      "priority": "最高",
+      "status": "進行中"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 18,
-  "state_hash": "e27a18b7c48f1056664eb037d03ad3821423656625ecb6ba1b76a4c05a372e5d",
-  "generated_at": "2026-06-18T02:52:39.544984+00:00"
+  "revision": 23,
+  "state_hash": "f36461b6f3a8cac70aa36aa8ab723e7f4037008d4adc9f2179f3100737141f45",
+  "generated_at": "2026-06-20T03:05:36.434803+00:00"
 }

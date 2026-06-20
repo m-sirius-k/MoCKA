@@ -23,6 +23,9 @@ import hashlib
 import datetime
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ========== 設定 ==========
 _MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")

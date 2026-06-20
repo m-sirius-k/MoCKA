@@ -1,2 +1,8 @@
 [2026-06-08T09:19:47.716044] WARN url=http://localhost:5002/agent/mocka_write_event tool=Edit file=C:/Users/sirok/MoCKA/test_dummy_257.txt error='cp932' codec can't encode character '\u2014' in position 37: illegal multibyte sequence
 [2026-06-08T10:00:13.662611] OK event_id=E20260608_047 tool=MultiEdit file=C:/Users/sirok/MoCKA/test_dummy_257.txt url=http://localhost:5002/agent/mocka_write_event
+[2026-06-19T12:26:09.374404] WARN url=http://localhost:5002/agent/mocka_write_event tool=Bash error=timed out
+[2026-06-19T12:26:09.375017] OFFLINE tool=Bash cmd_or_file='[Bash] echo "test" > C:/Users/sirok/MoCKA/test_hook.txt' (記録未送信・作業は継続)
+[2026-06-19T12:26:16.260741] SKIP tool=Bash reason=no_write_pattern cmd='ls -la'
+[2026-06-19T12:26:37.333049] WARN url=http://localhost:5002/agent/mocka_write_event tool=Write error=timed out
+[2026-06-19T12:26:37.334061] OFFLINE tool=Write cmd_or_file='test_hook.txt' (記録未送信・作業は継続)
+[2026-06-19 14:01:26] OFFLINE CHANGE_DONE: MoCKA-START.bat - PYTHONUTF8廃止対応(Python 3.13.14) -> PYTHONIOENCODING=utf-8 に変更。12箇所のset PYTHONUTF8=1を削除。

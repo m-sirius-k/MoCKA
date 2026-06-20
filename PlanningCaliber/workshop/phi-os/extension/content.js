@@ -135,7 +135,11 @@ class AutoTrigger {
 // ============================================================
 function installGlobalHandlers() {
   window.addEventListener('error', (e) => {
-    console.error('[PHI OS] Uncaught error:', e.message, e.filename, e.lineno);
+    const msg = e.message || (e.error && e.error.message) || '';
+    if (msg.includes('ResizeObserver loop completed with undelivered notifications')) {
+      return;
+    }
+    console.error('[PHI OS] Uncaught error:', msg, e.filename, e.lineno);
   });
   window.addEventListener('unhandledrejection', (e) => {
     console.error('[PHI OS] Unhandled rejection:', e.reason);

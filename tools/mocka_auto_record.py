@@ -25,6 +25,9 @@ import urllib.request
 import urllib.error
 import datetime
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 LOCAL_MCP   = "http://localhost:5002/agent/mocka_write_event"
 LOCAL_APP   = "http://localhost:5000/file/register"

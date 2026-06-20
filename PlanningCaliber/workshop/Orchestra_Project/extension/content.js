@@ -568,6 +568,9 @@ async function initMockaContext() {
   if (!['chatgpt.com','chat.openai.com','claude.ai']
       .some(h => location.hostname.includes(h))) return;
 
+  // 未ログイン状態のclaude.ai/login配下では発火させない(認証前にハンドシェイクを試みても無意味なため)
+  if (location.hostname.includes('claude.ai') && location.pathname.startsWith('/login')) return;
+
   const cached = sessionStorage.getItem('mocka_context_ts');
   if (cached && Date.now() - parseInt(cached) < 3600000) return;
 

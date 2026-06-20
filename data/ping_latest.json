@@ -3,16 +3,16 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=[2026-05-15] 保存取得 infield [hin",
+  "A": "Z-Axis=0.819 / INCIDENT=[2026-06-20] PRE_REINSTALL_SNA",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "[2026-05-15] 保存取得 infield [hint] 入力: インシデントまたは課題   ↓ morphologyで分解・パターン照合   ↓ SCAMPER 7視点で問いかけ   ↓ 出力: 「今まで思いつかなかった解の候補」3〜5件   ↓ きむら博士がHuman Gateで選択   ↓ MoCKAイベントとして記録・蓄積 [hint] 入力: インシデントまたは課題\n[2026-05-15] 保存取得 infield [hint] インシデント: 「またpython直接実行を指示された」     ↓ morphology_engine 予測: 「このパターンはDANGER。再発確率78%」     ↓ SCAMPER創造エンジン S: Pythonを何で代替できるか C: mocka_file_editorと組み合わせると？ R: 逆転 → Cl\n[2026-05-15] 保存取得 infield [hint] 失敗体験/成功体験 → 文字分解 → 組み合わせ → 成功/失敗方向の予測 = morphology_engine.py + pattern_library.json [hint] 失敗体験/成功体験 → 文字分解 → 組み合わせ → 成功/失敗方向の予測 = morphology_engine.py + patter\n[2026-02-14:MoCKA 3.0 引継書] OpenAI API の「利用上限（quota）」に達したため、replan が API 呼び出しに失敗。MoCKAの制度連鎖はAPIクレジット枯渇で止まる脆弱性あり\n[2026-03-19:MoCKA 再接続検証] Watcher/Bridge統合後の動作確認で制度的整合性評価が必要。再接続フェーズは検証プロトコルを必ず踏むこと\n[2026-02-06:MoCKA 監査官評価] Copilot模範回答：MoCKAの重大リスクは記録の形骸化。形式的な5W1H記録では制度として機能しない\n[cv] [2026-03-25:MoCKA オーケストラの実現可能性と制] 🗺️ MoCKA オーケストラ実装ロードマップ (Phase 36-40)Phase 36: 憲法制定と環境整備 (Foundation)[Action] runtime/mission_statement.json の永続化。[Action] 5大AIの「性格（Provider Config）」の\n[cv] [2026-03-26:MoCKA オーケストラの実現可能性と制] あなたが一連の作業でそのほかに見つけた問題点はありましたか？",
-    "PHILOSOPHY": "[PHL-TOP E20260516_023] きむら博士がAIを使って行った全ての作業を記録する。ファイル・Project・AI種別を問わない。記録なき作業はMoCKAとして存在しない。\n[PHL-TOP E20260516_023] Claude/Gemini/GPT/Perplexity/Copilot全AIの全インタラクションが記録対象。作業完了時に必ずmocka_write_eventでCHANGE_DONE/SEALを実行する。\n[2026-05-15] [hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測 きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測する。SCAMPERがそれを組み替えて新しい制度を発明する。  これはMoCKAが「記録する文明」から「発明する文明」に進化する転換点です。  論文にもなります。SPP/PHLの次の第\n[2026-05-15] 保存取得 infield [hint] きむら博士の経験知は「パターンの塊」です。morphologyがそれを分解・予測する。SCAMPERがそれを組み替えて新しい制度を発明する。  これはMoCKAが「記録する文明」から「発明する文明」に進化する転換点です。  論文にもなります。SPP/PHLの次の第三の柱として。 [hint] きむら博士の経験知は「パタ\n[2026-05-15] [hint] そうですね　事前に　失敗体験/成功体験　を文字分解して　その組みあわせから　成功 そうですね　事前に　失敗体験/成功体験　を文字分解して　その組みあわせから　成功方向　失敗報告の流れの予測をさせようという試みがあります　  それと同じく　その組みあわせと　7つの制度を持ち得ると　[新しい　思いつかない物ができないかな？]という発想 source\n[2026-03-10:MoCKA インベントリ CSV] 私の最適解：Event Ledger Architecture の具体設計 ChatGPTの三層構造は正しい。しかしMoCKAの現実に即して、第3層（クラウド統合・AI配信層）を明示的に加えた四層構造が最適\n[2026-02-28:MoCKA 公開最適化] 公開対象は器のみであり、運用データはローカル保持とし、制度の連続性と\n[2026-03-21:MoCKA 状態と進行] 到達済 記録制度（CSV・ledger） インシデント制度（5W1H） 再発検知（semantic） 自己疑念（STOP） 自動修正（REAL_EXECUTED） 予防層\n[2026-03-23:MoCKA Movement 起動実装] 本記録は、MoCKA文明における「静的完成状態」から「動的存在状態」への遷移を確定\n[2026-03-24:因果文明の進行] フェーズ20：因果文明（初期起動段階） 直前までに成立したもの 手続き記憶（プロセス）",
-    "OPERATION": "[2026-05-15] [hint] その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超 その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超えて「創造」する source=claude|type=hint\n[2026-05-15] 保存取得 infield [hint] その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超えて「創造」する [hint] その組み合わせ × 7つの視点 → 今まで思いつかなかった解を生成 = 予測を超えて「創造」する\n[2026-05-15] [hint] MOCKAは　30年分の私の知識としたときに　SCAMPERはその知識記憶記録を MOCKAは　30年分の私の知識としたときに　SCAMPERはその知識記憶記録を使った　創造部門　　そういう切り口です source=claude|type=hint\n[2026-02-14:MoCKA 3.0 引継書] GPT外部監査: 文明の航海日誌。構造・状態定義・障害履歴・思想階層・未完了項目が明示された制度移行文書\n[2026-02-15:文明設計転換] GPT外部監査: 依存構造から主権構造への転換宣言。APIクレジット枯渇後に自立設計へ\n[2026-02-28:MoCKA 公開最適化] GPT外部監査: 器のみ公開・運用データはローカル封印・ガードを制度化。設計思想として極めて健全\n[2026-03-13:MoCKA 自律AI進化] GPT外部監査: 単体AIプログラムを超え制度化された自律AI機関として成立\n[2026-03-20:MoCKA 記録制度設計] GPT外部監査: 目的駆動型→失敗記録制度型へ存在定義を更新。創造憲法レベルの再定義"
+    "INCIDENT": "[2026-06-20] PRE_REINSTALL_SNAPSHOT: Orchestra/Memory/Relay/PHI-OS/MoCKAbridge 5拡張 全入れ替え前整合性チェック 対象: 5拡張（Orchestra/Memory/Relay/PHI-OS/MoCKAbridge）の全アンインストール→PC再起動→再インストール作業の直前スナップショット。\nレポート: C\n[2026-06-20] CHANGE_DONE: trg_detect_direct_update WHEN条件追加完了（方針B） 結果: phi_os/audit_trigger.pyのinstall_audit_schema()内、trg_detect_direct_updateにWHEN (NEW.channel_type IS NULL OR NEW.channel_typ\n[2026-06-20] CHANGE_START: phi_os/audit_trigger.py trg_detect_direct_update WHEN条件追加着手 対象: C:/Users/sirok/MoCKA/phi_os/audit_trigger.py（およびdata/mocka_events.db内のtrg_detect_direct_updateトリガー本体）\n\n[2026-06-18] 技術的にもですが\n1）　mockaの知名度を上げる　2）　この全体システムII強もを持たせる　\n3）　企業担当者　経営者　Aiファームに　使ってみたらどうなるだろ？って考えさせる　vasAI\n4）　これあると　簡単にできるようになる忘れなくなる　商材としての紹介　mini\nこの観点から最適解を出して！MoCKAに「今すぐ」組み込むべきTop 4（Ti",
+    "PHILOSOPHY": "[2026-06-19] [Relay引き継ぎ - 自動生成]\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n\n\n\n## Relay 設計思想\n\n- miniMoCKA鉄則: PHI-OSと連携するが単独でも動く\n\n- AIを信じるな、システムで縛れ\n\n- 記録なき作業はMoCKAとして存在しない\n\n\n\n\n## 製品構成\n\n- Free: ルールベース\n[2026-06-19] その考察は、十分あり得ると思います。\n\nつまり博士が言いたいのは、\n\n「論文として匿名で出す」のではなく、この考え方自体を先に『○○理論』『○○アーキテクチャ』として世の中に認知させるべきだったのではないか。\n\nということですよね。\n\n私は、この戦略にはメリットとデメリットの両方があると思います。\n\nメリット\n\nもし先に\n\nMoCKA\n\nPHL\n\nSPP\n\n\n[2026-06-19] 私の　考察言って良い？　これ　あなたにも　gptにも何度も何度も　差し替えて　なおかつバージョンも上げて書いたんです　本文の内容なら仕方が無いですが　そこではじかれるって　悔しいです N/A 私の　考察言って良い？　これ　あなたにも　gptにも何度も何度も　差し替えて　なおかつバージョンも上げて書いたんです　本文の内容なら仕方が無いですが　そこではじかれるっ\n[2026-06-19] CHANGE_START: MoCKA-START.bat -X utf8 追加 + guidelines.json PYTHONUTF8廃止記録 対象1: C:/Users/sirok/MoCKA/MoCKA-START.bat\n変更内容: 全python起動コマンドに -X utf8 フラグを追加。PYTHONUTF8=1はPython 3.13.14で\n[2026-06-19] 調査完了です。以下が今回の現状把握の核心です：\n最重要発見（推測ゼロ、コードベースで確認した事実）:\nEvent Gateの「単一経路保証」は設計文書上の保証であり、実装レベルでは穴がある。 mocka_mcp_server.py:408-429 にGate落ち時のフォールバック経路が存在し、検証をスキップしてSQLite直書きする。",
+    "OPERATION": "[2026-06-20] CHANGE_DONE: 認証キーリアルタイム監視+COMMAND CENTERヘッドライン表示 実装完了 実装内容:\\n1) auth_key_drive リアルタイム化: 既存実装を確認した結果、interface/health_check.py の check_auth_key_drive() は元々プロセス起動ごと(かつ呼び出しごと)に os.pat\n[2026-06-20] CHANGE_DONE: Watcherフェイルセーフ+COMMAND CENTER案内表示 実装完了 実装内容:\\n1) interface/mocka_watcher.py: check_auth_key_drive()追加。os.path.splitdrive(KEY_PATH)でドライブ文字取得、os.path.exists(drive+\\\"\\\\\\\\\n[2026-06-20] CHANGE_START: Watcherフェイルセーフ+COMMAND CENTER案内表示 実装着手 対象1: interface/mocka_watcher.py — initialize_firebase()にAドライブ存在チェック追加(未接続時はexit 0でスキップ、クラッシュ扱いにしない)\\n対象2: interface/health_chec\n[2026-06-13] Claude Code用 指示書（MoCKA 3.0 整理タスク）\n目的\nMoCKA 3.0のこれまでの実装成果を以下の観点で整理すること：\n実装済みモジュールの全体像\nレイヤー構造（Semantic / Decision / Memory / Self-Audit / Feedback / Learning / Governance）"
   },
-  "essence_updated": false,
+  "essence_updated": true,
   "ngrok_online": false,
   "NGROK": false,
-  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
+  "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化保留・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）+ Institution Architecture確立（Constitution/Institution/Operation 3層・Connector Framework v2.0・SEO-OS/PR-OS稼働・PHI-OS Event Gate確立）",
   "top_todos": [
     {
       "id": "TODO_221",
@@ -20,14 +20,9 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_312",
-      "title": "p-DERS論文 — AIES 2026正式投稿",
+      "id": "TODO_350",
+      "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
       "priority": "最高"
-    },
-    {
-      "id": "TODO_139",
-      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
-      "priority": "高"
     },
     {
       "id": "TODO_207",
@@ -38,7 +33,12 @@
       "id": "TODO_206",
       "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
       "priority": "高"
+    },
+    {
+      "id": "TODO_205",
+      "title": "TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）",
+      "priority": "高"
     }
   ],
-  "generated_at": "2026-06-18T08:42:41.624339"
+  "generated_at": "2026-06-20T11:35:49.437608"
 }

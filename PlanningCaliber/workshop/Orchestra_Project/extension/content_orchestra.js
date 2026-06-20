@@ -502,6 +502,8 @@ async function injectAndSendContext(ctx) {
 async function mockaAutoInject() {
   if (!location.hostname.includes('chatgpt.com') &&
       !location.hostname.includes('chat.openai.com')) return;
+  // /auth/ パスは認証エラーページ等のため除外（入力欄が存在しない）
+  if (location.pathname.startsWith('/auth/')) return;
 
   console.log('[MoCKA] autoInject: fetch Living Context...');
   const ctx = await fetchLivingContext();

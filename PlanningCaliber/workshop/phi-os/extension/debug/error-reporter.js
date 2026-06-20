@@ -37,6 +37,8 @@ export function installGlobalHandlers() {
   });
 
   window.addEventListener('error', (event) => {
+    // ResizeObserver loop は無害なブラウザ仕様ノイズのため除外
+    if (event.message?.includes('ResizeObserver loop')) return;
     reportError({
       type:    'RUNTIME_ERROR',
       message: event.message,

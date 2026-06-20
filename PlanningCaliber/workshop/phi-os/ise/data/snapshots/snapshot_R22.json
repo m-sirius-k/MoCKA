@@ -1,0 +1,142 @@
+{
+  "state_version": 1,
+  "project": {
+    "phase": 4,
+    "mission": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化保留・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）+ Institution Architecture確立（Constitution/Institution/Operation 3層・Connector Framework v2.0・SEO-OS/PR-OS稼働・PHI-OS Event Gate確立）",
+    "priority": []
+  },
+  "warnings": [],
+  "todos": [
+    {
+      "id": "TODO_207",
+      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_205",
+      "title": "TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_221",
+      "title": "mocka.nsjp.org — /mini-mocka/orchestra コンテンツ投入（LP+説明書+Q&A）",
+      "priority": "最高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_160",
+      "title": "Orchestra — CSV/JSON export正規化（3種exportProfile）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_171",
+      "title": "Orchestra Phase4 — JS難読化ビルドパイプライン",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_166",
+      "title": "Orchestra合議 — UIブロッカー対策（プリフライトチェック実装）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_161",
+      "title": "Orchestra — 販売品質耐久性6要素実装",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_150",
+      "title": "Prism — モード切替思考深化Chrome拡張 開発",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_220",
+      "title": "mocka.nsjp.org — WordPress メニュー構築（ヘッダーナビ）",
+      "priority": "高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_222",
+      "title": "mocka.nsjp.org — トップページ（Sirius Labブランドハブ）コンテンツ投入",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_224",
+      "title": "mocka.nsjp.org — インデックスON + Rank Mathサイトマップ送信",
+      "priority": "低",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_223",
+      "title": "mocka.nsjp.org — /vasai コンテンツ投入（製品紹介シンプル版）",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_231",
+      "title": "NTP Phase5: C001骨格商品P02〜P07詳細調査（TSI=0.5→1.0）",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_122",
+      "title": "MoCKA Go移行 — app.pyをGoに段階的置換",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_239",
+      "title": "PR-OS: 各Adapter認証情報設定（WordPress優先）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_241",
+      "title": "PR-OS Phase4: MoCKA Command Center統合",
+      "priority": "低",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_242",
+      "title": "PR-OS: WordPress認証情報設定→実動テスト",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_325",
+      "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
+      "priority": "高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_334",
+      "title": "TODO_269実機API疎通テスト — Perplexity Connector",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_335",
+      "title": "TODO_270実機API疎通テスト — Genspark Connector",
+      "priority": "中",
+      "status": "未着手"
+    }
+  ],
+  "decision_ledger_rev": 4,
+  "guideline_revision": 0,
+  "revision": 22,
+  "state_hash": "5a9bf23ec1ad87f445d99d5d6a225a1f582fd8a792aed7d528db019defa6f5cb",
+  "generated_at": "2026-06-19T07:54:55.457014+00:00"
+}

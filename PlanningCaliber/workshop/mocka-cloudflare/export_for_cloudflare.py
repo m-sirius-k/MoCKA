@@ -4,7 +4,7 @@ SQLite の events テーブルを JSON に書き出し、
 OVERVIEW/TODO/lever_essence を data/ にコピーする。
 MoCKA-START.bat から呼び出す。
 """
-import json, sqlite3, shutil, sys
+import json, sqlite3, shutil, sys, time
 from datetime import datetime, timezone
 from pathlib import Path
 if sys.stdout.encoding != 'utf-8':
@@ -53,11 +53,27 @@ def _inject_snapshot_ts(dst: Path):
         print(f"[snapshot_ts] skip {dst.name}: {e}")
 
 
+def _copy_with_retry(src: Path, dst: Path, retries=4, base_delay=0.5):
+    for attempt in range(retries):
+        try:
+            shutil.copy2(src, dst)
+            return
+        except PermissionError as e:
+            if attempt == retries - 1:
+                print(f"[copy] giving up on {src.name} -> {dst}: {e}")
+                raise
+            delay = base_delay * (2 ** attempt)
+            print(f"[copy] {dst.name} locked, retry {attempt + 1}/{retries} in {delay}s")
+            time.sleep(delay)
+
 def copy_files():
     DATA_OUT.mkdir(parents=True, exist_ok=True)
     for src, dst in COPIES:
         if src.exists():
-            shutil.copy2(src, dst)
+            try:
+                _copy_with_retry(src, dst)
+            except PermissionError:
+                continue
             _inject_snapshot_ts(dst)
             print(f"[copy] {src.name} → {dst}")
         else:

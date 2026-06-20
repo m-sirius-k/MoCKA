@@ -6,9 +6,12 @@ MoCKA Memory Caliber -- MCP Server
 
 import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys
 from pathlib import Path
+from dotenv import load_dotenv
 import requests
 from flask import Flask, request, Response
 from flask_cors import CORS
+
+load_dotenv()
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 if sys.stderr.encoding != 'utf-8':

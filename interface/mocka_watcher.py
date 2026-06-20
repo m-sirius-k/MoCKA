@@ -16,13 +16,21 @@ if sys.stderr.encoding != 'utf-8':
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # 環境設定（KEY_PATHのデフォルト値を修正）
+# MoCKA-START.bat の set VAR=value && next 構文はcmd.exeが&&前のスペースを値に含めるため strip() で防御
 KEY_PATH   = os.environ.get("MOCKA_FIREBASE_KEY_PATH",
-                             r"A:\secrets\mocka-knowledge-gate-firebase-adminsdk-fbsvc-53613922c1.json")
+                             r"A:\secrets\mocka-knowledge-gate-firebase-adminsdk-fbsvc-53613922c1.json").strip()
 PROJECT_ID = os.environ.get("MOCKA_FIREBASE_PROJECT_ID", "mocka-knowledge-gate")
 INTERVAL   = 60  # 秒
 WATCHER_QUEUE = Path("C:/Users/sirok/MoCKA/data/watcher_queue")
 PROCESSED_LOG = Path("C:/Users/sirok/MoCKA/data/watcher_processed.json")
 WATCHER_QUEUE.mkdir(parents=True, exist_ok=True)
+
+def check_auth_key_drive() -> bool:
+    """KEY_PATHのドライブ文字（認証キードライブ）が接続されているか確認する"""
+    drive, _ = os.path.splitdrive(KEY_PATH)
+    if not drive:
+        return True
+    return os.path.exists(drive + "\\")
 
 def initialize_firebase():
     if not firebase_admin._apps:
@@ -65,6 +73,10 @@ def poll(db, processed_ids):
 
 def main():
     print("[WATCHER] 起動中...")
+    drive, _ = os.path.splitdrive(KEY_PATH)
+    if not check_auth_key_drive():
+        print(f"[WATCHER] 認証キードライブ({drive})が接続されていません。Watcherをスキップします。")
+        sys.exit(0)
     db = initialize_firebase()
     processed_ids = load_processed_ids()
     print(f"[WATCHER] 監視開始。既処理: {len(processed_ids)}件 / interval={INTERVAL}秒")

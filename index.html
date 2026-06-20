@@ -225,6 +225,7 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   <div class="srv"><div class="dot on"></div><span class="srv-name">SEO-OS</span>&nbsp;<span class="srv-port">:8750</span></div>
   <div class="srv"><div class="dot on"></div><span class="srv-name">ngrok</span>&nbsp;<span class="srv-port">MCP</span></div>
   <div class="srv"><div class="dot warn"></div><span class="srv-name">relay_dom</span>&nbsp;<span class="srv-port" style="color:var(--amber)">FAIL</span></div>
+  <div class="srv" id="srv-auth_key" style="display:none"><div class="dot" id="auth-key-dot"></div><span class="srv-name">認証キー</span>&nbsp;<span class="srv-port" id="auth-key-status"></span></div>
   <div class="srv"><div class="dot on"></div><span class="srv-name">SQLite</span>&nbsp;<span class="srv-port">OK</span></div>
 </div>
 
@@ -551,7 +552,7 @@ function hidePanelErr(errId){
 async function apiFetch(url,panelId){
   DBG.info(panelId,`GET ${url}`);
   try{
-    const r=await fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}});
+    const r=await fetch(url,{cache:'no-store',headers:{'ngrok-skip-browser-warning':'true'}});
     if(!r.ok)throw new Error(`HTTP ${r.status} ${r.statusText}`);
     const text=await r.text();
     /* 文字化け検知 */
@@ -869,6 +870,51 @@ function renderTic(data0,data1){
   }
 }
 
+function renderAuthKeyHeadline(check){
+  try{
+    const el=document.getElementById('srv-auth_key');
+    const dot=document.getElementById('auth-key-dot');
+    const txt=document.getElementById('auth-key-status');
+    if(!el||!dot||!txt||!check)return;
+    const present=check.status==='PASS';
+    el.style.display='';
+    if(present){
+      dot.className='dot on';
+      txt.style.color='var(--green)';
+      txt.textContent='keyを認証しました';
+    }else{
+      dot.className='dot warn';
+      txt.style.color='var(--amber)';
+      txt.textContent='keyを認証できませんでした';
+    }
+  }catch(e){DBG.err('tic0','renderAuthKeyHeadline: '+e.message);}
+}
+
+function renderTic0Live(resp){
+  try{
+    const checks=resp.checks||[];
+    if(!checks.length){DBG.warn('tic0','/health/status checks空 → 静的データ維持');return;}
+    const authKeyCheck=checks.find(c=>c.component==='auth_key_drive');
+    if(authKeyCheck)renderAuthKeyHeadline(authKeyCheck);
+    const stMap={PASS:'ok',FAIL:'ng',WARN:'warn'};
+    const data0=checks.map(c=>({st:stMap[c.status]||'ng',name:c.component,note:(c.detail||'').split('\n')[0]}));
+    const f=d=>`<div class="tic-row ${d.st}">
+      <span class="tic-tag ${d.st}">${d.st.toUpperCase()}</span>
+      <span class="tic-name">${d.name}</span>
+      <span class="tic-note">${d.note}</span>
+    </div>`;
+    document.getElementById('tic0-body').innerHTML=data0.map(f).join('');
+    const fail0=data0.filter(d=>d.st==='ng').length;
+    const warn0=data0.filter(d=>d.st==='warn').length;
+    setDbgTags('tic0',[{cls:fail0?'err':(warn0?'warn':'ok'),label:fail0?`${fail0}FAIL`:(warn0?`${warn0}WARN`:'ALL OK')}]);
+    hidePanelErr('err-tic0');
+    DBG.ok('tic0',`ライブ反映: fail=${fail0} warn=${warn0} (overall=${resp.overall})`);
+  }catch(e){
+    DBG.err('tic0','renderTic0Live: '+e.message);
+    showPanelErr('err-tic0',e.message);
+  }
+}
+
 function renderCoords(data){
   try{
     IC.expectArr(data,'coords');
@@ -1071,6 +1117,7 @@ document.addEventListener('DOMContentLoaded',()=>{
    LIVE DATA FETCH (app.py エンドポイント)
    ═══════════════════════════════════════════════ */
 const BASE='http://localhost:5000';
+const CALIBER_BASE='http://localhost:5679';
 
 async function fetchLive(){
   DBG.info('sys','ライブデータ取得開始');
@@ -1079,9 +1126,8 @@ async function fetchLive(){
     {url:`${BASE}/heinrich/status`,     panel:'hein',   key:null},
     {url:`${BASE}/risk/recommendation`, panel:'todo',   key:null},
     {url:`${BASE}/health/status`,       panel:'tic0',   key:null},
-    {url:`${BASE}/phl/history`,         panel:'ess',    key:null},
+    {url:`${CALIBER_BASE}/phl/history`, panel:'ess',    key:null},
     {url:`${BASE}/api/beta/status`,     panel:'bee',    key:null},
-    {url:`${BASE}/api/risk-score`,      panel:'coord',  key:null},
     {url:`${BASE}/api/ise/state`,       panel:'ise-state',    key:null},
     {url:`${BASE}/api/ise/status`,      panel:'ise-sessions', key:null},
   ];
@@ -1092,6 +1138,7 @@ async function fetchLive(){
       /* パネルごとのデータマッピング（app.py形式に応じて調整） */
       if(j.panel==='ise-state')    renderISEState(data);
       if(j.panel==='ise-sessions') renderISESessions(data);
+      if(j.panel==='tic0')         renderTic0Live(data);
     }catch(e){
       DBG.warn(j.panel,'フォールバック → 静的データ使用');
     }

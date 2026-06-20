@@ -17,6 +17,7 @@ PING_GEN    = ROOT_DIR / "interface" / "ping_generator.py"
 REDUCING    = ROOT_DIR / "data" / "storage" / "infield" / "REDUCING"
 RE_REDUCED  = ROOT_DIR / "data" / "storage" / "infield" / "RE_REDUCED"
 ESSENCE_DONE= ROOT_DIR / "data" / "storage" / "infield" / "ESSENCE_DONE"
+INTERFACE_ESSENCE = ROOT_DIR / "interface" / "lever_essence.json"
 
 INTERVAL_SEC       = 300   # essence更新: 5分
 REDUCING_SEC       = 60    # REDUCING監視: 1分
@@ -112,6 +113,34 @@ def archive_re_reduced():
     if moved > 0:
         print(f"[ESSENCE_AUTO] RE_REDUCED->ESSENCE_DONE: {moved}件アーカイブ")
     return moved
+
+
+def sync_essence_db_to_file():
+    """DBのessenceテーブルをinterface/lever_essence.jsonに同期"""
+    import json
+    try:
+        con = sqlite3.connect(str(DB_PATH))
+        rows = con.execute("SELECT axis, content FROM essence ORDER BY updated_at DESC").fetchall()
+        con.close()
+        axes = {}
+        for axis, content in rows:
+            if axis not in axes:
+                axes[axis] = content
+        if not axes:
+            return False
+        with open(str(INTERFACE_ESSENCE), encoding="utf-8") as f:
+            data = json.load(f)
+        for ax, content in axes.items():
+            if ax in data:
+                data[ax] = content
+        data["_synced_at"] = datetime.now(timezone.utc).isoformat()
+        with open(str(INTERFACE_ESSENCE), "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"[ESSENCE_AUTO] lever_essence.json同期完了 ({list(axes.keys())})")
+        return True
+    except Exception as e:
+        print(f"[ESSENCE_AUTO] lever_essence.json同期失敗: {e}")
+        return False
 
 
 def run_ping_generator():
@@ -232,6 +261,7 @@ def essence_auto_loop():
 
             if now - last_essence >= INTERVAL_SEC:
                 n = update_essence_from_events()
+                sync_essence_db_to_file()
                 if n > 0:
                     run_ping_generator()
                     last_ping = now
@@ -265,6 +295,7 @@ if __name__ == "__main__":
     archived= archive_re_reduced()
     alive   = check_caliber_health()
     n       = update_essence_from_events()
+    sync_essence_db_to_file()
     if n > 0:
         run_ping_generator()
     print(f"[ESSENCE_AUTO] v4完了: REDUCING={moved}件 アーカイブ={archived}件 Caliber={alive} essence={n}軸更新")

@@ -553,7 +553,9 @@ def user_voice():
 
 @app.route("/")
 def index():
-    return send_from_directory(ROOT_DIR, "index.html")
+    resp = send_from_directory(ROOT_DIR, "index.html")
+    resp.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    return resp
 
 @app.route("/get_history")
 def get_history():
@@ -2392,13 +2394,35 @@ def health_status():
         result = _json.loads(last_line)
         overall = result.get('overall', 'UNKNOWN')
         color   = 'GREEN' if overall == 'ALL PASS' else ('AMBER' if 'PARTIAL' in overall or 'DEGRADED' in overall else 'RED')
-        return jsonify({
+        checks = result.get('checks', [])
+
+        # auth_key_drive はhealth_check.py起動時の1回限りの値がhealth_log.jsonlに
+        # キャッシュされたままになるため(定期再実行プロセスが存在しない)、
+        # リクエストごとに os.path.exists でドライブ存在を再評価しチェック結果を上書きする
+        try:
+            import health_check as _health_check
+            ok, detail = _health_check.check_auth_key_drive()
+            found = False
+            for c in checks:
+                if c.get('component') == 'auth_key_drive':
+                    c['status'] = 'PASS' if ok else 'WARN'
+                    c['detail'] = detail
+                    found = True
+                    break
+            if not found:
+                checks.append({'component': 'auth_key_drive', 'status': 'PASS' if ok else 'WARN', 'detail': detail})
+        except Exception:
+            pass
+
+        resp = jsonify({
             'status': 'ok',
             'overall': overall,
             'color': color,
-            'checks': result.get('checks', []),
+            'checks': checks,
             'ts': result.get('timestamp', ''),
         })
+        resp.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        return resp
     except Exception as e:
         return jsonify({'status': 'error', 'overall': 'UNKNOWN', 'color': 'RED', 'error': str(e)}), 500
         return jsonify({'status': 'error', 'overall': 'UNKNOWN', 'color': 'RED', 'error': str(e)}), 500

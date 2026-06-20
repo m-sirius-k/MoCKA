@@ -1,11 +1,15 @@
 {
-  "mocka_server": {
+  "python_env": {
     "ok": true,
-    "detail": "200 OK"
+    "detail": "PYTHONUTF8=(unset) OK"
+  },
+  "mocka_server": {
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "caliber_pipeline": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "anthropic_api": {
     "ok": true,
@@ -21,10 +25,22 @@
   },
   "mcp_schema_hash": {
     "ok": true,
-    "detail": "変更なし (hash: 249917f288fa3951)"
+    "detail": "変更なし (hash: 3484c303ccc72768)"
   },
   "relay_dom_selector": {
     "ok": false,
     "detail": "Relay: last_ping なし（claude.aiタブ未オープン、または拡張未起動）"
+  },
+  "env_bom": {
+    "ok": true,
+    "detail": ".env BOMなし OK"
+  },
+  "phi_os_audit": {
+    "ok": false,
+    "detail": "Direct Write違反 22530件 | Gate経由率 3.4% (<95%) (total=12418 gate=3.4%)"
+  },
+  "auth_key_drive": {
+    "ok": true,
+    "detail": "認証キードライブ(A:) 接続済み"
   }
 }

@@ -73,10 +73,12 @@ def install_audit_schema(conn: sqlite3.Connection):
     """)
 
     # GATE外UPDATE検知トリガー
+    # channel_type が 'gate' でない UPDATEは直接書き込みと判定（INSERT判定と同条件）
     conn.execute("DROP TRIGGER IF EXISTS trg_detect_direct_update")
     conn.execute("""
         CREATE TRIGGER trg_detect_direct_update
         AFTER UPDATE ON events
+        WHEN (NEW.channel_type IS NULL OR NEW.channel_type != 'gate')
         BEGIN
             INSERT INTO audit_violations
                 (detected_at, table_name, operation, event_id, channel_type, actor, raw_snippet)

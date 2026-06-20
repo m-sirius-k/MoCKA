@@ -97,8 +97,13 @@ async function pingMoCKA() {
 }
 
 // 起動時に即ping、以降5分ごとに繰り返す
+// MV3のservice workerは非アクティブ時に終了するため、setIntervalは休止後に止まる。
+// chrome.alarmsはservice worker再起動後もブラウザ側でスケジュールが保持される。
 pingMoCKA();
-setInterval(pingMoCKA, PING_INTERVAL_MS);
+chrome.alarms.create('mocka_relay_ping', { periodInMinutes: PING_INTERVAL_MS / 60000 });
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === 'mocka_relay_ping') pingMoCKA();
+});
 
 // ─── インストール時初期化 ─────────────────────────────────────────────────────
 

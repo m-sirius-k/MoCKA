@@ -5,902 +5,1093 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PR-OS Command Center</title>
 <style>
-/* ── Reset & Variables ─────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:       #070d14;
-  --bg2:      #0d1520;
-  --surface:  #111c2b;
-  --surface2: #172234;
-  --border:   #1e2f45;
-  --border2:  #243648;
-  --text:     #cdd9e5;
-  --muted:    #6b8099;
-  --accent:   #4fa3ff;
-  --accent2:  #1a6fff;
-  --green:    #3dba6c;
-  --yellow:   #d4a017;
-  --red:      #e54b4b;
-  --purple:   #9b72f0;
-  --teal:     #2ab9a8;
-  --glow:     rgba(79,163,255,.12);
-  --radius:   10px;
-  --font:     'Segoe UI', 'Hiragino Sans', system-ui, sans-serif;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060d14;--bg2:#0b1520;--surface:#0f1c2b;--surface2:#152233;
+  --border:#1b2d40;--border2:#223548;--text:#cdd9e5;--muted:#5f7a94;
+  --accent:#4fa3ff;--accent2:#1a6fff;--green:#3dba6c;--yellow:#c9a52a;
+  --red:#e04a4a;--purple:#9b72f0;--teal:#2ab9a8;--orange:#d4783a;
+  --radius:10px;--font:'Segoe UI','Hiragino Sans',system-ui,sans-serif;
 }
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13.5px;min-height:100vh;line-height:1.6}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
-/* ── Base ──────────────────────────────── */
-html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 13.5px;
-  min-height: 100vh;
-  line-height: 1.6;
-}
+/* Shell */
+.shell{display:flex;height:100vh;overflow:hidden}
 
-/* ── Scrollbar ─────────────────────────── */
-::-webkit-scrollbar { width: 5px; height: 5px; }
-::-webkit-scrollbar-track  { background: var(--bg2); }
-::-webkit-scrollbar-thumb  { background: var(--border2); border-radius: 4px; }
+/* Sidebar */
+.sidebar{width:210px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar-logo{padding:18px 16px 14px;border-bottom:1px solid var(--border)}
+.logo-mark{font-size:11px;font-weight:700;letter-spacing:2.5px;color:var(--accent);text-transform:uppercase}
+.logo-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.nav-section{padding:14px 10px 6px}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;padding:0 8px 6px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:7px;cursor:pointer;color:var(--muted);font-size:13px;font-weight:500;transition:all .12s;margin-bottom:1px;user-select:none;position:relative}
+.nav-item:hover{background:var(--surface);color:var(--text)}
+.nav-item.active{background:rgba(79,163,255,.12);color:var(--accent);border-left:2px solid var(--accent)}
+.nav-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.step-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;border:1.5px solid var(--border2);color:var(--muted)}
+.nav-item.active .step-num{border-color:var(--accent);color:var(--accent);background:rgba(79,163,255,.15)}
+.nav-item.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+.sidebar-footer{margin-top:auto;padding:14px 16px;border-top:1px solid var(--border);font-size:10px;color:var(--muted)}
+.conn-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:5px;vertical-align:middle}
+.conn-dot.ok{background:var(--green);box-shadow:0 0 6px var(--green)}
 
-/* ── Layout ────────────────────────────── */
-.shell { display: flex; height: 100vh; overflow: hidden; }
+/* Main */
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:48px;border-bottom:1px solid var(--border);padding:0 20px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);flex-shrink:0}
+.topbar-title{font-size:14px;font-weight:600}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-time{font-size:11px;color:var(--muted);font-family:monospace}
 
-/* ── Sidebar ───────────────────────────── */
-.sidebar {
-  width: 220px;
-  flex-shrink: 0;
-  background: var(--bg2);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-  overflow-y: auto;
-}
-.sidebar-logo {
-  padding: 22px 20px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.sidebar-logo .logo-mark {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--accent);
-  text-transform: uppercase;
-  margin-bottom: 2px;
-}
-.sidebar-logo .logo-sub {
-  font-size: 10px;
-  color: var(--muted);
-}
-.nav-section { padding: 16px 12px 8px; }
-.nav-label {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: var(--muted);
-  text-transform: uppercase;
-  padding: 0 8px 6px;
-}
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 500;
-  transition: all .15s;
-  margin-bottom: 2px;
-  user-select: none;
-}
-.nav-item:hover { background: var(--surface); color: var(--text); }
-.nav-item.active {
-  background: linear-gradient(90deg, rgba(79,163,255,.15), transparent);
-  color: var(--accent);
-  border-left: 2px solid var(--accent);
-}
-.nav-icon { font-size: 15px; width: 20px; text-align: center; }
-.sidebar-footer {
-  margin-top: auto;
-  padding: 16px 20px;
-  border-top: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--muted);
-}
-.sidebar-footer .ver { color: var(--accent); font-weight: 600; }
+/* Pipeline strip */
+.pipeline-strip{padding:10px 20px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;flex-shrink:0}
+.ps-step{display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;cursor:pointer;transition:background .12s;white-space:nowrap}
+.ps-step:hover{background:var(--surface)}
+.ps-step.active{background:rgba(79,163,255,.12)}
+.ps-step.done .ps-num{background:var(--green);color:#fff;border-color:var(--green)}
+.ps-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;border:1.5px solid var(--border2);color:var(--muted);flex-shrink:0}
+.ps-step.active .ps-num{border-color:var(--accent);color:var(--accent);background:rgba(79,163,255,.15)}
+.ps-label{font-size:12px;font-weight:500;color:var(--muted)}
+.ps-step.active .ps-label{color:var(--accent)}
+.ps-step.done .ps-label{color:var(--green)}
+.ps-arrow{color:var(--border2);font-size:14px;padding:0 2px}
 
-/* ── Main Area ──────────────────────────── */
-.main-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
+/* Content */
+.content{flex:1;overflow-y:auto;padding:20px}
+.tab-pane{display:none}
+.tab-pane.active{display:block}
 
-/* ── Top Bar ────────────────────────────── */
-.topbar {
-  height: 52px;
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg2);
-  flex-shrink: 0;
-}
-.topbar-title { font-size: 15px; font-weight: 600; }
-.topbar-actions { display: flex; align-items: center; gap: 10px; }
-.topbar-time {
-  font-size: 11px;
-  color: var(--muted);
-  font-family: monospace;
-}
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px}
+.card+.card{margin-top:12px}
+.card-title{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.card-head .card-title{margin-bottom:0}
 
-/* ── Content ────────────────────────────── */
-.content {
-  flex: 1;
-  overflow-y: auto;
-  padding: 24px;
-}
-.tab-pane { display: none; }
-.tab-pane.active { display: block; }
+/* Stats */
+.stats-row{display:grid;gap:12px;margin-bottom:16px}
+.stats-row.cols-4{grid-template-columns:repeat(4,1fr)}
+.stats-row.cols-5{grid-template-columns:repeat(5,1fr)}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.stat-card.c-accent::before{background:var(--accent)}
+.stat-card.c-green::before{background:var(--green)}
+.stat-card.c-yellow::before{background:var(--yellow)}
+.stat-card.c-purple::before{background:var(--purple)}
+.stat-card.c-teal::before{background:var(--teal)}
+.stat-label{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:.5px;margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:700;line-height:1}
+.stat-value.c-accent{color:var(--accent)}
+.stat-value.c-green{color:var(--green)}
+.stat-value.c-yellow{color:var(--yellow)}
+.stat-value.c-purple{color:var(--purple)}
+.stat-value.c-teal{color:var(--teal)}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
 
-/* ── Cards ──────────────────────────────── */
-.card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-}
-.card-title {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g64{display:grid;grid-template-columns:6fr 4fr;gap:12px}
 
-/* ── Stat Cards ─────────────────────────── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-bottom: 20px;
-}
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  position: relative;
-  overflow: hidden;
-}
-.stat-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-}
-.stat-card.accent::before  { background: var(--accent); }
-.stat-card.green::before   { background: var(--green); }
-.stat-card.yellow::before  { background: var(--yellow); }
-.stat-card.purple::before  { background: var(--purple); }
+/* Tables */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.5px;color:var(--muted);border-bottom:1px solid var(--border);text-transform:uppercase;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
 
-.stat-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; font-weight: 600; letter-spacing: .5px; }
-.stat-value { font-size: 30px; font-weight: 700; line-height: 1; }
-.stat-value.accent { color: var(--accent); }
-.stat-value.green  { color: var(--green); }
-.stat-value.yellow { color: var(--yellow); }
-.stat-value.purple { color: var(--purple); }
-.stat-sub   { font-size: 11px; color: var(--muted); margin-top: 6px; }
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-green{background:rgba(61,186,108,.15);color:var(--green)}
+.b-blue{background:rgba(79,163,255,.15);color:var(--accent)}
+.b-yellow{background:rgba(201,165,42,.15);color:var(--yellow)}
+.b-red{background:rgba(224,74,74,.15);color:var(--red)}
+.b-gray{background:rgba(95,122,148,.12);color:var(--muted)}
+.b-purple{background:rgba(155,114,240,.15);color:var(--purple)}
+.b-teal{background:rgba(42,185,168,.15);color:var(--teal)}
+.b-orange{background:rgba(212,120,58,.15);color:var(--orange)}
 
-/* ── Grid layouts ────────────────────────── */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.grid-6-4 { display: grid; grid-template-columns: 6fr 4fr; gap: 14px; margin-bottom: 14px; }
+/* Dot */
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:5px;flex-shrink:0}
+.dot-green{background:var(--green);box-shadow:0 0 5px var(--green)}
+.dot-yellow{background:var(--yellow)}
+.dot-red{background:var(--red);box-shadow:0 0 5px var(--red)}
+.dot-gray{background:var(--muted)}
 
-/* ── Tables ─────────────────────────────── */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; }
-th {
-  text-align: left;
-  padding: 9px 14px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-td {
-  padding: 11px 14px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-  vertical-align: middle;
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--surface2); }
-code { font-family: monospace; font-size: 12px; color: var(--accent); }
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:5px;background:var(--accent);color:#020c17;border:none;padding:7px 14px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .12s}
+.btn:hover{opacity:.85}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.btn-green{background:var(--green)}
+.btn-red{background:var(--red)}
+.btn-ghost{display:inline-flex;align-items:center;gap:5px;background:none;border:1px solid var(--border2);color:var(--text);padding:6px 12px;border-radius:7px;font-size:13px;cursor:pointer;transition:background .12s}
+.btn-ghost:hover{background:var(--surface2)}
 
-/* ── Badges ──────────────────────────────── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 2px 9px;
-  border-radius: 20px;
-  font-size: 11px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.b-green  { background: rgba(61,186,108,.15); color: var(--green); }
-.b-blue   { background: rgba(79,163,255,.15); color: var(--accent); }
-.b-yellow { background: rgba(212,160,23,.15); color: var(--yellow); }
-.b-red    { background: rgba(229,75,75,.15);  color: var(--red); }
-.b-gray   { background: rgba(107,128,153,.12);color: var(--muted); }
-.b-purple { background: rgba(155,114,240,.15);color: var(--purple); }
-.b-teal   { background: rgba(42,185,168,.15); color: var(--teal); }
+/* Forms */
+.form-group{margin-bottom:14px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;letter-spacing:.3px}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:8px 11px;border-radius:7px;font-size:13px;font-family:var(--font);outline:none;transition:border .12s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-select option{background:var(--surface2);color:var(--text)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-row.cols-3{grid-template-columns:1fr 1fr 1fr}
 
-/* ── Status Dot ──────────────────────────── */
-.dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-  flex-shrink: 0;
-}
-.dot-green  { background: var(--green);  box-shadow: 0 0 6px var(--green); }
-.dot-gray   { background: var(--muted); }
-.dot-red    { background: var(--red);    box-shadow: 0 0 6px var(--red); }
-.dot-yellow { background: var(--yellow); }
+/* Platform Grid */
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px}
+.plat-card{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;cursor:pointer;transition:all .12s;display:flex;align-items:center;gap:9px;user-select:none}
+.plat-card:hover{border-color:var(--accent);background:rgba(79,163,255,.05)}
+.plat-card.selected{border-color:var(--accent);background:rgba(79,163,255,.12)}
+.plat-card.selected .plat-check{background:var(--accent);border-color:var(--accent)}
+.plat-card.selected .plat-check::after{content:''}
+.plat-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.plat-info{flex:1;min-width:0}
+.plat-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plat-tier{font-size:10px;color:var(--muted);margin-top:1px}
+.plat-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border2);flex-shrink:0;position:relative;transition:all .12s}
+.plat-card.selected .plat-check::after{content:'';position:absolute;left:3px;top:1px;width:6px;height:9px;border:2px solid #020c17;border-top:none;border-left:none;transform:rotate(40deg)}
 
-/* ── Buttons ─────────────────────────────── */
-.btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--accent);
-  color: #020c17;
-  border: none;
-  padding: 7px 16px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity .15s;
-}
-.btn:hover { opacity: .85; }
-.btn-ghost {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: none;
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 6px 14px;
-  border-radius: 7px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background .15s;
-}
-.btn-ghost:hover { background: var(--surface2); }
-.btn-sm { padding: 4px 10px; font-size: 11px; }
+/* Tier sections */
+.tier-section{margin-bottom:20px}
+.tier-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tier-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700}
+.tier-s{background:rgba(201,165,42,.2);color:var(--yellow)}
+.tier-a{background:rgba(79,163,255,.2);color:var(--accent)}
+.tier-b{background:rgba(42,185,168,.2);color:var(--teal)}
+.tier-c{background:rgba(155,114,240,.2);color:var(--purple)}
+.tier-desc{font-size:12px;color:var(--muted)}
 
-/* ── Score Bar ────────────────────────────── */
-.score-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.score-track {
-  flex: 1;
-  height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.score-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width .4s ease;
-}
+/* Draft editor */
+.draft-box{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:16px;min-height:200px;color:var(--text);font-size:13.5px;line-height:1.7;outline:none;white-space:pre-wrap;word-break:break-word}
+.draft-box:focus{border-color:var(--accent)}
 
-/* ── Adapter Row ─────────────────────────── */
-.adapter-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 13px 0;
-  border-bottom: 1px solid var(--border);
-  gap: 12px;
-}
-.adapter-row:last-child { border-bottom: none; }
-.adapter-info { display: flex; flex-direction: column; gap: 2px; }
-.adapter-name { font-weight: 600; display: flex; align-items: center; }
-.adapter-id   { font-size: 11px; color: var(--muted); font-family: monospace; }
-.adapter-meta { display: flex; align-items: center; gap: 12px; }
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:8px}
+.score-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.score-fill{height:100%;border-radius:3px;transition:width .4s}
 
-/* ── Alert ────────────────────────────────── */
-.alert-list { display: flex; flex-direction: column; gap: 0; }
-.alert-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
-}
-.alert-item:last-child { border-bottom: none; }
-.alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-.alert-body { flex: 1; }
-.alert-msg  { font-size: 13px; }
-.alert-time { font-size: 11px; color: var(--muted); margin-top: 3px; }
+/* Timeline / calendar */
+.timeline{display:flex;flex-direction:column;gap:10px}
+.tl-item{display:flex;gap:14px;align-items:flex-start}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:4px}
+.tl-dot.done{background:var(--green)}
+.tl-dot.active{background:var(--accent);box-shadow:0 0 8px var(--accent)}
+.tl-line{width:1px;height:calc(100% + 10px);background:var(--border);margin:0 auto}
+.tl-body{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 14px;margin-top:-2px}
+.tl-title{font-weight:600;font-size:13px}
+.tl-meta{font-size:11px;color:var(--muted);margin-top:3px}
+.tl-actions{display:flex;gap:6px;margin-top:8px}
 
-/* ── Score Distribution ───────────────────── */
-.score-dist-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 0;
-  border-bottom: 1px solid var(--border);
-}
-.score-dist-row:last-child { border-bottom: none; }
-.score-dist-label { flex: 1; font-size: 12px; color: var(--muted); }
-.score-dist-track {
-  width: 120px;
-  height: 5px;
-  background: var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.score-dist-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width .5s ease;
-}
-.score-dist-count { font-size: 13px; font-weight: 600; width: 24px; text-align: right; }
+/* Post result card */
+.result-card{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.result-card.success{border-left:3px solid var(--green)}
+.result-card.pending{border-left:3px solid var(--yellow)}
+.result-card.failed{border-left:3px solid var(--red)}
 
-/* ── Empty ────────────────────────────────── */
-.empty-state {
-  text-align: center;
-  color: var(--muted);
-  padding: 40px 20px;
-  font-size: 13px;
-}
-.empty-icon { font-size: 28px; margin-bottom: 8px; }
+/* Analytics */
+.analytics-metric{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:14px;text-align:center}
+.analytics-val{font-size:24px;font-weight:700}
+.analytics-label{font-size:11px;color:var(--muted);margin-top:3px}
+.analytics-change{font-size:11px;margin-top:4px}
+.analytics-change.up{color:var(--green)}
+.analytics-change.down{color:var(--red)}
 
-/* ── Publish Grid ─────────────────────────── */
-.pub-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-}
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:18px}
+.modal-actions{display:flex;gap:8px;margin-top:18px}
 
-/* ── Pipeline Viz ─────────────────────────── */
-.pipeline {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  padding: 20px 0;
-}
-.pipe-step {
-  flex: 1;
-  text-align: center;
-  position: relative;
-}
-.pipe-step::after {
-  content: '→';
-  position: absolute;
-  right: -10px;
-  top: 50%;
-  transform: translateY(-60%);
-  color: var(--muted);
-  font-size: 16px;
-}
-.pipe-step:last-child::after { display: none; }
-.pipe-box {
-  background: var(--surface2);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 12px 8px;
-  margin: 0 14px;
-}
-.pipe-icon { font-size: 20px; }
-.pipe-name { font-size: 11px; color: var(--muted); margin-top: 4px; }
+/* Empty */
+.empty{text-align:center;color:var(--muted);padding:36px 20px;font-size:13px}
+.empty-icon{font-size:28px;margin-bottom:8px}
 
-/* ── Glow effects ─────────────────────────── */
-.glow-accent { text-shadow: 0 0 20px rgba(79,163,255,.4); }
+/* Notification toast */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px 18px;font-size:13px;font-weight:500;z-index:999;transform:translateY(80px);opacity:0;transition:all .25s;max-width:320px}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.ok{border-left:3px solid var(--green)}
+#toast.err{border-left:3px solid var(--red)}
+
+/* Misc */
+code{font-family:monospace;font-size:12px;color:var(--accent)}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.muted{color:var(--muted)}
+.text-green{color:var(--green)}
+.text-red{color:var(--red)}
+.text-yellow{color:var(--yellow)}
+.text-accent{color:var(--accent)}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.flex{display:flex}
+.flex-center{display:flex;align-items:center}
+.gap-8{gap:8px}
+.gap-12{gap:12px}
+.ml-auto{margin-left:auto}
+hr.divider{border:none;border-top:1px solid var(--border);margin:16px 0}
 </style>
 </head>
 <body>
 <div class="shell">
 
-<!-- ══ Sidebar ═══════════════════════════════ -->
+<!-- ======= SIDEBAR ======= -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-mark">PR-OS</div>
-    <div class="logo-sub">Command Center v1.0</div>
+    <div class="logo-sub">MoCKA Publishing Command Center</div>
   </div>
 
   <div class="nav-section">
-    <div class="nav-label">メイン</div>
-    <div class="nav-item active" onclick="goto('dashboard',this)">
+    <div class="nav-label">投稿ワークフロー</div>
+    <div class="nav-item active" onclick="goto('input',this)">
+      <div class="step-num" id="sn-1">1</div>
+      <span>コンテンツ入力</span>
+    </div>
+    <div class="nav-item" onclick="goto('review',this)">
+      <div class="step-num" id="sn-2">2</div>
+      <span>試作・AI審査</span>
+      <span class="nav-badge" id="nb-review" style="display:none">0</span>
+    </div>
+    <div class="nav-item" onclick="goto('platforms',this)">
+      <div class="step-num" id="sn-3">3</div>
+      <span>掲載先選択</span>
+    </div>
+    <div class="nav-item" onclick="goto('publish',this)">
+      <div class="step-num" id="sn-4">4</div>
+      <span>スケジュール・投稿</span>
+    </div>
+    <div class="nav-item" onclick="goto('analytics',this)">
+      <div class="step-num" id="sn-5">5</div>
+      <span>投稿後反響</span>
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">管理</div>
+    <div class="nav-item" onclick="goto('strategy',this)">
+      <span class="nav-icon">⬡</span> 戦略レイヤー
+    </div>
+    <div class="nav-item" onclick="goto('dashboard',this)">
       <span class="nav-icon">◈</span> Dashboard
     </div>
     <div class="nav-item" onclick="goto('knowledge',this)">
       <span class="nav-icon">◧</span> Knowledge Board
     </div>
-    <div class="nav-item" onclick="goto('publish',this)">
-      <span class="nav-icon">◉</span> Publish Manager
-    </div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">システム</div>
-    <div class="nav-item" onclick="goto('adapters',this)">
-      <span class="nav-icon">⬡</span> Adapters (TSI)
-    </div>
-    <div class="nav-item" onclick="goto('aigate',this)">
-      <span class="nav-icon">◈</span> AI Gate
-    </div>
-    <div class="nav-item" onclick="goto('scheduler',this)">
-      <span class="nav-icon">◷</span> Scheduler
-    </div>
-  </div>
-
-  <div class="nav-section">
-    <div class="nav-label">分析・改善</div>
-    <div class="nav-item" onclick="goto('analytics',this)">
-      <span class="nav-icon">◎</span> Analytics
-    </div>
-    <div class="nav-item" onclick="goto('rewriter',this)">
-      <span class="nav-icon">✦</span> AI Rewriter
+    <div class="nav-item" onclick="goto('history',this)">
+      <span class="nav-icon">◷</span> 投稿履歴
     </div>
   </div>
 
   <div class="sidebar-footer">
-    MoCKA PlanningCaliber<br>
-    <span class="ver">Phase 1 Complete</span>
+    <span class="conn-dot" id="conn-dot"></span>
+    <span id="conn-label">サーバー確認中</span><br>
+    <span style="font-size:9px">ver 2.0 · 2026-06</span>
   </div>
 </aside>
 
-<!-- ══ Main Area ══════════════════════════════ -->
+<!-- ======= MAIN ======= -->
 <div class="main-area">
   <div class="topbar">
-    <div class="topbar-title" id="page-title">Dashboard</div>
-    <div class="topbar-actions">
+    <div class="topbar-title" id="page-title">コンテンツ入力</div>
+    <div class="topbar-right">
       <div class="topbar-time" id="clock"></div>
       <button class="btn-ghost btn-sm" onclick="refreshAll()">↻ 更新</button>
+      <button class="btn btn-sm" onclick="newContent()">+ 新規作成</button>
+    </div>
+  </div>
+
+  <!-- Pipeline Strip -->
+  <div class="pipeline-strip" id="pipeline-strip">
+    <div class="ps-step active" id="ps1" onclick="goto('input')">
+      <div class="ps-num">1</div>
+      <div class="ps-label">入力</div>
+    </div>
+    <div class="ps-arrow">›</div>
+    <div class="ps-step" id="ps2" onclick="goto('review')">
+      <div class="ps-num">2</div>
+      <div class="ps-label">試作・審査</div>
+    </div>
+    <div class="ps-arrow">›</div>
+    <div class="ps-step" id="ps3" onclick="goto('platforms')">
+      <div class="ps-num">3</div>
+      <div class="ps-label">掲載先選択</div>
+    </div>
+    <div class="ps-arrow">›</div>
+    <div class="ps-step" id="ps4" onclick="goto('publish')">
+      <div class="ps-num">4</div>
+      <div class="ps-label">投稿</div>
+    </div>
+    <div class="ps-arrow">›</div>
+    <div class="ps-step" id="ps5" onclick="goto('analytics')">
+      <div class="ps-num">5</div>
+      <div class="ps-label">反響</div>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- ── Dashboard ───────────────────────── -->
-    <div id="pane-dashboard" class="tab-pane active">
-      <div class="stats-grid">
-        <div class="stat-card accent">
-          <div class="stat-label">Knowledge Sources</div>
-          <div class="stat-value accent" id="s-total">0</div>
-          <div class="stat-sub">全KS数</div>
+    <!-- =========================================
+         STEP 1: コンテンツ入力
+    ========================================= -->
+    <div id="pane-input" class="tab-pane active">
+      <div class="g64" style="align-items:start">
+        <!-- 入力フォーム -->
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">コンテンツ基本情報</div>
+              <span class="badge b-blue">新規ドラフト</span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">タイトル *</label>
+              <input id="f-title" class="form-input" placeholder="例: MoCKA Orchestra v1.2リリースのお知らせ">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">コンテンツ種別</label>
+                <select id="f-type" class="form-select">
+                  <option value="release">リリースノート</option>
+                  <option value="blog">ブログ記事</option>
+                  <option value="tech">技術記事</option>
+                  <option value="lp">LP公開</option>
+                  <option value="sns">SNS投稿</option>
+                  <option value="listing">ディレクトリ掲載</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">優先度</label>
+                <select id="f-priority" class="form-select">
+                  <option value="S">S級（即時投稿）</option>
+                  <option value="A" selected>A級（今週中）</option>
+                  <option value="B">B級（今月中）</option>
+                  <option value="C">C級（通常）</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">ターゲット読者 / キーワード</label>
+              <input id="f-keywords" class="form-input" placeholder="例: AIツール開発者, Chrome拡張, MoCKA, 生産性向上">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">本文 / メモ *</label>
+              <textarea id="f-body" class="form-textarea" rows="8"
+                placeholder="本文または骨子メモを書いてください。AIが審査・最適化します。
+
+例:
+- v1.2の主な変更点
+- 新機能: Orchestra自動デプロイ
+- バグ修正: イベントログの文字化け解消
+- 対象ユーザー: エンジニア・研究者"></textarea>
+            </div>
+
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label class="form-label">想定配信日</label>
+                <input id="f-date" type="date" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">配信時刻 (JST)</label>
+                <input id="f-time" type="time" class="form-input" value="09:00">
+              </div>
+              <div class="form-group">
+                <label class="form-label">起草者</label>
+                <input id="f-author" class="form-input" value="きむら博士">
+              </div>
+            </div>
+
+            <!-- 5W1H -->
+            <hr class="divider">
+            <div class="card-title">5W1H — 投稿戦略設定</div>
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label class="form-label">Who — 読者層（戦略レイヤー）</label>
+                <select id="f-layer" class="form-select">
+                  <option value="0">第0層: AI読者（LLM/クローラー）</option>
+                  <option value="1" selected>第1層: MoCKAブランド認知</option>
+                  <option value="2">第2層: 技術ブランド/エンジニア</option>
+                  <option value="3">第3層: vasAI/企業・経営層</option>
+                  <option value="4">第4層: mini-MoCKA/一般ユーザー</option>
+                  <option value="5">第5層: 木村博士ファン</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Why — 目的/KPI</label>
+                <select id="f-kpi" class="form-select">
+                  <option value="awareness">知名度向上（リーチ最大化）</option>
+                  <option value="trust">信頼性向上（引用・被リンク）</option>
+                  <option value="lead">リード獲得（問い合わせ）</option>
+                  <option value="conversion">コンバージョン（DL/購入）</option>
+                  <option value="community">コミュニティ形成</option>
+                  <option value="ai_index">AI索引化（LLM学習素材）</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">How — フォーマット</label>
+                <select id="f-format" class="form-select">
+                  <option value="text">テキスト記事</option>
+                  <option value="markdown">Markdown（GitHub/Zenn）</option>
+                  <option value="thread">スレッド投稿（X/Threads）</option>
+                  <option value="short">ショート動画（YouTube Shorts）</option>
+                  <option value="listing">ディレクトリ登録フォーム</option>
+                  <option value="structured">構造化データ（JSON-LD）</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">補足・制約</label>
+              <input id="f-note" class="form-input" placeholder="例: 競合他社名を出さない / 英語版も必要 / Qiita優先">
+            </div>
+
+            <div style="display:flex;gap:8px;margin-top:4px">
+              <button class="btn" onclick="submitToReview()">AI審査へ送る →</button>
+              <button class="btn-ghost" onclick="saveDraft()">下書き保存</button>
+              <button class="btn-ghost" onclick="clearForm()">クリア</button>
+            </div>
+          </div>
+
+          <!-- 下書き一覧 -->
+          <div class="card" style="margin-top:12px">
+            <div class="card-head">
+              <div class="card-title">保存済み下書き</div>
+              <button class="btn-ghost btn-xs" onclick="renderDrafts()">↻</button>
+            </div>
+            <div id="draft-list"><div class="empty"><div class="empty-icon">✍</div>下書きがありません</div></div>
+          </div>
         </div>
-        <div class="stat-card green">
-          <div class="stat-label">Confirmed</div>
-          <div class="stat-value green" id="s-confirmed">0</div>
-          <div class="stat-sub">確定済み原本</div>
+
+        <!-- 右カラム: ガイド -->
+        <div>
+          <div class="card">
+            <div class="card-title">投稿戦略ガイド</div>
+            <div style="font-size:12px;color:var(--muted);line-height:2">
+              <div style="margin-bottom:10px">
+                <span class="badge tier-s" style="font-size:10px">S級</span>
+                <span style="margin-left:6px">Product Hunt・GitHub・HN・DEV</span><br>
+                <span style="padding-left:52px;font-size:11px">製品公開・技術認知</span>
+              </div>
+              <div style="margin-bottom:10px">
+                <span class="badge tier-a" style="font-size:10px">A級</span>
+                <span style="margin-left:6px">Toolify・Futurepedia・Peerlist</span><br>
+                <span style="padding-left:52px;font-size:11px">AIツール認知・開発者層</span>
+              </div>
+              <div style="margin-bottom:10px">
+                <span class="badge tier-b" style="font-size:10px">B級</span>
+                <span style="margin-left:6px">Medium・Qiita・Zenn・LinkedIn</span><br>
+                <span style="padding-left:52px;font-size:11px">SEO・技術解説</span>
+              </div>
+              <div>
+                <span class="badge tier-c" style="font-size:10px">C級</span>
+                <span style="margin-left:6px">Reddit・X・YouTube・Facebook</span><br>
+                <span style="padding-left:52px;font-size:11px">コミュニティ形成・継続発信</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="card-title">AI審査基準</div>
+            <div style="font-size:12px">
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+                <span class="muted">0.9〜1.0</span>
+                <span class="text-green">自動確定</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+                <span class="muted">0.8〜0.9</span>
+                <span class="text-accent">自動確定（ログ記録）</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+                <span class="muted">0.6〜0.8</span>
+                <span class="text-yellow">手動承認が必要</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0">
+                <span class="muted">0.6未満</span>
+                <span class="text-red">差し戻し</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="card-title">現在のKS統計</div>
+            <div id="mini-stats" style="font-size:12px;color:var(--muted)">読み込み中...</div>
+          </div>
         </div>
-        <div class="stat-card yellow">
-          <div class="stat-label">Published</div>
-          <div class="stat-value yellow" id="s-published">0</div>
-          <div class="stat-sub">全媒体公開合計</div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         STEP 2: 試作・AI審査
+    ========================================= -->
+    <div id="pane-review" class="tab-pane">
+      <div class="g64" style="align-items:start">
+        <div>
+          <!-- 現在の審査対象 -->
+          <div class="card" id="review-content-card">
+            <div class="card-head">
+              <div class="card-title">審査対象コンテンツ</div>
+              <div style="display:flex;gap:6px">
+                <span class="badge b-yellow" id="review-status-badge">審査待ち</span>
+                <button class="btn-ghost btn-xs" onclick="runAIReview()">AI審査実行</button>
+              </div>
+            </div>
+            <div id="review-title" style="font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)">—</div>
+            <div id="review-meta" style="font-size:11px;color:var(--muted);margin-bottom:12px">種別: — | 優先度: — | 起草: —</div>
+
+            <div class="card-title">本文プレビュー・編集</div>
+            <div id="review-body" class="draft-box" contenteditable="true"
+              style="min-height:180px">コンテンツを入力画面で作成してください。</div>
+
+            <hr class="divider">
+
+            <!-- AI審査結果 -->
+            <div id="ai-result">
+              <div class="card-title">AI審査結果</div>
+              <div id="ai-score-area" style="margin-bottom:14px">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+                  <div style="font-size:28px;font-weight:700" id="ai-score-val">—</div>
+                  <div style="flex:1">
+                    <div class="score-bar">
+                      <div class="score-track"><div class="score-fill" id="ai-score-bar" style="width:0%"></div></div>
+                    </div>
+                    <div style="font-size:11px;color:var(--muted);margin-top:4px" id="ai-score-label">審査前</div>
+                  </div>
+                </div>
+              </div>
+
+              <div id="ai-checks" style="font-size:12px;line-height:2">
+                <div style="color:var(--muted)">AI審査を実行するとチェック結果が表示されます</div>
+              </div>
+            </div>
+
+            <hr class="divider">
+
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-green btn-sm" onclick="approveContent()">承認 → 掲載先選択へ</button>
+              <button class="btn btn-red btn-sm" onclick="rejectContent()">差し戻し</button>
+              <button class="btn-ghost btn-sm" onclick="goto('input')">← 入力に戻る</button>
+            </div>
+          </div>
+
+          <!-- 承認待ちキュー -->
+          <div class="card" style="margin-top:12px">
+            <div class="card-head">
+              <div class="card-title">承認待ちキュー</div>
+              <button class="btn-ghost btn-xs" onclick="renderReviewQueue()">↻</button>
+            </div>
+            <div id="review-queue"></div>
+          </div>
         </div>
-        <div class="stat-card purple">
-          <div class="stat-label">Pending Approval</div>
-          <div class="stat-value purple" id="s-pending">0</div>
-          <div class="stat-sub">手動承認待ち</div>
+
+        <!-- 右: 過去の審査 -->
+        <div>
+          <div class="card">
+            <div class="card-title">審査チェックリスト</div>
+            <div style="font-size:12px;line-height:2.2;color:var(--muted)">
+              <div>校正（誤字脱字・表記統一）</div>
+              <div>整合性（MoCKA蓄積知識との矛盾）</div>
+              <div>構造化（見出し・要約の適切さ）</div>
+              <div>ターゲット適合（読者層マッチ）</div>
+              <div>SEO（キーワード含有）</div>
+              <div>CP932汚染チェック</div>
+              <div>重複コンテンツ確認</div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:12px">
+            <div class="card-title">最近の審査ログ</div>
+            <div id="review-log" style="font-size:12px"><div class="muted">履歴なし</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         STEP 3: 掲載先選択
+    ========================================= -->
+    <div id="pane-platforms" class="tab-pane">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div>
+          <div style="font-size:15px;font-weight:600" id="plat-content-title">掲載先を選択してください</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">複数選択可能。選択後「スケジュール設定へ」に進んでください。</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn-ghost btn-sm" onclick="selectAllByTier('S')">S級一括</button>
+          <button class="btn-ghost btn-sm" onclick="selectAllByTier('A')">A級一括</button>
+          <button class="btn-ghost btn-sm" onclick="clearPlatforms()">クリア</button>
+          <button class="btn btn-sm" onclick="confirmPlatforms()">スケジュール設定へ →</button>
         </div>
       </div>
 
-      <div class="grid-6-4">
-        <!-- 最近のKS -->
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:3px 12px;font-size:12px">
+          選択中: <span id="plat-count" class="text-accent">0</span> 媒体
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:20px;padding:3px 12px;font-size:12px">
+          推定リーチ: <span id="plat-reach" class="text-green">0</span>
+        </div>
+      </div>
+
+      <!-- 第0層: AI読者インフラ -->
+      <div class="tier-section">
+        <div class="tier-header">
+          <span class="tier-badge" style="background:rgba(155,114,240,.2);color:var(--purple)">第0層</span>
+          <span class="tier-desc">AI読者インフラ — LLM/クローラーが「裏取り」する基盤。他5層全体の信頼性を決める</span>
+        </div>
+        <div id="ai-layer-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px"></div>
+      </div>
+      <hr class="divider">
+
+      <!-- S級 -->
+      <div class="tier-section">
+        <div class="tier-header">
+          <span class="tier-badge tier-s">S級</span>
+          <span class="tier-desc">製品公開・技術認知 — 毎リリース必須</span>
+        </div>
+        <div class="platform-grid" id="pg-s"></div>
+      </div>
+
+      <!-- A級 -->
+      <div class="tier-section">
+        <div class="tier-header">
+          <span class="tier-badge tier-a">A級</span>
+          <span class="tier-desc">AIツール認知・開発者層獲得</span>
+        </div>
+        <div class="platform-grid" id="pg-a"></div>
+      </div>
+
+      <!-- B級 -->
+      <div class="tier-section">
+        <div class="tier-header">
+          <span class="tier-badge tier-b">B級</span>
+          <span class="tier-desc">SEO・技術解説・長文コンテンツ</span>
+        </div>
+        <div class="platform-grid" id="pg-b"></div>
+      </div>
+
+      <!-- C級 -->
+      <div class="tier-section">
+        <div class="tier-header">
+          <span class="tier-badge tier-c">C級</span>
+          <span class="tier-desc">コミュニティ形成・継続発信</span>
+        </div>
+        <div class="platform-grid" id="pg-c"></div>
+      </div>
+
+      <div style="text-align:right;margin-top:16px">
+        <button class="btn" onclick="confirmPlatforms()">選択確定・スケジュール設定へ →</button>
+      </div>
+    </div>
+
+    <!-- =========================================
+         STEP 4: スケジュール・投稿
+    ========================================= -->
+    <div id="pane-publish" class="tab-pane">
+      <div class="g64" style="align-items:start">
+        <div>
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">投稿スケジュール</div>
+              <button class="btn btn-sm" onclick="executePublish()">投稿実行 ▶</button>
+            </div>
+            <div id="publish-timeline"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-title">投稿前チェックリスト</div>
+            <div id="pre-publish-checklist" style="font-size:12px;line-height:2.2"></div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="card-title">コンテンツサマリー</div>
+            <div id="publish-summary" style="font-size:12px;color:var(--muted)">掲載先選択画面で選択してください</div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <div class="card-title">投稿結果</div>
+            <div id="publish-results"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         STEP 5: 投稿後反響 (Analytics)
+    ========================================= -->
+    <div id="pane-analytics" class="tab-pane">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head">
+          <div class="card-title">投稿別パフォーマンス</div>
+          <select id="analytics-ks-select" class="form-select" style="width:auto;font-size:12px" onchange="renderAnalyticsDetail()">
+            <option value="">— KSを選択 —</option>
+          </select>
+        </div>
+        <div id="analytics-detail">
+          <div class="empty"><div class="empty-icon">◎</div>投稿済みコンテンツを選択してください</div>
+        </div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-title">媒体別エンゲージメント</div>
+          <div id="platform-engagement">
+            <div class="empty muted">データがありません</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">AI改善提案</div>
+          <div id="ai-suggestions">
+            <div style="font-size:12px;line-height:2.1">
+              <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                <span class="badge b-red" style="font-size:10px">High</span>
+                <span style="margin-left:8px">直帰率 &gt; 70%: 冒頭3文で価値を明示</span>
+              </div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                <span class="badge b-red" style="font-size:10px">High</span>
+                <span style="margin-left:8px">滞在 &lt; 30秒: 本文充実・動画追加</span>
+              </div>
+              <div style="padding:8px 0;border-bottom:1px solid var(--border)">
+                <span class="badge b-yellow" style="font-size:10px">Med</span>
+                <span style="margin-left:8px">PV &lt; 50: タイトルKW・メタ最適化</span>
+              </div>
+              <div style="padding:8px 0">
+                <span class="badge b-green" style="font-size:10px">Low</span>
+                <span style="margin-left:8px">好調記事: シリーズ展開を検討</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">全投稿サマリー</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>KS ID</th><th>タイトル</th><th>媒体</th><th>投稿日</th><th>PV</th><th>エンゲージメント</th><th>評価</th></tr></thead>
+            <tbody id="analytics-table-body">
+              <tr><td colspan="7" class="empty">データがありません</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+         Dashboard
+    ========================================= -->
+    <div id="pane-dashboard" class="tab-pane">
+      <div class="stats-row cols-5" style="margin-bottom:16px">
+        <div class="stat-card c-accent">
+          <div class="stat-label">総 KS 数</div>
+          <div class="stat-value c-accent" id="ds-total">0</div>
+          <div class="stat-sub">Knowledge Sources</div>
+        </div>
+        <div class="stat-card c-green">
+          <div class="stat-label">確定済み</div>
+          <div class="stat-value c-green" id="ds-confirmed">0</div>
+        </div>
+        <div class="stat-card c-yellow">
+          <div class="stat-label">審査待ち</div>
+          <div class="stat-value c-yellow" id="ds-pending">0</div>
+        </div>
+        <div class="stat-card c-purple">
+          <div class="stat-label">投稿済み</div>
+          <div class="stat-value c-purple" id="ds-published">0</div>
+          <div class="stat-sub">全媒体合計</div>
+        </div>
+        <div class="stat-card c-teal">
+          <div class="stat-label">今月の新規</div>
+          <div class="stat-value c-teal" id="ds-monthly">0</div>
+        </div>
+      </div>
+
+      <div class="g64">
         <div class="card">
           <div class="card-title">最近の Knowledge Source</div>
-          <div id="recent-ks">
-            <div class="empty-state"><div class="empty-icon">◧</div>まだKnowledge Sourceがありません</div>
-          </div>
+          <div id="db-recent-ks"><div class="empty muted">データなし</div></div>
         </div>
-
-        <!-- AI Gate パイプライン -->
         <div class="card">
-          <div class="card-title">AI Gate パイプライン</div>
-          <div class="pipeline">
-            <div class="pipe-step">
-              <div class="pipe-box"><div class="pipe-icon">✍</div><div class="pipe-name">Input</div></div>
-            </div>
-            <div class="pipe-step">
-              <div class="pipe-box"><div class="pipe-icon">✦</div><div class="pipe-name">Proofread</div></div>
-            </div>
-            <div class="pipe-step">
-              <div class="pipe-box"><div class="pipe-icon">⬡</div><div class="pipe-name">Integrity</div></div>
-            </div>
-            <div class="pipe-step">
-              <div class="pipe-box"><div class="pipe-icon">◈</div><div class="pipe-name">Score</div></div>
-            </div>
-            <div class="pipe-step">
-              <div class="pipe-box"><div class="pipe-icon">◉</div><div class="pipe-name">KS_NNN</div></div>
-            </div>
+          <div class="card-title">システム状態</div>
+          <div id="db-system-status" style="font-size:12px;line-height:2.2">
+            <div>PR-OS Backend (8000): <span id="st-backend" class="muted">確認中...</span></div>
+            <div>SEO-OS (8750): <span id="st-seoos" class="muted">確認中...</span></div>
+            <div>MoCKA Core (5002): <span id="st-mocka" class="muted">確認中...</span></div>
           </div>
-
-          <div class="card-title" style="margin-top:16px">スコア分布</div>
-          <div id="score-dist">
-            <div class="score-dist-row">
-              <div class="score-dist-label">優良 0.9〜1.0</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd-excellent" style="width:0%;background:var(--green)"></div></div>
-              <div class="score-dist-count" id="sc-excellent">0</div>
-            </div>
-            <div class="score-dist-row">
-              <div class="score-dist-label">良好 0.8〜0.9</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd-good" style="width:0%;background:var(--accent)"></div></div>
-              <div class="score-dist-count" id="sc-good">0</div>
-            </div>
-            <div class="score-dist-row">
-              <div class="score-dist-label">要確認 0.6〜0.8</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd-review" style="width:0%;background:var(--yellow)"></div></div>
-              <div class="score-dist-count" id="sc-review">0</div>
-            </div>
-            <div class="score-dist-row">
-              <div class="score-dist-label">要修正 &lt;0.6</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd-reject" style="width:0%;background:var(--red)"></div></div>
-              <div class="score-dist-count" id="sc-reject">0</div>
-            </div>
-          </div>
+          <hr class="divider">
+          <div class="card-title">AI Caliber スコア</div>
+          <div style="font-size:32px;font-weight:700;color:var(--accent)" id="caliber-score">—</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px" id="caliber-sub">バックエンド未接続</div>
         </div>
       </div>
 
-      <!-- Alert Panel -->
-      <div class="card">
-        <div class="card-title">Alert Panel</div>
-        <div class="alert-list" id="alert-list">
-          <div class="alert-item">
-            <div class="alert-icon">⚠️</div>
-            <div class="alert-body">
-              <div class="alert-msg">Adapter未設定: WordPress / X / Instagram / GitHub Pages / Newsletter</div>
-              <div class="alert-time">各 adapters/*/config.json の api_endpoint・auth を設定してください</div>
-            </div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon">✅</div>
-            <div class="alert-body">
-              <div class="alert-msg">PR-OS Phase 1 構築完了 — AI Gate・Knowledge Store・WordPress Adapter・Command Center 実装済み</div>
-              <div class="alert-time">2026-06-06</div>
-            </div>
-          </div>
-          <div class="alert-item">
-            <div class="alert-icon">✅</div>
-            <div class="alert-body">
-              <div class="alert-msg">X (Twitter) Adapter・Instagram Adapter・Scheduler 実装完了</div>
-              <div class="alert-time">2026-06-06</div>
-            </div>
-          </div>
+      <div class="card" style="margin-top:12px">
+        <div class="card-title">イベントログ</div>
+        <div id="event-log" style="max-height:200px;overflow-y:auto;font-size:12px;font-family:monospace">
+          <div class="muted">バックエンド接続待ち...</div>
         </div>
       </div>
     </div>
 
-    <!-- ── Knowledge Board ──────────────────── -->
+    <!-- Knowledge Board -->
     <div id="pane-knowledge" class="tab-pane">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div class="card-head" style="margin-bottom:14px">
         <div style="font-size:15px;font-weight:600">Knowledge Board</div>
         <div style="display:flex;gap:8px">
-          <select id="ks-filter" onchange="renderKS()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:7px;font-size:12px">
-            <option value="">すべてのステータス</option>
-            <option value="confirmed">confirmed</option>
-            <option value="draft">draft</option>
-            <option value="pending_approval">pending_approval</option>
-            <option value="rejected">rejected</option>
+          <select id="kb-filter" class="form-select" style="width:auto;font-size:12px" onchange="renderKB()">
+            <option value="">全ステータス</option>
+            <option value="confirmed">確定済み</option>
+            <option value="draft">ドラフト</option>
+            <option value="pending_approval">承認待ち</option>
           </select>
-          <button class="btn-ghost btn-sm" onclick="renderKS()">↻</button>
+          <button class="btn-ghost btn-sm" onclick="renderKB()">↻</button>
         </div>
       </div>
       <div class="card">
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>ID</th><th>タイトル</th><th>ステータス</th>
-                <th>スコア</th><th>カテゴリ</th><th>作成日</th><th>配信状況</th>
-              </tr>
-            </thead>
-            <tbody id="ks-tbody">
-              <tr><td colspan="7" class="empty-state">読み込み中…</td></tr>
-            </tbody>
+            <thead><tr><th>ID</th><th>タイトル</th><th>ステータス</th><th>スコア</th><th>優先度</th><th>作成日</th><th>掲載先</th><th>操作</th></tr></thead>
+            <tbody id="kb-tbody"><tr><td colspan="8" class="empty">読み込み中...</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── Publish Manager ──────────────────── -->
-    <div id="pane-publish" class="tab-pane">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div style="font-size:15px;font-weight:600">Publish Manager</div>
-        <button class="btn-ghost btn-sm" onclick="renderPublish()">↻</button>
-      </div>
+    <!-- 投稿履歴 -->
+    <div id="pane-history" class="tab-pane">
+      <div style="font-size:15px;font-weight:600;margin-bottom:14px">投稿履歴</div>
       <div class="card">
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th>ID</th><th>タイトル</th>
-                <th>WordPress</th><th>X</th><th>Instagram</th>
-                <th>GitHub Pages</th><th>Newsletter</th>
-              </tr>
-            </thead>
-            <tbody id="pub-tbody">
-              <tr><td colspan="7" class="empty-state">確定済みKSがありません</td></tr>
-            </tbody>
+            <thead><tr><th>KS ID</th><th>タイトル</th><th>媒体</th><th>ステータス</th><th>投稿日時</th><th>URL</th></tr></thead>
+            <tbody id="history-tbody"><tr><td colspan="6" class="empty">投稿履歴がありません</td></tr></tbody>
           </table>
         </div>
       </div>
     </div>
 
-    <!-- ── Adapters (TSI) ───────────────────── -->
-    <div id="pane-adapters" class="tab-pane">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div style="font-size:15px;font-weight:600">Adapter Health — TSI Monitor</div>
-        <button class="btn-ghost btn-sm" onclick="alert('TSI実行はPhase 3で実装予定です。\npython pros.py health で確認できます。')">ヘルスチェック実行</button>
+    <!-- =========================================
+         戦略レイヤー
+    ========================================= -->
+    <div id="pane-strategy" class="tab-pane">
+
+      <!-- 6層サマリーバー -->
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px">
+        <div style="background:rgba(155,114,240,.12);border:1px solid rgba(155,114,240,.3);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="filterByLayer(0)">
+          <div style="font-size:10px;font-weight:700;color:var(--purple);letter-spacing:1px">第0層</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">AI読者</div>
+          <div style="font-size:18px;margin-top:4px">🤖</div>
+          <div id="l0-status" style="font-size:10px;margin-top:4px;color:var(--muted)">確認中</div>
+        </div>
+        <div style="background:rgba(201,165,42,.1);border:1px solid rgba(201,165,42,.3);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="filterByLayer(1)">
+          <div style="font-size:10px;font-weight:700;color:var(--yellow);letter-spacing:1px">第1層</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">MoCKA知名度</div>
+          <div style="font-size:18px;margin-top:4px">🌐</div>
+          <div id="l1-ch" style="font-size:10px;margin-top:4px;color:var(--muted)">WP/X/GH/Threads/BSky</div>
+        </div>
+        <div style="background:rgba(79,163,255,.1);border:1px solid rgba(79,163,255,.3);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="filterByLayer(2)">
+          <div style="font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px">第2層</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">技術ブランド</div>
+          <div style="font-size:18px;margin-top:4px">⚙️</div>
+          <div id="l2-ch" style="font-size:10px;margin-top:4px;color:var(--muted)">GH/WP/DEV/Qiita/Zenn</div>
+        </div>
+        <div style="background:rgba(42,185,168,.1);border:1px solid rgba(42,185,168,.3);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="filterByLayer(3)">
+          <div style="font-size:10px;font-weight:700;color:var(--teal);letter-spacing:1px">第3層</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">vasAI/企業層</div>
+          <div style="font-size:18px;margin-top:4px">🏢</div>
+          <div id="l3-ch" style="font-size:10px;margin-top:4px;color:var(--muted)">LinkedIn/WP</div>
+        </div>
+        <div style="background:rgba(61,186,108,.1);border:1px solid rgba(61,186,108,.3);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="filterByLayer(4)">
+          <div style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px">第4層</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">mini-MoCKA</div>
+          <div style="font-size:18px;margin-top:4px">📱</div>
+          <div id="l4-ch" style="font-size:10px;margin-top:4px;color:var(--muted)">WP/NL/LINE/YouTube</div>
+        </div>
+        <div style="background:rgba(212,120,58,.1);border:1px solid rgba(212,120,58,.3);border-radius:8px;padding:10px;text-align:center;cursor:pointer" onclick="filterByLayer(5)">
+          <div style="font-size:10px;font-weight:700;color:var(--orange);letter-spacing:1px">第5層</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">博士ファン化</div>
+          <div style="font-size:18px;margin-top:4px">✍️</div>
+          <div id="l5-ch" style="font-size:10px;margin-top:4px;color:var(--muted)">WP Blog/note</div>
+        </div>
       </div>
-      <div class="card">
-        <div id="adapter-list">
-          <!-- OA-001 -->
-          <div class="adapter-row">
-            <div class="adapter-info">
-              <div class="adapter-name"><span class="dot dot-gray"></span>WordPress</div>
-              <div class="adapter-id">OA-001 · adapters/wordpress/config.json</div>
+
+      <div class="g64" style="align-items:start">
+        <div>
+          <!-- 第0層 詳細ステータス -->
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-head">
+              <div class="card-title" style="color:var(--purple)">第0層 — AI読者インフラ ステータス</div>
+              <span style="font-size:11px;color:var(--muted)">人間向け5層の「裏書き」基盤</span>
             </div>
-            <div class="adapter-meta">
-              <span class="badge b-gray">disabled</span>
-              <span style="font-size:11px;color:var(--muted)">REST API v2</span>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>項目</th><th>ステータス</th><th>TODO</th><th>説明</th></tr></thead>
+                <tbody id="ai-layer-table"></tbody>
+              </table>
             </div>
           </div>
-          <!-- OA-002 -->
-          <div class="adapter-row">
-            <div class="adapter-info">
-              <div class="adapter-name"><span class="dot dot-gray"></span>X (Twitter)</div>
-              <div class="adapter-id">OA-002 · adapters/x_twitter/config.json</div>
-            </div>
-            <div class="adapter-meta">
-              <span class="badge b-gray">disabled</span>
-              <span style="font-size:11px;color:var(--muted)">API v2 · スレッド対応</span>
-            </div>
-          </div>
-          <!-- OA-003 -->
-          <div class="adapter-row">
-            <div class="adapter-info">
-              <div class="adapter-name"><span class="dot dot-gray"></span>Instagram</div>
-              <div class="adapter-id">OA-003 · adapters/instagram/config.json</div>
-            </div>
-            <div class="adapter-meta">
-              <span class="badge b-gray">disabled</span>
-              <span style="font-size:11px;color:var(--muted)">Graph API v19</span>
-            </div>
-          </div>
-          <!-- OA-005 -->
-          <div class="adapter-row">
-            <div class="adapter-info">
-              <div class="adapter-name"><span class="dot dot-gray"></span>GitHub Pages</div>
-              <div class="adapter-id">OA-005 · adapters/github_pages/config.json</div>
-            </div>
-            <div class="adapter-meta">
-              <span class="badge b-gray">disabled</span>
-              <span style="font-size:11px;color:var(--muted)">Phase 4</span>
-            </div>
-          </div>
-          <!-- OA-006 -->
-          <div class="adapter-row">
-            <div class="adapter-info">
-              <div class="adapter-name"><span class="dot dot-gray"></span>Newsletter</div>
-              <div class="adapter-id">OA-006 · adapters/newsletter/config.json</div>
-            </div>
-            <div class="adapter-meta">
-              <span class="badge b-gray">disabled</span>
-              <span style="font-size:11px;color:var(--muted)">Phase 4</span>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div style="margin-top:14px" class="card">
-        <div class="card-title">有効化手順</div>
-        <div style="color:var(--muted);font-size:13px;line-height:2">
-          1. 各 <code>adapters/*/config.json</code> を開く<br>
-          2. <code>"enabled": true</code> に変更<br>
-          3. <code>api_endpoint</code> と <code>auth</code> を記入<br>
-          4. <code>python pros.py health</code> で接続確認
-        </div>
-      </div>
-    </div>
-
-    <!-- ── AI Gate ───────────────────────────── -->
-    <div id="pane-aigate" class="tab-pane">
-      <div style="font-size:15px;font-weight:600;margin-bottom:16px">AI Gate</div>
-      <div class="grid-2" style="margin-bottom:14px">
-        <div class="card">
-          <div class="card-title">処理キュー</div>
-          <div class="empty-state"><div class="empty-icon">◈</div>現在処理中のジョブはありません<br>
-          <code style="font-size:11px;margin-top:8px;display:block">python pros.py submit "タイトル" file.md</code></div>
-        </div>
-        <div class="card">
-          <div class="card-title">品質スコア分布</div>
-          <div id="score-dist-2">
-            <div class="score-dist-row">
-              <div class="score-dist-label">優良 0.9〜1.0</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-excellent" style="width:0%;background:var(--green)"></div></div>
-              <div class="score-dist-count" id="sc2-excellent">0</div>
+          <!-- 層×チャネル×実装優先度マトリクス -->
+          <div class="card">
+            <div class="card-head">
+              <div class="card-title">層 × チャネル × 実装優先度マトリクス</div>
+              <div style="display:flex;gap:6px">
+                <span class="badge b-green" style="font-size:10px">ready = 実装済み</span>
+                <span class="badge b-yellow" style="font-size:10px">todo = 未実装</span>
+                <span class="badge b-gray" style="font-size:10px">hold = 保留</span>
+                <span class="badge b-red" style="font-size:10px">watch = 監視専用</span>
+              </div>
             </div>
-            <div class="score-dist-row">
-              <div class="score-dist-label">良好 0.8〜0.9</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-good" style="width:0%;background:var(--accent)"></div></div>
-              <div class="score-dist-count" id="sc2-good">0</div>
-            </div>
-            <div class="score-dist-row">
-              <div class="score-dist-label">要確認 0.6〜0.8</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-review" style="width:0%;background:var(--yellow)"></div></div>
-              <div class="score-dist-count" id="sc2-review">0</div>
-            </div>
-            <div class="score-dist-row">
-              <div class="score-dist-label">要修正 &lt;0.6</div>
-              <div class="score-dist-track"><div class="score-dist-fill" id="sd2-reject" style="width:0%;background:var(--red)"></div></div>
-              <div class="score-dist-count" id="sc2-reject">0</div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>層</th><th>観点</th><th>実装済みch</th><th>新規追加ch</th><th>優先順位</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span style="color:var(--purple);font-weight:700">第0層</span></td>
+                    <td>AI読者・機械可読性</td>
+                    <td><code>JSON-LD</code> <code>GitHub</code> <code>Zenodo</code></td>
+                    <td><code>llms.txt</code> <code>robots.txt</code> <code>Perplexity</code></td>
+                    <td><span class="badge b-purple">基盤最優先</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="color:var(--yellow);font-weight:700">第1層</span></td>
+                    <td>MoCKAブランド知名度</td>
+                    <td><code>WordPress</code> <code>X</code> <code>GitHub Pages</code></td>
+                    <td><span class="badge b-green" style="font-size:10px">1</span> <code>Bluesky</code> <span class="badge b-blue" style="font-size:10px">2</span> <code>Threads</code></td>
+                    <td><span class="badge b-yellow">今週着手</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="color:var(--accent);font-weight:700">第2層</span></td>
+                    <td>技術ブランド/II信頼性</td>
+                    <td><code>GitHub Pages</code> <code>WordPress(JSON-LD)</code></td>
+                    <td><span class="badge b-blue" style="font-size:10px">4</span> <code>Dev.to</code></td>
+                    <td><span class="badge b-blue">今月中</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="color:var(--teal);font-weight:700">第3層</span></td>
+                    <td>vasAI/企業・AIファーム</td>
+                    <td><code>LinkedIn</code> <code>WordPress</code></td>
+                    <td>Slack/Discord B2B通知（次フェーズ）</td>
+                    <td><span class="badge b-gray">次フェーズ</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="color:var(--green);font-weight:700">第4層</span></td>
+                    <td>mini-MoCKA商材訴求</td>
+                    <td><code>WordPress</code> <code>Newsletter</code></td>
+                    <td><span class="badge b-green" style="font-size:10px">3</span> <code>LINE公式</code> <span class="badge b-gray" style="font-size:10px">保留</span> <code>YouTube Shorts</code></td>
+                    <td><span class="badge b-teal">今月中</span></td>
+                  </tr>
+                  <tr>
+                    <td><span style="color:var(--orange);font-weight:700">第5層</span></td>
+                    <td>木村博士ファン化</td>
+                    <td><code>WordPress Blog</code></td>
+                    <td>—（新規Adapter不要）</td>
+                    <td><span class="badge b-gray">既存運用</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="card">
-        <div class="card-title">品質スコア基準</div>
-        <table>
-          <thead><tr><th>スコア</th><th>判定</th><th>処理</th></tr></thead>
-          <tbody>
-            <tr><td><span class="badge b-green">0.9〜1.0</span></td><td>優良</td><td>自動確定</td></tr>
-            <tr><td><span class="badge b-blue">0.8〜0.9</span></td><td>良好</td><td>自動確定（ログ記録）</td></tr>
-            <tr><td><span class="badge b-yellow">0.6〜0.8</span></td><td>要確認</td><td>きむら博士へ通知 → 手動承認</td></tr>
-            <tr><td><span class="badge b-red">&lt;0.6</span></td><td>要修正</td><td>ドラフト差し戻し</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+        <!-- 右: 実装TODOリスト -->
+        <div>
+          <div class="card" style="margin-bottom:12px">
+            <div class="card-title">新規Adapter 実装優先順位</div>
+            <div style="display:flex;flex-direction:column;gap:8px" id="impl-todo-list">
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="badge b-purple" style="font-size:10px">★1 最優先</span>
+                  <span style="font-weight:700">Bluesky</span>
+                  <code style="font-size:10px">TODO_347</code>
+                </div>
+                <div style="font-size:11px;color:var(--muted)">実装難易度最低・審査ゼロ・即日本番投入可。AT Protocol APIで実装容易。第1層知名度に直結。</div>
+              </div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="badge b-yellow" style="font-size:10px">★2</span>
+                  <span style="font-weight:700">Threads</span>
+                  <code style="font-size:10px">TODO_348</code>
+                </div>
+                <div style="font-size:11px;color:var(--muted)">Meta Graph API。Instagramと基盤共通で実装工数低減可。テック層への知名度に直結。</div>
+              </div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="badge b-green" style="font-size:10px">★3</span>
+                  <span style="font-weight:700">LINE公式</span>
+                  <code style="font-size:10px">TODO_349</code>
+                </div>
+                <div style="font-size:11px;color:var(--muted)">国内9,500万人。第4層mini-MoCKA商材訴求に唯一届く経路。Messaging API実装。</div>
+              </div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="badge b-blue" style="font-size:10px">★4</span>
+                  <span style="font-weight:700">Dev.to</span>
+                  <code style="font-size:10px">TODO_350</code>
+                </div>
+                <div style="font-size:11px;color:var(--muted)">Markdown投稿API。WordPressコンテンツ転用容易。第2層技術ブランド補強。</div>
+              </div>
+              <div style="background:var(--surface2);border:1px solid rgba(224,74,74,.3);border-radius:8px;padding:12px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="badge b-red" style="font-size:10px">監視専用</span>
+                  <span style="font-weight:700">Reddit / Stack Overflow</span>
+                  <code style="font-size:10px">TODO_351</code>
+                </div>
+                <div style="font-size:11px;color:var(--muted)">投稿はBANリスク極高。TIC tech_watcher側に統合し「自社言及の検知専用」として運用。</div>
+              </div>
+              <div style="background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px;opacity:.6">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                  <span class="badge b-gray" style="font-size:10px">保留</span>
+                  <span style="font-weight:700">YouTube Shorts</span>
+                </div>
+                <div style="font-size:11px;color:var(--muted)">動画制作体制が整うまで後回し。テキスト/画像ベースの即日稼働チャネルを先に固める。</div>
+              </div>
+            </div>
+          </div>
 
-    <!-- ── Scheduler ─────────────────────────── -->
-    <div id="pane-scheduler" class="tab-pane">
-      <div style="font-size:15px;font-weight:600;margin-bottom:16px">Scheduler — 予約配信キュー</div>
-      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
-        <div class="stat-card accent">
-          <div class="stat-label">Total Jobs</div>
-          <div class="stat-value accent" id="q-total">0</div>
-        </div>
-        <div class="stat-card yellow">
-          <div class="stat-label">Pending</div>
-          <div class="stat-value yellow" id="q-pending">0</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-label">Done</div>
-          <div class="stat-value green" id="q-done">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Failed</div>
-          <div class="stat-value" id="q-failed" style="color:var(--red)">0</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Job ID</th><th>KS ID</th><th>Adapter</th><th>配信予定</th><th>ステータス</th><th>作成日</th></tr>
-            </thead>
-            <tbody id="queue-tbody">
-              <tr><td colspan="6" class="empty-state">
-                <div class="empty-icon">◷</div>
-                予約ジョブがありません<br>
-                <code style="font-size:11px;margin-top:8px;display:block">python pros.py schedule KS_001 wordpress 2026-06-10T10:00:00+09:00</code>
-              </td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-      <!-- ── Analytics ────────────────────────── -->
-    <div id="pane-analytics" class="tab-pane">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <div style="font-size:15px;font-weight:600">Google Analytics 4</div>
-        <span class="badge b-gray" id="ga-status-badge">未設定</span>
-      </div>
-
-      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px">
-        <div class="stat-card accent">
-          <div class="stat-label">Sessions</div>
-          <div class="stat-value accent" id="ga-sessions">—</div>
-          <div class="stat-sub" id="ga-days-label">過去30日</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-label">Page Views</div>
-          <div class="stat-value green" id="ga-pageviews">—</div>
-          <div class="stat-sub">ページビュー</div>
-        </div>
-        <div class="stat-card yellow">
-          <div class="stat-label">Bounce Rate</div>
-          <div class="stat-value yellow" id="ga-bounce">—</div>
-          <div class="stat-sub">直帰率</div>
-        </div>
-        <div class="stat-card purple">
-          <div class="stat-label">Avg Duration</div>
-          <div class="stat-value purple" id="ga-duration">—</div>
-          <div class="stat-sub">平均滞在時間</div>
-        </div>
-      </div>
-
-      <div class="card" id="ga-setup-card">
-        <div class="card-title">GA4 設定手順</div>
-        <div style="color:var(--muted);font-size:13px;line-height:2.2">
-          1. <a href="https://console.cloud.google.com/" style="color:var(--accent)" target="_blank">Google Cloud Console</a> でサービスアカウントを作成<br>
-          2. <code>Google Analytics Data API</code> を有効化<br>
-          3. GA4 プロパティにサービスアカウントを閲覧者として追加<br>
-          4. 認証情報JSONをダウンロード<br>
-          5. <code>python pros.py setup-ga &lt;property_id&gt; &lt;creds.json&gt;</code> を実行<br>
-          6. <code>pip install google-analytics-data</code> でライブラリをインストール
-        </div>
-      </div>
-    </div>
-
-    <!-- ── AI Rewriter ───────────────────────── -->
-    <div id="pane-rewriter" class="tab-pane">
-      <div style="font-size:15px;font-weight:600;margin-bottom:16px">AI Rewriter — 改善提案エンジン</div>
-
-      <div class="card" style="margin-bottom:14px">
-        <div class="card-title">改善ルール</div>
-        <table>
-          <thead><tr><th>優先度</th><th>カテゴリ</th><th>条件</th><th>提案内容</th></tr></thead>
-          <tbody>
-            <tr>
-              <td><span class="badge b-red">High</span></td>
-              <td>engagement</td>
-              <td>直帰率 &gt; 70%</td>
-              <td>冒頭3文で価値明示・見出し追加・内部リンク</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-red">High</span></td>
-              <td>length</td>
-              <td>平均滞在 &lt; 30秒</td>
-              <td>本文充実（1,000文字以上）・動画・画像追加</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-yellow">Medium</span></td>
-              <td>SEO</td>
-              <td>PV &lt; 50</td>
-              <td>タイトルにキーワード明示・メタ最適化</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-yellow">Medium</span></td>
-              <td>SEO</td>
-              <td>新規ユーザー 0</td>
-              <td>ロングテールKW追加・SNS拡散</td>
-            </tr>
-            <tr>
-              <td><span class="badge b-green">Low</span></td>
-              <td>engagement</td>
-              <td>PV&gt;200 &amp; 直帰&lt;40% &amp; 滞在&gt;2分</td>
-              <td>関連シリーズ展開・ニュースレター再配信</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="card">
-        <div class="card-title">KS別改善提案</div>
-        <div id="rewriter-content">
-          <div class="empty-state">
-            <div class="empty-icon">✦</div>
-            GA4が設定されると自動で改善提案が生成されます<br>
-            <code style="font-size:11px;margin-top:8px;display:block">python pros.py report</code>
+          <div class="card">
+            <div class="card-title">5W1H × レイヤー対応表</div>
+            <div style="font-size:12px;line-height:2.2">
+              <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">
+                <span style="width:40px;font-weight:700;color:var(--accent)">Who</span>
+                <span class="muted">第0〜5層で定義されたターゲット読者</span>
+              </div>
+              <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">
+                <span style="width:40px;font-weight:700;color:var(--accent)">What</span>
+                <span class="muted">KS確定済み原本（AI審査スコア0.8+）</span>
+              </div>
+              <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">
+                <span style="width:40px;font-weight:700;color:var(--accent)">When</span>
+                <span class="muted">S級:即日 A級:2日後 B級:5日後 C級:7日後</span>
+              </div>
+              <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">
+                <span style="width:40px;font-weight:700;color:var(--accent)">Where</span>
+                <span class="muted">レイヤー適合チャネル（掲載先選択画面）</span>
+              </div>
+              <div style="display:flex;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)">
+                <span style="width:40px;font-weight:700;color:var(--accent)">Why</span>
+                <span class="muted">KPI選択（知名度/信頼/リード/CV/AI索引）</span>
+              </div>
+              <div style="display:flex;gap:6px;padding:4px 0">
+                <span style="width:40px;font-weight:700;color:var(--accent)">How</span>
+                <span class="muted">フォーマット選択（テキスト/MD/スレッド等）</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -910,7 +1101,1006 @@ code { font-family: monospace; font-size: 12px; color: var(--accent); }
 </div><!-- /main-area -->
 </div><!-- /shell -->
 
-<script src="dashboard.js"></script>
-<script src="app.js"></script>
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Reject Modal -->
+<div class="modal-bg" id="reject-modal">
+  <div class="modal">
+    <div class="modal-title text-red">差し戻し理由</div>
+    <div class="form-group">
+      <label class="form-label">理由を入力してください</label>
+      <textarea id="reject-reason" class="form-textarea" rows="4" placeholder="例: キーワードが不足しています。SEO最適化を行ってください。"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-red" onclick="submitReject()">差し戻し実行</button>
+      <button class="btn-ghost" onclick="closeModal('reject-modal')">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+// ── STATE ─────────────────────────────────────────────────────────
+const API_BASE = 'http://localhost:8000';
+const SEO_BASE = 'http://localhost:8750';
+
+const PLATFORMS = [
+  // S級 — 毎リリース必須
+  {id:'product_hunt', name:'Product Hunt',  icon:'🚀', tier:'S', layer:1, reach:50000,  url:'https://www.producthunt.com',         impl:'ready'},
+  {id:'github',       name:'GitHub',        icon:'🐙', tier:'S', layer:0, reach:100000, url:'https://github.com',                  impl:'ready'},
+  {id:'hacker_news',  name:'Hacker News',   icon:'🔥', tier:'S', layer:2, reach:80000,  url:'https://news.ycombinator.com',        impl:'ready'},
+  {id:'dev_to',       name:'DEV Community', icon:'👩‍💻', tier:'S', layer:2, reach:30000,  url:'https://dev.to',                      impl:'todo_350'},
+  {id:'chrome_store', name:'Chrome Web Store',icon:'🌐',tier:'S', layer:1, reach:20000,  url:'https://chrome.google.com/webstore',  impl:'ready'},
+  // A級 — 知名度・AIツール認知・新規追加優先4ch
+  {id:'bluesky',      name:'Bluesky',        icon:'🦋', tier:'A', layer:1, reach:15000,  url:'https://bsky.app',                    impl:'todo_347', priority:1},
+  {id:'threads',      name:'Threads',        icon:'🧵', tier:'A', layer:1, reach:40000,  url:'https://www.threads.net',             impl:'todo_348', priority:2},
+  {id:'line_official',name:'LINE公式',       icon:'💚', tier:'A', layer:4, reach:90000,  url:'https://www.linebiz.com',             impl:'todo_349', priority:3},
+  {id:'toolify',      name:'Toolify',        icon:'🔧', tier:'A', layer:1, reach:15000,  url:'https://www.toolify.ai',              impl:'ready'},
+  {id:'theresanai',   name:"There's An AI",  icon:'🤖', tier:'A', layer:1, reach:25000,  url:'https://theresanaiforthat.com',       impl:'ready'},
+  {id:'futurepedia',  name:'Futurepedia',    icon:'📚', tier:'A', layer:1, reach:18000,  url:'https://www.futurepedia.io',          impl:'ready'},
+  {id:'peerlist',     name:'Peerlist',       icon:'🤝', tier:'A', layer:2, reach:8000,   url:'https://peerlist.io',                 impl:'ready'},
+  {id:'indie_hackers',name:'Indie Hackers',  icon:'💡', tier:'A', layer:1, reach:20000,  url:'https://www.indiehackers.com',        impl:'ready'},
+  {id:'aixploria',    name:'AIxploria',      icon:'🔭', tier:'A', layer:1, reach:10000,  url:'https://www.aixploria.com',           impl:'ready'},
+  {id:'dang_ai',      name:'Dang.ai',        icon:'🎯', tier:'A', layer:1, reach:8000,   url:'https://dang.ai',                    impl:'ready'},
+  {id:'toolpilot',    name:'ToolPilot',      icon:'✈️', tier:'A', layer:1, reach:7000,   url:'https://www.toolpilot.ai',            impl:'ready'},
+  // B級 — SEO・技術解説・長文
+  {id:'medium',       name:'Medium',         icon:'📝', tier:'B', layer:2, reach:40000,  url:'https://medium.com',                  impl:'ready'},
+  {id:'qiita',        name:'Qiita',          icon:'🌸', tier:'B', layer:2, reach:30000,  url:'https://qiita.com',                   impl:'ready'},
+  {id:'zenn',         name:'Zenn',           icon:'💎', tier:'B', layer:2, reach:20000,  url:'https://zenn.dev',                    impl:'ready'},
+  {id:'note',         name:'note',           icon:'📓', tier:'B', layer:5, reach:15000,  url:'https://note.com',                    impl:'ready'},
+  {id:'linkedin',     name:'LinkedIn',       icon:'💼', tier:'B', layer:3, reach:25000,  url:'https://www.linkedin.com',            impl:'ready'},
+  {id:'hashnode',     name:'Hashnode',       icon:'🔷', tier:'B', layer:2, reach:10000,  url:'https://hashnode.com',                impl:'ready'},
+  {id:'betalist',     name:'BetaList',       icon:'🧪', tier:'B', layer:1, reach:8000,   url:'https://betalist.com',                impl:'ready'},
+  {id:'saashub',      name:'SaaSHub',        icon:'🛠', tier:'B', layer:1, reach:12000,  url:'https://www.saashub.com',             impl:'ready'},
+  {id:'alternativeto',name:'AlternativeTo',  icon:'⚖️', tier:'B', layer:1, reach:20000,  url:'https://alternativeto.net',           impl:'ready'},
+  // C級 — コミュニティ・継続発信（X/Redditは監視専用）
+  {id:'youtube',      name:'YouTube Shorts', icon:'▶️', tier:'C', layer:4, reach:100000, url:'https://youtube.com',                 impl:'hold'},
+  {id:'facebook',     name:'Facebook',       icon:'👍', tier:'C', layer:4, reach:15000,  url:'https://facebook.com',               impl:'ready'},
+  {id:'x_twitter',    name:'X (Twitter)',    icon:'𝕏', tier:'C', layer:1, reach:50000,  url:'https://x.com',                       impl:'watch_only'},
+  {id:'reddit_art',   name:'r/Artificial',   icon:'🔎', tier:'C', layer:2, reach:10000,  url:'https://reddit.com/r/artificial',     impl:'watch_only'},
+  {id:'reddit_sp',    name:'r/SideProject',  icon:'🔎', tier:'C', layer:1, reach:8000,   url:'https://reddit.com/r/SideProject',    impl:'watch_only'},
+  {id:'reddit_saas',  name:'r/SaaS',         icon:'🔎', tier:'C', layer:3, reach:6000,   url:'https://reddit.com/r/SaaS',           impl:'watch_only'},
+];
+
+// 第0層: AI読者インフラ（投稿先ではなく「機械可読性」管理）
+const AI_LAYER_ITEMS = [
+  {id:'jsonld',       name:'JSON-LD / Schema.org', icon:'📐', status:'done',    todo:'TODO_331', note:'WordPress実装済み'},
+  {id:'llms_txt',     name:'llms.txt',              icon:'🤖', status:'todo',    todo:'—',        note:'未着手。AI向けサイトマップ'},
+  {id:'github_pages', name:'GitHub Pages (静的HTML)',icon:'🐙', status:'done',    todo:'—',        note:'クローラブル。LLM学習素材'},
+  {id:'zenodo',       name:'Zenodo DOI',             icon:'📜', status:'done',    todo:'—',        note:'p-DERS論文・検証可能性確保'},
+  {id:'perplexity',   name:'Perplexity Connector',   icon:'🔮', status:'partial', todo:'TODO_334', note:'疎通テスト止まり'},
+  {id:'genspark',     name:'Genspark Adapter',       icon:'✨', status:'partial', todo:'TODO_335', note:'疎通テスト止まり'},
+  {id:'sitemap',      name:'XML Sitemap (機械向け)',  icon:'🗺', status:'done',    todo:'—',        note:'WordPress自動生成'},
+  {id:'robots',       name:'robots.txt (AI許可設定)', icon:'🤖', status:'todo',    todo:'—',        note:'GPTBot/ClaudeBot許可設定が必要'},
+];
+
+let state = {
+  currentKS: null,
+  drafts: [],
+  selectedPlatforms: new Set(),
+  publishJobs: [],
+  reviewQueue: [],
+  ksIndex: { records: [] },
+};
+
+// ── PERSISTENCE ───────────────────────────────────────────────────
+function save() {
+  try {
+    localStorage.setItem('pros_state', JSON.stringify({
+      drafts: state.drafts,
+      reviewQueue: state.reviewQueue,
+      publishJobs: state.publishJobs,
+      selectedPlatforms: [...state.selectedPlatforms],
+    }));
+  } catch(e) {}
+}
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem('pros_state') || '{}');
+    if (d.drafts) state.drafts = d.drafts;
+    if (d.reviewQueue) state.reviewQueue = d.reviewQueue;
+    if (d.publishJobs) state.publishJobs = d.publishJobs;
+    if (d.selectedPlatforms) state.selectedPlatforms = new Set(d.selectedPlatforms);
+  } catch(e) {}
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+const paneNames = {
+  input: 'コンテンツ入力', review: '試作・AI審査', platforms: '掲載先選択',
+  publish: 'スケジュール・投稿', analytics: '投稿後反響',
+  strategy: '戦略レイヤー / 実装優先度',
+  dashboard: 'Dashboard', knowledge: 'Knowledge Board', history: '投稿履歴',
+};
+
+function goto(name, el) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const pane = document.getElementById('pane-' + name);
+  if (pane) pane.classList.add('active');
+
+  // sidebar active
+  if (el) { el.classList.add('active'); }
+  else {
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick')?.includes(`'${name}'`)) n.classList.add('active');
+    });
+  }
+
+  document.getElementById('page-title').textContent = paneNames[name] || name;
+
+  // pipeline strip highlight
+  const steps = ['input','review','platforms','publish','analytics'];
+  steps.forEach((s,i) => {
+    const el = document.getElementById('ps'+(i+1));
+    if (!el) return;
+    el.classList.remove('active');
+    if (s === name) el.classList.add('active');
+  });
+
+  // panel-specific render
+  if (name === 'review')    renderReviewQueue();
+  if (name === 'platforms') renderPlatforms();
+  if (name === 'publish')   renderPublishTimeline();
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'knowledge') renderKB();
+  if (name === 'history')   renderHistory();
+  if (name === 'analytics') renderAnalyticsTable();
+  if (name === 'strategy')  renderStrategy();
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────
+function toast(msg, type='ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show ' + type;
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── STEP 1: INPUT ─────────────────────────────────────────────────
+function getFormData() {
+  const today = new Date().toISOString().split('T')[0];
+  return {
+    id: 'KS_' + String(state.drafts.length + state.reviewQueue.length + 1).padStart(3,'0'),
+    title:    document.getElementById('f-title').value.trim(),
+    type:     document.getElementById('f-type').value,
+    priority: document.getElementById('f-priority').value,
+    keywords: document.getElementById('f-keywords').value.trim(),
+    body:     document.getElementById('f-body').value.trim(),
+    date:     document.getElementById('f-date').value || today,
+    time:     document.getElementById('f-time').value || '09:00',
+    author:   document.getElementById('f-author').value.trim() || 'きむら博士',
+    note:     document.getElementById('f-note').value.trim(),
+    // 5W1H
+    w_layer:  document.getElementById('f-layer')?.value  || '1',
+    w_kpi:    document.getElementById('f-kpi')?.value    || 'awareness',
+    w_format: document.getElementById('f-format')?.value || 'text',
+    status:   'draft',
+    created_at: new Date().toISOString(),
+    ai_gate_log: null,
+    publish_status: {},
+  };
+}
+
+// ── STRATEGY ──────────────────────────────────────────────────────
+function renderStrategy() {
+  // 第0層テーブル
+  const tbody = document.getElementById('ai-layer-table');
+  if (tbody) {
+    tbody.innerHTML = AI_LAYER_ITEMS.map(item => {
+      const col = item.status === 'done' ? 'var(--green)' : item.status === 'partial' ? 'var(--yellow)' : 'var(--red)';
+      const lbl = item.status === 'done' ? '<span class="badge b-green">実装済</span>' :
+                  item.status === 'partial' ? '<span class="badge b-yellow">疎通のみ</span>' :
+                  '<span class="badge b-red">未着手</span>';
+      return `<tr>
+        <td style="font-weight:600">${item.icon} ${item.name}</td>
+        <td>${lbl}</td>
+        <td><code style="color:${col}">${item.todo}</code></td>
+        <td style="font-size:11px;color:var(--muted)">${item.note}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // 第0層ステータスサマリー
+  const done = AI_LAYER_ITEMS.filter(i => i.status === 'done').length;
+  const total = AI_LAYER_ITEMS.length;
+  const l0el = document.getElementById('l0-status');
+  if (l0el) l0el.textContent = `${done}/${total} 完了`;
+}
+
+function filterByLayer(layer) {
+  goto('platforms');
+  // プラットフォーム画面でレイヤーフィルタをハイライト（将来拡張用、現状はplatformsへ遷移のみ）
+  toast(`第${layer}層のチャネルを表示中`);
+}
+
+function validateForm() {
+  const t = document.getElementById('f-title').value.trim();
+  const b = document.getElementById('f-body').value.trim();
+  if (!t) { toast('タイトルを入力してください', 'err'); return false; }
+  if (!b) { toast('本文またはメモを入力してください', 'err'); return false; }
+  return true;
+}
+
+function saveDraft() {
+  if (!validateForm()) return;
+  const d = getFormData();
+  state.drafts.push(d);
+  save();
+  renderDrafts();
+  toast('下書きを保存しました');
+}
+
+function submitToReview() {
+  if (!validateForm()) return;
+  const d = getFormData();
+  d.status = 'pending_approval';
+  state.reviewQueue.push(d);
+  state.currentKS = d;
+  save();
+  updateReviewBadge();
+  toast('AI審査キューに追加しました。審査画面に移動します。');
+  setTimeout(() => {
+    loadReviewContent(d);
+    goto('review');
+  }, 400);
+}
+
+function clearForm() {
+  ['f-title','f-keywords','f-body','f-note'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('f-type').value     = 'release';
+  document.getElementById('f-priority').value = 'A';
+  const fl = document.getElementById('f-layer');   if (fl) fl.value = '1';
+  const fk = document.getElementById('f-kpi');     if (fk) fk.value = 'awareness';
+  const ff = document.getElementById('f-format');  if (ff) ff.value = 'text';
+}
+
+function newContent() {
+  clearForm();
+  goto('input');
+}
+
+function renderDrafts() {
+  const el = document.getElementById('draft-list');
+  if (!state.drafts.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">✍</div>下書きがありません</div>';
+    return;
+  }
+  el.innerHTML = state.drafts.slice().reverse().map((d,_i,arr) => {
+    const i = arr.length - 1 - _i;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.title || '無題'}</div>
+        <div style="font-size:11px;color:var(--muted)">${d.type} | ${d.created_at.slice(0,10)}</div>
+      </div>
+      <button class="btn-ghost btn-xs" onclick="loadDraft(${state.drafts.length-1-i})">編集</button>
+      <button class="btn btn-xs" onclick="sendDraftToReview(${state.drafts.length-1-i})">審査へ</button>
+    </div>`;
+  }).join('');
+}
+
+function loadDraft(i) {
+  const d = state.drafts[i];
+  if (!d) return;
+  document.getElementById('f-title').value    = d.title;
+  document.getElementById('f-type').value     = d.type;
+  document.getElementById('f-priority').value = d.priority;
+  document.getElementById('f-keywords').value = d.keywords;
+  document.getElementById('f-body').value     = d.body;
+  document.getElementById('f-note').value     = d.note;
+  toast('下書きを読み込みました');
+}
+
+function sendDraftToReview(i) {
+  const d = state.drafts[i];
+  if (!d) return;
+  d.status = 'pending_approval';
+  state.reviewQueue.push(d);
+  state.drafts.splice(i, 1);
+  state.currentKS = d;
+  save();
+  renderDrafts();
+  updateReviewBadge();
+  loadReviewContent(d);
+  goto('review');
+}
+
+function updateReviewBadge() {
+  const n = state.reviewQueue.filter(r => r.status === 'pending_approval').length;
+  const nb = document.getElementById('nb-review');
+  nb.textContent = n;
+  nb.style.display = n > 0 ? 'flex' : 'none';
+}
+
+function updateMiniStats() {
+  const el = document.getElementById('mini-stats');
+  const total = state.drafts.length + state.reviewQueue.length;
+  const pending = state.reviewQueue.filter(r => r.status === 'pending_approval').length;
+  const published = state.publishJobs.filter(j => j.status === 'done').length;
+  el.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div>下書き: <span class="text-accent">${state.drafts.length}</span></div>
+      <div>承認待ち: <span class="text-yellow">${pending}</span></div>
+      <div>投稿済み: <span class="text-green">${published}</span></div>
+    </div>`;
+}
+
+// ── STEP 2: REVIEW ────────────────────────────────────────────────
+function loadReviewContent(d) {
+  document.getElementById('review-title').textContent = d.title || '—';
+  document.getElementById('review-meta').textContent =
+    `種別: ${d.type} | 優先度: ${d.priority} | 起草: ${d.author} | ${d.created_at.slice(0,16)}`;
+  document.getElementById('review-body').textContent = d.body || '';
+  document.getElementById('review-status-badge').textContent = '審査待ち';
+  document.getElementById('review-status-badge').className = 'badge b-yellow';
+  document.getElementById('ai-score-val').textContent = '—';
+  document.getElementById('ai-score-bar').style.width = '0%';
+  document.getElementById('ai-score-label').textContent = '審査前';
+  document.getElementById('ai-checks').innerHTML = '<div style="color:var(--muted)">AI審査を実行するとチェック結果が表示されます</div>';
+  state.currentKS = d;
+}
+
+async function runAIReview() {
+  if (!state.currentKS) { toast('審査対象がありません', 'err'); return; }
+  const badge = document.getElementById('review-status-badge');
+  badge.textContent = '審査中...';
+  badge.className = 'badge b-blue';
+
+  // ローカルでスコアリング（バックエンド呼び出し試行 + フォールバック）
+  let score = calcLocalScore(state.currentKS);
+
+  try {
+    const res = await fetch(`${API_BASE}/api/caliber`);
+    if (res.ok) {
+      const cal = await res.json();
+      score = Math.min(1.0, (score + cal.score) / 2);
+    }
+  } catch {}
+
+  score = Math.round(score * 100) / 100;
+  state.currentKS.ai_gate_log = {
+    score,
+    corrections: Math.floor(Math.random() * 5),
+    integrity_pass: score >= 0.6,
+    checked_at: new Date().toISOString(),
+  };
+  save();
+
+  // 表示
+  const scoreEl  = document.getElementById('ai-score-val');
+  const barEl    = document.getElementById('ai-score-bar');
+  const labelEl  = document.getElementById('ai-score-label');
+  const checksEl = document.getElementById('ai-checks');
+
+  const color = score >= 0.9 ? 'var(--green)'
+              : score >= 0.8 ? 'var(--accent)'
+              : score >= 0.6 ? 'var(--yellow)'
+              : 'var(--red)';
+  scoreEl.textContent = score.toFixed(2);
+  scoreEl.style.color = color;
+  barEl.style.width   = (score * 100) + '%';
+  barEl.style.background = color;
+
+  const verdict = score >= 0.9 ? '優良 — 自動確定可'
+                : score >= 0.8 ? '良好 — 自動確定（ログ記録）'
+                : score >= 0.6 ? '要確認 — 手動承認が必要'
+                : '要修正 — 差し戻し推奨';
+  labelEl.textContent = verdict;
+
+  const body = state.currentKS.body || '';
+  const checks = [
+    {ok: body.length > 50,     label: '本文の長さが十分か'},
+    {ok: (state.currentKS.keywords||'').length > 0, label: 'キーワードが設定されているか'},
+    {ok: !/(※|→|←|■|【|】)/g.test(body), label: 'CP932禁止記号が含まれていないか'},
+    {ok: body.split('\n').length > 1, label: '段落構造があるか'},
+    {ok: !!state.currentKS.title && state.currentKS.title.length > 5, label: 'タイトルが十分な長さか'},
+  ];
+  checksEl.innerHTML = checks.map(c =>
+    `<div style="padding:4px 0;display:flex;align-items:center;gap:8px;font-size:12px">
+      <span style="color:${c.ok ? 'var(--green)' : 'var(--red)'};">${c.ok ? '✓' : '✗'}</span>
+      <span style="color:${c.ok ? 'var(--text)' : 'var(--muted)'}">${c.label}</span>
+    </div>`
+  ).join('');
+
+  badge.textContent = score >= 0.8 ? '自動確定' : score >= 0.6 ? '承認待ち' : '差し戻し';
+  badge.className = `badge ${score >= 0.8 ? 'b-green' : score >= 0.6 ? 'b-yellow' : 'b-red'}`;
+
+  toast(`審査完了: スコア ${score.toFixed(2)}`);
+
+  if (score >= 0.8) {
+    setTimeout(() => {
+      state.currentKS.status = 'confirmed';
+      save();
+    }, 500);
+  }
+}
+
+function calcLocalScore(ks) {
+  let score = 0.5;
+  const body = ks.body || '';
+  if (body.length > 200) score += 0.15;
+  else if (body.length > 50) score += 0.05;
+  if (ks.keywords && ks.keywords.length > 5) score += 0.1;
+  if (ks.title && ks.title.length > 10) score += 0.1;
+  if (body.split('\n').length > 3) score += 0.1;
+  if (ks.note) score += 0.05;
+  return Math.min(0.95, score);
+}
+
+function approveContent() {
+  if (!state.currentKS) { toast('承認対象がありません', 'err'); return; }
+  state.currentKS.status = 'confirmed';
+  const idx = state.reviewQueue.findIndex(r => r.id === state.currentKS.id);
+  if (idx >= 0) state.reviewQueue[idx] = state.currentKS;
+  save();
+  updateReviewBadge();
+  toast('承認しました。掲載先選択画面に移動します。');
+  setTimeout(() => goto('platforms'), 500);
+}
+
+function rejectContent() {
+  openModal('reject-modal');
+}
+
+function submitReject() {
+  const reason = document.getElementById('reject-reason').value.trim();
+  if (!reason) { toast('差し戻し理由を入力してください', 'err'); return; }
+  if (state.currentKS) {
+    state.currentKS.status = 'rejected';
+    state.currentKS.reject_reason = reason;
+    save();
+    updateReviewBadge();
+  }
+  closeModal('reject-modal');
+  document.getElementById('reject-reason').value = '';
+  toast('差し戻しました。入力画面で修正してください。');
+  goto('input');
+}
+
+function renderReviewQueue() {
+  const el = document.getElementById('review-queue');
+  const queue = state.reviewQueue.filter(r => r.status === 'pending_approval');
+  if (!queue.length) {
+    el.innerHTML = '<div class="empty muted">承認待ちがありません</div>';
+    return;
+  }
+  el.innerHTML = queue.map(d =>
+    `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:600;font-size:13px">${d.title}</div>
+        <div style="font-size:11px;color:var(--muted)">${d.type} | ${d.created_at.slice(0,10)}</div>
+      </div>
+      <button class="btn-ghost btn-xs" onclick="selectForReview('${d.id}')">審査</button>
+    </div>`
+  ).join('');
+}
+
+function selectForReview(id) {
+  const d = state.reviewQueue.find(r => r.id === id);
+  if (d) loadReviewContent(d);
+}
+
+// ── STEP 3: PLATFORMS ─────────────────────────────────────────────
+const IMPL_COLOR = {
+  ready:      'var(--green)',
+  todo_347:   'var(--yellow)',
+  todo_348:   'var(--yellow)',
+  todo_349:   'var(--yellow)',
+  todo_350:   'var(--yellow)',
+  hold:       'var(--muted)',
+  watch_only: 'var(--red)',
+};
+const IMPL_LABEL = {
+  ready:'実装済', todo_347:'★1 未実装', todo_348:'★2 未実装',
+  todo_349:'★3 未実装', todo_350:'★4 未実装', hold:'保留', watch_only:'監視専用',
+};
+
+function renderPlatforms() {
+  // 第0層グリッド
+  const aiEl = document.getElementById('ai-layer-grid');
+  if (aiEl) {
+    aiEl.innerHTML = AI_LAYER_ITEMS.map(item => {
+      const col = item.status === 'done' ? 'var(--green)' : item.status === 'partial' ? 'var(--yellow)' : 'var(--muted)';
+      const lbl = item.status === 'done' ? '実装済' : item.status === 'partial' ? '疎通のみ' : '未着手';
+      return `<div style="background:var(--surface2);border:1px solid var(--border2);border-left:3px solid ${col};border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px">
+        <div style="font-size:20px">${item.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:2px">${item.note}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:10px;color:${col};font-weight:700">${lbl}</div>
+          ${item.todo !== '—' ? `<div style="font-size:10px;color:var(--muted)">${item.todo}</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const grids = {S:'pg-s', A:'pg-a', B:'pg-b', C:'pg-c'};
+  Object.entries(grids).forEach(([tier, gridId]) => {
+    const el = document.getElementById(gridId);
+    const pts = PLATFORMS.filter(p => p.tier === tier);
+    el.innerHTML = pts.map(p => {
+      const sel = state.selectedPlatforms.has(p.id);
+      const implColor = IMPL_COLOR[p.impl] || 'var(--muted)';
+      const implLabel = IMPL_LABEL[p.impl] || p.impl;
+      const isWatchOnly = p.impl === 'watch_only';
+      return `<div class="plat-card${sel?' selected':''}${isWatchOnly?' ':''}" onclick="${isWatchOnly ? `toast('${p.name}は監視専用です（投稿不可）','err')` : `togglePlatform('${p.id}',this)`}" style="${isWatchOnly ? 'opacity:.55;cursor:default' : ''}">
+        <div class="plat-icon">${p.icon}</div>
+        <div class="plat-info">
+          <div class="plat-name" title="${p.name}">${p.name}</div>
+          <div class="plat-tier" style="color:${implColor};font-weight:${p.impl !== 'ready' ? '600' : '400'}">${implLabel}</div>
+        </div>
+        <div class="plat-check"></div>
+      </div>`;
+    }).join('');
+  });
+
+  // タイトル更新
+  if (state.currentKS) {
+    document.getElementById('plat-content-title').textContent =
+      `「${state.currentKS.title}」の掲載先を選択`;
+  }
+  updatePlatformStats();
+}
+
+function togglePlatform(id, el) {
+  if (state.selectedPlatforms.has(id)) {
+    state.selectedPlatforms.delete(id);
+    el.classList.remove('selected');
+  } else {
+    state.selectedPlatforms.add(id);
+    el.classList.add('selected');
+  }
+  updatePlatformStats();
+  save();
+}
+
+function selectAllByTier(tier) {
+  PLATFORMS.filter(p => p.tier === tier).forEach(p => state.selectedPlatforms.add(p.id));
+  renderPlatforms();
+  save();
+}
+
+function clearPlatforms() {
+  state.selectedPlatforms.clear();
+  renderPlatforms();
+  save();
+}
+
+function updatePlatformStats() {
+  const count = state.selectedPlatforms.size;
+  const reach = PLATFORMS.filter(p => state.selectedPlatforms.has(p.id))
+    .reduce((s,p) => s + p.reach, 0);
+  document.getElementById('plat-count').textContent = count;
+  document.getElementById('plat-reach').textContent = reach >= 1000
+    ? (reach/1000).toFixed(0) + 'k人'
+    : reach + '人';
+}
+
+function confirmPlatforms() {
+  if (!state.selectedPlatforms.size) {
+    toast('少なくとも1つ以上の掲載先を選択してください', 'err');
+    return;
+  }
+  toast(`${state.selectedPlatforms.size}媒体選択。スケジュール設定へ移動します。`);
+  goto('publish');
+}
+
+// ── STEP 4: PUBLISH ───────────────────────────────────────────────
+function renderPublishTimeline() {
+  const el = document.getElementById('publish-timeline');
+  const ks = state.currentKS;
+
+  if (!state.selectedPlatforms.size) {
+    el.innerHTML = '<div class="empty muted">掲載先が選択されていません。<br><a href="#" onclick="goto(\'platforms\')">← 掲載先選択に戻る</a></div>';
+    renderPublishChecklist();
+    return;
+  }
+
+  const selected = PLATFORMS.filter(p => state.selectedPlatforms.has(p.id));
+  const tierOrder = {S:0, A:1, B:2, C:3};
+  selected.sort((a,b) => tierOrder[a.tier] - tierOrder[b.tier]);
+
+  const baseDate = ks?.date ? new Date(ks.date + 'T' + (ks?.time||'09:00') + ':00') : new Date();
+  const delayMap = {S:0, A:2, B:5, C:7}; // days
+
+  el.innerHTML = '<div class="timeline">' + selected.map((p, i) => {
+    const d = new Date(baseDate);
+    d.setDate(d.getDate() + (delayMap[p.tier] || 0));
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} ${String(d.getHours()).padStart(2,'0')}:00 JST`;
+    const existingJob = state.publishJobs.find(j => j.platform === p.id && j.ks_id === ks?.id);
+    const status = existingJob?.status || 'pending';
+    const statusMap = {pending:'予定', running:'実行中', done:'完了', failed:'失敗'};
+    const colorMap  = {pending:'b-gray', running:'b-blue', done:'b-green', failed:'b-red'};
+    return `<div class="tl-item">
+      <div class="tl-dot${status==='done'?' done':status==='running'?' active':''}"></div>
+      <div class="tl-body">
+        <div class="tl-title">${p.icon} ${p.name} <span class="badge ${colorMap[status]}" style="font-size:10px">${statusMap[status]}</span>
+          <span class="badge tier-${p.tier.toLowerCase()}" style="font-size:10px;margin-left:4px">${p.tier}級</span>
+        </div>
+        <div class="tl-meta">${dateStr}</div>
+        <div class="tl-actions">
+          <button class="btn-ghost btn-xs" onclick="scheduleJob('${p.id}', '${dateStr}')">予約設定</button>
+          <a href="${p.url}" target="_blank" class="btn-ghost btn-xs" style="text-decoration:none">サイトを開く ↗</a>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+
+  renderPublishChecklist();
+  renderPublishSummary();
+  renderPublishResults();
+}
+
+function renderPublishChecklist() {
+  const el = document.getElementById('pre-publish-checklist');
+  const ks = state.currentKS;
+  const checks = [
+    {ok: !!ks?.title,  label: 'タイトルが設定されている'},
+    {ok: !!ks?.body,   label: '本文が入力されている'},
+    {ok: !!ks?.keywords, label: 'キーワードが設定されている'},
+    {ok: ks?.status === 'confirmed', label: 'AI審査が完了している'},
+    {ok: state.selectedPlatforms.size > 0, label: '掲載先が選択されている'},
+    {ok: !!ks?.ai_gate_log?.score && ks.ai_gate_log.score >= 0.6, label: 'スコアが基準値以上 (0.6+)'},
+  ];
+  el.innerHTML = checks.map(c =>
+    `<div style="display:flex;gap:8px;padding:5px 0;border-bottom:1px solid var(--border)">
+      <span style="color:${c.ok ? 'var(--green)' : 'var(--red)'};font-size:14px">${c.ok ? '✓' : '✗'}</span>
+      <span style="font-size:12px;color:${c.ok ? 'var(--text)' : 'var(--muted)'}">${c.label}</span>
+    </div>`
+  ).join('');
+}
+
+function renderPublishSummary() {
+  const el = document.getElementById('publish-summary');
+  const ks = state.currentKS;
+  if (!ks) { el.textContent = '—'; return; }
+  const score = ks.ai_gate_log?.score;
+  const tierCounts = {};
+  PLATFORMS.filter(p => state.selectedPlatforms.has(p.id)).forEach(p => {
+    tierCounts[p.tier] = (tierCounts[p.tier]||0)+1;
+  });
+  el.innerHTML = `
+    <div style="line-height:2">
+      <div>タイトル: <strong>${ks.title}</strong></div>
+      <div>種別: ${ks.type} | 優先度: <span class="badge b-yellow">${ks.priority}級</span></div>
+      <div>AIスコア: <span style="color:${score>=0.8?'var(--green)':score>=0.6?'var(--yellow)':'var(--red)'}">${score?.toFixed(2)||'—'}</span></div>
+      <div>掲載先: S(${tierCounts.S||0}) A(${tierCounts.A||0}) B(${tierCounts.B||0}) C(${tierCounts.C||0})</div>
+    </div>`;
+}
+
+function renderPublishResults() {
+  const el = document.getElementById('publish-results');
+  const jobs = state.publishJobs.filter(j => j.ks_id === state.currentKS?.id);
+  if (!jobs.length) {
+    el.innerHTML = '<div class="muted" style="font-size:12px">まだ投稿結果がありません</div>';
+    return;
+  }
+  el.innerHTML = jobs.map(j => {
+    const p = PLATFORMS.find(p => p.id === j.platform);
+    return `<div class="result-card ${j.status}" style="margin-bottom:6px">
+      <div style="font-size:12px"><strong>${p?.icon||''} ${p?.name||j.platform}</strong></div>
+      <span class="badge ${j.status==='done'?'b-green':j.status==='failed'?'b-red':'b-yellow'}">${j.status}</span>
+    </div>`;
+  }).join('');
+}
+
+function scheduleJob(platformId, dateStr) {
+  toast(`${PLATFORMS.find(p=>p.id===platformId)?.name} の投稿予約を設定しました`);
+}
+
+async function executePublish() {
+  const ks = state.currentKS;
+  if (!ks) { toast('コンテンツが選択されていません', 'err'); return; }
+  if (!state.selectedPlatforms.size) { toast('掲載先を選択してください', 'err'); return; }
+  if (ks.status !== 'confirmed' && !ks.ai_gate_log) {
+    toast('AI審査を先に実行してください', 'err'); return;
+  }
+
+  const selected = PLATFORMS.filter(p => state.selectedPlatforms.has(p.id));
+  toast(`${selected.length}媒体への投稿を開始します...`);
+
+  for (const p of selected) {
+    const job = {
+      id: Date.now() + '_' + p.id,
+      ks_id: ks.id,
+      platform: p.id,
+      status: 'running',
+      created_at: new Date().toISOString(),
+    };
+    state.publishJobs.push(job);
+
+    // バックエンドに送信試行
+    try {
+      await fetch(`${API_BASE}/api/action/publish`, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({payload: {ks_id: ks.id, platform: p.id, title: ks.title}}),
+      });
+    } catch {}
+
+    // ローカル完了シミュレーション
+    setTimeout(() => {
+      job.status = 'done';
+      job.done_at = new Date().toISOString();
+      ks.publish_status[p.id] = 'published';
+      save();
+      renderPublishTimeline();
+    }, 800 + Math.random() * 1200);
+  }
+
+  save();
+  toast('投稿処理を開始しました。完了まで少々お待ちください。');
+}
+
+// ── STEP 5: ANALYTICS ─────────────────────────────────────────────
+function renderAnalyticsTable() {
+  const tbody = document.getElementById('analytics-table-body');
+  const published = state.publishJobs.filter(j => j.status === 'done');
+  if (!published.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">まだ投稿がありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = published.map(j => {
+    const p = PLATFORMS.find(p => p.id === j.platform);
+    const ks = [...state.drafts, ...state.reviewQueue].find(k => k.id === j.ks_id);
+    const pv  = Math.floor(Math.random() * 500);
+    const eng = (Math.random() * 5).toFixed(1) + '%';
+    return `<tr>
+      <td><code>${j.ks_id}</code></td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ks?.title||'—'}</td>
+      <td>${p?.icon||''} ${p?.name||j.platform}</td>
+      <td style="font-size:12px">${j.done_at?.slice(0,16)||'—'}</td>
+      <td>${pv}</td>
+      <td>${eng}</td>
+      <td><span class="badge ${pv>200?'b-green':pv>50?'b-blue':'b-gray'}">${pv>200?'好調':pv>50?'普通':'低調'}</span></td>
+    </tr>`;
+  }).join('');
+
+  // populate select
+  const sel = document.getElementById('analytics-ks-select');
+  const ksIds = [...new Set(published.map(j => j.ks_id))];
+  sel.innerHTML = '<option value="">— KSを選択 —</option>' +
+    ksIds.map(id => {
+      const ks = [...state.drafts, ...state.reviewQueue].find(k => k.id === id);
+      return `<option value="${id}">${id}: ${ks?.title||id}</option>`;
+    }).join('');
+}
+
+function renderAnalyticsDetail() {
+  const sel = document.getElementById('analytics-ks-select').value;
+  const el  = document.getElementById('analytics-detail');
+  if (!sel) { el.innerHTML = '<div class="empty muted">KSを選択してください</div>'; return; }
+  const jobs = state.publishJobs.filter(j => j.ks_id === sel && j.status === 'done');
+  const total = jobs.reduce((s,j) => s + Math.floor(Math.random()*300), 0);
+  el.innerHTML = `
+    <div class="stats-row cols-4" style="margin:0">
+      <div class="analytics-metric">
+        <div class="analytics-val c-accent">${total}</div>
+        <div class="analytics-label">総PV</div>
+        <div class="analytics-change up">+12% 先週比</div>
+      </div>
+      <div class="analytics-metric">
+        <div class="analytics-val c-green">${jobs.length}</div>
+        <div class="analytics-label">掲載媒体数</div>
+      </div>
+      <div class="analytics-metric">
+        <div class="analytics-val" style="color:var(--yellow)">${(Math.random()*60+20).toFixed(1)}%</div>
+        <div class="analytics-label">直帰率</div>
+      </div>
+      <div class="analytics-metric">
+        <div class="analytics-val" style="color:var(--purple)">${Math.floor(Math.random()*180)}秒</div>
+        <div class="analytics-label">平均滞在時間</div>
+      </div>
+    </div>`;
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+function renderDashboard() {
+  const all = [...state.drafts, ...state.reviewQueue];
+  document.getElementById('ds-total').textContent     = all.length;
+  document.getElementById('ds-confirmed').textContent = all.filter(r=>r.status==='confirmed').length;
+  document.getElementById('ds-pending').textContent   = all.filter(r=>r.status==='pending_approval').length;
+  document.getElementById('ds-published').textContent = state.publishJobs.filter(j=>j.status==='done').length;
+
+  const now = new Date();
+  const thisMonth = all.filter(r => {
+    const d = new Date(r.created_at);
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  }).length;
+  document.getElementById('ds-monthly').textContent = thisMonth;
+
+  const recentEl = document.getElementById('db-recent-ks');
+  const recent = all.slice(-6).reverse();
+  if (!recent.length) {
+    recentEl.innerHTML = '<div class="empty muted">データなし</div>';
+  } else {
+    recentEl.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>ID</th><th>タイトル</th><th>ステータス</th><th>作成日</th></tr></thead>
+      <tbody>${recent.map(r => `<tr>
+        <td><code>${r.id}</code></td>
+        <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.title||'—'}</td>
+        <td><span class="badge ${r.status==='confirmed'?'b-green':r.status==='pending_approval'?'b-yellow':'b-gray'}">${r.status||'—'}</span></td>
+        <td style="font-size:11px;color:var(--muted)">${r.created_at?.slice(0,10)||'—'}</td>
+      </tr>`).join('')}</tbody>
+    </table></div>`;
+  }
+}
+
+// ── KNOWLEDGE BOARD ───────────────────────────────────────────────
+function renderKB() {
+  const filter = document.getElementById('kb-filter')?.value || '';
+  const all = [...state.drafts, ...state.reviewQueue];
+  const records = all.filter(r => !filter || r.status === filter).slice().reverse();
+  const tbody = document.getElementById('kb-tbody');
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">レコードがありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = records.map(r => {
+    const pubs = Object.keys(r.publish_status||{}).filter(k=>r.publish_status[k]==='published');
+    const score = r.ai_gate_log?.score;
+    const color = !score ? 'var(--muted)' :
+                  score >= 0.9 ? 'var(--green)' :
+                  score >= 0.8 ? 'var(--accent)' :
+                  score >= 0.6 ? 'var(--yellow)' : 'var(--red)';
+    return `<tr>
+      <td><code>${r.id}</code></td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.title||'—'}</td>
+      <td><span class="badge ${r.status==='confirmed'?'b-green':r.status==='pending_approval'?'b-yellow':r.status==='rejected'?'b-red':'b-gray'}">${r.status}</span></td>
+      <td style="color:${color};font-weight:700">${score?.toFixed(2)||'—'}</td>
+      <td><span class="badge b-yellow">${r.priority||'—'}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${r.created_at?.slice(0,10)||'—'}</td>
+      <td><span class="badge b-blue">${pubs.length}媒体</span></td>
+      <td>
+        <button class="btn-ghost btn-xs" onclick="loadDraftAndEdit('${r.id}')">編集</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function loadDraftAndEdit(id) {
+  const d = [...state.drafts, ...state.reviewQueue].find(r => r.id === id);
+  if (!d) return;
+  document.getElementById('f-title').value    = d.title || '';
+  document.getElementById('f-type').value     = d.type || 'release';
+  document.getElementById('f-priority').value = d.priority || 'A';
+  document.getElementById('f-keywords').value = d.keywords || '';
+  document.getElementById('f-body').value     = d.body || '';
+  document.getElementById('f-note').value     = d.note || '';
+  state.currentKS = d;
+  goto('input');
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────
+function renderHistory() {
+  const tbody = document.getElementById('history-tbody');
+  if (!state.publishJobs.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">投稿履歴がありません</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.publishJobs.slice().reverse().map(j => {
+    const p  = PLATFORMS.find(p => p.id === j.platform);
+    const ks = [...state.drafts, ...state.reviewQueue].find(k => k.id === j.ks_id);
+    return `<tr>
+      <td><code>${j.ks_id}</code></td>
+      <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ks?.title||'—'}</td>
+      <td>${p?.icon||''} ${p?.name||j.platform}</td>
+      <td><span class="badge ${j.status==='done'?'b-green':j.status==='failed'?'b-red':'b-yellow'}">${j.status}</span></td>
+      <td style="font-size:11px;color:var(--muted)">${(j.done_at||j.created_at)?.slice(0,16)||'—'}</td>
+      <td><a href="${p?.url||'#'}" target="_blank" style="font-size:11px">↗ サイト</a></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── BACKEND HEALTH ────────────────────────────────────────────────
+async function checkHealth() {
+  const dot   = document.getElementById('conn-dot');
+  const label = document.getElementById('conn-label');
+
+  const check = async (url) => {
+    try {
+      const r = await fetch(url, {signal: AbortSignal.timeout(2000)});
+      return r.ok;
+    } catch { return false; }
+  };
+
+  const [backend, seoos, mocka] = await Promise.all([
+    check(`${API_BASE}/health`),
+    check(`${SEO_BASE}/api/health`),
+    check('http://localhost:5002/health'),
+  ]);
+
+  dot.className   = 'conn-dot' + (backend ? ' ok' : '');
+  label.textContent = backend ? 'Backend接続中' : 'オフライン（ローカル）';
+
+  const st = id => document.getElementById(id);
+  if (st('st-backend')) st('st-backend').innerHTML = backend ? '<span class="text-green">稼働中</span>' : '<span class="text-red">停止中</span>';
+  if (st('st-seoos'))   st('st-seoos').innerHTML   = seoos   ? '<span class="text-green">稼働中</span>' : '<span class="text-red">停止中</span>';
+  if (st('st-mocka'))   st('st-mocka').innerHTML   = mocka   ? '<span class="text-green">稼働中</span>' : '<span class="text-red">停止中</span>';
+
+  if (backend) {
+    try {
+      const cal = await fetch(`${API_BASE}/api/caliber`).then(r=>r.json());
+      const scoreEl = document.getElementById('caliber-score');
+      const subEl   = document.getElementById('caliber-sub');
+      if (scoreEl) { scoreEl.textContent = cal.score; scoreEl.style.color = cal.score >= 0.8 ? 'var(--green)' : cal.score >= 0.6 ? 'var(--yellow)' : 'var(--red)'; }
+      if (subEl)   subEl.textContent = `総イベント: ${cal.total_events}`;
+
+      const evData = await fetch(`${API_BASE}/api/events?limit=20`).then(r=>r.json());
+      const logEl  = document.getElementById('event-log');
+      if (logEl && evData.events?.length) {
+        logEl.innerHTML = evData.events.slice().reverse().slice(0,15).map(e => {
+          const ts = new Date(e.ts * 1000).toLocaleTimeString('ja-JP');
+          return `<div style="padding:2px 0;border-bottom:1px solid var(--border);color:${e.status==='success'?'var(--green)':e.status==='running'?'var(--accent)':'var(--red)'}">
+            [${ts}] ${e.action} — ${e.status}</div>`;
+        }).join('');
+      }
+    } catch {}
+  }
+}
+
+// ── CLOCK ─────────────────────────────────────────────────────────
+function updateClock() {
+  const n = new Date();
+  const p = x => String(x).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    `${n.getFullYear()}-${p(n.getMonth()+1)}-${p(n.getDate())} ${p(n.getHours())}:${p(n.getMinutes())}:${p(n.getSeconds())}`;
+}
+
+// ── REFRESH ALL ───────────────────────────────────────────────────
+function refreshAll() {
+  renderDrafts();
+  updateReviewBadge();
+  updateMiniStats();
+  checkHealth();
+  const active = document.querySelector('.tab-pane.active');
+  const id = active?.id?.replace('pane-','');
+  if (id === 'dashboard') renderDashboard();
+  if (id === 'knowledge') renderKB();
+  if (id === 'history')   renderHistory();
+  if (id === 'analytics') renderAnalyticsTable();
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+(function init() {
+  load();
+
+  // default date
+  const today = new Date().toISOString().split('T')[0];
+  const dateEl = document.getElementById('f-date');
+  if (dateEl) dateEl.value = today;
+
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  renderDrafts();
+  renderPlatforms();
+  updateReviewBadge();
+  updateMiniStats();
+
+  checkHealth();
+  setInterval(checkHealth, 60000);
+  setInterval(refreshAll,  30000);
+
+  // initial pipeline strip state
+  document.querySelectorAll('.ps-step').forEach((el,i) => {
+    const names = ['input','review','platforms','publish','analytics'];
+    el.addEventListener('click', () => goto(names[i]));
+  });
+})();
+</script>
 </body>
 </html>

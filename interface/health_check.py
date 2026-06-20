@@ -49,6 +49,12 @@ RED   = "\033[91m"
 RESET = "\033[0m"
 
 HEALTH_CHECKS = {
+    "python_env": {
+        "method": "python_env",
+        "risk":            "PYTHONUTF8等の不正値でFatal Python errorが発生し全プロセスが起動不能になる",
+        "opportunity":     "起動時検知により環境変数汚染を即座に捕捉できる",
+        "beta_candidate":  "encoding_policy",
+    },
     "mocka_server": {
         "method": "http_get",
         "url": "http://localhost:5000/loop/status",
@@ -123,6 +129,13 @@ HEALTH_CHECKS = {
         "risk":            "Gate外からのDB直接書き込みはPHI-OS信頼境界を破壊する",
         "opportunity":     "Gate経由率100%の継続証明でPHI-OS制度的信頼性を確立できる",
         "beta_candidate":  "governance_integrity",
+    },
+    "auth_key_drive": {
+        "method": "auth_key_drive",
+        "optional": True,
+        "risk":            "認証キードライブ(A:)未接続でWatcherがFirestore接続できずクラッシュする",
+        "opportunity":     "未接続を起動時に明示検知すればWatcherスキップ+案内表示で原因不明のクラッシュを防止できる",
+        "beta_candidate":  "encoding_policy",
     },
 }
 
@@ -237,6 +250,24 @@ def check_phi_os_audit() -> tuple:
         return False, f"監査エラー: {e}"
 
 
+def check_auth_key_drive() -> tuple:
+    """
+    認証キードライブ(A:)の接続確認 (Watcherクラッシュ対応)
+    mocka_watcher.py の KEY_PATH 由来のドライブ文字が接続されているか確認する。
+    """
+    import os
+    key_path = os.environ.get(
+        "MOCKA_FIREBASE_KEY_PATH",
+        r"A:\secrets\mocka-knowledge-gate-firebase-adminsdk-fbsvc-53613922c1.json",
+    ).strip()
+    drive, _ = os.path.splitdrive(key_path)
+    if not drive:
+        return True, "KEY_PATHにドライブ指定なし (skip)"
+    if os.path.exists(drive + "\\"):
+        return True, f"認証キードライブ({drive}) 接続済み"
+    return False, f"認証キードライブ({drive})が接続されていません。挿入してください"
+
+
 def check_env_bom() -> tuple:
     """
     .envファイルのBOM（U+FEFF）検知 (TODO_296)
@@ -249,6 +280,49 @@ def check_env_bom() -> tuple:
     if raw.startswith(b'\xef\xbb\xbf'):
         return False, ".envにBOM検出 (BOM付きUTF-8) -> MOCKA_ENDPOINTがNone化するリスク"
     return True, ".env BOMなし OK"
+
+
+def check_python_env() -> tuple:
+    """
+    Python環境変数の妥当性チェック（PYTHONUTF8等）
+    無効値が存在する場合 os.environ 全体をファイルにダンプする。
+    2026-06-19: PYTHONUTF8 invalid value で全プロセス起動不能になった事例対応
+    """
+    import os
+    issues = []
+    val = os.environ.get("PYTHONUTF8")
+    if val is not None and val not in ("0", "1", ""):
+        issues.append(f"PYTHONUTF8='{val}' (有効値は '0'/'1'/未設定)")
+    pythonioencoding = os.environ.get("PYTHONIOENCODING", "")
+    if pythonioencoding and pythonioencoding.lower() not in ("utf-8", "utf_8", "utf8", ""):
+        issues.append(f"PYTHONIOENCODING='{pythonioencoding}' (utf-8推奨)")
+
+    if issues:
+        _dump_env_snapshot("python_env_invalid", issues)
+        return False, " | ".join(issues)
+    return True, f"PYTHONUTF8={repr(val) if val is not None else '(unset)'} OK"
+
+
+def _dump_env_snapshot(trigger: str, errors: list):
+    """
+    環境変数スナップショットをタイムスタンプ付きファイルに書き出す。
+    子プロセス起動失敗・env不正値検知時のフォールバックキャプチャ用。
+    """
+    import os
+    dump_dir = Path("C:/Users/sirok/MoCKA/data/tic/env_dumps")
+    dump_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    out = dump_dir / f"env_dump_{ts}_{trigger}.json"
+    payload = {
+        "timestamp": datetime.datetime.now().isoformat(),
+        "trigger": trigger,
+        "errors": errors,
+        "environ": dict(os.environ),
+    }
+    out.write_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, default=str),
+        encoding="utf-8",
+    )
 
 
 def check_relay_dom(cfg: dict) -> tuple:
@@ -295,7 +369,9 @@ def _save_baseline(results: list):
 def run_check(name: str, cfg: dict) -> dict:
     method = cfg["method"]
     try:
-        if method == "http_get":
+        if method == "python_env":
+            ok, detail = check_python_env()
+        elif method == "http_get":
             ok, detail = check_http_get(cfg)
         elif method == "sqlite_check":
             ok, detail = check_sqlite(cfg)
@@ -307,6 +383,8 @@ def run_check(name: str, cfg: dict) -> dict:
             ok, detail = check_env_bom()
         elif method == "phi_os_audit":
             ok, detail = check_phi_os_audit()
+        elif method == "auth_key_drive":
+            ok, detail = check_auth_key_drive()
         else:
             ok, detail = False, f"unknown method: {method}"
     except Exception as e:
@@ -461,6 +539,12 @@ def run(target: str = None):
 
     if fails:
         push_prevention(fails)
+        # 子プロセス起動失敗疑いの場合 os.environ を即時キャプチャ
+        server_fails = [r for r in fails if r["component"] in ("mocka_server", "caliber_pipeline")]
+        if server_fails:
+            fail_names = [r["component"] for r in server_fails]
+            fail_details = [r["detail"] for r in server_fails]
+            _dump_env_snapshot("server_launch_fail_" + "_".join(fail_names), fail_details)
         write_event(
             "HEALTH_FAIL: ヘルスチェック異常検出",
             f"FAIL: {[r['component'] for r in fails]} | {overall}",

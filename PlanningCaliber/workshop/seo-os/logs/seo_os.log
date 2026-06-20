@@ -3750,3 +3750,382 @@
 2026-06-18 08:42:48,327 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on http://127.0.0.1:8750
 2026-06-18 08:42:48,327 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-18 15:34:22,633 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-18 15:34:22,663 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-18 15:34:22,664 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-18 15:34:22,751 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-18 15:34:22,757 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-18 15:34:22,761 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-18 15:34:22,787 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-18 15:34:22,788 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-18 15:34:22,800 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-18 15:34:22,801 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-18 15:34:22,804 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-18 15:34:22,805 [INFO] [Bootstrap] Worker初期化完了
+2026-06-18 15:34:23,739 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-18 15:34:23,741 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-18 16:49:14,220 [INFO] 127.0.0.1 - - [18/Jun/2026 16:49:14] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:49:43,103 [INFO] 127.0.0.1 - - [18/Jun/2026 16:49:43] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:50:13,416 [INFO] 127.0.0.1 - - [18/Jun/2026 16:50:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:50:13,651 [INFO] 127.0.0.1 - - [18/Jun/2026 16:50:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:50:13,731 [INFO] 127.0.0.1 - - [18/Jun/2026 16:50:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:50:43,108 [INFO] 127.0.0.1 - - [18/Jun/2026 16:50:43] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:51:13,430 [INFO] 127.0.0.1 - - [18/Jun/2026 16:51:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:51:13,685 [INFO] 127.0.0.1 - - [18/Jun/2026 16:51:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:51:13,745 [INFO] 127.0.0.1 - - [18/Jun/2026 16:51:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:51:43,098 [INFO] 127.0.0.1 - - [18/Jun/2026 16:51:43] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:52:13,427 [INFO] 127.0.0.1 - - [18/Jun/2026 16:52:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:52:13,690 [INFO] 127.0.0.1 - - [18/Jun/2026 16:52:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:52:13,735 [INFO] 127.0.0.1 - - [18/Jun/2026 16:52:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:53:05,114 [INFO] 127.0.0.1 - - [18/Jun/2026 16:53:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:53:13,415 [INFO] 127.0.0.1 - - [18/Jun/2026 16:53:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:54:05,110 [INFO] 127.0.0.1 - - [18/Jun/2026 16:54:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:54:13,408 [INFO] 127.0.0.1 - - [18/Jun/2026 16:54:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:55:05,103 [INFO] 127.0.0.1 - - [18/Jun/2026 16:55:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:55:13,413 [INFO] 127.0.0.1 - - [18/Jun/2026 16:55:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:55:47,591 [INFO] 127.0.0.1 - - [18/Jun/2026 16:55:47] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:56:13,328 [INFO] 127.0.0.1 - - [18/Jun/2026 16:56:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:56:13,587 [INFO] 127.0.0.1 - - [18/Jun/2026 16:56:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:56:13,633 [INFO] 127.0.0.1 - - [18/Jun/2026 16:56:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:56:43,105 [INFO] 127.0.0.1 - - [18/Jun/2026 16:56:43] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:57:13,419 [INFO] 127.0.0.1 - - [18/Jun/2026 16:57:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:57:13,669 [INFO] 127.0.0.1 - - [18/Jun/2026 16:57:13] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:58:05,145 [INFO] 127.0.0.1 - - [18/Jun/2026 16:58:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:59:05,431 [INFO] 127.0.0.1 - - [18/Jun/2026 16:59:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 16:59:05,688 [INFO] 127.0.0.1 - - [18/Jun/2026 16:59:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:00:05,126 [INFO] 127.0.0.1 - - [18/Jun/2026 17:00:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:00:05,454 [INFO] 127.0.0.1 - - [18/Jun/2026 17:00:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:01:05,107 [INFO] 127.0.0.1 - - [18/Jun/2026 17:01:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:01:05,445 [INFO] 127.0.0.1 - - [18/Jun/2026 17:01:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:02:05,119 [INFO] 127.0.0.1 - - [18/Jun/2026 17:02:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:02:05,436 [INFO] 127.0.0.1 - - [18/Jun/2026 17:02:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:03:05,131 [INFO] 127.0.0.1 - - [18/Jun/2026 17:03:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:03:05,440 [INFO] 127.0.0.1 - - [18/Jun/2026 17:03:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:04:05,135 [INFO] 127.0.0.1 - - [18/Jun/2026 17:04:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:04:05,479 [INFO] 127.0.0.1 - - [18/Jun/2026 17:04:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:05:05,133 [INFO] 127.0.0.1 - - [18/Jun/2026 17:05:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:05:05,459 [INFO] 127.0.0.1 - - [18/Jun/2026 17:05:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:06:05,131 [INFO] 127.0.0.1 - - [18/Jun/2026 17:06:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:06:05,465 [INFO] 127.0.0.1 - - [18/Jun/2026 17:06:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:07:05,115 [INFO] 127.0.0.1 - - [18/Jun/2026 17:07:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:07:05,436 [INFO] 127.0.0.1 - - [18/Jun/2026 17:07:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:08:05,116 [INFO] 127.0.0.1 - - [18/Jun/2026 17:08:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:08:05,440 [INFO] 127.0.0.1 - - [18/Jun/2026 17:08:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:09:05,120 [INFO] 127.0.0.1 - - [18/Jun/2026 17:09:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:09:05,437 [INFO] 127.0.0.1 - - [18/Jun/2026 17:09:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:10:05,159 [INFO] 127.0.0.1 - - [18/Jun/2026 17:10:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:10:05,472 [INFO] 127.0.0.1 - - [18/Jun/2026 17:10:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:10:05,779 [INFO] 127.0.0.1 - - [18/Jun/2026 17:10:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:11:05,128 [INFO] 127.0.0.1 - - [18/Jun/2026 17:11:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:11:05,447 [INFO] 127.0.0.1 - - [18/Jun/2026 17:11:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:12:05,131 [INFO] 127.0.0.1 - - [18/Jun/2026 17:12:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:12:05,450 [INFO] 127.0.0.1 - - [18/Jun/2026 17:12:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:13:05,121 [INFO] 127.0.0.1 - - [18/Jun/2026 17:13:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:13:05,437 [INFO] 127.0.0.1 - - [18/Jun/2026 17:13:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:14:05,134 [INFO] 127.0.0.1 - - [18/Jun/2026 17:14:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:14:05,458 [INFO] 127.0.0.1 - - [18/Jun/2026 17:14:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:15:05,450 [INFO] 127.0.0.1 - - [18/Jun/2026 17:15:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:15:05,707 [INFO] 127.0.0.1 - - [18/Jun/2026 17:15:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:15:05,769 [INFO] 127.0.0.1 - - [18/Jun/2026 17:15:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:16:05,147 [INFO] 127.0.0.1 - - [18/Jun/2026 17:16:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:16:05,471 [INFO] 127.0.0.1 - - [18/Jun/2026 17:16:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:17:05,137 [INFO] 127.0.0.1 - - [18/Jun/2026 17:17:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:17:05,462 [INFO] 127.0.0.1 - - [18/Jun/2026 17:17:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:18:05,141 [INFO] 127.0.0.1 - - [18/Jun/2026 17:18:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:18:05,458 [INFO] 127.0.0.1 - - [18/Jun/2026 17:18:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:19:05,123 [INFO] 127.0.0.1 - - [18/Jun/2026 17:19:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:19:05,442 [INFO] 127.0.0.1 - - [18/Jun/2026 17:19:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:20:05,447 [INFO] 127.0.0.1 - - [18/Jun/2026 17:20:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:20:05,700 [INFO] 127.0.0.1 - - [18/Jun/2026 17:20:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:20:05,763 [INFO] 127.0.0.1 - - [18/Jun/2026 17:20:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:21:05,141 [INFO] 127.0.0.1 - - [18/Jun/2026 17:21:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:21:05,476 [INFO] 127.0.0.1 - - [18/Jun/2026 17:21:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:22:05,140 [INFO] 127.0.0.1 - - [18/Jun/2026 17:22:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:22:05,455 [INFO] 127.0.0.1 - - [18/Jun/2026 17:22:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:23:05,153 [INFO] 127.0.0.1 - - [18/Jun/2026 17:23:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:23:05,466 [INFO] 127.0.0.1 - - [18/Jun/2026 17:23:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:24:05,128 [INFO] 127.0.0.1 - - [18/Jun/2026 17:24:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:24:05,447 [INFO] 127.0.0.1 - - [18/Jun/2026 17:24:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:25:05,140 [INFO] 127.0.0.1 - - [18/Jun/2026 17:25:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:25:05,460 [INFO] 127.0.0.1 - - [18/Jun/2026 17:25:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:26:05,137 [INFO] 127.0.0.1 - - [18/Jun/2026 17:26:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:26:05,457 [INFO] 127.0.0.1 - - [18/Jun/2026 17:26:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:27:05,136 [INFO] 127.0.0.1 - - [18/Jun/2026 17:27:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:27:05,469 [INFO] 127.0.0.1 - - [18/Jun/2026 17:27:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:28:05,173 [INFO] 127.0.0.1 - - [18/Jun/2026 17:28:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:28:05,509 [INFO] 127.0.0.1 - - [18/Jun/2026 17:28:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:29:05,150 [INFO] 127.0.0.1 - - [18/Jun/2026 17:29:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:29:05,479 [INFO] 127.0.0.1 - - [18/Jun/2026 17:29:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:30:05,146 [INFO] 127.0.0.1 - - [18/Jun/2026 17:30:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:30:05,469 [INFO] 127.0.0.1 - - [18/Jun/2026 17:30:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:31:05,162 [INFO] 127.0.0.1 - - [18/Jun/2026 17:31:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:31:05,466 [INFO] 127.0.0.1 - - [18/Jun/2026 17:31:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:31:05,780 [INFO] 127.0.0.1 - - [18/Jun/2026 17:31:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:32:05,151 [INFO] 127.0.0.1 - - [18/Jun/2026 17:32:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:32:05,488 [INFO] 127.0.0.1 - - [18/Jun/2026 17:32:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:33:05,154 [INFO] 127.0.0.1 - - [18/Jun/2026 17:33:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:33:05,474 [INFO] 127.0.0.1 - - [18/Jun/2026 17:33:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:34:05,163 [INFO] 127.0.0.1 - - [18/Jun/2026 17:34:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:34:05,504 [INFO] 127.0.0.1 - - [18/Jun/2026 17:34:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:35:05,153 [INFO] 127.0.0.1 - - [18/Jun/2026 17:35:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:35:05,474 [INFO] 127.0.0.1 - - [18/Jun/2026 17:35:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:36:05,153 [INFO] 127.0.0.1 - - [18/Jun/2026 17:36:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:36:05,481 [INFO] 127.0.0.1 - - [18/Jun/2026 17:36:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:37:05,158 [INFO] 127.0.0.1 - - [18/Jun/2026 17:37:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:37:05,496 [INFO] 127.0.0.1 - - [18/Jun/2026 17:37:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:38:05,177 [INFO] 127.0.0.1 - - [18/Jun/2026 17:38:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:38:05,521 [INFO] 127.0.0.1 - - [18/Jun/2026 17:38:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:39:05,173 [INFO] 127.0.0.1 - - [18/Jun/2026 17:39:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:39:05,512 [INFO] 127.0.0.1 - - [18/Jun/2026 17:39:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:40:05,162 [INFO] 127.0.0.1 - - [18/Jun/2026 17:40:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:40:05,494 [INFO] 127.0.0.1 - - [18/Jun/2026 17:40:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:41:05,166 [INFO] 127.0.0.1 - - [18/Jun/2026 17:41:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:41:05,503 [INFO] 127.0.0.1 - - [18/Jun/2026 17:41:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:42:05,160 [INFO] 127.0.0.1 - - [18/Jun/2026 17:42:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:42:05,480 [INFO] 127.0.0.1 - - [18/Jun/2026 17:42:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:43:05,165 [INFO] 127.0.0.1 - - [18/Jun/2026 17:43:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:43:05,563 [INFO] 127.0.0.1 - - [18/Jun/2026 17:43:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:44:05,181 [INFO] 127.0.0.1 - - [18/Jun/2026 17:44:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:44:05,513 [INFO] 127.0.0.1 - - [18/Jun/2026 17:44:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:45:05,194 [INFO] 127.0.0.1 - - [18/Jun/2026 17:45:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:45:05,524 [INFO] 127.0.0.1 - - [18/Jun/2026 17:45:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:46:05,189 [INFO] 127.0.0.1 - - [18/Jun/2026 17:46:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:46:05,526 [INFO] 127.0.0.1 - - [18/Jun/2026 17:46:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:47:05,177 [INFO] 127.0.0.1 - - [18/Jun/2026 17:47:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:47:05,511 [INFO] 127.0.0.1 - - [18/Jun/2026 17:47:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:48:05,187 [INFO] 127.0.0.1 - - [18/Jun/2026 17:48:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:48:05,521 [INFO] 127.0.0.1 - - [18/Jun/2026 17:48:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:49:05,186 [INFO] 127.0.0.1 - - [18/Jun/2026 17:49:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:49:05,539 [INFO] 127.0.0.1 - - [18/Jun/2026 17:49:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:50:05,177 [INFO] 127.0.0.1 - - [18/Jun/2026 17:50:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:50:05,513 [INFO] 127.0.0.1 - - [18/Jun/2026 17:50:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:51:05,189 [INFO] 127.0.0.1 - - [18/Jun/2026 17:51:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:51:05,525 [INFO] 127.0.0.1 - - [18/Jun/2026 17:51:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:52:05,187 [INFO] 127.0.0.1 - - [18/Jun/2026 17:52:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:52:05,517 [INFO] 127.0.0.1 - - [18/Jun/2026 17:52:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:53:05,191 [INFO] 127.0.0.1 - - [18/Jun/2026 17:53:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:53:05,520 [INFO] 127.0.0.1 - - [18/Jun/2026 17:53:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:54:05,188 [INFO] 127.0.0.1 - - [18/Jun/2026 17:54:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 17:54:05,522 [INFO] 127.0.0.1 - - [18/Jun/2026 17:54:05] "GET /api/health HTTP/1.1" 200 -
+2026-06-18 18:37:35,507 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-18 18:37:35,507 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-18 18:37:35,508 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-18 18:37:35,521 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-18 18:37:35,523 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-18 18:37:35,525 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-18 18:37:35,564 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-18 18:37:35,573 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-18 18:37:35,592 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-18 18:37:35,593 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-18 18:37:35,593 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-18 18:37:35,594 [INFO] [Bootstrap] Worker初期化完了
+2026-06-18 18:37:36,305 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-18 18:37:36,305 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 07:29:35,926 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 07:29:35,927 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 07:29:35,927 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 07:29:35,943 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 07:29:35,944 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 07:29:35,944 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 07:29:35,984 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 07:29:35,984 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 07:29:36,007 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 07:29:36,008 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 07:29:36,010 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 07:29:36,010 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 07:29:37,184 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 07:29:37,185 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 07:54:47,198 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 07:54:47,234 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 07:54:47,249 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 07:54:47,360 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 07:54:47,423 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 07:54:47,444 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 07:54:47,567 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 07:54:47,622 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 07:54:47,647 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 07:54:47,709 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 07:54:47,763 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 07:54:47,797 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 07:54:48,191 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 07:54:48,192 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 08:52:40,519 [INFO] 127.0.0.1 - - [19/Jun/2026 08:52:40] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-19 08:52:40,519 [INFO] 127.0.0.1 - - [19/Jun/2026 08:52:40] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-19 08:52:40,543 [INFO] 127.0.0.1 - - [19/Jun/2026 08:52:40] "GET /api/jobs?status=running HTTP/1.1" 200 -
+2026-06-19 08:52:40,544 [INFO] 127.0.0.1 - - [19/Jun/2026 08:52:40] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-19 08:52:40,544 [INFO] 127.0.0.1 - - [19/Jun/2026 08:52:40] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-19 08:52:40,544 [INFO] 127.0.0.1 - - [19/Jun/2026 08:52:40] "GET /api/jobs?status=failed HTTP/1.1" 200 -
+2026-06-19 14:02:41,912 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 14:02:41,913 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 14:02:41,918 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 14:02:41,994 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 14:02:41,994 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 14:02:41,994 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 14:02:42,012 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 14:02:42,014 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 14:02:42,023 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 14:02:42,024 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 14:02:42,024 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 14:02:42,024 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 14:02:42,439 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 14:02:42,440 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 14:14:32,407 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 14:14:32,410 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 14:14:32,414 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 14:14:32,456 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 14:14:32,463 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 14:14:32,479 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 14:14:32,505 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 14:14:32,515 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 14:14:32,527 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 14:14:32,549 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 14:14:32,564 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 14:14:32,575 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 14:14:32,841 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 14:14:32,848 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 14:18:25,922 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 14:18:26,024 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 14:18:26,054 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 14:18:26,071 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 14:18:26,075 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 14:18:26,078 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 14:18:26,083 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 14:18:26,085 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 14:18:26,092 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 14:18:26,102 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 14:18:26,113 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 14:18:26,117 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 14:18:26,253 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 14:18:26,254 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 15:05:02,825 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 15:05:02,830 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 15:05:02,840 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 15:05:02,843 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 15:05:02,843 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 15:05:02,845 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 15:05:02,918 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 15:05:02,922 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 15:05:02,926 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 15:05:02,928 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 15:05:02,937 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 15:05:02,938 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 15:05:03,479 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 15:05:03,479 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-19 19:53:27,552 [INFO] 127.0.0.1 - - [19/Jun/2026 19:53:27] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-19 19:53:57,215 [INFO] 127.0.0.1 - - [19/Jun/2026 19:53:57] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-19 19:58:46,162 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-19 19:58:46,162 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-19 19:58:46,163 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-19 19:58:46,170 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-19 19:58:46,170 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-19 19:58:46,170 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-19 19:58:46,186 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-19 19:58:46,186 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-19 19:58:46,194 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-19 19:58:46,194 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-19 19:58:46,194 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-19 19:58:46,194 [INFO] [Bootstrap] Worker初期化完了
+2026-06-19 19:58:46,642 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-19 19:58:46,644 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 08:08:33,414 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-20 08:08:33,417 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-20 08:08:33,418 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-20 08:08:33,442 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-20 08:08:33,442 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-20 08:08:33,443 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-20 08:08:33,477 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-20 08:08:33,477 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-20 08:08:33,487 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-20 08:08:33,488 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-20 08:08:33,493 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-20 08:08:33,494 [INFO] [Bootstrap] Worker初期化完了
+2026-06-20 08:08:34,027 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-20 08:08:34,028 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 08:42:38,329 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-20 08:42:38,334 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-20 08:42:38,335 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-20 08:42:38,337 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-20 08:42:38,337 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-20 08:42:38,342 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-20 08:42:38,461 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-20 08:42:38,610 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-20 08:42:38,705 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-20 08:42:38,799 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-20 08:42:38,909 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-20 08:42:39,045 [INFO] [Bootstrap] Worker初期化完了
+2026-06-20 08:42:40,304 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-20 08:42:40,304 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 09:20:55,276 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-20 09:20:55,324 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-20 09:20:55,340 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-20 09:20:55,367 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-20 09:20:55,375 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-20 09:20:55,419 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-20 09:20:55,450 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-20 09:20:55,502 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-20 09:20:55,575 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-20 09:20:55,648 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-20 09:20:55,661 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-20 09:20:55,671 [INFO] [Bootstrap] Worker初期化完了
+2026-06-20 09:20:55,888 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-20 09:20:55,893 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 10:20:16,263 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-20 10:20:16,320 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-20 10:20:16,367 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-20 10:20:16,446 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-20 10:20:16,503 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-20 10:20:16,608 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-20 10:20:16,674 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-20 10:20:16,726 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-20 10:20:16,777 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-20 10:20:16,788 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-20 10:20:16,803 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-20 10:20:16,834 [INFO] [Bootstrap] Worker初期化完了
+2026-06-20 10:20:17,344 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-20 10:20:17,345 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 10:26:07,657 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-20 10:26:07,676 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-20 10:26:07,703 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-20 10:26:07,720 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-20 10:26:07,723 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-20 10:26:07,750 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-20 10:26:07,850 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-20 10:26:07,893 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-20 10:26:07,919 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-20 10:26:07,992 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-20 10:26:08,068 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-20 10:26:08,132 [INFO] [Bootstrap] Worker初期化完了
+2026-06-20 10:26:08,689 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-20 10:26:08,695 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 11:35:51,394 [INFO] [Registry] 登録: upload_html ← SFTPWorker
+2026-06-20 11:35:51,396 [INFO] [Registry] 登録: upload_asset ← SFTPWorker
+2026-06-20 11:35:51,399 [INFO] [Bootstrap] ロード: workers.sftp_worker
+2026-06-20 11:35:51,407 [INFO] [Registry] 登録: publish_blog ← WordPressWorker
+2026-06-20 11:35:51,408 [INFO] [Registry] 登録: publish_lp ← WordPressWorker
+2026-06-20 11:35:51,409 [INFO] [Bootstrap] ロード: workers.wordpress_worker
+2026-06-20 11:35:51,426 [INFO] [Registry] 登録: post_instagram ← InstagramWorker
+2026-06-20 11:35:51,427 [INFO] [Bootstrap] ロード: plugins.instagram_worker
+2026-06-20 11:35:51,438 [INFO] [Registry] 登録: post_x ← XWorker
+2026-06-20 11:35:51,439 [INFO] [Registry] 登録: schedule_x ← XWorker
+2026-06-20 11:35:51,439 [INFO] [Bootstrap] ロード: plugins.x_worker
+2026-06-20 11:35:51,440 [INFO] [Bootstrap] Worker初期化完了
+2026-06-20 11:35:51,764 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:8750
+2026-06-20 11:35:51,765 [INFO] [33mPress CTRL+C to quit[0m
+2026-06-20 11:35:53,526 [INFO] 127.0.0.1 - - [20/Jun/2026 11:35:53] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-20 11:36:22,645 [INFO] 127.0.0.1 - - [20/Jun/2026 11:36:22] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-20 11:36:52,327 [INFO] 127.0.0.1 - - [20/Jun/2026 11:36:52] "GET /api/jobs?status=pending HTTP/1.1" 200 -
