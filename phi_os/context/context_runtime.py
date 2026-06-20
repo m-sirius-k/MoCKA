@@ -12,6 +12,7 @@ import json
 import requests
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 from .institution_context import InstitutionContext
@@ -164,3 +165,36 @@ class ContextRuntime:
             requests.post(f"{_MCP_URL}/event", json=payload, timeout=1.0)
         except Exception:
             pass
+
+
+# ──────────────────────────────────────────────────
+# P3: Event Runtime本体接続（プロセス間連携）
+# ──────────────────────────────────────────────────
+# mocka_mcp_server.py（別プロセス）から mocka_write_event 完了直後に呼ばれる。
+# mocka_events.db への新規イベント書き込み・next_event_id()の呼び出しは一切行わない
+# （DANGER監査 E20260621_940325153cf6f 準拠）。Context Runtime側への伝播は
+# event_runtime_log.json への追記のみで完結する。
+
+_EVENT_LOG_PATH = Path(__file__).parents[2] / "data" / "context_snapshots" / "event_runtime_log.json"
+_EVENT_LOG_MAX = 200
+
+
+def emit_event_to_context_runtime(event_type: str, event_id: str, payload: dict | None = None) -> None:
+    entry = {
+        "event_type": event_type,
+        "event_id": event_id,
+        "payload": payload or {},
+        "received_at": datetime.now(timezone.utc).isoformat(),
+    }
+    try:
+        _EVENT_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+        log: list = []
+        if _EVENT_LOG_PATH.exists():
+            log = json.loads(_EVENT_LOG_PATH.read_text(encoding="utf-8"))
+        log.insert(0, entry)
+        _EVENT_LOG_PATH.write_text(
+            json.dumps(log[:_EVENT_LOG_MAX], ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+    except Exception:
+        pass

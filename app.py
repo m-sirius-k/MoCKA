@@ -4057,4 +4057,10 @@ if __name__ == "__main__":
         _schema_audit_enforce()
     except Exception as e:
         print(f"[schema_audit] 起動時チェック失敗（処理は継続）: {e}")
+    try:
+        from phi_os.context.context_runtime import ContextRuntime
+        context_runtime_instance = ContextRuntime.boot()
+        print(f"[ContextRuntime] boot()成功 — booted_at={context_runtime_instance._booted_at}")
+    except Exception as e:
+        print(f"[ContextRuntime] boot()失敗（処理は継続）: {e}")
     app.run(host="127.0.0.1", port=5000, debug=False)

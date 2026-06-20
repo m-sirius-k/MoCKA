@@ -163,10 +163,13 @@ def sha256_file(path):
         for chunk in iter(lambda: f.read(8192), b""): h.update(chunk)
     return h.hexdigest()
 
-def _update_working_context_live(title: str, why_purpose: str, ai: str = "") -> None:
-    # CONTEXT_RUNTIME_CONNECTION_INSTRUCTIONS.md P0/P1:
+def _update_working_context_live(title: str, why_purpose: str, ai: str = "",
+                                  event_id: str = "", tags: str = "") -> None:
+    # CONTEXT_RUNTIME_CONNECTION_INSTRUCTIONS.md P0/P1 + P3指示書 STEP2:
     # mocka_write_event発火の唯一の集約点でWorkingContextを更新し、
-    # 定期Snapshot(15分 or 100件)トリガーを評価する。失敗してもイベント書込自体は妨げない。
+    # 定期Snapshot(15分 or 100件)トリガーを評価し、Context Runtime側へイベントを伝播する。
+    # next_event_id()には一切触れない。mocka_events.dbへの新規書き込みも行わない
+    # （event_runtime_log.jsonへの追記のみ）。失敗してもイベント書込自体は妨げない。
     try:
         import sys as _sys
         _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
@@ -174,8 +177,22 @@ def _update_working_context_live(title: str, why_purpose: str, ai: str = "") -> 
             _sys.path.insert(0, _repo_root)
         from phi_os.context.working_context import WorkingContext
         from phi_os.context.context_scheduler import maybe_snapshot
+        from phi_os.context.context_runtime import emit_event_to_context_runtime
         WorkingContext.live_update(
             current_task=title, current_goal=why_purpose, current_ai=ai,
+        )
+        tags_lower = (tags or "").lower()
+        if "change_start" in tags_lower:
+            event_type = "CHANGE_START"
+        elif "decision" in tags_lower:
+            event_type = "DECISION_RECORD"
+        elif "incident" in tags_lower:
+            event_type = "INCIDENT_REGISTER"
+        else:
+            event_type = "CHANGE_DONE"
+        emit_event_to_context_runtime(
+            event_type=event_type, event_id=event_id,
+            payload={"title": title, "why_purpose": why_purpose, "tags": tags},
         )
         maybe_snapshot()
     except Exception:
@@ -371,7 +388,8 @@ def execute_tool(name, args):
                     body = r.json()
                     eid  = body.get("event_id", "?")
                     auto_log(name, args, f"GATE written {eid} event_source=live")
-                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor)
+                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
+                                                  event_id=eid, tags=gate_payload["tags"])
                     return json.dumps({"status": "ok", "event_id": eid,
                                        "when": datetime.datetime.now().isoformat(),
                                        "storage": "gate/sqlite"}, ensure_ascii=False)
@@ -395,7 +413,8 @@ def execute_tool(name, args):
                 if result["status"] == "ok":
                     eid = result["event_id"]
                     auto_log(name, args, f"GATE offline in-process fallback {eid}")
-                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor)
+                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
+                                                  event_id=eid, tags=gate_payload["tags"])
                     return json.dumps({"status": "ok", "event_id": eid,
                                        "when": datetime.datetime.now().isoformat(),
                                        "storage": "gate/sqlite(in-process)"}, ensure_ascii=False)
