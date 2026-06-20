@@ -69,3 +69,12 @@ Press CTRL+C to quit
 127.0.0.1 - - [20/Jun/2026 17:07:16] "POST /mcp HTTP/1.1" 200 -
 127.0.0.1 - - [20/Jun/2026 17:10:22] "POST /mcp HTTP/1.1" 200 -
 127.0.0.1 - - [20/Jun/2026 17:10:24] "POST /mcp HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:13:58] "POST /mcp HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:14:35] "POST /mcp HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:14:51] "POST /mcp HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:18:05] "POST /agent/mocka_write_event HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:18:11] "POST /agent/mocka_write_event HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:18:16] "POST /agent/mocka_write_event HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:18:24] "POST /agent/mocka_write_event HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:18:30] "POST /agent/mocka_write_event HTTP/1.1" 200 -
+127.0.0.1 - - [20/Jun/2026 17:18:35] "POST /agent/mocka_write_event HTTP/1.1" 200 -
