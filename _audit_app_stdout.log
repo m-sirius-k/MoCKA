@@ -8,3 +8,47 @@
 Directory: C:\Users\sirok\MoCKA
  * Serving Flask app 'app'
  * Debug mode: off
+[SEAL OK] staged 8 file(s), no forbidden patterns
+[main 860ca90ca] AUTO_SEAL_50EVT
+ 8 files changed, 3 insertions(+), 3 deletions(-)
+ create mode 100644 _audit_app_stderr.log
+ create mode 100644 _audit_app_stdout.log
+ create mode 100644 _audit_caliber_stderr.log
+ create mode 100644 _audit_caliber_stdout.log
+ create mode 100644 _audit_mcp_stderr.log
+ create mode 100644 _audit_mcp_stdout.log
+COMMIT: 860ca90ca0d3a4d79217b7b63b814c74a6a68039
+SUMMARY_HASH: 12f1cd6b148d949e4aa9e9276e01d840e6f8a821de46365ac64c50b5183b7470
+ANCHOR UPDATED AND COMMITTED
+PASS: governance_event required + signature valid
+registry_path: C:\Users\sirok\MoCKA\governance\registry.json
+registry_sha256: d7272a2019fa483651c1e2594005a261c486dc16d78dc84af9a651d1d05b684b
+INFO: revoke_event.json not present
+PASS: role policy interface valid
+PASS: approval flow interface valid
+INFO: phase17_determinism_check.py not present (determinism gate interface only)
+PASS: registry tamper detectable
+PASS: governance_event tamper detectable
+PASS: chaos basic checks
+PASS: anchor_record present + summary_hash matches
+INFO: external_audit_report.json not present (optional interface)
+OK: taxonomy_integrity
+[verify_all] STEP: governance_event_required
+[verify_all] OK: governance_event_required
+[verify_all] STEP: revoke_event
+[verify_all] OK: revoke_event
+[verify_all] STEP: role_policy
+[verify_all] OK: role_policy
+[verify_all] STEP: approval_flow
+[verify_all] OK: approval_flow
+[verify_all] STEP: deterministic_build_gate
+[verify_all] OK: deterministic_build_gate
+[verify_all] STEP: chaos_gate
+[verify_all] OK: chaos_gate
+[verify_all] STEP: anchor_interface
+[verify_all] OK: anchor_interface
+[verify_all] STEP: external_audit_report_interface
+[verify_all] OK: external_audit_report_interface
+[verify_all] STEP: taxonomy_integrity
+[verify_all] OK: taxonomy_integrity
+[verify_all] ALL CHECKS PASSED

@@ -40,5 +40,39 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-20T15:26:45.621254"
+  "generated_at": "2026-06-20T15:26:45.621254",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "audit normal traffic chat 3",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-17",
+        "why": "MoCKA文明の最高法規制定を記録するため。GPT外部監査分析の正式採択記録。",
+        "how": "KPA_HERITAGE_v2.0全文貼付→憲法条文化作業→GPT分析受領",
+        "note": "CONSTITUTION,KPA_HERITAGE,PhaseOmega,GPT_AUDIT,PHILOSOPHY",
+        "recur": 0,
+        "matched": [
+          "audit"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-24",
+        "why": "外部監査結果の制度的記録。AIES 2026投稿の根拠文書として保存。",
+        "how": "きむら博士がGPT外部監査に論文v3を提出。結果をClaudeに持参。",
+        "note": "PAPER,GPT,AUDIT,ACCEPT,TODO_064,CANONICAL",
+        "recur": 0,
+        "matched": [
+          "audit"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-20T15:42:40.888693"
+  }
 }
