@@ -290,21 +290,23 @@ def list_tasks(limit: int = 20) -> list:
 # ─── メインDB連携 ─────────────────────────────────────────────────────────────
 
 def _record_to_main_db(task_id: str, event_type: str, summary: str):
-    """クロス監査イベントをmocka_events.dbにも記録する。"""
+    """クロス監査イベントをmocka_events.dbにも記録する（Phase5-1: 生SQL INSERT禁止 → Gate経由）。"""
     try:
+        from event_buffer import get_buffer
         ts = datetime.now(UTC).isoformat()
         eid = f"XAUDIT_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}"
-        conn = sqlite3.connect(str(DB), timeout=10)
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute("""
-            INSERT OR IGNORE INTO events
-            (event_id, when_ts, who_actor, what_type, where_component,
-             title, short_summary, _imported_at, _source, ai_actor, severity)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?)
-        """, [eid, ts, "cross_audit", event_type, "cross_audit_engine",
-              task_id, summary[:500], ts, "cross_audit", "claude", "normal"])
-        conn.commit()
-        conn.close()
+        get_buffer().push({
+            "event_id":        eid,
+            "when":            ts,
+            "who_actor":       "cross_audit",
+            "what_type":       event_type,
+            "where_component": "cross_audit_engine",
+            "why_purpose":     "クロス監査エンジンによる相互検証記録",
+            "title":           task_id,
+            "short_summary":   summary[:500],
+            "ai_actor":        "claude",
+            "severity":        "normal",
+        })
     except Exception as e:
         print(f"[cross_audit] main DB write error: {e}")
 

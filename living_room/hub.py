@@ -19,15 +19,19 @@ import sys
 import json
 import sqlite3
 import hashlib
+import time
+import secrets
 from datetime import datetime, date, timezone
 from pathlib import Path
 
 # CWD = C:\Users\sirok\MoCKA を前提としてFlask/phi_osをインポート
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO_ROOT))
+sys.path.insert(0, str(_REPO_ROOT / "interface"))
 
 from flask import Flask, request, jsonify
 from phi_os.gate_validator import validate
+from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(独自INSERT禁止・正規Gateへ統一)
 
 app = Flask(__name__)
 
@@ -49,16 +53,10 @@ def _get_conn():
 
 
 def _next_event_id() -> str:
+    """time-ordered unique id（Phase5-1: COUNT(*)系ID生成禁止）"""
     d = date.today().strftime("%Y%m%d")
-    conn = _get_conn()
-    try:
-        n = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE event_id LIKE ?",
-            (f"E{d}_%",),
-        ).fetchone()[0]
-    finally:
-        conn.close()
-    return f"E{d}_{n + 1:03d}"
+    micros_of_day = time.time_ns() // 1000 % 1_000_000_000
+    return f"E{d}_{micros_of_day:09d}{secrets.token_hex(2)}"
 
 
 def _last_hash() -> str:
@@ -80,23 +78,27 @@ def _event_hash(payload: dict) -> str:
 
 
 def _write_event(payload: dict) -> None:
+    """
+    Phase5-1: 独自の生SQL INSERTを廃止し、正規Gate(Local Buffer経由)へ統一する。
+    Living Room Hubは独立した第二のGate実装を持つべきではない
+    （Event System = 単一制度。複数のGate実装は記録経路の分裂を招く）。
+    """
     row = {
-        "event_id":        payload.get("event_id", ""),
-        "when_ts":         payload.get("when_ts", ""),
-        "who_actor":       payload.get("who_actor", ""),
-        "what_type":       payload.get("what_type", ""),
-        "where_component": payload.get("where_component", ""),
-        "where_path":      payload.get("where_path", ""),
-        "why_purpose":     payload.get("why_purpose", ""),
-        "how_trigger":     payload.get("how_trigger", ""),
-        "before_state":    payload.get("before_state", ""),
-        "after_state":     payload.get("after_state", ""),
-        "title":           payload.get("what_title", ""),
-        "short_summary":   payload.get("description", ""),
-        "session_id":      payload.get("who_session", ""),
-        "_source":         "living_room",
-        "trace_id":        payload.get("event_hash", ""),
-        "related_event_id": payload.get("prev_hash", ""),
+        "event_id":        payload.get("event_id"),
+        "when":            payload.get("when_ts"),
+        "who_actor":       payload.get("who_actor"),
+        "what_type":       payload.get("what_type"),
+        "where_component": payload.get("where_component"),
+        "where_path":      payload.get("where_path"),
+        "why_purpose":     payload.get("why_purpose"),
+        "how_trigger":     payload.get("how_trigger"),
+        "before_state":    payload.get("before_state"),
+        "after_state":     payload.get("after_state"),
+        "title":           payload.get("what_title"),
+        "short_summary":   payload.get("description"),
+        "session_id":      payload.get("who_session"),
+        "trace_id":        payload.get("event_hash"),
+        "related_event_id": payload.get("prev_hash"),
         "free_note":       "|".join(filter(None, [
             payload.get("tags", ""),
             "channel=living_room",
@@ -105,19 +107,7 @@ def _write_event(payload: dict) -> None:
         "lifecycle_phase": "in_operation",
         "risk_level":      "normal",
     }
-    row = {k: (v if v != "" else None) for k, v in row.items()}
-    conn = _get_conn()
-    try:
-        cols = list(row.keys())
-        placeholders = ",".join("?" * len(cols))
-        vals = [row[c] for c in cols]
-        conn.execute(
-            f"INSERT OR IGNORE INTO events ({','.join(cols)}) VALUES ({placeholders})",
-            vals,
-        )
-        conn.commit()
-    finally:
-        conn.close()
+    get_buffer().push(row)
 
 
 # --- エンドポイント ---------------------------------------------------------

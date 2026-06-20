@@ -3,8 +3,15 @@
 # Role: 5W1H Index — AI活動の一次証跡。Writeより前に来る「文明の原本」。
 # ref: E20260610_10454
 import sqlite3
+import sys
+import time
+import secrets
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
+from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
 
 MOCKA_INDEX_VERSION = '1.0'
 
@@ -34,37 +41,26 @@ class IndexWriter:
             f'Where:{index.where}\nHow:{index.how}'
         )
 
-        conn = sqlite3.connect(self.db_path)
-        cur = conn.cursor()
-        cur.execute("SELECT COUNT(*) FROM events")
-        count = cur.fetchone()[0]
-        event_id = f"E{datetime.now(timezone.utc).strftime('%Y%m%d')}_{count+1:05d}"
+        # Phase5-1: 生SQL INSERT INTO events禁止 → Local Buffer経由でGateへ統一
+        d = datetime.now(timezone.utc).strftime('%Y%m%d')
+        micros_of_day = time.time_ns() // 1000 % 1_000_000_000
+        event_id = f"E{d}_{micros_of_day:09d}{secrets.token_hex(2)}"
 
-        cur.execute(
-            """INSERT INTO events
-               (event_id, title, short_summary, when_ts,
-                who_actor, ai_actor, what_type, free_note,
-                where_component, why_purpose, how_trigger,
-                lifecycle_phase, session_id)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (
-                event_id,
-                f'INDEX: {index.who}',
-                short_summary,
-                index.when,
-                index.who,
-                'index_writer',
-                'index',
-                free_note,
-                index.where,
-                index.why,
-                index.how,
-                'in_operation',
-                index.session_id,
-            )
-        )
-        conn.commit()
-        conn.close()
+        get_buffer().push({
+            "event_id":        event_id,
+            "title":           f'INDEX: {index.who}',
+            "short_summary":   short_summary,
+            "when":            index.when,
+            "who_actor":       index.who,
+            "ai_actor":        'index_writer',
+            "what_type":       'index',
+            "free_note":       free_note,
+            "where_component": index.where,
+            "why_purpose":     index.why,
+            "how_trigger":     index.how,
+            "lifecycle_phase": 'in_operation',
+            "session_id":      index.session_id,
+        })
         return event_id
 
     def search(self, keyword='', who='', limit=10) -> list:

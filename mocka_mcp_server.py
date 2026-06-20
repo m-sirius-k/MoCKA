@@ -4,7 +4,7 @@ MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
-import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys
+import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys, time, secrets
 from pathlib import Path
 from dotenv import load_dotenv
 import requests
@@ -102,7 +102,12 @@ def _db_read_events(n=None):
         return []
 
 def _db_write_event(row: dict):
-    """SQLiteにイベントを書き込む（文字化け防御ゲート付き）"""
+    """
+    SQLiteにイベントを書き込む（文字化け防御ゲート付き）。
+    Phase5-1 Gate Policy: 唯一の呼び出し元はGate(/api/gate/event)がConnectionError
+    の際のfallbackであり、これは許可されたDirect Writeチャネル'recovery'に該当する
+    （ALLOWED_DIRECT_CHANNELS参照）。_source列に明示的にタグ付けし監査上exempt扱いとする。
+    """
     try:
         # 全フィールドをsanitize
         safe = {k: _sanitize(str(v)) for k, v in row.items()}
@@ -114,8 +119,8 @@ def _db_write_event(row: dict):
              why_purpose, how_trigger, channel_type, lifecycle_phase, risk_level,
              category_ab, target_class, title, short_summary, before_state,
              after_state, change_type, impact_scope, impact_result,
-             related_event_id, trace_id, free_note)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+             related_event_id, trace_id, free_note, _source)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
         """, (
             safe.get("event_id",""), safe.get("when",""), safe.get("who_actor",""),
             safe.get("what_type",""), safe.get("where_component",""), safe.get("where_path",""),
@@ -125,6 +130,7 @@ def _db_write_event(row: dict):
             safe.get("before_state",""), safe.get("after_state",""), safe.get("change_type",""),
             safe.get("impact_scope",""), safe.get("impact_result",""),
             safe.get("related_event_id",""), safe.get("trace_id",""), safe.get("free_note",""),
+            "direct_allowed:recovery",
         ))
         con.commit()
         con.close()
@@ -198,19 +204,10 @@ def sha256_file(path):
     return h.hexdigest()
 
 def next_event_id():
+    """time-ordered unique id（Phase5-1: MAX(id)+1系ID生成禁止）"""
     today = datetime.date.today().strftime("%Y%m%d")
-    try:
-        con = _get_db()
-        cur = con.cursor()
-        pattern = f"E{today}_%"
-        cur.execute("SELECT event_id FROM events WHERE event_id LIKE ?", (pattern,))
-        ids = [r[0] for r in cur.fetchall()]
-        con.close()
-        rx = re.compile(rf"E{today}_(\d+)")
-        nums = [int(m.group(1)) for eid in ids for m in [rx.search(eid)] if m]
-    except:
-        nums = []
-    return f"E{today}_{(max(nums)+1 if nums else 1):03d}"
+    micros_of_day = time.time_ns() // 1000 % 1_000_000_000
+    return f"E{today}_{micros_of_day:09d}{secrets.token_hex(2)}"
 
 def auto_log(tool_name, args, result_summary):
     # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録

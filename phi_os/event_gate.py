@@ -3,7 +3,7 @@
 # v2: Local Buffer + async flush対応のbatch ingestion追加（TODO_347）
 from flask import Blueprint, request, jsonify
 from .gate_validator import validate, validate_operational
-import sqlite3, hashlib, json, time, secrets
+import sqlite3, hashlib, json, time, secrets, sys
 from datetime import datetime, date, timezone
 from pathlib import Path
 
@@ -12,6 +12,9 @@ gate_bp = Blueprint('event_gate', __name__)
 # Single Truth DB — data/mocka_events.db (絶対パス解決)
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+
+sys.path.insert(0, str(_REPO_ROOT / 'interface'))
+from gate_policy import POLICY_VERSION as GATE_POLICY_VERSION  # Phase5-1 Gate Policy
 
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -203,27 +206,56 @@ def receive_event_batch():
     }), 200
 
 
+# Gate確立日（health_check.py GATE_LAUNCH_DATEと同一基準）。
+# 確立以前の旧データを「non_gate_events」に含めると、現在進行中の
+# direct write違反と過去の歴史的バックログが混同され、UI上の異常検知が
+# 誤警告になる（TODO_347 vFinal運用で発覚）。
+GATE_LAUNCH_DATE = "2026-06-16"
+
+
 @gate_bp.route('/api/gate/audit', methods=['GET'])
 def gate_audit():
     """
-    TODO_347 TASK6: real-time(live) / buffered の分離表示。
-    合算した単一指標は提供しない（real_time_events と buffered_events を分けて返す）。
+    TODO_347 TASK6 / vFinal / Phase5-1: real-time(live) / buffered / 許可Direct / 違反Direct
+    の4分類表示。合算した単一指標は提供しない。
+    集計対象はGATE_LAUNCH_DATE以降のイベントのみ（健全性監視はhealth_check.py
+    check_phi_os_auditと同一基準に揃える）。
+    Phase5-1 Gate Policy: 許可されたDirect Write(_source='direct_allowed:{channel}')は
+    監査上violationとしない。それ以外でGate未経由（live/buffered以外）のものは
+    すべて制度違反(violation)として検出する。
     """
     conn = _get_conn()
     try:
-        total = conn.execute('SELECT COUNT(*) FROM events').fetchone()[0]
-        live = conn.execute("SELECT COUNT(*) FROM events WHERE _source='live'").fetchone()[0]
-        buffered = conn.execute("SELECT COUNT(*) FROM events WHERE _source='buffered'").fetchone()[0]
+        total = conn.execute(
+            'SELECT COUNT(*) FROM events WHERE when_ts >= ?', (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        live = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source='live' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        buffered = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source='buffered' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        allowed_direct = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source LIKE 'direct_allowed:%' AND when_ts >= ?",
+            (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        legacy_total = conn.execute(
+            'SELECT COUNT(*) FROM events WHERE when_ts < ?', (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
     finally:
         conn.close()
-    non_gate = max(total - live - buffered, 0)
     gate_routed = live + buffered
+    violation = max(total - gate_routed - allowed_direct, 0)
     rate = round(gate_routed / total * 100, 2) if total else 0.0
     return jsonify({
         'status': 'ok',
+        'policy_version': GATE_POLICY_VERSION,
+        'gate_launch_date': GATE_LAUNCH_DATE,
         'real_time_events': {'count': live, 'source': '/api/gate/event'},
         'buffered_events': {'count': buffered, 'source': '/api/gate/event/batch'},
-        'non_gate_events': {'count': non_gate, 'note': '_source未設定のlegacyレコード'},
+        'allowed_direct_events': {'count': allowed_direct, 'note': '許可チャネル(bootstrap/maintenance/migration/restore/recovery)経由のDirect Write'},
+        'violation_events': {'count': violation, 'note': f'{GATE_LAUNCH_DATE}以降でGate未経由・許可チャネルでもない制度違反件数'},
+        'legacy_events': {'count': legacy_total, 'note': f'{GATE_LAUNCH_DATE}以前のGate確立前バックログ（監査対象外）'},
         'gate_passthrough_rate_percent': rate,
     }), 200
 

@@ -142,9 +142,8 @@ class ContextComposer:
         }
 
         now = datetime.now(JST)
-        eid = db.get_next_event_id()
-        db.write_event({
-            "event_id": eid,
+        from event_buffer import get_buffer  # Phase5-1: db.write_event直接禁止 → Gate経由
+        get_buffer().push({
             "when": now.isoformat(),
             "who_actor": role,
             "what_type": "CONTEXT_COMPOSE",

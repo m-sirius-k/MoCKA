@@ -77,9 +77,8 @@ def close_commission(commission_id: str, result: str) -> dict:
     })
     _save_registry(data)
 
-    eid = db.get_next_event_id()
-    db.write_event({
-        "event_id": eid,
+    from event_buffer import get_buffer  # Phase5-1: db.write_event直接禁止 → Gate経由
+    get_buffer().push({
         "when": now.isoformat(),
         "who_actor": target.get("assigned_to"),
         "what_type": "COMMISSION_CLOSED",

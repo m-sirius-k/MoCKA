@@ -130,14 +130,21 @@ def read_events(
     return rows
 
 
-def write_event(row: dict) -> bool:
+def write_event(row: dict, channel: str = None) -> bool:
     """
     イベント書き込み（SQLite + CSV併用）
     app.py の csv.DictWriter.writerow を置き換え
 
+    Phase5-1 Gate Enforcement: 通常イベントはGate(get_buffer().push())経由で
+    書き込むべきであり、本関数の直接呼び出しはGate Policy(gate_policy.py)で
+    許可されたchannel（bootstrap/maintenance/migration/restore/recovery）の
+    場合のみ正当化される。channel未指定の呼び出しは監査上'direct_violation'
+    として検出される。
+
     Args:
         row: CSV_FIELDNAMESに準拠したdict
              ("when" キーを使用、db_helperが内部でwhen_tsに変換)
+        channel: 許可されたDirect Writeチャネル名（gate_policy.ALLOWED_DIRECT_CHANNELS参照）
     Returns:
         True: 成功 / False: 失敗
     """
@@ -150,7 +157,11 @@ def write_event(row: dict) -> bool:
         db_col = "when_ts" if csv_col == "when" else csv_col
         db_row[db_col] = row.get(csv_col) or None
 
-    db_row["_source"] = "new"
+    try:
+        from gate_policy import tag_source
+        db_row["_source"] = tag_source(channel)
+    except Exception:
+        db_row["_source"] = "direct_violation"
     db_row["_imported_at"] = datetime.now(timezone.utc).isoformat()
 
     try:

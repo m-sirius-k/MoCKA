@@ -224,10 +224,8 @@ class LifecycleManager:
     def _record_audit_event(self, report: LifecycleReport):
         """監査イベントをMoCKAイベント台帳に記録する"""
         try:
-            import db_helper as db
-            eid = db.get_next_event_id()
-            db.write_event({
-                "event_id":        eid,
+            from event_buffer import get_buffer  # Phase5-1: db.write_event直接禁止 → Gate経由
+            get_buffer().push({
                 "when":            report.run_at,
                 "who_actor":       "LifecycleManager",
                 "what_type":       "LIFECYCLE_AUDIT",

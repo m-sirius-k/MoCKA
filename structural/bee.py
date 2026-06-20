@@ -17,6 +17,9 @@ import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
+from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
+
 # Windows コンソール UTF-8 対応
 if hasattr(sys.stdout, 'reconfigure'):
     try:
@@ -360,19 +363,18 @@ class BetaEcologyEngine:
         return removed
 
     def _record_extinct(self, beta_id: str, entry: dict):
-        """消滅βを events.db に記録する"""
-        if not DB_PATH.exists():
-            return
+        """消滅βを events.db に記録する（Phase5-1: 生SQL INSERT禁止 → Gate経由）"""
         try:
-            con = sqlite3.connect(str(DB_PATH))
             eid = f"BETA_EXTINCT_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            con.execute(
-                "INSERT OR IGNORE INTO events (event_id, title, what_type, when_ts) VALUES (?,?,?,?)",
-                (eid, f"[BEE] β消滅: {entry.get('beta_ja')} ({beta_id})",
-                 "BETA_EXTINCT", datetime.now().isoformat())
-            )
-            con.commit()
-            con.close()
+            get_buffer().push({
+                "event_id":        eid,
+                "title":           f"[BEE] β消滅: {entry.get('beta_ja')} ({beta_id})",
+                "what_type":       "BETA_EXTINCT",
+                "when":            datetime.now().isoformat(),
+                "who_actor":       "bee_engine",
+                "where_component": "structural/bee.py",
+                "why_purpose":     "β Ecology Engine ライフサイクル管理",
+            })
         except Exception:
             pass
 

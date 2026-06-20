@@ -27,6 +27,9 @@ if sys.stderr.encoding != 'utf-8':
 app = Flask(__name__)
 CORS(app)
 
+sys.path.insert(0, str(Path("C:/Users/sirok/MoCKA/interface")))
+from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
+
 ROOT       = Path("C:/Users/sirok/MoCKA")
 OUTBOX     = ROOT / "data" / "storage" / "outbox" / "PILS"
 PILS_DONE  = ROOT / "data" / "storage" / "outbox" / "PILS_DONE"
@@ -177,10 +180,8 @@ def get_prev_hash() -> str:
 
 
 def append_event(row):
-    """SQLite単一ストレージへ記録（CSV廃止済み）"""
+    """Local Buffer経由でGateへ記録（Phase5-1: DB直書き禁止・db_helper/Gate統一）"""
     try:
-        import sqlite3 as _sq3
-        db = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
         cols = ["event_id","when_ts","who_actor","what_type","where_component",
                 "where_path","why_purpose","how_trigger","channel_type",
                 "lifecycle_phase","risk_level","category_ab","target_class",
@@ -188,19 +189,12 @@ def append_event(row):
                 "change_type","impact_scope","impact_result",
                 "related_event_id","trace_id","free_note"]
         padded = (list(row) + [""]*23)[:23]
-        extra  = [datetime.now(timezone.utc).isoformat(),
-                  "caliber_server","caliber","","normal",0.0,0,"caliber_v5"]
-        all_cols = cols + ["_imported_at","_source","ai_actor","session_id",
-                           "severity","pattern_score","recurrence_flag","verified_by"]
-        ph  = ",".join(["?"]*len(all_cols))
-        sql = f"INSERT OR IGNORE INTO events ({','.join(all_cols)}) VALUES ({ph})"
-        conn = _sq3.connect(str(db), timeout=10)
-        conn.execute("PRAGMA journal_mode=WAL")
-        conn.execute(sql, padded + extra)
-        conn.commit()
-        conn.close()
+        event = dict(zip(cols, padded))
+        event["where_component"] = event.get("where_component") or "caliber_pipeline"
+        event["who_actor"] = event.get("who_actor") or "caliber_server"
+        get_buffer().push(event)
     except Exception as e:
-        print(f"[caliber] SQLite error: {e}")
+        print(f"[caliber] event push error: {e}")
 
 
 @app.route("/health", methods=["GET"])

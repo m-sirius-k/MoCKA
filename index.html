@@ -1130,36 +1130,42 @@ function renderGateAudit(data){
     const live = data.real_time_events && data.real_time_events.count || 0;
     const buffered = data.buffered_events && data.buffered_events.count || 0;
     const pending = data.buffered_events && data.buffered_events.pending_in_queue || 0;
-    const nonGate = data.non_gate_events && data.non_gate_events.count || 0;
+    const allowedDirect = data.allowed_direct_events && data.allowed_direct_events.count || 0;
+    const violation = data.violation_events && data.violation_events.count || 0;
     const rate = data.gate_passthrough_rate_percent != null ? data.gate_passthrough_rate_percent : 0;
-    const directWriteOk = nonGate === 0;
+    const directWriteOk = violation === 0;
     setDbgTags('gate-audit',[{cls:'ok',label:'OK'}]);
     document.getElementById('gate-audit-rate-badge').textContent = `経由率 ${rate}%`;
     const el=document.getElementById('gate-audit-body');
     el.innerHTML = `
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
-        <div style="flex:1;min-width:140px;">
+        <div style="flex:1;min-width:120px;">
           <div style="font-size:10px;color:var(--muted)">REAL-TIME (live)</div>
           <div style="font-size:20px;color:var(--green)">${Number(live).toLocaleString()}</div>
           <div style="font-size:10px;color:var(--muted)">/api/gate/event 経由（即時）</div>
         </div>
-        <div style="flex:1;min-width:140px;">
+        <div style="flex:1;min-width:120px;">
           <div style="font-size:10px;color:var(--muted)">BUFFERED</div>
           <div style="font-size:20px;color:var(--blue)">${Number(buffered).toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--muted)">/api/gate/event/batch 経由（遅延flush） / queue待機: ${pending}</div>
+          <div style="font-size:10px;color:var(--muted)">/api/gate/event/batch 経由 / queue待機: ${pending}</div>
         </div>
-        <div style="flex:1;min-width:140px;">
-          <div style="font-size:10px;color:var(--muted)">NON-GATE（異常検知）</div>
-          <div style="font-size:20px;color:${directWriteOk?'var(--green)':'var(--red)'}">${Number(nonGate).toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--muted)">${directWriteOk?'direct write = 0 を保証':'⚠ Gate未経由の直書きを検知'}</div>
+        <div style="flex:1;min-width:120px;">
+          <div style="font-size:10px;color:var(--muted)">許可Direct(exempt)</div>
+          <div style="font-size:20px;color:var(--amber)">${Number(allowedDirect).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--muted)">bootstrap/maintenance/migration/restore/recovery</div>
+        </div>
+        <div style="flex:1;min-width:120px;">
+          <div style="font-size:10px;color:var(--muted)">違反Direct（異常検知）</div>
+          <div style="font-size:20px;color:${directWriteOk?'var(--green)':'var(--red)'}">${Number(violation).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--muted)">${directWriteOk?'制度違反 = 0 を保証':'⚠ 許可されていないdirect writeを検知'}</div>
         </div>
       </div>
       <div style="font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;">
         handshake/app.py → EventBuffer(in-memory+retry) → PHI-OS Event Gate → SQLite（single source）<br>
-        live と buffered は合算しない（状態の二重性をそのまま表示）。
+        live・buffered・許可Direct・違反Directは合算しない（状態をそのまま表示／Phase5-1 Gate Policy）。
       </div>
     `;
-    DBG.ok('gate-audit',`live=${live} buffered=${buffered} non_gate=${nonGate} rate=${rate}%`);
+    DBG.ok('gate-audit',`live=${live} buffered=${buffered} allowed_direct=${allowedDirect} violation=${violation} rate=${rate}%`);
   }catch(e){
     DBG.err('gate-audit','renderGateAudit: '+e.message);
     showPanelErr('err-gate-audit',e.message);

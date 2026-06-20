@@ -83,21 +83,36 @@ def _knowledge_summary():
     return summary
 
 
+GATE_LAUNCH_DATE = "2026-06-16"  # health_check.py / event_gate.pyと同一基準
+
+
 def _gate_audit():
     """
-    TODO_347 TASK6: real-time events / buffered events 分離表示。
-    合算して単一指標にすることを禁止し、Gate経由率を別途算出する。
+    TODO_347 TASK6 / vFinal / Phase5-1: real-time / buffered / 許可Direct / 違反Direct
+    の4分類表示。合算して単一指標にすることを禁止し、Gate経由率を別途算出する。
+    Gate確立日(GATE_LAUNCH_DATE)以前の旧データは集計対象外とし、
+    現在進行中のdirect write違反と歴史的バックログを混同しない。
+    許可されたDirect Write(gate_policy.ALLOWED_DIRECT_CHANNELS)は違反としない。
     """
-    live = buffered = total = 0
+    live = buffered = allowed_direct = total = 0
     try:
         conn = db._get_conn()
-        total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
-        live = conn.execute("SELECT COUNT(*) FROM events WHERE _source='live'").fetchone()[0]
-        buffered = conn.execute("SELECT COUNT(*) FROM events WHERE _source='buffered'").fetchone()[0]
+        total = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        live = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source='live' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        buffered = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source='buffered' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        allowed_direct = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source LIKE 'direct_allowed:%' AND when_ts >= ?",
+            (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
         conn.close()
     except Exception:
         pass
-    non_gate = max(total - live - buffered, 0)
     pending = 0
     try:
         from event_buffer import get_buffer
@@ -105,6 +120,7 @@ def _gate_audit():
     except Exception:
         pass
     gate_routed = live + buffered
+    violation = max(total - gate_routed - allowed_direct, 0)
     rate = round(gate_routed / total * 100, 2) if total else 0.0
     return {
         "real_time_events": {
@@ -116,9 +132,13 @@ def _gate_audit():
             "pending_in_queue": pending,
             "description": "Local Buffer -> /api/gate/event/batch 経由（遅延flush）",
         },
-        "non_gate_events": {
-            "count": non_gate,
-            "description": "Gate未経由（_source未設定のlegacyレコード）",
+        "allowed_direct_events": {
+            "count": allowed_direct,
+            "description": "許可チャネル(bootstrap/maintenance/migration/restore/recovery)経由のDirect Write",
+        },
+        "violation_events": {
+            "count": violation,
+            "description": f"{GATE_LAUNCH_DATE}以降でGate未経由・許可チャネルでもない制度違反件数",
         },
         "gate_passthrough_rate_percent": rate,
     }

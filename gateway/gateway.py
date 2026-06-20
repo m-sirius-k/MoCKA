@@ -27,6 +27,9 @@ import adapter_copilot
 import adapter_perplexity   # TODO_269
 import adapter_genspark     # TODO_270
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
+from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
+
 app = Flask(__name__)
 CORS(app)
 
@@ -153,42 +156,26 @@ def post_event():
         return jsonify({"error": "title is required"}), 400
 
     try:
-        conn = sqlite3.connect(str(DB_PATH))
-        cur  = conn.cursor()
-
-        cur.execute("SELECT COUNT(*) FROM events")
-        count    = cur.fetchone()[0]
-        now      = datetime.now(timezone.utc)
-        event_id = f"E{now.strftime('%Y%m%d')}_{count+1:03d}"
-
+        now = datetime.now(timezone.utc)
         # who_actor = "vendor/model" 形式で格納
         # ai_actor  = source（Orchestra等）
         # タグ専用カラムなし → what_type に gateway_event を、free_note にタグを格納
         who_actor = f"{vendor}/{model}" if model else vendor
 
-        cur.execute(
-            """INSERT INTO events
-               (event_id, title, short_summary, when_ts,
-                who_actor, ai_actor, what_type, free_note,
-                where_component, lifecycle_phase, why_purpose)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (
-                event_id,
-                title,
-                short_summary,
-                now.isoformat(),
-                who_actor,
-                source,
-                "gateway_event",
-                tags_str,
-                "gateway",
-                "in_operation",
-                data.get("why_purpose", "multi_ai_record"),
-            )
-        )
-        conn.commit()
-        conn.close()
-        return jsonify({"status": "ok", "event_id": event_id}), 201
+        # Phase5-1: 生SQL INSERT INTO events禁止 → Local Buffer経由でGateへ統一
+        get_buffer().push({
+            "title":           title,
+            "short_summary":   short_summary,
+            "when":            now.isoformat(),
+            "who_actor":       who_actor,
+            "ai_actor":        source,
+            "what_type":       "gateway_event",
+            "free_note":       tags_str,
+            "where_component": "gateway",
+            "lifecycle_phase": "in_operation",
+            "why_purpose":     data.get("why_purpose", "multi_ai_record"),
+        })
+        return jsonify({"status": "ok"}), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
