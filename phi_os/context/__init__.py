@@ -10,6 +10,7 @@ from .execution_context import ExecutionContext, ExecutionGate, GateResult
 from .context_runtime import ContextRuntime
 from .context_snapshot import ContextSnapshot
 from .context_validator import ContextValidator
+from .context_scheduler import maybe_snapshot
 
 __all__ = [
     "InstitutionContext",
@@ -21,4 +22,5 @@ __all__ = [
     "ContextRuntime",
     "ContextSnapshot",
     "ContextValidator",
+    "maybe_snapshot",
 ]

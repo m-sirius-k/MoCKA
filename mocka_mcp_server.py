@@ -163,6 +163,24 @@ def sha256_file(path):
         for chunk in iter(lambda: f.read(8192), b""): h.update(chunk)
     return h.hexdigest()
 
+def _update_working_context_live(title: str, why_purpose: str, ai: str = "") -> None:
+    # CONTEXT_RUNTIME_CONNECTION_INSTRUCTIONS.md P0/P1:
+    # mocka_write_event発火の唯一の集約点でWorkingContextを更新し、
+    # 定期Snapshot(15分 or 100件)トリガーを評価する。失敗してもイベント書込自体は妨げない。
+    try:
+        import sys as _sys
+        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        if _repo_root not in _sys.path:
+            _sys.path.insert(0, _repo_root)
+        from phi_os.context.working_context import WorkingContext
+        from phi_os.context.context_scheduler import maybe_snapshot
+        WorkingContext.live_update(
+            current_task=title, current_goal=why_purpose, current_ai=ai,
+        )
+        maybe_snapshot()
+    except Exception:
+        pass
+
 def auto_log(tool_name, args, result_summary):
     # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録
     try:
@@ -353,6 +371,7 @@ def execute_tool(name, args):
                     body = r.json()
                     eid  = body.get("event_id", "?")
                     auto_log(name, args, f"GATE written {eid} event_source=live")
+                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor)
                     return json.dumps({"status": "ok", "event_id": eid,
                                        "when": datetime.datetime.now().isoformat(),
                                        "storage": "gate/sqlite"}, ensure_ascii=False)
@@ -376,6 +395,7 @@ def execute_tool(name, args):
                 if result["status"] == "ok":
                     eid = result["event_id"]
                     auto_log(name, args, f"GATE offline in-process fallback {eid}")
+                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor)
                     return json.dumps({"status": "ok", "event_id": eid,
                                        "when": datetime.datetime.now().isoformat(),
                                        "storage": "gate/sqlite(in-process)"}, ensure_ascii=False)

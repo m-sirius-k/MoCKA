@@ -9,7 +9,7 @@
     "PHILOSOPHY": "[2026-06-20] [hint] 制度・技術・装置を設計段階から儀式的に組み込む 制度・技術・装置を設計段階から儀式的に組み込む source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] トレーサビリティ問題はスケールと制度効率の関係として捉える トレーサビリティ問題はスケールと制度効率の関係として捉える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 制度・技術・信頼の三位一体設計 制度・技術・信頼の三位一体設計 source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] CHANGE_START: Phase5-1.5 Schema Integrity Hardening 着手 対象: data/mocka_events.db(events._source列), data/mocka_schema_v1.sql, interface/gate_policy.py, 新規migration/audit script, cali\n[20260620_0] 制度情報と技術情報が混在し、思想抽出が難しくなった 6401debf38478560 who_role=|event_source=buffered|orig_channel=internal\n[20260620_0] 外部情報がMoCKA文脈に混入した 6401debf38478560 who_role=|event_source=buffered|orig_channel=internal\n[2026-06-20] CHANGE_DONE: 監査をGate経由/許可Direct/違反Directの4分類に拡張(Phase5-1) 対象: phi_os/event_gate.py /api/gate/audit, interface/dashboard.py _gate_audit(), index.html renderGateAudit\\n内容: 従来のnon_gat\n[2026-06-20] CHANGE_START: Phase5-1 Gate Enforcement完全実装着手 対象: db_helper.write_event()直接呼び出し全モジュール棚卸し+Gate Policy新設+全Direct Write統一\\n変更理由: Gate経由率が現状約64%でDoD(95%以上)未達。制度変更ではなく制度どおりの実装を完成させる。\\n変",
     "OPERATION": "[2026-06-20] [hint] 断定を避けつつ丁寧に説明する 断定を避けつつ丁寧に説明する source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 導入を短く、結論を先に、箇条書きにする構成指令 導入を短く、結論を先に、箇条書きにする構成指令 source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 文章を編集する際の文法・指令一覧を作る 文章を編集する際の文法・指令一覧を作る source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 内部記録と外部表示の役割を分けて考える 内部記録と外部表示の役割を分けて考える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] BIMとトレーサビリティを連携させると視覚化と検索性が向上する BIMとトレーサビリティを連携させると視覚化と検索性が向上する source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 専門用語に簡単な補足を加える 専門用語に簡単な補足を加える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-16] CHANGE_START: phi_os/dictionary.py 新規作成着手 対象: C:/Users/sirok/MoCKA/phi_os/dictionary.py\n変更理由: PHI-OS語彙コア辞書 v1 設計・実装指示（博士指示）"
   },
-  "essence_updated": true,
+  "essence_updated": false,
   "ngrok_online": false,
   "NGROK": false,
   "current_phase": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化保留・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）+ Institution Architecture確立（Constitution/Institution/Operation 3層・Connector Framework v2.0・SEO-OS/PR-OS稼働・PHI-OS Event Gate確立）",
@@ -40,5 +40,5 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-21T06:30:33.132333"
+  "generated_at": "2026-06-21T07:25:21.815254"
 }

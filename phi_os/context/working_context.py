@@ -102,6 +102,41 @@ class WorkingContext:
             self.current_ai = ai
         self.updated_at = datetime.now(timezone.utc).isoformat()
 
+    @classmethod
+    def live_update(cls, current_task: str = "", current_goal: str = "",
+                     next_action: str = "", current_ai: str = "",
+                     editing_files: list | None = None) -> None:
+        """
+        WorkingContext更新の唯一の書き込み口（CONTEXT_RUNTIME_CONNECTION_INSTRUCTIONS P0）。
+        mocka_write_event発火時に呼ばれ、working_context_latest.json を直接更新する。
+        プロセス間でインスタンスを共有できないため、スナップショットファイルへの
+        直接読み書きで永続化する（既存のload()/update()ロジックは変更しない）。
+        """
+        latest = _SNAPSHOT_DIR / "working_context_latest.json"
+        data: dict = {}
+        if latest.exists():
+            try:
+                data = json.loads(latest.read_text(encoding="utf-8"))
+            except Exception:
+                data = {}
+
+        if current_task:
+            data["current_task"] = current_task
+        if current_goal:
+            data["current_goal"] = current_goal
+        if next_action:
+            data["next_action"] = next_action
+        if current_ai:
+            data["current_ai"] = current_ai
+        if editing_files:
+            data["editing_files"] = editing_files
+        data["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+        _SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+        latest.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+
     def to_dict(self) -> dict:
         return {
             "layer": "Working",

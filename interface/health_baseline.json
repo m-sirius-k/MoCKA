@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 | Gate経由率 69.7% (<95%, Gate確立2026-06-16以降のみ集計) (total=837 gate=69.7% [real-time=531/buffered=52] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 | Gate経由率 70.6% (<95%, Gate確立2026-06-16以降のみ集計) (total=863 gate=70.6% [real-time=552/buffered=57] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
