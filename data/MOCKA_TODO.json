@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-19",
+    "updated": "2026-06-20",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -360,6 +360,18 @@
       "note": "Step1完了: MoCKA_Relay_handoff_spec_v1.md確定（##見出し構造による丸ごとブロック除外方式に変更、個別文言パターン依存を廃止）。Step2: 拡張機能要件定義書（4機能の仕様・適用範囲）作成へ。Step3: アンインストール+storage削除。Step4: 仕様書を基準にゼロから再構築。",
       "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
       "created_at": "2026-06-19T17:49:53.685053"
+    },
+    {
+      "id": "TODO_347",
+      "title": "PHI-OS Gate経由率64.4%の残課題対応 — handshake.py等のdb_helper直接書き込みをGate経由に統一するか、許可済み迂回路として正式化するか博士の判断",
+      "status": "未着手",
+      "priority": "中",
+      "category": "phi_os",
+      "description": "E20260620_100調査で判明: phi_os_audit FAILの主因(22531件)は2026-06-19の一回限り保守スクリプト4本によるものでPattern A対応済み(audit_violations.status='RESOLVED_LEGACY_BULK_FIX'に一括マーク、health_check.pyもGate確立日2026-06-16以降のみで集計するよう修正済み)。\n残る真の継続的Direct Write(1日あたり約10件、status='NEW'のまま)の発生源は以下のdb_helper.write_event()直接呼び出し(Gate /api/gate/event を経由しない設計):\n- interface/handshake.py:161 (AIセッション開始時のHANDSHAKE記録、channel_type=None)\n- app.py内のchat取り込みルート(複数箇所、channel_type='chat'固定でkimuraのブラウザ拡張経由チャットログを記録)\n- 他にも同様にdb_helper直接呼び出しをしているモジュールが存在(interface/mentor_engine.py, interface/reflection_engine.py, interface/ai_session.py, interface/commission_manager.py, interface/context_composer.py, interface/proposal_schema.py, gateway/lifecycle_manager.py) — これらが実際にどの程度の頻度で書き込みを行っているかは未調査。\n判断が必要な選択肢:\nA) 上記モジュールをGateのHTTP API(/api/gate/event)経由に書き換える(Gate経由率を実質100%近くまで上げられるが改修範囲が広い)\nB) handshake/chat等を「許可された迂回路」として正式化し、phi_os_auditの集計から除外する(channel_type別の許可リストを設け、未許可チャネルのみを違反対象とする)\nC) 95%という閾値自体を、Gate確立後の実質運用値(現在64.4%)を踏まえて見直す(例: 80%等の現実的な値に変更、またはA実施後に再設定)\n現状値: Gate確立(2026-06-16)以降の実質Gate経由率64.4%(455/707件)、新規Direct Write違反30件(2026-06-18:26件, 2026-06-20:4件)。",
+      "assigned_to": "Claude",
+      "note": "健全性チェックは引き続きFAIL継続中(意図的・正確な数値に基づくFAIL)。博士の方針判断待ち。",
+      "reference_event": "E20260620_100",
+      "created_at": "2026-06-20T12:57:01.897436"
     }
   ],
   "completed": [
@@ -4697,5 +4709,6 @@
     "description": "AI依頼時はTODO_IDを指定して依頼する。このファイルをMOCKA_OVERVIEW.jsonと一緒に貼れば即座に文脈共有できる",
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
-  }
+  },
+  "_snapshot_at": "2026-06-20T04:03:51.115005+00:00"
 }
