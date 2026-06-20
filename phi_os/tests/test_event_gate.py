@@ -98,7 +98,7 @@ def test_happy_path(client):
     assert r.status_code == 201
     body = r.get_json()
     assert body['status'] == 'ok'
-    assert re.match(r'E\d{8}_\d{3}', body['event_id'])
+    assert re.match(r'E\d{8}_\d{9}[0-9a-f]{4}', body['event_id'])
 
 
 def test_event_source_live(client):
@@ -107,9 +107,9 @@ def test_event_source_live(client):
                     data=json.dumps(valid_payload()),
                     content_type='application/json')
     assert r.status_code == 201
-    # event_idがE{YYYYMMDD}_{NNN}形式
+    # event_idがE{YYYYMMDD}_{time-ordered9digits}{4hex}形式（TODO_347 TASK1）
     eid = r.get_json()['event_id']
-    assert re.match(r'^E\d{8}_\d{3}$', eid), f"unexpected event_id: {eid}"
+    assert re.match(r'^E\d{8}_\d{9}[0-9a-f]{4}$', eid), f"unexpected event_id: {eid}"
 
 
 def test_reject_actor(client):

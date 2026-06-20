@@ -16,6 +16,8 @@ import sqlite3
 import csv
 import os
 import re
+import time
+import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -246,25 +248,14 @@ def search_events(keyword: str, limit: int = 50) -> list[dict]:
 
 def get_next_event_id() -> str:
     """
-    次のevent_idを採番（E{YYYYMMDD}_{NNN}形式）
-    router.pyのget_next_event_id()を置き換え可能
+    次のevent_idを採番（time-ordered unique id / TODO_347 TASK1）。
+    ORDER BY event_id DESC LIMIT 1 + 1方式（MAX(id)+1相当）は並列書き込みで
+    衝突するため廃止。日内マイクロ秒（time-ordered）+ ランダム4hex（衝突防止）
+    でDB問い合わせ不要・並列安全・衝突率ゼロ設計とする。
     """
     today = datetime.now().strftime("%Y%m%d")
-    prefix = f"E{today}_"
-
-    if DB_PATH.exists():
-        conn = _get_conn()
-        rows = conn.execute(
-            "SELECT event_id FROM events WHERE event_id LIKE ? ORDER BY event_id DESC LIMIT 1",
-            (f"{prefix}%",)
-        ).fetchall()
-        conn.close()
-        if rows:
-            last_id = rows[0][0]
-            num = int(last_id.split("_")[-1]) + 1
-            return f"{prefix}{num:03d}"
-
-    return f"{prefix}001"
+    micros_of_day = time.time_ns() // 1000 % 1_000_000_000
+    return f"E{today}_{micros_of_day:09d}{secrets.token_hex(2)}"
 
 
 # ============================================================

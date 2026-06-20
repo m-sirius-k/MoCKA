@@ -305,6 +305,17 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
 
 </div>
 
+<!-- ── ROW C3: PHI-OS EVENT GATE AUDIT (TODO_347 vFinal) ── -->
+<div class="section-hd">PHI-OS Event Gate — 経路監査</div>
+<div class="panel" id="panel-gate-audit">
+  <div class="dbg-strip" id="dbg-gate-audit"></div>
+  <div class="panel-hd"><span class="panel-title">Event Flow: handshake → buffer → gate → db</span><span class="panel-badge" id="gate-audit-rate-badge">--</span></div>
+  <div id="gate-audit-body">
+    <div style="font-size:11px;color:var(--muted)">取得中...</div>
+  </div>
+  <div class="dbg-err-msg" id="err-gate-audit"></div>
+</div>
+
 <!-- ISE パネル (v1.3 Phase C 統合パネル) -->
 <div class="panel" id="panel-ise">
   <h3>⚙ ISE — Institution State Engine</h3>
@@ -1113,6 +1124,49 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')scamperRun();});
 });
 
+function renderGateAudit(data){
+  try{
+    hidePanelErr('err-gate-audit');
+    const live = data.real_time_events && data.real_time_events.count || 0;
+    const buffered = data.buffered_events && data.buffered_events.count || 0;
+    const pending = data.buffered_events && data.buffered_events.pending_in_queue || 0;
+    const nonGate = data.non_gate_events && data.non_gate_events.count || 0;
+    const rate = data.gate_passthrough_rate_percent != null ? data.gate_passthrough_rate_percent : 0;
+    const directWriteOk = nonGate === 0;
+    setDbgTags('gate-audit',[{cls:'ok',label:'OK'}]);
+    document.getElementById('gate-audit-rate-badge').textContent = `経由率 ${rate}%`;
+    const el=document.getElementById('gate-audit-body');
+    el.innerHTML = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
+        <div style="flex:1;min-width:140px;">
+          <div style="font-size:10px;color:var(--muted)">REAL-TIME (live)</div>
+          <div style="font-size:20px;color:var(--green)">${Number(live).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--muted)">/api/gate/event 経由（即時）</div>
+        </div>
+        <div style="flex:1;min-width:140px;">
+          <div style="font-size:10px;color:var(--muted)">BUFFERED</div>
+          <div style="font-size:20px;color:var(--blue)">${Number(buffered).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--muted)">/api/gate/event/batch 経由（遅延flush） / queue待機: ${pending}</div>
+        </div>
+        <div style="flex:1;min-width:140px;">
+          <div style="font-size:10px;color:var(--muted)">NON-GATE（異常検知）</div>
+          <div style="font-size:20px;color:${directWriteOk?'var(--green)':'var(--red)'}">${Number(nonGate).toLocaleString()}</div>
+          <div style="font-size:10px;color:var(--muted)">${directWriteOk?'direct write = 0 を保証':'⚠ Gate未経由の直書きを検知'}</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;">
+        handshake/app.py → EventBuffer(in-memory+retry) → PHI-OS Event Gate → SQLite（single source）<br>
+        live と buffered は合算しない（状態の二重性をそのまま表示）。
+      </div>
+    `;
+    DBG.ok('gate-audit',`live=${live} buffered=${buffered} non_gate=${nonGate} rate=${rate}%`);
+  }catch(e){
+    DBG.err('gate-audit','renderGateAudit: '+e.message);
+    showPanelErr('err-gate-audit',e.message);
+    setDbgTags('gate-audit',[{cls:'err',label:'RENDER ERR'}]);
+  }
+}
+
 /* ═══════════════════════════════════════════════
    LIVE DATA FETCH (app.py エンドポイント)
    ═══════════════════════════════════════════════ */
@@ -1130,6 +1184,7 @@ async function fetchLive(){
     {url:`${BASE}/api/beta/status`,     panel:'bee',    key:null},
     {url:`${BASE}/api/ise/state`,       panel:'ise-state',    key:null},
     {url:`${BASE}/api/ise/status`,      panel:'ise-sessions', key:null},
+    {url:`${BASE}/api/gate/audit`,      panel:'gate-audit',   key:null},
   ];
   await Promise.allSettled(jobs.map(async j=>{
     try{
@@ -1139,6 +1194,7 @@ async function fetchLive(){
       if(j.panel==='ise-state')    renderISEState(data);
       if(j.panel==='ise-sessions') renderISESessions(data);
       if(j.panel==='tic0')         renderTic0Live(data);
+      if(j.panel==='gate-audit')   renderGateAudit(data);
     }catch(e){
       DBG.warn(j.panel,'フォールバック → 静的データ使用');
     }
@@ -1175,6 +1231,7 @@ function initAll(){
   try{ renderScamperHistory(); }           catch(e){ DBG.err('scp',e.message); }
   try{ document.getElementById('ise-state-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }    catch(e){}
   try{ document.getElementById('ise-sessions-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }catch(e){}
+  try{ document.getElementById('gate-audit-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }catch(e){}
 
   /* ライブデータ取得（バックグラウンド） */
   fetchLive().then(()=>DBG.ok('sys','ライブデータ取得フェーズ完了')).catch(e=>DBG.warn('sys','ライブ取得失敗: '+e.message));

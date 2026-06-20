@@ -138,17 +138,11 @@
       "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
       "priority": "最高",
       "status": "進行中"
-    },
-    {
-      "id": "TODO_347",
-      "title": "PHI-OS Gate経由率64.4%の残課題対応 — handshake.py等のdb_helper直接書き込みをGate経由に統一するか、許可済み迂回路として正式化するか博士の判断",
-      "priority": "中",
-      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 24,
-  "state_hash": "d02390a4586f85d4f9e00af19235a9e65855ea57489646bec787ce2abd4b9b15",
-  "generated_at": "2026-06-20T04:16:48.718337+00:00"
+  "revision": 25,
+  "state_hash": "f36461b6f3a8cac70aa36aa8ab723e7f4037008d4adc9f2179f3100737141f45",
+  "generated_at": "2026-06-20T05:54:47.793267+00:00"
 }

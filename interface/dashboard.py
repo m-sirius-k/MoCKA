@@ -83,6 +83,47 @@ def _knowledge_summary():
     return summary
 
 
+def _gate_audit():
+    """
+    TODO_347 TASK6: real-time events / buffered events 分離表示。
+    合算して単一指標にすることを禁止し、Gate経由率を別途算出する。
+    """
+    live = buffered = total = 0
+    try:
+        conn = db._get_conn()
+        total = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+        live = conn.execute("SELECT COUNT(*) FROM events WHERE _source='live'").fetchone()[0]
+        buffered = conn.execute("SELECT COUNT(*) FROM events WHERE _source='buffered'").fetchone()[0]
+        conn.close()
+    except Exception:
+        pass
+    non_gate = max(total - live - buffered, 0)
+    pending = 0
+    try:
+        from event_buffer import get_buffer
+        pending = get_buffer().pending_count()
+    except Exception:
+        pass
+    gate_routed = live + buffered
+    rate = round(gate_routed / total * 100, 2) if total else 0.0
+    return {
+        "real_time_events": {
+            "count": live,
+            "description": "/api/gate/event 経由（即時書き込み成功）",
+        },
+        "buffered_events": {
+            "count": buffered,
+            "pending_in_queue": pending,
+            "description": "Local Buffer -> /api/gate/event/batch 経由（遅延flush）",
+        },
+        "non_gate_events": {
+            "count": non_gate,
+            "description": "Gate未経由（_source未設定のlegacyレコード）",
+        },
+        "gate_passthrough_rate_percent": rate,
+    }
+
+
 def _build_dashboard():
     now = datetime.now(JST)
     return {
@@ -100,6 +141,7 @@ def _build_dashboard():
             for name, (host, port) in CONNECTORS.items()
         },
         "knowledge_summary": _knowledge_summary(),
+        "gate_audit": _gate_audit(),
         "generated_at": now.isoformat(),
     }
 

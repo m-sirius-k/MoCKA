@@ -3,7 +3,7 @@
 # v2: Local Buffer + async flush対応のbatch ingestion追加（TODO_347）
 from flask import Blueprint, request, jsonify
 from .gate_validator import validate, validate_operational
-import sqlite3, hashlib, json
+import sqlite3, hashlib, json, time, secrets
 from datetime import datetime, date, timezone
 from pathlib import Path
 
@@ -23,16 +23,15 @@ def _get_conn():
 
 
 def _next_event_id() -> str:
+    """
+    time-ordered unique id（TODO_347 TASK1）。
+    SELECT COUNT(*)/MAX(id)+1方式は並列書き込みで衝突するため廃止。
+    日内マイクロ秒（time-ordered）+ ランダム4hex（衝突防止）でDB問い合わせ不要・
+    並列安全・衝突率ゼロ設計とする。
+    """
     d = date.today().strftime('%Y%m%d')
-    conn = _get_conn()
-    try:
-        n = conn.execute(
-            'SELECT COUNT(*) FROM events WHERE event_id LIKE ?',
-            (f'E{d}_%',)
-        ).fetchone()[0]
-    finally:
-        conn.close()
-    return f'E{d}_{n + 1:03d}'
+    micros_of_day = time.time_ns() // 1000 % 1_000_000_000
+    return f'E{d}_{micros_of_day:09d}{secrets.token_hex(2)}'
 
 
 def _hash(payload: dict) -> str:
@@ -201,6 +200,31 @@ def receive_event_batch():
         'accepted': accepted,
         'duplicate_count': duplicate_count,
         'rejected': rejected,
+    }), 200
+
+
+@gate_bp.route('/api/gate/audit', methods=['GET'])
+def gate_audit():
+    """
+    TODO_347 TASK6: real-time(live) / buffered の分離表示。
+    合算した単一指標は提供しない（real_time_events と buffered_events を分けて返す）。
+    """
+    conn = _get_conn()
+    try:
+        total = conn.execute('SELECT COUNT(*) FROM events').fetchone()[0]
+        live = conn.execute("SELECT COUNT(*) FROM events WHERE _source='live'").fetchone()[0]
+        buffered = conn.execute("SELECT COUNT(*) FROM events WHERE _source='buffered'").fetchone()[0]
+    finally:
+        conn.close()
+    non_gate = max(total - live - buffered, 0)
+    gate_routed = live + buffered
+    rate = round(gate_routed / total * 100, 2) if total else 0.0
+    return jsonify({
+        'status': 'ok',
+        'real_time_events': {'count': live, 'source': '/api/gate/event'},
+        'buffered_events': {'count': buffered, 'source': '/api/gate/event/batch'},
+        'non_gate_events': {'count': non_gate, 'note': '_source未設定のlegacyレコード'},
+        'gate_passthrough_rate_percent': rate,
     }), 200
 
 

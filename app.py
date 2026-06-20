@@ -822,8 +822,8 @@ def mataka():
     eid = f"MATAKA_{ts_f}_{who[:4].upper()}"
     h   = _hs.sha256(f"{eid}{ts_str}{selected_text[:50]}".encode()).hexdigest()[:16]
 
-    # events.dbに構造化記録
-    db_helper.write_event({
+    # events.dbへLocal Buffer経由で記録（TODO_347: db_helper.write_event直接呼び出し禁止）
+    get_buffer().push({
         "event_id": eid, "when": ts_str,
         "who_actor": w5h1.get("who", who),
         "what_type": "MATAKA",
@@ -947,7 +947,8 @@ def claim():
     eid = f"CLAIM_{ts_f}_{who[:4].upper()}"
     h   = _hs.sha256(f"{eid}{ts_str}{selected_text[:50]}".encode()).hexdigest()[:16]
 
-    db_helper.write_event({
+    # TODO_347: db_helper.write_event直接呼び出し禁止 → Local Buffer経由に統一
+    get_buffer().push({
         "event_id": eid, "when": ts_str,
         "who_actor": w5h1.get("who", who),
         "what_type": "CLAIM",
@@ -1035,8 +1036,8 @@ def collect():
     PILS = P(r"C:/Users/sirok/MoCKA/data/storage/outbox/PILS")
     PILS.mkdir(parents=True,exist_ok=True)
     shutil.copy2(fname, PILS/fname.name)
-    # CSV書き込み廃止 → SQLite(db_helper)に記録
-    db_helper.write_event({
+    # CSV書き込み廃止 → SQLite(db_helper)直書き禁止(TODO_347) → Local Buffer経由に統一
+    get_buffer().push({
         "event_id": eid, "when": ts_str, "who_actor": source,
         "what_type": "collect", "where_component": "chat_import",
         "where_path": "mocka_bridge_v2", "why_purpose": url[:80],
@@ -2664,15 +2665,16 @@ def _auto_incident_overdue():
             if cur.fetchone()[0] > 0:
                 continue
             eid = f"OVD_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{tid}"
-            cur.execute("""INSERT INTO events
-                (event_id,when_ts,what_type,who_actor,title,why_purpose,how_trigger,free_note)
-                VALUES (?,?,?,?,?,?,?,?)""",
-                (eid, datetime.now().isoformat(), 'OVERDUE_INCIDENT', 'system',
-                 f'[締切超過] {tid}: {t.get("title","")[:50]}',
-                 '締切超過TODOの自動INCIDENT化',
-                 'auto_incident_overdue()',
-                 f'priority={t.get("priority","")} status={t.get("status","")}'))
-            con.commit()
+            # TODO_347: 生SQL INSERT INTO events禁止 → Local Buffer経由に統一
+            get_buffer().push({
+                "event_id": eid, "when": datetime.now().isoformat(),
+                "what_type": "OVERDUE_INCIDENT", "who_actor": "system",
+                "where_component": "app.py:_auto_incident_overdue",
+                "title": f'[締切超過] {tid}: {t.get("title","")[:50]}',
+                "why_purpose": "締切超過TODOの自動INCIDENT化",
+                "how_trigger": "auto_incident_overdue()",
+                "free_note": f'priority={t.get("priority","")} status={t.get("status","")}',
+            })
             print(f'[OVERDUE] INCIDENT化: {tid}')
         con.close()
     except Exception as e:
