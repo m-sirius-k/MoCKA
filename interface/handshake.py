@@ -12,6 +12,7 @@ from datetime import datetime, timezone, timedelta
 
 sys.path.insert(0, str(Path(__file__).parent))
 import db_helper as db
+from event_buffer import get_buffer
 
 from flask import Blueprint, jsonify, request
 
@@ -157,18 +158,20 @@ def handshake():
         "timestamp": now.isoformat(),
     }
 
-    eid = db.get_next_event_id()
-    db.write_event({
-        "event_id": eid,
-        "when": now.isoformat(),
-        "who_actor": ai_id,
-        "what_type": "HANDSHAKE",
+    # TODO_347: Gate直叩きの同期書き込みは廃止。Local Bufferへpushし
+    # handshakeのレスポンス速度に影響を与えず、非同期でGate(/api/gate/event/batch)
+    # 経由でSQLiteへ永続化する（禁止事項: db_helper.write_event()の直接呼び出し）。
+    get_buffer().push({
+        "who_actor":       ai_id,
+        "who_session":     session_id,
+        "what_type":       "handshake",
         "where_component": "interface/handshake.py",
-        "why_purpose": "Institution Handshake Protocol",
-        "how_trigger": "POST /api/handshake",
-        "title": f"Institution Handshake: {ai_id} / {role}",
-        "short_summary": f"scope={scope} session_id={session_id}",
-        "trace_id": session_id,
+        "where_path":      "/api/handshake",
+        "why_purpose":     "Institution Handshake Protocol",
+        "how_trigger":     "POST /api/handshake",
+        "title":           f"Institution Handshake: {ai_id} / {role}",
+        "description":     f"scope={scope} session_id={session_id}",
+        "tags":            session_id,
     })
 
     return jsonify(response)

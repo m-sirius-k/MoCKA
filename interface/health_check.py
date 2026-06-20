@@ -199,10 +199,25 @@ def check_file_hash(cfg: dict) -> tuple:
     return True, f"変更なし (hash: {h})"
 
 
+# PHI-OS Event Gate確立日 (TODO_322完了)。これより前のイベントは
+# Gate自体が存在しないため構造的にchannel_type='gate'になり得ない。
+# 全期間を分母にするとGate確立以前の数ヶ月分の旧データに希釈され、
+# 指標として意味を持たなくなるため、Gate経由率はこの日付以降のみで算出する。
+GATE_LAUNCH_DATE = "2026-06-16"
+
+
 def check_phi_os_audit() -> tuple:
     """
-    PHI-OS Gate定期監査 (TODO_324)
-    Gate経由率100% / Direct Write 0件 / Actor未設定0件 を継続監視する。
+    PHI-OS Gate定期監査 (TODO_324 / E20260620_100で根本対策実施 / TODO_347でLocal Buffer対応)
+    Gate経由率95%以上 / 新規Direct Write 0件 / Actor未設定0件 を継続監視する。
+    Gate経由率はGATE_LAUNCH_DATE以降に作成されたイベントのみを対象に算出する
+    （Gate確立以前のイベントは対象外。過去の一回限りメンテナンス由来の
+    audit_violationsはstatus='RESOLVED_LEGACY_BULK_FIX'で別管理し、
+    本チェックではstatus='NEW'のみを違反として数える）。
+    TODO_347: Local Buffer + async flush構造への移行により、Gate経由(channel_type='gate')
+    は即時同期書き込み(_source='live')と非同期バッファ経由(_source='buffered')の
+    2種類に分かれる。統合値で95%判定する一方、内訳は分離して表示する
+    （「即時性」と「完全性」を1つの数字に混ぜない）。
     """
     db_path = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
     if not db_path.exists():
@@ -222,29 +237,48 @@ def check_phi_os_audit() -> tuple:
             "SELECT COUNT(*) FROM audit_violations WHERE status = 'NEW'"
         ).fetchone()[0]
 
-        total_events = con.execute("SELECT COUNT(*) FROM events").fetchone()[0]
-        gate_events  = con.execute(
-            "SELECT COUNT(*) FROM events WHERE channel_type = 'gate'"
+        total_events = con.execute(
+            "SELECT COUNT(*) FROM events WHERE when_ts >= ?", (GATE_LAUNCH_DATE,)
         ).fetchone()[0]
+        gate_live = con.execute(
+            "SELECT COUNT(*) FROM events WHERE channel_type = 'gate' AND _source = 'live' AND when_ts >= ?",
+            (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        gate_buffered = con.execute(
+            "SELECT COUNT(*) FROM events WHERE channel_type = 'gate' AND _source = 'buffered' AND when_ts >= ?",
+            (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        gate_events = gate_live + gate_buffered
         no_actor = con.execute(
-            "SELECT COUNT(*) FROM events WHERE who_actor IS NULL OR who_actor = ''"
+            "SELECT COUNT(*) FROM events WHERE (who_actor IS NULL OR who_actor = '') AND when_ts >= ?",
+            (GATE_LAUNCH_DATE,)
         ).fetchone()[0]
         con.close()
+
+        # 未flushのLocal Buffer滞留分（参考値。DBにまだ存在しないため上記カウントには含まれない）
+        buffer_pending = None
+        try:
+            from event_buffer import get_buffer
+            buffer_pending = get_buffer().pending_count()
+        except Exception:
+            pass
 
         gate_rate = (gate_events / total_events * 100) if total_events > 0 else 100
         issues = []
         if new_violations > 0:
-            issues.append(f"Direct Write違反 {new_violations}件")
+            issues.append(f"Direct Write違反(新規) {new_violations}件")
         if gate_rate < 95:
-            issues.append(f"Gate経由率 {gate_rate:.1f}% (<95%)")
+            issues.append(f"Gate経由率 {gate_rate:.1f}% (<95%, Gate確立{GATE_LAUNCH_DATE}以降のみ集計)")
         if no_actor > 0:
             issues.append(f"Actor未設定 {no_actor}件")
 
+        detail = f"(total={total_events} gate={gate_rate:.1f}% [real-time={gate_live}/buffered={gate_buffered}]"
+        detail += f" buffer_pending={buffer_pending})" if buffer_pending is not None else ")"
+
         if issues:
-            return False, " | ".join(issues) + f" (total={total_events} gate={gate_rate:.1f}%)"
+            return False, " | ".join(issues) + " " + detail
         return True, (
-            f"Gate経由率{gate_rate:.1f}% Direct-Write 0件 Actor-OK"
-            f" (total={total_events})"
+            f"Gate経由率{gate_rate:.1f}% Direct-Write(新規) 0件 Actor-OK " + detail
         )
     except Exception as e:
         return False, f"監査エラー: {e}"

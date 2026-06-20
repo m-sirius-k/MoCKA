@@ -3,6 +3,7 @@ import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
 import db_helper
+from event_buffer import get_buffer
 import shutil
 import os
 import json
@@ -267,7 +268,10 @@ def append_event(meta: dict):
     }
     with open(master_path, "w", encoding="utf-8-sig") as f:
         json.dump(master_obj, f, ensure_ascii=False, indent=2)
-    db_helper.write_event(row)
+    # TODO_347: Gate直叩きの同期書き込みは廃止。Local Bufferへpushし
+    # chat応答等のレイテンシに影響を与えず、非同期でGate経由でSQLiteへ永続化する
+    # （禁止事項: db_helper.write_event()の直接呼び出し）。
+    get_buffer().push(row)
 
 def load_history(limit=None):
     rows = db_helper.read_events(limit=int(limit) if limit else None)

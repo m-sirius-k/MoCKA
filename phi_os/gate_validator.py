@@ -41,3 +41,25 @@ def validate(payload: dict) -> list[str]:
         errors.append('REJECT-07: before/afterどちらか必須(Replay不能)')
 
     return errors
+
+
+def validate_operational(payload: dict) -> list[str]:
+    """
+    Operational/telemetryイベント用の軽量検証（TODO_347 Local Buffer対応）。
+    validate()はAI主体の変更記録(governance write)向けに設計されており、
+    who_actor='claude'禁止・who_session厳格フォーマット・before/after必須等は
+    handshake/chat-voice-captureのような高頻度の運用テレメトリには適合しない。
+    ここでは「Gateを唯一の永続経路にする」という制度目的に必要な最小限
+    （who_actor/what_type/where_componentが空でないこと）のみを検査し、
+    governance writeの厳格な検証基準を弱めることはしない（別レーンとして分離）。
+    """
+    errors = []
+    if not payload.get('who_actor'):
+        errors.append('OP-REJECT-01: who_actor必須')
+    if not payload.get('what_type'):
+        errors.append('OP-REJECT-02: what_type必須')
+    if not payload.get('where_component'):
+        errors.append('OP-REJECT-03: where_component必須')
+    if not payload.get('why_purpose'):
+        errors.append('OP-REJECT-04: why_purpose必須')
+    return errors

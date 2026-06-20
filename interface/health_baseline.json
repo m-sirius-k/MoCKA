@@ -4,12 +4,12 @@
     "detail": "PYTHONUTF8=(unset) OK"
   },
   "mocka_server": {
-    "ok": false,
-    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
+    "ok": true,
+    "detail": "200 OK"
   },
   "caliber_pipeline": {
-    "ok": false,
-    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
+    "ok": true,
+    "detail": "200 OK"
   },
   "anthropic_api": {
     "ok": true,
@@ -25,7 +25,7 @@
   },
   "mcp_schema_hash": {
     "ok": true,
-    "detail": "変更なし (hash: 3484c303ccc72768)"
+    "detail": "変更なし (hash: da1bedf540d8cd31)"
   },
   "relay_dom_selector": {
     "ok": false,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反 22530件 | Gate経由率 3.4% (<95%) (total=12418 gate=3.4%)"
+    "detail": "Direct Write違反(新規) 32件 | Gate経由率 64.3% (<95%, Gate確立2026-06-16以降のみ集計) (total=712 gate=64.3% [real-time=458/buffered=0] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
