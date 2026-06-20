@@ -107,22 +107,36 @@ def _ensure_idempotency_table(conn) -> None:
 
 # ── endpoint ──────────────────────────────────────────────────────────────────
 
+def process_event(payload: dict, event_source: str = 'live', conn=None) -> dict:
+    """
+    Unified Event Entry（Phase5-2.1）。
+    Validation -> Gate Policy(event_source付与) -> Signature -> Hash Chain ->
+    Integrity Registration -> DB Commit を一体で実行する唯一の保存経路。
+    Flask route(/api/gate/event)とMCP server(mocka_write_event)のいずれの
+    呼び出し元からも、トランスポート(HTTP/インプロセス)を問わずこの関数を
+    経由しなければならない。これ以外にevents保存を行う経路は制度上存在しない。
+    """
+    errors = validate(payload)
+    if errors:
+        return {'status': 'rejected', 'errors': errors}
+
+    payload = dict(payload)
+    payload['event_id'] = payload.get('event_id') or _next_event_id()
+    payload['when_ts'] = payload.get('when_ts') or datetime.now(timezone.utc).isoformat()
+    payload['event_source'] = event_source
+
+    _write(payload, conn=conn)
+
+    return {'status': 'ok', 'event_id': payload['event_id']}
+
+
 @gate_bp.route('/api/gate/event', methods=['POST'])
 def receive_event():
     payload = request.get_json(force=True) or {}
-
-    errors = validate(payload)
-    if errors:
-        return jsonify({'status': 'rejected', 'errors': errors}), 422
-
-    # Gate自動付与フィールド
-    payload['event_id'] = _next_event_id()
-    payload['when_ts'] = datetime.now(timezone.utc).isoformat()
-    payload['event_source'] = 'live'
-
-    _write(payload)
-
-    return jsonify({'status': 'ok', 'event_id': payload['event_id']}), 201
+    result = process_event(payload, event_source='live')
+    if result['status'] == 'rejected':
+        return jsonify(result), 422
+    return jsonify(result), 201
 
 
 @gate_bp.route('/api/gate/event/batch', methods=['POST'])

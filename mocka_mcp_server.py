@@ -101,46 +101,6 @@ def _db_read_events(n=None):
         print(f"[MCP] db_read_events error: {e}")
         return []
 
-def _db_write_event(row: dict):
-    """
-    SQLiteにイベントを書き込む（文字化け防御ゲート付き）。
-    Phase5-1 Gate Policy: 唯一の呼び出し元はGate(/api/gate/event)がConnectionError
-    の際のfallbackであり、これは許可されたDirect Writeチャネル'recovery'に該当する
-    （ALLOWED_DIRECT_CHANNELS参照）。_source列に明示的にタグ付けし監査上exempt扱いとする。
-    """
-    try:
-        # 全フィールドをsanitize
-        safe = {k: _sanitize(str(v)) for k, v in row.items()}
-        con = _get_db()
-        cur = con.cursor()
-        cur.execute("""
-            INSERT OR IGNORE INTO events
-            (event_id, when_ts, who_actor, what_type, where_component, where_path,
-             why_purpose, how_trigger, channel_type, lifecycle_phase, risk_level,
-             category_ab, target_class, title, short_summary, before_state,
-             after_state, change_type, impact_scope, impact_result,
-             related_event_id, trace_id, free_note, _source)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        """, (
-            safe.get("event_id",""), safe.get("when",""), safe.get("who_actor",""),
-            safe.get("what_type",""), safe.get("where_component",""), safe.get("where_path",""),
-            safe.get("why_purpose",""), safe.get("how_trigger",""), safe.get("channel_type",""),
-            safe.get("lifecycle_phase",""), safe.get("risk_level",""), safe.get("category_ab",""),
-            safe.get("target_class",""), safe.get("title",""), safe.get("short_summary",""),
-            safe.get("before_state",""), safe.get("after_state",""), safe.get("change_type",""),
-            safe.get("impact_scope",""), safe.get("impact_result",""),
-            safe.get("related_event_id",""), safe.get("trace_id",""), safe.get("free_note",""),
-            "direct_allowed:recovery",
-        ))
-        con.commit()
-        con.close()
-        return True
-    except Exception as e:
-        print(f"[MCP] db_write_event error: {e}")
-        return False
-
-EVENTS_FIELDS = ["event_id","when","who_actor","what_type","where_component","where_path","why_purpose","how_trigger","channel_type","lifecycle_phase","risk_level","category_ab","target_class","title","short_summary","before_state","after_state","change_type","impact_scope","impact_result","related_event_id","trace_id","free_note"]
-
 app = Flask(__name__)
 CORS(app, origins="*")
 
@@ -202,12 +162,6 @@ def sha256_file(path):
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(8192), b""): h.update(chunk)
     return h.hexdigest()
-
-def next_event_id():
-    """time-ordered unique id（Phase5-1: MAX(id)+1系ID生成禁止）"""
-    today = datetime.date.today().strftime("%Y%m%d")
-    micros_of_day = time.time_ns() // 1000 % 1_000_000_000
-    return f"E{today}_{micros_of_day:09d}{secrets.token_hex(2)}"
 
 def auto_log(tool_name, args, result_summary):
     # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録
@@ -408,28 +362,27 @@ def execute_tool(name, args):
                     return json.dumps({"status": "gate_rejected", "errors": r.json().get("errors", []),
                                        "gate_status": r.status_code}, ensure_ascii=False)
             except requests.exceptions.ConnectionError:
-                # GATEが落ちている場合のフォールバック — SQLite直接書き込み
-                eid = next_event_id()
-                ts  = datetime.datetime.now().isoformat()
-                row = {f: "" for f in EVENTS_FIELDS}
-                row["event_id"]        = eid
-                row["when"]            = ts
-                row["who_actor"]       = _actor
-                row["what_type"]       = "claude_mcp"
-                row["where_component"] = "mcp_caliber"
-                row["where_path"]      = "mocka_mcp_server.py"
-                row["why_purpose"]     = gate_payload["why_purpose"]
-                row["how_trigger"]     = gate_payload["how_trigger"]
-                row["title"]           = _title
-                row["short_summary"]   = _desc
-                row["free_note"]       = args.get("tags", "") + "|event_source=fallback"
-                row["lifecycle_phase"] = "in_operation"
-                row["risk_level"]      = "normal"
-                row["channel_type"]    = "mcp"
-                ok = _db_write_event(row)
-                auto_log(name, args, f"GATE offline fallback {eid} db={'ok' if ok else 'error'}")
-                return json.dumps({"status": "ok" if ok else "error", "event_id": eid,
-                                   "when": ts, "storage": "fallback/sqlite"}, ensure_ascii=False)
+                # GATEプロセスがHTTP応答不能な場合のフォールバック。
+                # Phase5-2.1 Unified Event Entry: 生SQL直接INSERTは廃止し、
+                # phi_os.event_gate.process_event()をインプロセスで直接呼び出す
+                # ことで、HTTP経路と完全に同じValidation/Signature/HashChainを
+                # 経由させる（事後のmigrate_event_integrity.py補完を不要にする）。
+                import sys as _sys
+                _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+                if _repo_root not in _sys.path:
+                    _sys.path.insert(0, _repo_root)
+                from phi_os.event_gate import process_event as _gate_process_event
+                result = _gate_process_event(gate_payload, event_source="direct_allowed:recovery")
+                if result["status"] == "ok":
+                    eid = result["event_id"]
+                    auto_log(name, args, f"GATE offline in-process fallback {eid}")
+                    return json.dumps({"status": "ok", "event_id": eid,
+                                       "when": datetime.datetime.now().isoformat(),
+                                       "storage": "gate/sqlite(in-process)"}, ensure_ascii=False)
+                else:
+                    auto_log(name, args, f"GATE offline fallback rejected: {result.get('errors')}")
+                    return json.dumps({"status": "gate_rejected", "errors": result.get("errors", [])},
+                                       ensure_ascii=False)
 
         elif name == "mocka_seal":
             # CSV廃止済み → SQLite全件JSONハッシュ
