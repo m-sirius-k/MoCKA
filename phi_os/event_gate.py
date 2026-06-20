@@ -89,6 +89,33 @@ def _write(payload: dict, conn=None) -> None:
     }
     # 空文字列はNoneに変換して保存
     row = {k: (v if v != '' else None) for k, v in row.items()}
+
+    # TEMP-TRACE: remove after investigation
+    try:
+        import traceback, threading, os as _os, json as _json
+        from datetime import datetime as _dt, timezone as _tz
+        _src_val = row.get('_source')
+        _stack = traceback.extract_stack()
+        _frames = [f"{f.filename}:{f.lineno}:{f.name}" for f in _stack[-8:]]
+        with open(r"C:\Users\sirok\MoCKA\gate_trace_temp.log", "a", encoding="utf-8") as _tf:
+            _tf.write(_json.dumps({
+                "ts": _dt.now(_tz.utc).isoformat(),
+                "pid": _os.getpid(),
+                "thread_ident": threading.get_ident(),
+                "thread_name": threading.current_thread().name,
+                "func": "event_gate._write",
+                "_source_value": _src_val,
+                "event_id": row.get("event_id"),
+                "where_component": row.get("where_component"),
+                "what_type": row.get("what_type"),
+                "stack": _frames,
+                "full_row": {k: row.get(k) for k in row},
+            }, ensure_ascii=False) + "\n")
+            _tf.flush()
+    except Exception:
+        pass
+    # END TEMP-TRACE
+
     owns_conn = conn is None
     if owns_conn:
         conn = _get_conn()
