@@ -1,0 +1,10 @@
+[pattern_engine] OK - 392 keywords
+[ESSENCE_AUTO] 起動失敗: name 'Path' is not defined
+[AUTO_APPROVE] error: name '_load_pqueue' is not defined
+[AUTO-AUDIT] 日次自動sealループ開始
+[app] cross_audit engine loaded
+--- MoCKA STARTING ---
+[STORAGE] SQLite単一化済み: CSV書き込み完全廃止
+Directory: C:\Users\sirok\MoCKA
+ * Serving Flask app 'app'
+ * Debug mode: off
