@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-20",
+    "updated": "2026-06-21",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -373,6 +373,30 @@
       "reference_event": "E20260620_100",
       "created_at": "2026-06-20T12:57:01.897436",
       "updated_at": "2026-06-20T13:18:45.307783"
+    },
+    {
+      "id": "TODO_348",
+      "title": "[完了] WorkingContext Live Update接続 + Snapshot Runtime有効化",
+      "status": "完了",
+      "priority": "高",
+      "category": "Context Runtime/WorkingContext",
+      "description": "R01(GPT)監査「Context Runtime v2は設計完了・実装完了・接続未完了」の裏取りから判明した根本原因（WorkingContextの更新呼び出し元が存在せず6/17 03:11で凍結）への対処。P0=WorkingContext.live_update()新設、P1=context_scheduler.pyによる定期snapshot発火。サーバー再起動後の実証試験5項目全てOK。診断の核心は「記憶欠落ではなく状態ポインタ欠落」。",
+      "assigned_to": "Claude Code（実装）",
+      "note": "完全実証済み。CHANGE_DONE: E20260621_52338111904aa / mocka_seal sha256: d2696f77...",
+      "reference_event": "E20260621_52338111904aa",
+      "created_at": "2026-06-21T07:28:58.576627"
+    },
+    {
+      "id": "TODO_349",
+      "title": "[歯止め] HAB正式定義書/ARCHITECTURE_REGISTRY更新はEvent Runtime本体接続完了まで着手禁止",
+      "status": "保留中（3完了待ち）",
+      "priority": "高",
+      "category": "Context Runtime/HAB/制度設計",
+      "description": "きむら博士とClaude間の合意による歯止め。HABの実体は新規開発物ではなく、既存のContext Runtime+CALIBERを中心とする上位接続層である、という整理が現時点で最も整合的。ただしこれを制度文書（ARCHITECTURE_REGISTRY.json）に固定するのは、Context Runtimeが「生きた制度状態」として運用できることを段階的に確認した後にすべき。\n\n確定順序:\n1. WorkingContext Live Update接続 → 完了(TODO_348)\n2. Snapshot Runtime有効化 → 完了(TODO_348)\n3. Event Runtime本体接続 → 未着手\n4. Context Runtimeの制度的位置づけ監査 → 未着手（3完了後のみ着手可）\n5. HAB正式定義書作成 → 未着手（4完了後のみ着手可）\n6. ARCHITECTURE_REGISTRY更新 → 未着手（5完了後のみ着手可）\n\nリスク: 後続セッション（くろ子/GPT/他AI）が「もう動いているなら定義書だけ先に書いておこう」と前のめりになり、3が未完のまま5・6に着手する可能性がある。これを防ぐためのTODOとして明示登録。",
+      "assigned_to": "きむら博士+Claude Chat（制度監査）",
+      "note": "【歯止め】3(Event Runtime本体接続)が完了するまで、5(HAB正式定義書)・6(ARCHITECTURE_REGISTRY更新)には絶対に着手しないこと。",
+      "reference_event": "E20260621_52338111904aa",
+      "created_at": "2026-06-21T07:29:11.545702"
     }
   ],
   "completed": [
@@ -4711,5 +4735,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-20T22:25:19.906064+00:00"
+  "_snapshot_at": "2026-06-20T22:35:24.309813+00:00"
 }
