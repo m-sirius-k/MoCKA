@@ -1,4 +1,4 @@
-﻿"""
+"""
 mocka_todo_sync.py - ローカルTODO.json -> Firestore 双方向同期
 配置: C:/Users/sirok/MoCKA/interface/mocka_todo_sync.py
 """
@@ -78,8 +78,10 @@ def pull_from_firestore():
                     todo["note"] = new_note
                 updated += 1
     if updated:
-        with open(TODO_PATH, "w", encoding="utf-8") as f:
+        tmp_path = TODO_PATH.with_suffix(".json.tmp")
+        with open(tmp_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+        os.replace(tmp_path, TODO_PATH)
         print(f"[OK] {updated}件 ローカルに反映完了")
     else:
         print("[OK] 更新なし")

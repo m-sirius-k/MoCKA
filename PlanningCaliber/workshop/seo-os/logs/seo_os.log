@@ -4129,3 +4129,9 @@
 2026-06-20 11:35:53,526 [INFO] 127.0.0.1 - - [20/Jun/2026 11:35:53] "GET /api/jobs?status=pending HTTP/1.1" 200 -
 2026-06-20 11:36:22,645 [INFO] 127.0.0.1 - - [20/Jun/2026 11:36:22] "GET /api/jobs?status=pending HTTP/1.1" 200 -
 2026-06-20 11:36:52,327 [INFO] 127.0.0.1 - - [20/Jun/2026 11:36:52] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-20 12:26:46,589 [INFO] 127.0.0.1 - - [20/Jun/2026 12:26:46] "GET /api/jobs?status=pending HTTP/1.1" 200 -
+2026-06-20 12:26:46,589 [INFO] 127.0.0.1 - - [20/Jun/2026 12:26:46] "GET /api/jobs HTTP/1.1" 200 -
+2026-06-20 12:26:46,610 [INFO] 127.0.0.1 - - [20/Jun/2026 12:26:46] "GET /api/jobs?status=approved HTTP/1.1" 200 -
+2026-06-20 12:26:46,611 [INFO] 127.0.0.1 - - [20/Jun/2026 12:26:46] "GET /api/jobs?status=running HTTP/1.1" 200 -
+2026-06-20 12:26:46,615 [INFO] 127.0.0.1 - - [20/Jun/2026 12:26:46] "GET /api/jobs?status=done HTTP/1.1" 200 -
+2026-06-20 12:26:46,615 [INFO] 127.0.0.1 - - [20/Jun/2026 12:26:46] "GET /api/jobs?status=failed HTTP/1.1" 200 -

@@ -27,6 +27,15 @@ VIOLATIONS = []
 # チェック対象外ディレクトリ
 SKIP_DIRS = {"__pycache__", ".git", "node_modules", "venv", ".venv", "archive"}
 
+# チェック対象外ファイル名パターン（バックアップ・パッチ・旧版ファイル）
+SKIP_NAME_PATTERNS = re.compile(
+    r'(_bak[_.]|\.bak|_backup_|_patch[_.]|^patch_|^fix_|_old[_.]|^app_broken)',
+    re.IGNORECASE
+)
+
+BASELINE_PATH = ROOT / "data" / "utf8_mandate_baseline.json"
+DETAIL_LOG_PATH = ROOT / "data" / "utf8_mandate_violations.log"
+
 # Rule 5対象ディレクトリ (CLI実行系)
 CLI_DIRS = {"mocka_v3_eval", "runtime", "structural", "scripts"}
 
@@ -77,6 +86,8 @@ for py_file in ROOT.rglob("*.py"):
     if any(skip in py_file.parts for skip in SKIP_DIRS):
         continue
     if py_file.name == "check_utf8_mandate.py":
+        continue
+    if SKIP_NAME_PATTERNS.search(py_file.name):
         continue
 
     try:
@@ -139,14 +150,43 @@ for ps_file in ROOT.rglob("*.ps1"):
             )
 
 # ==============================
-# 結果出力
+# 結果出力（ベースライン差分方式 / TODO_338後続対応）
 # ==============================
-if VIOLATIONS:
-    print(f"\n[WARN] UTF-8 mandate violations: {len(VIOLATIONS)}\n")
-    for v in VIOLATIONS:
-        print(f"  [NG] {v}")
-    print("\n-> UTF8_MANDATE.md を参照して修正してください")
+# 初回フルスキャン分は data/utf8_mandate_baseline.json に記録し、
+# 以降は新規違反のみを警告対象とする。詳細は別ログに出力し、
+# 起動時stdoutはサマリー件数のみ表示する（他の起動ログを埋もれさせない）。
+import json as _json
+
+if BASELINE_PATH.exists():
+    try:
+        baseline_set = set(_json.loads(BASELINE_PATH.read_text(encoding="utf-8")))
+    except Exception:
+        baseline_set = set()
+else:
+    baseline_set = None  # 初回: ベースライン未作成
+
+current_set = set(VIOLATIONS)
+new_violations = [v for v in VIOLATIONS if baseline_set is not None and v not in baseline_set]
+
+DETAIL_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+DETAIL_LOG_PATH.write_text(
+    "\n".join(f"[NG] {v}" for v in VIOLATIONS),
+    encoding="utf-8"
+)
+
+if baseline_set is None:
+    BASELINE_PATH.write_text(
+        _json.dumps(sorted(current_set), ensure_ascii=False, indent=2),
+        encoding="utf-8"
+    )
+    print(f"[INFO] UTF-8 mandate: 初回ベースライン作成 {len(VIOLATIONS)}件（既存分として記録、今後は新規違反のみ警告）")
+    print(f"-> 詳細: {DETAIL_LOG_PATH}")
+    sys.exit(0)
+elif new_violations:
+    print(f"\n[WARN] UTF-8 mandate: 新規違反 {len(new_violations)}件（既存分 {len(VIOLATIONS) - len(new_violations)}件は記録済みのため省略）\n")
+    print(f"-> 詳細: {DETAIL_LOG_PATH}")
+    print("-> UTF8_MANDATE.md を参照して修正してください")
     sys.exit(1)
 else:
-    print("[OK] UTF-8 mandate: no violations. MoCKA is clean.")
+    print(f"[OK] UTF-8 mandate: 新規違反なし（既存分 {len(VIOLATIONS)}件はベースライン記録済み）")
     sys.exit(0)

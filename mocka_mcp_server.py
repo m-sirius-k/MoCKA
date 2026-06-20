@@ -233,7 +233,9 @@ def load_todo():
 def save_todo(data):
     data["meta"]["updated"] = datetime.date.today().isoformat()
     data["meta"]["updated_by"] = "Claude"
-    TODO_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp_path = TODO_PATH.with_suffix(".json.tmp")
+    tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(tmp_path, TODO_PATH)
 
 TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},

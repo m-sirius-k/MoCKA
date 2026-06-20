@@ -53,7 +53,7 @@ def _inject_snapshot_ts(dst: Path):
         print(f"[snapshot_ts] skip {dst.name}: {e}")
 
 
-def _copy_with_retry(src: Path, dst: Path, retries=4, base_delay=0.5):
+def _copy_with_retry(src: Path, dst: Path, retries=7, base_delay=0.5):
     for attempt in range(retries):
         try:
             shutil.copy2(src, dst)
