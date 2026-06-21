@@ -1,0 +1,52 @@
+{
+  "audited_at": "2026-06-21T01:14:25.846241+00:00",
+  "n_threads": 10,
+  "results": [
+    {
+      "test": "1_boot_concurrency",
+      "threads": 10,
+      "success_count": 10,
+      "error_count": 0,
+      "errors": [],
+      "distinct_instances": 10,
+      "verdict": "OK"
+    },
+    {
+      "test": "2_validate_concurrency",
+      "threads": 10,
+      "success_count": 10,
+      "error_count": 0,
+      "errors": [],
+      "distinct_results": 1,
+      "verdict": "OK"
+    },
+    {
+      "test": "3_live_update_concurrency",
+      "threads": 10,
+      "error_count": 0,
+      "errors": [],
+      "json_corrupted": false,
+      "final_current_task": "CONCURRENT_TEST_AI_9",
+      "verdict": "OK"
+    },
+    {
+      "test": "4_snapshot_vs_update",
+      "snapshot_calls": 1,
+      "error_count": 0,
+      "errors": [],
+      "working_json_corrupted": false,
+      "snapshot_json_valid": true,
+      "verdict": "OK"
+    },
+    {
+      "test": "5_ownership_check",
+      "live_update_signature": "(current_task: 'str' = '', current_goal: 'str' = '', next_action: 'str' = '', current_ai: 'str' = '', editing_files: 'list | None' = None) -> 'None'",
+      "has_explicit_actor_param": false,
+      "note_current_ai_param": true,
+      "finding": "current_ai は最終更新者の自己申告フィールドであり、書き込み主体を強制識別するactorパラメータではない。mocka_write_eventのauthorパラメータと同様の仕組みはWorkingContext.live_update()には伝播していない。",
+      "verdict": "CONFIRMED_GAP"
+    }
+  ],
+  "ng_count": 0,
+  "overall_verdict": "PASS"
+}

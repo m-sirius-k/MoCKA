@@ -34,6 +34,9 @@ class WorkingContext:
     current_ai: str = ""
     session_id: str = ""
 
+    # --- H2-2: Actor-scoped observe(3.2) ---
+    actor_id: str = ""
+
     # --- Verification ---
     verification_status: str = "UNVERIFIED"
 
@@ -153,6 +156,7 @@ class WorkingContext:
             "blockers": self.blockers,
             "current_ai": self.current_ai,
             "session_id": self.session_id,
+            "actor_id": self.actor_id,
             "verification_status": self.verification_status,
             "running_services": self.running_services,
             "open_ports": self.open_ports,
@@ -160,3 +164,66 @@ class WorkingContext:
             "current_database": self.current_database,
             "updated_at": self.updated_at,
         }
+
+    # ──────────────────────────────────────────
+    # H2-2: Actor-scoped観測(3.2) — 他Actorからの直接参照を禁止する。
+    # 既存のload()/live_update()(共有ファイル・互換維持)は変更しない。
+    # ──────────────────────────────────────────
+
+    @classmethod
+    def _scoped_path(cls, actor_id: str) -> Path:
+        return _SNAPSHOT_DIR / f"working_context_{actor_id}.json"
+
+    @classmethod
+    def load_scoped(cls, requesting_actor_id: str, target_actor_id: str) -> "WorkingContext":
+        """actor-scoped観測(3.2)。自身のactor_id以外を要求した場合は拒否する。"""
+        from .access_gate import enforce_observe
+        from .permissions import ACTOR_SCOPED
+
+        enforce_observe(requesting_actor_id, target_actor_id, ACTOR_SCOPED)
+
+        ctx = cls(actor_id=target_actor_id)
+        ctx.updated_at = datetime.now(timezone.utc).isoformat()
+        path = cls._scoped_path(target_actor_id)
+        if path.exists():
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+                for k, v in data.items():
+                    if hasattr(ctx, k) and k not in ("updated_at",):
+                        setattr(ctx, k, v)
+            except Exception:
+                pass
+        return ctx
+
+    @classmethod
+    def live_update_scoped(cls, actor_id: str, current_task: str = "",
+                            current_goal: str = "", next_action: str = "",
+                            editing_files: list | None = None) -> None:
+        """actor-scoped書き込み(2.2 write)。自身のactor_idに紐づくファイルのみ更新する。"""
+        from .access_gate import before_context_update
+
+        before_context_update(actor_id, actor_id)
+
+        path = cls._scoped_path(actor_id)
+        data: dict = {}
+        if path.exists():
+            try:
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except Exception:
+                data = {}
+
+        data["actor_id"] = actor_id
+        if current_task:
+            data["current_task"] = current_task
+        if current_goal:
+            data["current_goal"] = current_goal
+        if next_action:
+            data["next_action"] = next_action
+        if editing_files:
+            data["editing_files"] = editing_files
+        data["updated_at"] = datetime.now(timezone.utc).isoformat()
+
+        _SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+        path.write_text(
+            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
