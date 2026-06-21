@@ -466,10 +466,10 @@
       "category": "制度/アーキテクチャ/パイプライン統合",
       "description": "実態調査で判明：「Caliberで生成→PR-OSで意味化→SEO-OSで到達」という1本化パイプラインは未完成。①Caliber(C:\\Users\\sirok\\MoCKA\\caliber)は品質監視・スコアリング専用(caliber_engine.py等)で記事生成ロジックが存在しない。②PR-OS(MoCKA/workshop/pr-os)は実装済み：router.py/transformer.py/templates.pyで4軸変換(技術/ビジネス/セキュリティ/学術)+6プラットフォームアダプタ(GitHub/WordPress/LinkedIn/X/Dev.to/Substack)。③SEO-OS(planningcaliber/seo)は部分実装：Flask API(port:5200)+SQLite、62+プラットフォーム対応、analytics(PV/CTR/conversion)あり、/api/publishはキュー管理レベル。④PR-OSとSEO-OSは別リポジトリ・別システムで未連携。現状は「PR-OS単独稼働、生成も到達も別系統で繋がっていない」状態。\n\n次にやるべき2点：\nA) Caliberに記事生成機能を追加（または外部生成ツールをCaliberの皮で包む）\nB) MoCKA/pr-os → planningcaliber/seo へのAPI連携（意味化済みコンテンツをSEO-OSのpublishキューに渡す）\n\nsirius-labは別件（公開ポータル）で本パイプラインとは無関係。\nURL: PR-OS=github.com/m-sirius-k/MoCKA(workshop/pr-os) / SEO-OS=github.com/m-sirius-k/planningcaliber(seo)",
       "assigned_to": "Claude（調査・実装）+ きむら博士（判断）",
-      "note": "【正本定義の確定・くろこ最終指示発行済み】(2026-06-21)\n\n正本定義（解釈ブレ防止のため一文固定）：「正本」とは\"実行時にデプロイ・動作しているコード層（PlanningCaliber/workshop）\"のみを指し、MoCKA/workshop配下は設計参照レイヤーとして固定・非実行扱いとする。\n\nくろこ最終指示（PATCH_3）発行済み内容：\n①誤ったパス(MoCKA\\workshop\\pr-os等)への変更は全て破棄、参照のみ扱いに固定\n②正本(PlanningCaliber\\workshop\\pr-os・seo-os)に対し棚卸し4項目を実装前に報告させる：gate/ai_gate.py機能重複確認／scheduler(daemon.py+kernel/scheduler.py)機能重複確認／distribution_router_v2.py出力スキーマ確認／既存publish_queue相当テーブル確認\n③棚卸し報告完了・Claude Chat側での新規実装/既存拡張の切り分け確定まで実装着手禁止\n\n本件の評価：3回連続の実装停止(TODO_154型衝突検出→正本パス誤り発覚→正本定義の解釈ブレ防止)を経た「壊れかけた二重OS構造(MoCKA設計層/PlanningCaliber実行層)の再同期プロトコル」として機能した。\n\n次: くろこの棚卸し報告待ち。報告後に実装方針最終確定。",
+      "note": "【最終設計ルール追加・全判断確定】(2026-06-21、きむら博士)\n\n統合tick設計への核心ルール追加：\n「統合tick内の各ルーティング処理は『副作用のない純粋関数層』と『実行層(DB更新・adapter実行)』を必ず分離し、tick本体に直接外部I/Oロジックを埋め込まないこと」\n理由：PR-OS queue(ファイル)/SEO-OS jobs(DB)/publish_queue(新DB)/wordpress adapter(外部I/O)を全部tickに直接書き込むと「God Tick」化するリスク。\n\n確定構造：\ntick()\n ├─ classify/route（pure logic、副作用なし）\n ├─ publish_queue fetch / jobs fetch / queue.json fetch（読み取りのみ）\n └─ execute layer（DB update / adapter call / event log を分離した別関数群として実行）\n\n【semantic_mapper配置】Claude判断通り確定：PR-OS側に置く。理由：distribution_routerの直後／SEO-OSに依存しない／生成→変換→配信の方向性が自然。\n\n【channel差分問題】確定：今は無視（Phase2で拡張）。理由：今やると設計が膨らむ、まず1本通すのが目的。newsletter/llm_index（distribution_router側のみ）、devto/linkedin/substack（TODO_353側のみ）は現状未対応のまま据え置き、WordPress 1本検証に集中する。\n\n【全体評価確定】scheduler統合判断=◎／OS単一化思想=◎／semantic_mapper分離=◎／distribution_router責務固定=◎。「分散OSの収束設計」として高評価。指示書は構造・実装可能性・境界・拡張性の4点で合格、tick内I/O分離ルール追加で確定発行可能と判断。\n\nくろこへの指示書（統合tick設計＋pure/execute層分離ルール）発行済み。次：くろこからの3点報告（kernel/scheduler.py既存tick構造／semantic_mapper配置確認／channel差分提案）待ち。報告後、publish_queue/platform_status/統合tickルーティングの実装着手へ。",
       "reference_event": "",
       "created_at": "2026-06-21T11:53:45.507984",
-      "updated_at": "2026-06-21T12:21:59.060944"
+      "updated_at": "2026-06-21T12:29:31.297457"
     }
   ],
   "completed": [
@@ -4850,5 +4850,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T03:25:40.113882+00:00"
+  "_snapshot_at": "2026-06-21T03:35:46.043396+00:00"
 }
