@@ -67,9 +67,18 @@ class WordPressAdapter(OutputAdapter):
         base = self.cfg.get("api_endpoint", "").rstrip("/")
         self.api = f"{base}/wp-json/wp/v2"
 
+    def _credentials_available(self) -> bool:
+        """
+        認証情報(Application Password)はconfig.jsonには持たせず、
+        OS環境変数(MOCKA_WP_USER/MOCKA_WP_APP_PASSWORD)からのみ取得する。
+        Adapterは認証情報を知らない設計とし、Git管理事故・盗難リスクを避ける。
+        """
+        return bool(os.environ.get("MOCKA_WP_USER")) and \
+               bool(os.environ.get("MOCKA_WP_APP_PASSWORD"))
+
     def _auth(self) -> dict:
-        u = self.cfg["auth"]["username"]
-        p = self.cfg["auth"]["password"]
+        u = os.environ.get("MOCKA_WP_USER", "")
+        p = os.environ.get("MOCKA_WP_APP_PASSWORD", "")
         token = b64encode(f"{u}:{p}".encode()).decode()
         return {"Authorization": f"Basic {token}", "Content-Type": "application/json"}
 
@@ -172,11 +181,37 @@ class WordPressAdapter(OutputAdapter):
 
         return payload
 
+    def wp_post_exists(self, slug: str) -> dict | None:
+        """
+        slug検索による軽量冪等性チェック。完全冪等(更新・差分検知)は行わない。
+        同じslugの記事が既に存在するかだけを確認し、存在すればその記事情報を返す。
+        """
+        if not slug:
+            return None
+        try:
+            r = requests.get(f"{self.api}/posts",
+                             params={"slug": slug, "per_page": 1},
+                             headers=self._auth(), timeout=10)
+            data = r.json()
+            return data[0] if data else None
+        except Exception:
+            return None
+
     # ── publish ──────────────────────────────────────────
     def publish(self, converted: dict) -> PublishResult:
         ks_id = converted.get("_ks_id", "")
         if not self.cfg.get("enabled"):
             return self._disabled_result(ks_id)
+        if not self._credentials_available():
+            return PublishResult(success=False, adapter_id=self.adapter_id, ks_id=ks_id,
+                                 error="MOCKA_WP_USER/MOCKA_WP_APP_PASSWORD未設定")
+        slug = converted.get("slug", "")
+        existing = self.wp_post_exists(slug)
+        if existing:
+            return PublishResult(success=True, adapter_id=self.adapter_id,
+                                 ks_id=ks_id, post_id=str(existing.get("id")),
+                                 url=existing.get("link"),
+                                 error="skipped: duplicate slug")
         try:
             payload = self._build_payload(converted)
             r = requests.post(f"{self.api}/posts",
@@ -196,6 +231,9 @@ class WordPressAdapter(OutputAdapter):
         ks_id = converted.get("_ks_id", "")
         if not self.cfg.get("enabled"):
             return self._disabled_result(ks_id)
+        if not self._credentials_available():
+            return PublishResult(success=False, adapter_id=self.adapter_id, ks_id=ks_id,
+                                 error="MOCKA_WP_USER/MOCKA_WP_APP_PASSWORD未設定")
         try:
             payload = {**self._build_payload(converted),
                        "status": "future", "date": publish_at}

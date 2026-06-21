@@ -17,6 +17,7 @@ def init():
         policy      TEXT,
         author      TEXT DEFAULT 'きむら博士',
         ai_draft    INTEGER DEFAULT 0,
+        retry_count INTEGER DEFAULT 0,
         created_at  TEXT,
         approved_at TEXT,
         deployed_at TEXT,
@@ -117,8 +118,39 @@ def init():
         detail    TEXT,
         timestamp TEXT
     );
+    CREATE TABLE IF NOT EXISTS publish_queue (
+        id           TEXT PRIMARY KEY,
+        content_id   TEXT NOT NULL,
+        platform     TEXT NOT NULL,
+        payload      TEXT,
+        status       TEXT DEFAULT 'pending',
+        priority     INTEGER DEFAULT 3,
+        source       TEXT DEFAULT 'pr_os',
+        created_at   TEXT,
+        processed_at TEXT,
+        result_url   TEXT,
+        error        TEXT
+    );
+    CREATE TABLE IF NOT EXISTS platform_status (
+        id           TEXT PRIMARY KEY,
+        content_id   TEXT NOT NULL,
+        platform     TEXT NOT NULL,
+        status       TEXT DEFAULT 'pending',
+        result_url   TEXT,
+        error        TEXT,
+        updated_at   TEXT
+    );
     """)
     conn.commit()
+
+    # 既存DB(jobs.db既存ファイル)にはCREATE TABLE IF NOT EXISTSが効かないため
+    # 既存テーブルへのカラム追加はALTER TABLEで個別に対応する
+    try:
+        conn.execute("ALTER TABLE jobs ADD COLUMN retry_count INTEGER DEFAULT 0")
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass  # 既に列が存在する場合
+
     conn.close()
     print("[OK] jobs.db初期化完了")
 

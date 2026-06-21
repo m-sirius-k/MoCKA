@@ -113,7 +113,7 @@
       "id": "TODO_242",
       "title": "PR-OS: WordPress認証情報設定→実動テスト",
       "priority": "高",
-      "status": "未着手"
+      "status": "進行中"
     },
     {
       "id": "TODO_325",
@@ -150,17 +150,11 @@
       "title": "mocka-seal(anchor_update.py)のgit add -A分離設計(未着手)",
       "priority": "中",
       "status": "未着手"
-    },
-    {
-      "id": "TODO_353",
-      "title": "Caliber→PR-OS→SEO-OS パイプライン未統合 — 生成欠落・両OS分断の解消",
-      "priority": "最高",
-      "status": "進行中"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 29,
-  "state_hash": "74e8ba210449b3dbaa01f52c45feb979f4fb917d96b4a4c80932a89d5244f684",
-  "generated_at": "2026-06-21T03:13:52.442707+00:00"
+  "revision": 31,
+  "state_hash": "23cb700b4478b670244113044f645aaddb5739722632c121456f36e0ca31240c",
+  "generated_at": "2026-06-21T05:38:52.444159+00:00"
 }

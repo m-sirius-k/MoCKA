@@ -5,8 +5,7 @@
   "api_endpoint": "",
   "auth": {
     "method": "application_password",
-    "username": "",
-    "password": ""
+    "note": "username/passwordはconfig.jsonに置かない。OS環境変数 MOCKA_WP_USER / MOCKA_WP_APP_PASSWORD から取得する(wp_adapter.py _auth())"
   },
   "defaults": {
     "status": "draft",
