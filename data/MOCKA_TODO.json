@@ -457,6 +457,19 @@
       "note": "",
       "reference_event": "E20260621_369666340131a",
       "created_at": "2026-06-21T11:39:18.317818"
+    },
+    {
+      "id": "TODO_353",
+      "title": "Caliber→PR-OS→SEO-OS パイプライン未統合 — 生成欠落・両OS分断の解消",
+      "status": "進行中",
+      "priority": "最高",
+      "category": "制度/アーキテクチャ/パイプライン統合",
+      "description": "実態調査で判明：「Caliberで生成→PR-OSで意味化→SEO-OSで到達」という1本化パイプラインは未完成。①Caliber(C:\\Users\\sirok\\MoCKA\\caliber)は品質監視・スコアリング専用(caliber_engine.py等)で記事生成ロジックが存在しない。②PR-OS(MoCKA/workshop/pr-os)は実装済み：router.py/transformer.py/templates.pyで4軸変換(技術/ビジネス/セキュリティ/学術)+6プラットフォームアダプタ(GitHub/WordPress/LinkedIn/X/Dev.to/Substack)。③SEO-OS(planningcaliber/seo)は部分実装：Flask API(port:5200)+SQLite、62+プラットフォーム対応、analytics(PV/CTR/conversion)あり、/api/publishはキュー管理レベル。④PR-OSとSEO-OSは別リポジトリ・別システムで未連携。現状は「PR-OS単独稼働、生成も到達も別系統で繋がっていない」状態。\n\n次にやるべき2点：\nA) Caliberに記事生成機能を追加（または外部生成ツールをCaliberの皮で包む）\nB) MoCKA/pr-os → planningcaliber/seo へのAPI連携（意味化済みコンテンツをSEO-OSのpublishキューに渡す）\n\nsirius-labは別件（公開ポータル）で本パイプラインとは無関係。\nURL: PR-OS=github.com/m-sirius-k/MoCKA(workshop/pr-os) / SEO-OS=github.com/m-sirius-k/planningcaliber(seo)",
+      "assigned_to": "Claude（調査・実装）+ きむら博士（判断）",
+      "note": "きむら博士判断確定（2026-06-21）：流れ（PR-OS→SEO-OS連携）を先に作る。Caliber生成機能(A)は後回し。\n\n完成形（循環構造）確定：\nCaliber（生成・評価）→ PR-OS（意味化・編集・戦略変換）→ SEO-OS（配信・到達・計測）→ Caliber（改善）\n\n着手順序：B（PR-OS→SEO-OS API連携）を先行。Aは流れが繋がった後、生成源として追加する位置づけに格下げ。次セッションでB設計に着手。",
+      "reference_event": "",
+      "created_at": "2026-06-21T11:53:45.507984",
+      "updated_at": "2026-06-21T11:54:21.206019"
     }
   ],
   "completed": [
@@ -4837,5 +4850,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T02:45:23.825636+00:00"
+  "_snapshot_at": "2026-06-21T02:55:28.305297+00:00"
 }
