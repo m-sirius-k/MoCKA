@@ -466,10 +466,10 @@
       "category": "制度/アーキテクチャ/パイプライン統合",
       "description": "実態調査で判明：「Caliberで生成→PR-OSで意味化→SEO-OSで到達」という1本化パイプラインは未完成。①Caliber(C:\\Users\\sirok\\MoCKA\\caliber)は品質監視・スコアリング専用(caliber_engine.py等)で記事生成ロジックが存在しない。②PR-OS(MoCKA/workshop/pr-os)は実装済み：router.py/transformer.py/templates.pyで4軸変換(技術/ビジネス/セキュリティ/学術)+6プラットフォームアダプタ(GitHub/WordPress/LinkedIn/X/Dev.to/Substack)。③SEO-OS(planningcaliber/seo)は部分実装：Flask API(port:5200)+SQLite、62+プラットフォーム対応、analytics(PV/CTR/conversion)あり、/api/publishはキュー管理レベル。④PR-OSとSEO-OSは別リポジトリ・別システムで未連携。現状は「PR-OS単独稼働、生成も到達も別系統で繋がっていない」状態。\n\n次にやるべき2点：\nA) Caliberに記事生成機能を追加（または外部生成ツールをCaliberの皮で包む）\nB) MoCKA/pr-os → planningcaliber/seo へのAPI連携（意味化済みコンテンツをSEO-OSのpublishキューに渡す）\n\nsirius-labは別件（公開ポータル）で本パイプラインとは無関係。\nURL: PR-OS=github.com/m-sirius-k/MoCKA(workshop/pr-os) / SEO-OS=github.com/m-sirius-k/planningcaliber(seo)",
       "assigned_to": "Claude（調査・実装）+ きむら博士（判断）",
-      "note": "設計FIX最終確定（2026-06-21）。\n\n【platform_status DB設計】\nCREATE TABLE platform_status (\n    platform TEXT PRIMARY KEY,\n    status TEXT NOT NULL, -- active/inactive\n    updated_at TEXT NOT NULL,\n    updated_by TEXT DEFAULT 'system'\n);\n必須ルール: status変更はAPI経由（後でUI化可能）／コードは分岐しない（if platform==...禁止）／\"読むだけ\"。config方式は不採用（静的・退化と判定）。\n\n【最終構造確定（3層が閉じる）】\nPR-OS: 生成・意味化・stateless\nSEO-OS: 配信・キュー・platform_status参照（stateful唯一責任者）\nPHI-OS: 全イベント記録\n\n【scheduler粒度】Claude提案・分単位ポーリング(固定interval、初期値1分)。理由: ①「非同期scheduler」決定との整合(イベント駆動だと実質即時実行化し矛盾) ②既存MoCKAパターン(sync_watch.py 10分周期/essence_auto_updater.py 5分間隔)と同型で実装コスト低 ③deferred replayも同一loopで「deferred×platform_status=active」を毎周期チェックする単一ロジックで処理可能、別バッチ不要。\n\n【実装フェーズ移行（くろこ着手対象、設計完了・全項目確定）】\nSEO-OS: ①/api/publish実装 ②publish_queueテーブル ③platform_statusテーブル ④scheduler worker(1分interval) ⑤wordpress adapter接続\nPR-OS: transformer.py → schema出力固定化\n\n設計フェーズ完全終了。次は実装指示書作成またはくろこへの直接依頼。",
+      "note": "【重大衝突発見→解決確定】(2026-06-21)\nくろこ実装着手前のCHANGE_START前整合性確認(TODO_154)で致命的衝突を発見：SEO-OS既存app.pyに既に POST /api/publish が実装済み（account_id/media_id必須・publish_jobsテーブル・ダッシュボード手動投稿用）。本指示書のスキーマ(content_id/source/mode・publish_queueテーブル)と全くの別物で、同一パス上書きでダッシュボード機能が破壊される危険があった。くろこが正しく検出・実装停止。\n\nきむら博士判断確定：\n- 既存 POST /api/publish は一切変更しない（人間操作系・publish_jobs・ダッシュボード用、維持）\n- 新規エンドポイントは POST /api/internal/publish に分離（PR-OS自動連携専用・publish_queue・OS系ゲート）\n- 命名理由：「pr-os専用」ではなく「内部OS系ゲート」とすることで将来PR-OS以外のOS系コンポーネントの流入も想定した抽象度を確保\n\n設計原則（核心）：「人間系イベント」と「OS系イベント」は責任主体・スキーマ・キュー構造・監査粒度が全て異なるため、同一エンドポイントでの分岐(if account_id vs content_id)は禁止。APIレイヤー・スキーマ・キューを完全分離する。\n\n最終構造：\nDashboard UI → POST /api/publish(既存・無変更) → publish_jobs\nPR-OS → POST /api/internal/publish(新規) → publish_queue → SEO-OS scheduler → platform adapters\n\nくろこへの実装指示書は本パス変更を反映の上で再発行要。元指示書(3-1〜3-5)のpublish_queue/platform_status/validator/scheduler/WordPress adapter部分はそのまま有効、パスのみ/api/publishから/api/internal/publishに変更。",
       "reference_event": "",
       "created_at": "2026-06-21T11:53:45.507984",
-      "updated_at": "2026-06-21T12:05:09.022505"
+      "updated_at": "2026-06-21T12:14:35.041569"
     }
   ],
   "completed": [
@@ -4850,5 +4850,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T03:05:32.704694+00:00"
+  "_snapshot_at": "2026-06-21T03:15:36.416749+00:00"
 }
