@@ -279,14 +279,15 @@
     {
       "id": "TODO_242",
       "title": "PR-OS: WordPress認証情報設定→実動テスト",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "高",
       "category": "PR-OS",
       "description": "adapters/wordpress/config.jsonにcredentials（URL/user/app_password）を設定。python pros.py submit で実際にmocka.nsjp.orgへ投稿通しテスト。",
       "assigned_to": "Claude",
-      "note": "",
+      "note": "【TODO_353完了を受けてTODO_242着手】(2026-06-21)\n\nTODO_353（Caliber→PR-OS→SEO-OSパイプライン統合）で確定した統合tick・publish_queue・jobs統一実行経路・冪等性チェック・retry機構・note追記化が実装完了し、本TODO_242が「WordPress接続テスト」から「OS外部書き込みの安定性検証」という位置づけに格上げされた。\n\nテストフロー確定：\npublish_queue → semantic_mapper → jobs → _execute_job() → wp_adapter.publish() → WordPress draft post\n\n成功条件4点確定：\n①WordPressにdraft記事が生成される\n②content_idがnoteに残る（出自追跡）\n③再実行してもduplicate skipが動作する（冪等性検証）\n④retry→成功 or failedが記録される（retry機構検証）\n\n事前確認3点（必要な実認証情報、きむら博士から提供待ち）：\n①WordPress API endpoint（https://<domain>/wp-json/wp/v2/posts、REST API有効化確認必須）\n②Application Password（管理者または投稿権限ユーザーで発行）\n③config.json defaults.status = draft で確定（即時公開は事故防止のため不採用）\n\n着手手順：①endpoint確認 ②credentials設定 ③1件publish_queue投入 ④tick実行 ⑤WordPress確認。\n既知のトラブルパターン：404=permalink設定問題／401=Application Password不一致／403=REST API制限orプラグイン干渉。\n\n次：きむら博士からWordPress URL・Application Password発行状況の提供待ち。",
       "reference_event": "",
-      "created_at": "2026-06-06T14:38:03.372496"
+      "created_at": "2026-06-06T14:38:03.372496",
+      "updated_at": "2026-06-21T12:54:20.682884"
     },
     {
       "id": "TODO_244",
@@ -457,19 +458,6 @@
       "note": "",
       "reference_event": "E20260621_369666340131a",
       "created_at": "2026-06-21T11:39:18.317818"
-    },
-    {
-      "id": "TODO_353",
-      "title": "Caliber→PR-OS→SEO-OS パイプライン未統合 — 生成欠落・両OS分断の解消",
-      "status": "一部完了（実装完了・実動テスト待ち）",
-      "priority": "最高",
-      "category": "制度/アーキテクチャ/パイプライン統合",
-      "description": "実態調査で判明：「Caliberで生成→PR-OSで意味化→SEO-OSで到達」という1本化パイプラインは未完成。①Caliber(C:\\Users\\sirok\\MoCKA\\caliber)は品質監視・スコアリング専用(caliber_engine.py等)で記事生成ロジックが存在しない。②PR-OS(MoCKA/workshop/pr-os)は実装済み：router.py/transformer.py/templates.pyで4軸変換(技術/ビジネス/セキュリティ/学術)+6プラットフォームアダプタ(GitHub/WordPress/LinkedIn/X/Dev.to/Substack)。③SEO-OS(planningcaliber/seo)は部分実装：Flask API(port:5200)+SQLite、62+プラットフォーム対応、analytics(PV/CTR/conversion)あり、/api/publishはキュー管理レベル。④PR-OSとSEO-OSは別リポジトリ・別システムで未連携。現状は「PR-OS単独稼働、生成も到達も別系統で繋がっていない」状態。\n\n次にやるべき2点：\nA) Caliberに記事生成機能を追加（または外部生成ツールをCaliberの皮で包む）\nB) MoCKA/pr-os → planningcaliber/seo へのAPI連携（意味化済みコンテンツをSEO-OSのpublishキューに渡す）\n\nsirius-labは別件（公開ポータル）で本パイプラインとは無関係。\nURL: PR-OS=github.com/m-sirius-k/MoCKA(workshop/pr-os) / SEO-OS=github.com/m-sirius-k/planningcaliber(seo)",
-      "assigned_to": "Claude（調査・実装）+ きむら博士（判断）",
-      "note": "【実行経路統一修正完了・最終ゲート確認指示中】(2026-06-21)\n\n修正完了報告（くろこ）：\nconvert_publish_queue_to_job()実装済み(scheduler.py:8-46)。フィールドマッピング: title=追跡用合成文字列／type=\"publish\"固定／status=\"approved\"固定(既存_execute_job()取得条件にそのまま乗る)／priority=転記／pipeline=platform対応表(wordpress→blog_pipelineのみ確定、x/github未対応でPhase2課題)／content=payload／target=platform／note=\"source=publish_queue:{id}\"(監査追跡の鍵)。\nstatus遷移: publish_queue(pending→transferred or留め置き) → jobs(approved→queued→running→done/failed、既存_execute_job()管理)。追跡はnote列文字列検索、専用source_queue_id列追加はPhase2課題として見送り（Phase1は簡素さ優先）。\nUTF-8/構文チェックOK、CHANGE_DONE記録済み。\n\n【TODO_242移行前・最終ゲート確認指示】(きむら博士提示の3点、くろこへ確認指示済み)\n1. wp_adapter.pyの冪等性（同一content_id重複呼び出しで重複記事作成しないか）\n2. 失敗時のretry/failed status遷移の有無\n3. execute_publish_queue_item()の例外吸収（1件の異常が統合tick全体を止めない構造か、God Tick化防止ルールと同様に必須）\n\n3番のみ不十分なら修正必須、1・2番は許容判断の余地ありとして報告待ち。報告後にTODO_242（WordPress実動テスト）移行可否を最終判定。",
-      "reference_event": "",
-      "created_at": "2026-06-21T11:53:45.507984",
-      "updated_at": "2026-06-21T12:43:29.380610"
     }
   ],
   "completed": [
@@ -4843,6 +4831,20 @@
       "created_at": "2026-06-21T08:56:27.796049",
       "updated_at": "2026-06-21T09:06:12.670402",
       "completed_at": "2026-06-21"
+    },
+    {
+      "id": "TODO_353",
+      "title": "Caliber→PR-OS→SEO-OS パイプライン未統合 — 生成欠落・両OS分断の解消",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/アーキテクチャ/パイプライン統合",
+      "description": "実態調査で判明：「Caliberで生成→PR-OSで意味化→SEO-OSで到達」という1本化パイプラインは未完成。①Caliber(C:\\Users\\sirok\\MoCKA\\caliber)は品質監視・スコアリング専用(caliber_engine.py等)で記事生成ロジックが存在しない。②PR-OS(MoCKA/workshop/pr-os)は実装済み：router.py/transformer.py/templates.pyで4軸変換(技術/ビジネス/セキュリティ/学術)+6プラットフォームアダプタ(GitHub/WordPress/LinkedIn/X/Dev.to/Substack)。③SEO-OS(planningcaliber/seo)は部分実装：Flask API(port:5200)+SQLite、62+プラットフォーム対応、analytics(PV/CTR/conversion)あり、/api/publishはキュー管理レベル。④PR-OSとSEO-OSは別リポジトリ・別システムで未連携。現状は「PR-OS単独稼働、生成も到達も別系統で繋がっていない」状態。\n\n次にやるべき2点：\nA) Caliberに記事生成機能を追加（または外部生成ツールをCaliberの皮で包む）\nB) MoCKA/pr-os → planningcaliber/seo へのAPI連携（意味化済みコンテンツをSEO-OSのpublishキューに渡す）\n\nsirius-labは別件（公開ポータル）で本パイプラインとは無関係。\nURL: PR-OS=github.com/m-sirius-k/MoCKA(workshop/pr-os) / SEO-OS=github.com/m-sirius-k/planningcaliber(seo)",
+      "assigned_to": "Claude（調査・実装）+ きむら博士（判断）",
+      "note": "【Phase1運用ルール実装完了・設計フェーズ正式終了】(2026-06-21、きむら博士最終承認)\n\n完了条件4点すべて確認済み：\n①wp_post_exists()実装・publish()内呼び出し確認（POST前slug検索、存在時はsuccess=True/error=\"skipped: duplicate slug\"返却で新規作成回避）\n②retry_count列追加（実DB ALTER TABLE適用済み・列存在確認済み）・_fail()内retry判定（retry_count<1→status='retry'、超過→'failed'）\n③note追記化（_append_note()新設、source=publish_queue:{id}記録が失敗後も\" | error=...\"形式で保持される構造に変更、直接UPDATE note=?上書き廃止）\n④wp_adapter.py/init_db.py/scheduler.py 3ファイルすべてUTF-8検証・py_compile構文チェック・CHANGE_DONE記録済み\n\nきむら博士最終評価：構造OK／安全性OK／冪等性OK／retry OK／ログ追跡OK。\nリスク評価：唯一残る「外部API障害時の遅延蓄積」はPhase2課題として明示的に保留。\n\n【TODO_242実行承認】WordPress credentials設定→実動テストへの移行を正式承認。\n\n【本TODO_353の意義総括】Caliber→PR-OS→SEO-OSパイプライン未統合の発見から開始し、以下を経て「PR-OS→SEO-OS→外部WordPress」までの完全パイプラインが閉じた状態に到達：\n①既存/api/publish衝突検出→/api/internal/publish分離 ②正本パス誤認発覚→PlanningCaliber/workshop確定 ③scheduler複数化の危険性検出→単一tick+pure/execute層分離に修正 ④実行経路二重化リスク検出→publish_queue→jobs統一実行経路に修正 ⑤外部書き込みOSとしての安全性要件（冪等性・retry・監査追跡）を最終ゲートで確定・実装。\n\n設計フェーズはこれで正式終了。次工程はTODO_242（実動検証フェーズ）へ移行。",
+      "reference_event": "",
+      "created_at": "2026-06-21T11:53:45.507984",
+      "updated_at": "2026-06-21T12:50:41.342727",
+      "completed_at": "2026-06-21"
     }
   ],
   "orchestra_handoff": {
@@ -4850,5 +4852,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T03:45:49.541257+00:00"
+  "_snapshot_at": "2026-06-21T03:55:54.103581+00:00"
 }
