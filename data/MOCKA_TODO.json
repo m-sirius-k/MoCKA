@@ -462,15 +462,15 @@
     {
       "id": "TODO_354",
       "title": "拡張機能正本パスレジストリ確立 — Relay/Orchestra/Memory/PHI-OS/MoCKA Bridgeの実体パス確定・複数系統フォルダの整理",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "最高",
       "category": "制度/ガバナンス/正本管理",
       "description": "E20260621_378795484b70f（INCIDENT: Relay新ロジックが作業対象フォルダ取り違えにより本番未反映）を受けた再発防止策。\n\n【背景】\nRelay拡張が最低3系統(C:\\Users\\sirok\\Relay_Project\\ / workshop\\Relay_Project\\extension\\ / workshop\\mini-mocka-series\\relay\\)に分散して存在し、TODO_350 Step1の新ロジック実装が、Chromeが実際にロードしている正本(workshop\\Relay_Project\\extension\\、Chrome Secure Preferencesで確認済み)ではなく無関係な野良フォルダに対して行われていた。MoCKA Bridgeも同様に4系統(1.0.2/1.3/1.3.1/2.4)に分散。\n\n【対応内容】\n①Chrome Secure Preferences由来で確定した正本パス一覧をMOCKA_OVERVIEW.jsonに「extension_canonical_paths」として明記:\n  - Relay: okocleheboabgenhlhliingbpjlkmpcf → workshop\\Relay_Project\\extension\\\n  - Orchestra: lbjcmlkcjgjibcmlaokldopjokajjlgc → workshop\\Orchestra_Project\\extension\\\n  - Memory: nheoiflmnjkgobnahglbbeoihaddacnp → workshop\\memory\\extension\\\n  - PHI OS: bieancjajjieckhmgkmcpigpahodiodb → workshop\\phi-os\\extension\\\n  - MoCKA Bridge: impamkjmlflhhjaabhaenkgmnmpflobd → C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n②各製品で正本以外に発見された野良/重複フォルダの一覧化（削除候補としてマーク。即削除はきむら博士承認後）。\n③ファイル変更前の制度（TODO_154）に「正本パス確認」のチェック項目を追加：拡張機能・複数コピーが作られうる資産の変更前は、必ずMOCKA_OVERVIEW.jsonのextension_canonical_pathsで対象パスを確認することを必須化。\n④PHI-OS/Memory/Orchestraについても、正本フォルダ内のロジックが想定通り最新かを別途確認（今回はRelayのみ実装内容まで検証済み）。",
       "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "きむら博士確定方針（2026-06-21）: \\extension\\を必ず一つ下の階層に置くルールを統一する。製品系(workshop配下のRelay/Orchestra/Memory/PHI-OS)はこのルールに概ね従っているが、MoCKA Bridgeのみ逸脱(現在: C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\直下にmanifest.json等が並ぶ構造)。\n\n【Bridge移行確定】\n移行元: C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n移行先: C:\\Users\\sirok\\MoCKA\\tools\\mocka-bridge\\extension\\\n理由: BridgeはMoCKA本体側のGateであり製品(PlanningCaliber\\workshop)ではないため、workshop配下には置かない。ただし「\\extension\\を一つ下の階層に」という構造ルール自体は本体側Gateにも適用し、全製品+Gateで統一する。\n\n移行手順スクリプト(migrate_mocka_bridge.ps1)をClaudeが作成済み（バックアップ自動作成→New-Item→Move-Item方式）。移行後はchrome://extensionsで再読み込みが必要（unpacked拡張はフォルダパス変更でIDが変わる可能性があるため、新IDが発行されたら依存箇所の確認も必要）。\n\n実行はきむら博士のローカル環境で。完了後はmocka_write_eventで移行完了を記録すること。",
+      "note": "きむら博士確定方針（2026-06-21）: \\extension\\を必ず一つ下の階層に置くルールを統一する。製品系(workshop配下のRelay/Orchestra/Memory/PHI-OS)はこのルールに概ね従っているが、MoCKA Bridgeのみ逸脱(現在: C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\直下にmanifest.json等が並ぶ構造)。\n\n【Bridge移行完了（2026-06-21 16:31〜16:42実施）】\n移行元: C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n移行先: C:\\Users\\sirok\\MoCKA\\tools\\mocka-bridge\\extension\\\nバックアップ: C:\\Users\\sirok\\MoCKA\\data\\backups\\mocka-extension_backup_20260621_163135（git statusはモノレポ全体起因の無関係な未コミット変更8件のみだったため-Forceで実行・mocka-extension配下自体はクリーン）\n新Extension ID: doapadhfedmognoilmjieekfhijeadnf（旧ID impamkjmlflhhjaabhaenkgmnmpflobd は旧パス参照の死骸エントリとしてChrome内に残存・実害なし・手動削除可）\n\n動作監査結果（全項目PASS）:\n- Runtime: Service Worker起動 PASS（has_started_service_worker=True）\n- Runtime: Background Script正常 PASS（エラーログなし）\n- Runtime: Content Script注入成功 PASS（claude.aiでMoCKA Activeパネル確認）\n- 機能: Claude送信が機能する PASS（[MOCKA] 送信ボタンクリック成功）\n- 機能: MoCKA接続が機能する PASS（パネル「正常」緑ドット）\n- 機能: イベント生成が機能する PASS（[MOCKA] DNA注入完了ログ確認）\n- 機能: エラーログなし PASS\n\nMOCKA_OVERVIEW.jsonに「extension_canonical_paths」セクション新設・5拡張の正本パスを記録済み。\n\n【未完了部分（次フェーズ）】\n②各製品の野良/重複フォルダ一覧化・削除候補マーク（未実施）\n③TODO_154への正本パス確認チェック項目追加（未実施）\n④PHI-OS/Memory/Orchestraの正本フォルダ内ロジックが最新かの検証（未実施・Relayのみ別件で検証済みで「旧ロジックのまま」と判明）",
       "reference_event": "E20260621_378795484b70f",
       "created_at": "2026-06-21T15:30:44.542475",
-      "updated_at": "2026-06-21T15:42:37.599274"
+      "updated_at": "2026-06-21T16:44:04.782899"
     }
   ],
   "completed": [
@@ -4865,5 +4865,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T07:39:43.624031+00:00"
+  "_snapshot_at": "2026-06-21T07:49:47.031553+00:00"
 }
