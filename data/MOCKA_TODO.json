@@ -421,6 +421,18 @@
       "note": "H2-1/H2-2は確定済み(完了扱い)。H2-3のみ未着手。次回セッション冒頭で着手するかどうかを判断すること。",
       "reference_event": "E20260621_6350980699329",
       "created_at": "2026-06-21T09:27:33.453365"
+    },
+    {
+      "id": "TODO_PHASE_H2_1_2_IMPLEMENTATION",
+      "title": "[完了] H2-1/H2-2実装 — permissions/access_gate/control_gate新設、3保証実証済み",
+      "status": "完了",
+      "priority": "高",
+      "category": "HAB/PHL/H2実装",
+      "description": "H2 PARTIAL SPEC v1.0(GPT監査反映版)に基づく実装完了。permissions.py/access_gate.py/control_gate.py新設、working_context.py/context_snapshot.pyへのscoped機能追記。3つの保証(Snapshot非再現・control実行不能・ExecutionContext完全分離)を実証試験で確認済み。既存Phase H0実証(hab_concurrency_audit.py)の再実行でも既存単一AI動作への影響ゼロを確認。",
+      "assigned_to": "Claude Code（実装完了）",
+      "note": "完了。CHANGE_DONE: E20260621_569214997ea24 / mocka_seal sha256: 8dc4c368...\n\n次工程: TODO_PHASE_H2_3_TRUST_DEFINITION（H2-3: Trust/Enforcement意味定義）。control_gate.pyは封印済みインターフェースとして存在するが、いつ・どの条件で発火するかはH2-3未確定のまま。次回セッションでH2-3着手を判断すること。",
+      "reference_event": "E20260621_569214997ea24",
+      "created_at": "2026-06-21T10:16:34.317002"
     }
   ],
   "completed": [
@@ -4801,5 +4813,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T01:14:48.319685+00:00"
+  "_snapshot_at": "2026-06-21T01:24:52.437504+00:00"
 }
