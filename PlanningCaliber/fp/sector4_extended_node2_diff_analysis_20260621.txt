@@ -1,0 +1,192 @@
+S4-Extended: mocka-node2 未コミット差分の内容識別 (2026-06-21)
+対象: C:\Users\sirok\mocka-archive\mocka-node2
+目的: 修正判断ではなく分類判断のための材料収集。読み取り専用のみ実施（git stash含め変更操作は一切未実施）。
+
+=== Step A-1: git status (生出力) ===
+
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   runtime/main_loop.py
+	modified:   runtime/mutation_engine.py
+	modified:   verify_chain.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	apply_dsl.py
+	audit_guard.py
+	best_replay.py
+	causal_recorder.py
+	cross_context_engine.py
+	crossover_dsl.py
+	decision_recorder.py
+	docs/architecture/mocka_ecosystem_map.svg
+	docs/images/.$mocka_overview.svg.bkp
+	docs/images/mocka_governance_layer_perpetual_mechanism.svg
+	evaluator.py
+	evolution_loop.bat
+	extract_rules.py
+	fix_ledger.py
+	fusion_boost.py
+	generation_manager.py
+	goal_engine.py
+	goal_evolution_engine.py
+	hash_ledger_writer.py
+	innovation_engine.py
+	learn_structure.py
+	learn_weights.py
+	mutate_dsl.py
+	network/
+	ops/sync_contracts.ps1
+	policy_engine.py
+	prune_experiments.py
+	rebuild_chain.py
+	research/memory/
+	restart_mocka.bat
+	reward_learning.py
+	run_mocka.bat
+	runtime/branch_engine.py
+	runtime/decision_mode_engine.py
+	runtime/goal_engine.py
+	runtime/mode_transition_engine.py
+	runtime/reason_engine.py
+	select_top_experiments.py
+	viewer.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+=== Step A-2: git diff --stat (生出力) ===
+
+ runtime/main_loop.py       | 132 +++++++++++++++------------------------------
+ runtime/mutation_engine.py |  68 +++++++++++------------
+ verify_chain.py            |  56 ++++++++++++-------
+ 3 files changed, 115 insertions(+), 141 deletions(-)
+
+=== Step A-3: git ls-files --others --exclude-standard (生出力、全件) ===
+
+apply_dsl.py
+audit_guard.py
+best_replay.py
+causal_recorder.py
+cross_context_engine.py
+crossover_dsl.py
+decision_recorder.py
+docs/architecture/mocka_ecosystem_map.svg
+docs/images/.$mocka_overview.svg.bkp
+docs/images/mocka_governance_layer_perpetual_mechanism.svg
+evaluator.py
+evolution_loop.bat
+extract_rules.py
+fix_ledger.py
+fusion_boost.py
+generation_manager.py
+goal_engine.py
+goal_evolution_engine.py
+hash_ledger_writer.py
+innovation_engine.py
+learn_structure.py
+learn_weights.py
+mutate_dsl.py
+network/node1_out/ (35個のタイムスタンプ付きjsonファイル、ログ的データのため個別列挙省略)
+ops/sync_contracts.ps1
+policy_engine.py
+prune_experiments.py
+rebuild_chain.py
+research/memory/experiments.jsonl
+restart_mocka.bat
+reward_learning.py
+run_mocka.bat
+runtime/branch_engine.py
+runtime/decision_mode_engine.py
+runtime/goal_engine.py
+runtime/mode_transition_engine.py
+runtime/reason_engine.py
+select_top_experiments.py
+viewer.py
+
+合計: untracked 39エントリ（network/配下35個のjsonログ + research/memory/experiments.jsonlを個別カウントせず1グループとした場合の表示。git status表示上は"network/"と"research/memory/"がディレクトリ単位でまとめられている）。
+
+=== Step A-4: 重要ファイル抽出 ===
+
+【明示指定】
+- evolution_loop.bat（依頼により指定）
+- audit_guard.py（依頼により指定）
+
+【diff --stat上、変更行数が大きいもの（trackedファイル3件、全件が対象）】
+- runtime/main_loop.py: 132行変更（+54/-100相当の構成変更）
+- runtime/mutation_engine.py: 68行変更
+- verify_chain.py: 56行変更
+
+→ 上記5ファイルを深掘り対象として選定。
+
+=== Step A-5: 重要ファイルの内容確認結果 ===
+
+--- 1. evolution_loop.bat ---
+MoCKA本体側: **完全に同一内容で存在**（C:\Users\sirok\MoCKA\evolution_loop.bat、563byte、diffで差分ゼロを確認）。
+内容: `cd /d C:\Users\sirok\MoCKA` の後、18個のPythonスクリプトを順次実行する無限ループ（evolution_loop）。
+重要な発見: このバッチが参照する18スクリプトのうち、**14個がMoCKA本体の想定パス（直下/runtime/）に現存しない**（後述の参照先チェック結果）。つまりこのbatファイル自体は本体側にも存在するが、**本体側で実行すると半数以上のステップが失敗する状態**になっている可能性が高い（本調査では実行確認は行っていない、ファイル存在確認のみ）。
+→ **node2のコピーは本体と完全一致＝統合済み（重複）**。但しbat自体が参照する周辺スクリプト群の整理状況については別途要確認（後述）。
+
+--- 2. audit_guard.py ---
+MoCKA本体側: `C:\Users\sirok\MoCKA\scripts\ledger\audit_guard.py` として**存在**（直下ではなくscripts/ledger/に整理移動されている）。
+内容比較: **完全一致**（UTF-8出力ラッパーの4行（sys/io関連のpreamble）が本体側に追加されている以外、ロジック本体（safe_load/recover/verify_chain/main）は1文字も変わらず同一）。
+→ **既に統合済み（パス移動＋UTF-8対応の軽微な追記のみ）＝重複残骸**。危険な未統合資産ではない。
+
+--- 3. runtime/main_loop.py ---
+MoCKA本体側: 存在（最終更新2026-03-26）。
+内容比較: node2の「新版（未コミットdiffの+側）」とほぼ同一のアーキテクチャ（intent/goal/plan/action/state/evaluation パイプライン）。但し本体側は**さらに先に進んでいる**：
+  - `import sys` が追加されている
+  - `from civilization_bridge import push_to_civilization, pull_from_civilization, run_civilization_step` が追加されている（node2の新版には無い）
+→ **本体はnode2の新版より後の世代＝既に統合済み、かつ本体側がさらに発展している**。node2側の変更内容に本体未到達の要素は無い。
+
+--- 4. runtime/mutation_engine.py ---
+MoCKA本体側: 存在（最終更新2026-06-18、つい最近更新）。
+内容比較: ロジック本体（load_state/generate_mutations/save、STATE_PATH/OUTPUT_PATHの定義含む）は**完全一致**。本体側は先頭にUTF-8出力ラッパー（4行）が追加されているのみ。
+→ **完全に統合済み（軽微なラッパー追記のみ）＝重複残骸**。
+
+--- 5. verify_chain.py ---
+MoCKA本体側: 存在（最終更新2026-05-15）。
+内容比較: **大きく異なる＝別物**。本体側は`from schema.schema import verify_ledger`を呼ぶ薄いラッパー実装（スクリプト自身の場所からMoCKAルートを自動解決する方式）に置き換わっており、node2の新版（hash_event/load関数を持つ独自実装）とも、node2の旧版（runtime.hash_utils/schema_validator/env_guardを使う実装）とも異なる、**第三の独立した実装に進化**している。
+→ **node2側の実装（新旧どちらも）は本体の現行アーキテクチャから見て陳腐化した別系統＝単なる実験残骸**（本体に統合されたわけではなく、本体が別方向に進化したため取り残された）。
+
+=== 追加確認: evolution_loop.bat参照先18スクリプトの本体側存在状況 ===
+
+依頼範囲を超えない範囲で、evolution_loop.batの分類精度を上げるため、参照先の存在確認のみ実施（内容深掘りはせず存在/位置確認のみ）：
+
+| 参照スクリプト | 本体側の状態 |
+|---|---|
+| runtime/event_ingestor.py | 存在（runtime/、2026-06-18更新） |
+| runtime/dsl_guard.py | 存在（runtime/、2026-06-18更新） |
+| runtime/ensure_actions.py | 存在（runtime/、2026-06-18更新） |
+| runtime/action_selector.py | 存在（runtime/、2026-06-18更新） |
+| audit_guard.py | **scripts/ledger/に移動済み**（上記で確認） |
+| decision_recorder.py | **scripts/ledger/に移動済み**、内容はUTF-8ラッパー追加のみで実質同一 |
+| causal_recorder.py | **scripts/ledger/に移動済み**（内容比較は範囲外のため未実施） |
+| policy_engine.py | **core_kernel/governance/engines/に移動**、但し内容は**全く別物**（docstring付きの新しいモジュール化実装に置き換え） |
+| goal_evolution_engine.py | **docs/archive/に存在**、node2版と**完全一致（diff差分ゼロ）** — 本体側自身がこれを「アーカイブ」ディレクトリに分類済み |
+| cross_context_engine.py / crossover_dsl.py / mutate_dsl.py / reward_learning.py / fusion_boost.py / learn_structure.py / apply_dsl.py / evaluator.py / generation_manager.py | いずれも**docs/archive/に存在**（本体側も同じファイル名でarchive扱い） |
+| innovation_engine.py | scripts/に存在（archive扱いではない） |
+
+→ evolution_loop.batが参照するスクリプト群は、本体側で「直下に残るもの」「scripts/やcore_kernel/に再編されたもの」「docs/archive/に格納されたもの（=本体自身もアーカイブ済みと認識）」の3パターンに分かれている。直下を前提にしたbatファイルをそのまま今の本体で実行すると、docs/archive/配下に移動されたものについては相対パスが解決できず失敗する可能性が高い（実行確認は範囲外のため未検証）。
+
+=== 全体総括 ===
+
+mocka-node2全体としての分類：**「既に本体へ統合済み（重複残骸）」に最も近い**。
+
+根拠：
+1. 深掘りした5件の重要ファイルのうち4件（evolution_loop.bat, audit_guard.py, runtime/main_loop.py, runtime/mutation_engine.py）は、本体側に**完全一致または軽微なラッパー追加のみの差分**で既に存在している。
+2. 残り1件（verify_chain.py）も「統合されていない新機能」ではなく、**本体が別アーキテクチャへ進化した結果取り残された旧実装**であり、「危険な未統合資産」には該当しない。
+3. 追加確認した9件の参照スクリプト中、6件（goal_evolution_engine, cross_context_engine, crossover_dsl, reward_learning, fusion_boost, learn_structure, apply_dsl, evaluator, generation_manager）は本体の`docs/archive/`に内容完全一致で存在 — **本体側のプロジェクト管理者自身が既にこれらを「アーカイブ済み」と分類している**ことを意味し、node2の存在はこの判断と矛盾しない。
+4. 「危険な未統合資産」に該当する要素は、今回深掘りした範囲では**発見されなかった**。
+
+但し以下は完全な「死骸」と断定するにはやや留保が必要：
+- `policy_engine.py`は本体側で全く異なる実装に置き換わっており、node2版の古いロジックに本体未収録の着想が含まれている可能性はゼロではない（が、本体側の新実装の方がdocstring付きで明らかに設計が洗練されており、後退とは考えにくい）。
+- evolution_loop.bat自体は本体に存在するが、参照先の一部がdocs/archive/に移動済みのため、**現状のまま実行すると一部ステップが失敗する「壊れた現役スクリプト」になっている可能性**がある。これはmocka-node2固有の問題ではなく、**MoCKA本体側の整理（archive移動）とbatファイルの参照パスが同期していない**という、本体側に存在する別種の課題として留意すべき。
+
+結論として、mocka-node2の42件の差分は「危険な未統合資産」ではなく、安心して「もう案ずる必要のない死骸（統合済み残骸＋陳腐化した実験コード）」に分類してよいと判断する。但し上記の「本体側batファイル参照パス不整合」は、本調査の範囲（node2の分類）を超える別件の懸念事項として記録しておく（新規TODO化は依頼によりここでは行わない）。
+
+=== 方法論注記 ===
+git status/git diff/git diff --stat/git ls-files --others --exclude-standard/diff（読み取り専用unixコマンド）のみ使用。git add/commit/stashは一切実行していない。深掘りは依頼範囲（evolution_loop.bat, audit_guard.py, diff行数上位3件のtrackedファイル）に加え、A-4で参照されたbatファイルの依存先確認まで補助的に実施したが、これも全て読み取り専用の存在確認・diff比較に限定した。

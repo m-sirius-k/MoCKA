@@ -37,10 +37,10 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 | Gate経由率 71.7% (<95%, Gate確立2026-06-16以降のみ集計) (total=899 gate=71.7% [real-time=578/buffered=67] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 | Gate経由率 73.7% (<95%, Gate確立2026-06-16以降のみ集計) (total=967 gate=73.7% [real-time=635/buffered=78] buffer_pending=0)"
   },
   "auth_key_drive": {
-    "ok": true,
-    "detail": "認証キードライブ(A:) 接続済み"
+    "ok": false,
+    "detail": "認証キードライブ(A:)が接続されていません。挿入してください"
   }
 }

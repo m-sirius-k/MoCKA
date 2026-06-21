@@ -1,0 +1,116 @@
+S3: mocka-joints Canonical Survey (2026-06-21)
+Target: C:\Users\sirok\mocka-joints
+Read-only investigation. No delete/move/rename/git add/git commit performed.
+
+=== 1. Junction/Symlink有無 ===
+
+mocka-joints 自体: 通常フォルダ（LinkType=空, Target=空）。LastWriteTime 2026-03-26 18:32:05。
+
+直下4サブフォルダ全て通常フォルダ（コピー）であり、Junction/Symlinkは一切確認されなかった：
+| サブフォルダ | LinkType | LastWriteTime |
+|---|---|---|
+| mocka_extension | 通常 | 2026-03-11 15:31:20 |
+| mocka-ecosystem | 通常 | 2026-03-06 11:02:46 |
+| mocka-infield | 通常 | 2026-03-20 10:58:26 |
+| mocka-pythonbridge | 通常 | 2026-06-11 15:22:08 |
+
+=== 2. Git有無 ===
+
+- mocka-joints 自体: .git 無し（単なる集約用フォルダ、自身はリポジトリではない）
+- mocka_extension: .git 無し
+- mocka-ecosystem: トップレベルに.git無し。但し【内部にさらに入れ子リポジトリが多数存在】（詳細は項目3参照）
+- mocka-infield: .git 無し
+- mocka-pythonbridge: **.git 有り**（ローカルのみ、origin未設定）
+  - branch: main
+  - 最新commit: e059de0a8306742f0f0bd72e09edca98e6e4ecf1 / 2026-06-11 15:41:22 +0900 / "EV-20260611-0389: SECURITY: harden top-level .gitignore for secrets"
+  - working tree: クリーン（差分無し）
+
+=== mocka-ecosystem内の入れ子リポジトリ（重要発見） ===
+
+mocka-ecosystem配下に、S2で確認済みの「ホーム直下mocka-*」と**同一のGitHub origin**を持つ独立クローンが複数存在することを確認：
+
+| 入れ子フォルダ | origin | 最新commit (このコピー内) | 最新commit日時 | アイテム数 |
+|---|---|---|---|---|
+| mocka-civilization | github.com/m-sirius-k/mocka-civilization | 7a8dcfa8 "MoCKA Control Center finalize" | 2026-03-13 18:13:47 | 789 |
+| mocka-core-private | github.com/m-sirius-k/mocka-core-private | a05da8ab "Phase17 reconstruction baseline" | 2026-03-14 10:24:53 | 443 |
+| mocka-external-brain | github.com/m-sirius-k/mocka-external-brain | f8e08047 "Phase17 reconstruction baseline" | 2026-03-14 10:24:56 | 272 |
+| mocka-transparency | github.com/m-sirius-k/mocka-transparency | 6ea4cd9a "Phase17 reconstruction baseline" | 2026-03-14 10:25:00 | 392 |
+| MoCKA-KNOWLEDGE-GATE | github.com/m-sirius-k/MoCKA-KNOWLEDGE-GATE | 60a26672 "Phase17 reconstruction baseline" | 2026-03-14 10:24:58 | 1416 |
+| MoCKA | github.com/m-sirius-k/MoCKA | 5b4a5d2c "MoCKA Control Center finalize" | 2026-03-13 18:13:34 | 1600 |
+
+他に m-sirius-k（345アイテム、独自.git）、_canon（50アイテム、.git無し、ツール/ドキュメント集）、tools（3アイテム）も同階層に存在。
+
+=== 3. 内包しているmocka-*一覧 ===
+
+mocka-joints 直下（4件）:
+- mocka_extension（S2リストの対象外の名称）
+- mocka-ecosystem（S2リストの対象外の名称、但し内部にS2対象が入れ子）
+- **mocka-infield**（S2の高優先度リストに名称一致。ホーム直下にも同名フォルダが独立して存在）
+- mocka-pythonbridge（S2リストの対象外の名称）
+
+mocka-ecosystem配下（入れ子、6件がS2の高優先度リストと名称一致）:
+- mocka-civilization ✓ S2一致
+- mocka-core-private ✓ S2一致
+- mocka-external-brain ✓ S2一致
+- mocka-transparency ✓ S2一致
+- MoCKA-KNOWLEDGE-GATE ✓ S2の"mocka-knowledge-gate"と一致（大文字小文字違い）
+- MoCKA ※S2の"MoCKA本体"に相当する名称（MoCKA本体そのもののクローンと思われる）
+
+=== 4. 元repoとの対応関係 ===
+
+| mocka-joints内パス | ホーム直下mocka-*との関係 | MoCKA本体配下との関係 |
+|---|---|---|
+| mocka-joints/mocka-infield | ホーム直下 C:\Users\sirok\mocka-infield と同名。中身の構成（breaker/ledger/retry/tools等のフォルダ名）はほぼ一致するが、本調査では深い内容比較は実施せず（指示の範囲外）。タイムスタンプはmocka-joints側が2026-03-20、ホーム直下側は2026-04-17が最新ファイルで、ホーム直下の方が新しい可能性 | MoCKA本体に同名フォルダなし（S2で確認済み） |
+| mocka-ecosystem/mocka-civilization 等5件 | ホーム直下の同名スタンドアロンrepo（mocka-civilization等）と**同一GitHub origin**を持つ別クローン。但しcommitハッシュが異なり、ホーム直下側の最新commit（2026-03-29付近、または2026-06-17のseal）より古い2026-03-13〜14時点の"Phase17 reconstruction baseline"で固定されている | MoCKA本体配下には同名フォルダなし（S2で確認済み） |
+| mocka-ecosystem/MoCKA | ホーム直下のmocka-*系列とは別（これはMoCKA本体自体のクローン）。MoCKA本体は別途C:\Users\sirok\MoCKA に存在し巨大（6088+アイテム）。このクローンは1600アイテムのみで、2026-03-13時点の古いスナップショット | MoCKA本体そのものの過去スナップショットに相当 |
+| mocka_extension, mocka-pythonbridge | ホーム直下に同名フォルダなし。独立した存在 | MoCKA本体配下にmocka-extension（ハイフン違い）あり。直接比較は本調査範囲外 |
+
+=== 5. コピーか参照か ===
+
+- 全て**物理コピー**であることを確認。Junction/Symlinkは検出されず、各フォルダは独立したファイルシステム上の実体を持つ。
+- mocka-ecosystem内の入れ子repoは、ホーム直下の同名repoとは**git originは同一だがcommitハッシュが異なる＝分岐済みの古いスナップショット**（"Phase17 reconstruction baseline"のタグ付け文言から、過去の特定フェーズで意図的にチェックアウト・固定されたものと推測される）。
+- 完全一致コピーではなく、**部分一致（分岐済み・古いバージョンで停止）**と判定。
+
+=== 6. 更新履歴・時系列関係 ===
+
+- mocka-ecosystem内の入れ子repo群の最終コミット日時はいずれも**2026-03-13〜03-14**に集中。
+- S2で発見した「2026-06-17 08:54〜08:57の一括seal」コミット群（mocka-core-private, mocka-docs, mocka-outfield, mocka-runtime）とは**全く異なる、約3ヶ月前の独立したイベント**。
+- 時系列まとめ：
+  1. 2026-03-13〜14: mocka-ecosystem内の各repoが"Phase17 reconstruction baseline"等でこの時点のスナップショットとして固定（おそらく検証・復旧作業の一環）
+  2. 2026-03-26: mocka-joints自体が作成/最終更新（4サブフォルダを束ねる形）
+  3. 2026-06-11: mocka-pythonbridgeのみ単独で更新（"SECURITY: harden top-level .gitignore"）— 他の3サブフォルダより約3ヶ月後の活動
+  4. 2026-06-17 08:54〜08:57: ホーム直下の別repo群で一括seal（mocka-joints内のコピーには反映されていない、無関係のタイムライン）
+
+=== 7. 利用痕跡 ===
+
+【使われていた痕跡が見られるもの】
+- mocka-ecosystem: watcher.log, watcher_poll.log, _chaos_tmp, session_20260304_093728.log 等の実行痕跡あり。apply_docs.ps1 / ecosystem_integrity_check.ps1 / mocka_doctor.ps1 等の保守ツール群が同居しており、「エコシステム全体の整合性チェック・ドキュメント適用」のための作業場として実際に使われていたことを示す。
+- mocka-infield: retry_worker.log, breaker_state.json.bak, dream_progress_hash_cache.json 等、稼働中システムのランタイムログ・状態ファイルが存在。
+- mocka-pythonbridge: .venv_mocka（Python仮想環境）が構築済みで、2026-06-11に最新コミットがあり、直近まで活動していた形跡。copilot.png/gemini.png等のスクリーンショット、AIブリッジ関連スクリプトが多数。
+
+【長期間手つかずに見える兆候】
+- mocka_extension: わずか2ファイル（background.js, manifest.json）のみで他に活動痕跡なし。2026-03-11以降更新無し。
+- mocka-ecosystem内の入れ子repo群: 2026-03-14以降、一切更新されていない（git log上も同日時で停止）。
+- mocka-joints自体の更新日時（2026-03-26）から本日（2026-06-21）まで約3ヶ月、mocka-pythonbridgeを除く3サブフォルダは完全に静止状態。
+
+=== 仮分類 ===
+
+| サブフォルダ | 仮分類 | 根拠 |
+|---|---|---|
+| mocka-joints（全体） | 不明（複合的な集約フォルダ） | 単一の用途ではなく、異なる時期・異なる目的の4つの独立物を束ねた「寄せ集め」的な構造 |
+| mocka_extension | 残骸 | 2ファイルのみ、3ヶ月以上更新無し、用途を示す痕跡なし |
+| mocka-ecosystem | 実験用途（過去の検証作業の産物） | "ecosystem_integrity_check.ps1"等のツール名、watcher/chaosログの存在から、2026-03時点でエコシステム全体の整合性検証・修復を行うための作業ディレクトリだったと推測。現在は活動停止 |
+| mocka-ecosystem内の各mocka-*クローン | 残骸（検証用の古いスナップショット） | originは正規だが、commitが2026-03-13/14で固定され3ヶ月以上更新無し。ホーム直下の同名repoの方が新しく、Canonical候補ではない |
+| mocka-infield | 不明（独立用途の可能性） | ホーム直下にも同名フォルダがあり関係性未確定。ランタイムログ等の活動痕跡はあるが、ホーム直下版とどちらが「現役」かは本調査の範囲内では確定できず |
+| mocka-pythonbridge | 独立用途（現役の可能性） | 直近（2026-06-11）まで活動、独自gitリポジトリ、venv構築済み。ホーム直下に同名の対応物が無く、これ単体で完結した独立ツールと見られる |
+
+=== 特記事項 ===
+
+1. mocka-pythonbridgeの.git内に本日17:50時点のファイル更新が見られたが、find -newermtでの再確認の結果、該当する実ファイルは検出されず、working tree自体もクリーン（差分無し）。本調査中に実行した`git log -1`/`git remote -v`（いずれも読み取り専用コマンド）がreflogやpacked-refs関連のメタデータに副次的なタイムスタンプ変化を与えた可能性が高く、内容変更は無いと判断。
+
+2. mocka-ecosystem内の「MoCKA」フォルダ（MoCKA本体の古いクローン）は1600アイテムと、本体C:\Users\sirok\MoCKA（6088+アイテム、現役）と比べて規模が大幅に小さく、2026-03-13時点の古いスナップショットであることは明確。これも「同名・規模差・更新停止」という、PlanningCaliber（TODO_355）・MOCKA_TODO.json（TODO_357）・C:\Users\sirok\runtime（S2特記事項6）と同型のCanonical Integrityパターンの一例として観察された。新規TODO化は本調査の指示外のため見送り。
+
+3. アクセス不能・破損ファイルは検出されなかった。
+
+=== 方法論注記 ===
+全てGet-ChildItem/git log/git remote -v/find等の読み取り専用コマンドのみ使用。ファイルの作成・変更・削除・移動・rename、git add/commitは一切実行していない。深い内容比較（バイト単位diff等）は指示範囲外のため実施せず、構造・メタデータ・git履歴レベルの比較に限定した。

@@ -1,0 +1,115 @@
+S4: mocka-archive Canonical Survey — アーカイブ層として機能しているかの検証 (2026-06-21)
+対象: C:\Users\sirok\mocka-archive
+Read-only investigation. No delete/move/rename/git add/git commit performed.
+
+=== 1. 全体構造の把握 ===
+
+直下サブフォルダ12件:
+| サブフォルダ | アイテム数 | 最終更新 |
+|---|---|---|
+| tools_backup_20260215 | 10 | 2026-02-15 15:27 |
+| ops_mocka | 5 | 2026-02-19 10:33 |
+| verify_test | 1323 | 2026-02-20 15:25 |
+| _mocka_phase22_checkout | 520 | 2026-02-26 12:19 |
+| phase2c_verify | 12 | 2026-03-01 12:33 |
+| MoCKA_phase22_anchored | 524 | 2026-03-13 17:22 |
+| MoCKA_phase22_iso | 523 | 2026-03-13 17:22 |
+| mocka_verify_tmp | 663 | 2026-03-13 18:13 |
+| MoCKA_clean_test__FROZEN | 2846 | 2026-03-21 10:08 |
+| MoCKA_node2 | 334 | 2026-03-23 10:37 |
+| mocka-node2 | 6423 | **2026-03-24 18:47（working tree dirty、後述）** |
+| mocka-organized | 606 | 2026-03-24 18:49 |
+
+直下loose файイル: 約80件（.py/.ps1/.csv/.txt/.md/.json/.svg等）。
+
+【命名規則の一貫性】
+一貫性は**無い**。以下のように複数の異なる命名規則が混在：
+- 日付付き: `tools_backup_20260215`（唯一の明示的な日付付き命名）
+- フェーズ番号付き: `_mocka_phase22_checkout`, `MoCKA_phase22_anchored`, `MoCKA_phase22_iso`, `phase2c_verify`
+- 目的ラベル付き（状態を示す形容詞）: `MoCKA_clean_test__FROZEN`（"FROZEN"を明示）, `mocka_verify_tmp`（"tmp"）, `verify_test`
+- 連番/亜種名: `MoCKA_node2`, `mocka-node2`（大文字小文字・アンダースコア/ハイフンが異なる**ほぼ同名の別フォルダが2つ存在**）
+- 用途不明の単純名: `ops_mocka`, `mocka-organized`
+
+→ 日付・バージョン・目的のいずれかで統一されたルールは存在せず、**作業者がその場で思いついた名前をつけた場当たり的な命名**と判断される。
+
+=== 2. 「アーカイブとして機能しているか」の判定 ===
+
+【名前から時点/内容が判別可能なもの】
+- `tools_backup_20260215`: 日付明示、内容も"backup"と明示 → 判別可能
+- `_mocka_phase22_checkout`, `MoCKA_phase22_anchored`, `MoCKA_phase22_iso`: "phase22"という制作フェーズ名から大まかな時点は推測可能（ただし正確な日付は別途確認が必要）→ 部分的に判別可能
+- `MoCKA_clean_test__FROZEN`: "FROZEN"=凍結済みという状態は分かるが、何のテストかは名前のみでは不明 → 部分的
+- `phase2c_verify`: フェーズ名から推測可能
+
+【名前だけでは判別不能なもの（12件中、約6件）】
+- `MoCKA_node2` / `mocka-node2`: "node2"が何を指すか名前のみでは不明。2つの類似名フォルダの関係（一方が他方の派生か、全く別物か）も名前からは判別不可能
+- `mocka_verify_tmp`: "tmp"はあるが何の検証の一時データか不明
+- `mocka-organized`: "organized"が示す整理整頓の基準・対象が不明
+- `ops_mocka`: 用途ラベルとして抽象的すぎる
+- `verify_test`: 上記`phase2c_verify`等との違いが名前だけでは不明
+
+→ **12件中6件（半数）が「名前だけでは何のスナップショットか判別不能」**。アーカイブとして「いつの・何の」記録かを後から追跡できる体系にはなっていない。
+
+【重複の疑い】
+- `MoCKA_phase22_anchored`（524アイテム）と`MoCKA_phase22_iso`（523アイテム）はアイテム数がほぼ同一（1件差）で、最終更新時刻も同日同時刻帯（2026-03-13 17:22:31秒台 vs 17:22:33秒台、2秒差）。**ほぼ同時に生成された、内容が極めて近い2つのスナップショット**である可能性が高い（深い内容diffは本調査範囲外のため未実施、件数・タイムスタンプの近似のみで指摘）。
+- `MoCKA_node2`（334アイテム）と`mocka-node2`（6423アイテム）は名前は似ているが規模が19倍も異なり、同一内容のコピーではなく**別物**と判断される（小さい方は何らかの抜粋/部分コピーの可能性）。
+- 直下loose filesに`mocka_file_inventory.csv` / `mocka_file_inventory_clean.csv` / `mocka_filtered_inventory.csv` / `mocka_full_inventory.csv`、`mocka_py_inventory.txt` / `mocka_py_inventory_clean.txt`、`mocka_secret_inventory.txt` / `mocka_secret_inventory_clean.txt`等、**「無印」版と「_clean」版がペアで多数存在** — 同じ調査を複数回繰り返したか、フィルタ処理の前後版を両方残した形跡。命名規則自体に「過去の作業ログをそのまま積み重ねる」傾向が見られ、整理されたアーカイブというより**作業ディレクトリの延長**という性格が強い。
+
+=== 3. Git有無（重大な矛盾の検出） ===
+
+mocka-archive自体: .git無し。
+
+直下12サブフォルダ中、**3件にgitリポジトリが存在**（アーカイブとしては異例）：
+
+| フォルダ | origin | 最新commit | working tree状態 |
+|---|---|---|---|
+| MoCKA_clean_test__FROZEN | `C:\Users\sirok\MoCKA`（**ローカルパス**） | c08e03e0 "MoCKA Control Center update" / 2026-03-13 17:22:31 | クリーン |
+| mocka_verify_tmp | `https://github.com/nsjpkimura-del/MoCKA.git`（**別GitHubアカウント**、m-sirius-kではない） | 2e893ee6 "MoCKA Control Center update" / 2026-03-13 17:22:34 | クリーン |
+| mocka-node2 | `git@github.com:m-sirius-k/MoCKA.git`（SSH） | 6d82ccdf "update: refine mocka_overview.svg" / 2026-03-22 11:12:36 | **⚠️ 未コミット差分42件（M3件+??39件）** |
+
+加えて、`mocka-organized/public`（入れ子）にも独自`.git`あり：
+- origin: `https://github.com/あなたのID/mocka-public.git` — **これはプレースホルダー文字列がそのまま残っている**（"あなたのID"は明らかにテンプレート初期値で、実アカウント名に置換されないまま放置されたリポジトリ設定）。
+
+【矛盾の核心】
+- `mocka-node2`は「アーカイブ」フォルダの中にあるにもかかわらず、**42件の未コミット変更（編集中ファイル3件＋新規未追跡ファイル39件、evolution_loop.bat/audit_guard.py/decision_recorder.py等の実装ファイル群）を抱えた、明らかに作業途中のリポジトリ**。これは「凍結された記録」ではなく「作業を中断したまま放置された開発ブランチ」であり、アーカイブの定義（変更されない記録）と真っ向から矛盾する。
+- 同じ"MoCKA Control Center update"というコミットメッセージ・同じコミット時刻（17:22:31〜34秒、3秒以内）が`MoCKA_clean_test__FROZEN`と`mocka_verify_tmp`の両方に存在 — **同一の操作（おそらく一括クローン/バッチ処理）から生成された姉妹フォルダ**であることがほぼ確実。
+- originが「ローカルパス」「別アカウント(nsjpkimura-del)」「正規アカウント(m-sirius-k)」「未設定プレースホルダー」の4パターンに分かれており、**どれが正規の作業用クローンで、どれが検証用の使い捨てクローンか、origin情報だけでは判別不能**。
+
+=== 4. 最終更新日時の分布 ===
+
+全12サブフォルダの最終更新は **2026-02-15〜2026-03-24** の約5週間の範囲に集中しており、それ以降（2026-03-25〜現在2026-06-21の約3ヶ月間）は**完全に更新が止まっている**。
+
+例外: `mocka-node2`のみ、ファイル自体のタイムスタンプは2026-03-24が最新だが、前述のgit未コミット差分（39件の新規untrackedファイル）の内容が示すのは「2026-03-24の時点で作業が中断され、以後一切触れられていない」状態であり、"最近も更新されている"わけではなく**"中断されたまま固まっている"**という性質。
+
+→ 結論: 全件「一度保存されてから完全に止まっている」に分類され、"アーカイブのはずなのに最近も更新されている"フォルダは0件。但しmocka-node2は「正しくコミットされずに止まった」という意味で特異。
+
+=== 5. S2/S3で発見した既存の謎フォルダとの対応関係 ===
+
+【S3のmocka-ecosystem（2026-03 Phase17スナップショット群）との重複確認】
+- 名前の直接重複は無い（mocka-archiveの12フォルダ名とmocka-ecosystem内の6リポジトリ名は一致しない）。
+- 但し**「MoCKA本体の独立クローンを複数の場所に分散して保持する」という構造的パターンは同一**：
+  - S3: `mocka-joints/mocka-ecosystem/MoCKA`（origin: github.com/m-sirius-k/MoCKA, 2026-03-13時点, 1600アイテム）
+  - S4: `mocka-archive/MoCKA_clean_test__FROZEN`（origin: ローカルパスC:\Users\sirok\MoCKA, 2026-03-13時点, 2846アイテム）
+  - S4: `mocka-archive/mocka-node2` / `MoCKA_node2`（origin: github.com/m-sirius-k/MoCKA, 2026-03-22〜24時点）
+  - これら**少なくとも4つの異なるMoCKA本体クローンが、2026-03中旬〜下旬の異なる時点で、異なる場所（mocka-joints, mocka-archive）に作成されていたことが判明**。いずれも現在のMoCKA本体（C:\Users\sirok\MoCKA、6088+アイテム、活動継続中）とは無関係に放置されている。
+- `mocka-organized/public`はS2のホーム直下`mocka-public`（github.com/m-sirius-k/mocka-public、活動中、最新commit 2026-05-16）とは別物（originにプレースホルダーが残る未完成クローン、2026-03-24時点で停止）。
+
+【総合観察】
+S2〜S4を通じて、「MoCKA」「mocka-public」等の中核プロジェクトについて、ホーム直下・mocka-joints・mocka-archiveの3箇所にまたがり、合計5件以上の独立した（同期されていない）古いクローン/スナップショットが散在していることが確認された。これは個別の事故ではなく、**プロジェクト全体で繰り返されている同型のパターン（Canonical Integrityの欠如）**である可能性が高い。
+
+=== 総合判定: アーカイブ層として機能しているか ===
+
+**機能していない、と判定する根拠**：
+1. 命名規則の一貫性が無く、半数のフォルダが名前だけでは内容を判別できない。
+2. 「無印/_clean」のような重複ファイルが多数存在し、過去の作業ログがそのまま積み重ねられている（整理されていない）。
+3. アーカイブの中に**未コミット差分を抱えた現役同然のgitリポジトリ（mocka-node2）**が混在しており、「変更されない記録」という性質を満たしていない。
+4. origin情報がローカルパス・複数の異なるGitHubアカウント・未設定プレースホルダーの間でバラバラであり、どれが正規のスナップショットかを後から判定する手段が無い。
+5. 全体として「いつか整理しようと思って退避させた作業フォルダの集積所」という性格が強く、本来のアーカイブ（時点が明示され、内容が固定され、検索・参照可能な記録）としての機能は果たしていない。
+
+=== 特記事項 ===
+
+- アクセス不能なフォルダ・ファイルは検出されなかった。
+- `mocka-node2`内の未コミットファイル群（evolution_loop.bat, audit_guard.py, decision_recorder.py, fusion_boost.py等）は、現在のMoCKA本体に同名・類似名の機能が存在するかどうかは本調査では確認していない（深い内容比較は範囲外）。
+- `verify_test`フォルダ内に`.venv`（Python仮想環境、cryptography 46.0.5含む）が含まれ、1323アイテムのかなりの部分を占めている。
+
+=== 方法論注記 ===
+Get-ChildItem/find/git log/git remote -v/git status等の読み取り専用コマンドのみ使用。ファイル内容の深いdiff比較は実施せず、件数・タイムスタンプ・git履歴・命名規則レベルの比較に限定した。削除・移動・rename・git add/commitは一切実行していない。

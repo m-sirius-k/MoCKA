@@ -156,23 +156,11 @@
       "title": "拡張機能正本パスレジストリ確立 — Relay/Orchestra/Memory/PHI-OS/MoCKA Bridgeの実体パス確定・複数系統フォルダの整理",
       "priority": "最高",
       "status": "進行中"
-    },
-    {
-      "id": "TODO_356",
-      "title": "GL7 False Positive on Quoted Git Paths — 非ASCIIファイル名によるGovernance Gate誤検知（書き込み系MCPツール全般ブロック）",
-      "priority": "最高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_357",
-      "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
-      "priority": "最高",
-      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 35,
-  "state_hash": "42e1147544e99d4c78b0a75b0ff481421b1be7dd0e919212fa18caa785c300c2",
-  "generated_at": "2026-06-21T22:26:40.368797+00:00"
+  "revision": 33,
+  "state_hash": "f4b78f728cb9c9b974d625212713a04baeeca33388844431c6abc9d1676a0cd5",
+  "generated_at": "2026-06-21T07:58:53.443770+00:00"
 }

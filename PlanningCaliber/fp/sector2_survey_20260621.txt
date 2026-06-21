@@ -1,0 +1,64 @@
+S2: User Home Root MoCKA-related Folders Survey (2026-06-21)
+Read-only investigation. No delete/move/rename/git add/git commit performed.
+
+=== Summary Table ===
+
+| Path | LinkType | Git | Latest Update | MoCKA Counterpart | Tentative Classification |
+|---|---|---|---|---|---|
+| C:\Users\sirok\mocka-archive | Normal dir | None | 2026-03-26 18:33 | Not found | Archive / dead-stock candidate (13,870 items, no git, "FROZEN"/"backup" named subdirs) |
+| C:\Users\sirok\mocka-civilization | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-civilization) | 2026-06-17 08:52 (.git ref update; last commit 2026-03-29) | Not found | Canonical candidate (independent GitHub-tracked product repo) |
+| C:\Users\sirok\mocka-core-private | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-core-private) | 2026-06-17 08:57 (last commit 2026-06-17, "seal:") | Not found | Canonical candidate (active, recent seal commit) |
+| C:\Users\sirok\mocka-docs | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-docs) | 2026-06-17 09:00 (last commit 2026-06-17, "seal:") | Exists, 2 items only | Canonical candidate; MoCKA-side counterpart is a near-empty stub |
+| C:\Users\sirok\mocka-external-brain | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-external-brain) | 2026-06-17 08:52 (.git ref; last commit 2026-03-29) | Not found | Canonical candidate (independent repo) |
+| C:\Users\sirok\mocka-infield | Normal dir | None | 2026-04-17 16:41 | Not found | Unknown / possibly experimental (very small: 6 items total) |
+| C:\Users\sirok\mocka-joints | Normal dir | None (subfolders contain own .git) | 2026-06-11 15:41 | Not found | Unknown — appears to be a container/junction-like grouping of other mocka-* repos (mocka_extension, mocka-ecosystem, mocka-infield, mocka-pythonbridge); 13,191 items total |
+| C:\Users\sirok\mocka-knowledge-gate | Normal dir | Yes (origin: github.com/m-sirius-k/MoCKA-KNOWLEDGE-GATE) | 2026-06-17 08:52 (.git ref; last commit 2026-03-29) | Not found | Canonical candidate (large, 3,650 items, deployment-related files present: Dockerfile, vercel.json) |
+| C:\Users\sirok\mocka-outfield | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-outfield) | 2026-06-17 08:56 (last commit 2026-06-17, "seal:") | Not found | Canonical candidate (active) |
+| C:\Users\sirok\mocka-public | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-public) | 2026-06-17 08:52 (last commit 2026-05-16) | Not found | Canonical candidate (public-facing docs/papers repo) |
+| C:\Users\sirok\mocka-runtime | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-runtime) | 2026-06-17 08:56 (last commit 2026-06-17, "seal:") | Exists (C:\Users\sirok\MoCKA\runtime, different name) | Canonical candidate; note MoCKA\runtime is NOT this repo, just same word, see "runtime" row below |
+| C:\Users\sirok\mocka-transparency | Normal dir | Yes (origin: github.com/m-sirius-k/mocka-transparency) | 2026-06-17 08:52 (last commit 2026-03-29) | Not found | Canonical candidate |
+| C:\Users\sirok\Relay_Project | Normal dir | None | 2026-06-19 19:17 | Not found | Active working copy / experiment (Chrome extension source, .bak files present, no git — same naming pattern risk as PlanningCaliber A/B case) |
+| Orchestra_Project (home root) | N/A | N/A | N/A | N/A | NOT FOUND at home root (see note below) |
+| Memory / mocka-memory (home root) | N/A | N/A | N/A | N/A | NOT FOUND at home root |
+| PHI-OS / phi-os (home root) | N/A | N/A | N/A | N/A | NOT FOUND at home root (nested copies exist elsewhere, see note) |
+| MoCKA Bridge / mocka-bridge / mocka-extension (home root) | N/A | N/A | N/A | N/A | NOT FOUND at home root (nested copies exist under MoCKA\, see note) |
+| C:\Users\sirok\runtime | Normal dir | None | 2026-04-05 13:06 | Exists, 609 items | Backup/derelict — home-root "runtime" almost empty (1 item: "record" subfolder) vs MoCKA\runtime with 609 items; likely a stale leftover, not the active runtime |
+| C:\Users\sirok\shared | Normal dir | None | 2026-05-20 14:44 | Not found | Experiment/fragment (4 small .js files, no git) |
+| C:\Users\sirok\schemas | Normal dir | None | (empty) | Exists, 1 item | Empty shell / dead — 0 items |
+| C:\Users\sirok\Tracing | Normal dir | None | 2024-09-04 08:47 (pre-existing OS trace data) | Not found | Unrelated to MoCKA — Windows ETW trace log (WPPMedia), pre-dates MoCKA project entirely |
+| C:\Users\sirok\ops | Normal dir | None | 2026-02-19 10:15 | Exists, 4 items | Small fragment, possibly superseded by MoCKA\ops |
+| C:\Users\sirok\keys | Normal dir | None | (empty) | Exists, 5 items | Empty shell / dead — 0 items |
+| C:\Users\sirok\db | Normal dir | None | 2026-05-28 17:50 | Not found | Small utility script fragment (4 .py/.sql files) |
+| C:\Users\sirok\inventory | Normal dir | None | 2026-02-21 13:06 | Not found | One-off inventory snapshot dump (2 txt files), likely dead/historical |
+| C:\Users\sirok\audit | Normal dir | None | 2026-02-22 18:24 | Exists, 54 items | Small fragment (1 tsv file) vs much larger MoCKA\audit; likely superseded |
+
+=== Notes on items NOT found at home root ===
+
+- Orchestra_Project: Not present directly under C:\Users\sirok\. Not located in this survey's scope (S2 was restricted to home-root level; no recursive deep search performed per "深追いしない" instruction).
+- Memory / mocka-memory: Not present at home root under any checked name variant.
+- PHI-OS / phi-os: Not present at home root. Nested occurrences observed incidentally during this survey (not deeply investigated, listed for reference only):
+  - C:\Users\sirok\MoCKA\phi_os
+  - C:\Users\sirok\planningcaliber\workshop\phi-os
+  - C:\Users\sirok\m-sirius-k\sirius-lab\phi-os
+- MoCKA Bridge / mocka-bridge / mocka-extension: Not present at home root. Nested occurrences observed incidentally:
+  - C:\Users\sirok\MoCKA\mocka-extension
+  - C:\Users\sirok\MoCKA\tools\mocka-bridge (this is the same untracked new directory flagged as "new_directory_detected" trigger candidate in the GL7 investigation context — for reference only, not re-investigated here)
+
+=== Special remarks (items not fitting cleanly into the table) ===
+
+1. mocka-archive: contains explicitly "frozen"/"backup"/"tmp" named subdirectories (MoCKA_clean_test__FROZEN, mocka_verify_tmp, tools_backup_20260215, verify_test) — strong indicator this is itself a graveyard of past archival attempts, not a single coherent backup.
+
+2. mocka-joints: depth-1 shows it contains other mocka-* project copies as subdirectories (mocka_extension, mocka-ecosystem, mocka-infield, mocka-pythonbridge) — possible duplicate/nested copy of mocka-infield (which also exists independently at home root). Relationship between standalone mocka-infield and mocka-joints\mocka-infield not verified (out of scope for this survey's depth limit).
+
+3. Multiple folders share the identical latest commit message "seal: 55480c46484f5113fb7813090e51e0eb857d189626444d025099f9a6e48b63ee" at slightly different timestamps within minutes of each other on 2026-06-17 (mocka-core-private, mocka-docs, mocka-outfield, mocka-runtime): suggests a single batch/bulk operation (script-driven multi-repo seal commit) ran across these repos around 08:54-08:57 that day.
+
+4. Several folders are completely empty (0 items): C:\Users\sirok\schemas, C:\Users\sirok\keys — both have non-empty counterparts under MoCKA\, suggesting these home-root folders may be vestigial/leftover shells from a prior structure.
+
+5. C:\Users\sirok\Tracing predates the MoCKA project by a wide margin (2024 vs MoCKA's 2026 activity) and contains Windows ETW (Event Tracing for Windows) media trace logs — this folder is almost certainly unrelated to MoCKA despite matching the requested name list, and is flagged here as a likely false-positive inclusion in the target list.
+
+6. C:\Users\sirok\runtime vs C:\Users\sirok\MoCKA\runtime show a striking scale mismatch (1 vs 609 items) similar in pattern to the PlanningCaliber A/B case (TODO_355) and the MOCKA_TODO.json C:/A: case (TODO_357) — same-name, wildly different scale, no clear sync mechanism identified. Flagging as a possible 4th instance of the "Canonical Integrity" pattern, for awareness only — no new TODO filed per this survey's instructions (fact-finding only).
+
+7. Access errors: none encountered. All listed folders were readable without permission issues.
+
+=== Methodology note ===
+All folder sizes ("TotalItemsRecursive") were obtained via Get-ChildItem -Recurse (read-only). Git info via `git log -1` and `git remote -v` only (no fetch/pull performed, so remote-tracking freshness is not verified against actual GitHub state). Depth-1 listings only, per instruction not to dig deeper. No files were created, modified, deleted, moved, or renamed; no git add/commit was executed on any of the surveyed folders.

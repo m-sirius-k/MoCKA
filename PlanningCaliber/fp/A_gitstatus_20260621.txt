@@ -1,0 +1,31 @@
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add/rm <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	deleted:    workshop/mini-mocka-series/README.md
+	deleted:    workshop/mini-mocka-series/core-sdk/src/bridge/inter-product.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/dom/extractor.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/dom/watcher.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/index.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/settings/prefs.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/storage/export.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/storage/session.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/storage/store.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/summary/generator.js
+	deleted:    workshop/mini-mocka-series/core-sdk/src/summary/injector.js
+	deleted:    workshop/mini-mocka-series/docs/CORE_SDK_SPEC.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.claude/
+	data/
+	mocka-share/
+	seo/
+	src/
+	workshop/cyber_benchmark/
+	workshop/essence_recover/
+	workshop/needle_eye_project/
+
+no changes added to commit (use "git add" and/or "git commit -a")

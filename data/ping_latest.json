@@ -3,11 +3,11 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=[2026-06-21] CHANGE_DONE: tick",
+  "A": "Z-Axis=0.819 / INCIDENT=[2026-06-18] 技術的にもですが\n\n1）　mock",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "[2026-06-21] CHANGE_DONE: tick例外吸収修正(poison message対策・1件異常でtick全体停止しない構造へ) 対象: seo-os/kernel/scheduler.py\\n変更理由: MOCKA_INSTRUCTION_GATE_CHECK 3番(例外吸収)で要修正と判定。修正前はrun_once()/_execute_job()/_exec\n[2026-06-21] CHANGE_START: H2-3 Trust Boundary Spec v0.3パッチ着手(表現修正のみ) 対象: phi_os/context/control_gate.py(SemanticPacketのクラスdocstringのみ)\\n変更理由: H2-3 Trust Boundary Spec v0.3(GPT(R01)指摘・v0.2からの追加\n[2026-06-21] CHANGE_START: H2 PARTIAL SPEC v1.0作成（GPT FROZEN SPECからH2-3混入分を除外） H2 PARTIAL SPEC v1.0作成。GPT(R01)が提示した「H2 FROZEN SPEC v1.0」の内容を検証した結果、第4節(TrustおよびEnforcement)が、同じ応答内で「H2-3は止めた方がいい」\n[2026-06-18] 技術的にもですが\n1）　mockaの知名度を上げる　2）　この全体システムII強もを持たせる　\n3）　企業担当者　経営者　Aiファームに　使ってみたらどうなるだろ？って考えさせる　vasAI\n4）　これあると　簡単にできるようになる忘れなくなる　商材としての紹介　mini\nこの観点から最適解を出して！MoCKAに「今すぐ」組み込むべきTop 4（Ti",
-    "PHILOSOPHY": "[2026-06-21] これは止めて正解。ここは完全に「設計以前の整合性問題」になってる。\n\n結論からいく。\n\n■ 結論（正本）\n\n👉 正本は C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\ 配下の実装\n\n具体的には：\n\nPR-OS → PlanningCaliber/workshop/pr-os/\n\nSEO-OS → Planning\n[2026-06-20] DECISION_RECORD: Event Runtime本体接続(P3) DANGER監査 — event_id重複事故との関連判明・次回P3指示書への歯止め確定 【DANGER監査結果 / Lessons Learned】COMMAND CENTER matcher_resultが「Event Runtime本体接続」というテキストに対しverdict\n[2026-06-20] CHANGE_DONE: 監査をGate経由/許可Direct/違反Directの4分類に拡張(Phase5-1) 対象: phi_os/event_gate.py /api/gate/audit, interface/dashboard.py _gate_audit(), index.html renderGateAudit\\n内容: 従来のnon_gat\n[2026-06-20] CHANGE_START: Phase5-1 Gate Enforcement完全実装着手 対象: db_helper.write_event()直接呼び出し全モジュール棚卸し+Gate Policy新設+全Direct Write統一\\n変更理由: Gate経由率が現状約64%でDoD(95%以上)未達。制度変更ではなく制度どおりの実装を完成させる。\\n変\n[2026-06-20] 私の推奨\n順序としては\nWorkingContext Live Update接続\nSnapshot Runtime有効化",
-    "OPERATION": "[2026-06-20] ## 調査結果：GPTとクロードの見解差分の実態\n\n確定事実を再検証した結果、**GPTの「致命的」という指摘は半分だけ正しい**ことが分かりました。Memory層を分解すると、停止している部分と稼働している部分が混在しています。\n\n### 実証データ\n\n```\n\ndata/mocka_events.db: 60MB, 最終更新 2026-06-21 06:\n[2026-06-20] [hint] 内部記録と外部表示の役割を分けて考える 内部記録と外部表示の役割を分けて考える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] BIMとトレーサビリティを連携させると視覚化と検索性が向上する BIMとトレーサビリティを連携させると視覚化と検索性が向上する source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 専門用語に簡単な補足を加える 専門用語に簡単な補足を加える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 仮説思考を促す 仮説思考を促す source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 小さな成功体験を積ませる 小さな成功体験を積ませる source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] ## 調査結果：GPTとクロードの見解差分の実態\n確定事実を再検証した結果、**GPTの「致命的」という指摘は半分だけ正しい**ことが分かりました。Memory層を分解すると、停止している部分と稼働している部分が混在しています。"
+    "INCIDENT": "[2026-06-18] 技術的にもですが\n\n1）　mockaの知名度を上げる　2）　この全体システムII強もを持たせる　\n\n3）　企業担当者　経営者　Aiファームに　使ってみたらどうなるだろ？って考えさせる　vasAI\n\n4）　これあると　簡単にできるようになる忘れなくなる　商材としての紹介　mini\n\nこの観点から最適解を出して！MoCKAに「今すぐ」組み込むべきTop 4（Ti\n[2026-06-15] Claude+くろこでやってるときは問題なかったと思うが gpt+くろこ　などで　直接指示したとき　もすくは　くろこ単独で行ったことが原因ではないか？ そこで問題になるのが　全てのAiが　書き換えした事実が　共通eventで管理されてない　index.HTMLなど それが　やはり　　mocka　vasAi　　minimocka　の　管理部門が　共通＝同調＝　\n[2026-06-21] そんな小さな問題は　なにをごちゃごちゃ\n\nこれを見て衝撃を受けろ！ N/A そんな小さな問題は　なにをごちゃごちゃ\n\nこれを見て衝撃を受けろ！|who_role=|event_source=buffered|orig_channel=chat\n[2026-06-21] CHANGE_DONE: tick例外吸収修正(poison message対策・1件異常でtick全体停止しない構造へ) 対象: seo-os/kernel/scheduler.py\\n変更理由: MOCKA_INSTRUCTION_GATE_CHECK 3番(例外吸収)で要修正と判定。修正前はrun_once()/_execute_job()/_exec\n[2026-06-21] CHANGE_START: H2-3 Trust Boundary Spec v0.3パッチ着手(表現修正のみ) 対象: phi_os/context/control_gate.py(SemanticPacketのクラスdocstringのみ)\\n変更理由: H2-3 Trust Boundary Spec v0.3(GPT(R01)指摘・v0.2からの追加\n[2026-06-21] CHANGE_START: H2 PARTIAL SPEC v1.0作成（GPT FROZEN SPECからH2-3混入分を除外） H2 PARTIAL SPEC v1.0作成。GPT(R01)が提示した「H2 FROZEN SPEC v1.0」の内容を検証した結果、第4節(TrustおよびEnforcement)が、同じ応答内で「H2-3は止めた方がいい」\n[2026-06-18] 技術的にもですが\n1）　mockaの知名度を上げる　2）　この全体システムII強もを持たせる　",
+    "PHILOSOPHY": "[2026-06-21] 監査評価：Phase B設計仕様書レビュー\n\n完了報告を確認しました。\n\n私の評価では、今回の成果物は「Phase Bの骨格設計」という当初目的を満たしており、現時点で過不足のない停止点になっています。\n\n第1節 総合判定\n\n判定は\n\nPASS\n\nです。\n\n理由は単純で、\n\n今回作成した仕様書が\n\n調査結果\n\n↓\n\n分類軸\n\n↓\n\nレコード構造\n\n↓\n\n運用\n[2026-06-21] R01監査判断\n\n私なら、この時点では manifest.json を即座に 2.0.0 へ上げません。\n\n理由は制度的に「証拠不足」だからです。\n\n現在判明している事実\n\n確定事項\n\nPHI-OS\n\nmanifest.json = 1.0.0\n\ncontent.jsコメント = v2.0\n\nconsole.log = v2.0\n\n未確定事項\n\nv2.0とは\n[2026-06-21] ## 引き継ぎパケット [Relay Free]\n\n**いつ**: 2026-06-21 14:45 (0ターン)\n\n**何を**: _219: token fallback時の非会話テキスト混入対策\n\n**TODO/次のアクション**:\n\n- [LB_001] _219: token fallback時の非会話テキスト混入対策\n\n- [LB_002] _f\n[2026-06-21] これは止めて正解。ここは完全に「設計以前の整合性問題」になってる。\n結論からいく。\n■ 結論（正本）\n👉 正本は C:\\Users\\sirok\\MoCKA\\PlanningCaliber\\workshop\\ 配下の実装\n具体的には：",
+    "OPERATION": "[2026-06-20] [hint] 断定を避けつつ丁寧に説明する 断定を避けつつ丁寧に説明する source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 導入を短く、結論を先に、箇条書きにする構成指令 導入を短く、結論を先に、箇条書きにする構成指令 source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 文章を編集する際の文法・指令一覧を作る 文章を編集する際の文法・指令一覧を作る source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] ## 調査結果：GPTとクロードの見解差分の実態\n確定事実を再検証した結果、**GPTの「致命的」という指摘は半分だけ正しい**ことが分かりました。Memory層を分解すると、停止している部分と稼働している部分が混在しています。\n### 実証データ\n```\ndata/mocka_events.db: 60MB, 最終更新 2026-06-21 06:"
   },
   "essence_updated": true,
   "ngrok_online": false,
@@ -25,20 +25,20 @@
       "priority": "最高"
     },
     {
-      "id": "TODO_207",
-      "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
-      "priority": "高"
+      "id": "TODO_354",
+      "title": "拡張機能正本パスレジストリ確立 — Relay/Orchestra/Memory/PHI-OS/MoCKA Bridgeの実体パス確定・複数系統フォルダの整理",
+      "priority": "最高"
     },
     {
-      "id": "TODO_206",
-      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
-      "priority": "高"
+      "id": "TODO_356",
+      "title": "GL7 False Positive on Quoted Git Paths — 非ASCIIファイル名によるGovernance Gate誤検知（書き込み系MCPツール全般ブロック）",
+      "priority": "最高"
     },
     {
-      "id": "TODO_205",
-      "title": "TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）",
-      "priority": "高"
+      "id": "TODO_357",
+      "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
+      "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-21T14:39:04.374716"
+  "generated_at": "2026-06-22T07:26:49.891171"
 }

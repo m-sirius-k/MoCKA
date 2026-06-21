@@ -1,0 +1,13 @@
+ workshop/mini-mocka-series/README.md               |  85 ------
+ .../core-sdk/src/bridge/inter-product.js           |  50 ----
+ .../core-sdk/src/dom/extractor.js                  |  42 ---
+ .../mini-mocka-series/core-sdk/src/dom/watcher.js  |  97 -------
+ workshop/mini-mocka-series/core-sdk/src/index.js   |  17 --
+ .../core-sdk/src/settings/prefs.js                 |  47 ----
+ .../core-sdk/src/storage/export.js                 |  57 ----
+ .../core-sdk/src/storage/session.js                | 111 --------
+ .../core-sdk/src/storage/store.js                  |  64 -----
+ .../core-sdk/src/summary/generator.js              | 153 -----------
+ .../core-sdk/src/summary/injector.js               |  91 -------
+ workshop/mini-mocka-series/docs/CORE_SDK_SPEC.md   | 287 ---------------------
+ 12 files changed, 1101 deletions(-)
