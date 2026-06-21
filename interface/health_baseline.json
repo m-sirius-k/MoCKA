@@ -25,7 +25,7 @@
   },
   "mcp_schema_hash": {
     "ok": false,
-    "detail": "ハッシュ変更検出!\n                          前回: b59f57c80c2b9d5c\n                          今回: 62354945567d1bbb"
+    "detail": "ハッシュ変更検出!\n                          前回: b59f57c80c2b9d5c\n                          今回: b2a1102efc6aac0c"
   },
   "relay_dom_selector": {
     "ok": false,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 | Gate経由率 71.3% (<95%, Gate確立2026-06-16以降のみ集計) (total=884 gate=71.3% [real-time=564/buffered=66] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 | Gate経由率 71.7% (<95%, Gate確立2026-06-16以降のみ集計) (total=899 gate=71.7% [real-time=578/buffered=67] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,

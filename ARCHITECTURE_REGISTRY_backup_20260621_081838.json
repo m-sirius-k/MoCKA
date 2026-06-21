@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-06-17",
+  "projects": {
+    "MoCKA": {
+      "repository": "github.com/m-sirius-k/MoCKA",
+      "command_center": "localhost:5000",
+      "allowed_modules": [
+        "AI運用", "制度", "PHI-OS", "Memory", "Event",
+        "Governance", "監査", "オーケストレーション", "Caliber"
+      ],
+      "forbidden_modules": [
+        "SEO", "Distribution", "Publishing", "Marketing",
+        "SNS", "Keyword", "OGP", "Schema.org", "Analytics"
+      ]
+    },
+    "PlanningCaliber": {
+      "repository": "github.com/m-sirius-k/planningcaliber",
+      "command_center": "localhost:8750",
+      "allowed_modules": [
+        "SEO", "Distribution OS", "Publishing", "Marketing",
+        "SNS", "Media", "Keyword", "OGP", "Schema.org",
+        "Analytics", "Campaign", "Content Optimization"
+      ],
+      "forbidden_modules": [
+        "MoCKA Core", "PHI-OS", "Event Ledger", "Governance"
+      ]
+    }
+  },
+  "gate_rule": "実装前に対象プロジェクトのallowed_modulesを確認すること。forbidden_modulesに該当する場合は実装を停止し確認を求めること。"
+}

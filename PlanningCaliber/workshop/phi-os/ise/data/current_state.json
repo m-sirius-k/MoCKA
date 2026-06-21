@@ -138,11 +138,29 @@
       "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
       "priority": "最高",
       "status": "進行中"
+    },
+    {
+      "id": "TODO_HAB_5LAYER_DESIGN_PENDING",
+      "title": "HAB/PlanningCaliber/Caliber/Runtime 5層構造案の精査(未着手)",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_MOCKA_SEAL_GIT_ADD_A_SEPARATION",
+      "title": "mocka-seal(anchor_update.py)のgit add -A分離設計(未着手)",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_353",
+      "title": "Caliber→PR-OS→SEO-OS パイプライン未統合 — 生成欠落・両OS分断の解消",
+      "priority": "最高",
+      "status": "進行中"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 25,
-  "state_hash": "f36461b6f3a8cac70aa36aa8ab723e7f4037008d4adc9f2179f3100737141f45",
-  "generated_at": "2026-06-20T22:53:52.754650+00:00"
+  "revision": 29,
+  "state_hash": "74e8ba210449b3dbaa01f52c45feb979f4fb917d96b4a4c80932a89d5244f684",
+  "generated_at": "2026-06-21T03:13:52.442707+00:00"
 }

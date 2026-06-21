@@ -6,24 +6,90 @@
       "repository": "github.com/m-sirius-k/MoCKA",
       "command_center": "localhost:5000",
       "allowed_modules": [
-        "AI運用", "制度", "PHI-OS", "Memory", "Event",
-        "Governance", "監査", "オーケストレーション", "Caliber"
+        "AI運用",
+        "制度",
+        "PHI-OS",
+        "Memory",
+        "Event",
+        "Governance",
+        "監査",
+        "オーケストレーション",
+        "Caliber"
       ],
       "forbidden_modules": [
-        "SEO", "Distribution", "Publishing", "Marketing",
-        "SNS", "Keyword", "OGP", "Schema.org", "Analytics"
-      ]
+        "SEO",
+        "Distribution",
+        "Publishing",
+        "Marketing",
+        "SNS",
+        "Keyword",
+        "OGP",
+        "Schema.org",
+        "Analytics"
+      ],
+      "components": {
+        "HAB": {
+          "name": "HAB",
+          "full_name": "Holistic Adapter Bridge",
+          "status": "確定（2026-06-21）",
+          "definition": "4層統合Context Runtime（context_runtime.py）。HAB └ ContextRuntimeという親子分割構造ではなく、HAB = ContextRuntimeである。",
+          "reference": {
+            "decision_record": "E20260621_4117432930fee",
+            "formal_spec_change_done": "E20260621_506685020de12",
+            "implementation_change_done": [
+              "E20260621_52338111904aa",
+              "E20260621_176809820ef07"
+            ]
+          },
+          "layers": [
+            "InstitutionContext（制度情報。データソース: ARCHITECTURE_REGISTRY.json, MOCKA_OVERVIEW.json）",
+            "WorkingContext（作業状態。データソース: working_context_latest.json、live_update()でライブ更新）",
+            "MemoryContext（5W1H・判断履歴。データソース: mocka_events.dbライブ再クエリ + snapshot）",
+            "ExecutionContext（Gate判定5チェック。データソース: ARCHITECTURE_REGISTRY.json）"
+          ],
+          "responsibilities": [
+            "制度状態生成（4層統合によりAI参照可能な単一制度状態を生成）",
+            "制度状態維持（イベント発火ごとのWorkingContextライブ更新）",
+            "制度状態評価（validate()によるresumable判定）",
+            "Gate判定（Architecture/Ownership/Incident/Boundary/Permission）"
+          ],
+          "responsibilities_excluded": [
+            "event_id採番（next_event_id()の領域。読取専用、変更禁止）",
+            "管理/監視/統制/可視化（Command Centerの領域、別ポート5000）",
+            "Relay（セッション間文脈引き継ぎ、別コンポーネント）",
+            "Orchestra（保存/共有/協業UI層、別コンポーネント）"
+          ],
+          "immutable_constraints": [
+            "next_event_id()への変更は禁止（DANGER監査 Decision Record E20260621_940325153cf6f）",
+            "HAB経由でevent_idを新規発行する機能を追加してはならない（emit_event_to_context_runtime()は新規DB書き込みを行わない設計を継承）"
+          ],
+          "vasai_minimocka_commonality": "ARCHITECTURE_REGISTRY.json等のデータソースを切り替えるだけでvasAI/mini-MoCKA双方で共通利用可能。Orchestra/Memory/Relay/PHI-OSと異なり、サービス層の下に位置する共通基盤。"
+        }
+      },
+      "_hab_registered_at": "2026-06-20T23:18:38.698035+00:00"
     },
     "PlanningCaliber": {
       "repository": "github.com/m-sirius-k/planningcaliber",
       "command_center": "localhost:8750",
       "allowed_modules": [
-        "SEO", "Distribution OS", "Publishing", "Marketing",
-        "SNS", "Media", "Keyword", "OGP", "Schema.org",
-        "Analytics", "Campaign", "Content Optimization"
+        "SEO",
+        "Distribution OS",
+        "Publishing",
+        "Marketing",
+        "SNS",
+        "Media",
+        "Keyword",
+        "OGP",
+        "Schema.org",
+        "Analytics",
+        "Campaign",
+        "Content Optimization"
       ],
       "forbidden_modules": [
-        "MoCKA Core", "PHI-OS", "Event Ledger", "Governance"
+        "MoCKA Core",
+        "PHI-OS",
+        "Event Ledger",
+        "Governance"
       ]
     }
   },

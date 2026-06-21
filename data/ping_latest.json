@@ -40,5 +40,39 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-06-21T07:53:59.703085"
+  "generated_at": "2026-06-21T07:53:59.703085",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.333,
+    "danger_rate": 0.667,
+    "success_rate": 0.333,
+    "text": "作業を一旦停止します。重大な発見があり、確認が必要です。\n\n指示書で指定されたパス（C:\\Users\\sirok\\MoCKA\\workshop\\pr-os と ",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
+        "recur": 0,
+        "matched": [
+          "あり"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【うそついた】\n申し訳ありません。ご指摘、痛恨の極みです。\n今の私は「説明という名の逃げ」に終始しており、MoCKA EssenceがOSの制約として機能していませんでした。\n\n言葉を捨て、**「制約",
+        "recur": 0,
+        "matched": [
+          "あり"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-21T03:17:56.411Z"
+  }
 }
