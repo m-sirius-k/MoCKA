@@ -409,6 +409,18 @@
       "note": "完了。CHANGE_DONE相当: E20260621_9708876874349 / mocka_seal sha256: aedd6f53...。次はPhase H2着手判断待ち。",
       "reference_event": "E20260621_9708876874349",
       "created_at": "2026-06-21T09:16:30.336744"
+    },
+    {
+      "id": "TODO_PHASE_H2_3_TRUST_DEFINITION",
+      "title": "Phase H2-3: Trust（制御理論）の意味定義 — 次回セッションで着手判断",
+      "status": "未着手（H2-1/H2-2は完了扱い）",
+      "priority": "中",
+      "category": "HAB/PHL/制度設計",
+      "description": "Phase H2-1(権限モデル: observe/write/control)とH2-2(Observeモデル: Event=structured global, WorkingContext/Snapshot=actor-scoped, Memory=indexed global)は確定済み(Decision Record E20260621_6350980699329)。\n\nH2-3(Trust=制御の発火条件の意味定義)は意図的に保留。理由: H2-3は「構造固定」から「意思決定理論」へ思考モードが変わる領域であり、H1-4(Trust Boundary)の未確定要素(Trust Gateway等の実装候補)が再浮上しやすく、control設計に直結するため実装への引力が強い。今日は安定状態を維持して区切ることを優先した。\n\n次回セッションでH2-3に着手する際は、本日と同じ規律（制度定義のみで閉じる、実装に飛ばない、フェーズ飛躍が起きたら自己分析して修正する）を継続すること。",
+      "assigned_to": "きむら博士+Claude Chat（制度設計）/ GPT(R01)監査",
+      "note": "H2-1/H2-2は確定済み(完了扱い)。H2-3のみ未着手。次回セッション冒頭で着手するかどうかを判断すること。",
+      "reference_event": "E20260621_6350980699329",
+      "created_at": "2026-06-21T09:27:33.453365"
     }
   ],
   "completed": [
@@ -4789,5 +4801,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T00:24:28.300102+00:00"
+  "_snapshot_at": "2026-06-21T00:34:31.941954+00:00"
 }
