@@ -478,11 +478,23 @@
       "status": "未着手",
       "priority": "最高",
       "category": "制度/インフラ/governance/GL7",
-      "description": "GL7 (Execution Governance Engine) のDry Runにおいて、git status --porcelain の出力パースが非ASCIIファイル名のクォート処理(git core.quotepath挙動による二重引用符+8進エスケープ)に対応しておらず、scope比較・新規ディレクトリ検知が誤動作する。\n\n根本原因: structural/execution_governance.py の check_abort_conditions() が dry_run() で取得した changed_files/additions のパス文字列を単純な line[3:].strip() でパースしているため、日本語等の非ASCII文字を含むファイル名が git により\\\"PlanningCaliber/fp/xxx_\\\\346\\\\234\\\\254...\\\" 形式でクォートされた場合、先頭にリテラルのダブルクォート文字が残存したまま top-level dir 名と比較され、scope内に存在する正当なディレクトリ(例: PlanningCaliber)であってもdeletion_outside_scope / new_directory_detected として誤検知される。\n\n再現: mocka_add_todo (TODO_355, TODO_356 起票試行, 2回) で実際に発生・再現確認済み。READ_ONLY_TOOLS に含まれない全ての書き込み系MCPツール(mocka_add_todo, mocka_update_todo, mocka_write_event, mocka_seal) で同条件下where再現する。\n\n影響: MoCKA本体リポジトリのworking treeに非ASCIIファイル名のuntracked/changedファイルが1件でも存在すると、無関係な全ての書き込み系ツール呼び出しが連鎖的にブロックされる。\n\n修正方針案(未実施、承認待ち):\n1. git status --porcelain -z (NUL区切り・クォートなし) への移行、または\n2. クォートされたパス文字列の8進エスケープを復号する処理を check_abort_conditions() 前段に追加。\n\n本TODOは障害調査の結果に基づき、MOCKA_TODO.json直接編集で代替登録したものである(mocka_add_todo自体がGL7誤検知でブロックされているため使用不可)。",
+      "description": "GL7 (Execution Governance Engine) のDry Runにおいて、git status --porcelain の出力パースが非ASCIIファイル名のクォート処理(git core.quotepath挙動による二重引用符+8進エスケープ)に対応しておらず、scope比較・新規ディレクトリ検知が誤動作する。\n\n根本原因: structural/execution_governance.py の check_abort_conditions() が dry_run() で取得した changed_files/additions のパス文字列を単純な line[3:].strip() でパースしているため、日本語等の非ASCII文字を含むファイル名が git により\\\"PlanningCaliber/fp/xxx_\\\\346\\\\234\\\\254...\\\" 形式でクォートされた場合、先頭にリテラルのダブルクォート文字が残存したまま top-level dir 名と比較され、scope内に存在する正当なディレクトリ(例: PlanningCaliber)であってもdeletion_outside_scope / new_directory_detected として誤検知される。\n\n再現: mocka_add_todo (TODO_355, TODO_356 起票試行, 2回) で実際に発生・再現確認済み。READ_ONLY_TOOLS に含まれない全ての書き込み系MCPツール(mocka_add_todo, mocka_update_todo, mocka_write_event, mocka_seal) で同条件下で再現する。\n\n影響: MoCKA本体リポジトリのworking treeに非ASCIIファイル名のuntracked/changedファイルが1件でも存在すると、無関係な全ての書き込み系ツール呼び出しが連鎖的にブロックされる。\n\n修正方針案(未実施、承認待ち):\n1. git status --porcelain -z (NUL区切り・クォートなし) への移行、または\n2. クォートされたパス文字列の8進エスケープを復号する処理を check_abort_conditions() 前段に追加。\n\n本TODOは障害調査の結果に基づき、MOCKA_TODO.json直接編集で代替登録したものである(mocka_add_todo自体がGL7誤検知でブロックされているため使用不可)。",
       "assigned_to": "くろこ（実装）+ きむら博士（承認）",
       "note": "mocka_add_todo経由で2回再現確認済み（GL7_EXECUTION_BLOCKED）。障害による代替手順としてMOCKA_TODO.json直接編集で登録。TODO起票自体はCHANGE_START/CHANGE_DONE対象外。GL7恒久修正のみCHANGE管理対象とする。",
       "reference_event": "GL7_EXECUTION_BLOCKED（TODO_355/TODO_356起票試行・2回再現）",
       "created_at": "2026-06-21T17:29:24"
+    },
+    {
+      "id": "TODO_357",
+      "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "制度/ガバナンス/正本管理",
+      "description": "TODO_356代替登録作業中に発見。C:/Users/sirok/MOCKA_TODO.json（38件、TODO_354まで反映、BOM無し）と A:/MOCKA_TODO.json（11件、2026-04-05時点で更新停止、TODO_010まで、UTF-8 BOM付き）が約2ヶ月半・340件以上の差分を持ったまま同期されていない状態にあることが判明した。\n\n【背景】\nTODO_053（2026-04-21完了、'MoCKA完全ポータブル化'）でA:\\（SanDisk Extreme SSD）への移行・運用体制が確立されたはずだったが、その後何らかの理由で同期が2026-04-05時点（あるいはそれ以降の早い時点）で停止し、以後C:側のみが更新され続けていた。A:側は単なる'古いバックアップ'ではなく、長期間取り残された分岐としてそのまま放置されていた。\n\n【本日発見された一連の事象との共通性（R01総括）】\n本日同時に発覚した以下3件は、いずれも『正本だと思われていたものが知らないうちに分岐していた』という同型の構造を持つ：\n- PlanningCaliber（TODO_355）: フォルダ単位の正本/派生分岐\n- MOCKA_TODO.json（本TODO）: ファイル単位の正本/古い分岐\n- GL7（TODO_356）: 仕様/実挙動の不一致\n\nこれはMoCKA全体の拡張速度に対して正本管理の仕組みが追いついていない、という上位の構造的課題（Canonical Integrity）を示す可能性がある。\n\n【調査対象6項目】\n1. A側生成日時（いつTODO_010時点でスナップショットが作られたか）\n2. A側用途（当初の設計意図：完全代替バックアップなのか、特定時点のスナップショットなのか）\n3. バックアップ仕様確認（TODO_053時点でどういう同期方式が想定されていたか、ドキュメント・コードを確認）\n4. 同期方式確認（自動同期スクリプトが存在したか、存在したなら何故停止したか、存在しなかったなら最初から手動運用だったのか）\n5. 正本宣言（C:側を唯一の正本として確定するか、A:側を真のバックアップとして復旧・再同期するか、博士の最終判断を仰ぐための材料を揃える）\n6. 廃止可否（A:側を今の形のまま維持する意味があるか、それとも完全に正本と同期させる運用に切り替えるべきか）\n\n【非破壊原則】\n調査完了・正本宣言が出るまで、A:側ファイルへの追記・修正は一切行わない（本TODO_357自体もA:側には登録しない。理由はA:側自体が調査対象だから）。",
+      "assigned_to": "くろこ（調査）+ きむら博士（最終裁定）",
+      "note": "PlanningCaliber Canonical Audit（TODO_355）・GL7-FP-001（TODO_356）と並ぶ、本日発覚した第3のCanonical Integrity事案。GL7修正完了後、本TODOとTODO_355を並行調査することを推奨。",
+      "reference_event": "TODO_356代替登録作業中の発見（A:側バックアップ形骸化）",
+      "created_at": "2026-06-21T17:34:01"
     }
   ],
   "completed": [
@@ -4877,5 +4889,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T08:30:02.670334+00:00"
+  "_snapshot_at": "2026-06-21T08:40:06.838776+00:00"
 }
