@@ -433,6 +433,30 @@
       "note": "完了。CHANGE_DONE: E20260621_569214997ea24 / mocka_seal sha256: 8dc4c368...\n\n次工程: TODO_PHASE_H2_3_TRUST_DEFINITION（H2-3: Trust/Enforcement意味定義）。control_gate.pyは封印済みインターフェースとして存在するが、いつ・どの条件で発火するかはH2-3未確定のまま。次回セッションでH2-3着手を判断すること。",
       "reference_event": "E20260621_569214997ea24",
       "created_at": "2026-06-21T10:16:34.317002"
+    },
+    {
+      "id": "TODO_HAB_5LAYER_DESIGN_PENDING",
+      "title": "HAB/PlanningCaliber/Caliber/Runtime 5層構造案の精査(未着手)",
+      "status": "未着手",
+      "priority": "中",
+      "category": "design",
+      "description": "2026-06-21のH2-1/H2-2/H2-3作業中に出てきたHAB以降の5層構造設計案は、まだ精査が済んでいない状態。コードには起こしていない(議論レベルのみ)。次回、意味禁止設計の検証から開始する。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260621_7674885563126",
+      "created_at": "2026-06-21T11:39:14.553557"
+    },
+    {
+      "id": "TODO_MOCKA_SEAL_GIT_ADD_A_SEPARATION",
+      "title": "mocka-seal(anchor_update.py)のgit add -A分離設計(未着手)",
+      "status": "未着手",
+      "priority": "中",
+      "category": "infrastructure",
+      "description": "mocka-seal(scripts/ledger/anchor_update.py)は内部でgit add -Aを実行するため、制度変更(意味のあるコミット)と自動更新系の運用副産物(ARCHITECTURE_REGISTRY.json/ping_latest.json/health_baseline.json/beta_registry.json等)が同一コミットに混在し、トレーサビリティを損なう構造的課題がある。mocka-sealを「意味コミット」と「非意味スナップショット」に分離する設計を次回検討する。今回は実装せず記録のみ。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260621_369666340131a",
+      "created_at": "2026-06-21T11:39:18.317818"
     }
   ],
   "completed": [
@@ -4813,5 +4837,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T02:35:20.011133+00:00"
+  "_snapshot_at": "2026-06-21T02:45:23.825636+00:00"
 }
