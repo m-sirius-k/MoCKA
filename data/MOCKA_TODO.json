@@ -284,10 +284,10 @@
       "category": "PR-OS",
       "description": "adapters/wordpress/config.jsonにcredentials（URL/user/app_password）を設定。python pros.py submit で実際にmocka.nsjp.orgへ投稿通しテスト。",
       "assigned_to": "Claude",
-      "note": "【TODO_353完了を受けてTODO_242着手】(2026-06-21)\n\nTODO_353（Caliber→PR-OS→SEO-OSパイプライン統合）で確定した統合tick・publish_queue・jobs統一実行経路・冪等性チェック・retry機構・note追記化が実装完了し、本TODO_242が「WordPress接続テスト」から「OS外部書き込みの安定性検証」という位置づけに格上げされた。\n\nテストフロー確定：\npublish_queue → semantic_mapper → jobs → _execute_job() → wp_adapter.publish() → WordPress draft post\n\n成功条件4点確定：\n①WordPressにdraft記事が生成される\n②content_idがnoteに残る（出自追跡）\n③再実行してもduplicate skipが動作する（冪等性検証）\n④retry→成功 or failedが記録される（retry機構検証）\n\n事前確認3点（必要な実認証情報、きむら博士から提供待ち）：\n①WordPress API endpoint（https://<domain>/wp-json/wp/v2/posts、REST API有効化確認必須）\n②Application Password（管理者または投稿権限ユーザーで発行）\n③config.json defaults.status = draft で確定（即時公開は事故防止のため不採用）\n\n着手手順：①endpoint確認 ②credentials設定 ③1件publish_queue投入 ④tick実行 ⑤WordPress確認。\n既知のトラブルパターン：404=permalink設定問題／401=Application Password不一致／403=REST API制限orプラグイン干渉。\n\n次：きむら博士からWordPress URL・Application Password発行状況の提供待ち。",
+      "note": "【認証情報受け渡し設計確定・実装完了】(2026-06-21)\n\nきむら博士判断：認証情報はClaude Chatを経由しない（実値を見ない）方針で確定。\n\nくろこ実装完了内容：\n- WordPress URL: config.jsonのapi_endpoint（非機密情報）\n- Application Password(username/password): OS環境変数 MOCKA_WP_USER / MOCKA_WP_APP_PASSWORD に分離\n- wp_adapter.py の_auth()は環境変数からのみ認証情報を取得する設計に変更。config.jsonからusername/passwordフィールドを削除済み（Adapterは認証情報を一切保持しない設計）\n- 環境変数未設定時はpublish()/schedule()が安全側に倒れ、明示的エラーを返す\n\nきむら博士に依頼した残作業（Claude Chatは実値を受け取らない）：\n①config.jsonのapi_endpointに実際のWordPress URL設定（/wp-json/wp/v2/posts応答確認要）\n②config.jsonのenabledをtrueに変更\n③OS環境変数 MOCKA_WP_USER / MOCKA_WP_APP_PASSWORD をシステムに設定\n\n次：設定完了後、health_check()→publish()の実動テストに進む。テストフロー・成功条件4点は既存note記載の通り（draft投稿・duplicate skip検証・retry検証含む）。",
       "reference_event": "",
       "created_at": "2026-06-06T14:38:03.372496",
-      "updated_at": "2026-06-21T12:54:20.682884"
+      "updated_at": "2026-06-21T13:02:39.854628"
     },
     {
       "id": "TODO_244",
@@ -4852,5 +4852,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T03:55:54.103581+00:00"
+  "_snapshot_at": "2026-06-21T04:05:57.598469+00:00"
 }
