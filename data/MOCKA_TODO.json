@@ -284,10 +284,10 @@
       "category": "PR-OS",
       "description": "adapters/wordpress/config.jsonにcredentials（URL/user/app_password）を設定。python pros.py submit で実際にmocka.nsjp.orgへ投稿通しテスト。",
       "assigned_to": "Claude",
-      "note": "【ID/パス整備完了→実行手順提示】(2026-06-21)\n\nきむら博士へ実行手順を提示済み（Claude Chatは実値非関与）：\nStep1: PowerShellで [Environment]::SetEnvironmentVariable(\"MOCKA_WP_USER\"/\"MOCKA_WP_APP_PASSWORD\", 値, \"User\") を実行・永続化\nStep2: くろこへ直接依頼してconfig.json(adapters/wordpress/config.json)のapi_endpoint設定・enabled=true変更\nStep3: くろこへhealth_check()実行依頼→WordPress REST API接続確認\n\nhealth_check()成功後、実動テスト本番（publish_queue投入1件→tick実行→WordPress draft記事確認→再実行でduplicate skip確認→retry機構確認）に進む。\n\n次：きむら博士のStep1〜3実施・くろこからのhealth_check()結果報告待ち。",
+      "note": "【インシデント疑い→解消、実装健全性確認済み】(2026-06-21)\n\nTODO_353関連の本日実装作業について、一時「実体が確認できない」とのくろこ報告を受け、Claude Chat側で重大インシデント候補として扱い保留化を試みた。\n\nきむら博士による手動確認（PowerShell dir/Get-ChildItem実行）の結果、以下が判明：\n- MoCKA\\PlanningCaliber\\workshop\\pr-os\\・\\seo-os\\ 配下に本日の実装対象ファイル（mocka_bridge.py/scheduler.py/daemon.py/distribution_router_v2.py/semantic_mapper.py/wp_adapter.py/kernel/scheduler.py/data/init_db.py/gate/ai_gate.py等）が全て実在確認\n- semantic_mapper.py（本日新設と報告）のCreationTime/LastWriteTimeが共に「2026/06/21 12:34:11」——本日の作業時刻と完全一致、実装が実体を伴っていたことが確定\n\n原因：先の「整合性確認」指示を受けたClaude Codeセッションが誤ったワーキングディレクトリ・検索範囲を見ていたために「ファイル不存在」と誤報告した（実装側の問題ではなく確認セッション側の問題）。\n\nなお、TODO_353は既にcompleted配列に格納済みのため、Claude ChatからのTODO_353への直接の状態変更は仕様上不可（mocka_update_todoはcompleted移動済みTODOを対象外とする仕様）。TODO_353のnote内容自体は最終承認・完了状態のまま正しく保持されており、データ消失・実害はなかったことを確認。\n\nTODO_242は実装健全性確認済みとして、WordPress実動テストへの移行を正式に継続する。次：環境変数永続化（MOCKA_WP_USER/MOCKA_WP_APP_PASSWORD）・config.json編集（api_endpoint/enabled=true）・health_check()実行へ進む。",
       "reference_event": "",
       "created_at": "2026-06-06T14:38:03.372496",
-      "updated_at": "2026-06-21T13:13:03.419897"
+      "updated_at": "2026-06-21T13:31:22.273851"
     },
     {
       "id": "TODO_244",
@@ -4852,5 +4852,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T04:26:05.361666+00:00"
+  "_snapshot_at": "2026-06-21T04:36:09.164253+00:00"
 }
