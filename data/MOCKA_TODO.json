@@ -552,26 +552,28 @@
     {
       "id": "TODO_359",
       "title": "essence_auto_updater(#2)の最終運用境界を決定する(判断A:機能として残す or 判断B:Phase5で廃止)",
-      "status": "未着手",
+      "status": "Decision Ready",
       "priority": "高",
       "category": "incident",
       "description": "app.py:140-148の動的import+start_essence_auto_loop()呼出について。現状NameErrorで不発だが「動いていないから安全」ではなく「将来バグ修正時に発火する潜在リスク」。判断A(機能として残し、バグ修正後start_background_loops()へ集約)か判断B(Phase5で廃止)かを人間が決定する。決定後、INCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」のGroup B該当項目を更新する。単独でのapp.py修正は行わない(Core System File Change Approval前)。",
       "assigned_to": "Claude",
-      "note": "",
+      "note": "結論候補: app.py内冗長起動経路廃止候補(削除承認候補、削除決定ではない)。根拠: MoCKA-START.batが正式起動経路として既に存在し同名プロセスkill処理も実装済み(責務重複確認)。機能廃止ではなく冗長経路廃止。Core System File Change Approval時に正式な削除実装承認を得る。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#2)参照。",
       "reference_event": "E20260623_383498220496e",
-      "created_at": "2026-06-23T06:56:37.430991"
+      "created_at": "2026-06-23T06:56:37.430991",
+      "updated_at": "2026-06-23T07:02:31.147538"
     },
     {
       "id": "TODO_360",
       "title": "init_audit_db(#4)の最終運用境界を決定する(start_background_loops() or initialize_runtime()等の起動フェーズ専用境界)",
-      "status": "未着手",
+      "status": "Necessity Confirmed_Placement Review中",
       "priority": "高",
       "category": "incident",
       "description": "app.py:2587-2593のinit_audit_db()モジュールレベル呼出(sqlite3接続+CREATE TABLE IF NOT EXISTS)について。ThreadではなくDB初期化のため、start_background_loops()への単純移管では解決しない可能性が高い。initialize_runtime()のような起動フェーズ専用の初期化境界へ移すか、ルート関数内での遅延初期化にするかを決定する。決定後、INCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」のGroup B該当項目を更新する。単独でのapp.py修正は行わない(Core System File Change Approval前)。",
       "assigned_to": "Claude",
-      "note": "",
+      "note": "necessity判定: 必要(CREATE TABLE IF NOT EXISTSのみ、冪等性あり、app.py自身が唯一の実運用呼び出し元)。TODO_359と異なり配置問題。Placement Review第一候補: initialize_runtime()境界(init_audit_db()/registry load/config validation/startup checksを集約、start_background_loops()とは責務分離)。bootstrap()案・__main__直接案は比較劣後。配置の最終確定はCore System File Change Approval時にapp.py全文を踏まえて行う。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#4)参照。",
       "reference_event": "E20260623_383498220496e",
-      "created_at": "2026-06-23T06:56:40.335572"
+      "created_at": "2026-06-23T06:56:40.335572",
+      "updated_at": "2026-06-23T07:06:44.629514"
     }
   ],
   "completed": [
@@ -4980,5 +4982,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T21:57:05.139406+00:00"
+  "_snapshot_at": "2026-06-22T22:07:10.460260+00:00"
 }
