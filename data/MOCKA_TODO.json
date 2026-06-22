@@ -539,15 +539,15 @@
     {
       "id": "TODO_358",
       "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
-      "status": "Change Plan v1完成_Core System File Change Approval審査待ち",
+      "status": "Core System File Change Approval承認済み_条件付き_実装待ち",
       "priority": "高",
       "category": "phase5x_incident",
       "description": "",
       "assigned_to": "Claude",
-      "note": "Human Gate Review完了/Remediation Matrix確定/Runtime Boundary v1制定済み/Change Plan v1完成(docs/incidents/CHANGE_PLAN_IMPORT_APP_SIDE_EFFECT_v1.md)。対象app.py、追加2件(initialize_runtime/start_background_loops)、移設5件(#1/#3/#4/#5/#6)、削除1件(#2)。次回はCore System File Change Approvalの発行判断のみ。",
+      "note": "2026-06-23: Core System File Change Approval発行(条件付き承認)。条件1:スコープはChange Plan v1の範囲に限定。条件2:Runtime Boundary v1の責務を実装中に拡張しない。条件3:実装後にImport Safety再検証(import app単独実行でThread/DB/HTTP/Git操作が発生しないことを確認)。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「12.」参照。次フェーズ: Implementation(app.py本体への実装着手)。",
       "reference_event": "E20260622_734189009170f",
       "created_at": "2026-06-22T20:12:46.825393",
-      "updated_at": "2026-06-23T07:17:08.515791"
+      "updated_at": "2026-06-23T07:19:17.326065"
     },
     {
       "id": "TODO_359",
@@ -574,6 +574,18 @@
       "reference_event": "E20260623_383498220496e",
       "created_at": "2026-06-23T06:56:40.335572",
       "updated_at": "2026-06-23T07:09:11.382902"
+    },
+    {
+      "id": "TODO_361",
+      "title": "Decision Ledger Reconnection — TODO_358 Human Gate Review判断のDecision Ledger接続",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/運用接続/Process Integration",
+      "description": "分類: 新規機能追加ではなく「既存制度再接続(Process Integration)」。E20260623_664174251c911（Decision Ledger Bypassインシデント）で判明した断絶への対応。\\n\\n目的: TODO_358のHuman Gate Review（R01判定によるGroup A/B分岐）の判断根拠を、既存のDecision Ledger Schema v1(TODO_305: DC採番・alternatives必須・JSONL)の形式で記録する。\\n\\n成果物:\\n①DCレコード1件以上をDecision Ledgerに登録（「なぜGroup A(#1/#3/#5/#6)はstart_background_loops()へ単純集約で整合的だが、Group B(#2/#4)は別途制度判断が必要だったか」をalternatives付きで構造化）\\n②運用ルール更新: 今後Human Gate Reviewで条件付き承認等の分岐判定が出た場合、Markdown記述で終わらせず必ずDecision Ledgerへの記録をセットにする旨をCLAUDE.mdまたはTODO_154に追記\\n③TODO_359/360の最終決定が下された際も、その決定自体をDecision Ledger形式で記録すること\\n\\n非目的: 新しいDecision Ledger層を新設することではない。既存のTODO_194/278/287/289/305の層をそのまま使う。",
+      "assigned_to": "Claude（記録）+ くろこ（CLAUDE.md/TODO_154更新）+ きむら博士（承認）",
+      "note": "",
+      "reference_event": "E20260623_664174251c911",
+      "created_at": "2026-06-23T07:17:59.567362"
     }
   ],
   "completed": [
@@ -4982,5 +4994,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T22:17:14.468195+00:00"
+  "_snapshot_at": "2026-06-22T22:27:18.935333+00:00"
 }
