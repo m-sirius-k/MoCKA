@@ -25,6 +25,8 @@
 #         これは構造変更ではない。set_replay_mode()/replay()はReplayの入口を差し替えるだけで、
 #         ingest()・reduce()・state machine・snapshot/queue/event構造には一切触れない。
 #         デフォルトはLEGACY(v1)固定で既存挙動を変えない。
+# Phase4.5: ReplayAuditLogを追加し、hybridモードでのDrift検知+記録を可能にする。
+#         ingest()/reduce()/state machineには触れない。監査はReplayRouter経由でのみ発生する。
 
 from .policy_engine import PolicyEngine
 from .action_router import ActionRouter
@@ -32,6 +34,7 @@ from .event_queue import EventQueue
 from .replay_engine import ReplayEngine
 from .replay_engine_v2 import ReplayEngineV2
 from .replay_router import ReplayRouter, LEGACY
+from .replay_audit import ReplayAuditLog
 from .repositories_sqlite import (
     LocalEventRepository,
     LocalQueueRepository,
@@ -55,7 +58,8 @@ class RelayKernel:
         self.queue_repository = queue_repository or LocalQueueRepository()
         self.snapshot_repository = snapshot_repository or LocalSnapshotRepository()
         self.replay_engine_v2 = ReplayEngineV2(self, self.snapshot_repository, self.event_repository)
-        self.replay_router = ReplayRouter(self, mode=LEGACY)
+        self.replay_audit_log = ReplayAuditLog()
+        self.replay_router = ReplayRouter(self, mode=LEGACY, audit_log=self.replay_audit_log)
 
     def ingest(self, event: dict) -> dict:
         self.history.append(event)
