@@ -598,6 +598,54 @@
       "note": "実装フェーズ指定なし／設計確定扱い。分割せず単一統合仕様として登録。GL7/execution layerはコード名ではなく概念レイヤー（構造設計の会話レイヤー）。",
       "reference_event": "",
       "created_at": "2026-06-23T08:08:23.769196"
+    },
+    {
+      "id": "HAB-CONTRACT-LAYER-V1",
+      "title": "MoCKA HAB Contract Layer v1.0（統合指示・Execution Contract生成器化）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■目的\nHABを「判断・フィルタ層」から「Execution Contract生成器」に昇格させ、GL7以降の実行基盤と完全に分離された安定インターフェースを確立する。\n\n■① HABの役割定義（必須）\nHABは以下のみを担当する：\n- 入力の解釈\n- 実行契約（Execution Contract）の生成\n- 構造保証（schema enforcement）\n\nHABは禁止：\n- 実行処理\n- ログ生成\n- runtime判断\n- GL7への介入\n- 出力の再構築\n\n■② HAB OUTPUT標準フォーマット（固定）\nHABの出力は必ず単一JSONで以下構造に従う：\n{\n  \"intent\": { \"type\": \"string\", \"description\": \"ユーザー意図の明確化\" },\n  \"schema\": { \"version\": \"v1\", \"structure\": \"execution contract schema definition\" },\n  \"constraints\": [\"実行制約・安全制約・構造制約\"],\n  \"execution\": { \"action\": \"必ず明示された実行内容\", \"inputs\": {}, \"outputs\": {} },\n  \"safety\": { \"deny_conditions\": [\"実行禁止条件\"] },\n  \"metadata\": { \"source\": \"HAB\", \"trace_id\": \"optional\" }\n}\n\n■③ 不変ルール（強制）\n- JSONは単一オブジェクトのみ\n- partial JSON禁止\n- 欠損フィールド禁止\n- 曖昧表現禁止（must / explicit required）\n- executionフィールドは必須\n- schema version必須\n\n■④ GL7との関係（完全固定）\nHAB → Execution Contract生成のみ\nGL7 → Contract検証のみ（parse1回・修正禁止）\nEXEC → 実行のみ（純粋関数）\nOBSERVATION → ログ・診断のみ\n\n■⑤ mocka_write_eventとの関係\n- HAB：構造生成のみ\n- GL7：検証のみ\n- storage：純粋保存（加工禁止）\n- log：OBSERVATION層へ完全分離\n\n■⑥ fail closedルール\nHAB契約違反時：\n- 即reject\n- 自動修正禁止\n- diagnostic dump生成\n- raw input保持\n- 再構築禁止\n\n■⑦ 設計思想（固定）\nexecution layerから曖昧性と観測を完全に排除し、契約駆動実行構造へ変換する。\n\n■最終まとめ（一行）\nHABは「入力を実行可能契約に変換する唯一の層」として固定し、GL7以降は契約検証と実行に完全分離する。\n\n統合構造（EXEC-LAYER-STD-V1とのペア）：\nHAB（契約生成）→ GL7（契約検証）→ EXEC（実行）→ OBS（観測）",
+      "assigned_to": "くろこ",
+      "note": "EXEC-LAYER-STD-V1と対の上流仕様（契約生成ルールの固定）。両者でMoCKAの「入力→契約→検証→実行→観測」の全体構造を固定する2本柱。分割せず単一統合仕様として登録。実装フェーズ指定なし／設計確定扱い。",
+      "reference_event": "EXEC-LAYER-STD-V1",
+      "created_at": "2026-06-23T08:38:53.268768"
+    },
+    {
+      "id": "CONTRACT-INTEGRATION-TEST-SPEC-V1",
+      "title": "MoCKA Contract Integration Test Spec v1.0（HAB→GL7→EXEC→OBS）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■目的\nHAB-CONTRACT-LAYER-V1 と EXEC-LAYER-STD-V1 の統合において、契約駆動実行パイプラインが崩壊せず成立することを検証する。\n\n■① テスト対象構造\nHAB → GL7 → EXEC → OBS\n\n■② テスト分類（必須4系統）\n1. 正常系（VALID CONTRACT）\n- 完全なHAB_OUTPUT生成\n- intent / schema / execution 全て充足\n- GL7検証成功\n- EXEC実行成功\n- OBS記録成功\n\n2. 境界系（PARTIAL / EDGE）\n- intent曖昧だがschema存在\n- executionは存在するがinputs欠損\n- metadata不足 → GL7がrejectすること\n\n3. 破壊系（MALFORMED CONTRACT）\n- JSON崩壊\n- trailing data混入\n- log混在\n- schema欠落 → fail closed + diagnostic dump必須\n\n4. 改ざん系（WRAPPER / DOUBLE SERIALIZE）\n- HAB出力後に再serialize\n- GL7前で二重parse\n- execution層で構造改変 → 即reject or execution停止\n\n■③ GL7検証ルール\n- parseは1回のみ\n- JSON再構築禁止\n- log参照禁止\n- trailing data即reject（修正禁止）\n- fail closed強制\n\n■④ EXEC動作ルール\n- pure functionとして動作\n- state変更のみ許可\n- I/O・log禁止\n- 入力構造改変禁止\n\n■⑤ OBSルール\n- log / trace / diagnosticのみ\n- executionに干渉禁止\n- JSON構造への影響禁止\n\n■⑥ 成功条件（以下すべて成立でPASS）\n- HABが常に単一契約生成\n- GL7が100%構造検証のみ実行\n- EXECが純粋実行維持\n- OBSが非侵襲ログ保持\n- 全系統でJSON汚染ゼロ\n\n■⑦ 失敗条件\n- JSON/log混入発生\n- GL7が再構築実行\n- EXECがログ生成\n- HABが実行判断を持つ\n- trailing dataが通過\n\n■最終定義\nこのテストは「MoCKAが契約駆動実行OSとして成立しているか」を検証する唯一のゲートである。\nHAB→GL7→EXEC→OBSの統合は一発検証フェーズに入れる。",
+      "assigned_to": "くろこ",
+      "note": "EXEC-LAYER-STD-V1とHAB-CONTRACT-LAYER-V1の統合検証仕様（テスト3本柱目）。分割せず単一統合仕様として登録。実装フェーズ指定なし／設計確定扱い。",
+      "reference_event": "HAB-CONTRACT-LAYER-V1",
+      "created_at": "2026-06-23T08:41:05.665284"
+    },
+    {
+      "id": "UNIFIED-EXEC-PHASE-PLAN-V1",
+      "title": "MoCKA Unified Execution Phase Plan v1.0（HAB統合後フルパス）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■目的\nHAB→GL7→EXEC→OBS→TEST の契約駆動パイプラインを実運用可能状態に到達させる。\n\n■① フェーズ0：現状固定（完了扱い）\n以下は既に成立：\n- HAB-CONTRACT-LAYER-V1（契約生成）\n- EXEC-LAYER-STD-V1（実行基盤分離）\n- CONTRACT-INTEGRATION-TEST-SPEC-V1（統合検証）\n→ 設計は完了しているため変更禁止\n\n■② フェーズ1：ドライラン設計（最初の実行準備）\nやること：\n- サンプルHAB_INPUTを1種類定義\n- intent / schema / execution を必ず含む\n- GL7通過前提の完全JSONを1つ作る\n目的：「契約が現実の入力に対して成立するか」を初確認\n\n■③ フェーズ2：GL7境界テスト\nやること：\n- 正常契約 → PASS確認\n- 欠損契約 → FAIL確認\n- trailing data → 即reject確認\n- log混入 → fail closed確認\n目的：GL7が「検証器として純粋動作するか」検証\n\n■④ フェーズ3：EXEC純粋実行テスト\nやること：\n- executionのみを抽出して実行\n- state変更のみ許可\n- log生成禁止確認\n目的：EXECが\"副作用なし実行器\"として成立するか\n\n■⑤ フェーズ4：OBS侵入テスト\nやること：\n- OBSがexecutionへ干渉しないこと確認\n- logがJSON構造に混ざらないこと確認\n- diagnostic dumpのみ許可\n目的：観測と実行の完全分離保証\n\n■⑥ フェーズ5：破壊テスト（重要）\nやること：\n- 二重serialize契約投入\n- partial JSON投入\n- wrapper改変投入\n- malicious log混入\n期待動作：\n- 全てfail closed\n- 自動修復禁止\n- dumpのみ生成\n\n■⑦ フェーズ6：統合リグレッション\nやること：\n- 全テスト通過確認\n- HAB→GL7→EXEC→OBSの直列動作\n- 全層ログ独立確認\n目的：MoCKAが「契約駆動実行OS」として成立しているか最終確認\n\n■⑧ フェーズ7：運用固定化\nやること：\n- 成功パターンをテンプレ化\n- HAB contract version固定\n- GL7 rule lock\n- EXEC purity lock\n\n■最終到達状態\nHAB → GL7 → EXEC → OBS\n        ↓\n     TEST (guarantee layer)\n\n■結論\nMoCKAは「実行システム」ではなく「契約駆動で自己崩壊を防ぐOS構造」として完成フェーズに入る。\n次は「実データ投入フェーズ（初回本番）」に移行できる。",
+      "assigned_to": "くろこ",
+      "note": "フェーズ0(HAB/EXEC/TEST3本)を完了扱いとして固定、フェーズ1〜7の実行計画。分割せず単一統合仕様として登録。実装フェーズ指定なし／設計確定扱い。",
+      "reference_event": "CONTRACT-INTEGRATION-TEST-SPEC-V1",
+      "created_at": "2026-06-23T08:42:52.297118"
+    },
+    {
+      "id": "DRY-RUN-001-TEST-CASE-SPEC",
+      "title": "MoCKA First Contract Execution Test Case（Dry Run v1・未実行シナリオ）",
+      "status": "未着手",
+      "priority": "中",
+      "category": "テストケース定義",
+      "description": "■位置づけ\nこれは実行結果ではない。HAB→GL7→EXEC→OBSパイプラインの「未実行テストケース定義（SIMULATION SPEC）」であり、CONTRACT-INTEGRATION-TEST-SPEC-V1の入力データ例として扱う。PASS/FAIL判定はまだ確定していない。\n\n■① テスト入力（HAB_INPUTサンプル）\n{\n  \"user_input\": \"mocka_write_eventでログイベントを記録したい\",\n  \"context\": { \"system\": \"MoCKA\", \"mode\": \"dry-run\" }\n}\n\n■② 想定HAB変換結果（Execution Contract案）\n{\n  \"intent\": { \"type\": \"event_write\", \"description\": \"ログイベントの記録要求\" },\n  \"schema\": { \"version\": \"v1\" },\n  \"constraints\": [\"logとexecutionを分離する\", \"JSON単一構造を維持する\"],\n  \"execution\": {\n    \"action\": \"write_event\",\n    \"inputs\": { \"event_type\": \"log\", \"payload\": \"mocka_write_event\" },\n    \"outputs\": { \"status\": \"success_expected\" }\n  },\n  \"safety\": { \"deny_conditions\": [\"log混入\", \"double serialization\"] },\n  \"metadata\": { \"source\": \"HAB\", \"trace_id\": \"dry-run-001\" }\n}\n\n■③ GL7検証チェック項目（未実行）\n- JSON構造OK\n- execution明示あり\n- log混入なし\n- trailing dataなし\n\n■④ EXEC実行想定\naction: write_event / event_type: log / payload: mocka_write_event\n- event生成\n- state変更のみ\n- log生成禁止（OBSへ移譲）\n\n■⑤ OBS記録想定\n{\n  \"trace_id\": \"dry-run-001\",\n  \"status\": \"executed\",\n  \"events\": [\"write_event\"],\n  \"note\": \"execution separated from log layer\"\n}\n\n■次にやるべきこと（Phase A/B）\nPhase A（本当の意味のDry Run）：実際にmocka_write_eventを叩く→GL7通過→EXEC走らせる→OBS記録する\nPhase B（検証）：PASS/FAILを確定、failure mode収集、GL7調整",
+      "assigned_to": "くろこ",
+      "note": "重要：本TODOは「実行結果」ではない。mocka_write_event/GL7/EXEC/OBSはいずれも未実行。PASS/FAIL判定は付与しない。Phase A（実際にmocka_write_eventを実行して検証）はまだ未着手。",
+      "reference_event": "CONTRACT-INTEGRATION-TEST-SPEC-V1",
+      "created_at": "2026-06-23T08:45:49.108775"
     }
   ],
   "completed": [
@@ -5006,5 +5054,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T23:37:49.321859+00:00"
+  "_snapshot_at": "2026-06-22T23:47:53.534572+00:00"
 }
