@@ -539,15 +539,15 @@
     {
       "id": "TODO_358",
       "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
-      "status": "条件付き承認_Remediation Matrix確定待ち",
+      "status": "Change Plan v1完成_Core System File Change Approval審査待ち",
       "priority": "高",
       "category": "phase5x_incident",
       "description": "",
       "assigned_to": "Claude",
-      "note": "R01判定(2026-06-23): 条件付き承認。Group A(#1/#3/#5/#6)はstart_background_loops()へ移管で整合的。Group B(#2 essence_auto_updater, #4 init_audit_db)は制度判断必要のため別TODO化(要新設)。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11. Human Gate Review R01判定」参照。",
+      "note": "Human Gate Review完了/Remediation Matrix確定/Runtime Boundary v1制定済み/Change Plan v1完成(docs/incidents/CHANGE_PLAN_IMPORT_APP_SIDE_EFFECT_v1.md)。対象app.py、追加2件(initialize_runtime/start_background_loops)、移設5件(#1/#3/#4/#5/#6)、削除1件(#2)。次回はCore System File Change Approvalの発行判断のみ。",
       "reference_event": "E20260622_734189009170f",
       "created_at": "2026-06-22T20:12:46.825393",
-      "updated_at": "2026-06-23T06:56:26.391806"
+      "updated_at": "2026-06-23T07:17:08.515791"
     },
     {
       "id": "TODO_359",
@@ -565,15 +565,15 @@
     {
       "id": "TODO_360",
       "title": "init_audit_db(#4)の最終運用境界を決定する(start_background_loops() or initialize_runtime()等の起動フェーズ専用境界)",
-      "status": "Necessity Confirmed_Placement Review中",
+      "status": "完了_Placement Decision確定",
       "priority": "高",
       "category": "incident",
       "description": "app.py:2587-2593のinit_audit_db()モジュールレベル呼出(sqlite3接続+CREATE TABLE IF NOT EXISTS)について。ThreadではなくDB初期化のため、start_background_loops()への単純移管では解決しない可能性が高い。initialize_runtime()のような起動フェーズ専用の初期化境界へ移すか、ルート関数内での遅延初期化にするかを決定する。決定後、INCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」のGroup B該当項目を更新する。単独でのapp.py修正は行わない(Core System File Change Approval前)。",
       "assigned_to": "Claude",
-      "note": "necessity判定: 必要(CREATE TABLE IF NOT EXISTSのみ、冪等性あり、app.py自身が唯一の実運用呼び出し元)。TODO_359と異なり配置問題。Placement Review第一候補: initialize_runtime()境界(init_audit_db()/registry load/config validation/startup checksを集約、start_background_loops()とは責務分離)。bootstrap()案・__main__直接案は比較劣後。配置の最終確定はCore System File Change Approval時にapp.py全文を踏まえて行う。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#4)参照。",
+      "note": "Placement Decision確定: initialize_runtime()。判定基準: DB初期化はRuntime準備に属し、Bootstrap(環境準備/設定読込/依存性確認)の責務ではない。MoCKA長期構造(PHI-OS->Runtime Layer->Relay->Orchestra)とも整合。具体的な実装行はCore System File Change Approval時にapp.py全文を踏まえて確定する。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#4)参照。",
       "reference_event": "E20260623_383498220496e",
       "created_at": "2026-06-23T06:56:40.335572",
-      "updated_at": "2026-06-23T07:06:44.629514"
+      "updated_at": "2026-06-23T07:09:11.382902"
     }
   ],
   "completed": [
@@ -4982,5 +4982,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T22:07:10.460260+00:00"
+  "_snapshot_at": "2026-06-22T22:17:14.468195+00:00"
 }
