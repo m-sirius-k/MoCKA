@@ -519,9 +519,10 @@
       "category": "Architecture_Contract_Critical",
       "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。TODO_HAB_GPT_CONNECTION_SPEC_V1、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1と同位置づけ。MoCKA Phase0-6の全構造を1つの統合図として確定し、かつ外部接続（MCP）の境界を正式仕様化したもの。これがMoCKAコア構造確定作業の最終到達点。\n\n【Full System Stack（下から上）】\nEvent.db → FP（Phase0-3）→ Phase4（Control/Sovereign/Data）→ HAB↔GPT Connection Layer → Phase5（Governance, L4=Human Gate）→ Phase6（Civilization Loop）\n\n【Global Invariants】\nMeaning is never transmitted / Only structure is transmitted / No self-modification exists in runtime layers / Control≠Data≠Governance≠Evolution\n\n【System Essence】\"MoCKA is not a model system. MoCKA is a layered constraint architecture\"\n\n【MCP Integration Specification — 外部接続境界】\nMCPの3機能限定: Input Bridge / Output Bridge / Observation Bridge（すべてread-onlyまたは構造変換のみ）。\nHard Constraints（絶対禁止）: routing変更/Phase構造変更/H2-3介入/Relay制御変更/Event.db改変/意味解釈。\nExecution Boundary: Phase5・Phase6への外部アクセスはno access（完全遮断）。FP/Phase4はread-only。HAB↔GPTはinterface-onlyのみ。\nSecurity Model: MCPは\"observer/transporter/serializer\"であり\"controllerではない\"。\n\n【実用上の意味】今後Notion/Google Drive等の既存接続MCPツールをMoCKA作業に使う場合も、本仕様のExecution Boundaryに従うこと（Phase5/6への書き込みは不可、FP/Phase4は読み取りのみ等）。\n\n【LOCK理由】MoCKA全体構造の最終形であり、これを変更することは全Phase（0-6）の再設計に直結するため。",
       "assigned_to": "Claude",
-      "note": "2026-06-22確定（E20260622_061323040305a参照）。きむら博士・GPT合議によりDONE+LOCKED状態で登録。これにより、E20260622_017030043d9b2（FP↔Phase4）/ E20260622_149806056acf4（Phase4運用境界）/ E20260622_4870899134b52・63727730715f3・791597696ecd7（HAB↔GPT）/ E20260622_9198861628e40（Phase5/6統治）の全6イベントが、本Architecture Mapで統合・完結された。今後のMCP実装やRelay再設計（TODO_350）は本仕様の境界制約に従うこと。",
+      "note": "2026-06-22確定（E20260622_061323040305a参照）。きむら博士・GPT合議によりDONE+LOCKED状態で登録。これにより、E20260622_017030043d9b2（FP↔Phase4）/ E20260622_149806056acf4（Phase4運用境界）/ E20260622_4870899134b52・63727730715f3・791597696ecd7（HAB↔GPT）/ E20260622_9198861628e40（Phase5/6統治）の全6イベントが、本Architecture Mapで統合・完結された。今後のMCP実装やRelay再設計（TODO_350）は本仕様の境界制約に従うこと。\n\n【実機動作確認完了（2026-06-22 / E20260622_81722503030a9）】MCP実装v0.1（mcp/server.py等）をC:\\Users\\sirok\\MoCKA\\mcp\\配下に正規配置し、くろこによりuvicorn実機起動＋/ingest/github実HTTPテストで動作確認済み。レスポンスは仕様通りのevent_bundle構造（type=external_signal/immutable=true/意味変換なしpass-through）。途中、Claude側のファイル提示時の仮フォルダ名残留によりMoCKA直下にフラットコピーされる配置ミスが発生したが（E20260622_7373623609b91）、MCP Placement Guard Protocol（E20260622_0332043852c9d）に基づく指示書でくろこが修正・解決済み。MCP Integration Specification v1.0は仕様・実装・実機検証の3段階すべて完了。",
       "reference_event": "E20260622_061323040305a",
-      "created_at": "2026-06-22T09:11:20.695923"
+      "created_at": "2026-06-22T09:11:20.695923",
+      "updated_at": "2026-06-22T09:40:31.739702"
     }
   ],
   "completed": [
@@ -4930,5 +4931,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T00:37:42.598437+00:00"
+  "_snapshot_at": "2026-06-22T00:47:46.654037+00:00"
 }
