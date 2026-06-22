@@ -21,6 +21,8 @@ working_memory.py
 """
 
 import json
+import os
+import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -92,9 +94,23 @@ class WorkingMemoryEngine:
         return memory
 
     def _save(self, memory: dict) -> None:
+        """
+        Atomic write: 同ディレクトリに一意なtempファイルを書き込み、
+        fsyncでディスク反映後にos.replace()で原子的に置換する。
+        書き込み途中の状態が外部(他プロセス・他呼出)から観測されることを防ぎ、
+        中断・並行呼出時の新旧内容混在(State Cache Corruption)を防止する。
+        """
         self.path.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.path, "w", encoding="utf-8") as f:
-            json.dump(memory, f, ensure_ascii=False, indent=2)
+        tmp_path = self.path.with_suffix(f".tmp.{uuid.uuid4().hex}")
+        try:
+            with open(tmp_path, "w", encoding="utf-8") as f:
+                json.dump(memory, f, ensure_ascii=False, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(tmp_path, self.path)
+        finally:
+            if tmp_path.exists():
+                tmp_path.unlink(missing_ok=True)
 
     def update(self, event: str, changes: dict) -> dict:
         """
