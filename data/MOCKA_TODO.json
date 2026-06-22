@@ -535,6 +535,18 @@
       "note": "2026-06-22確定（E20260622_436667229d69e参照）。きむら博士承認済み（「くみこむさ！当然」）。今後Claudeがくろこ向け指示書（MCP_PLACEMENT_FIX_INSTRUCTION.mdのような形式）を作成する際は、必ず本ルールのテンプレート文を末尾に追加すること。次回以降の指示書作成時にこのTODOを参照し、漏れがないか確認する。",
       "reference_event": "E20260622_436667229d69e",
       "created_at": "2026-06-22T10:24:15.795515"
+    },
+    {
+      "id": "TODO_358",
+      "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
+      "status": "未着手",
+      "priority": "高",
+      "category": "phase5x_incident",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "6件判明分(app.py:136-137/140-148/2111-2112/2587-2593/2695/2823-2824)の精査完了後にHuman Gate Review開始。Core System File(app.py)着手は承認後のみ。承認なしに実装着手禁止。関連: docs/incidents/INCIDENT_IMPORT_APP_SIDE_EFFECT.md, docs/governance/import_safety_rule_v1.md",
+      "reference_event": "E20260622_734189009170f",
+      "created_at": "2026-06-22T20:12:46.825393"
     }
   ],
   "completed": [
@@ -4943,5 +4955,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T11:08:20.992617+00:00"
+  "_snapshot_at": "2026-06-22T11:18:24.586719+00:00"
 }
