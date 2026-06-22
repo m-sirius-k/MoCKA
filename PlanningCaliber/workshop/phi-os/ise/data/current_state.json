@@ -168,11 +168,17 @@
       "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
       "priority": "最高",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_358",
+      "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
+      "priority": "高",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 36,
-  "state_hash": "a725765b3142d2d3a3910bea2c4e029186d2b059919e8af16ac53efd0bdaac58",
-  "generated_at": "2026-06-22T09:47:35.292933+00:00"
+  "revision": 37,
+  "state_hash": "4404bc2385b9bf3805e8a58f07be8a63622baefe861d63655cabffa99b6b60d8",
+  "generated_at": "2026-06-22T21:46:44.167953+00:00"
 }
