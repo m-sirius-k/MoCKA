@@ -586,6 +586,18 @@
       "note": "",
       "reference_event": "E20260623_664174251c911",
       "created_at": "2026-06-23T07:17:59.567362"
+    },
+    {
+      "id": "EXEC-LAYER-STD-V1",
+      "title": "Execution Layer Standard v1.0（HAB接続統合・GL7検証器化）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "フェーズ：Execution Layer Standard v1.0（HAB接続統合）\n\n■目的\nHAB経由でのGPT出力をMoCKA実行層へ安全接続するため、GL7を含む実行レイヤーのJSON境界・ログ境界・責務境界を完全分離し固定化する。\n\n■指示（くろこ実装用・そのまま投げてOK）\n\n① GL7責務再定義（必須）\n- GL7は「実行層」ではなく「検証器」に縮小する\n- parseは1回のみ（入口固定）\n- JSON再構築禁止\n- wrapper再serialize禁止\n- trailing dataは即reject（trim禁止）\n- log生成は禁止（OBSERVATION層へ移管）\n\n② execution layer 3分割固定\n- INPUT層: GPT / HABからの入力。ここでのみJSON parse許可（1回）\n- EXECUTION層: 純粋処理のみ。データ構造変更禁止。ログ禁止\n- OBSERVATION層: log / debug / trace / diagnostic dump。ここだけ副作用許可\n\n③ JSON境界ルール（強制）\n- JSONは単一オブジェクトのみ許可\n- partial JSON禁止\n- trailing data即reject（修正しない）\n- stdoutとJSONは物理分離\n- log混入時はfail closed + diagnostic dump\n\n④ mocka_write_event修正\n- JSON生成責任はcallerに完全移譲\n- GL7は検証のみ\n- storageはpure sink（加工禁止）\n\n⑤ before_tool修正（重要）\n- parseは1回のみ\n- 2回目parse禁止\n- 再構築禁止\n- log参照禁止\n- validationのみ実施\n\n⑥ fail closed動作強化\n失敗時は必ず：\n- diagnostic dump生成\n- raw input保持\n- parse error理由のみ記録\n- 自動修復禁止\n\n■設計思想（固定）\nこの変更はバグ修正ではなく「execution layerの『観測と実行の分離』を強制する制度改修」である。\n\n■効果（解決するもの）\n- Extra data error\n- JSON二重連結\n- stdout混線\n- before_tool二重parse\n- wrapper再serializeバグ\n- log混入破壊\n\n■くろこ向け一言まとめ（最短版）\nGL7を実行層から検証器へ縮小し、execution layerをINPUT / EXECUTION / OBSERVATIONに分離。JSONは入口1回parse・出口1回のみ。ログとJSONを物理分離し、混入時はfail closed + diagnostic dump。",
+      "assigned_to": "くろこ",
+      "note": "実装フェーズ指定なし／設計確定扱い。分割せず単一統合仕様として登録。GL7/execution layerはコード名ではなく概念レイヤー（構造設計の会話レイヤー）。",
+      "reference_event": "",
+      "created_at": "2026-06-23T08:08:23.769196"
     }
   ],
   "completed": [
@@ -4994,5 +5006,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T23:07:36.823162+00:00"
+  "_snapshot_at": "2026-06-22T23:17:40.796991+00:00"
 }
