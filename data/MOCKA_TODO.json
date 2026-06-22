@@ -646,6 +646,66 @@
       "note": "重要：本TODOは「実行結果」ではない。mocka_write_event/GL7/EXEC/OBSはいずれも未実行。PASS/FAIL判定は付与しない。Phase A（実際にmocka_write_eventを実行して検証）はまだ未着手。",
       "reference_event": "CONTRACT-INTEGRATION-TEST-SPEC-V1",
       "created_at": "2026-06-23T08:45:49.108775"
+    },
+    {
+      "id": "REALITY-ALIGNMENT-HAB-GL7-V1",
+      "title": "MoCKA設計の現実適合（HAB/GL7縮退・EXEC削除・mocka_write_event実API準拠）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■背景\nHAB-CONTRACT-LAYER-V1 / EXEC-LAYER-STD-V1 で設計したHAB→GL7→EXEC→OBSのOS的パイプラインは、実際のmocka_write_eventのI/O仕様（title, description, author の3フィールドのみ。mode/namespace/rollback等は存在しない）と乖離していたことが判明。\n\n■結論（採用ルート：A 現実適合ルート）\nMoCKAの上位設計を捨てず、「実APIに合わせて縮退設計する」。\n\n■① 正しい関数現実\nmocka_write_event(title, description, author)\n\n■② 修正後のMoCKA構造（現実適合版）\nHAB（変換のみ）→ GL7（3 field validation only）→ mocka_write_event(title, description, author) → OBS（log only）\n\n■③ GL7の役割修正\ntitle検証 / description検証 / author検証 / nullチェック のみ。OS validatorではない。\n\n■④ HABの役割修正\n「自由構造 → 3フィールド変換器」。\ninput: intent / schema / execution → output: title / description / author\n\n■⑤ EXEC層は削除\n実行ロジックが存在せず、ただのwrite関数のため、EXEC層は不要。\n\n■⑥ OBSの役割\nただのログ記録。構造解釈しない。traceのみ保持。\n\n■⑦ 本質\n「OSを作っていたのではなく、シンプルなイベント書き込み関数に対して過剰抽象を積んでいた」。EXEC-LAYER-STD-V1 / HAB-CONTRACT-LAYER-V1 / CONTRACT-INTEGRATION-TEST-SPEC-V1 / UNIFIED-EXEC-PHASE-PLAN-V1 はこの縮退設計を反映して見直しが必要。\n\n■次にやること\n「HAB→3フィールド変換器としての最小設計」を出す。",
+      "assigned_to": "くろこ",
+      "note": "過去4本(EXEC-LAYER-STD-V1, HAB-CONTRACT-LAYER-V1, CONTRACT-INTEGRATION-TEST-SPEC-V1, UNIFIED-EXEC-PHASE-PLAN-V1)はOS理想設計に基づくため、本TODO採用後は実API(title/description/authorのみ)に合わせた見直しが必要。EXEC層は実体なしのため削除方向。",
+      "reference_event": "DRY-RUN-001-TEST-CASE-SPEC",
+      "created_at": "2026-06-23T08:50:00.658283"
+    },
+    {
+      "id": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
+      "title": "Phase 0.5：API収束フェーズ（HAB→3フィールド変換の最小仕様確定）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■位置づけ\nREALITY-ALIGNMENT-HAB-GL7-V1で確定した現実適合ルートの次工程。実行フェーズではなく、インターフェース再設計フェーズ。実データ書き込みはまだ行わない。\n\n■目的\nHABをintent/schema/execution構造から、mocka_write_eventの実API（title, description, author）への3フィールド変換器として確定する。\n\n■① HABの縮退設計\n- intent/schema/execution構造の生成を禁止\n- 入力をtitle/description/authorの3フィールドへ完全変換する変換器として再定義\n\n■② GL7の軽量化\n- JSON構造検証ではなく、3フィールドのfield validationに縮退\n- title検証 / description検証 / author検証 / nullチェックのみ\n\n■③ EXEC削除確定\n- 実行ロジックは存在しないため、EXEC層は構造として扱わない\n\n■④ OBSの最小化\n- traceのみ記録。構造解釈・storage書き換えは行わない\n\n■確定後の構造\nHAB → (3-field transform) → GL7 → (field validation) → mocka_write_event(title, description, author) → OBS → (trace only)\n\n■完了条件\nHAB→3フィールド変換の最小仕様が確定すること。確定後初めて「1件だけ実書き込みテスト」に進める。",
+      "assigned_to": "くろこ",
+      "note": "実行フェーズではなくインターフェース再設計フェーズ。本仕様確定までmocka_write_eventの実書き込みテストは行わない。",
+      "reference_event": "REALITY-ALIGNMENT-HAB-GL7-V1",
+      "created_at": "2026-06-23T08:50:54.987860"
+    },
+    {
+      "id": "GL7-VALIDATION-MISSING-BUG",
+      "title": "[不具合]mocka_write_eventに空文字/欠損バリデーションが存在しない",
+      "status": "未着手",
+      "priority": "高",
+      "category": "不具合",
+      "description": "■検証結果（Phase 2：不正入力耐性テスト）\n入力：title=\"test_event_2\", description=\"\", author=\"\"\n期待：FAIL or REJECT（空値検出、書き込み阻止、event_id発行なし）\n実際：status=\"ok\", event_id=\"E20260623_3961913609a48\"で正常に書き込まれた（gate/sqlite）\n\n■結論\nHAB-3FIELD-TRANSFORM-MIN-SPECで設計したGL7の役割（title/description/author検証、nullチェック）は現状mocka_write_event側に実装されていない。空文字・欠損フィールドがそのままDBに書き込まれてしまう。\n\n■影響\n- データ品質の汚染（空のdescription/authorイベントが蓄積される）\n- author=\"\" は本来「正確なAI識別子」必須のはずだが強制されていない\n\n■対応候補\n- mocka_write_event呼び出し前段（GL7相当）でのfield validation実装\n- もしくはmocka_write_event内部でのrequired/non-empty validation追加",
+      "assigned_to": "Claude",
+      "note": "実テストで確認済みの実バグ。event_id=E20260623_3961913609a48として実際にgate/sqliteに書き込まれてしまったテストデータが残存している。",
+      "reference_event": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
+      "created_at": "2026-06-23T08:53:34.609029"
+    },
+    {
+      "id": "GL7-MINIMAL-IMPL-SPEC",
+      "title": "GL7最小実装仕様（mocka_write_event呼び出し前バリデーション）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■背景\nGL7-VALIDATION-MISSING-BUGで実証された通り、mocka_write_eventには空文字/欠損に対するバリデーションが存在しない。HAB-3FIELD-TRANSFORM-MIN-SPECで定義したGL7（field validation層）を実装する。\n\n■対象データ\n- E20260623_3961913609a48：invalid化済み（無効化レコード: E20260623_466594526e084）\n\n■仕様\n① title: non-empty string 必須\n② description: non-empty string 必須\n③ author: valid-id（正確なAI識別子。空文字/null禁止）\n④ reject rule：いずれか欠損・空文字の場合は即reject、mocka_write_eventを呼び出さない\n⑤ fail closed：validation失敗時は書き込みを行わず、reject理由を呼び出し元に返す。自動修復・デフォルト値補完は禁止\n\n■配置\nmocka_write_eventを直接呼ぶ全AI/呼び出し元が、呼び出し前に本validationを適用する運用ルールとして定義（mocka_write_event自体の改修ではなく、呼び出し前段でのGL7相当チェック）。",
+      "assigned_to": "くろこ",
+      "note": "削除APIが存在しないため、不正テストデータ(E20260623_3961913609a48)は物理削除せず無効化レコード(E20260623_466594526e084)で論理無効化済み。今後のmocka_write_event呼び出しは本仕様を適用すること。",
+      "reference_event": "GL7-VALIDATION-MISSING-BUG",
+      "created_at": "2026-06-23T08:54:42.131074"
+    },
+    {
+      "id": "GL7-MIGRATION-POLICY-V1",
+      "title": "GL7 Migration Policy v1.0（既存データ整合ルール：VALID/LEGACY/QUARANTINE）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "設計成果物",
+      "description": "■目的\nGL7導入前に生成された既存イベント（pre-GL7 data）と、導入後の検証済みデータ（post-GL7 data）を同一DB内で安全に共存させる。\n\n■① データ区分ルール（必須・3分類固定）\n1. VALID（GL7通過）：GL7 validation済み、title/description/author全て有効\n2. LEGACY（pre-GL7）：GL7未検証データ、既存イベント全て該当\n3. QUARANTINE（無効化）：GL7違反 or 無効化レコード対象（例：空文字author/description）\n\n■② 既存データの扱い（今回のケース）\n- E20260623_3961913609a48：status: LEGACY → QUARANTINE対象\n- E20260623_466594526e084：status: QUARANTINE（論理無効化レコード）\n\n■③ ルール（重要・固定）\n- LEGACYは検証しない（retroactive validation禁止、過去データはそのまま保持）\n- QUARANTINEは参照除外（query結果から除外、DB削除は禁止（既定））\n- VALIDのみ正規データ扱い（GL7通過のみが「正規イベント」）\n\n■④ GL7導入後の挙動\n書き込み時：GL7 PASS → VALIDとして保存／GL7 FAIL → reject（書き込みしない）\n既存データ検索時：default=VALIDのみ返す／LEGACYはオプション表示／QUARANTINEは非表示\n\n■⑤ 移行ルール（段階的適用）\nPhase 1: GL7 validation追加、既存データはLEGACY維持\nPhase 2: 新規データのみVALID化\nPhase 3: クエリフィルタ完全分離\n\n■⑥ システム構造（確定）\nINPUT → HAB → GL7 → [VALID→storage] / [FAIL→reject] → OBS\nLEGACY → bypass GL7\nQUARANTINE → excluded\n\n■⑦ 結論\nこのルールにより、GL7導入前後のデータは同一DB内で破綻なく共存可能。\n\n■次ステップ\nGL7最小実装（実際にrejectを発生させる実装定義）→ GL7-MINIMAL-IMPL-SPECで対応",
+      "assigned_to": "くろこ",
+      "note": "mocka_list_events/mocka_search等の既存read系ツールは現状VALID/LEGACY/QUARANTINEのstatusフィルタを持たないため、Phase3(クエリフィルタ完全分離)実装にはツール側の対応も必要。",
+      "reference_event": "GL7-MINIMAL-IMPL-SPEC",
+      "created_at": "2026-06-23T08:57:23.372607"
     }
   ],
   "completed": [
@@ -5054,5 +5114,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T23:47:53.534572+00:00"
+  "_snapshot_at": "2026-06-22T23:57:57.317385+00:00"
 }
