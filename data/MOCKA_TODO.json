@@ -485,6 +485,19 @@
       "note": "PlanningCaliber Canonical Audit（TODO_355）・GL7-FP-001（TODO_356）と並ぶ、本日発覚した第3のCanonical Integrity事案。GL7修正完了後、本TODOとTODO_355を並行調査することを推奨。",
       "reference_event": "TODO_356代替登録作業中の発見（A:側バックアップ形骸化）",
       "created_at": "2026-06-21T17:34:01"
+    },
+    {
+      "id": "TODO_HAB_GPT_CONNECTION_SPEC_V1",
+      "title": "[ARCHITECTURE_CONTRACT/LOCKED] HAB ↔ GPT Connection Contract v1.0 — 構造接続固定ノード",
+      "status": "DONE_LOCKED",
+      "priority": "最高",
+      "category": "Architecture_Contract_Critical",
+      "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。HAB↔GPT間を「意味ではなく構造で接続される」関係として固定する契約。structural filter（HAB）↔ telemetry generator（GPT）interface / no semantic coupling rule / Event.db integration defined / H2-3・Relay境界固定。Phase4 Core Interfaceに分類される。\n\n【固定内容】\n- データフロー: HAB→(structured constraints+context frame)→GPT→(semantic output+telemetry)→Event.db / GPT→H2-3（L2+のみ即delegate）\n- Invariant: GPTはHABを解釈しない / HABはGPT出力を意味変換しない / GPTは判断しない（生成のみ） / H2-3はリアルタイム判断維持 / Relayは時間のみ制御\n- Forbidden: GPT→routing変更禁止 / HAB→decision生成禁止 / GPT↔H2-3直接改変禁止 / batch化routing禁止 / 意味ベース再解釈ループ禁止\n\n【LOCK理由】本契約は変更するとPhase4全体が構造的に壊れる種類の仕様であるため、「変更不可TODO」として扱う。後続のRelay/MCP/Phase5タスクすべての基点（接続レイヤ固定点）。",
+      "assigned_to": "Claude",
+      "note": "2026-06-22確定（E20260622_4870899134b52参照）。きむら博士判断によりDONE+LOCKED状態で登録。実装タスクとして消化されるものではなく、構造の結節点として永続参照される。変更が必要になった場合はPhase5以降の「解釈固定の更新権」議論を経てv2.0として再定義する以外の変更経路は想定しない。\n\n【Implementation Spec追加（2026-06-22 / E20260622_63727730715f3）】契約本体を実行可能なJSON入出力規約まで具体化済み。Input Object（context_id/routing_tag/structural_constraints/state_snapshot/execution_context）、Output Object（context_id/routing_tag/telemetry/event_bundle）、Event.db Serialization Rule（event_id/type/timestamp/source/payload/causal_parent統一構造）を確定。くろこ実装時はこのスキーマをそのまま採用すること。最重要原則：\"Meaning is not transmitted between HAB and GPT — Only structure is transmitted\"。実装着手の際は本ノートのJSON構造定義をそのまま参照可能。\n\n【4点セット完結（2026-06-22 / E20260622_791597696ecd7）】Audit Version（人間監査用読み下し）+ MCP Integration Forward Specification（将来拡張版）が追加完成。本契約は[契約本体/実装仕様/監査版/MCP拡張前提版]の4文書セットとして完結。MCP統合時の制約: MCPは「外部入出力の拡張レイヤ」に過ぎず、意味解釈権・制御権・override権を一切持たない。将来Notion/Google Drive等のMCPツールをHAB-GPT接続に絡める場合も、本Forward Specの許可範囲（HABへの構造入力／GPT出力の外部転送／Event.db read-only）を超えてはならない。",
+      "reference_event": "E20260622_4870899134b52",
+      "created_at": "2026-06-22T09:02:25.758535",
+      "updated_at": "2026-06-22T09:06:46.519272"
     }
   ],
   "completed": [
@@ -4893,5 +4906,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-21T23:57:25.680041+00:00"
+  "_snapshot_at": "2026-06-22T00:07:30.078066+00:00"
 }
