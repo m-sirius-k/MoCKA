@@ -539,15 +539,15 @@
     {
       "id": "TODO_358",
       "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
-      "status": "Core System File Change Approval承認済み_条件付き_実装待ち",
+      "status": "Implementation完了_Incident Closure待ち",
       "priority": "高",
       "category": "phase5x_incident",
       "description": "",
       "assigned_to": "Claude",
-      "note": "2026-06-23: Implementation Readiness Check(Check A/B/C)完了、3項目全てOK。割り込みインシデント: data/working_memory.json破損(State Cache Corruption, L2)によりwrite系ゲート全停止 -> 原因特定(2 JSONオブジェクト連結、working_memory.py _save()の非atomic write)-> 復旧完了 -> 再発防止としてworking_memory.py _save()をatomic write化(temp file + fsync + os.replace)完了。Import Side Effect Incident本体は承認済み・実装待ちのまま変化なし。次フェーズ: Implementation(app.py本体への実装着手、ユーザーの明示指示待ち)。",
+      "note": "2026-06-23: app.py実装完了。Change Plan v1の6箇所(#1-#6)全て対応(#1/#3/#5/#6=start_background_loops()へ移設、#4=initialize_runtime()へ移設、#2=app.py内起動経路削除)。実機検証: import app単独実行でactive_threads=1(daemon thread起動なし)/ESSENCE_AUTO出力消失/git操作なし確認。phi_os/tests 104件PASS(回帰なし)。Core System File Change Approval条件1-3全て満たした。残るのはIncident Closure(実運用での観察期間後にクローズ)のみ。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「14.」参照。",
       "reference_event": "E20260622_734189009170f",
       "created_at": "2026-06-22T20:12:46.825393",
-      "updated_at": "2026-06-23T07:33:46.303479"
+      "updated_at": "2026-06-23T07:43:18.460033"
     },
     {
       "id": "TODO_359",
@@ -4994,5 +4994,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T22:37:23.112087+00:00"
+  "_snapshot_at": "2026-06-22T22:47:27.659872+00:00"
 }
