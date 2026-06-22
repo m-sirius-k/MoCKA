@@ -133,22 +133,6 @@ def auto_process_loop():
             print("[AUTO] 例外: {}".format(str(e)[:80]))
             time.sleep(30)
 
-_auto_thread = threading.Thread(target=auto_process_loop, daemon=True)
-_auto_thread.start()
-
-# ===== Essence自動更新ループ（RE_REDUCED監視）=====
-try:
-    import importlib.util as _ilu
-    _spec = _ilu.spec_from_file_location(
-        'essence_auto_updater',
-        str(Path(__file__).parent / 'interface' / 'essence_auto_updater.py')
-    )
-    _eau = _ilu.module_from_spec(_spec)
-    _spec.loader.exec_module(_eau)
-    _eau.start_essence_auto_loop()
-except Exception as _eau_err:
-    print(f"[ESSENCE_AUTO] 起動失敗: {_eau_err}")
-
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(ROOT_DIR, "data")
 EVENTS_CSV = os.path.join(DATA_DIR, "events.csv")  # 廃止済み変数（互換保持のみ・書き込み禁止）
@@ -2108,10 +2092,6 @@ def auto_audit_loop():
             print(f"[AUTO-AUDIT] ループ例外: {e}")
         _lt2.sleep(60)
 
-_audit_thread = _lt.Thread(target=auto_audit_loop, daemon=True)
-_audit_thread.start()
-
-
 @app.route("/audit/status")
 def audit_status():
     from pathlib import Path as _P
@@ -2589,7 +2569,6 @@ try:
         init_audit_db, create_task, submit_result,
         run_discrepancy_check, get_task_report, list_tasks as list_audit_tasks
     )
-    init_audit_db()
     print("[app] cross_audit engine loaded")
 
     @app.route("/cross_audit/task", methods=["POST"])
@@ -2691,8 +2670,6 @@ def _start_overdue_loop():
     t = _threading.Timer(3600, _start_overdue_loop)
     t.daemon = True
     t.start()
-
-_threading.Timer(10, _start_overdue_loop).start()
 
 @app.route('/integrity/monitor')
 def integrity_monitor():
@@ -2819,11 +2796,6 @@ def _guidelines_loop():
         except Exception as e:
             print(f"[guidelines] loop error: {e}")
         time.sleep(3600)  # 1時間ごと
-
-_gt = _threading.Thread(target=_guidelines_loop, daemon=True)
-_gt.start()
-
-
 
 # ============================================================
 # TODO_118: Risk Engine — TODOリスクスコア + SYSTEM RECOMMENDATION
@@ -4049,6 +4021,26 @@ def knowledge_diff():
 # ── Knowledge Diff API ここまで ───────────────────────────────────────────────
 
 
+# ============================================================
+# Runtime Boundary v1 (docs/governance/runtime_boundary_v1.md)
+# import時の副作用を排除するため、起動時の副作用源を
+# initialize_runtime()/start_background_loops()に集約する。
+# いずれも__main__ブロック内でのみ呼び出す。
+# ============================================================
+
+def initialize_runtime():
+    """起動時に一度だけ実行する初期化処理(DB初期化等)。Thread/Timer起動は行わない。"""
+    init_audit_db()
+
+
+def start_background_loops():
+    """継続稼働するbackground Thread/Timerの起動窓口。initialize_runtime()完了後に呼ぶ。"""
+    threading.Thread(target=auto_process_loop, daemon=True).start()
+    _lt.Thread(target=auto_audit_loop, daemon=True).start()
+    _threading.Timer(10, _start_overdue_loop).start()
+    _threading.Thread(target=_guidelines_loop, daemon=True).start()
+
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
@@ -4066,4 +4058,6 @@ if __name__ == "__main__":
         print(f"[ContextRuntime] boot()成功 — booted_at={context_runtime_instance._booted_at}")
     except Exception as e:
         print(f"[ContextRuntime] boot()失敗（処理は継続）: {e}")
+    initialize_runtime()
+    start_background_loops()
     app.run(host="127.0.0.1", port=5000, debug=False)
