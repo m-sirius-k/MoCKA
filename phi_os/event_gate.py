@@ -139,13 +139,56 @@ def receive_event():
     return jsonify(result), 201
 
 
+def process_buffered_event(ev: dict, conn) -> dict:
+    """
+    Operational telemetry専用の単発処理（validate_operational + idempotency + _write）。
+    receive_event_batch（HTTP/Local Event Buffer）と、MCP Bridge等のインプロセス
+    呼び出し元の双方から共有される。Flask依存を持たないため、トランスポートを
+    問わず呼び出せる。conn のcommit/closeは呼び出し元の責務とする。
+    戻り値: {'status':'ok','event_id':...} | {'status':'duplicate'} |
+            {'status':'rejected','errors':[...]}
+    """
+    idem_key = ev.get('idempotency_key')
+    if idem_key:
+        dup = conn.execute(
+            'SELECT 1 FROM gate_idempotency WHERE idempotency_key = ?', (idem_key,)
+        ).fetchone()
+        if dup:
+            return {'status': 'duplicate'}
+
+    errors = validate_operational(ev)
+    if errors:
+        return {'status': 'rejected', 'errors': errors}
+
+    ev = dict(ev)
+    req_id = ev.get('event_id')
+    dup_id = conn.execute(
+        'SELECT 1 FROM events WHERE event_id = ?', (req_id,)
+    ).fetchone() if req_id else None
+    eid = req_id if (req_id and not dup_id) else _next_event_id()
+
+    ev['event_id'] = eid
+    ev['when_ts'] = ev.get('when_ts') or ev.get('when') or datetime.now(timezone.utc).isoformat()
+    ev['event_source'] = ev.get('event_source', 'buffered')
+
+    _write(ev, conn=conn)
+
+    if idem_key:
+        conn.execute(
+            'INSERT OR IGNORE INTO gate_idempotency (idempotency_key, event_id, created_at) '
+            'VALUES (?, ?, ?)',
+            (idem_key, eid, datetime.now(timezone.utc).isoformat())
+        )
+    return {'status': 'ok', 'event_id': eid}
+
+
 @gate_bp.route('/api/gate/event/batch', methods=['POST'])
 def receive_event_batch():
     """
     Local Event Buffer用のbatch ingestionエンドポイント（TODO_347）。
     単発の/api/gate/eventはAI主体のgovernance writeの厳格検証(validate)を
     維持するため変更しない。本エンドポイントはhandshake/chat等の高頻度
-    operational telemetry専用で、validate_operational()による軽量検証と
+    operational telemetry専用で、process_buffered_event()による軽量検証と
     idempotency_keyによる重複防止(リトライ時の二重書き込み防止)を行う。
     """
     payload = request.get_json(force=True) or {}
@@ -158,39 +201,13 @@ def receive_event_batch():
     try:
         _ensure_idempotency_table(conn)
         for ev in events:
-            idem_key = ev.get('idempotency_key')
-            if idem_key:
-                dup = conn.execute(
-                    'SELECT 1 FROM gate_idempotency WHERE idempotency_key = ?', (idem_key,)
-                ).fetchone()
-                if dup:
-                    duplicate_count += 1
-                    continue
-
-            errors = validate_operational(ev)
-            if errors:
-                rejected.append({'idempotency_key': idem_key, 'errors': errors})
-                continue
-
-            req_id = ev.get('event_id')
-            dup_id = conn.execute(
-                'SELECT 1 FROM events WHERE event_id = ?', (req_id,)
-            ).fetchone() if req_id else None
-            eid = req_id if (req_id and not dup_id) else _next_event_id()
-
-            ev['event_id'] = eid
-            ev['when_ts'] = ev.get('when_ts') or ev.get('when') or datetime.now(timezone.utc).isoformat()
-            ev['event_source'] = ev.get('event_source', 'buffered')
-
-            _write(ev, conn=conn)
-
-            if idem_key:
-                conn.execute(
-                    'INSERT OR IGNORE INTO gate_idempotency (idempotency_key, event_id, created_at) '
-                    'VALUES (?, ?, ?)',
-                    (idem_key, eid, datetime.now(timezone.utc).isoformat())
-                )
-            accepted.append(eid)
+            result = process_buffered_event(ev, conn)
+            if result['status'] == 'duplicate':
+                duplicate_count += 1
+            elif result['status'] == 'rejected':
+                rejected.append({'idempotency_key': ev.get('idempotency_key'), 'errors': result['errors']})
+            else:
+                accepted.append(result['event_id'])
         conn.commit()
     finally:
         conn.close()

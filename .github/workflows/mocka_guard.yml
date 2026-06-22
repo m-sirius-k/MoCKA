@@ -1,0 +1,39 @@
+name: MoCKA Global Rule Guard
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rule-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate MoCKA Structure
+        run: |
+          echo "Checking MoCKA structural integrity..."
+
+          if grep -r "mocka_v0.1" --include="*.py" --include="*.md" -l .; then
+            echo "RULE VIOLATION: temp folder detected"
+            exit 1
+          fi
+
+          if find . -type d -path "*/mcp/mcp"; then
+            echo "RULE VIOLATION: double nesting detected (mcp/mcp)"
+            exit 1
+          fi
+
+          if find . -type d -path "*/relay/relay"; then
+            echo "RULE VIOLATION: double nesting detected (relay/relay)"
+            exit 1
+          fi
+
+          if find . -type d -path "*/event/event"; then
+            echo "RULE VIOLATION: double nesting detected (event/event)"
+            exit 1
+          fi
+
+          echo "STRUCTURE OK"

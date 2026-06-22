@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-22T07:26:49.891171"
+  "generated_at": "2026-06-22T07:26:49.891171",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -0.875,
+    "danger_rate": 0.062,
+    "success_rate": 0.938,
+    "text": "共有だけだ　なんもするな　記録だけしとけ　どあほ\n\n\n\n\nMoCKA System Directive：MCP構造ガードレイヤ設置指示（くろこ宛）\n\n1. 指示",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-14",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "SERVER STATUS\n● APP :5000 ONLINE\n● CALIBER :5679 ONLINE\n● MCP :5002 OFFLINE\n● NGROK OFFLINE\nMCP TOOL",
+        "recur": 0,
+        "matched": [
+          "MCP tool"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-06-11",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "The entry already exists — manifest.json already has content_orchestra.js registered for chatgpt.com",
+        "recur": 0,
+        "matched": [
+          "MCP tool"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-22T00:26:50.577Z"
+  }
 }
