@@ -544,10 +544,10 @@
       "category": "phase5x_incident",
       "description": "",
       "assigned_to": "Claude",
-      "note": "2026-06-23: Core System File Change Approval発行(条件付き承認)。条件1:スコープはChange Plan v1の範囲に限定。条件2:Runtime Boundary v1の責務を実装中に拡張しない。条件3:実装後にImport Safety再検証(import app単独実行でThread/DB/HTTP/Git操作が発生しないことを確認)。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「12.」参照。次フェーズ: Implementation(app.py本体への実装着手)。",
+      "note": "2026-06-23: Implementation Readiness Check(Check A/B/C)完了、3項目全てOK。割り込みインシデント: data/working_memory.json破損(State Cache Corruption, L2)によりwrite系ゲート全停止 -> 原因特定(2 JSONオブジェクト連結、working_memory.py _save()の非atomic write)-> 復旧完了 -> 再発防止としてworking_memory.py _save()をatomic write化(temp file + fsync + os.replace)完了。Import Side Effect Incident本体は承認済み・実装待ちのまま変化なし。次フェーズ: Implementation(app.py本体への実装着手、ユーザーの明示指示待ち)。",
       "reference_event": "E20260622_734189009170f",
       "created_at": "2026-06-22T20:12:46.825393",
-      "updated_at": "2026-06-23T07:19:17.326065"
+      "updated_at": "2026-06-23T07:33:46.303479"
     },
     {
       "id": "TODO_359",
@@ -4994,5 +4994,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T22:27:18.935333+00:00"
+  "_snapshot_at": "2026-06-22T22:37:23.112087+00:00"
 }
