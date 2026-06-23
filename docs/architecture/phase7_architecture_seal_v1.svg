@@ -1,0 +1,79 @@
+<svg viewBox="0 0 1000 760" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>MoCKA Phase7 Semantic Operating Layer Architecture Seal v1</title>
+<desc>Four stacked layers: PHI-OS immutable core (frozen), Adapter Layer, Semantic Core containing A Meaning Generation, B Meaning Fixation, C Meaning Audit, D Meaning Execution, and an Execution Loop cycling canonical to intent to explanation to snapshot to drift back to cycle. Prohibited boundaries: PHI-OS non-invasion, no Relay integration, no external reverse flow, append-only snapshots.</desc>
+<rect x="0" y="0" width="1000" height="760" fill="#15171c"/>
+
+<text x="40" y="44" font-family="sans-serif" font-size="20" font-weight="600" fill="#f0f1f3">MoCKA Phase7 - Semantic Operating Layer</text>
+<text x="40" y="68" font-family="sans-serif" font-size="13" fill="#9aa0ab">Architecture Seal v1 - structure frozen 2026-06-23</text>
+
+<rect x="40" y="96" width="700" height="60" rx="8" fill="#202329" stroke="#3a3f4a" stroke-width="1.5"/>
+<text x="60" y="122" font-family="sans-serif" font-size="15" font-weight="600" fill="#f0f1f3">PHI-OS - immutable event core</text>
+<text x="60" y="142" font-family="sans-serif" font-size="12" fill="#9aa0ab">FROZEN - append-only - single source of truth</text>
+
+<line x1="390" y1="156" x2="390" y2="186" stroke="#3a3f4a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="40" y="190" width="700" height="50" rx="8" fill="#202329" stroke="#3a3f4a" stroke-width="1.5"/>
+<text x="60" y="212" font-family="sans-serif" font-size="15" font-weight="600" fill="#f0f1f3">Adapter Layer</text>
+<text x="60" y="230" font-family="sans-serif" font-size="12" fill="#9aa0ab">existing - non-invasive</text>
+
+<line x1="390" y1="240" x2="390" y2="270" stroke="#3a3f4a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<text x="60" y="288" font-family="sans-serif" font-size="14" font-weight="600" fill="#c7cbd1">Semantic Core</text>
+<rect x="40" y="296" width="700" height="140" rx="8" fill="none" stroke="#2c2f36" stroke-width="1" stroke-dasharray="4 4"/>
+
+<rect x="60" y="316" width="150" height="100" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="135" y="350" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">A</text>
+<text x="135" y="370" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Meaning</text>
+<text x="135" y="384" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Generation</text>
+<text x="135" y="404" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">canonical / intent</text>
+
+<rect x="230" y="316" width="150" height="100" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="305" y="350" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">B</text>
+<text x="305" y="370" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Meaning</text>
+<text x="305" y="384" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Fixation</text>
+<text x="305" y="404" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">explanation / snapshot</text>
+
+<rect x="400" y="316" width="150" height="100" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="475" y="350" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">C</text>
+<text x="475" y="370" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Meaning</text>
+<text x="475" y="384" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Audit</text>
+<text x="475" y="404" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">drift / consistency</text>
+
+<rect x="570" y="316" width="150" height="100" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="645" y="350" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">D</text>
+<text x="645" y="370" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Meaning</text>
+<text x="645" y="384" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">Execution</text>
+<text x="645" y="404" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">cycle / lifecycle</text>
+
+<line x1="210" y1="366" x2="230" y2="366" stroke="#9aa0ab" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="380" y1="366" x2="400" y2="366" stroke="#9aa0ab" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="550" y1="366" x2="570" y2="366" stroke="#9aa0ab" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<line x1="390" y1="436" x2="390" y2="466" stroke="#3a3f4a" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+<rect x="40" y="470" width="700" height="80" rx="8" fill="#202329" stroke="#3a3f4a" stroke-width="1.5"/>
+<text x="60" y="496" font-family="sans-serif" font-size="15" font-weight="600" fill="#f0f1f3">Execution Loop - MeaningCycleExecutor</text>
+<text x="60" y="516" font-family="sans-serif" font-size="11" fill="#9aa0ab">canonical -&gt; intent -&gt; explanation -&gt; snapshot -&gt; drift -&gt; cycle</text>
+<text x="60" y="534" font-family="sans-serif" font-size="11" fill="#9aa0ab">HALT: CANONICAL_NOT_FOUND / INSUFFICIENT_TRACE</text>
+
+<path d="M 760 510 C 860 510, 860 366, 760 366" fill="none" stroke="#ff9d5b" stroke-width="1.5" marker-end="url(#arrow2)"/>
+<text x="775" y="440" font-family="sans-serif" font-size="10" fill="#9aa0ab">next cycle</text>
+
+<rect x="40" y="570" width="700" height="150" rx="8" fill="#202329" stroke="#2c2f36" stroke-width="1"/>
+<text x="60" y="596" font-family="sans-serif" font-size="14" font-weight="600" fill="#f0f1f3">Prohibited boundaries (fixed)</text>
+<text x="60" y="622" font-family="sans-serif" font-size="12" fill="#c7cbd1">- PHI-OS non-invasion: no write, no cluster recompute, no embedding regen</text>
+<text x="60" y="646" font-family="sans-serif" font-size="12" fill="#c7cbd1">- No Relay integration: relay/replay_*.py is a separate concept, never merged</text>
+<text x="60" y="670" font-family="sans-serif" font-size="12" fill="#c7cbd1">- No external reverse flow: GPT/MCP adapters stay Advisor-only, propose not execute</text>
+<text x="60" y="694" font-family="sans-serif" font-size="12" fill="#c7cbd1">- Append-only snapshots: no overwrite, no delete, no auto-remediation</text>
+
+<text x="40" y="740" font-family="sans-serif" font-size="11" fill="#9aa0ab">Baseline: 6,563 clusters fixed - 6h diameter constraint maintained - all contracts in docs/contracts/</text>
+
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0,0 L8,4 L0,8 z" fill="#9aa0ab"/>
+</marker>
+<marker id="arrow2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0,0 L8,4 L0,8 z" fill="#ff9d5b"/>
+</marker>
+</defs>
+</svg>
