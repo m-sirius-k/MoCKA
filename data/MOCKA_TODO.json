@@ -674,14 +674,15 @@
     {
       "id": "GL7-VALIDATION-MISSING-BUG",
       "title": "[不具合]mocka_write_eventに空文字/欠損バリデーションが存在しない",
-      "status": "未着手",
+      "status": "調査済み",
       "priority": "高",
       "category": "不具合",
       "description": "■検証結果（Phase 2：不正入力耐性テスト）\n入力：title=\"test_event_2\", description=\"\", author=\"\"\n期待：FAIL or REJECT（空値検出、書き込み阻止、event_id発行なし）\n実際：status=\"ok\", event_id=\"E20260623_3961913609a48\"で正常に書き込まれた（gate/sqlite）\n\n■結論\nHAB-3FIELD-TRANSFORM-MIN-SPECで設計したGL7の役割（title/description/author検証、nullチェック）は現状mocka_write_event側に実装されていない。空文字・欠損フィールドがそのままDBに書き込まれてしまう。\n\n■影響\n- データ品質の汚染（空のdescription/authorイベントが蓄積される）\n- author=\"\" は本来「正確なAI識別子」必須のはずだが強制されていない\n\n■対応候補\n- mocka_write_event呼び出し前段（GL7相当）でのfield validation実装\n- もしくはmocka_write_event内部でのrequired/non-empty validation追加",
       "assigned_to": "Claude",
-      "note": "実テストで確認済みの実バグ。event_id=E20260623_3961913609a48として実際にgate/sqliteに書き込まれてしまったテストデータが残存している。",
+      "note": "[訂正] 当初「validationが存在しない」と誤認していたが、実際はC:\\Users\\sirok\\MoCKA\\phi_os\\gate_validator.py のvalidate()がwho_actor/who_session/why_purpose(10文字以上)/how_trigger/where_path/what_type/before_after を厳格に検証する本物のゲートが稼働中（PHI-OS GATE v1, 2026-06-16導入）。\n真因: mocka_mcp_server.py のmocka_write_event処理(364-384行)で、authorが空文字の場合に_DEFAULT_ACTORへ自動補填、why_purpose/after_stateがdescription空の場合にtitleへフォールバックする実装になっており、validate()に渡る前に空フィールドが隠蔽されてしまう。validate()自体は正しく動作している。\n対象テストイベント E20260623_3961913609a48 は実際にはauthor自動補填・why_purpose=title代用で正規にvalidate()を通過していたため、DBレベルでは空author行は存在しない（無効化レコードE20260623_466594526e084は前提が誤っていたが実害はない）。\n対応候補: mocka_write_event呼び出し時にauthor/descriptionが本当に空だった場合は自動補填せずREJECTする（フォールバックを「補完」ではなく「検知して拒否」に変更）。",
       "reference_event": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
-      "created_at": "2026-06-23T08:53:34.609029"
+      "created_at": "2026-06-23T08:53:34.609029",
+      "updated_at": "2026-06-23T09:07:38.795728"
     },
     {
       "id": "GL7-MINIMAL-IMPL-SPEC",
@@ -5114,5 +5115,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-22T23:57:57.317385+00:00"
+  "_snapshot_at": "2026-06-23T00:08:01.069761+00:00"
 }
