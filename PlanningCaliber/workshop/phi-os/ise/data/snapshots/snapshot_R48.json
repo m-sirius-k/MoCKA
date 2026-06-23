@@ -2,17 +2,11 @@
   "state_version": 1,
   "project": {
     "phase": 4,
-    "mission": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化着手・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）",
+    "mission": "Phase 4: 商用製品展開フェーズ（Orchestra稼働中・Relay収益化保留・vasAI封印済み）+ MoCKA制度化フェーズ（TIC/BEE/PHI OS実装完了）+ Institution Architecture確立（Constitution/Institution/Operation 3層・Connector Framework v2.0・SEO-OS/PR-OS稼働・PHI-OS Event Gate確立）",
     "priority": []
   },
   "warnings": [],
   "todos": [
-    {
-      "id": "TODO_139",
-      "title": "user_voice export自動取込 — フォルダ監視→importer→essence更新の全自動化",
-      "priority": "高",
-      "status": "未着手"
-    },
     {
       "id": "TODO_207",
       "title": "TIC Layer 4 — Human Gate UI（COMMAND CENTER TICパネル）",
@@ -113,132 +107,90 @@
       "id": "TODO_241",
       "title": "PR-OS Phase4: MoCKA Command Center統合",
       "priority": "低",
-      "status": "未着手"
+      "status": "進行中"
     },
     {
       "id": "TODO_242",
       "title": "PR-OS: WordPress認証情報設定→実動テスト",
       "priority": "高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_325",
+      "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
+      "priority": "高",
       "status": "未着手"
     },
     {
-      "id": "TODO_243",
-      "title": "PR-OS: mocka_bridge.py MoCKA統合動作確認",
+      "id": "TODO_334",
+      "title": "TODO_269実機API疎通テスト — Perplexity Connector",
       "priority": "中",
       "status": "未着手"
     },
     {
-      "id": "TODO_254",
-      "title": "SEO-OS Phase6 — Decision Ledger・Explain API・Simulation Mode・MoCKA Bridge実装",
+      "id": "TODO_335",
+      "title": "TODO_270実機API疎通テスト — Genspark Connector",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_350",
+      "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
       "priority": "最高",
       "status": "進行中"
     },
     {
-      "id": "TODO_258",
-      "title": "MoCKA 多AI接続アーキテクチャ — Phase1 Orchestraコンテキスト注入",
-      "priority": "高",
-      "status": "未着手"
+      "id": "TODO_HAB_5LAYER_DESIGN_PENDING",
+      "title": "HAB/PlanningCaliber/Caliber/Runtime 5層構造案の精査(未着手)",
+      "priority": "中",
+      "status": "進行中"
     },
     {
-      "id": "TODO_259",
-      "title": "MoCKA 多AI接続アーキテクチャ — Phase2 REST API公開（Cloudflare Workers）",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_268",
-      "title": "AI Connector Framework v1 確立 — gateway.py転用・ChatGPT Actions疎通テスト",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_269",
-      "title": "Perplexity Connector 実装 — adapter_perplexity.py",
+      "id": "TODO_MOCKA_SEAL_GIT_ADD_A_SEPARATION",
+      "title": "mocka-seal(anchor_update.py)のgit add -A分離設計(未着手)",
       "priority": "中",
       "status": "未着手"
     },
     {
-      "id": "TODO_270",
-      "title": "Genspark Connector 実装 — adapter_genspark.py",
+      "id": "TODO_354",
+      "title": "拡張機能正本パスレジストリ確立 — Relay/Orchestra/Memory/PHI-OS/MoCKA Bridgeの実体パス確定・複数系統フォルダの整理",
+      "priority": "最高",
+      "status": "進行中"
+    },
+    {
+      "id": "TODO_356",
+      "title": "GL7 False Positive on Quoted Git Paths — 非ASCIIファイル名によるGovernance Gate誤検知（書き込み系MCPツール全般ブロック）",
+      "priority": "最高",
+      "status": "未着手"
+    },
+    {
+      "id": "TODO_361",
+      "title": "Decision Ledger Reconnection — TODO_358 Human Gate Review判断のDecision Ledger接続",
       "priority": "中",
       "status": "未着手"
     },
     {
-      "id": "TODO_271",
-      "title": "PHI-OS プロセス管理統合 — PID管理・Restart自動化",
+      "id": "DRY-RUN-001-TEST-CASE-SPEC",
+      "title": "MoCKA First Contract Execution Test Case（Dry Run v1・未実行シナリオ）",
       "priority": "中",
       "status": "未着手"
     },
     {
-      "id": "TODO_272",
-      "title": "AI Capability Registry 実装 — Connector Framework v2.0 Phase1",
+      "id": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
+      "title": "Phase 0.5：API収束フェーズ（HAB→3フィールド変換の最小仕様確定）",
       "priority": "高",
       "status": "未着手"
     },
     {
-      "id": "TODO_273",
-      "title": "Connector Router 実装 — Connector Framework v2.0 Phase2",
+      "id": "GL7-UNENFORCED-CONDITIONS-BUG",
+      "title": "[不具合]GL7の安全条件3点が実行経路に未接続(FORBIDDEN_EXECUTIONS/encoding_mismatch/Human Gate)",
       "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_274",
-      "title": "Institution Log 拡張 — Connector Framework v2.0 Phase3",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_275",
-      "title": "Lifecycle Manager 実装 — Index起点の自動制度循環エンジン",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_276",
-      "title": "AI Capability Registry 制度設計 — AI別権限・能力・制約の正式定義",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_277",
-      "title": "AI Role Registry 実装 — 制度上の役職定義（監査官・設計者・レビュー担当等）",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_278",
-      "title": "Proposal Schema + Decision Ledger 実装 — AI提案フォーマット固定化と採用/却下記録",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_279",
-      "title": "Context Package API 実装 — セッション開始時一括取得エンドポイント",
-      "priority": "高",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_284",
-      "title": "Knowledge Diff API — Guideline/Essence/Registry差分取得エンドポイント",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_296",
-      "title": "health_check.py — .envファイルのBOM検知を監視対象に追加",
-      "priority": "中",
-      "status": "未着手"
-    },
-    {
-      "id": "TODO_297",
-      "title": "tech_watcher — watch_sources.json URL死活監視（廃止ドメイン自動検知）",
-      "priority": "中",
       "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 1,
-  "state_hash": "eb6910c81897933af16f3ae2cb6f97c528e861cf6990507957e3063a508d89b8",
-  "generated_at": "2026-06-12T01:22:53.990812+00:00"
+  "revision": 48,
+  "state_hash": "770c6a849717f86bf3b2dd4dc2cc409d1cac939244eb23725d8d8a612ee68ddb",
+  "generated_at": "2026-06-23T09:41:26.185925+00:00"
 }
