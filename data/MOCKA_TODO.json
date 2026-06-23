@@ -793,15 +793,15 @@
     {
       "id": "PHI-OS-HUMAN-GATE-STATE-MODEL-V1",
       "title": "PHI-OS Human Gate State Model v1 + GL7最小カーネル仕様v1（確定仕様・未実装）",
-      "status": "Phase1完了",
+      "status": "Phase2完了",
       "priority": "高",
       "category": "基準仕様",
       "description": "CONTROL-MAP-V2-DECISIONの後続。責務固定原則(GL7=物理制約/PHI-OS=意味裁定+HumanGate/App=UIトリガ)に基づく実装仕様。\n\n■PHI-OS Human Gate State Model v1\n基本原則: PHI-OSがHuman Gate状態管理の唯一責務を持つ。GL7/App層は状態を保持しない。\n状態(5種): PENDING / APPROVED / REJECTED / EXPIRED / CANCELED\nデータ構造: HUMAN_GATE_EVENT(event_id, timestamp, action[submit|approve|reject|expire|cancel], request_id, payload, previous_state, next_state)としてevent単位で永続化。\n状態遷移: submit→PENDINGのみ生成。approve/reject/expireはPENDINGからのみ許可。cancelはPENDING/APPROVED/REJECTEDいずれからも可能で最終状態。\n永続ルール: state自体は保存せずeventのみ保存、stateはeventから再構築(イベントソーシング)。\npending管理: pending_queueという固定データ構造は廃止。event.type==HUMAN_GATE_EVENTかつlatest state==PENDINGの動的クエリで生成。\nGL7との関係: GL7はHuman Gateを一切保持しない。役割は実行可否の物理判定とPHI-OSへのevent送信トリガ生成のみ。\nApp層との関係: submit/approve/reject eventの発火と状態表示(PHI-OSから取得)のみ。状態保持しない。\n\n■GL7最小カーネル仕様v1(削除後確定版)\n残存ABORT_CONDITIONS(4条件のみ): grounding_not_completed / deletion_outside_scope / new_directory_detected / unexpected_file_count\n完全削除対象: FORBIDDEN_EXECUTIONS(PHI-OSへ移設済の前提) / encoding_mismatch(廃止) / Human Gate関連コード一切\nGL7責務: 入力構造の物理検証、実行許可/拒否の判定、PHI-OSへのevent転送のみ\nGL7禁止: 意味判断、承認判断、人間判断、状態保持\nGL7出力: ALLOW または DENY+reason_code の二値のみ。両方をeventとしてPHI-OSへ送信する。\n\n■実装が必要な箇所(未着手・コード変更なし)\n1. structural/execution_governance.py: FORBIDDEN_EXECUTIONS定義削除、ABORT_CONDITIONSからencoding_mismatch削除、戻り値をALLOW/DENY+reason_code形式に変更\n2. phi_os/: HUMAN_GATE_EVENTのイベントソーシング機構を新規実装する場所(phi_os/event_gate.py拡張 or 新規phi_os/human_gate.py)を決定し実装\n3. app.py: /decision/approve・/decision/rejectをPHI-OS側のsubmit/approve/reject eventに置き換え、prevention_queue.json直接操作を廃止\n\n■リスク\n本番稼働中のガバナンス/安全機構(GL7 dry run, app.py prevention_queue)への変更であり、影響範囲が大きい。実装着手前に着手順序・ロールバック方針の確認が必要。",
       "assigned_to": "くろこ",
-      "note": "[Phase1完了] phi_os/human_gate.py + phi_os/tests/test_human_gate.py 作成、15件全PASS。event_id: E20260623_2383746160050。\nPHI-OSが単独でHuman Gateとして動作する中間状態が成立(GL7/app.pyは未変更)。\n\n次: Phase2(GL7→PHI-OS接続。structural/execution_governance.pyのDryRunResult/ApprovalResultにDENY/ALLOW+reason_codeのevent化を追加し、phi_os.human_gate.submit()を呼ぶよう接続する。削除はまだしない)。Phase2着手前に、GL7からPHI-OSへどう接続するか(HTTP経由かin-process importか、mocka_mcp_server.pyのGATE_URL fallbackパターンを参考にするか)の設計確認が必要。",
+      "note": "[Phase2完了] phi_os/event_bus.py新規作成 + structural/execution_governance.pyのpre_execution_check()にevent forwarding(fail-soft, ALLOW/DENY+reason_code)追加。event_id: E20260623_4242554374661。\n動作確認済み: GL7判定(approved=False)は従来通り、同時にevent_bus経由でPHI-OS側にDENY eventが非同期記録される。GL7→PHI-OSの関数呼び出し/state参照/同期待ちは発生せず、削除(FORBIDDEN_EXECUTIONS等)は未実施。\n\n次: Phase3(app.py移行。/decision/approve・/decision/rejectをprevention_queue.json直接操作からphi_os.human_gateのsubmit/approve/reject呼び出しへ置き換え、UIは状態表示のみに)。Phase3着手前に、既存prevention_queue.jsonの未処理PENDING項目をどう移行するか(データ移行方針)の確認が必要。",
       "reference_event": "CONTROL-MAP-V2-DECISION",
       "created_at": "2026-06-23T10:38:30.919447",
-      "updated_at": "2026-06-23T10:47:30.310110"
+      "updated_at": "2026-06-23T10:50:36.636575"
     }
   ],
   "completed": [
@@ -5210,5 +5210,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-23T01:48:43.320480+00:00"
+  "_snapshot_at": "2026-06-23T01:58:46.921599+00:00"
 }
