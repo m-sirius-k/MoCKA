@@ -1,0 +1,10 @@
+{
+  "input_records": 12922,
+  "input_clusters_phase5a": 8506,
+  "adjacency_pairs_evaluated": 7988,
+  "merges_applied": 1755,
+  "output_clusters_phase5b": 6751,
+  "invalid_timestamp_excluded": 16,
+  "adjacency_max_gap_seconds": 3600,
+  "llm_adjustment_status": "deferred (fixed at 0.0), not invoked in this pass"
+}

@@ -1,0 +1,14 @@
+{
+  "input_clusters_phase5a": 8506,
+  "groups_processed": 247,
+  "edges_evaluated": 8259,
+  "edges_accepted": 1943,
+  "output_clusters_phase5b_v3": 6563,
+  "max_cluster_size": 275,
+  "singleton_clusters": 4451,
+  "max_diameter_seconds_observed": 21561.0,
+  "clusters_exceeding_diameter_limit": 0,
+  "hard_limit_seconds": 21600,
+  "diameter_limit_seconds": 21600,
+  "algorithm": "incremental local clustering (no Union-Find, no transitive closure)"
+}

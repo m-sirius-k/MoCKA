@@ -164,12 +164,6 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_357",
-      "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
-      "priority": "最高",
-      "status": "未着手"
-    },
-    {
       "id": "TODO_361",
       "title": "Decision Ledger Reconnection — TODO_358 Human Gate Review判断のDecision Ledger接続",
       "priority": "中",
@@ -196,7 +190,7 @@
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 47,
-  "state_hash": "f473595e023766078a5be2957913dc2879e9148d0ab73d48d7cafc11aafa59ad",
-  "generated_at": "2026-06-23T04:01:23.318315+00:00"
+  "revision": 48,
+  "state_hash": "770c6a849717f86bf3b2dd4dc2cc409d1cac939244eb23725d8d8a612ee68ddb",
+  "generated_at": "2026-06-23T07:51:25.460919+00:00"
 }

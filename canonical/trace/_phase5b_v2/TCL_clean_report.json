@@ -1,0 +1,13 @@
+{
+  "input_clusters_phase5a": 8506,
+  "template_pairs_evaluated": 1972,
+  "non_template_pairs_evaluated": 5841,
+  "merges_applied": 1956,
+  "merges_applied_template": 1646,
+  "merges_applied_non_template": 310,
+  "output_clusters_phase5b_v2": 6550,
+  "template_hard_filter_seconds": 86400,
+  "non_template_max_gap_seconds": 3600,
+  "template_min_group_size": 3,
+  "llm_adjustment_status": "deferred (fixed at 0.0), not invoked in this pass"
+}

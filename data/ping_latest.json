@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-23T13:01:32.235451"
+  "generated_at": "2026-06-23T13:01:32.235451",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -0.478,
+    "danger_rate": 0.261,
+    "success_rate": 0.739,
+    "text": "結論：今回はここで終了（新フェーズには入らない）\n\n■ 理由（構造的に重要）\n\n今回で完了しているのは：\n\nTODO_357の制度確定\n\nGL7整合検証\n\nev",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-17",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "powershell\n\n```powershell\npython \"C:\\Users\\sirok\\batch_ecol2.py\"\n```\n\n実行してください。走らせながら明日の自動化設計を始めます。\n",
+        "recur": 0,
+        "matched": [
+          "events.db"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-17",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "```powershell\nprint(f\"\\n完了: 成功={success} スキップ={skip}\")\n\"@ | Out-File -FilePath \"C:\\Users\\sirok\\batch",
+        "recur": 0,
+        "matched": [
+          "events.db"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-23T04:35:07.147Z"
+  }
 }
