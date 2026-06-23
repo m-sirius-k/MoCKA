@@ -170,15 +170,27 @@
       "status": "未着手"
     },
     {
-      "id": "TODO_358",
-      "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
+      "id": "TODO_361",
+      "title": "Decision Ledger Reconnection — TODO_358 Human Gate Review判断のDecision Ledger接続",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "DRY-RUN-001-TEST-CASE-SPEC",
+      "title": "MoCKA First Contract Execution Test Case（Dry Run v1・未実行シナリオ）",
+      "priority": "中",
+      "status": "未着手"
+    },
+    {
+      "id": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
+      "title": "Phase 0.5：API収束フェーズ（HAB→3フィールド変換の最小仕様確定）",
       "priority": "高",
       "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 37,
-  "state_hash": "4404bc2385b9bf3805e8a58f07be8a63622baefe861d63655cabffa99b6b60d8",
-  "generated_at": "2026-06-22T21:46:44.167953+00:00"
+  "revision": 46,
+  "state_hash": "06216ad0a3393f80978cb1e819a027e3ff9480a7fac2082fd5651bbc668fedde",
+  "generated_at": "2026-06-23T01:16:45.463200+00:00"
 }
