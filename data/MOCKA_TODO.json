@@ -768,14 +768,39 @@
     {
       "id": "CONTROL-MAP-V1-DECISION",
       "title": "制御マップ決定記録（Bモデル: PHI-OS中心統合）作成完了・実装は別途",
-      "status": "DECISION_RECORDED",
+      "status": "SUPERSEDED",
       "priority": "高",
       "category": "基準仕様",
       "description": "docs/governance/control_map_v1.md 作成済み(event_id: E20260623_583480931c0e9)。\n決定: B(PHI-OS中心モデル)を採用方向とする。GL7=物理ゲート(最小ルール)、PHI-OS=意味ゲート(Human Gate含む統合窓口)、app.py=実行UI層に縮小。\n\n■重要: 本TODOはまだ「決定記録」のみで、コード変更は一切行っていない。\n■保留事項(次の意思決定が必要、設計指示を待つ)\n- FORBIDDEN_EXECUTIONS(8項目)を廃止するかPHI-OS側へ移設するか未決定\n- encoding_mismatch廃止可否(mocka_check_utf8との役割重複の可能性、要検証)\n- app.pyのprevention_queue(再発パターン予防策の承認)とGL7 Dry Run承認(変更実行可否)は対象が異なる可能性があり、同じHuman Gateとして統合してよいか要検討\n\n■次の一手\nGL7を残す前提での「破壊しない最小統合案」の設計(別TODO化推奨)。GL7-UNENFORCED-CONDITIONS-BUGの対応候補A/B/Cは本決定(Bモデル)を前提に選定すること。",
       "assigned_to": "くろこ",
-      "note": "コード未変更。実装に進む前に保留事項3点について木村博士の判断が必要。GL7-UNENFORCED-CONDITIONS-BUGの対応候補A/B/Cはこの決定を前提に選定する。",
+      "note": "[後継ドキュメントへ移行] docs/governance/control_map_v2.md (event_id: E20260623_5482985384990)で3保留事項を確定済み。FORBIDDEN_EXECUTIONS→PHI-OS統合、encoding_mismatch→廃止/mocka_check_utf8へ一本化、Human Gate→PHI-OS単一責務(app.pyはUIトリガに限定)。コードはまだ未変更。次はGL7-MIN-KERNEL-IMPL(新規TODO)で実コード設計に進む。",
       "reference_event": "GL7-UNENFORCED-CONDITIONS-BUG",
-      "created_at": "2026-06-23T10:20:00.228547"
+      "created_at": "2026-06-23T10:20:00.228547",
+      "updated_at": "2026-06-23T10:36:00.296484"
+    },
+    {
+      "id": "CONTROL-MAP-V2-DECISION",
+      "title": "制御マップ責務固定版(v2)確定 — 実装設計はGL7最小カーネル化へ",
+      "status": "DECISION_RECORDED",
+      "priority": "高",
+      "category": "基準仕様",
+      "description": "docs/governance/control_map_v2.md 作成済み(event_id: E20260623_5482985384990)。CONTROL-MAP-V1-DECISIONの後継。\n\n■確定した責務固定原則\nGL7=物理制約のみ(実行できる/できないか) / PHI-OS=意味・リスク・整合性判断(許可すべきか、Human Gate含む) / App層=運用フロー(UIトリガ)\n\n■3保留事項の最終結論\n- FORBIDDEN_EXECUTIONS(execution_governance.py:26-35) → GL7から削除、PHI-OSの意味禁止ルールへ統合\n- encoding_mismatch(execution_governance.py:40) → GL7のABORT_CONDITIONSから廃止、既存mocka_check_utf8へ一本化(新規実装不要)\n- Human Gate → PHI-OSを唯一のHuman Gate意味層とし、app.py(prevention_queue)はUIトリガに限定。GL7は関与しない\n\n■GL7に残るABORT_CONDITIONS(確定)\ngrounding_not_completed / deletion_outside_scope / new_directory_detected / unexpected_file_count の4条件のみ\n\n■未決定事項(継続保留)\nprevention_queue(再発パターン予防策の承認)とGL7後続の人間承認(変更実行可否)は対象が異なる可能性があり、実装設計時に再確認が必要\n\n■重要\n本TODOもコード未変更。次は実コード設計(GL7からの削除箇所、PHI-OSへの追加箇所、app.py側の委譲先変更)に進む。",
+      "assigned_to": "くろこ",
+      "note": "次の一手: 「GL7最小カーネル化(削除後の実コード設計)」。実装に進む前に、Human Gateのpending状態をPHI-OSのどこに持たせるか(phi_os/event_gate.py拡張 or 新規モジュール)の設計判断が必要。",
+      "reference_event": "CONTROL-MAP-V1-DECISION",
+      "created_at": "2026-06-23T10:36:16.635006"
+    },
+    {
+      "id": "PHI-OS-HUMAN-GATE-STATE-MODEL-V1",
+      "title": "PHI-OS Human Gate State Model v1 + GL7最小カーネル仕様v1（確定仕様・未実装）",
+      "status": "DECISION_RECORDED",
+      "priority": "高",
+      "category": "基準仕様",
+      "description": "CONTROL-MAP-V2-DECISIONの後続。責務固定原則(GL7=物理制約/PHI-OS=意味裁定+HumanGate/App=UIトリガ)に基づく実装仕様。\n\n■PHI-OS Human Gate State Model v1\n基本原則: PHI-OSがHuman Gate状態管理の唯一責務を持つ。GL7/App層は状態を保持しない。\n状態(5種): PENDING / APPROVED / REJECTED / EXPIRED / CANCELED\nデータ構造: HUMAN_GATE_EVENT(event_id, timestamp, action[submit|approve|reject|expire|cancel], request_id, payload, previous_state, next_state)としてevent単位で永続化。\n状態遷移: submit→PENDINGのみ生成。approve/reject/expireはPENDINGからのみ許可。cancelはPENDING/APPROVED/REJECTEDいずれからも可能で最終状態。\n永続ルール: state自体は保存せずeventのみ保存、stateはeventから再構築(イベントソーシング)。\npending管理: pending_queueという固定データ構造は廃止。event.type==HUMAN_GATE_EVENTかつlatest state==PENDINGの動的クエリで生成。\nGL7との関係: GL7はHuman Gateを一切保持しない。役割は実行可否の物理判定とPHI-OSへのevent送信トリガ生成のみ。\nApp層との関係: submit/approve/reject eventの発火と状態表示(PHI-OSから取得)のみ。状態保持しない。\n\n■GL7最小カーネル仕様v1(削除後確定版)\n残存ABORT_CONDITIONS(4条件のみ): grounding_not_completed / deletion_outside_scope / new_directory_detected / unexpected_file_count\n完全削除対象: FORBIDDEN_EXECUTIONS(PHI-OSへ移設済の前提) / encoding_mismatch(廃止) / Human Gate関連コード一切\nGL7責務: 入力構造の物理検証、実行許可/拒否の判定、PHI-OSへのevent転送のみ\nGL7禁止: 意味判断、承認判断、人間判断、状態保持\nGL7出力: ALLOW または DENY+reason_code の二値のみ。両方をeventとしてPHI-OSへ送信する。\n\n■実装が必要な箇所(未着手・コード変更なし)\n1. structural/execution_governance.py: FORBIDDEN_EXECUTIONS定義削除、ABORT_CONDITIONSからencoding_mismatch削除、戻り値をALLOW/DENY+reason_code形式に変更\n2. phi_os/: HUMAN_GATE_EVENTのイベントソーシング機構を新規実装する場所(phi_os/event_gate.py拡張 or 新規phi_os/human_gate.py)を決定し実装\n3. app.py: /decision/approve・/decision/rejectをPHI-OS側のsubmit/approve/reject eventに置き換え、prevention_queue.json直接操作を廃止\n\n■リスク\n本番稼働中のガバナンス/安全機構(GL7 dry run, app.py prevention_queue)への変更であり、影響範囲が大きい。実装着手前に着手順序・ロールバック方針の確認が必要。",
+      "assigned_to": "くろこ",
+      "note": "仕様確定・コード未変更。実装着手には影響範囲が大きいため、着手順序(GL7削除を先にするとHuman Gate機構なき間に承認なし実行が通る空白期間が生じる等)の確認が必要。",
+      "reference_event": "CONTROL-MAP-V2-DECISION",
+      "created_at": "2026-06-23T10:38:30.919447"
     }
   ],
   "completed": [
@@ -5184,5 +5209,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-23T01:28:34.301877+00:00"
+  "_snapshot_at": "2026-06-23T01:38:38.773364+00:00"
 }
