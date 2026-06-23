@@ -616,15 +616,15 @@
     {
       "id": "CONTRACT-INTEGRATION-TEST-SPEC-V1",
       "title": "MoCKA Contract Integration Test Spec v1.0（HAB→GL7→EXEC→OBS）",
-      "status": "設計確定",
+      "status": "CLOSED",
       "priority": "高",
       "category": "設計成果物",
       "description": "■目的\nHAB-CONTRACT-LAYER-V1 と EXEC-LAYER-STD-V1 の統合において、契約駆動実行パイプラインが崩壊せず成立することを検証する。\n\n■① テスト対象構造\nHAB → GL7 → EXEC → OBS\n\n■② テスト分類（必須4系統）\n1. 正常系（VALID CONTRACT）\n- 完全なHAB_OUTPUT生成\n- intent / schema / execution 全て充足\n- GL7検証成功\n- EXEC実行成功\n- OBS記録成功\n\n2. 境界系（PARTIAL / EDGE）\n- intent曖昧だがschema存在\n- executionは存在するがinputs欠損\n- metadata不足 → GL7がrejectすること\n\n3. 破壊系（MALFORMED CONTRACT）\n- JSON崩壊\n- trailing data混入\n- log混在\n- schema欠落 → fail closed + diagnostic dump必須\n\n4. 改ざん系（WRAPPER / DOUBLE SERIALIZE）\n- HAB出力後に再serialize\n- GL7前で二重parse\n- execution層で構造改変 → 即reject or execution停止\n\n■③ GL7検証ルール\n- parseは1回のみ\n- JSON再構築禁止\n- log参照禁止\n- trailing data即reject（修正禁止）\n- fail closed強制\n\n■④ EXEC動作ルール\n- pure functionとして動作\n- state変更のみ許可\n- I/O・log禁止\n- 入力構造改変禁止\n\n■⑤ OBSルール\n- log / trace / diagnosticのみ\n- executionに干渉禁止\n- JSON構造への影響禁止\n\n■⑥ 成功条件（以下すべて成立でPASS）\n- HABが常に単一契約生成\n- GL7が100%構造検証のみ実行\n- EXECが純粋実行維持\n- OBSが非侵襲ログ保持\n- 全系統でJSON汚染ゼロ\n\n■⑦ 失敗条件\n- JSON/log混入発生\n- GL7が再構築実行\n- EXECがログ生成\n- HABが実行判断を持つ\n- trailing dataが通過\n\n■最終定義\nこのテストは「MoCKAが契約駆動実行OSとして成立しているか」を検証する唯一のゲートである。\nHAB→GL7→EXEC→OBSの統合は一発検証フェーズに入れる。",
       "assigned_to": "くろこ",
-      "note": "[実スキーマ準拠版・確定] 対象: phi_os/gate_validator.py:8-43 (validate)。PHI-OS-GATE-BASELINE-V1配下。\n\n■正常系(VALID)\n全フィールド正規満たす1件:\nwho_actor=\"Claude-sonnet-4-6\", who_session=\"SESSION_20260623_120000\",\nwhy_purpose=\"統合テスト用イベント記録\"(10文字以上), how_trigger=\"mcp_tool_call\",\nwhere_path=\"mocka_mcp_server.py\", what_type=ALLOWED_WHAT_TYPESのいずれか,\nafter_state=\"test\"\n期待: errors=[] → process_event status=ok\n\n■境界系(EDGE、REJECT-01〜07を1項目ずつ単独違反させる)\n1. who_actor=\"\" または \"claude\" → REJECT-01のみ発生を確認\n2. who_session=\"SESSION_invalid\"(prefix違反) → REJECT-02のみ\n3. why_purpose=\"短い\"(10文字未満) → REJECT-03のみ\n4. how_trigger=\"\" → REJECT-04のみ\n5. where_path=\"\" → REJECT-05のみ\n6. what_type=\"未許可タイプ\" → REJECT-06のみ\n7. before_state/after_state両方未設定 → REJECT-07のみ\n他は正常値に固定し、1項目ずつ違反させてerrorsが該当コードのみであることを確認(複合違反でないことの検証)\n\n■破壊系(MALFORMED、validate_operationalとの取り違え検証含む)\n- payload=None / payload={} を validate() に渡してKeyError等の例外なくerrors配列で返ることを確認\n- governance write(validate)にoperational専用payload(who_actor/what_type/where_componentのみ)を渡し、REJECT-02〜07が正しく発生することを確認(レーン混在防止)\n\n■実装由来の既知ギャップ(別TODO: GL7-VALIDATION-MISSING-BUG)\n- mocka_mcp_server.py:365-368のauthor自動補填、:379のwhy_purposeフォールバック(_desc[:80] or _title)により、validate()手前で空フィールドが隠蔽されるケースは本テストの対象外(呼び出し前段の問題のため、GL7-VALIDATION-MISSING-BUG側で対応)。本テストはvalidate()関数自体の正しさのみを検証する。\n\n■合格条件\n- 正常系1件PASS\n- 境界系7件、各1エラーのみでFAIL\n- 破壊系2件、例外なくerrors配列で処理",
+      "note": "[完了] phi_os/tests/test_gate_validator.py に実装・実行済み。11件全PASS(正常系1/境界系7/破壊系2/レーン混在検証1)。event_id: E20260623_837453139129a (CHANGE_DONE)。\n\n■重要な副産物\n本作業中、実在のGL7(structural/execution_governance.py, ExecutionGovernanceEngine)が実際に発火し、tests/直下への新規ディレクトリ作成をdeletion_outside_scopeでabortした。これによりPHI-OS-GATE-BASELINE-V1で「GL7 = phi_os/gate_validator.py」と定義した対応関係が誤りであることが判明。\n正しい対応: GL7(実体) = structural/execution_governance.py + structural/governance_pipeline.py(before_tool/after_tool)。phi_os/gate_validator.pyはPHI-OS GATE v1内の検証関数であり、別の統治層。PHI-OS-GATE-BASELINE-V1の更新が必要(別TODO化推奨)。",
       "reference_event": "HAB-CONTRACT-LAYER-V1",
       "created_at": "2026-06-23T08:41:05.665284",
-      "updated_at": "2026-06-23T09:44:33.075712"
+      "updated_at": "2026-06-23T09:50:49.884887"
     },
     {
       "id": "UNIFIED-EXEC-PHASE-PLAN-V1",
@@ -718,14 +718,28 @@
     {
       "id": "PHI-OS-GATE-BASELINE-V1",
       "title": "PHI-OS GATE 基準OS化（正規仕様定義・GL7関係再定義・TODO再生成ルール）",
-      "status": "未着手",
+      "status": "SUPERSEDED",
       "priority": "高",
       "category": "基準仕様",
       "description": "■背景\nGL7系設計TODO群(EXEC-LAYER-STD-V1等7本)を実装と照合した結果、PHI-OS GATE v1(phi_os/event_gate.py, phi_os/gate_validator.py, mocka_mcp_server.py)が事実上の正規仕様として既に稼働していることが判明。本TODOはこれを「設計の影」ではなく「正本」として確定させる基準OS化作業。\n\n■① PHI-OS GATE 正式仕様（確定版・実装ベース）\nエントリポイント: mocka_mcp_server.py:363-424 (mocka_write_event)\n契約生成: mocka_mcp_server.py:371-384 でgate_payload構築\n  フィールド: who_actor / who_role / who_session / what_type / what_title /\n              where_path / where_component / why_purpose / how_trigger /\n              before_state / after_state / description / tags\n検証(validate): phi_os/gate_validator.py:8-43\n  REJECT-01: who_actor必須・レガシー値禁止(Claude/claude/空文字)\n  REJECT-02: who_session形式 (SESSION_YYYYMMDD_HHMMSS)\n  REJECT-03: why_purpose 10文字以上\n  REJECT-04: how_trigger必須\n  REJECT-05: where_path必須\n  REJECT-06: what_type が ALLOWED_WHAT_TYPES に含まれること\n  REJECT-07: before/after どちらか必須(Replay保証)\n永続化: phi_os/event_gate.py:41-95 (_write) — DB保存 + integrity.sign_event署名 + ハッシュチェーン\n運用テレメトリ用軽量検証: validate_operational (gate_validator.py:46-65)\n分類監査: /api/gate/audit (event_gate.py:231-275) — live/buffered/allowed_direct/violation/legacy の5分類、GATE_LAUNCH_DATE=\"2026-06-16\"基準\n\n■② GL7との関係（再定義・確定）\nGL7という名称は今後 phi_os/gate_validator.py の validate()/validate_operational() を指す。\nHAB相当はmocka_mcp_server.py内のgate_payload構築ロジックを指す。\nEXEC相当は phi_os/event_gate.py の _write()(署名・ハッシュチェーン・DB commit)を指す。\nOBSERVATION相当は auto_log() およびworking_context連携(_update_working_context_live)を指す。\nこれら4層はすべて実在し、抽象的なOS設計として新規構築する必要はない。今後の議論は本TODOが定義する実体名で行う。\n\n■③ TODO体系再生成ルール\n今後、GL7/HAB/EXEC/OBS等の用語を使う新規TODOを作成する際は、必ず対応する実ファイル:行を mapped_to として明記すること。\n実装と矛盾する設計を提案する場合は、まず本TODOの①セクションと差分を取り、ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/REAL_GAPのいずれかに自己分類してから登録する。\n既存のCLOSED/SPEC_OBSOLETEのTODOを参照する新規提案は、再浮上ではなく本TODOへのreference_eventとして従属させる。\n\n■④ 残存REAL_GAP（本TODO確定後に着手）\n- CONTRACT-INTEGRATION-TEST-SPEC-V1: 実スキーマ準拠のテスト整備\n- GL7-VALIDATION-MISSING-BUG: mocka_mcp_server.py:365-368のauthor自動補填によるREJECT-01回避バグ",
       "assigned_to": "くろこ",
-      "note": "これ以降、GL7/HAB/EXEC/OBSという語は本TODOで定義した実ファイル:行を指す。抽象設計の再提案より先に本TODOとの差分確認を必須化する。",
+      "note": "[後継TODOへ移行] MOCKA-TWO-LAYER-OS-BASELINE-V1 に二層構造(GL7=Execution Kernel / PHI-OS=Policy Layer)として正式に置き換え。GL7の実体対応の誤りはそちらで訂正済み。",
       "reference_event": "GL7-MIGRATION-POLICY-V1",
-      "created_at": "2026-06-23T09:42:53.261157"
+      "created_at": "2026-06-23T09:42:53.261157",
+      "updated_at": "2026-06-23T09:52:35.188922"
+    },
+    {
+      "id": "MOCKA-TWO-LAYER-OS-BASELINE-V1",
+      "title": "MoCKA二層OS構造の正式定義（GL7=Execution Kernel / PHI-OS=Policy Layer）",
+      "status": "確定",
+      "priority": "高",
+      "category": "基準仕様",
+      "description": "■背景\nCONTRACT-INTEGRATION-TEST-SPEC-V1の実作業中、本物のGL7(structural/execution_governance.py)がtests/直下への新規ディレクトリ作成をdeletion_outside_scopeで実際にabortした。これにより、PHI-OS-GATE-BASELINE-V1で行った「GL7=phi_os/gate_validator.py」という対応関係が誤りだったことが実証された。本TODOは正しい二層構造を実ファイル:行根拠で確定する。\n\n■① 二層構造の正式定義\n【GL7 = Execution Kernel(実行権限層)】\n実体: structural/execution_governance.py (ExecutionGovernanceEngine)\n      structural/governance_pipeline.py (GovernanceEngine.before_tool/after_tool)\n責務: 「このtool呼び出しを実行してよいか」を判定する。GL1〜GL7をMCP tool呼び出しの前後(before_tool/after_tool)に接続する唯一の窓口(governance_pipeline.py:10)。\n判定対象: WRITE_TOOLS(書き込み系tool)に対してdry run/abortを検査(governance_pipeline.py:18)。\nABORT_CONDITIONS(execution_governance.py:37-43): new_directory_detected / unexpected_file_count / encoding_mismatch / deletion_outside_scope / grounding_not_completed\nFORBIDDEN_EXECUTIONS(execution_governance.py:26-35): create_new_folder_without_grounding / infer_save_path / infer_branch_name 等の推論ベース実行を禁止\n判定基準: scope(action.get(\"scope\"))に対するgit diffの変更ファイル一致検査(execution_governance.py:127-132)\n性質: 「実行してよいか」を見る、リポジトリ変更ガード。Default Deny(READ_ONLY_TOOLS以外は全てGL7対象, governance_pipeline.py:31-32)。\n\n【PHI-OS = Policy Layer(データ正当性層)】\n実体: phi_os/event_gate.py (process_event, gate_bp)\n      phi_os/gate_validator.py (validate, validate_operational)\n責務: 「このイベントデータは記録してよい形か」を判定する。GL7の実行許可が下りた後、実際にmocka_write_eventで書き込まれるデータの構造的正当性(5W1H必須フィールド・形式)を検証する。\n判定基準: REJECT-01〜07(who_actor/who_session/why_purpose/how_trigger/where_path/what_type/before_after)\n性質: 「データが正しい形か」を見る、ペイロード検証器。実行可否ではなくコンテンツの正当性を扱う。\n\n■② 境界仕様（責任分界点）\nGL7(Execution Kernel)が「実行権限」を判定 → PASSしたら\nPHI-OS(Policy Layer)が「データ正当性」を判定 → PASSしたら\n実データがDB(data/mocka_events.db)へ永続化される\n\n実行フロー: MCP tool呼び出し → governance_pipeline.before_tool() [GL7検査] → (許可) → mocka_mcp_server.py内のtool処理 → mocka_write_event時はphi_os.event_gate.process_event() [PHI-OS検査] → DB書き込み → governance_pipeline.after_tool() [GL7記録]\n\n境界の原則:\n- GL7は「ファイルシステム/リポジトリ構造への変更」を見る(scope/diff単位)\n- PHI-OSは「イベントペイロードの内容」を見る(フィールド単位)\n- 両者は独立した統制層であり、片方が通っても他方は別途判定される(直列だが責務排他)\n\n■③ TODO体系の再分類ルール\n今後「GL7」を名乗るTODOは structural/execution_governance.py または structural/governance_pipeline.py への mapped_to を必須とする(OSレイヤー扱い)。\n今後「PHI-OS」を名乗るTODOは phi_os/event_gate.py または phi_os/gate_validator.py への mapped_to を必須とする(制御/ポリシーレイヤー扱い)。\n既存のEXEC-LAYER-STD-V1 / GL7-MINIMAL-IMPL-SPEC / REALITY-ALIGNMENT-HAB-GL7-V1 は「GL7」と名乗っているが実際はPHI-OS(phi_os/gate_validator.py)を指していたため、命名と実体の不一致がある。次回参照時にmapped_toの層を訂正すること(本TODOをreference_eventとして辿れば訂正履歴が追える)。\nGL7-VALIDATION-MISSING-BUG(mocka_mcp_server.py:365-368のauthor自動補填問題)はPHI-OS層のバグであり、GL7とは無関係。\n\n■結論\n今回の本質はバグ修正ではなく、MoCKAが「実行権限層(GL7)」と「データ正当性層(PHI-OS)」という二層OS構造を持つことが、GL7自身の実発火によって実証された点にある。",
+      "assigned_to": "くろこ",
+      "note": "[役割再定義・実装順序は不変] 実行順序(GL7→TOOL→PHI-OS→after_tool)は実装事実として確定済み、変更しない。今回の更新は両層の「役割の言葉」を実態に合わせて訂正するもの。\n\n訂正前: 「GL7=実行権限層」「PHI-OS=データ正当性層」(順序のみの説明で役割の時制が曖昧)\n訂正後:\n- GL7(structural/execution_governance.py + governance_pipeline.py) = 実行カーネル。before_tool()でtool呼び出し自体を許可/拒否する入口統制(scope/diff/abort判定)。\n- PHI-OS(phi_os/event_gate.py + gate_validator.py) = 意味監査レイヤー。tool本体実行後、実際に書き込まれるイベントペイロードの5W1H整合性を実行後に検証・記録する層(事前検証ではなく事後監査)。\n\n結論: MoCKAは「二層OS」ではなく「カーネル(GL7、先・行為許可)+監査(PHI-OS、後・意味確定)」構造。PHI-OSを実行前検証に変更する提案(governance_pipeline.before_tool()の改修)は別途REAL_GAPとして検討事項に留め、今回は実装変更を行わない。",
+      "reference_event": "PHI-OS-GATE-BASELINE-V1",
+      "created_at": "2026-06-23T09:52:26.607607",
+      "updated_at": "2026-06-23T09:54:14.636930"
     }
   ],
   "completed": [
@@ -5134,5 +5148,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-23T00:48:16.948354+00:00"
+  "_snapshot_at": "2026-06-23T00:58:21.240364+00:00"
 }
