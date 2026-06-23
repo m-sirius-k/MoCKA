@@ -740,6 +740,30 @@
       "reference_event": "PHI-OS-GATE-BASELINE-V1",
       "created_at": "2026-06-23T09:52:26.607607",
       "updated_at": "2026-06-23T09:54:14.636930"
+    },
+    {
+      "id": "GL7-KERNEL-SPEC-DOC-V1",
+      "title": "GL7カーネル仕様書作成（完了）",
+      "status": "CLOSED",
+      "priority": "中",
+      "category": "基準仕様",
+      "description": "docs/governance/gl7_execution_kernel_spec_v1.md を作成済み。\n内容: 責務/Execution Pipeline固定順序/呼び出し経路(before_tool/after_tool)/Default Deny(READ_ONLY_TOOLS)/Dry Run入力(scope/expected_new_dirs/expected_max_changes)/ABORT_CONDITIONS5種(発火箇所:行番号付き)/FORBIDDEN_EXECUTIONS/2026-06-23実発火ログ(deletion_outside_scope)/GL7とPHI-OSの境界。\n未確認事項として明記: encoding_mismatchの実発火ロジック、FORBIDDEN_EXECUTIONS各項目の実効箇所、Human Gateの実体。これらは推測で断定せず別途調査が必要。\nevent_id: E20260623_155727531d911 (CHANGE_DONE)",
+      "assigned_to": "くろこ",
+      "note": "次候補: PHI-OS監査ログ構造の標準化(②)。または本仕様書内の未確認事項(encoding_mismatch等)の追加調査。",
+      "reference_event": "MOCKA-TWO-LAYER-OS-BASELINE-V1",
+      "created_at": "2026-06-23T10:12:50.855067"
+    },
+    {
+      "id": "GL7-UNENFORCED-CONDITIONS-BUG",
+      "title": "[不具合]GL7の安全条件3点が実行経路に未接続(FORBIDDEN_EXECUTIONS/encoding_mismatch/Human Gate)",
+      "status": "未着手",
+      "priority": "高",
+      "category": "不具合",
+      "description": "■検証結果(リポジトリ全体grep追跡、2026-06-23)\nGL7-KERNEL-SPEC-DOC-V1作成後の追加調査で確定。docs/governance/gl7_execution_kernel_spec_v1.md 10章に詳細記載。\n\n■① FORBIDDEN_EXECUTIONS(structural/execution_governance.py:26-35)\n定義箇所以外でリポジトリ内のどの.pyファイルからも参照されない。8項目(create_new_folder_without_grounding等)が一切実効していない。\n\n■② encoding_mismatch(execution_governance.py:40)\nABORT_CONDITIONSリストに名前のみ存在。check_abort_conditions()(119-152行)のいずれの分岐も\"encoding_mismatch\"をabortsに追加しない。発火コード自体が存在しない。\n\n■③ Human Gate\nexecution_governance.py:15,157のコメントが「Dry Run承認後、別途Human Gateの承認が必要」と言及するが、structural/配下にHuman Gate相当の呼び出しコードは存在しない。\napp.py:2151-2289に別の機構(PREVENTION QUEUE: prevention_queue.json + /decision/approve + /decision/reject、kimura_hakaseが承認/却下)が実在するが、GL7のpre_execution_check()とは無接続(structural/からprevention_queue/decision_approve/decision_rejectへの参照ゼロ)。\n\n■実際に機能しているABORT_CONDITIONS\ngrounding_not_completed / deletion_outside_scope / new_directory_detected / unexpected_file_count の4条件のみ。\n\n■影響\nGL7は「掲げている安全条件の一部が実際には効いていない」状態。特にHuman Gateが無接続のため、Dry Run承認(approved=True)のみで実行が進む経路が存在し、ドキュメント上の想定(機械的検査+人間承認の二段階)と実態が異なる。\n\n■対応候補\nA. FORBIDDEN_EXECUTIONSをcheck_abort_conditions()内で実際に判定するロジックを追加\nB. encoding_mismatch判定ロジックを追加(対象ファイルのエンコーディング検証、mocka_check_utf8との連携も検討)\nC. Human Gateの接続方針を決定: GL7のapproved=True後にapp.pyのprevention_queue相当の人間承認フローを挟むか、それとも別の介入点(before_tool/tool_router/PHI-OS)に置くかを設計確定する",
+      "assigned_to": "Claude",
+      "note": "実コードgrep追跡で確定した実バグ。GL7-VALIDATION-MISSING-BUG(PHI-OS層)とは別物(GL7=Execution Kernel層のバグ)。修正には3項目それぞれ別途設計判断が必要なため、対応候補A/B/Cのどれから着手するか追加確認すること。",
+      "reference_event": "GL7-KERNEL-SPEC-DOC-V1",
+      "created_at": "2026-06-23T10:18:06.008175"
     }
   ],
   "completed": [
@@ -5148,5 +5172,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-23T01:08:25.566491+00:00"
+  "_snapshot_at": "2026-06-23T01:18:29.646668+00:00"
 }
