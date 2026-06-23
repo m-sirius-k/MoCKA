@@ -16,12 +16,37 @@ Execution Pipeline（固定順序）:
 """
 
 import subprocess
+import sys as _sys
 from dataclasses import dataclass, field
 from pathlib import Path
+from datetime import datetime, timezone
 
 from grounding_engine import RepositoryGroundingEngine
 
 REPO_ROOT = Path(r"C:\Users\sirok\MoCKA")
+
+# Phase2(PHI-OS-HUMAN-GATE-STATE-MODEL-V1): GL7 -> PHI-OS は pure event
+# forwarding のみ。GL7はphi_os側の関数を呼び出さない・state参照しない・
+# 同期待ちしない。event_bus.append()がここで唯一のPHI-OSとの接点であり、
+# 失敗してもGL7自身の判定(ApprovalResult)には影響させない(fail-soft)。
+_repo_root_str = str(REPO_ROOT)
+if _repo_root_str not in _sys.path:
+    _sys.path.insert(0, _repo_root_str)
+
+
+def _emit_gl7_event(result: str, reason_code: str, context: dict) -> None:
+    try:
+        from phi_os import event_bus
+        event_bus.append("GL7_EVENT", {
+            "result": result,
+            "reason_code": reason_code,
+            "context": context,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        })
+    except Exception:
+        # GL7は物理ゲートであることを優先する。PHI-OS側への転送失敗は
+        # GL7自身の実行許可/拒否判定をブロックしない(fail-soft, GL7側はfail closed維持)。
+        pass
 
 FORBIDDEN_EXECUTIONS = [
     "create_new_folder_without_grounding",
@@ -158,11 +183,17 @@ class ExecutionGovernanceEngine:
         """
         result = self.dry_run(action)
         if result.aborts:
+            _emit_gl7_event("DENY", ",".join(result.aborts), {
+                "action": action, "change_count": result.change_count,
+            })
             return ApprovalResult(
                 approved=False,
                 reason=f"abort conditions triggered: {result.aborts}",
                 dry_run=result,
             )
+        _emit_gl7_event("ALLOW", "dry_run_clean", {
+            "action": action, "change_count": result.change_count,
+        })
         return ApprovalResult(approved=True, reason="dry run clean", dry_run=result)
 
     def record_execution(self, action: dict, result: dict) -> None:

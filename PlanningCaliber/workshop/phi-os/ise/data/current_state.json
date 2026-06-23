@@ -186,11 +186,17 @@
       "title": "Phase 0.5：API収束フェーズ（HAB→3フィールド変換の最小仕様確定）",
       "priority": "高",
       "status": "未着手"
+    },
+    {
+      "id": "GL7-UNENFORCED-CONDITIONS-BUG",
+      "title": "[不具合]GL7の安全条件3点が実行経路に未接続(FORBIDDEN_EXECUTIONS/encoding_mismatch/Human Gate)",
+      "priority": "高",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 46,
-  "state_hash": "06216ad0a3393f80978cb1e819a027e3ff9480a7fac2082fd5651bbc668fedde",
-  "generated_at": "2026-06-23T01:16:45.463200+00:00"
+  "revision": 47,
+  "state_hash": "f473595e023766078a5be2957913dc2879e9148d0ab73d48d7cafc11aafa59ad",
+  "generated_at": "2026-06-23T04:01:23.318315+00:00"
 }
