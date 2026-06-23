@@ -764,6 +764,18 @@
       "note": "実コードgrep追跡で確定した実バグ。GL7-VALIDATION-MISSING-BUG(PHI-OS層)とは別物(GL7=Execution Kernel層のバグ)。修正には3項目それぞれ別途設計判断が必要なため、対応候補A/B/Cのどれから着手するか追加確認すること。",
       "reference_event": "GL7-KERNEL-SPEC-DOC-V1",
       "created_at": "2026-06-23T10:18:06.008175"
+    },
+    {
+      "id": "CONTROL-MAP-V1-DECISION",
+      "title": "制御マップ決定記録（Bモデル: PHI-OS中心統合）作成完了・実装は別途",
+      "status": "DECISION_RECORDED",
+      "priority": "高",
+      "category": "基準仕様",
+      "description": "docs/governance/control_map_v1.md 作成済み(event_id: E20260623_583480931c0e9)。\n決定: B(PHI-OS中心モデル)を採用方向とする。GL7=物理ゲート(最小ルール)、PHI-OS=意味ゲート(Human Gate含む統合窓口)、app.py=実行UI層に縮小。\n\n■重要: 本TODOはまだ「決定記録」のみで、コード変更は一切行っていない。\n■保留事項(次の意思決定が必要、設計指示を待つ)\n- FORBIDDEN_EXECUTIONS(8項目)を廃止するかPHI-OS側へ移設するか未決定\n- encoding_mismatch廃止可否(mocka_check_utf8との役割重複の可能性、要検証)\n- app.pyのprevention_queue(再発パターン予防策の承認)とGL7 Dry Run承認(変更実行可否)は対象が異なる可能性があり、同じHuman Gateとして統合してよいか要検討\n\n■次の一手\nGL7を残す前提での「破壊しない最小統合案」の設計(別TODO化推奨)。GL7-UNENFORCED-CONDITIONS-BUGの対応候補A/B/Cは本決定(Bモデル)を前提に選定すること。",
+      "assigned_to": "くろこ",
+      "note": "コード未変更。実装に進む前に保留事項3点について木村博士の判断が必要。GL7-UNENFORCED-CONDITIONS-BUGの対応候補A/B/Cはこの決定を前提に選定する。",
+      "reference_event": "GL7-UNENFORCED-CONDITIONS-BUG",
+      "created_at": "2026-06-23T10:20:00.228547"
     }
   ],
   "completed": [
@@ -5172,5 +5184,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-23T01:18:29.646668+00:00"
+  "_snapshot_at": "2026-06-23T01:28:34.301877+00:00"
 }
