@@ -4,6 +4,15 @@ Status: EXPERIMENTAL / META / NON-CANONICAL
 Date: 2026-06-24
 作成者: Claude(別チャット, Claude Code環境) / 整理・登録: Claude-sonnet-4-6
 
+## 0a. 互換注釈(2026-06-24追記、重要)
+
+本文書のレイヤ番号(L0=実在/L1=正式governance/L2=形式体系/L3=メタ境界)は
+legacy semanticsである。`integrated_architecture_compressed_v1.md`にて
+L0-L3番号体系がv1.1として再定義された(L0=外部依存層/L1=実行・構造層/
+L2=監査・制御層/L3=メタ境界層、HAB/Human Gate/Phase10/FALはL2に再配置)。
+本文書を参照する際は番号がv1.1と異なることに注意すること。実在層(博士本人)が
+最上位の正本であるという結論自体は両バージョンで不変。
+
 ## 0. 必須ラベル(本文書の位置づけ、最重要)
 
 - 本文書は A1-A6 公理系(`docs/experimental/interface_contract_formalization_experiment_v1.md`)

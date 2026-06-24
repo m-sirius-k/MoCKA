@@ -1,0 +1,131 @@
+<svg viewBox="0 0 1000 880" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>MoCKA L0-L3 Locked Institutional Diagram v1 (experimental/meta, non-canonical)</title>
+<desc>L0 external arbitration anchor (the human, not drawn as a node) supplies meaning via a dashed inbound arrow only; all solid arrows point from L1/L2/L3 toward L0 (reference only, no reverse execution). L1 execution layer contains Relay (state transition compressor), Orchestra (meaning reconstruction engine), Memory (history compression structure) and PHI-OS (synchronization hub, not a controller). L2 audit/control layer contains HAB, Human Gate, Phase10 and FAL. L3 meta boundary layer defines the limit of expressibility. This diagram does not replace official governance documents.</desc>
+<rect x="0" y="0" width="1000" height="880" fill="#15171c"/>
+
+<style>
+@keyframes mocka_fadein { 0% { opacity: 0; } 100% { opacity: 0.9; } }
+@keyframes mocka_pulse { 0%,100% { stroke-opacity: 0.55; } 50% { stroke-opacity: 1; } }
+@keyframes mocka_flow { 0% { stroke-dashoffset: 24; } 100% { stroke-dashoffset: 0; } }
+.l0-presence { animation: mocka_fadein 2.4s ease-in forwards; }
+.l2-watch { animation: mocka_pulse 3s ease-in-out infinite; }
+.flow-line { stroke-dasharray: 6 6; animation: mocka_flow 1.2s linear infinite; }
+</style>
+
+<text x="40" y="44" font-family="sans-serif" font-size="20" font-weight="600" fill="#f0f1f3">MoCKA L0-L3 Locked Institutional Diagram</text>
+<text x="40" y="68" font-family="sans-serif" font-size="13" fill="#9aa0ab">experimental/meta v1 - non-canonical - layer numbers fixed per integrated_architecture_compressed_v1.md</text>
+
+<!-- L3 meta boundary layer -->
+<rect x="40" y="96" width="700" height="80" rx="8" fill="#202329" stroke="#3a3f4a" stroke-width="1.5" class="l2-watch"/>
+<text x="60" y="122" font-family="sans-serif" font-size="15" font-weight="600" fill="#f0f1f3">L3 - Meta Boundary Layer</text>
+<text x="60" y="142" font-family="sans-serif" font-size="12" fill="#9aa0ab">表現可能性の限界管理 / 構造閉包条件 / 体系の外部を指し示す機構のみ</text>
+<text x="60" y="160" font-family="sans-serif" font-size="11" fill="#6f7480">境界生成のみを行う。発火・実行・時間は扱わない。</text>
+
+<line x1="390" y1="176" x2="390" y2="206" stroke="#3a3f4a" stroke-width="1.5" class="flow-line" marker-end="url(#arrow)"/>
+<text x="405" y="196" font-family="sans-serif" font-size="10" fill="#9aa0ab">境界生成</text>
+
+<!-- L2 audit/control layer -->
+<text x="60" y="232" font-family="sans-serif" font-size="14" font-weight="600" fill="#c7cbd1">L2 - 監査・制御層(Audit / Control)</text>
+<rect x="40" y="240" width="700" height="120" rx="8" fill="none" stroke="#2c2f36" stroke-width="1" stroke-dasharray="4 4"/>
+
+<rect x="60" y="258" width="150" height="84" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="135" y="288" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">HAB</text>
+<text x="135" y="306" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">状態定義機構</text>
+<text x="135" y="322" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">append-only</text>
+
+<rect x="230" y="258" width="150" height="84" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="305" y="288" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">Human Gate</text>
+<text x="305" y="306" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">最終通過制御</text>
+<text x="305" y="322" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">確定権はL0のみ</text>
+
+<rect x="400" y="258" width="150" height="84" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="475" y="288" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">Phase10</text>
+<text x="475" y="306" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">状態遷移体系</text>
+<text x="475" y="322" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">opaque transform</text>
+
+<rect x="570" y="258" width="150" height="84" rx="8" fill="#262a31" stroke="#5b8cff" stroke-width="1.5"/>
+<text x="645" y="288" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">FAL</text>
+<text x="645" y="306" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">監査・整合性検証</text>
+<text x="645" y="322" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">authority_tag非確定権</text>
+
+<line x1="390" y1="360" x2="390" y2="390" stroke="#3a3f4a" stroke-width="1.5" class="flow-line" marker-end="url(#arrow)"/>
+<text x="405" y="380" font-family="sans-serif" font-size="10" fill="#9aa0ab">状態圧縮</text>
+
+<!-- L1 execution layer -->
+<text x="60" y="416" font-family="sans-serif" font-size="14" font-weight="600" fill="#c7cbd1">L1 - 実行・構造層(Execution)</text>
+<rect x="40" y="424" width="700" height="120" rx="8" fill="none" stroke="#2c2f36" stroke-width="1" stroke-dasharray="4 4"/>
+
+<rect x="60" y="442" width="150" height="84" rx="8" fill="#262a31" stroke="#7fb88a" stroke-width="1.5"/>
+<text x="135" y="472" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">Relay</text>
+<text x="135" y="490" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">状態遷移</text>
+<text x="135" y="504" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">圧縮装置</text>
+
+<rect x="230" y="442" width="150" height="84" rx="8" fill="#262a31" stroke="#7fb88a" stroke-width="1.5"/>
+<text x="305" y="472" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">Orchestra</text>
+<text x="305" y="490" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">意味再構成</text>
+<text x="305" y="504" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">エンジン</text>
+
+<rect x="400" y="442" width="150" height="84" rx="8" fill="#262a31" stroke="#7fb88a" stroke-width="1.5"/>
+<text x="475" y="472" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">Memory</text>
+<text x="475" y="490" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">履歴圧縮</text>
+<text x="475" y="504" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">再参照構造</text>
+
+<rect x="570" y="442" width="150" height="84" rx="8" fill="#262a31" stroke="#7fb88a" stroke-width="1.5"/>
+<text x="645" y="472" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3" text-anchor="middle">PHI-OS</text>
+<text x="645" y="490" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">同期ハブ</text>
+<text x="645" y="504" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">(制御ではない)</text>
+
+<!-- synchronization propagation lines within L1, hub = PHI-OS -->
+<line x1="645" y1="442" x2="135" y2="442" stroke="#5d6470" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="645" y1="442" x2="305" y2="442" stroke="#5d6470" stroke-width="1" stroke-dasharray="2 4"/>
+<line x1="645" y1="442" x2="475" y2="442" stroke="#5d6470" stroke-width="1" stroke-dasharray="2 4"/>
+<text x="340" y="432" font-family="sans-serif" font-size="10" fill="#6f7480" text-anchor="middle">同期伝播(PHI-OSがハブ、制御ではない)</text>
+
+<!-- L0 external region, not a node -->
+<rect x="780" y="96" width="180" height="448" rx="10" fill="none" stroke="#ff9d5b" stroke-width="1.2" stroke-dasharray="3 5" class="l0-presence"/>
+<text x="870" y="120" font-family="sans-serif" font-size="13" font-weight="600" fill="#ff9d5b" text-anchor="middle">L0</text>
+<text x="870" y="140" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">外部裁定アンカー</text>
+<text x="870" y="158" font-family="sans-serif" font-size="11" fill="#c7cbd1" text-anchor="middle">(博士本人)</text>
+<text x="870" y="184" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">ノード化しない</text>
+<text x="870" y="200" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">非構造領域</text>
+<text x="870" y="226" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">最終裁定</text>
+<text x="870" y="242" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">意味確定</text>
+<text x="870" y="258" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">責任帰属</text>
+<text x="870" y="274" font-family="sans-serif" font-size="10" fill="#9aa0ab" text-anchor="middle">公理選択</text>
+
+<!-- solid reference arrows L3/L2/L1 -> L0, one direction only -->
+<line x1="740" y1="136" x2="778" y2="136" stroke="#9aa0ab" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="740" y1="300" x2="778" y2="300" stroke="#9aa0ab" stroke-width="1.2" marker-end="url(#arrow)"/>
+<line x1="740" y1="484" x2="778" y2="484" stroke="#9aa0ab" stroke-width="1.2" marker-end="url(#arrow)"/>
+<text x="745" y="118" font-family="sans-serif" font-size="9" fill="#6f7480">参照(逆流なし)</text>
+
+<!-- dashed meaning-supply arrow L0 -> L3 only, inbound, one direction -->
+<path d="M 778 524 C 700 600, 500 600, 390 540" fill="none" stroke="#ff9d5b" stroke-width="1.3" stroke-dasharray="4 4" marker-end="url(#arrow2)"/>
+<text x="560" y="608" font-family="sans-serif" font-size="10" fill="#ff9d5b" text-anchor="middle">意味供給(揺らぎ入力、博士からのみ・破線)</text>
+
+<!-- legend: animation semantics -->
+<rect x="40" y="560" width="700" height="120" rx="8" fill="#202329" stroke="#2c2f36" stroke-width="1"/>
+<text x="60" y="586" font-family="sans-serif" font-size="13" font-weight="600" fill="#f0f1f3">アニメーション意味拘束(制度意味、視覚効果ではない)</text>
+<text x="60" y="610" font-family="sans-serif" font-size="11" fill="#c7cbd1">fadeIn(L0枠) = 存在確認 - L0は常時描画されず、参照されたときのみ存在が確認される</text>
+<text x="60" y="630" font-family="sans-serif" font-size="11" fill="#c7cbd1">pulse(L3枠) = 状態監視 - 境界条件の継続的な監視を表す、発火・実行を意味しない</text>
+<text x="60" y="650" font-family="sans-serif" font-size="11" fill="#c7cbd1">flow(矢印破線移動) = 状態遷移圧 - L1からL2へ、L2からL3への圧縮の継続的な圧力を表す</text>
+<text x="60" y="670" font-family="sans-serif" font-size="10" fill="#9aa0ab">いずれもA6(非実行性)に従い、時刻・トリガー・発火条件を意味しない静的表現である</text>
+
+<rect x="40" y="694" width="700" height="150" rx="8" fill="#202329" stroke="#2c2f36" stroke-width="1"/>
+<text x="60" y="720" font-family="sans-serif" font-size="14" font-weight="600" fill="#f0f1f3">Prohibited boundaries (fixed)</text>
+<text x="60" y="746" font-family="sans-serif" font-size="12" fill="#c7cbd1">- L0 is never drawn as a node; it has no internal representation</text>
+<text x="60" y="770" font-family="sans-serif" font-size="12" fill="#c7cbd1">- No reverse flow: only L1/L2/L3 -&gt; L0 (reference); only L0 -&gt; L3 (meaning supply, dashed)</text>
+<text x="60" y="794" font-family="sans-serif" font-size="12" fill="#c7cbd1">- L2(Human Gate)の確定権はL0のみ。SYSTEM/EXTERNALは生成のみで確定不可</text>
+<text x="60" y="818" font-family="sans-serif" font-size="12" fill="#c7cbd1">- This diagram does not override docs/governance/ official contracts</text>
+
+<text x="40" y="864" font-family="sans-serif" font-size="11" fill="#9aa0ab">experimental/meta - non-canonical - see integrated_architecture_compressed_v1.md for layer definitions</text>
+
+<defs>
+<marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0,0 L8,4 L0,8 z" fill="#9aa0ab"/>
+</marker>
+<marker id="arrow2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+<path d="M0,0 L8,4 L0,8 z" fill="#ff9d5b"/>
+</marker>
+</defs>
+</svg>
