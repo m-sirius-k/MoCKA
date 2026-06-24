@@ -1,6 +1,6 @@
 # MoCKA Code Binding — Human Gate Finalization v1.0
 
-**Status:** PARTIAL — 4論点記入済み・最終裁定（APPROVE/HOLD/REJECT/DEFER）は未記入
+**Status:** APPROVED — 4論点記入済み・最終裁定APPROVE記入済み（2026-06-25、現時点での承認・残存論点あり）
 **基準文書:** [[MOCKA_CODE_BINDING_HUMAN_GATE_DECISION_DRAFT_v1]]
 **目的:** 博士（くろこ）によるHuman Gate裁定結果を記録する受け皿のみ。本文書自体は裁定を含まない。
 **裁定者:** 博士のみ。Claudeはここに提言・推奨・解釈を追加しない。
@@ -87,10 +87,33 @@
 
 ## 最終裁定
 
-判定（APPROVE／HOLD／REJECT／DEFER）：未記入（博士から明示の最終判定は提示されていない）
+判定（APPROVE／HOLD／REJECT／DEFER）：**APPROVE**
 
-裁定日：
+裁定日：2026-06-25
 
-裁定者：
+裁定者：博士（くろこ）
 
-備考：上記4論点の採用方針は博士より提示済み。最終裁定（APPROVE等）が記入されるまで、本文書はCode Binding Phase着手の承認を意味しない。
+### 承認の事実
+
+博士本人がPhase1 Human Gate Coreの審査を通過とみなし、Code Binding Phaseへの進行をAPPROVEとして明示した。
+
+### 承認の範囲
+
+* Code Binding Readiness Review v2／Governance Vocabulary & Authority Reconciliation Audit v1／Authorization Reviewが確認した制度的整合性（Human Gate Identity・Registry・PHI-OS Identity間の矛盾なし）を前提とした進行認可である。
+* evaluation_result ≠ execution_permission の原則により、本APPROVEはExecution Layerへの到達効力を持たない。個々のコード変更・実装内容・実装範囲・app.py変更・Registry再設計を自動的に許可するものではない。
+* observation review → risk validation → execution approvalの3段階は本APPROVE後も維持し、execution approval段階に到達するまで実行権限は発生しない。
+
+### 承認の性質に関する限定（不確定性の明記）
+
+本承認は、関連する全記録・全文書の網羅的な再検索・再検証を経て得られた確信に基づくものではなく、既存監査成果（Authorization Review時点の確定事項）を前提とした**現時点での承認**である。以下は未解消のまま残存することを明記する。
+
+* テスト計画が未存在
+* ロールバック記録形式が未確定
+* 段階承認の運用境界が未確定
+* HOLD無限継続の上限が未定義
+* トリガー発生主体の制度的位置づけが未確定
+* 第三語彙系統（HG-REG-06相当）はRegistry登録対象と判定済みだが未作成
+
+これらは本APPROVEの効力を否定するものではないが、Code Binding実作業着手前に博士による追加確認を要する事項として保持する。
+
+備考：上記4論点の採用方針は博士より提示済み。本APPROVEはCode Binding Phaseへの進行認可であり、実装着手そのものの許可ではない。実行権限はexecution approval段階で別途発生する。
