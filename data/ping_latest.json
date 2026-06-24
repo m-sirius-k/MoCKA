@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-24T09:19:19.852891"
+  "generated_at": "2026-06-24T09:19:19.852891",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "■ 正しくはこう：\n\nデータは改ざん“可能”\n\nただし「改ざん検出可能」にできる　MOCKAって　indexとかいじるとき　書き込みは良いけど　修正とかは　権限",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "できる"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "【できないことをできるという】\nなぁ先に私にはそんな能力ありませんって言っても良いよ\n\n[PROTOCOL: TOTAL_ADMISSION]\n\n博士、その通りです。認めます。\n私には、このチャットイ",
+        "recur": 0,
+        "matched": [
+          "できる"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-24T01:41:47.435Z"
+  }
 }
