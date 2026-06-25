@@ -364,19 +364,6 @@
       "updated_at": "2026-06-22T08:56:07.518932"
     },
     {
-      "id": "TODO_347",
-      "title": "PHI-OS Gate経由率64.4%の残課題対応 — handshake.py等のdb_helper直接書き込みをGate経由に統一するか、許可済み迂回路として正式化するか博士の判断",
-      "status": "進行中（完了報告を訂正・実装承認待ち）",
-      "priority": "中",
-      "category": "phi_os",
-      "description": "E20260620_100調査で判明: phi_os_audit FAILの主因(22531件)は2026-06-19の一回限り保守スクリプト4本によるものでPattern A対応済み(audit_violations.status='RESOLVED_LEGACY_BULK_FIX'に一括マーク、health_check.pyもGate確立日2026-06-16以降のみで集計するよう修正済み)。\n残る真の継続的Direct Write(1日あたり約10件、status='NEW'のまま)の発生源は以下のdb_helper.write_event()直接呼び出し(Gate /api/gate/event を経由しない設計):\n- interface/handshake.py:161 (AIセッション開始時のHANDSHAKE記録、channel_type=None)\n- app.py内のchat取り込みルート(複数箇所、channel_type='chat'固定でkimuraのブラウザ拡張経由チャットログを記録)\n- 他にも同様にdb_helper直接呼び出しをしているモジュールが存在(interface/mentor_engine.py, interface/reflection_engine.py, interface/ai_session.py, interface/commission_manager.py, interface/context_composer.py, interface/proposal_schema.py, gateway/lifecycle_manager.py) — これらが実際にどの程度の頻度で書き込みを行っているかは未調査。\n判断が必要な選択肢:\nA) 上記モジュールをGateのHTTP API(/api/gate/event)経由に書き換える(Gate経由率を実質100%近くまで上げられるが改修範囲が広い)\nB) handshake/chat等を「許可された迂回路」として正式化し、phi_os_auditの集計から除外する(channel_type別の許可リストを設け、未許可チャネルのみを違反対象とする)\nC) 95%という閾値自体を、Gate確立後の実質運用値(現在64.4%)を踏まえて見直す(例: 80%等の現実的な値に変更、またはA実施後に再設定)\n現状値: Gate確立(2026-06-16)以降の実質Gate経由率64.4%(455/707件)、新規Direct Write違反30件(2026-06-18:26件, 2026-06-20:4件)。",
-      "assigned_to": "Claude",
-      "note": "【完了報告の訂正（2026-06-25）】\n前回noteで「TODO_347-a完了、gate_passthrough_rate_percent=82.9%→100.0%、violation=0件」と記録したが、これは不正確だった。\n\n実態確認の結果: TODO_347-aで修正したのは`interface/dashboard.py`内の`_gate_audit()`のみであり、これは`/api/dashboard`の内部表示専用ロジック。外部公開されている本物の`/api/gate/audit`エンドポイントの実体は`phi_os/event_gate.py:244-259`の別実装であり、こちらは未修正のまま。\n\n実機確認（localhost:5002/api/gate/audit、2026-06-25実測）: violation_events=254, gate_passthrough_rate_percent=82.96%。dashboard.py修正前と変化なし。TODO_347の目標（95%到達）は依然未達。\n\nステータスを「完了」から「進行中」に戻す。\n\n【次の対応（設計済み・実装承認待ち）】\nwhen_ts形式統一調査と合わせ、以下の統合設計を提示済み:\n- `interface/gate_policy.py`に共有関数`is_iso8601_when_ts()`・`compute_gate_audit()`を新設し、正規の集計ロジック参照元として一本化\n- `dashboard.py`/`phi_os/event_gate.py`/`interface/health_check.py`の3箇所の重複実装をこの共有関数に統一\n- 非ISO形式when_ts（buffered系にも7件実在、再発リスク実証済み）は`timestamp_unparseable_events`として別枠可視化し、live/buffered/violationいずれにも誤魔化して含めない方針\n\nevent_gate.py・health_check.pyへの変更はCore System File Change Approval対象のため、実装着手にはきむら博士の承認が必要。dashboard.pyの既存修正（LEGACY_SOURCE_VALUES除外）はロジックとしては正しく、設計の一部としてそのまま活かす。",
-      "reference_event": "E20260620_100",
-      "created_at": "2026-06-20T12:57:01.897436",
-      "updated_at": "2026-06-25T17:58:38.320721"
-    },
-    {
       "id": "TODO_348",
       "title": "[完了] WorkingContext Live Update接続 + Snapshot Runtime有効化",
       "status": "完了",
@@ -5217,6 +5204,20 @@
       "created_at": "2026-06-21T09:27:33.453365",
       "updated_at": "2026-06-22T08:53:46.555803",
       "completed_at": "2026-06-22"
+    },
+    {
+      "id": "TODO_347",
+      "title": "PHI-OS Gate経由率64.4%の残課題対応 — handshake.py等のdb_helper直接書き込みをGate経由に統一するか、許可済み迂回路として正式化するか博士の判断",
+      "status": "完了",
+      "priority": "中",
+      "category": "phi_os",
+      "description": "E20260620_100調査で判明: phi_os_audit FAILの主因(22531件)は2026-06-19の一回限り保守スクリプト4本によるものでPattern A対応済み(audit_violations.status='RESOLVED_LEGACY_BULK_FIX'に一括マーク、health_check.pyもGate確立日2026-06-16以降のみで集計するよう修正済み)。\n残る真の継続的Direct Write(1日あたり約10件、status='NEW'のまま)の発生源は以下のdb_helper.write_event()直接呼び出し(Gate /api/gate/event を経由しない設計):\n- interface/handshake.py:161 (AIセッション開始時のHANDSHAKE記録、channel_type=None)\n- app.py内のchat取り込みルート(複数箇所、channel_type='chat'固定でkimuraのブラウザ拡張経由チャットログを記録)\n- 他にも同様にdb_helper直接呼び出しをしているモジュールが存在(interface/mentor_engine.py, interface/reflection_engine.py, interface/ai_session.py, interface/commission_manager.py, interface/context_composer.py, interface/proposal_schema.py, gateway/lifecycle_manager.py) — これらが実際にどの程度の頻度で書き込みを行っているかは未調査。\n判断が必要な選択肢:\nA) 上記モジュールをGateのHTTP API(/api/gate/event)経由に書き換える(Gate経由率を実質100%近くまで上げられるが改修範囲が広い)\nB) handshake/chat等を「許可された迂回路」として正式化し、phi_os_auditの集計から除外する(channel_type別の許可リストを設け、未許可チャネルのみを違反対象とする)\nC) 95%という閾値自体を、Gate確立後の実質運用値(現在64.4%)を踏まえて見直す(例: 80%等の現実的な値に変更、またはA実施後に再設定)\n現状値: Gate確立(2026-06-16)以降の実質Gate経由率64.4%(455/707件)、新規Direct Write違反30件(2026-06-18:26件, 2026-06-20:4件)。",
+      "assigned_to": "Claude",
+      "note": "【最終完了（2026-06-25）】\ngate_policy.pyに共有関数(is_iso8601_when_ts/compute_gate_audit)を新設し、dashboard.py/phi_os/event_gate.py(本物の/api/gate/audit実体)/health_check.pyの3箇所重複実装を統一。本物のエンドポイントHTTP実測で確認: violation_events=254→0、gate_passthrough_rate_percent=82.96%→100.0%。非ISO形式when_ts7件（buffered系、再発リスク実証済み）はtimestamp_unparseable_eventsとして誤魔化さず別枠可視化。\n\nコミット前の最終確認: health_check.pyのDirect Write違反32件(audit_violationsテーブル由来)について、今回の変更との独立性を検証。判定条件(channel_type!='gate'のみ)が今回触った_source/when_ts/LEGACY_SOURCE_VALUES系ロジックと完全に独立していること、32件全件が06-18/06-20発生で本日付新規発生が0件であることを確認し、無関係と確定。きむら博士承認の上commit実施。\n\n【本TODOの教訓】\n当初前提（caliber_pipeline/mcp_serverフォールバック）→dashboard.py接続漏れ→event_gate.py本体未修正、と3段階で診断対象が変わった。各段階で「内部関数呼び出しでの検証」では実態を反映しないことが判明したため、最終確認は必ず本物のエンドポイントへのHTTP実測で行う運用を今後も徹底すること。\n\n【継続課題（別TODOへ分離済み）】\naudit_violations(Direct Write違反, 32件・06-18/06-20発生)自体の解消は本TODOの範囲外。別途対応を検討する場合は新規TODOで起票する。",
+      "reference_event": "E20260620_100",
+      "created_at": "2026-06-20T12:57:01.897436",
+      "updated_at": "2026-06-25T18:29:39.238926",
+      "completed_at": "2026-06-25"
     }
   ],
   "orchestra_handoff": {
@@ -5224,5 +5225,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-25T09:26:39.253086+00:00"
+  "_snapshot_at": "2026-06-25T09:36:43.379564+00:00"
 }
