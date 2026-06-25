@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-23",
+    "updated": "2026-06-25",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -803,6 +803,18 @@
       "reference_event": "CONTROL-MAP-V2-DECISION",
       "created_at": "2026-06-23T10:38:30.919447",
       "updated_at": "2026-06-23T11:05:20.565980"
+    },
+    {
+      "id": "TODO_362",
+      "title": "Heinrich Monitorパネル配線断絶 — fetchLive()にrenderHein()呼び出しが存在せずSTATIC.heinハードコード値のまま固定表示",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "UI/COMMAND CENTER/Heinrich",
+      "description": "ラベル修正作業（Heinrich理論ギャップ表記への変更）の過程で発見。index.htmlのfetchLive()内、/heinrich/statusからライブデータを取得した後、ise-state/tic0/gate-audit等の他パネルには明示的な再描画呼び出し（renderXxx(data)）が存在するが、Heinrich Monitorパネルにはそれが存在しない。\n\n結果としてCOMMAND CENTERのHeinrich Monitorパネルは初期化時のSTATIC.hein（l1:1, l2:2.5, l3:6.0, uncaught:14995, rate:2.0というハードコード値）を表示したままで、ライブ計算値（heinrich_engine.pyが実際に算出する値。直近確認時はmissing_estimate=78,802）に一切更新されていない。\n\nこれまでのTODO_347関連調査（E20260620_100等）で「未捕捉14,995件→78,802件」という変動を「同一ロジックの異なる時点のスナップショット差」と解釈していたが、本発見により前提が誤っていた可能性が高い。表示されていた14,995という値はheinrich_engine.pyのライブ計算結果ではなく、UIの配線断絶により一度も更新されていない初期化時の固定デモ値だった。\n\n修正方針案（未実施・承認待ち）:\nfetchLive()内にif(j.panel==='hein') renderHein(mapHeinData(data));相当の処理を追加し、data.rate/data.uncaught等のフィールドをheinrich_engine.pyの実フィールド名（L1/L2/L3/missing_estimate等）に正しくマッピングする変換関数（mapHeinData）の実装も必要。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "ラベル修正タスク（用語訂正のみ）の作業中に発見。ロジック変更禁止指示を遵守し、本タスクでは修正を行わず別TODOとして起票。発見の経緯はClaude Code実行ログ（fetchLive()内の他パネルとの比較）に基づく。",
+      "reference_event": "",
+      "created_at": "2026-06-25T16:48:01.272703"
     }
   ],
   "completed": [
@@ -5211,5 +5223,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-25T07:38:22.292591+00:00"
+  "_snapshot_at": "2026-06-25T07:48:25.909157+00:00"
 }
