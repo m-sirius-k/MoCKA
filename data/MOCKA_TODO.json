@@ -366,15 +366,15 @@
     {
       "id": "TODO_347",
       "title": "PHI-OS Gate経由率64.4%の残課題対応 — handshake.py等のdb_helper直接書き込みをGate経由に統一するか、許可済み迂回路として正式化するか博士の判断",
-      "status": "対象範囲再設定（進行中）",
+      "status": "完了（a/b完了、when_ts課題は別TODOへ分離）",
       "priority": "中",
       "category": "phi_os",
       "description": "E20260620_100調査で判明: phi_os_audit FAILの主因(22531件)は2026-06-19の一回限り保守スクリプト4本によるものでPattern A対応済み(audit_violations.status='RESOLVED_LEGACY_BULK_FIX'に一括マーク、health_check.pyもGate確立日2026-06-16以降のみで集計するよう修正済み)。\n残る真の継続的Direct Write(1日あたり約10件、status='NEW'のまま)の発生源は以下のdb_helper.write_event()直接呼び出し(Gate /api/gate/event を経由しない設計):\n- interface/handshake.py:161 (AIセッション開始時のHANDSHAKE記録、channel_type=None)\n- app.py内のchat取り込みルート(複数箇所、channel_type='chat'固定でkimuraのブラウザ拡張経由チャットログを記録)\n- 他にも同様にdb_helper直接呼び出しをしているモジュールが存在(interface/mentor_engine.py, interface/reflection_engine.py, interface/ai_session.py, interface/commission_manager.py, interface/context_composer.py, interface/proposal_schema.py, gateway/lifecycle_manager.py) — これらが実際にどの程度の頻度で書き込みを行っているかは未調査。\n判断が必要な選択肢:\nA) 上記モジュールをGateのHTTP API(/api/gate/event)経由に書き換える(Gate経由率を実質100%近くまで上げられるが改修範囲が広い)\nB) handshake/chat等を「許可された迂回路」として正式化し、phi_os_auditの集計から除外する(channel_type別の許可リストを設け、未許可チャネルのみを違反対象とする)\nC) 95%という閾値自体を、Gate確立後の実質運用値(現在64.4%)を踏まえて見直す(例: 80%等の現実的な値に変更、またはA実施後に再設定)\n現状値: Gate確立(2026-06-16)以降の実質Gate経由率64.4%(455/707件)、新規Direct Write違反30件(2026-06-18:26件, 2026-06-20:4件)。",
       "assigned_to": "Claude",
-      "note": "【対象範囲再設定（2026-06-25）】\nA案実装コスト調査（くろこ実施）により、本TODOが立てられた2026-06-20時点の前提診断が、その後のPhase5-1/5-2改修（Local Buffer統一）により既に古くなっていたことが判明。\n\n旧前提: caliber_pipeline(111件)・mcp_serverフォールバック(22件)がGate未経由の直接書き込み主因\n新事実: 両経路のライブ書き込み分（caliber_pipeline 7件・mcp_server 16件）は既にGate統一済み（Phase5-1 EventBuffer/バッチ送信、Phase5-2.1インプロセスprocess_event共有）。追加書き換えコストはほぼゼロ。「111件」「22件」はchannel_type基準（旧分類）であり、実際の監査が使う_source基準とは食い違っている。\n\n現在のライブ値: gate_passthrough_rate_percent=82.9%（旧64.4%から既に改善）、violation_events=254件。\nviolation_events 254件の内訳:\n- caliber_pipeline _source='csv_migration': 108件（過去CSV移行データのタイムスタンプが監査対象期間に紛れ込んでいるアーティファクト。ライブ書き込みではない）\n- interface/handshake.py _source='new': 45件（未調査）\n- claude.ai _source='new': 44件（未調査）\n- mcp_caliber _source='new': 12件（未調査）\n- A-2レガシー分（legacy+csv_migration）: 7件\n\n【対象範囲の再設定】\n旧A/B/C（caliber_pipeline/mcp_serverフォールバックの統一可否）は判断不要に格下げ。実害がないため。\n新たな調査対象: ①handshake.py/claude.ai/mcp_caliberの3経路（_source='new'、計101件）の発生源・性質の特定 ②csv_migrationタイムスタンプ問題(108件)の解消方法（監査対象期間からの除外が妥当か等）。\nこの2点の調査・対応が完了した上で、改めて95%到達の見積もりとA/B/C相当の判断（経路統一/許可リスト化/閾値見直し）を行う。\n\nGL7-MIGRATION-POLICY-V1（VALID/LEGACY/QUARANTINE分類）への参照は調査時に見つからず（UNCONFIRMED、別途確認要）。",
+      "note": "【完了（2026-06-25）】\nTODO_347-a（dashboard.py LEGACY_SOURCE_VALUES除外実装）・TODO_347-b（38件差分調査）完了。\n\nTODO_347-b結果: violation 254件全件の出所をDB実測で確認（csv_migration124+new103+legacy14+caliber_server12+csv_legacy1=254、完全一致）。「38件差分」は実在せず、前回のA案コスト調査時の概算誤差だったと判明。直近5日間（6/21-6/25）で該当source系の新規発生は0件、現在進行中の制度違反なしを確認。\n\nTODO_347-a結果: dashboard.pyの_gate_audit()にgate_policy.LEGACY_SOURCE_VALUES参照のNOT IN条件を追加（GATE_LAUNCH_DATE以降のみ判定する設計、博士承認済み方針）。修正後実測: gate_passthrough_rate_percent=82.9%→100.0%、violation=254件→0件。UTF8検証OK、呼び出し元1箇所のみでレスポンス形式不変、TODO_347-b実測と完全整合。きむら博士承認の上commit実施。\n\n【残課題（別TODOへ分離）】\nFP-bで発見されたwhen_ts列の形式混在（ISO8601/\"YYYYMMDD_N\"型/\"pipeline\"文字列/\"N/A\"/16進ハッシュ）による文字列比較バグは、今回のLEGACY_SOURCE_VALUES除外で結果的に症状が消えたが根本原因は未解消。将来「_sourceが正規カテゴリかつwhen_ts非ISO形式」のデータが発生した場合に再発するリスクが残るため、別タスク（when_ts形式統一調査・実装）として切り出し、調査FPを発行済み。\n\nこれにより、当初のTODO_347前提診断（caliber_pipeline/mcp_serverフォールバックのA/B/C判断）は判断不要のまま終了。実際の主因はdashboard.pyの集計接続漏れだった。",
       "reference_event": "E20260620_100",
       "created_at": "2026-06-20T12:57:01.897436",
-      "updated_at": "2026-06-25T17:15:07.903332"
+      "updated_at": "2026-06-25T17:40:01.840684"
     },
     {
       "id": "TODO_348",
@@ -5224,5 +5224,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-25T08:38:43.264293+00:00"
+  "_snapshot_at": "2026-06-25T08:48:46.904303+00:00"
 }
