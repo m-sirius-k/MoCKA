@@ -8,11 +8,6 @@ import sqlite3, time, secrets, sys
 from datetime import datetime, date, timezone
 from pathlib import Path
 
-_REPO_ROOT_FOR_POLICY = Path(__file__).resolve().parent.parent
-if str(_REPO_ROOT_FOR_POLICY / "interface") not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT_FOR_POLICY / "interface"))
-from gate_policy import compute_gate_audit
-
 gate_bp = Blueprint('event_gate', __name__)
 
 # Single Truth DB — data/mocka_events.db (絶対パス解決)
@@ -246,20 +241,37 @@ def gate_audit():
     """
     conn = _get_conn()
     try:
-        audit = compute_gate_audit(conn, GATE_LAUNCH_DATE)
+        total = conn.execute(
+            'SELECT COUNT(*) FROM events WHERE when_ts >= ?', (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        live = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source='live' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        buffered = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source='buffered' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        allowed_direct = conn.execute(
+            "SELECT COUNT(*) FROM events WHERE _source LIKE 'direct_allowed:%' AND when_ts >= ?",
+            (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
+        legacy_total = conn.execute(
+            'SELECT COUNT(*) FROM events WHERE when_ts < ?', (GATE_LAUNCH_DATE,)
+        ).fetchone()[0]
     finally:
         conn.close()
+    gate_routed = live + buffered
+    violation = max(total - gate_routed - allowed_direct, 0)
+    rate = round(gate_routed / total * 100, 2) if total else 0.0
     return jsonify({
         'status': 'ok',
         'policy_version': GATE_POLICY_VERSION,
         'gate_launch_date': GATE_LAUNCH_DATE,
-        'real_time_events': {'count': audit['real_time_events'], 'source': '/api/gate/event'},
-        'buffered_events': {'count': audit['buffered_events'], 'source': '/api/gate/event/batch'},
-        'allowed_direct_events': {'count': audit['allowed_direct_events'], 'note': '許可チャネル(bootstrap/maintenance/migration/restore/recovery)経由のDirect Write'},
-        'violation_events': {'count': audit['violation_events'], 'note': f'{GATE_LAUNCH_DATE}以降でGate未経由・許可チャネルでもない制度違反件数（LEGACY_SOURCE_VALUES・timestamp_unparseable除外後）'},
-        'legacy_events': {'count': audit['legacy_events'], 'note': f'{GATE_LAUNCH_DATE}以前のGate確立前バックログ（監査対象外）'},
-        'timestamp_unparseable_events': {'count': audit['timestamp_unparseable_events'], 'note': 'when_tsがISO8601として解釈不能なため日付窓判定の対象外とした件数（TODO_347-c）'},
-        'gate_passthrough_rate_percent': audit['gate_passthrough_rate_percent'],
+        'real_time_events': {'count': live, 'source': '/api/gate/event'},
+        'buffered_events': {'count': buffered, 'source': '/api/gate/event/batch'},
+        'allowed_direct_events': {'count': allowed_direct, 'note': '許可チャネル(bootstrap/maintenance/migration/restore/recovery)経由のDirect Write'},
+        'violation_events': {'count': violation, 'note': f'{GATE_LAUNCH_DATE}以降でGate未経由・許可チャネルでもない制度違反件数'},
+        'legacy_events': {'count': legacy_total, 'note': f'{GATE_LAUNCH_DATE}以前のGate確立前バックログ（監査対象外）'},
+        'gate_passthrough_rate_percent': rate,
     }), 200
 
 
