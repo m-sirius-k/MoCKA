@@ -14,6 +14,7 @@ from datetime import datetime, timezone, timedelta
 sys.path.insert(0, str(Path(__file__).parent))
 import db_helper as db
 from handshake import CURRENT_PHASE, CONTRACT_SEAL, _get_top_todo
+from gate_policy import compute_gate_audit
 
 from flask import Blueprint, jsonify
 
@@ -93,54 +94,46 @@ def _gate_audit():
     Gate確立日(GATE_LAUNCH_DATE)以前の旧データは集計対象外とし、
     現在進行中のdirect write違反と歴史的バックログを混同しない。
     許可されたDirect Write(gate_policy.ALLOWED_DIRECT_CHANNELS)は違反としない。
+    集計ロジック本体はgate_policy.compute_gate_audit()に一本化済み(TODO_347-c)。
     """
-    live = buffered = allowed_direct = total = 0
+    audit = {}
+    pending = 0
     try:
         conn = db._get_conn()
-        total = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE when_ts >= ?", (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
-        live = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE _source='live' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
-        buffered = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE _source='buffered' AND when_ts >= ?", (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
-        allowed_direct = conn.execute(
-            "SELECT COUNT(*) FROM events WHERE _source LIKE 'direct_allowed:%' AND when_ts >= ?",
-            (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
-        conn.close()
+        try:
+            audit = compute_gate_audit(conn, GATE_LAUNCH_DATE)
+        finally:
+            conn.close()
     except Exception:
         pass
-    pending = 0
     try:
         from event_buffer import get_buffer
         pending = get_buffer().pending_count()
     except Exception:
         pass
-    gate_routed = live + buffered
-    violation = max(total - gate_routed - allowed_direct, 0)
-    rate = round(gate_routed / total * 100, 2) if total else 0.0
     return {
         "real_time_events": {
-            "count": live,
+            "count": audit.get("real_time_events", 0),
             "description": "/api/gate/event 経由（即時書き込み成功）",
         },
         "buffered_events": {
-            "count": buffered,
+            "count": audit.get("buffered_events", 0),
             "pending_in_queue": pending,
             "description": "Local Buffer -> /api/gate/event/batch 経由（遅延flush）",
         },
         "allowed_direct_events": {
-            "count": allowed_direct,
+            "count": audit.get("allowed_direct_events", 0),
             "description": "許可チャネル(bootstrap/maintenance/migration/restore/recovery)経由のDirect Write",
         },
         "violation_events": {
-            "count": violation,
+            "count": audit.get("violation_events", 0),
             "description": f"{GATE_LAUNCH_DATE}以降でGate未経由・許可チャネルでもない制度違反件数",
         },
-        "gate_passthrough_rate_percent": rate,
+        "timestamp_unparseable_events": {
+            "count": audit.get("timestamp_unparseable_events", 0),
+            "description": "when_tsがISO8601として解釈不能なため日付窓判定の対象外とした件数",
+        },
+        "gate_passthrough_rate_percent": audit.get("gate_passthrough_rate_percent", 0.0),
     }
 
 

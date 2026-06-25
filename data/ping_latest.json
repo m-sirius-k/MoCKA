@@ -3,11 +3,11 @@
   "G": 5.0,
   "C": "STRICT",
   "P": "SESSION_START_LOCK",
-  "A": "Z-Axis=0.819 / INCIDENT=[2026-06-24] SEAL: A6構造層確定コミット",
+  "A": "Z-Axis=0.819 / INCIDENT=[2026-06-23] CHANGE_START: too",
   "ESSENCE_SUMMARY": {
-    "INCIDENT": "[2026-06-24] SEAL: A6構造層確定コミット push完了(seal_a6_final_v1) 対象: docs/experimental/meta/配下5ファイル(boundary_of_formal_system_v1.md修正、external_dependency_structure_v1.md/institutional_locked_diagram_v1.\n[2026-06-24] CHANGE_DONE: レイヤ番号体系統合(v1.1)+統合アーキテクチャ図保存 完了 結果: 3件完了、全てUTF-8検証OK(BOM無し、issues無し)。\n1. docs/experimental/meta/integrated_architecture_compressed_v1.md 新規作成(130行、5499bytes)。L0-L3新番号体\n[2026-06-24] CHANGE_START: レイヤ番号体系統合(v1.1)+統合アーキテクチャ図保存 着手 対象3件:\n1. docs/experimental/meta/boundary_of_formal_system_v1.md (既存修正・互換注釈追加)\n2. docs/experimental/meta/external_dependency_structure_\n[2026-06-18] 技術的にもですが\n1）　mockaの知名度を上げる　2）　この全体システムII強もを持たせる　\n3）　企業担当者　経営者　Aiファームに　使ってみたらどうなるだろ？って考えさせる　vasAI\n4）　これあると　簡単にできるようになる忘れなくなる　商材としての紹介　mini\nこの観点から最適解を出して！MoCKAに「今すぐ」組み込むべきTop 4（Ti",
-    "PHILOSOPHY": "[2026-06-24] CHANGE_DONE: MOCKA_GOVERNANCE_VOCABULARY_AUTHORITY_RECONCILIATION_AUDIT_v1.md 作成完了 対象: docs/audits/MOCKA_GOVERNANCE_VOCABULARY_AUTHORITY_RECONCILIATION_AUDIT_v1.md（新規、204行、19333バイト\n[2026-06-24] CHANGE_DONE: MOCKA_CODE_BINDING_READINESS_REVIEW_v2.md 作成完了 対象: docs/audits/MOCKA_CODE_BINDING_READINESS_REVIEW_v2.md（新規、186行、18259バイト、UTF-8 OK・BOM無し）。既存v1(NOT READY、承認単位/Rollback \n[2026-06-24] CHANGE_DONE: MOCKA_HUMAN_GATE_FINALIZATION_CLOSURE_AUDIT_v1.md 作成完了 対象: docs/audits/MOCKA_HUMAN_GATE_FINALIZATION_CLOSURE_AUDIT_v1.md（新規、179行、16297バイト、UTF-8 OK・BOM無し）。内容: Human Gat\n[2026-06-24] SEAL: A6-v2整合性検証 確定コミット push完了(seal_a6_v2_verified_v1) 対象: docs/experimental/meta/a6_v2_consistency_test_v1.md(新規1ファイル)。\ncommit: c125f5adb \"seal: A6-v2 consistency verification com\n[2026-06-24] SEAL: A6-v2構造整合性層 確定コミット push完了(seal_a6_v2_final_v1) 対象: docs/experimental/meta/structural_consistency_layer_v2.md(新規1ファイル)。\ncommit: 9c91365a2 \"seal: A6-v2 structural consistency l\n[2026-06-24] CHANGE_DONE: mocka_phase10_blackbox_impact_analysis_v1.md 作成完了 結果: docs/audits/mocka_phase10_blackbox_impact_analysis_v1.md新設完了（153行、4520バイト、UTF-8 OK）。\\n内容: (1)分析前提(Phase10-3/10-4内",
-    "OPERATION": "[2026-06-23] CHANGE_START: Phase7-A-3 explanation_builder契約文書 新規作成着手 対象: C:/Users/sirok/MoCKA/docs/contracts/explanation_builder_contract_v1.md（新規）\n変更理由: くろこ指示によりPhase7-A-3に着手。explanation_build\n[2026-06-20] ## 調査結果：GPTとクロードの見解差分の実態\n\n確定事実を再検証した結果、**GPTの「致命的」という指摘は半分だけ正しい**ことが分かりました。Memory層を分解すると、停止している部分と稼働している部分が混在しています。\n\n### 実証データ\n\n```\n\ndata/mocka_events.db: 60MB, 最終更新 2026-06-21 06:\n[2026-06-20] [hint] 内部記録と外部表示の役割を分けて考える 内部記録と外部表示の役割を分けて考える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 専門用語に簡単な補足を加える 専門用語に簡単な補足を加える source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 文章を編集する際の文法・指令一覧を作る 文章を編集する際の文法・指令一覧を作る source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 複数案を比較検討する力を養う 複数案を比較検討する力を養う source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] ## 調査結果：GPTとクロードの見解差分の実態\n確定事実を再検証した結果、**GPTの「致命的」という指摘は半分だけ正しい**ことが分かりました。Memory層を分解すると、停止している部分と稼働している部分が混在しています。"
+    "INCIDENT": "[2026-06-23] CHANGE_START: tools/canonical_trace_merger_phase5b_v3.py 新規作成着手 対象: C:/Users/sirok/MoCKA/tools/canonical_trace_merger_phase5b_v3.py（新規、v1/v2は変更せず保持）\n変更理由: rev.2で発見された「275件巨大クラスタ」問題\n[2026-06-25] when_ts形式統一調査完了（調査のみ・コード変更なし）+ 緊急発見: /api/gate/audit実エンドポイント未修正 【緊急発見】TODO_347-aで修正したinterface/dashboard.py._gate_audit()は、/api/dashboard内部で使われる関数であり、TODO_347が当初から問題視していた実際の `/api/\n[2026-06-25] CHANGE_DONE: dashboard.py LEGACY_SOURCE_VALUES除外フィルタ実装完了（未確定・Human Gate承認待ち） 結果: interface/dashboard.py の _gate_audit() を修正。\n1) `from gate_policy import LEGACY_SOURCE_VALUES` をimpo\n[2026-06-24] SEAL: A6構造層確定コミット push完了(seal_a6_final_v1) 対象: docs/experimental/meta/配下5ファイル(boundary_of_formal_system_v1.md修正、external_dependency_structure_v1.md/institutional_locked_diagram_v1.\n[2026-06-24] CHANGE_DONE: レイヤ番号体系統合(v1.1)+統合アーキテクチャ図保存 完了 結果: 3件完了、全てUTF-8検証OK(BOM無し、issues無し)。\n1. docs/experimental/meta/integrated_architecture_compressed_v1.md 新規作成(130行、5499bytes)。L0-L3新番号体\n[2026-06-24] CHANGE_START: レイヤ番号体系統合(v1.1)+統合アーキテクチャ図保存 着手 対象3件:\n1. docs/experimental/meta/boundary_of_formal_system_v1.md (既存修正・互換注釈追加)",
+    "PHILOSOPHY": "[2026-06-25] TODO_347-b 38件差分調査完了（差分は実在せず・前回推定値の誤差と判明） SQL実測（data/mocka_events.db、dashboard.py._gate_audit()と同一クエリ条件）:\ntotal(when_ts>=2026-06-16)=1487, live=1094, buffered=139, allowed_direct=0\n[2026-06-24] CHANGE_START: phase2_execution_governance_v1.md 新規作成着手 対象: docs/governance/phase2_execution_governance_v1.md（新規）\n変更理由: Phase1.5 Risk Validation完了後、博士指示によりPhase2 Execution Governanc\n[2026-06-24] CHANGE_START: docs/phase1/human_gate_core_snapshot_v1.md / STATE_PHASE1_LOCKED 新規作成着手 対象: C:/Users/sirok/MoCKA/docs/phase1/human_gate_core_snapshot_v1.md（新規）、C:/Users/sirok/MoCKA/S\n[2026-06-24] CHANGE_DONE: MOCKA_GOVERNANCE_VOCABULARY_AUTHORITY_RECONCILIATION_AUDIT_v1.md 作成完了 対象: docs/audits/MOCKA_GOVERNANCE_VOCABULARY_AUTHORITY_RECONCILIATION_AUDIT_v1.md（新規、204行、19333バイト\n[2026-06-24] CHANGE_DONE: MOCKA_CODE_BINDING_READINESS_REVIEW_v2.md 作成完了 対象: docs/audits/MOCKA_CODE_BINDING_READINESS_REVIEW_v2.md（新規、186行、18259バイト、UTF-8 OK・BOM無し）。既存v1(NOT READY、承認単位/Rollback \n[2026-06-24] CHANGE_DONE: MOCKA_HUMAN_GATE_FINALIZATION_CLOSURE_AUDIT_v1.md 作成完了 対象: docs/audits/MOCKA_HUMAN_GATE_FINALIZATION_CLOSURE_AUDIT_v1.md（新規、179行、16297バイト、UTF-8 OK・BOM無し）。内容: Human Gat\n[2026-06-24] SEAL: A6-v2整合性検証 確定コミット push完了(seal_a6_v2_verified_v1) 対象: docs/experimental/meta/a6_v2_consistency_test_v1.md(新規1ファイル)。\ncommit: c125f5adb \"seal: A6-v2 consistency verification com",
+    "OPERATION": "[2026-06-20] [hint] BIMとトレーサビリティを連携させると視覚化と検索性が向上する BIMとトレーサビリティを連携させると視覚化と検索性が向上する source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 断定を避けつつ丁寧に説明する 断定を避けつつ丁寧に説明する source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-20] [hint] 導入を短く、結論を先に、箇条書きにする構成指令 導入を短く、結論を先に、箇条書きにする構成指令 source=past_chat_batch|type=hint|who_role=|event_source=buffered|orig_channel=browser_extension\n[2026-06-23] CHANGE_START: Phase7-A-3 explanation_builder契約文書 新規作成着手 対象: C:/Users/sirok/MoCKA/docs/contracts/explanation_builder_contract_v1.md（新規）\n変更理由: くろこ指示によりPhase7-A-3に着手。explanation_build\n[2026-06-20] ## 調査結果：GPTとクロードの見解差分の実態\n確定事実を再検証した結果、**GPTの「致命的」という指摘は半分だけ正しい**ことが分かりました。Memory層を分解すると、停止している部分と稼働している部分が混在しています。\n### 実証データ"
   },
   "essence_updated": true,
   "ngrok_online": false,
@@ -40,39 +40,5 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-25T07:04:48.973649",
-  "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.934,
-    "danger_rate": 0.033,
-    "success_rate": 0.967,
-    "text": "記録完了（event_id: E20260625_531060524fb4f）。\n\n3点まとめ:\n\nrelay_dom (DEGRADED) — health_",
-    "top_events": [
-      {
-        "verdict": "DANGER",
-        "when": "2026-04-14",
-        "why": "voice_capture",
-        "how": "export_import",
-        "note": "SERVER STATUS\n● APP :5000 ONLINE\n● CALIBER :5679 ONLINE\n● MCP :5002 OFFLINE\n● NGROK OFFLINE\nMCP TOOL",
-        "recur": 0,
-        "matched": [
-          "MCP tool"
-        ],
-        "score": 1
-      },
-      {
-        "verdict": "DANGER",
-        "when": "2026-06-11",
-        "why": "voice_capture",
-        "how": "chrome_extension_v15",
-        "note": "The entry already exists — manifest.json already has content_orchestra.js registered for chatgpt.com",
-        "recur": 0,
-        "matched": [
-          "MCP tool"
-        ],
-        "score": 1
-      }
-    ],
-    "updated_at": "2026-06-25T05:49:11.186Z"
-  }
+  "generated_at": "2026-06-25T18:06:38.218875"
 }

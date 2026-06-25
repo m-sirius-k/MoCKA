@@ -186,11 +186,17 @@
       "title": "[不具合]GL7の安全条件3点が実行経路に未接続(FORBIDDEN_EXECUTIONS/encoding_mismatch/Human Gate)",
       "priority": "高",
       "status": "未着手"
+    },
+    {
+      "id": "TODO_362",
+      "title": "Heinrich Monitorパネル配線断絶 — fetchLive()にrenderHein()呼び出しが存在せずSTATIC.heinハードコード値のまま固定表示",
+      "priority": "最高",
+      "status": "未着手"
     }
   ],
   "decision_ledger_rev": 4,
   "guideline_revision": 0,
-  "revision": 48,
-  "state_hash": "770c6a849717f86bf3b2dd4dc2cc409d1cac939244eb23725d8d8a612ee68ddb",
-  "generated_at": "2026-06-25T06:54:40.412967+00:00"
+  "revision": 49,
+  "state_hash": "72957cf012e214eecbed5558fa3386da98d5b929466aa317ae658326a83e8869",
+  "generated_at": "2026-06-25T09:06:29.745646+00:00"
 }

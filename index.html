@@ -702,7 +702,7 @@ function renderHein(data){
         <div class="hein-bar"><div class="hein-fill" style="background:var(--blue);width:${data.l3/maxBar*100}%"></div></div>
         <span class="hein-num" style="color:var(--blue)">${data.l3}x</span>
       </div>
-      <div class="hein-note">理論値 1:29:300 — 捕捉率 ${data.rate}% / 未捕捉推定 ${Number(data.uncaught).toLocaleString()}件</div>
+      <div class="hein-note" title="これは記録漏れの件数ではなく、Heinrichの法則(1:29:300)に基づく理論的期待値とのギャップです">理論値 1:29:300 — 観測/理論比率 ${data.rate}% / Heinrich理論ギャップ ${Number(data.uncaught).toLocaleString()}件</div>
       <div style="border-top:1px solid var(--line);margin:8px 0 6px;padding-top:6px;font-size:10px;color:var(--muted)">7日 Incident トレンド</div>
       <div class="spark">${(data.spark||[]).map((v,i)=>`<div class="spark-bar" style="height:${v}%;background:${i===data.spark.length-1?'var(--red)':'rgba(231,76,110,.45)'}"></div>`).join('')}</div>
     `;

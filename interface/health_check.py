@@ -17,6 +17,9 @@ import datetime
 import argparse
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from gate_policy import compute_gate_audit
+
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
@@ -237,17 +240,10 @@ def check_phi_os_audit() -> tuple:
             "SELECT COUNT(*) FROM audit_violations WHERE status = 'NEW'"
         ).fetchone()[0]
 
-        total_events = con.execute(
-            "SELECT COUNT(*) FROM events WHERE when_ts >= ?", (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
-        gate_live = con.execute(
-            "SELECT COUNT(*) FROM events WHERE channel_type = 'gate' AND _source = 'live' AND when_ts >= ?",
-            (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
-        gate_buffered = con.execute(
-            "SELECT COUNT(*) FROM events WHERE channel_type = 'gate' AND _source = 'buffered' AND when_ts >= ?",
-            (GATE_LAUNCH_DATE,)
-        ).fetchone()[0]
+        audit = compute_gate_audit(con, GATE_LAUNCH_DATE)
+        total_events = audit["real_time_events"] + audit["buffered_events"] + audit["allowed_direct_events"] + audit["violation_events"]
+        gate_live = audit["real_time_events"]
+        gate_buffered = audit["buffered_events"]
         gate_events = gate_live + gate_buffered
         no_actor = con.execute(
             "SELECT COUNT(*) FROM events WHERE (who_actor IS NULL OR who_actor = '') AND when_ts >= ?",

@@ -134,6 +134,11 @@ def run():
                 'interpretation': 'MoCKAが捕捉できている事案の割合'
             },
             'missing_estimate': missing,
+            'missing_estimate_label_ja': 'Heinrich理論ギャップ',
+            'missing_estimate_note': (
+                'これは記録漏れの件数ではなく、Heinrichの法則(1:29:300)に基づく'
+                '理論的期待値と実測Layer3件数とのギャップを表す統計的推定値。'
+            ),
             'insight': (
                 'Layer2が少ない=軽微事故の記録経路が不足。'
                 'またか！ボタンの活用でLayer2を増やすことが制度成熟への最短経路。'
@@ -162,7 +167,7 @@ def run():
     print(f'理論比率: 1 : 29  : 300')
     print(f'Layer2捕捉率: {g2}%  (理論の{g2}%)')
     print(f'Layer3捕捉率: {g3}%  (理論の{g3}%)')
-    print(f'未捕捉推定:   {missing}件')
+    print(f'Heinrich理論ギャップ:   {missing}件')
     print()
     print('【洞察】')
     print('  Layer2が少ない = 軽微事故の記録経路が不足')
