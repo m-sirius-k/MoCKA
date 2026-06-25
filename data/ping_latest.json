@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-25T07:04:48.973649"
+  "generated_at": "2026-06-25T07:04:48.973649",
+  "matcher_result": {
+    "verdict": "SUCCESS",
+    "score": -0.934,
+    "danger_rate": 0.033,
+    "success_rate": 0.967,
+    "text": "記録完了（event_id: E20260625_531060524fb4f）。\n\n3点まとめ:\n\nrelay_dom (DEGRADED) — health_",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-14",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "SERVER STATUS\n● APP :5000 ONLINE\n● CALIBER :5679 ONLINE\n● MCP :5002 OFFLINE\n● NGROK OFFLINE\nMCP TOOL",
+        "recur": 0,
+        "matched": [
+          "MCP tool"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-06-11",
+        "why": "voice_capture",
+        "how": "chrome_extension_v15",
+        "note": "The entry already exists — manifest.json already has content_orchestra.js registered for chatgpt.com",
+        "recur": 0,
+        "matched": [
+          "MCP tool"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-25T05:49:11.186Z"
+  }
 }

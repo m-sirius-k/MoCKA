@@ -4,8 +4,8 @@
     "detail": "PYTHONUTF8=(unset) OK"
   },
   "mocka_server": {
-    "ok": false,
-    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
+    "ok": true,
+    "detail": "200 OK"
   },
   "caliber_pipeline": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 | Gate経由率 81.8% (<95%, Gate確立2026-06-16以降のみ集計) (total=1398 gate=81.8% [real-time=1015/buffered=129] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 | Gate経由率 82.3% (<95%, Gate確立2026-06-16以降のみ集計) (total=1432 gate=82.3% [real-time=1044/buffered=134] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
