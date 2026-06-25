@@ -28,6 +28,38 @@ PRE_COMMIT_FORBIDDEN = [
     "secrets/",
 ]
 
+# Core System File Change Approval(Human Gate)対象。
+# 自動シール(AUTO_SEAL_50EVT等)が無承認でこれらの変更を確定させてしまう
+# 事故が2026-06-25に発生したため、対象は無条件git add -Aから除外し、
+# 未コミットのまま人間承認待ちとして残す(TODO_347governance修正)。
+CORE_SYSTEM_DIRS = ("phi_os/", "interface/", "structural/", "gateway/")
+CORE_SYSTEM_FILES_EXTRA = (
+    "app.py", "index.html", "scripts/ledger/anchor_update.py",
+    "PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py",
+)
+
+def is_core_system_file(path: str) -> bool:
+    p = path.replace("\\", "/")
+    if p in CORE_SYSTEM_FILES_EXTRA:
+        return True
+    return p.endswith(".py") and p.startswith(CORE_SYSTEM_DIRS)
+
+def unstage_core_system_files():
+    """staged済みファイルからCore System Fileを検出し、unstageして
+    自動コミット対象から除外する。除外したファイルは画面に明示する。"""
+    result = subprocess.run(
+        ["git", "diff", "--cached", "--name-only"],
+        capture_output=True, text=True, cwd=ROOT
+    )
+    staged = result.stdout.splitlines()
+    excluded = [f for f in staged if is_core_system_file(f)]
+    if excluded:
+        subprocess.run(["git", "restore", "--staged", "--"] + excluded, cwd=ROOT)
+        print(f"[SEAL] {len(excluded)} core system file(s) excluded, pending Human Gate approval:")
+        for f in excluded:
+            print(f"  - {f}")
+    return excluded
+
 def check_staged_files():
     """git add済みファイルに禁止パターンが含まれていないか確認"""
     result = subprocess.run(
@@ -68,6 +100,7 @@ def main():
 
     # 1. 変更をコミット
     run(["git", "add", "-A"])
+    unstage_core_system_files()
     check_staged_files()
     out, code = run(["git", "commit", "-m", msg])
     print(out if out else "nothing to commit")
@@ -92,6 +125,7 @@ def main():
 
     # 4. anchor_record自体をコミット
     run(["git", "add", "-A"])
+    unstage_core_system_files()
     run(["git", "commit", "-m", f"anchor: re-seal after {commit[:7]}"])
     print("ANCHOR UPDATED AND COMMITTED")
 

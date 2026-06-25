@@ -24,6 +24,31 @@ GIT_TARGETS   = [
     'data/events_latest.json',
 ]
 
+# Core System File Change Approval(Human Gate)対象。
+# このデーモンのgit commitがパス指定なしだったため、たまたまその時点で
+# git indexにステージされていた無関係な変更(Human Gate承認待ちのコード)を
+# 巻き込んでpushしてしまう事故が2026-06-25に発生した。
+# 再発防止のため、commitは常にGIT_TARGETSのみに限定し、かつCore System File
+# が未コミットで存在する間はサイクル自体をスキップする(TODO_347governance修正)。
+CORE_SYSTEM_DIRS  = ('phi_os/', 'interface/', 'structural/', 'gateway/')
+CORE_SYSTEM_FILES = (
+    'app.py', 'index.html', 'scripts/ledger/anchor_update.py',
+    'PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py',
+)
+
+
+def has_pending_core_system_changes():
+    """Core System Fileが未コミット(staged/unstaged問わず)で存在するか確認する。"""
+    result = subprocess.run(
+        ['git', 'status', '--porcelain'],
+        cwd=str(MOCKA_ROOT), capture_output=True, text=True, encoding='utf-8', errors='replace'
+    )
+    for line in result.stdout.splitlines():
+        path = line[3:].strip().replace('\\', '/')
+        if path in CORE_SYSTEM_FILES or (path.endswith('.py') and path.startswith(CORE_SYSTEM_DIRS)):
+            return True, path
+    return False, None
+
 
 def run_export():
     result = subprocess.run(
@@ -38,12 +63,16 @@ def run_export():
 
 
 def git_push_if_changed():
+    pending, path = has_pending_core_system_changes()
+    if pending:
+        print(f'[sync_watch] core system file pending Human Gate approval ({path}) -> skip this cycle')
+        return
     subprocess.run(
         ['git', 'add'] + GIT_TARGETS,
         cwd=str(MOCKA_ROOT), capture_output=True
     )
     diff = subprocess.run(
-        ['git', 'diff', '--cached', '--quiet'],
+        ['git', 'diff', '--cached', '--quiet', '--'] + GIT_TARGETS,
         cwd=str(MOCKA_ROOT)
     )
     if diff.returncode == 0:
@@ -51,7 +80,7 @@ def git_push_if_changed():
         return
     now_str = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
     subprocess.run(
-        ['git', 'commit', '-m', f'auto sync {now_str}'],
+        ['git', 'commit', '-m', f'auto sync {now_str}', '--'] + GIT_TARGETS,
         cwd=str(MOCKA_ROOT), capture_output=True
     )
     push = subprocess.run(
