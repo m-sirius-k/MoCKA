@@ -358,10 +358,10 @@
       "category": "Relay/MoCKA-Relay統合",
       "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
       "assigned_to": "Claude",
-      "note": "Step1完了: MoCKA_Relay_handoff_spec_v1.md確定（##見出し構造による丸ごとブロック除外方式に変更、個別文言パターン依存を廃止）。Step2: 拡張機能要件定義書（4機能の仕様・適用範囲）作成へ。Step3: アンインストール+storage削除。Step4: 仕様書を基準にゼロから再構築。\n\n【追加・上位制約確定（2026-06-22 / E20260622_149806056acf4）】Phase4 Operational Constraints Specification v1.0にてRelayの時間制御パラメータが確定。実装時はこれを上限値として遵守すること：window_size 1000-10000ms（推奨5000ms baseline）/ slide_step 100-2000ms / 変更頻度上限10回/hour / 3回以上の連続変更はcooldown 300s必須。Relayは時間構造のみ制御可能であり、routing/decision/semantic layerへの干渉は一切不可（invariant）。違反時は即時Relay freeze→drift event生成→Human Gate解除待ちが復旧ルール。Step4（ゼロから再構築）の際はこの制約を実装仕様に組み込むこと。",
+      "note": "【2026-06-26 events.db一次記録に基づく整理】\n\nStep1（MoCKA_Relay_handoff_spec_v1.md確定）: 完了（既存記載通り、##見出し構造による丸ごとブロック除外方式に変更済み）。\n\nStep2（拡張機能要件定義書作成）: 未確認。events.db全期間（2026-05-17〜2026-06-26、title LIKE '%Relay%'等でCHANGE_DONEイベント79件を検索）を確認したが、要件定義書作成に該当する記録が見当たらなかった。未着手と決めつけず「未確認」として記録する。\n\nStep3（アンインストール+chrome.storage.local削除）: 未確認。同様に全期間検索したが、アンインストール・storage削除に該当する記録が見当たらなかった。「未着手」と決めつけず「未確認」として記録する。\n\nStep4（仕様書を基準にゼロから再構築・正式配置）: 完了。E20260625_594023925a824（系統B v2.0.0をC:\\Users\\sirok\\Relay_Project→extension\\へ正式コピー、manifest.json確認済み）、E20260625_0398106358736（relay_dom_selector ping実機確認OK、background.js→app.py→health_check.pyの経路を実機で生存確認、本文に「TODO_350 Step4(正式配置)完了」と明記）の2件で確認済み（いずれも2026-06-25付）。\n\n残課題（明記・博士判断待ち）: 旧v4.1.0の孤立ファイル5点（popup.html/popup.js/relay_search_ui.js/sidepanel.html/sidepanel.js）が新manifest.jsonから無参照のままextension\\ルートに残存。削除可否は博士判断待ちのまま未解消。\n\n注記: 本TODO自体のnote欄は2026-06-22更新のままStep1のみの記載で、6/25に完了したStep4の進捗が反映されていなかった（TODO記録と一次記録(events.db)のズレが発生していた事例）。今回Claudeが直接events.dbを検索し本noteを一次記録に基づき訂正・更新した。\n\n【追加・上位制約（既存記載維持）】Phase4 Operational Constraints Specification v1.0（E20260622_149806056acf4）のRelay時間制御パラメータ上限値（window_size 1000-10000ms、slide_step 100-2000ms、変更頻度上限10回/hour、3回以上連続変更時cooldown 300s必須）は引き続き有効。Relayはrouting/decision/semantic layerへの干渉不可（invariant）。",
       "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
       "created_at": "2026-06-19T17:49:53.685053",
-      "updated_at": "2026-06-22T08:56:07.518932"
+      "updated_at": "2026-06-26T17:54:05.064946"
     },
     {
       "id": "TODO_348",
@@ -5349,5 +5349,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T08:44:52.852866+00:00"
+  "_snapshot_at": "2026-06-26T08:54:57.056591+00:00"
 }
