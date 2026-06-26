@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-26",
+    "updated": "2026-06-27",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -358,10 +358,10 @@
       "category": "Relay/MoCKA-Relay統合",
       "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
       "assigned_to": "Claude",
-      "note": "Step1: 完了。Step2: 完了（2026-06-26、docs/handoff/MoCKA_Relay_requirements_v1.md作成、E20260626_0926759826735）。Step3: 未着手。Step4: 未完了（訂正済み、根拠はE20260626_675420922bb64参照）。\n\nStep2要件定義書の要点: relay-logbook.js新規実装（正本フォルダ\\workshop\\Relay_Project\\extension\\配下）、TODO_366確定方針（draft/active 2段構成）をそのまま転記、content.jsのextractTodosFromText()/EXTRACT_TODOSハンドラは廃止対象として明記、引き継ぎパケット生成はStep1確定spec(getHandoffBlockRanges)を踏襲、Phase4 Operational Constraints上限値を非機能要件化、6章で再実装対象外ロジックと削除対象データ(LB_001〜080等)を1対1対応で明記。\n\n残課題: 旧v4.1.0孤立ファイル5点の削除可否は博士判断待ちのまま未解消。\n\n次のアクション: Step3（アンインストール+chrome.storage.local削除）またはStep4の再実装着手。どちらを先行するかは博士確認。\n\n【本日3件の記録-現物不一致事案（既存記載維持）】\n1. TODO_350 Step1フォルダ取り違え(E20260621_378795484b70f) 2. TODO_354レジストリ未書き込み(E20260626_337391387a8aa) 3. TODO_350 Step4誤完了(E20260626_675420922bb64)。CHANGE_DONE記録の信頼性という上位パターンとして次回セッションの議論対象。\n\n【上位制約（既存記載維持）】Phase4 Operational Constraints Specification v1.0（E20260622_149806056acf4）のRelay時間制御パラメータ上限値（window_size 1000-10000ms、slide_step 100-2000ms、変更頻度上限10回/hour、3回以上連続変更時cooldown 300s必須）は引き続き有効。Relayはrouting/decision/semantic layerへの干渉不可（invariant）。",
+      "note": "Step1（仕様書確定）完了／Step2（要件定義書 MoCKA_Relay_requirements_v1.md）完了／Step3（アンインストール+storage削除）完了——chrome.storage.local.get(null,console.log)実機確認で{}（空）を確認、E20260627_363495360c273に記録／Step4（relay-logbook.js新規実装、旧content.js extractTodosFromText()廃止）未完了、次回着手。",
       "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
       "created_at": "2026-06-19T17:49:53.685053",
-      "updated_at": "2026-06-26T18:28:30.216639"
+      "updated_at": "2026-06-27T07:02:50.495349"
     },
     {
       "id": "TODO_348",
@@ -5349,5 +5349,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T21:56:51.353852+00:00"
+  "_snapshot_at": "2026-06-26T22:07:02.198904+00:00"
 }
