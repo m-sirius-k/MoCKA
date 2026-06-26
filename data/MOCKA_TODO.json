@@ -912,6 +912,18 @@
       "note": "参照INCIDENT群: E20260627_753188422ec60（DOMセレクタdrift発見）、E20260627_814381913f18f（countTurns/getUserOnlyLinesの修正、本TODOの対象外＝既に解決済みの部分）、E20260621_378795484b70f（同根の「現物確認なし完了判定」インシデント1件目）、E20260626_337391387a8aa（同2件目）、E20260626_675420922bb64（同3件目）。\n\n調査範囲: content.jsのgetConversationText()（[data-message-author-role]依拠、generatePacket()の基礎）。assistant側発言の正しい検出方法を実機(DevTools)で特定し、修正後は必ず実機で引き継ぎパケット生成（decisions/files/memos抽出含む）が正しく機能することを確認すること。机上の修正のみで「完了」と記録しないこと。",
       "reference_event": "E20260627_753188422ec60",
       "created_at": "2026-06-27T07:52:43.514638"
+    },
+    {
+      "id": "TODO_374",
+      "title": "8段階Civilization Loop断絶の実コード調査（Observe→Record接続・Incident→Recurrence超過）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "governance/civilization_loop",
+      "description": "2026-06-25「MOCKA v3システム運用ガイドライン」セッションで発見された8段階文明ループ（Observe→Record→Incident→Recurrence→Prevention→Decision→Action→Audit）の件数集計から、2つの核心VIOLATIONが未解決のまま残っている。①Observe=0件にもかかわらずRecord=1,842件が存在する「接続なき生成」——Record段階の入力経路がObserveを経由していない可能性。②Incident=23件からRecurrence=66件という出力過多——1:多の正規分岐か、Recurrenceが独立経路で生成されているかが未確定（INFERRED扱いで保留中）。当時の調査は①の実コード確認（router.py等でObserve段階が実装・接続されているか）に進もうとしたが、claude.ai側チャットにはローカルファイルシステム（C:\\Users\\sirok\\MoCKA\\配下）への直接アクセス経路がなく、Claude Code側での続行が必要と判明し中断した。",
+      "assigned_to": "Claude",
+      "note": "本TODOはClaude Code（ローカルファイルシステムアクセス可能な環境）での実行が前提。調査手順：(1) router.py等、Observe段階を実装しているはずのファイルを特定し、Record書き込み箇所（mocka_write_event等）がObserve段階の出力を経由しているか実コードで確認。経由していない場合はINCIDENT化。(2) Recurrenceカウントの生成経路を特定し、Incidentレコードを参照しているか、独立カウントかを確認。(3) 本日(2026-06-27)発見した「記録(新規実装=完了)と現物(実装内容)の不一致」系インシデント群と同系列のパターンである可能性が高いため、調査結果はこれらと紐付けて記録すること。TODO_373（getConversationText() DOM drift）とは独立した別系統の調査だが、どちらも「Step1相当の確定記録に対する実機/実コード検証不足」という共通点があるため優先度は同等の「最高」とする。",
+      "reference_event": "E20260626_675420922bb64",
+      "created_at": "2026-06-27T07:57:57.769490"
     }
   ],
   "completed": [
@@ -5362,5 +5374,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T22:57:23.960272+00:00"
+  "_snapshot_at": "2026-06-26T23:07:27.732731+00:00"
 }
