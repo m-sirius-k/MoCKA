@@ -351,19 +351,6 @@
       "created_at": "2026-06-17T19:06:21.003145"
     },
     {
-      "id": "TODO_350",
-      "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
-      "status": "進行中",
-      "priority": "最高",
-      "category": "Relay/MoCKA-Relay統合",
-      "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
-      "assigned_to": "Claude",
-      "note": "Step1完了／Step2完了／Step3完了(E20260627_363495360c273)／Step4は4段階に分割し進行中。\n\n【Step4進捗】\n- Step4-a: relay-logbook.js新規実装 完了（E20260627_04455154664e2）。\n- Step4-b: manifest.json統合+content.js改修 完了（E20260627_317205664dd97）。\n- Step4-c: popup.html/popup.js draft UI実装 完了（E20260627_563388750e42b）。\n- 実機検証中にDOMセレクタdrift発見（INCIDENT E20260627_753188422ec60）: content.jsの[data-message-author-role=\"human\"]が現行claude.ai DOMに存在せず、ターン数・draft抽出が常に0になっていた。実機確認(DevTools)により正しいセレクタ[data-testid=\"user-message\"]を特定、countTurns()/getUserOnlyLines()を修正済み(E20260627_814381913f18f)。getConversationText()(generatePacket用、Step1機能)は対応するassistant側セレクタ未確認のため別途調査が必要(引き継ぎパケット生成機能の実質的再検証が必要)。\n- 再実機検証待ち: セレクタ修正後、ターン数・draft抽出が正しく動作するかをきむら博士に再確認依頼中。\n- Step4-d: 旧extractTodosFromText()/TODO_PATTERNS/saveTodos()の削除＋全体動作確認 — 未着手（実機検証OK後に着手）\n\n【新規・関連課題】getConversationText()のassistant側セレクタ問題は、Step1(引き継ぎパケット生成)の実質的な動作不全を意味する可能性があり、別途調査・修正が必要。TODO_350完了基準にも影響しうるため、Step4完了後に取り扱う。\n\n【恒久対応（既存記載維持）】content.js sendMessage3箇所にchrome.runtime?.idガード追加済み(E20260627_5756305388b24)。要件定義書にStep3運用ノート+context invalidatedガード標準パターン（2.5節）を追記済み(E20260627_640216512bc1a)。",
-      "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
-      "created_at": "2026-06-19T17:49:53.685053",
-      "updated_at": "2026-06-27T07:43:52.411659"
-    },
-    {
       "id": "TODO_348",
       "title": "[完了] WorkingContext Live Update接続 + Snapshot Runtime有効化",
       "status": "完了",
@@ -913,6 +900,18 @@
       "note": "TODO_371（正本不信から生まれた補助記録パターン）とは別の角度の同種リスクのため、統合せず「関連事項」として相互参照する。TODO_371・TODO_370・TODO_354も同型パターンの実例として参照可能。",
       "reference_event": "E20260625_61973816958ef",
       "created_at": "2026-06-26T12:45:15.277274"
+    },
+    {
+      "id": "TODO_373",
+      "title": "getConversationText()のDOM drift調査・修正（assistant側testid確認含む）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "Relay/MoCKA-Relay統合/DOM整合性",
+      "description": "TODO_350 Step4実機検証中（2026-06-27）に発見したINCIDENT（E20260627_753188422ec60）の派生課題。content.jsのcountTurns()/getUserOnlyLines()が依拠していた旧セレクタ[data-message-author-role=\"human\"]は、現行claude.aiのDOM構造に存在しないことが実機確認(DevTools)で確定し、正しいセレクタ[data-testid=\"user-message\"]への修正・実機検証は完了済み（E20260627_814381913f18f、E20260627_9602974928834）。\n\nしかし、content.js内のgetConversationText()（generatePacket()=引き継ぎパケット生成の基礎、TODO_350 Step1で「完了」と記録済みの機能）は、[data-message-author-role]（roleを問わず全件取得する版）に依拠したままで、未修正・未検証である。\n\n実機確認の結果、claude.aiの現行DOMでは[data-testid]属性に'message'を含むものは'user-message'の1種類のみで、assistant(Claude)側の発言に対応するdata-testidは（確認した範囲では）見当たらなかった。getConversationText()はユーザー・アシスタント両方の発言を結合してdecisions/files/memos等を抽出する設計のため、assistant側を正しく検出する方法を別途調査する必要がある。\n\n【目的】\n本TODOの目的は「引き継ぎパケット生成機能の実働確認」である。TODO_350 Step1は「完了」と記録されているが、その完了判定がDOM構造の実機検証を伴っていたかは不明であり、Step4で発見したのと同種の「現物確認なしの完了判定」が再現している可能性がある。本TODOで実機検証を行い、Step1の完了記録の妥当性そのものを確認する。\n\n【本日の上位パターンとの関連】\n2026-06-26〜27にかけて、CHANGE_DONE記録と実際の作業結果が一致しない事案が複数件発見されている：\n1. TODO_350 Step1 作業対象フォルダ取り違え（E20260621_378795484b70f）\n2. TODO_354 extension_canonical_pathsレジストリが実際には一度も書き込まれていなかった（E20260626_337391387a8aa）\n3. TODO_350 Step4の誤完了記録（E20260626_675420922bb64）\n4. 本TODOの起点であるDOMセレクタdrift（E20260627_753188422ec60）— ターン数・TODO抽出が「完了」記録の裏で実際には機能していなかった\n\nこれらは「CHANGE_DONE記録自体の信頼性」という共通の上位リスクパターンを示す事例群であり、TODO_371/TODO_372とも関連する。本TODOの調査・修正自体も、机上の修正で終わらせず必ず実機検証（DevTools実測）を伴うことを徹底する。",
+      "assigned_to": "くろこ（調査・実装）+ きむら博士（実機検証協力）",
+      "note": "参照INCIDENT群: E20260627_753188422ec60（DOMセレクタdrift発見）、E20260627_814381913f18f（countTurns/getUserOnlyLinesの修正、本TODOの対象外＝既に解決済みの部分）、E20260621_378795484b70f（同根の「現物確認なし完了判定」インシデント1件目）、E20260626_337391387a8aa（同2件目）、E20260626_675420922bb64（同3件目）。\n\n調査範囲: content.jsのgetConversationText()（[data-message-author-role]依拠、generatePacket()の基礎）。assistant側発言の正しい検出方法を実機(DevTools)で特定し、修正後は必ず実機で引き継ぎパケット生成（decisions/files/memos抽出含む）が正しく機能することを確認すること。机上の修正のみで「完了」と記録しないこと。",
+      "reference_event": "E20260627_753188422ec60",
+      "created_at": "2026-06-27T07:52:43.514638"
     }
   ],
   "completed": [
@@ -5342,6 +5341,20 @@
       "created_at": "2026-06-25T16:48:01.272703",
       "updated_at": "2026-06-26T12:23:15.217352",
       "completed_at": "2026-06-26"
+    },
+    {
+      "id": "TODO_350",
+      "title": "Relay 完全リセット — 正式仕様書v1.0に基づく再構築",
+      "status": "完了",
+      "priority": "最高",
+      "category": "Relay/MoCKA-Relay統合",
+      "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
+      "assigned_to": "Claude",
+      "note": "Step1完了／Step2完了／Step3完了(E20260627_363495360c273)／Step4完了（4段階すべて完了・実機検証済み）。\n\n【Step4完了内訳】\n- Step4-a: relay-logbook.js新規実装 完了（E20260627_04455154664e2）。\n- Step4-b: manifest.json統合+content.js改修 完了（E20260627_317205664dd97）。\n- Step4-c: popup.html/popup.js draft UI実装 完了（E20260627_563388750e42b）。\n- DOMセレクタdrift発見・修正（INCIDENT E20260627_753188422ec60→修正E20260627_814381913f18f）。実機検証で解消確認（E20260627_9602974928834、E20260627_0385712227709：ターン数20検出・draft3件抽出・確定フローまで全て正常動作）。\n- Step4-d: 旧extractTodosFromText()/TODO_PATTERNS/saveTodos()/STORAGE.TODOS削除 完了（E20260627_160531295a645）。grep検索で残存コードゼロ件・node --checkで構文OK・UTF-8 OKを確認済み（根拠として明記）。\n\n【TODO_350完了判定】Step1〜4すべて完了。引き継ぎパケット生成(generatePacket/getConversationText())のDOMセレクタ問題（Step4で発見したdriftと同根）は、本TODOの範囲外の別課題としてTODO_373へ切り出し済み。TODO_350自体はRelay完全リセットの完了基準（4機能の再実装・要件定義・storage削除・relay-logbook.js実装）を満たしたため完了とする。\n\n【恒久対応（既存記載維持）】content.js sendMessage3箇所にchrome.runtime?.idガード追加済み(E20260627_5756305388b24)。要件定義書にStep3運用ノート+context invalidatedガード標準パターン（2.5節）を追記済み(E20260627_640216512bc1a)。",
+      "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
+      "created_at": "2026-06-19T17:49:53.685053",
+      "updated_at": "2026-06-27T07:52:16.470630",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5349,5 +5362,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T22:47:19.454732+00:00"
+  "_snapshot_at": "2026-06-26T22:57:23.960272+00:00"
 }
