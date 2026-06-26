@@ -1,7 +1,0 @@
-﻿name = "relay-license"
-main = "relay_license_worker.js"
-compatibility_date = "2024-01-01"
-
-[[kv_namespaces]]
-binding = "RELAY_KV"
-id = "f61f5dd6ab2840eaa6d40ee49591ae1e"

@@ -28,8 +28,8 @@
     "detail": "ハッシュ変更検出!\n                          前回: b59f57c80c2b9d5c\n                          今回: b2a1102efc6aac0c"
   },
   "relay_dom_selector": {
-    "ok": false,
-    "detail": "Relay: last_ping なし（claude.aiタブ未オープン、または拡張未起動）"
+    "ok": true,
+    "detail": "Relay alive (last_ping: 2026-06-26T10:30:04.621148, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 | Gate経由率 82.3% (<95%, Gate確立2026-06-16以降のみ集計) (total=1432 gate=82.3% [real-time=1044/buffered=134] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 (total=1271 gate=100.0% [real-time=1130/buffered=141] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,

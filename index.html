@@ -714,6 +714,21 @@ function renderHein(data){
   }
 }
 
+/* TODO_362: /heinrich/status の実レスポンス(heinrich.actual_ratio/capture_rate/
+   missing_estimate等)を renderHein() が期待する {l1,l2,l3,rate,uncaught,spark}
+   形式に変換する。heinrich_engine.py側の計算ロジックは変更しない。 */
+function mapHeinData(raw){
+  const h=(raw&&raw.heinrich)||{};
+  const ratioParts=String(h.actual_ratio||'1:0:0').split(':').map(Number);
+  const l1=Number.isFinite(ratioParts[0])?ratioParts[0]:1;
+  const l2=Number.isFinite(ratioParts[1])?ratioParts[1]:0;
+  const l3=Number.isFinite(ratioParts[2])?ratioParts[2]:0;
+  const rateStr=(h.capture_rate&&h.capture_rate.layer3)||'0%';
+  const rate=parseFloat(rateStr)||0;
+  const uncaught=h.missing_estimate??0;
+  return {l1,l2,l3,rate,uncaught,spark:[]};
+}
+
 function renderTodo(data){
   try{
     IC.expectArr(data,'todos');
@@ -1201,6 +1216,7 @@ async function fetchLive(){
       if(j.panel==='ise-sessions') renderISESessions(data);
       if(j.panel==='tic0')         renderTic0Live(data);
       if(j.panel==='gate-audit')   renderGateAudit(data);
+      if(j.panel==='hein')         renderHein(mapHeinData(data));
     }catch(e){
       DBG.warn(j.panel,'フォールバック → 静的データ使用');
     }

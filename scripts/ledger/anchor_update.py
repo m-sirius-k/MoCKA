@@ -37,10 +37,16 @@ CORE_SYSTEM_FILES_EXTRA = (
     "app.py", "index.html", "scripts/ledger/anchor_update.py",
     "PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py",
 )
+# TODO_370(根本修正): workshop配下はTODO_354でPrivateリポジトリ(mocka-workshop-private)
+# 管理に切り替わったため、拡張子を問わず無条件でMoCKA本体の自動add対象から除外する。
+# 旧版は.py拡張子限定・個別ファイル列挙方式で、新規.jsファイル追加時に再発する欠陥があった。
+PRIVATE_REPO_DIRS = ("PlanningCaliber/workshop/",)
 
 def is_core_system_file(path: str) -> bool:
     p = path.replace("\\", "/")
     if p in CORE_SYSTEM_FILES_EXTRA:
+        return True
+    if p.startswith(PRIVATE_REPO_DIRS):
         return True
     return p.endswith(".py") and p.startswith(CORE_SYSTEM_DIRS)
 

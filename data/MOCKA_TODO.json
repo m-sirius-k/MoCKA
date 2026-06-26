@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-25",
+    "updated": "2026-06-26",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO.json",
@@ -803,6 +803,92 @@
       "reference_event": "",
       "created_at": "2026-06-25T16:48:01.272703",
       "updated_at": "2026-06-25T17:04:58.562391"
+    },
+    {
+      "id": "TODO_363",
+      "title": "runtime/incident_engine.py・incident_git_sync.py — sync_watch.py同型のgit commit無スコープ+push無条件パターン修正",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/ガバナンス/git迂回",
+      "description": "git確定経路全棚卸し（E20260625関連）で発見。runtime/incident_engine.pyのgit_commit()(30-42行)・runtime/incident_git_sync.pyのcommit_incident()(11-40行)が、sync_watch.pyと同型の脆弱パターン（git addはスコープされるがgit commitが無スコープ・git push無条件）を保持している。\n\nincident_engine.py: record_event()から新規incident記録時/10回ごとに自動呼び出しされる設計だが、現在は呼び出し元（civilization_evolution_loop.py等）が稼働プロセスとして存在しないため発火経路が切れている。再配線・再起動された場合、即座に同種の事故（Human Gate未承認コードのorigin/mainへの巻き込みpush）を再発する。\nincident_git_sync.pyは__main__専用（手動実行のみ）で現状の自動発火リスクはない。\n\n対応方針: anchor_update.py/sync_watch.py（別TODOで対応済み・進行中）と同じCore System File除外パターン（is_core_system_file()相当の判定＋git commit/git diffへのパス指定追加）を両ファイルに適用する。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "緊急度は中（現在発火経路なし）。anchor_update.py/sync_watch.py修正完了後の次回作業として着手すること。",
+      "reference_event": "",
+      "created_at": "2026-06-25T19:45:18.362701"
+    },
+    {
+      "id": "TODO_364",
+      "title": "GL7の構造的死角 — MCP境界外（subprocess/Thread/タスクスケジューラ経由）の実行コードが監視対象外になる設計上の限界への対応方針判断",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/ガバナンス/GL7",
+      "description": "git確定経路全棚卸し（E20260625関連）で確認。GL7（structural/execution_governance.py）はmocka_mcp_server.py経由のMCP tool呼び出し境界（before_tool/after_tool）でのみ介入する設計のため、subprocess/Thread/タスクスケジューラ経由で動作する非MCP実行コード（app.py内のバックグラウンドスレッド、独立デーモンプロセス、タスクスケジューラ起動スクリプト等）は原理的にGL7の監視対象外になる。\n\n本日発見されたAUTO_SEAL_50EVT・sync_watch.py・incident_engine.py・incident_git_sync.pyのいずれも、この構造的死角に該当していたためHuman Gateを迂回できた。個別ファイルの修正（TODO_347-c関連、TODO_363）では症状は解消できるが、「次に誰かが新しい自律的バックグラウンド処理を書いた場合、また同じ死角に該当する」という根本的な再発可能性は残る。\n\n検討すべき方向性（いずれも未着手・設計判断待ち）:\nA) GL7の監視範囲をMCP境界以外（subprocess/Thread起動時等）にも拡張する\nB) git操作（add/commit/push）を行う全コードを、単一の承認済み共有ヘルパー関数経由に強制統一し、そのヘルパー自体にCore System File除外ロジックを一元化する（個別ファイルでの実装漏れを構造的に防ぐ）\nC) 現状維持し、個別発見時に都度パッチ（今回・TODO_363方式）で対応する\n\n付随発見（別軸の衛生課題）: タスクスケジューラに登録されている MoCKA_Civilization_Run_Daily（対象スクリプトのディレクトリ自体が削除済み、毎回失敗）・MoCKA_Outfield_Watcher_Poll（Arguments空文字列、実質何もしない）の2件が壊れたまま放置されている。git迂回リスクとは無関係だが、整理対象として記録。",
+      "assigned_to": "きむら博士（設計判断）",
+      "note": "アーキテクチャレベルの判断が必要なため、今日のうちに即決しない。次回以降、きむら博士の「5年後も維持できるか」の判断軸で検討すること。A/B/Cいずれを選ぶかにより、TODO_363の実装方針（個別修正で進めるか、先にBの共有ヘルパーを作ってそこに合流させるか）が変わる可能性がある。",
+      "reference_event": "",
+      "created_at": "2026-06-25T19:45:37.716154"
+    },
+    {
+      "id": "TODO_365",
+      "title": "risk/recommendation が完了済みTODO(TODO_357等)を推奨し続ける表示バグの調査",
+      "status": "未着手",
+      "priority": "中",
+      "category": "バグ/UI/risk_recommendation",
+      "description": "COMMAND CENTER UIの/api/risk/recommendationエンドポイントが、MOCKA_TODO.json上でstatus=RESOLVED/AUDIT_PASSED(2026-06-23確定)となっているTODO_357を、依然として現役のrecommendationとして返している可能性が観測された(2026-06-26、ブラウザF12 Networkタブで確認)。\n\nレスポンスJSON内にcreated_at/updated_at等のタイムスタンプフィールドが見当たらず、recommendation生成ロジックがMOCKA_TODO.jsonのcompletedセクション/statusフィールドを正しく参照していないか、別の古いキャッシュ・データソースから生成している可能性がある。\n\n一方、同時に確認した/api/gate/auditのviolation_events:0は、TODO_347の完了記録(violation_events 254→0)と整合していたため、全エンドポイントが一律に古いわけではなく、recommendationロジック固有の問題と推測される。\n\n【調査対象】\n1. risk/recommendation生成元のコード(モジュール・関数特定)\n2. 完了済みTODOを除外するロジックが存在するか、存在するなら何故TODO_357が漏れたか\n3. ACTIVE TODOパネル(todo_count=33)とMOCKA_TODO.json正本の件数差異も合わせて確認(UIフィルタの仕様か、データソースのズレか)",
+      "assigned_to": "くろこ(調査)+ きむら博士(裁定)",
+      "note": "E発見: 2026-06-26、きむら博士とのセッションでF12 Network調査により発見。TODO_356/357/347の状態をMCP正本とUI実機表示で比較した際に判明した。要追跡: 本TODO自体がmocka_add_todo経由で正常に書き込めたかどうかも、TODO_356(GL7非ASCIIパス誤検知によるMCP書き込みブロック)の現状確認材料になる。",
+      "reference_event": "2026-06-26セッション(F12 Network調査)",
+      "created_at": "2026-06-26T07:40:02.978555"
+    },
+    {
+      "id": "TODO_366",
+      "title": "Relay relay-logbook.js TODO抽出パイプライン再構築 — draft/active分離・ストレージ全クリア・誤抽出防止",
+      "status": "進行中",
+      "priority": "高",
+      "category": "製品/Relay/引き継ぎ",
+      "description": "2026-06-26、本会話冒頭で貼られた「引き継ぎパケット[Relay Free]」(LB_001〜008)が断片的で意味をなさないことを起点に調査。\n\n【特定した事実】\n①生成元はcontent.jsではなくrelay-logbook.jsの4段階抽出パイプライン(extractCandidateLines→filterCodeLines→extractTodoLines)。TODO_336(2026-06-18完了)はStage3(コード行除外)のみ対応済みで、「文脈を無視した一文単位の抜き取り」という構造的欠陥は未対応のまま残っていた。\n②Stage4のTODO_RE(/TODO|FIXME|やること|未完了|要対応|要確認|あとで|検討|残課題|pending/i)が汎用語すぎるため、TODO番号と無関係な技術文書レビュー発言(spec文書チェック等)まで無差別に混入。\n③Stage2(10文字以上なら採用)が会話全体(Claude発言含む)を対象にしており、ユーザー発言限定ではない。これは「自然言語でTODOと言えば拾う」という約2ヶ月前の当初設計意図(ユーザー発言の明示トリガー想定)から、実装が逸脱した結果と推定(未確証・聞き取りベース)。\n④抽出された瞬間にstatus:\"active\"として確定保存される一段構成のため、誤抽出が一度紛れ込むと二度と整理されず、LB_001〜080(2ヶ月分)が無限に蓄積されていた。テスト中に生成された残骸も混在。\n⑤【未解明】TODO_356/219等、本来\"TODO_NNN\"のはずの文字列が\"_NNN\"に変化している(TODOという4文字が系統的に欠落)。relay-logbook.js側にこれを起こす処理は無く、content.js側のDOM抽出(getConversationText等)が原因の可能性が高いが未確認。\n\n【決定方針(きむら博士確認済み・2026-06-26)】\n緩い自動抽出の便利さ自体は維持する。「抽出」と「確定」を分離し、以下の2段構成にする:\n- 自動抽出結果はstatus:\"draft\"として一時保存(上限件数を設け古いものは自動破棄)\n- 20ターン警告等のタイミングでdraft一覧をユーザーに提示し、選択されたものだけstatus:\"active\"に確定\n\nUIの選別粒度(popup内チェックボックス選択 vs 警告ポップアップでの簡易confirm)は未確定。本FPでは簡易confirm方式をデフォルト案として進めるが、くろこ判断で変更可。",
+      "assigned_to": "くろこ(実装)+ きむら博士(承認)",
+      "note": "前段で、私(Claude)がcontent.jsのextractLines/extractTopicに句点判定ガードを試験的に追加したが、これは生成元の特定を誤った状態での仮説ベース修正であり無効。本TODOの実装着手前に必ず撤回・無視すること。",
+      "reference_event": "2026-06-26セッション(LB_001〜080の実データ確認・relay-logbook.js特定)",
+      "created_at": "2026-06-26T08:42:42.819167"
+    },
+    {
+      "id": "TODO_367",
+      "title": "PHI-OS優先権移行未実施 — Orchestra/Relay/Memoryの自前保存ロジックが停止されておらず二重記録が発生",
+      "status": "設計確定・実装は別TODOへ分離",
+      "priority": "最高",
+      "category": "制度/PHI-OS/権限統合",
+      "description": "2026-06-26、Relay調査(TODO_366)中に「Memory — AI Work State」というRelayとは別の拡張機能を発見。MutationObserverと正規表現(WINDOWS_PATH/CREATED_JA/DECISION_JA等)でページ全体を監視・キャプチャしている(DevToolsで一次確認済み)。きむら博士の指摘: Orchestra/Relay/Memoryは元々単独動作のため自前の保存ロジックを持つのが正しい初期設計だが、PHI-OS導入後はPHI-OSが情報管理の優先権を持つべきであり、各製品は自前ロジックを停止してPHI-OS経由に一本化する移行が必要。この移行が未実施のまま放置されており、二重記録の構造的原因になっている。TODO_354のnote「④PHI-OS/Memory/Orchestraの正本ロジック検証(未実施)」と整合する既知の未対応事項。",
+      "assigned_to": "くろこ(調査)+ きむら博士(設計判断)",
+      "note": "【設計確定(2026-06-26)】\n調査完了。確定事実:\n- Orchestra: host_permissionsにlocalhost:5000明記済み。fetchLivingContext()が/api/handshake(ngrok経由)からMoCKA Living Contextを読み取り専用で取得済み。書き込み経路はなし。\n- Memory: chrome.storage.local内に完全自己完結。MoCKAへの接続経路ゼロ(host_permissions自体に対象なし)。\n- PHI-OS: process_event()が唯一の正規書き込みエントリポイント(Flask /api/gate/event・MCP mocka_write_event)。拡張機能専用の受け口は現時点で存在しない。\n\n採用した移行案(案A・コスト最小):\n①Orchestraの既存片道接続(fetchLivingContext→/api/handshake)を土台に、対の書き込み経路を追加する。ゼロから接続を作るMemory/Relayより先に着手する。\n②PHI-OS側に新規エンドポイント(仮称/api/gate/event/extension)をevent_gate.pyに追加。既存/api/gate/event/batchのidempotency_key機構を流用し、AIガバナンス書き込みの厳格検証(validate_operational)とは分離する。\n③Orchestra background.jsはIndexedDB保存(saveMessage)を維持したまま、同一payloadを新エンドポイントへも送信する並行二重化を移行期間中は意図的に許容する。idempotency_keyで再送時の重複は防止。\n④host_permissionsは変更不要(Orchestraは既にlocalhost:5000を持つ)。\n⑤Memory/Relayは、Orchestraでの実装パターン確立後に個別検討。host_permissions追加が必要な分、コストが高い。\n\n案B(全製品同時移行)は切り分け困難のため非推奨として記録のみ・採用せず。\n\n次のアクション: 実装フェーズはPHI-OS本体側のコード変更(event_gate.pyへの新規エンドポイント追加)を含むため、別TODOとして切り出す(TODO_325 Trust Boundary確立との関連整理が必要)。本TODO_367自体は設計フェーズとして完了とする。",
+      "reference_event": "2026-06-26セッション Memory拡張機能content.js確認",
+      "created_at": "2026-06-26T10:04:43.227711",
+      "updated_at": "2026-06-26T10:18:53.449544"
+    },
+    {
+      "id": "TODO_368",
+      "title": "Orchestra→PHI-OS書き込み経路実装 — event_gate.pyに拡張機能専用エンドポイント追加",
+      "status": "着手可（Human Gate承認済み）",
+      "priority": "高",
+      "category": "制度/PHI-OS/拡張機能連携",
+      "description": "TODO_367で確定した設計案A(Orchestra既存片道接続への書き込み経路追加)の実装フェーズ。\n\n【実装内容】\n①event_gate.pyに新規エンドポイント(仮称/api/gate/event/extension)を追加。既存/api/gate/event/batchのidempotency_key機構を流用し、AIガバナンス書き込みの厳格検証(validate_operational)とは分離した、拡張機能専用の軽量受け口とする。\n②Orchestra background.jsに、saveMessage()(IndexedDB保存)と並行して同一payloadを新エンドポイントへfetchで送信する処理を追加。IndexedDB保存自体は維持(移行期間中の並行二重化を意図的に許容)。\n③host_permissionsの変更は不要(Orchestraは既にlocalhost:5000を保持)。\n④Memory/Relayへの展開はOrchestraでの安定稼働確認後、別途検討(本TODOの範囲外)。\n\n【関連・整理が必要な既存TODO】\n- TODO_325(PHI-OS Trust Boundary確立・Windows ACL設定)との関係整理が必要。本TODOがevent_gate.pyに新規の書き込み口を追加する以上、Trust Boundary設計にも影響する可能性がある。着手前にTODO_325の現状を確認すること。\n- TODO_322(PHI-OS Event Gate単一経路保証・完了済み)の「単一経路」という前提に、本TODOの新エンドポイントが抵触しないか確認すること(process_event()を必ず経由する設計を維持できるか)。",
+      "assigned_to": "くろこ(実装)+ きむら博士(承認・Human Gate)",
+      "note": "【着手可・Human Gate承認(2026-06-26)】\nくろこによる事前調査完了。確定事実:\n①TODO_322「単一経路」の実態は、process_event()という関数単位ではなく、_write()という書き込み関数単位で成立している。既存の/api/gate/event/batchは既にprocess_buffered_event()という別経路(process_event()を経由しない)を持ち、最終的にのみ_write()に収束する構造。新規エンドポイントが同じパターン(軽量検証→_write())を踏襲する限り、新たな違反は生まない。\n②TODO_325未着手の実害なし。mocka_events.dbの実ACL確認済み(sirok/Administrators/SYSTEM=FullControl, CodexSandboxUsers=ReadAndExecute)。Orchestra拡張機能はブラウザサンドボックスの制約上SQLiteへの直接アクセス手段を持たず、書き込みは必ずHTTPリクエスト経由でevent_gate.pyのゲートを通る。「process_event()/_write()系がアプリケーション層のゲート、TODO_325はDBファイルレベルの物理防御」という二層構造の理解が事実と一致。TODO_325はTODO_368のブロッカーではない。\n\n判断: TODO_368着手を承認。実装は既存のprocess_buffered_event()パターン(軽量検証→_write()収束)を踏襲すること。",
+      "reference_event": "TODO_367設計確定(2026-06-26)",
+      "created_at": "2026-06-26T10:19:10.383664",
+      "updated_at": "2026-06-26T10:22:43.882086"
+    },
+    {
+      "id": "TODO_369",
+      "title": "TODO_322記録文言の精度修正 — 「process_event()が唯一」→「_write()が単一書き込み点」",
+      "status": "記録済み（対応は次回ドキュメント更新時）",
+      "priority": "低",
+      "category": "記録/正本精度",
+      "description": "TODO_322(完了済み)の「process_event()経由が唯一の経路」という記述は、2026-06-26のTODO_368事前調査で厳密には不正確と判明。/api/gate/event/batch（receive_event_batch()）はprocess_buffered_event()という別の独立したコードパス(validate_operational()→_write()を直接実行)を持ち、process_event()を経由しない。\n\n正確な理解: 単一経路の実態はprocess_event()という関数単位ではなく、最終的な書き込みを行う_write()という関数単位で成立している。process_event()/process_buffered_event()いずれの経路も、最終的にはこの_write()に収束する、という「二経路→単一書き込み点」の構造。\n\n「ALL AI→PHI-OS EVENT GATE→SINGLE DB」という大枠の主張自体は変わらず正しい。本TODOは機能変更ではなく、記録の正確化のみを目的とする。completed済みのTODO_322は仕組み上直接編集できないため、本TODOとして訂正記録を独立保存する。",
+      "assigned_to": "Claude(記録)",
+      "note": "対応内容: 次回MOCKA_OVERVIEW.json/関連ドキュメント更新時に、TODO_322由来の「process_event()が唯一」という表現を見つけたら「_write()が単一書き込み点」に修正すること。緊急性なし・記録精度向上のみが目的。",
+      "reference_event": "TODO_368着手前調査(2026-06-26)",
+      "created_at": "2026-06-26T10:23:12.387519"
     }
   ],
   "completed": [
@@ -5225,5 +5311,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-25T10:27:03.374747+00:00"
+  "_snapshot_at": "2026-06-26T02:12:42.800738+00:00"
 }

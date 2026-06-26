@@ -50,3 +50,7 @@ docs/reference/semantic_dictionary/raw/all_terms.md
 
 # バックアップファイル（誤コミット防止）
 *.bak_*
+
+# workshop配下は非公開化（TODO_354）。以後はmocka-workshop-private側で管理する。
+# 過去の履行履歴（既にPublicにpush済みの5134件）はそのまま残し、書き換えはしない。
+PlanningCaliber/workshop/

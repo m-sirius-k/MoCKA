@@ -1,6 +1,0 @@
-{"ts": 1781655671.5739667, "action": "evaluate", "status": "running", "result": {}, "error": null}
-{"ts": 1781655671.5761008, "action": "evaluate", "status": "failed", "result": {}, "error": "No module named 'semantic_scorer'"}
-{"ts": 1781655681.540534, "action": "sync", "status": "running", "result": {}, "error": null}
-{"ts": 1781655681.5412865, "action": "sync", "status": "success", "result": {"status": "sync_completed", "synced": 0}, "error": null}
-{"ts": 1781656093.960262, "action": "evaluate", "status": "running", "result": {}, "error": null}
-{"ts": 1781656094.0496368, "action": "evaluate", "status": "success", "result": {"s1_semantic_coverage": 0.08, "s2_structure_completeness": 0.08, "s3_citation_fitness": 0.08, "s4_retrieval_fit": 0.08, "s5_reusability": 0.08, "scalar": 0.08, "_source": "seo_center_stub"}, "error": null}
