@@ -358,10 +358,10 @@
       "category": "Relay/MoCKA-Relay統合",
       "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
       "assigned_to": "Claude",
-      "note": "Step1（仕様書確定）完了／Step2（要件定義書 MoCKA_Relay_requirements_v1.md）完了／Step3（アンインストール+storage削除）完了——E20260627_363495360c273に記録／Step4（relay-logbook.js新規実装、旧content.js extractTodosFromText()廃止）4段階に分割し進行中。\n\n【Step4進捗】\n- Step4-a: relay-logbook.js新規実装 完了（E20260627_04455154664e2）。4段階抽出パイプライン(extractCandidateLines/filterCodeLines/extractTodoLines/toDraftObjects)+draft保存(saveDrafts/MAX_DRAFT_COUNT=50/FIFO自動破棄)+confirmDrafts/discardDrafts。Node.js単体テストで純粋関数部分の動作確認済み（8行入力→TODO系4件正しく抽出、コード行・重複は正しく除外）。manifest.json未統合（Step4-bで実施）。\n- Step4-b: content.js改修（EXTRACT_TODOSをrelay-logbook.js経由に差し替え＋GET_DRAFTS/CONFIRM_DRAFTSハンドラ追加、manifest.json content_scriptsへrelay-logbook.js追加、context invalidatedガード適用）— 未着手\n- Step4-c: popup.html/popup.js改修（draft一覧表示＋確定ボタンのUI）— 未着手\n- Step4-d: 旧extractTodosFromText()の廃止＋全体動作確認 — 未着手\n\n【恒久対応（既存記載維持）】content.js sendMessage3箇所にchrome.runtime?.idガード追加済み(E20260627_5756305388b24)。要件定義書にStep3運用ノート+context invalidatedガード標準パターン（2.5節）を追記済み(E20260627_640216512bc1a)。",
+      "note": "Step1完了／Step2完了／Step3完了(E20260627_363495360c273)／Step4は4段階に分割し進行中。\n\n【Step4進捗】\n- Step4-a: relay-logbook.js新規実装 完了（E20260627_04455154664e2）。\n- Step4-b: manifest.json統合+content.js改修 完了（E20260627_317205664dd97）。\n- Step4-c: popup.html/popup.js draft UI実装 完了（E20260627_563388750e42b）。重要: popup.js STORAGE.TODOSを旧キー'relay_todos'から'relay_todos_active'に修正（relay-logbook.jsのSTORAGE_ACTIVEと一致させ、確定後のTODOが表示されない不整合を事前に防止）。全sendMessage呼び出しにtry-catch+可視エラーフィードバック(draft-feedback要素)を適用、サイレント失敗を排除。単体テストでストレージキー整合性を確認済み。ブラウザ実機でのUI目視確認は未実施。\n- Step4-d: 旧extractTodosFromText()/TODO_PATTERNS/saveTodos()の削除＋全体動作確認 — 未着手\n\n【恒久対応（既存記載維持）】content.js sendMessage3箇所にchrome.runtime?.idガード追加済み(E20260627_5756305388b24)。要件定義書にStep3運用ノート+context invalidatedガード標準パターン（2.5節）を追記済み(E20260627_640216512bc1a)。",
       "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
       "created_at": "2026-06-19T17:49:53.685053",
-      "updated_at": "2026-06-27T07:14:23.078683"
+      "updated_at": "2026-06-27T07:22:57.595996"
     },
     {
       "id": "TODO_348",
@@ -5349,5 +5349,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T22:17:06.123168+00:00"
+  "_snapshot_at": "2026-06-26T22:27:10.338293+00:00"
 }
