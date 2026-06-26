@@ -358,10 +358,10 @@
       "category": "Relay/MoCKA-Relay統合",
       "description": "2026-06-19、LB_001再発（検索結果がキーワード一致の羅列で意味がない＝TODO誤抽出）の原因調査により、RelayのisHandoffサ判定が独自パターン（/^\\[Relay引き継ぎ/等）に依存し、MoCKA側が2026-05-24 TODO_174で確定した正式フォーマット（## 引き継ぎパケット [Relay {plan}]構造）を一度も正しく参照していなかったことが判明。きむら博士判断: MoCKAとRelayが同じ土俵で別々の判断を行っていた構造自体が問題。MoCKAを正、Relayをその影響下で動く一製品として再定義する。リセット範囲: chrome.storage.local全削除＋拡張機能本体（content.js/background.js/popup.js/relay-logbook.js等）をアンインストールしゼロから再実装。機能要件（20ターン警告/引き継ぎパケット生成/TODO抽出管理/新規chat自動注入の4機能）は維持、実装と蓄積データ（誤った前提・誤抽出済みデータ）は持ち込まない。",
       "assigned_to": "Claude",
-      "note": "【2026-06-26 きむら博士確認済み・確定（一次更新）】\n\nStep1（MoCKA_Relay_handoff_spec_v1.md確定）: 完了（既存記載通り、##見出し構造による丸ごとブロック除外方式に変更済み）。\n\nStep2（拡張機能要件定義書作成）: 未着手（確定）。\n\nStep3（アンインストール+chrome.storage.local削除）: 未着手（確定）。\n\nStep4（仕様書を基準にゼロから再構築・正式配置）: 【2026-06-26再訂正】完了 → 未完了 に訂正。\n訂正根拠:\n①TODO抽出経路（content.js: chrome.runtime.onMessageの'EXTRACT_TODOS'ハンドラ→extractTodosFromText()→旧パターン配列TODO_PATTERNS(/\\[RELAY_TODO\\]/等)→saveTodos()でdraft/active分離なしに直接chrome.storage.localへマージ保存）が現役で到達可能であることを確認。TODO_366確定方針（draft/active 2段構成）は未反映。\n②TODO_366が対象とするrelay-logbook.js（4段階抽出パイプライン）自体が正本フォルダ（workshop\\Relay_Project\\extension\\）に存在しない（新旧混在ではなく実装そのものの不在）。\n引き継ぎパケット生成部分（##見出しブロック除外、getHandoffBlockRanges）のみは新方式に更新済みだが、TODO抽出部分は旧方式のまま稼働中のため、Step4全体としては未完了と判定する。\n\n残課題: 旧v4.1.0孤立ファイル5点（popup.html/popup.js/relay_search_ui.js/sidepanel.html/sidepanel.js）の削除可否は博士判断待ちのまま未解消。\n\n【本日(2026-06-26)3件目の記録-現物不一致事案、上位パターンとしての関連付け】\n1. TODO_350 Step1 — 作業対象フォルダ取り違え（INCIDENT E20260621_378795484b70f）\n2. TODO_354 — extension_canonical_pathsレジストリが実際には一度も書き込まれていなかった（INCIDENT E20260626_337391387a8aa）\n3. TODO_350 Step4 — 本記録（INCIDENT相当、E20260626_675420922bb64）\nこの3件は「CHANGE_DONE記録自体の信頼性」という上位リスクパターンを示唆する。記録プロトコル(CHANGE_START/DONE)の形式は守られていても、記録内容と実際の作業結果の一致が検証されていない事例が連続した。TODO_371/TODO_372、および委任エージェント連鎖インシデント(E20260626_815897130f246、電話ゲーム)とも関連する共通テーマとして、次回セッション以降の議論対象とする。\n\n次のアクション: Step2着手前に、TODO_366の確定方針（draft/active分離の仕様）を再確認する。\n\n【上位制約（既存記載維持）】Phase4 Operational Constraints Specification v1.0（E20260622_149806056acf4）のRelay時間制御パラメータ上限値（window_size 1000-10000ms、slide_step 100-2000ms、変更頻度上限10回/hour、3回以上連続変更時cooldown 300s必須）は引き続き有効。Relayはrouting/decision/semantic layerへの干渉不可（invariant）。",
+      "note": "Step1: 完了。Step2: 完了（2026-06-26、docs/handoff/MoCKA_Relay_requirements_v1.md作成、E20260626_0926759826735）。Step3: 未着手。Step4: 未完了（訂正済み、根拠はE20260626_675420922bb64参照）。\n\nStep2要件定義書の要点: relay-logbook.js新規実装（正本フォルダ\\workshop\\Relay_Project\\extension\\配下）、TODO_366確定方針（draft/active 2段構成）をそのまま転記、content.jsのextractTodosFromText()/EXTRACT_TODOSハンドラは廃止対象として明記、引き継ぎパケット生成はStep1確定spec(getHandoffBlockRanges)を踏襲、Phase4 Operational Constraints上限値を非機能要件化、6章で再実装対象外ロジックと削除対象データ(LB_001〜080等)を1対1対応で明記。\n\n残課題: 旧v4.1.0孤立ファイル5点の削除可否は博士判断待ちのまま未解消。\n\n次のアクション: Step3（アンインストール+chrome.storage.local削除）またはStep4の再実装着手。どちらを先行するかは博士確認。\n\n【本日3件の記録-現物不一致事案（既存記載維持）】\n1. TODO_350 Step1フォルダ取り違え(E20260621_378795484b70f) 2. TODO_354レジストリ未書き込み(E20260626_337391387a8aa) 3. TODO_350 Step4誤完了(E20260626_675420922bb64)。CHANGE_DONE記録の信頼性という上位パターンとして次回セッションの議論対象。\n\n【上位制約（既存記載維持）】Phase4 Operational Constraints Specification v1.0（E20260622_149806056acf4）のRelay時間制御パラメータ上限値（window_size 1000-10000ms、slide_step 100-2000ms、変更頻度上限10回/hour、3回以上連続変更時cooldown 300s必須）は引き続き有効。Relayはrouting/decision/semantic layerへの干渉不可（invariant）。",
       "reference_event": "引き継ぎパケット[Relay Free]2026-06-19 13:36 LB_001再発",
       "created_at": "2026-06-19T17:49:53.685053",
-      "updated_at": "2026-06-26T18:21:39.586285"
+      "updated_at": "2026-06-26T18:28:30.216639"
     },
     {
       "id": "TODO_348",
@@ -5349,5 +5349,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T09:25:09.664211+00:00"
+  "_snapshot_at": "2026-06-26T09:35:13.938854+00:00"
 }
