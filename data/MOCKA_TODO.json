@@ -904,14 +904,15 @@
     {
       "id": "TODO_373",
       "title": "getConversationText()のDOM drift調査・修正（assistant側testid確認含む）",
-      "status": "未着手",
+      "status": "方針確定・TODO_376待ち",
       "priority": "最高",
       "category": "Relay/MoCKA-Relay統合/DOM整合性",
       "description": "TODO_350 Step4実機検証中（2026-06-27）に発見したINCIDENT（E20260627_753188422ec60）の派生課題。content.jsのcountTurns()/getUserOnlyLines()が依拠していた旧セレクタ[data-message-author-role=\"human\"]は、現行claude.aiのDOM構造に存在しないことが実機確認(DevTools)で確定し、正しいセレクタ[data-testid=\"user-message\"]への修正・実機検証は完了済み（E20260627_814381913f18f、E20260627_9602974928834）。\n\nしかし、content.js内のgetConversationText()（generatePacket()=引き継ぎパケット生成の基礎、TODO_350 Step1で「完了」と記録済みの機能）は、[data-message-author-role]（roleを問わず全件取得する版）に依拠したままで、未修正・未検証である。\n\n実機確認の結果、claude.aiの現行DOMでは[data-testid]属性に'message'を含むものは'user-message'の1種類のみで、assistant(Claude)側の発言に対応するdata-testidは（確認した範囲では）見当たらなかった。getConversationText()はユーザー・アシスタント両方の発言を結合してdecisions/files/memos等を抽出する設計のため、assistant側を正しく検出する方法を別途調査する必要がある。\n\n【目的】\n本TODOの目的は「引き継ぎパケット生成機能の実働確認」である。TODO_350 Step1は「完了」と記録されているが、その完了判定がDOM構造の実機検証を伴っていたかは不明であり、Step4で発見したのと同種の「現物確認なしの完了判定」が再現している可能性がある。本TODOで実機検証を行い、Step1の完了記録の妥当性そのものを確認する。\n\n【本日の上位パターンとの関連】\n2026-06-26〜27にかけて、CHANGE_DONE記録と実際の作業結果が一致しない事案が複数件発見されている：\n1. TODO_350 Step1 作業対象フォルダ取り違え（E20260621_378795484b70f）\n2. TODO_354 extension_canonical_pathsレジストリが実際には一度も書き込まれていなかった（E20260626_337391387a8aa）\n3. TODO_350 Step4の誤完了記録（E20260626_675420922bb64）\n4. 本TODOの起点であるDOMセレクタdrift（E20260627_753188422ec60）— ターン数・TODO抽出が「完了」記録の裏で実際には機能していなかった\n\nこれらは「CHANGE_DONE記録自体の信頼性」という共通の上位リスクパターンを示す事例群であり、TODO_371/TODO_372とも関連する。本TODOの調査・修正自体も、机上の修正で終わらせず必ず実機検証（DevTools実測）を伴うことを徹底する。",
       "assigned_to": "くろこ（調査・実装）+ きむら博士（実機検証協力）",
-      "note": "参照INCIDENT群: E20260627_753188422ec60（DOMセレクタdrift発見）、E20260627_814381913f18f（countTurns/getUserOnlyLinesの修正、本TODOの対象外＝既に解決済みの部分）、E20260621_378795484b70f（同根の「現物確認なし完了判定」インシデント1件目）、E20260626_337391387a8aa（同2件目）、E20260626_675420922bb64（同3件目）。\n\n調査範囲: content.jsのgetConversationText()（[data-message-author-role]依拠、generatePacket()の基礎）。assistant側発言の正しい検出方法を実機(DevTools)で特定し、修正後は必ず実機で引き継ぎパケット生成（decisions/files/memos抽出含む）が正しく機能することを確認すること。机上の修正のみで「完了」と記録しないこと。",
+      "note": "実機調査により以下が確定：(1) ユーザー発言は[data-testid=\"user-message\"]で取得可能（修正済み・正本パスで確認済み）。(2) assistant側に専用data-testidは存在しない（全data-testid一覧で確認済み、message/assistant系の別名なし）。(3) 判定ロジックの方針確定：.group（mb-1 mt-[var(--msg-gap)] groupクラス）が1往復（user発言+assistant発言のペア）のコンテナとして機能しており、各.group内でuser-messageの有無とaction-bar-copy等の[data-message-action-bar]要素の有無を見ることで両発言を判別できる。(4) 重大な副次発見：content-visibility:autoにより画面外の.group要素はinnerTextが空文字になる問題が判明、これはgetConversationText()/generatePacket()の核心的な制約のため、影響範囲がTODO_373の本来スコープ（セレクタ特定）を超えると判断しTODO_376として分離（E20260627_5181221779f6f）。TODO_373自体はセレクタ特定・判定方針確定の時点で一区切りとし、実装完了の最終確認はTODO_376の対処方針確定後に行う。",
       "reference_event": "E20260627_753188422ec60",
-      "created_at": "2026-06-27T07:52:43.514638"
+      "created_at": "2026-06-27T07:52:43.514638",
+      "updated_at": "2026-06-27T08:46:10.860162"
     },
     {
       "id": "TODO_374",
@@ -937,6 +938,18 @@
       "note": "出典が見つかった場合: 数値の信頼性を裏付け、TODO_374の仮説を再評価する。出典が見つからなかった場合: 集計自体が幻だった可能性が高いと確定し、8段階Civilization Loopの実態評価そのものをやり直す必要が出てくる。どちらに転んでも有用な情報のため、優先度は低いが削除せず保持すること。",
       "reference_event": "E20260627_224664290bb18",
       "created_at": "2026-06-26T23:24:47.416353+00:00"
+    },
+    {
+      "id": "TODO_376",
+      "title": "getConversationText()のcontent-visibility:auto対応——引き継ぎパケットの発言欠落リスク調査",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "relay/content_visibility",
+      "description": "getConversationText()（generatePacket()の基盤、引き継ぎパケット生成の核心機能）が、claude.aiのCSS content-visibility:auto最適化により、画面外（未スクロール）の発言要素のinnerTextを正しく取得できない疑いがある。実機確認（E20260627_5181221779f6f）では画面内5件は正常取得、それ以前の43件は全てtextLen=0だった。長い会話で引き継ぎパケットを生成すると、直近の数往復しか内容が含まれず、それ以前の文脈が欠落したパケットが生成されている可能性が高い。",
+      "assigned_to": "Claude",
+      "note": "対処方針の検討が必要：(1) 各.group要素をscrollIntoView()で一時的に画面内へ移動させてからinnerTextを読む方式（パフォーマンス・UX上の副作用あり、画面のガタつき・処理時間増大）、(2) content-visibilityをCSS側でoverride可能か調査（content-visibility: visibleを対象要素に強制適用すればレンダリングをスキップさせずに済む可能性）、(3) DOM経由ではなく別のデータ取得経路（React内部state、APIレスポンスキャッシュ等）が使えるか調査。着手前に、実際に生成済みの引き継ぎパケット（過去のFP）を遡って内容欠落の実例がないか確認することを推奨（実害の有無を先に確認してから対処の緊急度を判断する）。TODO_373(assistant側セレクタ特定)の調査中に発見された副産物だが、影響範囲はTODO_373より大きいため別TODOとして分離。",
+      "reference_event": "E20260627_5181221779f6f",
+      "created_at": "2026-06-27T08:45:34.635370"
     }
   ],
   "completed": [
@@ -5387,5 +5400,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T23:37:39.943136+00:00"
+  "_snapshot_at": "2026-06-26T23:47:43.992822+00:00"
 }
