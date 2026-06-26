@@ -919,11 +919,24 @@
       "status": "未着手",
       "priority": "最高",
       "category": "governance/civilization_loop",
-      "description": "2026-06-25「MOCKA v3システム運用ガイドライン」セッションで発見された8段階文明ループ（Observe→Record→Incident→Recurrence→Prevention→Decision→Action→Audit）の件数集計から、2つの核心VIOLATIONが未解決のまま残っている。①Observe=0件にもかかわらずRecord=1,842件が存在する「接続なき生成」——Record段階の入力経路がObserveを経由していない可能性。②Incident=23件からRecurrence=66件という出力過多——1:多の正規分岐か、Recurrenceが独立経路で生成されているかが未確定（INFERRED扱いで保留中）。当時の調査は①の実コード確認（router.py等でObserve段階が実装・接続されているか）に進もうとしたが、claude.ai側チャットにはローカルファイルシステム（C:\\Users\\sirok\\MoCKA\\配下）への直接アクセス経路がなく、Claude Code側での続行が必要と判明し中断した。",
+      "description": "2026-06-25「MOCKA v3システム運用ガイドライン」セッションで報告された8段階文明ループ（Observe→Record→Incident→Recurrence→Prevention→Decision→Action→Audit）の件数集計（Observe=0/Record=1,842、Incident=23/Recurrence=66）に基づく仮説。[2026-06-27 Claude Code調査により訂正] 当初「VIOLATION」と確定表現していたが、出典（reference_event）を実際に確認した結果、その出典は別件（TODO_350 Step4の記録-実装不一致）を指しており、この数値集計自体の一次データ上の根拠が現時点で確認できなかった。そのため「VIOLATION」という確定表現は削除し、出典未確認の仮説として扱う。①Observe→Record接続なき生成、②Incident→Recurrence出力過多、いずれも仮説段階。",
       "assigned_to": "Claude",
-      "note": "本TODOはClaude Code（ローカルファイルシステムアクセス可能な環境）での実行が前提。調査手順：(1) router.py等、Observe段階を実装しているはずのファイルを特定し、Record書き込み箇所（mocka_write_event等）がObserve段階の出力を経由しているか実コードで確認。経由していない場合はINCIDENT化。(2) Recurrenceカウントの生成経路を特定し、Incidentレコードを参照しているか、独立カウントかを確認。(3) 本日(2026-06-27)発見した「記録(新規実装=完了)と現物(実装内容)の不一致」系インシデント群と同系列のパターンである可能性が高いため、調査結果はこれらと紐付けて記録すること。TODO_373（getConversationText() DOM drift）とは独立した別系統の調査だが、どちらも「Step1相当の確定記録に対する実機/実コード検証不足」という共通点があるため優先度は同等の「最高」とする。",
+      "note": "[2026-06-27 Claude Code調査結果を追記] (1) interface/router.pyはObserve段階・Civilization Loopの書き込み経路とは無関係と確認。BOM文字+無効な関数定義構文(write_safe_csv(row); write_sqlite(row):)で実行不能だが、これはreality_sync/sync_integration_test.pyが既知のBROKENとして検知・追跡済みの破損であり、runtime/action_executor.pyもtry/exceptでフォールバック済み。(2) 実際のevents書き込み正規経路はphi_os/event_gate.py（app.pyがgate_bpをimport、process_event/process_buffered_eventが「これ以外にevents保存を行う経路は制度上存在しない」と明記）。(3) reference_event E20260626_675420922bb64を直接DB確認した結果、TODO_350 Step4の「記録-実装不一致」記録であり、8段階ループ集計の出典ではなかった（参照先誤り）。(4) mocka_events.dbのwhat_type/where_component/category_ab/lifecycle_phase集計のいずれも、Observe=0/Record=1842/Incident=23/Recurrence=66と一致する列を確認できず、この数値の集計元コード・レポートは未特定のまま。(5) なお調査中、data/MOCKA_OVERVIEW.json内のrouter記述「2026-04-05修正済み（DEPENDENCY_BREAK解消）」が現物（壊れたまま）と矛盾していることも発見（別件として記録要）。次のアクション: 数値の出典特定（2026-06-25前後のevents.db該当ログ精査）は優先度を下げた別TODOとして切り出すか、きむら博士の判断待ち。",
       "reference_event": "E20260626_675420922bb64",
-      "created_at": "2026-06-27T07:57:57.769490"
+      "created_at": "2026-06-27T07:57:57.769490",
+      "updated_at": "2026-06-27T08:23:27.057374"
+    },
+    {
+      "id": "TODO_375",
+      "title": "2026-06-25前後のevents.dbログ精査、Observe/Record/Incident/Recurrence集計の出典コード・レポート特定",
+      "status": "未着手",
+      "priority": "低",
+      "category": "governance/civilization_loop",
+      "description": "TODO_374の前提だった8段階Civilization Loop集計（Observe=0/Record=1,842、Incident=23/Recurrence=66）の出典が、2026-06-27のClaude Code調査で確認できなかった（reference_eventは別件を指していた、mocka_events.dbの主要列集計でも対応するカウントが見つからなかった）。これは「数値が間違っている」ことの確定ではなく「出典未確認」の確定にとどまるため、2026-06-25前後のevents.dbログ・関連レポートを精査し、この集計がどのコード・どのレポートから出たものかを特定する。",
+      "assigned_to": "Claude",
+      "note": "出典が見つかった場合: 数値の信頼性を裏付け、TODO_374の仮説を再評価する。出典が見つからなかった場合: 集計自体が幻だった可能性が高いと確定し、8段階Civilization Loopの実態評価そのものをやり直す必要が出てくる。どちらに転んでも有用な情報のため、優先度は低いが削除せず保持すること。",
+      "reference_event": "E20260627_224664290bb18",
+      "created_at": "2026-06-26T23:24:47.416353+00:00"
     }
   ],
   "completed": [
@@ -5374,5 +5387,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T23:17:32.088060+00:00"
+  "_snapshot_at": "2026-06-26T23:27:36.208496+00:00"
 }
