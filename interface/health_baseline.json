@@ -29,7 +29,7 @@
   },
   "relay_dom_selector": {
     "ok": true,
-    "detail": "Relay alive (last_ping: 2026-06-26T10:30:04.621148, v2.0.0)"
+    "detail": "Relay alive (last_ping: 2026-06-26T12:16:48.408228, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 (total=1271 gate=100.0% [real-time=1130/buffered=141] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 (total=1367 gate=100.0% [real-time=1147/buffered=220] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,

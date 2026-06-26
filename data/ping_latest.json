@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-26T11:12:50.458933"
+  "generated_at": "2026-06-26T11:12:50.458933",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.333,
+    "danger_rate": 0.667,
+    "success_rate": 0.333,
+    "text": "バックアップ完了（66MB）。次に重要な技術的注意点を確認させてください。\n\nConfirmed which unpushed local commits to",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-04-15",
+        "why": "右クリックメニューからの保存・共有操作",
+        "how": "context_menu_click",
+        "note": "あ、ごめんなさい！PowerShellの画面に直接Pythonのコードを貼り付けてしまいましたね。\n\nそのエラーは、PowerShellがPythonのコードを自分のコマンド（Windowsのコマンド",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
+        "recur": 0,
+        "matched": [
+          "エラー"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-26T03:01:53.652Z"
+  }
 }
