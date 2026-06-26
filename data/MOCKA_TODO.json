@@ -950,6 +950,18 @@
       "note": "対処方針の検討が必要：(1) 各.group要素をscrollIntoView()で一時的に画面内へ移動させてからinnerTextを読む方式（パフォーマンス・UX上の副作用あり、画面のガタつき・処理時間増大）、(2) content-visibilityをCSS側でoverride可能か調査（content-visibility: visibleを対象要素に強制適用すればレンダリングをスキップさせずに済む可能性）、(3) DOM経由ではなく別のデータ取得経路（React内部state、APIレスポンスキャッシュ等）が使えるか調査。着手前に、実際に生成済みの引き継ぎパケット（過去のFP）を遡って内容欠落の実例がないか確認することを推奨（実害の有無を先に確認してから対処の緊急度を判断する）。TODO_373(assistant側セレクタ特定)の調査中に発見された副産物だが、影響範囲はTODO_373より大きいため別TODOとして分離。",
       "reference_event": "E20260627_5181221779f6f",
       "created_at": "2026-06-27T08:45:34.635370"
+    },
+    {
+      "id": "TODO_377",
+      "title": "mocka-workshop-private内のnode_modules/__pycache__等、無関係な大量未コミット変更の扱い検討（.gitignore見直し含む）",
+      "status": "未着手",
+      "priority": "低",
+      "category": "制度/ガバナンス/リポジトリ管理",
+      "description": "2026-06-27、TODO_350 Step3/Step4-a~dの成果をmocka-workshop-privateへpushする際（commit 552dce7）、Relay_Project/extension/配下に厳密にスコープを絞った。その過程で、workshop全体には今回の作業とは無関係な大量の未コミット変更（node_modules配下、__pycache__の.pycファイル、seo-os/phi-os/pr-os/scamper_engine等のスナップショット・ログ群、DDP/LPのhtml等）が存在することが判明した。これらは本来git管理対象にすべきでない可能性が高く（.gitignoreの不備の疑い）、今回は意図的に対象外とした。本TODOで、これらの扱い（.gitignore追加によるuntrack化、既存履行履歴の扱い等）を検討する。",
+      "assigned_to": "くろこ（調査）+ きむら博士（設計判断）",
+      "note": "今回意図的に対象外とした理由: 無関係な大量ファイルを今日のpushに混在させると、コミット内容の追跡可能性（このコミットに何が含まれるか）を損なうため。スコープはRelay_Project/extension/配下のみに厳密に限定した（参照: commit 552dce7, push c264dee..552dce7 to mocka-workshop-private origin/main, 2026-06-27）。緊急性なし。次に着手する際は、まずnode_modules/__pycache__等が意図的に追跡されているのか、単なる.gitignore漏れなのかを確認すること。",
+      "reference_event": "",
+      "created_at": "2026-06-26T23:56:12.357539+00:00"
     }
   ],
   "completed": [
@@ -5400,5 +5412,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-26T23:47:43.992822+00:00"
+  "_snapshot_at": "2026-06-26T23:57:48.347491+00:00"
 }
