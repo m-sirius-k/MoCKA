@@ -208,6 +208,31 @@ def check_file_hash(cfg: dict) -> tuple:
 # 指標として意味を持たなくなるため、Gate経由率はこの日付以降のみで算出する。
 GATE_LAUNCH_DATE = "2026-06-16"
 
+# TODO_389: check_phi_os_audit()の増分検知用スナップショット。
+# 既に1度「新規」として検出済みのaudit_violations.idをここに蓄積し、
+# 以後のチェックでは同じidを再度「新規」として報告しない
+# （既知・対応保留中の件数が毎チェックで再検出され続ける問題への対策）。
+PHI_OS_AUDIT_SEEN_PATH = Path("C:/Users/sirok/MoCKA/data/tic/phi_os_audit_seen_ids.json")
+
+
+def _load_phi_os_audit_seen_ids() -> set:
+    try:
+        if PHI_OS_AUDIT_SEEN_PATH.exists():
+            return set(json.loads(PHI_OS_AUDIT_SEEN_PATH.read_text(encoding="utf-8")))
+    except Exception:
+        pass
+    return set()
+
+
+def _save_phi_os_audit_seen_ids(ids: set) -> None:
+    try:
+        PHI_OS_AUDIT_SEEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+        PHI_OS_AUDIT_SEEN_PATH.write_text(
+            json.dumps(sorted(ids), ensure_ascii=False), encoding="utf-8"
+        )
+    except Exception:
+        pass
+
 
 def check_phi_os_audit() -> tuple:
     """
@@ -221,6 +246,9 @@ def check_phi_os_audit() -> tuple:
     は即時同期書き込み(_source='live')と非同期バッファ経由(_source='buffered')の
     2種類に分かれる。統合値で95%判定する一方、内訳は分離して表示する
     （「即時性」と「完全性」を1つの数字に混ぜない）。
+    TODO_389: status='NEW'の件数は、既知・対応保留中のものを毎回「新規」と
+    誤報し続けるため、_load_phi_os_audit_seen_ids()で前回までの既知id集合を
+    読み込み、今回のNEW id集合との差分のみを新規violationとして数える。
     """
     db_path = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
     if not db_path.exists():
@@ -236,9 +264,14 @@ def check_phi_os_audit() -> tuple:
             con.close()
             return True, "audit_violations table not yet installed (run: python phi_os/audit_trigger.py --install)"
 
-        new_violations = con.execute(
-            "SELECT COUNT(*) FROM audit_violations WHERE status = 'NEW'"
-        ).fetchone()[0]
+        current_new_ids = {
+            row[0] for row in con.execute(
+                "SELECT id FROM audit_violations WHERE status = 'NEW'"
+            ).fetchall()
+        }
+        seen_ids = _load_phi_os_audit_seen_ids()
+        new_violations = len(current_new_ids - seen_ids)
+        _save_phi_os_audit_seen_ids(seen_ids | current_new_ids)
 
         audit = compute_gate_audit(con, GATE_LAUNCH_DATE)
         total_events = audit["real_time_events"] + audit["buffered_events"] + audit["allowed_direct_events"] + audit["violation_events"]
