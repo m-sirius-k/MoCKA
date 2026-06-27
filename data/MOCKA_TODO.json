@@ -885,10 +885,10 @@
       "category": "制度/ガバナンス/TODO管理/データ正規化",
       "description": "TODO_384（TODO管理スキーマのステータス値不統一）の博士裁定で承認された恒久対策案。\\n\\n【背景】\\nTODO_384調査により、MOCKA_TODO.jsonのstatusフィールドが「タスク進行度」（通常TODO: 未着手/進行中/完了/保留/廃止の5値）と「紐付く設計文書/契約のライフサイクル状態」（Architecture Contract系: DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中(設計待ち)/調査済みの9語彙）という、本質的に異なる2つの軸を同一フィールドに混在させていたことが判明した。この混在自体が、2026-06-23の一括再分類がCHANGE_START/DONEを経由しなかった記録義務逸脱（INCIDENT: E20260627_2097846853127）の温床になった可能性がある。\\n\\n現状はTODO_384の暫定対策として、mocka_mcp_server.pyのTODO_STATUS_ENUMに両軸の値(5値+9語彙=14値)を1つの許容集合として混在させたまま運用している。これは応急対応であり、長期的には軸を分離すべきというのが博士裁定（2026-06-27承認）。\\n\\n【依頼内容】\\n1. MOCKA_TODO.jsonのスキーマに新フィールド「contract_status」を追加する設計案を作成する（Architecture Contract系13件のみ使用、通常TODOには付与しない）\\n2. 既存のArchitecture Contract系13件について、現在statusに格納されている9語彙の値をcontract_statusへ移行し、statusは通常5値のいずれか（例: 完了/進行中等、タスクとしての進行度に読み替えたもの）に置き換える移行手順を設計する\\n3. mocka_mcp_server.pyのmocka_add_todo/mocka_update_todoにcontract_statusパラメータを追加し、TODO_STATUS_ENUMを「status用5値」と「contract_status用9語彙」の2つの独立したenumに分割する\\n4. 移行の実行はHuman Gate承認後に行う（本TODOは設計案の提示までで実行は別途承認を得る）",
       "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "[2026-06-28追記・設計案完成] くろこにより設計案完成・Event.db自己記録済み。作成物: docs/governance/contract_status_separation_design_v1.md。内容: ①スキーマ定義（デフォルト値3案+推奨案A）②13件移行マッピング表③mocka_mcp_server.py変更案（差分形式）④移行リスク整理。コード・データへの実変更は行っていない（指示書のスコープ通り）。\n\n【13件 vs 17件問題・きむら博士裁定済み(2026-06-28)】くろこが一次データ照合した結果、指示書の前提「13件」に対しMOCKA_TODO.json全体を9語彙status値で検索すると17件が該当（くろこ報告は16件、Claude Chat側の再カウントで17件確認・差分1件は要追跡）。category別内訳: 設計成果物7件+基準仕様6件=13件（くろこ提案の対象範囲）、Architecture_Contract_Critical 3件（TODO_HAB_GPT_CONNECTION_SPEC_V1/TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1/TODO_ARCHITECTURE_MAP_MCP_V1、DONE_LOCKED契約）、不具合1件（GL7-VALIDATION-MISSING-BUG）。\n\nきむら博士裁定: 両カテゴリとも除外しない。contract_status二軸化の対象は17件全件（13件ではなく）。Architecture_Contract_Critical系3件（最上位LOCKED契約）も対象に含める。GL7-VALIDATION-MISSING-BUG（category=不具合だが偶然9語彙を使用）も対象に含める。\n\n次のアクション: ①13件分しか作成されていない既存の移行マッピング表・docs/governance/contract_status_separation_design_v1.mdを、17件全件（差分1件の特定含む）に対応する形でくろこに再作成させる ②16件/17件のカウント差分（1件）の原因をくろこに再確認させる ③Architecture_Contract_Critical 3件については、DONE_LOCKED契約自体の変更可否（Phase5以降のv2.0再定義プロセス）にも触れた移行設計が必要になる可能性があるため、その点も設計案に追記させる。実装着手は本裁定後の設計案再確認を経てから。",
+      "note": "[2026-06-28追記・きむら博士承認] v2設計案（docs/governance/contract_status_separation_design_v2.md）を承認。\n\n【承認内容】\n①対象範囲: 17件全件（Architecture_Contract_Critical 3件・GL7-VALIDATION-MISSING-BUG含む）\n②3.3 Architecture_Contract_Critical 3件への対応: くろこ提案を承認。contract_status付与はメタデータ整理であり「変更不可」原則に抵触しないとの立場を採用。3件もcontract_status二軸化の対象に含めて移行する。\n③3.4 GL7-VALIDATION-MISSING-BUGの対応: くろこ提案を承認。contract_status欄は付与しない（不具合管理上の「調査済み」であり契約ライフサイクルではないため、status側のみ5値に正規化する）。\n④移行マッピング表（17件分）の内容を承認。\n\n【次工程】実装着手をHuman Gate承認済みとしてくろこに指示する。対象: ①mocka_mcp_server.pyのTODO_STATUS_ENUM分割（status用5値/contract_status用9語彙の2つの独立enum）②mocka_add_todo/mocka_update_todoへのcontract_statusパラメータ追加③MOCKA_TODO.json正本の17件（GL7-VALIDATION-MISSING-BUGを除く16件にcontract_status付与、GL7-VALIDATION-MISSING-BUGはstatus側のみ5値正規化）への実移行。CHANGE_START/CHANGE_DONEで記録すること（TODO_384裁定の趣旨に基づく必須要件）。",
       "reference_event": "TODO_384裁定（2026-06-27、contract_status分離案承認）",
       "created_at": "2026-06-27T20:38:56.542070",
-      "updated_at": "2026-06-28T07:11:17.030768"
+      "updated_at": "2026-06-28T07:18:25.745890"
     }
   ],
   "completed": [
@@ -5535,5 +5535,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T22:11:59.043894+00:00"
+  "_snapshot_at": "2026-06-27T22:22:04.280789+00:00"
 }
