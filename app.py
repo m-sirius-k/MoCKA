@@ -2165,6 +2165,14 @@ def _save_pqueue(data):
     PREVENTION_QUEUE_PATH.write_text(
         json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
 
+# TODO_387案B: prevention_queueのstatus値は生成元によって表記が割れている
+# (/prevention/generate="PENDING", tech_watcher等="NEW")。既存データの値自体は
+# 書き換えず、判定側のみ大文字小文字非依存・別名込みで「未決定」を判定する。
+_PENDING_STATUS_ALIASES = {"PENDING", "NEW"}
+
+def _is_pending_status(status) -> bool:
+    return str(status).strip().upper() in _PENDING_STATUS_ALIASES
+
 
 @app.route("/prevention/generate", methods=["POST"])
 def prevention_generate():
@@ -2224,13 +2232,13 @@ def prevention_generate():
         generated += 1
 
     PREVENTION_QUEUE_PATH.write_text(
-        json.dumps(pq, ensure_ascii=False, indent=2),
+        json.dumps({"queue": pq}, ensure_ascii=False, indent=2),
         encoding="utf-8"
     )
 
     return jsonify({
         "generated": generated,
-        "total_pending": sum(1 for x in pq if x.get("status") == "PENDING"),
+        "total_pending": sum(1 for x in pq if _is_pending_status(x.get("status"))),
         "groups_analyzed": len(groups)
     })
 
@@ -2238,7 +2246,7 @@ def prevention_generate():
 @app.route("/prevention/queue")
 def prevention_queue():
     data = _load_pqueue()
-    pending = [q for q in data.get("queue", []) if q.get("status") == "pending"]
+    pending = [q for q in data.get("queue", []) if _is_pending_status(q.get("status"))]
     return jsonify({"queue": data.get("queue", []), "pending_count": len(pending)})
 
 @app.route("/decision/approve", methods=["POST"])
@@ -2248,7 +2256,7 @@ def decision_approve():
     data = _load_pqueue()
     approved = None
     for item in data["queue"]:
-        if item.get("id") == pid and item.get("status") == "pending":
+        if item.get("id") == pid and _is_pending_status(item.get("status")):
             item["status"] = "approved"
             item["approved_at"] = datetime.now().isoformat()
             approved = item
@@ -2282,7 +2290,7 @@ def decision_reject():
     pid = payload.get("id", "")
     data = _load_pqueue()
     for item in data["queue"]:
-        if item.get("id") == pid and item.get("status") == "pending":
+        if item.get("id") == pid and _is_pending_status(item.get("status")):
             item["status"] = "rejected"
             item["rejected_at"] = datetime.now().isoformat()
             break
