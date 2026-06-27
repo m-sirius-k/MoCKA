@@ -31,9 +31,12 @@ except Exception as _gov_err:
         "mocka_get_command_center", "mocka_check_utf8",
     }
 
-# TODO_384: status enum制約（通常TODO5値 + Architecture Contract系9語彙の許容集合）
-TODO_STATUS_ENUM = {
-    "未着手", "進行中", "完了", "保留", "廃止",
+# TODO_385: status(通常5値)とcontract_status(Architecture Contract系9語彙)を
+# 別軸のenumに分離（TODO_384は両者を1つの集合に混在させていたが、設計成果物/基準仕様等
+# 「紐付く契約のライフサイクル状態」と通常タスクの「進行度」は意味が異なるため分離する）
+TODO_STATUS_ENUM = {"未着手", "進行中", "完了", "保留", "廃止"}
+
+CONTRACT_STATUS_ENUM = {
     "DECISION_RECORDED", "DONE_LOCKED", "ALTERNATE_IMPLEMENTED", "SPEC_OBSOLETE",
     "SUPERSEDED", "CLOSED", "確定", "Phase3停止中(設計待ち)", "調査済み",
 }
@@ -234,8 +237,8 @@ TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_todo","description":"MOCKA_TODO.json を返す。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
-    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
-    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/noteを個別に更新可。未指定フィールドは既存値を保持。completedに移動済みのTODOは対象外。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"}},"required":["id"]}},
+    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。通常TODOには指定しない（省略時はフィールド自体を付与しない）"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
+    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/contract_status/noteを個別に更新可。未指定フィールドは既存値を保持。completedに移動済みのTODOは対象外。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"}},"required":["id"]}},
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
@@ -303,6 +306,9 @@ def execute_tool(name, args):
             add_status = args.get("status", "未着手")
             if add_status not in TODO_STATUS_ENUM:
                 return json.dumps({"error": f"invalid status: {add_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
+            add_contract_status = args.get("contract_status", "")
+            if add_contract_status and add_contract_status not in CONTRACT_STATUS_ENUM:
+                return json.dumps({"error": f"invalid contract_status: {add_contract_status!r}. allowed: {sorted(CONTRACT_STATUS_ENUM)}"}, ensure_ascii=False)
             data = load_todo()
             all_ids = [t.get("id") for t in data.get("todos", [])] + [t.get("id") for t in data.get("completed", [])]
             if todo_id in all_ids:
@@ -319,6 +325,8 @@ def execute_tool(name, args):
                 "reference_event": args.get("reference_event", ""),
                 "created_at":      datetime.datetime.now().isoformat()
             }
+            if add_contract_status:                # 未指定時はキー自体を付与しない(TODO_385設計案1.3案A)
+                new_todo["contract_status"] = add_contract_status
             data["todos"].append(new_todo)
             save_todo(data)
             auto_log(name, args, f"added {todo_id}")
@@ -329,9 +337,12 @@ def execute_tool(name, args):
             if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
             todo_id    = args.get("id", "")
             new_status = args.get("status", "")   # 空文字 = 未指定 → 既存値を保持
+            new_contract_status = args.get("contract_status", "")  # 空文字 = 未指定 → 既存値を保持
             note       = args.get("note", "")
             if new_status and new_status not in TODO_STATUS_ENUM:
                 return json.dumps({"error": f"invalid status: {new_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
+            if new_contract_status and new_contract_status not in CONTRACT_STATUS_ENUM:
+                return json.dumps({"error": f"invalid contract_status: {new_contract_status!r}. allowed: {sorted(CONTRACT_STATUS_ENUM)}"}, ensure_ascii=False)
             data = load_todo()
             updated = False
             effective_status = ""
@@ -339,6 +350,8 @@ def execute_tool(name, args):
                 if item.get("id") == todo_id:
                     if new_status:                 # 指定された場合のみ更新（PATCH動作）
                         item["status"] = new_status
+                    if new_contract_status:        # 指定された場合のみ更新（PATCH動作）
+                        item["contract_status"] = new_contract_status
                     if note:                       # 指定された場合のみ更新（PATCH動作）
                         item["note"] = note
                     item["updated_at"] = datetime.datetime.now().isoformat()
