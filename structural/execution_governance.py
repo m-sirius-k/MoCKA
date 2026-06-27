@@ -117,16 +117,29 @@ class ExecutionGovernanceEngine:
           {"scope": ["structural"], "expected_new_dirs": [], "expected_max_changes": 5}
         現在のworking tree差分からDry Run結果を構築する。
         """
-        status_lines = [l for l in self._git("status", "--porcelain").splitlines() if l]
+        raw = self._git("status", "--porcelain", "-z")
+        entries = raw.split("\0")[:-1] if raw.endswith("\0") else [e for e in raw.split("\0") if e]
 
         additions, deletions, changed = [], [], []
-        for line in status_lines:
-            code, path = line[:2], line[3:].strip()
-            changed.append(path)
-            if "D" in code:
-                deletions.append(path)
-            elif code.strip() in ("??", "A"):
-                additions.append(path)
+        i = 0
+        while i < len(entries):
+            entry = entries[i]
+            code, path = entry[:2], entry[3:]
+            if code[0] in ("R", "C") or code[1] in ("R", "C"):
+                # rename/copy: "XY new-path" entry followed by a separate old-path entry
+                new_path = path
+                i += 1
+                old_path = entries[i] if i < len(entries) else new_path
+                changed.append(new_path)
+                additions.append(new_path)
+                deletions.append(old_path)
+            else:
+                changed.append(path)
+                if "D" in code:
+                    deletions.append(path)
+                elif code.strip() in ("??", "A"):
+                    additions.append(path)
+            i += 1
 
         diff_summary = self._git("diff", "--stat")
 

@@ -424,31 +424,6 @@
       "created_at": "2026-06-21T11:39:18.317818"
     },
     {
-      "id": "TODO_356",
-      "title": "GL7 False Positive on Quoted Git Paths — 非ASCIIファイル名によるGovernance Gate誤検知（書き込み系MCPツール全般ブロック）",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "制度/インフラ/governance/GL7",
-      "description": "GL7 (Execution Governance Engine) のDry Runにおいて、git status --porcelain の出力パースが非ASCIIファイル名のクォート処理(git core.quotepath挙動による二重引用符+8進エスケープ)に対応しておらず、scope比較・新規ディレクトリ検知が誤動作する。\n\n根本原因: structural/execution_governance.py の check_abort_conditions() が dry_run() で取得した changed_files/additions のパス文字列を単純な line[3:].strip() でパースしているため、日本語等の非ASCII文字を含むファイル名が git により\\\"PlanningCaliber/fp/xxx_\\\\346\\\\234\\\\254...\\\" 形式でクォートされた場合、先頭にリテラルのダブルクォート文字が残存したまま top-level dir 名と比較され、scope内に存在する正当なディレクトリ(例: PlanningCaliber)であってもdeletion_outside_scope / new_directory_detected として誤検知される。\n\n再現: mocka_add_todo (TODO_355, TODO_356 起票試行, 2回) で実際に発生・再現確認済み。READ_ONLY_TOOLS に含まれない全ての書き込み系MCPツール(mocka_add_todo, mocka_update_todo, mocka_write_event, mocka_seal) で同条件下で再現する。\n\n影響: MoCKA本体リポジトリのworking treeに非ASCIIファイル名のuntracked/changedファイルが1件でも存在すると、無関係な全ての書き込み系ツール呼び出しが連鎖的にブロックされる。\n\n修正方針案(未実施、承認待ち):\n1. git status --porcelain -z (NUL区切り・クォートなし) への移行、または\n2. クォートされたパス文字列の8進エスケープを復号する処理を check_abort_conditions() 前段に追加。\n\n本TODOは障害調査の結果に基づき、MOCKA_TODO.json直接編集で代替登録したものである(mocka_add_todo自体がGL7誤検知でブロックされているため使用不可)。",
-      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "mocka_add_todo経由で2回再現確認済み（GL7_EXECUTION_BLOCKED）。障害による代替手順としてMOCKA_TODO.json直接編集で登録。TODO起票自体はCHANGE_START/CHANGE_DONE対象外。GL7恒久修正のみCHANGE管理対象とする。",
-      "reference_event": "GL7_EXECUTION_BLOCKED（TODO_355/TODO_356起票試行・2回再現）",
-      "created_at": "2026-06-21T17:29:24"
-    },
-    {
-      "id": "TODO_357",
-      "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
-      "status": "RESOLVED / AUDIT_PASSED (GL7 verified) / canonical_state=CONFIRMED / eventindex=N/A / trace_model=events.db(append-only ledger)",
-      "priority": "最高",
-      "category": "制度/ガバナンス/正本管理",
-      "description": "TODO_356代替登録作業中に発見。C:/Users/sirok/MOCKA_TODO.json（38件、TODO_354まで反映、BOM無し）と A:/MOCKA_TODO.json（11件、2026-04-05時点で更新停止、TODO_010まで、UTF-8 BOM付き）が約2ヶ月半・340件以上の差分を持ったまま同期されていない状態にあることが判明した。\n\n【背景】\nTODO_053（2026-04-21完了、'MoCKA完全ポータブル化'）でA:\\（SanDisk Extreme SSD）への移行・運用体制が確立されたはずだったが、その後何らかの理由で同期が2026-04-05時点（あるいはそれ以降の早い時点）で停止し、以後C:側のみが更新され続けていた。A:側は単なる'古いバックアップ'ではなく、長期間取り残された分岐としてそのまま放置されていた。\n\n【本日発見された一連の事象との共通性（R01総括）】\n本日同時に発覚した以下3件は、いずれも『正本だと思われていたものが知らないうちに分岐していた』という同型の構造を持つ：\n- PlanningCaliber（TODO_355）: フォルダ単位の正本/派生分岐\n- MOCKA_TODO.json（本TODO）: ファイル単位の正本/古い分岐\n- GL7（TODO_356）: 仕様/実挙動の不一致\n\nこれはMoCKA全体の拡張速度に対して正本管理の仕組みが追いついていない、という上位の構造的課題（Canonical Integrity）を示す可能性がある。\n\n【調査対象6項目】\n1. A側生成日時（いつTODO_010時点でスナップショットが作られたか）\n2. A側用途（当初の設計意図：完全代替バックアップなのか、特定時点のスナップショットなのか）\n3. バックアップ仕様確認（TODO_053時点でどういう同期方式が想定されていたか、ドキュメント・コードを確認）\n4. 同期方式確認（自動同期スクリプトが存在したか、存在したなら何故停止したか、存在しなかったなら最初から手動運用だったのか）\n5. 正本宣言（C:側を唯一の正本として確定するか、A:側を真のバックアップとして復旧・再同期するか、博士の最終判断を仰ぐための材料を揃える）\n6. 廃止可否（A:側を今の形のまま維持する意味があるか、それとも完全に正本と同期させる運用に切り替えるべきか）\n\n【非破壊原則】\n調査完了・正本宣言が出るまで、A:側ファイルへの追記・修正は一切行わない（本TODO_357自体もA:側には登録しない。理由はA:側自体が調査対象だから）。",
-      "assigned_to": "くろこ（調査）+ きむら博士（最終裁定）",
-      "note": "git canonical authority layer established(A/C separation complete)。正本設計:確定済み(git, MoCKA/docs/archive/todo_canonical/ commit e66087a tag archive/todo-A-snapshot-20260621 + commit 94e479d tag baseline/todo-C-live-20260623)。実行整合:確認済み(GL7 dry_run条件 new_directory_detected/deletion_outside_scope/expected_max_changes(400) いずれも抵触なし、dirty count 7件)。eventindex/causal_graph(runtime/causal_graph.json, tools/causal_snapshot.py)はtrajectory速度異常検知専用ツールであり、TODO汎用登録APIではないことを確認(訂正済み)。因果記録はevents.db(append-only ledger)への CHANGE_START/CHANGE_DONE記録(E20260623_8929322346b85 / E20260623_9268579460662)で完結。中間レイヤ(eventindex独立概念)は不採用。きむら博士裁定2026-06-23付。",
-      "reference_event": "TODO_356代替登録作業中の発見（A:側バックアップ形骸化）",
-      "created_at": "2026-06-21T17:34:01",
-      "updated_at": "2026-06-23T13:32:28.347638"
-    },
-    {
       "id": "TODO_HAB_GPT_CONNECTION_SPEC_V1",
       "title": "[ARCHITECTURE_CONTRACT/LOCKED] HAB ↔ GPT Connection Contract v1.0 — 構造接続固定ノード",
       "status": "DONE_LOCKED",
@@ -501,41 +476,28 @@
     {
       "id": "TODO_358",
       "title": "Phase5.x-D Human Gate Review — Import Safety Rule違反 Core System File Change Approval",
-      "status": "Implementation完了_Incident Closure待ち",
+      "status": "進行中",
       "priority": "高",
       "category": "phase5x_incident",
       "description": "",
       "assigned_to": "Claude",
-      "note": "2026-06-23: app.py実装完了。Change Plan v1の6箇所(#1-#6)全て対応(#1/#3/#5/#6=start_background_loops()へ移設、#4=initialize_runtime()へ移設、#2=app.py内起動経路削除)。実機検証: import app単独実行でactive_threads=1(daemon thread起動なし)/ESSENCE_AUTO出力消失/git操作なし確認。phi_os/tests 104件PASS(回帰なし)。Core System File Change Approval条件1-3全て満たした。残るのはIncident Closure(実運用での観察期間後にクローズ)のみ。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「14.」参照。",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: Implementation完了_Incident Closure待ち\\n\\n2026-06-23: app.py実装完了。Change Plan v1の6箇所(#1-#6)全て対応(#1/#3/#5/#6=start_background_loops()へ移設、#4=initialize_runtime()へ移設、#2=app.py内起動経路削除)。実機検証: import app単独実行でactive_threads=1(daemon thread起動なし)/ESSENCE_AUTO出力消失/git操作なし確認。phi_os/tests 104件PASS(回帰なし)。Core System File Change Approval条件1-3全て満たした。残るのはIncident Closure(実運用での観察期間後にクローズ)のみ。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「14.」参照。",
       "reference_event": "E20260622_734189009170f",
       "created_at": "2026-06-22T20:12:46.825393",
-      "updated_at": "2026-06-23T07:43:18.460033"
+      "updated_at": "2026-06-27T20:31:11.469179"
     },
     {
       "id": "TODO_359",
       "title": "essence_auto_updater(#2)の最終運用境界を決定する(判断A:機能として残す or 判断B:Phase5で廃止)",
-      "status": "Decision Ready",
+      "status": "進行中",
       "priority": "高",
       "category": "incident",
       "description": "app.py:140-148の動的import+start_essence_auto_loop()呼出について。現状NameErrorで不発だが「動いていないから安全」ではなく「将来バグ修正時に発火する潜在リスク」。判断A(機能として残し、バグ修正後start_background_loops()へ集約)か判断B(Phase5で廃止)かを人間が決定する。決定後、INCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」のGroup B該当項目を更新する。単独でのapp.py修正は行わない(Core System File Change Approval前)。",
       "assigned_to": "Claude",
-      "note": "結論候補: app.py内冗長起動経路廃止候補(削除承認候補、削除決定ではない)。根拠: MoCKA-START.batが正式起動経路として既に存在し同名プロセスkill処理も実装済み(責務重複確認)。機能廃止ではなく冗長経路廃止。Core System File Change Approval時に正式な削除実装承認を得る。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#2)参照。",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: Decision Ready\\n\\n結論候補: app.py内冗長起動経路廃止候補(削除承認候補、削除決定ではない)。根拠: MoCKA-START.batが正式起動経路として既に存在し同名プロセスkill処理も実装済み(責務重複確認)。機能廃止ではなく冗長経路廃止。Core System File Change Approval時に正式な削除実装承認を得る。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#2)参照。",
       "reference_event": "E20260623_383498220496e",
       "created_at": "2026-06-23T06:56:37.430991",
-      "updated_at": "2026-06-23T07:02:31.147538"
-    },
-    {
-      "id": "TODO_360",
-      "title": "init_audit_db(#4)の最終運用境界を決定する(start_background_loops() or initialize_runtime()等の起動フェーズ専用境界)",
-      "status": "完了_Placement Decision確定",
-      "priority": "高",
-      "category": "incident",
-      "description": "app.py:2587-2593のinit_audit_db()モジュールレベル呼出(sqlite3接続+CREATE TABLE IF NOT EXISTS)について。ThreadではなくDB初期化のため、start_background_loops()への単純移管では解決しない可能性が高い。initialize_runtime()のような起動フェーズ専用の初期化境界へ移すか、ルート関数内での遅延初期化にするかを決定する。決定後、INCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」のGroup B該当項目を更新する。単独でのapp.py修正は行わない(Core System File Change Approval前)。",
-      "assigned_to": "Claude",
-      "note": "Placement Decision確定: initialize_runtime()。判定基準: DB初期化はRuntime準備に属し、Bootstrap(環境準備/設定読込/依存性確認)の責務ではない。MoCKA長期構造(PHI-OS->Runtime Layer->Relay->Orchestra)とも整合。具体的な実装行はCore System File Change Approval時にapp.py全文を踏まえて確定する。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#4)参照。",
-      "reference_event": "E20260623_383498220496e",
-      "created_at": "2026-06-23T06:56:40.335572",
-      "updated_at": "2026-06-23T07:09:11.382902"
+      "updated_at": "2026-06-27T20:31:20.793706"
     },
     {
       "id": "TODO_361",
@@ -802,42 +764,30 @@
       "created_at": "2026-06-26T07:40:02.978555"
     },
     {
-      "id": "TODO_367",
-      "title": "PHI-OS優先権移行未実施 — Orchestra/Relay/Memoryの自前保存ロジックが停止されておらず二重記録が発生",
-      "status": "設計確定・実装は別TODOへ分離",
-      "priority": "最高",
-      "category": "制度/PHI-OS/権限統合",
-      "description": "2026-06-26、Relay調査(TODO_366)中に「Memory — AI Work State」というRelayとは別の拡張機能を発見。MutationObserverと正規表現(WINDOWS_PATH/CREATED_JA/DECISION_JA等)でページ全体を監視・キャプチャしている(DevToolsで一次確認済み)。きむら博士の指摘: Orchestra/Relay/Memoryは元々単独動作のため自前の保存ロジックを持つのが正しい初期設計だが、PHI-OS導入後はPHI-OSが情報管理の優先権を持つべきであり、各製品は自前ロジックを停止してPHI-OS経由に一本化する移行が必要。この移行が未実施のまま放置されており、二重記録の構造的原因になっている。TODO_354のnote「④PHI-OS/Memory/Orchestraの正本ロジック検証(未実施)」と整合する既知の未対応事項。",
-      "assigned_to": "くろこ(調査)+ きむら博士(設計判断)",
-      "note": "【設計確定(2026-06-26)】\n調査完了。確定事実:\n- Orchestra: host_permissionsにlocalhost:5000明記済み。fetchLivingContext()が/api/handshake(ngrok経由)からMoCKA Living Contextを読み取り専用で取得済み。書き込み経路はなし。\n- Memory: chrome.storage.local内に完全自己完結。MoCKAへの接続経路ゼロ(host_permissions自体に対象なし)。\n- PHI-OS: process_event()が唯一の正規書き込みエントリポイント(Flask /api/gate/event・MCP mocka_write_event)。拡張機能専用の受け口は現時点で存在しない。\n\n採用した移行案(案A・コスト最小):\n①Orchestraの既存片道接続(fetchLivingContext→/api/handshake)を土台に、対の書き込み経路を追加する。ゼロから接続を作るMemory/Relayより先に着手する。\n②PHI-OS側に新規エンドポイント(仮称/api/gate/event/extension)をevent_gate.pyに追加。既存/api/gate/event/batchのidempotency_key機構を流用し、AIガバナンス書き込みの厳格検証(validate_operational)とは分離する。\n③Orchestra background.jsはIndexedDB保存(saveMessage)を維持したまま、同一payloadを新エンドポイントへも送信する並行二重化を移行期間中は意図的に許容する。idempotency_keyで再送時の重複は防止。\n④host_permissionsは変更不要(Orchestraは既にlocalhost:5000を持つ)。\n⑤Memory/Relayは、Orchestraでの実装パターン確立後に個別検討。host_permissions追加が必要な分、コストが高い。\n\n案B(全製品同時移行)は切り分け困難のため非推奨として記録のみ・採用せず。\n\n次のアクション: 実装フェーズはPHI-OS本体側のコード変更(event_gate.pyへの新規エンドポイント追加)を含むため、別TODOとして切り出す(TODO_325 Trust Boundary確立との関連整理が必要)。本TODO_367自体は設計フェーズとして完了とする。",
-      "reference_event": "2026-06-26セッション Memory拡張機能content.js確認",
-      "created_at": "2026-06-26T10:04:43.227711",
-      "updated_at": "2026-06-26T10:18:53.449544"
-    },
-    {
       "id": "TODO_368",
       "title": "Orchestra→PHI-OS書き込み経路実装 — event_gate.pyに拡張機能専用エンドポイント追加",
-      "status": "着手可（Human Gate承認済み）",
+      "status": "未着手",
       "priority": "高",
       "category": "制度/PHI-OS/拡張機能連携",
       "description": "TODO_367で確定した設計案A(Orchestra既存片道接続への書き込み経路追加)の実装フェーズ。\n\n【実装内容】\n①event_gate.pyに新規エンドポイント(仮称/api/gate/event/extension)を追加。既存/api/gate/event/batchのidempotency_key機構を流用し、AIガバナンス書き込みの厳格検証(validate_operational)とは分離した、拡張機能専用の軽量受け口とする。\n②Orchestra background.jsに、saveMessage()(IndexedDB保存)と並行して同一payloadを新エンドポイントへfetchで送信する処理を追加。IndexedDB保存自体は維持(移行期間中の並行二重化を意図的に許容)。\n③host_permissionsの変更は不要(Orchestraは既にlocalhost:5000を保持)。\n④Memory/Relayへの展開はOrchestraでの安定稼働確認後、別途検討(本TODOの範囲外)。\n\n【関連・整理が必要な既存TODO】\n- TODO_325(PHI-OS Trust Boundary確立・Windows ACL設定)との関係整理が必要。本TODOがevent_gate.pyに新規の書き込み口を追加する以上、Trust Boundary設計にも影響する可能性がある。着手前にTODO_325の現状を確認すること。\n- TODO_322(PHI-OS Event Gate単一経路保証・完了済み)の「単一経路」という前提に、本TODOの新エンドポイントが抵触しないか確認すること(process_event()を必ず経由する設計を維持できるか)。",
       "assigned_to": "くろこ(実装)+ きむら博士(承認・Human Gate)",
-      "note": "【着手可・Human Gate承認(2026-06-26)】\nくろこによる事前調査完了。確定事実:\n①TODO_322「単一経路」の実態は、process_event()という関数単位ではなく、_write()という書き込み関数単位で成立している。既存の/api/gate/event/batchは既にprocess_buffered_event()という別経路(process_event()を経由しない)を持ち、最終的にのみ_write()に収束する構造。新規エンドポイントが同じパターン(軽量検証→_write())を踏襲する限り、新たな違反は生まない。\n②TODO_325未着手の実害なし。mocka_events.dbの実ACL確認済み(sirok/Administrators/SYSTEM=FullControl, CodexSandboxUsers=ReadAndExecute)。Orchestra拡張機能はブラウザサンドボックスの制約上SQLiteへの直接アクセス手段を持たず、書き込みは必ずHTTPリクエスト経由でevent_gate.pyのゲートを通る。「process_event()/_write()系がアプリケーション層のゲート、TODO_325はDBファイルレベルの物理防御」という二層構造の理解が事実と一致。TODO_325はTODO_368のブロッカーではない。\n\n判断: TODO_368着手を承認。実装は既存のprocess_buffered_event()パターン(軽量検証→_write()収束)を踏襲すること。",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: 着手可（Human Gate承認済み）\\n\\n【着手可・Human Gate承認(2026-06-26)】\\nくろこによる事前調査完了。確定事実:\\n①TODO_322「単一経路」の実態は、process_event()という関数単位ではなく、_write()という書き込み関数単位で成立している。既存の/api/gate/event/batchは既にprocess_buffered_event()という別経路(process_event()を経由しない)を持ち、最終的にのみ_write()に収束する構造。新規エンドポイントが同じパターン(軽量検証→_write())を踏襲する限り、新たな違反は生まない。\\n②TODO_325未着手の実害なし。mocka_events.dbの実ACL確認済み(sirok/Administrators/SYSTEM=FullControl, CodexSandboxUsers=ReadAndExecute)。Orchestra拡張機能はブラウザサンドボックスの制約上SQLiteへの直接アクセス手段を持たず、書き込みは必ずHTTPリクエスト経由でevent_gate.pyのゲートを通る。「process_event()/_write()系がアプリケーション層のゲート、TODO_325はDBファイルレベルの物理防御」という二層構造の理解が事実と一致。TODO_325はTODO_368のブロッカーではない。\\n\\n判断: TODO_368着手を承認。実装は既存のprocess_buffered_event()パターン(軽量検証→_write()収束)を踏襲すること。",
       "reference_event": "TODO_367設計確定(2026-06-26)",
       "created_at": "2026-06-26T10:19:10.383664",
-      "updated_at": "2026-06-26T10:22:43.882086"
+      "updated_at": "2026-06-27T20:31:58.439433"
     },
     {
       "id": "TODO_369",
       "title": "TODO_322記録文言の精度修正 — 「process_event()が唯一」→「_write()が単一書き込み点」",
-      "status": "記録済み（対応は次回ドキュメント更新時）",
+      "status": "保留",
       "priority": "低",
       "category": "記録/正本精度",
       "description": "TODO_322(完了済み)の「process_event()経由が唯一の経路」という記述は、2026-06-26のTODO_368事前調査で厳密には不正確と判明。/api/gate/event/batch（receive_event_batch()）はprocess_buffered_event()という別の独立したコードパス(validate_operational()→_write()を直接実行)を持ち、process_event()を経由しない。\n\n正確な理解: 単一経路の実態はprocess_event()という関数単位ではなく、最終的な書き込みを行う_write()という関数単位で成立している。process_event()/process_buffered_event()いずれの経路も、最終的にはこの_write()に収束する、という「二経路→単一書き込み点」の構造。\n\n「ALL AI→PHI-OS EVENT GATE→SINGLE DB」という大枠の主張自体は変わらず正しい。本TODOは機能変更ではなく、記録の正確化のみを目的とする。completed済みのTODO_322は仕組み上直接編集できないため、本TODOとして訂正記録を独立保存する。",
       "assigned_to": "Claude(記録)",
-      "note": "対応内容: 次回MOCKA_OVERVIEW.json/関連ドキュメント更新時に、TODO_322由来の「process_event()が唯一」という表現を見つけたら「_write()が単一書き込み点」に修正すること。緊急性なし・記録精度向上のみが目的。",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: 記録済み（対応は次回ドキュメント更新時）\\n\\n対応内容: 次回MOCKA_OVERVIEW.json/関連ドキュメント更新時に、TODO_322由来の「process_event()が唯一」という表現を見つけたら「_write()が単一書き込み点」に修正すること。緊急性なし・記録精度向上のみが目的。",
       "reference_event": "TODO_368着手前調査(2026-06-26)",
-      "created_at": "2026-06-26T10:23:12.387519"
+      "created_at": "2026-06-26T10:23:12.387519",
+      "updated_at": "2026-06-27T20:32:06.617550"
     },
     {
       "id": "TODO_370",
@@ -926,6 +876,19 @@
       "note": "",
       "reference_event": "E20260627_225581073d2ed(削除候補事前確認), E20260627_603295790075e/E20260627_632827668f476(経緯調査), TODO_354",
       "created_at": "2026-06-27T19:55:59.094616"
+    },
+    {
+      "id": "TODO_384",
+      "title": "TODO管理スキーマのステータス値不統一 — MOCKA_TODO.json正規化（mockaloop整合性根幹）",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "制度/ガバナンス/TODO管理/データ正規化",
+      "description": "TODO_356着手準備のためMOCKA_TODO.json全体を確認した際に発見。「最高」優先度の現存TODOのうち、statusフィールドが正規の3値（未着手/進行中/完了）以外の値になっているものが複数存在する。\\n\\n【発見済みの異常値】\\n- TODO_357: statusに長い診断文字列（RESOLVED / AUDIT_PASSED (GL7 verified) / canonical_state=CONFIRMED / eventindex=N/A / trace_model=events.db(append-only ledger)）がそのまま格納\\n- TODO_367: statusに説明文（設計確定・実装は別TODOへ分離）がそのまま格納\\n- TODO_HAB_GPT_CONNECTION_SPEC_V1 / TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1 / TODO_ARCHITECTURE_MAP_MCP_V1: statusに独自値DONE_LOCKEDを使用\\n\\nこれは個別TODOの内容の正しさとは別の、TODO管理システムそのもののスキーマが守られていないという構造的不整合である。Civilization LoopのRecord段階の信頼性に直結するため、TODO_374（8段階断絶調査）より手前の、データ正規化レベルの問題として独立起票する。\\n\\n【依頼内容】\\n1. MOCKA_TODO.json全体（todos + completed）をスキャンし、statusが正規3値以外の全件を一覧化する\\n2. 各異常値がどの正規値に対応するか判定する（診断情報や説明文はnote欄に移すべきかも含めて整理）\\n3. 不統一が生まれた根本原因の調査（複数ツール/テンプレートの語彙差異、アーキテクチャ契約系の別管理ルール運用など）\\n4. 修正方針案の提示（一括正規化スクリプト vs 個別手動修正）。実行は博士承認後",
+      "assigned_to": "くろこ（調査）+ きむら博士（承認）",
+      "note": "【C区分追加調査結果】2026-06-27, Claude-sonnet-4-6（CHANGE_START: E20260627_4099648459ec3）。以下を追記する（先のnote本文は保持）。\\n\\n■(1)作成経路の特定\\nC区分13件のうち作成時イベントが追跡できたものは、いずれも作成時status='未着手'（正規値）で登録されていた（例: EXEC-LAYER-STD-V1は2026-06-23T08:08:23作成時status='未着手'、created_atのみでreference_event空欄=mocka_add_todo経由ではなく直接JSON編集の可能性が高い。mocka_add_todoは呼び出し時に[MCP] mocka_add_todo: {id} added というログを出すが、tools/auto_record.logにこれら13件のID出現は0件で、events.db内にも'mocka_add_todo'呼び出しイベントとしての記録は見つからなかった）。\\n非正規値（DONE_LOCKED等）への変更は、作成の約40分後、commit ad198bc8c（2026-06-23T09:48:17+0900, auto sync）で一括発生。この1コミットでdata/MOCKA_TODO.json中7件のstatusが同時に正規値('未着手')から非正規値（ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE等）へ書き換えられており、各noteには'[再分類]'という統一接頭辞と、対応する実装箇所(phi_os/event_gate.py:110-130等)へのmapped_to記述が付与されていた。これは個別の手動更新ではなく、単一の棚卸し作業として一括実行されたことを示す。\\n重要な発見: この一括再分類自体について、events.db上にCHANGE_START/CHANGE_DONEの記録が存在しない（該当時間帯2026-06-23T00:30-01:00のevents.dbには tests/test_gate_validator.py 作成関連の2件のみで、TODOステータス変更に関する記録なし）。つまりArchitecture Contract系 workflow自体が、通常TODOには適用されるはずの記録義務（mocka_write_event）を経由せずにstatusを書き換えていた。これはTODO_384の技術的原因（enum未検証）とは別に、運用上の記録義務逸脱という追加の論点である。\\n\\n■(2)集中出現時間帯（2026-06-22 09:07〜06-23 01:48）の作業内容\\nevents.db照会の結果、この時間帯はTODO_HAB_GPT_CONNECTION_SPEC_V1のImplementation Spec/Audit Version確定（06-22 00:03-00:06 UTC）、MCP実装設計v0.1コード生成（06-22 00:13 UTC）、phi_os/tests/test_gate_validator.py作成（06-23 00:46-00:50 UTC）、docs/governance/gl7_execution_kernel_spec_v1.md・control_map_v1.md・control_map_v2.md新規作成（06-23 01:12-01:35 UTC）、phi_os/human_gate.py + event_bus.py新規作成（06-23 01:45-01:48 UTC）が連続して行われていた。すなわちGL7仕様確定とPHI-OS Phase1/2実装が同時並行で進んだ、設計確定→ドキュメント化→実装着手の一連の作業セッションであり、その過程で関連する設計成果物TODO群がまとめて状態更新（再分類）された。\\n\\n■(3)語彙体系の全体像\\nC区分13件で使用された独自status値は計9種: DONE_LOCKED, ALTERNATE_IMPLEMENTED, SPEC_OBSOLETE, CLOSED, SUPERSEDED, DECISION_RECORDED, 確定, Phase3停止中(設計待ち), 調査済み。\\n決定的な発見: docs/governance/control_map_v1.md冒頭に \\\"Status: DECISION_RECORDED（本文書は意思決定の記録。コード変更は未実施）\\\" という記述があり、対応するTODO(CONTROL-MAP-V1-DECISION)のstatus値'DECISION_RECORDED'はこの文書自身のStatus行をそのまま転記したものであることが確認できた。すなわちこの語彙は「TODOというタスクの進行度」ではなく「紐付くドキュメント/仕様自体のライフサイクル状態」を表すものであり、通常TODOのstatusとは指している対象が異なる。一定の体系（ドキュメント状態をDECISION_RECORDED→ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/DONE_LOCKEDのいずれかに遷移させる）として運用されている形跡はあるが、この語彙集合・遷移規則を正式に定義した仕様書は見つからなかった（暗黙知による運用）。\\n\\n■(4)目的・必要性の評価\\n通常TODOの状態（未着手/進行中/完了/保留/廃止）は「タスクが今どこまで進んだか」を表す。一方Cの語彙は「ある設計文書/契約が今どの確定段階にあるか」（決定記録/実装済み/別実装で代替/旧仕様化/後継に置換/凍結）を表しており、軸そのものが異なる（タスク進行 vs 文書ライフサイクル）。[ARCHITECTURE_CONTRACT/LOCKED]という命名が示す「一度確定したら変更しない」という不変性の概念は、通常TODOの'完了'（タスクが終わった）とは意味が異なり、'完了'に縮退させると「今後変更不可」という重要な制約情報が失われる。よって本質的に別概念であり、単純な同一概念の別表現ではないと判断する。\\n\\n■(5)他システムからの参照確認\\nmocka_mcp_server.py、structural/governance_audit_check.py、interface/commission_manager.py等を個別にgrepしたが、DONE_LOCKED/SPEC_OBSOLETE/ALTERNATE_IMPLEMENTED/DECISION_RECORDED等の文字列を条件分岐（if文等）で直接参照しているコードは見つからなかった（広域grepでのCLOSED/SUPERSEDED一致は全て無関係な文脈の同綴語であった）。つまり現状、これらの値はどのプログラムからもパースされておらず、人間が読む記録としてのみ機能している。技術的な統合リスクは低い。\\n\\n■(6)結論・推奨案\\nA・Bとは異なり、Cは正規3/5値への統合を推奨しない。代わりに以下を提案する。\\n1. Architecture Contract系（category='設計成果物'またはID形式が[A-Z]+-[A-Z]+-V[0-9]+型の非TODO_接頭辞）については、通常TODOのstatusとは別軸の概念であることを正式に文書化し、MOCKA_OVERVIEW.json等に「Document Lifecycle Status語彙一覧」として明文化する（現状9語彙: DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中/調査済み → 将来的な表記揺れ防止のため許容語彙を確定し列挙する）。\\n2. この語彙を独立ワークフローとして正式認定する場合、再分類等のstatus変更時もCHANGE_START/CHANGE_DONEの記録義務を必ず適用するというルールを明文化する（今回の調査で、この記録義務が一度逸脱していたことが判明したため）。\\n3. mocka_update_todo/mocka_add_todoのenum制約実装（TODO_384④で提案済み）は、通常TODO用のstatus enumとArchitecture Contract用のdocument-status enumを別軸のフィールドとして区別する設計にする（例: 通常TODOはstatus、Architecture Contract系はcontract_status等の別フィールド名にする案も検討に値する。同一フィールド名に2つの異なる軸の値を混在させ続けること自体が今回の問題の温床であるため）。\\n最終裁定（独立ワークフローとして正式認定か、通常スキーマへの統合か）は博士に委ねる。CHANGE_DONE記録済み。",
+      "reference_event": "TODO_356対応中の発見（MOCKA_TODO.json全体確認時）",
+      "created_at": "2026-06-27T20:15:24.382561",
+      "updated_at": "2026-06-27T20:28:31.325153"
     }
   ],
   "completed": [
@@ -5495,6 +5458,62 @@
       "created_at": "2026-06-21T15:30:44.542475",
       "updated_at": "2026-06-27T19:57:00",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_356",
+      "title": "GL7 False Positive on Quoted Git Paths — 非ASCIIファイル名によるGovernance Gate誤検知（書き込み系MCPツール全般ブロック）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/インフラ/governance/GL7",
+      "description": "GL7 (Execution Governance Engine) のDry Runにおいて、git status --porcelain の出力パースが非ASCIIファイル名のクォート処理(git core.quotepath挙動による二重引用符+8進エスケープ)に対応しておらず、scope比較・新規ディレクトリ検知が誤動作する。\n\n根本原因: structural/execution_governance.py の check_abort_conditions() が dry_run() で取得した changed_files/additions のパス文字列を単純な line[3:].strip() でパースしているため、日本語等の非ASCII文字を含むファイル名が git により\\\"PlanningCaliber/fp/xxx_\\\\346\\\\234\\\\254...\\\" 形式でクォートされた場合、先頭にリテラルのダブルクォート文字が残存したまま top-level dir 名と比較され、scope内に存在する正当なディレクトリ(例: PlanningCaliber)であってもdeletion_outside_scope / new_directory_detected として誤検知される。\n\n再現: mocka_add_todo (TODO_355, TODO_356 起票試行, 2回) で実際に発生・再現確認済み。READ_ONLY_TOOLS に含まれない全ての書き込み系MCPツール(mocka_add_todo, mocka_update_todo, mocka_write_event, mocka_seal) で同条件下で再現する。\n\n影響: MoCKA本体リポジトリのworking treeに非ASCIIファイル名のuntracked/changedファイルが1件でも存在すると、無関係な全ての書き込み系ツール呼び出しが連鎖的にブロックされる。\n\n修正方針案(未実施、承認待ち):\n1. git status --porcelain -z (NUL区切り・クォートなし) への移行、または\n2. クォートされたパス文字列の8進エスケープを復号する処理を check_abort_conditions() 前段に追加。\n\n本TODOは障害調査の結果に基づき、MOCKA_TODO.json直接編集で代替登録したものである(mocka_add_todo自体がGL7誤検知でブロックされているため使用不可)。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "修正完了（2026-06-27, Claude-sonnet-4-6, CHANGE_START: E20260627_030162330ddc0 / CHANGE_DONE: E20260627_8148088176902）。\\n\\n【修正内容】structural/execution_governance.py の dry_run() を git status --porcelain -z（NUL区切り・クォートなし）に移行。line[3:].strip()による単純パースを廃止し、entry[3:]ベースのNUL区切りパースに書き換え。rename/copy(R/C)は「XY new-path\\\\0old-path\\\\0」の2エントリ構造を考慮し、new_pathをchanged_files/additionsに、old_pathをdeletionsに正しく振り分けるよう実装。\\n\\n【テスト結果】一時gitリポジトリ(todo356_repro)で日本語ファイル名のuntracked/changed(M)/rename(R)の3パターンを再現。修正前: untrackedケースでdeletion_outside_scope/new_directory_detectedが誤検知されることを確認（再現成功）。修正後: 3パターン全てでabortsが正しく空になることを確認。さらに実MoCKAリポジトリでscope外ファイル変更時にdeletion_outside_scopeが正しく検知される（真陽性維持・regression無し）ことも確認済み。UTF-8検証OK（BOM無し）。\\n\\n【副作用確認】同様のgit status出力パース処理はstructural/grounding_engine.py get_working_tree()にも存在するが、パスの分類・比較を行わず生の行を返すのみで本件の誤検知ロジックには関与しないため未修正（別件として記録のみ、対応は別TODO化を検討）。READ_ONLY_TOOLS(mocka_mcp_server.py)は独立した別定義セットであり本修正の影響対象外であることを確認。\\n\\n【今後のTODO起票について】本修正によりmocka_add_todo等の書き込み系MCPツールの障害（非ASCIIファイル名存在時のGL7誤検知ブロック）は解消された。今後のTODO起票はMOCKA_TODO.json直接編集ではなく、正規ツール（mocka_add_todo等）経由に戻してよい。",
+      "reference_event": "GL7_EXECUTION_BLOCKED（TODO_355/TODO_356起票試行・2回再現）",
+      "created_at": "2026-06-21T17:29:24",
+      "updated_at": "2026-06-27T20:13:53.510267",
+      "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_357",
+      "title": "MOCKA_TODO Canonical Audit — C:/A:二系統分岐問題（正本/古い分岐の不一致）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス/正本管理",
+      "description": "TODO_356代替登録作業中に発見。C:/Users/sirok/MOCKA_TODO.json（38件、TODO_354まで反映、BOM無し）と A:/MOCKA_TODO.json（11件、2026-04-05時点で更新停止、TODO_010まで、UTF-8 BOM付き）が約2ヶ月半・340件以上の差分を持ったまま同期されていない状態にあることが判明した。\n\n【背景】\nTODO_053（2026-04-21完了、'MoCKA完全ポータブル化'）でA:\\（SanDisk Extreme SSD）への移行・運用体制が確立されたはずだったが、その後何らかの理由で同期が2026-04-05時点（あるいはそれ以降の早い時点）で停止し、以後C:側のみが更新され続けていた。A:側は単なる'古いバックアップ'ではなく、長期間取り残された分岐としてそのまま放置されていた。\n\n【本日発見された一連の事象との共通性（R01総括）】\n本日同時に発覚した以下3件は、いずれも『正本だと思われていたものが知らないうちに分岐していた』という同型の構造を持つ：\n- PlanningCaliber（TODO_355）: フォルダ単位の正本/派生分岐\n- MOCKA_TODO.json（本TODO）: ファイル単位の正本/古い分岐\n- GL7（TODO_356）: 仕様/実挙動の不一致\n\nこれはMoCKA全体の拡張速度に対して正本管理の仕組みが追いついていない、という上位の構造的課題（Canonical Integrity）を示す可能性がある。\n\n【調査対象6項目】\n1. A側生成日時（いつTODO_010時点でスナップショットが作られたか）\n2. A側用途（当初の設計意図：完全代替バックアップなのか、特定時点のスナップショットなのか）\n3. バックアップ仕様確認（TODO_053時点でどういう同期方式が想定されていたか、ドキュメント・コードを確認）\n4. 同期方式確認（自動同期スクリプトが存在したか、存在したなら何故停止したか、存在しなかったなら最初から手動運用だったのか）\n5. 正本宣言（C:側を唯一の正本として確定するか、A:側を真のバックアップとして復旧・再同期するか、博士の最終判断を仰ぐための材料を揃える）\n6. 廃止可否（A:側を今の形のまま維持する意味があるか、それとも完全に正本と同期させる運用に切り替えるべきか）\n\n【非破壊原則】\n調査完了・正本宣言が出るまで、A:側ファイルへの追記・修正は一切行わない（本TODO_357自体もA:側には登録しない。理由はA:側自体が調査対象だから）。",
+      "assigned_to": "くろこ（調査）+ きむら博士（最終裁定）",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: RESOLVED / AUDIT_PASSED (GL7 verified) / canonical_state=CONFIRMED / eventindex=N/A / trace_model=events.db(append-only ledger)\\n\\ngit canonical authority layer established(A/C separation complete)。正本設計:確定済み(git, MoCKA/docs/archive/todo_canonical/ commit e66087a tag archive/todo-A-snapshot-20260621 + commit 94e479d tag baseline/todo-C-live-20260623)。実行整合:確認済み(GL7 dry_run条件 new_directory_detected/deletion_outside_scope/expected_max_changes(400) いずれも抵触なし、dirty count 7件)。eventindex/causal_graph(runtime/causal_graph.json, tools/causal_snapshot.py)はtrajectory速度異常検知専用ツールであり、TODO汎用登録APIではないことを確認(訂正済み)。因果記録はevents.db(append-only ledger)への CHANGE_START/CHANGE_DONE記録(E20260623_8929322346b85 / E20260623_9268579460662)で完結。中間レイヤ(eventindex独立概念)は不採用。きむら博士裁定2026-06-23付。",
+      "reference_event": "TODO_356代替登録作業中の発見（A:側バックアップ形骸化）",
+      "created_at": "2026-06-21T17:34:01",
+      "updated_at": "2026-06-27T20:30:59.255332",
+      "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_360",
+      "title": "init_audit_db(#4)の最終運用境界を決定する(start_background_loops() or initialize_runtime()等の起動フェーズ専用境界)",
+      "status": "完了",
+      "priority": "高",
+      "category": "incident",
+      "description": "app.py:2587-2593のinit_audit_db()モジュールレベル呼出(sqlite3接続+CREATE TABLE IF NOT EXISTS)について。ThreadではなくDB初期化のため、start_background_loops()への単純移管では解決しない可能性が高い。initialize_runtime()のような起動フェーズ専用の初期化境界へ移すか、ルート関数内での遅延初期化にするかを決定する。決定後、INCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」のGroup B該当項目を更新する。単独でのapp.py修正は行わない(Core System File Change Approval前)。",
+      "assigned_to": "Claude",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: 完了_Placement Decision確定\\n\\nPlacement Decision確定: initialize_runtime()。判定基準: DB初期化はRuntime準備に属し、Bootstrap(環境準備/設定読込/依存性確認)の責務ではない。MoCKA長期構造(PHI-OS->Runtime Layer->Relay->Orchestra)とも整合。具体的な実装行はCore System File Change Approval時にapp.py全文を踏まえて確定する。詳細はINCIDENT_IMPORT_APP_SIDE_EFFECT.md「11.」Group B(#4)参照。",
+      "reference_event": "E20260623_383498220496e",
+      "created_at": "2026-06-23T06:56:40.335572",
+      "updated_at": "2026-06-27T20:31:28.923382",
+      "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_367",
+      "title": "PHI-OS優先権移行未実施 — Orchestra/Relay/Memoryの自前保存ロジックが停止されておらず二重記録が発生",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/PHI-OS/権限統合",
+      "description": "2026-06-26、Relay調査(TODO_366)中に「Memory — AI Work State」というRelayとは別の拡張機能を発見。MutationObserverと正規表現(WINDOWS_PATH/CREATED_JA/DECISION_JA等)でページ全体を監視・キャプチャしている(DevToolsで一次確認済み)。きむら博士の指摘: Orchestra/Relay/Memoryは元々単独動作のため自前の保存ロジックを持つのが正しい初期設計だが、PHI-OS導入後はPHI-OSが情報管理の優先権を持つべきであり、各製品は自前ロジックを停止してPHI-OS経由に一本化する移行が必要。この移行が未実施のまま放置されており、二重記録の構造的原因になっている。TODO_354のnote「④PHI-OS/Memory/Orchestraの正本ロジック検証(未実施)」と整合する既知の未対応事項。",
+      "assigned_to": "くろこ(調査)+ きむら博士(設計判断)",
+      "note": "[元status記録(TODO_384 B区分修正により移動)]: 設計確定・実装は別TODOへ分離\\n\\n【設計確定(2026-06-26)】\\n調査完了。確定事実:\\n- Orchestra: host_permissionsにlocalhost:5000明記済み。fetchLivingContext()が/api/handshake(ngrok経由)からMoCKA Living Contextを読み取り専用で取得済み。書き込み経路はなし。\\n- Memory: chrome.storage.local内に完全自己完結。MoCKAへの接続経路ゼロ(host_permissions自体に対象なし)。\\n- PHI-OS: process_event()が唯一の正規書き込みエントリポイント(Flask /api/gate/event・MCP mocka_write_event)。拡張機能専用の受け口は現時点で存在しない。\\n\\n採用した移行案(案A・コスト最小):\\n①Orchestraの既存片道接続(fetchLivingContext→/api/handshake)を土台に、対の書き込み経路を追加する。ゼロから接続を作るMemory/Relayより先に着手する。\\n②PHI-OS側に新規エンドポイント(仮称/api/gate/event/extension)をevent_gate.pyに追加。既存/api/gate/event/batchのidempotency_key機構を流用し、AIガバナンス書き込みの厳格検証(validate_operational)とは分離する。\\n③Orchestra background.jsはIndexedDB保存(saveMessage)を維持したまま、同一payloadを新エンドポイントへも送信する並行二重化を移行期間中は意図的に許容する。idempotency_keyで再送時の重複は防止。\\n④host_permissionsは変更不要(Orchestraは既にlocalhost:5000を持つ)。\\n⑤Memory/Relayは、Orchestraでの実装パターン確立後に個別検討。host_permissions追加が必要な分、コストが高い。\\n\\n案B(全製品同時移行)は切り分け困難のため非推奨として記録のみ・採用せず。\\n\\n次のアクション: 実装フェーズはPHI-OS本体側のコード変更(event_gate.pyへの新規エンドポイント追加)を含むため、別TODOとして切り出す(TODO_325 Trust Boundary確立との関連整理が必要)。本TODO_367自体は設計フェーズとして完了とする。",
+      "reference_event": "2026-06-26セッション Memory拡張機能content.js確認",
+      "created_at": "2026-06-26T10:04:43.227711",
+      "updated_at": "2026-06-27T20:31:45.029472",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5502,5 +5521,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T11:06:18.517458+00:00"
+  "_snapshot_at": "2026-06-27T11:36:23.466062+00:00"
 }

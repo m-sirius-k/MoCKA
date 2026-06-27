@@ -31,6 +31,13 @@ except Exception as _gov_err:
         "mocka_get_command_center", "mocka_check_utf8",
     }
 
+# TODO_384: status enum制約（通常TODO5値 + Architecture Contract系9語彙の許容集合）
+TODO_STATUS_ENUM = {
+    "未着手", "進行中", "完了", "保留", "廃止",
+    "DECISION_RECORDED", "DONE_LOCKED", "ALTERNATE_IMPLEMENTED", "SPEC_OBSOLETE",
+    "SUPERSEDED", "CLOSED", "確定", "Phase3停止中(設計待ち)", "調査済み",
+}
+
 MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not MOCKA_ENDPOINT:
     print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
@@ -293,6 +300,9 @@ def execute_tool(name, args):
             title   = args.get("title", "").strip()
             if not todo_id or not title:
                 return json.dumps({"error": "id and title are required"})
+            add_status = args.get("status", "未着手")
+            if add_status not in TODO_STATUS_ENUM:
+                return json.dumps({"error": f"invalid status: {add_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
             data = load_todo()
             all_ids = [t.get("id") for t in data.get("todos", [])] + [t.get("id") for t in data.get("completed", [])]
             if todo_id in all_ids:
@@ -300,7 +310,7 @@ def execute_tool(name, args):
             new_todo = {
                 "id":              todo_id,
                 "title":           title,
-                "status":          args.get("status", "未着手"),
+                "status":          add_status,
                 "priority":        args.get("priority", "中"),
                 "category":        args.get("category", ""),
                 "description":     args.get("description", ""),
@@ -320,6 +330,8 @@ def execute_tool(name, args):
             todo_id    = args.get("id", "")
             new_status = args.get("status", "")   # 空文字 = 未指定 → 既存値を保持
             note       = args.get("note", "")
+            if new_status and new_status not in TODO_STATUS_ENUM:
+                return json.dumps({"error": f"invalid status: {new_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
             data = load_todo()
             updated = False
             effective_status = ""
