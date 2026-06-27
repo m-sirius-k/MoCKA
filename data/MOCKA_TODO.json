@@ -902,19 +902,6 @@
       "created_at": "2026-06-26T12:45:15.277274"
     },
     {
-      "id": "TODO_373",
-      "title": "getConversationText()のDOM drift調査・修正（assistant側testid確認含む）",
-      "status": "方針確定・TODO_376待ち",
-      "priority": "最高",
-      "category": "Relay/MoCKA-Relay統合/DOM整合性",
-      "description": "TODO_350 Step4実機検証中（2026-06-27）に発見したINCIDENT（E20260627_753188422ec60）の派生課題。content.jsのcountTurns()/getUserOnlyLines()が依拠していた旧セレクタ[data-message-author-role=\"human\"]は、現行claude.aiのDOM構造に存在しないことが実機確認(DevTools)で確定し、正しいセレクタ[data-testid=\"user-message\"]への修正・実機検証は完了済み（E20260627_814381913f18f、E20260627_9602974928834）。\n\nしかし、content.js内のgetConversationText()（generatePacket()=引き継ぎパケット生成の基礎、TODO_350 Step1で「完了」と記録済みの機能）は、[data-message-author-role]（roleを問わず全件取得する版）に依拠したままで、未修正・未検証である。\n\n実機確認の結果、claude.aiの現行DOMでは[data-testid]属性に'message'を含むものは'user-message'の1種類のみで、assistant(Claude)側の発言に対応するdata-testidは（確認した範囲では）見当たらなかった。getConversationText()はユーザー・アシスタント両方の発言を結合してdecisions/files/memos等を抽出する設計のため、assistant側を正しく検出する方法を別途調査する必要がある。\n\n【目的】\n本TODOの目的は「引き継ぎパケット生成機能の実働確認」である。TODO_350 Step1は「完了」と記録されているが、その完了判定がDOM構造の実機検証を伴っていたかは不明であり、Step4で発見したのと同種の「現物確認なしの完了判定」が再現している可能性がある。本TODOで実機検証を行い、Step1の完了記録の妥当性そのものを確認する。\n\n【本日の上位パターンとの関連】\n2026-06-26〜27にかけて、CHANGE_DONE記録と実際の作業結果が一致しない事案が複数件発見されている：\n1. TODO_350 Step1 作業対象フォルダ取り違え（E20260621_378795484b70f）\n2. TODO_354 extension_canonical_pathsレジストリが実際には一度も書き込まれていなかった（E20260626_337391387a8aa）\n3. TODO_350 Step4の誤完了記録（E20260626_675420922bb64）\n4. 本TODOの起点であるDOMセレクタdrift（E20260627_753188422ec60）— ターン数・TODO抽出が「完了」記録の裏で実際には機能していなかった\n\nこれらは「CHANGE_DONE記録自体の信頼性」という共通の上位リスクパターンを示す事例群であり、TODO_371/TODO_372とも関連する。本TODOの調査・修正自体も、机上の修正で終わらせず必ず実機検証（DevTools実測）を伴うことを徹底する。",
-      "assigned_to": "くろこ（調査・実装）+ きむら博士（実機検証協力）",
-      "note": "実機調査により以下が確定：(1) ユーザー発言は[data-testid=\"user-message\"]で取得可能（修正済み・正本パスで確認済み）。(2) assistant側に専用data-testidは存在しない（全data-testid一覧で確認済み、message/assistant系の別名なし）。(3) 判定ロジックの方針確定：.group（mb-1 mt-[var(--msg-gap)] groupクラス）が1往復（user発言+assistant発言のペア）のコンテナとして機能しており、各.group内でuser-messageの有無とaction-bar-copy等の[data-message-action-bar]要素の有無を見ることで両発言を判別できる。(4) 重大な副次発見：content-visibility:autoにより画面外の.group要素はinnerTextが空文字になる問題が判明、これはgetConversationText()/generatePacket()の核心的な制約のため、影響範囲がTODO_373の本来スコープ（セレクタ特定）を超えると判断しTODO_376として分離（E20260627_5181221779f6f）。TODO_373自体はセレクタ特定・判定方針確定の時点で一区切りとし、実装完了の最終確認はTODO_376の対処方針確定後に行う。",
-      "reference_event": "E20260627_753188422ec60",
-      "created_at": "2026-06-27T07:52:43.514638",
-      "updated_at": "2026-06-27T08:46:10.860162"
-    },
-    {
       "id": "TODO_374",
       "title": "8段階Civilization Loop断絶の実コード調査（Observe→Record接続・Incident→Recurrence超過）",
       "status": "未着手",
@@ -940,18 +927,6 @@
       "created_at": "2026-06-26T23:24:47.416353+00:00"
     },
     {
-      "id": "TODO_376",
-      "title": "getConversationText()のcontent-visibility:auto対応——引き継ぎパケットの発言欠落リスク調査",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "relay/content_visibility",
-      "description": "getConversationText()（generatePacket()の基盤、引き継ぎパケット生成の核心機能）が、claude.aiのCSS content-visibility:auto最適化により、画面外（未スクロール）の発言要素のinnerTextを正しく取得できない疑いがある。実機確認（E20260627_5181221779f6f）では画面内5件は正常取得、それ以前の43件は全てtextLen=0だった。長い会話で引き継ぎパケットを生成すると、直近の数往復しか内容が含まれず、それ以前の文脈が欠落したパケットが生成されている可能性が高い。",
-      "assigned_to": "Claude",
-      "note": "対処方針の検討が必要：(1) 各.group要素をscrollIntoView()で一時的に画面内へ移動させてからinnerTextを読む方式（パフォーマンス・UX上の副作用あり、画面のガタつき・処理時間増大）、(2) content-visibilityをCSS側でoverride可能か調査（content-visibility: visibleを対象要素に強制適用すればレンダリングをスキップさせずに済む可能性）、(3) DOM経由ではなく別のデータ取得経路（React内部state、APIレスポンスキャッシュ等）が使えるか調査。着手前に、実際に生成済みの引き継ぎパケット（過去のFP）を遡って内容欠落の実例がないか確認することを推奨（実害の有無を先に確認してから対処の緊急度を判断する）。TODO_373(assistant側セレクタ特定)の調査中に発見された副産物だが、影響範囲はTODO_373より大きいため別TODOとして分離。",
-      "reference_event": "E20260627_5181221779f6f",
-      "created_at": "2026-06-27T08:45:34.635370"
-    },
-    {
       "id": "TODO_377",
       "title": "mocka-workshop-private内のnode_modules/__pycache__等、無関係な大量未コミット変更の扱い検討（.gitignore見直し含む）",
       "status": "未着手",
@@ -962,6 +937,42 @@
       "note": "今回意図的に対象外とした理由: 無関係な大量ファイルを今日のpushに混在させると、コミット内容の追跡可能性（このコミットに何が含まれるか）を損なうため。スコープはRelay_Project/extension/配下のみに厳密に限定した（参照: commit 552dce7, push c264dee..552dce7 to mocka-workshop-private origin/main, 2026-06-27）。緊急性なし。次に着手する際は、まずnode_modules/__pycache__等が意図的に追跡されているのか、単なる.gitignore漏れなのかを確認すること。",
       "reference_event": "",
       "created_at": "2026-06-26T23:56:12.357539+00:00"
+    },
+    {
+      "id": "TODO_378",
+      "title": "Relevant chats等UI widget文字列の重複混入対応",
+      "status": "未着手",
+      "priority": "中",
+      "category": "Relay",
+      "description": "getConversationText()の.group走査で取得したテキストに、「Relevant chatsRelevant chats」のような区切りなしのUI widget文字列重複が混入する現象が未対応のまま残っている（E20260627セッションで確認済み）。sr-only/visually-hidden/screen-readerクラスおよびbuttonタグの除外では対応できないパターンであり、別の既知UI文字列リストによる除外、または別のDOM特定方法が必要。CHANGE_DONE（E20260627_483788449cfed）のスコープ外として明示的に切り出された残課題。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260627_483788449cfed",
+      "created_at": "2026-06-27T13:28:56.962006"
+    },
+    {
+      "id": "TODO_379",
+      "title": "Relay拡張の実出力（clipboard/storage.local）そのものの確認",
+      "status": "未着手",
+      "priority": "高",
+      "category": "Relay",
+      "description": "TODO_376/373の検証は、Relay拡張がロードされていないCometプロファイル上でcontent.jsのロジックをpage.evaluateにより直接再現する方式（DOM直読みシミュレーション）で行われた。実際の拡張機能の出力（navigator.clipboard.writeText、chrome.storage.localのrelay_logbook_currentキー）そのものは一度も確認していない。Relay拡張が実際にロードされたブラウザプロファインで、popup.html経由でgeneratePacket()を実行し、実際の出力テキストにcontent-visibility欠落やUI widget重複が残っていないかを最終確認する必要がある。CHANGE_DONE（E20260627_483788449cfed）に明記された既知の限界。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260627_483788449cfed",
+      "created_at": "2026-06-27T13:29:07.555293"
+    },
+    {
+      "id": "TODO_380",
+      "title": "zero_len_count=1の要因調査",
+      "status": "未着手",
+      "priority": "低",
+      "category": "Relay",
+      "description": "CHANGE_DONE（E20260627_483788449cfed）の最終検証で、コンテナ絞り込み実装後もzero_len_count=1が残存していることを確認した。サイドバー混入の誤検知（部分一致による偽陽性）とは別の、個別group単位で実際にtext_len=0だった1件であり、要因は未調査。影響範囲（実害があるか軽微なノイズか）も未評価。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260627_483788449cfed",
+      "created_at": "2026-06-27T13:29:15.821494"
     }
   ],
   "completed": [
@@ -5405,6 +5416,34 @@
       "created_at": "2026-06-19T17:49:53.685053",
       "updated_at": "2026-06-27T07:52:16.470630",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_376",
+      "title": "getConversationText()のcontent-visibility:auto対応——引き継ぎパケットの発言欠落リスク調査",
+      "status": "完了",
+      "priority": "最高",
+      "category": "relay/content_visibility",
+      "description": "getConversationText()（generatePacket()の基盤、引き継ぎパケット生成の核心機能）が、claude.aiのCSS content-visibility:auto最適化により、画面外（未スクロール）の発言要素のinnerTextを正しく取得できない疑いがある。実機確認（E20260627_5181221779f6f）では画面内5件は正常取得、それ以前の43件は全てtextLen=0だった。長い会話で引き継ぎパケットを生成すると、直近の数往復しか内容が含まれず、それ以前の文脈が欠落したパケットが生成されている可能性が高い。",
+      "assigned_to": "Claude",
+      "note": "CHANGE_DONE（E20260627_483788449cfed）で対処実装・実機検証完了。content-visibility:auto起因の画面外発言text_len=0は解消確認済み。残課題はTODO_378/379/380に分割。",
+      "reference_event": "E20260627_5181221779f6f",
+      "created_at": "2026-06-27T08:45:34.635370",
+      "updated_at": "2026-06-27T13:29:22.817352",
+      "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_373",
+      "title": "getConversationText()のDOM drift調査・修正（assistant側testid確認含む）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "Relay/MoCKA-Relay統合/DOM整合性",
+      "description": "TODO_350 Step4実機検証中（2026-06-27）に発見したINCIDENT（E20260627_753188422ec60）の派生課題。content.jsのcountTurns()/getUserOnlyLines()が依拠していた旧セレクタ[data-message-author-role=\"human\"]は、現行claude.aiのDOM構造に存在しないことが実機確認(DevTools)で確定し、正しいセレクタ[data-testid=\"user-message\"]への修正・実機検証は完了済み（E20260627_814381913f18f、E20260627_9602974928834）。\n\nしかし、content.js内のgetConversationText()（generatePacket()=引き継ぎパケット生成の基礎、TODO_350 Step1で「完了」と記録済みの機能）は、[data-message-author-role]（roleを問わず全件取得する版）に依拠したままで、未修正・未検証である。\n\n実機確認の結果、claude.aiの現行DOMでは[data-testid]属性に'message'を含むものは'user-message'の1種類のみで、assistant(Claude)側の発言に対応するdata-testidは（確認した範囲では）見当たらなかった。getConversationText()はユーザー・アシスタント両方の発言を結合してdecisions/files/memos等を抽出する設計のため、assistant側を正しく検出する方法を別途調査する必要がある。\n\n【目的】\n本TODOの目的は「引き継ぎパケット生成機能の実働確認」である。TODO_350 Step1は「完了」と記録されているが、その完了判定がDOM構造の実機検証を伴っていたかは不明であり、Step4で発見したのと同種の「現物確認なしの完了判定」が再現している可能性がある。本TODOで実機検証を行い、Step1の完了記録の妥当性そのものを確認する。\n\n【本日の上位パターンとの関連】\n2026-06-26〜27にかけて、CHANGE_DONE記録と実際の作業結果が一致しない事案が複数件発見されている：\n1. TODO_350 Step1 作業対象フォルダ取り違え（E20260621_378795484b70f）\n2. TODO_354 extension_canonical_pathsレジストリが実際には一度も書き込まれていなかった（E20260626_337391387a8aa）\n3. TODO_350 Step4の誤完了記録（E20260626_675420922bb64）\n4. 本TODOの起点であるDOMセレクタdrift（E20260627_753188422ec60）— ターン数・TODO抽出が「完了」記録の裏で実際には機能していなかった\n\nこれらは「CHANGE_DONE記録自体の信頼性」という共通の上位リスクパターンを示す事例群であり、TODO_371/TODO_372とも関連する。本TODOの調査・修正自体も、机上の修正で終わらせず必ず実機検証（DevTools実測）を伴うことを徹底する。",
+      "assigned_to": "くろこ（調査・実装）+ きむら博士（実機検証協力）",
+      "note": "getMessageBodyElement（sr-only/button除外＋textContent最大要素選択）・getConversationContainer（[data-message-action-bar]祖先絞り込み）として実装完了（CHANGE_DONE: E20260627_483788449cfed）。data-message-author-role廃止後のassistant側セレクタ問題はこれで解決。",
+      "reference_event": "E20260627_753188422ec60",
+      "created_at": "2026-06-27T07:52:43.514638",
+      "updated_at": "2026-06-27T13:29:30.592668",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5412,5 +5451,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T04:23:39.043370+00:00"
+  "_snapshot_at": "2026-06-27T04:33:43.097017+00:00"
 }
