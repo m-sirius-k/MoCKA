@@ -25,11 +25,11 @@
   },
   "mcp_schema_hash": {
     "ok": true,
-    "detail": "変更なし (hash: 08c81aad56ed753c)"
+    "detail": "変更なし (hash: 158fa47a3cd38ce8)"
   },
   "relay_dom_selector": {
-    "ok": false,
-    "detail": "Relay ping stale (>300s): last_ping=2026-06-27T20:45:40.994906"
+    "ok": true,
+    "detail": "Relay alive (last_ping: 2026-06-28T07:27:12.926193, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 (total=1674 gate=100.0% [real-time=1310/buffered=364] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 (total=1705 gate=100.0% [real-time=1333/buffered=372] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,

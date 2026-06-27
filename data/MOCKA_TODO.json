@@ -885,14 +885,15 @@
     {
       "id": "TODO_387",
       "title": "Civilization Loop実処理連鎖（/prevention/generate等）の実動作検証",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "中",
       "category": "governance/civilization_loop/実動作検証",
       "description": "TODO_374の再評価（2026-06-28完了）で判明した内容への後続。app.pyの/loop/statusが返す8項目は独立した別データソースの集計値であり、ステージ間のデータ受け渡し処理連鎖はそもそも実装されていない（最初から非連結の独立メトリクス）ことが確定した。\n\n一方、これとは別に、TODO_136/137（2026-05-11完成）で実装された本来の実処理連鎖（具体的には/prevention/generateエンドポイント。recurrence_registry→prevention_queue自動生成等）は、コード上の存在をくろこが確認済みだが、**実際に正常動作するかの実行テストは未実施**のまま。\n\n実装から1ヶ月以上（2026-05-11→2026-06-28）経過しており、その間にTODO_363/370で扱った複数のgit rebase事故・自動コミット巻き込みインシデントが発生している。これらのインシデントが/prevention/generate等の実処理連鎖に意図しない影響を与えていないか、念のため実機確認する。\n\n【確認すべき内容】\n①/prevention/generateエンドポイントを実機で叩き、recurrence_registryからprevention_queueへの自動生成が現在も正常動作するか\n②TODO_82〜85（Prevention/Decision/Action/Audit自動化、いずれも完了済み）の各処理チェーンが、現在も接続されたまま動いているか\n③もし動作不良が見つかった場合、原因がTODO_363/370系のgit事故由来かどうかを切り分ける\n\n実装変更は不要（壊れていなければ「正常動作確認」のみで完了。壊れていた場合は別途修正TODOを起票する）。",
       "assigned_to": "くろこ（実施）+ きむら博士（確認）",
-      "note": "",
+      "note": "[2026-06-28追記・実異常発見＋きむら博士裁定] くろこにより実機検証完了。当初想定（壊れていなければ確認のみで完了）に反し、2件の実異常を発見。\n\n【3.1 prevention_queue.json形式破損バグ】app.py 2194-2229行。/prevention/generate実行時、{\"queue\":[...]}形式が生リスト[...]へ上書きされるバグ。実機テスト時に実際に発生し/prevention/queue・/decision/approveが500エラー化したが、くろこが事前バックアップ済みのため即時復元・両エンドポイント200復帰確認済み。データ損失・恒久実害なし。\n\n【3.2 Prevention→Decision実断絶（最重要）】/decision/approve等がstatus==\"pending\"（小文字）のみを処理対象とするが、現キュー内に小文字pendingは0件（NEW=1799件・approved=4件のみ）。2026-06-01以降蓄積された全新規項目（TECH_ALERT含む）がDecision段階に到達不能な状態が約1ヶ月継続していたことが判明。Audit段（auto_audit_loop）は健全起動確認済み。\n\n【3.3 原因切り分け】git log -Sでバグ導入commit 861a0ec3d（2026-05-11、TODO_136/137と同日）を特定。TODO_363/370のgit rebase事故より前であり無関係。実装当初からの大文字小文字不一致という原始バグと判定。\n\n【きむら博士裁定（修正方針）】案B採用。フィルタ側（/decision/approve等の判定ロジック）を大文字小文字非依存にする。既存データ（status値）には触れない最も保守的な方針。案A/C（書き込み修正・既存データ移行）は不採用。\n\n次のアクション: 案Bの実装をくろこに指示する（別途指示書）。実装完了後、3.2で発見された未処理1799件が新フィルタで正しくDecision段階に乗るか実機確認すること。",
       "reference_event": "E20260628_6670925541dac",
-      "created_at": "2026-06-28T07:51:22.371775"
+      "created_at": "2026-06-28T07:51:22.371775",
+      "updated_at": "2026-06-28T08:01:04.549018"
     }
   ],
   "completed": [
@@ -5595,5 +5596,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T23:00:06.346821+00:00"
+  "_snapshot_at": "2026-06-27T23:05:00.999643+00:00"
 }
