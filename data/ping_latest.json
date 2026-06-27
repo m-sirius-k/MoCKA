@@ -40,5 +40,39 @@
       "priority": "最高"
     }
   ],
-  "generated_at": "2026-06-27T12:23:23.171687"
+  "generated_at": "2026-06-27T12:23:23.171687",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "検証結果、仮説①（innerTextの仕様差）を強く裏付ける、かなり決定的なデータが出ました。\n\n検証A：contains()判定は正常\n\n{\"viaQuery",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-05-09",
+        "why": "save/broadcast from command center",
+        "how": "context_menu_click",
+        "note": "[hint] まず　この環境で一番重要だと思うことは　[私のchatの言葉]です  そこには　理論的な物から出てくる言葉や　感覚的な言葉　推測　予測　確定事項　そんなのが一番含まれています  言葉は　",
+        "recur": 0,
+        "matched": [
+          "違う"
+        ],
+        "score": 1
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "**MoCKA 名称統一プロジェクト（Naming Unification Project）\n— あなたが言及した “insert system / shadow” の全記録 —**\n🟥 1. 背景：",
+        "recur": 0,
+        "matched": [
+          "違う"
+        ],
+        "score": 1
+      }
+    ],
+    "updated_at": "2026-06-27T03:55:09.024Z"
+  }
 }

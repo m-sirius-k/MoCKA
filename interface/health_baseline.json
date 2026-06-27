@@ -28,8 +28,8 @@
     "detail": "ハッシュ変更検出!\n                          前回: b59f57c80c2b9d5c\n                          今回: b2a1102efc6aac0c"
   },
   "relay_dom_selector": {
-    "ok": false,
-    "detail": "Relay ping stale (>300s): last_ping=2026-06-26T18:41:14.847235"
+    "ok": true,
+    "detail": "Relay alive (last_ping: 2026-06-27T12:22:50.026455, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": false,
-    "detail": "Direct Write違反(新規) 32件 (total=1398 gate=100.0% [real-time=1163/buffered=235] buffer_pending=0)"
+    "detail": "Direct Write違反(新規) 32件 (total=1476 gate=100.0% [real-time=1196/buffered=280] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
