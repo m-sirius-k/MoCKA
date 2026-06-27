@@ -1,0 +1,31 @@
+43,70d42
+< // ── PHI-OS Event Gate送信（TODO_368） ────────────────────────────────────────
+< // IndexedDB保存と並行して送る。失敗してもIndexedDB保存は維持する（移行期間中の二重化は許容）。
+< const PHI_OS_EXTENSION_GATE_URL = 'http://localhost:5000/api/gate/event/extension';
+< 
+< async function sendToPhiOsGate(record) {
+<   try {
+<     await fetch(PHI_OS_EXTENSION_GATE_URL, {
+<       method: 'POST',
+<       headers: { 'Content-Type': 'application/json' },
+<       body: JSON.stringify({
+<         idempotency_key: record.id,
+<         event_id: record.id,
+<         when: record.timestamp,
+<         who_actor: 'orchestra_extension',
+<         what_type: 'conversation_message',
+<         where_component: 'orchestra',
+<         where_path: record.url || '',
+<         why_purpose: 'orchestra_conversation_capture',
+<         title: `Orchestra: ${record.service} ${record.role}`,
+<         free_note: `session_id=${record.session_id}`,
+<         channel_type: 'extension',
+<       }),
+<     });
+<   } catch (e) {
+<     console.warn('[Orchestra] PHI-OS gate send failed (non-fatal):', e.message);
+<   }
+< }
+< 
+1121d1092
+<           sendToPhiOsGate(msg.payload); // 並行送信・非ブロッキング（TODO_368）
