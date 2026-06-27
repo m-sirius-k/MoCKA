@@ -867,14 +867,16 @@
     {
       "id": "TODO_370",
       "title": "AUTO_SEAL_50EVT Human Gateバイパス再発 — is_core_system_file()がphi_os/workshop配下を検知できていない",
-      "status": "未着手",
+      "status": "完了",
       "priority": "最高",
       "category": "制度/ガバナンス/AUTO_SEAL",
       "description": "2026-06-26、TODO_368実装中に、AUTO_SEAL_50EVT機構がHuman Gateのcommit指示を待たずにphi_os/event_gate.pyとOrchestra拡張機能のbackground.jsを自動コミットしていたことが判明(複数回に分割)。TODO_347/362関連事故対応(commit 90a39ef27)で修正済みとされていた現象の再発。\n\n推測される原因: is_core_system_file()のガードが、今回の対象パス(phi_os/event_gate.py、PlanningCaliber\\workshop\\Orchestra_Project\\extension\\配下のbackground.js)を正しく検知できていない可能性。90a39ef27時点のガードはMoCKAコアリポジトリ直下のファイルを想定したもので、workshop配下の拡張機能ディレクトリ階層までは対象範囲に含まれていなかった可能性がある(未確認)。\n\n現状: origin/mainへのpushはまだ行われていない(ローカルHEADがリモートより先行のみ)。外部への影響は今のところ確認されていない。",
       "assigned_to": "くろこ(調査・修正)+ きむら博士(Human Gate承認)",
-      "note": "対応事項: ①pushを止めたまま、is_core_system_file()のガード判定ロジックを確認し、phi_os/配下・workshop配下のextension関連ファイルが正しく対象に含まれるよう修正する。②今回自動コミットされた9caf0cb16〜3f2d287c0のコミット群が、Human Gate未承認のまま生成された点について、意図しない変更が混入していないか再レビューする。③再発防止のため、ガード対象パスのテストケース(workshop配下・phi_os配下を含む)をis_core_system_file()のテストに追加することを検討する。\n\n関連: TODO_368(Orchestra→PHI-OS書き込み経路追加)のmocka_write_event記録は、commit自体が完了している事実に基づいて記録してよい(Human Gate承認のcommitではなく自動コミットだった経緯を明記すること)。",
-      "reference_event": "TODO_368実装中の自動コミット再発(2026-06-26)・関連: 90a39ef27",
-      "created_at": "2026-06-26T11:13:46.957691"
+      "note": "対応事項: ①pushを止めたまま、is_core_system_file()のガード判定ロジックを確認し、phi_os/配下・workshop配下のextension関連ファイルが正しく対象に含まれるよう修正する。②今回自動コミットされた9caf0cb16〜3f2d287c0のコミット群が、Human Gate未承認のまま生成された点について、意図しない変更が混入していないか再レビューする。③再発防止のため、ガード対象パスのテストケース(workshop配下・phi_os配下を含む)をis_core_system_file()のテストに追加することを検討する。\n\n関連: TODO_368(Orchestra→PHI-OS書き込み経路追加)のmocka_write_event記録は、commit自体が完了している事実に基づいて記録してよい(Human Gate承認のcommitではなく自動コミットだった経緯を明記すること)。\n\n[2026-06-27追記・完了確定] 一次データ確認の結果、根本修正(PRIVATE_REPO_DIRS一般化)はanchor_update.pyに実装・Human Gate承認・commit 6187be393(2026-06-26 12:29)で確定済みと判明。ただし同修正のsync_watch.py側ミラー(Edit#2、12:11-12:12に適用・検証済み)は、直後に実行されたgit rebase失敗(seo_os.logロック)→git reset --hard HEADの復旧操作により無記録のまま1世代前(commit 90a39ef27)の内容に巻き戻っていた(disk実体と90a39ef27のdiffがゼロであることで確認、INCIDENT記録E20260627_140130612325b)。2026-06-27、sync_watch.pyへPRIVATE_REPO_DIRS修正を再適用し、mocka-workshop-privateリポジトリへcommit 6af31d6としてpush完了(origin/main: 498e429→6af31d6)。これにより両ファイルのガードが一致し、本TODOは実質完了。再発防止策は別途TODO_382として起票済み。",
+      "reference_event": "TODO_368実装中の自動コミット再発(2026-06-26)・関連: 90a39ef27/6187be393/6af31d6/E20260627_140130612325b",
+      "created_at": "2026-06-26T11:13:46.957691",
+      "updated_at": "2026-06-27T16:10:00",
+      "completed_at": "2026-06-27T16:10:00"
     },
     {
       "id": "TODO_371",
@@ -937,6 +939,18 @@
       "note": "今回意図的に対象外とした理由: 無関係な大量ファイルを今日のpushに混在させると、コミット内容の追跡可能性（このコミットに何が含まれるか）を損なうため。スコープはRelay_Project/extension/配下のみに厳密に限定した（参照: commit 552dce7, push c264dee..552dce7 to mocka-workshop-private origin/main, 2026-06-27）。緊急性なし。次に着手する際は、まずnode_modules/__pycache__等が意図的に追跡されているのか、単なる.gitignore漏れなのかを確認すること。",
       "reference_event": "",
       "created_at": "2026-06-26T23:56:12.357539+00:00"
+    },
+    {
+      "id": "TODO_382",
+      "title": "git rebase/reset --hard失敗時の未コミット変更巻き戻りリスク — 作業ツリー保護策の検討",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/ガバナンス/git安全性",
+      "description": "背景: TODO_370続報調査(2026-06-27)で発見。2026-06-26、Claude Code(session 33ccb033)がsync_watch.pyへPRIVATE_REPO_DIRS修正を適用・UTF-8検証・ロジックテスト・CHANGE_DONE記録(E20260626_528882618f4c1)まで完了させたが、直後に実行した`git rebase -r 90a39ef27 --exec '...'`がファイルロックで失敗し、復旧の`git reset --hard HEAD`を経て、当該修正が無記録のまま1世代前(commit 90a39ef27)の内容に巻き戻った。この巻き戻りはevents.db・コミットメッセージのいずれにも記録されず、2026-06-27の調査(disk実体とcommit blobの直接diff)でのみ発見できた。詳細はINCIDENT記録E20260627_140130612325bを参照。\\n\\n検討すべき論点:\\n①Edit/Write実行直後、git rebase/git reset --hard/git checkout等の「作業ツリーを一括上書きする」コマンドを実行する前に、未コミットの変更を検知して警告またはブロックする仕組み(pre-command guard)の必要性\\n②そのようなコマンドを実行する前提として、対象範囲(rebase起点〜HEAD間)に含まれるファイルで、直近のCHANGE_DONE記録がありながら未コミットのものを横断的に検出する手段の検討\\n③git操作自体をmocka_write_eventの記録対象に含めるか(現在は記録対象外で、ファイル内容の変更のみが記録対象になっている)\\n④既存のAUTO_SEAL_50EVT/sync_watch.py問題(TODO_347/362/370)とは別系統だが、根は「git操作がHuman Gate/PHL記録の外側で作業内容に影響し得る」という共通点がある",
+      "assigned_to": "くろこ(調査・設計提案)+ きむら博士(承認)",
+      "note": "",
+      "reference_event": "E20260627_140130612325b",
+      "created_at": "2026-06-27T16:09:19.958574"
     }
   ],
   "completed": [
@@ -5471,5 +5485,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T07:04:44.066852+00:00"
+  "_snapshot_at": "2026-06-27T07:14:48.124483+00:00"
 }
