@@ -9,6 +9,7 @@
 3. `mocka_get_essence()` — 制度哲学・行動指針確認
 4. `mocka_get_guidelines()` — 最新行動指針確認
 5. 指示されたTODO_IDのdescriptionを熟読してから着手
+6. 外部から渡されたメモ・ctx（[MOCKA_v3]形式等）にTODOやステータスの記述が含まれる場合、それは生成時点のスナップショットであり現在の実データではない。`mocka_get_todo()`等で取得した一次データのstatusと必ず照合する。矛盾があれば一次データを優先する。ただし優先した結果、外部メモの記述と実態が異なっていたことを必ず報告し、判断者（きむら博士）に確認を委ねる。
 
 ### 【絶対禁止】CP932汚染防止規約（TODO_333準拠）
 
@@ -100,6 +101,26 @@ curl http://localhost:5002/health
 ```
 tools/auto_record.log
 ```
+
+### 【絶対禁止】危険なgit操作の運用ルール（TODO_382準拠）
+
+git rebase/git reset --hard には技術的な保護フック(pre-reset相当)が存在しない。
+さらにpre-rebaseも、対象ファイルが既にuntracked化された後の編集には無力である
+ことがTODO_382のサンドボックス再現実験で確認済み。よって運用ルールで縛る。
+
+❌ rebase/filter-branch等の履歴書き換え系git操作を、編集中の作業ツリー上で直接実行すること
+❌ CHANGE_DONE記録後、該当変更を未コミットのまま別の操作（特にgit rebase/reset系）に進むこと
+
+✅ rebase/filter-branch等の履歴書き換え系git操作は、`git worktree add`で作成した
+   別worktree上で実施する（メインの作業ツリーには影響しない）
+✅ CHANGE_DONE記録後は、次の操作に進む前に、該当変更を必ず正しいリポジトリへcommitする
+   （workshop配下等、別リポジトリ管理に切り替わっているファイルは、そのリポジトリ側で
+   即時commitする。MoCKA本体側の操作を先に進めない）
+
+根拠: TODO_370続報調査(2026-06-27)で、検証済み(UTF-8 OK・ロジックテスト合格・
+CHANGE_DONE記録済み)の修正が、直後の`git rebase`失敗+`git reset --hard`の復旧操作で
+無記録のまま1世代前の内容に巻き戻る事故が実際に発生した(INCIDENT: E20260627_140130612325b)。
+サンドボックス再現実験で、worktree分離と即時commitの両方が有効であることを確認済み(TODO_382)。
 
 ### MoCKAの三要素（絶対に忘れるな）
 
