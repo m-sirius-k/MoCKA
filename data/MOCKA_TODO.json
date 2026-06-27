@@ -939,18 +939,6 @@
       "note": "今回意図的に対象外とした理由: 無関係な大量ファイルを今日のpushに混在させると、コミット内容の追跡可能性（このコミットに何が含まれるか）を損なうため。スコープはRelay_Project/extension/配下のみに厳密に限定した（参照: commit 552dce7, push c264dee..552dce7 to mocka-workshop-private origin/main, 2026-06-27）。緊急性なし。次に着手する際は、まずnode_modules/__pycache__等が意図的に追跡されているのか、単なる.gitignore漏れなのかを確認すること。",
       "reference_event": "",
       "created_at": "2026-06-26T23:56:12.357539+00:00"
-    },
-    {
-      "id": "TODO_382",
-      "title": "git rebase/reset --hard失敗時の未コミット変更巻き戻りリスク — 作業ツリー保護策の検討",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度/ガバナンス/git安全性",
-      "description": "背景: TODO_370続報調査(2026-06-27)で発見。2026-06-26、Claude Code(session 33ccb033)がsync_watch.pyへPRIVATE_REPO_DIRS修正を適用・UTF-8検証・ロジックテスト・CHANGE_DONE記録(E20260626_528882618f4c1)まで完了させたが、直後に実行した`git rebase -r 90a39ef27 --exec '...'`がファイルロックで失敗し、復旧の`git reset --hard HEAD`を経て、当該修正が無記録のまま1世代前(commit 90a39ef27)の内容に巻き戻った。この巻き戻りはevents.db・コミットメッセージのいずれにも記録されず、2026-06-27の調査(disk実体とcommit blobの直接diff)でのみ発見できた。詳細はINCIDENT記録E20260627_140130612325bを参照。\\n\\n検討すべき論点:\\n①Edit/Write実行直後、git rebase/git reset --hard/git checkout等の「作業ツリーを一括上書きする」コマンドを実行する前に、未コミットの変更を検知して警告またはブロックする仕組み(pre-command guard)の必要性\\n②そのようなコマンドを実行する前提として、対象範囲(rebase起点〜HEAD間)に含まれるファイルで、直近のCHANGE_DONE記録がありながら未コミットのものを横断的に検出する手段の検討\\n③git操作自体をmocka_write_eventの記録対象に含めるか(現在は記録対象外で、ファイル内容の変更のみが記録対象になっている)\\n④既存のAUTO_SEAL_50EVT/sync_watch.py問題(TODO_347/362/370)とは別系統だが、根は「git操作がHuman Gate/PHL記録の外側で作業内容に影響し得る」という共通点がある",
-      "assigned_to": "くろこ(調査・設計提案)+ きむら博士(承認)",
-      "note": "",
-      "reference_event": "E20260627_140130612325b",
-      "created_at": "2026-06-27T16:09:19.958574"
     }
   ],
   "completed": [
@@ -5478,6 +5466,20 @@
       "created_at": "2026-06-27T15:15:43.483595",
       "updated_at": "2026-06-27T15:23:06.055009",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_382",
+      "title": "git rebase/reset --hard失敗時の未コミット変更巻き戻りリスク — 作業ツリー保護策の検討",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/git安全性",
+      "description": "背景: TODO_370続報調査(2026-06-27)で発見。2026-06-26、Claude Code(session 33ccb033)がsync_watch.pyへPRIVATE_REPO_DIRS修正を適用・UTF-8検証・ロジックテスト・CHANGE_DONE記録(E20260626_528882618f4c1)まで完了させたが、直後に実行した`git rebase -r 90a39ef27 --exec '...'`がファイルロックで失敗し、復旧の`git reset --hard HEAD`を経て、当該修正が無記録のまま1世代前(commit 90a39ef27)の内容に巻き戻った。この巻き戻りはevents.db・コミットメッセージのいずれにも記録されず、2026-06-27の調査(disk実体とcommit blobの直接diff)でのみ発見できた。詳細はINCIDENT記録E20260627_140130612325bを参照。\\n\\n検討すべき論点:\\n①Edit/Write実行直後、git rebase/git reset --hard/git checkout等の「作業ツリーを一括上書きする」コマンドを実行する前に、未コミットの変更を検知して警告またはブロックする仕組み(pre-command guard)の必要性\\n②そのようなコマンドを実行する前提として、対象範囲(rebase起点〜HEAD間)に含まれるファイルで、直近のCHANGE_DONE記録がありながら未コミットのものを横断的に検出する手段の検討\\n③git操作自体をmocka_write_eventの記録対象に含めるか(現在は記録対象外で、ファイル内容の変更のみが記録対象になっている)\\n④既存のAUTO_SEAL_50EVT/sync_watch.py問題(TODO_347/362/370)とは別系統だが、根は「git操作がHuman Gate/PHL記録の外側で作業内容に影響し得る」という共通点がある",
+      "assigned_to": "くろこ(調査・設計提案)+ きむら博士(承認)",
+      "note": "2026-06-27完了。調査・サンドボックス実証・運用ルール明文化まで完了。\n\n【調査結果】\n①git hookの限界: git resetにはpre-reset/post-reset相当のhookが一切存在せず(git仕様上の制約)、技術的にネイティブhookでは防止不可能。git rebaseにはpre-rebaseが存在するが、本件のような「ファイルが既にuntracked化された後に編集された」パターンには無力(rebase開始時点でgit status上cleanに見えるため、dirty-checkベースのhookは検知できない)。\n②他システムの一般パターン: CI/CDのephemeral運用(作業ツリーを使い捨て前提にする思想)、モノレポでの git worktree分離(履歴書き換え系操作を別worktreeに隔離する実績パターン)、危険操作前のバックアップwrapperの3つを確認。pre-commitフレームワーク(husky等)は本件には非適用。\n\n【サンドボックス再現実験(3パターン全て実施・成功)】\nStep1(素の再現): tracked(v1)→未コミット編集(v2)→git rm --cachedでuntracked化→git rebase -r --execを意図的に失敗させたところ、working tree上のファイルが無記録でv1に巻き戻ることを確認(実際にはファイル自体が消失するケースも確認、実インシデントより深刻な結果だった)。\nStep2-A(worktree分離の検証): 同じ危険なrebaseを別worktree(`git worktree add`)で実施した場合、メインの作業ツリーのv2編集は完全に無傷だった。有効性を実証。\nStep2-D(即commitの検証): CHANGE_DONE相当の直後に該当ファイルを正しいリポジトリ(workshop-private相当)へ即時commitしてから、メインリポジトリで同じ危険なrebaseを実施した場合、メインリポジトリ側のファイルは巻き戻ったが、private repo側(正本)のv2は無傷だった。有効性を実証。\n\n【採用方針】\n案A(worktree分離)+案D(即commit運用)を採用。案B(バックアップwrapper)はペンディング。案C(pre-rebase hook単独)は本件パターンに無力なため不採用。\n\n【実施内容】\nCLAUDE.mdに「危険なgit操作の運用ルール(TODO_382準拠)」章を新設し、上記2点を明記(CHANGE_START=E20260627_342085523370b/CHANGE_DONE=E20260627_3933792575d91)。\n\n【TODO_371との関係】\n統合はせず、相互参照のみ。TODO_371は「正本が信頼できないという不安が複数の補助記録機構を生み出す」という上位の診断TODOであり、TODO_382は「git操作自体がPHL記録の外側で作業内容を破壊し得る」という個別の技術的リスクへの対応。関連事項として位置づける。",
+      "reference_event": "E20260627_140130612325b",
+      "created_at": "2026-06-27T16:09:19.958574",
+      "updated_at": "2026-06-27T17:53:35.129552",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5485,5 +5487,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T08:45:21.695581+00:00"
+  "_snapshot_at": "2026-06-27T08:55:25.585626+00:00"
 }
