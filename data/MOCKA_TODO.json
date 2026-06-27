@@ -961,18 +961,6 @@
       "note": "",
       "reference_event": "E20260627_483788449cfed",
       "created_at": "2026-06-27T13:29:07.555293"
-    },
-    {
-      "id": "TODO_380",
-      "title": "zero_len_count=1の要因調査",
-      "status": "未着手",
-      "priority": "低",
-      "category": "Relay",
-      "description": "CHANGE_DONE（E20260627_483788449cfed）の最終検証で、コンテナ絞り込み実装後もzero_len_count=1が残存していることを確認した。サイドバー混入の誤検知（部分一致による偽陽性）とは別の、個別group単位で実際にtext_len=0だった1件であり、要因は未調査。影響範囲（実害があるか軽微なノイズか）も未評価。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260627_483788449cfed",
-      "created_at": "2026-06-27T13:29:15.821494"
     }
   ],
   "completed": [
@@ -5444,6 +5432,20 @@
       "created_at": "2026-06-27T07:52:43.514638",
       "updated_at": "2026-06-27T13:29:30.592668",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_380",
+      "title": "zero_len_count=1の要因調査",
+      "status": "完了",
+      "priority": "低",
+      "category": "Relay",
+      "description": "CHANGE_DONE（E20260627_483788449cfed）の最終検証で、コンテナ絞り込み実装後もzero_len_count=1が残存していることを確認した。サイドバー混入の誤検知（部分一致による偽陽性）とは別の、個別group単位で実際にtext_len=0だった1件であり、要因は未調査。影響範囲（実害があるか軽微なノイズか）も未評価。",
+      "assigned_to": "Claude",
+      "note": "実機検証で確定(E20260627_462379996852b)。zero_len_count=1の対象は会話メッセージではなく、サイドバーのリサイズハンドルDIV(class名\"group\"がTailwindのgroup-hover:ユーティリティと衝突)。実害なし(getConversationText()のfilterで最終出力からは除外済み、content.js:182)。content.js側の予防修正は見送り(きむら博士判断、実害軽微のため)。",
+      "reference_event": "E20260627_483788449cfed",
+      "created_at": "2026-06-27T13:29:15.821494",
+      "updated_at": "2026-06-27T14:44:52.157003",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5451,5 +5453,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T05:44:12.078096+00:00"
+  "_snapshot_at": "2026-06-27T05:54:15.751415+00:00"
 }
