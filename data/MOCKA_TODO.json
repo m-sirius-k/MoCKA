@@ -892,6 +892,20 @@
       "note": "",
       "reference_event": "E20260627_225581073d2ed(削除候補事前確認), E20260627_603295790075e/E20260627_632827668f476(経緯調査), TODO_354",
       "created_at": "2026-06-27T19:55:59.094616"
+    },
+    {
+      "id": "TODO_386_CONTRACT_STATUS_TEST",
+      "title": "[TEST/一時]TODO_386 contract_status実機確認用テストTODO",
+      "status": "廃止",
+      "priority": "低",
+      "category": "テスト用一時データ",
+      "description": "",
+      "assigned_to": "Claude",
+      "note": "[TEST完了/廃止]TODO_386実機確認用の一時TODO。contract_status新規作成/単独更新/status単独更新(回帰)/status不正値reject/contract_status不正値rejectの全4項目を実機確認済み(2026-06-28)。確認完了のため廃止扱いとする。正本データとして参照しないこと。",
+      "reference_event": "",
+      "created_at": "2026-06-28T07:32:51.938328",
+      "contract_status": "CLOSED",
+      "updated_at": "2026-06-28T07:33:56.652431"
     }
   ],
   "completed": [
@@ -5545,6 +5559,20 @@
       "created_at": "2026-06-27T20:38:56.542070",
       "updated_at": "2026-06-28T07:27:03.477941",
       "completed_at": "2026-06-28"
+    },
+    {
+      "id": "TODO_386",
+      "title": "TODO_385残タスク — contract_status実機確認＋commit混入ファイルレビュー",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/ガバナンス/TODO管理/実機確認",
+      "description": "TODO_385（contract_status分離・実装完了済み）の完了確定に必要な実機確認2点。TODO_385がcompleted配列に移動済みのため、本TODOで残タスクを追跡する。\n\n①contract_status付きTODO更新の実機確認テスト。2026-06-28、きむら博士がMoCKA-START.batを再起動済みのため、mocka_mcp_server.pyの新コード（TODO_STATUS_ENUM/CONTRACT_STATUS_ENUM分割・contract_statusパラメータ対応）が反映された状態になっている。実際にmocka_update_todoでcontract_status付きの呼び出しを行い、正常に書き込まれるか・既存の通常TODO（5値status）の読み書きに影響がないか（回帰確認）を確認する。\n\n②commit c9848c438の混入ファイルレビュー。governance/anchor_record.json等、くろこの意図的な変更ではない自動生成ファイル（PostToolUseフック由来と推測）がcommitに混入していたことが判明済み（くろこ自身の申告）。TODO_363/370で扱った「AUTO_SEAL系機構がHuman Gate未承認のままcommitに巻き込まれる」同型パターンに該当するかどうかを内容レビューで確認する。\n\n両方確認OKであれば本TODOを完了とし、TODO_385の実質的な最終クローズとする。",
+      "assigned_to": "くろこ（実施）+ きむら博士（確認）",
+      "note": "[2026-06-28完了・きむら博士承認] くろこにより両確認項目完了・Event.db自己記録済み。\n\n【2.1 contract_status実機確認】全4項目OK。①新規TODO作成時のcontract_status付与（DECISION_RECORDED）→正本に正しく保存 ②contract_status単独更新（→CLOSED）→他フィールド不変でPATCH動作正常 ③status単独更新（回帰確認、→進行中）→contract_status維持・回帰なし ④不正値reject: statusは5値のみ・contract_statusは9語彙のみを許容リストとして正しくreject（軸分離機能の実証）。テスト用TODO（TODO_386_CONTRACT_STATUS_TEST）は削除ツール不在のためstatus=廃止+note明記で後始末。\n\n【2.2 commit混入ファイルレビュー】governance/anchor_record.json等2件の混入原因を特定。原因: リポジトリ内で「auto sync」自動コミットが約10分間隔で稼働中（git logで確認、くろこのcommit直後に別の自動再シールcommit a8b4e0238が実行されている）。くろこのgit commit実行タイミングと自動シール機構の未コミット変更が重なったことが原因。\n\n判定: is_core_system_file()のガード対象（CORE_SYSTEM_DIRS/CORE_SYSTEM_FILES_EXTRA）にanchor_record.jsonは含まれておらず、そもそもガード除外対象ではなく「シール機構が自己更新する正規対象」であるため、TODO_363/370のガード不備パターンとは異なると判断。データ破損・意図しない値の混入は確認されず実害なし。ただし「commit履歴上の帰属が不明瞭になった」運用上の瑕疵は別途指摘（実害なしと運用課題を分離した報告）。\n\nきむら博士確認: 両項目とも承認。TODO_385は実質的に最終クローズとする。\n\n【残課題（別TODO検討推奨・本TODOの範囲外）】くろこが指摘した「commit履行上の帰属不明瞭」問題は、自動シール機構と人間/AIの意図的commitが同一commitに混在する運用上の課題であり、TODO_MOCKA_SEAL_GIT_ADD_A_SEPARATION（mocka-sealのgit add -A分離設計・未着手）と同種の論点。直接対応は不要だが、将来同TODOを着手する際の参考事例として残す。",
+      "reference_event": "E20260628_4529685922869",
+      "created_at": "2026-06-28T07:31:06.656268",
+      "updated_at": "2026-06-28T07:37:59.250309",
+      "completed_at": "2026-06-28"
     }
   ],
   "orchestra_handoff": {
@@ -5552,5 +5580,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T22:29:51.055303+00:00"
+  "_snapshot_at": "2026-06-27T22:39:57.302513+00:00"
 }
