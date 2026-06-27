@@ -431,10 +431,10 @@
       "category": "制度/ガバナンス/正本管理",
       "description": "E20260621_378795484b70f（INCIDENT: Relay新ロジックが作業対象フォルダ取り違えにより本番未反映）を受けた再発防止策。\n\n【背景】\nRelay拡張が最低3系統(C:\\Users\\sirok\\Relay_Project\\ / workshop\\Relay_Project\\extension\\ / workshop\\mini-mocka-series\\relay\\)に分散して存在し、TODO_350 Step1の新ロジック実装が、Chromeが実際にロードしている正本(workshop\\Relay_Project\\extension\\、Chrome Secure Preferencesで確認済み)ではなく無関係な野良フォルダに対して行われていた。MoCKA Bridgeも同様に4系統(1.0.2/1.3/1.3.1/2.4)に分散。\n\n【対応内容】\n①Chrome Secure Preferences由来で確定した正本パス一覧をMOCKA_OVERVIEW.jsonに「extension_canonical_paths」として明記:\n  - Relay: okocleheboabgenhlhliingbpjlkmpcf → workshop\\Relay_Project\\extension\\\n  - Orchestra: lbjcmlkcjgjibcmlaokldopjokajjlgc → workshop\\Orchestra_Project\\extension\\\n  - Memory: nheoiflmnjkgobnahglbbeoihaddacnp → workshop\\memory\\extension\\\n  - PHI OS: bieancjajjieckhmgkmcpigpahodiodb → workshop\\phi-os\\extension\\\n  - MoCKA Bridge: impamkjmlflhhjaabhaenkgmnmpflobd → C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n②各製品で正本以外に発見された野良/重複フォルダの一覧化（削除候補としてマーク。即削除はきむら博士承認後）。\n③ファイル変更前の制度（TODO_154）に「正本パス確認」のチェック項目を追加：拡張機能・複数コピーが作られうる資産の変更前は、必ずMOCKA_OVERVIEW.jsonのextension_canonical_pathsで対象パスを確認することを必須化。\n④PHI-OS/Memory/Orchestraについても、正本フォルダ内のロジックが想定通り最新かを別途確認（今回はRelayのみ実装内容まで検証済み）。",
       "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "きむら博士確定方針（2026-06-21）: \\extension\\を必ず一つ下の階層に置くルールを統一する。製品系(workshop配下のRelay/Orchestra/Memory/PHI-OS)はこのルールに概ね従っているが、MoCKA Bridgeのみ逸脱(現在: C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\直下にmanifest.json等が並ぶ構造)。\n\n【Bridge移行完了（2026-06-21 16:31〜16:42実施）】\n移行元: C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n移行先: C:\\Users\\sirok\\MoCKA\\tools\\mocka-bridge\\extension\\\nバックアップ: C:\\Users\\sirok\\MoCKA\\data\\backups\\mocka-extension_backup_20260621_163135（git statusはモノレポ全体起因の無関係な未コミット変更8件のみだったため-Forceで実行・mocka-extension配下自体はクリーン）\n新Extension ID: doapadhfedmognoilmjieekfhijeadnf（旧ID impamkjmlflhhjaabhaenkgmnmpflobd は旧パス参照の死骸エントリとしてChrome内に残存・実害なし・手動削除可）\n\n動作監査結果（全項目PASS）:\n- Runtime: Service Worker起動 PASS（has_started_service_worker=True）\n- Runtime: Background Script正常 PASS（エラーログなし）\n- Runtime: Content Script注入成功 PASS（claude.aiでMoCKA Activeパネル確認）\n- 機能: Claude送信が機能する PASS（[MOCKA] 送信ボタンクリック成功）\n- 機能: MoCKA接続が機能する PASS（パネル「正常」緑ドット）\n- 機能: イベント生成が機能する PASS（[MOCKA] DNA注入完了ログ確認）\n- 機能: エラーログなし PASS\n\n【2026-06-26追記・重要: 完了記載の内容が後日現物確認で消失していたことが判明】\n上記note内「MOCKA_OVERVIEW.jsonに「extension_canonical_paths」セクション新設・5拡張の正本パスを記録済み」という記載は誤りだったことが判明した（INCIDENT E20260626_337391387a8aa）。\n\n調査結果: data/MOCKA_OVERVIEW.jsonを現物確認したが該当セクションは存在せず、git log --all -S\"extension_canonical_paths\" -- data/MOCKA_OVERVIEW.json で全履歴を検索しても、このファイルへの当該文字列追加コミットはゼロ件だった。文字列自体はdata/MOCKA_TODO.json（本TODOのnote記述）とdata/events_latest.json（イベントログキャッシュ）にのみ存在し、実際のMOCKA_OVERVIEW.jsonへの書き込みは一度も行われていなかった。「後日上書きされて消失」ではなく「そもそも一度も書き込まれていなかった」。\n\nこのため、本TODOの中核成果物である「正本パスレジストリ」は実質的に未達成のまま。Bridge移行自体（拡張機能の物理移動・Extension ID変更・動作監査PASS）は別件として実機確認されており、この部分の事実性は本不一致の対象外。\n\n【未完了部分（次フェーズ・再確定）】\n①正本パス一覧のMOCKA_OVERVIEW.jsonへの実書き込み（未実施・上記の通り判明）\n②各製品の野良/重複フォルダ一覧化・削除候補マーク（未実施）\n③TODO_154への正本パス確認チェック項目追加（未実施）\n④PHI-OS/Memory/Orchestraの正本フォルダ内ロジックが最新かの検証（未実施・Relayのみ別件で検証済みで「旧ロジックのまま」と判明、かつTODO_366対象のrelay-logbook.js自体が正本フォルダに存在しないことも判明）",
+      "note": "[2026-06-27 18:14追記・Orchestra background.js修正完了]\n\nsendToPhiOsGate()(TODO_368成果物、29行)をc264dee時点のblobから復元。復元後、改行コード正規化済みdiffでc264deeと完全一致(差分ゼロ)・node --checkで構文OK・UTF-8 OKを確認。mocka-workshop-privateリポジトリへcommit 81ec2f3としてpush完了(push前後でfetch・ahead/behind確認済み、TODO_382のA+D運用ルール準拠)。\n\n被害範囲評価の訂正をINCIDENT記録(E20260627_63352845998b5)として残した。元のINCIDENT(E20260627_140130612325b、sync_watch.py巻き戻り)は被害範囲をsync_watch.py単独に限定していたが、実際は同一時間帯(2026-06-26 12:25-12:26)の事故でOrchestra background.jsも被害範囲に含まれていた。\n\n【横展開チェック結果(Step4)】\n- Memory拡張機能(workshop\\memory\\extension\\): c264deeと完全一致、巻き込みなし\n- PHI-OS拡張機能(workshop\\phi-os\\extension\\): background.js/content.js共に完全一致(background.jsの見かけ上のdiffはCRLF/LF改行コード差のみ)、巻き込みなし\n- Relay(workshop\\Relay_Project\\extension\\): TODO_350 Step4-a以降(2026-06-27)に再コミット履行があり、当該事故時間帯より後の状態が正本に反映済みのため安全\n- Orchestra(workshop\\Orchestra_Project\\extension\\): background.jsのみ被害確認・修正済み(本追記)。他ファイル(content.js等)は別途確認が望ましいが、本調査の範囲では深掘りせず\n\n【TODO_366関係】別途完了処理済み(TODO_366 status完了、2026-06-27)。\n\n【未完了部分(引き続き)】\n①正本パス一覧のMOCKA_OVERVIEW.jsonへの実書き込み(未実施)\n②各製品の野良/重複フォルダ一覧化・削除候補マーク(未実施)\n③TODO_154への正本パス確認チェック項目追加(未実施)\n④PHI-OS/Memory/Orchestraの正本フォルダ内ロジック最新性検証 — 完了。Orchestra側の欠落も発見・修正済み",
       "reference_event": "E20260621_378795484b70f",
       "created_at": "2026-06-21T15:30:44.542475",
-      "updated_at": "2026-06-26T18:16:13.931733"
+      "updated_at": "2026-06-27T18:14:13.474058"
     },
     {
       "id": "TODO_356",
@@ -813,18 +813,6 @@
       "note": "E発見: 2026-06-26、きむら博士とのセッションでF12 Network調査により発見。TODO_356/357/347の状態をMCP正本とUI実機表示で比較した際に判明した。要追跡: 本TODO自体がmocka_add_todo経由で正常に書き込めたかどうかも、TODO_356(GL7非ASCIIパス誤検知によるMCP書き込みブロック)の現状確認材料になる。",
       "reference_event": "2026-06-26セッション(F12 Network調査)",
       "created_at": "2026-06-26T07:40:02.978555"
-    },
-    {
-      "id": "TODO_366",
-      "title": "Relay relay-logbook.js TODO抽出パイプライン再構築 — draft/active分離・ストレージ全クリア・誤抽出防止",
-      "status": "進行中",
-      "priority": "高",
-      "category": "製品/Relay/引き継ぎ",
-      "description": "2026-06-26、本会話冒頭で貼られた「引き継ぎパケット[Relay Free]」(LB_001〜008)が断片的で意味をなさないことを起点に調査。\n\n【特定した事実】\n①生成元はcontent.jsではなくrelay-logbook.jsの4段階抽出パイプライン(extractCandidateLines→filterCodeLines→extractTodoLines)。TODO_336(2026-06-18完了)はStage3(コード行除外)のみ対応済みで、「文脈を無視した一文単位の抜き取り」という構造的欠陥は未対応のまま残っていた。\n②Stage4のTODO_RE(/TODO|FIXME|やること|未完了|要対応|要確認|あとで|検討|残課題|pending/i)が汎用語すぎるため、TODO番号と無関係な技術文書レビュー発言(spec文書チェック等)まで無差別に混入。\n③Stage2(10文字以上なら採用)が会話全体(Claude発言含む)を対象にしており、ユーザー発言限定ではない。これは「自然言語でTODOと言えば拾う」という約2ヶ月前の当初設計意図(ユーザー発言の明示トリガー想定)から、実装が逸脱した結果と推定(未確証・聞き取りベース)。\n④抽出された瞬間にstatus:\"active\"として確定保存される一段構成のため、誤抽出が一度紛れ込むと二度と整理されず、LB_001〜080(2ヶ月分)が無限に蓄積されていた。テスト中に生成された残骸も混在。\n⑤【未解明】TODO_356/219等、本来\"TODO_NNN\"のはずの文字列が\"_NNN\"に変化している(TODOという4文字が系統的に欠落)。relay-logbook.js側にこれを起こす処理は無く、content.js側のDOM抽出(getConversationText等)が原因の可能性が高いが未確認。\n\n【決定方針(きむら博士確認済み・2026-06-26)】\n緩い自動抽出の便利さ自体は維持する。「抽出」と「確定」を分離し、以下の2段構成にする:\n- 自動抽出結果はstatus:\"draft\"として一時保存(上限件数を設け古いものは自動破棄)\n- 20ターン警告等のタイミングでdraft一覧をユーザーに提示し、選択されたものだけstatus:\"active\"に確定\n\nUIの選別粒度(popup内チェックボックス選択 vs 警告ポップアップでの簡易confirm)は未確定。本FPでは簡易confirm方式をデフォルト案として進めるが、くろこ判断で変更可。",
-      "assigned_to": "くろこ(実装)+ きむら博士(承認)",
-      "note": "前段で、私(Claude)がcontent.jsのextractLines/extractTopicに句点判定ガードを試験的に追加したが、これは生成元の特定を誤った状態での仮説ベース修正であり無効。本TODOの実装着手前に必ず撤回・無視すること。",
-      "reference_event": "2026-06-26セッション(LB_001〜080の実データ確認・relay-logbook.js特定)",
-      "created_at": "2026-06-26T08:42:42.819167"
     },
     {
       "id": "TODO_367",
@@ -5480,6 +5468,20 @@
       "created_at": "2026-06-27T16:09:19.958574",
       "updated_at": "2026-06-27T17:53:35.129552",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_366",
+      "title": "Relay relay-logbook.js TODO抽出パイプライン再構築 — draft/active分離・ストレージ全クリア・誤抽出防止",
+      "status": "完了",
+      "priority": "高",
+      "category": "製品/Relay/引き継ぎ",
+      "description": "2026-06-26、本会話冒頭で貼られた「引き継ぎパケット[Relay Free]」(LB_001〜008)が断片的で意味をなさないことを起点に調査。\n\n【特定した事実】\n①生成元はcontent.jsではなくrelay-logbook.jsの4段階抽出パイプライン(extractCandidateLines→filterCodeLines→extractTodoLines)。TODO_336(2026-06-18完了)はStage3(コード行除外)のみ対応済みで、「文脈を無視した一文単位の抜き取り」という構造的欠陥は未対応のまま残っていた。\n②Stage4のTODO_RE(/TODO|FIXME|やること|未完了|要対応|要確認|あとで|検討|残課題|pending/i)が汎用語すぎるため、TODO番号と無関係な技術文書レビュー発言(spec文書チェック等)まで無差別に混入。\n③Stage2(10文字以上なら採用)が会話全体(Claude発言含む)を対象にしており、ユーザー発言限定ではない。これは「自然言語でTODOと言えば拾う」という約2ヶ月前の当初設計意図(ユーザー発言の明示トリガー想定)から、実装が逸脱した結果と推定(未確証・聞き取りベース)。\n④抽出された瞬間にstatus:\"active\"として確定保存される一段構成のため、誤抽出が一度紛れ込むと二度と整理されず、LB_001〜080(2ヶ月分)が無限に蓄積されていた。テスト中に生成された残骸も混在。\n⑤【未解明】TODO_356/219等、本来\"TODO_NNN\"のはずの文字列が\"_NNN\"に変化している(TODOという4文字が系統的に欠落)。relay-logbook.js側にこれを起こす処理は無く、content.js側のDOM抽出(getConversationText等)が原因の可能性が高いが未確認。\n\n【決定方針(きむら博士確認済み・2026-06-26)】\n緩い自動抽出の便利さ自体は維持する。「抽出」と「確定」を分離し、以下の2段構成にする:\n- 自動抽出結果はstatus:\"draft\"として一時保存(上限件数を設け古いものは自動破棄)\n- 20ターン警告等のタイミングでdraft一覧をユーザーに提示し、選択されたものだけstatus:\"active\"に確定\n\nUIの選別粒度(popup内チェックボックス選択 vs 警告ポップアップでの簡易confirm)は未確定。本FPでは簡易confirm方式をデフォルト案として進めるが、くろこ判断で変更可。",
+      "assigned_to": "くろこ(実装)+ きむら博士(承認)",
+      "note": "実装はTODO_350 Step4-a（commit 552dce7、2026-06-27 08:55）で完結。relay-logbook.jsのdraft/active分離方針が実装済み。TODO_366自体は番号のクロスリファレンス漏れにより、TODO_350完了後もステータスが未更新のまま放置されていた。(TODO_354 Step④先行調査、2026-06-27、E20260627_329217593c35d/E20260627_465352857ed76参照)",
+      "reference_event": "2026-06-26セッション(LB_001〜080の実データ確認・relay-logbook.js特定)",
+      "created_at": "2026-06-26T08:42:42.819167",
+      "updated_at": "2026-06-27T18:11:13.423073",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5487,5 +5489,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T09:05:29.945402+00:00"
+  "_snapshot_at": "2026-06-27T09:15:33.872421+00:00"
 }
