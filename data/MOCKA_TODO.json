@@ -937,30 +937,6 @@
       "note": "今回意図的に対象外とした理由: 無関係な大量ファイルを今日のpushに混在させると、コミット内容の追跡可能性（このコミットに何が含まれるか）を損なうため。スコープはRelay_Project/extension/配下のみに厳密に限定した（参照: commit 552dce7, push c264dee..552dce7 to mocka-workshop-private origin/main, 2026-06-27）。緊急性なし。次に着手する際は、まずnode_modules/__pycache__等が意図的に追跡されているのか、単なる.gitignore漏れなのかを確認すること。",
       "reference_event": "",
       "created_at": "2026-06-26T23:56:12.357539+00:00"
-    },
-    {
-      "id": "TODO_378",
-      "title": "Relevant chats等UI widget文字列の重複混入対応",
-      "status": "未着手",
-      "priority": "中",
-      "category": "Relay",
-      "description": "getConversationText()の.group走査で取得したテキストに、「Relevant chatsRelevant chats」のような区切りなしのUI widget文字列重複が混入する現象が未対応のまま残っている（E20260627セッションで確認済み）。sr-only/visually-hidden/screen-readerクラスおよびbuttonタグの除外では対応できないパターンであり、別の既知UI文字列リストによる除外、または別のDOM特定方法が必要。CHANGE_DONE（E20260627_483788449cfed）のスコープ外として明示的に切り出された残課題。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260627_483788449cfed",
-      "created_at": "2026-06-27T13:28:56.962006"
-    },
-    {
-      "id": "TODO_379",
-      "title": "Relay拡張の実出力（clipboard/storage.local）そのものの確認",
-      "status": "未着手",
-      "priority": "高",
-      "category": "Relay",
-      "description": "TODO_376/373の検証は、Relay拡張がロードされていないCometプロファイル上でcontent.jsのロジックをpage.evaluateにより直接再現する方式（DOM直読みシミュレーション）で行われた。実際の拡張機能の出力（navigator.clipboard.writeText、chrome.storage.localのrelay_logbook_currentキー）そのものは一度も確認していない。Relay拡張が実際にロードされたブラウザプロファインで、popup.html経由でgeneratePacket()を実行し、実際の出力テキストにcontent-visibility欠落やUI widget重複が残っていないかを最終確認する必要がある。CHANGE_DONE（E20260627_483788449cfed）に明記された既知の限界。",
-      "assigned_to": "Claude",
-      "note": "",
-      "reference_event": "E20260627_483788449cfed",
-      "created_at": "2026-06-27T13:29:07.555293"
     }
   ],
   "completed": [
@@ -5446,6 +5422,34 @@
       "created_at": "2026-06-27T13:29:15.821494",
       "updated_at": "2026-06-27T14:44:52.157003",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_379",
+      "title": "Relay拡張の実出力（clipboard/storage.local）そのものの確認",
+      "status": "完了",
+      "priority": "高",
+      "category": "Relay",
+      "description": "TODO_376/373の検証は、Relay拡張がロードされていないCometプロファイル上でcontent.jsのロジックをpage.evaluateにより直接再現する方式（DOM直読みシミュレーション）で行われた。実際の拡張機能の出力（navigator.clipboard.writeText、chrome.storage.localのrelay_logbook_currentキー）そのものは一度も確認していない。Relay拡張が実際にロードされたブラウザプロファインで、popup.html経由でgeneratePacket()を実行し、実際の出力テキストにcontent-visibility欠落やUI widget重複が残っていないかを最終確認する必要がある。CHANGE_DONE（E20260627_483788449cfed）に明記された既知の限界。",
+      "assigned_to": "Claude",
+      "note": "実機検証で確定(E20260627_2996833452ac8)。Relay拡張実出力(chrome.storage.local['relay_logbook_current'])をCDP経由で直接取得し、off-screen化(top約-32000px)された会話前半の内容が生成パケットに正しく含まれていることを確認。content.jsのinnerText→textContent修正(CHANGE_DONE E20260627_483788449cfed)が実出力でも機能していることを実証。検証スクリプトtodo379_storage_diff.py(MoCKA/PlanningCaliber/workshop/Relay_Project/test/配下)新規作成。",
+      "reference_event": "E20260627_483788449cfed",
+      "created_at": "2026-06-27T13:29:07.555293",
+      "updated_at": "2026-06-27T15:05:09.496134",
+      "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_378",
+      "title": "Relevant chats等UI widget文字列の重複混入対応",
+      "status": "完了",
+      "priority": "中",
+      "category": "Relay",
+      "description": "getConversationText()の.group走査で取得したテキストに、「Relevant chatsRelevant chats」のような区切りなしのUI widget文字列重複が混入する現象が未対応のまま残っている（E20260627セッションで確認済み）。sr-only/visually-hidden/screen-readerクラスおよびbuttonタグの除外では対応できないパターンであり、別の既知UI文字列リストによる除外、または別のDOM特定方法が必要。CHANGE_DONE（E20260627_483788449cfed）のスコープ外として明示的に切り出された残課題。",
+      "assigned_to": "Claude",
+      "note": "実機検証で根本原因確定・修正完了(E20260627_66312156799d1, E20260627_8079961749616)。原因は「Relevant chats」固有ではなく、claude.aiが各応答に自動挿入するsr-only見出し(\"Claudeが返答しました: {要約}\")がgetMessageBodyElement()のsr-only除外フィルタ(group直接子のみ対象)の階層をすり抜けていたこと。content.jsにgetCleanTextContent()(cloneNode+sr-only等子孫を再帰的に削除)を追加し解消。実機DOM(claude.ai実会話)での再検証で、文章レベル重複7件が解消されたことを確認済み。残存する短い技術用語の重複(UTF-8/markdownテーブル区切り等5件)は別要因の可能性が高く、本TODOの範囲外として観察事項のみ残す。",
+      "reference_event": "E20260627_483788449cfed",
+      "created_at": "2026-06-27T13:28:56.962006",
+      "updated_at": "2026-06-27T15:13:40.172452",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5453,5 +5457,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T06:04:20.218220+00:00"
+  "_snapshot_at": "2026-06-27T06:14:24.404623+00:00"
 }
