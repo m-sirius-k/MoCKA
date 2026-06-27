@@ -426,7 +426,8 @@
     {
       "id": "TODO_HAB_GPT_CONNECTION_SPEC_V1",
       "title": "[ARCHITECTURE_CONTRACT/LOCKED] HAB ↔ GPT Connection Contract v1.0 — 構造接続固定ノード",
-      "status": "DONE_LOCKED",
+      "status": "完了",
+      "contract_status": "DONE_LOCKED",
       "priority": "最高",
       "category": "Architecture_Contract_Critical",
       "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。HAB↔GPT間を「意味ではなく構造で接続される」関係として固定する契約。structural filter（HAB）↔ telemetry generator（GPT）interface / no semantic coupling rule / Event.db integration defined / H2-3・Relay境界固定。Phase4 Core Interfaceに分類される。\n\n【固定内容】\n- データフロー: HAB→(structured constraints+context frame)→GPT→(semantic output+telemetry)→Event.db / GPT→H2-3（L2+のみ即delegate）\n- Invariant: GPTはHABを解釈しない / HABはGPT出力を意味変換しない / GPTは判断しない（生成のみ） / H2-3はリアルタイム判断維持 / Relayは時間のみ制御\n- Forbidden: GPT→routing変更禁止 / HAB→decision生成禁止 / GPT↔H2-3直接改変禁止 / batch化routing禁止 / 意味ベース再解釈ループ禁止\n\n【LOCK理由】本契約は変更するとPhase4全体が構造的に壊れる種類の仕様であるため、「変更不可TODO」として扱う。後続のRelay/MCP/Phase5タスクすべての基点（接続レイヤ固定点）。",
@@ -439,7 +440,8 @@
     {
       "id": "TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1",
       "title": "[ARCHITECTURE_CONTRACT/LOCKED] Phase5 Governance & Update Authority + Phase6 Civilization Loop v1.0",
-      "status": "DONE_LOCKED",
+      "status": "完了",
+      "contract_status": "DONE_LOCKED",
       "priority": "最高",
       "category": "Architecture_Contract_Critical",
       "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。TODO_HAB_GPT_CONNECTION_SPEC_V1と同位置づけ。MoCKA全体の更新権限の所在（誰が変えるか）と進化メカニズム（どう変わるか）を確定する最上位ガバナンス文書。\n\n【Phase5: Update Hierarchy（L0-L4）】\nL0 GPT=更新不可 / L1 H2-3=判断のみ / L2 Relay=時間パラメータのみ / L3 System=自動更新なし / L4 Human Gate（きむら博士）=全構造更新権。すべての構造変更はL4のみ可能。自動更新禁止（system self-modification=false）。\nTrigger Conditions: 明示的Human Gate指示 / Phase間矛盾検出（drift severe） / Event.db整合性破壊。\nCore Principle: 「制御は存在するが、自己変更は存在しない」\n\n【Phase6: Civilization Loop & Self-Evolution Control】\n2層構造: Stable Layer（Phase0-5）/ Evolution Layer（Phase6）。\nEvolution Trigger: Human Gate明示更新 / 構造的破綻 / Phase5更新条件、のいずれかでのみ発火。\nNon-Autonomous Rule: システムは自発進化しない。進化は常に外部起点。\nAllowed Evolution Targets: FP / Phase4 / HAB↔GPT / Event.db schema。\nCivilization Loop: Observe→Detect drift→Human decision→Structural update→Re-freeze。\nCore Principle: 「MoCKA is not self-evolving system. MoCKA is externally-evolving governed system」\n\n【LOCK理由】本構造を変更すること自体がMoCKAの統治原則の根幹（誰が更新権を持つか）に関わるため、変更不可TODOとして扱う。FP/Phase4/HAB-GPT全構造の最上位に位置する統治レイヤ。",
@@ -451,7 +453,8 @@
     {
       "id": "TODO_ARCHITECTURE_MAP_MCP_V1",
       "title": "[ARCHITECTURE_CONTRACT/LOCKED] MoCKA Architecture Map v1.0（Phase0-6統合）+ MCP Integration Spec v1.0",
-      "status": "DONE_LOCKED",
+      "status": "完了",
+      "contract_status": "DONE_LOCKED",
       "priority": "最高",
       "category": "Architecture_Contract_Critical",
       "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。TODO_HAB_GPT_CONNECTION_SPEC_V1、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1と同位置づけ。MoCKA Phase0-6の全構造を1つの統合図として確定し、かつ外部接続（MCP）の境界を正式仕様化したもの。これがMoCKAコア構造確定作業の最終到達点。\n\n【Full System Stack（下から上）】\nEvent.db → FP（Phase0-3）→ Phase4（Control/Sovereign/Data）→ HAB↔GPT Connection Layer → Phase5（Governance, L4=Human Gate）→ Phase6（Civilization Loop）\n\n【Global Invariants】\nMeaning is never transmitted / Only structure is transmitted / No self-modification exists in runtime layers / Control≠Data≠Governance≠Evolution\n\n【System Essence】\"MoCKA is not a model system. MoCKA is a layered constraint architecture\"\n\n【MCP Integration Specification — 外部接続境界】\nMCPの3機能限定: Input Bridge / Output Bridge / Observation Bridge（すべてread-onlyまたは構造変換のみ）。\nHard Constraints（絶対禁止）: routing変更/Phase構造変更/H2-3介入/Relay制御変更/Event.db改変/意味解釈。\nExecution Boundary: Phase5・Phase6への外部アクセスはno access（完全遮断）。FP/Phase4はread-only。HAB↔GPTはinterface-onlyのみ。\nSecurity Model: MCPは\"observer/transporter/serializer\"であり\"controllerではない\"。\n\n【実用上の意味】今後Notion/Google Drive等の既存接続MCPツールをMoCKA作業に使う場合も、本仕様のExecution Boundaryに従うこと（Phase5/6への書き込みは不可、FP/Phase4は読み取りのみ等）。\n\n【LOCK理由】MoCKA全体構造の最終形であり、これを変更することは全Phase（0-6）の再設計に直結するため。",
@@ -514,7 +517,8 @@
     {
       "id": "EXEC-LAYER-STD-V1",
       "title": "Execution Layer Standard v1.0（HAB接続統合・GL7検証器化）",
-      "status": "ALTERNATE_IMPLEMENTED",
+      "status": "完了",
+      "contract_status": "ALTERNATE_IMPLEMENTED",
       "priority": "高",
       "category": "設計成果物",
       "description": "フェーズ：Execution Layer Standard v1.0（HAB接続統合）\n\n■目的\nHAB経由でのGPT出力をMoCKA実行層へ安全接続するため、GL7を含む実行レイヤーのJSON境界・ログ境界・責務境界を完全分離し固定化する。\n\n■指示（くろこ実装用・そのまま投げてOK）\n\n① GL7責務再定義（必須）\n- GL7は「実行層」ではなく「検証器」に縮小する\n- parseは1回のみ（入口固定）\n- JSON再構築禁止\n- wrapper再serialize禁止\n- trailing dataは即reject（trim禁止）\n- log生成は禁止（OBSERVATION層へ移管）\n\n② execution layer 3分割固定\n- INPUT層: GPT / HABからの入力。ここでのみJSON parse許可（1回）\n- EXECUTION層: 純粋処理のみ。データ構造変更禁止。ログ禁止\n- OBSERVATION層: log / debug / trace / diagnostic dump。ここだけ副作用許可\n\n③ JSON境界ルール（強制）\n- JSONは単一オブジェクトのみ許可\n- partial JSON禁止\n- trailing data即reject（修正しない）\n- stdoutとJSONは物理分離\n- log混入時はfail closed + diagnostic dump\n\n④ mocka_write_event修正\n- JSON生成責任はcallerに完全移譲\n- GL7は検証のみ\n- storageはpure sink（加工禁止）\n\n⑤ before_tool修正（重要）\n- parseは1回のみ\n- 2回目parse禁止\n- 再構築禁止\n- log参照禁止\n- validationのみ実施\n\n⑥ fail closed動作強化\n失敗時は必ず：\n- diagnostic dump生成\n- raw input保持\n- parse error理由のみ記録\n- 自動修復禁止\n\n■設計思想（固定）\nこの変更はバグ修正ではなく「execution layerの『観測と実行の分離』を強制する制度改修」である。\n\n■効果（解決するもの）\n- Extra data error\n- JSON二重連結\n- stdout混線\n- before_tool二重parse\n- wrapper再serializeバグ\n- log混入破壊\n\n■くろこ向け一言まとめ（最短版）\nGL7を実行層から検証器へ縮小し、execution layerをINPUT / EXECUTION / OBSERVATIONに分離。JSONは入口1回parse・出口1回のみ。ログとJSONを物理分離し、混入時はfail closed + diagnostic dump。",
@@ -527,7 +531,8 @@
     {
       "id": "HAB-CONTRACT-LAYER-V1",
       "title": "MoCKA HAB Contract Layer v1.0（統合指示・Execution Contract生成器化）",
-      "status": "SPEC_OBSOLETE",
+      "status": "廃止",
+      "contract_status": "SPEC_OBSOLETE",
       "priority": "高",
       "category": "設計成果物",
       "description": "■目的\nHABを「判断・フィルタ層」から「Execution Contract生成器」に昇格させ、GL7以降の実行基盤と完全に分離された安定インターフェースを確立する。\n\n■① HABの役割定義（必須）\nHABは以下のみを担当する：\n- 入力の解釈\n- 実行契約（Execution Contract）の生成\n- 構造保証（schema enforcement）\n\nHABは禁止：\n- 実行処理\n- ログ生成\n- runtime判断\n- GL7への介入\n- 出力の再構築\n\n■② HAB OUTPUT標準フォーマット（固定）\nHABの出力は必ず単一JSONで以下構造に従う：\n{\n  \"intent\": { \"type\": \"string\", \"description\": \"ユーザー意図の明確化\" },\n  \"schema\": { \"version\": \"v1\", \"structure\": \"execution contract schema definition\" },\n  \"constraints\": [\"実行制約・安全制約・構造制約\"],\n  \"execution\": { \"action\": \"必ず明示された実行内容\", \"inputs\": {}, \"outputs\": {} },\n  \"safety\": { \"deny_conditions\": [\"実行禁止条件\"] },\n  \"metadata\": { \"source\": \"HAB\", \"trace_id\": \"optional\" }\n}\n\n■③ 不変ルール（強制）\n- JSONは単一オブジェクトのみ\n- partial JSON禁止\n- 欠損フィールド禁止\n- 曖昧表現禁止（must / explicit required）\n- executionフィールドは必須\n- schema version必須\n\n■④ GL7との関係（完全固定）\nHAB → Execution Contract生成のみ\nGL7 → Contract検証のみ（parse1回・修正禁止）\nEXEC → 実行のみ（純粋関数）\nOBSERVATION → ログ・診断のみ\n\n■⑤ mocka_write_eventとの関係\n- HAB：構造生成のみ\n- GL7：検証のみ\n- storage：純粋保存（加工禁止）\n- log：OBSERVATION層へ完全分離\n\n■⑥ fail closedルール\nHAB契約違反時：\n- 即reject\n- 自動修正禁止\n- diagnostic dump生成\n- raw input保持\n- 再構築禁止\n\n■⑦ 設計思想（固定）\nexecution layerから曖昧性と観測を完全に排除し、契約駆動実行構造へ変換する。\n\n■最終まとめ（一行）\nHABは「入力を実行可能契約に変換する唯一の層」として固定し、GL7以降は契約検証と実行に完全分離する。\n\n統合構造（EXEC-LAYER-STD-V1とのペア）：\nHAB（契約生成）→ GL7（契約検証）→ EXEC（実行）→ OBS（観測）",
@@ -540,7 +545,8 @@
     {
       "id": "CONTRACT-INTEGRATION-TEST-SPEC-V1",
       "title": "MoCKA Contract Integration Test Spec v1.0（HAB→GL7→EXEC→OBS）",
-      "status": "CLOSED",
+      "status": "完了",
+      "contract_status": "CLOSED",
       "priority": "高",
       "category": "設計成果物",
       "description": "■目的\nHAB-CONTRACT-LAYER-V1 と EXEC-LAYER-STD-V1 の統合において、契約駆動実行パイプラインが崩壊せず成立することを検証する。\n\n■① テスト対象構造\nHAB → GL7 → EXEC → OBS\n\n■② テスト分類（必須4系統）\n1. 正常系（VALID CONTRACT）\n- 完全なHAB_OUTPUT生成\n- intent / schema / execution 全て充足\n- GL7検証成功\n- EXEC実行成功\n- OBS記録成功\n\n2. 境界系（PARTIAL / EDGE）\n- intent曖昧だがschema存在\n- executionは存在するがinputs欠損\n- metadata不足 → GL7がrejectすること\n\n3. 破壊系（MALFORMED CONTRACT）\n- JSON崩壊\n- trailing data混入\n- log混在\n- schema欠落 → fail closed + diagnostic dump必須\n\n4. 改ざん系（WRAPPER / DOUBLE SERIALIZE）\n- HAB出力後に再serialize\n- GL7前で二重parse\n- execution層で構造改変 → 即reject or execution停止\n\n■③ GL7検証ルール\n- parseは1回のみ\n- JSON再構築禁止\n- log参照禁止\n- trailing data即reject（修正禁止）\n- fail closed強制\n\n■④ EXEC動作ルール\n- pure functionとして動作\n- state変更のみ許可\n- I/O・log禁止\n- 入力構造改変禁止\n\n■⑤ OBSルール\n- log / trace / diagnosticのみ\n- executionに干渉禁止\n- JSON構造への影響禁止\n\n■⑥ 成功条件（以下すべて成立でPASS）\n- HABが常に単一契約生成\n- GL7が100%構造検証のみ実行\n- EXECが純粋実行維持\n- OBSが非侵襲ログ保持\n- 全系統でJSON汚染ゼロ\n\n■⑦ 失敗条件\n- JSON/log混入発生\n- GL7が再構築実行\n- EXECがログ生成\n- HABが実行判断を持つ\n- trailing dataが通過\n\n■最終定義\nこのテストは「MoCKAが契約駆動実行OSとして成立しているか」を検証する唯一のゲートである。\nHAB→GL7→EXEC→OBSの統合は一発検証フェーズに入れる。",
@@ -553,7 +559,8 @@
     {
       "id": "UNIFIED-EXEC-PHASE-PLAN-V1",
       "title": "MoCKA Unified Execution Phase Plan v1.0（HAB統合後フルパス）",
-      "status": "SPEC_OBSOLETE",
+      "status": "廃止",
+      "contract_status": "SPEC_OBSOLETE",
       "priority": "高",
       "category": "設計成果物",
       "description": "■目的\nHAB→GL7→EXEC→OBS→TEST の契約駆動パイプラインを実運用可能状態に到達させる。\n\n■① フェーズ0：現状固定（完了扱い）\n以下は既に成立：\n- HAB-CONTRACT-LAYER-V1（契約生成）\n- EXEC-LAYER-STD-V1（実行基盤分離）\n- CONTRACT-INTEGRATION-TEST-SPEC-V1（統合検証）\n→ 設計は完了しているため変更禁止\n\n■② フェーズ1：ドライラン設計（最初の実行準備）\nやること：\n- サンプルHAB_INPUTを1種類定義\n- intent / schema / execution を必ず含む\n- GL7通過前提の完全JSONを1つ作る\n目的：「契約が現実の入力に対して成立するか」を初確認\n\n■③ フェーズ2：GL7境界テスト\nやること：\n- 正常契約 → PASS確認\n- 欠損契約 → FAIL確認\n- trailing data → 即reject確認\n- log混入 → fail closed確認\n目的：GL7が「検証器として純粋動作するか」検証\n\n■④ フェーズ3：EXEC純粋実行テスト\nやること：\n- executionのみを抽出して実行\n- state変更のみ許可\n- log生成禁止確認\n目的：EXECが\"副作用なし実行器\"として成立するか\n\n■⑤ フェーズ4：OBS侵入テスト\nやること：\n- OBSがexecutionへ干渉しないこと確認\n- logがJSON構造に混ざらないこと確認\n- diagnostic dumpのみ許可\n目的：観測と実行の完全分離保証\n\n■⑥ フェーズ5：破壊テスト（重要）\nやること：\n- 二重serialize契約投入\n- partial JSON投入\n- wrapper改変投入\n- malicious log混入\n期待動作：\n- 全てfail closed\n- 自動修復禁止\n- dumpのみ生成\n\n■⑦ フェーズ6：統合リグレッション\nやること：\n- 全テスト通過確認\n- HAB→GL7→EXEC→OBSの直列動作\n- 全層ログ独立確認\n目的：MoCKAが「契約駆動実行OS」として成立しているか最終確認\n\n■⑧ フェーズ7：運用固定化\nやること：\n- 成功パターンをテンプレ化\n- HAB contract version固定\n- GL7 rule lock\n- EXEC purity lock\n\n■最終到達状態\nHAB → GL7 → EXEC → OBS\n        ↓\n     TEST (guarantee layer)\n\n■結論\nMoCKAは「実行システム」ではなく「契約駆動で自己崩壊を防ぐOS構造」として完成フェーズに入る。\n次は「実データ投入フェーズ（初回本番）」に移行できる。",
@@ -578,7 +585,8 @@
     {
       "id": "REALITY-ALIGNMENT-HAB-GL7-V1",
       "title": "MoCKA設計の現実適合（HAB/GL7縮退・EXEC削除・mocka_write_event実API準拠）",
-      "status": "ALTERNATE_IMPLEMENTED",
+      "status": "完了",
+      "contract_status": "ALTERNATE_IMPLEMENTED",
       "priority": "高",
       "category": "設計成果物",
       "description": "■背景\nHAB-CONTRACT-LAYER-V1 / EXEC-LAYER-STD-V1 で設計したHAB→GL7→EXEC→OBSのOS的パイプラインは、実際のmocka_write_eventのI/O仕様（title, description, author の3フィールドのみ。mode/namespace/rollback等は存在しない）と乖離していたことが判明。\n\n■結論（採用ルート：A 現実適合ルート）\nMoCKAの上位設計を捨てず、「実APIに合わせて縮退設計する」。\n\n■① 正しい関数現実\nmocka_write_event(title, description, author)\n\n■② 修正後のMoCKA構造（現実適合版）\nHAB（変換のみ）→ GL7（3 field validation only）→ mocka_write_event(title, description, author) → OBS（log only）\n\n■③ GL7の役割修正\ntitle検証 / description検証 / author検証 / nullチェック のみ。OS validatorではない。\n\n■④ HABの役割修正\n「自由構造 → 3フィールド変換器」。\ninput: intent / schema / execution → output: title / description / author\n\n■⑤ EXEC層は削除\n実行ロジックが存在せず、ただのwrite関数のため、EXEC層は不要。\n\n■⑥ OBSの役割\nただのログ記録。構造解釈しない。traceのみ保持。\n\n■⑦ 本質\n「OSを作っていたのではなく、シンプルなイベント書き込み関数に対して過剰抽象を積んでいた」。EXEC-LAYER-STD-V1 / HAB-CONTRACT-LAYER-V1 / CONTRACT-INTEGRATION-TEST-SPEC-V1 / UNIFIED-EXEC-PHASE-PLAN-V1 はこの縮退設計を反映して見直しが必要。\n\n■次にやること\n「HAB→3フィールド変換器としての最小設計」を出す。",
@@ -603,7 +611,7 @@
     {
       "id": "GL7-VALIDATION-MISSING-BUG",
       "title": "[不具合]mocka_write_eventに空文字/欠損バリデーションが存在しない",
-      "status": "調査済み",
+      "status": "進行中",
       "priority": "高",
       "category": "不具合",
       "description": "■検証結果（Phase 2：不正入力耐性テスト）\n入力：title=\"test_event_2\", description=\"\", author=\"\"\n期待：FAIL or REJECT（空値検出、書き込み阻止、event_id発行なし）\n実際：status=\"ok\", event_id=\"E20260623_3961913609a48\"で正常に書き込まれた（gate/sqlite）\n\n■結論\nHAB-3FIELD-TRANSFORM-MIN-SPECで設計したGL7の役割（title/description/author検証、nullチェック）は現状mocka_write_event側に実装されていない。空文字・欠損フィールドがそのままDBに書き込まれてしまう。\n\n■影響\n- データ品質の汚染（空のdescription/authorイベントが蓄積される）\n- author=\"\" は本来「正確なAI識別子」必須のはずだが強制されていない\n\n■対応候補\n- mocka_write_event呼び出し前段（GL7相当）でのfield validation実装\n- もしくはmocka_write_event内部でのrequired/non-empty validation追加",
@@ -616,7 +624,8 @@
     {
       "id": "GL7-MINIMAL-IMPL-SPEC",
       "title": "GL7最小実装仕様（mocka_write_event呼び出し前バリデーション）",
-      "status": "ALTERNATE_IMPLEMENTED",
+      "status": "完了",
+      "contract_status": "ALTERNATE_IMPLEMENTED",
       "priority": "高",
       "category": "設計成果物",
       "description": "■背景\nGL7-VALIDATION-MISSING-BUGで実証された通り、mocka_write_eventには空文字/欠損に対するバリデーションが存在しない。HAB-3FIELD-TRANSFORM-MIN-SPECで定義したGL7（field validation層）を実装する。\n\n■対象データ\n- E20260623_3961913609a48：invalid化済み（無効化レコード: E20260623_466594526e084）\n\n■仕様\n① title: non-empty string 必須\n② description: non-empty string 必須\n③ author: valid-id（正確なAI識別子。空文字/null禁止）\n④ reject rule：いずれか欠損・空文字の場合は即reject、mocka_write_eventを呼び出さない\n⑤ fail closed：validation失敗時は書き込みを行わず、reject理由を呼び出し元に返す。自動修復・デフォルト値補完は禁止\n\n■配置\nmocka_write_eventを直接呼ぶ全AI/呼び出し元が、呼び出し前に本validationを適用する運用ルールとして定義（mocka_write_event自体の改修ではなく、呼び出し前段でのGL7相当チェック）。",
@@ -629,7 +638,8 @@
     {
       "id": "GL7-MIGRATION-POLICY-V1",
       "title": "GL7 Migration Policy v1.0（既存データ整合ルール：VALID/LEGACY/QUARANTINE）",
-      "status": "CLOSED",
+      "status": "完了",
+      "contract_status": "CLOSED",
       "priority": "高",
       "category": "設計成果物",
       "description": "■目的\nGL7導入前に生成された既存イベント（pre-GL7 data）と、導入後の検証済みデータ（post-GL7 data）を同一DB内で安全に共存させる。\n\n■① データ区分ルール（必須・3分類固定）\n1. VALID（GL7通過）：GL7 validation済み、title/description/author全て有効\n2. LEGACY（pre-GL7）：GL7未検証データ、既存イベント全て該当\n3. QUARANTINE（無効化）：GL7違反 or 無効化レコード対象（例：空文字author/description）\n\n■② 既存データの扱い（今回のケース）\n- E20260623_3961913609a48：status: LEGACY → QUARANTINE対象\n- E20260623_466594526e084：status: QUARANTINE（論理無効化レコード）\n\n■③ ルール（重要・固定）\n- LEGACYは検証しない（retroactive validation禁止、過去データはそのまま保持）\n- QUARANTINEは参照除外（query結果から除外、DB削除は禁止（既定））\n- VALIDのみ正規データ扱い（GL7通過のみが「正規イベント」）\n\n■④ GL7導入後の挙動\n書き込み時：GL7 PASS → VALIDとして保存／GL7 FAIL → reject（書き込みしない）\n既存データ検索時：default=VALIDのみ返す／LEGACYはオプション表示／QUARANTINEは非表示\n\n■⑤ 移行ルール（段階的適用）\nPhase 1: GL7 validation追加、既存データはLEGACY維持\nPhase 2: 新規データのみVALID化\nPhase 3: クエリフィルタ完全分離\n\n■⑥ システム構造（確定）\nINPUT → HAB → GL7 → [VALID→storage] / [FAIL→reject] → OBS\nLEGACY → bypass GL7\nQUARANTINE → excluded\n\n■⑦ 結論\nこのルールにより、GL7導入前後のデータは同一DB内で破綻なく共存可能。\n\n■次ステップ\nGL7最小実装（実際にrejectを発生させる実装定義）→ GL7-MINIMAL-IMPL-SPECで対応",
@@ -642,7 +652,8 @@
     {
       "id": "PHI-OS-GATE-BASELINE-V1",
       "title": "PHI-OS GATE 基準OS化（正規仕様定義・GL7関係再定義・TODO再生成ルール）",
-      "status": "SUPERSEDED",
+      "status": "廃止",
+      "contract_status": "SUPERSEDED",
       "priority": "高",
       "category": "基準仕様",
       "description": "■背景\nGL7系設計TODO群(EXEC-LAYER-STD-V1等7本)を実装と照合した結果、PHI-OS GATE v1(phi_os/event_gate.py, phi_os/gate_validator.py, mocka_mcp_server.py)が事実上の正規仕様として既に稼働していることが判明。本TODOはこれを「設計の影」ではなく「正本」として確定させる基準OS化作業。\n\n■① PHI-OS GATE 正式仕様（確定版・実装ベース）\nエントリポイント: mocka_mcp_server.py:363-424 (mocka_write_event)\n契約生成: mocka_mcp_server.py:371-384 でgate_payload構築\n  フィールド: who_actor / who_role / who_session / what_type / what_title /\n              where_path / where_component / why_purpose / how_trigger /\n              before_state / after_state / description / tags\n検証(validate): phi_os/gate_validator.py:8-43\n  REJECT-01: who_actor必須・レガシー値禁止(Claude/claude/空文字)\n  REJECT-02: who_session形式 (SESSION_YYYYMMDD_HHMMSS)\n  REJECT-03: why_purpose 10文字以上\n  REJECT-04: how_trigger必須\n  REJECT-05: where_path必須\n  REJECT-06: what_type が ALLOWED_WHAT_TYPES に含まれること\n  REJECT-07: before/after どちらか必須(Replay保証)\n永続化: phi_os/event_gate.py:41-95 (_write) — DB保存 + integrity.sign_event署名 + ハッシュチェーン\n運用テレメトリ用軽量検証: validate_operational (gate_validator.py:46-65)\n分類監査: /api/gate/audit (event_gate.py:231-275) — live/buffered/allowed_direct/violation/legacy の5分類、GATE_LAUNCH_DATE=\"2026-06-16\"基準\n\n■② GL7との関係（再定義・確定）\nGL7という名称は今後 phi_os/gate_validator.py の validate()/validate_operational() を指す。\nHAB相当はmocka_mcp_server.py内のgate_payload構築ロジックを指す。\nEXEC相当は phi_os/event_gate.py の _write()(署名・ハッシュチェーン・DB commit)を指す。\nOBSERVATION相当は auto_log() およびworking_context連携(_update_working_context_live)を指す。\nこれら4層はすべて実在し、抽象的なOS設計として新規構築する必要はない。今後の議論は本TODOが定義する実体名で行う。\n\n■③ TODO体系再生成ルール\n今後、GL7/HAB/EXEC/OBS等の用語を使う新規TODOを作成する際は、必ず対応する実ファイル:行を mapped_to として明記すること。\n実装と矛盾する設計を提案する場合は、まず本TODOの①セクションと差分を取り、ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/REAL_GAPのいずれかに自己分類してから登録する。\n既存のCLOSED/SPEC_OBSOLETEのTODOを参照する新規提案は、再浮上ではなく本TODOへのreference_eventとして従属させる。\n\n■④ 残存REAL_GAP（本TODO確定後に着手）\n- CONTRACT-INTEGRATION-TEST-SPEC-V1: 実スキーマ準拠のテスト整備\n- GL7-VALIDATION-MISSING-BUG: mocka_mcp_server.py:365-368のauthor自動補填によるREJECT-01回避バグ",
@@ -655,7 +666,8 @@
     {
       "id": "MOCKA-TWO-LAYER-OS-BASELINE-V1",
       "title": "MoCKA二層OS構造の正式定義（GL7=Execution Kernel / PHI-OS=Policy Layer）",
-      "status": "確定",
+      "status": "完了",
+      "contract_status": "確定",
       "priority": "高",
       "category": "基準仕様",
       "description": "■背景\nCONTRACT-INTEGRATION-TEST-SPEC-V1の実作業中、本物のGL7(structural/execution_governance.py)がtests/直下への新規ディレクトリ作成をdeletion_outside_scopeで実際にabortした。これにより、PHI-OS-GATE-BASELINE-V1で行った「GL7=phi_os/gate_validator.py」という対応関係が誤りだったことが実証された。本TODOは正しい二層構造を実ファイル:行根拠で確定する。\n\n■① 二層構造の正式定義\n【GL7 = Execution Kernel(実行権限層)】\n実体: structural/execution_governance.py (ExecutionGovernanceEngine)\n      structural/governance_pipeline.py (GovernanceEngine.before_tool/after_tool)\n責務: 「このtool呼び出しを実行してよいか」を判定する。GL1〜GL7をMCP tool呼び出しの前後(before_tool/after_tool)に接続する唯一の窓口(governance_pipeline.py:10)。\n判定対象: WRITE_TOOLS(書き込み系tool)に対してdry run/abortを検査(governance_pipeline.py:18)。\nABORT_CONDITIONS(execution_governance.py:37-43): new_directory_detected / unexpected_file_count / encoding_mismatch / deletion_outside_scope / grounding_not_completed\nFORBIDDEN_EXECUTIONS(execution_governance.py:26-35): create_new_folder_without_grounding / infer_save_path / infer_branch_name 等の推論ベース実行を禁止\n判定基準: scope(action.get(\"scope\"))に対するgit diffの変更ファイル一致検査(execution_governance.py:127-132)\n性質: 「実行してよいか」を見る、リポジトリ変更ガード。Default Deny(READ_ONLY_TOOLS以外は全てGL7対象, governance_pipeline.py:31-32)。\n\n【PHI-OS = Policy Layer(データ正当性層)】\n実体: phi_os/event_gate.py (process_event, gate_bp)\n      phi_os/gate_validator.py (validate, validate_operational)\n責務: 「このイベントデータは記録してよい形か」を判定する。GL7の実行許可が下りた後、実際にmocka_write_eventで書き込まれるデータの構造的正当性(5W1H必須フィールド・形式)を検証する。\n判定基準: REJECT-01〜07(who_actor/who_session/why_purpose/how_trigger/where_path/what_type/before_after)\n性質: 「データが正しい形か」を見る、ペイロード検証器。実行可否ではなくコンテンツの正当性を扱う。\n\n■② 境界仕様（責任分界点）\nGL7(Execution Kernel)が「実行権限」を判定 → PASSしたら\nPHI-OS(Policy Layer)が「データ正当性」を判定 → PASSしたら\n実データがDB(data/mocka_events.db)へ永続化される\n\n実行フロー: MCP tool呼び出し → governance_pipeline.before_tool() [GL7検査] → (許可) → mocka_mcp_server.py内のtool処理 → mocka_write_event時はphi_os.event_gate.process_event() [PHI-OS検査] → DB書き込み → governance_pipeline.after_tool() [GL7記録]\n\n境界の原則:\n- GL7は「ファイルシステム/リポジトリ構造への変更」を見る(scope/diff単位)\n- PHI-OSは「イベントペイロードの内容」を見る(フィールド単位)\n- 両者は独立した統制層であり、片方が通っても他方は別途判定される(直列だが責務排他)\n\n■③ TODO体系の再分類ルール\n今後「GL7」を名乗るTODOは structural/execution_governance.py または structural/governance_pipeline.py への mapped_to を必須とする(OSレイヤー扱い)。\n今後「PHI-OS」を名乗るTODOは phi_os/event_gate.py または phi_os/gate_validator.py への mapped_to を必須とする(制御/ポリシーレイヤー扱い)。\n既存のEXEC-LAYER-STD-V1 / GL7-MINIMAL-IMPL-SPEC / REALITY-ALIGNMENT-HAB-GL7-V1 は「GL7」と名乗っているが実際はPHI-OS(phi_os/gate_validator.py)を指していたため、命名と実体の不一致がある。次回参照時にmapped_toの層を訂正すること(本TODOをreference_eventとして辿れば訂正履歴が追える)。\nGL7-VALIDATION-MISSING-BUG(mocka_mcp_server.py:365-368のauthor自動補填問題)はPHI-OS層のバグであり、GL7とは無関係。\n\n■結論\n今回の本質はバグ修正ではなく、MoCKAが「実行権限層(GL7)」と「データ正当性層(PHI-OS)」という二層OS構造を持つことが、GL7自身の実発火によって実証された点にある。",
@@ -668,7 +680,8 @@
     {
       "id": "GL7-KERNEL-SPEC-DOC-V1",
       "title": "GL7カーネル仕様書作成（完了）",
-      "status": "CLOSED",
+      "status": "完了",
+      "contract_status": "CLOSED",
       "priority": "中",
       "category": "基準仕様",
       "description": "docs/governance/gl7_execution_kernel_spec_v1.md を作成済み。\n内容: 責務/Execution Pipeline固定順序/呼び出し経路(before_tool/after_tool)/Default Deny(READ_ONLY_TOOLS)/Dry Run入力(scope/expected_new_dirs/expected_max_changes)/ABORT_CONDITIONS5種(発火箇所:行番号付き)/FORBIDDEN_EXECUTIONS/2026-06-23実発火ログ(deletion_outside_scope)/GL7とPHI-OSの境界。\n未確認事項として明記: encoding_mismatchの実発火ロジック、FORBIDDEN_EXECUTIONS各項目の実効箇所、Human Gateの実体。これらは推測で断定せず別途調査が必要。\nevent_id: E20260623_155727531d911 (CHANGE_DONE)",
@@ -692,7 +705,8 @@
     {
       "id": "CONTROL-MAP-V1-DECISION",
       "title": "制御マップ決定記録（Bモデル: PHI-OS中心統合）作成完了・実装は別途",
-      "status": "SUPERSEDED",
+      "status": "廃止",
+      "contract_status": "SUPERSEDED",
       "priority": "高",
       "category": "基準仕様",
       "description": "docs/governance/control_map_v1.md 作成済み(event_id: E20260623_583480931c0e9)。\n決定: B(PHI-OS中心モデル)を採用方向とする。GL7=物理ゲート(最小ルール)、PHI-OS=意味ゲート(Human Gate含む統合窓口)、app.py=実行UI層に縮小。\n\n■重要: 本TODOはまだ「決定記録」のみで、コード変更は一切行っていない。\n■保留事項(次の意思決定が必要、設計指示を待つ)\n- FORBIDDEN_EXECUTIONS(8項目)を廃止するかPHI-OS側へ移設するか未決定\n- encoding_mismatch廃止可否(mocka_check_utf8との役割重複の可能性、要検証)\n- app.pyのprevention_queue(再発パターン予防策の承認)とGL7 Dry Run承認(変更実行可否)は対象が異なる可能性があり、同じHuman Gateとして統合してよいか要検討\n\n■次の一手\nGL7を残す前提での「破壊しない最小統合案」の設計(別TODO化推奨)。GL7-UNENFORCED-CONDITIONS-BUGの対応候補A/B/Cは本決定(Bモデル)を前提に選定すること。",
@@ -705,7 +719,8 @@
     {
       "id": "CONTROL-MAP-V2-DECISION",
       "title": "制御マップ責務固定版(v2)確定 — 実装設計はGL7最小カーネル化へ",
-      "status": "DECISION_RECORDED",
+      "status": "完了",
+      "contract_status": "DECISION_RECORDED",
       "priority": "高",
       "category": "基準仕様",
       "description": "docs/governance/control_map_v2.md 作成済み(event_id: E20260623_5482985384990)。CONTROL-MAP-V1-DECISIONの後継。\n\n■確定した責務固定原則\nGL7=物理制約のみ(実行できる/できないか) / PHI-OS=意味・リスク・整合性判断(許可すべきか、Human Gate含む) / App層=運用フロー(UIトリガ)\n\n■3保留事項の最終結論\n- FORBIDDEN_EXECUTIONS(execution_governance.py:26-35) → GL7から削除、PHI-OSの意味禁止ルールへ統合\n- encoding_mismatch(execution_governance.py:40) → GL7のABORT_CONDITIONSから廃止、既存mocka_check_utf8へ一本化(新規実装不要)\n- Human Gate → PHI-OSを唯一のHuman Gate意味層とし、app.py(prevention_queue)はUIトリガに限定。GL7は関与しない\n\n■GL7に残るABORT_CONDITIONS(確定)\ngrounding_not_completed / deletion_outside_scope / new_directory_detected / unexpected_file_count の4条件のみ\n\n■未決定事項(継続保留)\nprevention_queue(再発パターン予防策の承認)とGL7後続の人間承認(変更実行可否)は対象が異なる可能性があり、実装設計時に再確認が必要\n\n■重要\n本TODOもコード未変更。次は実コード設計(GL7からの削除箇所、PHI-OSへの追加箇所、app.py側の委譲先変更)に進む。",
@@ -717,7 +732,8 @@
     {
       "id": "PHI-OS-HUMAN-GATE-STATE-MODEL-V1",
       "title": "PHI-OS Human Gate State Model v1 + GL7最小カーネル仕様v1（確定仕様・未実装）",
-      "status": "Phase3停止中(設計待ち)",
+      "status": "進行中",
+      "contract_status": "Phase3停止中(設計待ち)",
       "priority": "高",
       "category": "基準仕様",
       "description": "CONTROL-MAP-V2-DECISIONの後続。責務固定原則(GL7=物理制約/PHI-OS=意味裁定+HumanGate/App=UIトリガ)に基づく実装仕様。\n\n■PHI-OS Human Gate State Model v1\n基本原則: PHI-OSがHuman Gate状態管理の唯一責務を持つ。GL7/App層は状態を保持しない。\n状態(5種): PENDING / APPROVED / REJECTED / EXPIRED / CANCELED\nデータ構造: HUMAN_GATE_EVENT(event_id, timestamp, action[submit|approve|reject|expire|cancel], request_id, payload, previous_state, next_state)としてevent単位で永続化。\n状態遷移: submit→PENDINGのみ生成。approve/reject/expireはPENDINGからのみ許可。cancelはPENDING/APPROVED/REJECTEDいずれからも可能で最終状態。\n永続ルール: state自体は保存せずeventのみ保存、stateはeventから再構築(イベントソーシング)。\npending管理: pending_queueという固定データ構造は廃止。event.type==HUMAN_GATE_EVENTかつlatest state==PENDINGの動的クエリで生成。\nGL7との関係: GL7はHuman Gateを一切保持しない。役割は実行可否の物理判定とPHI-OSへのevent送信トリガ生成のみ。\nApp層との関係: submit/approve/reject eventの発火と状態表示(PHI-OSから取得)のみ。状態保持しない。\n\n■GL7最小カーネル仕様v1(削除後確定版)\n残存ABORT_CONDITIONS(4条件のみ): grounding_not_completed / deletion_outside_scope / new_directory_detected / unexpected_file_count\n完全削除対象: FORBIDDEN_EXECUTIONS(PHI-OSへ移設済の前提) / encoding_mismatch(廃止) / Human Gate関連コード一切\nGL7責務: 入力構造の物理検証、実行許可/拒否の判定、PHI-OSへのevent転送のみ\nGL7禁止: 意味判断、承認判断、人間判断、状態保持\nGL7出力: ALLOW または DENY+reason_code の二値のみ。両方をeventとしてPHI-OSへ送信する。\n\n■実装が必要な箇所(未着手・コード変更なし)\n1. structural/execution_governance.py: FORBIDDEN_EXECUTIONS定義削除、ABORT_CONDITIONSからencoding_mismatch削除、戻り値をALLOW/DENY+reason_code形式に変更\n2. phi_os/: HUMAN_GATE_EVENTのイベントソーシング機構を新規実装する場所(phi_os/event_gate.py拡張 or 新規phi_os/human_gate.py)を決定し実装\n3. app.py: /decision/approve・/decision/rejectをPHI-OS側のsubmit/approve/reject eventに置き換え、prevention_queue.json直接操作を廃止\n\n■リスク\n本番稼働中のガバナンス/安全機構(GL7 dry run, app.py prevention_queue)への変更であり、影響範囲が大きい。実装着手前に着手順序・ロールバック方針の確認が必要。",
@@ -876,19 +892,6 @@
       "note": "",
       "reference_event": "E20260627_225581073d2ed(削除候補事前確認), E20260627_603295790075e/E20260627_632827668f476(経緯調査), TODO_354",
       "created_at": "2026-06-27T19:55:59.094616"
-    },
-    {
-      "id": "TODO_385",
-      "title": "Architecture Contract系のcontract_statusフィールド分離設計（status/contract_status二軸化）",
-      "status": "進行中",
-      "priority": "中",
-      "category": "制度/ガバナンス/TODO管理/データ正規化",
-      "description": "TODO_384（TODO管理スキーマのステータス値不統一）の博士裁定で承認された恒久対策案。\\n\\n【背景】\\nTODO_384調査により、MOCKA_TODO.jsonのstatusフィールドが「タスク進行度」（通常TODO: 未着手/進行中/完了/保留/廃止の5値）と「紐付く設計文書/契約のライフサイクル状態」（Architecture Contract系: DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中(設計待ち)/調査済みの9語彙）という、本質的に異なる2つの軸を同一フィールドに混在させていたことが判明した。この混在自体が、2026-06-23の一括再分類がCHANGE_START/DONEを経由しなかった記録義務逸脱（INCIDENT: E20260627_2097846853127）の温床になった可能性がある。\\n\\n現状はTODO_384の暫定対策として、mocka_mcp_server.pyのTODO_STATUS_ENUMに両軸の値(5値+9語彙=14値)を1つの許容集合として混在させたまま運用している。これは応急対応であり、長期的には軸を分離すべきというのが博士裁定（2026-06-27承認）。\\n\\n【依頼内容】\\n1. MOCKA_TODO.jsonのスキーマに新フィールド「contract_status」を追加する設計案を作成する（Architecture Contract系13件のみ使用、通常TODOには付与しない）\\n2. 既存のArchitecture Contract系13件について、現在statusに格納されている9語彙の値をcontract_statusへ移行し、statusは通常5値のいずれか（例: 完了/進行中等、タスクとしての進行度に読み替えたもの）に置き換える移行手順を設計する\\n3. mocka_mcp_server.pyのmocka_add_todo/mocka_update_todoにcontract_statusパラメータを追加し、TODO_STATUS_ENUMを「status用5値」と「contract_status用9語彙」の2つの独立したenumに分割する\\n4. 移行の実行はHuman Gate承認後に行う（本TODOは設計案の提示までで実行は別途承認を得る）",
-      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "[2026-06-28追記・きむら博士承認] v2設計案（docs/governance/contract_status_separation_design_v2.md）を承認。\n\n【承認内容】\n①対象範囲: 17件全件（Architecture_Contract_Critical 3件・GL7-VALIDATION-MISSING-BUG含む）\n②3.3 Architecture_Contract_Critical 3件への対応: くろこ提案を承認。contract_status付与はメタデータ整理であり「変更不可」原則に抵触しないとの立場を採用。3件もcontract_status二軸化の対象に含めて移行する。\n③3.4 GL7-VALIDATION-MISSING-BUGの対応: くろこ提案を承認。contract_status欄は付与しない（不具合管理上の「調査済み」であり契約ライフサイクルではないため、status側のみ5値に正規化する）。\n④移行マッピング表（17件分）の内容を承認。\n\n【次工程】実装着手をHuman Gate承認済みとしてくろこに指示する。対象: ①mocka_mcp_server.pyのTODO_STATUS_ENUM分割（status用5値/contract_status用9語彙の2つの独立enum）②mocka_add_todo/mocka_update_todoへのcontract_statusパラメータ追加③MOCKA_TODO.json正本の17件（GL7-VALIDATION-MISSING-BUGを除く16件にcontract_status付与、GL7-VALIDATION-MISSING-BUGはstatus側のみ5値正規化）への実移行。CHANGE_START/CHANGE_DONEで記録すること（TODO_384裁定の趣旨に基づく必須要件）。",
-      "reference_event": "TODO_384裁定（2026-06-27、contract_status分離案承認）",
-      "created_at": "2026-06-27T20:38:56.542070",
-      "updated_at": "2026-06-28T07:18:25.745890"
     }
   ],
   "completed": [
@@ -5528,6 +5531,20 @@
       "created_at": "2026-06-27T20:15:24.382561",
       "updated_at": "2026-06-27T20:37:35.563635",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_385",
+      "title": "Architecture Contract系のcontract_statusフィールド分離設計（status/contract_status二軸化）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/ガバナンス/TODO管理/データ正規化",
+      "description": "TODO_384（TODO管理スキーマのステータス値不統一）の博士裁定で承認された恒久対策案。\\n\\n【背景】\\nTODO_384調査により、MOCKA_TODO.jsonのstatusフィールドが「タスク進行度」（通常TODO: 未着手/進行中/完了/保留/廃止の5値）と「紐付く設計文書/契約のライフサイクル状態」（Architecture Contract系: DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中(設計待ち)/調査済みの9語彙）という、本質的に異なる2つの軸を同一フィールドに混在させていたことが判明した。この混在自体が、2026-06-23の一括再分類がCHANGE_START/DONEを経由しなかった記録義務逸脱（INCIDENT: E20260627_2097846853127）の温床になった可能性がある。\\n\\n現状はTODO_384の暫定対策として、mocka_mcp_server.pyのTODO_STATUS_ENUMに両軸の値(5値+9語彙=14値)を1つの許容集合として混在させたまま運用している。これは応急対応であり、長期的には軸を分離すべきというのが博士裁定（2026-06-27承認）。\\n\\n【依頼内容】\\n1. MOCKA_TODO.jsonのスキーマに新フィールド「contract_status」を追加する設計案を作成する（Architecture Contract系13件のみ使用、通常TODOには付与しない）\\n2. 既存のArchitecture Contract系13件について、現在statusに格納されている9語彙の値をcontract_statusへ移行し、statusは通常5値のいずれか（例: 完了/進行中等、タスクとしての進行度に読み替えたもの）に置き換える移行手順を設計する\\n3. mocka_mcp_server.pyのmocka_add_todo/mocka_update_todoにcontract_statusパラメータを追加し、TODO_STATUS_ENUMを「status用5値」と「contract_status用9語彙」の2つの独立したenumに分割する\\n4. 移行の実行はHuman Gate承認後に行う（本TODOは設計案の提示までで実行は別途承認を得る）",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "[2026-06-28追記・実装完了] くろこにより実装フェーズ完了。commit c9848c438。\n\n【Step1】mocka_mcp_server.py: TODO_STATUS_ENUM(5値)とCONTRACT_STATUS_ENUM(9語彙)に分割。mocka_add_todo/mocka_update_todoにcontract_statusパラメータ追加（未指定時はキー省略）。UTF-8検証OK・py_compile成功・mcp_schema_hash.json更新済み。\n\n【Step2】MOCKA_TODO.json正本: 17件全件移行完了。16件はstatusを5値正規化+contract_statusに元9語彙を保持、GL7-VALIDATION-MISSING-BUGのみstatus変更のみ（contract_status非付与）。一次データ再検証で9語彙の残留は0件（移行漏れなし）。\n\n【Step3】整合性確認: MOCKA_OVERVIEW.jsonに当該17件IDの参照なし（矛盾なし）。reference_event/note内のID参照網はID自体を変更していないため維持確認済み。\n\n【Step4】git commit c9848c438（mocka_mcp_server.py + 設計案v1/v2）。mocka_seal実行済み。\n\n【限界報告1・実機未確認】「新規contract_status付きTODO更新の実機テスト」は稼働中MCPサーバープロセスの再起動が必要なため本セッション内未実施。py_compile成功+コードレビューによる静的検証のみ。次回サーバー再起動時に実機確認推奨（Event.db記録済み）。\n\n【限界報告2・意図しないファイル混入】commit c9848c438にgovernance/anchor_record.json等、くろこの意図的な変更ではない自動生成ファイル（PostToolUseフック由来と推測）が混入していた。意図した変更（mocka_mcp_server.py・設計案2件）以外の混入をくろこ自身が申告。\n\n次のアクション: ①次回MoCKA-START.bat再起動時にcontract_status付きTODO更新の実機確認を実施 ②commit c9848c438の混入ファイル（governance/anchor_record.json等）が意図しない変更を含んでいないか内容レビュー（TODO_363/370と同型の「自動コミット巻き込み」パターンの可能性を念のため確認）",
+      "reference_event": "TODO_384裁定（2026-06-27、contract_status分離案承認）",
+      "created_at": "2026-06-27T20:38:56.542070",
+      "updated_at": "2026-06-28T07:27:03.477941",
+      "completed_at": "2026-06-28"
     }
   ],
   "orchestra_handoff": {
@@ -5535,5 +5552,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T22:22:04.280789+00:00"
+  "_snapshot_at": "2026-06-27T22:28:20.959658+00:00"
 }
