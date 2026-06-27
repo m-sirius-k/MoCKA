@@ -5450,6 +5450,20 @@
       "created_at": "2026-06-27T13:28:56.962006",
       "updated_at": "2026-06-27T15:13:40.172452",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_381",
+      "title": "短い技術用語・markdownテーブル区切りの重複混入調査（UTF-8等5件）",
+      "status": "完了",
+      "priority": "低",
+      "category": "Relay",
+      "description": "TODO_378(sr-only見出し\"Claudeが返答しました: {要約}\"の重複混入、getCleanTextContent()で解消済み)の実機検証(scan-ui-pollution再実行、E20260627_8079961749616)で、修正後も残存した5件の重複混入。対象: 'UTF-8'(重複)、'|---|---|---'(markdownテーブル区切り、重複)、'TODO'(重複)、'|---'(重複)、'、mocka-governance'(重複)。いずれも短い技術用語・markdown記号であり、TODO_378で対応したsr-only見出しの混入パターンとは構造的に異なると推定される（sr-only要素のouterHTML確認では説明できない）。原因未調査。自然な文章中の偶然の繰り返し（実害なし）か、別のDOM重複レンダリング機構（markdownテーブル分割レンダリング等）かを切り分ける必要がある。",
+      "assigned_to": "Claude",
+      "note": "実機検証(inspect-duplicateで5件全件個別確認、E20260627_375694736e4f3)の結果、対処不要(誤判定の取り下げ)と確定してクローズ。5件はいずれも「同一テキストの重複混入」ではなかった: (1)UTF-8/TODO/、mocka-governanceの3件はブロック要素間(li/p等)の区切り文字欠如により、隣接する別々の正当な文が連結されて偶然「重複」に見えた誤検出。(2)|---|---|---/|---の2件はコードブロック内の6列markdownテーブル区切り行そのものの literal content(単一要素内に元から存在する正当な文字列パターン)。TODO_378(sr-only階層漏れ)とは無関係の別原因であることも確認済み。content.js修正は不要。",
+      "reference_event": "E20260627_8079961749616",
+      "created_at": "2026-06-27T15:15:43.483595",
+      "updated_at": "2026-06-27T15:23:06.055009",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5457,5 +5471,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T06:14:24.404623+00:00"
+  "_snapshot_at": "2026-06-27T06:24:28.085361+00:00"
 }
