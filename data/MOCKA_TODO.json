@@ -878,17 +878,16 @@
       "created_at": "2026-06-27T19:55:59.094616"
     },
     {
-      "id": "TODO_384",
-      "title": "TODO管理スキーマのステータス値不統一 — MOCKA_TODO.json正規化（mockaloop整合性根幹）",
+      "id": "TODO_385",
+      "title": "Architecture Contract系のcontract_statusフィールド分離設計（status/contract_status二軸化）",
       "status": "未着手",
-      "priority": "最高",
+      "priority": "中",
       "category": "制度/ガバナンス/TODO管理/データ正規化",
-      "description": "TODO_356着手準備のためMOCKA_TODO.json全体を確認した際に発見。「最高」優先度の現存TODOのうち、statusフィールドが正規の3値（未着手/進行中/完了）以外の値になっているものが複数存在する。\\n\\n【発見済みの異常値】\\n- TODO_357: statusに長い診断文字列（RESOLVED / AUDIT_PASSED (GL7 verified) / canonical_state=CONFIRMED / eventindex=N/A / trace_model=events.db(append-only ledger)）がそのまま格納\\n- TODO_367: statusに説明文（設計確定・実装は別TODOへ分離）がそのまま格納\\n- TODO_HAB_GPT_CONNECTION_SPEC_V1 / TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1 / TODO_ARCHITECTURE_MAP_MCP_V1: statusに独自値DONE_LOCKEDを使用\\n\\nこれは個別TODOの内容の正しさとは別の、TODO管理システムそのもののスキーマが守られていないという構造的不整合である。Civilization LoopのRecord段階の信頼性に直結するため、TODO_374（8段階断絶調査）より手前の、データ正規化レベルの問題として独立起票する。\\n\\n【依頼内容】\\n1. MOCKA_TODO.json全体（todos + completed）をスキャンし、statusが正規3値以外の全件を一覧化する\\n2. 各異常値がどの正規値に対応するか判定する（診断情報や説明文はnote欄に移すべきかも含めて整理）\\n3. 不統一が生まれた根本原因の調査（複数ツール/テンプレートの語彙差異、アーキテクチャ契約系の別管理ルール運用など）\\n4. 修正方針案の提示（一括正規化スクリプト vs 個別手動修正）。実行は博士承認後",
-      "assigned_to": "くろこ（調査）+ きむら博士（承認）",
-      "note": "【C区分追加調査結果】2026-06-27, Claude-sonnet-4-6（CHANGE_START: E20260627_4099648459ec3）。以下を追記する（先のnote本文は保持）。\\n\\n■(1)作成経路の特定\\nC区分13件のうち作成時イベントが追跡できたものは、いずれも作成時status='未着手'（正規値）で登録されていた（例: EXEC-LAYER-STD-V1は2026-06-23T08:08:23作成時status='未着手'、created_atのみでreference_event空欄=mocka_add_todo経由ではなく直接JSON編集の可能性が高い。mocka_add_todoは呼び出し時に[MCP] mocka_add_todo: {id} added というログを出すが、tools/auto_record.logにこれら13件のID出現は0件で、events.db内にも'mocka_add_todo'呼び出しイベントとしての記録は見つからなかった）。\\n非正規値（DONE_LOCKED等）への変更は、作成の約40分後、commit ad198bc8c（2026-06-23T09:48:17+0900, auto sync）で一括発生。この1コミットでdata/MOCKA_TODO.json中7件のstatusが同時に正規値('未着手')から非正規値（ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE等）へ書き換えられており、各noteには'[再分類]'という統一接頭辞と、対応する実装箇所(phi_os/event_gate.py:110-130等)へのmapped_to記述が付与されていた。これは個別の手動更新ではなく、単一の棚卸し作業として一括実行されたことを示す。\\n重要な発見: この一括再分類自体について、events.db上にCHANGE_START/CHANGE_DONEの記録が存在しない（該当時間帯2026-06-23T00:30-01:00のevents.dbには tests/test_gate_validator.py 作成関連の2件のみで、TODOステータス変更に関する記録なし）。つまりArchitecture Contract系 workflow自体が、通常TODOには適用されるはずの記録義務（mocka_write_event）を経由せずにstatusを書き換えていた。これはTODO_384の技術的原因（enum未検証）とは別に、運用上の記録義務逸脱という追加の論点である。\\n\\n■(2)集中出現時間帯（2026-06-22 09:07〜06-23 01:48）の作業内容\\nevents.db照会の結果、この時間帯はTODO_HAB_GPT_CONNECTION_SPEC_V1のImplementation Spec/Audit Version確定（06-22 00:03-00:06 UTC）、MCP実装設計v0.1コード生成（06-22 00:13 UTC）、phi_os/tests/test_gate_validator.py作成（06-23 00:46-00:50 UTC）、docs/governance/gl7_execution_kernel_spec_v1.md・control_map_v1.md・control_map_v2.md新規作成（06-23 01:12-01:35 UTC）、phi_os/human_gate.py + event_bus.py新規作成（06-23 01:45-01:48 UTC）が連続して行われていた。すなわちGL7仕様確定とPHI-OS Phase1/2実装が同時並行で進んだ、設計確定→ドキュメント化→実装着手の一連の作業セッションであり、その過程で関連する設計成果物TODO群がまとめて状態更新（再分類）された。\\n\\n■(3)語彙体系の全体像\\nC区分13件で使用された独自status値は計9種: DONE_LOCKED, ALTERNATE_IMPLEMENTED, SPEC_OBSOLETE, CLOSED, SUPERSEDED, DECISION_RECORDED, 確定, Phase3停止中(設計待ち), 調査済み。\\n決定的な発見: docs/governance/control_map_v1.md冒頭に \\\"Status: DECISION_RECORDED（本文書は意思決定の記録。コード変更は未実施）\\\" という記述があり、対応するTODO(CONTROL-MAP-V1-DECISION)のstatus値'DECISION_RECORDED'はこの文書自身のStatus行をそのまま転記したものであることが確認できた。すなわちこの語彙は「TODOというタスクの進行度」ではなく「紐付くドキュメント/仕様自体のライフサイクル状態」を表すものであり、通常TODOのstatusとは指している対象が異なる。一定の体系（ドキュメント状態をDECISION_RECORDED→ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/DONE_LOCKEDのいずれかに遷移させる）として運用されている形跡はあるが、この語彙集合・遷移規則を正式に定義した仕様書は見つからなかった（暗黙知による運用）。\\n\\n■(4)目的・必要性の評価\\n通常TODOの状態（未着手/進行中/完了/保留/廃止）は「タスクが今どこまで進んだか」を表す。一方Cの語彙は「ある設計文書/契約が今どの確定段階にあるか」（決定記録/実装済み/別実装で代替/旧仕様化/後継に置換/凍結）を表しており、軸そのものが異なる（タスク進行 vs 文書ライフサイクル）。[ARCHITECTURE_CONTRACT/LOCKED]という命名が示す「一度確定したら変更しない」という不変性の概念は、通常TODOの'完了'（タスクが終わった）とは意味が異なり、'完了'に縮退させると「今後変更不可」という重要な制約情報が失われる。よって本質的に別概念であり、単純な同一概念の別表現ではないと判断する。\\n\\n■(5)他システムからの参照確認\\nmocka_mcp_server.py、structural/governance_audit_check.py、interface/commission_manager.py等を個別にgrepしたが、DONE_LOCKED/SPEC_OBSOLETE/ALTERNATE_IMPLEMENTED/DECISION_RECORDED等の文字列を条件分岐（if文等）で直接参照しているコードは見つからなかった（広域grepでのCLOSED/SUPERSEDED一致は全て無関係な文脈の同綴語であった）。つまり現状、これらの値はどのプログラムからもパースされておらず、人間が読む記録としてのみ機能している。技術的な統合リスクは低い。\\n\\n■(6)結論・推奨案\\nA・Bとは異なり、Cは正規3/5値への統合を推奨しない。代わりに以下を提案する。\\n1. Architecture Contract系（category='設計成果物'またはID形式が[A-Z]+-[A-Z]+-V[0-9]+型の非TODO_接頭辞）については、通常TODOのstatusとは別軸の概念であることを正式に文書化し、MOCKA_OVERVIEW.json等に「Document Lifecycle Status語彙一覧」として明文化する（現状9語彙: DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中/調査済み → 将来的な表記揺れ防止のため許容語彙を確定し列挙する）。\\n2. この語彙を独立ワークフローとして正式認定する場合、再分類等のstatus変更時もCHANGE_START/CHANGE_DONEの記録義務を必ず適用するというルールを明文化する（今回の調査で、この記録義務が一度逸脱していたことが判明したため）。\\n3. mocka_update_todo/mocka_add_todoのenum制約実装（TODO_384④で提案済み）は、通常TODO用のstatus enumとArchitecture Contract用のdocument-status enumを別軸のフィールドとして区別する設計にする（例: 通常TODOはstatus、Architecture Contract系はcontract_status等の別フィールド名にする案も検討に値する。同一フィールド名に2つの異なる軸の値を混在させ続けること自体が今回の問題の温床であるため）。\\n最終裁定（独立ワークフローとして正式認定か、通常スキーマへの統合か）は博士に委ねる。CHANGE_DONE記録済み。",
-      "reference_event": "TODO_356対応中の発見（MOCKA_TODO.json全体確認時）",
-      "created_at": "2026-06-27T20:15:24.382561",
-      "updated_at": "2026-06-27T20:28:31.325153"
+      "description": "TODO_384（TODO管理スキーマのステータス値不統一）の博士裁定で承認された恒久対策案。\\n\\n【背景】\\nTODO_384調査により、MOCKA_TODO.jsonのstatusフィールドが「タスク進行度」（通常TODO: 未着手/進行中/完了/保留/廃止の5値）と「紐付く設計文書/契約のライフサイクル状態」（Architecture Contract系: DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中(設計待ち)/調査済みの9語彙）という、本質的に異なる2つの軸を同一フィールドに混在させていたことが判明した。この混在自体が、2026-06-23の一括再分類がCHANGE_START/DONEを経由しなかった記録義務逸脱（INCIDENT: E20260627_2097846853127）の温床になった可能性がある。\\n\\n現状はTODO_384の暫定対策として、mocka_mcp_server.pyのTODO_STATUS_ENUMに両軸の値(5値+9語彙=14値)を1つの許容集合として混在させたまま運用している。これは応急対応であり、長期的には軸を分離すべきというのが博士裁定（2026-06-27承認）。\\n\\n【依頼内容】\\n1. MOCKA_TODO.jsonのスキーマに新フィールド「contract_status」を追加する設計案を作成する（Architecture Contract系13件のみ使用、通常TODOには付与しない）\\n2. 既存のArchitecture Contract系13件について、現在statusに格納されている9語彙の値をcontract_statusへ移行し、statusは通常5値のいずれか（例: 完了/進行中等、タスクとしての進行度に読み替えたもの）に置き換える移行手順を設計する\\n3. mocka_mcp_server.pyのmocka_add_todo/mocka_update_todoにcontract_statusパラメータを追加し、TODO_STATUS_ENUMを「status用5値」と「contract_status用9語彙」の2つの独立したenumに分割する\\n4. 移行の実行はHuman Gate承認後に行う（本TODOは設計案の提示までで実行は別途承認を得る）",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "TODO_384の博士裁定（2026-06-27）により起票。CHANGE_START/DONEで記録。設計案提示まで。実行（既存13件の移行・コード変更）は別途承認後。",
+      "reference_event": "TODO_384裁定（2026-06-27、contract_status分離案承認）",
+      "created_at": "2026-06-27T20:38:56.542070"
     }
   ],
   "completed": [
@@ -5514,6 +5513,20 @@
       "created_at": "2026-06-26T10:04:43.227711",
       "updated_at": "2026-06-27T20:31:45.029472",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_384",
+      "title": "TODO管理スキーマのステータス値不統一 — MOCKA_TODO.json正規化（mockaloop整合性根幹）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス/TODO管理/データ正規化",
+      "description": "TODO_356着手準備のためMOCKA_TODO.json全体を確認した際に発見。「最高」優先度の現存TODOのうち、statusフィールドが正規の3値（未着手/進行中/完了）以外の値になっているものが複数存在する。\\n\\n【発見済みの異常値】\\n- TODO_357: statusに長い診断文字列（RESOLVED / AUDIT_PASSED (GL7 verified) / canonical_state=CONFIRMED / eventindex=N/A / trace_model=events.db(append-only ledger)）がそのまま格納\\n- TODO_367: statusに説明文（設計確定・実装は別TODOへ分離）がそのまま格納\\n- TODO_HAB_GPT_CONNECTION_SPEC_V1 / TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1 / TODO_ARCHITECTURE_MAP_MCP_V1: statusに独自値DONE_LOCKEDを使用\\n\\nこれは個別TODOの内容の正しさとは別の、TODO管理システムそのもののスキーマが守られていないという構造的不整合である。Civilization LoopのRecord段階の信頼性に直結するため、TODO_374（8段階断絶調査）より手前の、データ正規化レベルの問題として独立起票する。\\n\\n【依頼内容】\\n1. MOCKA_TODO.json全体（todos + completed）をスキャンし、statusが正規3値以外の全件を一覧化する\\n2. 各異常値がどの正規値に対応するか判定する（診断情報や説明文はnote欄に移すべきかも含めて整理）\\n3. 不統一が生まれた根本原因の調査（複数ツール/テンプレートの語彙差異、アーキテクチャ契約系の別管理ルール運用など）\\n4. 修正方針案の提示（一括正規化スクリプト vs 個別手動修正）。実行は博士承認後",
+      "assigned_to": "くろこ（調査）+ きむら博士（承認）",
+      "note": "【最終実装完了】2026-06-27, Claude-sonnet-4-6（CHANGE_START: E20260627_822854907f956 / CHANGE_DONE: E20260627_2331380648341）。博士の最終裁定に基づき以下を実施。詳細な調査経緯は本TODOの調査履歴（過去のnote追記、本記録作成時点でcompletedへ移動済みのため別途events.db参照）およびCHANGE_DONEイベントを参照。\\n\\nA(14件・正規5値化): 正規ステータスを3値(未着手/進行中/完了)→5値(+保留/+廃止)に拡張。既存14件('保留'6件/'廃止'8件)はそのまま新スキーマに合致するためデータ変更なし。\\n\\nB(7件・個別手動修正): TODO_357→完了、TODO_358→進行中、TODO_359→進行中、TODO_360→完了、TODO_367→完了、TODO_368→未着手、TODO_369→保留。各TODOの診断文字列・説明文は[元status記録]としてnote先頭に移動済み。\\n\\nC(13件・現状維持+文書化): 正規スキーマへの統合は行わず、.claude/CLAUDE.mdに「TODO管理スキーマ — status正規値一覧（TODO_384準拠）」節を新設。Architecture Contract系9語彙(DECISION_RECORDED/DONE_LOCKED/ALTERNATE_IMPLEMENTED/SPEC_OBSOLETE/SUPERSEDED/CLOSED/確定/Phase3停止中(設計待ち)/調査済み)を正式文書化し、今後の語彙更新・status変更にCHANGE_START/DONE記録を必須とする運用ルールを明記。contract_status等への分離は別TODOへ切り出し（本TODOでは実施せず）。\\n\\n恒久対策: mocka_mcp_server.pyにTODO_STATUS_ENUM(通常5値+Architecture Contract系9語彙=14値)を新設し、mocka_add_todo/mocka_update_todoの両方にenum検証を実装。不正値はエラー返却し書き込みを拒否する。UTF-8検証OK、py_compile成功、mcp_schema_hash.json更新済み（CLAUDE.md手順準拠）。\\n\\nINCIDENT記録: 2026-06-23 09:48(JST)のcommit ad198bc8cによるArchitecture Contract系一括再分類が、CHANGE_START/CHANGE_DONEを経由しなかった記録義務逸脱として新規INCIDENT記録（event_id: E20260627_2097846853127）。TODO_370(git rebase/reset --hard無記録巻き戻し)・TODO_382(同インシデント踏まえた運用ルール確立)と同系統の構造的パターンとして参照付け済み。\\n\\nTODO_384本体はこれで完了。",
+      "reference_event": "TODO_356対応中の発見（MOCKA_TODO.json全体確認時）",
+      "created_at": "2026-06-27T20:15:24.382561",
+      "updated_at": "2026-06-27T20:37:35.563635",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5521,5 +5534,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T11:36:23.466062+00:00"
+  "_snapshot_at": "2026-06-27T21:51:48.323207+00:00"
 }
