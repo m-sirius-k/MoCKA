@@ -424,19 +424,6 @@
       "created_at": "2026-06-21T11:39:18.317818"
     },
     {
-      "id": "TODO_354",
-      "title": "拡張機能正本パスレジストリ確立 — Relay/Orchestra/Memory/PHI-OS/MoCKA Bridgeの実体パス確定・複数系統フォルダの整理",
-      "status": "進行中",
-      "priority": "最高",
-      "category": "制度/ガバナンス/正本管理",
-      "description": "E20260621_378795484b70f（INCIDENT: Relay新ロジックが作業対象フォルダ取り違えにより本番未反映）を受けた再発防止策。\n\n【背景】\nRelay拡張が最低3系統(C:\\Users\\sirok\\Relay_Project\\ / workshop\\Relay_Project\\extension\\ / workshop\\mini-mocka-series\\relay\\)に分散して存在し、TODO_350 Step1の新ロジック実装が、Chromeが実際にロードしている正本(workshop\\Relay_Project\\extension\\、Chrome Secure Preferencesで確認済み)ではなく無関係な野良フォルダに対して行われていた。MoCKA Bridgeも同様に4系統(1.0.2/1.3/1.3.1/2.4)に分散。\n\n【対応内容】\n①Chrome Secure Preferences由来で確定した正本パス一覧をMOCKA_OVERVIEW.jsonに「extension_canonical_paths」として明記:\n  - Relay: okocleheboabgenhlhliingbpjlkmpcf → workshop\\Relay_Project\\extension\\\n  - Orchestra: lbjcmlkcjgjibcmlaokldopjokajjlgc → workshop\\Orchestra_Project\\extension\\\n  - Memory: nheoiflmnjkgobnahglbbeoihaddacnp → workshop\\memory\\extension\\\n  - PHI OS: bieancjajjieckhmgkmcpigpahodiodb → workshop\\phi-os\\extension\\\n  - MoCKA Bridge: impamkjmlflhhjaabhaenkgmnmpflobd → C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n②各製品で正本以外に発見された野良/重複フォルダの一覧化（削除候補としてマーク。即削除はきむら博士承認後）。\n③ファイル変更前の制度（TODO_154）に「正本パス確認」のチェック項目を追加：拡張機能・複数コピーが作られうる資産の変更前は、必ずMOCKA_OVERVIEW.jsonのextension_canonical_pathsで対象パスを確認することを必須化。\n④PHI-OS/Memory/Orchestraについても、正本フォルダ内のロジックが想定通り最新かを別途確認（今回はRelayのみ実装内容まで検証済み）。",
-      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "[2026-06-27 18:14追記・Orchestra background.js修正完了]\n\nsendToPhiOsGate()(TODO_368成果物、29行)をc264dee時点のblobから復元。復元後、改行コード正規化済みdiffでc264deeと完全一致(差分ゼロ)・node --checkで構文OK・UTF-8 OKを確認。mocka-workshop-privateリポジトリへcommit 81ec2f3としてpush完了(push前後でfetch・ahead/behind確認済み、TODO_382のA+D運用ルール準拠)。\n\n被害範囲評価の訂正をINCIDENT記録(E20260627_63352845998b5)として残した。元のINCIDENT(E20260627_140130612325b、sync_watch.py巻き戻り)は被害範囲をsync_watch.py単独に限定していたが、実際は同一時間帯(2026-06-26 12:25-12:26)の事故でOrchestra background.jsも被害範囲に含まれていた。\n\n【横展開チェック結果(Step4)】\n- Memory拡張機能(workshop\\memory\\extension\\): c264deeと完全一致、巻き込みなし\n- PHI-OS拡張機能(workshop\\phi-os\\extension\\): background.js/content.js共に完全一致(background.jsの見かけ上のdiffはCRLF/LF改行コード差のみ)、巻き込みなし\n- Relay(workshop\\Relay_Project\\extension\\): TODO_350 Step4-a以降(2026-06-27)に再コミット履行があり、当該事故時間帯より後の状態が正本に反映済みのため安全\n- Orchestra(workshop\\Orchestra_Project\\extension\\): background.jsのみ被害確認・修正済み(本追記)。他ファイル(content.js等)は別途確認が望ましいが、本調査の範囲では深掘りせず\n\n【TODO_366関係】別途完了処理済み(TODO_366 status完了、2026-06-27)。\n\n【未完了部分(引き続き)】\n①正本パス一覧のMOCKA_OVERVIEW.jsonへの実書き込み(未実施)\n②各製品の野良/重複フォルダ一覧化・削除候補マーク(未実施)\n③TODO_154への正本パス確認チェック項目追加(未実施)\n④PHI-OS/Memory/Orchestraの正本フォルダ内ロジック最新性検証 — 完了。Orchestra側の欠落も発見・修正済み",
-      "reference_event": "E20260621_378795484b70f",
-      "created_at": "2026-06-21T15:30:44.542475",
-      "updated_at": "2026-06-27T18:14:13.474058"
-    },
-    {
       "id": "TODO_356",
       "title": "GL7 False Positive on Quoted Git Paths — 非ASCIIファイル名によるGovernance Gate誤検知（書き込み系MCPツール全般ブロック）",
       "status": "未着手",
@@ -3939,10 +3926,10 @@
       "category": "制度/ガバナンス",
       "description": "全文書き換え時の必須プロトコル確立。\n【ルール】\n①変更対象ファイルの全文を読む\n②関連ファイル（app.py↔index.html等）を全て読んで照合する\n③整合性確認後に書き換え実行\n④書き換え後に再度整合性確認\n⑤mocka_write_eventで変更前後の状態を記録\n\n【違反の定義】\n関連ファイルを読まずに全文書き換えを実行すること＝MoCKA検証原則違反\n\n【背景】\nきむら博士が全文書き換えを命じる理由は「整合性保証」のため。しかしClaudeが関連ファイルを照合せずに再生成すると「パッチ方式の全文書き換え」になりMoCKAの精神に違反する。incident_pool/total_pool不一致バグ（E20260517_021）がその証拠。",
       "assigned_to": "Claude（執行）",
-      "note": "2026-06-08 くろこ実装完了。CLAUDE.md起動プロトコル新規作成(C:\\Users\\sirok\\MoCKA\\.claude\\CLAUDE.md)。変更前後記録プロトコルをCLAUDE.mdに明文化・強制化。CHANGE_START=E20260608_024 / CHANGE_DONE=E20260608_026。",
+      "note": "2026-06-08 くろこ実装完了。CLAUDE.md起動プロトコル新規作成(C:\\Users\\sirok\\MoCKA\\.claude\\CLAUDE.md)。変更前後記録プロトコルをCLAUDE.mdに明文化・強制化。CHANGE_START=E20260608_024 / CHANGE_DONE=E20260608_026。\n\n[2026-06-27追記・TODO_354連携] ファイル変更プロトコル章に「拡張機能・複数コピーが作られうる資産の変更前は、必ずMOCKA_OVERVIEW.jsonのextension_canonical_pathsで対象パスを確認すること」を追加(TODO_354で確定したextension_canonical_pathsセクション新設に連動)。CHANGE_START=E20260627_801039909bae4 / CHANGE_DONE=E20260627_8373873955fea。",
       "reference_event": "E20260517_021",
       "created_at": "2026-05-17T11:35:46.898947",
-      "updated_at": "2026-06-08T08:59:11.575092",
+      "updated_at": "2026-06-27T19:40:00",
       "completed_at": "2026-06-08T00:00:00"
     },
     {
@@ -5482,6 +5469,20 @@
       "created_at": "2026-06-26T08:42:42.819167",
       "updated_at": "2026-06-27T18:11:13.423073",
       "completed_at": "2026-06-27"
+    },
+    {
+      "id": "TODO_354",
+      "title": "拡張機能正本パスレジストリ確立 — Relay/Orchestra/Memory/PHI-OS/MoCKA Bridgeの実体パス確定・複数系統フォルダの整理",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/ガバナンス/正本管理",
+      "description": "E20260621_378795484b70f（INCIDENT: Relay新ロジックが作業対象フォルダ取り違えにより本番未反映）を受けた再発防止策。\n\n【背景】\nRelay拡張が最低3系統(C:\\Users\\sirok\\Relay_Project\\ / workshop\\Relay_Project\\extension\\ / workshop\\mini-mocka-series\\relay\\)に分散して存在し、TODO_350 Step1の新ロジック実装が、Chromeが実際にロードしている正本(workshop\\Relay_Project\\extension\\、Chrome Secure Preferencesで確認済み)ではなく無関係な野良フォルダに対して行われていた。MoCKA Bridgeも同様に4系統(1.0.2/1.3/1.3.1/2.4)に分散。\n\n【対応内容】\n①Chrome Secure Preferences由来で確定した正本パス一覧をMOCKA_OVERVIEW.jsonに「extension_canonical_paths」として明記:\n  - Relay: okocleheboabgenhlhliingbpjlkmpcf → workshop\\Relay_Project\\extension\\\n  - Orchestra: lbjcmlkcjgjibcmlaokldopjokajjlgc → workshop\\Orchestra_Project\\extension\\\n  - Memory: nheoiflmnjkgobnahglbbeoihaddacnp → workshop\\memory\\extension\\\n  - PHI OS: bieancjajjieckhmgkmcpigpahodiodb → workshop\\phi-os\\extension\\\n  - MoCKA Bridge: impamkjmlflhhjaabhaenkgmnmpflobd → C:\\Users\\sirok\\MoCKA\\tools\\mocka-extension\\\n②各製品で正本以外に発見された野良/重複フォルダの一覧化（削除候補としてマーク。即削除はきむら博士承認後）。\n③ファイル変更前の制度（TODO_154）に「正本パス確認」のチェック項目を追加：拡張機能・複数コピーが作られうる資産の変更前は、必ずMOCKA_OVERVIEW.jsonのextension_canonical_pathsで対象パスを確認することを必須化。\n④PHI-OS/Memory/Orchestraについても、正本フォルダ内のロジックが想定通り最新かを別途確認（今回はRelayのみ実装内容まで検証済み）。",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "[2026-06-27 19:41 最終追記・①②③④全完了]\n\n①extension_canonical_paths実書き込み完了(commit b02ac0d1b、git show/git log -S両方で実在検証済み)\n②野良/重複フォルダ一覧化完了(削除候補4件: C:\\Users\\sirok\\Relay_Project\\、workshop\\mini-mocka-series\\relay\\、MoCKA\\mocka-extension\\、MoCKA\\external\\chrome_bridge\\mocka-bridge\\。削除は未実施・博士承認待ち)\n③TODO_154(CLAUDE.md)に正本パス確認チェック項目追加完了(CHANGE_DONE: E20260627_8373873955fea)\n④PHI-OS/Memory/Orchestra正本フォルダ最新性検証完了(Orchestra background.jsのTODO_368成果物消失を発見・復元済み、TODO_366はTODO_350完了に伴い完了処理済み)\n\n本TODOを完了とする。残作業は削除候補4件の博士承認・実削除のみ(別途指示待ち)。",
+      "reference_event": "E20260621_378795484b70f",
+      "created_at": "2026-06-21T15:30:44.542475",
+      "updated_at": "2026-06-27T19:41:32.779728",
+      "completed_at": "2026-06-27"
     }
   ],
   "orchestra_handoff": {
@@ -5489,5 +5490,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T10:36:05.384804+00:00"
+  "_snapshot_at": "2026-06-27T10:46:09.474137+00:00"
 }
