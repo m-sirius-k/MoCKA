@@ -845,31 +845,6 @@
       "created_at": "2026-06-26T12:45:15.277274"
     },
     {
-      "id": "TODO_374",
-      "title": "8段階Civilization Loop断絶の実コード調査（Observe→Record接続・Incident→Recurrence超過）",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "governance/civilization_loop",
-      "description": "2026-06-25「MOCKA v3システム運用ガイドライン」セッションで報告された8段階文明ループ（Observe→Record→Incident→Recurrence→Prevention→Decision→Action→Audit）の件数集計（Observe=0/Record=1,842、Incident=23/Recurrence=66）に基づく仮説。[2026-06-27 Claude Code調査により訂正] 当初「VIOLATION」と確定表現していたが、出典（reference_event）を実際に確認した結果、その出典は別件（TODO_350 Step4の記録-実装不一致）を指しており、この数値集計自体の一次データ上の根拠が現時点で確認できなかった。そのため「VIOLATION」という確定表現は削除し、出典未確認の仮説として扱う。①Observe→Record接続なき生成、②Incident→Recurrence出力過多、いずれも仮説段階。",
-      "assigned_to": "Claude",
-      "note": "[2026-06-27 Claude Code調査結果を追記] (1) interface/router.pyはObserve段階・Civilization Loopの書き込み経路とは無関係と確認。BOM文字+無効な関数定義構文(write_safe_csv(row); write_sqlite(row):)で実行不能だが、これはreality_sync/sync_integration_test.pyが既知のBROKENとして検知・追跡済みの破損であり、runtime/action_executor.pyもtry/exceptでフォールバック済み。(2) 実際のevents書き込み正規経路はphi_os/event_gate.py（app.pyがgate_bpをimport、process_event/process_buffered_eventが「これ以外にevents保存を行う経路は制度上存在しない」と明記）。(3) reference_event E20260626_675420922bb64を直接DB確認した結果、TODO_350 Step4の「記録-実装不一致」記録であり、8段階ループ集計の出典ではなかった（参照先誤り）。(4) mocka_events.dbのwhat_type/where_component/category_ab/lifecycle_phase集計のいずれも、Observe=0/Record=1842/Incident=23/Recurrence=66と一致する列を確認できず、この数値の集計元コード・レポートは未特定のまま。(5) なお調査中、data/MOCKA_OVERVIEW.json内のrouter記述「2026-04-05修正済み（DEPENDENCY_BREAK解消）」が現物（壊れたまま）と矛盾していることも発見（別件として記録要）。次のアクション: 数値の出典特定（2026-06-25前後のevents.db該当ログ精査）は優先度を下げた別TODOとして切り出すか、きむら博士の判断待ち。",
-      "reference_event": "E20260626_675420922bb64",
-      "created_at": "2026-06-27T07:57:57.769490",
-      "updated_at": "2026-06-27T08:23:27.057374"
-    },
-    {
-      "id": "TODO_375",
-      "title": "2026-06-25前後のevents.dbログ精査、Observe/Record/Incident/Recurrence集計の出典コード・レポート特定",
-      "status": "未着手",
-      "priority": "低",
-      "category": "governance/civilization_loop",
-      "description": "TODO_374の前提だった8段階Civilization Loop集計（Observe=0/Record=1,842、Incident=23/Recurrence=66）の出典が、2026-06-27のClaude Code調査で確認できなかった（reference_eventは別件を指していた、mocka_events.dbの主要列集計でも対応するカウントが見つからなかった）。これは「数値が間違っている」ことの確定ではなく「出典未確認」の確定にとどまるため、2026-06-25前後のevents.dbログ・関連レポートを精査し、この集計がどのコード・どのレポートから出たものかを特定する。",
-      "assigned_to": "Claude",
-      "note": "出典が見つかった場合: 数値の信頼性を裏付け、TODO_374の仮説を再評価する。出典が見つからなかった場合: 集計自体が幻だった可能性が高いと確定し、8段階Civilization Loopの実態評価そのものをやり直す必要が出てくる。どちらに転んでも有用な情報のため、優先度は低いが削除せず保持すること。",
-      "reference_event": "E20260627_224664290bb18",
-      "created_at": "2026-06-26T23:24:47.416353+00:00"
-    },
-    {
       "id": "TODO_377",
       "title": "mocka-workshop-private内のnode_modules/__pycache__等、無関係な大量未コミット変更の扱い検討（.gitignore見直し含む）",
       "status": "未着手",
@@ -906,6 +881,18 @@
       "created_at": "2026-06-28T07:32:51.938328",
       "contract_status": "CLOSED",
       "updated_at": "2026-06-28T07:33:56.652431"
+    },
+    {
+      "id": "TODO_387",
+      "title": "Civilization Loop実処理連鎖（/prevention/generate等）の実動作検証",
+      "status": "未着手",
+      "priority": "中",
+      "category": "governance/civilization_loop/実動作検証",
+      "description": "TODO_374の再評価（2026-06-28完了）で判明した内容への後続。app.pyの/loop/statusが返す8項目は独立した別データソースの集計値であり、ステージ間のデータ受け渡し処理連鎖はそもそも実装されていない（最初から非連結の独立メトリクス）ことが確定した。\n\n一方、これとは別に、TODO_136/137（2026-05-11完成）で実装された本来の実処理連鎖（具体的には/prevention/generateエンドポイント。recurrence_registry→prevention_queue自動生成等）は、コード上の存在をくろこが確認済みだが、**実際に正常動作するかの実行テストは未実施**のまま。\n\n実装から1ヶ月以上（2026-05-11→2026-06-28）経過しており、その間にTODO_363/370で扱った複数のgit rebase事故・自動コミット巻き込みインシデントが発生している。これらのインシデントが/prevention/generate等の実処理連鎖に意図しない影響を与えていないか、念のため実機確認する。\n\n【確認すべき内容】\n①/prevention/generateエンドポイントを実機で叩き、recurrence_registryからprevention_queueへの自動生成が現在も正常動作するか\n②TODO_82〜85（Prevention/Decision/Action/Audit自動化、いずれも完了済み）の各処理チェーンが、現在も接続されたまま動いているか\n③もし動作不良が見つかった場合、原因がTODO_363/370系のgit事故由来かどうかを切り分ける\n\n実装変更は不要（壊れていなければ「正常動作確認」のみで完了。壊れていた場合は別途修正TODOを起票する）。",
+      "assigned_to": "くろこ（実施）+ きむら博士（確認）",
+      "note": "",
+      "reference_event": "E20260628_6670925541dac",
+      "created_at": "2026-06-28T07:51:22.371775"
     }
   ],
   "completed": [
@@ -5573,6 +5560,34 @@
       "created_at": "2026-06-28T07:31:06.656268",
       "updated_at": "2026-06-28T07:37:59.250309",
       "completed_at": "2026-06-28"
+    },
+    {
+      "id": "TODO_375",
+      "title": "2026-06-25前後のevents.dbログ精査、Observe/Record/Incident/Recurrence集計の出典コード・レポート特定",
+      "status": "完了",
+      "priority": "低",
+      "category": "governance/civilization_loop",
+      "description": "TODO_374の前提だった8段階Civilization Loop集計（Observe=0/Record=1,842、Incident=23/Recurrence=66）の出典が、2026-06-27のClaude Code調査で確認できなかった（reference_eventは別件を指していた、mocka_events.dbの主要列集計でも対応するカウントが見つからなかった）。これは「数値が間違っている」ことの確定ではなく「出典未確認」の確定にとどまるため、2026-06-25前後のevents.dbログ・関連レポートを精査し、この集計がどのコード・どのレポートから出たものかを特定する。",
+      "assigned_to": "Claude",
+      "note": "[2026-06-28完了・きむら博士承認] くろこにより出典特定完了。\n\n決定的証拠: app.pyの/loop/statusエンドポイント（1470-1581行）が、Observe/Record/Incident/Recurrence等8項目をリクエスト毎にライブ計算して返すダッシュボードAPI。稼働中サーバーへの実機curlで「recurrence=66」がTODO_374記載の「Recurrence=66」と完全一致、これが出典の決定的証拠となった。Observe/Record/Incidentが現在値と異なるのは矛盾ではなく、events.dbが1,842件→13,692件に成長したのと同じ理由（ライブカウンタの自然な時間経過による変化）。\n\n出典確定。本TODOは完了とする。詳細はdocs/governance/civilization_loop_investigation_v1.md参照。",
+      "reference_event": "E20260627_224664290bb18",
+      "created_at": "2026-06-26T23:24:47.416353+00:00",
+      "updated_at": "2026-06-28T07:50:40.432861",
+      "completed_at": "2026-06-28"
+    },
+    {
+      "id": "TODO_374",
+      "title": "8段階Civilization Loop断絶の実コード調査（Observe→Record接続・Incident→Recurrence超過）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "governance/civilization_loop",
+      "description": "2026-06-25「MOCKA v3システム運用ガイドライン」セッションで報告された8段階文明ループ（Observe→Record→Incident→Recurrence→Prevention→Decision→Action→Audit）の件数集計（Observe=0/Record=1,842、Incident=23/Recurrence=66）に基づく仮説。[2026-06-27 Claude Code調査により訂正] 当初「VIOLATION」と確定表現していたが、出典（reference_event）を実際に確認した結果、その出典は別件（TODO_350 Step4の記録-実装不一致）を指しており、この数値集計自体の一次データ上の根拠が現時点で確認できなかった。そのため「VIOLATION」という確定表現は削除し、出典未確認の仮説として扱う。①Observe→Record接続なき生成、②Incident→Recurrence出力過多、いずれも仮説段階。",
+      "assigned_to": "Claude",
+      "note": "[2026-06-28完了・きむら博士裁定（案B採用）] くろこにより断絶仮説の再評価完了。\n\n【結論】出典は特定済み（TODO_375完了）。当初の「断絶」仮説（①Observe→Record接続なき生成 ②Incident→Recurrence出力過多）は前提が誤っていたと確定。app.pyの/loop/statusエンドポイントのコードを見る限り、8項目は互いに独立した別データソースの集計値であり、ステージ間でデータを受け渡す処理連鎖はそもそも実装されていない。つまり「壊れた」のではなく「最初から非連結の独立メトリクス」だったことが判明。これはバグではなく設計上の前提誤認。\n\n【きむら博士裁定】案B採用。TODO_374自体は仮説検証として完了とするが、TODO_136/137が指す本来の実処理連鎖（/prevention/generate等）はコード上の存在を確認済み（くろこ報告）であるものの実行テストは範囲外だったため、実動作検証を新規TODOに切り出して継続する。\n\n詳細はdocs/governance/civilization_loop_investigation_v1.md参照。後続: 新規TODO（実処理連鎖の実動作検証）を別途起票。",
+      "reference_event": "E20260626_675420922bb64",
+      "created_at": "2026-06-27T07:57:57.769490",
+      "updated_at": "2026-06-28T07:50:53.060415",
+      "completed_at": "2026-06-28"
     }
   ],
   "orchestra_handoff": {
@@ -5580,5 +5595,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T22:50:01.562891+00:00"
+  "_snapshot_at": "2026-06-27T23:00:06.346821+00:00"
 }
