@@ -169,6 +169,32 @@
     "anonymized": true,
     "latex_package": "aaai2026（submissionモード）"
   },
+  "extension_canonical_paths": {
+    "purpose": "拡張機能・複数コピーが作られうる資産の変更前に必ず参照する正本パス一覧（TODO_354）。Chrome Secure Preferences実測により確定。",
+    "established": "2026-06-27",
+    "reference_event": "E20260621_378795484b70f（発端INCIDENT）",
+    "relay": {
+      "extension_id": "okocleheboabgenhlhliingbpjlkmpcf",
+      "canonical_path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/Relay_Project/extension/"
+    },
+    "orchestra": {
+      "extension_id": "lbjcmlkcjgjibcmlaokldopjokajjlgc",
+      "canonical_path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/Orchestra_Project/extension/"
+    },
+    "memory": {
+      "extension_id": "nheoiflmnjkgobnahglbbeoihaddacnp",
+      "canonical_path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/memory/extension/"
+    },
+    "phi_os": {
+      "extension_id": "bieancjajjieckhmgkmcpigpahodiodb",
+      "canonical_path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/phi-os/extension/"
+    },
+    "mocka_bridge": {
+      "extension_id": "doapadhfedmognoilmjieekfhijeadnf",
+      "canonical_path": "C:/Users/sirok/MoCKA/tools/mocka-bridge/extension/",
+      "note": "2026-06-21移行後の新ID。旧ID impamkjmlflhhjaabhaenkgmnmpflobd は旧パス参照の死骸エントリとしてChrome内に残存（実害なし・手動削除可、TODO_354 note参照）。"
+    }
+  },
   "repositories": {
     "heart": {
       "name": "MoCKA",
@@ -533,5 +559,5 @@
       "data": "data/tic/"
     }
   },
-  "_snapshot_at": "2026-06-27T09:15:33.857450+00:00"
+  "_snapshot_at": "2026-06-27T09:20:20.291928+00:00"
 }
