@@ -881,19 +881,6 @@
       "created_at": "2026-06-28T07:32:51.938328",
       "contract_status": "CLOSED",
       "updated_at": "2026-06-28T07:33:56.652431"
-    },
-    {
-      "id": "TODO_387",
-      "title": "Civilization Loop実処理連鎖（/prevention/generate等）の実動作検証",
-      "status": "進行中",
-      "priority": "中",
-      "category": "governance/civilization_loop/実動作検証",
-      "description": "TODO_374の再評価（2026-06-28完了）で判明した内容への後続。app.pyの/loop/statusが返す8項目は独立した別データソースの集計値であり、ステージ間のデータ受け渡し処理連鎖はそもそも実装されていない（最初から非連結の独立メトリクス）ことが確定した。\n\n一方、これとは別に、TODO_136/137（2026-05-11完成）で実装された本来の実処理連鎖（具体的には/prevention/generateエンドポイント。recurrence_registry→prevention_queue自動生成等）は、コード上の存在をくろこが確認済みだが、**実際に正常動作するかの実行テストは未実施**のまま。\n\n実装から1ヶ月以上（2026-05-11→2026-06-28）経過しており、その間にTODO_363/370で扱った複数のgit rebase事故・自動コミット巻き込みインシデントが発生している。これらのインシデントが/prevention/generate等の実処理連鎖に意図しない影響を与えていないか、念のため実機確認する。\n\n【確認すべき内容】\n①/prevention/generateエンドポイントを実機で叩き、recurrence_registryからprevention_queueへの自動生成が現在も正常動作するか\n②TODO_82〜85（Prevention/Decision/Action/Audit自動化、いずれも完了済み）の各処理チェーンが、現在も接続されたまま動いているか\n③もし動作不良が見つかった場合、原因がTODO_363/370系のgit事故由来かどうかを切り分ける\n\n実装変更は不要（壊れていなければ「正常動作確認」のみで完了。壊れていた場合は別途修正TODOを起票する）。",
-      "assigned_to": "くろこ（実施）+ きむら博士（確認）",
-      "note": "[2026-06-28追記・実異常発見＋きむら博士裁定] くろこにより実機検証完了。当初想定（壊れていなければ確認のみで完了）に反し、2件の実異常を発見。\n\n【3.1 prevention_queue.json形式破損バグ】app.py 2194-2229行。/prevention/generate実行時、{\"queue\":[...]}形式が生リスト[...]へ上書きされるバグ。実機テスト時に実際に発生し/prevention/queue・/decision/approveが500エラー化したが、くろこが事前バックアップ済みのため即時復元・両エンドポイント200復帰確認済み。データ損失・恒久実害なし。\n\n【3.2 Prevention→Decision実断絶（最重要）】/decision/approve等がstatus==\"pending\"（小文字）のみを処理対象とするが、現キュー内に小文字pendingは0件（NEW=1799件・approved=4件のみ）。2026-06-01以降蓄積された全新規項目（TECH_ALERT含む）がDecision段階に到達不能な状態が約1ヶ月継続していたことが判明。Audit段（auto_audit_loop）は健全起動確認済み。\n\n【3.3 原因切り分け】git log -Sでバグ導入commit 861a0ec3d（2026-05-11、TODO_136/137と同日）を特定。TODO_363/370のgit rebase事故より前であり無関係。実装当初からの大文字小文字不一致という原始バグと判定。\n\n【きむら博士裁定（修正方針）】案B採用。フィルタ側（/decision/approve等の判定ロジック）を大文字小文字非依存にする。既存データ（status値）には触れない最も保守的な方針。案A/C（書き込み修正・既存データ移行）は不採用。\n\n次のアクション: 案Bの実装をくろこに指示する（別途指示書）。実装完了後、3.2で発見された未処理1799件が新フィルタで正しくDecision段階に乗るか実機確認すること。",
-      "reference_event": "E20260628_6670925541dac",
-      "created_at": "2026-06-28T07:51:22.371775",
-      "updated_at": "2026-06-28T08:01:04.549018"
     }
   ],
   "completed": [
@@ -5589,6 +5576,20 @@
       "created_at": "2026-06-27T07:57:57.769490",
       "updated_at": "2026-06-28T07:50:53.060415",
       "completed_at": "2026-06-28"
+    },
+    {
+      "id": "TODO_387",
+      "title": "Civilization Loop実処理連鎖（/prevention/generate等）の実動作検証",
+      "status": "完了",
+      "priority": "中",
+      "category": "governance/civilization_loop/実動作検証",
+      "description": "TODO_374の再評価（2026-06-28完了）で判明した内容への後続。app.pyの/loop/statusが返す8項目は独立した別データソースの集計値であり、ステージ間のデータ受け渡し処理連鎖はそもそも実装されていない（最初から非連結の独立メトリクス）ことが確定した。\n\n一方、これとは別に、TODO_136/137（2026-05-11完成）で実装された本来の実処理連鎖（具体的には/prevention/generateエンドポイント。recurrence_registry→prevention_queue自動生成等）は、コード上の存在をくろこが確認済みだが、**実際に正常動作するかの実行テストは未実施**のまま。\n\n実装から1ヶ月以上（2026-05-11→2026-06-28）経過しており、その間にTODO_363/370で扱った複数のgit rebase事故・自動コミット巻き込みインシデントが発生している。これらのインシデントが/prevention/generate等の実処理連鎖に意図しない影響を与えていないか、念のため実機確認する。\n\n【確認すべき内容】\n①/prevention/generateエンドポイントを実機で叩き、recurrence_registryからprevention_queueへの自動生成が現在も正常動作するか\n②TODO_82〜85（Prevention/Decision/Action/Audit自動化、いずれも完了済み）の各処理チェーンが、現在も接続されたまま動いているか\n③もし動作不良が見つかった場合、原因がTODO_363/370系のgit事故由来かどうかを切り分ける\n\n実装変更は不要（壊れていなければ「正常動作確認」のみで完了。壊れていた場合は別途修正TODOを起票する）。",
+      "assigned_to": "くろこ（実施）+ きむら博士（確認）",
+      "note": "[2026-06-28完了・きむら博士承認] くろこにより修正完了・Event.db自己記録済み。commit 6d5b25a07。\n\n【Step1】/prevention/generateの{\"queue\":[...]}形式破損バグを修正。実機再確認で形式破損が再発しないことを確認。\n\n【Step2・案B】_is_pending_status()ヘルパーを新設し、{\"PENDING\",\"NEW\"}を未決定状態として判定するよう実装。単純な大文字小文字変換（.lower()統一）だけでは「NEW」という別語彙までは拾えないため、許容値を明示列挙する方式を選択（くろこの判断、報告書に理由明記）。既存データのstatus値自体は変更していない（裁定通り）。\n\n【Step3・実機チェーン確認】きむら博士再起動後、実際にNEW項目（TECH_ALERT_20260601_074600_stripe_worker）を承認→status=\"approved\"更新→DECISION_APPROVEDイベント記録→2秒後にping_latest.json更新（Action連鎖発火）までの一連を実機で確認。別項目での却下、承認済み項目の誤再カウントなしの境界条件も確認済み。1,798件の未処理NEW項目は全件、新フィルタでDecision段階の処理対象として認識される状態になった（個別の大量承認/却下作業自体はきむら博士の判断に委ねるため未実施）。\n\n【Step4】commit 6d5b25a07（app.pyのみ、混入なし確認済み）・mocka_seal実行済み。\n\nきむら博士確認: 承認。TODO_387完了。\n\n【関連TODO_374の最終結論更新】本TODOにより、TODO_374で確認された「8項目は独立した非連結メトリクス」という構造とは別に、Prevention→Decision間に実在した約1ヶ月分のバグ（git事故とは無関係の原始バグ、2026-05-11導入）が解消された。8段階Civilization Loopの実処理連鎖（Prevention→Decision→Action→Audit）は2026-06-28時点で正常動作を実機確認済み。\n\n【残課題（きむら博士判断待ち・本TODOの範囲外）】1,798件の未処理NEW項目に対する個別の承認/却下作業は実施していない。今後どう処理するか（一括レビュー/個別レビュー/一定期間放置等）はきむら博士の判断次第。",
+      "reference_event": "E20260628_6670925541dac",
+      "created_at": "2026-06-28T07:51:22.371775",
+      "updated_at": "2026-06-28T08:32:54.338114",
+      "completed_at": "2026-06-28"
     }
   ],
   "orchestra_handoff": {
@@ -5596,5 +5597,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-27T23:05:00.999643+00:00"
+  "_snapshot_at": "2026-06-27T23:35:02.226839+00:00"
 }
