@@ -29,15 +29,15 @@
   },
   "relay_dom_selector": {
     "ok": true,
-    "detail": "Relay alive (last_ping: 2026-06-28T07:27:12.926193, v2.0.0)"
+    "detail": "Relay alive (last_ping: 2026-06-28T08:55:12.883476, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
     "detail": ".env BOMなし OK"
   },
   "phi_os_audit": {
-    "ok": false,
-    "detail": "Direct Write違反(新規) 32件 (total=1705 gate=100.0% [real-time=1333/buffered=372] buffer_pending=0)"
+    "ok": true,
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=1759 gate=100.0% [real-time=1379/buffered=380] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
