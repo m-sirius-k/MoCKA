@@ -881,6 +881,19 @@
       "created_at": "2026-06-28T07:32:51.938328",
       "contract_status": "CLOSED",
       "updated_at": "2026-06-28T07:33:56.652431"
+    },
+    {
+      "id": "TODO_390",
+      "title": "MOCKA_TODO.json Active/Archive構造分離 — ①物理分離②ツール分離③死蔵項目掃き出し",
+      "status": "進行中",
+      "priority": "高",
+      "category": "制度/ガバナンス/データ構造",
+      "description": "2026-06-28、きむら博士より「completed配列(344件)をtodos配列(68件)と同じレイヤーで管理するのは間違っている」との指摘。アクティブ管理とアーカイブ管理は読み取りパターン・更新頻度が異なる別物であり、同一ファイル・同一ツールに同居させていることが「現在地把握」のたびに412件分のデータを引っ張る非効率と、todos配列内への死蔵項目混入を生んでいる。\n\n【現状の問題（実機確認済み）】\n- mocka_get_todo()が1回でtodos(68件)+completed(344件)=412件を返す。AIが「今何をすべきか」を知るために毎回過去アーカイブ全件を読み込む構造になっている。\n- todos配列内に、status=\"完了\"または\"廃止\"でありながらcompleted配列へ移動されずに残存している項目が混在している。確認済みの例: TODO_HAB_GPT_CONNECTION_SPEC_V1(完了/DONE_LOCKED)、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1(完了/DONE_LOCKED)、TODO_ARCHITECTURE_MAP_MCP_V1(完了/DONE_LOCKED)、EXEC-LAYER-STD-V1(完了/ALTERNATE_IMPLEMENTED)、CONTRACT-INTEGRATION-TEST-SPEC-V1(完了/CLOSED)、MOCKA-TWO-LAYER-OS-BASELINE-V1(完了/確定)、GL7-KERNEL-SPEC-DOC-V1(完了/CLOSED)、CONTROL-MAP-V2-DECISION(完了/DECISION_RECORDED)、GL7-MINIMAL-IMPL-SPEC(完了/ALTERNATE_IMPLEMENTED)、GL7-MIGRATION-POLICY-V1(完了/CLOSED)、TODO_386_CONTRACT_STATUS_TEST(廃止/CLOSED)、HAB-CONTRACT-LAYER-V1(廃止/SPEC_OBSOLETE)、UNIFIED-EXEC-PHASE-PLAN-V1(廃止/SPEC_OBSOLETE)、PHI-OS-GATE-BASELINE-V1(廃止/SUPERSEDED)、CONTROL-MAP-V1-DECISION(廃止/SUPERSEDED)。これらは「ARCHITECTURE_CONTRACT/LOCKED」のような永続参照ノードも含むため、単純削除ではなく扱いを個別判断する必要がある。\n\n【実装方針：3点セット】\n①物理分離: MOCKA_TODO.jsonを MOCKA_TODO_ACTIVE.json(現todos相当) と MOCKA_TODO_ARCHIVE.json(現completed相当) の2ファイルに分離する。既存のmeta/server_config/current_phase等のヘッダー情報はACTIVE側に残す（運用上の現在地情報のため）。\n②ツール分離: mocka_get_todo()はACTIVE側のみを返すよう改修。Archive参照用に mocka_get_todo_archive() を新設（オプションでID/カテゴリ/日付範囲によるフィルタ検索ができると412件総返しの再発を防げる）。mocka_add_todo/mocka_update_todoはACTIVE側のみを操作対象とする現行仕様を維持。\n③死蔵項目の掃き出し: todos配列内でstatus=\"完了\"または\"廃止\"の項目を抽出し、以下の判定をしてからArchive側へ移動する。\n  - 通常の完了TODO → そのままcompletedへ移動\n  - ARCHITECTURE_CONTRACT/LOCKED系（永続参照ノード: TODO_HAB_GPT_CONNECTION_SPEC_V1等3件）→ 移動するか、ACTIVE側に「Reference/Locked」専用の別セクションを設けて残すか、きむら博士に判断を確認する（単純にcompletedへ混ぜると今回と同種の問題が再発するため）\n  - SPEC_OBSOLETE/SUPERSEDED系（HAB-CONTRACT-LAYER-V1等4件）→ 後継ドキュメントへの参照を保持したままcompletedへ移動\n\n【整合性確認の必須事項（TODO_154準拠）】\n本変更はMOCKA_TODO.jsonを参照する全関連ファイルに影響するため、着手前に必ず以下を確認・照合すること:\n- mocka_mcp_server.py内のmocka_get_todo/mocka_add_todo/mocka_update_todoの実装箇所\n- MOCKA_OVERVIEW.jsonのstorage.primary/backup記述、how_to_use記述\n- app.py / COMMAND CENTER UI側でTODO件数・一覧を参照している箇所（/loop/status等、todos長さやcompleted長さをカウントしている処理がある場合は分離後の参照先を修正）\n- CLAUDE.md等、AIへの起動時説明にMOCKA_TODO.json単一ファイルを前提とした記述があれば更新\n- 既存のバックアップ先（A:/MOCKA_TODO.json）の扱いも分離後の2ファイル運用に合わせて更新\n\n【完了条件】\n- mocka_get_todo()がACTIVE分のみ(現68件規模)を返すこと\n- mocka_get_todo_archive()でArchive(現344件規模)が別途参照可能なこと\n- todos配列内に完了/廃止statusの項目が残っていないこと（LOCKED系の扱いはきむら博士確認後に確定）\n- 既存のmocka_add_todo/mocka_update_todoが分離後も正常動作すること（回帰テスト）\n- TODO_154の関連ファイル整合性確認プロトコルに従い変更前後の状態をmocka_write_eventで記録すること",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "【2026-06-28 きむら博士判断確定】3層レイヤー分離で決定。\n- ACTIVE = 現todos相当（今動いている作業）\n- REFERENCE/LOCKED = ARCHITECTURE_CONTRACT/LOCKED系（憲法/契約相当。完了済みではなく常時参照され続けるもの。今後も増え続ける前提）\n- ARCHIVE = 現completed相当（終わった作業の履歴）\n\n判断理由（きむら博士）: LOCKED系はACTIVEとも関連性が残るが、ARCHIVE（終わった作業）とは性質が違う。「法律的なもの」として常時参照され続けるべきであり、3層に物理的に分けるのが間違いがない。\n\nツール側の対応: 当初案②（mocka_get_todo_archive()新設）は不要と判断。3層に物理分離すれば、mocka_get_todo()は自然とACTIVE層のみを返す構造になるため、Archive専用ツールの新設は見送り（ARCHIVE層への参照が必要になった場合は別途検討）。\n\n実装範囲を①+③（物理分離＋LOCKED層の切り出し）に確定。次セッションでこの3層構成での実装を進める。",
+      "reference_event": "2026-06-28セッション（completed配列344件混在の指摘）",
+      "created_at": "2026-06-28T09:20:18.089744",
+      "updated_at": "2026-06-28T09:24:05.309480"
     }
   ],
   "completed": [
@@ -5625,5 +5638,5 @@
     "example": "TODO_002を担当して。router.pyのsave処理を調査して根本原因を特定してください",
     "protocol": "TODO_ID → 着手 → status更新 → event記録 → 完了報告"
   },
-  "_snapshot_at": "2026-06-28T00:15:15.680080+00:00"
+  "_snapshot_at": "2026-06-28T00:25:19.494823+00:00"
 }
