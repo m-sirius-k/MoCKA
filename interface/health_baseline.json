@@ -28,8 +28,8 @@
     "detail": "変更なし (hash: 158fa47a3cd38ce8)"
   },
   "relay_dom_selector": {
-    "ok": true,
-    "detail": "Relay alive (last_ping: 2026-06-28T08:55:12.883476, v2.0.0)"
+    "ok": false,
+    "detail": "Relay ping stale (>300s): last_ping=2026-06-28T17:55:12.038245"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": true,
-    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=1759 gate=100.0% [real-time=1379/buffered=380] buffer_pending=0)"
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=1777 gate=100.0% [real-time=1388/buffered=389] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
