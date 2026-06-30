@@ -559,10 +559,10 @@
       "category": "制度/ガバナンス/データ構造",
       "description": "2026-06-28、きむら博士より「completed配列(344件)をtodos配列(68件)と同じレイヤーで管理するのは間違っている」との指摘。アクティブ管理とアーカイブ管理は読み取りパターン・更新頻度が異なる別物であり、同一ファイル・同一ツールに同居させていることが「現在地把握」のたびに412件分のデータを引っ張る非効率と、todos配列内への死蔵項目混入を生んでいる。\n\n【現状の問題（実機確認済み）】\n- mocka_get_todo()が1回でtodos(68件)+completed(344件)=412件を返す。AIが「今何をすべきか」を知るために毎回過去アーカイブ全件を読み込む構造になっている。\n- todos配列内に、status=\"完了\"または\"廃止\"でありながらcompleted配列へ移動されずに残存している項目が混在している。確認済みの例: TODO_HAB_GPT_CONNECTION_SPEC_V1(完了/DONE_LOCKED)、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1(完了/DONE_LOCKED)、TODO_ARCHITECTURE_MAP_MCP_V1(完了/DONE_LOCKED)、EXEC-LAYER-STD-V1(完了/ALTERNATE_IMPLEMENTED)、CONTRACT-INTEGRATION-TEST-SPEC-V1(完了/CLOSED)、MOCKA-TWO-LAYER-OS-BASELINE-V1(完了/確定)、GL7-KERNEL-SPEC-DOC-V1(完了/CLOSED)、CONTROL-MAP-V2-DECISION(完了/DECISION_RECORDED)、GL7-MINIMAL-IMPL-SPEC(完了/ALTERNATE_IMPLEMENTED)、GL7-MIGRATION-POLICY-V1(完了/CLOSED)、TODO_386_CONTRACT_STATUS_TEST(廃止/CLOSED)、HAB-CONTRACT-LAYER-V1(廃止/SPEC_OBSOLETE)、UNIFIED-EXEC-PHASE-PLAN-V1(廃止/SPEC_OBSOLETE)、PHI-OS-GATE-BASELINE-V1(廃止/SUPERSEDED)、CONTROL-MAP-V1-DECISION(廃止/SUPERSEDED)。これらは「ARCHITECTURE_CONTRACT/LOCKED」のような永続参照ノードも含むため、単純削除ではなく扱いを個別判断する必要がある。\n\n【実装方針：3点セット】\n①物理分離: MOCKA_TODO.jsonを MOCKA_TODO_ACTIVE.json(現todos相当) と MOCKA_TODO_ARCHIVE.json(現completed相当) の2ファイルに分離する。既存のmeta/server_config/current_phase等のヘッダー情報はACTIVE側に残す（運用上の現在地情報のため）。\n②ツール分離: mocka_get_todo()はACTIVE側のみを返すよう改修。Archive参照用に mocka_get_todo_archive() を新設（オプションでID/カテゴリ/日付範囲によるフィルタ検索ができると412件総返しの再発を防げる）。mocka_add_todo/mocka_update_todoはACTIVE側のみを操作対象とする現行仕様を維持。\n③死蔵項目の掃き出し: todos配列内でstatus=\"完了\"または\"廃止\"の項目を抽出し、以下の判定をしてからArchive側へ移動する。\n  - 通常の完了TODO → そのままcompletedへ移動\n  - ARCHITECTURE_CONTRACT/LOCKED系（永続参照ノード: TODO_HAB_GPT_CONNECTION_SPEC_V1等3件）→ 移動するか、ACTIVE側に「Reference/Locked」専用の別セクションを設けて残すか、きむら博士に判断を確認する（単純にcompletedへ混ぜると今回と同種の問題が再発するため）\n  - SPEC_OBSOLETE/SUPERSEDED系（HAB-CONTRACT-LAYER-V1等4件）→ 後継ドキュメントへの参照を保持したままcompletedへ移動\n\n【整合性確認の必須事項（TODO_154準拠）】\n本変更はMOCKA_TODO.jsonを参照する全関連ファイルに影響するため、着手前に必ず以下を確認・照合すること:\n- mocka_mcp_server.py内のmocka_get_todo/mocka_add_todo/mocka_update_todoの実装箇所\n- MOCKA_OVERVIEW.jsonのstorage.primary/backup記述、how_to_use記述\n- app.py / COMMAND CENTER UI側でTODO件数・一覧を参照している箇所（/loop/status等、todos長さやcompleted長さをカウントしている処理がある場合は分離後の参照先を修正）\n- CLAUDE.md等、AIへの起動時説明にMOCKA_TODO.json単一ファイルを前提とした記述があれば更新\n- 既存のバックアップ先（A:/MOCKA_TODO.json）の扱いも分離後の2ファイル運用に合わせて更新\n\n【完了条件】\n- mocka_get_todo()がACTIVE分のみ(現68件規模)を返すこと\n- mocka_get_todo_archive()でArchive(現344件規模)が別途参照可能なこと\n- todos配列内に完了/廃止statusの項目が残っていないこと（LOCKED系の扱いはきむら博士確認後に確定）\n- 既存のmocka_add_todo/mocka_update_todoが分離後も正常動作すること（回帰テスト）\n- TODO_154の関連ファイル整合性確認プロトコルに従い変更前後の状態をmocka_write_eventで記録すること",
       "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "【2026-06-28 きむら博士判断確定】3層レイヤー分離で決定。\n- ACTIVE = 現todos相当（今動いている作業）\n- REFERENCE/LOCKED = ARCHITECTURE_CONTRACT/LOCKED系（憲法/契約相当。完了済みではなく常時参照され続けるもの。今後も増え続ける前提）\n- ARCHIVE = 現completed相当（終わった作業の履歴）\n\n判断理由（きむら博士）: LOCKED系はACTIVEとも関連性が残るが、ARCHIVE（終わった作業）とは性質が違う。「法律的なもの」として常時参照され続けるべきであり、3層に物理的に分けるのが間違いがない。\n\nツール側の対応: 当初案②（mocka_get_todo_archive()新設）は不要と判断。3層に物理分離すれば、mocka_get_todo()は自然とACTIVE層のみを返す構造になるため、Archive専用ツールの新設は見送り（ARCHIVE層への参照が必要になった場合は別途検討）。\n\n実装範囲を①+③（物理分離＋LOCKED層の切り出し）に確定。次セッションでこの3層構成での実装を進める。",
+      "note": "【2026-06-28 きむら博士判断確定】3層レイヤー分離で決定。\n- ACTIVE = 現todos相当（今動いている作業）\n- REFERENCE/LOCKED = ARCHITECTURE_CONTRACT/LOCKED系（憲法/契約相当。完了済みではなく常時参照され続けるもの。今後も増え続ける前提）\n- ARCHIVE = 現completed相当（終わった作業の履歴）\n\n判断理由（きむら博士）: LOCKED系はACTIVEとも関連性が残るが、ARCHIVE（終わった作業）とは性質が違う。「法律的なもの」として常時参照され続けるべきであり、3層に物理的に分けるのが間違いがない。\n\nツール側の対応: 当初案②（mocka_get_todo_archive()新設）は不要と判断。3層に物理分離すれば、mocka_get_todo()は自然とACTIVE層のみを返す構造になるため、Archive専用ツールの新設は見送り（ARCHIVE層への参照が必要になった場合は別途検討）。\n\n実装範囲を①+③（物理分離＋LOCKED層の切り出し）に確定。次セッションでこの3層構成での実装を進める。\n\n【2026-06-30追記：運用反映漏れの発覚と解消（TODO_394参照）】\nTODO_PATH新パスへのコード修正(14:14頃コミット)後、mocka_mcp_server.pyプロセスの再起動が行われておらず、メモリ上は旧パス参照のまま稼働し続けていたことがTODO_394の監査で判明。この間（約4時間弱）に追加されたTODO_391〜394が旧パス側にのみ存在する移行漏れ状態となっていた。\n\n18:00:46にプロセス再起動を実施、差分マージ（旧パスtodos52/completed4と新パスの差分3〜4件を新パス側へ反映）により解消済み。Event/DB層（mocka_events.db）は単一ファイルのため最初から無関係・無影響だった。\n\nこの経緯から、「Implementation Complete（コード修正完了）→ Process Restart（プロセス再起動）→ Verification（検証）→ Operational Complete（運用反映完了）」の4段階区分を、今後の標準運用ルールとして採用する。特にTODO_390のような「コード修正は完了したが、運用反映（プロセス再起動）の確認が漏れる」パターンの再発防止策として有効。\n\nなお、TODO_390自体は本追記時点でも②（ツール分離=mocka_get_todo_archive新設）は見送り、③（死蔵項目掃き出し）は未実装のままであり、status=\"進行中\"を維持する（完了ではない）。",
       "reference_event": "2026-06-28セッション（completed配列344件混在の指摘）",
       "created_at": "2026-06-28T09:20:18.089744",
-      "updated_at": "2026-06-28T09:24:05.309480"
+      "updated_at": "2026-06-30T18:04:33.188781"
     },
     {
       "id": "TODO_390_CLEANUP_CHECK",
@@ -623,6 +623,30 @@
       "note": "2026-06-30起票。TODO_390(MOCKA_TODOリポジトリ外配置ミスの是正)解決後に着手すること。緊急性は低いが、放置すると製品ごとの独自記録(TODO_371で発見したパターンと同型)が今後も増殖し続けるリスクがあるため優先度は中〜高で扱う。",
       "reference_event": "E20260630_3652619598685",
       "created_at": "2026-06-30T14:13:01.443389"
+    },
+    {
+      "id": "TODO_392",
+      "title": "MoCKA思想進化史 v0.1 公文書化（docs/governance/配下）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/思想史/公文書化",
+      "description": "【役割】くろこは今回も忠実な定着役。文章の修正・要約・再構成・解釈の追加は行わないこと。下記本文をそのままファイル化する。\n\n【作業内容】\n①以下の確定済み本文を docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md として新規作成する。\n②mocka_write_eventで記録する（作成完了の事実のみ。内容への評価・解釈コメントは付与しない）。\n③CLAUDE.mdまたはMOCKA_OVERVIEW.jsonに本文書への参照リンクを追加すべきか確認する場合のみ、きむら博士に確認を取る（自己判断で追加しない）。\n\n【本文（このまま使用）】\n\n# MoCKA思想進化史 v0.1（現時点の復元結果・Revision 0）\n\n位置づけ：憲法でもADRでも実装仕様でもない。「なぜその制度が生まれたのか」を説明する設計思想史であり、同時に今後の設計判断の基準書でもある。今後の資料・議事録により更新され得る。\n\n## 第0世代｜現場\nプラント制御・設計・現場・経営・改善という30年の実務経験。「なぜ同じ説明を何度もするんだ」「なぜ記録が残らないんだ」「なぜ前回を活かせないんだ」という問いが原点。MoCKAの出自はソフトウェアではなく現場にある。\n\n## 第1世代｜AIの根本欠点の発見\nAIは毎回ゼロから考え直す。考えたことが経験として残らない。同じ説明、同じ議論、同じ設計、同じ失敗が繰り返される。\n\n## 第2世代｜経験を残す制度が必要\n欠点：考えたことが消える。\n第一実装：Orchestra（経験の一次保存層）。チャット保存ツールではなく、経験を失わないための最初の制度。\nしかし、保存だけでは次に使えないという欠点が残る。\n\n## 第3世代｜経験を継承する制度が必要\n欠点：保存した経験の山から、何が重要か分からず使えない。\n実装：Relay（経験継承制度）。圧縮技術ではなく、経験を次のAIへ継承するための制度。\nしかし、Relayが継承するのは「何を話したか」であり、「なぜそう考えたか」ではないという欠点が残る。\n\n## 第4世代｜理由を忘れない制度が必要\n欠点：AIは理由を忘れる。文脈を渡されても判断の背景は薄れる。\n構想：PHL（再注入装置。保存装置ではない）。\n\n## 第5世代｜AIの能力ではなく制度で品質を保証する\n欠点：理由を持っていても、AIはそれを守らない。\n原則：AIの能力ではなく、制度によって品質を保証する（運用原則：「AIを信じるな、システムで縛れ」）。\n実装：PHI-OS / event_gate / Trust Boundary（制度実行層）。\n\n## 第6世代｜Reasonを保存する萌芽\n欠点：制度はイベントを記録するが、判断の理由そのものは点としてしか残らない。\n萌芽：judgement_reasonテーブル。当時は名前のない実験的な実装だったが、現在の観点から見ると、Reason Capture思想へ繋がる最初期の萌芽として再解釈できる（断定はしない）。\n\n## 第7世代｜理由そのものを知識として扱う\n構想：Reason Capture。散らばった理由を横断的に検索・参照可能な知識単位として扱う。\n\n## 第8世代｜理由が制度になる\n構想：Institutional Reasoning。Reasonが個別の記録から制度として機能する段階へ。\n\n## 第9世代｜知識は活性化されて行動を変える（North Star）\nReason → Knowledge → Institution → Behavior。\nKnowledgeは保存されるだけでは終わらない。AIの行動を変えるために活性化される（Knowledge Activation）。この一文によってPHI・Memory・Relay・Prismが一本の系譜として繋がる。\n\n## 設計原則\nMoCKAは、新しい機能を追加するために進化したのではない。AIが持つ一つの欠点を発見し、その欠点を制度によって補うことを繰り返して進化してきた。したがって、MoCKAの各コンポーネントは独立した製品ではなく、AIの欠点を制度で補完するための進化の系譜として理解される。\n\n## 本文書の位置づけ（基準書としての機能）\n今後何か新しい機能や制度を考えるときは、次の3つを説明できなければMoCKAの思想と整合しない。\n①AIのどんな欠点を解決するのか\n②その欠点に対する制度は何か\n③その制度はKnowledge → Institution → Behaviorの流れにどう組み込まれるか\n\n【完了条件】\n・docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md が本文のまま作成されていること\n・mocka_write_event記録済みであること\n・本文に対する加筆・改変・要約が一切行われていないこと（差分確認すること）",
+      "assigned_to": "くろこ（ファイル作成・記録）",
+      "note": "TODO_391（現状の把握）の後続。第二段階「ここに至る経緯」の確定成果物。第三段階「美しくしなやかに、完璧に」に進む前の土台文書。",
+      "reference_event": "",
+      "created_at": "2026-06-30T14:54:16.896172"
+    },
+    {
+      "id": "TODO_393",
+      "title": "MoCKA思想進化史 Repository統合フェーズ",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/思想史/Repository統合",
+      "description": "【目的】\nMoCKA思想進化史(docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md)をRepository標準参照文書として制度へ組み込む。\n\n【前提】\nTODO_392（思想史固定）とは完全に切り離す。本TODOは「Repository組み込み」フェーズであり、文書内容自体への変更は一切行わない。\n\n【対象】\n- CLAUDE.md\n- MOCKA_OVERVIEW.json\n- Handbook（存在する場合）\n- README\n- Architecture Index（存在する場合）\n\n【作業内容】\n上記各ファイルに、MOCKA_THOUGHT_EVOLUTION_v0.1.mdへの参照リンク（パス記載）を追加する。本文の引用・要約は行わない。リンク追加のみ。\n\n【完了条件】\n・対象ファイルそれぞれに参照リンクが追加されていること\n・思想史文書本体への変更が一切ないこと\n・mocka_write_event記録済みであること",
+      "assigned_to": "くろこ",
+      "note": "TODO_392の後続。Phase分離により監査性を確保。",
+      "reference_event": "",
+      "created_at": "2026-06-30T17:48:48.317993"
     }
   ],
   "orchestra_handoff": {
@@ -671,6 +695,34 @@
       "reference_event": "E20260622_734189009170f",
       "created_at": "2026-06-22T20:12:46.825393",
       "updated_at": "2026-06-30T12:39:44.429383",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_391",
+      "title": "Reason Capture構想 現状把握フェーズ（周辺調査・資産棚卸し）",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/Reason Capture/資産棚卸し",
+      "description": "【役割定義】くろこは今回、設計者ではなく監査官として振る舞う。事実を整理し、制度を評価せず、客観的な現在位置のみを報告する。\n\n【目的】「Reason Capture / Institutional Reasoning」をMoCKAのNorth Starとして位置づけるにあたり、既存制度がその目的地に対してどこまで実現済みか、何が欠けているかを仕分ける。資産棚卸しであり、設計提案ではない。\n\n【調査対象】\n1. judgement_reasonテーブル（スキーマ・実データの有無・件数）\n2. PHL（Persistent Horizon Layer）関連ファイル\n3. PHI-OS / event_gate 関連ファイル（特にLOCKED範囲）\n4. H1定義書（Trust Boundary文書群）\n5. Architecture Contract群（HAB↔GPT Contract v1.0含む）\n\n【各項目に記録する欄】\n- ファイルパス／対象テーブル\n- 現状の機能（一言で）\n- 「Reason Unit」として横断検索可能か（Yes/No/部分的）\n- 関連するLOCK状態（変更不可かどうか）\n- Reason Unit候補になり得るか（観測のみ・提案文体禁止。例：「core候補」「部分候補」「非候補」＋一言根拠）\n\n【出力形式】仕分けマップ（表形式）、mocka_write_eventで記録。区分は「実現済み」「部分実現」「未実現」の3区分。\n\n【調査対象外（くろこが判断・言及してはならない事項）】\n・なぜ現在の制度になったのか（経緯）\n・制度思想の是非\n・Reason Captureを正式採用すべきか\n・HAB↔GPT Contractとの調停\n・新制度設計\n・優先順位決定\n・改善案\n・名称変更\n・新Repository提案\n\n【完了条件】\n・Reason Capture観点の仕分けマップ完成\n・mocka_write_event記録済み\n・きむら博士が次フェーズ（ここに至る経緯整理）に進める状態になっていること\n\n【位置づけ】【現状の把握】→【ここに至る経緯】→【美しくしなやかに、完璧に】の三段階のうち、本TODOは第一段階のみ。",
+      "assigned_to": "くろこ（調査）+ きむら博士（次フェーズ判断）",
+      "note": "【完了】くろこによる調査完了。3回の報告（直接調査→訂正→最終版）を経て5項目の仕分けマップが確定。\n\n最終区分:\n①judgement_reasonテーブル＝部分実現（19カラムのスキーマ実在・実データ1件のみ、TODO_194/305と関連）\n②PHL＝部分実現（「Persistent Horizon」完全一致は0件。実装は類似名称の別物「PHL-OS」のみ。論文構想への言及はあるがコード実装との同一性不明）\n③PHI-OS/event_gate＝実現済み（Single Entry Pointとして8ファイル+複数ドキュメントから参照される稼働中コード）\n④H1定義書/Trust Boundary＝部分実現（「H1」という独立文書は不在。実際の制度記述は「H2-3」という別名称でcontrol_gate.py/permissions.py/FP_HAB_DUPLICATE_POLICYに分散）\n⑤Architecture Contract群＝実現済み（TODO_HAB_GPT_CONNECTION_SPEC_V1がREFERENCE_LOCKED層に完了/LOCKED状態で実在。加えてFP_HAB_GPT_CONTRACT_V02/V03・PHASE4_EXECUTION_INTERFACE_SPEC_V1.0という完全一致名称の文書も別途存在）\n\n特記事項（観測）: 調査過程で「未実現→実現済み（暫定）→実現済み（具体的実体判明）」という段階的訂正が発生した。原因はMOCKA_TODO_REFERENCE_LOCKED.json層の抽出ロジック不備（初回見落とし）。これ自体がReason Capture構想のギャップ（資産が複数層・複数名称に分散し横断検索性が低い）を裏付ける実例となった。\n\nmocka_write_event記録済み。きむら博士は次フェーズ（ここに至る経緯整理）に進める状態。",
+      "reference_event": "",
+      "created_at": "2026-06-30T14:35:20.470421",
+      "updated_at": "2026-06-30T14:44:13.687494",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_394",
+      "title": "mocka_mcp_server パス統一 運用反映監査（TODO_390再判定）",
+      "status": "完了",
+      "priority": "最高",
+      "category": "制度/運用監査/TODO_390再判定",
+      "description": "【背景】\nTODO_392完了報告の過程で、TODO_392自体がリポジトリ内 data/MOCKA_TODO_ACTIVE.json には存在せず、旧パス（C:\\Users\\sirok\\MOCKA_TODO_ACTIVE.json、リポジトリ外）にのみ存在することが判明した。TODO_390で mocka_mcp_server.py の TODO_PATH を新パスへ修正したはずだが、実行中プロセスが再起動されておらず、メモリ上は旧パスを参照し続けている疑いがある。これはTODO_390の完了判定そのものへの監査が必要であることを意味する。\n\n【新運用ルール（本TODOで確立する）】\n「実装完了」と「運用反映完了」を区別する。\nImplementation Complete → Process Restart → Verification → Operational Complete\nの4段階。TODO_390はImplementation Completeの段階で「完了」と判定されていた可能性があり、Operational Completeには至っていない疑いがある。\n\n【役割】\nくろこは監査官。今回も制度の是非・改善案・再設計の提案は行わない。事実確認と段階的実行のみ。\n\n【Phase A：現状把握（再起動前）】\n以下を一覧化する。\n- 旧パスと新パスそれぞれについて：TODO / Event / Index / DB / Journal の Write先・Read先\n- Cache の状態\n- mocka_mcp_server.py の Process / PID / 起動設定\n- TODO_391、TODO_392、関連Event、Journalが旧パス・新パスのどちらに保存されているか\n\n【Phase B：差異報告】\nPhase Aの結果を「一致」「不一致」「移行漏れ」「再起動で反映予定」の表形式で報告する。判断・提案はしない。\n\n【Phase C：再起動実施】\nPhase Bの報告をきむら博士が確認し、明示的な許可が出た後にのみ mocka_mcp_server.py を再起動する。許可なく再起動しないこと。\n\n【Phase D：再起動後の同一監査】\nPhase Aと同じ項目を再起動後にもう一度確認する。\n\n【Phase E：TODO_390の再判定】\nPhase A〜Dの結果に基づき、TODO_390が実際にOperational Completeの段階に到達したかを事実ベースで報告する。「完了」「未完了」の最終判定自体はきむら博士が行う。くろこは事実の提示まで。\n\n【完了条件】\n・Phase A〜Dすべてmocka_write_eventに記録済み\n・Phase Eの事実報告がきむら博士に提示されていること\n・各PhaseはきむらBaseの明示確認を経てから次へ進むこと（特にPhase B→C間は必須）",
+      "assigned_to": "くろこ",
+      "note": "【完了】Phase A〜E全て完了。\nPhase A：旧パスtodos52/completed4、新パスtodos49/completed3で不一致。TODO_391/392/394が移行漏れと判明（後にTODO_393も該当と訂正）。プロセスPID4836はTODO_390コード修正(14:14)より前の12:08起動で、旧パスをメモリ保持したまま稼働中と確認。\nPhase B'：差分マージ実施。マージ後新パスtodos52/completed4で件数一致。TODO_391はcompleted、TODO_392/393/394はtodosへ反映。既存49件は上書きなし。\nPhase C：きむら博士許可の上、停止→新コードで再起動実施。\nPhase D：PID 4836→3132、起動時刻18:00:46へ変化。件数一致継続、TODO_391〜394全件new側に存在確認。MCP実機(mocka_get_todo)応答も総数56件で整合。\nPhase E事実整理：Implementation Complete(14:14頃)→Process Restart(18:00:46)→Verification(18:01頃)→Operational Complete(18:01時点)。TODO_390の当初完了報告(14:2x台)はImplementation Completeのみの状態であり、Process Restart以降は未到達だった。この間(約4時間弱)に追加されたTODO_391〜394は旧パスにのみ存在する移行漏れ状態が継続していたが、本TODOの対応で解消。\n\n最終判定（TODO_390の完了扱いの再評価）はきむら博士判断。「Implementation Complete→Process Restart→Verification→Operational Complete」の4段階区分は今後の標準運用ルールとして定着させる価値あり。",
+      "reference_event": "",
+      "created_at": "2026-06-30T17:49:06.050650",
+      "updated_at": "2026-06-30T18:02:53.996922",
       "completed_at": "2026-06-30"
     }
   ]
