@@ -47,7 +47,7 @@ if not MOCKA_ENDPOINT:
 
 BASE           = Path(r"C:\Users\sirok\MoCKA")
 OVERVIEW_PATH  = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
-TODO_PATH      = Path(r"C:\Users\sirok\MOCKA_TODO_ACTIVE.json")
+TODO_PATH      = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
 KNOWLEDGE_GATE = BASE / "data"
 EVENTS_CSV     = BASE / "data" / "events.csv"  # 廃止済み（互換保持のみ）
 FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
