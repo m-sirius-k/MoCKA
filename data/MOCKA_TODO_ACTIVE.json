@@ -626,15 +626,15 @@
     {
       "id": "TODO_401",
       "title": "TODO_399-C: OVERRIDES enforcement設計（強制制御・ゲート設計）",
-      "status": "未着手",
+      "status": "保留",
       "priority": "中",
       "category": "制度/Knowledge Activation/Decision Policy",
       "description": "【背景】\nabsolute_priority（絶対優先の主張）を持つKnowledge Assetが実際に「強制的に優先される」ことを、システムとしてどう保証するかの設計。これはガードレール設計そのものであり、3分割の中で最も重要かつ難度が高い。\n\n【前提】\nTODO_399-A（配置・形式）、TODO_399-B（比較アルゴリズム）完了後に着手すること。\n\n【設計対象】\n①OVERRIDESの強制をどの層で行うか：event_gateで止めるか、Decision層で拒否するか、両方か\n②human_gateとの連動方法：absolute_priority同士の競合等、機械的に解決できないケースでHuman Gateへどう橋渡しするか\n③強制が「効いていること」をどう検証・監査するか（TODO_396のGL7-UNENFORCED-CONDITIONS-BUGのような「掲げているが実効していない」状態を再発させないための設計上の手当て）\n\n【完了条件】\nOVERRIDES enforcement設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
       "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "TODO_399-A/B（実体設計・比較アルゴリズム）完了後の最終ピース。\n\n【v0.1提出済み。GPT最終論点（カナリアテストの位置づけ）への決定。v0.2で確定版とする】\n\nv0.1の評価：3層構造（評価＝Decision Policy／制約＝event_gate／監査＝audit_trigger）に加えカナリアテストを設けた4層アーキテクチャは高評価。OVERRIDESの意味を「権利」から「Decision Policyが評価した結果に付随する監査可能な要求フラグ」へ転換した点も確定でよい。\n\n【決定：カナリアテストはA案（CI依存）を採用】\n理由：\n①TODO_399で独立DB/serviceを拒否しPHI-OS内に統合した判断、TODO_396で新規Gateを作らずhuman_gateを再利用した判断と一貫性を保つため。新しい常駐監視プロセスを追加することは、これまで繰り返し確認してきた「経路・プロセスが増えるほど死蔵・分裂リスクが増える」という教訓（TODO_371の正本不信パターン、TODO_396のhuman_gate_bp死蔵）に反する。\n②human_gate_bp死蔵の根本原因は「実行環境への組み込み忘れ」であり「監視頻度」の問題ではなかった。CI定期実行でも、テスト自体の実行が担保されていれば十分検知できる。\n③現状の運用規模（個人開発者＋くろこ）では、常駐監視プロセス自体がTODO_364で発見されたような「タスクスケジューラ登録だが壊れて放置」パターンを新たに生むリスクの方が高い。\n\n【v0.2で追加すること：CI実行自体の生存確認】\nA案を採るからには、「カナリアテストが実際に定期実行されているか」自体を別途担保する仕組みが必要。以下を設計に追加すること：\n- カナリアテスト（test_override_evidence_gap_is_rejected_by_event_gate）の最終実行日時を記録する仕組み（例：実行結果をmocka_write_eventへ記録）\n- 最終実行日時が一定期間（例：7日）更新されていない場合に検知する、既存の仕組み（例：TODO_371で言及されたcheck系・health_check.py等）への統合を検討する\n- これにより「テストが書かれているが実行されていない」という二次的な死蔵（カナリアテストのカナリア）を防ぐ\n\n【v0.1のその他設計はそのまま確定】\n①強制層：Decision Policy（評価）＋event_gate（証跡なしDecision Evidenceをリジェクト）の二層\n②human_gate連動：新規Gateを作らずsubmit()を再利用、gate_type=\"decision_policy\"で区別\n③監査：trg_detect_override_evidence_gap（DBトリガー、audit_trigger.pyパターン踏襲）\n\n【提出物】\n①OVERRIDES enforcement設計 v0.2（カナリアテストのCI実行担保の仕組みを追加）\n②残存リスク・未解決事項の最終整理\n③完了条件チェックリスト最終版\n\n【完了条件】\nv0.2でカナリアテストのCI実行担保の仕組みが明記され、きむら博士が承認した時点で完了とする。これでTODO_399/400/401（Decision Policy三部作）が完結する。",
+      "note": "TODO_399-A/B（実体設計・比較アルゴリズム）完了後の最終ピース。\n\n【v0.1提出済み。GPT最終論点（カナリアテストの位置づけ）への決定。v0.2で確定版とする】\n\nv0.1の評価：3層構造（評価＝Decision Policy／制約＝event_gate／監査＝audit_trigger）に加えカナリアテストを設けた4層アーキテクチャは高評価。OVERRIDESの意味を「権利」から「Decision Policyが評価した結果に付随する監査可能な要求フラグ」へ転換した点も確定でよい。\n\n【決定：カナリアテストはA案（CI依存）を採用】\n理由：\n①TODO_399で独立DB/serviceを拒否しPHI-OS内に統合した判断、TODO_396で新規Gateを作らずhuman_gateを再利用した判断と一貫性を保つため。新しい常駐監視プロセスを追加することは、これまで繰り返し確認してきた「経路・プロセスが増えるほど死蔵・分裂リスクが増える」という教訓（TODO_371の正本不信パターン、TODO_396のhuman_gate_bp死蔵）に反する。\n②human_gate_bp死蔵の根本原因は「実行環境への組み込み忘れ」であり「監視頻度」の問題ではなかった。CI定期実行でも、テスト自体の実行が担保されていれば十分検知できる。\n③現状の運用規模（個人開発者＋くろこ）では、常駐監視プロセス自体がTODO_364で発見されたような「タスクスケジューラ登録だが壊れて放置」パターンを新たに生むリスクの方が高い。\n\n【v0.2設計完了 2026-07-01 — きむら博士承認待ち（awaiting_approval）】\n成果物: docs/governance/OVERRIDES_ENFORCEMENT_DESIGN_v0.2.md\n\n設計内容:\n- CIパターン: 軽量ガード型（canary_overrides.yml新設、週次schedule: cron 毎週月曜3:00 UTC）\n- mocka_write_event記録方式: 2段階（CI側はgit commit、ローカルhealth_check.pyのcheck_canary_overrides_liveness()がFAIL時にwrite_event()で記録）\n- 7日検知統合先: interface/health_check.py のHEALTH_CHECKSに canary_overrides_liveness エントリを追加、check_canary_overrides_liveness()関数を追加（check_phi_os_audit()と同パターン）\n- 最終実行日時の保存先: data/tic/canary_overrides_last_run.json\n\n残存リスク:\n- R4: カナリアテスト本体（test_override_evidence_gap_is_rejected_by_event_gate）が未実装。実装後にCI統合・health_check.py統合の順で実施する。\n\n【完了条件】\nきむら博士の承認をもって完了。承認後にTODO_399/400/401（Decision Policy三部作）が完結する。",
       "reference_event": "",
       "created_at": "2026-06-30T19:03:21.060218",
-      "updated_at": "2026-06-30T20:01:14.388834"
+      "updated_at": "2026-07-01T08:56:17.921949"
     },
     {
       "id": "GOVERNANCE_MILESTONE_GM1",
@@ -673,6 +673,46 @@
       "reference_event": "TODO_402 v0.2完了報告（2026-07-01）",
       "created_at": "2026-07-01T08:17:52.983861",
       "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "GM2_ROADMAP",
+      "title": "GM2ロードマップ記録 — Operational Assurance → Registry → Atlas → Knowledge Activation（アクション不要・ビジョンのみ）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/ロードマップ/GM2",
+      "description": "【位置づけ】\n新規TODOではない。GM1（制度基盤完成：Decision Policy/Mathematical Closure/Governance Audit/Artifact Governance/Impact Audit/4箇所トレーサビリティ一致）に続くフェーズのビジョン記録。GM2自体はTODOとして起票しない（TODOがTODOを呼ぶ増殖を避ける）。各Stepの着手時に個別TODOとして具体化する。\n\n【GM2 Vision（3ステップ）】\n\nStep1: Operational Assurance（運用保証）\nTODO_401 v0.2が本体。Canary Test・CI実効保証・Override検証・Evidence Gap検証・Runtime Enforcement。次回セッションの開始点として既に確定済み。\n\nStep2: Registry（命名・分類・シリーズ管理）\n「何が存在するか」を管理する台帳。Atlasより先に固める（Atlasの内容が何度も書き換わるのを防ぐため）。カテゴリ/シリーズ命名規則の正式管理台帳として将来実装する。\n\nStep3: Atlas（構造・関係・案内図）\nRegistryが固まった後に着手。「それらがどうつながっているか」を示す地図。\n\n【Atlas設計方針（重要：最初から百科事典にしない）】\nAtlas v1.0を一度に作らず、育てる本として段階導入する：\n- v0.1：MoCKA全体構成（1枚）／シリーズ一覧／レイヤーマップ(MoCKA/PHI/Relay/Memory/Orchestra)／文書入口(README/Specification/TODO/Event)。これだけで「迷わないこと」という目的を達成する。データフロー・トレーサビリティ・ロードマップはまだ書かない。\n- v0.5：Vocabulary（用語体系）を追加\n- v0.8：Dependency（依存マップ）を追加\n- v1.0：Traceability／Document Map／Data Flowまで完成\n\n【Navigation と Activation の責務分離（確定）】\n- Knowledge Navigation＝Passive。役目は「探す」のみ。\"Where?\"に答える（例：Atlasで「Decision PolicyはTODO_399〜402」と分かる）\n- Knowledge Activation＝Active。役目は「使う」のみ。\"Why?/When?/How?\"に答える（例：「PHIが今必要なのはTODO_399です」と能動的に示す）\nTODO_395で設計済みのKnowledge Activation Architecture v0.4とは責務が異なるため、混同しないこと。\n\n【段階実行順序（確定）】\nOperational Assurance → Registry → Atlas → Knowledge Activation\nこの順序を守る理由：Registryが先に固まらないとAtlasの内容が何度も書き換わるため。逆順は避ける。\n\n【次回セッションの開始点（変更なし）】\nTODO_401 v0.2（GM2 Step1）。Atlas/Registry/Knowledge Activationの着手はTODO_401 v0.2完了後。",
+      "assigned_to": "記録のみ（アクション不要）",
+      "note": "2026-07-01、GM1完結セッションの締めくくりとして記録。R01監査官との議論を経て、Atlas v1.0を一度に作る案（TODO_395型の自己増殖リスクあり）から、段階導入（v0.1→v0.5→v0.8→v1.0）へ修正。Navigation(Passive)とActivation(Active)の責務分離も併せて確定。GM2自体はアクション不要のビジョン記録であり、各Stepは着手時に個別TODOとして具体化する。",
+      "reference_event": "2026-07-01セッション（GM1完結後のGM2提案）",
+      "created_at": "2026-07-01T08:44:12.576349",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "CATEGORY_REGISTRY_V1",
+      "title": "カテゴリ/シリーズ命名規則 v1 確定 — DP/GV/IA(運用開始) + OA/KN/KA(予約)、後方互換導入",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/ガバナンス/命名規則",
+      "description": "【目的】\nTODOシリーズが増え続けている現状（Decision Policy Series, Governance Audit Series, Impact Audit Series）に対し、カテゴリ／シリーズの命名規則を早期に制度化する。後から30シリーズできてから直すコストを避けるため、今のタイミングで導入する。\n\n【命名原則（確定）】\nカテゴリは責務（Why）で分け、シリーズは成果物（What）で分ける。\n例：DP（Decision）＝意思決定制度に関するカテゴリ／Decision Policy Series＝そのカテゴリの具体的なシリーズ。\nこの区別により、将来「Decision Validation Series」「Decision Metrics Series」等が生まれてもすべてDPカテゴリに収まる。\n\nカテゴリは安定、シリーズは増えてよい——これがMoCKAの「骨格」と「成長部分」の設計原則である。\n\n【確定する6カテゴリ】\n| カテゴリ | シリーズ名 | 略号 | 状態 |\n|---|---|---|---|\n| Decision | Decision Policy Series | DP | 運用開始 |\n| Governance | Governance Audit Series | GV | 運用開始 |\n| Impact | Impact Audit Series | IA | 運用開始 |\n| Operational Assurance | Operational Assurance Series | OA | 予約 |\n| Knowledge Navigation | Knowledge Navigation Series | KN | 予約 |\n| Knowledge Activation | Knowledge Activation Series | KA | 予約 |\n「予約」＝カテゴリ名のみ制度化し、まだシリーズが始まっていない状態。\n\n【導入方式（後方互換・3段階）】\n\n第1段階（今すぐ適用）：新規作成物のみ新命名規則を適用する。\n\n第2段階（既存シリーズは変更しない）：Decision Policy Series（399〜405,402）／Governance Audit Series（406〜409）／Impact Audit Series（IA-001）は名称を一切変えない。代わりに対応表（Series→Category）のみを追加する：\n- Decision Policy Series → DP\n- Governance Audit Series → GV\n- Impact Audit Series → IA\n名称は資産なので変えない。分類だけ追加する。\n\n第3段階（将来）：Registry（GM2_ROADMAPのStep2）が確立した時点で、Category/Series/Status/Descriptionの一覧を正式な管理台帳として固定する。\n\n【非目的】\n既存TODO（399〜410, GM1系）への一斉改名・遡及的なID変更は行わない。番号体系自体の変更も行わない（シリーズごとの連番制、例：IA-001, IA-002...は維持）。",
+      "assigned_to": "記録のみ（新規TODOから適用・既存TODOは不変）",
+      "note": "2026-07-01、GM2_ROADMAP Step2(Registry)の先行として、命名規則のみ早期確定。導入コストが最も低いタイミングであるとの判断（R01監査官）。既存3シリーズ(DP/GV/IA)は名称不変・分類のみ付与。予約3カテゴリ(OA/KN/KA)はGM2_ROADMAPの各Stepに対応する。",
+      "reference_event": "2026-07-01セッション（GM2提案に伴う命名規則確定）",
+      "created_at": "2026-07-01T08:44:30.882184",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "GM3_VISION",
+      "title": "GM3 Charter — Knowledge Governance / 判断経路の継承（長期ビジョン・現在の開発対象ではない）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/憲章/Charter",
+      "description": "【性質の明示（重要）】\nGM3はGM1・GM2と同じ階層に置かない。GM1は「完了した制度基盤」、GM2は「実行予定のロードマップ」、GM3は「長期ビジョン（Charter／憲章）」である。仕様・TODO・実装・ロードマップは一切書かない。書くのは数個の原則のみ。\n\n【GM3 目的】\n一度到達した判断を、証拠・文脈・責任を保ったまま未来へ継承できる知識基盤を目指す。\n\n【GM3 原則（5項目のみ）】\n①知識だけでなく判断経路を継承する。\n②判断は証拠・文脈・責任と分離しない。\n③推論は必要に応じて再利用されるが、常に検証可能である。\n④人間の最終判断権は維持される。\n⑤実装はGM1・GM2の成熟を前提とする。\n\n【用語について（暫定）】\n「Reason Graph」という用語は今は固定しない。まだ十分に実証されていないため。現時点では「判断経路（Reasoning Path）」という表現に留める。将来、実際にグラフ構造として成熟した段階で正式名称化を検討する。\n\n【背景となった議論の要旨（記録）】\nGM1（知識を保存する→制度を作る→制度を監査する）の先には、「制度そのものが自分の状態を理解できる」という段階がある。Registry（何が存在するか）・Atlas（どう繋がっているか）・Activation（今どれが必要か）が揃った先に、Evidence→Decision→Reason→Context→Historyという判断経路の継承という構想が見える。これは「AIは毎回ゼロから考え直している」という、MoCKA創設時からの一貫した問題意識に立ち返るものである。\n\n【最重要の一文（必ず保持すること）】\nGM3は現在の開発対象ではない。GM1・GM2が十分に成熟した後にのみ再評価する長期ビジョンである。\n\nこの一文があることで、TODO_395型の設計暴走を防止する。GM3はいつ始めるかを決める文書ではなく、どこを目指すのかを忘れないための北極星である。",
+      "assigned_to": "記録のみ（アクション不要・思想記録）",
+      "note": "2026-07-01、GM1完結・GM2ロードマップ記録に続けて、R01監査官との議論を経て「憲章（Charter）」として記録することで合意。GM2_ROADMAPとは性質が異なる（GM2＝実行計画、GM3＝将来理念）ことを明確に区別すること。GM3は次回セッション（TODO_401 v0.2開始）の作業範囲・優先順位には一切影響を与えない。\n\n【継承の前提（追記）】\n未来は、今日の判断を信頼できるときにだけ継承できる。GM1で証拠を整え、GM2で運用を保証し、その上で初めてGM3の「継承」が意味を持つ。この順番（証拠→運用→継承）を崩さないこと。\n\n【本日の総括（2026-07-01）】\n2026年7月1日、MoCKAは制度を完成させただけでなく、「どこまでを今日行い、どこからを未来へ託すか」を制度として定義した。GM3を提案しながらも実行対象として持ち込まず、北極星として切り離して保持できたこと自体が、本日確立したDecision Policy（Decision Policyが唯一の裁定アルゴリズムであり、要求は採否決定権を持たない）という思想が、制度設計だけでなくプロジェクト運営の実践にも適用された一例である。",
+      "reference_event": "2026-07-01セッション（GM3 Charter化議論）",
+      "created_at": "2026-07-01T08:50:18.956628",
+      "contract_status": "DONE_LOCKED",
+      "updated_at": "2026-07-01T08:51:58.864481"
     }
   ],
   "orchestra_handoff": {
@@ -973,6 +1013,20 @@
       "reference_event": "E20260630_6432312496826",
       "created_at": "2026-06-30T20:08:52.465955",
       "updated_at": "2026-07-01T07:51:23.787096",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "IA-001",
+      "title": "IA-001: Decision Policy制度変更 影響範囲監査（Impact & Consistency Audit）— Approval Gate/Event System/Repository Topology/Scope整合性の横断確認",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/Impact Audit/Decision Policy影響範囲監査",
+      "description": "【位置づけ】\n本TODOは新規TODOを増やすための監査ではなく、本日確立したDecision Policy SeriesとGovernance Audit Seriesという「制度の背骨」が、前段(Event/Evidence/Scope)・後段(Enforcement/Artifact/CI)と整合しているかを検証する、ライフサイクル横断の影響範囲監査(Impact & Consistency Audit)である。\n\nこれはGovernance Audit Series(406〜410)の続きではない。406〜409が「成果物管理・監査運用そのものの制度化」だったのに対し、本監査は「完成した制度が他レイヤーへ与える影響評価」であり役割が異なる。そのため独立した新シリーズ「Impact Audit Series」の第1号(IA-001)として起票する。将来Decision/Artifact/Execution/Memory等、他の制度変更についても同種の横断監査が繰り返される可能性が高く、独立シリーズとして育てる。\n\n【対象ライフサイクル】\nDecision Policy → Approval → Evidence → Artifact → Audit → CI\nこの一本の流れを見る監査である。Human Gate・Documentation・Repository全体・Future Expansionまで広げると目的が変わるため、本監査では扱わない。\n\n【Scope Freeze（監査開始時点で固定・途中変更禁止）】\n- Repository: MoCKA (C:\\Users\\sirok\\MoCKA)\n- Branch: main\n- Commit: cfb0985f9（本日pushした最新commit）\n- Event: E20260701_9568639306a25 以前に記録された既存イベント群\n監査開始後、これらの対象を途中で拡張・変更しない。406〜407で学んだ教訓（監査スコープの誤設定がインシデントを生んだ）を、Scope Freezeという明示的な制度として組み込む。\n\n【監査対象（5領域に絞り込み・10領域から意図的に縮小）】\n①Decision Policy ↔ Approval Gate：Decision結果と承認ゲートの責務境界に矛盾・抜けがないか\n②Decision Evidence ↔ Event System：Evidenceの出所とevent_gate記録が常に一対一で追跡できるか\n③Artifact Governance ↔ Repository Topology：TODO_408で定義した成果物管理が、実際のリポジトリ・ブランチ・パス構造と一致しているか（本日コミットしたcfb0985f9の実体を含む）\n④Scope定義 ↔ 各監査の前提整合性：TODO_406〜409で確立したScope定義が、他の既存監査TODO（TODO_371等）でも同じ前提で使われているか\n⑤Decision Policy ↔ CI/Canary：TODO_401 v0.2着手前の事前情報収集のみ（調査限定）\n\n【Deferred（意図的な対象外・「忘れた」のではなく「意図的に切った」ことを明記）】\n- Human Gate（Approval/Execution/Self Approval/権限逆転）\n- Repository Integrity全般（Submodule/Worktree/Mirror等）\n- Documentation全体（README/Architecture/Diagram等）\n- Future Expansion全般（authority_rankのAI Event等への将来細分化）\nこれらは本監査では扱わない。必要であれば各々独立TODOとして別途起票する。\n\n【段階的進め方（Phase制・各Phaseの境界を厳守すること）】\n\n■Phase A（必須・①②③④の事実確認のみ）\n- ①Decision Policy⇔Approval Gateの責務境界：コード上の呼び出し関係の確認のみ。新規設計はしない\n- ②Decision Evidence⇔Event System：サンプル3〜5件で出所とevent_gate記録の一対一追跡可能性を実地確認\n- ③Artifact Governance⇔Repository Topology：TODO_408定義と実際のリポジトリ構造の一致確認\n- ④Scope定義⇔各監査前提：TODO_406〜409のScope定義が他の既存監査TODOと用語・前提で不整合がないか確認\n\n■Phase B（条件付き・Phase Aで不整合が確認された場合のみ）\n重要な制約：Phase BはPhase Aで実証された事実のみを対象とする。監査中に「あれも見よう」と対象を広げることは禁止する（TODO_395型の無限微調整を防ぐため）。不整合の原因切り分けはTODO_406〜407と同じ4分類手法（記録/移動/履歴/誤記）を踏襲する。\n\n■Phase C（⑤のみ・調査限定）\nTODO_401 v0.2のための事前情報収集として、Decision PolicyがCI/Canaryで実際に検証可能な構造になっているかを軽く確認する。発見事項はTODO_401 v0.2への申し送りとしてまとめるのみ。重要な制約：TODO_401のAcceptance Criteria・Scope・Definition of Doneは本監査では一切変更しない。調査結果はTODO_401へ引き継ぐのみとし、TODO_401 v0.2の作業範囲との重複を完全に排除する。\n\n【非目的】\n新規の設計変更・実装は一切行わない。事実確認・整合性チェックのみ。Deferred対象（Human Gate/Repository Integrity/Documentation/Future Expansion）への調査拡大は行わない。\n\n【完了条件】\n①〜④それぞれについて以下3分類で報告すること：\n- No Finding（問題なし）\n- Minor Finding（軽微な不整合・補強推奨レベル）\n- Major Finding（構造的な不整合・追加対応が必要なレベル）\n⑤はTODO_401 v0.2への申し送り事項としてまとめること（本監査内では完了扱いとしない）。\nPhase Bが発火した場合はその結果も報告に含めること。\nmocka_write_event記録済みであること。",
+      "assigned_to": "くろこ（監査実施）+ きむら博士（最終判定）",
+      "note": "【監査完了: 2026-07-01】event記録: E20260701_622268880294f\n\nPhase A結果:\n1) Decision Policy vs Approval Gate: No Finding\n   - human_gate.pyの汎用状態機械(submit/approve/reject)とDecision Policyの責務境界がコード・ポリシー文書双方で完全に分離していることを確認。stage_4 escalate_if_needed()はhuman_gate.submit()再利用設計(gate_type=decision_policyで区別)で矛盾なし。\n2) Decision Evidence vs Event System: Minor Finding\n   - ポリシー文書上のEvidence定義(DECISION_POLICY_v0.1.md sec4)は完備しているが、event_gateのlayer_2_constraint(trg_detect_override_evidence_gap)は未実装。CHANGE_STARTイベントによる変更記録は存在するがDBトリガーによる強制保証は未達。意図的先送り(TODO_401 v0.2)であり構造的問題ではない。\n3) Artifact Governance vs Repository Topology: No Finding\n   - commit cfb0985f9の4ファイル全てがTODO_ARTIFACT_GOVERNANCE_v1.0.mdの定義と合致(Artifact Type/Evidence Location明示済み)。リポジトリトポロジーと定義の乖離なし。\n4) Scope定義 vs 既存監査前提整合性: No Finding\n   - TODO_406〜409のScopeが共通前提(MoCKAリポジトリ/mainブランチ/制度系TODOのみ/Human Gate等除外)で統一されていることを確認。TODO_371は独立スコープで前提矛盾なし。\n\nPhase B: 発火なし(Major Findingなし)\n\nPhase C(TODO_401 v0.2申し送り):\n- 現状CIにDecision Policy/event_gate連動テストは存在しない(mocka_regression/mocka_guard/phios_regression)\n- カナリアテスト(test_override_evidence_gap_is_rejected_by_event_gate)のCI実装がTODO_401 v0.2の主要課題\n- liveness_guarantee(最終実行日時記録+7日未更新検知)も未実装\n\nArtifact Type: Investigation Report\nCompletion Evidence: note内完結\nVerification Status: Verified\nEvidence Location: event E20260701_622268880294f / commit cfb0985f9",
+      "reference_event": "2026-07-01セッション（Decision Policy Series + Governance Audit Series完結後の影響範囲監査提案）",
+      "created_at": "2026-07-01T08:30:08.613029",
+      "updated_at": "2026-07-01T08:37:36.382730",
       "completed_at": "2026-07-01"
     }
   ]
