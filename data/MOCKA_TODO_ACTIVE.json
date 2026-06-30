@@ -636,18 +636,6 @@
       "created_at": "2026-06-30T18:43:31.324923"
     },
     {
-      "id": "TODO_399",
-      "title": "TODO_399-A: Decision Policy v1.0 実体設計（配置・形式・構造）",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度/Knowledge Activation/Decision Policy",
-      "description": "【背景】\nTODO_398（Knowledge Asset Promotion Pipeline v0.4）で、Decision Policyを「唯一の裁定者」として責務集約することが確定した。本TODOはDecision Policy自体の実体設計フェーズ。\n\n【目的】\nDecision Policyをどこに、どう実体化するかを設計する（実装はしない）。\n\n【設計対象】\n①配置場所：PHI-OS内に置くか、独立したDBか、独立したserviceとして切り出すか\n②表現形式：JSON/DSL/コードのいずれで記述するか\n③構造：TODO_398で定義した判定順序（absolute_priority優先→confidence比較→解決不能ならHuman Gateへ）を、実際にどういうデータ構造・関数シグネチャで表現するか\n④既存PHI-OS（event_gate/control_gate/human_gate）との接続点をどこに置くか\n\n【完了条件】\nDecision Policy v1.0設計文書が作成され、TODO_399-B（conflict_resolution_order設計）・TODO_399-C（OVERRIDES設計）の前提となる配置・形式が確定していること。きむら博士の承認を得ること。\n\n【非目的】\n実装（コード化）は本TODOの範囲外。",
-      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "TODO_398後続。Decision Policy実体化の第一段階（配置・形式・構造）。TODO_399-B/Cの前提となる。",
-      "reference_event": "",
-      "created_at": "2026-06-30T19:03:00.165421"
-    },
-    {
       "id": "TODO_400",
       "title": "TODO_399-B: conflict_resolution_order設計（比較アルゴリズム）",
       "status": "保留",
@@ -816,6 +804,20 @@
       "reference_event": "",
       "created_at": "2026-06-30T18:50:26.076918",
       "updated_at": "2026-06-30T19:02:08.747866",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_399",
+      "title": "TODO_399-A: Decision Policy v1.0 実体設計（配置・形式・構造）",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nTODO_398（Knowledge Asset Promotion Pipeline v0.4）で、Decision Policyを「唯一の裁定者」として責務集約することが確定した。本TODOはDecision Policy自体の実体設計フェーズ。\n\n【目的】\nDecision Policyをどこに、どう実体化するかを設計する（実装はしない）。\n\n【設計対象】\n①配置場所：PHI-OS内に置くか、独立したDBか、独立したserviceとして切り出すか\n②表現形式：JSON/DSL/コードのいずれで記述するか\n③構造：TODO_398で定義した判定順序（absolute_priority優先→confidence比較→解決不能ならHuman Gateへ）を、実際にどういうデータ構造・関数シグネチャで表現するか\n④既存PHI-OS（event_gate/control_gate/human_gate）との接続点をどこに置くか\n\n【完了条件】\nDecision Policy v1.0設計文書が作成され、TODO_399-B（conflict_resolution_order設計）・TODO_399-C（OVERRIDES設計）の前提となる配置・形式が確定していること。きむら博士の承認を得ること。\n\n【非目的】\n実装（コード化）は本TODOの範囲外。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "【完了】v0.1→v0.2→v0.3の3段階改訂を経て最終確定。\n\n確定した判断の線引き（今後の設計フェーズでも適用する基準）：\n「構造の境界が壊れるリスク（今直すべき）」と「評価精度・運用設計の最適化（後でよい）」を分離する。境界が崩れると後工程の定義ごとズレるため必須修正とし、最適化系は明示的に先送りする。これによりTODO_395で起きた「設計が終わらず無限に微調整される」パターンを回避した。\n\nv0.3確定構造（Decision Policy = 5段の決定オートマトン）：\n1. detect_conflicts（2層化）\n   - detect_explicit_conflicts：knowledge_relationships上のCONFLICTS_WITH（制度的に確定済みの矛盾）\n   - detect_implicit_conflicts：同一domain×category内の重複（未確定の暗黙的競合）\n2. rank_candidates（v0.2のまま据え置き）\n3. apply_policy（3分割）\n   - evaluate_override：override_requestedの評価のみ\n   - resolve_competition：override非該当時の通常競合解決のみ\n   - finalize_selection：純粋な最終確定処理のみ\n4. escalate_if_needed（v0.2のまま据え置き、Human Gateへの薄いラッパー）\n\n配置：phi_os/decision_policy.py（PHI-OS内統合、独立DB/service不採用）。ポリシーデータはdocs/governance/DECISION_POLICY_v0.1.md内にJSON埋め込み（TODO_393のACTIVATION_POLICY_v0.1.md形式を踏襲）。\n\n最重要設計判断：absolute_priorityをoverride_requestedへ改名し、「絶対優先権」から「優先してほしいという要求」へ格下げ。採否の最終決定権は常にDecision Policy側（evaluate_override）にあることをフィールド名自体に埋め込んだ。これによりTODO_398で確立した「Decision Policyを唯一の裁定者とする」権力分離原則の抜け道を塞いだ。\n\n次フェーズへ明示的に先送りした事項（TODO_399-B/C以降の対象）：\n①rank_candidatesの評価層化（単一ソートから特徴量評価層への進化）\n②escalation条件の3分類（structural/policy/ambiguity failureの区別）\n③policyの「解釈可能なルール空間」への進化（最も重く、現時点では着手しない）\n④detect_implicit_conflictsの定義精緻化（現状はdomain×category重複という静的な定義。論理的競合への拡張はTODO_399-Bへ）\n\nきむら博士の最終承認を得て本TODOを完了とする。",
+      "reference_event": "",
+      "created_at": "2026-06-30T19:03:00.165421",
+      "updated_at": "2026-06-30T19:48:46.449936",
       "completed_at": "2026-06-30"
     }
   ]
