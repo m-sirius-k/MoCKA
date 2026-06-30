@@ -636,18 +636,6 @@
       "created_at": "2026-06-30T18:43:31.324923"
     },
     {
-      "id": "TODO_400",
-      "title": "TODO_399-B: conflict_resolution_order設計（比較アルゴリズム）",
-      "status": "保留",
-      "priority": "中",
-      "category": "制度/Knowledge Activation/Decision Policy",
-      "description": "【背景】\nTODO_399-A（Decision Policy実体設計）で配置・形式が確定した後、conflict_resolution_order（複数Knowledge Assetが競合した際の比較アルゴリズム）自体を設計するフェーズ。\n\n【前提】\nTODO_399-A完了後に着手すること。\n\n【設計対象】\n①比較アルゴリズムの仕様：confidence値の比較方法（単純な大小比較か、重み付き計算か）\n②absolute_priority同士が競合した場合の扱い（複数のAssetが同時にabsolute_priority=trueを主張した場合の解決方法）\n③ルールの記述形式とバージョニング方針\n④domain×categoryをまたいだ競合（異なる領域の知識同士が衝突する場合）の扱い\n\n【完了条件】\nconflict_resolution_orderの設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
-      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "TODO_399-A後続。TODO_399-Aの配置・形式確定が前提条件。",
-      "reference_event": "",
-      "created_at": "2026-06-30T19:03:09.535197"
-    },
-    {
       "id": "TODO_401",
       "title": "TODO_399-C: OVERRIDES enforcement設計（強制制御・ゲート設計）",
       "status": "保留",
@@ -818,6 +806,20 @@
       "reference_event": "",
       "created_at": "2026-06-30T19:03:00.165421",
       "updated_at": "2026-06-30T19:48:46.449936",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_400",
+      "title": "TODO_399-B: conflict_resolution_order設計（比較アルゴリズム）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nTODO_399-A（Decision Policy実体設計）で配置・形式が確定した後、conflict_resolution_order（複数Knowledge Assetが競合した際の比較アルゴリズム）自体を設計するフェーズ。\n\n【前提】\nTODO_399-A完了後に着手すること。\n\n【設計対象】\n①比較アルゴリズムの仕様：confidence値の比較方法（単純な大小比較か、重み付き計算か）\n②absolute_priority同士が競合した場合の扱い（複数のAssetが同時にabsolute_priority=trueを主張した場合の解決方法）\n③ルールの記述形式とバージョニング方針\n④domain×categoryをまたいだ競合（異なる領域の知識同士が衝突する場合）の扱い\n\n【完了条件】\nconflict_resolution_orderの設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "【完了】v0.1のみで確定（3往復の歯止め通り、最短で完結）。\n\n確定した比較アルゴリズム構造：\n\n①評価ベクトル方式（合成スコア化しない）：\n_evaluation_vector(candidate, policy) = (decision_effect_rank, -confidence, authority_rank, -created_at)\nrank_candidatesは辞書式順序（lexicographic order）による比較。confidence算出方法が未確定（TODO_398から継続課題）であるため、重み付き計算は導入せず単純比較に留める判断。\n\n②override_requested同士の競合解決：\n0件→none、1件→単独採用、複数件→confidence上位者を採用（authority_orderで同値判定）、それでも同値なら全員却下しescalate_if_needed()へ委ねる（人間判断）。機械的に「説明できない勝者」を作らない設計とした。\n\n③ルール記述形式：TODO_399-Aで確定したDECISION_POLICY_v0.1.md（JSON埋め込み）をそのまま使用。バージョニングはX.Y形式（X=構造変更、Y=パラメータ調整）。\n\n④implicit_conflict定義の精緻化：detect_implicit_conflictsに confidence差が一定マージン（初期値0.3）以上開いている場合は競合とみなさない閾値を追加。domain×categoryをまたぐ横断的競合は自動検出せず、knowledge_relationshipsへの明示的記録（人間判断）に依存する制約を維持（implicit_conflictsの範囲自体は拡張しない）。\n\n【判断の線引き基準が正しく機能した例】\n重み付き計算の即時導入（案M）、領域横断の自動検出拡張（案N）はいずれも不採用。confidence算出方法未確定・policyのルール空間化（TODO_399で次フェーズ送り）という既存の境界を侵さない範囲に踏みとどまった。\n\n【残存リスク・次フェーズへ引き継ぎ】\n①confidence算出方法・算出主体は依然未定義（TODO_398から継続、TODO_399-C以降でも未解決の可能性あり）\n②implicit_conflict_confidence_margin(0.3)の初期値は運用しながら調整する前提（固定仕様ではなく運用ポリシー）\n③knowledge_relationships記録漏れへの対策は本TODOに含まれない\n\nきむら博士の承認を得て本TODOを完了とする。次フェーズTODO_401（OVERRIDES enforcement設計）は「OVERRIDESはルールか制約か例外系イベントか」という、AIの意思決定が計算から制度に変わる核心的論点を扱う。",
+      "reference_event": "",
+      "created_at": "2026-06-30T19:03:09.535197",
+      "updated_at": "2026-06-30T19:56:02.288547",
       "completed_at": "2026-06-30"
     }
   ]
