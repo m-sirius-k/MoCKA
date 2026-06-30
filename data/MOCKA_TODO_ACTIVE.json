@@ -624,19 +624,6 @@
       "created_at": "2026-06-30T14:54:16.896172"
     },
     {
-      "id": "TODO_393",
-      "title": "MoCKA思想進化史 Repository統合フェーズ",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度/思想史/Repository統合",
-      "description": "【目的】\nMoCKA思想進化史(docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md)をRepository標準参照文書として制度へ組み込む。\n\n【前提】\nTODO_392（思想史固定）とは完全に切り離す。本TODOは「Repository組み込み」フェーズであり、文書内容自体への変更は一切行わない。\n\n【対象】\n- CLAUDE.md\n- MOCKA_OVERVIEW.json\n- Handbook（存在する場合）\n- README\n- Architecture Index（存在する場合）\n\n【作業内容】\n上記各ファイルに、MOCKA_THOUGHT_EVOLUTION_v0.1.mdへの参照リンク（パス記載）を追加する。本文の引用・要約は行わない。リンク追加のみ。\n\n【完了条件】\n・対象ファイルそれぞれに参照リンクが追加されていること\n・思想史文書本体への変更が一切ないこと\n・mocka_write_event記録済みであること",
-      "assigned_to": "くろこ",
-      "note": "【再開】TODO_395（Knowledge Activation Architecture v0.4）がきむら博士の最終承認を得たため、本TODO（TODO_393-B：制度組み込み）を再開する。\n\n【前提（v0.4で確定した内容を踏まえること）】\n本TODOは単に思想進化史(MOCKA_THOUGHT_EVOLUTION_v0.1.md)への参照リンクをCLAUDE.md等へ追加するだけでなく、TODO_395で確定したKnowledge Activation Architecture v0.4（Knowledge Assets→Activation Policy→Reference Trigger/Selection/Retrieval→Reasoning Context→Decision→Behavior→Decision Evidence→Reason Unit→Review Gate→Knowledge Assets）を、実際にAIが参照・利用する制度として組み込むことを目的とする。\n\n【対象（v0.4の実装引き継ぎノートを踏まえて更新）】\n- CLAUDE.md：思想進化史への参照リンク追加＋Activation Policyの配置場所決定\n- MOCKA_OVERVIEW.json：同上\n- Handbook（存在する場合）\n- README\n- Architecture Index（存在する場合）\n\n【作業内容】\n①思想進化史への参照リンク追加（当初のスコープ通り、文書内容自体への変更は行わない）\n②Activation Policyを「監査可能な構成データ」として外部化する配置場所を決定し、ファイルを作成する（形式は問わないが、バージョン管理可能・差分追跡可能・Agent内部非埋め込みを満たすこと）\n③Reason Unit生成条件（初期4条件：tension発生時/human_gate通過時/既存Reason Assets上書き時/明示指定）をActivation Policyファイル内に初期値として記載する\n④Review Gateの審査主体・審査フローについて、既存human_gateと統合するか別立てにするかの実装方針を決定する（TODO_395で未決定だった事項）\n\n【完了条件（更新）】\n・対象ファイルそれぞれに思想進化史への参照リンクが追加されていること\n・Activation Policyファイルが新規作成され、初期Reason Unit生成条件が記載されていること\n・Review Gateの実装方針（human_gate統合か別立てか）が決定されていること\n・思想史文書本体への変更が一切ないこと\n・mocka_write_event記録済みであること",
-      "reference_event": "",
-      "created_at": "2026-06-30T17:48:48.317993",
-      "updated_at": "2026-06-30T18:32:11.024248"
-    },
-    {
       "id": "TODO_396",
       "title": "Review Gate実装 — phi_os/human_gate.pyスキーマ拡張（Reason Unit昇格審査）",
       "status": "未着手",
@@ -751,6 +738,20 @@
       "reference_event": "",
       "created_at": "2026-06-30T18:17:12.628503",
       "updated_at": "2026-06-30T18:31:56.795254",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_393",
+      "title": "MoCKA思想進化史 Repository統合フェーズ",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/思想史/Repository統合",
+      "description": "【目的】\nMoCKA思想進化史(docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md)をRepository標準参照文書として制度へ組み込む。\n\n【前提】\nTODO_392（思想史固定）とは完全に切り離す。本TODOは「Repository組み込み」フェーズであり、文書内容自体への変更は一切行わない。\n\n【対象】\n- CLAUDE.md\n- MOCKA_OVERVIEW.json\n- Handbook（存在する場合）\n- README\n- Architecture Index（存在する場合）\n\n【作業内容】\n上記各ファイルに、MOCKA_THOUGHT_EVOLUTION_v0.1.mdへの参照リンク（パス記載）を追加する。本文の引用・要約は行わない。リンク追加のみ。\n\n【完了条件】\n・対象ファイルそれぞれに参照リンクが追加されていること\n・思想史文書本体への変更が一切ないこと\n・mocka_write_event記録済みであること",
+      "assigned_to": "くろこ",
+      "note": "【完了】TODO_395（Knowledge Activation Architecture v0.4）承認後に再開。\n\n完了内容：\n①思想進化史への参照リンク追加：.claude/CLAUDE.md、data/MOCKA_OVERVIEW.json、README.mdの3ファイルに追加（Handbook/Architecture Indexは不存在のため対象外）\n②Activation Policy新規作成：docs/governance/ACTIVATION_POLICY_v0.1.md（初期Reason Unit生成条件4件：tension発生時/human_gate通過時/既存Reason Assets上書き時/明示指定、を記載）\n③Review Gate実装方針決定：既存phi_os/human_gate.pyとの統合を採用（別立てGateは新設しない）\n④思想史文書本体（MOCKA_THOUGHT_EVOLUTION_v0.1.md）への変更なし確認済み\n⑤mocka_write_event記録（CHANGE_START/DONE計4件）済み\n\n未実装として切り出し：Review Gateの実機実装（human_gate.pyスキーマ拡張）はTODO_396として新規起票し引き継ぎ。本TODOは方針決定・文書整備までで完結とする。",
+      "reference_event": "",
+      "created_at": "2026-06-30T17:48:48.317993",
+      "updated_at": "2026-06-30T18:36:35.299428",
       "completed_at": "2026-06-30"
     }
   ]
