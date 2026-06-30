@@ -107,6 +107,23 @@ curl http://localhost:5002/health
 tools/auto_record.log
 ```
 
+### 【必須】git操作は共有ヘルパー経由に統一（TODO_364準拠）
+
+git add/commit/push を行う自律処理・常駐スクリプトを新規に書く場合、
+個別にCore System File除外ロジックを実装してはならない。
+`governance/mocka_git_safe_commit.py` の `mocka_git_safe_commit()` を
+必ず経由すること（正本: `is_core_system_file()`もこのファイルに一元化済み）。
+
+❌ git add/commit/pushを個別スクリプトでsubprocess直接呼出すること
+❌ Core System File除外ロジック（`is_core_system_file()`相当）を個別に再実装すること
+
+✅ git操作は `mocka_git_safe_commit(paths=..., message=..., push=...)` 経由で行う
+✅ `push=True` は、verify_all.py等の検証ステップを経由した呼び出し元からのみ使用する
+   （検証を経由しないpush=True呼出を新規に追加しないこと）
+
+対象: `scripts/ledger/anchor_update.py` / `PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py` /
+`runtime/incident_engine.py` / `runtime/incident_git_sync.py` は本ヘルパー経由に移行済み（2026-06-30）。
+
 ### 【絶対禁止】危険なgit操作の運用ルール（TODO_382準拠）
 
 git rebase/git reset --hard には技術的な保護フック(pre-reset相当)が存在しない。

@@ -25,11 +25,11 @@
   },
   "mcp_schema_hash": {
     "ok": true,
-    "detail": "変更なし (hash: 158fa47a3cd38ce8)"
+    "detail": "変更なし (hash: 4fb27fef7ab43baf)"
   },
   "relay_dom_selector": {
-    "ok": false,
-    "detail": "Relay ping stale (>300s): last_ping=2026-06-29T10:27:18.709157"
+    "ok": true,
+    "detail": "Relay alive (last_ping: 2026-06-30T12:07:52.774662, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": true,
-    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=1788 gate=100.0% [real-time=1396/buffered=392] buffer_pending=0)"
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=1803 gate=100.0% [real-time=1405/buffered=398] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,

@@ -2,15 +2,19 @@ import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-﻿import json
+import json
 import time
 import os
 import subprocess
 import hashlib
+import sys
 
 BASE_DIR = os.path.dirname(__file__)
 ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR,".."))
 LEDGER_PATH = os.path.join(BASE_DIR,"incident_ledger.json")
+
+sys.path.insert(0, os.path.join(ROOT_DIR, "governance"))
+from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
 
 COMMIT_INTERVAL = 10
 
@@ -28,18 +32,16 @@ def save_ledger(data):
         json.dump(data,f,indent=2)
 
 def git_commit():
-
-    try:
-
-        subprocess.run(["git","add","runtime/incident_ledger.json"],cwd=ROOT_DIR)
-        subprocess.run(["git","commit","-m","MoCKA incident batch update"],cwd=ROOT_DIR)
-        subprocess.run(["git","push"],cwd=ROOT_DIR)
-
+    # TODO_364: git add/commit/pushをmocka_git_safe_commit経由に統一。
+    result = mocka_git_safe_commit(
+        paths=["runtime/incident_ledger.json"],
+        message="MoCKA incident batch update",
+        push=True, root=ROOT_DIR
+    )
+    if result["error"]:
+        print("GIT_RECORD_FAILED", result["error"])
+    else:
         print("INCIDENT_BATCH_GIT_RECORDED")
-
-    except Exception as e:
-
-        print("GIT_RECORD_FAILED",str(e))
 
 def incident_hash(title,content,source):
 
