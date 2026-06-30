@@ -510,10 +510,10 @@
       "category": "制度/ガバナンス/正本信頼性",
       "description": "2026-06-26、TODO_370(AUTO_SEAL_50EVTのHuman Gateバイパス再発)の対応中に、きむら博士から本質的な指摘があった。\n\n【きむら博士の説明(2026-06-26)】\nAUTO_SEAL_50EVT/sync_watch.pyは、きむら博士自身が意図的に設計したもの。理由は「MoCKAの最重要記録(会話・変更・イベントログ)が正しく記録されていない不安があったため、Gitに丸ごと保存させることで漏れなく全てを残す保険機構」として組んだ。\n\nきむら博士の診断: 「events.db/mocka_write_event経由の正本ルール(5W1H形式での記録)が正しく機能していれば、この補助ルールは本来不要。正本ルールの上に補助ルールがあるようなものだが、実際は正本ルールが正しく稼働しておらず、補助ルールの方が本流(支流が主流化)になってしまっている」。\n\n【本日の調査全体に共通する構造的パターンとの一致】\n本日発見した以下のいずれも、同型の「正本への不信から生まれた独自の補助記録」というパターンを持つ：\n- relay-logbook.js(TODO_366): MoCKA本体のTODO/イベント記録が信頼できないことから生まれた、Relay独自のLB_記録\n- Memory拡張機能(TODO_367で発見): PHI-OSが情報を一元管理していないことから生まれた、独自のmemory_registryキャプチャ\n- AUTO_SEAL_50EVT/sync_watch.py(本TODO): events.dbへの記録漏れの不安から生まれた、Git全体保存という力技の保険機構\n\nこれらは個別にはバグ修正(TODO_366/367/370)で対応中だが、根本には「events.db/mocka_write_event経由の正本記録が、実際にどの程度信頼できるのか」という、検証されていない共通の前提がある。\n\n【調査内容】\n①events.db/mocka_write_event経由の記録が、実際にどの程度漏れている(または漏れていない)のかを実測する。具体的な検証方法（例: 一定期間の実際の作業内容と、events.dbの記録内容を突き合わせて、記録漏れの実件数を数える等）はくろこの判断で設計してよい。\n②漏れが実際にはほとんど無い場合: AUTO_SEAL_50EVT/sync_watch.pyのようなGit丸ごと保存型の補助機構は、段階的に廃止できる可能性がある(これは設計判断としてきむら博士に最終確認する)。\n③漏れが実際にある場合: その漏れの直接原因(mocka_write_eventが呼ばれていない経路の特定等)を優先して修正する方が、補助機構の維持より優先度が高い。",
       "assigned_to": "くろこ(実測調査)+ きむら博士(設計判断)",
-      "note": "これは個別バグ修正(TODO_366/367/370)とは異なる、上位の診断TODO。「正本が信頼できないという不安が、複数の独立した補助記録機構を生み出している」という、本日発見した複数インシデントに共通する根本原因への対応。緊急の実装は不要だが、優先度は高い(これを放置すると、今後も同種の補助機構が個別に増殖し続ける可能性がある)。\n\n[2026-06-26追記1] TODO_347-c実機確認作業中に新たな調査対象を発見。health_check.pyのcheck_phi_os_audit()が「Direct Write違反(新規)32件」のFAILを返したが、これはcompute_gate_audit()（violation_events=0）とは無関係に、audit_violationsテーブル(audit_trigger.pyによるDB直接INSERT検知トリガー)が独立して記録しているものだった。該当32件は2026-06-20付・status='NEW'のまま未対応で放置されていた。relay-logbook.js（独自TODO抽出パイプライン）・Memory拡張機能（memory_registry自己完結ストレージ）・AUTO_SEAL_50EVT（anchor_update.py/sync_watch.py）と同型の「正本ロジックとは別に並走する独立記録機構」パターンに該当する可能性があるため、個別修正せず本TODOの調査範囲に追加する。\n\n[2026-06-26追記2] きむら博士の指摘を受け、472a6d0f9(sync_watch.pyによる自動push)がHuman Gate迂回でないか一次情報で検証。結果: (A)data/4ファイルをCloudflare同期用に追跡例外とする設計自体は.gitignoreの古い既存コメントに基づく別文脈の意図的設計で問題なし。(B)しかし「sync_watch.pyのgit commit自体もGIT_TARGETSにスコープし、has_pending_core_system_changes()でCore System File未承認時はサイクルをスキップする」という具体的な修正方式の選択(commit 90a39ef27)は、その直前の調査記録からわずか47分後に出現しており、修正方式選択そのものをきむら博士が事前承認した記録が見つからなかった。この論点は別TODOとして切り出し、TODO_372として起票した(統合はせず相互参照)。",
+      "note": "これは個別バグ修正(TODO_366/367/370)とは異なる、上位の診断TODO。「正本が信頼できないという不安が、複数の独立した補助記録機構を生み出している」という、本日発見した複数インシデントに共通する根本原因への対応。緊急の実装は不要だが、優先度は高い(これを放置すると、今後も同種の補助機構が個別に増殖し続ける可能性がある)。\n\n[2026-06-26追記1] TODO_347-c実機確認作業中に新たな調査対象を発見。health_check.pyのcheck_phi_os_audit()が「Direct Write違反(新規)32件」のFAILを返したが、これはcompute_gate_audit()（violation_events=0）とは無関係に、audit_violationsテーブル(audit_trigger.pyによるDB直接INSERT検知トリガー)が独立して記録しているものだった。該当32件は2026-06-20付・status='NEW'のまま未対応で放置されていた。relay-logbook.js（独自TODO抽出パイプライン）・Memory拡張機能（memory_registry自己完結ストレージ）・AUTO_SEAL_50EVT（anchor_update.py/sync_watch.py）と同型の「正本ロジックとは別に並走する独立記録機構」パターンに該当する可能性があるため、個別修正せず本TODOの調査範囲に追加する。\n\n[2026-06-26追記2] きむら博士の指摘を受け、472a6d0f9(sync_watch.pyによる自動push)がHuman Gate迂回でないか一次情報で検証。結果: (A)data/4ファイルをCloudflare同期用に追跡例外とする設計自体は.gitignoreの古い既存コメントに基づく別文脈の意図的設計で問題なし。(B)しかし「sync_watch.pyのgit commit自体もGIT_TARGETSにスコープし、has_pending_core_system_changes()でCore System File未承認時はサイクルをスキップする」という具体的な修正方式の選択(commit 90a39ef27)は、その直前の調査記録からわずか47分後に出現しており、修正方式選択そのものをきむら博士が事前承認した記録が見つからなかった。この論点は別TODOとして切り出し、TODO_372として起票した(統合はせず相互参照)。\n\n[2026-06-30追記] AUTO_SEAL_50EVTがTODO_393関連commitに無関係ファイル(ping_latest.json、records/master/配下3件)を巻き込んだ実例を確認。",
       "reference_event": "TODO_370対応中のきむら博士の指摘(2026-06-26)",
       "created_at": "2026-06-26T11:30:41.253043",
-      "updated_at": "2026-06-26T12:45:35.018393"
+      "updated_at": "2026-06-30T18:39:34.677656"
     },
     {
       "id": "TODO_372",
@@ -631,9 +631,22 @@
       "category": "制度/Knowledge Activation/実装",
       "description": "【背景】\nTODO_393（Knowledge Activation Architecture v0.4の制度組み込み）で、Review Gateの実装方針として既存phi_os/human_gate.pyとの統合が決定された。本TODOはその実装本体。\n\n【目的】\nReason Unit→Knowledge Assetsへの昇格審査（Review Gate）を、既存human_gate.pyのスキーマ拡張として実装する。\n\n【作業内容】\n①human_gate.pyの既存状態モデル（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）を確認し、Reason Unit昇格審査をこの状態モデルにどう乗せるかを設計する（新規状態を追加するか、既存状態を流用するかを判断する）\n②昇格審査専用フィールドを設計・実装する（TODO_395 v0.4で定義した審査内容：①Decision Evidenceとの整合性②既存Knowledge Assetsとの矛盾の有無③昇格させる価値があるか、をどう記録するか）\n③審査結果（承認/保留/却下）それぞれの後続処理を実装する（承認→Knowledge Assetsへ昇格、保留→Reason Unitのまま次回持ち越し、却下→昇格対象外フラグを付けて隔離）\n\n【完了条件】\n・human_gate.pyのスキーマ拡張が実装されていること\n・Reason Unitの昇格審査が承認/保留/却下の3分岐で正しく動作することの確認（簡易テストで可）\n・mocka_write_event記録済みであること\n・本番稼働中のガバナンス機構への変更のため、着手順序・ロールバック方針をきむら博士に事前確認してから実装すること",
       "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "TODO_393完了報告で「方針決定のみ・実装未着手」として切り出された事項。TODO_395 v0.4のReview Gate設計を実装に落とす本体作業。",
+      "note": "【Phase A完了。Phase B開始条件を確定】\n\nPhase A調査結果（要点）：\n①human_gate.pyはイベントソーシング方式（state非保存、event列のみ保存しget_state()で再構築）。5状態（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）、TRANSITIONS辞書で遷移制御、13件の既存テストあり。\n②呼び出し元はphi_os/migrate_prevention_queue.py（一度きりの移行スクリプト、常駐稼働ではない）のみ。重要発見：human_gate_bp（Flask Blueprint）はapp.py/mocka_mcp_server.pyのどちらにもregister_blueprintされておらず、HTTP経由では到達不能な事実上の死蔵コード。影響範囲は想定よりはるかに小さい。\n③案A（既存5状態流用＋type/payloadで区別）を採用確定。理由：Human Gateは状態機械、Review Gateは用途（ユースケース）であり、状態を増やすのではなく用途をメタデータで区別する方がイベントソーシングの設計原則と整合し、既存13テストへの影響もない。\n④ロールバック方針確定：append-only原則によりイベント削除不要。新規コード（追加分）のみrevertすればよい。既存13テストの全件PASSをロールバック確認基準とする。\n\n【Phase B開始条件（GPTレビュー反映・確定）】\n①責務表を以下で固定する：\n- Human Gate＝汎用承認エンジン（人間承認イベント管理）\n- Review Gate＝Human Gateを利用する一ユースケース（Knowledge昇格審査）\n- Reason Unit＝判断資産\n- Knowledge Assets＝承認済み知識\nReview Gateは新しいHuman Gateではなく、Human Gate基盤を利用するユースケースとして実装すること。\n\n②イベント区別はevent_typeとgate_typeの2軸で行う：\n- event_type: REASON_PROMOTION（Reason Unit昇格審査であることを示す）\n- gate_type: review_gate（将来Human GateとReview Gateが分岐拡張された際、Review Gateだけを集計・監査できるようにするため）\npayloadにこの2フィールドを最低限含めること。\n\n③semantic/query_engine/human_gate.py（同名だが無関係の別モジュール）との混同リスクについては、本TODOでは変更しないが、別途リネーム検討TODOを起票しておくこと（半年後に必ず混乱するというGPT指摘を記録として残す）。\n\n【Phase B（実装）着手を許可。上記①②③を満たした実装とすること】",
       "reference_event": "",
-      "created_at": "2026-06-30T18:36:26.276532"
+      "created_at": "2026-06-30T18:36:26.276532",
+      "updated_at": "2026-06-30T18:43:21.909605"
+    },
+    {
+      "id": "TODO_397",
+      "title": "semantic/query_engine/human_gate.py リネーム検討（phi_os/human_gate.pyとの命名衝突解消）",
+      "status": "未着手",
+      "priority": "低",
+      "category": "制度/命名衝突/保守",
+      "description": "TODO_396 Phase A調査で発見。semantic/query_engine/human_gate.py（Phase7-B-6、意味的矛盾の裁定記録用）が、phi_os/human_gate.py（Human Gate承認状態管理の本体）と同名だが無関係の別モジュールとして存在している。\n\n現時点で直接の依存関係や混入はないが、同名異機能は将来必ず混乱を招く（GPT指摘）。リネーム候補として semantic_judgement.py 等が挙げられている。\n\n緊急性はない。次に余裕がある時にリネーム実施を検討する。",
+      "assigned_to": "くろこ",
+      "note": "TODO_396 Phase A調査での副次発見。緊急性低、保守タスクとして記録のみ。",
+      "reference_event": "",
+      "created_at": "2026-06-30T18:43:31.324923"
     }
   ],
   "orchestra_handoff": {
