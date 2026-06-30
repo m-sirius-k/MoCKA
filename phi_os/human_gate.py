@@ -203,6 +203,76 @@ def list_pending(conn=None) -> list:
             conn.close()
 
 
+# ── Review Gate（Reason Unit → Knowledge Assets 昇格審査ユースケース） ──
+# TODO_396 Phase B。Review Gateは新しい状態機械ではない。Human Gateが持つ
+# 汎用承認エンジン（submit/approve/reject、PENDING/APPROVED/REJECTED状態）を
+# そのまま利用する一ユースケースとして実装する。
+# 責務: Human Gate=汎用承認エンジン / Review Gate=その上のユースケース。
+# 区別: event_type（このイベントが何の審査か）と gate_type（どのGateの
+# ユースケースか）の2軸をpayloadに必ず含めることで、将来Human GateとReview Gate
+# 以外のユースケースが増えても、同一テーブル・同一状態機械のまま集計・監査できる。
+
+REASON_PROMOTION_EVENT_TYPE = "REASON_PROMOTION"
+REVIEW_GATE_TYPE = "review_gate"
+
+
+def submit_reason_promotion(reason_unit_id: str, evidence_ref: str | None = None,
+                             request_id: str | None = None, conn=None) -> dict:
+    """Reason UnitをKnowledge Assets昇格審査(Review Gate)へ提出する。"""
+    payload = {
+        "event_type": REASON_PROMOTION_EVENT_TYPE,
+        "gate_type": REVIEW_GATE_TYPE,
+        "reason_unit_id": reason_unit_id,
+        "decision_evidence_ref": evidence_ref,
+    }
+    if request_id:
+        payload["request_id"] = request_id
+    return submit(payload, conn=conn)
+
+
+def approve_promotion(request_id: str, decision_evidence_consistency: bool,
+                       knowledge_assets_conflict: bool, promotion_value: str,
+                       note: str | None = None, conn=None) -> dict:
+    """Review Gate承認。TODO_395 v0.4の審査3観点(Decision Evidenceとの整合性/
+    既存Knowledge Assetsとの矛盾の有無/昇格させる価値があるか)を記録した上でapproveする。
+    Knowledge Assetsストア自体への書き込みは別途未確定のため、本関数はHuman Gate側の
+    承認イベント記録までを責務とする（昇格実体化はTODO_396スコープ外・別途実装）。"""
+    payload = {
+        "event_type": REASON_PROMOTION_EVENT_TYPE,
+        "gate_type": REVIEW_GATE_TYPE,
+        "decision_evidence_consistency": decision_evidence_consistency,
+        "knowledge_assets_conflict": knowledge_assets_conflict,
+        "promotion_value": promotion_value,
+        "note": note,
+    }
+    return approve(request_id, payload, conn=conn)
+
+
+def reject_promotion(request_id: str, reason: str, conn=None) -> dict:
+    """Review Gate却下。昇格対象外として隔離する(REJECTED状態そのものが隔離を表す。
+    データ削除は行わない＝append-only原則)。"""
+    payload = {
+        "event_type": REASON_PROMOTION_EVENT_TYPE,
+        "gate_type": REVIEW_GATE_TYPE,
+        "rejected_reason": reason,
+    }
+    return reject(request_id, payload, conn=conn)
+
+
+def list_pending_promotions(conn=None) -> list:
+    """Review Gate(gate_type=review_gate)に限定したPENDING一覧。
+    保留(=承認も却下もせずPENDINGのまま残す)はこの一覧から次回以降も再確認できる。"""
+    result = []
+    for row in list_pending(conn=conn):
+        try:
+            payload = json.loads(row.get("payload") or "{}")
+        except (TypeError, json.JSONDecodeError):
+            payload = {}
+        if payload.get("gate_type") == REVIEW_GATE_TYPE:
+            result.append(row)
+    return result
+
+
 # ── HTTP API(App層からのUIトリガ用) ──────────────────────────────────
 
 @human_gate_bp.route('/api/human_gate/submit', methods=['POST'])
