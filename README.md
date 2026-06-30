@@ -1192,6 +1192,11 @@ python rebuild_state.py
 文明ループ動作確認済み。  
 ガバナンス20項目すべて通過。
 
+## 参照文書
+
+- MoCKA思想進化史: [docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md](docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md)
+- Knowledge Activation Policy: [docs/governance/ACTIVATION_POLICY_v0.1.md](docs/governance/ACTIVATION_POLICY_v0.1.md)
+
 
 
 

@@ -116,6 +116,10 @@
     "roadmap": "Day5: セキュリティ強化+コスト自動記録 / Day6: 論文評価15ケース自動実行"
   },
   "governance": {
+    "reference_documents": {
+      "mocka_thought_evolution": "docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md",
+      "knowledge_activation_policy": "docs/governance/ACTIVATION_POLICY_v0.1.md"
+    },
     "latest_seal": {
       "sha256": "ad98246bef68a9a28f56b40d8b675e2b878b20db42ebec50c525132ea947ea27",
       "event_count": 12171,

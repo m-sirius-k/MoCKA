@@ -552,19 +552,6 @@
       "created_at": "2026-06-27T19:55:59.094616"
     },
     {
-      "id": "TODO_390",
-      "title": "MOCKA_TODO.json Active/Archive構造分離 — ①物理分離②ツール分離③死蔵項目掃き出し",
-      "status": "進行中",
-      "priority": "高",
-      "category": "制度/ガバナンス/データ構造",
-      "description": "2026-06-28、きむら博士より「completed配列(344件)をtodos配列(68件)と同じレイヤーで管理するのは間違っている」との指摘。アクティブ管理とアーカイブ管理は読み取りパターン・更新頻度が異なる別物であり、同一ファイル・同一ツールに同居させていることが「現在地把握」のたびに412件分のデータを引っ張る非効率と、todos配列内への死蔵項目混入を生んでいる。\n\n【現状の問題（実機確認済み）】\n- mocka_get_todo()が1回でtodos(68件)+completed(344件)=412件を返す。AIが「今何をすべきか」を知るために毎回過去アーカイブ全件を読み込む構造になっている。\n- todos配列内に、status=\"完了\"または\"廃止\"でありながらcompleted配列へ移動されずに残存している項目が混在している。確認済みの例: TODO_HAB_GPT_CONNECTION_SPEC_V1(完了/DONE_LOCKED)、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1(完了/DONE_LOCKED)、TODO_ARCHITECTURE_MAP_MCP_V1(完了/DONE_LOCKED)、EXEC-LAYER-STD-V1(完了/ALTERNATE_IMPLEMENTED)、CONTRACT-INTEGRATION-TEST-SPEC-V1(完了/CLOSED)、MOCKA-TWO-LAYER-OS-BASELINE-V1(完了/確定)、GL7-KERNEL-SPEC-DOC-V1(完了/CLOSED)、CONTROL-MAP-V2-DECISION(完了/DECISION_RECORDED)、GL7-MINIMAL-IMPL-SPEC(完了/ALTERNATE_IMPLEMENTED)、GL7-MIGRATION-POLICY-V1(完了/CLOSED)、TODO_386_CONTRACT_STATUS_TEST(廃止/CLOSED)、HAB-CONTRACT-LAYER-V1(廃止/SPEC_OBSOLETE)、UNIFIED-EXEC-PHASE-PLAN-V1(廃止/SPEC_OBSOLETE)、PHI-OS-GATE-BASELINE-V1(廃止/SUPERSEDED)、CONTROL-MAP-V1-DECISION(廃止/SUPERSEDED)。これらは「ARCHITECTURE_CONTRACT/LOCKED」のような永続参照ノードも含むため、単純削除ではなく扱いを個別判断する必要がある。\n\n【実装方針：3点セット】\n①物理分離: MOCKA_TODO.jsonを MOCKA_TODO_ACTIVE.json(現todos相当) と MOCKA_TODO_ARCHIVE.json(現completed相当) の2ファイルに分離する。既存のmeta/server_config/current_phase等のヘッダー情報はACTIVE側に残す（運用上の現在地情報のため）。\n②ツール分離: mocka_get_todo()はACTIVE側のみを返すよう改修。Archive参照用に mocka_get_todo_archive() を新設（オプションでID/カテゴリ/日付範囲によるフィルタ検索ができると412件総返しの再発を防げる）。mocka_add_todo/mocka_update_todoはACTIVE側のみを操作対象とする現行仕様を維持。\n③死蔵項目の掃き出し: todos配列内でstatus=\"完了\"または\"廃止\"の項目を抽出し、以下の判定をしてからArchive側へ移動する。\n  - 通常の完了TODO → そのままcompletedへ移動\n  - ARCHITECTURE_CONTRACT/LOCKED系（永続参照ノード: TODO_HAB_GPT_CONNECTION_SPEC_V1等3件）→ 移動するか、ACTIVE側に「Reference/Locked」専用の別セクションを設けて残すか、きむら博士に判断を確認する（単純にcompletedへ混ぜると今回と同種の問題が再発するため）\n  - SPEC_OBSOLETE/SUPERSEDED系（HAB-CONTRACT-LAYER-V1等4件）→ 後継ドキュメントへの参照を保持したままcompletedへ移動\n\n【整合性確認の必須事項（TODO_154準拠）】\n本変更はMOCKA_TODO.jsonを参照する全関連ファイルに影響するため、着手前に必ず以下を確認・照合すること:\n- mocka_mcp_server.py内のmocka_get_todo/mocka_add_todo/mocka_update_todoの実装箇所\n- MOCKA_OVERVIEW.jsonのstorage.primary/backup記述、how_to_use記述\n- app.py / COMMAND CENTER UI側でTODO件数・一覧を参照している箇所（/loop/status等、todos長さやcompleted長さをカウントしている処理がある場合は分離後の参照先を修正）\n- CLAUDE.md等、AIへの起動時説明にMOCKA_TODO.json単一ファイルを前提とした記述があれば更新\n- 既存のバックアップ先（A:/MOCKA_TODO.json）の扱いも分離後の2ファイル運用に合わせて更新\n\n【完了条件】\n- mocka_get_todo()がACTIVE分のみ(現68件規模)を返すこと\n- mocka_get_todo_archive()でArchive(現344件規模)が別途参照可能なこと\n- todos配列内に完了/廃止statusの項目が残っていないこと（LOCKED系の扱いはきむら博士確認後に確定）\n- 既存のmocka_add_todo/mocka_update_todoが分離後も正常動作すること（回帰テスト）\n- TODO_154の関連ファイル整合性確認プロトコルに従い変更前後の状態をmocka_write_eventで記録すること",
-      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "【2026-06-28 きむら博士判断確定】3層レイヤー分離で決定。\n- ACTIVE = 現todos相当（今動いている作業）\n- REFERENCE/LOCKED = ARCHITECTURE_CONTRACT/LOCKED系（憲法/契約相当。完了済みではなく常時参照され続けるもの。今後も増え続ける前提）\n- ARCHIVE = 現completed相当（終わった作業の履歴）\n\n判断理由（きむら博士）: LOCKED系はACTIVEとも関連性が残るが、ARCHIVE（終わった作業）とは性質が違う。「法律的なもの」として常時参照され続けるべきであり、3層に物理的に分けるのが間違いがない。\n\nツール側の対応: 当初案②（mocka_get_todo_archive()新設）は不要と判断。3層に物理分離すれば、mocka_get_todo()は自然とACTIVE層のみを返す構造になるため、Archive専用ツールの新設は見送り（ARCHIVE層への参照が必要になった場合は別途検討）。\n\n実装範囲を①+③（物理分離＋LOCKED層の切り出し）に確定。次セッションでこの3層構成での実装を進める。\n\n【2026-06-30追記：運用反映漏れの発覚と解消（TODO_394参照）】\nTODO_PATH新パスへのコード修正(14:14頃コミット)後、mocka_mcp_server.pyプロセスの再起動が行われておらず、メモリ上は旧パス参照のまま稼働し続けていたことがTODO_394の監査で判明。この間（約4時間弱）に追加されたTODO_391〜394が旧パス側にのみ存在する移行漏れ状態となっていた。\n\n18:00:46にプロセス再起動を実施、差分マージ（旧パスtodos52/completed4と新パスの差分3〜4件を新パス側へ反映）により解消済み。Event/DB層（mocka_events.db）は単一ファイルのため最初から無関係・無影響だった。\n\nこの経緯から、「Implementation Complete（コード修正完了）→ Process Restart（プロセス再起動）→ Verification（検証）→ Operational Complete（運用反映完了）」の4段階区分を、今後の標準運用ルールとして採用する。特にTODO_390のような「コード修正は完了したが、運用反映（プロセス再起動）の確認が漏れる」パターンの再発防止策として有効。\n\nなお、TODO_390自体は本追記時点でも②（ツール分離=mocka_get_todo_archive新設）は見送り、③（死蔵項目掃き出し）は未実装のままであり、status=\"進行中\"を維持する（完了ではない）。",
-      "reference_event": "2026-06-28セッション（completed配列344件混在の指摘）",
-      "created_at": "2026-06-28T09:20:18.089744",
-      "updated_at": "2026-06-30T18:04:33.188781"
-    },
-    {
       "id": "TODO_390_CLEANUP_CHECK",
       "title": "TODO_390最終確認: 旧MOCKA_TODO.json削除判定",
       "status": "保留",
@@ -644,9 +631,22 @@
       "category": "制度/思想史/Repository統合",
       "description": "【目的】\nMoCKA思想進化史(docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md)をRepository標準参照文書として制度へ組み込む。\n\n【前提】\nTODO_392（思想史固定）とは完全に切り離す。本TODOは「Repository組み込み」フェーズであり、文書内容自体への変更は一切行わない。\n\n【対象】\n- CLAUDE.md\n- MOCKA_OVERVIEW.json\n- Handbook（存在する場合）\n- README\n- Architecture Index（存在する場合）\n\n【作業内容】\n上記各ファイルに、MOCKA_THOUGHT_EVOLUTION_v0.1.mdへの参照リンク（パス記載）を追加する。本文の引用・要約は行わない。リンク追加のみ。\n\n【完了条件】\n・対象ファイルそれぞれに参照リンクが追加されていること\n・思想史文書本体への変更が一切ないこと\n・mocka_write_event記録済みであること",
       "assigned_to": "くろこ",
-      "note": "TODO_392の後続。Phase分離により監査性を確保。",
+      "note": "【再開】TODO_395（Knowledge Activation Architecture v0.4）がきむら博士の最終承認を得たため、本TODO（TODO_393-B：制度組み込み）を再開する。\n\n【前提（v0.4で確定した内容を踏まえること）】\n本TODOは単に思想進化史(MOCKA_THOUGHT_EVOLUTION_v0.1.md)への参照リンクをCLAUDE.md等へ追加するだけでなく、TODO_395で確定したKnowledge Activation Architecture v0.4（Knowledge Assets→Activation Policy→Reference Trigger/Selection/Retrieval→Reasoning Context→Decision→Behavior→Decision Evidence→Reason Unit→Review Gate→Knowledge Assets）を、実際にAIが参照・利用する制度として組み込むことを目的とする。\n\n【対象（v0.4の実装引き継ぎノートを踏まえて更新）】\n- CLAUDE.md：思想進化史への参照リンク追加＋Activation Policyの配置場所決定\n- MOCKA_OVERVIEW.json：同上\n- Handbook（存在する場合）\n- README\n- Architecture Index（存在する場合）\n\n【作業内容】\n①思想進化史への参照リンク追加（当初のスコープ通り、文書内容自体への変更は行わない）\n②Activation Policyを「監査可能な構成データ」として外部化する配置場所を決定し、ファイルを作成する（形式は問わないが、バージョン管理可能・差分追跡可能・Agent内部非埋め込みを満たすこと）\n③Reason Unit生成条件（初期4条件：tension発生時/human_gate通過時/既存Reason Assets上書き時/明示指定）をActivation Policyファイル内に初期値として記載する\n④Review Gateの審査主体・審査フローについて、既存human_gateと統合するか別立てにするかの実装方針を決定する（TODO_395で未決定だった事項）\n\n【完了条件（更新）】\n・対象ファイルそれぞれに思想進化史への参照リンクが追加されていること\n・Activation Policyファイルが新規作成され、初期Reason Unit生成条件が記載されていること\n・Review Gateの実装方針（human_gate統合か別立てか）が決定されていること\n・思想史文書本体への変更が一切ないこと\n・mocka_write_event記録済みであること",
       "reference_event": "",
-      "created_at": "2026-06-30T17:48:48.317993"
+      "created_at": "2026-06-30T17:48:48.317993",
+      "updated_at": "2026-06-30T18:32:11.024248"
+    },
+    {
+      "id": "TODO_396",
+      "title": "Review Gate実装 — phi_os/human_gate.pyスキーマ拡張（Reason Unit昇格審査）",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/実装",
+      "description": "【背景】\nTODO_393（Knowledge Activation Architecture v0.4の制度組み込み）で、Review Gateの実装方針として既存phi_os/human_gate.pyとの統合が決定された。本TODOはその実装本体。\n\n【目的】\nReason Unit→Knowledge Assetsへの昇格審査（Review Gate）を、既存human_gate.pyのスキーマ拡張として実装する。\n\n【作業内容】\n①human_gate.pyの既存状態モデル（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）を確認し、Reason Unit昇格審査をこの状態モデルにどう乗せるかを設計する（新規状態を追加するか、既存状態を流用するかを判断する）\n②昇格審査専用フィールドを設計・実装する（TODO_395 v0.4で定義した審査内容：①Decision Evidenceとの整合性②既存Knowledge Assetsとの矛盾の有無③昇格させる価値があるか、をどう記録するか）\n③審査結果（承認/保留/却下）それぞれの後続処理を実装する（承認→Knowledge Assetsへ昇格、保留→Reason Unitのまま次回持ち越し、却下→昇格対象外フラグを付けて隔離）\n\n【完了条件】\n・human_gate.pyのスキーマ拡張が実装されていること\n・Reason Unitの昇格審査が承認/保留/却下の3分岐で正しく動作することの確認（簡易テストで可）\n・mocka_write_event記録済みであること\n・本番稼働中のガバナンス機構への変更のため、着手順序・ロールバック方針をきむら博士に事前確認してから実装すること",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "TODO_393完了報告で「方針決定のみ・実装未着手」として切り出された事項。TODO_395 v0.4のReview Gate設計を実装に落とす本体作業。",
+      "reference_event": "",
+      "created_at": "2026-06-30T18:36:26.276532"
     }
   ],
   "orchestra_handoff": {
@@ -723,6 +723,34 @@
       "reference_event": "",
       "created_at": "2026-06-30T17:49:06.050650",
       "updated_at": "2026-06-30T18:02:53.996922",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_390",
+      "title": "MOCKA_TODO.json Active/Archive構造分離 — ①物理分離②ツール分離③死蔵項目掃き出し",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/データ構造",
+      "description": "2026-06-28、きむら博士より「completed配列(344件)をtodos配列(68件)と同じレイヤーで管理するのは間違っている」との指摘。アクティブ管理とアーカイブ管理は読み取りパターン・更新頻度が異なる別物であり、同一ファイル・同一ツールに同居させていることが「現在地把握」のたびに412件分のデータを引っ張る非効率と、todos配列内への死蔵項目混入を生んでいる。\n\n【現状の問題（実機確認済み）】\n- mocka_get_todo()が1回でtodos(68件)+completed(344件)=412件を返す。AIが「今何をすべきか」を知るために毎回過去アーカイブ全件を読み込む構造になっている。\n- todos配列内に、status=\"完了\"または\"廃止\"でありながらcompleted配列へ移動されずに残存している項目が混在している。確認済みの例: TODO_HAB_GPT_CONNECTION_SPEC_V1(完了/DONE_LOCKED)、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1(完了/DONE_LOCKED)、TODO_ARCHITECTURE_MAP_MCP_V1(完了/DONE_LOCKED)、EXEC-LAYER-STD-V1(完了/ALTERNATE_IMPLEMENTED)、CONTRACT-INTEGRATION-TEST-SPEC-V1(完了/CLOSED)、MOCKA-TWO-LAYER-OS-BASELINE-V1(完了/確定)、GL7-KERNEL-SPEC-DOC-V1(完了/CLOSED)、CONTROL-MAP-V2-DECISION(完了/DECISION_RECORDED)、GL7-MINIMAL-IMPL-SPEC(完了/ALTERNATE_IMPLEMENTED)、GL7-MIGRATION-POLICY-V1(完了/CLOSED)、TODO_386_CONTRACT_STATUS_TEST(廃止/CLOSED)、HAB-CONTRACT-LAYER-V1(廃止/SPEC_OBSOLETE)、UNIFIED-EXEC-PHASE-PLAN-V1(廃止/SPEC_OBSOLETE)、PHI-OS-GATE-BASELINE-V1(廃止/SUPERSEDED)、CONTROL-MAP-V1-DECISION(廃止/SUPERSEDED)。これらは「ARCHITECTURE_CONTRACT/LOCKED」のような永続参照ノードも含むため、単純削除ではなく扱いを個別判断する必要がある。\n\n【実装方針：3点セット】\n①物理分離: MOCKA_TODO.jsonを MOCKA_TODO_ACTIVE.json(現todos相当) と MOCKA_TODO_ARCHIVE.json(現completed相当) の2ファイルに分離する。既存のmeta/server_config/current_phase等のヘッダー情報はACTIVE側に残す（運用上の現在地情報のため）。\n②ツール分離: mocka_get_todo()はACTIVE側のみを返すよう改修。Archive参照用に mocka_get_todo_archive() を新設（オプションでID/カテゴリ/日付範囲によるフィルタ検索ができると412件総返しの再発を防げる）。mocka_add_todo/mocka_update_todoはACTIVE側のみを操作対象とする現行仕様を維持。\n③死蔵項目の掃き出し: todos配列内でstatus=\"完了\"または\"廃止\"の項目を抽出し、以下の判定をしてからArchive側へ移動する。\n  - 通常の完了TODO → そのままcompletedへ移動\n  - ARCHITECTURE_CONTRACT/LOCKED系（永続参照ノード: TODO_HAB_GPT_CONNECTION_SPEC_V1等3件）→ 移動するか、ACTIVE側に「Reference/Locked」専用の別セクションを設けて残すか、きむら博士に判断を確認する（単純にcompletedへ混ぜると今回と同種の問題が再発するため）\n  - SPEC_OBSOLETE/SUPERSEDED系（HAB-CONTRACT-LAYER-V1等4件）→ 後継ドキュメントへの参照を保持したままcompletedへ移動\n\n【整合性確認の必須事項（TODO_154準拠）】\n本変更はMOCKA_TODO.jsonを参照する全関連ファイルに影響するため、着手前に必ず以下を確認・照合すること:\n- mocka_mcp_server.py内のmocka_get_todo/mocka_add_todo/mocka_update_todoの実装箇所\n- MOCKA_OVERVIEW.jsonのstorage.primary/backup記述、how_to_use記述\n- app.py / COMMAND CENTER UI側でTODO件数・一覧を参照している箇所（/loop/status等、todos長さやcompleted長さをカウントしている処理がある場合は分離後の参照先を修正）\n- CLAUDE.md等、AIへの起動時説明にMOCKA_TODO.json単一ファイルを前提とした記述があれば更新\n- 既存のバックアップ先（A:/MOCKA_TODO.json）の扱いも分離後の2ファイル運用に合わせて更新\n\n【完了条件】\n- mocka_get_todo()がACTIVE分のみ(現68件規模)を返すこと\n- mocka_get_todo_archive()でArchive(現344件規模)が別途参照可能なこと\n- todos配列内に完了/廃止statusの項目が残っていないこと（LOCKED系の扱いはきむら博士確認後に確定）\n- 既存のmocka_add_todo/mocka_update_todoが分離後も正常動作すること（回帰テスト）\n- TODO_154の関連ファイル整合性確認プロトコルに従い変更前後の状態をmocka_write_eventで記録すること",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "【2026-06-28 きむら博士判断確定】3層レイヤー分離で決定。\n- ACTIVE = 現todos相当（今動いている作業）\n- REFERENCE/LOCKED = ARCHITECTURE_CONTRACT/LOCKED系（憲法/契約相当。完了済みではなく常時参照され続けるもの。今後も増え続ける前提）\n- ARCHIVE = 現completed相当（終わった作業の履歴）\n\n実装範囲を①+③（物理分離＋LOCKED層の切り出し）に確定。②（mocka_get_todo_archive新設）は3層物理分離により不要と判断し見送り。\n\n【2026-06-30：運用反映漏れの発覚と解消（TODO_394参照）】\nTODO_PATH新パスへのコード修正(14:14頃)後、mocka_mcp_server.pyプロセスの再起動が行われておらず、メモリ上は旧パス参照のまま稼働し続けていたことがTODO_394の監査で判明。18:00:46に再起動・差分マージで解消。「Implementation Complete→Process Restart→Verification→Operational Complete」の4段階区分を今後の標準運用ルールとして採用。\n\ngit commit ff1337847（data/MOCKA_TODO_ACTIVE.json差分マージ反映）push完了。\n\n【2026-06-30：③死蔵項目掃き出し 最終確認完了】\n対象15件の所在確認実施。結果、ARCHITECTURE_CONTRACT/LOCKED系3件はREFERENCE_LOCKED層に、完了/廃止系11件はARCHIVE/completed層に、それぞれ既に適正格納済みであることを確認（実際の移動作業は不要だった＝現状確認のみで完了）。例外としてGL7-VALIDATION-MISSING-BUGはstatus=進行中のため対象外とし、ACTIVE/todosに残置（既存TODOとして進捗追跡継続）。\n\n①物理分離・②ツール分離見送り・③死蔵項目掃き出し確認、全て出揃ったため本TODOを完了とする。",
+      "reference_event": "2026-06-28セッション（completed配列344件混在の指摘）",
+      "created_at": "2026-06-28T09:20:18.089744",
+      "updated_at": "2026-06-30T18:10:58.244197",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_395",
+      "title": "TODO_393-A: Knowledge Activation Architecture v0.1 設計",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/Knowledge Activation/設計",
+      "description": "【North Star再定義（前提として共有する事項）】\n本TODOの設計はNorth Starの正確な理解を前提とする。\nNorth Starは「Knowledge → Institution → Behavior」という三段階の流れではなく、「Knowledge changes AI Behavior」という一点に集約される。Reason Captureは目的そのものではなく、Knowledge Activationを実現するための構成要素である。\n\nすべての新制度は「この知識は、AIのどの判断を、どのように変えるのか」を説明できることを設計要件とする。\n\n【役割】\nくろこは設計担当。ただし本TODOの成果物（Knowledge Activation Architecture v0.1）は、きむら博士の承認を得るまで実装（TODO_393-B/CLAUDE.md等への反映）に進めてはならない。設計のみで完結すること。\n\n【目的】\nMoCKA思想進化史(MOCKA_THOUGHT_EVOLUTION_v0.1.md)やHandbook等の知識を、AIがどのタイミングで参照し、どのような判断へ反映するかを制度として設計する。「文書を置く」ことと「AIが実際に利用する制度」を明確に区別する。\n\n【最低限整理すべき事項】\n①どの知識を参照対象にするのか（思想進化史のみか、judgement_reason等の他のReason Unitも含むか）\n②いつ参照するのか（セッション開始時の固定読込か、特定の判断局面でのトリガー参照か、その両方か）\n③誰（どのAgent）が参照するのか（Claude/くろこ/将来の他Agent、それぞれで参照範囲・タイミングが異なるか）\n④参照結果をどこへ反映するのか（判断理由の記録先、TODO/event等への紐付け方）\n⑤知識が更新されたらどう再読込するのか（手動再読込か、自動検知か、バージョン管理との関係）\n⑥理由（Reason Unit）との関係（Knowledge ActivationとReason Captureの構成関係を明示すること。Reason CaptureはKnowledge Activationの一部であるという位置づけを反映する）\n\n【成果物】\nKnowledge Activation Architecture v0.1（設計文書、まだファイル配置・組み込みは行わない）\n\n【完了条件】\n・上記①〜⑥が設計文書として整理されていること\n・きむら博士への提示・承認取得まで完了していること\n・承認後にTODO_393-B（旧TODO_393、制度組み込み）の再開可否がきむら博士から明示されること\n\n【非目的】\nCLAUDE.md/MOCKA_OVERVIEW.json等の実ファイルへの反映は本TODOの範囲外（TODO_393-Bで実施）。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "North Star再定義（Knowledge changes AI Decisions）を踏まえた制度設計フェーズ。TODO_393-Aに相当。\n\n【完了】v0.1→v0.2→v0.3→v0.4の4段階改訂を経て、きむら博士の最終承認を得た。\n\nv0.4確定構造：\nKnowledge Assets → Activation Policy → Reference Trigger → Reference Selection → Reference Retrieval → Reasoning Context → Decision → Behavior → Decision Evidence → Reason Unit → 【Review Gate】 → Knowledge Assets（昇格・循環）\n\n主要な設計確定事項：\n①North Star：「Knowledge changes AI Decisions」（Behaviorではなく判断そのものを基準とする）\n②Reason Unitは知識源ではなく「Knowledge→Decisionへ変換される瞬間」の構造化記録\n③PHI-OSはAgentを能動的に駆動する主体ではなく、Agentが利用する境界・Trust Boundary（Agent→PHI-OSの向き）\n④Reference を Trigger/Selection/Retrieval の3段階に分解（障害切り分け可能性のため）\n⑤Reasoning Context：LLMの内部推論そのものではなく「推論材料（参照ID/適用ルール/制約/優先度/競合）」を構造化保存する設計で検証可能性を担保\n⑥Decision Evidenceは Decision/Behavior/Evidence の3サブフィールドに内部分離して記録\n⑦Reason Unit生成条件（tension発生時/human_gate通過時/既存Reason Assets上書き時/明示指定）は固定仕様ではなくActivation Policy管理下の運用ポリシーとして位置づけ\n⑧最重要：Review Gate新設。Reason Unit→Knowledge Assetsへの昇格は無審査で自動実行しない。審査主体はきむら博士（または既存human_gate流用）。審査内容は整合性・矛盾の有無・昇格価値の3点。承認/保留/却下の3分岐。Review Gateが審査するのは「Decisionの正しさ」ではなく「そのReason Unitを正本知識へ昇格させるか」である点を明確化（GPT最終レビュー反映）。\n\n実装引き継ぎノート（TODO_393-B向け）：\n・Activation Policyは「監査可能な構成データ」として外部化（形式は問わないが、バージョン管理・差分追跡可能・Agent内部に埋め込まれないことが要件）\n・Reasoning ContextとDecisionの境界は「評価・判断を含むか否か」で引く。Reasoning Context→Decisionへの参照は一方向（循環参照を避ける）\n・Decision Evidence内部はDecision/Behavior/Evidenceの3サブフィールドに分離し、phi_os/event_gateの既存スキーマとの対応関係を実装時に精査する\n・Review Gateは将来的にKnowledge Curation（重複統合・類似Reason Unit統合・廃止候補比較）へ拡張する余地を持たせておく（v0.4では実装しないが拡張方向として記録）\n・Review Gateボトルネック対策として、将来的に前段に自動スクリーニングを置く拡張も拒否しない設計とする\n\n【残存未解決事項（TODO_393-B以降で対応）】\nPHL実装ギャップ／Reason Unit実データの希薄さ（過去分）／Agent境界未確定／TODO_154との重複リスク／Activation Policy管理主体の確定／Review Gate審査主体の持続可能性\n\nきむら博士の最終承認を得て本TODOを完了とする。TODO_393-Bへ進む。",
+      "reference_event": "",
+      "created_at": "2026-06-30T18:17:12.628503",
+      "updated_at": "2026-06-30T18:31:56.795254",
       "completed_at": "2026-06-30"
     }
   ]

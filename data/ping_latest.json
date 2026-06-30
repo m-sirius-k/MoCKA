@@ -43,36 +43,38 @@
   "generated_at": "2026-06-30T12:08:58.905717",
   "matcher_result": {
     "verdict": "DANGER",
-    "score": 1.0,
-    "danger_rate": 1.0,
-    "success_rate": 0.0,
-    "text": "mocka_get_todo()",
+    "score": 0.571,
+    "danger_rate": 0.786,
+    "success_rate": 0.214,
+    "text": "一番足りないもの\n\n実は④のリスクに少し書いてあります。\n\nAIが本当に参照したのか分からない\n\n私はここが一番重要だと思います。\n\n今の図は\n\n\n\nKnowl",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "# 隶弱ｇ・ｿ・ｵ郢ｧ・ｳ郢晢ｽｼ郢昴・for i in range(10000):\n    # 髫ｱ・ｲ鬯伜ｾ鯉ｽ帝墓ｻ薙・\n    task = generate_task(i)\n    \n  ",
+        "when": "2026-04-05",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "MoCKA Appendix C 厳格監査評価報告（公文書）\n対象文書：\n第1章 総合評価（結論）\nまず結論から明確に述べる。\nこれは「非常に強い一次証拠文書」だが、まだ「理論証明」には到達していない",
         "recur": 0,
         "matched": [
-          "mocka"
+          "なぜ",
+          "足り"
         ],
-        "score": 1
+        "score": 2
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-29",
-        "why": "",
-        "how": "manual_click",
-        "note": "邵ｲ闃ｯheck邵ｲﾂtest邵ｲ繝ｻSelect-String -Path \"C:\\Users\\sirok\\MoCKA\\index.html\" -Pattern \"AI_URLS\"",
+        "when": "2026-03-28",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "**MoCKA 名称統一プロジェクト（Naming Unification Project）\n— あなたが言及した “insert system / shadow” の全記録 —**\n🟥 1. 背景：",
         "recur": 0,
         "matched": [
-          "mocka"
+          "なぜ",
+          "違う"
         ],
-        "score": 1
+        "score": 2
       }
     ],
-    "updated_at": "2026-06-30T03:33:01.371Z"
+    "updated_at": "2026-06-30T09:22:09.149Z"
   }
 }
