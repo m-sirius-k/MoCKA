@@ -638,14 +638,27 @@
     {
       "id": "TODO_401",
       "title": "TODO_399-C: OVERRIDES enforcement設計（強制制御・ゲート設計）",
-      "status": "保留",
+      "status": "未着手",
       "priority": "中",
       "category": "制度/Knowledge Activation/Decision Policy",
       "description": "【背景】\nabsolute_priority（絶対優先の主張）を持つKnowledge Assetが実際に「強制的に優先される」ことを、システムとしてどう保証するかの設計。これはガードレール設計そのものであり、3分割の中で最も重要かつ難度が高い。\n\n【前提】\nTODO_399-A（配置・形式）、TODO_399-B（比較アルゴリズム）完了後に着手すること。\n\n【設計対象】\n①OVERRIDESの強制をどの層で行うか：event_gateで止めるか、Decision層で拒否するか、両方か\n②human_gateとの連動方法：absolute_priority同士の競合等、機械的に解決できないケースでHuman Gateへどう橋渡しするか\n③強制が「効いていること」をどう検証・監査するか（TODO_396のGL7-UNENFORCED-CONDITIONS-BUGのような「掲げているが実効していない」状態を再発させないための設計上の手当て）\n\n【完了条件】\nOVERRIDES enforcement設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
       "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "TODO_399-A/B後続。3分割の中で最重要・最難度。GL7-UNENFORCED-CONDITIONS-BUGと同種の「掲げているが効いていない」リスクへの警戒を設計時から組み込むこと。",
+      "note": "TODO_399-A/B（実体設計・比較アルゴリズム）完了後の最終ピース。\n\n【v0.1提出済み。GPT最終論点（カナリアテストの位置づけ）への決定。v0.2で確定版とする】\n\nv0.1の評価：3層構造（評価＝Decision Policy／制約＝event_gate／監査＝audit_trigger）に加えカナリアテストを設けた4層アーキテクチャは高評価。OVERRIDESの意味を「権利」から「Decision Policyが評価した結果に付随する監査可能な要求フラグ」へ転換した点も確定でよい。\n\n【決定：カナリアテストはA案（CI依存）を採用】\n理由：\n①TODO_399で独立DB/serviceを拒否しPHI-OS内に統合した判断、TODO_396で新規Gateを作らずhuman_gateを再利用した判断と一貫性を保つため。新しい常駐監視プロセスを追加することは、これまで繰り返し確認してきた「経路・プロセスが増えるほど死蔵・分裂リスクが増える」という教訓（TODO_371の正本不信パターン、TODO_396のhuman_gate_bp死蔵）に反する。\n②human_gate_bp死蔵の根本原因は「実行環境への組み込み忘れ」であり「監視頻度」の問題ではなかった。CI定期実行でも、テスト自体の実行が担保されていれば十分検知できる。\n③現状の運用規模（個人開発者＋くろこ）では、常駐監視プロセス自体がTODO_364で発見されたような「タスクスケジューラ登録だが壊れて放置」パターンを新たに生むリスクの方が高い。\n\n【v0.2で追加すること：CI実行自体の生存確認】\nA案を採るからには、「カナリアテストが実際に定期実行されているか」自体を別途担保する仕組みが必要。以下を設計に追加すること：\n- カナリアテスト（test_override_evidence_gap_is_rejected_by_event_gate）の最終実行日時を記録する仕組み（例：実行結果をmocka_write_eventへ記録）\n- 最終実行日時が一定期間（例：7日）更新されていない場合に検知する、既存の仕組み（例：TODO_371で言及されたcheck系・health_check.py等）への統合を検討する\n- これにより「テストが書かれているが実行されていない」という二次的な死蔵（カナリアテストのカナリア）を防ぐ\n\n【v0.1のその他設計はそのまま確定】\n①強制層：Decision Policy（評価）＋event_gate（証跡なしDecision Evidenceをリジェクト）の二層\n②human_gate連動：新規Gateを作らずsubmit()を再利用、gate_type=\"decision_policy\"で区別\n③監査：trg_detect_override_evidence_gap（DBトリガー、audit_trigger.pyパターン踏襲）\n\n【提出物】\n①OVERRIDES enforcement設計 v0.2（カナリアテストのCI実行担保の仕組みを追加）\n②残存リスク・未解決事項の最終整理\n③完了条件チェックリスト最終版\n\n【完了条件】\nv0.2でカナリアテストのCI実行担保の仕組みが明記され、きむら博士が承認した時点で完了とする。これでTODO_399/400/401（Decision Policy三部作）が完結する。",
       "reference_event": "",
-      "created_at": "2026-06-30T19:03:21.060218"
+      "created_at": "2026-06-30T19:03:21.060218",
+      "updated_at": "2026-06-30T20:01:14.388834"
+    },
+    {
+      "id": "TODO_402",
+      "title": "conflict_resolution_order 数理閉包設計 — confidence算出・ranking合成・正規化・tie-break決定性",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nTODO_400（conflict_resolution_order設計）はv0.1で完了・クローズ済み。同TODOのnoteで「①confidence算出方法・算出主体は依然未定義（TODO_398から継続、未解決の可能性あり）」と明記されている通り、構造設計（枠組み）は確定したが、数理的な閉包（中身の関数）は意図的に未確定のまま残されている。\n\nTODO_401(TODO_399-C) v0.3確定の際、きむら博士・GPTレビューを経て「completed配列は意味的に不変（completedの定義を後から揺らさない＝audit_triggerの信頼性維持）」という運用原則を確認。これに基づき、TODO_400自体を分割・再オープンせず、残る数理的領域を新規TODOとして独立起票することが確定した。\n\n【位置づけ】\nTODO_400＝競合解決の「枠組み」（構造設計、完了済み）\nTODO_402＝その枠組みの「数学的実装」（数理閉包、本TODO）\n\n両者は階層的継承構造として分離する。TODO_400の内容自体には一切手を加えない。\n\n【設計対象】\n①confidence definition closure：confidence値の算出方法・算出主体（誰が／何が／どの根拠でconfidenceを付与するか）の確定。TODO_398から継続する未解決課題。\n②ranking integration function：rank_candidatesの評価ベクトル（decision_effect_rank, -confidence, authority_rank, -created_at）における各要素の正確な合成・比較関数の厳密形。\n③evaluation vector normalization：評価ベクトル各要素のスケール（単位・範囲）が異なる場合の正規化ルール。\n④deterministic tie-break system：すべての比較軸が同値だった場合に、決定論的に（再現可能に）勝者を一意に決める仕組みの保証。\n⑤conflict_resolution_orderへの数学的接続：上記①〜④を、TODO_400で確定したconflict_resolution_orderの構造（detect_conflicts/rank_candidates/apply_policy等）にどう接続するかの設計。\n\n【完了条件】\n①〜⑤が設計文書として整理され、TODO_400の構造設計と矛盾なく接続されることが確認され、きむら博士の承認を得ること。\n\n【非目的】\n実装（コード化）は本TODOの範囲外。TODO_400本体への変更・再オープンは行わない（completed履歴は不変として扱う）。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "TODO_400（完了済み・構造設計）とTODO_401(TODO_399-C) v0.3確定クローズを経て起票。「completedは意味的に不変」という運用原則を守るため、TODO_400の分割（400-A/400-B）ではなく新規TODO_402として独立させた。TODO_400のnote「confidence算出方法・算出主体は依然未定義」が本TODOの直接の引き継ぎ元。",
+      "reference_event": "E20260630_6432312496826",
+      "created_at": "2026-06-30T20:08:52.465955"
     }
   ],
   "orchestra_handoff": {
