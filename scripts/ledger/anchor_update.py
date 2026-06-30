@@ -13,6 +13,9 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\governance")))
+from mocka_git_safe_commit import is_core_system_file, mocka_git_safe_commit  # noqa: E402
+
 ROOT = Path(r"C:\Users\sirok\MoCKA")
 ANCHOR_PATHS = [
     ROOT / "governance" / "anchor_record.json",
@@ -27,44 +30,6 @@ PRE_COMMIT_FORBIDDEN = [
     ".env",
     "secrets/",
 ]
-
-# Core System File Change Approval(Human Gate)対象。
-# 自動シール(AUTO_SEAL_50EVT等)が無承認でこれらの変更を確定させてしまう
-# 事故が2026-06-25に発生したため、対象は無条件git add -Aから除外し、
-# 未コミットのまま人間承認待ちとして残す(TODO_347governance修正)。
-CORE_SYSTEM_DIRS = ("phi_os/", "interface/", "structural/", "gateway/")
-CORE_SYSTEM_FILES_EXTRA = (
-    "app.py", "index.html", "scripts/ledger/anchor_update.py",
-    "PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py",
-)
-# TODO_370(根本修正): workshop配下はTODO_354でPrivateリポジトリ(mocka-workshop-private)
-# 管理に切り替わったため、拡張子を問わず無条件でMoCKA本体の自動add対象から除外する。
-# 旧版は.py拡張子限定・個別ファイル列挙方式で、新規.jsファイル追加時に再発する欠陥があった。
-PRIVATE_REPO_DIRS = ("PlanningCaliber/workshop/",)
-
-def is_core_system_file(path: str) -> bool:
-    p = path.replace("\\", "/")
-    if p in CORE_SYSTEM_FILES_EXTRA:
-        return True
-    if p.startswith(PRIVATE_REPO_DIRS):
-        return True
-    return p.endswith(".py") and p.startswith(CORE_SYSTEM_DIRS)
-
-def unstage_core_system_files():
-    """staged済みファイルからCore System Fileを検出し、unstageして
-    自動コミット対象から除外する。除外したファイルは画面に明示する。"""
-    result = subprocess.run(
-        ["git", "diff", "--cached", "--name-only"],
-        capture_output=True, text=True, cwd=ROOT
-    )
-    staged = result.stdout.splitlines()
-    excluded = [f for f in staged if is_core_system_file(f)]
-    if excluded:
-        subprocess.run(["git", "restore", "--staged", "--"] + excluded, cwd=ROOT)
-        print(f"[SEAL] {len(excluded)} core system file(s) excluded, pending Human Gate approval:")
-        for f in excluded:
-            print(f"  - {f}")
-    return excluded
 
 def check_staged_files():
     """git add済みファイルに禁止パターンが含まれていないか確認"""
@@ -104,12 +69,13 @@ def get_summary_hash(commit):
 def main():
     msg = sys.argv[1] if len(sys.argv) > 1 else "update: auto anchor update"
 
-    # 1. 変更をコミット
+    # 1. 変更をコミット(git add/Core System File除外/commitはmocka_git_safe_commit経由、TODO_364)
     run(["git", "add", "-A"])
-    unstage_core_system_files()
     check_staged_files()
-    out, code = run(["git", "commit", "-m", msg])
-    print(out if out else "nothing to commit")
+    commit_result = mocka_git_safe_commit(message=msg, push=False)
+    if commit_result["error"]:
+        print(f"ERROR: {commit_result['error']}")
+        sys.exit(1)
 
     commit, _ = run(["git", "log", "--format=%H", "-1"])
     print(f"COMMIT: {commit}")
@@ -129,10 +95,8 @@ def main():
         ar["sealed_at_utc"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
         p.write_text(json.dumps(ar, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # 4. anchor_record自体をコミット
-    run(["git", "add", "-A"])
-    unstage_core_system_files()
-    run(["git", "commit", "-m", f"anchor: re-seal after {commit[:7]}"])
+    # 4. anchor_record自体をコミット(TODO_364: mocka_git_safe_commit経由)
+    mocka_git_safe_commit(message=f"anchor: re-seal after {commit[:7]}", push=False)
     print("ANCHOR UPDATED AND COMMITTED")
 
     # 5. 検証
