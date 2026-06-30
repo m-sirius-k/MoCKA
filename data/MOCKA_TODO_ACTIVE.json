@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-06-30",
+    "updated": "2026-07-01",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -564,18 +564,6 @@
       "created_at": "2026-06-30T12:44:36.902912"
     },
     {
-      "id": "TODO_221_ORCHESTRA_PAGE_500_RECOVERY",
-      "title": "緊急: Orchestraページ(mocka.nsjp.org)HTTP 500復旧",
-      "status": "未着手",
-      "priority": "最高",
-      "category": "Web/WordPress/miniMoCKA/障害対応",
-      "description": "TODO_221(mini-mocka/orchestraコンテンツ投入、max-width未解決)の調査中に発見。https://mocka.nsjp.org/mini-mocka-2/orchestra/ へのアクセスが現在WordPress致命的エラー(HTTP 500、「このサイトで重大なエラーが発生しました」)を返している。\n\n実機確認結果(2026-06-30、外部curlのみ。SSH/サーバーアクセス権なし):\n- トップページ https://mocka.nsjp.org/ : HTTP 200 OK\n- mini-mocka親ページ https://mocka.nsjp.org/mini-mocka/ : /mini-mocka-2/ へリダイレクトされHTTP 200 OK\n- wp-admin: HTTP 200 OK(到達可能)\n- Orchestraページ https://mocka.nsjp.org/mini-mocka-2/orchestra/ : HTTP 500(致命的エラー)\n- wp-json/wp/v2/pages確認: Orchestraページ(id=61, slug=orchestra, parent=60, status=publish)はDB上には存在(削除されたわけではない)。表示時にPHPが落ちている状態。\n\n原因候補(未確定): TODO_221のnote「6/7: page-orchestra.phpカスタムテンプレート作成済み」と記載があり、このカスタムPHPテンプレートのエラーが疑われるが、PHPエラーログを確認できていないため確定情報ではない。\n\n対応に必要なステップ: (1)きむら博士によるSSH経由でのPHPエラーログ確認(/home/nsjp/www/mocka/wp-content/debug.log等を想定、正確なパスは要確認)。(2)エラー内容に応じてpage-orchestra.phpの修正、またはカスタムテンプレートを使わずWordPress標準ページテンプレートへ切替。(3)復旧確認後、元のTODO_221(max-width未解決のCSS調査)を後続作業として再開する。",
-      "assigned_to": "きむら博士(SSHログ確認・サーバー作業) + くろこ(修正実装)",
-      "note": "TODO_221から緊急分岐。元のmax-width CSS調査(orch-wrap { max-width: 860px }とテーマCSSの競合)は、本ページ自体がそもそも描画されていない(HTTP 500)ため意味を成さない状態だった。ページ復旧が最優先、max-width調査はその後の後続作業として位置づける。くろこはSSH/サーバーアクセス権を持たないため、これ以上のPHPエラーログ確認による原因切り分けはきむら博士側の作業が必須。",
-      "reference_event": "TODO_221調査中の発見(2026-06-30)",
-      "created_at": "2026-06-30T13:08:00.208798"
-    },
-    {
       "id": "TODO_WP_DUPLICATE_PAGES_CLEANUP",
       "title": "WordPress重複ページ(-2サフィックス6件)の整理",
       "status": "未着手",
@@ -649,16 +637,42 @@
       "updated_at": "2026-06-30T20:01:14.388834"
     },
     {
-      "id": "TODO_402",
-      "title": "conflict_resolution_order 数理閉包設計 — confidence算出・ranking合成・正規化・tie-break決定性",
+      "id": "GOVERNANCE_MILESTONE_GM1",
+      "title": "Governance Milestone 1（GM-1）— Decision Policy Series（399-405）+ Governance Audit Series（406-409）確立記録",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/マイルストーン/Governance Milestone",
+      "description": "【位置づけ】\nこれは新規TODOではなく、後から「どこで制度基盤が固まったのか」を示すためのマイルストーン記録である。アクション項目は持たない。\n\n【対象区間】\nTODO_403〜409（2026-07-01セッション）\n\n【確立された2系統】\n\n■Decision Policy Series（完結・基準文書として参照可能）\n399 → 400 → 401 → 404 → 405\n対象：判断／優先順位／Evidence／Enforcement\n成果：\n①Decision Policyの責務境界が固定された（判定のみ・実行しない・保存しない・Approvalを持たない）\n②Decision Evidenceが制度用語として定義された（Decision Policyの裁定について後続層が制度的正当性を検証できる最小証跡）\n③OVERRIDESの意味連続性が監査(TODO_403)で確認された（A=補充と判定、再固定不要）\n\n■Governance Audit Series（完結・自己修復実証事例）\n406 → 407 → 408 → 409\n対象：成果物／証跡／検証／監査運用\n成果：406で監査スコープ誤設定による誤判定→407で検証・訂正→408でTODO_ARTIFACT_GOVERNANCE_v1.0.md制度化（Artifact Type/Completion Evidence/Verification Status/Evidence Location）→409で適用範囲固定、という一連で「監査制度が自己修復できること」を実証した。\n\n【両系統の分離原則（今後も維持すること）】\nDecision Policy Series＝制度設計（何を判断するか）\nGovernance Audit Series＝制度運用（その成果物をどう証明・検証するか）\nこの2つは混同せず、別管理を維持する。\n\n【次の推奨順序（参考記録）】\n①TODO_402（confidence算出・数理閉包・Decision Policy理論完成）\n②TODO_401 v0.2（カナリアテストCI実行保証・運用強化）\n③TODO_SAKURA_SSH_KEY_AUTOMATION（実務設計課題・Decision Policyとは独立）",
+      "assigned_to": "記録のみ（アクション不要）",
+      "note": "2026-07-01、監査官(R01)最終承認を受けて記録。Decision Policy Series（399〜405）承認・Governance Audit Series（406〜409）承認。両シリーズとも完結済み、アクション不要のマイルストーン記録としてREFERENCE_LOCKED相当で保持する。",
+      "reference_event": "TODO_403〜409セッション（2026-07-01）",
+      "created_at": "2026-07-01T07:45:28.649098",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "TODO_410",
+      "title": "CONFLICT_RESOLUTION_MATH文書末尾にScope（適用範囲）段落を追加（任意・将来対応）",
       "status": "未着手",
-      "priority": "中",
-      "category": "制度/Knowledge Activation/Decision Policy",
-      "description": "【背景】\nTODO_400（conflict_resolution_order設計）はv0.1で完了・クローズ済み。同TODOのnoteで「①confidence算出方法・算出主体は依然未定義（TODO_398から継続、未解決の可能性あり）」と明記されている通り、構造設計（枠組み）は確定したが、数理的な閉包（中身の関数）は意図的に未確定のまま残されている。\n\nTODO_401(TODO_399-C) v0.3確定の際、きむら博士・GPTレビューを経て「completed配列は意味的に不変（completedの定義を後から揺らさない＝audit_triggerの信頼性維持）」という運用原則を確認。これに基づき、TODO_400自体を分割・再オープンせず、残る数理的領域を新規TODOとして独立起票することが確定した。\n\n【位置づけ】\nTODO_400＝競合解決の「枠組み」（構造設計、完了済み）\nTODO_402＝その枠組みの「数学的実装」（数理閉包、本TODO）\n\n両者は階層的継承構造として分離する。TODO_400の内容自体には一切手を加えない。\n\n【設計対象】\n①confidence definition closure：confidence値の算出方法・算出主体（誰が／何が／どの根拠でconfidenceを付与するか）の確定。TODO_398から継続する未解決課題。\n②ranking integration function：rank_candidatesの評価ベクトル（decision_effect_rank, -confidence, authority_rank, -created_at）における各要素の正確な合成・比較関数の厳密形。\n③evaluation vector normalization：評価ベクトル各要素のスケール（単位・範囲）が異なる場合の正規化ルール。\n④deterministic tie-break system：すべての比較軸が同値だった場合に、決定論的に（再現可能に）勝者を一意に決める仕組みの保証。\n⑤conflict_resolution_orderへの数学的接続：上記①〜④を、TODO_400で確定したconflict_resolution_orderの構造（detect_conflicts/rank_candidates/apply_policy等）にどう接続するかの設計。\n\n【完了条件】\n①〜⑤が設計文書として整理され、TODO_400の構造設計と矛盾なく接続されることが確認され、きむら博士の承認を得ること。\n\n【非目的】\n実装（コード化）は本TODOの範囲外。TODO_400本体への変更・再オープンは行わない（completed履歴は不変として扱う）。",
-      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "TODO_400（完了済み・構造設計）とTODO_401(TODO_399-C) v0.3確定クローズを経て起票。「completedは意味的に不変」という運用原則を守るため、TODO_400の分割（400-A/400-B）ではなく新規TODO_402として独立させた。TODO_400のnote「confidence算出方法・算出主体は依然未定義」が本TODOの直接の引き継ぎ元。",
-      "reference_event": "E20260630_6432312496826",
-      "created_at": "2026-06-30T20:08:52.465955"
+      "priority": "低",
+      "category": "制度/Knowledge Activation/Decision Policy/文書補強（任意）",
+      "description": "【背景】\nTODO_402 v0.2完了報告にて、R01監査官から将来対応でよい1点の提案があった。必須ではない。\n\n【作業内容】\nCONFLICT_RESOLUTION_MATH_v0.1.md（またはv0.2）の末尾に「Scope（適用範囲）」を1段落追加する。\n\n推奨文言：\n「本数理仕様はDecision Policyにおける競合解決アルゴリズムに適用される。Execution Runtime、Approval Gate、Knowledge Activationの内部実装を拘束するものではなく、Decision Policyが返す裁定結果の数学的性質のみを規定する。」\n\nこれにより、他レイヤー（Execution Runtime/Approval Gate/Knowledge Activation）との境界をさらに明確化する。\n\n【優先度】\n低。緊急性なし。次に文書を触る機会があれば対応すればよい。Decision Policy Series自体は本TODOの有無に関わらずTODO_402 v0.2をもって完結済み（GOVERNANCE_MILESTONE_GM1参照）。",
+      "assigned_to": "くろこ（将来対応）",
+      "note": "2026-07-01、TODO_402 v0.2完了報告後のR01監査官の任意提案。必須ではなく将来対応でよい旨が明示されている。",
+      "reference_event": "TODO_402 v0.2完了報告（2026-07-01）",
+      "created_at": "2026-07-01T08:17:36.716763"
+    },
+    {
+      "id": "GOVERNANCE_MILESTONE_GM1_ADDENDUM",
+      "title": "GOVERNANCE_MILESTONE_GM1 補遺 — Decision Policy Series最終確定構成（399→400→401→404→405→402 Mathematical Closure）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/マイルストーン/Governance Milestone",
+      "description": "【位置づけ】\nGOVERNANCE_MILESTONE_GM1の補遺記録。GM1記録時点(TODO_403〜409完了時)ではTODO_402は未着手だったため、Decision Policy Seriesの完結扱いを「399→400→401→404→405（402は次の理論完成タスクとして別記）」としていた。本補遺はTODO_402 v0.2完了を受けて、Decision Policy Seriesの最終構成を確定する。\n\n【Decision Policy Series 最終確定構成（GM1から訂正）】\n399 → 400 → 401 → 404 → 405 → 402（Mathematical Closure）\n\n402は「シリーズの後に追加されたタスク」ではなく、「シリーズの数理閉包（Mathematical Closure）」という位置づけ。399〜405で確立した制度・仕様の上に、402で決定性・推移性・全順序という数学的保証が乗ることで、「Decision Policyとは何か／どう判断するか／どう保証するか／その判断がなぜ数学的に一意か」が一貫して説明できる状態になった。\n\n【各ステップの最終的な役割整理】\n- 399：Decision Policyの概念・権限・意味を定義\n- 400：競合解決アルゴリズムと評価ベクトルを定義\n- 401：Enforcement・監査・実効保証を定義\n- 404：制度文書として正規化\n- 405：責務境界・Decision Evidence・event_gateを補強\n- 402（Mathematical Closure）：数理仕様・決定性・数学的保証を完成\n\n【評価】\nR01監査官評価：MoCKAの基盤仕様（Core Governance Specification）の一つとして扱える完成度に到達。\n\n【Governance Audit Series（406〜409）との関係】\n本シリーズとは独立した別系統のまま。混同しないこと（GOVERNANCE_MILESTONE_GM1の原則を維持）。\n\n【残存の任意項目】\nTODO_410（Scope段落の追加・任意・将来対応）。Decision Policy Seriesの完結自体には影響しない。",
+      "assigned_to": "記録のみ（アクション不要）",
+      "note": "2026-07-01、TODO_402 v0.2完了・監査官(R01)最終承認を受けて記録。GOVERNANCE_MILESTONE_GM1本体は変更せず（completed・不変）、本補遺として最終確定構成を別記する。",
+      "reference_event": "TODO_402 v0.2完了報告（2026-07-01）",
+      "created_at": "2026-07-01T08:17:52.983861",
+      "contract_status": "DONE_LOCKED"
     }
   ],
   "orchestra_handoff": {
@@ -834,6 +848,132 @@
       "created_at": "2026-06-30T19:03:09.535197",
       "updated_at": "2026-06-30T19:56:02.288547",
       "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_221_ORCHESTRA_PAGE_500_RECOVERY",
+      "title": "緊急: Orchestraページ(mocka.nsjp.org)HTTP 500復旧",
+      "status": "完了",
+      "priority": "最高",
+      "category": "Web/WordPress/miniMoCKA/障害対応",
+      "description": "TODO_221(mini-mocka/orchestraコンテンツ投入、max-width未解決)の調査中に発見。https://mocka.nsjp.org/mini-mocka-2/orchestra/ へのアクセスが現在WordPress致命的エラー(HTTP 500、「このサイトで重大なエラーが発生しました」)を返している。\n\n実機確認結果(2026-06-30、外部curlのみ。SSH/サーバーアクセス権なし):\n- トップページ https://mocka.nsjp.org/ : HTTP 200 OK\n- mini-mocka親ページ https://mocka.nsjp.org/mini-mocka/ : /mini-mocka-2/ へリダイレクトされHTTP 200 OK\n- wp-admin: HTTP 200 OK(到達可能)\n- Orchestraページ https://mocka.nsjp.org/mini-mocka-2/orchestra/ : HTTP 500(致命的エラー)\n- wp-json/wp/v2/pages確認: Orchestraページ(id=61, slug=orchestra, parent=60, status=publish)はDB上には存在(削除されたわけではない)。表示時にPHPが落ちている状態。\n\n原因候補(未確定): TODO_221のnote「6/7: page-orchestra.phpカスタムテンプレート作成済み」と記載があり、このカスタムPHPテンプレートのエラーが疑われるが、PHPエラーログを確認できていないため確定情報ではない。\n\n対応に必要なステップ: (1)きむら博士によるSSH経由でのPHPエラーログ確認(/home/nsjp/www/mocka/wp-content/debug.log等を想定、正確なパスは要確認)。(2)エラー内容に応じてpage-orchestra.phpの修正、またはカスタムテンプレートを使わずWordPress標準ページテンプレートへ切替。(3)復旧確認後、元のTODO_221(max-width未解決のCSS調査)を後続作業として再開する。",
+      "assigned_to": "きむら博士(SSHログ確認・サーバー作業) + くろこ(修正実装)",
+      "note": "きむら博士確認(2026-07-01セッション)：6/30付で既に復旧済み。HTTP 500エラー解消、稼働確認済み。元のTODO_221(max-width CSS未解決)を後続作業として再開可能な状態。",
+      "reference_event": "TODO_221調査中の発見(2026-06-30)",
+      "created_at": "2026-06-30T13:08:00.208798",
+      "updated_at": "2026-07-01T07:02:02.041045",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_403",
+      "title": "TODO_399→400→401 設計流れの意味連続性監査 — 補充(A)か解釈変更(B)かの判定",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/設計確定前監査",
+      "description": "【背景】\nTODO_399(Decision Policy実体設計)→TODO_400(conflict_resolution_order設計)→TODO_401(OVERRIDES enforcement設計)という一連の流れが、「元設計の延長としての補充(completion)」なのか、「途中でOVERRIDESの定義そのものが変質した再解釈(reinterpretation)」なのかを検証する。論点は「どちらが正しいか」ではなく「どの時点で意味が変わったか」。\n\n【確認依頼内容(くろこへ・事実ベースで整理すること)】\n\n1. 各ステップの役割定義\n- 399は何を定義したか（問題定義か仕様か）\n- 400は何を追加・変換したか（分類か構造化か再定義か）\n- 401は何を確定したか（制御設計か統治理論か実装か）\n\n2. 意味変化の有無（判定すること）\n- OVERRIDESの意味は一貫しているか\n- 途中で概念レイヤーが追加されたか\n- 「例外処理」→「統治構造」への変化が発生しているか\n\n3. 分類判定（最重要）\nこの流れはどちらかを明確にすること：\nA. 補充（同一設計内の拡張）\nB. 解釈変更（設計思想の変化）\n\n4. 変化点の特定（Bの場合）\n- どのステップで変化が起きたか\n- 何がトリガーだったか\n\n5. 推奨\n- 現行(401確定版)を採用すべきか\n- 399〜401を再固定（再設計）すべきか\n\n【監査的重要性】\nもし「解釈変更」と判定された場合、MoCKAの制御階層設計そのものへ影響し、TODO_401は単なる設計ではなく「制度再定義」になっている可能性がある。逆に「補充」と判定されれば、そのまま正規設計として確定できる。\n\nこれはバグ検出ではなく、設計の確定前監査プロセス（意味の連続性を確認せずに次へ進むと制度OSは必ず歪む、という原則に基づく）として位置づける。",
+      "assigned_to": "くろこ（事実整理・判定）+ きむら博士（最終承認）",
+      "note": "【監査完了・きむら博士最終承認】くろこによる事実整理（399/400/401の役割定義→意味変化の有無→分類判定→変化点特定→推奨）を実施。\n\n判定：A（補充／同一設計内の拡張）。意味の核（absolute_priority→override_requestedへの格下げ＝採否決定権はDecision Policy側）はTODO_399で確立され、400・401はその上に積まれた具体化。TODO_401の「権利→監査可能な要求フラグ」という再表現は格下げの言語化に過ぎず、概念の外延変更ではない。event_gate/audit_trigger/カナリアテストは「定義」ではなく「定義が実効していることの保証機構」の追加であり、補充に分類。再固定不要、現行(TODO_401確定版)を採用。\n\n【補足監査(R01)による2点の修正提案・両方採用】\n①文言修正：「Decision Policyを唯一の裁定者とする」という表現は誤読を招く。正確には「Decision Policyは制度上の主権者ではなく、Human Approval Gateの下で唯一の裁定アルゴリズムである」という階層構造（Human→Approval Gate→Decision Policy→Execution）を明示すべき。Decision Policy v1.0設計文書(DECISION_POLICY_v0.1.md)側の表現を次回更新時に修正すること。\n②新規制度概念の明文化：399→401の流れで「Decision Evidence」が単なるログではなく、Decision PolicyとExecution/Auditを接続する制度的インターフェースへ実質的に昇格している。これは設計変更ではないが新しい制度概念であるため、TODO_401を完全に閉じる前に一文で定義すべき。\\n推奨定義文：「Decision Evidenceとは、Decision Policyが行った裁定について、後続層（Execution・Audit）が制度的正当性を検証できる最小証跡である。」\\n\\n【残存リスク（次フェーズへ引き継ぎ・既知）】\\nconfidence算出方法・算出主体の未確定（TODO_402へ引き継ぎ済み）／カナリアテストCI実行担保の実装未了（TODO_401 v0.2記載済み・未実装）／TODO_401 status「未着手」のまま（v0.2待ち、本監査完了後に正式クローズ判断が必要）。\n\n【最終判定】意味連続性：維持／設計思想：維持／分類判定：A（補充）／再固定：不要／補足推奨：文言修正＋Decision Evidence定義の明文化（→TODO_404として別途起票）。",
+      "reference_event": "2026-07-01セッション（399→400→401流れの意味連続性監査指示）",
+      "created_at": "2026-07-01T07:09:08.982613",
+      "updated_at": "2026-07-01T07:13:10.347007",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_404",
+      "title": "Decision Policy文書 補強2点 — 階層表現修正＋Decision Evidence制度用語定義（TODO_403補足監査反映）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/Decision Policy/文書補強",
+      "description": "【背景】\nTODO_403（TODO_399→400→401の意味連続性監査）で分類判定A（補充）が確定したが、補足監査(R01)から2点の文言・概念補強が推奨され、きむら博士が採用を承認した。TODO_401自体（completed）は変更せず、設計文書(DECISION_POLICY_v0.1.md等)側への追記として対応する。\n\n【作業内容】\n\n①文言修正：階層構造の明示\n現状「Decision Policyを唯一の裁定者とする」という表現は、Decision Policyが制度上の主権者であるかのような誤読を招く。\n正確な構造：\nHuman\n  ↓\nApproval Gate\n  ↓\nDecision Policy（唯一の裁定アルゴリズム。主権者ではない）\n  ↓\nExecution\nDECISION_POLICY_v0.1.md（および参照している関連文書があれば）の「唯一の裁定者」表現を、「Human Approval Gateの下で唯一の裁定アルゴリズムを担う」という主権者ではなくアルゴリズムである旨が伝わる表現へ修正する。\n\n②Decision Evidenceの制度用語としての明文化\n399→401の流れで「Decision Evidence」が単なるログではなく、Decision PolicyとExecution/Auditを接続する制度的インターフェースとして実質的に機能している。新概念ではあるが設計変更ではないため、TODO_401を完全に閉じる前に一文で定義しておく。\n\n推奨定義文（そのまま採用可）：\n「Decision Evidenceとは、Decision Policyが行った裁定について、後続層（Execution・Audit）が制度的正当性を検証できる最小証跡である。」\n\nDECISION_POLICY_v0.1.md内のDecision Evidence関連箇所（event_gate連携部分）に、この一文を制度用語の定義として追記する。\n\n【非目的】\nDecision Policyの構造・アルゴリズム自体（rank_candidates/apply_policy等）への変更は行わない。文言・定義の追記のみ。TODO_399/400/401本体（completed）への遡及変更は行わない。\n\n【完了条件】\n・DECISION_POLICY_v0.1.mdに①②の修正・追記が反映されていること\n・差分が「文言・定義追記のみ」であり構造変更を含まないことを確認すること\n・mocka_write_event記録済みであること",
+      "assigned_to": "くろこ（実装）+ きむら博士（確認）",
+      "note": "【完了】DECISION_POLICY_v0.1.md を docs/governance/ に新規作成（ファイルが未生成だったため、TODO_399/400/401の確定設計に基づき作成と同時にTODO_404修正を適用）。\n\n適用した修正2点:\n(1) セクション0「Decision Policyの制度的位置づけ」: Human -> Approval Gate -> Decision Policy（唯一の裁定アルゴリズム、制度上の主権者ではない） -> Execution の4層構造を明示。\n(2) セクション4「Decision Evidenceの制度用語定義」: 「Decision Evidenceとは、Decision Policyが行った裁定について、後続層（Execution・Audit）が制度的正当性を検証できる最小証跡である。」をevent_gate連携箇所（layer_2_constraint説明）付近に追記。\n\n差分確認: 新規ファイル作成のみ。TODO_399/400/401本体（completed）への遡及変更なし。\nUTF-8: OK（BOM無し、8121 bytes、151行）。\nauto_recordフックによる自動記録: Write実行時に発火済み。",
+      "reference_event": "TODO_403監査完了（2026-07-01）",
+      "created_at": "2026-07-01T07:13:27.290446",
+      "updated_at": "2026-07-01T07:18:27.269295",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_405",
+      "title": "DECISION_POLICY_v0.1.md 全文監査 — 責務境界/Decision Evidence3主体/event_gate役割の明文化確認（正規設計確定前の最終監査）",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/設計確定前監査",
+      "description": "【背景】\nTODO_404完了報告にて、docs/governance/DECISION_POLICY_v0.1.md が399/400/401/404を統合した最初の制度文書として新規作成された。これはDecision Policyシリーズの「憲章」に相当する重要文書であり、正規設計として最終確定する前に全文監査を行う。\n\n【私(claude.ai/R01)はローカルファイルシステムへの直接アクセス手段を持たないため、本文監査の実行はくろこが担当し、結果を報告すること】\n\n【監査観点（3点・本文を読んで確認すること）】\n\n①Decision Policyの責務境界の明文化\n以下が本文中に明示されているか確認：\n- Decision Policyは「判定する」のみを行うこと\n- 「実行しない」こと\n- 「保存しない」こと\n- 「Approvalを持たない（Approval Gateの下位にある）」こと\nこれらの責務境界（やらないことの明示）が文章として存在するか、存在しなければ追記が必要か判断する。\n\n②Decision Evidenceの3主体の明文化\n最低限、以下3点が本文中に明示されているか確認：\n- 誰が生成するか（Decision Policy自身か、Decision Policy呼び出し元か）\n- 誰が読むか（Execution層か、Audit層か、両方か）\n- 誰が検証するか（event_gateか、audit_triggerか、人間か）\n\n③event_gateの役割の明確化\nevent_gateは\n- Evidenceの「存在」を確認するだけなのか\n- Evidenceの「内容」も検査するのか\nこの区別が本文中で明確にされているか確認する（TODO_401のenforcement設計では3層構造のうちevent_gateが「証跡なしのDecision Evidenceをリジェクト」と定義されていたが、これが「存在チェックのみ」なのか「内容チェックも含む」のか、本文表現を精査する）。\n\n【監査の進め方】\n①〜③それぞれについて「明文化済み／不足あり」を判定し、不足があれば追記案を提示する。\n用語統一・権限境界・制度階層・責務分離・将来拡張性の観点も併せて確認する。\n監査完了後、「監査官承認（R01）」相当の最終判定をきむら博士に提示する。\n\n【完了条件】\n①②③の判定結果が報告されていること。不足箇所があれば追記され、追記後の差分がmocka_write_eventに記録されていること。きむら博士の最終承認をもってDECISION_POLICY_v0.1.mdを正規設計として確定する。",
+      "assigned_to": "くろこ（全文監査）+ きむら博士（最終承認・監査官R01相当）",
+      "note": "【完了】全文監査実施（2026-07-01）。判定結果と追記内容:\n\n①責務境界: 不足あり -> 追記完了\n「判定のみ・実行しない・保存しない・Approvalを持たない」の4点をセクション0内「責務境界（不変の制約）」として明文化。\n\n②Decision Evidenceの3主体: 一部不足 -> 追記完了\n「生成主体: Decision Policy」「読者: event_gate/Execution/Audit」「検証主体: Execution/Audit」をセクション4に追記。\n\n③event_gateの役割: 不足あり -> 追記完了\nlayer_2_constraintのroleフィールドに「Evidenceの内容検査は行わない（存在確認のみ）」を追記。セクション4本文にも「存在を確認するのみ」「内容検査は行わない」を明記。\n\n構造変更なし（文言・定義追記のみ）確認済み。UTF-8: OK（BOM無し・9392 bytes・165行）。最終承認はきむら博士。",
+      "reference_event": "TODO_404完了報告（2026-07-01）",
+      "created_at": "2026-07-01T07:20:51.563287",
+      "updated_at": "2026-07-01T07:30:21.313339",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_406",
+      "title": "設計系TODO completed判定と物理ファイル実体化の乖離 — TODO_399/400/401の事例を起点とした横断棚卸し",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/ガバナンス/正本信頼性",
+      "description": "【発見事実】\nTODO_404完了報告にて判明。TODO_399/400/401はTODO上では「完了(completed)」と確定していたが、その設計内容を記述するはずの物理ファイル docs/governance/DECISION_POLICY_v0.1.md はディスク上に存在していなかった（TODO_404着手時に新規作成して初めて実体化した）。\n\n【パターンとしての位置づけ】\nTODO_371（「正本記録の信頼性実測」「completed判定とartifact存在の乖離」を含む根本原因調査）、およびTODO_242（一時「実体が確認できない」インシデント疑いが発生し、手動確認の結果は実在していたケース）と類似だが、今回は逆方向のパターンである点に注意：今回は「completed判定が先にあり、それを裏付ける成果物が実際には存在しなかった」。TODO設計プロセスにおいて「設計文書がnoteフィールド内にのみ存在し、正式なファイルとして物理化されないままTODOがcompletedになる」という構造的リスクを示す実例。\\n\\n【調査対象】\\n①TODO_393〜402系列（Knowledge Activation〜Decision Policy一連の設計TODO）のうち、note内で「確定」「完了」と記述されながら、対応する物理ファイル（docs/governance/配下等）が実際に存在するかを横断的に棚卸しする\\n②「TODOのcompleted判定」と「成果物の物理ファイル化」を同時に完了条件とするルールを、設計系TODOのテンプレート（完了条件記載欄）に組み込むべきかを検討する\\n\\n【非目的】\\nTODO_399/400/401/404自体の内容変更は行わない（noteに残る設計内容自体は正しいことが確認済み）。本TODOは再発防止のプロセス改善のみを対象とする。",
+      "assigned_to": "きむら博士（裁定）+ くろこ（再発防止策の検討）",
+      "note": "【完了】TODO_393〜402系列の物理ファイル棚卸し実施（2026-07-01）。\n\n結果一覧:\n\n| TODO | タイトル概要 | 期待される成果物 | 実在 |\n|------|------------|----------------|------|\n| TODO_393 | 思想進化史Repository統合 | ACTIVATION_POLICY_v0.1.md + MOCKA_THOUGHT_EVOLUTION_v0.1.md | あり（両ファイル確認済み） |\n| TODO_394 | mocka_mcp_server パス統一監査 | 物理成果物なし（監査記録のみ） | N/A |\n| TODO_395 | Knowledge Activation Architecture v0.1設計 | 独立した設計文書（KA Architecture v0.4） | なし（note内記述のみ。docs/governance/配下に独立ファイルなし） |\n| TODO_396 | phi_os/human_gate.py スキーマ拡張 | phi_os/human_gate.py（実装ファイル） | なし（ファイル未発見・参照commit 64f8a4ae9もリポジトリに存在しない） |\n| TODO_397 | リネーム検討（未着手） | N/A | N/A |\n| TODO_398 | Knowledge Asset Promotion Pipeline設計 | 独立した設計文書 | なし（note内記述のみ。docs/governance/配下に独立ファイルなし） |\n| TODO_399 | Decision Policy v1.0実体設計 | DECISION_POLICY_v0.1.md | あり（TODO_404で作成） |\n| TODO_400 | conflict_resolution_order設計 | DECISION_POLICY_v0.1.mdに統合 | あり（統合済み） |\n| TODO_401 | OVERRIDES enforcement設計（未着手） | N/A | N/A |\n| TODO_402 | 数理閉包設計（未着手） | N/A | N/A |\n\n重大所見:\n1. TODO_396（phi_os/human_gate.py実装）: 「commit 64f8a4ae9として完了」と記録されているが、当該commitはplanningcaliberリポジトリにもMoCKAリポジトリにも存在しない。phi_os/human_gate.pyもファイルシステム上に存在しない。completed判定の根拠が失われている。\n2. TODO_395・TODO_398: 設計内容はnoteフィールドに詳細記述があるが、docs/governance/配下等への独立した設計文書ファイルは作成されていない。TODO_399のDECISION_POLICY_v0.1.mdと対照的。\n\n所感（きむら博士への提言・最終判断は博士が行う）:\n「completedの判定」と「成果物の物理ファイル化」を同時に完了条件とする運用ルールの追加を推奨する。根拠: 今回の棚卸しでTODO_399（DECISION_POLICY_v0.1.md未生成）とTODO_396（human_gate.py未生成かつcommit不在）が発見された。設計内容がnoteにのみ存在するケース（TODO_395・398）は、将来のAIが一次データを参照できない状態になりうる。ただしこれは「常に全TODO成果物を物理化する」という過剰な要件化とは分けて考える必要があり、「物理成果物が明示されているTODOは完了条件にファイル化を含める」という限定的な追加が適切と思われる。",
+      "reference_event": "TODO_404完了報告（2026-07-01）",
+      "created_at": "2026-07-01T07:21:12.216652",
+      "updated_at": "2026-07-01T07:31:11.588018",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_407",
+      "title": "TODO_407: TODO_396「実装完了・push済み」の制度的根拠検証 — 記録・成果物・履歴の整合性判定（段階的監査 Phase A/B/C）",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/成果物不整合インシデント検証",
+      "description": "【目的】\nTODO_396「実装完了・push済み」という制度的主張の根拠を検証し、記録・成果物・履歴の整合性を判定する。必要に応じて不整合の原因（記録・移動・履歴・誤記）を分類する。これは「ファイル探索」ではなく「実装済みという制度的主張の検証」タスクである。\n\n【背景】\nTODO_406の横断棚卸しで、TODO_396（Review Gate実装・phi_os/human_gate.pyスキーマ拡張）が「実装完了・commit 64f8a4ae9としてpush済み」と記録されているにもかかわらず、phi_os/human_gate.pyがファイルシステム上に存在せず、commit 64f8a4ae9もどのリポジトリにも見当たらないことが判明した。\n\n【検証すべき4つの可能性（性質が全く異なるため切り分け必須）】\n①実際のGit操作結果（コミットハッシュ・pushログ）を確認して記録した → もし消失していれば「成果物の消失・履歴不整合」\n②AIの実装報告（「実装しました」「pushしました」という自己申告）をそのまま記録した → 「実装報告の信頼性」問題\n③設計予定を実装済みとして誤って記録した → 「記録運用上の問題」\n④当時は存在したが、その後のリポジトリ整理・履歴変更（rebase/filter-branch等）で失われた → 「成果物の消失・履歴不整合」\n\n【段階的監査範囲（広げすぎない・監査対象を固定する）】\n\n■Phase A（必須・必ず実施）\nTODO_396の制度的主張を検証する。調査対象を以下4点に限定し、事実のみを集める：\n1. TODO_396の原文（note・TODO本文）\n2. 「実装完了」「push済み」と判断した一次記録（mocka_write_eventの該当イベント等）\n3. 指定されたコミット(64f8a4ae9)の存在確認\n4. phi_os/human_gate.pyの存在確認\n\n■Phase B（条件付き・Phase Aで不整合が確認された場合のみ実施）\n「存在しない」のではなく「移動・変更された可能性」を検証する：\n- リポジトリ移動\n- ファイル名変更\n- ディレクトリ再編\n- コミット履歴の書き換え（rebase、filter-branch等）\n\n■Phase C（必要時のみ・Phase Bでも説明できない場合のみ実施）\nここで初めて「AIが誤って実装済みと報告したのか」という制度的問題を扱う：\n- 当時のチャットログ\n- AIの実装報告\n- 実装宣言と実成果物の対応関係\n\n【非目的】\nMoCKA全体の監査ではない。Knowledge Activation系（TODO_393〜402）全体への調査範囲拡大は、本TODOでは行わない（必要であれば別TODOとして起票する）。\n\n【完了条件】\nPhase A〜（必要に応じてB・C）の結果に基づき、①〜④のいずれに該当するかを判定し、きむら博士へ報告すること。mocka_write_event記録済みであること。",
+      "assigned_to": "くろこ（監査実施）+ きむら博士（最終判定）",
+      "note": "【完了】Phase Aのみで完了（Phase B/C不要）。\n\nPhase A 4点確認結果:\n1. TODO_396原文: noteに「commit 64f8a4ae9として個別commit・push完了（a548e3719..64f8a4ae9）」と記録あり\n2. 実装完了の一次記録: mocka_searchでは直接ヒットなし。ただしTODO_396 noteが詳細な実装記録を保持（Phase A/B経緯・テスト結果・承認根拠）\n3. commit 64f8a4ae9の存在: MoCKAリポジトリ（C:/Users/sirok/MoCKA）に確認。コミットメッセージ「TODO_396 Phase B: phi_os/human_gate.py Review Gate実装 (人間承認済み, Core System File)」。phi_os/human_gate.py +70行変更。\n4. phi_os/human_gate.pyの存在: C:/Users/sirok/MoCKA/phi_os/human_gate.py に確認済み。\n\n判定: 分類① 「Git操作結果を確認して記録した（実装は正常に存在）」\n\nTODO_406での「なし」判定は誤りだった。原因: phi_os/（MoCKAコアPythonモジュール、C:/Users/sirok/MoCKA/phi_os/）とPlanningCaliber/workshop/phi-os/（Chrome拡張の正本パス）を混同した検索ミス。MOCKA_OVERVIEW.jsonのextension_canonical_pathsに記載されるphi_osのcanonical_pathはChrome拡張の配置先であり、Pythonモジュールのphi_os/とは別物。\n\nTODO_406のTODO_396に関する報告内容は誤りであり、修正が必要。",
+      "reference_event": "TODO_406完了報告（2026-07-01）",
+      "created_at": "2026-07-01T07:34:55.405016",
+      "updated_at": "2026-07-01T07:39:27.058409",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_408",
+      "title": "TODO_408: TODOテンプレート標準化 — Artifact Type/Completion Evidence/Verification Status/Evidence Location 4項目導入",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/ガバナンス/TODOテンプレート標準化",
+      "description": "【背景】\nTODO_406で見えた本質的問題は「成果物がない」ことではなく、「何を成果物とみなせば完了なのかが制度として定義されていなかった」こと。設計だけで終わるTODO、文書が必要なTODO、コードが必要なTODO、実装・検証まで必要なTODOが、これまで区別なく同じ「完了」ステータスに収束していた。\n\n【採用する4項目（TODOテンプレート標準）】\n①Artifact Type：成果物の種類（例：Design Note / Governance Document / Source Code / Investigation Report / Test Report）\n②Completion Evidence：完了を何で証明するか（例：note記載で可 / .md必須 / 実ファイル＋コミット必須 / 監査レポート / テスト結果）\n③Verification Status：検証状態（Pending / Verified / Verification Required）\n④Evidence Location：成果物・証跡の所在（ファイルパス、リポジトリ、コミットID、関連文書等）\n\n【TODO_396が問題になった理由（具体例として記録）】\nArtifact Typeのみだったら「Source Code」で終わっていた。しかしCompletion Evidenceに「実ファイル＋コミット」と明記されていれば、completed判定の時点で実ファイル・コミットの実在確認が完了条件に組み込まれ、今回の不整合は完了時点で検出できていたはずである。\n\n【段階的導入方針（既存TODO全件の遡及書き換えはしない）】\n- Phase 1：新規TODOから適用\n- Phase 2：重要な制度系TODO（TODO_399/400/401/404/407等）のみ遡及的に追記\n- Phase 3：テンプレート正式化、以後の全TODOに適用\n\n【非目的】\n既存の全TODO（完了・未完了問わず）への一括遡及適用は行わない。mocka_add_todo/mocka_update_todoのスキーマ自体への必須フィールド追加（強制バリデーション）も本TODOの範囲外とし、別途検討する。\n\n【完了条件】\n①〜④の4項目定義がガバナンス文書（docs/governance/配下）として明文化されること。Phase 1（新規TODOへの適用開始）が運用に乗ること。きむら博士の承認を得ること。",
+      "assigned_to": "くろこ（設計・段階導入）+ きむら博士（承認）",
+      "note": "【完了】docs/governance/TODO_ARTIFACT_GOVERNANCE_v1.0.md を新規作成。\n\nArtifact Type: Governance Document\nCompletion Evidence: .md必須 -> 作成済み\nVerification Status: Verified（UTF-8 OK・4937 bytes・91行）\nEvidence Location: C:/Users/sirok/MoCKA/docs/governance/TODO_ARTIFACT_GOVERNANCE_v1.0.md\n\n導入した4項目定義:\n- Artifact Type（成果物の種類: Design Note / Governance Document / Source Code / Investigation Report / Test Report / Config-Data / N/A）\n- Completion Evidence（完了証明: note記載で可 / .md必須 / 実ファイル+コミット必須 / 監査レポート / テスト結果）\n- Verification Status（検証状態: Pending / Verified / Verification Required）\n- Evidence Location（所在: パス・コミットID・文書パス等）\n\n段階導入: Phase 1（新規TODO即時適用）/ Phase 2（制度系TODO_399/400/401/404/407のみ遡及）/ Phase 3（将来の正式化）\nv1.0除外: Completion Authority（v2.0送り）・全件遡及なし・スキーマ強制なし\n\n最終文言: 「TODO_408はDecision Policy設計の変更ではなく、成果物管理・監査制度を標準化する独立したガバナンス改善として扱う。本制度は新規TODOから段階的に適用し、既存成果物への遡及適用は必要最小限とする。」をファイル末尾に明記済み。\n\n最終承認はきむら博士。",
+      "reference_event": "TODO_406完了報告（2026-07-01）",
+      "created_at": "2026-07-01T07:35:13.069000",
+      "updated_at": "2026-07-01T07:40:39.347043",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_409",
+      "title": "TODO_409: TODO_ARTIFACT_GOVERNANCE_v1.0.md 冒頭に「適用範囲」段落を追加",
+      "status": "完了",
+      "priority": "低",
+      "category": "制度/ガバナンス/文書補強",
+      "description": "【背景】\nTODO_408完了報告後、R01監査官より1点の追加推奨があった。docs/governance/TODO_ARTIFACT_GOVERNANCE_v1.0.md を今後の基準文書として扱うなら、冒頭に「適用範囲」を1段落だけ明記すべき。\n\n【作業内容】\ndocs/governance/TODO_ARTIFACT_GOVERNANCE_v1.0.md の冒頭に、以下の内容（趣旨）の段落を追記する：\n\n「本文書はTODO成果物の管理・監査に適用される。Decision Policy、Knowledge Activation等の制度設計そのものを変更するものではなく、成果物の定義・証跡・検証状態を標準化することを目的とする。」\n\nこれにより、本文書が「制度を変える文書」ではなく「制度運用を標準化する文書」であることを明確にする。\n\n【非目的】\n本文書の他の内容（4項目定義・段階導入計画・末尾の位置づけ文）への変更は行わない。冒頭の適用範囲段落の追加のみ。TODO_408本体（completed）への遡及変更は行わない。\n\n【完了条件】\ndocs/governance/TODO_ARTIFACT_GOVERNANCE_v1.0.md の冒頭に適用範囲段落が追加されていること。差分が当該段落の追加のみであることを確認すること。mocka_write_event記録済みであること。",
+      "assigned_to": "くろこ",
+      "note": "【完了】docs/governance/TODO_ARTIFACT_GOVERNANCE_v1.0.md の冒頭に適用範囲段落を1段落追加。差分は冒頭2行（「適用範囲: 〜」段落）のみ。4項目定義・段階導入計画・末尾の位置づけ文は変更なし。UTF-8: OK（5208 bytes・93行）。TODO_408本体への遡及変更なし。最終承認はきむら博士。",
+      "reference_event": "TODO_408完了報告（2026-07-01）",
+      "created_at": "2026-07-01T07:42:21.825692",
+      "updated_at": "2026-07-01T07:43:50.767084",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "TODO_402",
+      "title": "conflict_resolution_order 数理閉包設計 — confidence算出・ranking合成・正規化・tie-break決定性",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nTODO_400（conflict_resolution_order設計）はv0.1で完了・クローズ済み。同TODOのnoteで「①confidence算出方法・算出主体は依然未定義（TODO_398から継続、未解決の可能性あり）」と明記されている通り、構造設計（枠組み）は確定したが、数理的な閉包（中身の関数）は意図的に未確定のまま残されている。\n\nTODO_401(TODO_399-C) v0.3確定の際、きむら博士・GPTレビューを経て「completed配列は意味的に不変（completedの定義を後から揺らさない＝audit_triggerの信頼性維持）」という運用原則を確認。これに基づき、TODO_400自体を分割・再オープンせず、残る数理的領域を新規TODOとして独立起票することが確定した。\n\n【位置づけ】\nTODO_400＝競合解決の「枠組み」（構造設計、完了済み）\nTODO_402＝その枠組みの「数学的実装」（数理閉包、本TODO）\n\n両者は階層的継承構造として分離する。TODO_400の内容自体には一切手を加えない。\n\n【設計対象】\n①confidence definition closure：confidence値の算出方法・算出主体（誰が／何が／どの根拠でconfidenceを付与するか）の確定。TODO_398から継続する未解決課題。\n②ranking integration function：rank_candidatesの評価ベクトル（decision_effect_rank, -confidence, authority_rank, -created_at）における各要素の正確な合成・比較関数の厳密形。\n③evaluation vector normalization：評価ベクトル各要素のスケール（単位・範囲）が異なる場合の正規化ルール。\n④deterministic tie-break system：すべての比較軸が同値だった場合に、決定論的に（再現可能に）勝者を一意に決める仕組みの保証。\n⑤conflict_resolution_orderへの数学的接続：上記①〜④を、TODO_400で確定したconflict_resolution_orderの構造（detect_conflicts/rank_candidates/apply_policy等）にどう接続するかの設計。\n\n【完了条件】\n①〜⑤が設計文書として整理され、TODO_400の構造設計と矛盾なく接続されることが確認され、きむら博士の承認を得ること。\n\n【非目的】\n実装（コード化）は本TODOの範囲外。TODO_400本体への変更・再オープンは行わない（completed履歴は不変として扱う）。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "【完了】v0.1→v0.2の2段階で確定。きむら博士承認済み。\n\nArtifact Type: Governance Document\nCompletion Evidence: .md必須 -> 作成済み\nVerification Status: Verified\nEvidence Location: C:/Users/sirok/MoCKA/docs/governance/CONFLICT_RESOLUTION_MATH_v0.1.md（v0.2 内部更新）\n\nv0.2追記3点（構造変更なし）:\n①2-4にEVENT_RECORD将来細分化注記（Human/System/AI Eventサブ分類は authority_rank 5段階構造を変更せず追加可能）\n②3-3にconfidence保存精度と制度精度の分離（保存は実装依存でよい・比較時のみ0.01刻みへ正規化）\n③セクション6「評価関数の数学的保証」追加（反射性・推移性・決定性・全順序の成立確認）\n\nDecision Policy Series（399→400→401→404→405→402）の数理閉包完成。TODO_400本体への変更なし。UTF-8: OK（15439 bytes・323行）。",
+      "reference_event": "E20260630_6432312496826",
+      "created_at": "2026-06-30T20:08:52.465955",
+      "updated_at": "2026-07-01T07:51:23.787096",
+      "completed_at": "2026-07-01"
     }
   ]
 }
