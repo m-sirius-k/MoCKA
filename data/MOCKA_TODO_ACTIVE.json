@@ -624,19 +624,6 @@
       "created_at": "2026-06-30T14:54:16.896172"
     },
     {
-      "id": "TODO_396",
-      "title": "Review Gate実装 — phi_os/human_gate.pyスキーマ拡張（Reason Unit昇格審査）",
-      "status": "未着手",
-      "priority": "中",
-      "category": "制度/Knowledge Activation/実装",
-      "description": "【背景】\nTODO_393（Knowledge Activation Architecture v0.4の制度組み込み）で、Review Gateの実装方針として既存phi_os/human_gate.pyとの統合が決定された。本TODOはその実装本体。\n\n【目的】\nReason Unit→Knowledge Assetsへの昇格審査（Review Gate）を、既存human_gate.pyのスキーマ拡張として実装する。\n\n【作業内容】\n①human_gate.pyの既存状態モデル（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）を確認し、Reason Unit昇格審査をこの状態モデルにどう乗せるかを設計する（新規状態を追加するか、既存状態を流用するかを判断する）\n②昇格審査専用フィールドを設計・実装する（TODO_395 v0.4で定義した審査内容：①Decision Evidenceとの整合性②既存Knowledge Assetsとの矛盾の有無③昇格させる価値があるか、をどう記録するか）\n③審査結果（承認/保留/却下）それぞれの後続処理を実装する（承認→Knowledge Assetsへ昇格、保留→Reason Unitのまま次回持ち越し、却下→昇格対象外フラグを付けて隔離）\n\n【完了条件】\n・human_gate.pyのスキーマ拡張が実装されていること\n・Reason Unitの昇格審査が承認/保留/却下の3分岐で正しく動作することの確認（簡易テストで可）\n・mocka_write_event記録済みであること\n・本番稼働中のガバナンス機構への変更のため、着手順序・ロールバック方針をきむら博士に事前確認してから実装すること",
-      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
-      "note": "【Phase A完了。Phase B開始条件を確定】\n\nPhase A調査結果（要点）：\n①human_gate.pyはイベントソーシング方式（state非保存、event列のみ保存しget_state()で再構築）。5状態（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）、TRANSITIONS辞書で遷移制御、13件の既存テストあり。\n②呼び出し元はphi_os/migrate_prevention_queue.py（一度きりの移行スクリプト、常駐稼働ではない）のみ。重要発見：human_gate_bp（Flask Blueprint）はapp.py/mocka_mcp_server.pyのどちらにもregister_blueprintされておらず、HTTP経由では到達不能な事実上の死蔵コード。影響範囲は想定よりはるかに小さい。\n③案A（既存5状態流用＋type/payloadで区別）を採用確定。理由：Human Gateは状態機械、Review Gateは用途（ユースケース）であり、状態を増やすのではなく用途をメタデータで区別する方がイベントソーシングの設計原則と整合し、既存13テストへの影響もない。\n④ロールバック方針確定：append-only原則によりイベント削除不要。新規コード（追加分）のみrevertすればよい。既存13テストの全件PASSをロールバック確認基準とする。\n\n【Phase B開始条件（GPTレビュー反映・確定）】\n①責務表を以下で固定する：\n- Human Gate＝汎用承認エンジン（人間承認イベント管理）\n- Review Gate＝Human Gateを利用する一ユースケース（Knowledge昇格審査）\n- Reason Unit＝判断資産\n- Knowledge Assets＝承認済み知識\nReview Gateは新しいHuman Gateではなく、Human Gate基盤を利用するユースケースとして実装すること。\n\n②イベント区別はevent_typeとgate_typeの2軸で行う：\n- event_type: REASON_PROMOTION（Reason Unit昇格審査であることを示す）\n- gate_type: review_gate（将来Human GateとReview Gateが分岐拡張された際、Review Gateだけを集計・監査できるようにするため）\npayloadにこの2フィールドを最低限含めること。\n\n③semantic/query_engine/human_gate.py（同名だが無関係の別モジュール）との混同リスクについては、本TODOでは変更しないが、別途リネーム検討TODOを起票しておくこと（半年後に必ず混乱するというGPT指摘を記録として残す）。\n\n【Phase B（実装）着手を許可。上記①②③を満たした実装とすること】",
-      "reference_event": "",
-      "created_at": "2026-06-30T18:36:26.276532",
-      "updated_at": "2026-06-30T18:43:21.909605"
-    },
-    {
       "id": "TODO_397",
       "title": "semantic/query_engine/human_gate.py リネーム検討（phi_os/human_gate.pyとの命名衝突解消）",
       "status": "未着手",
@@ -647,6 +634,42 @@
       "note": "TODO_396 Phase A調査での副次発見。緊急性低、保守タスクとして記録のみ。",
       "reference_event": "",
       "created_at": "2026-06-30T18:43:31.324923"
+    },
+    {
+      "id": "TODO_399",
+      "title": "TODO_399-A: Decision Policy v1.0 実体設計（配置・形式・構造）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nTODO_398（Knowledge Asset Promotion Pipeline v0.4）で、Decision Policyを「唯一の裁定者」として責務集約することが確定した。本TODOはDecision Policy自体の実体設計フェーズ。\n\n【目的】\nDecision Policyをどこに、どう実体化するかを設計する（実装はしない）。\n\n【設計対象】\n①配置場所：PHI-OS内に置くか、独立したDBか、独立したserviceとして切り出すか\n②表現形式：JSON/DSL/コードのいずれで記述するか\n③構造：TODO_398で定義した判定順序（absolute_priority優先→confidence比較→解決不能ならHuman Gateへ）を、実際にどういうデータ構造・関数シグネチャで表現するか\n④既存PHI-OS（event_gate/control_gate/human_gate）との接続点をどこに置くか\n\n【完了条件】\nDecision Policy v1.0設計文書が作成され、TODO_399-B（conflict_resolution_order設計）・TODO_399-C（OVERRIDES設計）の前提となる配置・形式が確定していること。きむら博士の承認を得ること。\n\n【非目的】\n実装（コード化）は本TODOの範囲外。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "TODO_398後続。Decision Policy実体化の第一段階（配置・形式・構造）。TODO_399-B/Cの前提となる。",
+      "reference_event": "",
+      "created_at": "2026-06-30T19:03:00.165421"
+    },
+    {
+      "id": "TODO_400",
+      "title": "TODO_399-B: conflict_resolution_order設計（比較アルゴリズム）",
+      "status": "保留",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nTODO_399-A（Decision Policy実体設計）で配置・形式が確定した後、conflict_resolution_order（複数Knowledge Assetが競合した際の比較アルゴリズム）自体を設計するフェーズ。\n\n【前提】\nTODO_399-A完了後に着手すること。\n\n【設計対象】\n①比較アルゴリズムの仕様：confidence値の比較方法（単純な大小比較か、重み付き計算か）\n②absolute_priority同士が競合した場合の扱い（複数のAssetが同時にabsolute_priority=trueを主張した場合の解決方法）\n③ルールの記述形式とバージョニング方針\n④domain×categoryをまたいだ競合（異なる領域の知識同士が衝突する場合）の扱い\n\n【完了条件】\nconflict_resolution_orderの設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "TODO_399-A後続。TODO_399-Aの配置・形式確定が前提条件。",
+      "reference_event": "",
+      "created_at": "2026-06-30T19:03:09.535197"
+    },
+    {
+      "id": "TODO_401",
+      "title": "TODO_399-C: OVERRIDES enforcement設計（強制制御・ゲート設計）",
+      "status": "保留",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/Decision Policy",
+      "description": "【背景】\nabsolute_priority（絶対優先の主張）を持つKnowledge Assetが実際に「強制的に優先される」ことを、システムとしてどう保証するかの設計。これはガードレール設計そのものであり、3分割の中で最も重要かつ難度が高い。\n\n【前提】\nTODO_399-A（配置・形式）、TODO_399-B（比較アルゴリズム）完了後に着手すること。\n\n【設計対象】\n①OVERRIDESの強制をどの層で行うか：event_gateで止めるか、Decision層で拒否するか、両方か\n②human_gateとの連動方法：absolute_priority同士の競合等、機械的に解決できないケースでHuman Gateへどう橋渡しするか\n③強制が「効いていること」をどう検証・監査するか（TODO_396のGL7-UNENFORCED-CONDITIONS-BUGのような「掲げているが実効していない」状態を再発させないための設計上の手当て）\n\n【完了条件】\nOVERRIDES enforcement設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "TODO_399-A/B後続。3分割の中で最重要・最難度。GL7-UNENFORCED-CONDITIONS-BUGと同種の「掲げているが効いていない」リスクへの警戒を設計時から組み込むこと。",
+      "reference_event": "",
+      "created_at": "2026-06-30T19:03:21.060218"
     }
   ],
   "orchestra_handoff": {
@@ -765,6 +788,34 @@
       "reference_event": "",
       "created_at": "2026-06-30T17:48:48.317993",
       "updated_at": "2026-06-30T18:36:35.299428",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_396",
+      "title": "Review Gate実装 — phi_os/human_gate.pyスキーマ拡張（Reason Unit昇格審査）",
+      "status": "完了",
+      "priority": "中",
+      "category": "制度/Knowledge Activation/実装",
+      "description": "【背景】\nTODO_393（Knowledge Activation Architecture v0.4の制度組み込み）で、Review Gateの実装方針として既存phi_os/human_gate.pyとの統合が決定された。本TODOはその実装本体。\n\n【目的】\nReason Unit→Knowledge Assetsへの昇格審査（Review Gate）を、既存human_gate.pyのスキーマ拡張として実装する。\n\n【作業内容】\n①human_gate.pyの既存状態モデル（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）を確認し、Reason Unit昇格審査をこの状態モデルにどう乗せるかを設計する（新規状態を追加するか、既存状態を流用するかを判断する）\n②昇格審査専用フィールドを設計・実装する（TODO_395 v0.4で定義した審査内容：①Decision Evidenceとの整合性②既存Knowledge Assetsとの矛盾の有無③昇格させる価値があるか、をどう記録するか）\n③審査結果（承認/保留/却下）それぞれの後続処理を実装する（承認→Knowledge Assetsへ昇格、保留→Reason Unitのまま次回持ち越し、却下→昇格対象外フラグを付けて隔離）\n\n【完了条件】\n・human_gate.pyのスキーマ拡張が実装されていること\n・Reason Unitの昇格審査が承認/保留/却下の3分岐で正しく動作することの確認（簡易テストで可）\n・mocka_write_event記録済みであること\n・本番稼働中のガバナンス機構への変更のため、着手順序・ロールバック方針をきむら博士に事前確認してから実装すること",
+      "assigned_to": "くろこ（実装）+ きむら博士（承認）",
+      "note": "【完了】Phase A（調査・設計確認）→Phase B（実装）の2段階で実施。\n\nPhase A：human_gate.pyの現行スキーマ確認（イベントソーシング方式、5状態、TRANSITIONS辞書）、呼び出し元調査（migrate_prevention_queue.pyのみ。human_gate_bpはregister_blueprintされておらずHTTP経由到達不能の死蔵コードと判明し、影響範囲が想定より大幅に小さいことが確定）。案A（既存状態流用＋type/payload区別）を採用確定。ロールバック方針確定（append-only原則により新規コードrevertのみで足りる）。\n\nPhase B：新規状態・新規テーブルは追加せず、submit_reason_promotion/approve_promotion/reject_promotion/list_pending_promotionsの4関数を既存Human Gate基盤の上に追加（責務表：Human Gate＝汎用承認エンジン、Review Gate＝それを利用するユースケース、を踏襲）。全関数payloadにevent_type=\"REASON_PROMOTION\"・gate_type=\"review_gate\"を付与（将来Review Gate単体集計を可能にするためのGPT指摘反映）。既存テスト15件（13＋新規2件相当）全PASS、回帰なし確認済み。\n\nスコープ外として明記：承認後のKnowledge Assetsストアへの実体昇格処理（具体的格納先・形式が未確定のため）は本実装に含めず、承認イベントの記録までを責務とした。これは今後の別TODOとして残る。\n\ngit処理：phi_os/human_gate.pyはCore System File保護機構（mocka_git_safe_commit.py）により自動除外され、個別承認commitが必要と判定された。Phase A/Bの内容（影響範囲限定的・既存テスト全PASS・破壊的変更なし）を根拠にきむら博士が承認、commit 64f8a4ae9として個別commit・push完了（a548e3719..64f8a4ae9）。data/MOCKA_TODO_ACTIVE.json側はcommit 0a6975623。\n\n副次的発見：semantic/query_engine/human_gate.pyとの命名衝突リスクをTODO_397として切り出し済み。Knowledge Assets実体昇格処理の未確定は今後の検討事項として残存。",
+      "reference_event": "",
+      "created_at": "2026-06-30T18:36:26.276532",
+      "updated_at": "2026-06-30T18:49:25.366449",
+      "completed_at": "2026-06-30"
+    },
+    {
+      "id": "TODO_398",
+      "title": "Knowledge Asset Promotion Pipeline 設計（Review Gate→Knowledge Assets実体昇格）",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/Knowledge Activation/設計",
+      "description": "【背景】\nTODO_396でReview Gate（Reason Unit昇格審査）を実装したが、承認後の「Knowledge Assetsストアへの実体昇格」処理は明示的にスコープ外とした。理由：Knowledge Assetsの具体的な格納先・形式自体が未確定だったため。\n\n現状、TODO_395で設計した循環構造の最後の区間が未定義である：\nReason Unit → Review Gate → ？？？ → Knowledge Assets\n\n本TODOはこの「？？？」を制度として定義する。これが埋まって初めて、TODO_395の循環構造（Knowledge Assets→Activation Policy→Reference Trigger/Selection/Retrieval→Reasoning Context→Decision→Behavior→Decision Evidence→Reason Unit→Review Gate→Knowledge Assets）が概念だけでなく実装方針としても閉じる。\n\n【役割】\n本TODOは設計のみを対象とし、実装・文書更新・リポジトリ変更は一切行わない。TODO_395と同様の進め方（v0.1提出→レビュー→改訂を繰り返す）とする。\n\n【設計対象（最低限）】\n①昇格先：ファイルか、データベースか、複数ストアか\n②Knowledge Assetの構造：一意ID、バージョン、出典（Reason Unit参照）、承認履歴、適用範囲、有効・無効状態\n③昇格フロー：Review Gate承認→Knowledge Asset生成→インデックス更新→Activation Policyから参照可能化、という一連の流れ\n④更新戦略：新規追加、既存資産の改訂、廃止（Deprecated）、統合（Merge）\n⑤監査性：「このKnowledge AssetはどのReason Unitから生まれたか」「誰が承認したか」「いつ昇格したか」を追跡可能にする設計\n\n【成果物】\nKnowledge Asset Promotion Pipeline v0.1（設計文書。TODO_395と同様の構成：①設計本体②設計判断の根拠③他案との比較④リスク・未解決事項⑤次フェーズへ進むための前提条件チェックリスト）\n\n【完了条件】\nきむら博士が「この設計なら循環が実際に閉じる」と承認した時点で完了とする。承認後、実装フェーズ（TODO_398-B相当）を別途起票する。\n\n【非目的】\n実装（ファイル作成・DB設計の実コード化等）は本TODOの範囲外。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "【完了】v0.1→v0.2→v0.3→v0.4の4段階改訂を経て、きむら博士の最終承認を得た。TODO_396でスコープ外とした「Review Gate→Knowledge Assets実体昇格」の循環構造を完成させた。\n\nv0.4確定設計（最終版）：\n\n①テーブル構成\n- knowledge_asset_events：asset_id（行レベルUUID）/ knowledge_key（人間可読な論理キー）/ version / action（PROMOTE/REVISE/DEPRECATE）/ content（固定スキーマ：statement/applicability_condition/rationale/examples/decision_effect）/ source_reason_unit_ids（配列）/ domain × category（2軸）/ status / approved_by / created_at / activation_metadata\n- knowledge_relationships：from_knowledge_key / to_knowledge_key / relationship_type（SUPERSEDES/CONFLICTS_WITH/DEPENDS_ON/MERGED_FROM/SUPPORTS/DERIVED_FROM/REFINES/PREREQUISITE_FOR/CONTEXTUALIZES）\n\n②責務の完全分離（最重要・最終確定）\n- Knowledge Asset：判断材料そのもの。activation_metadataとしてconfidence（確信度）/ absolute_priority（boolean。priorityという相対順位ではなく「絶対優先の主張」のみを持つ）/ decision_effect（判断への作用内容）の3属性のみを保持。precedence_rule等の裁定ロジックは一切持たない。\n- Activation Policy：いつ候補にするか（Reference Trigger/Selection/Retrievalの基準）\n- Decision Policy（新設・唯一の裁定者）：候補同士の比較・競合解決を専管。conflict_resolution_orderをシステムグローバルなルールとして一本化保持。判定順序：absolute_priority優先→confidence比較→解決不能ならHuman Gateへ。\n\nこれにより「Knowledgeは判断材料、Policyは唯一の裁定者、Decisionは唯一の結果」という権力分離（data/judge separation）が完成。TODO_395のNorth Star「Knowledge changes AI Decisions」と完全に整合する構造となった。\n\n③昇格フロー\nReview Gate承認(approve_promotion) → knowledge_asset_eventsへPROMOTEイベント書き込み(activation_metadata必須記入) → knowledge_relationships更新(既存資産との関係記録) → Decision Policyから競合解決ルール付きで参照可能になる\n\n【残存リスク・未解決事項（次フェーズへ引き継ぎ）】\n- domain×category語彙の確定\n- 既存REFERENCE_LOCKED層・judgement_reason・Knowledge Assetの3者境界線合意\n- confidence/absolute_priorityの算出・付与主体の決定\n- Activation Policy側（Reference Trigger/Selection/Retrieval）の実装\n- Decision Policyの実体化（実装フェーズ）：conflict_resolution_orderの記述形式（YAML/JSON/DSL）、ルールセットのバージョニング、実行エンジンの配置場所（PHI-OSか外部か）、OVERRIDES（絶対優先の強制）をどの層で保証するか\n\nきむら博士の最終承認を得て本TODOを完了とする。次フェーズ「Decision Policy実体化」は別途TODO起票する。",
+      "reference_event": "",
+      "created_at": "2026-06-30T18:50:26.076918",
+      "updated_at": "2026-06-30T19:02:08.747866",
       "completed_at": "2026-06-30"
     }
   ]
