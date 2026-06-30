@@ -1356,9 +1356,9 @@ def todo_risk():
     if cached: return jsonify(cached)
     import importlib.util as _ilu, datetime as _dt
     try:
-        todo_path = os.path.join(os.path.dirname(ROOT_DIR), 'MOCKA_TODO.json')
+        todo_path = os.path.join(ROOT_DIR, 'data', 'MOCKA_TODO_ACTIVE.json')
         if not os.path.exists(todo_path):
-            todo_path = r'C:\Users\sirok\MOCKA_TODO.json'
+            todo_path = r'C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json'
         todos = json.load(open(todo_path, encoding='utf-8')).get('todos', [])
         # morphology engineでリスク評価
         _spec = _ilu.spec_from_file_location('me_risk', os.path.join(ROOT_DIR,'interface','morphology_engine.py'))
@@ -1414,7 +1414,7 @@ def integrity_status():
         # 締切超過TODOチェック
         overdue_todos = []
         try:
-            todo_path = r'C:\Users\sirok\MOCKA_TODO.json'
+            todo_path = r'C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json'
             todos = json.load(open(todo_path,encoding='utf-8')).get('todos',[])
             for t in todos:
                 if t.get('status') == '完了': continue
@@ -1597,7 +1597,7 @@ def get_latest_dna():
     from pathlib import Path
     PING_PATH   = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
     INJECT_FLAG = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
-    TODO_PATH   = Path(r"C:\Users\sirok\MOCKA_TODO.json")
+    TODO_PATH   = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
     inject_mode = "ON"
     if INJECT_FLAG.exists():
         v = INJECT_FLAG.read_text(encoding="utf-8-sig").strip().upper()
@@ -1672,7 +1672,7 @@ def get_restore_packet():
 @app.route("/gemini/briefing")
 def gemini_briefing():
     from pathlib import Path
-    TODO_PATH    = Path(r"C:\Users\sirok\MOCKA_TODO.json")
+    TODO_PATH    = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
     ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     todos_pending = []
     try:
@@ -1856,7 +1856,7 @@ def danger_status():
 @app.route("/public/todo")
 def public_todo():
     from pathlib import Path
-    TODO_PATH = Path(r"C:\Users\sirok\MOCKA_TODO.json")
+    TODO_PATH = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
     if not TODO_PATH.exists():
         return jsonify({"status": "NOT_FOUND"})
     try:
@@ -2624,10 +2624,10 @@ def sync_todo():
     import json as _json
     from pathlib import Path as _Path
     try:
-        _TODO = _Path("C:/Users/sirok/MOCKA_TODO.json")
+        _TODO = _Path("C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json")
         with _TODO.open("r", encoding="utf-8-sig") as _f:
             _data = _json.load(_f)
-        _count = len((_data.get("todos") or []) + (_data.get("completed") or []))
+        _count = len(_data.get("todos") or [])
         return _json.dumps({"ok": True, "count": _count, "message": "local only"}), 200, {"Content-Type": "application/json"}
     except Exception as e:
         return _json.dumps({"ok": False, "error": str(e)}), 500, {"Content-Type": "application/json"}
@@ -2641,7 +2641,7 @@ def _auto_incident_overdue():
     import sqlite3 as _sq
     OVERDUE_KEYWORDS = ['5/14','5/21','4/30','5/1','5/2','5/3','5/4','5/5']
     try:
-        todo_path = r'C:\Users\sirok\MOCKA_TODO.json'
+        todo_path = r'C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json'
         todos = json.load(open(todo_path, encoding='utf-8')).get('todos', [])
         db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
         con = _sq.connect(db)
@@ -2892,9 +2892,9 @@ def _calc_todo_risk_score(todo):
 def risk_todos():
     """全未着手TODOにリスクスコアを付与して返す"""
     try:
-        todo_path = os.path.join(os.path.dirname(__file__), "..", "MOCKA_TODO.json")
+        todo_path = os.path.join(os.path.dirname(__file__), "data", "MOCKA_TODO_ACTIVE.json")
         if not os.path.exists(todo_path):
-            todo_path = r"C:\Users\sirok\MOCKA_TODO.json"
+            todo_path = r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json"
 
         with open(todo_path, "r", encoding="utf-8") as f:
             todo_data = json.load(f)
@@ -2932,9 +2932,9 @@ def risk_todos():
 def risk_recommendation():
     """SYSTEM RECOMMENDATION — 今やるべき1つを返す"""
     try:
-        todo_path = os.path.join(os.path.dirname(__file__), "..", "MOCKA_TODO.json")
+        todo_path = os.path.join(os.path.dirname(__file__), "data", "MOCKA_TODO_ACTIVE.json")
         if not os.path.exists(todo_path):
-            todo_path = r"C:\Users\sirok\MOCKA_TODO.json"
+            todo_path = r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json"
 
         with open(todo_path, "r", encoding="utf-8") as f:
             todo_data = json.load(f)
@@ -4039,6 +4039,21 @@ def knowledge_diff():
 def initialize_runtime():
     """起動時に一度だけ実行する初期化処理(DB初期化等)。Thread/Timer起動は行わない。"""
     init_audit_db()
+    # TODO_371: Direct Write違反検知トリガー(trg_detect_direct_insert/update)は
+    # phi_os/audit_trigger.pyのinstall_audit_schema()が__main__からしか呼ばれず
+    # 起動シーケンスに組み込まれていなかったため、10日以上検知が完全停止していた
+    # (2026-06-20〜2026-06-30、本日再発見・再インストール済み)。
+    # 再発防止のため起動時に毎回(冪等に)再インストールする。
+    try:
+        import sqlite3 as _sq3
+        from phi_os.audit_trigger import install_audit_schema as _install_audit_schema
+        _audit_con = _sq3.connect(os.path.join(ROOT_DIR, 'data', 'mocka_events.db'))
+        _install_audit_schema(_audit_con)
+        _audit_con.commit()
+        _audit_con.close()
+        print("[initialize_runtime] audit_trigger installed (trg_detect_direct_insert/update)")
+    except Exception as e:
+        print(f"[initialize_runtime] audit_trigger install failed: {e}")
 
 
 def start_background_loops():
