@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "description": "ARCHITECTURE_CONTRACT/LOCKED系 永続参照ノード層。completed/ARCHIVE扱いにしないこと。",
+    "source": "MOCKA_TODO.json todos配列より分離 (TODO_390, 2026-06-28)",
+    "count": 3
+  },
+  "reference_locked": [
+    {
+      "id": "TODO_HAB_GPT_CONNECTION_SPEC_V1",
+      "title": "[ARCHITECTURE_CONTRACT/LOCKED] HAB ↔ GPT Connection Contract v1.0 — 構造接続固定ノード",
+      "status": "完了",
+      "contract_status": "DONE_LOCKED",
+      "priority": "最高",
+      "category": "Architecture_Contract_Critical",
+      "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。HAB↔GPT間を「意味ではなく構造で接続される」関係として固定する契約。structural filter（HAB）↔ telemetry generator（GPT）interface / no semantic coupling rule / Event.db integration defined / H2-3・Relay境界固定。Phase4 Core Interfaceに分類される。\n\n【固定内容】\n- データフロー: HAB→(structured constraints+context frame)→GPT→(semantic output+telemetry)→Event.db / GPT→H2-3（L2+のみ即delegate）\n- Invariant: GPTはHABを解釈しない / HABはGPT出力を意味変換しない / GPTは判断しない（生成のみ） / H2-3はリアルタイム判断維持 / Relayは時間のみ制御\n- Forbidden: GPT→routing変更禁止 / HAB→decision生成禁止 / GPT↔H2-3直接改変禁止 / batch化routing禁止 / 意味ベース再解釈ループ禁止\n\n【LOCK理由】本契約は変更するとPhase4全体が構造的に壊れる種類の仕様であるため、「変更不可TODO」として扱う。後続のRelay/MCP/Phase5タスクすべての基点（接続レイヤ固定点）。",
+      "assigned_to": "Claude",
+      "note": "2026-06-22確定（E20260622_4870899134b52参照）。きむら博士判断によりDONE+LOCKED状態で登録。実装タスクとして消化されるものではなく、構造の結節点として永続参照される。変更が必要になった場合はPhase5以降の「解釈固定の更新権」議論を経てv2.0として再定義する以外の変更経路は想定しない。\n\n【Implementation Spec追加（2026-06-22 / E20260622_63727730715f3）】契約本体を実行可能なJSON入出力規約まで具体化済み。Input Object（context_id/routing_tag/structural_constraints/state_snapshot/execution_context）、Output Object（context_id/routing_tag/telemetry/event_bundle）、Event.db Serialization Rule（event_id/type/timestamp/source/payload/causal_parent統一構造）を確定。くろこ実装時はこのスキーマをそのまま採用すること。最重要原則：\"Meaning is not transmitted between HAB and GPT — Only structure is transmitted\"。実装着手の際は本ノートのJSON構造定義をそのまま参照可能。\n\n【4点セット完結（2026-06-22 / E20260622_791597696ecd7）】Audit Version（人間監査用読み下し）+ MCP Integration Forward Specification（将来拡張版）が追加完成。本契約は[契約本体/実装仕様/監査版/MCP拡張前提版]の4文書セットとして完結。MCP統合時の制約: MCPは「外部入出力の拡張レイヤ」に過ぎず、意味解釈権・制御権・override権を一切持たない。将来Notion/Google Drive等のMCPツールをHAB-GPT接続に絡める場合も、本Forward Specの許可範囲（HABへの構造入力／GPT出力の外部転送／Event.db read-only）を超えてはならない。",
+      "reference_event": "E20260622_4870899134b52",
+      "created_at": "2026-06-22T09:02:25.758535",
+      "updated_at": "2026-06-22T09:06:46.519272"
+    },
+    {
+      "id": "TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1",
+      "title": "[ARCHITECTURE_CONTRACT/LOCKED] Phase5 Governance & Update Authority + Phase6 Civilization Loop v1.0",
+      "status": "完了",
+      "contract_status": "DONE_LOCKED",
+      "priority": "最高",
+      "category": "Architecture_Contract_Critical",
+      "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。TODO_HAB_GPT_CONNECTION_SPEC_V1と同位置づけ。MoCKA全体の更新権限の所在（誰が変えるか）と進化メカニズム（どう変わるか）を確定する最上位ガバナンス文書。\n\n【Phase5: Update Hierarchy（L0-L4）】\nL0 GPT=更新不可 / L1 H2-3=判断のみ / L2 Relay=時間パラメータのみ / L3 System=自動更新なし / L4 Human Gate（きむら博士）=全構造更新権。すべての構造変更はL4のみ可能。自動更新禁止（system self-modification=false）。\nTrigger Conditions: 明示的Human Gate指示 / Phase間矛盾検出（drift severe） / Event.db整合性破壊。\nCore Principle: 「制御は存在するが、自己変更は存在しない」\n\n【Phase6: Civilization Loop & Self-Evolution Control】\n2層構造: Stable Layer（Phase0-5）/ Evolution Layer（Phase6）。\nEvolution Trigger: Human Gate明示更新 / 構造的破綻 / Phase5更新条件、のいずれかでのみ発火。\nNon-Autonomous Rule: システムは自発進化しない。進化は常に外部起点。\nAllowed Evolution Targets: FP / Phase4 / HAB↔GPT / Event.db schema。\nCivilization Loop: Observe→Detect drift→Human decision→Structural update→Re-freeze。\nCore Principle: 「MoCKA is not self-evolving system. MoCKA is externally-evolving governed system」\n\n【LOCK理由】本構造を変更すること自体がMoCKAの統治原則の根幹（誰が更新権を持つか）に関わるため、変更不可TODOとして扱う。FP/Phase4/HAB-GPT全構造の最上位に位置する統治レイヤ。",
+      "assigned_to": "Claude",
+      "note": "2026-06-22確定（E20260622_9198861628e40参照）。きむら博士・GPT合議によりDONE+LOCKED状態で登録。これにより「この解釈固定を誰が更新できるのか／Sovereignを変更できるのか／overrideの起源を変えられるのか」という未決論点（前回セッションで提起）が解消済み。今後MoCKAのいかなる構造変更も、本文書のL4（Human Gate=きむら博士）経由でのみ正当性を持つ。",
+      "reference_event": "E20260622_9198861628e40",
+      "created_at": "2026-06-22T09:08:58.758735"
+    },
+    {
+      "id": "TODO_ARCHITECTURE_MAP_MCP_V1",
+      "title": "[ARCHITECTURE_CONTRACT/LOCKED] MoCKA Architecture Map v1.0（Phase0-6統合）+ MCP Integration Spec v1.0",
+      "status": "完了",
+      "contract_status": "DONE_LOCKED",
+      "priority": "最高",
+      "category": "Architecture_Contract_Critical",
+      "description": "通常の実装TODOではなく「固定アーキテクチャノード（fixed architecture node）」。TODO_HAB_GPT_CONNECTION_SPEC_V1、TODO_PHASE5_6_GOVERNANCE_AUTHORITY_V1と同位置づけ。MoCKA Phase0-6の全構造を1つの統合図として確定し、かつ外部接続（MCP）の境界を正式仕様化したもの。これがMoCKAコア構造確定作業の最終到達点。\n\n【Full System Stack（下から上）】\nEvent.db → FP（Phase0-3）→ Phase4（Control/Sovereign/Data）→ HAB↔GPT Connection Layer → Phase5（Governance, L4=Human Gate）→ Phase6（Civilization Loop）\n\n【Global Invariants】\nMeaning is never transmitted / Only structure is transmitted / No self-modification exists in runtime layers / Control≠Data≠Governance≠Evolution\n\n【System Essence】\"MoCKA is not a model system. MoCKA is a layered constraint architecture\"\n\n【MCP Integration Specification — 外部接続境界】\nMCPの3機能限定: Input Bridge / Output Bridge / Observation Bridge（すべてread-onlyまたは構造変換のみ）。\nHard Constraints（絶対禁止）: routing変更/Phase構造変更/H2-3介入/Relay制御変更/Event.db改変/意味解釈。\nExecution Boundary: Phase5・Phase6への外部アクセスはno access（完全遮断）。FP/Phase4はread-only。HAB↔GPTはinterface-onlyのみ。\nSecurity Model: MCPは\"observer/transporter/serializer\"であり\"controllerではない\"。\n\n【実用上の意味】今後Notion/Google Drive等の既存接続MCPツールをMoCKA作業に使う場合も、本仕様のExecution Boundaryに従うこと（Phase5/6への書き込みは不可、FP/Phase4は読み取りのみ等）。\n\n【LOCK理由】MoCKA全体構造の最終形であり、これを変更することは全Phase（0-6）の再設計に直結するため。",
+      "assigned_to": "Claude",
+      "note": "2026-06-22確定（E20260622_061323040305a参照）。きむら博士・GPT合議によりDONE+LOCKED状態で登録。これにより、E20260622_017030043d9b2（FP↔Phase4）/ E20260622_149806056acf4（Phase4運用境界）/ E20260622_4870899134b52・63727730715f3・791597696ecd7（HAB↔GPT）/ E20260622_9198861628e40（Phase5/6統治）の全6イベントが、本Architecture Mapで統合・完結された。今後のMCP実装やRelay再設計（TODO_350）は本仕様の境界制約に従うこと。\n\n【実機動作確認完了（2026-06-22 / E20260622_81722503030a9）】MCP実装v0.1（mcp/server.py等）をC:\\Users\\sirok\\MoCKA\\mcp\\配下に正規配置し、くろこによりuvicorn実機起動＋/ingest/github実HTTPテストで動作確認済み。レスポンスは仕様通りのevent_bundle構造（type=external_signal/immutable=true/意味変換なしpass-through）。途中、Claude側のファイル提示時の仮フォルダ名残留によりMoCKA直下にフラットコピーされる配置ミスが発生したが（E20260622_7373623609b91）、MCP Placement Guard Protocol（E20260622_0332043852c9d）に基づく指示書でくろこが修正・解決済み。MCP Integration Specification v1.0は仕様・実装・実機検証の3段階すべて完了。",
+      "reference_event": "E20260622_061323040305a",
+      "created_at": "2026-06-22T09:11:20.695923",
+      "updated_at": "2026-06-22T09:40:31.739702"
+    }
+  ]
+}

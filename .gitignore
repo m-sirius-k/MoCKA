@@ -4,6 +4,9 @@ data/*
 !data/MOCKA_TODO.json
 !data/lever_essence.json
 !data/events_latest.json
+!data/MOCKA_TODO_ACTIVE.json
+!data/MOCKA_TODO_REFERENCE_LOCKED.json
+!data/MOCKA_TODO_ARCHIVE.json
 *.csv
 .env
 *.key
