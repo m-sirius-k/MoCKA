@@ -41,6 +41,8 @@ READ_ONLY_TOOLS = {
     "mocka_get_guidelines",
     "mocka_get_command_center",
     "mocka_check_utf8",
+    "mocka_registry_get",
+    "mocka_registry_current_state",
 }
 
 # 後方互換のため維持(governance_pipeline外部から書き込み系tool集合として参照される場合がある)
