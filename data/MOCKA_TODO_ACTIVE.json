@@ -780,18 +780,6 @@
       "created_at": "2026-07-01T09:49:00.641485",
       "contract_status": "DONE_LOCKED",
       "updated_at": "2026-07-01T09:50:05.120894"
-    },
-    {
-      "id": "KN-003",
-      "title": "Registry Record Specification（レコード構造定義）",
-      "status": "未着手",
-      "priority": "中",
-      "category": "KN",
-      "description": "Registry Series 第3弾。TERM-001（承認済み）で確定した用語・設計原則・Index Modelを前提として、Registry Recordの構造を定義する。\n\n【冒頭で必ず確定する2論点】\n1. Registry RecordはEntityかIndexか（TERM-001でIndex Model採用確定。KN-003冒頭で再確認・明文化）\n2. Artifact:Recordの関係は1:1固定か1:N許容か（申し送り論点。1:N許容の場合はKN-004/005の設計に直接影響するため必ず先に確定）\n\n【設計対象】\n- Recordが持つべき要素の大枠（Identifier/Reference/Status等）\n- 各要素の目的と役割（フィールド名・型はKN-004の範囲）\n- Artifactとの参照関係の構造\n- Entry（暫定：Recordの同義語）の確定または再定義\n\n【Scope Freeze（対象外）】\n- JSON Schema（KN-004の範囲）\n- Validator・整合性条件（KN-005の範囲）\n- 実装・コード変更（KN-007の範囲）\n\n【参照文書】\n- REGISTRY_CHARTER_v1.0.md（KN-001）\n- CATEGORY_REGISTRY_v2.0.md（KN-002）\n- TERM-001_REGISTRY_TERMINOLOGY.md（TERM-001）\n- GM2_REGISTRY_BASELINE_002.md（申し送り論点記載）\n\n【成果物】docs/governance/REGISTRY_RECORD_SPEC_v1.0.md\nArtifact Type: Governance Document / Completion Evidence: .md必須\n\n【完了条件】Human Approval Gate（きむら博士）の承認を得ること。承認後、KN-004は別途起票するので本TODO内では起票しないこと。",
-      "assigned_to": "くろこ",
-      "note": "依存関係: GM2_REGISTRY_BASELINE_001 -> TERM-001(完了) -> KN-003。GM2_REGISTRY_BASELINE_002に申し送り論点記載済み（1:1 vs 1:N）。",
-      "reference_event": "",
-      "created_at": "2026-07-01T12:03:14.416435"
     }
   ],
   "orchestra_handoff": {
@@ -1148,6 +1136,20 @@
       "reference_event": "GM2_REGISTRY_BASELINE_001（2026-07-01）",
       "created_at": "2026-07-01T09:54:00.070236",
       "updated_at": "2026-07-01T12:01:38.498344",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "KN-003",
+      "title": "Registry Record Specification（レコード構造定義）",
+      "status": "完了",
+      "priority": "中",
+      "category": "KN",
+      "description": "Registry Series 第3弾。TERM-001（承認済み）で確定した用語・設計原則・Index Modelを前提として、Registry Recordの構造を定義する。\n\n【冒頭で必ず確定する2論点】\n1. Registry RecordはEntityかIndexか（TERM-001でIndex Model採用確定。KN-003冒頭で再確認・明文化）\n2. Artifact:Recordの関係は1:1固定か1:N許容か（申し送り論点。1:N許容の場合はKN-004/005の設計に直接影響するため必ず先に確定）\n\n【設計対象】\n- Recordが持つべき要素の大枠（Identifier/Reference/Status等）\n- 各要素の目的と役割（フィールド名・型はKN-004の範囲）\n- Artifactとの参照関係の構造\n- Entry（暫定：Recordの同義語）の確定または再定義\n\n【Scope Freeze（対象外）】\n- JSON Schema（KN-004の範囲）\n- Validator・整合性条件（KN-005の範囲）\n- 実装・コード変更（KN-007の範囲）\n\n【参照文書】\n- REGISTRY_CHARTER_v1.0.md（KN-001）\n- CATEGORY_REGISTRY_v2.0.md（KN-002）\n- TERM-001_REGISTRY_TERMINOLOGY.md（TERM-001）\n- GM2_REGISTRY_BASELINE_002.md（申し送り論点記載）\n\n【成果物】docs/governance/REGISTRY_RECORD_SPEC_v1.0.md\nArtifact Type: Governance Document / Completion Evidence: .md必須\n\n【完了条件】Human Approval Gate（きむら博士）の承認を得ること。承認後、KN-004は別途起票するので本TODO内では起票しないこと。",
+      "assigned_to": "くろこ",
+      "note": "2026-07-01 Human Approval Gate承認済み（きむら博士）。APPROVED (FINAL)。Phase 0（4点：責務境界/1:1多重度/Identifierのみによる同一性/Index-not-Proxy原則）確定。Phase 1（5情報カテゴリ：Identity/Reference/Classification/Lifecycle/Metadata）確定。R01レビュー4点修正+申し送り1件反映（Artifact Type/Category 2階層分離・Lifecycle分離明記・Metadata境界明記・Authority意図的排除の設計思想化）。commit dea1a386f / event E20260701_6616047035bba。KN-004申し送り：Recordが絶対に持ってはいけない情報の禁止事項一覧化。",
+      "reference_event": "",
+      "created_at": "2026-07-01T12:03:14.416435",
+      "updated_at": "2026-07-01T12:16:16.741790",
       "completed_at": "2026-07-01"
     }
   ]
