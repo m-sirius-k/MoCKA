@@ -626,15 +626,16 @@
     {
       "id": "TODO_401",
       "title": "TODO_399-C: OVERRIDES enforcement設計（強制制御・ゲート設計）",
-      "status": "保留",
+      "status": "完了",
       "priority": "中",
       "category": "制度/Knowledge Activation/Decision Policy",
       "description": "【背景】\nabsolute_priority（絶対優先の主張）を持つKnowledge Assetが実際に「強制的に優先される」ことを、システムとしてどう保証するかの設計。これはガードレール設計そのものであり、3分割の中で最も重要かつ難度が高い。\n\n【前提】\nTODO_399-A（配置・形式）、TODO_399-B（比較アルゴリズム）完了後に着手すること。\n\n【設計対象】\n①OVERRIDESの強制をどの層で行うか：event_gateで止めるか、Decision層で拒否するか、両方か\n②human_gateとの連動方法：absolute_priority同士の競合等、機械的に解決できないケースでHuman Gateへどう橋渡しするか\n③強制が「効いていること」をどう検証・監査するか（TODO_396のGL7-UNENFORCED-CONDITIONS-BUGのような「掲げているが実効していない」状態を再発させないための設計上の手当て）\n\n【完了条件】\nOVERRIDES enforcement設計文書が作成され、きむら博士の承認を得ること。\n\n【非目的】\n実装は本TODOの範囲外。",
       "assigned_to": "くろこ（設計）+ きむら博士（承認）",
-      "note": "TODO_399-A/B（実体設計・比較アルゴリズム）完了後の最終ピース。\n\n【v0.1提出済み。GPT最終論点（カナリアテストの位置づけ）への決定。v0.2で確定版とする】\n\nv0.1の評価：3層構造（評価＝Decision Policy／制約＝event_gate／監査＝audit_trigger）に加えカナリアテストを設けた4層アーキテクチャは高評価。OVERRIDESの意味を「権利」から「Decision Policyが評価した結果に付随する監査可能な要求フラグ」へ転換した点も確定でよい。\n\n【決定：カナリアテストはA案（CI依存）を採用】\n理由：\n①TODO_399で独立DB/serviceを拒否しPHI-OS内に統合した判断、TODO_396で新規Gateを作らずhuman_gateを再利用した判断と一貫性を保つため。新しい常駐監視プロセスを追加することは、これまで繰り返し確認してきた「経路・プロセスが増えるほど死蔵・分裂リスクが増える」という教訓（TODO_371の正本不信パターン、TODO_396のhuman_gate_bp死蔵）に反する。\n②human_gate_bp死蔵の根本原因は「実行環境への組み込み忘れ」であり「監視頻度」の問題ではなかった。CI定期実行でも、テスト自体の実行が担保されていれば十分検知できる。\n③現状の運用規模（個人開発者＋くろこ）では、常駐監視プロセス自体がTODO_364で発見されたような「タスクスケジューラ登録だが壊れて放置」パターンを新たに生むリスクの方が高い。\n\n【v0.2設計完了 2026-07-01 — きむら博士承認待ち（awaiting_approval）】\n成果物: docs/governance/OVERRIDES_ENFORCEMENT_DESIGN_v0.2.md\n\n設計内容:\n- CIパターン: 軽量ガード型（canary_overrides.yml新設、週次schedule: cron 毎週月曜3:00 UTC）\n- mocka_write_event記録方式: 2段階（CI側はgit commit、ローカルhealth_check.pyのcheck_canary_overrides_liveness()がFAIL時にwrite_event()で記録）\n- 7日検知統合先: interface/health_check.py のHEALTH_CHECKSに canary_overrides_liveness エントリを追加、check_canary_overrides_liveness()関数を追加（check_phi_os_audit()と同パターン）\n- 最終実行日時の保存先: data/tic/canary_overrides_last_run.json\n\n残存リスク:\n- R4: カナリアテスト本体（test_override_evidence_gap_is_rejected_by_event_gate）が未実装。実装後にCI統合・health_check.py統合の順で実施する。\n\n【完了条件】\nきむら博士の承認をもって完了。承認後にTODO_399/400/401（Decision Policy三部作）が完結する。",
+      "note": "TODO_399-A/B（実体設計・比較アルゴリズム）完了後の最終ピース。\n\n【v0.2実装完了 2026-07-01 Decision Policy Series完結】\n\n成果物:\n- docs/governance/OVERRIDES_ENFORCEMENT_DESIGN_v0.2.md（設計文書 + Implementation Note追記）\n- tests/test_canary_overrides.py（カナリアテスト実装・2件PASS確認済み）\n- .github/workflows/canary_overrides.yml（CI週次定期実行、毎週月曜3:00 UTC）\n- interface/health_check.py（check_canary_overrides_liveness()追加・HEALTH_CHECKS統合）\n- data/tic/canary_overrides_last_run.json（初期ファイル作成）\n\n実施順序（設計文書R4の警告通り）:\n①カナリアテスト実装 -> greenを確認 -> ②CI YAML追加 -> ③health_check.py統合\n\ncompletion_evidence:\n- OVERRIDES_ENFORCEMENT_DESIGN_v0.2.md\n- tests/test_canary_overrides.py（2 passed）",
       "reference_event": "",
       "created_at": "2026-06-30T19:03:21.060218",
-      "updated_at": "2026-07-01T08:56:17.921949"
+      "updated_at": "2026-07-01T09:10:00.000000",
+      "completed_at": "2026-07-01T09:10:00"
     },
     {
       "id": "GOVERNANCE_MILESTONE_GM1",

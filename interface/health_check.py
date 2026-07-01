@@ -140,6 +140,15 @@ HEALTH_CHECKS = {
         "opportunity":     "未接続を起動時に明示検知すればWatcherスキップ+案内表示で原因不明のクラッシュを防止できる",
         "beta_candidate":  "encoding_policy",
     },
+    "canary_overrides_liveness": {
+        "method": "canary_overrides_liveness",
+        "stale_days": 7,
+        "last_run_path": "C:/Users/sirok/MoCKA/data/tic/canary_overrides_last_run.json",
+        "optional": False,
+        "risk":            "カナリアテストのCI実行が停止すると、OVERRIDES enforcement強制制御の形骸化を検知できなくなる（カナリアのカナリア）",
+        "opportunity":     "最終実行日時の7日監視でCI死蔵を構造的に防止できる",
+        "beta_candidate":  "governance_integrity",
+    },
 }
 
 
@@ -313,6 +322,51 @@ def check_phi_os_audit() -> tuple:
         return False, f"監査エラー: {e}"
 
 
+def check_canary_overrides_liveness(cfg: dict) -> tuple:
+    """
+    カナリアテスト（test_override_evidence_gap_is_rejected_by_event_gate）
+    の最終CI実行日時を確認し、stale_days日以上更新がない場合にFAILを返す。
+    （カナリアのカナリア。TODO_401 v0.2設計）
+    """
+    path = Path(cfg["last_run_path"])
+    stale_days = cfg.get("stale_days", 7)
+
+    if not path.exists():
+        return False, (
+            "canary_overrides_last_run.json が存在しません。"
+            "カナリアテストCIが一度も実行されていない可能性があります。"
+        )
+
+    try:
+        record = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as e:
+        return False, f"last_run.json 読み込みエラー: {e}"
+
+    last_run_str = record.get("last_run", "")
+    if not last_run_str:
+        return False, "last_run フィールドが不在"
+
+    try:
+        last_run = datetime.datetime.fromisoformat(last_run_str.replace("Z", "+00:00"))
+        now_utc = datetime.datetime.now(datetime.timezone.utc)
+        elapsed = now_utc - last_run
+    except Exception as e:
+        return False, f"last_run パース失敗: {e}"
+
+    result = record.get("result", "UNKNOWN")
+    elapsed_days = elapsed.total_seconds() / 86400
+
+    if elapsed_days > stale_days:
+        return False, (
+            f"カナリアテスト最終実行から {elapsed_days:.1f} 日経過（閾値: {stale_days} 日）"
+            f" | last_run: {last_run_str} | result: {result}"
+        )
+
+    return True, (
+        f"OK ({elapsed_days:.1f} 日前に実行済み) | result: {result} | run_id: {record.get('run_id', '?')}"
+    )
+
+
 def check_auth_key_drive() -> tuple:
     """
     認証キードライブ(A:)の接続確認 (Watcherクラッシュ対応)
@@ -448,6 +502,8 @@ def run_check(name: str, cfg: dict) -> dict:
             ok, detail = check_phi_os_audit()
         elif method == "auth_key_drive":
             ok, detail = check_auth_key_drive()
+        elif method == "canary_overrides_liveness":
+            ok, detail = check_canary_overrides_liveness(cfg)
         else:
             ok, detail = False, f"unknown method: {method}"
     except Exception as e:

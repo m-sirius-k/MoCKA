@@ -7,6 +7,10 @@ data/*
 !data/MOCKA_TODO_ACTIVE.json
 !data/MOCKA_TODO_REFERENCE_LOCKED.json
 !data/MOCKA_TODO_ARCHIVE.json
+# data/tic/canary_overrides_last_run.json: CIが更新するcanaryテスト最終実行記録（TODO_401 v0.2）
+!data/tic/
+data/tic/*
+!data/tic/canary_overrides_last_run.json
 *.csv
 .env
 *.key

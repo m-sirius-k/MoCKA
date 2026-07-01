@@ -1,0 +1,73 @@
+name: Canary - OVERRIDES Enforcement
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"   # every Monday 03:00 UTC (weekly)
+  workflow_dispatch:
+
+env:
+  PYTHONIOENCODING: utf-8
+  PYTHONUTF8: "1"
+
+jobs:
+  canary:
+    name: canary-overrides
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements-test.txt
+
+      - id: canary_test
+        name: Run canary test
+        run: python -X utf8 -m pytest tests/test_canary_overrides.py::test_override_evidence_gap_is_rejected_by_event_gate -v
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+
+      - name: Record last run timestamp
+        if: always()
+        run: |
+          python -X utf8 -c "
+          import json, datetime, pathlib, os
+          result = 'PASS' if '${{ steps.canary_test.outcome }}' == 'success' else 'FAIL'
+          record = {
+              'last_run': datetime.datetime.utcnow().isoformat() + 'Z',
+              'result': result,
+              'run_id': os.environ.get('GITHUB_RUN_ID', 'local'),
+              'workflow': 'canary_overrides.yml'
+          }
+          p = pathlib.Path('data/tic/canary_overrides_last_run.json')
+          p.parent.mkdir(parents=True, exist_ok=True)
+          p.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding='utf-8')
+          print('Recorded:', record)
+          "
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: "1"
+
+      - name: Commit last run record
+        if: always()
+        run: |
+          git config user.email "ci@mocka-bot"
+          git config user.name "MoCKA CI Bot"
+          git add data/tic/canary_overrides_last_run.json
+          git diff --cached --quiet || git commit -m "ci: canary_overrides last_run update [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload last run record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: canary-overrides-last-run
+          path: data/tic/canary_overrides_last_run.json
+          retention-days: 90

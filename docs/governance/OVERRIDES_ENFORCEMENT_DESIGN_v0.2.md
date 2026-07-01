@@ -286,3 +286,7 @@ CIからのgit push（段階1）はGITHUB_TOKENの書き込み権限設定が必
 - [x] Artifact Type: Governance Document
 - [x] Completion Evidence: 本ファイル作成済み
 - [ ] きむら博士の承認（未完了 -> awaiting_approval）
+
+## Implementation Note
+
+This document specifies the operational design. Implementation SHALL proceed only after the canary test has been implemented and verified. Design approval does not imply implementation completion.
