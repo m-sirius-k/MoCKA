@@ -4,19 +4,69 @@ MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
-import json, csv, hashlib, datetime, re, sqlite3, unicodedata
+import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys, time, secrets
 from pathlib import Path
-from flask import Flask, request
+from dotenv import load_dotenv
+import requests
+from flask import Flask, request, Response
 from flask_cors import CORS
+
+load_dotenv()
+if sys.stdout.encoding != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+if sys.stderr.encoding != 'utf-8':
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
+# GL1~GL7 Governance Pipeline (MoCKA 3.0)
+sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
+try:
+    from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
+    _governance = GovernancePipeline()
+except Exception as _gov_err:
+    print(f"[ERROR] Governance Pipeline unavailable (Fail Closed for governed tools): {_gov_err}", flush=True)
+    _governance = None
+    READ_ONLY_TOOLS = {
+        "mocka_get_overview", "mocka_get_essence", "mocka_get_todo", "mocka_list_events",
+        "mocka_read_event", "mocka_search", "mocka_get_incidents", "mocka_get_guidelines",
+        "mocka_get_command_center", "mocka_check_utf8",
+    }
+
+# KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
+REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
+sys.path.insert(0, str(REGISTRY_MODULE_PATH))
+try:
+    import registry_store
+except Exception as _registry_err:
+    print(f"[ERROR] registry_store unavailable: {_registry_err}", flush=True)
+    registry_store = None
+
+# TODO_385: status(通常5値)とcontract_status(Architecture Contract系9語彙)を
+# 別軸のenumに分離（TODO_384は両者を1つの集合に混在させていたが、設計成果物/基準仕様等
+# 「紐付く契約のライフサイクル状態」と通常タスクの「進行度」は意味が異なるため分離する）
+TODO_STATUS_ENUM = {"未着手", "進行中", "完了", "保留", "廃止"}
+
+CONTRACT_STATUS_ENUM = {
+    "DECISION_RECORDED", "DONE_LOCKED", "ALTERNATE_IMPLEMENTED", "SPEC_OBSOLETE",
+    "SUPERSEDED", "CLOSED", "確定", "Phase3停止中(設計待ち)", "調査済み",
+}
+
+MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
+if not MOCKA_ENDPOINT:
+    print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
 
 BASE           = Path(r"C:\Users\sirok\MoCKA")
 OVERVIEW_PATH  = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
-TODO_PATH      = Path(r"C:\Users\sirok\MOCKA_TODO.json")
+TODO_PATH      = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
 KNOWLEDGE_GATE = BASE / "data"
 EVENTS_CSV     = BASE / "data" / "events.csv"  # 廃止済み（互換保持のみ）
 FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
 AUTO_LOG_CSV   = BASE / "data" / "claude_sessions.csv"
 DB_PATH        = BASE / "data" / "mocka_events.db"
+
+# [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ設定
+GATE_URL        = "http://localhost:5000/api/gate/event"
+SESSION_ID      = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+_DEFAULT_ACTOR  = "Claude-code-sonnet-4-6"  # who_actor未指定時のデフォルト
 
 # ============================================================
 # SQLite接続ヘルパー（文字化け防御ゲート付き）
@@ -51,10 +101,11 @@ def _db_read_events(n=None):
     try:
         con = _get_db()
         cur = con.cursor()
+        integrity_filter = "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
         if n:
-            cur.execute("SELECT * FROM events ORDER BY rowid DESC LIMIT ?", (n,))
+            cur.execute(f"SELECT * FROM events WHERE {integrity_filter} ORDER BY rowid DESC LIMIT ?", (n,))
         else:
-            cur.execute("SELECT * FROM events ORDER BY rowid")
+            cur.execute(f"SELECT * FROM events WHERE {integrity_filter} ORDER BY rowid")
         cols = [d[0] for d in cur.description]
         rows = []
         for r in cur.fetchall():
@@ -68,40 +119,6 @@ def _db_read_events(n=None):
     except Exception as e:
         print(f"[MCP] db_read_events error: {e}")
         return []
-
-def _db_write_event(row: dict):
-    """SQLiteにイベントを書き込む（文字化け防御ゲート付き）"""
-    try:
-        # 全フィールドをsanitize
-        safe = {k: _sanitize(str(v)) for k, v in row.items()}
-        con = _get_db()
-        cur = con.cursor()
-        cur.execute("""
-            INSERT OR IGNORE INTO events
-            (event_id, when_ts, who_actor, what_type, where_component, where_path,
-             why_purpose, how_trigger, channel_type, lifecycle_phase, risk_level,
-             category_ab, target_class, title, short_summary, before_state,
-             after_state, change_type, impact_scope, impact_result,
-             related_event_id, trace_id, free_note)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-        """, (
-            safe.get("event_id",""), safe.get("when",""), safe.get("who_actor",""),
-            safe.get("what_type",""), safe.get("where_component",""), safe.get("where_path",""),
-            safe.get("why_purpose",""), safe.get("how_trigger",""), safe.get("channel_type",""),
-            safe.get("lifecycle_phase",""), safe.get("risk_level",""), safe.get("category_ab",""),
-            safe.get("target_class",""), safe.get("title",""), safe.get("short_summary",""),
-            safe.get("before_state",""), safe.get("after_state",""), safe.get("change_type",""),
-            safe.get("impact_scope",""), safe.get("impact_result",""),
-            safe.get("related_event_id",""), safe.get("trace_id",""), safe.get("free_note",""),
-        ))
-        con.commit()
-        con.close()
-        return True
-    except Exception as e:
-        print(f"[MCP] db_write_event error: {e}")
-        return False
-
-EVENTS_FIELDS = ["event_id","when","who_actor","what_type","where_component","where_path","why_purpose","how_trigger","channel_type","lifecycle_phase","risk_level","category_ab","target_class","title","short_summary","before_state","after_state","change_type","impact_scope","impact_result","related_event_id","trace_id","free_note"]
 
 app = Flask(__name__)
 CORS(app, origins="*")
@@ -126,7 +143,22 @@ def search_events(query):
     # CSV廃止済み → SQLite参照
     q = query.lower()
     rows = _db_read_events()
-    return [r for r in rows if any(q in str(v).lower() for v in r.values())]
+    PRIMARY_FIELDS = ["title", "short_summary", "description", "free_note", "why_purpose", "who_actor", "what_type", "how_trigger"]
+    scored = []
+    for r in rows:
+        score = 0
+        for f in PRIMARY_FIELDS:
+            val = str(r.get(f, "")).lower()
+            if q in val:
+                score += 10
+                if val.startswith(q):
+                    score += 5
+        if r.get("what_type") == "user_voice":
+            score = max(0, score - 8)
+        if score > 0:
+            scored.append((score, r))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [r for _, r in scored[:30]]
 
 def search_knowledge_gate(query):
     q = query.lower()
@@ -150,20 +182,40 @@ def sha256_file(path):
         for chunk in iter(lambda: f.read(8192), b""): h.update(chunk)
     return h.hexdigest()
 
-def next_event_id():
-    today = datetime.date.today().strftime("%Y%m%d")
+def _update_working_context_live(title: str, why_purpose: str, ai: str = "",
+                                  event_id: str = "", tags: str = "") -> None:
+    # CONTEXT_RUNTIME_CONNECTION_INSTRUCTIONS.md P0/P1 + P3指示書 STEP2:
+    # mocka_write_event発火の唯一の集約点でWorkingContextを更新し、
+    # 定期Snapshot(15分 or 100件)トリガーを評価し、Context Runtime側へイベントを伝播する。
+    # next_event_id()には一切触れない。mocka_events.dbへの新規書き込みも行わない
+    # （event_runtime_log.jsonへの追記のみ）。失敗してもイベント書込自体は妨げない。
     try:
-        con = _get_db()
-        cur = con.cursor()
-        pattern = f"E{today}_%"
-        cur.execute("SELECT event_id FROM events WHERE event_id LIKE ?", (pattern,))
-        ids = [r[0] for r in cur.fetchall()]
-        con.close()
-        rx = re.compile(rf"E{today}_(\d+)")
-        nums = [int(m.group(1)) for eid in ids for m in [rx.search(eid)] if m]
-    except:
-        nums = []
-    return f"E{today}_{(max(nums)+1 if nums else 1):03d}"
+        import sys as _sys
+        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        if _repo_root not in _sys.path:
+            _sys.path.insert(0, _repo_root)
+        from phi_os.context.working_context import WorkingContext
+        from phi_os.context.context_scheduler import maybe_snapshot
+        from phi_os.context.context_runtime import emit_event_to_context_runtime
+        WorkingContext.live_update(
+            current_task=title, current_goal=why_purpose, current_ai=ai,
+        )
+        tags_lower = (tags or "").lower()
+        if "change_start" in tags_lower:
+            event_type = "CHANGE_START"
+        elif "decision" in tags_lower:
+            event_type = "DECISION_RECORD"
+        elif "incident" in tags_lower:
+            event_type = "INCIDENT_REGISTER"
+        else:
+            event_type = "CHANGE_DONE"
+        emit_event_to_context_runtime(
+            event_type=event_type, event_id=event_id,
+            payload={"title": title, "why_purpose": why_purpose, "tags": tags},
+        )
+        maybe_snapshot()
+    except Exception:
+        pass
 
 def auto_log(tool_name, args, result_summary):
     # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録
@@ -186,23 +238,59 @@ def load_todo():
 def save_todo(data):
     data["meta"]["updated"] = datetime.date.today().isoformat()
     data["meta"]["updated_by"] = "Claude"
-    TODO_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp_path = TODO_PATH.with_suffix(".json.tmp")
+    tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(tmp_path, TODO_PATH)
 
 TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
-    {"name":"mocka_get_todo","description":"MOCKA_TODO.json を返す。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
-    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
-    {"name":"mocka_update_todo","description":"TODO_IDのstatusを更新する","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string"},"note":{"type":"string"}},"required":["id","status"]}},
+    {"name":"mocka_get_todo","description":"MOCKA_TODO_ACTIVE.json を返す(ACTIVE層のみ。LOCKED/ARCHIVE層は対象外)。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO_ACTIVE.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。通常TODOには指定しない（省略時はフィールド自体を付与しない）"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
+    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/contract_status/noteを個別に更新可。未指定フィールドは既存値を保持。completedに移動済みのTODOは対象外。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"}},"required":["id"]}},
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
-    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description"]}},
-    {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}}
+    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description","author"]}},
+    {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
+    {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_get_command_center","description":"COMMAND CENTER（localhost:5000）の現在状態を取得する","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}},
+    {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"}},"required":["layer","record"]}},
+    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"}},"required":["target_id"]}}
 ]
 
 def execute_tool(name, args):
     try:
+        if _governance is None:
+            # Fail Closed: Governance Pipeline自体が初期化できていない場合、
+            # READ_ONLY_TOOLS以外は安全側で実行を停止する。
+            if name not in READ_ONLY_TOOLS:
+                return json.dumps({
+                    "error": "GL_FAIL_CLOSED",
+                    "reason": "Governance Pipeline unavailable; governed tool blocked",
+                }, ensure_ascii=False)
+        else:
+            try:
+                decision = _governance.before_tool(name, args)
+                if not decision.allowed:
+                    return json.dumps({
+                        "error": "GL7_EXECUTION_BLOCKED",
+                        "reason": decision.reason,
+                        "thinking_mode": decision.thinking_mode,
+                    }, ensure_ascii=False)
+            except Exception as _gov_call_err:
+                # Fail Closed: before_tool()自体が例外を投げた場合も
+                # READ_ONLY_TOOLS以外は安全側で実行を停止する。
+                print(f"[ERROR] Governance before_tool failed (Fail Closed): {_gov_call_err}", flush=True)
+                if name not in READ_ONLY_TOOLS:
+                    return json.dumps({
+                        "error": "GL_FAIL_CLOSED",
+                        "reason": f"before_tool() raised: {_gov_call_err}",
+                    }, ensure_ascii=False)
+
         if name == "mocka_get_overview":
             if not OVERVIEW_PATH.exists(): return json.dumps({"error": f"not found: {OVERVIEW_PATH}"})
             result = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8-sig"))
@@ -227,6 +315,12 @@ def execute_tool(name, args):
             title   = args.get("title", "").strip()
             if not todo_id or not title:
                 return json.dumps({"error": "id and title are required"})
+            add_status = args.get("status", "未着手")
+            if add_status not in TODO_STATUS_ENUM:
+                return json.dumps({"error": f"invalid status: {add_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
+            add_contract_status = args.get("contract_status", "")
+            if add_contract_status and add_contract_status not in CONTRACT_STATUS_ENUM:
+                return json.dumps({"error": f"invalid contract_status: {add_contract_status!r}. allowed: {sorted(CONTRACT_STATUS_ENUM)}"}, ensure_ascii=False)
             data = load_todo()
             all_ids = [t.get("id") for t in data.get("todos", [])] + [t.get("id") for t in data.get("completed", [])]
             if todo_id in all_ids:
@@ -234,7 +328,7 @@ def execute_tool(name, args):
             new_todo = {
                 "id":              todo_id,
                 "title":           title,
-                "status":          args.get("status", "未着手"),
+                "status":          add_status,
                 "priority":        args.get("priority", "中"),
                 "category":        args.get("category", ""),
                 "description":     args.get("description", ""),
@@ -243,6 +337,8 @@ def execute_tool(name, args):
                 "reference_event": args.get("reference_event", ""),
                 "created_at":      datetime.datetime.now().isoformat()
             }
+            if add_contract_status:                # 未指定時はキー自体を付与しない(TODO_385設計案1.3案A)
+                new_todo["contract_status"] = add_contract_status
             data["todos"].append(new_todo)
             save_todo(data)
             auto_log(name, args, f"added {todo_id}")
@@ -252,15 +348,26 @@ def execute_tool(name, args):
         elif name == "mocka_update_todo":
             if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
             todo_id    = args.get("id", "")
-            new_status = args.get("status", "")
+            new_status = args.get("status", "")   # 空文字 = 未指定 → 既存値を保持
+            new_contract_status = args.get("contract_status", "")  # 空文字 = 未指定 → 既存値を保持
             note       = args.get("note", "")
+            if new_status and new_status not in TODO_STATUS_ENUM:
+                return json.dumps({"error": f"invalid status: {new_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
+            if new_contract_status and new_contract_status not in CONTRACT_STATUS_ENUM:
+                return json.dumps({"error": f"invalid contract_status: {new_contract_status!r}. allowed: {sorted(CONTRACT_STATUS_ENUM)}"}, ensure_ascii=False)
             data = load_todo()
             updated = False
+            effective_status = ""
             for item in data.get("todos", []):
                 if item.get("id") == todo_id:
-                    item["status"] = new_status
-                    if note: item["note"] = note
+                    if new_status:                 # 指定された場合のみ更新（PATCH動作）
+                        item["status"] = new_status
+                    if new_contract_status:        # 指定された場合のみ更新（PATCH動作）
+                        item["contract_status"] = new_contract_status
+                    if note:                       # 指定された場合のみ更新（PATCH動作）
+                        item["note"] = note
                     item["updated_at"] = datetime.datetime.now().isoformat()
+                    effective_status = item.get("status", "")
                     if new_status == "完了":
                         item["completed_at"] = datetime.date.today().isoformat()
                         data.setdefault("completed", []).append(item)
@@ -269,8 +376,8 @@ def execute_tool(name, args):
                     break
             if not updated: return json.dumps({"error": f"{todo_id} not found"})
             save_todo(data)
-            auto_log(name, args, f"updated {todo_id} -> {new_status}")
-            return json.dumps({"status": "ok", "id": todo_id, "new_status": new_status}, ensure_ascii=False)
+            auto_log(name, args, f"updated {todo_id} -> {effective_status}")
+            return json.dumps({"status": "ok", "id": todo_id, "new_status": effective_status}, ensure_ascii=False)
 
         elif name == "mocka_list_events":
             events = read_events(int(args.get("n", 20)))
@@ -291,27 +398,67 @@ def execute_tool(name, args):
             return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
 
         elif name == "mocka_write_event":
-            # CSV廃止済み → SQLite直接書き込み（文字化け防御ゲート通過）
-            eid = next_event_id()
-            ts  = datetime.datetime.now().isoformat()
-            row = {f: "" for f in EVENTS_FIELDS}
-            row["event_id"]        = eid
-            row["when"]            = ts
-            row["who_actor"]       = args.get("author", "Claude")
-            row["what_type"]       = "claude_mcp"
-            row["where_component"] = "mcp_caliber"
-            row["where_path"]      = "mocka_mcp_server.py"
-            row["why_purpose"]     = args.get("why_purpose", "")
-            row["how_trigger"]     = args.get("how_trigger", "")
-            row["title"]           = args.get("title", "")
-            row["short_summary"]   = args.get("description", "")
-            row["free_note"]       = args.get("tags", "")
-            row["lifecycle_phase"] = "in_operation"
-            row["risk_level"]      = "normal"
-            row["channel_type"]    = "mcp"
-            ok = _db_write_event(row)
-            auto_log(name, args, f"written {eid} db={'ok' if ok else 'error'}")
-            return json.dumps({"status": "ok" if ok else "error", "event_id": eid, "when": ts, "storage": "sqlite"}, ensure_ascii=False)
+            # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ経由で書き込む
+            _actor = args.get("author", "")
+            # 未指定・レガシー値は Claude-code-{version} で自動補填
+            if not _actor or _actor in ("Claude", "claude"):
+                _actor = _DEFAULT_ACTOR
+            _desc = args.get("description", "")
+            _title = args.get("title", "")
+            gate_payload = {
+                "who_actor":       _actor,
+                "who_role":        "executor",
+                "who_session":     SESSION_ID,
+                "what_type":       "claude_mcp",
+                "what_title":      _title,
+                "where_path":      "mocka_mcp_server.py",
+                "where_component": "mcp_caliber",
+                "why_purpose":     args.get("why_purpose", "") or _desc[:80] or _title,
+                "how_trigger":     args.get("how_trigger", "") or "mcp_tool_call",
+                "after_state":     _desc[:200] or _title,
+                "description":     _desc,
+                "tags":            args.get("tags", ""),
+            }
+            try:
+                r = requests.post(GATE_URL, json=gate_payload, timeout=5)
+                if r.status_code == 201:
+                    body = r.json()
+                    eid  = body.get("event_id", "?")
+                    auto_log(name, args, f"GATE written {eid} event_source=live")
+                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
+                                                  event_id=eid, tags=gate_payload["tags"])
+                    return json.dumps({"status": "ok", "event_id": eid,
+                                       "when": datetime.datetime.now().isoformat(),
+                                       "storage": "gate/sqlite"}, ensure_ascii=False)
+                else:
+                    # GATEがエラーを返した場合 — rejectedとして呼び出し元に返す
+                    auto_log(name, args, f"GATE rejected {r.status_code}: {r.text[:80]}")
+                    return json.dumps({"status": "gate_rejected", "errors": r.json().get("errors", []),
+                                       "gate_status": r.status_code}, ensure_ascii=False)
+            except requests.exceptions.ConnectionError:
+                # GATEプロセスがHTTP応答不能な場合のフォールバック。
+                # Phase5-2.1 Unified Event Entry: 生SQL直接INSERTは廃止し、
+                # phi_os.event_gate.process_event()をインプロセスで直接呼び出す
+                # ことで、HTTP経路と完全に同じValidation/Signature/HashChainを
+                # 経由させる（事後のmigrate_event_integrity.py補完を不要にする）。
+                import sys as _sys
+                _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+                if _repo_root not in _sys.path:
+                    _sys.path.insert(0, _repo_root)
+                from phi_os.event_gate import process_event as _gate_process_event
+                result = _gate_process_event(gate_payload, event_source="direct_allowed:recovery")
+                if result["status"] == "ok":
+                    eid = result["event_id"]
+                    auto_log(name, args, f"GATE offline in-process fallback {eid}")
+                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
+                                                  event_id=eid, tags=gate_payload["tags"])
+                    return json.dumps({"status": "ok", "event_id": eid,
+                                       "when": datetime.datetime.now().isoformat(),
+                                       "storage": "gate/sqlite(in-process)"}, ensure_ascii=False)
+                else:
+                    auto_log(name, args, f"GATE offline fallback rejected: {result.get('errors')}")
+                    return json.dumps({"status": "gate_rejected", "errors": result.get("errors", [])},
+                                       ensure_ascii=False)
 
         elif name == "mocka_seal":
             # CSV廃止済み → SQLite全件JSONハッシュ
@@ -323,6 +470,210 @@ def execute_tool(name, args):
                       "timestamp": datetime.datetime.now().isoformat()}
             auto_log(name, args, h[:16])
             return json.dumps(result, ensure_ascii=False)
+
+        elif name == "mocka_get_incidents":
+            category = args.get("category", "")
+            limit = int(args.get("limit", 20))
+            con = _get_db()
+            try:
+                if category:
+                    rows = con.execute(
+                        """SELECT event_id, when_ts, title, short_summary, free_note
+                           FROM events
+                           WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
+                                  OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
+                                  OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
+                                  OR free_note LIKE ?)
+                           ORDER BY when_ts DESC LIMIT ?""",
+                        (f"%{category}%", limit)
+                    ).fetchall()
+                else:
+                    rows = con.execute(
+                        """SELECT event_id, when_ts, title, short_summary, free_note
+                           FROM events
+                           WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
+                                  OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
+                                  OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
+                                  OR title LIKE '%CLAIM%')
+                           ORDER BY when_ts DESC LIMIT ?""",
+                        (limit,)
+                    ).fetchall()
+                result = [dict(r) for r in rows]
+            finally:
+                con.close()
+            auto_log(name, args, f"{len(result)} incidents")
+            return json.dumps({"incidents": result, "count": len(result)}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_guidelines":
+            guidelines_path = BASE / "data" / "guidelines.json"
+            if not guidelines_path.exists():
+                return json.dumps({"error": "guidelines.json not found", "path": str(guidelines_path)}, ensure_ascii=False)
+            data = json.loads(guidelines_path.read_text(encoding="utf-8-sig"))
+            top = data[:20] if isinstance(data, list) else data
+            total = len(data) if isinstance(data, list) else 1
+            auto_log(name, args, f"guidelines loaded total={total}")
+            return json.dumps({"guidelines": top, "total": total}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_command_center":
+            import urllib.request
+            results = {}
+            endpoints = {
+                "loop_status": "http://localhost:5000/loop/status",
+                "risk": "http://localhost:5000/risk/recommendation",
+                "heinrich": "http://localhost:5000/heinrich/status",
+            }
+            for ep_name, url in endpoints.items():
+                try:
+                    with urllib.request.urlopen(url, timeout=3) as resp:
+                        results[ep_name] = json.loads(resp.read().decode("utf-8"))
+                except Exception as e:
+                    results[ep_name] = {"error": str(e)}
+            auto_log(name, args, "command center fetched")
+            return json.dumps(results, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_check_utf8":
+            filepath = args.get("filepath", "")
+            p = Path(filepath)
+            if not p.exists():
+                return json.dumps({"ok": False, "error": f"File not found: {filepath}"}, ensure_ascii=False)
+            raw = p.read_bytes()
+            result = {
+                "filepath": filepath,
+                "size_bytes": len(raw),
+                "has_bom": raw[:3] == b'\xef\xbb\xbf',
+                "ok": True,
+                "issues": []
+            }
+            if result["has_bom"]:
+                result["issues"].append("BOM detected (U+FEFF at start)")
+                result["ok"] = False
+            try:
+                text = raw.decode("utf-8")
+                result["encoding"] = "utf-8"
+                result["line_count"] = text.count('\n')
+            except UnicodeDecodeError as e:
+                result["ok"] = False
+                result["encoding"] = "NOT UTF-8"
+                result["issues"].append(f"UTF-8 decode error at byte {e.start}: {e.reason}")
+                try:
+                    raw.decode("cp932")
+                    result["issues"].append("File appears to be cp932 encoded")
+                except Exception:
+                    result["issues"].append("Cannot decode as cp932 either")
+            auto_log(name, args, f"utf8 check ok={result['ok']}")
+            return json.dumps(result, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_command_center":
+            try:
+                import urllib.request
+                with urllib.request.urlopen("http://localhost:5000/loop/status", timeout=3) as r:
+                    loop_data = json.loads(r.read().decode())
+                with urllib.request.urlopen("http://localhost:5000/risk/recommendation", timeout=3) as r:
+                    risk_data = json.loads(r.read().decode())
+                result = {"loop": loop_data, "risk": risk_data, "status": "ok"}
+            except Exception as e:
+                result = {"error": str(e), "note": "COMMAND CENTER(5000)未起動の可能性"}
+            auto_log(name, args, "command_center fetched")
+            return json.dumps(result, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_search_incidents":
+            query = args.get("query", "")
+            limit = int(args.get("limit", 10))
+            conn = _get_db()
+            cur = conn.cursor()
+            integrity_filter = "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
+            if query:
+                cur.execute(
+                    "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
+                    f"WHERE {integrity_filter} "
+                    "AND (LOWER(risk_level) IN ('incident','danger','critical','high')) "
+                    "AND (title LIKE ? OR short_summary LIKE ? OR event_id LIKE ?) "
+                    "ORDER BY when_ts DESC LIMIT ?",
+                    (f"%{query}%", f"%{query}%", f"%{query}%", limit)
+                )
+            else:
+                cur.execute(
+                    "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
+                    f"WHERE {integrity_filter} "
+                    "AND LOWER(risk_level) IN ('incident','danger','critical','high') "
+                    "ORDER BY when_ts DESC LIMIT ?",
+                    (limit,)
+                )
+            rows = cur.fetchall()
+            conn.close()
+            incidents = [{"id": r[0], "when": r[1], "title": r[2], "summary": r[3], "risk": r[4]} for r in rows]
+            auto_log(name, args, f"{len(incidents)} incidents found")
+            return json.dumps(incidents, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_phl":
+            import os as _os
+            BASE_DIR = _os.path.dirname(_os.path.abspath(__file__))
+            try:
+                with open(_os.path.join(BASE_DIR, "interface", "lever_essence.json"), encoding="utf-8") as f:
+                    philosophy = json.load(f).get("PHILOSOPHY", "")
+            except Exception as e:
+                philosophy = f"error: {e}"
+            phl = {
+                "philosophy": philosophy,
+                "phl_principles": [
+                    "不確実性下でのAI動作を制約するPersistent History Layer",
+                    "セッションをまたいで文脈を保持・再注入する",
+                    "希釈(dilution)に対してPHL再注入で回復する",
+                    "SPPとペアで機能: SPP=沈黙禁止 / PHL=文脈保持"
+                ],
+                "zenodo_doi": "10.5281/zenodo.19606271"
+            }
+            auto_log(name, args, "phl loaded")
+            return json.dumps(phl, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_get_spp":
+            spp = {
+                "spp_principles": [
+                    "Silence Prohibition Protocol: 不確実な状況でも沈黙してはならない",
+                    "AIは必ず何らかの応答・警告・報告をする義務がある",
+                    "DANGER/CRITICAL検知時は即座にアラートを発する",
+                    "Human Gateなしに重要判断を黙って実行してはならない"
+                ],
+                "governance_rules": [
+                    "全AIインタラクションはmocka_write_eventで記録必須",
+                    "ファイル変更前後にCHANGE_START/CHANGE_DONE記録",
+                    "記録なき作業はMoCKAとして存在しない(E20260516_023)",
+                    "AIを信じるな、システムで縛れ"
+                ],
+                "aies_paper": "Submission 282 / mocka_paper_FINAL_v9_20260509.pdf"
+            }
+            auto_log(name, args, "spp loaded")
+            return json.dumps(spp, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_registry_get":
+            if registry_store is None:
+                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+            result = registry_store.get_registry()
+            auto_log(name, args, "registry loaded")
+            return json.dumps(result, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_registry_add":
+            if registry_store is None:
+                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+            layer  = args.get("layer", "")
+            record = args.get("record", {})
+            if layer not in ("identity", "atlas", "reference", "classification", "lifecycle", "metadata"):
+                return json.dumps({"error": f"invalid layer: {layer!r}"}, ensure_ascii=False)
+            try:
+                added = registry_store.add_record(layer, record)
+            except registry_store.RegistryValidationError as e:
+                return json.dumps({"error": "REGISTRY_VALIDATION_FAILED", "reason": str(e)}, ensure_ascii=False)
+            auto_log(name, args, f"added to {layer}")
+            print(f"[MCP] mocka_registry_add: layer={layer} added")
+            return json.dumps({"status": "ok", "layer": layer, "record": added}, ensure_ascii=False)
+
+        elif name == "mocka_registry_current_state":
+            if registry_store is None:
+                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+            target_id = args.get("target_id", "")
+            result = registry_store.get_current_state(target_id)
+            auto_log(name, args, "current_state computed" if result else "not found")
+            return json.dumps(result if result else {"error": "not found"}, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})
 
@@ -350,7 +701,7 @@ def mcp_endpoint():
 @app.route("/.well-known/oauth-protected-resource", defaults={"subpath": ""})
 @app.route("/.well-known/oauth-protected-resource/<path:subpath>")
 def oauth_resource(subpath):
-    return json.dumps({"resource": "https://arnulfo-pseudopopular-unvirulently.ngrok-free.dev", "authorization_servers": []}), 200, {"Content-Type": "application/json"}
+    return json.dumps({"resource": MOCKA_ENDPOINT or "https://localhost:5002", "authorization_servers": []}), 200, {"Content-Type": "application/json"}
 
 @app.route("/.well-known/oauth-authorization-server")
 def oauth_server():
@@ -359,6 +710,29 @@ def oauth_server():
 @app.route("/register", methods=["POST"])
 def register():
     return json.dumps({"client_id": "mocka-mcp", "client_secret": "none"}), 200, {"Content-Type": "application/json"}
+
+@app.route("/api/<path:subpath>", methods=["GET", "POST", "PUT", "DELETE"])
+def proxy_to_app(subpath):
+    """port5000 (app.py / Living Memory API) へのリバースプロキシ（TODO_291）"""
+    target_url = f"http://localhost:5000/api/{subpath}"
+
+    try:
+        resp = requests.request(
+            method=request.method,
+            url=target_url,
+            headers={k: v for k, v in request.headers if k.lower() != 'host'},
+            json=request.get_json(silent=True),
+            params=request.args,
+            timeout=10,
+        )
+        return Response(
+            resp.content,
+            status=resp.status_code,
+            content_type=resp.headers.get('Content-Type', 'application/json'),
+        )
+    except Exception as e:
+        return json.dumps({"error": f"proxy error: {str(e)}"}, ensure_ascii=False), 502, {"Content-Type": "application/json"}
+
 
 @app.route("/health")
 def health():

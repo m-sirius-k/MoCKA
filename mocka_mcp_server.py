@@ -257,9 +257,9 @@ TOOLS = [
     {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_command_center","description":"COMMAND CENTER（localhost:5000）の現在状態を取得する","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}},
-    {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。","inputSchema":{"type":"object","properties":{},"required":[]}},
-    {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"}},"required":["layer","record"]}},
-    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"}},"required":["target_id"]}}
+    {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。envを明示しない場合は必ずtest環境を参照する(deny-by-default)。","inputSchema":{"type":"object","properties":{"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。本番を見る場合は明示的にprodを指定すること。"}},"required":[]}},
+    {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。envを明示しない場合は必ずtest環境に書き込む(deny-by-default、本番誤爆防止)。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データへ書き込み, test=検証用データへ書き込み(既定)。本番へ書く場合は明示的にprodを指定すること。"}},"required":["layer","record"]}},
+    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}}
 ]
 
 def execute_tool(name, args):
@@ -648,8 +648,11 @@ def execute_tool(name, args):
         elif name == "mocka_registry_get":
             if registry_store is None:
                 return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
-            result = registry_store.get_registry()
-            auto_log(name, args, "registry loaded")
+            env = args.get("env", "test")
+            if env not in ("prod", "test"):
+                return json.dumps({"error": f"invalid env: {env!r}"}, ensure_ascii=False)
+            result = registry_store.get_registry(env=env)
+            auto_log(name, args, f"registry loaded (env={env})")
             return json.dumps(result, ensure_ascii=False, indent=2)
 
         elif name == "mocka_registry_add":
@@ -657,22 +660,28 @@ def execute_tool(name, args):
                 return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
             layer  = args.get("layer", "")
             record = args.get("record", {})
+            env    = args.get("env", "test")
             if layer not in ("identity", "atlas", "reference", "classification", "lifecycle", "metadata"):
                 return json.dumps({"error": f"invalid layer: {layer!r}"}, ensure_ascii=False)
+            if env not in ("prod", "test"):
+                return json.dumps({"error": f"invalid env: {env!r}"}, ensure_ascii=False)
             try:
-                added = registry_store.add_record(layer, record)
+                added = registry_store.add_record(layer, record, env=env)
             except registry_store.RegistryValidationError as e:
                 return json.dumps({"error": "REGISTRY_VALIDATION_FAILED", "reason": str(e)}, ensure_ascii=False)
-            auto_log(name, args, f"added to {layer}")
-            print(f"[MCP] mocka_registry_add: layer={layer} added")
-            return json.dumps({"status": "ok", "layer": layer, "record": added}, ensure_ascii=False)
+            auto_log(name, args, f"added to {layer} (env={env})")
+            print(f"[MCP] mocka_registry_add: layer={layer} env={env} added")
+            return json.dumps({"status": "ok", "layer": layer, "env": env, "record": added}, ensure_ascii=False)
 
         elif name == "mocka_registry_current_state":
             if registry_store is None:
                 return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
             target_id = args.get("target_id", "")
-            result = registry_store.get_current_state(target_id)
-            auto_log(name, args, "current_state computed" if result else "not found")
+            env       = args.get("env", "test")
+            if env not in ("prod", "test"):
+                return json.dumps({"error": f"invalid env: {env!r}"}, ensure_ascii=False)
+            result = registry_store.get_current_state(target_id, env=env)
+            auto_log(name, args, f"current_state computed (env={env})" if result else f"not found (env={env})")
             return json.dumps(result if result else {"error": "not found"}, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})

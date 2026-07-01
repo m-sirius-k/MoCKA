@@ -24,12 +24,12 @@
     "detail": "ok"
   },
   "mcp_schema_hash": {
-    "ok": true,
-    "detail": "変更なし (hash: fd09d1a36a77aaba)"
+    "ok": false,
+    "detail": "ハッシュ変更検出!\n                          前回: fd09d1a36a77aaba\n                          今回: 0f28bfecdbf7875b"
   },
   "relay_dom_selector": {
     "ok": true,
-    "detail": "Relay alive (last_ping: 2026-07-01T12:18:47.614730, v2.0.0)"
+    "detail": "Relay alive (last_ping: 2026-07-01T13:39:30.790270, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": true,
-    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2045 gate=100.0% [real-time=1509/buffered=536] buffer_pending=0)"
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2073 gate=100.0% [real-time=1516/buffered=557] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
@@ -45,6 +45,6 @@
   },
   "canary_overrides_liveness": {
     "ok": true,
-    "detail": "OK (0.1 日前に実行済み) | result: PASS | run_id: local-init"
+    "detail": "OK (0.2 日前に実行済み) | result: PASS | run_id: local-init"
   }
 }
