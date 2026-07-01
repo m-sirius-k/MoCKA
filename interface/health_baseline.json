@@ -1,6 +1,50 @@
 {
+  "python_env": {
+    "ok": true,
+    "detail": "PYTHONUTF8=(unset) OK"
+  },
+  "mocka_server": {
+    "ok": true,
+    "detail": "200 OK"
+  },
+  "caliber_pipeline": {
+    "ok": true,
+    "detail": "200 OK"
+  },
+  "anthropic_api": {
+    "ok": true,
+    "detail": "401 (疎通確認OK)"
+  },
+  "stripe_worker": {
+    "ok": true,
+    "detail": "200 OK"
+  },
+  "sqlite_integrity": {
+    "ok": true,
+    "detail": "ok"
+  },
+  "mcp_schema_hash": {
+    "ok": true,
+    "detail": "変更なし (hash: fd09d1a36a77aaba)"
+  },
+  "relay_dom_selector": {
+    "ok": true,
+    "detail": "Relay alive (last_ping: 2026-07-01T11:59:47.242066, v2.0.0)"
+  },
+  "env_bom": {
+    "ok": true,
+    "detail": ".env BOMなし OK"
+  },
+  "phi_os_audit": {
+    "ok": true,
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2032 gate=100.0% [real-time=1498/buffered=534] buffer_pending=0)"
+  },
+  "auth_key_drive": {
+    "ok": true,
+    "detail": "認証キードライブ(A:) 接続済み"
+  },
   "canary_overrides_liveness": {
     "ok": true,
-    "detail": "OK (0.0 日前に実行済み) | result: PASS | run_id: local-init"
+    "detail": "OK (0.1 日前に実行済み) | result: PASS | run_id: local-init"
   }
 }
