@@ -714,6 +714,85 @@
       "created_at": "2026-07-01T08:50:18.956628",
       "contract_status": "DONE_LOCKED",
       "updated_at": "2026-07-01T08:51:58.864481"
+    },
+    {
+      "id": "GM2_STEP1_COMPLETE",
+      "title": "GM2 Step1（Operational Assurance）完了記録 — Decision Policy Series最終完結（399-405, 402）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/ロードマップ/GM2",
+      "description": "【位置づけ】\nGM2_ROADMAP補遺。TODO_401 v0.2の実装・検証完了を受けて、GM2 Step1(Operational Assurance)の完結を記録する。\n\n【TODO_401 v0.2 実装完了内容】\n①カナリアテスト：test_override_evidence_gap_is_rejected_by_event_gate / test_override_with_evidence_is_accepted、2 passed\n②CI YAML：.github/workflows/canary_overrides.yml（週次・月曜3:00 UTC自動実行）新規追加\n③health_check.py統合：check_canary_overrides_liveness()実装、HEALTH_CHECKSエントリ追加、稼働確認済み\ncommit: 3dd5e7a06 / event記録: E20260701_895712311dd32\n\n【Decision Policy Series 完結（最終確定）】\n399 → 400 → 401 → 402 → 404 → 405 全件completed。\nGOVERNANCE_MILESTONE_GM1_ADDENDUMで確定した「399→400→401→404→405→402(Mathematical Closure)」構成に、401のImplementation Pending状態が解消されたことを追記する。「設計は閉じたが実装が追いついていない」状態は本記録をもって解消。\n\n【GM2進捗更新】\nStep1: Operational Assurance → 完了（TODO_401 v0.2実装・検証済み）\nStep2: Registry → 次の開発対象\nStep3: Atlas → 未着手\n（Knowledge Activationは別途TODO_395で設計済み、GM2文脈での再利用は今後検討）\n\n【運用上の留意（軽微・アクション不要の所感）】\nTODO_396の前例（記録上は実装完了・pushとされていたが実体調査で一時「不整合」と誤判定された事例、後にTODO_407でスコープ誤設定と判明）があるため、今後commitハッシュを伴う完了報告について、余裕があるタイミングで軽く実機確認を挟む習慣は有用。ただし本記録時点では新たな監査TODOは起票しない（IA-001のScope Freeze原則・GM3の「今日やるべきことへ戻る」という判断を踏襲し、過剰な検証ループを避ける）。",
+      "assigned_to": "記録のみ（アクション不要）",
+      "note": "2026-07-01、TODO_401 v0.2実装完了報告を受けて記録。Decision Policy Series（399〜405, 402）が実装レベルまで含めて完全完結。GM2 Step2（Registry）が次の開発対象として確定。",
+      "reference_event": "TODO_401 v0.2実装完了報告（2026-07-01）",
+      "created_at": "2026-07-01T09:18:17.694509",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "GM2_BASELINE_STEP1",
+      "title": "GM2 Baseline — Step1完了時点のスナップショット固定（Registry着手前の基準点）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/ロードマップ/GM2/ベースライン",
+      "description": "【位置づけ】\n新規TODOではない。GM2 Step1（Operational Assurance）完了時点のスナップショットを、GM2の出発点として固定する基準点記録。Registry以降（Step2〜）はカテゴリ・知識体系が広がっていくため、この時点のベースラインがあることで将来の比較監査・回帰確認が容易になる。\n\n【固定するスナップショット（2026-07-01時点）】\n\n■完成した制度基盤（GM1）\n- Decision Policy Series：399→400→401→402→404→405（全件completed、実装・検証済み）\n- Governance Audit Series：406→407→408→409（全件completed）\n- Impact Audit Series：IA-001（completed、No Major Finding）\n- Artifact Governance：TODO_ARTIFACT_GOVERNANCE_v1.0.md（4項目：Artifact Type/Completion Evidence/Verification Status/Evidence Location）\n\n■命名規則（CATEGORY_REGISTRY_V1で確定済み）\n- 運用開始：DP(Decision)/GV(Governance)/IA(Impact)\n- 予約：OA(Operational Assurance)/KN(Knowledge Navigation)/KA(Knowledge Activation)\n\n■完了したGM2 Step\n- Step1: Operational Assurance（TODO_401 v0.2、GM2_STEP1_COMPLETE参照）\n  - カナリアテスト2件PASS、CI週次実行(canary_overrides.yml)、health_check.py統合(check_canary_overrides_liveness)\n  - commit: 3dd5e7a06\n\n■git状態（本日確定分）\n- commit cfb0985f9（TODO_402/404/405/408/409の成果物 + MOCKA_TODO_ACTIVE.json）\n- commit 898d3170e（OVERRIDES_ENFORCEMENT_DESIGN_v0.2.md設計）\n- commit 3dd5e7a06（TODO_401実装一式）\n- リポジトリ：MoCKA (github.com:m-sirius-k/MoCKA.git) / branch: main\n\n■未着手（ベースライン時点で明示的にオープンのまま）\n- GM2 Step2: Registry（次の開発対象）\n- GM2 Step3: Atlas\n- GM3: Charter（開発対象ではない、北極星として保持）\n- TODO_410（Scope段落追加・任意・将来対応）\n\n【本記録の使い方】\n将来「GM2はどこから始まったか」「Step2着手時点で何が既に確定していたか」を参照する際の一次データとして使う。GM2 Step2（Registry）設計時、このスナップショットを入力の一つとして扱う。\n\n【プロジェクトの重心変化（所感・記録）】\nここ数か月のMoCKAは「思想」から「制度」、そして「制度」から「運用保証」へと重心が移っている。この変化は、概念実証から実際に継続運用できる基盤へ成熟してきたことを示す節目である。",
+      "assigned_to": "記録のみ（アクション不要・基準点）",
+      "note": "2026-07-01、GM2 Step1完了・本日セッション終了時点で記録。新規TODOではなく参照用の基準点。GM2 Step2（Registry）着手時にこのベースラインとの差分を確認できる。",
+      "reference_event": "GM2_STEP1_COMPLETE（2026-07-01）",
+      "created_at": "2026-07-01T09:19:14.997613",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "KN_SERIES_LEDGER",
+      "title": "Knowledge Navigation Series 台帳 — Registry Series開始宣言（KNカテゴリ初のシリーズ）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/命名規則/シリーズ台帳",
+      "description": "【位置づけ】\n新規TODOではない。CATEGORY_REGISTRY_V1で予約済みのKN(Knowledge Navigation)カテゴリにおいて、初のシリーズが立ち上がったことを宣言する「シリーズ台帳」の1ページ。Decision Policy SeriesやGovernance Audit Seriesと同じ運用思想（1つの制度の中で番号が積み上がっていく）をKNカテゴリにも適用する。\n\n【シリーズ台帳エントリ】\nSeries Name: Registry Series\nCategory: KN (Knowledge Navigation)\nCurrent Status: Planning\nCurrent Item: KN-001\n\n【KNカテゴリ内の構成（将来像・予告のみ）】\nKN\n ├── Registry Series（今回開始）\n ├── Atlas Series（将来）\n └── （その他Navigation系Series・将来）\n\nRegistry＝存在を知る（What exists）、Atlas＝関係を知る（How connected）という役割分担をKNカテゴリ内の2シリーズとして表現する。\n\n【Registry Seriesの逐次承認方式（予告）】\nKN-001 Registry Charter → 承認 → KN-002 Category Registry → 承認 → KN-003 Record Specification → 承認 → KN-004 Schema → 承認 → KN-005 Validation Rules → 承認 → KN-006 Lifecycle → 承認 → KN-007 Implementation Plan\nKN-002以降は「存在する予定」であり、着手は前段階の承認後にのみ許可される。現時点で個別TODO化するのはKN-001のみ。",
+      "assigned_to": "記録のみ（アクション不要・シリーズ台帳）",
+      "note": "2026-07-01、GM2 Step2(Registry)着手にあたり、CATEGORY_REGISTRY_V1の運用開始としてKNカテゴリ最初のシリーズを宣言。新カテゴリ(RG等)は追加せず、既存6カテゴリの原則を維持したまま進める。",
+      "reference_event": "GM2_BASELINE_STEP1（2026-07-01）",
+      "created_at": "2026-07-01T09:24:05.553628",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "REGISTRY_CHARTER_APPROVAL",
+      "title": "REGISTRY_CHARTER_APPROVAL — KN-001正式承認 Decision Record（commit 94d2155ab）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/Decision Record/GM2",
+      "description": "【位置づけ】\nGM1におけるDecision Policy承認（399/400/401等）と同格の重みを持つ、GM2最初の制度的節目のDecision Record。REGISTRY_CHARTER_v1.0.md（KN-001, commit 94d2155ab）の正式承認を記録する。\n\n【承認内容】\n①Registryの目的：「存在する」ことを問い合わせ可能な状態で保持すること。存在の正当性は判断しない（品質評価とは別制度）。\n②Registryの責務：10種の登録対象種別（CATEGORY/DOCUMENT/EVENT/DECISION/POLICY/SPEC/TEST/WORKFLOW/HEALTH/KNOWLEDGE）\n③KNカテゴリ内位置付け：Registry SeriesとAtlas Seriesの2シリーズ構成（KN_SERIES_LEDGER準拠）\n④Atlasとの責務分離：Registry=What(存在)／Atlas=How(関係)\n⑤KN-002〜KN-007のシリーズ構成予告（逐次承認方式）\n⑥Human Approval Gate承認（現時点はきむら博士が担う。属人化を避けた表現）\n\n【監査経緯】\nR01監査官レビュー：APPROVED WITH MINOR REVISIONS。4点の軽微修正（①登録対象種別への文言修正 ②CATEGORY自己記述性の明記 ③Human Approval Gateへの属人化防止修正 ④Registryの品質評価非関与の明記）を反映して正式承認。Scope Freeze（JSON Schema/Record仕様/Validator/実装）は最後まで遵守。\n\n【Alternatives（検討され却下された代替案）】\n- カテゴリ名を「MoCKAカテゴリ」の意味で流用する案 → 却下。DP/GV/IA/OA/KN/KAとの混同を避けるため「登録対象種別」という別語を採用\n- ゲート条件の承認者を「きむら博士」固定表記のまま残す案 → 却下。将来の体制変化（共同開発者・運営委員会等）に対応できないため「Human Approval Gate」へ一般化し、脚注で現担当者を明記する方式を採用\n\nevent記録: E20260701_305976086bb41",
+      "assigned_to": "記録のみ（アクション不要・Decision Record）",
+      "note": "2026-07-01、KN-001（REGISTRY_CHARTER_v1.0.md）正式承認を受けて記録。GM2 Step2(Registry Series)の憲章として、以後のKN-002〜KN-007設計時に引用される基準文書の承認記録。",
+      "reference_event": "E20260701_305976086bb41",
+      "created_at": "2026-07-01T09:38:42.666266",
+      "contract_status": "DONE_LOCKED"
+    },
+    {
+      "id": "GM2_REGISTRY_BASELINE_001",
+      "title": "GM2 Registry Baseline 001 — KN-001/KN-002承認完了時点のスナップショット固定（KN-003着手前の基準点）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/ロードマップ/GM2/ベースライン",
+      "description": "【位置づけ】\n新規TODOではない。GM2_BASELINE_STEP1に続く、Registry Series内の小さなベースライン固定。KN-003以降は初めて「Record」という構造（フィールド定義・スキーマ・検証）に踏み込むため、その前段階として「制度・分類の確立」フェーズの完了を明示的に区切る。\n\n【固定するスナップショット（2026-07-01時点）】\n- KN-001（Registry Charter）：Approved / Completed（REGISTRY_CHARTER_APPROVAL, commit 94d2155ab）\n- KN-002（Category Registry）：Approved / Completed（commit 80007bb7d）\n- Category Registry：Fixed（DP/GV/IA/OA/KN/KAの6カテゴリ、Registry登録エントリとして正式固定。カテゴリ成熟度：DP/GV/IA/KN=Active、OA/KA=Reserved）\n- KN Series Ledger：Fixed（Registry Series稼働中、Atlas Series将来予告）\n\n【Registry Series 進行区分（このベースラインで明確化）】\n制度・分類フェーズ（完了）：KN-001（憲章）→KN-002（分類）\n構造・仕様フェーズ（これから）：KN-003（構造）→KN-004（形式）→KN-005（検証）→KN-006（運用）→KN-007（実装計画）\n\n【未確定事項（本ベースライン時点で明示的にオープンのまま）】\n- 正本方針（Governance Document vs Operational Record/MOCKA_TODO_ACTIVE.json）：KN-002 sec6脚注により、KN-006または独立方針決定TODOへ委譲済み\n- KN-003以降：未着手",
+      "assigned_to": "記録のみ（アクション不要・基準点）",
+      "note": "2026-07-01、KN-002完了・承認を受けて記録。KN-003着手前のベースライン固定。「制度・分類」と「構造・仕様」の境界を明示する。\n\n【次回開始点：KN-003冒頭で最初に決めるべき原則（申し送り）】\n「Registry Recordは\"実体\"なのか、それとも\"索引\"なのか」をKN-003の冒頭で明文化すること。\n- 実体モデル：Record自身が情報を保持する\n- 索引モデル：Recordは「どこに何があるか」を指し示す\nKN-001/KN-002の設計思想（Registryは存在を登録・参照可能にすることのみを責務とし、正当性は判断しない／Governance DocumentとOperational Recordの正本関係も未確定のままKN-006へ委譲）を踏まえると、索引（Index）モデルに近い。この前提をKN-003冒頭で確定させれば、KN-004(Schema)/KN-005(Validation)/KN-006(Lifecycle)まで一貫した設計になる。\n\n【KN-003からの性質変化】\nKN-001/KN-002＝制度の定義（Governance）。KN-003以降＝データモデル（Governance×Architecture×Data Structureの交点）に入る。",
+      "reference_event": "KN-002承認（2026-07-01）",
+      "created_at": "2026-07-01T09:49:00.641485",
+      "contract_status": "DONE_LOCKED",
+      "updated_at": "2026-07-01T09:50:05.120894"
+    },
+    {
+      "id": "TERM-001",
+      "title": "TERM-001: Registry Terminology &amp; Principles — 用語集・Registry Neutrality Principle・Concept Map（KN-003前提成果物）",
+      "status": "完了",
+      "priority": "高",
+      "category": "Knowledge Navigation/Registry Series/前提成果物",
+      "description": "【位置づけ】\nカテゴリでもシリーズでもない。Registry Series内でKN-003着手前に必要な「前提成果物（Pre-KN Artifact）」として限定的に位置づける。TM（Terminology）シリーズの新設は今回行わない（Scope Freeze維持。将来本当に必要になった時点で独立したガバナンス案件として制度化する）。KN-001・KN-002（承認済み・completed）への遡及編集は一切行わない。KN-003以降の番号予告も変更しない。\n\n依存関係：GM2_REGISTRY_BASELINE_001 → TERM-001 → KN-003\n\n【目的】\nKN-003以降で「Record」「Entry」「Artifact」「Reference」「Index」等の用語が大量に登場する前に、用語の意味を固定し、Registryの基本原則を明文化する。Vocabulary・Neutrality Principle・Concept Mapの3要素を1文書に統合する（KN-001のCharterと同じ粒度感を維持するため、3つの別文書には分割しない）。\n\n【成果物：docs/governance/TERM-001_REGISTRY_TERMINOLOGY.md】\n\n構成：\n1. Purpose\n2. Core Principles\n   - Registry Neutrality Principle（存在中立原則）：「Registryは対象の正当性・品質・価値を判断しない。存在を登録し、参照可能にすることのみを責務とする。」（KN-001セクション1の既存の一文を、独立した設計原則として明文化・格上げする）\n3. Terminology（用語集・候補12語）\n   Registry / Record / Entry / Artifact / Reference / Category / Series / Identifier / Status / Maturity / Source / Index\n   ※RecordとEntryが同義語か別概念かを明文化して決定すること\n4. Concept Map（本文の1章として。JSON/データ構造ではなく概念図）\n\n【冒頭で決めるべき最重要論点】\n「Registry Recordは実体（Entity）なのか、索引（Index）なのか」を本文中で明文化すること。KN-001/KN-002の設計思想（Registryは正当性を判断しない・存在の登録参照のみが責務）を踏まえると索引モデルに近いという見立てがあるが、本文書で正式に確定させ、以後のKN-004(Schema)/KN-005(Validation)/KN-006(Lifecycle)の一貫性の土台とする。\n\n【Scope Freeze（引き続き厳守）】\n- JSON Schema（KN-004の範囲）\n- Recordの詳細フィールド定義（KN-003の範囲）\n- Validator（KN-005の範囲）\n- 実装・コード変更（KN-007の範囲）\n\n【完了条件】\n上記構成で作成され、Human Approval Gate（きむら博士）の承認を得ること。承認後、KN-003へ進む（本TODO内では起票しない）。\n\nArtifact Type: Governance Document\nCompletion Evidence: .md必須\nmocka_write_event記録済みであること。",
+      "assigned_to": "くろこ（設計）+ きむら博士（Human Approval Gate承認）",
+      "note": "2026-07-01、GM2_REGISTRY_BASELINE_001完了後、KN-003着手前の前提成果物として起票。R01監査官との議論で、TMシリーズの新設は時期尚早（TERM導入の制度自体が先に必要になり本筋から外れる）と判断し、限定的な「前提成果物」扱いに決定。KN-001/KN-002の承認済み番号体系（KN-003=Record Specification）は一切変更しない。awaiting_approval: Human Approval Gate承認待ち、TERM-001_REGISTRY_TERMINOLOGY.md作成完了（commit c93f5c49c）。Index Model採用・存在中立原則・12用語定義・概念マップを含む。\n[2026-07-01] Human Approval Gate承認済み（きむら博士）。R01判定APPROVED。v1.1修正4点反映。commit 10246ce43。GM2_REGISTRY_BASELINE_002として固定。",
+      "reference_event": "GM2_REGISTRY_BASELINE_001（2026-07-01）",
+      "created_at": "2026-07-01T09:54:00.070236",
+      "updated_at": "2026-07-01T09:57:22.542645"
     }
   ],
   "orchestra_handoff": {
@@ -1028,6 +1107,34 @@
       "reference_event": "2026-07-01セッション（Decision Policy Series + Governance Audit Series完結後の影響範囲監査提案）",
       "created_at": "2026-07-01T08:30:08.613029",
       "updated_at": "2026-07-01T08:37:36.382730",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "KN-001",
+      "title": "KN-001: REGISTRY_CHARTER_v1.0 の策定 — Registryの目的・責務・KN内位置付け・Atlasとの分離",
+      "status": "完了",
+      "priority": "高",
+      "category": "Knowledge Navigation/Registry Series",
+      "description": "【シリーズ】Knowledge Navigation Series（KN） / Registry Series 第1号\n\n【目的】\nRegistryとは何かを1つの文書で固定する。実装は書かず、制度のみを書く。\n\n【スコープ（記載すること）】\n①Registryの目的\n②Registryの責務\n③KNカテゴリ内での位置付け（Registry Seriesと将来のAtlas Seriesの関係）\n④Atlasとの責務分離（Registry＝何が存在するか(What)を知る／Atlas＝どう繋がっているか(How)を知る、という区別を明文化する）\n⑤シリーズ構成の予告（KN-002〜KN-007がどのような内容になる予定かを、着手はしないが一覧として示す）\n⑥次段階へのゲート条件（KN-002 Category Registryへ進むために何が確定していればよいか）\n\n【Scope Freeze（本TODOでは一切扱わないこと）】\n- JSON Schema\n- Record仕様（フィールド定義等）\n- Validator（検証ロジック）\n- 実装\n- コード変更\nこれらはKN-003〜KN-006で個別に扱う。本TODOで先取りして設計しないこと。\n\n【進め方（逐次承認方式・GM1の原則を継承）】\nKN-001（本TODO）→承認→KN-002→承認→KN-003→…という順で進む。承認されていない設計を前提に次の設計を始めないこと。KN-002以降は本TODO完了・承認後に個別に起票する（現時点ではまだ起票しない）。\n\n【カテゴリ判定（確定）】\n新カテゴリ(RG等)は作らない。CATEGORY_REGISTRY_V1で予約済みのKN(Knowledge Navigation)カテゴリの下、Registry Seriesの最初のアイテムとして位置づける。KN_SERIES_LEDGERを参照。\n\n【成果物ガバナンス適用（TODO_408）】\nArtifact Type: Governance Document\nCompletion Evidence: .md必須\nEvidence Location: docs/governance/REGISTRY_CHARTER_v1.0.md（想定）\n\n【完了条件】\n①〜⑥が REGISTRY_CHARTER_v1.0.md として整理され、きむら博士の承認を得ること。承認後、KN-002を別途起票する。mocka_write_event記録済みであること。",
+      "assigned_to": "くろこ（設計）+ きむら博士（承認）",
+      "note": "2026-07-01、GM2 Step2着手として起票。KN_SERIES_LEDGERに従い、Knowledge Navigation Series/Registry Seriesの第1号。GM1で確立したScope Freeze・逐次承認ゲート原則をそのまま継承する。\n\n【完了・きむら博士承認】REGISTRY_CHARTER_v1.0.md（commit 94d2155ab）を正式承認。\n\nR01監査官によるレビュー結果：APPROVED WITH MINOR REVISIONS。4点の軽微修正を反映して正式承認：\n①セクション2見出し：「登録対象種別」へ修正（MoCKAカテゴリDP/GV/IA/OA/KN/KAとの混同防止）\n②CATEGORY項目：「CATEGORY自身もRegistryの管理対象とすることで、分類体系そのものを制度管理する」を追記（自己記述性の明確化）\n③セクション6ゲート条件：「きむら博士による承認」→「Human Approval Gate による承認（現時点では、きむら博士が担う）」へ修正（属人化防止・制度の長寿命化）\n④セクション1末尾：「Registryは存在の正当性を判断しない。存在を登録・参照可能にすることのみを責務とする」を追記（品質評価との責務分離を永続化）\n\nScope Freeze遵守確認済み（JSON Schema/Record仕様/Validator/実装への言及なし）。\n\n本文書はGM2全体の憲章として機能する。以後のKN-002〜KN-007はこの憲章を引用しながら設計を積み重ねる。承認をもってKN-001完了とし、REGISTRY_CHARTER_APPROVALとしてDecision Record化、KN-002を正式起票する。",
+      "reference_event": "KN_SERIES_LEDGER（2026-07-01）",
+      "created_at": "2026-07-01T09:24:22.905050",
+      "updated_at": "2026-07-01T09:38:10.650017",
+      "completed_at": "2026-07-01"
+    },
+    {
+      "id": "KN-002",
+      "title": "KN-002: Category Registry — MoCKA内のカテゴリ体系（CATEGORY_REGISTRY_V1/KN_SERIES_LEDGER）をRegistryとして整理",
+      "status": "完了",
+      "priority": "高",
+      "category": "Knowledge Navigation/Registry Series",
+      "description": "【シリーズ】Knowledge Navigation Series（KN） / Registry Series 第2号\n\n【前提】\nKN-001（REGISTRY_CHARTER_v1.0.md、REGISTRY_CHARTER_APPROVAL）承認済み。本TODOはその上に乗る。KN-001本体への変更・再オープンは行わない。\n\n【目的】\nREGISTRY_CHARTER_v1.0のセクション2で列挙した「登録対象種別」のうち、特にCATEGORY（MoCKA内の分類体系）自体をRegistryとして整理する。すなわち、CATEGORY_REGISTRY_V1（DP/GV/IA/OA/KN/KA）とKN_SERIES_LEDGER（Registry Series/Atlas Series）を、Registryの一登録対象として構造化する。\n\n【スコープ】\n①既存のCATEGORY_REGISTRY_V1（6カテゴリ：DP/GV/IA/OA/KN/KA）をRegistryの登録対象種別として整理し直す\n②既存のKN_SERIES_LEDGER（Registry Series/Atlas Series）を同様に整理する\n③カテゴリとシリーズの階層関係（Category 1: N Series）を明文化する\n④カテゴリ自体の追加・廃止ルールの大枠（詳細な状態遷移はKN-006 Lifecycleで扱うため、ここでは大枠のみ）\n\n【Scope Freeze（本TODOでは一切扱わないこと）】\n- JSON Schema（KN-004の範囲）\n- Registry Record構造の詳細フィールド定義（KN-003の範囲）\n- Validator（KN-005の範囲）\n- 実装・コード変更（KN-007の範囲）\n\n【進め方】\nKN-001と同様、v1.0として一度で提出→R01レビュー→軽微修正があれば反映→Human Approval Gate承認、という流れ。TODO_395型の終わらない微調整は避け、構造の境界に関わる必須修正のみ対応する。\n\n【完了条件】\ndocs/governance/CATEGORY_REGISTRY_v2.0.md（またはKN-002専用文書として別名でも可、判断は任せる）として整理され、Human Approval Gate（きむら博士）の承認を得ること。承認後、KN-003を別途起票する（本TODO内では起票しない）。\n\nArtifact Type: Governance Document\nCompletion Evidence: .md必須\nmocka_write_event記録済みであること。",
+      "assigned_to": "くろこ（設計）+ きむら博士（Human Approval Gate承認）",
+      "note": "2026-07-01、KN-001（REGISTRY_CHARTER_v1.0）承認・完了を受けて正式起票。REGISTRY_CHARTER_APPROVALのゲート条件6点をすべて満たした上での起票。\n\n【完了・きむら博士承認】CATEGORY_REGISTRY_v2.0.md（commit 80007bb7d）を正式承認。\n\nR01監査官レビュー：APPROVED WITH MINOR REVISIONS→修正反映後APPROVED。5点のうち4点+1脚注を反映：\n①sec2「状態」→「カテゴリ成熟度」に改名、値をReserved/Active/Historicalに統一（KN-006 Lifecycleの状態遷移と責務分離）\n②sec3-2「番号体系」→「Artifacts」に改名（Series=永続概念とArtifacts=運用上の識別子を分離。将来識別方式が変わってもSeries定義が影響を受けない設計）\n③sec4-1に「シリーズはカテゴリの責務を実現する単位である」を追記（Category=Why/Series=Whatの対応関係を明文化）\n④sec5-1に「既存シリーズの追加で解決できないこと」を筆頭条件として追加（新カテゴリは最後の手段という原則を制度化。CATEGORY_REGISTRY_V1の「カテゴリは安定、シリーズは増えてよい」と整合）\n脚注：sec6末尾に「Governance DocumentとOperational Record(MOCKA_TODO_ACTIVE.json)のどちらを正本とするかは、KN-006または独立した方針決定TODOで扱う未確定事項」を追記（正本方針の決定を今回は保留し、Scope Freezeを維持）\n\nこれによりMoCKAのカテゴリ体系（DP/GV/IA/OA/KN/KA）とKNカテゴリ内シリーズ構成（Registry Series/Atlas Series）が正式なGovernance Documentとして固定された。",
+      "reference_event": "REGISTRY_CHARTER_APPROVAL（2026-07-01）",
+      "created_at": "2026-07-01T09:39:02.161129",
+      "updated_at": "2026-07-01T09:48:47.267926",
       "completed_at": "2026-07-01"
     }
   ]
