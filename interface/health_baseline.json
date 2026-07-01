@@ -29,7 +29,7 @@
   },
   "relay_dom_selector": {
     "ok": true,
-    "detail": "Relay alive (last_ping: 2026-07-01T14:08:30.508506, v2.0.0)"
+    "detail": "Relay alive (last_ping: 2026-07-01T16:11:30.561893, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": true,
-    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2092 gate=100.0% [real-time=1528/buffered=564] buffer_pending=0)"
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2112 gate=100.0% [real-time=1539/buffered=573] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
@@ -45,6 +45,6 @@
   },
   "canary_overrides_liveness": {
     "ok": true,
-    "detail": "OK (0.2 日前に実行済み) | result: PASS | run_id: local-init"
+    "detail": "OK (0.3 日前に実行済み) | result: PASS | run_id: local-init"
   }
 }
