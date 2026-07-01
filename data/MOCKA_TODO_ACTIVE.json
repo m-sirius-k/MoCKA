@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-01",
+    "updated": "2026-07-02",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -816,6 +816,42 @@
       "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
       "reference_event": "E20260701_4496972051ad7",
       "created_at": "2026-07-01T18:18:18.534319"
+    },
+    {
+      "id": "KN_IA_NAMING_CONFIRMED",
+      "title": "IA正式名称の再確認 — 「Impact」（KN-002準拠）で確定、曖昧さなし",
+      "status": "完了",
+      "priority": "－",
+      "category": "Knowledge Navigation/Registry Series/用語確認",
+      "description": "KN-005（REGISTRY_SEMANTICS_v1.0.md）完了直後のレビューで、IA（Category Code）の正式名称が「Impact」なのか「Institutional Assets」なのか確認すべきという指摘があった。\n\n確認結果：CATEGORY_REGISTRY_v2.0.md（KN-002、完了・承認済み）にて、IAは「Impact」（Impact Audit Series）として既に確定済み。「Institutional Assets」という解釈は正本文書のどこにも根拠がなく、混入した出所不明テキスト内でのみ言及されていたもの。\n\n現行のIA-001（Decision Policy制度変更 影響範囲監査）の命名もこの定義と一致している。KN-005 Category Definitionsの記述（Impact | IA | 制度変更が他レイヤーへ与える影響評価）はKN-002と整合しており、変更不要。\n\n本TODOは新たな設計判断ではなく、既存定義（KN-002）の再確認記録。",
+      "assigned_to": "記録のみ（アクション不要）",
+      "note": "2026-07-02、KN-005完了直後のレビュー指摘を受けて確認・記録。根拠：CATEGORY_REGISTRY_v2.0.md（KN-002）。曖昧さの実体なし、KN-005本体の修正不要。",
+      "reference_event": "KN-005完了（2026-07-02）",
+      "created_at": "2026-07-02T07:47:30.774238"
+    },
+    {
+      "id": "REGISTRY_SERIES_V1_0_BASELINE",
+      "title": "Registry Series v1.0 Baseline — KN-001〜007確定時点のスナップショット固定（Atlas Series着手前の基準点）",
+      "status": "完了",
+      "priority": "－",
+      "category": "制度/ロードマップ/Registry Series/ベースライン",
+      "description": "【位置づけ】\n新規TODOではない。KN_SERIES_CROSS_AUDIT_001（通し整合性監査）完了を受けた、Registry Series仕様設計フェーズ（KN-001〜KN-007）の到達点スナップショット固定。Atlas Series着手前の基準点。\n\n【固定するスナップショット（2026-07-02時点）】\n- KN-001（Registry Charter）〜KN-007（Validation）：全件completed・docs/governance/に実配置確認済み\n- KN_SERIES_CROSS_AUDIT_001監査結果：Major Finding 0件／Minor Finding 5件（③⑦⑧はNo Finding）\n- 依存方向の一貫性（⑧）：No Finding。KN-001→...→KN-007の一方向依存が保たれ、逆方向参照（前提依存）は確認されなかった\n- 重複定義・循環参照（⑦）：No Finding\n- TERM-001用語整合（③）：No Finding\n\n【Minor Finding（5件・v1.1候補として別途管理。本記録では内容変更しない）】\n別記録 REGISTRY_SERIES_V1_1_CANDIDATE を参照。\n\n【本記録の使い方】\n将来「Registry SeriesはどこまでV1.0として確定していたか」を参照する一次データ。Atlas Series設計時、本スナップショットとの差分を確認できる。",
+      "assigned_to": "記録のみ（アクション不要・基準点）",
+      "note": "2026-07-02、KN_SERIES_CROSS_AUDIT_001完了・きむら博士確認を受けて記録。Registry Series（Structure/Meaning/Lifecycle/Validation）の設計フェーズがここで一区切り。次はAtlas Series着手判断。",
+      "reference_event": "KN_SERIES_CROSS_AUDIT_001完了（2026-07-02）",
+      "created_at": "2026-07-02T08:10:16.624513"
+    },
+    {
+      "id": "REGISTRY_SERIES_V1_1_CANDIDATE",
+      "title": "Registry Series v1.1 Candidate — KN-001〜007監査で発見したMinor Finding 5件の改訂候補メモ",
+      "status": "未着手",
+      "priority": "低",
+      "category": "制度/ロードマップ/Registry Series/改訂候補メモ",
+      "description": "【位置づけ】\n新規TODOではない。KN_SERIES_CROSS_AUDIT_001で発見されたMinor Finding 5件を、次回Registry Series v1.1改訂時に一括対応するための候補メモ。既完了TODO（KN-001〜007）本体は書き換えない。\n\n【候補リスト（優先度A/B/C）】\n\nA（次回改訂時に修正）\n- KN-004本文「未確定事項」に残るValidator=KN-005という古い記載を削除・更新\n- KN-001§5のKN-005・KN-007予告タイトルを、実際の確定内容（Semantics/Validation）に合わせて修正\n\nA（v1.1で統一様式化）\n- KN-004/005/006/007に「参照文書」節を追加し、KN-001/002/003/TERM-001と同じ様式に統一\n\nB（v1.1で追加）\n- KN-004にAtlas/Topology除外宣言（Atlas Boundary相当）を追加。現状KN-004のみこの宣言を持たない\n\nB（用語統一時に修正）\n- KN-005の「DECISION_POLICYシリーズ」表記を正式名称「Decision Policy Series」に統一\n- KN-005が継承すると記述する「Operational Assurance Series」は現状実体（0シリーズ・Reserved）が存在しない状態への継承である旨を明記\n\nC（Operational Record整理時に対応）\n- KN-005が引用する「GM2_ROADMAP」はdocs/governance/内の実体文書ではなくTODO内Operational Recordであるため、参照先の扱い（Governance DocumentとOperational Recordの正本関係）をKN-002 sec6脚注で委譲済みの方針決定TODOの結論を待って整理する\n\n【非目的】\n本メモの発行だけでは、上記候補への着手を意味しない。Registry Series v1.1として改訂着手する際に、本メモを入力として使う。",
+      "assigned_to": "記録のみ（次回v1.1改訂時に一括対応）",
+      "note": "2026-07-02、KN_SERIES_CROSS_AUDIT_001のMinor Finding 5件を集約して記録。Major Findingなし・依存方向/循環参照/TERM-001整合は全てNo Findingであったため、設計欠陥ではなく改善事項として扱う。",
+      "reference_event": "KN_SERIES_CROSS_AUDIT_001完了（2026-07-02）",
+      "created_at": "2026-07-02T08:10:33.594752"
     }
   ],
   "orchestra_handoff": {
@@ -1187,6 +1223,76 @@
       "created_at": "2026-07-01T12:03:14.416435",
       "updated_at": "2026-07-01T12:16:16.741790",
       "completed_at": "2026-07-01"
+    },
+    {
+      "id": "KN-004",
+      "title": "KN-004: Registry Record Schema（JSON Schema定義）— KN-003 Record Specificationの構造化・禁止フィールド明文化",
+      "status": "完了",
+      "priority": "中",
+      "category": "Knowledge Navigation/Registry Series",
+      "description": "Registry Series第4号。KN-003（REGISTRY_RECORD_SPEC_v1.0.md、完了・承認済み）で確定した5情報カテゴリ（Identity/Reference/Classification/Lifecycle/Metadata）をJSON Schemaとして構造化する。\n\n【KN-003からの申し送り事項（本TODOで必ず対応すること）】\nRecordが絶対に持ってはいけない情報の禁止事項一覧化。KN-003のPhase0で確定した設計思想（Index-not-Proxy原則／Authority意図的排除／Identifierのみによる同一性）をSchemaレベルの制約として明文化する。\n\n【設計対象】\n①Identity/Reference/Classification/Lifecycle/Metadataの5カテゴリをJSON Schemaのproperties構造へ変換\n②各フィールドの型・必須/任意の確定\n③禁止フィールド一覧（例：品質・価値評価フィールド、Authority/優先度重み付けフィールド、実データ本体のペイロード埋め込み、Index-not-Proxy原則に反する複製コンテンツ等）とその根拠（KN-001 Registry Neutrality Principle、KN-003 Phase0、TERM-001 Index Model採用）\n④KN-002で確定したCategory/Series 2階層との参照整合性\n\n【Scope Freeze（対象外）】\n- Validator実装ロジック（KN-005の範囲）\n- Lifecycle状態遷移の詳細（KN-006の範囲）\n- 実装・コード変更（KN-007の範囲）\n\n【参照文書】\nREGISTRY_CHARTER_v1.0.md（KN-001）/ CATEGORY_REGISTRY_v2.0.md（KN-002）/ TERM-001_REGISTRY_TERMINOLOGY.md / REGISTRY_RECORD_SPEC_v1.0.md（KN-003）\n\n【成果物】docs/governance/REGISTRY_SCHEMA_v1.0.md（またはJSON Schemaファイル本体との組み合わせ、くろこ判断）\nArtifact Type: Governance Document + Schema / Completion Evidence: .md（またはschema.json）必須\n\n【完了条件】Human Approval Gate（きむら博士）の承認を得ること。承認後、KN-005を別途起票する。",
+      "assigned_to": "くろこ（設計）+ きむら博士（Human Approval Gate承認）",
+      "note": "2026-07-02、きむら博士最終承認：REGISTRY_SCHEMA_v1.0.md（ネスト構造・5情報カテゴリ Identity/Reference/Classification/Lifecycle/Metadata、くろこ作成）を正本として確定・完了。\n\n【経緯】Claude Chat側が提示したフラット構造ドラフト（registry_id/artifact_type/category/status等をトップレベルに並置）は、KN-004の完了条件（「KN-003の忠実な機械可読化・新規設計を含まない」）を超えて再設計に踏み込んでいたと判明。くろこ正本は最初から「新たな設計判断を含まない」旨を宣言し、対応表で各フィールドのrequired/optional判定根拠を「推定判断」として逐一明示する構成であり、KN-004の目的（KN-003の変換のみ）と完全に一致していた。\n\n【判定】Claude Chat提示のフラット案は撤回。将来「運用フォーマット」が別途必要になった場合は、KN-004/KN-005以降ではなく独立仕様（例: Registry Exchange Format）として起票する方針で二段構えとする（本TODOのスコープには含めない）。\n\n【記録済みevent】E20260702_905223566c6a3（構造競合の経緯・判断待ち状態を記録。ファイル操作は未実行だった旨も記録済み）。\n\n正本ファイル: docs/governance/REGISTRY_SCHEMA_v1.0.md（既存・くろこ作成分を維持、変更なし）。\n未確定事項（Identifier命名規則・location形式制約・artifact_type/categoryのenum化・日時形式・各requiredの妥当性確認）はKN-005以降で扱う。Validator/整合性検証はKN-005、Status状態遷移はKN-006の範囲として維持。\n\n承認をもってKN-004完了。次はKN-005（Semantics：DP/GV/KN/KAの意味論、および今回除外したValidation詳細）を別途起票する。",
+      "reference_event": "KN-003完了（2026-07-01T12:16:16）",
+      "created_at": "2026-07-02T07:16:30.795315",
+      "updated_at": "2026-07-02T07:30:05.678547",
+      "completed_at": "2026-07-02"
+    },
+    {
+      "id": "KN-005",
+      "title": "KN-005: Registry Semantics — DP/GV/IA/OA/KN/KAの意味論・source_series構造・境界定義",
+      "status": "完了",
+      "priority": "中",
+      "category": "Knowledge Navigation/Registry Series",
+      "description": "Registry Series第5号。KN-004（REGISTRY_SCHEMA_v1.0.md・Schema/構造）確定を受け、Layer2「Semantics（意味論）」を定義する。\n\n【対象（Layer2）】\n①各Category（DP/GV/IA/OA/KN/KA）が「何を表すか」の意味定義\n②DPとGVの境界（Decision＝判断制度、Governance＝運用・監査制度、の区別を明文化）\n③KNとKAの境界（Navigation＝Passive/探す、Activation＝Active/使う、GM2_ROADMAPで既に確定済みの責務分離を本文書に引用・固定）\n④OA/IAの意味定義（Operational Assurance＝運用保証、Impact＝影響監査）\n⑤source_series（KN-004 reference.artifact_key周辺で言及）がどのような系列構造を持つか（Category:Series=1:N、Series内の番号体系はKN-002 Artifacts定義を継承）\n⑥classification.artifact_type（KN-004で非網羅・open string setとして残された項目）の意味的な分類軸の整理\n\n【Scope Freeze（対象外・明示的除外）】\n- Validator実装ロジック（KN-005内では扱わない。誤解しやすいため明記：KN-005は「意味」のみ、検証ロジックはKN-006ではなくKN-004完了時点でKN-005自体がValidationを含むと誤解されないよう再確認が必要）\n※注：KN-004完了記録では「Validator/整合性検証はKN-005の範囲」としていたが、KN-005は本来Semantics（意味論）であり、Validation（検証ロジック）は別シリーズ項目として再度切り出す必要がある。着手前にこの点をきむら博士に確認すること。\n- Lifecycle状態遷移の詳細（KN-006の範囲）\n- カテゴリ間・Series間の関係図/Topology（Atlas Series・GM2_ROADMAPの範囲、KN-004と同様に意図的除外）\n- 実装・コード変更（KN-007の範囲）\n\n【参照文書】\nREGISTRY_CHARTER_v1.0.md（KN-001）/ CATEGORY_REGISTRY_v2.0.md（KN-002）/ TERM-001_REGISTRY_TERMINOLOGY.md / REGISTRY_RECORD_SPEC_v1.0.md（KN-003）/ REGISTRY_SCHEMA_v1.0.md（KN-004）/ GM2_ROADMAP（KN/KA責務分離の既存記述）\n\n【成果物】docs/governance/REGISTRY_SEMANTICS_v1.0.md\nArtifact Type: Governance Document / Completion Evidence: .md必須\n\n【完了条件】\n①〜⑥が整理され、Human Approval Gate（きむら博士）の承認を得ること。着手前に上記Scope Freeze注記（KN-005とValidationの範囲整理）をきむら博士に確認すること。承認後、Validation（旧KN-005範囲と誤解されていた部分）とKN-006の扱いを整理した上で次を起票する。",
+      "assigned_to": "くろこ（設計）+ きむら博士（Human Approval Gate承認）",
+      "note": "2026-07-02、くろこによる実配置完了・きむら博士確認済み。\n\n【配置結果】\n- docs/governance/REGISTRY_SCHEMA_v1.0.md（KN-004）：9546 bytes・148行・UTF-8 OK（BOMなし）\n- docs/governance/REGISTRY_SEMANTICS_v1.0.md（KN-005）：4067 bytes・79行・UTF-8 OK（BOMなし）\n\n【commit】\nmocka_git_safe_commit()経由、commitハッシュ 22d6f55aa3f0a694b3fb8c9a1ebb28f8d5419dd8（push未実施・指示範囲外のため）\n\n【event記録】\nCHANGE_START: E20260702_801617742cfe8 / CHANGE_DONE: E20260702_894475501e57e\n\n【内容出所確認】\nKN-005本文はTODO KN-005 note記録済みの承認内容と、Claude.aiチャット確定版（TERM-001/Atlas境界を含む5章構成）を突き合わせて使用。途中に混入した出所不明の長大な再構成テキストは根拠として使用していないことをくろこが確認済み。KN-004本体（TODO内容）は変更なし。\n\n【Operational Complete確定】\nTODO_394の4段階区分：Implementation Complete→Verification→Operational Complete、全段階完了。\n\n【残課題（本TODOでは対応せず、別途起票）】\n- IA（Impact / Institutional Assetsのどちらか）の正式名称の制度的固定\n- KN/KA（Where?／Why?・When?・How?）表現の将来横展開（PHI/Orchestra等）検討\n- Extension Policy末尾への一文追加案（Category≠Workflow/Dependency/Execution Order）— 次改訂で反映検討\n\nHuman Approval Gate（きむら博士）承認済み。本TODOを完了とする。",
+      "reference_event": "KN-004完了（2026-07-02）",
+      "created_at": "2026-07-02T07:30:58.632961",
+      "updated_at": "2026-07-02T07:45:46.333702",
+      "completed_at": "2026-07-02"
+    },
+    {
+      "id": "KN-006",
+      "title": "KN-006: Registry State Model — Status（Draft/Review/Approved/Deprecated/Archived）の遷移条件・許可方向",
+      "status": "完了",
+      "priority": "中",
+      "category": "Knowledge Navigation/Registry Series",
+      "description": "Registry Series第6号。KN-005（Semantics）確定を受け、Layer3「State Model（状態遷移）」を定義する。KN-004 lifecycle.statusで確定済みの5状態（Draft/Review/Approved/Deprecated/Archived）に対し、遷移条件・許可方向を定義する。\n\n【対象】\n①5状態（Draft/Review/Approved/Deprecated/Archived）間の許可される遷移方向（例：Draft→Review→Approved、Approved→Deprecated→Archivedのような一方向性か、逆行を許すか）\n②各遷移が発生する条件（誰が・どのイベントで遷移を起こすか。Human Approval Gateとの接続点）\n③禁止される遷移（例：ArchivedからDraftへの復帰は禁止、等）\n④status_changed_at（KN-004で必須フィールド化済み）の更新規則\n⑤既存のPHI-OS Human Gate State Model（PENDING/APPROVED/REJECTED/EXPIRED/CANCELED）との関係整理——Registry Recordの状態とHuman Gateの承認状態は別物であることの明確化（両者は異なる状態空間であり、混同すると責務が崩れる）\n\n【Scope Freeze（対象外）】\n- Validation実装（KN-007の範囲）\n- Category/Series間の関係図・Topology（Atlas Seriesの範囲）\n- 実装・コード変更（KN-007以降の範囲）\n\n【参照文書】\nREGISTRY_RECORD_SPEC_v1.0.md（KN-003）/ REGISTRY_SCHEMA_v1.0.md（KN-004・lifecycle.status定義）/ REGISTRY_SEMANTICS_v1.0.md（KN-005）/ PHI-OS-HUMAN-GATE-STATE-MODEL-V1（既存Human Gate状態モデル、混同回避のための参照）\n\n【成果物】docs/governance/REGISTRY_STATE_MODEL_v1.0.md\nArtifact Type: Governance Document / Completion Evidence: .md必須\n\n【完了条件】①〜⑤が整理され、Human Approval Gate（きむら博士）の承認を得ること。承認後、KN-007（Validation）を別途起票する。",
+      "assigned_to": "くろこ（設計）+ きむら博士（Human Approval Gate承認）",
+      "note": "2026-07-02、くろこによる実配置完了・きむら博士確認済み。\n\n【配置結果】\ndocs/governance/REGISTRY_STATE_MODEL_v1.0.md：3895 bytes・92行・UTF-8 OK（BOMなし）\n\n【commit】\nmocka_git_safe_commit()経由、commitハッシュ 596b9529fe05625cd120ee0dae11746e176d85de（push未実施）\n\n【event記録】\nCHANGE_START: E20260702_2993151569ff1 / CHANGE_DONE: E20260702_34584217764de\n\n【Operational Complete確定】\nTODO_394の4段階区分：Implementation Complete→Verification→Operational Complete、全段階完了。\n\n本文構成（6章）：Scope／State Principles／State Definitions／Transition Rules／Boundary（Human Gate/Validation/Execution）／Extension Policy。Human Gate State Model（phi_os/human_gate.py）との状態空間分離を明記済み。\n\nHuman Approval Gate（きむら博士）承認済み。本TODOを完了とする。",
+      "reference_event": "KN-005完了（2026-07-02）",
+      "created_at": "2026-07-02T07:48:04.762897",
+      "updated_at": "2026-07-02T07:53:13.948791",
+      "completed_at": "2026-07-02"
+    },
+    {
+      "id": "KN-007",
+      "title": "KN-007: Registry Validation — Schema/Semantic/Transition検証機構の仕様設計",
+      "status": "完了",
+      "priority": "中",
+      "category": "Knowledge Navigation/Registry Series",
+      "description": "Registry Series第7号。KN-004(Schema)/KN-005(Semantics)/KN-006(State Model)確定を受け、これらの「仕様」を実際に検証する「機構」を定義する。KN-004完了時の暫定予約（Validation=KN-005）はKN-005側で訂正済み・KN-007へ正式移管確定。\n\n【対象】\n①Schema Validation：KN-004 JSON Schemaに対するRequired判定・型チェック・enumチェック\n②Semantic Validation：KN-005で定義したCategory境界・Boundary Rulesに対する検証（例：DPカテゴリのRecordがexecution関連フィールドを持たないことの検査等）\n③Transition Validation：KN-006で定義した許可遷移・禁止遷移に対する検証（例：Approved→Draftのような禁止遷移要求のリジェクト）\n④Validator仕様：検証を行う機構自体の設計（配置場所、呼び出しタイミング、event_gateとの接続点）\n⑤エラーコード・検証ポリシー：検証失敗時の扱い（リジェクト/警告/Human Gateへのエスカレーション等）\n\n【Scope Freeze（対象外）】\n- Category/Series間の関係図・Topology（Atlas Seriesの範囲）\n- 実装・コード変更そのもの（本TODOは仕様設計のみ。実コード化は別途実装TODOとして起票）\n\n【重要な既存教訓の適用】\nGL7-UNENFORCED-CONDITIONS-BUG（GL7の安全条件3点が実行経路に未接続だった事例）を踏まえ、本Validator仕様は「掲げているが実効していない」状態を再発させないよう、検証が実際に機能していることの検証方法（TODO_401のカナリアテストパターン）も設計に含めることを推奨する。\n\n【参照文書】\nREGISTRY_SCHEMA_v1.0.md（KN-004）/ REGISTRY_SEMANTICS_v1.0.md（KN-005）/ REGISTRY_STATE_MODEL_v1.0.md（KN-006）/ OVERRIDES_ENFORCEMENT_DESIGN_v0.2.md（TODO_401・カナリアテスト設計の参照例）\n\n【成果物】docs/governance/REGISTRY_VALIDATION_v1.0.md\nArtifact Type: Governance Document / Completion Evidence: .md必須\n\n【完了条件】①〜⑤が整理され、Human Approval Gate（きむら博士）の承認を得ること。承認後、Registry Series（KN-001〜KN-007）は仕様設計フェーズとして一区切りとなり、実装フェーズ（KN-007-B相当、別途起票）または Atlas Series着手のいずれかへ進む。",
+      "assigned_to": "くろこ（設計）+ きむら博士（Human Approval Gate承認）",
+      "note": "2026-07-02、くろこによる実配置完了・きむら博士確認済み。\n\n【配置結果】\ndocs/governance/REGISTRY_VALIDATION_v1.0.md：4215 bytes・94行・UTF-8 OK（BOMなし）\n\n【commit】\nmocka_git_safe_commit()経由、commitハッシュ 85de86394d47719160f7dd9b073db83ff630e581（push未実施）\n\n【event記録】\nCHANGE_START: E20260702_7299680657dde / CHANGE_DONE: E20260702_8396885522a5b\n\n【Operational Complete確定】\nTODO_394の4段階区分：Implementation Complete→Verification→Operational Complete、全段階完了。\n\n本文構成（8章）：Scope／Validation Principles／Validation Targets（Structure/Semantic/State）／Validator Specification（実装非依存に一般化済み）／Failure Handling／Verification Assurance（GL7-UNENFORCED-CONDITIONS-BUG教訓継承）／Boundary（Schema/State/Execution）／Extension Policy。\n\n【補足記録（軽微・要観察）】\nPlanningCaliber/fp/REGISTRY_VALIDATION_v0.1.mdという旧draftが別途存在することがくろこ報告で判明。ファイル名・バージョン（v0.1・fp/配下）が今回のv1.0（docs/governance/配下）と異なるため直接の衝突はないが、KN-004正本がPlanningCaliber/fp/に一時存在していた経緯（本Series内で既に1件発生）と類似パターン。緊急対応は不要だが、Registry Series完了後の棚卸し対象として記録のみ残す。\n\nHuman Approval Gate（きむら博士）承認済み。本TODOを完了とする。KN-004〜KN-007の4文書がdocs/governance/に揃い、Registry Series仕様設計フェーズが一区切り。",
+      "reference_event": "KN-006完了（2026-07-02）",
+      "created_at": "2026-07-02T07:53:55.683640",
+      "updated_at": "2026-07-02T08:01:18.717148",
+      "completed_at": "2026-07-02"
+    },
+    {
+      "id": "KN_SERIES_CROSS_AUDIT_001",
+      "title": "KN Series Cross Audit 001 — KN-001〜007通し整合性監査＋依存方向確認（Atlas着手前のスナップショット固定）",
+      "status": "完了",
+      "priority": "高",
+      "category": "Knowledge Navigation/Registry Series/横断監査",
+      "description": "Registry Series仕様設計フェーズ（KN-001〜KN-007）完了を受けた、Atlas Series着手前のスナップショット固定＋通し整合性監査。\n\n【Phase A: スナップショット固定（Git）】\n①KN-004〜KN-007のcommit（596b9529.../85de8639...等、既存commit群）をpushする（現状push=Falseで留めていたもの）\n②push後のcommitハッシュ・push先ブランチを報告\n\n【Phase B: 通し整合性監査（KN-001〜KN-007）】\n①責務境界の矛盾確認：各KN文書が宣言した対象/対象外が、他のKN文書の記述と矛盾していないか\n②docs/governance/内の相互参照確認：各文書内の参照文書リストが実際のファイル名・パスと一致しているか\n③TERM-001との参照整合：KN-003〜007が使用する用語（Record/Artifact/Reference等）がTERM-001の定義と一致しているか\n④GM2_ROADMAPとの順序整合：Registry→Atlasの順序、KN/KA責務分離の記述が一致しているか\n⑤Atlas委譲範囲の網羅性：Topology関連の記述が漏れなく「対象外」として明記されているか（KN-004/005/006/007それぞれのAtlas Boundary文言を横断確認）\n⑥用語統一確認：status/category/artifact_type等のフィールド名・値がKN-004〜007間で一致しているか（表記揺れがないか）\n⑦重複定義・循環参照の有無\n⑧【重要】依存方向の一貫性確認：\n   理想形 KN-001→KN-002→KN-003→KN-004→KN-005→KN-006→KN-007 の一方向性が保たれているか。特に以下の逆方向参照が無いことを確認する：\n   - KN-004がKN-007（Validation）を前提にしていないか\n   - KN-005（Semantics）がAtlas（未着手）を前提にしていないか\n   - KN-006（State Model）がValidator実装（KN-007実装フェーズ・未着手）を前提にしていないか\n\n【完了条件】\nPhase A/B双方の結果をきむら博士へ報告し、①〜⑧それぞれ「No Finding」「Minor Finding」「Major Finding」の3分類で判定すること（IA-001監査と同形式）。Minor/Major Findingがあれば軽微修正の提案を添える。mocka_write_event記録済みであること。\n\n【非目的】\n新規設計・新規TODO起票は行わない（発見事項の修正提案止まり）。Atlas Series/KN-007実装/PlanningCaliber fp棚卸しへの着手は本監査完了後、別途判断する。",
+      "assigned_to": "くろこ（実施）+ きむら博士（最終判定）",
+      "note": "2026-07-02、Phase A（push）・Phase B（8項目監査）完了。\n\n【判定結果】\n①責務境界の矛盾確認：Minor Finding\n②相互参照確認：Minor Finding\n③TERM-001用語整合：No Finding\n④GM2_ROADMAPとの順序整合：Minor Finding\n⑤Atlas委譲範囲の網羅性：Minor Finding\n⑥用語統一確認：Minor Finding\n⑦重複定義・循環参照：No Finding\n⑧依存方向の一貫性確認（重要）：No Finding\n\nMajor Finding 0件。特に⑧（KN-004はKN-007に一切言及せず、KN-005/006のKN-007・Atlas言及は全て「対象外として委譲」する一方向の除外宣言であり前提依存ではない）・⑦・③がNo Findingであったことから、Registry Seriesは設計欠陥ではなく改善事項レベルの成熟度に到達していると判定。\n\nMinor Finding 5件はREGISTRY_SERIES_V1_1_CANDIDATEとして集約記録。到達点はREGISTRY_SERIES_V1_0_BASELINEとして固定。\n\nHuman Approval Gate（きむら博士）：この監査結果をもってAtlas Series着手を承認。\n\n本TODOを完了とする。",
+      "reference_event": "KN-007完了（2026-07-02）",
+      "created_at": "2026-07-02T08:03:10.857785",
+      "updated_at": "2026-07-02T08:10:45.019374",
+      "completed_at": "2026-07-02"
     }
   ]
 }
