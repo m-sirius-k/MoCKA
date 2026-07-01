@@ -31,6 +31,15 @@ except Exception as _gov_err:
         "mocka_get_command_center", "mocka_check_utf8",
     }
 
+# KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
+REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
+sys.path.insert(0, str(REGISTRY_MODULE_PATH))
+try:
+    import registry_store
+except Exception as _registry_err:
+    print(f"[ERROR] registry_store unavailable: {_registry_err}", flush=True)
+    registry_store = None
+
 # TODO_385: status(通常5値)とcontract_status(Architecture Contract系9語彙)を
 # 別軸のenumに分離（TODO_384は両者を1つの集合に混在させていたが、設計成果物/基準仕様等
 # 「紐付く契約のライフサイクル状態」と通常タスクの「進行度」は意味が異なるため分離する）
@@ -247,7 +256,10 @@ TOOLS = [
     {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_command_center","description":"COMMAND CENTER（localhost:5000）の現在状態を取得する","inputSchema":{"type":"object","properties":{},"required":[]}},
-    {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}}
+    {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}},
+    {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"}},"required":["layer","record"]}},
+    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"}},"required":["target_id"]}}
 ]
 
 def execute_tool(name, args):
@@ -632,6 +644,36 @@ def execute_tool(name, args):
             }
             auto_log(name, args, "spp loaded")
             return json.dumps(spp, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_registry_get":
+            if registry_store is None:
+                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+            result = registry_store.get_registry()
+            auto_log(name, args, "registry loaded")
+            return json.dumps(result, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_registry_add":
+            if registry_store is None:
+                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+            layer  = args.get("layer", "")
+            record = args.get("record", {})
+            if layer not in ("identity", "atlas", "reference", "classification", "lifecycle", "metadata"):
+                return json.dumps({"error": f"invalid layer: {layer!r}"}, ensure_ascii=False)
+            try:
+                added = registry_store.add_record(layer, record)
+            except registry_store.RegistryValidationError as e:
+                return json.dumps({"error": "REGISTRY_VALIDATION_FAILED", "reason": str(e)}, ensure_ascii=False)
+            auto_log(name, args, f"added to {layer}")
+            print(f"[MCP] mocka_registry_add: layer={layer} added")
+            return json.dumps({"status": "ok", "layer": layer, "record": added}, ensure_ascii=False)
+
+        elif name == "mocka_registry_current_state":
+            if registry_store is None:
+                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+            target_id = args.get("target_id", "")
+            result = registry_store.get_current_state(target_id)
+            auto_log(name, args, "current_state computed" if result else "not found")
+            return json.dumps(result if result else {"error": "not found"}, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})
 
