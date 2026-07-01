@@ -153,3 +153,14 @@ STEP 0の結果は仮説Aの発端証拠を消滅させたが、仮説Bを直接
 STEP 0(`GL7_Safe_Dissection_Protocol.md`参照)の結果が出た時点で、
 本Vaultの各仮説のステータスを更新する。更新はこのVaultファイル内で
 行い、事実レイヤの文書(プロトコル・読解記録)を遡って書き換えない。
+
+---
+
+## 付記: records/master/ 発生源確認(2026-07-01完結)
+- 発生源: app.py の append_event(meta: dict)(237-264行目)
+- 書き込み: records/master/{event_id}.json、常時発火(条件分岐なし)
+- 呼び出し元: app.py内11箇所(/user_voice ルート含む)、what_type汎用
+- GL7(execution_governance.py)とは無関係。制御系(pre-execution)と
+  ログ記録系(post-execution, app.py側)は別コンポーネント
+- 未確認事項として残すもの: get_buffer().push(row)とのSQLite
+  永続化経路の整合(TODO_347コメント言及、本調査の対象外)
