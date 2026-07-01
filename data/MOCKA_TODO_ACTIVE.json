@@ -780,6 +780,42 @@
       "created_at": "2026-07-01T09:49:00.641485",
       "contract_status": "DONE_LOCKED",
       "updated_at": "2026-07-01T09:50:05.120894"
+    },
+    {
+      "id": "TODO_411",
+      "title": "AUTO_SEAL書き込み経路の完全トレース(トリガー条件、CI/local実行境界の確認)",
+      "status": "未着手",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "AUTO_SEAL_50EVT/AUTO_SEAL_{today}のトリガー条件(50イベント到達判定ロジック等)を完全にトレースする。app.py内のseal_script呼び出し箇所(2071/2085/2114行目付近)を起点とし、どのプロセス(ローカル常駐/CI/手動実行)がどのタイミングで発火させているかを確認する。2026-07-01のKN-004/AUTO_SEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)で、commit 8c00633e3(AUTO_SEAL_50EVT)がmocka_mcp_server.pyへのregistry_kn004接続コードを含んでいたことが観測されており、この経路の全体像が未確定のまま残っている。",
+      "assigned_to": "Claude",
+      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
+      "reference_event": "E20260701_4496972051ad7",
+      "created_at": "2026-07-01T18:17:58.303317"
+    },
+    {
+      "id": "TODO_412",
+      "title": "承認ゲート有無の構造検証(mocka_git_safe_commit以外に承認処理が別所に存在しないか)",
+      "status": "未着手",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "governance/mocka_git_safe_commit.pyのis_core_system_file()にはパス除外判定のみが存在し、input待ち・承認フラグ確認・外部承認APIコール等の承認確認ステップは同関数内に無いことを2026-07-01のAUTOSEAL調査で確認済み(AUTOSEAL_Observation_Record_2026-07-01.md参照)。mocka_git_safe_commit()以外の箇所(anchor_update.py、app.py内のseal呼び出し周辺、その他git操作を行うスクリプト)に承認ゲート相当の処理が別途存在しないかを構造的に検証する。",
+      "assigned_to": "Claude",
+      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
+      "reference_event": "E20260701_4496972051ad7",
+      "created_at": "2026-07-01T18:18:08.397015"
+    },
+    {
+      "id": "TODO_413",
+      "title": "CHANGE_START/CHANGE_DONEプロトコルとの接続確認(AUTO_SEALがこのプロトコルをバイパスしているか)",
+      "status": "未着手",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "TODO_144が定めるファイル変更前後の強制記録制度(CHANGE_START/CHANGE_DONE)と、AUTO_SEAL_50EVTによる無条件自動commitの関係を確認する。AUTO_SEALでcommitされる変更(例: commit 8c00633e3のmocka_mcp_server.py変更)がCHANGE_START/CHANGE_DONEの記録を経由しているか、あるいはAUTO_SEALがこのプロトコルをバイパスする経路として機能しているかを検証する。2026-07-01のAUTOSEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)では、この関係は未確認のまま残されている。",
+      "assigned_to": "Claude",
+      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
+      "reference_event": "E20260701_4496972051ad7",
+      "created_at": "2026-07-01T18:18:18.534319"
     }
   ],
   "orchestra_handoff": {
