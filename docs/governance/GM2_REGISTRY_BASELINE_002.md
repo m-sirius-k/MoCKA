@@ -63,6 +63,19 @@ KN-003（Registry Record Specification）着手の起点として固定する。
 - Source の正本確定（独立 TODO の範囲）
 - Entry の暫定定義の確定（KN-003 で再確認）
 
+## KN-003 冒頭で確定すべき申し送り論点
+
+KN-003 の本文冒頭で、以下 2 点を設計に入る前に必ず確定すること。
+
+1. Registry Record は実体（Entity）か索引（Index）か
+   （GM2_REGISTRY_BASELINE_001 申し送り。TERM-001 で Index Model を採用確定済み。KN-003 冒頭で再確認・明文化すること。）
+
+2. Artifact : Record の関係は 1:1 固定か、1:N 許容か
+   （2026-07-01 追加申し送り）
+   TERM-001 には「1 つの Artifact（または登録対象）に対して 1 つの Record が存在する」という記述があるが、
+   これが設計原則としての確定なのか、単なる説明上の簡略化（暫定）なのかを、KN-003 本文で明文化すること。
+   1:N 拡張を許容する場合、Schema と Validation の設計に直接影響するため、KN-003 本文冒頭で必ず決定すること。
+
 ---
 
 ## MCP記録について
