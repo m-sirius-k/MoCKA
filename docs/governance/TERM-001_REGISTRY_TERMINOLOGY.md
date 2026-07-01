@@ -76,6 +76,8 @@ MoCKA Registry は Index Model を採用する。
 設計に直接影響する。Record は Artifact の内容を複製・内包するのではなく、
 Artifact への参照情報（Reference）を保持する構造として設計されるべきである。
 
+Entity Model 不採用の理由: Entity Model は Record が対象そのものを代表する設計となるため、Registry Neutrality Principle および Index Model 設計と整合しないため採用しない。
+
 ---
 
 ## 3. Terminology（用語集）
@@ -104,9 +106,9 @@ Record の別称として使用する同義語である。
 
 Record と Entry は同一概念を指す。
 KN-002 では「Registry 登録エントリ」という表現を使用しており、
-本文書ではその用法に従い Entry を Record の同義語として確定する。
+本文書では Entry を Record の同義語として暫定採用する。
 別概念（例: Record のサブ要素としての Entry）への拡張は行わない。
-この定義は KN-003 で再確認・上書きしてよい。
+この暫定定義は KN-003 で再確認・上書きしてよい。
 
 ### Artifact（アーティファクト）
 
@@ -167,6 +169,8 @@ KN-002 セクション 6 注記「Governance Document と Operational Record の
 Registry の文脈では、ある Artifact に対して複数の表現形式（JSON / Markdown 等）が
 存在する場合に「どれが正本か」を示すために Source の概念が必要になる。
 
+Registry は Source を参照できるが、Source を決定する責務は持たない（Registry Neutrality Principle 準拠）。
+
 ### Index（インデックス）
 
 「どこにあるか」を示す索引。
@@ -192,12 +196,16 @@ Registry
                |
                +-- [1:1] Status        （Lifecycle で管理される状態）
                |
-               +-- [0:1] Maturity      （Category/Series 固有の成熟度）
-               |
                +-- [Reference] -------> Artifact
                                            |
                                            +-- [0:1] Source    （正本の指定）
+
+Category / Series
+  |
+  +-- [0:1] Maturity                   （Category/Series 固有の成熟度）
 ```
+
+注: Maturity は Category/Series の属性であり、個別 Record の属性ではない（セクション 3 Maturity 定義に準拠）。
 
 ### 4-2. Category - Series の関係
 
@@ -228,13 +236,13 @@ Record は Artifact の内容を複製しない。
 ### 4-4. Registry Neutrality Principle の位置づけ
 
 ```
-[Human Approval Gate]  ← 正当性・品質・価値の判断はここで行う
+[Human Approval Gate]  <- 正当性・品質・価値の判断はここで行う
         |
         v（承認結果）
-[Artifact]             ← 実際の成果物
+[Artifact]             <- 実際の成果物
         |
         v（存在登録）
-[Record in Registry]   ← 存在を参照可能にするのみ
+[Record in Registry]   <- 存在を参照可能にするのみ
 ```
 
 Registry は Artifact の評価結果を記録することができるが、
@@ -266,3 +274,8 @@ Registry は Artifact の評価結果を記録することができるが、
 ## 改訂履歴
 
 - v1.0（2026-07-01）: TERM-001 として新規作成。Registry用語集・存在中立原則・Entity vs Index確定・概念マップ。くろこ起草、きむら博士承認待ち。
+- v1.1（2026-07-01）: 4点修正（Entry暫定性明示・Concept Map整合・Source責務境界・Entity不採用理由追記）＋将来検討事項追加。
+
+## 将来検討事項
+
+- 「Index Model」という名称は将来「データベースのインデックス」と混同される可能性がある。外部公開段階では「Reference Index Model」等への改名を検討する余地がある。実際の改名は行わない（記録のみ）。
