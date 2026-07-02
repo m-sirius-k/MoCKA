@@ -40,6 +40,10 @@ def validate(payload: dict) -> list[str]:
     if not b and not a2:
         errors.append('REJECT-07: before/afterどちらか必須(Replay不能)')
 
+    # REJECT-08: where_component必須
+    if not payload.get('where_component'):
+        errors.append('REJECT-08: where_component必須')
+
     return errors
 
 
