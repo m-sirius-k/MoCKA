@@ -65,7 +65,8 @@ def has_pending_core_system_changes(root: Path = ROOT):
 
 
 def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
-                           push=False, root: Path = ROOT):
+                           push=False, root: Path = ROOT,
+                           human_gate_override_event_id: str = None):
     """
     git add/commit/(任意でpush)を、Core System File除外を必ず通した上で実行する。
 
@@ -75,6 +76,12 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
     push: Trueの場合のみ `git push origin main` を実行する。デフォルトFalse。
           push=Trueは検証ステップ(例: verify_all.py)を経由した呼び出し元からのみ
           使用すること(本ファイル冒頭の運用ルール参照)。
+    human_gate_override_event_id: Core System File Human Gateの明示的な人間承認
+          オーバーライド(2026-07-02 きむら博士裁定, Phase1=チャット承認方式)。
+          承認の根拠となったPHL event_id(mocka_write_eventで記録済みのもの)を渡した
+          場合のみ、Core System Fileを除外せずcommitに含める(commitメッセージに
+          event_idを埋め込み監査trailを保持する)。未指定時は従来通りfail closed(除外)。
+          Phase2(UI承認, TODO_207)稼働後は本パラメータの運用方法を見直すこと。
 
     戻り値: dict(
         committed: bool,            # 実際にcommitが行われたか
@@ -94,13 +101,24 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
 
         staged = _run(["git", "diff", "--cached", "--name-only"], root)
         staged_files = staged.stdout.splitlines()
-        excluded = [f for f in staged_files if is_core_system_file(f)]
-        if excluded:
-            _run(["git", "restore", "--staged", "--"] + excluded, root)
-            result["excluded"] = excluded
-            print(f"[mocka_git_safe_commit] {len(excluded)} core system file(s) "
+        core_files = [f for f in staged_files if is_core_system_file(f)]
+
+        if core_files and not human_gate_override_event_id:
+            _run(["git", "restore", "--staged", "--"] + core_files, root)
+            result["excluded"] = core_files
+            print(f"[mocka_git_safe_commit] {len(core_files)} core system file(s) "
                   f"excluded, pending Human Gate approval:")
-            for f in excluded:
+            for f in core_files:
+                print(f"  - {f}")
+        elif core_files and human_gate_override_event_id:
+            message = (f"{message}\n\n"
+                       f"[HUMAN_GATE_OVERRIDE:Phase1_chat_approval] "
+                       f"event_id={human_gate_override_event_id} "
+                       f"core_files={','.join(core_files)}")
+            print(f"[mocka_git_safe_commit] {len(core_files)} core system file(s) "
+                  f"included via Phase1 chat-approval override "
+                  f"(event_id={human_gate_override_event_id}):")
+            for f in core_files:
                 print(f"  - {f}")
 
         diff_check = subprocess.run(
