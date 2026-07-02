@@ -1309,5 +1309,17 @@
       "updated_at": "2026-07-02T08:10:45.019374",
       "completed_at": "2026-07-02"
     }
+    ,{
+      "id": "TODO_414",
+      "title": "watchdog_mocka.py x AUTO_SEAL_50EVT 同時実行時のgit書き込み競合リスク",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/ガバナンス/AUTO_SEAL",
+      "description": "watchdog_mocka.pyの日次seal(3時台固定発火)とAUTO_SEAL_50EVT(イベント件数トリガー、時刻非依存)は、いずれも収束点mocka_git_safe_commit()を呼び出す別プロセス。app.py内の排他フラグ(_seal_running[0])はapp.pyローカルスコープのみでwatchdog_mocka.pyとは共有されておらず、3時台にAUTO_SEAL_50EVTの閾値(50件)が同時に到達した場合、両プロセスが同時にgit add/commitを実行し競合する可能性が構造的に排除されていない。TODO_364(2026-06-30完了、単一ヘルパー関数への統一)はこの複数プロセス間の排他制御までは扱っていない。",
+      "assigned_to": "きむら博士（設計判断）",
+      "note": "2026-07-02発見。TODO_411/412/413(AUTO_SEAL経路トレース)の副産物として判明。対処方針(ロック導入/スケジュール分離/単一プロセス化)は未検討、GPTレビュー依頼中。",
+      "reference_event": "",
+      "created_at": "2026-07-02"
+    }
   ]
 }
