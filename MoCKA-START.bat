@@ -6,6 +6,17 @@ cd /d C:\Users\sirok\MoCKA
 echo MoCKA Starting...
 
 REM ============================================================
+REM [PHASE -1] Pre-launch duplicate-instance guard
+REM Abort startup if a prior MoCKA instance is still alive, instead
+REM of layering a second stack on top of it.
+REM ============================================================
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sirok\MoCKA\startup_guard.ps1"
+if errorlevel 1 (
+    echo MoCKA is already running. Aborting startup.
+    exit /b 1
+)
+
+REM ============================================================
 REM [PHASE 0] Cleanup stale background jobs from previous run
 REM ============================================================
 echo [PHASE 0] Cleaning up stale background processes...

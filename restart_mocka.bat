@@ -1,20 +1,17 @@
 @echo off
 echo === MoCKA FULL RESTART ===
 
-echo Killing Python processes...
-powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sirok\MoCKA\singleton_enforce.ps1" -Pattern "python"
+echo Stopping existing MoCKA processes...
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sirok\MoCKA\singleton_enforce.ps1" -Pattern "ping_generator\.py|sync_watch\.py|tech_watcher\.py|risk_scorer\.py|essence_auto_updater\.py|check_utf8_mandate\.py|app\.py|mocka_mcp_server\.py|gateway\.py|living_room[\\/]hub\.py"
 
-echo Killing extra PowerShell...
-taskkill /F /IM powershell.exe >nul 2>&1
+timeout /t 3 /nobreak >nul
 
-timeout /t 2 >nul
+REM Residual check only -- warns, does not abort. MoCKA-START.bat's own
+REM pre-launch guard is the final gate if a process failed to stop.
+powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sirok\MoCKA\residual_check.ps1"
 
-echo Restarting main loop...
-cd /d C:\Users\sirok\MoCKA\runtime
-start cmd /k python main_loop.py
-
-echo Restarting intent ingestor (manual trigger ready)...
-start cmd /k echo READY FOR intent_ingestor
+echo Starting MoCKA...
+call "C:\Users\sirok\MoCKA\MoCKA-START.bat"
 
 echo === RESTART COMPLETE ===
 pause
