@@ -19,6 +19,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from gate_policy import compute_gate_audit
+from mocka_endpoints import get_endpoint_url
 
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -28,7 +29,7 @@ TIC_DIR       = Path("C:/Users/sirok/MoCKA/data/tic")
 HEALTH_LOG    = TIC_DIR / "health_log.jsonl"
 HASH_STORE    = TIC_DIR / "mcp_schema_hash.json"
 PREV_QUEUE    = Path("C:/Users/sirok/MoCKA/data/prevention_queue.json")
-MCP_URL       = "http://localhost:5002/agent/mocka_write_event"
+MCP_URL       = get_endpoint_url("mocka_event_gateway", "write_event")
 HEALTH_OK_INTERVAL = 30  # HEALTH_OK は 30 回に 1 回だけ記録する
 _health_ok_counter_file = TIC_DIR / "health_ok_counter.txt"
 
@@ -60,7 +61,7 @@ HEALTH_CHECKS = {
     },
     "mocka_server": {
         "method": "http_get",
-        "url": "http://localhost:5000/loop/status",
+        "url": get_endpoint_url("mocka_server", "status"),
         "timeout": 5,
         "expect_status": [200],
         # Task 9: Risk / Opportunity (Structural Intelligence)
@@ -70,7 +71,7 @@ HEALTH_CHECKS = {
     },
     "caliber_pipeline": {
         "method": "http_get",
-        "url": "http://localhost:5679/health",
+        "url": get_endpoint_url("caliber_pipeline", "status"),
         "timeout": 5,
         "expect_status": [200],
         "risk":            "Caliberが止まるとEssence生成が停止し知識蒸留が断絶する",
@@ -113,7 +114,7 @@ HEALTH_CHECKS = {
     },
     "relay_dom_selector": {
         "method": "relay_dom",
-        "url": "http://localhost:5000/relay/status",
+        "url": get_endpoint_url("mocka_server", "relay"),
         "timeout": 5,
         "stale_seconds": 300,
         "optional": True,
