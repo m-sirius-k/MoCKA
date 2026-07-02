@@ -1,0 +1,31 @@
+{
+  "_comment": "MoCKA Endpoint Registry --唯一の設定源(Single Source of Truth)。起源: E20260702_1595449490459 (localhost名前解決障害)。connect_host(クライアント接続先)とbind_host(サーバーlisten先)は別概念として分離管理する。",
+  "mocka_server": {
+    "connect_host": "127.0.0.1",
+    "bind_host": "0.0.0.0",
+    "port": 5000,
+    "protocol": "http",
+    "paths": {
+      "status": "/loop/status",
+      "relay": "/relay/status"
+    }
+  },
+  "mocka_event_gateway": {
+    "connect_host": "127.0.0.1",
+    "bind_host": "0.0.0.0",
+    "port": 5002,
+    "protocol": "http",
+    "paths": {
+      "write_event": "/agent/mocka_write_event"
+    }
+  },
+  "caliber_pipeline": {
+    "connect_host": "127.0.0.1",
+    "bind_host": "0.0.0.0",
+    "port": 5679,
+    "protocol": "http",
+    "paths": {
+      "status": "/health"
+    }
+  }
+}

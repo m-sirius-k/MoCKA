@@ -852,6 +852,18 @@
       "note": "2026-07-02、KN_SERIES_CROSS_AUDIT_001のMinor Finding 5件を集約して記録。Major Findingなし・依存方向/循環参照/TERM-001整合は全てNo Findingであったため、設計欠陥ではなく改善事項として扱う。",
       "reference_event": "KN_SERIES_CROSS_AUDIT_001完了（2026-07-02）",
       "created_at": "2026-07-02T08:10:33.594752"
+    },
+    {
+      "id": "TODO_INL_DUPLICATE_OF",
+      "title": "hashベース重複集約(incident_engine.py方式)をINL incident.jsonのduplicate_ofフィールドとして採用検討",
+      "status": "未着手",
+      "priority": "低",
+      "category": "設計検討",
+      "description": "runtime/incident_engine.pyのincident_hash = sha256(title+content+source)一致でrepeat_countを加算する重複集約ロジックは、現行INL(Incident Navigation Layer) v0.1のincident.jsonスキーマには存在しない機能。同一障害の再発を1レコードに集約する仕組みとして、incident.jsonにduplicate_ofフィールド（元incident_idを指す参照）を追加する形での採用を、INL v0.2再設計（既存runtime/incident_*のラッパー層化）と合わせて検討する。\n\n背景: E20260702_331336771c627でINLとruntime/incident_*の重複を検出、E20260702_673923179808f調査でruntime/incident_engine.pyのhash集約ロジックの存在を確認、docs/governance/INCIDENT_LEGACY_NOTE.mdでruntime側は未起動・アーカイブ扱いと確定した上での派生検討事項。",
+      "assigned_to": "Claude",
+      "note": "",
+      "reference_event": "E20260702_673923179808f",
+      "created_at": "2026-07-02T12:15:27.067500"
     }
   ],
   "orchestra_handoff": {
