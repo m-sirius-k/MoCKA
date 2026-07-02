@@ -789,9 +789,10 @@
       "category": "制度/ガバナンス",
       "description": "AUTO_SEAL_50EVT/AUTO_SEAL_{today}のトリガー条件(50イベント到達判定ロジック等)を完全にトレースする。app.py内のseal_script呼び出し箇所(2071/2085/2114行目付近)を起点とし、どのプロセス(ローカル常駐/CI/手動実行)がどのタイミングで発火させているかを確認する。2026-07-01のKN-004/AUTO_SEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)で、commit 8c00633e3(AUTO_SEAL_50EVT)がmocka_mcp_server.pyへのregistry_kn004接続コードを含んでいたことが観測されており、この経路の全体像が未確定のまま残っている。",
       "assigned_to": "Claude",
-      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
+      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はむしろ判明待ちのため暫定的に'要判定'とする。\n\n[2026-07-02 Step1追記(event_id: E20260702_89262031271ab)]\nトリガー条件を確定(事実確認のみ):\n- 起動位置: app.py:4062 `_lt.Thread(target=auto_audit_loop, daemon=True).start()`(app.py本体プロセス内の常駐daemonスレッド。CI実行ではない)\n- 件数トリガー: app.py:2076-2077 `count - _last_event_count[0] >= 50`(SQLite events件数を60秒毎にpolling)\n- 日次トリガー: app.py:2065 `if now.hour == 0 and _last_seal_date[0] != today`\n- 手動トリガー: app.py:2106 `/audit/seal` POSTエンドポイント(呼び出し主体はコードからは判別不能)\n- 実行主体: 3経路とも最終的に scripts/ledger/anchor_update.py の main() を subprocess実行し、その中で governance/mocka_git_safe_commit.py の mocka_git_safe_commit() を呼ぶ(git add -A + is_core_system_file()除外 + git commit、push=False固定)\n- CI/local実行境界: 3経路とも実行主体はローカルのapp.pyプロセス(daemon thread or Flask route)であり、CI(GitHub Actions等)からの起動は確認されていない\n詳細はdocs/governance/GL7_STATE_INTEGRITY_NOTE_v1.0.md参照。",
       "reference_event": "E20260701_4496972051ad7",
-      "created_at": "2026-07-01T18:17:58.303317"
+      "created_at": "2026-07-01T18:17:58.303317",
+      "updated_at": "2026-07-02T13:35:10.438830"
     },
     {
       "id": "TODO_412",
@@ -801,9 +802,10 @@
       "category": "制度/ガバナンス",
       "description": "governance/mocka_git_safe_commit.pyのis_core_system_file()にはパス除外判定のみが存在し、input待ち・承認フラグ確認・外部承認APIコール等の承認確認ステップは同関数内に無いことを2026-07-01のAUTOSEAL調査で確認済み(AUTOSEAL_Observation_Record_2026-07-01.md参照)。mocka_git_safe_commit()以外の箇所(anchor_update.py、app.py内のseal呼び出し周辺、その他git操作を行うスクリプト)に承認ゲート相当の処理が別途存在しないかを構造的に検証する。",
       "assigned_to": "Claude",
-      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
+      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はむしろ判明待ちのため暫定的に'要判定'とする。\n\n[2026-07-02 Step1追記(event_id: E20260702_89262031271ab)]\n承認ゲート有無を構造的に確認(事実確認のみ):\n- anchor_update.py(AUTO_SEAL/MANUAL_SEAL/日次sealの3経路共通の実行主体)は、governance/mocka_git_safe_commit.pyのmocka_git_safe_commit()経由でgit add/commitを行う\n- mocka_git_safe_commit()内の承認関連ロジックは is_core_system_file() によるパス除外(CORE_SYSTEM_DIRS + .py拡張子限定)のみ。input待ち・承認フラグ確認・外部承認APIコールは存在しない(コード全文確認済み)\n- anchor_update.py側にも独自のsubprocess直接git呼び出しは無く、check_staged_files()によるPRE_COMMIT_FORBIDDENパターン(TestProfile/, Default/Cache/, chrome_debug/, .env, secrets/)の文字列一致チェックのみが別途存在(is_core_system_file()とは別ロジック)\n- 2026-07-02本日、governance/mocka_git_safe_commit.pyにhuman_gate_override_event_idパラメータを追加(commit 8c01fed19)。このcommit自体のGL7_STATE_LOCK適用可否はSCOPE_UNDEFINED_PENDING(E20260702_219441966dfbb)として別途判断保留中\n詳細はdocs/governance/GL7_STATE_INTEGRITY_NOTE_v1.0.md参照。",
       "reference_event": "E20260701_4496972051ad7",
-      "created_at": "2026-07-01T18:18:08.397015"
+      "created_at": "2026-07-01T18:18:08.397015",
+      "updated_at": "2026-07-02T13:35:27.432034"
     },
     {
       "id": "TODO_413",
@@ -813,9 +815,10 @@
       "category": "制度/ガバナンス",
       "description": "TODO_144が定めるファイル変更前後の強制記録制度(CHANGE_START/CHANGE_DONE)と、AUTO_SEAL_50EVTによる無条件自動commitの関係を確認する。AUTO_SEALでcommitされる変更(例: commit 8c00633e3のmocka_mcp_server.py変更)がCHANGE_START/CHANGE_DONEの記録を経由しているか、あるいはAUTO_SEALがこのプロトコルをバイパスする経路として機能しているかを検証する。2026-07-01のAUTOSEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)では、この関係は未確認のまま残されている。",
       "assigned_to": "Claude",
-      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はきむら博士判断待ちのため暫定的に'要判定'とする。",
+      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はむしろ判明待ちのため暫定的に'要判定'とする。\n\n[2026-07-02 Step1追記(event_id: E20260702_89262031271ab)]\nCHANGE_START/CHANGE_DONEプロトコルとの接続を確認(事実確認のみ):\n- anchor_update.py・mocka_git_safe_commit.py・app.pyのauto_audit_loop()いずれのコードにも、mocka_write_event呼び出しは存在しない(grep確認済み)\n- structural/execution_governance.pyのTODO_144フック(record_file_change/record_execution)を参照・使用している箇所は governance_pipeline.py 等5ファイルのみで、anchor_update.py/mocka_git_safe_commit.py/app.pyのauto_audit_loopはいずれも参照していない\n- 上記2点の事実により、AUTO_SEALの3経路(AUTO_SEAL_50EVT/AUTO_SEAL_{today}/MANUAL_SEAL)はCHANGE_START/CHANGE_DONEプロトコルを経由しない(バイパスしているというより、そもそも接続コード自体が存在しない)\n- events.db非連動が「設計」「バグ」「意図的な別正本分離」のいずれであるかは、コード上にその設計意図を明記した記述が見当たらず、既存文書(AUTOSEAL_Observation_Record_2026-07-01.md「未観測領域」)でも2026-07-01時点で既に未確定と明記されている。本調査でも新たな決定的根拠は見つからず、未確定のまま\n詳細はdocs/governance/GL7_STATE_INTEGRITY_NOTE_v1.0.md参照。",
       "reference_event": "E20260701_4496972051ad7",
-      "created_at": "2026-07-01T18:18:18.534319"
+      "created_at": "2026-07-01T18:18:18.534319",
+      "updated_at": "2026-07-02T13:35:31.801074"
     },
     {
       "id": "KN_IA_NAMING_CONFIRMED",

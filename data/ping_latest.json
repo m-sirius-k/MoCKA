@@ -40,5 +40,42 @@
       "priority": "高"
     }
   ],
-  "generated_at": "2026-07-02T12:20:36.753261"
+  "generated_at": "2026-07-02T12:20:36.753261",
+  "matcher_result": {
+    "verdict": "DANGER",
+    "score": 0.166,
+    "danger_rate": 0.583,
+    "success_rate": 0.417,
+    "text": "グを発見しました。該当時刻（10:23/12:20）周辺の内容を確認します。\n\n検索済み コード, 実行済み 2件のコマンド\n\n重要な事実確認: 今日（2026",
+    "top_events": [
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-31",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "recur": 0,
+        "matched": [
+          "エラー",
+          "止まっ",
+          "失敗"
+        ],
+        "score": 3
+      },
+      {
+        "verdict": "DANGER",
+        "when": "2026-03-30",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "以下は「PlaywrightのMoCKAへの統合可能性」について各AIが回答した内容です。\n\n【ChatGPT】\nChatGPT:\nPlaywright全機能の制度的評価とMoCKA統合設計\n0. 総",
+        "recur": 0,
+        "matched": [
+          "エラー",
+          "失敗"
+        ],
+        "score": 2
+      }
+    ],
+    "updated_at": "2026-07-02T05:12:13.302Z"
+  }
 }
