@@ -4,8 +4,8 @@
     "detail": "PYTHONUTF8=(unset) OK"
   },
   "mocka_server": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "caliber_pipeline": {
     "ok": true,
@@ -29,7 +29,7 @@
   },
   "relay_dom_selector": {
     "ok": true,
-    "detail": "Relay alive (last_ping: 2026-07-02T08:33:06.806455, v2.0.0)"
+    "detail": "Relay alive (last_ping: 2026-07-02T08:45:06.490780, v2.0.0)"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": true,
-    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2180 gate=100.0% [real-time=1565/buffered=615] buffer_pending=0)"
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2191 gate=100.0% [real-time=1572/buffered=619] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
