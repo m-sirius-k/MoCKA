@@ -158,6 +158,18 @@ class ExecutionGovernanceEngine:
         action = action or {}
         aborts = []
 
+        op = action.get("operation")
+        if op in FORBIDDEN_EXECUTIONS:
+            aborts.append(f"forbidden_execution:{op}")
+
+        for path in dry_run.changed_files:
+            fp = self.repo_root / path
+            if fp.exists() and fp.is_file():
+                try:
+                    fp.read_bytes().decode("utf-8")
+                except UnicodeDecodeError:
+                    aborts.append(f"encoding_mismatch:{path}")
+
         grounding = self.grounding.ground("dry_run_check")
         if not grounding.repository_root:
             aborts.append("grounding_not_completed")
