@@ -2,7 +2,7 @@
 echo === MoCKA FULL RESTART ===
 
 echo Killing Python processes...
-powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sirok\MoCKA\singleton_enforce.ps1" -Pattern "python"
+taskkill /F /IM python.exe >nul 2>&1
 
 echo Killing extra PowerShell...
 taskkill /F /IM powershell.exe >nul 2>&1

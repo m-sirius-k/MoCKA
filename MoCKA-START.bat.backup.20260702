@@ -9,7 +9,7 @@ REM ============================================================
 REM [PHASE 0] Cleanup stale background jobs from previous run
 REM ============================================================
 echo [PHASE 0] Cleaning up stale background processes...
-powershell -NoProfile -ExecutionPolicy Bypass -File "C:\Users\sirok\MoCKA\singleton_enforce.ps1" -Pattern "ping_generator\.py|sync_watch\.py|tech_watcher\.py|risk_scorer\.py|essence_auto_updater\.py|check_utf8_mandate\.py"
+powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { $_.CommandLine -match 'ping_generator\.py|sync_watch\.py|tech_watcher\.py|risk_scorer\.py|essence_auto_updater\.py|check_utf8_mandate\.py' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"
 timeout /t 1 /nobreak > nul
 
 REM ============================================================
