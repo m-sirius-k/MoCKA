@@ -4,12 +4,12 @@
     "detail": "PYTHONUTF8=(unset) OK"
   },
   "mocka_server": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "caliber_pipeline": {
-    "ok": true,
-    "detail": "200 OK"
+    "ok": false,
+    "detail": "接続エラー: <urlopen error [WinError 10061] 対象のコンピューターによって拒否されたため、接続できませんでした。>"
   },
   "anthropic_api": {
     "ok": true,
@@ -28,8 +28,8 @@
     "detail": "変更なし (hash: ed3bce62508eb81d)"
   },
   "relay_dom_selector": {
-    "ok": true,
-    "detail": "Relay alive (last_ping: 2026-07-03T09:00:50.504304, v2.0.0)"
+    "ok": false,
+    "detail": "Relay ping stale (>300s): last_ping=2026-07-03T12:49:28.589620"
   },
   "env_bom": {
     "ok": true,
@@ -37,7 +37,7 @@
   },
   "phi_os_audit": {
     "ok": true,
-    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2419 gate=100.0% [real-time=1661/buffered=758] buffer_pending=0)"
+    "detail": "Gate経由率100.0% Direct-Write(新規) 0件 Actor-OK (total=2469 gate=100.0% [real-time=1702/buffered=767] buffer_pending=0)"
   },
   "auth_key_drive": {
     "ok": true,
@@ -45,6 +45,6 @@
   },
   "canary_overrides_liveness": {
     "ok": true,
-    "detail": "OK (2.0 日前に実行済み) | result: PASS | run_id: local-init"
+    "detail": "OK (2.4 日前に実行済み) | result: PASS | run_id: local-init"
   }
 }
