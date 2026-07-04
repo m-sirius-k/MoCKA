@@ -42,39 +42,37 @@
   ],
   "generated_at": "2026-07-04T07:12:24.767012",
   "matcher_result": {
-    "verdict": "SUCCESS",
-    "score": -0.216,
-    "danger_rate": 0.392,
-    "success_rate": 0.608,
-    "text": "Analysisフェーズ3件を完成させました(いずれもCHANGE_DONE記録済み)。3件は互いに独立して作成し、一方の結論を他方の根拠には用いていません。\n",
+    "verdict": "DANGER",
+    "score": 1.0,
+    "danger_rate": 1.0,
+    "success_rate": 0.0,
+    "text": "Claude　gptのお説教の後の話だ　共有しとく　あなたもちゃんと覚えておくように",
     "top_events": [
       {
         "verdict": "DANGER",
-        "when": "2026-04-16",
-        "why": "右クリックメニューからの保存・共有操作",
-        "how": "context_menu_click",
-        "note": "【知識記録（PILS）】  本命：PHL/MoCKA 統合定義書（全エージェント共有用プロトコル）  起点AI：Gemini  信頼度：5.0  本文：DRきむら主導の「日本企業再興プロジェクト」にお",
+        "when": "2026-04-02",
+        "why": "voice_capture",
+        "how": "export_import",
+        "note": "ここさー　今の手順　ちょっとわかりにくいですよね\n1）　右クリック送りました　　　2）　5000受信中　点滅などを\n3）　受信完了（処理できます　　　自動でやる　OR　押しボタンで実行\n-------",
         "recur": 0,
         "matched": [
-          "失敗",
-          "用い"
+          "とく"
         ],
-        "score": 2
+        "score": 1
       },
       {
         "verdict": "DANGER",
-        "when": "2026-03-31",
+        "when": "2026-05-08",
         "why": "voice_capture",
         "how": "export_import",
-        "note": "以下は「PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してくだ...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n【Cha",
+        "note": "ロットとの話\n先ほど別の環境で　copilotの性能評価をしました 凄まじく優秀でした。　私との記憶はあなたは少ないかもしれないが 問題児で　私を何回切れさせ　首にして　当分触らないと思わせるほどのあ",
         "recur": 0,
         "matched": [
-          "失敗",
-          "用い"
+          "とく"
         ],
-        "score": 2
+        "score": 1
       }
     ],
-    "updated_at": "2026-07-04T00:28:21.813Z"
+    "updated_at": "2026-07-04T09:16:59.666Z"
   }
 }
