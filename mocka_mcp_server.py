@@ -67,6 +67,12 @@ DB_PATH        = BASE / "data" / "mocka_events.db"
 DECISIONS_DIR       = BASE / "data" / "decisions"
 DECISION_LEDGER_PATH = DECISIONS_DIR / "decision_ledger.jsonl"
 
+# Sprint3: Integrity Classification — 3層ログ構造(Decision=判断/Integrity=異常/
+# Reconnection=修復)のうち「何が壊れていたか」を記録する層。Decision Ledgerと
+# 対称構造(JSONL、append-only、3ツール)。
+INTEGRITY_DIR                = BASE / "data" / "integrity"
+INTEGRITY_CLASSIFICATION_PATH = INTEGRITY_DIR / "integrity_classification.jsonl"
+
 # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ設定
 GATE_URL        = "http://localhost:5000/api/gate/event"
 SESSION_ID      = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -287,6 +293,58 @@ def _append_decision(record):
     with open(DECISION_LEDGER_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
+# ===== Sprint3: Integrity Classification（State x Type分類体系） =====
+STATE_ENUM = {"Failure", "Risk", "Unknown"}
+
+TYPE_ENUM_BY_STATE = {
+    "Failure": {
+        "Transfer Failure", "Synchronization Failure", "Adoption Failure",
+        "Exposure Failure", "Runtime Divergence", "Topology Failure",
+    },
+    "Risk": {"Mirror Risk", "Legacy Residue", "Intent Conflict"},
+    "Unknown": {"Not Verified", "Evidence Missing"},
+}
+
+CLASSIFICATION_STATUS_ENUM = {"Open", "Resolved", "Superseded"}
+
+def _read_classifications():
+    """integrity_classification.jsonlの全行を読む（append-only。壊れた行は
+    スキップし件数のみ数える）。"""
+    if not INTEGRITY_CLASSIFICATION_PATH.exists():
+        return [], 0
+    records = []
+    broken = 0
+    with open(INTEGRITY_CLASSIFICATION_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except Exception:
+                broken += 1
+    return records, broken
+
+def _next_classification_id():
+    """IC_YYYYMMDD_NNN形式で当日分の次番号を採番する（欠番可・重複禁止）。"""
+    today = datetime.date.today().strftime("%Y%m%d")
+    records, _ = _read_classifications()
+    prefix = f"IC_{today}_"
+    used = [
+        int(r["classification_id"][len(prefix):])
+        for r in records
+        if isinstance(r.get("classification_id"), str) and r["classification_id"].startswith(prefix)
+        and r["classification_id"][len(prefix):].isdigit()
+    ]
+    n = (max(used) + 1) if used else 1
+    return f"{prefix}{n:03d}"
+
+def _append_classification(record):
+    """integrity_classification.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+    INTEGRITY_DIR.mkdir(parents=True, exist_ok=True)
+    with open(INTEGRITY_CLASSIFICATION_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
 TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
@@ -307,7 +365,10 @@ TOOLS = [
     {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}},
     {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
     {"name":"mocka_decision_get","description":"decision_idを指定してDecision Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string"}},"required":["decision_id"]}},
-    {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}}
+    {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
+    {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
+    {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
+    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
 ]
 
 def execute_tool(name, args):
@@ -816,6 +877,74 @@ def execute_tool(name, args):
             result.sort(key=lambda r: r.get("decision_id", ""), reverse=True)
             auto_log(name, args, f"{len(result)} decisions (broken_lines={broken})")
             return json.dumps({"count": len(result), "broken_lines": broken, "decisions": result}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_integrity_write":
+            title       = args.get("title", "").strip()
+            state       = args.get("state", "")
+            itype       = args.get("type", "")
+            description = args.get("description", "").strip()
+            detection_method = args.get("detection_method", "").strip()
+            impact_scope     = args.get("impact_scope", "").strip()
+            discovered_by    = args.get("discovered_by", "").strip()
+            if not all([title, state, itype, description, detection_method, impact_scope, discovered_by]):
+                return json.dumps({"error": "title/state/type/description/detection_method/impact_scope/discovered_by は全て必須"}, ensure_ascii=False)
+            if state not in STATE_ENUM:
+                return json.dumps({"error": f"invalid state: {state!r}. allowed: {sorted(STATE_ENUM)}"}, ensure_ascii=False)
+            if itype not in TYPE_ENUM_BY_STATE.get(state, set()):
+                return json.dumps({"error": f"invalid type {itype!r} for state {state!r}. allowed: {sorted(TYPE_ENUM_BY_STATE.get(state, set()))}"}, ensure_ascii=False)
+            status = args.get("status", "Open")
+            if status not in CLASSIFICATION_STATUS_ENUM:
+                return json.dumps({"error": f"invalid status: {status!r}. allowed: {sorted(CLASSIFICATION_STATUS_ENUM)}"}, ensure_ascii=False)
+            classification_id = args.get("classification_id", "").strip() or _next_classification_id()
+            discovered_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            record = {
+                "classification_id": classification_id,
+                "title":              title,
+                "state":              state,
+                "type":               itype,
+                "boundary":           args.get("boundary") or None,
+                "description":        description,
+                "detection_method":   detection_method,
+                "impact_scope":       impact_scope,
+                "related_events":     args.get("related_events", []),
+                "related_documents":  args.get("related_documents", []),
+                "discovered_at":      discovered_at,
+                "discovered_by":      discovered_by,
+                "status":             status,
+                "supersedes":         args.get("supersedes") or None,
+                "superseded_by":      None,
+            }
+            _append_classification(record)
+            auto_log(name, args, f"classification written {classification_id}")
+            return json.dumps({"status": "ok", "classification_id": classification_id}, ensure_ascii=False)
+
+        elif name == "mocka_integrity_get":
+            classification_id = args.get("classification_id", "")
+            records, _ = _read_classifications()
+            matches = [r for r in records if r.get("classification_id") == classification_id]
+            auto_log(name, args, "found" if matches else "not found")
+            return json.dumps(matches[-1] if matches else {"error": "not found"}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_integrity_list":
+            state_filter  = args.get("state", "")
+            type_filter   = args.get("type", "")
+            status_filter = args.get("status", "")
+            records, broken = _read_classifications()
+            latest = {}
+            for r in records:
+                cid = r.get("classification_id")
+                if cid:
+                    latest[cid] = r
+            result = list(latest.values())
+            if state_filter:
+                result = [r for r in result if r.get("state") == state_filter]
+            if type_filter:
+                result = [r for r in result if r.get("type") == type_filter]
+            if status_filter:
+                result = [r for r in result if r.get("status") == status_filter]
+            result.sort(key=lambda r: r.get("classification_id", ""), reverse=True)
+            auto_log(name, args, f"{len(result)} classifications (broken_lines={broken})")
+            return json.dumps({"count": len(result), "broken_lines": broken, "classifications": result}, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})
 
