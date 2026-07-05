@@ -1,0 +1,6 @@
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5010
+ * Running on http://192.168.1.3:5010
+Press CTRL+C to quit
+127.0.0.1 - - [05/Jul/2026 12:41:39] "GET /api/v1/context?mode=compact HTTP/1.1" 200 -

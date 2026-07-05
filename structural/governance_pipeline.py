@@ -43,6 +43,10 @@ READ_ONLY_TOOLS = {
     "mocka_check_utf8",
     "mocka_registry_get",
     "mocka_registry_current_state",
+    "mocka_decision_get",
+    "mocka_decision_list",
+    "mocka_integrity_get",
+    "mocka_integrity_list",
 }
 
 # 後方互換のため維持(governance_pipeline外部から書き込み系tool集合として参照される場合がある)

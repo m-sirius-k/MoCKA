@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import sqlite3
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "structural"))
+from event_recency import valid_when_ts_clause  # noqa: E402
 
 DATA_DIR      = Path(__file__).parent.parent / "data"
 OVERVIEW_PATH = DATA_DIR / "MOCKA_OVERVIEW.json"
@@ -48,7 +52,9 @@ class ContextBuilder:
             cur  = conn.cursor()
             # 正: when_ts  (×when_time)
             cur.execute(
-                "SELECT title, when_ts FROM events ORDER BY when_ts DESC LIMIT 1"
+                "SELECT title, when_ts FROM events "
+                f"WHERE {valid_when_ts_clause()} "
+                "ORDER BY when_ts DESC LIMIT 1"
             )
             row = cur.fetchone()
             conn.close()
@@ -100,7 +106,9 @@ class ContextBuilder:
             # 正: when_ts / short_summary  (×when_time / ×description / ×tags)
             cur.execute(
                 "SELECT event_id, title, short_summary, when_ts, what_type "
-                "FROM events ORDER BY when_ts DESC LIMIT ?",
+                "FROM events "
+                f"WHERE {valid_when_ts_clause()} "
+                "ORDER BY when_ts DESC LIMIT ?",
                 (limit,)
             )
             rows = cur.fetchall()

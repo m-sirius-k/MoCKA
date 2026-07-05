@@ -855,6 +855,19 @@
       "note": "",
       "reference_event": "E20260702_673923179808f",
       "created_at": "2026-07-02T12:15:27.067500"
+    },
+    {
+      "id": "MCP-TOOL-REGISTRY-DRIFT-DECISION-WRITE-PATH",
+      "title": "DC_20260705_006のLedger正式反映 + MCP Tool Registry Drift原因調査",
+      "status": "未着手",
+      "priority": "高",
+      "category": "運用欠落・tool_availability",
+      "description": "後段同期タスク(2件、優先度は不可分):\n1. DC_20260705_006(last_decisionの意味定義をDecision Ledger参照へ改訂する設計原則、E20260705_5059684010a13にevent記録済み)を、mocka_decision_write()が利用可能なセッションでdata/decisions/decision_ledger.jsonlへ正式append する。\n2. なぜ本セッション(SESSION_20260705_124108、mocka_mcp_server.py再起動実施済みPID17240)のMCP接続にmocka_decision_write/get/list・mocka_integrity_write/get/listが反映されないのか原因調査する。プロセス再起動だけでは解決しないことを確認済み(E20260705_732301073f4bd参照)。MCPクライアント側のツールリスト再取得タイミング/キャッシュ機構が焦点。",
+      "assigned_to": "Claude",
+      "note": "原因調査(読み取りのみ・完了): .claude/settings.jsonでmocka MCPサーバーは type:url でngrok経由port:5002へ接続。mocka_mcp_server.py:969でtools/listはリクエスト応答型のみ実装され、notifications/tools/list_changed送出は未実装(grep該当なし)。よってサーバープロセス再起動だけでは接続済みセッションのツール一覧キャッシュは更新されない。恒久対策候補: (a)list_changed通知の実装、(b)新セッションでの再接続を運用手順化。次アクション: 新セッションでmocka_decision_write経由のDC_20260705_006正式反映を実施し、(a)着手可否は別途判断。",
+      "reference_event": "E20260705_732301073f4bd",
+      "created_at": "2026-07-05T12:55:50.247256",
+      "updated_at": "2026-07-05T12:59:23.445559"
     }
   ],
   "orchestra_handoff": {
