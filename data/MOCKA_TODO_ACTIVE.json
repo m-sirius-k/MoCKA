@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-02",
+    "updated": "2026-07-05",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -380,14 +380,15 @@
     {
       "id": "TODO_361",
       "title": "Decision Ledger Reconnection — TODO_358 Human Gate Review判断のDecision Ledger接続",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "中",
       "category": "制度/運用接続/Process Integration",
       "description": "分類: 新規機能追加ではなく「既存制度再接続(Process Integration)」。E20260623_664174251c911（Decision Ledger Bypassインシデント）で判明した断絶への対応。\\n\\n目的: TODO_358のHuman Gate Review（R01判定によるGroup A/B分岐）の判断根拠を、既存のDecision Ledger Schema v1(TODO_305: DC採番・alternatives必須・JSONL)の形式で記録する。\\n\\n成果物:\\n①DCレコード1件以上をDecision Ledgerに登録（「なぜGroup A(#1/#3/#5/#6)はstart_background_loops()へ単純集約で整合的だが、Group B(#2/#4)は別途制度判断が必要だったか」をalternatives付きで構造化）\\n②運用ルール更新: 今後Human Gate Reviewで条件付き承認等の分岐判定が出た場合、Markdown記述で終わらせず必ずDecision Ledgerへの記録をセットにする旨をCLAUDE.mdまたはTODO_154に追記\\n③TODO_359/360の最終決定が下された際も、その決定自体をDecision Ledger形式で記録すること\\n\\n非目的: 新しいDecision Ledger層を新設することではない。既存のTODO_194/278/287/289/305の層をそのまま使う。",
       "assigned_to": "Claude（記録）+ くろこ（CLAUDE.md/TODO_154更新）+ きむら博士（承認）",
-      "note": "",
+      "note": "2026-07-05 Reconnection Sprint1にて実装着手・一部完了(CHANGE_START: E20260705_8645977592293 / CHANGE_DONE: E20260705_3366248354d05)。mocka_mcp_server.pyにmocka_decision_write/get/list実装済み・py_compile/UTF-8検証OK・data/decisions/decision_ledger.jsonlにDC実レコード2件登録済み(本セッションの裁定2件)。成果物①(DCレコード1件以上登録)は達成。②(CLAUDE.md/TODO_154への運用ルール追記)・③(今後の裁定を継続してDecision Ledger形式で記録する運用の定着)は未実施。また稼働中のmocka_mcp_server.pyプロセス(port:5002)の再起動が必要(新ツールをMCP経由で実際に呼び出すため、本セッションでは未実施)。",
       "reference_event": "E20260623_664174251c911",
-      "created_at": "2026-06-23T07:17:59.567362"
+      "created_at": "2026-06-23T07:17:59.567362",
+      "updated_at": "2026-07-05T10:52:47.987964"
     },
     {
       "id": "DRY-RUN-001-TEST-CASE-SPEC",
@@ -1308,8 +1309,8 @@
       "created_at": "2026-07-02T08:03:10.857785",
       "updated_at": "2026-07-02T08:10:45.019374",
       "completed_at": "2026-07-02"
-    }
-    ,{
+    },
+    {
       "id": "TODO_414",
       "title": "watchdog_mocka.py x AUTO_SEAL_50EVT 同時実行時のgit書き込み競合リスク",
       "status": "未着手",

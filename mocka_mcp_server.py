@@ -63,6 +63,10 @@ FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
 AUTO_LOG_CSV   = BASE / "data" / "claude_sessions.csv"
 DB_PATH        = BASE / "data" / "mocka_events.db"
 
+# TODO_361: Decision Ledger Reconnection — DECISION_LEDGER_SCHEMA_v1.md(docs/mocka3/)準拠
+DECISIONS_DIR       = BASE / "data" / "decisions"
+DECISION_LEDGER_PATH = DECISIONS_DIR / "decision_ledger.jsonl"
+
 # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ設定
 GATE_URL        = "http://localhost:5000/api/gate/event"
 SESSION_ID      = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -242,6 +246,47 @@ def save_todo(data):
     tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     os.replace(tmp_path, TODO_PATH)
 
+# ===== TODO_361: Decision Ledger（DECISION_LEDGER_SCHEMA_v1.md準拠） =====
+DECISION_STATUS_ENUM = {"Active", "Superseded", "Withdrawn"}
+
+def _read_decisions():
+    """decision_ledger.jsonlの全行を読む（append-only。同一decision_idの複数行は
+    末尾のものを最新状態として扱う。壊れた行はスキップし件数のみ数える）。"""
+    if not DECISION_LEDGER_PATH.exists():
+        return [], 0
+    records = []
+    broken = 0
+    with open(DECISION_LEDGER_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except Exception:
+                broken += 1
+    return records, broken
+
+def _next_decision_id():
+    """DC_YYYYMMDD_NNN形式で当日分の次番号を採番する（欠番可・重複禁止）。"""
+    today = datetime.date.today().strftime("%Y%m%d")
+    records, _ = _read_decisions()
+    prefix = f"DC_{today}_"
+    used = [
+        int(r["decision_id"][len(prefix):])
+        for r in records
+        if isinstance(r.get("decision_id"), str) and r["decision_id"].startswith(prefix)
+        and r["decision_id"][len(prefix):].isdigit()
+    ]
+    n = (max(used) + 1) if used else 1
+    return f"{prefix}{n:03d}"
+
+def _append_decision(record):
+    """decision_ledger.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+    DECISIONS_DIR.mkdir(parents=True, exist_ok=True)
+    with open(DECISION_LEDGER_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
 TOOLS = [
     {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
@@ -259,7 +304,10 @@ TOOLS = [
     {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}},
     {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。envを明示しない場合は必ずtest環境を参照する(deny-by-default)。","inputSchema":{"type":"object","properties":{"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。本番を見る場合は明示的にprodを指定すること。"}},"required":[]}},
     {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。envを明示しない場合は必ずtest環境に書き込む(deny-by-default、本番誤爆防止)。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データへ書き込み, test=検証用データへ書き込み(既定)。本番へ書く場合は明示的にprodを指定すること。"}},"required":["layer","record"]}},
-    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}}
+    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}},
+    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
+    {"name":"mocka_decision_get","description":"decision_idを指定してDecision Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string"}},"required":["decision_id"]}},
+    {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}}
 ]
 
 def execute_tool(name, args):
@@ -683,6 +731,91 @@ def execute_tool(name, args):
             result = registry_store.get_current_state(target_id, env=env)
             auto_log(name, args, f"current_state computed (env={env})" if result else f"not found (env={env})")
             return json.dumps(result if result else {"error": "not found"}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_decision_write":
+            title    = args.get("title", "").strip()
+            context  = args.get("context", "").strip()
+            decision = args.get("decision", "").strip()
+            rationale = args.get("rationale", "").strip()
+            impact   = args.get("impact", "").strip()
+            approved_by = args.get("approved_by", "").strip()
+            alternatives = args.get("alternatives", [])
+            if not all([title, context, decision, rationale, impact, approved_by]):
+                return json.dumps({"error": "title/context/decision/rationale/impact/approved_by は全て必須(DECISION_LEDGER_SCHEMA_v1.md準拠)"}, ensure_ascii=False)
+            if not isinstance(alternatives, list) or not alternatives:
+                return json.dumps({"error": "alternatives は1件以上の配列が必須(却下案が無い場合は option:N/A の1件を入れる)"}, ensure_ascii=False)
+            for alt in alternatives:
+                if not isinstance(alt, dict) or "option" not in alt or "rejected_reason" not in alt:
+                    return json.dumps({"error": "alternatives の各要素は option/rejected_reason を持つオブジェクトである必要がある"}, ensure_ascii=False)
+            status = args.get("status", "Active")
+            if status not in DECISION_STATUS_ENUM:
+                return json.dumps({"error": f"invalid status: {status!r}. allowed: {sorted(DECISION_STATUS_ENUM)}"}, ensure_ascii=False)
+            decision_id = args.get("decision_id", "").strip() or _next_decision_id()
+            approved_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            record = {
+                "decision_id":       decision_id,
+                "title":             title,
+                "context":           context,
+                "alternatives":      alternatives,
+                "decision":          decision,
+                "rationale":         rationale,
+                "impact":            impact,
+                "related_events":    args.get("related_events", []),
+                "related_documents": args.get("related_documents", []),
+                "approved_by":       approved_by,
+                "approved_at":       approved_at,
+                "supersedes":        args.get("supersedes") or None,
+                "superseded_by":     None,
+                "status":            status,
+            }
+            _append_decision(record)
+            # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
+            # what_type=DECISION_MADEのenum拡張はapp.py側GATEのスコープ外のため今回は追加しない）
+            event_id = None
+            try:
+                gate_payload = {
+                    "who_actor":       args.get("approved_by", _DEFAULT_ACTOR),
+                    "who_role":        "executor",
+                    "who_session":     SESSION_ID,
+                    "what_type":       "claude_mcp",
+                    "what_title":      f"[DECISION_MADE] {decision_id}: {title}",
+                    "where_path":      "mocka_mcp_server.py",
+                    "where_component": "mcp_caliber",
+                    "why_purpose":     rationale[:80] or title,
+                    "how_trigger":     "mcp_tool_call",
+                    "after_state":     decision[:200] or title,
+                    "description":     f"decision_id={decision_id}\ncontext={context}\ndecision={decision}\nrationale={rationale}\nimpact={impact}",
+                    "tags":            f"decision_ledger,{decision_id},{status}",
+                }
+                r = requests.post(GATE_URL, json=gate_payload, timeout=5)
+                if r.status_code == 201:
+                    event_id = r.json().get("event_id")
+            except Exception as _companion_err:
+                print(f"[MCP] mocka_decision_write companion event failed: {_companion_err}", flush=True)
+            auto_log(name, args, f"decision written {decision_id}")
+            return json.dumps({"status": "ok", "decision_id": decision_id, "event_id": event_id}, ensure_ascii=False)
+
+        elif name == "mocka_decision_get":
+            decision_id = args.get("decision_id", "")
+            records, _ = _read_decisions()
+            matches = [r for r in records if r.get("decision_id") == decision_id]
+            auto_log(name, args, "found" if matches else "not found")
+            return json.dumps(matches[-1] if matches else {"error": "not found"}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_decision_list":
+            status_filter = args.get("status", "")
+            records, broken = _read_decisions()
+            latest = {}
+            for r in records:
+                did = r.get("decision_id")
+                if did:
+                    latest[did] = r  # 後勝ち(append-only前提で末尾が最新)
+            result = list(latest.values())
+            if status_filter:
+                result = [r for r in result if r.get("status") == status_filter]
+            result.sort(key=lambda r: r.get("decision_id", ""), reverse=True)
+            auto_log(name, args, f"{len(result)} decisions (broken_lines={broken})")
+            return json.dumps({"count": len(result), "broken_lines": broken, "decisions": result}, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})
 
