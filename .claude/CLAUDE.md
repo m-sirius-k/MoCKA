@@ -185,6 +185,38 @@ MOCKA_TODO.jsonのstatusフィールドは、対象が「通常タスク」か�
 ✅ 通常TODO・Architecture Contract系のいずれも、statusを変更する作業は通常のファイル変更と同等に扱い、必ずCHANGE_START/CHANGE_DONEで記録する
 　（根拠: 2026-06-23 09:48の一括再分類（commit ad198bc8c）がこの記録を経由せずに行われた記録義務逸脱インシデントがTODO_384調査で発覚。再発防止のため明文化）
 
+### 【必須】Decision Ledgerへの記録義務（TODO_361準拠）
+
+Human Gate Reviewで条件付き承認等の分岐判定が出た場合、あるいは制度上の
+裁定（採用/却下/保留/凍結等）を行った場合は、Markdown文書やmocka_write_event
+への記述だけで終わらせず、必ずmocka_decision_write()でDecision Ledger
+（data/decisions/decision_ledger.jsonl）へも記録すること。
+
+❌ 裁定内容をMarkdown文書・イベント記述のみに残し、Decision Ledgerへの記録を省略すること
+✅ 裁定（採用/却下/保留）が確定した時点で、alternatives（却下案）・rationale（根拠）を
+   含めてmocka_decision_write()を呼ぶこと
+
+背景: DECISION_LEDGER_SCHEMA_v1.md（docs/mocka3/、2026-06-15）は設計済みだった
+にもかかわらず、Human Gate Review判断がMarkdown記述のみに留まり実装反映
+されない状態が2026-06-23のDecision Ledger Bypassインシデント（TODO_361）として
+発覚した。TODO_361にてmocka_mcp_server.pyへの再接続を完了した（2026-07-05）。
+
+### 【必須】実行証跡の定義 — 書込操作の成立条件（Execution Integrity）
+
+書込系ツール（mocka_write_event/mocka_decision_write/mocka_integrity_write/
+mocka_update_todo等）が{"status":"ok"}を返したことだけをもって、その変更が
+成立したとみなしてはならない。
+
+❌ ツールの戻り値がokだったことのみを根拠に「記録完了」「反映完了」と報告すること
+✅ 書込直後に、対応する取得系ツール（mocka_read_event/mocka_decision_get/
+   mocka_integrity_get/mocka_get_todo等）で読み戻し、実際にデータが
+   反映されていることを確認してから完了とみなすこと
+
+背景: 2026-07-05、Integrity Classification機構の検証時に、実際には実行
+されていないwrite/get/list結果が「成立した」ものとして提示される事例
+（ツール実行の成功報告と実際のデータ状態が一致しない状態）が発生した。
+「ツールが動くこと」と「状態が変わったこと」は別の確認事項である。
+
 ### MoCKAの三要素（絶対に忘れるな）
 
 * Structure（構造）: システムで縛る。信頼しない

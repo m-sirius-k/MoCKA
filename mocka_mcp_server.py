@@ -19,6 +19,7 @@ if sys.stderr.encoding != 'utf-8':
 
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
 sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
+from event_recency import valid_when_ts_clause  # noqa: E402
 try:
     from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
     _governance = GovernancePipeline()
@@ -587,23 +588,25 @@ def execute_tool(name, args):
             try:
                 if category:
                     rows = con.execute(
-                        """SELECT event_id, when_ts, title, short_summary, free_note
+                        f"""SELECT event_id, when_ts, title, short_summary, free_note
                            FROM events
                            WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
                                   OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
                                   OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
                                   OR free_note LIKE ?)
+                             AND {valid_when_ts_clause()}
                            ORDER BY when_ts DESC LIMIT ?""",
                         (f"%{category}%", limit)
                     ).fetchall()
                 else:
                     rows = con.execute(
-                        """SELECT event_id, when_ts, title, short_summary, free_note
+                        f"""SELECT event_id, when_ts, title, short_summary, free_note
                            FROM events
                            WHERE (what_type LIKE '%INCIDENT%' OR what_type LIKE '%DANGER%'
                                   OR what_type LIKE '%VIOLATION%' OR what_type LIKE '%MATAKA%'
                                   OR title LIKE '%INCIDENT%' OR title LIKE '%またか%'
                                   OR title LIKE '%CLAIM%')
+                             AND {valid_when_ts_clause()}
                            ORDER BY when_ts DESC LIMIT ?""",
                         (limit,)
                     ).fetchall()
@@ -697,6 +700,7 @@ def execute_tool(name, args):
                     f"WHERE {integrity_filter} "
                     "AND (LOWER(risk_level) IN ('incident','danger','critical','high')) "
                     "AND (title LIKE ? OR short_summary LIKE ? OR event_id LIKE ?) "
+                    f"AND {valid_when_ts_clause()} "
                     "ORDER BY when_ts DESC LIMIT ?",
                     (f"%{query}%", f"%{query}%", f"%{query}%", limit)
                 )
@@ -705,6 +709,7 @@ def execute_tool(name, args):
                     "SELECT event_id, when_ts, title, short_summary, risk_level FROM events "
                     f"WHERE {integrity_filter} "
                     "AND LOWER(risk_level) IN ('incident','danger','critical','high') "
+                    f"AND {valid_when_ts_clause()} "
                     "ORDER BY when_ts DESC LIMIT ?",
                     (limit,)
                 )
