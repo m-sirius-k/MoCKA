@@ -1,8 +1,9 @@
 # Copilot Studio Custom Connector 登録手順書
 
-作成日: 2026-06-18
-対応TODO: TODO_267
-前提条件: TODO_266 (Named Tunnel恒久化) 完了後に本登録を実施
+作成日: 2026-06-18(仕様書・手順書としてTODO_267で完了)
+更新日: 2026-07-06(実登録作業はTODO_417として管理、DC_20260706_005/006参照)
+対応TODO: TODO_267(仕様書・手順書整備、完了) / TODO_417(実登録・接続確認)
+前提条件: TODO_266 (Named Tunnel恒久化) は2026-07-06完了済み。TODO_415(auth.py実認証キー化)も完了済み
 
 ---
 
@@ -12,17 +13,16 @@ MoCKA Gateway API (`gateway/openapi.yaml`) を Copilot Studio の Custom Connect
 登録後は Copilot Studio から MoCKA の知識基盤へのアクセス・記録が可能になる。
 
 - API仕様: OpenAPI 3.0.3
-- 認証方式: API Key (`X-MoCKA-Key` ヘッダー)
-- 本番URL: `https://mocka-api.nsjpkimura-mocka.workers.dev`
-- Tunnel URL: TODO_266完了後に確定 (現時点では未定)
+- 認証方式: API Key (`X-MoCKA-Key` ヘッダー)。TODO_415によりfail-closed化済み、実キーは`.env`の`MOCKA_API_KEYS`を使用
+- 本番URL: `https://gateway.nsjp.org` (Cloudflare Tunnel経由、TODO_266で確定)
 
 ---
 
 ## 前提確認
 
-1. Named Tunnel が恒久稼働中であること (`cloudflared tunnel list` で確認)
+1. Named Tunnel が恒久稼働中であること (`cloudflared tunnel list` で確認、TODO_266完了済み)
 2. `gateway/openapi.yaml` が最新状態であること
-3. MoCKA API Key が手元にあること
+3. MoCKA API Key が手元にあること(`.env`の`MOCKA_API_KEYS`)
 
 ---
 
@@ -34,11 +34,9 @@ MoCKA Gateway API (`gateway/openapi.yaml`) を Copilot Studio の Custom Connect
 
 ```yaml
 servers:
-  - url: https://mocka-api.nsjpkimura-mocka.workers.dev
-    description: Production (Cloudflare Workers)
+  - url: https://gateway.nsjp.org
+    description: Production (Cloudflare Tunnel, TODO_266)
 ```
-
-Named Tunnel を使う場合はここを Tunnel の公開URLに変更する。
 
 ### Step 2: Copilot Studio へのアクセス
 
@@ -78,28 +76,32 @@ Named Tunnel を使う場合はここを Tunnel の公開URLに変更する。
 
 ---
 
-## エンドポイント一覧 (openapi.yaml 準拠)
+## エンドポイント一覧 (openapi.yaml 準拠、2026-07-06実パスに修正)
 
 | メソッド | パス | 説明 |
 |---------|------|------|
-| GET | /context | MoCKA コンテキスト取得 |
-| GET | /public/todo | TODOリスト取得 |
-| POST | /agent/mocka_write_event | イベント記録 |
-| GET | /public/events | 最新イベント取得 |
-| GET | /health | ヘルスチェック |
+| GET | /api/v1/health | ヘルスチェック(認証不要) |
+| GET | /api/v1/phase | 現在フェーズ取得(認証不要) |
+| GET | /api/v1/context | MoCKA コンテキスト取得 |
+| GET | /api/v1/todo | アクティブTODO取得 |
+| GET | /api/v1/essence | MoCKA本質(lever_essence)取得 |
+| GET | /api/v1/last_event | 最新イベント1件取得 |
+| GET | /api/v1/summary | 200字圧縮サマリー取得 |
+| POST | /api/v1/event | イベント記録 |
 
 ---
 
 ## トラブルシューティング
 
-- 401 Unauthorized: API Key が正しくヘッダーに設定されているか確認
-- 503 Service Unavailable: MoCKA サーバー (localhost:5000) またはTunnelが停止していないか確認
+- 401 Unauthorized: API Key が正しくヘッダーに設定されているか確認(ヘッダー未指定時は常に401)
+- 403 Forbidden: API Key が`.env`の`MOCKA_API_KEYS`と一致しているか確認(TODO_415でfail-closed化済み、誤ったキーは拒否される)
+- 503 Service Unavailable: MoCKA Gateway (localhost:5010) またはTunnelが停止していないか確認
 - openapi.yaml の validation error: `servers[0].url` のプロトコルが `https` であることを確認
 
 ---
 
 ## 注意事項
 
-- 本登録は TODO_266 (Named Tunnel 恒久化) 完了後に実施すること
+- TODO_266 (Named Tunnel 恒久化)・TODO_415(auth.py実認証キー化)はいずれも完了済み(2026-07-06)
 - Tunnel URL 変更時は openapi.yaml の `servers[0].url` も同期更新が必要
 - API Key は環境変数またはキーボルトで管理し、コードに直接記載しないこと

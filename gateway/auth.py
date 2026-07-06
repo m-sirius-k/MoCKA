@@ -44,7 +44,7 @@ def require_api_key():
     key = request.headers.get("X-MoCKA-Key", "").strip()
     if not key:
         abort(401, "X-MoCKA-Key header missing")
-    if VALID_KEYS and key not in VALID_KEYS:
+    if key not in VALID_KEYS:
         abort(403, "Invalid API key")
 
     if request.method == "POST" and request.path in HMAC_PATHS:

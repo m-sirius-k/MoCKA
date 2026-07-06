@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-05",
+    "updated": "2026-07-06",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -302,19 +302,6 @@
       "note": "一時停止。再開指示待ち。",
       "reference_event": "",
       "created_at": "2026-06-06T14:53:20.918597"
-    },
-    {
-      "id": "TODO_266",
-      "title": "Cloudflare Tunnel 恒久化 — Named Tunnel設定",
-      "status": "保留",
-      "priority": "高",
-      "category": "Cloudflare",
-      "description": "現在の一時URL(pharmacy-governing-whale-two.trycloudflare.com)はPC再起動で変わる。cloudflaredのNamed Tunnel設定で固定URLに変更する。mocka-gateway.nsjpkimura-mocka.workers.dev等の固定サブドメインに紐付け。",
-      "assigned_to": "Claude",
-      "note": "2026-06-18 くろこ設定ファイル作成完了。C:\\Users\\sirok\\.cloudflared\\config.yml(ingressテンプレート) + cloudflare\\setup_named_tunnel.bat(手順スクリプト)作成済み。実トンネル作成にはcloudflared tunnel login(ブラウザ認証)が必要。博士手動実施後TUNNEL_IDをconfig.ymlに記入し、MoCKA-START.batのngrok行をcloudflared行に差し替えること。commit e675e3de9",
-      "reference_event": "",
-      "created_at": "2026-06-09T20:28:44.749865",
-      "updated_at": "2026-06-18T11:11:55.538697"
     },
     {
       "id": "TODO_325",
@@ -868,6 +855,42 @@
       "reference_event": "E20260705_732301073f4bd",
       "created_at": "2026-07-05T12:55:50.247256",
       "updated_at": "2026-07-05T12:59:23.445559"
+    },
+    {
+      "id": "TODO_416",
+      "title": "app.pyがload_dotenv()を呼んでおらず、orchestra_context_bridge.py経由のGateway連携が機能していない",
+      "status": "未着手",
+      "priority": "中",
+      "category": "bug",
+      "description": "TODO_415(auth.py実認証キー化)のクライアント棚卸し中に偶然発見。app.py(COMMAND CENTER、port:5000)は.envを一切読み込んでおらず、subprocess.Popenで起動するtools/mocka_orchestra_v10.py経由でimportされるPlanningCaliber/workshop/Orchestra_Project/orchestra/orchestra_context_bridge.pyのMOCKA_API_KEY(Gateway連携用)が常に空文字列になっている。結果、X-MoCKA-Keyヘッダーが送られず401でフォールバック(元プロンプトをそのまま返す)し続けている。機能自体は壊れていないが、意図されたGatewayコンテキスト注入機能は一度も動作したことがないと推測される。対応するにはapp.pyの先頭にload_dotenv()を追加する必要がある(gateway.pyで実施したものと同様のパターン)。",
+      "assigned_to": "Claude",
+      "note": "認証強化(TODO_415)とは独立した既存課題として記録。TODO_415の変更範囲には含めない。きむら博士の裁定により、今回は修正せず別TODOとして管理する。",
+      "reference_event": "E20260706_6773801142aad",
+      "created_at": "2026-07-06T09:39:13.968355"
+    },
+    {
+      "id": "TODO_417",
+      "title": "Copilot Studio Custom Connector実登録・接続確認",
+      "status": "進行中",
+      "priority": "中",
+      "category": "Copilot",
+      "description": "TODO_267(2026-06-18完了、仕様書・手順書整備のみ)を受けた実作業。openapi.yamlのservers.urlをhttps://gateway.nsjp.orgへ更新し、Copilot Studioへの実登録・接続確認・認証確認・動作確認を行う。着手前にTODO_415と同様の棚卸しゲート(openapi.yaml/servers.urlの利用者棚卸し)を実施する。",
+      "assigned_to": "Claude",
+      "note": "2026-07-06着手。DC_20260706_005によりTODO_267とは別管理。作業方針: (1)openapi.yaml/servers.urlの利用者棚卸し(Copilot Studio・将来クライアント・テストツール・ドキュメント参照) (2)ゲート確認 (3)servers.url更新 (4)OpenAPI仕様の整合性確認 (5)Copilot Studio登録 (6)接続・呼び出し成功の実地確認。",
+      "reference_event": "E20260706_1409861878484",
+      "created_at": "2026-07-06T09:53:04.356194"
+    },
+    {
+      "id": "TODO_418",
+      "title": "gateway/cloudflare/worker.jsのBACKEND定数が旧trycloudflare.com URLのまま",
+      "status": "未着手",
+      "priority": "低",
+      "category": "Cloudflare",
+      "description": "TODO_417(Copilot Studio実登録)のOpenAPI利用者棚卸し中に発見。worker.jsのBACKEND定数(フォールバック値)が、TODO_266完了前の一時トンネルURL(https://pharmacy-governing-whale-two.trycloudflare.com、既に存在しない)のままになっている。env.MOCKA_BACKEND_URL(Cloudflare Workers環境変数)で上書き可能だが、未設定の場合はこの死んだURLにフォールバックする。tools/mocka-bridge/extension/config.jsがworker.js経由でgatewayにアクセスする経路(X-MoCKA-Sig方式、TODO_415/417のX-MoCKA-Key方式とは別)に影響する可能性がある。",
+      "assigned_to": "Claude",
+      "note": "TODO_417のスコープ外として独立管理。TODO_417はCopilot StudioからWorkerを経由せずgateway.nsjp.orgへ直接接続する設計のため、本件による直接的な支障はない。対応時はenv.MOCKA_BACKEND_URLをhttps://gateway.nsjp.orgに設定するか、BACKEND定数自体を更新する。",
+      "reference_event": "E20260706_126429942a04d",
+      "created_at": "2026-07-06T09:55:26.517476"
     }
   ],
   "orchestra_handoff": {
@@ -1335,6 +1358,34 @@
       "created_at": "2026-06-23T07:17:59.567362",
       "updated_at": "2026-07-05T12:13:34.333778",
       "completed_at": "2026-07-05"
+    },
+    {
+      "id": "TODO_266",
+      "title": "Cloudflare Tunnel 恒久化 — Named Tunnel設定",
+      "status": "完了",
+      "priority": "高",
+      "category": "Cloudflare",
+      "description": "現在の一時URL(pharmacy-governing-whale-two.trycloudflare.com)はPC再起動で変わる。cloudflaredのNamed Tunnel設定で固定URLに変更する。mocka-gateway.nsjpkimura-mocka.workers.dev等の固定サブドメインに紐付け。",
+      "assigned_to": "Claude",
+      "note": "2026-07-06完了: 完了条件チェックリスト6項目のうち5項目を実地確認、Relay接続確認のみ別スコープとして保留し、TODO_266自体は完了とする。\n\n最終確認結果:\n1. NS切替: 達成済み(chris.ns.cloudflare.com/kinsley.ns.cloudflare.com)\n2. health応答: gateway.nsjp.org/api/v1/health・mcp.nsjp.org/healthとも200 OK確認済み\n3. 認証動作: ヘッダー無し=401、既知のMOCKA_API_KEYS未設定によりダミー値では通過(想定通りの暫定挙動)\n4. Gateway経由MCP反映: テストイベント投稿(event_id: E20260706_628252981e081)がmocka_list_eventsから確認できた(_source=buffered、event_buffer/Gate経由の反映を確認)\n5. GPT通信: adapter_gpt.handle_function_call()をMOCKA_GATEWAY_URL=https://gateway.nsjp.org設定で実行し、テストイベント(event_id: E20260706_6706445047e28、who_actor=OpenAI/GPT-test)がmocka_list_eventsから確認できた\n6. 記録: 上記全てmocka_write_eventで記録済み。mocka_get_incidentsで新規インシデント無しを確認済み\n\n未対応のまま残す事項(TODO_266のスコープ外、DC_20260706_001で明文化済み):\n- Relay(Chrome拡張)とgateway.nsjp.orgの接続経路確認 -> 別途スコープ確認後に着手\n- auth.pyのMOCKA_API_KEYS/MOCKA_HMAC_SECRET未設定(実質認証なし状態)への実キー発行 -> 本番運用前の別課題として記録のみ\n- adapter_gpt.pyのGATEWAY_BASEデフォルトlocalhost -> 外部GPTから使う場合はMOCKA_GATEWAY_URL環境変数の設定が必要(今回はテストで直接指定して検証したのみ、恒久設定は別途)\n- cloudflaredのWindowsサービス常駐化自体は完了済み(--tokenモード稼働中)だが、MoCKA-START.batへの明示的な組み込み記述は未確認\n\n参照: gateway_verification_checklist.md、DC_20260706_001(スコープ境界決定)",
+      "reference_event": "",
+      "created_at": "2026-06-09T20:28:44.749865",
+      "updated_at": "2026-07-06T09:12:31.055093",
+      "completed_at": "2026-07-06"
+    },
+    {
+      "id": "TODO_415",
+      "title": "auth.py実認証キー化 - 暫定認証を本番運用可能な状態へ移行",
+      "status": "完了",
+      "priority": "高",
+      "category": "security",
+      "description": "外部公開済みのgateway.nsjp.org(TODO_266完了)の認証が、MOCKA_API_KEYS未設定により実質誰でも通る暫定状態のままである。本番運用可能な実認証キー方式への移行を行う。今回のフェーズは調査・設計整理・実装案・検証計画の作成までとし、コード変更は人間承認後に別タスクとして実施する。Relay/OpenAPI/Copilot登録等は対象外。",
+      "assigned_to": "Claude",
+      "note": "2026-07-06完了。承認手順(APIキー生成→.env反映→クライアント棚卸し→ゲート3c→auth.py fail-closed化→Gateway再起動→回帰試験7項目)を全て実施。\n\n実施内容:\n1. secrets.token_urlsafe(32)でAPIキー生成、.envのMOCKA_API_KEYSに追加\n2. gateway.pyにload_dotenv()を追加(auth/adapter_gpt等のimportより前に配置)。mocka_mcp_server.pyと同じ引数無しパターンで親ディレクトリの.envを自動検出することを確認\n3. クライアント棚卸し完了。adapter_*.py(gateway.pyと同一プロセス)=対応不要、adapter_gpt.py単体HTTP関数=テスト用途のみ、orchestra_context_bridge.py(商用Orchestraとは無関係の別ツール、tools/mocka_orchestra_v10.py経由)=app.pyがload_dotenv()未実装のため現状も空キーで401フォールバック中、fail-closed化前後で挙動不変と判明。mocka-bridge拡張=別認証方式で無関係\n4. ゲート(3c)通過をきむら博士が承認\n5. auth.py:47の`if VALID_KEYS and key not in VALID_KEYS:`を`if key not in VALID_KEYS:`に変更(フォールバック完全撤廃)。py_compile OK、UTF-8検証OK\n6. gateway.py(port:5010)プロセス再起動完了\n7. 回帰試験7項目全て成功(https://gateway.nsjp.org経由で実施): ヘッダー無し=401、無効キー=403(修正確認)、正キー=成功、health=正常、イベント投稿=成功、MCP反映確認済み、GPT通信確認済み\n\n新規インシデント無し。副次的に発見したapp.py側の既存課題(orchestra_context_bridge.py連携が機能していない)はTODO_416として独立記録済み、本TODOの変更範囲には含めていない。\n\n参照: auth_hardening_proposal_TODO_415.md、DC_20260706_003(案A承認)、DC_20260706_004(完了裁定、別途記録予定)",
+      "reference_event": "E20260706_1921644072722",
+      "created_at": "2026-07-06T09:20:07.906448",
+      "updated_at": "2026-07-06T09:43:38.087559",
+      "completed_at": "2026-07-06"
     }
   ]
 }

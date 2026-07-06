@@ -10,8 +10,8 @@ info:
     email: nsjpkimura@gmail.com
 
 servers:
-  - url: https://mocka-api.nsjpkimura-mocka.workers.dev
-    description: Production (Cloudflare Workers)
+  - url: https://gateway.nsjp.org
+    description: Production (Cloudflare Tunnel, TODO_266)
 
 security:
   - ApiKeyAuth: []
