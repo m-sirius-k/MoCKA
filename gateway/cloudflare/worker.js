@@ -13,7 +13,7 @@
 //   秘密鍵: Cloudflare環境変数 MOCKA_HMAC_SECRET
 //   有効時間: ±5分（リプレイ攻撃防止）
 
-const BACKEND         = "https://pharmacy-governing-whale-two.trycloudflare.com"; // fallback
+const BACKEND         = "https://gateway.nsjp.org"; // fallback (Named Tunnel, TODO_266)
 const RATE_LIMIT_WINDOW  = 60_000;   // 1分
 const RATE_LIMIT_MAX     = 60;       // 最大60リクエスト/分
 const HMAC_TIMESTAMP_TTL = 300_000;  // 5分（リプレイ防止ウィンドウ）
