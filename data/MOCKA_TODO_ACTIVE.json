@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-06",
+    "updated": "2026-07-07",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -871,14 +871,15 @@
     {
       "id": "TODO_417",
       "title": "Copilot Studio Custom Connector実登録・接続確認",
-      "status": "進行中",
+      "status": "保留",
       "priority": "中",
       "category": "Copilot",
       "description": "TODO_267(2026-06-18完了、仕様書・手順書整備のみ)を受けた実作業。openapi.yamlのservers.urlをhttps://gateway.nsjp.orgへ更新し、Copilot Studioへの実登録・接続確認・認証確認・動作確認を行う。着手前にTODO_415と同様の棚卸しゲート(openapi.yaml/servers.urlの利用者棚卸し)を実施する。",
       "assigned_to": "Claude",
-      "note": "2026-07-06着手。DC_20260706_005によりTODO_267とは別管理。作業方針: (1)openapi.yaml/servers.urlの利用者棚卸し(Copilot Studio・将来クライアント・テストツール・ドキュメント参照) (2)ゲート確認 (3)servers.url更新 (4)OpenAPI仕様の整合性確認 (5)Copilot Studio登録 (6)接続・呼び出し成功の実地確認。",
+      "note": "[2026-07-07 保留裁定] 状態: External Dependency(Microsoft Power Platform Premiumライセンス待ち)。工程(1)-(4)は完了済み(棚卸しゲート・servers.url更新・整合性確認、DC_20260706_006/E20260706_459395889a270)。工程(5)Copilot Studio実登録の着手時、Copilot Studioで「Custom connectors」メニューが見当たらず、Power Apps側で「データへのアクセスが完全には許可されていない」と表示される事象が発生。調査の結果、Custom Connector作成・利用はPower Apps/Power Automate Premium(per-user)ライセンスを前提とする可能性が高いと判明(2026年1月にPer App Plan廃止、per-user Premiumへ移行済み)。GPT/Gemini/Perplexityは既にadapter実装・接続済みでMoCKAのAIアダプタ設計自体は成立しているため、Copilot接続はアーキテクチャの正当性証明に必須ではないと判断。DC_20260707_001参照。Premiumライセンス導入が具体化した時点で工程(5)から再開する。次アクション: ライセンス確認(要否判断)→再開判断はきむら博士。",
       "reference_event": "E20260706_1409861878484",
-      "created_at": "2026-07-06T09:53:04.356194"
+      "created_at": "2026-07-06T09:53:04.356194",
+      "updated_at": "2026-07-07T07:03:13.616758"
     },
     {
       "id": "TODO_418",
