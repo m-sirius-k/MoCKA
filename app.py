@@ -12,6 +12,10 @@ import sys
 import requests
 from datetime import datetime
 from flask import Flask, send_from_directory, jsonify, request
+from dotenv import load_dotenv
+
+load_dotenv()
+
 if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 if sys.stderr.encoding != 'utf-8':
