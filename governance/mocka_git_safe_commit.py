@@ -89,10 +89,15 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
         commit_hash: str|None,      # commit後のHEADハッシュ(commit時のみ)
         pushed: bool,               # push実行有無
         error: str|None,            # エラー発生時のメッセージ
+        post_commit_files: list[str],     # commit直後にgit showで確認した実際の構成ファイル
+        post_commit_violation: list[str], # 上記のうちis_core_system_file()に該当するもの
+                                           # (非空の場合、呼び出し元はCHANGE_DONEではなく
+                                           # INCIDENT_CREATE相当として扱うこと)
     )
     """
     result = {"committed": False, "excluded": [], "commit_hash": None,
-              "pushed": False, "error": None}
+              "pushed": False, "error": None,
+              "post_commit_files": [], "post_commit_violation": []}
     try:
         if paths:
             _run(["git", "add"] + list(paths), root)
@@ -104,7 +109,24 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
         core_files = [f for f in staged_files if is_core_system_file(f)]
 
         if core_files and not human_gate_override_event_id:
-            _run(["git", "restore", "--staged", "--"] + core_files, root)
+            restore_res = _run(["git", "restore", "--staged", "--"] + core_files, root)
+            if restore_res.returncode != 0:
+                result["error"] = (f"git restore --staged failed for core system file(s), "
+                                   f"commit aborted: {restore_res.stderr.strip()}")
+                print(f"[mocka_git_safe_commit] ERROR: {result['error']}")
+                return result
+
+            # Post-condition verification (E20260708_6613941345364): don't trust the
+            # restore returncode alone, re-read the staged set to confirm exclusion
+            # actually took effect before proceeding to commit.
+            recheck = _run(["git", "diff", "--cached", "--name-only"], root)
+            still_staged = [f for f in recheck.stdout.splitlines() if is_core_system_file(f)]
+            if still_staged:
+                result["error"] = (f"core system file(s) still staged after restore, "
+                                   f"commit aborted: {still_staged}")
+                print(f"[mocka_git_safe_commit] ERROR: {result['error']}")
+                return result
+
             result["excluded"] = core_files
             print(f"[mocka_git_safe_commit] {len(core_files)} core system file(s) "
                   f"excluded, pending Human Gate approval:")
@@ -137,6 +159,35 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
         result["committed"] = True
         hash_res = _run(["git", "log", "--format=%H", "-1"], root)
         result["commit_hash"] = hash_res.stdout.strip()
+
+        # Standardized post-commit verification (all safe commits, per Phase 4
+        # security patch step3): independently re-inspect the actual committed
+        # tree (not just the pre-commit staged set) for core system files that
+        # should never have landed here. This is a second, independent check
+        # in addition to the pre-commit exclusion above.
+        show_res = _run(
+            ["git", "show", "--name-only", "--format=", result["commit_hash"]], root
+        )
+        committed_files = [f for f in show_res.stdout.splitlines() if f.strip()]
+        result["post_commit_files"] = committed_files
+        core_in_commit = [f for f in committed_files if is_core_system_file(f)]
+        # Core file presence is only a violation when it wasn't explicitly
+        # authorized via human_gate_override_event_id for this call. Authorized
+        # inclusions are expected and already carry the event_id in the commit
+        # message (see the override branch above).
+        result["post_commit_violation"] = (
+            [] if human_gate_override_event_id else core_in_commit
+        )
+        if result["post_commit_violation"]:
+            print(f"[mocka_git_safe_commit] POST-COMMIT VIOLATION: core system "
+                  f"file(s) present in commit {result['commit_hash'][:7]} despite "
+                  f"exclusion (no override was given for this call): "
+                  f"{result['post_commit_violation']}. Caller must treat this as "
+                  f"an integrity incident, not a normal CHANGE_DONE.")
+        else:
+            print(f"[mocka_git_safe_commit] post-commit check OK: "
+                  f"{len(committed_files)} file(s) in {result['commit_hash'][:7]}, "
+                  f"no core system file(s) present")
 
         if push:
             push_res = _run(["git", "push", "origin", "main"], root)

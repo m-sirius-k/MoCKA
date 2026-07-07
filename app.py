@@ -2072,11 +2072,38 @@ def auto_audit_loop():
             if count - _last_event_count[0] >= 50 and not _seal_running[0]:
                 _seal_running[0] = True
                 try:
-                    seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
-                    if seal_script.exists():
-                        subprocess.run(["python", str(seal_script), "AUTO_SEAL_50EVT"],
-                                       cwd=str(ROOT_DIR), timeout=30)
-                        print(f"[AUTO-AUDIT] 50件seal完了")
+                    # TODO_370/371, IC_20260707_006是正(監査官R01承認A案):
+                    # anchor_update.pyの自動実行はHuman Gateを迂回するため廃止。
+                    # ここではPENDINGイベントを記録して停止するのみとし、実際の
+                    # seal実行はきむら博士の明示指示(human_gate_override_event_id
+                    # 付与)による手動実行でのみ行う。自動条件によるAPPROVE相当の
+                    # 生成は行わない(require_human_gate、自動承認機構ではない)。
+                    delta = count - _last_event_count[0]
+                    get_buffer().push({
+                        "event_id": f"AUTO_SEAL_PENDING_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                        "when": datetime.now().isoformat(),
+                        "who_actor": "system:auto_audit_loop",
+                        "what_type": "AUTO_SEAL_PENDING",
+                        "where_component": "app.py:auto_audit_loop",
+                        "where_path": "scripts/ledger/anchor_update.py",
+                        "why_purpose": "event_count差分50到達によるseal要求。自動実行はしない(Human Gate迂回防止、TODO_370/371是正)。",
+                        "how_trigger": f"event_count={count} (delta={delta})",
+                        "channel_type": "internal",
+                        "lifecycle_phase": "in_operation",
+                        "risk_level": "normal",
+                        "category_ab": "B",
+                        "target_class": "governance",
+                        "title": "AUTO_SEAL_PENDING: 50件イベント到達、seal実行は人間指示待ち",
+                        "short_summary": f"event_count={count}, 前回seal時点から+{delta}件。anchor_update.pyは自動実行しない。",
+                        "before_state": "accumulating",
+                        "after_state": "pending_human_instruction",
+                        "change_type": "governance",
+                        "impact_scope": "seal_pipeline",
+                        "impact_result": "no_auto_execution",
+                        "related_event_id": "N/A", "trace_id": "N/A",
+                        "free_note": "require_human_gate=True|source=AUTO_SEAL_50EVT",
+                    })
+                    print(f"[AUTO-AUDIT] 50件到達 → AUTO_SEAL_PENDING記録のみ(自動seal実行なし、人間指示待ち)")
                     _last_event_count[0] = count
                 finally:
                     _seal_running[0] = False
