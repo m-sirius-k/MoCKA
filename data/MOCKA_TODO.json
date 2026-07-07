@@ -870,17 +870,17 @@
       "updated_at": "2026-07-07T07:03:13.616758"
     },
     {
-      "id": "TODO_420",
-      "title": "TODOデータソース乖離(SSOT監査) - MOCKA_TODO.json/MOCKA_TODO_ACTIVE.json/ユーザーホーム直下版の3系統分岐調査",
+      "id": "TODO_421",
+      "title": "Configuration SSOT監査 - .env/APIキー/パス設定/環境変数の正本確定",
       "status": "進行中",
       "priority": "中",
-      "category": "bug",
-      "description": "TODO_419(正本Orchestra監査)のPhase D(Read API棚卸し)中に発見(E20260707_764176513456a)。少なくとも3系統のTODOファイルが存在し分岐している疑いがある: (1)data/MOCKA_TODO.json(gateway/context_builder.pyが読む、Gateway API /api/v1/context・/api/v1/todoの実データソース) (2)data/MOCKA_TODO_ACTIVE.json(mocka_mcp_server.pyのMCPツール群 mocka_get_todo/update_todo/add_todoが読み書きする、本日の全TODO操作の実体) (3)C:/Users/sirok/MOCKA_TODO.json(interface/mocka_todo_sync.pyがFirestore同期用に参照する、MoCKA直下ですらないユーザーホーム直下の別ファイル)。実データ確認: (1)にはTODO_419が含まれない、(2)には含まれる。つまり外部AI(GPT/Copilot等)がGateway経由で取得するTODO情報は、MCPツールで管理している最新状態を反映していない可能性が高い。Orchestra乖離(TODO_419、実行コードの分岐)とは対象が異なる別問題(データソースの分岐)であり、TODO_419とは独立して管理する。",
+      "category": "governance",
+      "description": "[[project_mocka_ssot_governance_roadmap]]の4領域のうち「設定系(Configuration SSOT)」を対象とする監査。.env/.env.example/.env.local/config系JSON/YAML/APIキー設定/Cloudflare設定/MCP設定/Gateway設定を棚卸しし、各設定項目(API_KEY/GATEWAY_BASE/CDP_PORT/FIRESTORE_PROJECT等)について正本・複製・問題(二重定義・古い.env・未使用設定・同名異値管理等)を判定する。TODO_419/420で確立した「Phase A(棚卸し)→B(Call Graph)→C(SSOT判定)→D(統合方針設計)→Human Gate承認→実装(最小変更)→E2E検証」を踏襲する。",
       "assigned_to": "Claude",
-      "note": "Phase A-D(監査・設計)完了、DC_20260707_005で事実確定、docs/governance/TODO_SSOT_INTEGRATION_DESIGN_v0.1.mdで統合設計確定。【2026-07-07 Human Gate承認済み、DC_20260707_006】data/MOCKA_TODO_ACTIVE.jsonを制度上の正本、data/MOCKA_TODO.jsonを一方向Export生成物(直接編集禁止を明示する運用込み)とすることを条件付き承認。Firestore同期の扱いは対象外・別設計として継続検討。実装順序: TODO_419実装→E2E検証の後にTODO_420実装へ着手。実装直前チェックリスト: Export失敗時も正本無傷であること・一方向性維持を確認。",
-      "reference_event": "E20260707_764176513456a",
-      "created_at": "2026-07-07T08:49:42.044778",
-      "updated_at": "2026-07-07T09:11:20.245651"
+      "note": "2026-07-07着手。Phase A完了(E20260707_6329539325c59): docs/governance/CONFIGURATION_SSOT_INVENTORY_v0.1.md作成。.env(実5項目)/.env.example(1項目のみ、陳腐化)/Cloudflare Workers設定3系統(mocka-api・mocka-mcp・relay-license)/.claude/mocka_config.json(ngrok URL、旧式の可能性)/openapi.yamlを棚卸し。問題候補3件抽出済み。次はPhase B(Call Graph)で各問題候補を裏付ける。",
+      "reference_event": "",
+      "created_at": "2026-07-07T09:51:46.184644",
+      "updated_at": "2026-07-07T09:54:02.572834"
     }
   ],
   "orchestra_handoff": {
@@ -1418,7 +1418,21 @@
       "created_at": "2026-07-07T08:28:28.933972",
       "updated_at": "2026-07-07T09:31:41.807581",
       "completed_at": "2026-07-07"
+    },
+    {
+      "id": "TODO_420",
+      "title": "TODOデータソース乖離(SSOT監査) - MOCKA_TODO.json/MOCKA_TODO_ACTIVE.json/ユーザーホーム直下版の3系統分岐調査",
+      "status": "完了",
+      "priority": "中",
+      "category": "bug",
+      "description": "TODO_419(正本Orchestra監査)のPhase D(Read API棚卸し)中に発見(E20260707_764176513456a)。少なくとも3系統のTODOファイルが存在し分岐している疑いがある: (1)data/MOCKA_TODO.json(gateway/context_builder.pyが読む、Gateway API /api/v1/context・/api/v1/todoの実データソース) (2)data/MOCKA_TODO_ACTIVE.json(mocka_mcp_server.pyのMCPツール群 mocka_get_todo/update_todo/add_todoが読み書きする、本日の全TODO操作の実体) (3)C:/Users/sirok/MOCKA_TODO.json(interface/mocka_todo_sync.pyがFirestore同期用に参照する、MoCKA直下ですらないユーザーホーム直下の別ファイル)。実データ確認: (1)にはTODO_419が含まれない、(2)には含まれる。つまり外部AI(GPT/Copilot等)がGateway経由で取得するTODO情報は、MCPツールで管理している最新状態を反映していない可能性が高い。Orchestra乖離(TODO_419、実行コードの分岐)とは対象が異なる別問題(データソースの分岐)であり、TODO_419とは独立して管理する。",
+      "assigned_to": "Claude",
+      "note": "DC_20260707_005/006/009参照。Human Gate承認(DC_20260707_006)に基づきexport_for_cloudflare.pyのTODOコピー元をdata/MOCKA_TODO_ACTIVE.jsonへ変更(E20260707_03467625308b8)。data/MOCKA_TODO.json反映・Gateway /api/v1/context(extended、48件・TODO_420含む)まで実地検証済み。10分周期の自動反映は起動経路・SYNC_INTERVAL・auto syncコミット履歴の3証拠で運用中と判断し継続監視項目化(DC_20260707_009)。次回セッション冒頭で最新auto syncコミット後のdata/MOCKA_TODO.json内容を軽く確認するフォローアップのみ残る。",
+      "reference_event": "E20260707_764176513456a",
+      "created_at": "2026-07-07T08:49:42.044778",
+      "updated_at": "2026-07-07T09:46:43.794401",
+      "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T00:43:57.918261+00:00"
+  "_snapshot_at": "2026-07-07T00:54:02.828802+00:00"
 }
