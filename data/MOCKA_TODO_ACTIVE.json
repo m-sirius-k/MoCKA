@@ -898,14 +898,15 @@
     {
       "id": "TODO_425",
       "title": "Chrome Extension Configuration Sync Pipeline設計 - content.js/manifest.jsonのngrok URL同期方式",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "中",
       "category": "governance",
       "description": "",
       "assigned_to": "Claude",
-      "note": "DC_20260707_017参照。TODO_422 Phase 1調査(E20260707_5690049345a67)で発見。対象: Orchestra_Project/extension/content.js・manifest.json。Chrome Extensionの仕様制約(content scriptはNode資源に到達不能・manifestは静的パース)によりコードSSOT修正ではなく外部生成物の同期方式設計が必要。範囲想定: .env→config生成→content.js更新→manifest更新→package/release手順。Chrome Web Store再提出を伴うためリスク中〜高。着手前にTODO_419/420/422-Aと同じPhase A-D→Human Gate承認→実装→E2E検証の流れを踏襲すること。",
+      "note": "DC_20260707_017/018参照。Phase A〜C-1.4完了(実機検証で原因特定・原因はcontent script注入失敗ではなく、注入後の通信先が旧ngrok endpointを参照していたことと判明)。DC_20260707_018によりcontent.js/manifest.jsonをhttps://mcp.nsjp.org/api/handshakeへ全文置換で更新完了(commit f5bcb0ecebf0d6588e2a3a2a4dd92fb37196d0ce、push未実施)。UTF-8検証・構文検証・CORS preflight実測・旧URL残存grep確認まで完了(CHANGE_START E20260707_762847942c99e/CHANGE_DONE本イベント参照)。残作業: (1)claude.ai実機での動作確認(拡張再読み込み後にfetchLivingContext成功するか) (2)content_orchestra.js(localhost:5000)をmcp.nsjp.orgへ統一すべきか役割確認(商用経路の可能性が高いため要判断) (3)git push可否の確認。",
       "reference_event": "E20260707_5690049345a67",
-      "created_at": "2026-07-07T10:46:47.223167"
+      "created_at": "2026-07-07T10:46:47.223167",
+      "updated_at": "2026-07-07T12:55:53.891353"
     }
   ],
   "orchestra_handoff": {
