@@ -1,7 +1,0 @@
-MoCKA Starting...
-==============================================
-[ABORT] MoCKA already running:
-  PID 7860: "C:\WINDOWS\system32\cmd.exe" /k cd /d C:\Users\sirok\MoCKA && python -X utf8 app.py
-  PID 13532: "C:\WINDOWS\system32\cmd.exe" /k cd /d C:\Users\sirok\MoCKA && python -X utf8 app.py
-==============================================
-MoCKA is already running. Aborting startup.
