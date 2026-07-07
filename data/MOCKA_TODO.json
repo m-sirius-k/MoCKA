@@ -903,10 +903,10 @@
       "category": "governance",
       "description": "",
       "assigned_to": "Claude",
-      "note": "DC_20260707_017参照。Phase A(E20260707_923794356a87f/E20260707_030248862c6ed)・Phase B(E20260707_1993350524e29/E20260707_3009359714bd3、ngrok参照Legacy Reference候補・localhost統一第一候補)・Phase C-0(E20260707_566270023cf2c/E20260707_6531631500e49、検証計画確定)完了。Phase C-1(E20260707_9459218828c5a/E20260707_0322140417064)実施したがOrchestra拡張が接続ブラウザ上で実行された形跡なくブロッカー発生(判定不能)。Phase C-1.1環境確認(2026-07-07、CHANGE_START E20260707_303513921946d/CHANGE_DONE本イベント参照)を試みたが、chrome://extensionsの内容取得手段がツールセットに存在せず4項目中3項目(Profile名/Orchestra存在・有効状態・パス/正本パス差異)がHuman確認待ちのまま停止。1項目(mocka_bridgeと同一Profileであること)のみ確認済み。次工程はきむら博士による chrome://extensions の直接目視確認結果待ち。",
+      "note": "DC_20260707_017参照。Phase A/B/C-0/C-1/C-1.1/C-1.3完了(詳細は前回note参照、通信基盤は健全と確認済み)。Phase C-1.4(2026-07-07、CHANGE_START E20260707_1229411815d58/CHANGE_DONE本イベント参照)完了: manifest.jsonのcontent_scripts.matchesにclaude.ai用エントリが正しく存在すること、content.js配置に異常がないことを確認。新発見: ユーザー提供スクリーンショットの行番号がリポジトリのcontent_orchestra.jsと完全一致(インストール版=現行リポジトリ内容の可能性が高い)。副次発見: content_orchestra.jsにUTF-8 BOM混入(TODO_155違反、別件)。具体化した仮説: インストール済み拡張のmanifest.jsonがclaude.ai対応前の古いバージョンのままである可能性。次工程: Human確認(chrome://extensionsでのDeveloper mode確認・拡張再読み込み試行・バージョン番号1.1.0との一致確認)待ち。",
       "reference_event": "E20260707_5690049345a67",
       "created_at": "2026-07-07T10:46:47.223167",
-      "updated_at": "2026-07-07T11:46:06.630091"
+      "updated_at": "2026-07-07T12:00:55.531171"
     }
   ],
   "orchestra_handoff": {
@@ -1488,5 +1488,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T02:54:57.007032+00:00"
+  "_snapshot_at": "2026-07-07T03:05:00.991621+00:00"
 }
