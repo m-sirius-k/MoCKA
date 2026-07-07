@@ -1,0 +1,24 @@
+MoCKA Starting...
+[PHASE 0] Cleaning up stale background processes...
+[singleton_enforce] resolved python (diagnostic only, not used for matching): C:\Users\sirok\AppData\Local\Microsoft\WindowsApps\python.exe
+[singleton_enforce] no matching processes for pattern: ping_generator\.py|sync_watch\.py|tech_watcher\.py|risk_scorer\.py|essence_auto_updater\.py|check_utf8_mandate\.py
+[PHASE 0.6] Auditing ports 5000/5002/5679 for stale listeners...
+[PHASE 1] Background jobs launching...
+[ISE] revision=92 hash=452947e58cfe... snapshot=skipped
+[PING GENERATED] NGROK_STATUS=False | essence_updated=False
+
+[WARN] UTF-8 mandate: 新規違反 33件（既存分 753件は記録済みのため省略）
+
+-> 詳細: C:\Users\sirok\MoCKA\data\utf8_mandate_violations.log
+-> UTF8_MANDATE.md を参照して修正してください
+[WARN] UTF-8 check FAILED
+[PING GENERATED] NGROK_STATUS=False | essence_updated=True
+[ESSENCE_AUTO] INCIDENT更新 (新規3件 うちきむら博士発言1件)
+[ESSENCE_AUTO] PHILOSOPHY更新 (新規3件 うちきむら博士発言3件)
+[ESSENCE_AUTO] OPERATION更新 (新規3件 うちきむら博士発言0件)
+[ESSENCE_AUTO] lever_essence.json同期完了 (['INCIDENT', 'OPERATION', 'PHILOSOPHY'])
+[ESSENCE_AUTO] ping_generator強制実行完了
+[ESSENCE_AUTO] v4完了: REDUCING=0件 アーカイブ=0件 Caliber=False essence=3軸更新
+
+C:\Users\sirok\MoCKA>[PHASE 3.5] Verifying no duplicate PIDs on ports 5000/5002/5679...
+[OK] No duplicate PIDs detected on 5000/5002/5679
