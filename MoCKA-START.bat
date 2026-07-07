@@ -66,7 +66,6 @@ timeout /t 1 /nobreak > nul
 wt -w 0 ^
   new-tab --title "MoCKA-APP"       --tabColor "#005700" cmd /k "cd /d C:\Users\sirok\MoCKA && python -X utf8 app.py" ^
 ; new-tab --title "MoCKA-MCP"       --tabColor "#5f1e3a" cmd /k "cd /d C:\Users\sirok\MoCKA && python -X utf8 mocka_mcp_server.py" ^
-; new-tab --title "MoCKA-NGROK"     --tabColor "#3a1e5f" cmd /k "ngrok start mocka_mcp" ^
 ; new-tab --title "MoCKA-CALIBER"   --tabColor "#1e3a5f" cmd /k "cd /d C:\Users\sirok\MoCKA\caliber\chat_pipeline && python -X utf8 mocka_caliber_server.py" ^
 ; new-tab --title "MoCKA-CONNECTOR" --tabColor "#3a5f1e" cmd /k "cd /d C:\Users\sirok\MoCKA\gateway && python -X utf8 gateway.py" ^
 ; new-tab --title "MoCKA-RUNTIME-B" --tabColor "#5f3a00" cmd /k "cd /d C:\Users\sirok\MoCKA\runtime_b && mocka_runtime_b.exe" ^
