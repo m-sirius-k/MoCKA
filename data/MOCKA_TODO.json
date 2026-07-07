@@ -884,15 +884,15 @@
     {
       "id": "TODO_423",
       "title": "Decision Ledger文字化け原因追跡 - decision write pipelineの文字列変化点特定",
-      "status": "進行中",
+      "status": "保留",
       "priority": "中",
       "category": "bug",
       "description": "[[project_mocka_ssot_governance_roadmap]]のEvent/Decision/Ledger系SSOT監査。decision_ledger.jsonlに保存された内容が、意図した漢字と異なるコードポイントで記録される現象を調査する。Phase A-1(一次切り分け)完了: (1)decision_ledger.jsonlをPython明示UTF-8デコードで確認した結果、表示環境の問題ではなく保存データ自体が破損していることを確定 (2)_append_decision()自体には文字変換処理がないことを確認 (3)コードポイント差異(際U+969B→U+969F/+4、陳U+9673→U+9670/-3、腐U+8150→U+8155/+5)はいずれもコードポイント下位ニブルのみの変化で、単純な文字置換テーブルではなさそうだが、発生レイヤー(文字列生成時/json.dumps時/write時/JSON生成前の加工/AI出力受取時の中間処理/コピペ経路/Unicode正規化/encoding指定ミス)は未確定。UTF-8バイト列レベルでの差異はまだ確認していない。",
       "assigned_to": "Claude",
-      "note": "Phase A-1完了、DC_20260707_012で監査状態を「Ledger一次データ破損は確認済み」「発生レイヤー未確定」として固定(読み戻し確認済み)。追加観測: 本Decision自体の読み戻しでも新規の文字化け(「差異」→「差异」)を確認、再現性が高い。次回開始地点(Phase A-2、確定手順): Step1: mocka_decision_write()呼出直前(入力文字列→json.dumps直前→ファイルwrite直前→jsonl保存後)の4地点で文字列比較。Step2: コードポイント・UTF-8バイト列比較。Step3: 「実際」「陳腐化」「.claude」のみの最小再現テスト(書込経路 vs 元入力経路の切り分け)。なお本TODO記録作業中、CLAUDE.mdのCP932汚染防止規約(装飾記号禁止)に反し「※」を誤って使用したことに気づいた(結果的に無事だったが要注意)。",
+      "note": "Phase A-1(DC_20260707_012)・Phase A-2(DC_20260707_014)完了。json.dumps層・ファイルI/O層は原因から除外、非決定的な事象と判明。「メモリ/ストレージのビット化け」は依然として仮説段階であり確定事実ではない(要注意)。Phase A-3(継続監視の仕組み設計: write直前/保存直後のハッシュ取得・差分検知・writer process情報記録)は品質向上系であり緊急性なしと判断し、原因未確定・監視待ちの状態で保留する。ロードマップ優先で次のSSOT監査領域へ進む(Option A採用)。再開時はPhase A-3から。",
       "reference_event": "",
       "created_at": "2026-07-07T10:12:37.461990",
-      "updated_at": "2026-07-07T10:13:43.633089"
+      "updated_at": "2026-07-07T10:19:53.785586"
     }
   ],
   "orchestra_handoff": {
@@ -1460,5 +1460,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T01:14:12.413003+00:00"
+  "_snapshot_at": "2026-07-07T01:24:16.172382+00:00"
 }
