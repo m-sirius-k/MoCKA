@@ -184,6 +184,11 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
                   f"exclusion (no override was given for this call): "
                   f"{result['post_commit_violation']}. Caller must treat this as "
                   f"an integrity incident, not a normal CHANGE_DONE.")
+        elif core_in_commit:
+            print(f"[mocka_git_safe_commit] post-commit check OK: "
+                  f"{len(committed_files)} file(s) in {result['commit_hash'][:7]}, "
+                  f"core system file(s) {core_in_commit} present via authorized "
+                  f"override (event_id={human_gate_override_event_id})")
         else:
             print(f"[mocka_git_safe_commit] post-commit check OK: "
                   f"{len(committed_files)} file(s) in {result['commit_hash'][:7]}, "
