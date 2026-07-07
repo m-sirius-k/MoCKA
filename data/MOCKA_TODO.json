@@ -870,19 +870,6 @@
       "updated_at": "2026-07-07T07:03:13.616758"
     },
     {
-      "id": "TODO_422",
-      "title": "ngrok URL SSOT再統合 - mocka_config.json/file-guard.js/content.js/manifest.jsonの重複解消",
-      "status": "未着手",
-      "priority": "中",
-      "category": "governance",
-      "description": "DC_20260707_011(Confirmed Architecture Drift)で確定した、旧ngrok URL(arnulfo-pseudopopular-unvirulently.ngrok-free.dev)のハードコード分散を解消する。対象4箇所: (1).claude/mocka_config.json(mcp_endpoint) (2)PlanningCaliber/workshop/phi-os/core/file-guard.js(MOCKA_ENDPOINT定数、mocka-bridge.jsの集約ロジックを使わず独自ハードコード) (3)PlanningCaliber/workshop/Orchestra_Project/extension/content.js(MOCKA_HANDSHAKE_URL定数、TODO_293) (4)同extension/manifest.json(host_permissions)。TODO_218の設計意図(mocka_config.jsonへの一元集約)と矛盾し、TODO_266のCloudflare Tunnel恒久化(gateway.nsjp.org/mcp.nsjp.org)後も未更新のまま。着手前に設計判断が必要: mocka_config.jsonを唯一の設定源にするか、.envと統合するか、Cloudflareドメインを直接SSOT化するか。manifest.json変更はChrome拡張の再パッケージ・再配布を伴う可能性があるため、Human Gate承認必須。",
-      "assigned_to": "Claude",
-      "note": "DC_20260707_017によりスコープをfile-guard.jsのみに縮小(通称TODO_422-A)。範囲: mocka-bridge.js(phi-os/adapters/)の解決済みendpointをexportし、file-guard.js(phi-os/core/、11行目のハードコード)がそれを利用するよう変更。動作変更なし・リスク低。content.js/manifest.jsonのExtension設定同期はTODO_425へ切り出し。着手前にPhase 1調査済み(E20260707_5690049345a67)。Human Gate承認済み、実装フェーズへ進行可。",
-      "reference_event": "E20260707_292963172b805",
-      "created_at": "2026-07-07T10:05:20.549988",
-      "updated_at": "2026-07-07T10:46:34.780971"
-    },
-    {
       "id": "TODO_423",
       "title": "Decision Ledger文字化け原因追跡 - decision write pipelineの文字列変化点特定",
       "status": "保留",
@@ -1484,7 +1471,21 @@
       "created_at": "2026-07-07T09:51:46.184644",
       "updated_at": "2026-07-07T10:05:31.082975",
       "completed_at": "2026-07-07"
+    },
+    {
+      "id": "TODO_422",
+      "title": "ngrok URL SSOT再統合 - mocka_config.json/file-guard.js/content.js/manifest.jsonの重複解消",
+      "status": "完了",
+      "priority": "中",
+      "category": "governance",
+      "description": "DC_20260707_011(Confirmed Architecture Drift)で確定した、旧ngrok URL(arnulfo-pseudopopular-unvirulently.ngrok-free.dev)のハードコード分散を解消する。対象4箇所: (1).claude/mocka_config.json(mcp_endpoint) (2)PlanningCaliber/workshop/phi-os/core/file-guard.js(MOCKA_ENDPOINT定数、mocka-bridge.jsの集約ロジックを使わず独自ハードコード) (3)PlanningCaliber/workshop/Orchestra_Project/extension/content.js(MOCKA_HANDSHAKE_URL定数、TODO_293) (4)同extension/manifest.json(host_permissions)。TODO_218の設計意図(mocka_config.jsonへの一元集約)と矛盾し、TODO_266のCloudflare Tunnel恒久化(gateway.nsjp.org/mcp.nsjp.org)後も未更新のまま。着手前に設計判断が必要: mocka_config.jsonを唯一の設定源にするか、.envと統合するか、Cloudflareドメインを直接SSOT化するか。manifest.json変更はChrome拡張の再パッケージ・再配布を伴う可能性があるため、Human Gate承認必須。",
+      "assigned_to": "Claude",
+      "note": "DC_20260707_017によりスコープをfile-guard.jsのみに縮小(通称TODO_422-A)。実装完了(2026-07-07)。mocka-bridge.jsの解決済みMOCKA_ENDPOINTをexportし、file-guard.jsがそれをimportして使うよう変更。独自ハードコード削除。動作変更なし(解決値は従来と同一値であることを検証済み)。commit: 03227b35dd3a136716df66f6d93864ade7953a08(PlanningCaliber/workshop repo)。CHANGE_START: E20260707_03137740653d1 / CHANGE_DONE参照。content.js/manifest.jsonのExtension設定同期はTODO_425へ切り出し済み(未着手)。",
+      "reference_event": "E20260707_292963172b805",
+      "created_at": "2026-07-07T10:05:20.549988",
+      "updated_at": "2026-07-07T10:55:02.804977",
+      "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T01:54:29.970406+00:00"
+  "_snapshot_at": "2026-07-07T02:04:35.667066+00:00"
 }
