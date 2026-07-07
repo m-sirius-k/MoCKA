@@ -877,10 +877,10 @@
       "category": "governance",
       "description": "[[project_mocka_ssot_governance_roadmap]]の4領域のうち「設定系(Configuration SSOT)」を対象とする監査。.env/.env.example/.env.local/config系JSON/YAML/APIキー設定/Cloudflare設定/MCP設定/Gateway設定を棚卸しし、各設定項目(API_KEY/GATEWAY_BASE/CDP_PORT/FIRESTORE_PROJECT等)について正本・複製・問題(二重定義・古い.env・未使用設定・同名異値管理等)を判定する。TODO_419/420で確立した「Phase A(棚卸し)→B(Call Graph)→C(SSOT判定)→D(統合方針設計)→Human Gate承認→実装(最小変更)→E2E検証」を踏襲する。",
       "assigned_to": "Claude",
-      "note": "2026-07-07着手。Phase A完了(E20260707_6329539325c59): docs/governance/CONFIGURATION_SSOT_INVENTORY_v0.1.md作成。.env(実5項目)/.env.example(1項目のみ、陳腐化)/Cloudflare Workers設定3系統(mocka-api・mocka-mcp・relay-license)/.claude/mocka_config.json(ngrok URL、旧式の可能性)/openapi.yamlを棚卸し。問題候補3件抽出済み。次はPhase B(Call Graph)で各問題候補を裏付ける。",
+      "note": "Phase A完了(CONFIGURATION_SSOT_INVENTORY_v0.1.md)。Phase B完了(DC_20260707_010): (1).env系は正常(問題なし) (2)Cloudflare Workers 3系統(mocka-api=Live Proxy/mocka-mcp=GitHub Snapshot/relay-license=License)は役割分離されており重複ではないと確定 (3).claude/mocka_config.jsonはmocka-bridge.js(TODO_218)が読む設定で、旧ngrok URLのまま停滞している可能性があるがNeeds Verification(未確定)として登録。Cloudflare Dashboard監査(mcp.nsjp.org実ルーティング等)は別フェーズへ分離。次はPhase C(SSOT判定、実質PhaseB-003のみ対象)。",
       "reference_event": "",
       "created_at": "2026-07-07T09:51:46.184644",
-      "updated_at": "2026-07-07T09:54:02.572834"
+      "updated_at": "2026-07-07T10:01:11.883755"
     }
   ],
   "orchestra_handoff": {
@@ -1434,5 +1434,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T00:54:02.828802+00:00"
+  "_snapshot_at": "2026-07-07T01:04:07.411356+00:00"
 }
