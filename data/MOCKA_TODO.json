@@ -903,10 +903,10 @@
       "category": "governance",
       "description": "",
       "assigned_to": "Claude",
-      "note": "DC_20260707_017/018参照。Phase A〜C-1.4完了。DC_20260707_018によりcontent.js/manifest.jsonをhttps://mcp.nsjp.org/api/handshakeへ全文置換で更新完了。UTF-8検証・構文検証・CORS preflight実測・旧URL残存grep確認まで完了。【追記2026-07-07 Living Context整合性監査】commit f5bcb0eのpush完了(03227b3..f5bcb0e main -> main、mocka-workshop-privateリポジトリ)。push前にgit show --statで差分がDC_20260707_018承認内容(content.js/manifest.json各1行変更)と完全一致することを確認済み。あわせてChrome実機確認: Orchestra拡張(id=lbjcmlkcjgjibcmlaokldopjokajjlgc)はChrome Secure Preferences上でlocation=4(UNPACKED)/from_webstore=falseと判明。正本パスを直接読む開発者モード版のみが稼働中で、Chrome Web Store配布版は現時点で存在しない(README.mdのWeb Store登録チェックボックス未達を確認)。よって「配布経路まで反映されることを完了条件とする」という監査上の懸念は、Web Store版が実在しないため該当なし(開発者モード版=唯一の配布形態であり、pushにより実質完了)。残作業: (1)claude.ai実機でのfetchLivingContext成功確認(未着手) (2)content_orchestra.js(localhost:5000)をmcp.nsjp.orgへ統一すべきかの役割確認(未着手、要判断)。",
+      "note": "DC_20260707_017/018参照。content.js/manifest.jsonのngrok URL→mcp.nsjp.org更新・push完了(commit f5bcb0e、E20260707_8278442400d17)。Web Store配布版は現状不在のため配布経路への反映は完了。【監査官R01優先順位②】残るのはclaude.ai実機でのfetchLivingContext成功確認のみ(未着手)。ブラウザ操作が必要なため、次セッションで実施するか、くろこがcomputer-use/claude-in-chrome経由で実施するかをきむら博士の指示待ち。content_orchestra.js(localhost:5000)の役割確認も未着手のまま。",
       "reference_event": "E20260707_5690049345a67",
       "created_at": "2026-07-07T10:46:47.223167",
-      "updated_at": "2026-07-07T16:37:14.261235"
+      "updated_at": "2026-07-07T16:57:47.809572"
     }
   ],
   "orchestra_handoff": {
@@ -1488,5 +1488,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T07:49:29.139499+00:00"
+  "_snapshot_at": "2026-07-07T07:59:33.764744+00:00"
 }
