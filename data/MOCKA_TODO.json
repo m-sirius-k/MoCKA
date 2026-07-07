@@ -898,15 +898,15 @@
     {
       "id": "TODO_425",
       "title": "Chrome Extension Configuration Sync Pipeline設計 - content.js/manifest.jsonのngrok URL同期方式",
-      "status": "進行中",
+      "status": "保留",
       "priority": "中",
       "category": "governance",
       "description": "",
       "assigned_to": "Claude",
-      "note": "DC_20260707_017参照。Phase A完了(E20260707_923794356a87f/E20260707_030248862c6ed)。Phase B完了(2026-07-07、CHANGE_START E20260707_1993350524e29/CHANGE_DONE本イベント参照)。成果物: docs/governance/TODO_425_EXTENSION_SYNC_DESIGN_v0.1.md。原因分析: CSPヘッダー実測・コード比較により、content.jsのngrok参照は過去設計残骸の可能性が高いと判定(状況証拠ベース、確証ではない)。B案(localhost統一)を推奨候補として提示したが実装は未着手。未決定事項1(意図的仕様でないことのきむら博士最終確認)の確定後にPhase C(実装)着手予定。Extension Capability境界(Capability Schema/Architecture Contract/Human Authorization)の方向性も記録済み(Schema確定は別途)。",
+      "note": "DC_20260707_017参照。Phase A完了(E20260707_923794356a87f/E20260707_030248862c6ed)。Phase B完了(E20260707_1993350524e29/E20260707_3009359714bd3)、ngrok参照Legacy Reference候補・localhost統一第一候補と判定(実装未着手)。Phase C-0完了(E20260707_566270023cf2c/E20260707_6531631500e49)。Phase C-1実施(2026-07-07、CHANGE_START E20260707_9459218828c5a/CHANGE_DONE本イベント参照)したがブロッカー発生: claude-in-chrome接続ブラウザ上でOrchestra拡張自体が実行された形跡なし(無条件console.logが出力されず、handshake系network requestもゼロ件)。判定不能(A/B/Cいずれにも該当しない第4の結果)。次工程はHuman確認(接続ブラウザでのOrchestra拡張インストール/有効化状況の目視確認)待ちのため一旦「保留」とする。確認後、再度Phase C-1を実施してA/B/C判定へ進む。",
       "reference_event": "E20260707_5690049345a67",
       "created_at": "2026-07-07T10:46:47.223167",
-      "updated_at": "2026-07-07T11:11:45.952952"
+      "updated_at": "2026-07-07T11:23:56.060847"
     }
   ],
   "orchestra_handoff": {
@@ -1488,5 +1488,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T02:14:40.100054+00:00"
+  "_snapshot_at": "2026-07-07T02:24:44.799179+00:00"
 }
