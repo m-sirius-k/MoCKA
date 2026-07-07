@@ -1509,7 +1509,7 @@ def loop_status():
     # --- 8ステージ実データ収集 ---
     RECURRENCE_CSV = Path(r"C:\Users\sirok\MoCKA\data\recurrence_registry.csv")
     PREVENTION_JSON = Path(r"C:\Users\sirok\MoCKA\data\prevention_queue.json")
-    LEDGER_JSON  = Path(r"C:\Users\sirok\MoCKA\runtime\main\ledger.json")
+    ANCHOR_RECORD_JSON = Path(r"C:\Users\sirok\MoCKA\governance\anchor_record.json")
 
     # ② Record: events.db総件数（CSV廃止済み → SQLite参照）
     record_count = 0
@@ -1550,19 +1550,15 @@ def loop_status():
             prevention_pending = sum(1 for x in items if str(x.get("status","")).upper() not in ["APPROVED","REJECTED"])
         except: pass
 
-    # ⑧ Audit: 最終seal時刻
+    # ⑧ Audit: 最終seal時刻(Seal Migration: DC_20260707_021準拠、Canonical Seal Source=
+    # governance/anchor_record.jsonへ切替。/integrity/statusと同一の読み取りパターン)
     last_seal = None
     last_seal_hash = None
-    if LEDGER_JSON.exists():
+    if ANCHOR_RECORD_JSON.exists():
         try:
-            ldata = json.loads(LEDGER_JSON.read_text(encoding="utf-8-sig"))
-            if isinstance(ldata, list) and ldata:
-                last_entry = ldata[-1]
-                last_seal = str(last_entry.get("timestamp", ""))
-                last_seal_hash = last_entry.get("event_hash", "")[:16]
-            elif isinstance(ldata, dict):
-                last_seal = ldata.get("last_updated") or ldata.get("timestamp")
-                last_seal_hash = ldata.get("hash") or ldata.get("anchor_hash")
+            adata = json.loads(ANCHOR_RECORD_JSON.read_text(encoding="utf-8-sig"))
+            last_seal = adata.get("sealed_at_utc")
+            last_seal_hash = (adata.get("sealed_summary_hash") or "")[:16]
         except: pass
 
     civilization_loop = {
