@@ -870,17 +870,29 @@
       "updated_at": "2026-07-07T07:03:13.616758"
     },
     {
-      "id": "TODO_421",
-      "title": "Configuration SSOT監査 - .env/APIキー/パス設定/環境変数の正本確定",
-      "status": "進行中",
+      "id": "TODO_422",
+      "title": "ngrok URL SSOT再統合 - mocka_config.json/file-guard.js/content.js/manifest.jsonの重複解消",
+      "status": "未着手",
       "priority": "中",
       "category": "governance",
-      "description": "[[project_mocka_ssot_governance_roadmap]]の4領域のうち「設定系(Configuration SSOT)」を対象とする監査。.env/.env.example/.env.local/config系JSON/YAML/APIキー設定/Cloudflare設定/MCP設定/Gateway設定を棚卸しし、各設定項目(API_KEY/GATEWAY_BASE/CDP_PORT/FIRESTORE_PROJECT等)について正本・複製・問題(二重定義・古い.env・未使用設定・同名異値管理等)を判定する。TODO_419/420で確立した「Phase A(棚卸し)→B(Call Graph)→C(SSOT判定)→D(統合方針設計)→Human Gate承認→実装(最小変更)→E2E検証」を踏襲する。",
+      "description": "DC_20260707_011(Confirmed Architecture Drift)で確定した、旧ngrok URL(arnulfo-pseudopopular-unvirulently.ngrok-free.dev)のハードコード分散を解消する。対象4箇所: (1).claude/mocka_config.json(mcp_endpoint) (2)PlanningCaliber/workshop/phi-os/core/file-guard.js(MOCKA_ENDPOINT定数、mocka-bridge.jsの集約ロジックを使わず独自ハードコード) (3)PlanningCaliber/workshop/Orchestra_Project/extension/content.js(MOCKA_HANDSHAKE_URL定数、TODO_293) (4)同extension/manifest.json(host_permissions)。TODO_218の設計意図(mocka_config.jsonへの一元集約)と矛盾し、TODO_266のCloudflare Tunnel恒久化(gateway.nsjp.org/mcp.nsjp.org)後も未更新のまま。着手前に設計判断が必要: mocka_config.jsonを唯一の設定源にするか、.envと統合するか、Cloudflareドメインを直接SSOT化するか。manifest.json変更はChrome拡張の再パッケージ・再配布を伴う可能性があるため、Human Gate承認必須。",
       "assigned_to": "Claude",
-      "note": "Phase A完了(CONFIGURATION_SSOT_INVENTORY_v0.1.md)。Phase B完了(DC_20260707_010): (1).env系は正常(問題なし) (2)Cloudflare Workers 3系統(mocka-api=Live Proxy/mocka-mcp=GitHub Snapshot/relay-license=License)は役割分離されており重複ではないと確定 (3).claude/mocka_config.jsonはmocka-bridge.js(TODO_218)が読む設定で、旧ngrok URLのまま停滞している可能性があるがNeeds Verification(未確定)として登録。Cloudflare Dashboard監査(mcp.nsjp.org実ルーティング等)は別フェーズへ分離。次はPhase C(SSOT判定、実質PhaseB-003のみ対象)。",
+      "note": "DC_20260707_011参照。TODO_421(Configuration SSOT監査)のPhase C-1で発見。優先度Medium(運用影響はあるが即時障害ではない)。着手前にTODO_419/420と同じ「Phase A-D→Human Gate承認→実装→E2E検証」の流れを踏襲すること。",
+      "reference_event": "E20260707_292963172b805",
+      "created_at": "2026-07-07T10:05:20.549988"
+    },
+    {
+      "id": "TODO_423",
+      "title": "Decision Ledger文字化け原因追跡 - decision write pipelineの文字列変化点特定",
+      "status": "進行中",
+      "priority": "中",
+      "category": "bug",
+      "description": "[[project_mocka_ssot_governance_roadmap]]のEvent/Decision/Ledger系SSOT監査。decision_ledger.jsonlに保存された内容が、意図した漢字と異なるコードポイントで記録される現象を調査する。Phase A-1(一次切り分け)完了: (1)decision_ledger.jsonlをPython明示UTF-8デコードで確認した結果、表示環境の問題ではなく保存データ自体が破損していることを確定 (2)_append_decision()自体には文字変換処理がないことを確認 (3)コードポイント差異(際U+969B→U+969F/+4、陳U+9673→U+9670/-3、腐U+8150→U+8155/+5)はいずれもコードポイント下位ニブルのみの変化で、単純な文字置換テーブルではなさそうだが、発生レイヤー(文字列生成時/json.dumps時/write時/JSON生成前の加工/AI出力受取時の中間処理/コピペ経路/Unicode正規化/encoding指定ミス)は未確定。UTF-8バイト列レベルでの差異はまだ確認していない。",
+      "assigned_to": "Claude",
+      "note": "Phase A-1完了、DC_20260707_012で監査状態を「Ledger一次データ破損は確認済み」「発生レイヤー未確定」として固定(読み戻し確認済み)。追加観測: 本Decision自体の読み戻しでも新規の文字化け(「差異」→「差异」)を確認、再現性が高い。次回開始地点(Phase A-2、確定手順): Step1: mocka_decision_write()呼出直前(入力文字列→json.dumps直前→ファイルwrite直前→jsonl保存後)の4地点で文字列比較。Step2: コードポイント・UTF-8バイト列比較。Step3: 「実際」「陳腐化」「.claude」のみの最小再現テスト(書込経路 vs 元入力経路の切り分け)。なお本TODO記録作業中、CLAUDE.mdのCP932汚染防止規約(装飾記号禁止)に反し「※」を誤って使用したことに気づいた(結果的に無事だったが要注意)。",
       "reference_event": "",
-      "created_at": "2026-07-07T09:51:46.184644",
-      "updated_at": "2026-07-07T10:01:11.883755"
+      "created_at": "2026-07-07T10:12:37.461990",
+      "updated_at": "2026-07-07T10:13:43.633089"
     }
   ],
   "orchestra_handoff": {
@@ -1432,7 +1444,21 @@
       "created_at": "2026-07-07T08:49:42.044778",
       "updated_at": "2026-07-07T09:46:43.794401",
       "completed_at": "2026-07-07"
+    },
+    {
+      "id": "TODO_421",
+      "title": "Configuration SSOT監査 - .env/APIキー/パス設定/環境変数の正本確定",
+      "status": "完了",
+      "priority": "中",
+      "category": "governance",
+      "description": "[[project_mocka_ssot_governance_roadmap]]の4領域のうち「設定系(Configuration SSOT)」を対象とする監査。.env/.env.example/.env.local/config系JSON/YAML/APIキー設定/Cloudflare設定/MCP設定/Gateway設定を棚卸しし、各設定項目(API_KEY/GATEWAY_BASE/CDP_PORT/FIRESTORE_PROJECT等)について正本・複製・問題(二重定義・古い.env・未使用設定・同名異値管理等)を判定する。TODO_419/420で確立した「Phase A(棚卸し)→B(Call Graph)→C(SSOT判定)→D(統合方針設計)→Human Gate承認→実装(最小変更)→E2E検証」を踏襲する。",
+      "assigned_to": "Claude",
+      "note": "Phase A(CONFIGURATION_SSOT_INVENTORY_v0.1.md)・Phase B(DC_20260707_010)・Phase C-1(DC_20260707_011)完了。監査結論: .env系・Cloudflare Workers3系統は問題なし。ngrok URLのハードコード分散(4箇所)はConfirmed Architecture Drift(Medium優先度)として確定。実装はTODO_422へ分離し、Human Gate付議・設計判断(mocka_config.json一元化/.env統合/Cloudflareドメイン直接SSOT化のいずれか)を経てから着手する。CONFIGURATION SSOT監査はここでクローズ。次のテーマはEvent/Decision/Ledger系(Decision Ledger読み戻し時の文字化け、3回再現観測済み)。",
+      "reference_event": "",
+      "created_at": "2026-07-07T09:51:46.184644",
+      "updated_at": "2026-07-07T10:05:31.082975",
+      "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T01:04:07.411356+00:00"
+  "_snapshot_at": "2026-07-07T01:14:12.413003+00:00"
 }
