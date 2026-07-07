@@ -4,6 +4,7 @@ import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
 import db_helper
 from event_buffer import get_buffer
+import essence_resolver
 import shutil
 import os
 import json
@@ -1475,7 +1476,6 @@ def seal_history():
 def loop_status():
     import json, datetime
     from pathlib import Path
-    ESSENCE_PATH  = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     INJECT_FLAG   = Path(r"C:\Users\sirok\MOCKA_INJECT_MODE.txt")
     PING_PATH     = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
     RAW_DIR       = Path(r"C:\Users\sirok\MoCKA\data\storage\infield\RAW")
@@ -1484,20 +1484,17 @@ def loop_status():
     if INJECT_FLAG.exists():
         v = INJECT_FLAG.read_text(encoding="utf-8-sig").strip().upper()
         inject_mode = v if v in ["ON","OFF"] else "ON"
-    essence_count = 0
+    # ESSENCE_MIGRATION(Resolver方式、DC_20260707_019/020): Canonical Essence基準に切替
+    _essence = essence_resolver.get_display_essence()
+    _canonical = _essence.get("canonical") or {}
     essence_axes  = {"INCIDENT": False, "PHILOSOPHY": False, "OPERATION": False}
-    essence_updated = None
-    if ESSENCE_PATH.exists():
-        try:
-            data = json.loads(ESSENCE_PATH.read_text(encoding="utf-8-sig"))
-            for axis in essence_axes:
-                if data.get(axis) and str(data[axis]).strip():
-                    essence_axes[axis] = True
-            essence_count = sum(essence_axes.values())
-            dates = [data.get(f"{k}_updated") for k in essence_axes if data.get(f"{k}_updated")]
-            if dates:
-                essence_updated = max(dates)
-        except: pass
+    for axis in essence_axes:
+        if _canonical.get(axis) and str(_canonical[axis]).strip():
+            essence_axes[axis] = True
+    essence_count = sum(essence_axes.values())
+    essence_updated = _canonical.get("_synced_at")
+    essence_primary_source = _essence.get("primary_source")
+    essence_legacy = _essence.get("legacy")
     raw_count      = len(list(RAW_DIR.glob("*.json")))      if RAW_DIR.exists()      else 0
     raw_done_count = len(list(RAW_DONE_DIR.glob("*.json"))) if RAW_DONE_DIR.exists() else 0
     ping_data = {}
@@ -1580,7 +1577,8 @@ def loop_status():
     }
 
     return jsonify({"inject_mode": inject_mode, "essence_count": essence_count, "essence_axes": essence_axes,
-                    "essence_updated": essence_updated, "raw_count": raw_count, "raw_done_count": raw_done_count,
+                    "essence_updated": essence_updated, "essence_primary_source": essence_primary_source,
+                    "essence_legacy": essence_legacy, "raw_count": raw_count, "raw_done_count": raw_done_count,
                     "ping_latest": ping_data, "ping_age": ping_age,
                     "civilization_loop": civilization_loop})
 
@@ -1677,7 +1675,6 @@ def get_restore_packet():
 def gemini_briefing():
     from pathlib import Path
     TODO_PATH    = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
-    ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     todos_pending = []
     try:
         todo_data = json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
@@ -1686,10 +1683,8 @@ def gemini_briefing():
         pending.sort(key=lambda x: priority_order.get(x.get("priority", "低"), 9))
         todos_pending = [{"id": t.get("id"), "title": t.get("title"), "priority": t.get("priority")} for t in pending]
     except: pass
-    essence = {}
-    try:
-        essence = json.loads(ESSENCE_PATH.read_text(encoding="utf-8-sig"))
-    except: pass
+    # ESSENCE_MIGRATION(Resolver方式、DC_20260707_019/020): Canonical Essence基準に切替
+    essence = essence_resolver.get_display_essence()
     top = todos_pending[0] if todos_pending else {}
     header = f"[MoCKA SESSION START]\nPhase 2進行中\n未着手TODO: {len(todos_pending)}件\n最重要: {top.get('id','')} {top.get('title','')}"
     return jsonify({"status": "OK", "prompt_header": header, "todos_pending": todos_pending, "essence": essence}), 200
@@ -1766,7 +1761,6 @@ def ngrok_status():
 def pipeline_status():
     import json, datetime
     from pathlib import Path
-    ESSENCE_PATH  = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
     PATTERNS_FILE = Path(r"C:\Users\sirok\MoCKA\interface\danger_patterns.json")
     LEARN_LOG     = Path(r"C:\Users\sirok\MoCKA\data\language_learn_log.json")
     PING_PATH     = Path(r"C:\Users\sirok\MoCKA\data\ping_latest.json")
@@ -1819,27 +1813,28 @@ def pipeline_status():
             danger_info["last_critical"] = last_critical
         except: pass
     result["danger"] = danger_info
+    # ESSENCE_MIGRATION(Resolver方式、DC_20260707_019/020): Canonical Essence基準に切替
+    # Canonical Essenceは軸別{axis}_updated/{axis}_source_countを持たないため、
+    # updatedはCanonical全体の_synced_at、countは0固定(Legacy側の詳細はessence_legacyを参照)
+    _essence = essence_resolver.get_display_essence()
+    _canonical = _essence.get("canonical") or {}
+    _canonical_synced_at = _canonical.get("_synced_at","")
     essence_detail = {}
-    if ESSENCE_PATH.exists():
-        try:
-            data = json.loads(ESSENCE_PATH.read_text(encoding="utf-8"))
-            for axis in ["INCIDENT","PHILOSOPHY","OPERATION"]:
-                text = data.get(axis,"")
-                essence_detail[axis] = {"text":text[:120] if text else "","updated":data.get(f"{axis}_updated",""),"count":data.get(f"{axis}_source_count",0),"filled":bool(text and text.strip())}
-        except: pass
+    for axis in ["INCIDENT","PHILOSOPHY","OPERATION"]:
+        text = _canonical.get(axis,"")
+        essence_detail[axis] = {"text":text[:120] if text else "","updated":_canonical_synced_at,"count":0,"filled":bool(text and text.strip())}
     result["essence"] = essence_detail
+    result["essence_primary_source"] = _essence.get("primary_source")
+    result["essence_legacy"] = _essence.get("legacy")
     return jsonify(result)
 
 @app.route("/essence/detail")
 def essence_detail():
-    from pathlib import Path
-    ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
-    if not ESSENCE_PATH.exists():
+    # ESSENCE_MIGRATION(Resolver方式、DC_20260707_019/020): Canonical Essence基準に切替
+    _essence = essence_resolver.get_display_essence()
+    if _essence.get("primary_source") == "none":
         return jsonify({"status":"NOT_FOUND"})
-    try:
-        return jsonify({"status":"OK","data":json.loads(ESSENCE_PATH.read_text(encoding="utf-8"))})
-    except Exception as e:
-        return jsonify({"status":"ERROR","message":str(e)})
+    return jsonify({"status":"OK","data":_essence})
 
 @app.route("/danger/status")
 def danger_status():
@@ -1881,14 +1876,11 @@ def public_overview():
 
 @app.route("/public/essence")
 def public_essence():
-    from pathlib import Path
-    EP = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
-    if not EP.exists():
+    # ESSENCE_MIGRATION(Resolver方式、DC_20260707_019/020): Canonical Essence基準に切替
+    _essence = essence_resolver.get_display_essence()
+    if _essence.get("primary_source") == "none":
         return jsonify({"status": "NOT_FOUND"})
-    try:
-        return jsonify(json.loads(EP.read_text(encoding="utf-8")))
-    except Exception as e:
-        return jsonify({"status": "ERROR", "message": str(e)})
+    return jsonify(_essence)
 
 @app.route("/public/events")
 def public_events():
