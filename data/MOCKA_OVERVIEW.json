@@ -7,8 +7,9 @@
       "primary": "C:/Users/sirok/MOCKA_OVERVIEW.json",
       "backup": "A:/MOCKA_OVERVIEW.json"
     },
-    "updated": "2026-06-18",
-    "version": "4.0"
+    "updated": "2026-07-07",
+    "version": "4.1",
+    "staleness_note": "v4.1はmeta欄(updated/version)のみのseal更新(Living Context整合性監査、監査官R01承認、E20260707_491579458f00f/IC_20260705_011対応)。session_history/next_actions/current_issues等の本文はv4.0(2026-06-18)時点のまま未更新であり、TODO_384以降・KN-004・TODO_411-425等の作業が反映されていない。本文の内容更新は別途「自動生成候補→Integrity Check→Human Gate→seal更新」方式の設計確定後に実施する(次工程)。backup(A:/MOCKA_OVERVIEW.json)は本更新時点で2026-06-01版のまま(primaryより古い)であることも確認済み。"
   },
   "owner": {
     "name": "nsjp_kimura",
@@ -559,5 +560,5 @@
       "data": "data/tic/"
     }
   },
-  "_snapshot_at": "2026-07-07T07:39:25.063645+00:00"
+  "_snapshot_at": "2026-07-07T07:49:29.126244+00:00"
 }
