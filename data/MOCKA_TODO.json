@@ -893,6 +893,18 @@
       "reference_event": "",
       "created_at": "2026-07-07T10:12:37.461990",
       "updated_at": "2026-07-07T10:19:53.785586"
+    },
+    {
+      "id": "TODO_424",
+      "title": "mocka-api Worker利用実態確認 - 廃止候補か現状維持か",
+      "status": "未着手",
+      "priority": "低",
+      "category": "governance",
+      "description": "DC_20260707_015(SSOT監査Phase D-1)で発見。mocka-api Worker(gateway/cloudflare/、TODO_418で本日修正済み)について、コードベース内検索では実際の呼び出し元が見つからなかった。TODO_417でgateway/openapi.yamlのservers.urlがgateway.nsjp.org直接参照へ切り替わっているため、mocka-api Worker経由の二重ホップ経路(mocka-api.nsjpkimura-mocka.workers.dev→gateway.nsjp.org)が現在誰にも使われていない可能性がある。外部クライアント(Copilot Studio登録実績等、TODO_417参照)がまだ旧workers.dev URLを参照している可能性はコードベース検索だけでは否定できないため、別途確認が必要。",
+      "assigned_to": "Claude",
+      "note": "DC_20260707_015参照。優先度低(運用影響が軽微)。着手時はTODO_417の実際の登録内容(Copilot Studio側で使用したURL)を確認してから、廃止候補か現状維持かを判断すること。",
+      "reference_event": "E20260707_768808546f6b1",
+      "created_at": "2026-07-07T10:30:29.510219"
     }
   ],
   "orchestra_handoff": {
@@ -1460,5 +1472,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T01:24:16.172382+00:00"
+  "_snapshot_at": "2026-07-07T01:34:20.747529+00:00"
 }
