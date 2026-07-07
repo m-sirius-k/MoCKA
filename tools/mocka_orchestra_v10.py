@@ -9,6 +9,14 @@ import os
 MODE = sys.argv[2] if len(sys.argv) > 2 else "orchestra"
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
 
+# TODO_419: Orchestra Context Bridge統合(DC_20260707_006承認)
+_NO_CONTEXT = "--no-context" in sys.argv
+try:
+    from orchestra_context_bridge import inject_context as _inject_context
+    ENRICHED_PROMPT = PROMPT if _NO_CONTEXT else _inject_context(PROMPT)
+except ImportError:
+    ENRICHED_PROMPT = PROMPT
+
 CHAT_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chat_urls.json")
 
 def load_chat_urls():
@@ -97,7 +105,7 @@ async def run_chatgpt(context):
         print("[ChatGPT] 入力欄が見つからない - スキップ")
         return "ChatGPT", ""
     await chatgpt_box.click()
-    await chatgpt_box.fill(PROMPT)
+    await chatgpt_box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(1)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
@@ -138,7 +146,7 @@ async def run_perplexity(context):
 
     box = page.get_by_role("textbox").first
     await box.click()
-    await box.fill(PROMPT)
+    await box.fill(ENRICHED_PROMPT)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
 
@@ -163,7 +171,7 @@ async def run_gemini(context):
     print(f"[Gemini] URL確認: {current_url[:60]}")
     box = page.get_by_role("textbox").first
     await box.click()
-    await box.fill(PROMPT)
+    await box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
@@ -194,7 +202,7 @@ async def run_copilot(context):
         print("[Copilot] 入力欄が見つからない - スキップ")
         return "Copilot", ""
     await box.click()
-    await box.fill(PROMPT)
+    await box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(2)
     await page.keyboard.press("Enter")
     await asyncio.sleep(3)
