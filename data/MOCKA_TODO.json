@@ -898,14 +898,15 @@
     {
       "id": "TODO_425",
       "title": "Chrome Extension Configuration Sync Pipeline設計 - content.js/manifest.jsonのngrok URL同期方式",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "中",
       "category": "governance",
       "description": "",
       "assigned_to": "Claude",
-      "note": "DC_20260707_017参照。TODO_422 Phase 1調査(E20260707_5690049345a67)で発見。対象: Orchestra_Project/extension/content.js・manifest.json。Chrome Extensionの仕様制約(content scriptはNode資源に到達不能・manifestは静的パース)によりコードSSOT修正ではなく外部生成物の同期方式設計が必要。範囲想定: .env→config生成→content.js更新→manifest更新→package/release手順。Chrome Web Store再提出を伴うためリスク中〜高。着手前にTODO_419/420/422-Aと同じPhase A-D→Human Gate承認→実装→E2E検証の流れを踏襲すること。",
+      "note": "DC_20260707_017参照。Phase A完了(E20260707_923794356a87f/E20260707_030248862c6ed)。Phase B完了(2026-07-07、CHANGE_START E20260707_1993350524e29/CHANGE_DONE本イベント参照)。成果物: docs/governance/TODO_425_EXTENSION_SYNC_DESIGN_v0.1.md。原因分析: CSPヘッダー実測・コード比較により、content.jsのngrok参照は過去設計残骸の可能性が高いと判定(状況証拠ベース、確証ではない)。B案(localhost統一)を推奨候補として提示したが実装は未着手。未決定事項1(意図的仕様でないことのきむら博士最終確認)の確定後にPhase C(実装)着手予定。Extension Capability境界(Capability Schema/Architecture Contract/Human Authorization)の方向性も記録済み(Schema確定は別途)。",
       "reference_event": "E20260707_5690049345a67",
-      "created_at": "2026-07-07T10:46:47.223167"
+      "created_at": "2026-07-07T10:46:47.223167",
+      "updated_at": "2026-07-07T11:11:45.952952"
     }
   ],
   "orchestra_handoff": {
@@ -1487,5 +1488,5 @@
       "completed_at": "2026-07-07"
     }
   ],
-  "_snapshot_at": "2026-07-07T02:04:35.667066+00:00"
+  "_snapshot_at": "2026-07-07T02:14:40.100054+00:00"
 }
