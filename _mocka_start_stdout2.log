@@ -22,3 +22,111 @@ MoCKA Starting...
 
 C:\Users\sirok\MoCKA>[PHASE 3.5] Verifying no duplicate PIDs on ports 5000/5002/5679...
 [OK] No duplicate PIDs detected on 5000/5002/5679
+
+==================================================
+  SYSTEM STATUS  2026-07-07
+==================================================
+  Health Check    [92mOK[0m
+  Watcher         [92mOK[0m
+  Git Sync        [91mFAIL[0m
+  UTF-8           [92mOK[0m
+==================================================
+
+==================================================
+  Today's Changes
+==================================================
+  NEW Critical : 0
+  Risk Up      : 0
+  Risk Down    : 0
+  Rank Changed : 0
+==================================================
+
+==================================================
+  Trace Log  (本日)
+==================================================
+  No changes detected.
+==================================================
+
+[trend_engine] 0件記録（本日合計: 11件）
+======================================================================
+  Today's Technical Risk Summary  2026-07-07
+======================================================================
+  claude_ai_dom       [91m 92 (=)     [0m [CRITICAL][0m  [STABLE    ]  外部仕様変更が極めて高頻度・代替は困難・3コンポーネントに影響  → relay, orchestra
+  mocka_server        [91m 70 (=)     [0m [CRITICAL][0m  [STABLE    ]  変更頻度は低い・代替手段なし・全システム影響範囲
+  chrome_mv3          [91m 70 (=)     [0m [CRITICAL][0m  [STABLE    ]  変更頻度は中程度・代替手段なし・4コンポーネントに影響  → relay, orchestra, memory, phi_os
+  anthropic_api       [93m 60 (=)     [0m [WARNING ][0m  [STABLE    ]  変更頻度は中程度・代替手段なし・2コンポーネントに影響  → orchestra, relay, mcp_schema
+  mcp_schema          [93m 55 (=)     [0m [WARNING ][0m  [STABLE    ]  変更頻度は中程度・代替は困難・3コンポーネントに影響  → relay, phi_os
+  sqlite_events_db    [33m 45 (=)     [0m [CAUTION ][0m  [STABLE    ]  変更頻度は低い・代替は容易・全システム影響範囲  → mocka_server
+  caliber_pipeline    [33m 45 (=)     [0m [CAUTION ][0m  [STABLE    ]  変更頻度は低い・代替は困難・3コンポーネントに影響
+  python_libs         [33m 45 (=)     [0m [CAUTION ][0m  [STABLE    ]  変更頻度は低い・代替は容易・全システム影響範囲
+  stripe_webhook      [33m 40 (=)     [0m [CAUTION ][0m  [STABLE    ]  変更頻度は低い・代替は困難・2コンポーネントに影響  → orchestra
+  cloudflare_workers  [33m 40 (=)     [0m [CAUTION ][0m  [STABLE    ]  変更頻度は低い・代替は困難・2コンポーネントに影響  → orchestra, relay
+  mocka_start_bat     [33m 35 (=)     [0m [CAUTION ][0m  [STABLE    ]  変更頻度は低い・代替は困難・1コンポーネントに影響
+======================================================================
+
+[root_cause_engine] dependency_events.jsonl に本日の変化なし。終了。
+==================================================
+  Today's Focus
+==================================================
+  No new technical risks detected.
+  Highest risk: claude_ai_dom (92, unchanged)
+  Action required: None
+==================================================
+
+==================================================
+  Prediction
+==================================================
+  anthropic_api  : Waiting for sufficient history (23 / 30)
+  caliber_pipeline : Waiting for sufficient history (23 / 30)
+  chrome_mv3     : Waiting for sufficient history (23 / 30)
+  claude_ai_dom  : Waiting for sufficient history (23 / 30)
+  cloudflare_workers : Waiting for sufficient history (23 / 30)
+  mcp_schema     : Waiting for sufficient history (23 / 30)
+  mocka_server   : Waiting for sufficient history (23 / 30)
+  mocka_start_bat : Waiting for sufficient history (23 / 30)
+  python_libs    : Waiting for sufficient history (23 / 30)
+  sqlite_events_db : Waiting for sufficient history (23 / 30)
+  stripe_webhook : Waiting for sufficient history (23 / 30)
+==================================================
+
+
+  [URL alive check]
+
+=================================================================
+  MoCKA Tech Watcher v3.0 (意味差分検知版)  2026-07-07
+  変更種別: SEMANTIC / NOISE / NO_CHANGE
+  アラート: CRITICAL / WARNING / INFO（NOISEはevent記録のみ）
+=================================================================
+  [OK    ] Anthropic API Release Notes
+           方式: anthropic_headings  fp: b4c813313305cffe
+  [OK    ] Claude Code Release Notes
+           方式: claude_code_changes  fp: aa37a61b6f28e31c
+  [OK    ] Chrome Extensions MV3
+           方式: chrome_mv3_changes  fp: d8373be5679803fe
+  [OK    ] Stripe Changelog
+           方式: stripe_entry_count  fp: bdd619a32207675f
+  [OK    ] MCP Specification
+           方式: mcp_spec_headings  fp: a7b3c53d5b674536
+
+  CRITICAL: 0件  WARNING: 0件  NOISE: 0件（queue不追加）  変化なし: 5件  初回: 0件  ERROR: 0件
+=================================================================
+
+
+==================================================
+  Today's Technical Risk Summary  2026-07-07
+==================================================
+  claude_ai_dom       [91m 92  [CRITICAL][0m  ##################
+  mocka_server        [91m 70  [CRITICAL][0m  ##############
+  chrome_mv3          [91m 70  [CRITICAL][0m  ##############
+  anthropic_api       [93m 60  [WARNING ][0m  ############
+  mcp_schema          [93m 55  [WARNING ][0m  ###########
+  sqlite_events_db    [33m 45  [CAUTION ][0m  #########
+  caliber_pipeline    [33m 45  [CAUTION ][0m  #########
+  python_libs         [33m 45  [CAUTION ][0m  #########
+  stripe_webhook      [33m 40  [CAUTION ][0m  ########
+  cloudflare_workers  [33m 40  [CAUTION ][0m  ########
+  mocka_start_bat     [33m 35  [CAUTION ][0m  #######
+==================================================
+  CRITICAL: 3件  WARNING: 2件
+==================================================
+
