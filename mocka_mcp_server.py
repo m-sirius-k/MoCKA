@@ -509,12 +509,23 @@ def execute_tool(name, args):
 
         elif name == "mocka_write_event":
             # [PHI-OS GATE v1 2026-06-16] Phase 3 — GATEプロキシ経由で書き込む
-            _actor = args.get("author", "")
-            # 未指定・レガシー値は Claude-code-{version} で自動補填
-            if not _actor or _actor in ("Claude", "claude"):
-                _actor = _DEFAULT_ACTOR
-            _desc = args.get("description", "")
-            _title = args.get("title", "")
+            # GL7-VALIDATION-MISSING-BUG是正: title/description/authorはツール定義上
+            # required(352行台のTOOLS登録"required":["title","description","author"])
+            # であるにもかかわらず、空文字が自動補填されvalidate()まで隠蔽されていた。
+            # レガシー値("Claude"/"claude")の自動正規化は維持しつつ、本当に空の場合は
+            # 検知してREJECTする（対応候補どおり、フォールバックを「補完」から
+            # 「検知して拒否」へ変更）。
+            _title = args.get("title", "").strip()
+            _desc = args.get("description", "").strip()
+            _actor_raw = args.get("author", "").strip()
+            if not _title:
+                return json.dumps({"status": "gate_rejected", "errors": ["title is required (empty)"]}, ensure_ascii=False)
+            if not _desc:
+                return json.dumps({"status": "gate_rejected", "errors": ["description is required (empty)"]}, ensure_ascii=False)
+            if not _actor_raw:
+                return json.dumps({"status": "gate_rejected", "errors": ["author is required (empty)"]}, ensure_ascii=False)
+            # 未指定検知はここまでで完了済み。レガシー値のみ Claude-code-{version} で自動補填
+            _actor = _DEFAULT_ACTOR if _actor_raw in ("Claude", "claude") else _actor_raw
             gate_payload = {
                 "who_actor":       _actor,
                 "who_role":        "executor",
