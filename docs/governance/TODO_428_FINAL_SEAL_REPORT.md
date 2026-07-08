@@ -67,11 +67,11 @@ Historical Snapshotとしてそのまま存続する(過去の記憶を消さな
 | Test B | todo_summary合計が一次データ件数合計と一致 | PASS |
 | Test C | Generator実行前後でlegacy MOCKA_OVERVIEW.jsonのSHA256が不変 | PASS |
 | Runtime確認 | Repository=Runtimeであることを確認済み(app.py/mocka_mcp_server.py) | PASS |
-| Safe-commit dry-run | 対象ファイルをgit add→ステージ確認→is_core_system_file()判定(全件False)→git restore --stagedで解除。実commitなし | PASS |
+| Safe-commit dry-run | 対象ファイルをgit add->ステージ確認->is_core_system_file()判定(全件False)->git restore --stagedで解除。実commitなし | PASS |
 
 `mocka_git_safe_commit()`には`--dry-run`引数は存在しない(実装未確認のまま前回指示書に
 記載されていた誤り)。目的(commitせずに対象を確認する)を満たすため、同関数が内部で行う
-git add→ステージ済みファイルのcore判定という手順のみを手動で再現し、最後に必ず
+git add->ステージ済みファイルのcore判定という手順のみを手動で再現し、最後に必ず
 `git restore --staged`で解除した。commitは一度も実行していない。
 
 ## Generated Artifact Policy
