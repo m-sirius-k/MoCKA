@@ -191,7 +191,7 @@ SealGovernanceGate.execute()
 working tree上の差分として残し、commitは保留する(TODO_427/TODO_428と同型の
 "MCP復旧後に正規記録・commit"パターン)。
 
-### 完了条件チェックリスト
+### 完了条件チェックリスト(Phase C-2時点)
 
 - [x] Governance Gate実装
 - [x] app.py最小接続(working tree、commit未実施)
@@ -202,3 +202,79 @@ working tree上の差分として残し、commitは保留する(TODO_427/TODO_42
 - [x] Audit Report更新(本追記)
 - [ ] Human Gate提出 — 本追記自体がその提出物。app.py commitの可否については
       追加のご判断を仰ぐ
+
+---
+
+## Phase C-3 追記(2026-07-08、裁定: app.py commit保留・実Legacy実行禁止・Shadow Adapter方式採用)
+
+きむら博士裁定により、(1)app.py commitはMCP復旧後の正規`event_id`発行を待つ
+(チャット承認をoverride根拠として流用しない)、(2)実`anchor_update.py`による
+Legacy検証は本番seal発火を伴うため禁止、Shadow Adapter方式で代替、の2点が
+確定した。Phase C-3ではStep 1(Core Change Request作成)・Step 4(Shadow Adapter
+実装)・Step 5(Shadow Adapterによる最終検証)を実施し、Step 2/3
+(MCP復旧待ち・app.py commit)は前提条件未充足のため停止した。
+
+### Step 1: Core Change Request
+
+新規: [PHASE_C_CORE_CHANGE_REQUEST_v1.0.md](PHASE_C_CORE_CHANGE_REQUEST_v1.0.md)。
+`app.py`のBefore/After差分・TODO_427/Pack1(`3bc80842e`)のoverride形式との比較・
+Core System File該当理由・rollback方針・検証結果を記載した、commit実行時に
+そのまま添付できる形式のHuman Gate提出資料。
+
+### Step 2/3: MCP復旧待機・app.py commit — 停止
+
+本セッション開始時点・Phase C-3着手時点の両方でMoCKA系MCPツール(`mocka_write_event`等)の
+接続を確認したが、いずれも0件(ToolSearchで再確認済み)。正規`event_id`を発行できないため、
+裁定通りStep 2/3には進んでいない。`app.py`は引き続きworking tree差分のまま
+(commit未実施)。
+
+### Step 4: Shadow Adapter実装
+
+新規: `governance/shadow_seal_adapter.py`。実`anchor_update.py`は一度も実行せず、
+以下3種の検証のみを行う:
+
+1. `verify_cli_contract()`: `anchor_update.py`のソースを**静的に読むのみ**で、
+   `SealGovernanceGate._extract_hashes()`が期待する出力marker(`"COMMIT:"`・
+   `"SUMMARY_HASH:"`)が現在も存在するかを確認(実行しない、将来の出力形式変更による
+   ドリフトを検知する仕組み)
+2. `verify_anchor_schema_compatibility()`: 実`anchor_record.json`(2箇所)を
+   **読み取りのみ**で、`anchor_update.py`が前提とするフィールド
+   (external_ref/sealed_summary_hash/sealed_at_utc)の存在を確認
+3. `verify_hash_compatibility(sandbox_root)`: `anchor_update.py`が内部で使う
+   既存の安全な部品(`mocka_git_safe_commit`・`calc_summary_hash.py`、いずれも
+   無改造)をsandbox環境で実行し、hash算出アルゴリズムが正しく動作することを実証
+
+### Step 5: 最終検証(Shadow Adapter経由、実Legacy実行なし)
+
+`tests/test_shadow_seal_adapter.py`、4件ともPASS:
+
+| Test | 内容 | 結果 |
+|---|---|---|
+| Test A | CLI契約確認(anchor_update.py静的読み取り) | PASS |
+| Test B | anchor_record.jsonスキーマ互換性確認(実ファイル読み取りのみ) | PASS |
+| Test C | hash互換性確認(sandbox内でmocka_git_safe_commit・calc_summary_hash.pyを無変更実行、64桁hex一致) | PASS |
+| Test D | 非侵襲性確認(実anchor_update.py・anchor_record.json2箇所・decision_ledger.jsonlが無変更) | PASS |
+
+"Governance Gate -> GL7 -> Gate A -> Seal pipeline"のうち、Governance Gate・GL7・
+Gate Aの正常系/Abort系は`test_seal_governance_gate.py`(Phase C-2、3件PASS)で、
+hash/artifact整合はShadow Adapter(本Step、4件PASS)で検証済み。唯一未検証なのは
+"実`anchor_update.py`を実際に呼んだ場合にGateから渡された値で正しく完走するか"
+という真のLegacy統合であり、これは実行そのものが本番seal発火に等しいため、
+本Phaseでは意図的に未実施のまま残す。
+
+### 完了条件チェックリスト(Phase C-3時点、更新)
+
+- [x] Governance Gate実装
+- [ ] app.py Core変更完了 — working tree差分のまま、commit未実施(MCP復旧待ち)
+- [ ] Human Gate event存在 — MCP不通のため未発行
+- [x] Shadow検証PASS(Shadow Adapter、Test A-D 4件)
+- [x] Caliber PASS(Gate単体、Test A-C 3件)
+- [x] Audit Report更新(本追記)
+- [ ] TODO_411/412/413裁定可能 — app.py commit完了後に判断
+
+### Commit状況(Phase C-3)
+
+`governance/shadow_seal_adapter.py`・`tests/test_shadow_seal_adapter.py`・
+`docs/governance/PHASE_C_CORE_CHANGE_REQUEST_v1.0.md`・本レポート更新は
+いずれも`is_core_system_file()`判定`False`(Core System File非該当)であり、
+通常通りcommit可能。`app.py`は引き続き保留。
