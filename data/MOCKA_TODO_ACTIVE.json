@@ -843,9 +843,10 @@
       "category": "Governance Integrity",
       "description": "IC_20260707_006(AUTO_SEAL_50EVT Human Gate Bypass)是正のExplore一次データ照合中に、同型・別発火経路として、app.py:2058-2066の日次AUTO_SEAL_{today}トリガーと、watchdog_mocka.py:82-95のtry_daily_sealが、いずれもHuman Gate未経由でanchor_update.pyをsubprocess経由で直接起動していることが判明(IC_20260708_001)。50EVT分岐(app.py:2072-2109)で確立したAUTO_SEAL_PENDING方式(イベント記録+停止+人間の明示指示待ち)を、両経路へ対称的に適用する。承認パック3本立て(パック1=本件実装対象/パック2=_auto_approve_prevention()制度監査/パック3=write_condense_worker.py実装監査)のうちパック1に該当し、監査官R01(きむら博士)がパック1の実装開始を承認済み(2026-07-08)。",
       "assigned_to": "Claude-sonnet-5(実装)+ きむら博士(承認)",
-      "note": "実施順序通り完了: Incident/TODO登録 → app.py修正(2058-2091行、AUTO_SEAL_PENDING_DAILY方式) → watchdog_mocka.py修正(82-122行、同方式) → 単体テスト(正常系/境界値系、app.py・watchdog双方でsubprocess呼出0回・イベント記録を確認) → 統合テスト(audit_seal_manual()等スコープ外箇所の非変更を確認) → 再監査(独立Exploreエージェントによる実装/記録/整合性の一次データ照合、矛盾なし) → Integrity追記(IC_20260708_001→Resolved、続いてIC_20260707_006→Resolvedの順で追記)完了。MoCKA MCPセッションのmocka_write_event/mocka_integrity_write等が本セッション中Session terminated(サーバー本体localhost:5002は健全、capability drift類似の別種障害)のため、本登録・追記は一次データファイルへの直接編集で代替した。MCP復旧後にCHANGE_START/CHANGE_DONE相当の遡及記録、およびgit commit(mocka_git_safe_commit経由)が必要。",
+      "note": "実施順序通り完了・commit済み: Incident/TODO登録 -> app.py修正(2058-2091行) -> watchdog_mocka.py修正(82-122行) -> 単体/統合テスト合格 -> 独立Explore再監査(矛盾なし) -> Integrity追記(IC_20260708_001/IC_20260707_006 Resolved) -> Decision Record(DC_20260708_004) -> commit 3bc80842e(paths限定: app.py/watchdog_mocka.py/data/MOCKA_TODO_ACTIVE.json、human_gate_override_event_id=E20260708_1825441396032、post-commit違反なし確認済み)。注記: app.py稼働中プロセス(PID 16244)は本commit時点でまだ再起動しておらず旧コードのまま稼働中のため、修正の実runtime反映には別途プロセス再起動が必要(次工程、本セッションでは未実施)。",
       "reference_event": "PENDING(MCPセッション不通のため未発行、復旧後に遡及記録予定)",
-      "created_at": "2026-07-08T08:57:49.412313"
+      "created_at": "2026-07-08T08:57:49.412313",
+      "updated_at": "2026-07-08T15:48:06.623198"
     },
     {
       "id": "TODO_428",
