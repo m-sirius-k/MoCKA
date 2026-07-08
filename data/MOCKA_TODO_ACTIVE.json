@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-07",
+    "updated": "2026-07-08",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -32,18 +32,6 @@
       "note": "E20260601_011。「AIは便利だから採用と言う。博士は5年後も維持できるかを見る。」この非対称性がHuman Gateの存在理由。",
       "reference_event": "E20260601_011",
       "created_at": "2026-06-01T07:35:58.299123"
-    },
-    {
-      "id": "TODO_206",
-      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度/TIC/impact",
-      "description": "TIC Layer 3。「面白い機能」ではなく「MoCKAがどう変わるか」を自動洗い出し。\n\n【impact_analyzer.py の動作】\nevaluation_queue.jsonlから技術エントリを読み込み、\nMoCKAの依存マップ（dependency_map.json）と照合して\n影響を受けるコンポーネントを列挙する。\n\n【dependency_map.json 構造】\n{\n  \"claude.ai_dom\": [\"Relay\", \"Orchestra\", \"content.js\"],\n  \"anthropic_api\": [\"Caliber\", \"vasAI\"],\n  \"mcp_schema\": [\"mocka_mcp_server\", \"Caliber\", \"Claude接続\"],\n  \"stripe_webhook\": [\"Orchestra\", \"Relay(予定)\"],\n  \"chrome_mv3\": [\"Orchestra\", \"Relay\", \"PHI-OS\", \"Memory\"],\n  \"sqlite\": [\"events.db\", \"morphology.db\", \"Caliber\"],\n  \"cloudflare_workers\": [\"orchestra-license\", \"relay-license(予定)\"]\n}\n\n【出力】\n各技術変更に対して影響コンポーネントリストを自動生成。\nHuman Gate提示時に「このAPIが変わるとOrchestra/Relayが壊れます」と明示。",
-      "assigned_to": "Claude（実装）",
-      "note": "E20260601_011。依存マップが核心。MoCKA多層構造の全依存を可視化。",
-      "reference_event": "E20260601_011",
-      "created_at": "2026-06-01T07:35:46.706472"
     },
     {
       "id": "TODO_209",
@@ -84,30 +72,6 @@
       "updated_at": "2026-06-09T17:19:57.275561"
     },
     {
-      "id": "TODO_160",
-      "title": "Orchestra — CSV/JSON export正規化（3種exportProfile）",
-      "status": "未着手",
-      "priority": "高",
-      "category": "製品/Orchestra/PHI_OS/export",
-      "description": "CSV/JSON export を同一正規化関数から生成する仕組みを実装。exportProfile3種: raw（取得そのまま）/normalized（PHI OSスキーマ準拠）/share-ready（内部フィールド除去済み）。同一フィルタ条件・同一並び順・同一ID群で出力。background.jsのexport関数をexport.jsに分離してprofile切り替えを実装。CSV/JSONのズレを構造的に防止する。",
-      "assigned_to": "Claude（実装）",
-      "note": "",
-      "reference_event": "E20260519_020",
-      "created_at": "2026-05-19T17:17:10.632487"
-    },
-    {
-      "id": "TODO_171",
-      "title": "Orchestra Phase4 — JS難読化ビルドパイプライン",
-      "status": "未着手",
-      "priority": "中",
-      "category": "製品/Orchestra/monetization",
-      "description": "JS難読化でコード解読コストを上げる。①terser（JS難読化ツール）でbackground.js/content.js/popup.jsをminify+obfuscate ②変数名・関数名をランダム文字列に変換 ③ライセンス検証ロジック部分を特に強く難読化 ④ビルドスクリプト（build.py）作成で毎回自動難読化 ⑤Store提出用ZIPは難読化済みファイルを使用",
-      "assigned_to": "Claude（実装）",
-      "note": "E20260522_029",
-      "reference_event": "E20260522_029",
-      "created_at": "2026-05-22T17:32:10.285703"
-    },
-    {
       "id": "TODO_166",
       "title": "Orchestra合議 — UIブロッカー対策（プリフライトチェック実装）",
       "status": "未着手",
@@ -118,18 +82,6 @@
       "note": "2026-05-22: 合議テストで発覚。今後も定期的に発生するパターン。プリフライトチェックが最優先対策。",
       "reference_event": "E20260522_003",
       "created_at": "2026-05-22T08:42:45.206804"
-    },
-    {
-      "id": "TODO_161",
-      "title": "Orchestra — 販売品質耐久性6要素実装",
-      "status": "未着手",
-      "priority": "高",
-      "category": "製品/Orchestra/耐久性",
-      "description": "販売品質耐久性のための6要素を実装。①schema version: 全保存データにversionを持たせ起動時migration②diagnostics: popup診断タブ（last save/export/selector hit/error/observer active可視化）③selector registry: SELECTORS.jsにclauде.aiセレクタを集中管理・confidence/updated管理④stream stability: テキスト安定化+idle time複合判定（800〜1200ms）⑤feature flags: share/export/vault/debug/built-in AI を機能単位でon/off⑥audit log: 保存・共有・更新のwho/when/whatを記録。壊れたレコードの隔離処理も実装（全体停止防止）。",
-      "assigned_to": "Claude（実装）",
-      "note": "",
-      "reference_event": "E20260519_020",
-      "created_at": "2026-05-19T17:17:22.112694"
     },
     {
       "id": "TODO_150",
@@ -232,14 +184,15 @@
     {
       "id": "TODO_231",
       "title": "NTP Phase5: C001骨格商品P02〜P07詳細調査（TSI=0.5→1.0）",
-      "status": "未着手",
+      "status": "保留",
       "priority": "中",
       "category": "NTP/保険FP",
       "description": "C001（メットライフ）の骨格商品P02〜P07（TSI=0.5）の詳細データ調査。保険料・保障内容・条件を取得してmaster_v5に反映する。",
       "assigned_to": "Claude",
-      "note": "",
+      "note": "実装対象外(保留)。理由: 実在金融商品(メットライフ)の実地データ取得が完了条件、推測値生成は禁止、既存コード・既存仕様のみでは完了不能、専用Web調査(Perplexity等)担当領域。",
       "reference_event": "E20260604_174",
-      "created_at": "2026-06-04T13:59:26.793565"
+      "created_at": "2026-06-04T13:59:26.793565",
+      "updated_at": "2026-07-08T12:27:25.942278"
     },
     {
       "id": "TODO_122",
@@ -264,19 +217,6 @@
       "note": "",
       "reference_event": "",
       "created_at": "2026-06-06T14:20:04.671440"
-    },
-    {
-      "id": "TODO_241",
-      "title": "PR-OS Phase4: MoCKA Command Center統合",
-      "status": "進行中",
-      "priority": "低",
-      "category": "PR-OS",
-      "description": "PR-OS Command CenterをMoCKA既存Command Centerと統合。mocka_events.dbへの公開後フィードバック記録・双方向データフロー完成。",
-      "assigned_to": "Claude",
-      "note": "mocka_bridge E2E経路確認済み。PR-OS UI(localhost:8740)起動にuvicorn未インストールでブロック。pip install uvicorn後に再確認が必要。",
-      "reference_event": "",
-      "created_at": "2026-06-06T14:20:13.628642",
-      "updated_at": "2026-06-18T18:36:30.818391"
     },
     {
       "id": "TODO_242",
@@ -306,14 +246,15 @@
     {
       "id": "TODO_325",
       "title": "PHI-OS Trust Boundary確立 — DBアクセスをPHI-OSプロセス専用に限定（Windows ACL）",
-      "status": "未着手",
+      "status": "保留",
       "priority": "高",
       "category": "architecture",
       "description": "GPT R01 Priority1指摘。SQLiteファイルへの直接アクセスをPHI-OSプロセスのみに限定。Windows ACLでmocka_events.dbの書き込み権限をPHI-OSサービスアカウントのみに設定。AI/外部スクリプトからの直接SQLite接続を物理的に遮断。Trust Boundary確立。",
       "assigned_to": "Claude",
-      "note": "GPT R01 Priority1（必須）。TODO_323(Trigger)・TODO_324(定期監査)と合わせてPhase5で実施。",
+      "note": "実装対象外(保留)。理由: Windows ACLでmocka_events.dbへの書き込みをPHI-OSプロセスのみに制限する変更で、db_helper.py/event_gate.py/human_gate.py/risk_scorer.py/impact_analyzer.py等多数の既存スクリプトが直接sqlite3接続している(要棚卸し)。ノート記載どおりTODO_323/324と合わせたPhase5協調実施が前提。実運用中の共有DBへの権限制限という高影響・後戻り困難な変更のため、既存フィードバック方針(認証/セキュリティ切替は全クライアント棚卸し完了を実装着手ゲートとする)に従い、人的判断(博士確認)が必要な領域として保留。",
       "reference_event": "E20260616_064",
-      "created_at": "2026-06-16T10:13:10.769167"
+      "created_at": "2026-06-16T10:13:10.769167",
+      "updated_at": "2026-07-08T12:28:08.777877"
     },
     {
       "id": "TODO_334",
@@ -387,19 +328,6 @@
       "note": "実行フェーズではなくインターフェース再設計フェーズ。本仕様確定までmocka_write_eventの実書き込みテストは行わない。",
       "reference_event": "REALITY-ALIGNMENT-HAB-GL7-V1",
       "created_at": "2026-06-23T08:50:54.987860"
-    },
-    {
-      "id": "GL7-VALIDATION-MISSING-BUG",
-      "title": "[不具合]mocka_write_eventに空文字/欠損バリデーションが存在しない",
-      "status": "進行中",
-      "priority": "高",
-      "category": "不具合",
-      "description": "■検証結果（Phase 2：不正入力耐性テスト）\n入力：title=\"test_event_2\", description=\"\", author=\"\"\n期待：FAIL or REJECT（空値検出、書き込み阻止、event_id発行なし）\n実際：status=\"ok\", event_id=\"E20260623_3961913609a48\"で正常に書き込まれた（gate/sqlite）\n\n■結論\nHAB-3FIELD-TRANSFORM-MIN-SPECで設計したGL7の役割（title/description/author検証、nullチェック）は現状mocka_write_event側に実装されていない。空文字・欠損フィールドがそのままDBに書き込まれてしまう。\n\n■影響\n- データ品質の汚染（空のdescription/authorイベントが蓄積される）\n- author=\"\" は本来「正確なAI識別子」必須のはずだが強制されていない\n\n■対応候補\n- mocka_write_event呼び出し前段（GL7相当）でのfield validation実装\n- もしくはmocka_write_event内部でのrequired/non-empty validation追加",
-      "assigned_to": "Claude",
-      "note": "[訂正] 当初「validationが存在しない」と誤認していたが、実際はC:\\Users\\sirok\\MoCKA\\phi_os\\gate_validator.py のvalidate()がwho_actor/who_session/why_purpose(10文字以上)/how_trigger/where_path/what_type/before_after を厳格に検証する本物のゲートが稼働中（PHI-OS GATE v1, 2026-06-16導入）。\n真因: mocka_mcp_server.py のmocka_write_event処理(364-384行)で、authorが空文字の場合に_DEFAULT_ACTORへ自動補填、why_purpose/after_stateがdescription空の場合にtitleへフォールバックする実装になっており、validate()に渡る前に空フィールドが隠蔽されてしまう。validate()自体は正しく動作している。\n対象テストイベント E20260623_3961913609a48 は実際にはauthor自動補填・why_purpose=title代用で正規にvalidate()を通過していたため、DBレベルでは空author行は存在しない（無効化レコードE20260623_466594526e084は前提が誤っていたが実害はない）。\n対応候補: mocka_write_event呼び出し時にauthor/descriptionが本当に空だった場合は自動補填せずREJECTする（フォールバックを「補完」ではなく「検知して拒否」に変更）。",
-      "reference_event": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
-      "created_at": "2026-06-23T08:53:34.609029",
-      "updated_at": "2026-06-23T09:07:38.795728"
     },
     {
       "id": "GL7-UNENFORCED-CONDITIONS-BUG",
@@ -476,19 +404,6 @@
       "reference_event": "TODO_368着手前調査(2026-06-26)",
       "created_at": "2026-06-26T10:23:12.387519",
       "updated_at": "2026-06-27T20:32:06.617550"
-    },
-    {
-      "id": "TODO_371",
-      "title": "正本記録(events.db/mocka_write_event)の信頼性実測 — AUTO_SEAL等の補助機構が本流化している根本原因の検証",
-      "status": "進行中",
-      "priority": "高",
-      "category": "制度/ガバナンス/正本信頼性",
-      "description": "2026-06-26、TODO_370(AUTO_SEAL_50EVTのHuman Gateバイパス再発)の対応中に、きむら博士から本質的な指摘があった。\n\n【きむら博士の説明(2026-06-26)】\nAUTO_SEAL_50EVT/sync_watch.pyは、きむら博士自身が意図的に設計したもの。理由は「MoCKAの最重要記録(会話・変更・イベントログ)が正しく記録されていない不安があったため、Gitに丸ごと保存させることで漏れなく全てを残す保険機構」として組んだ。\n\nきむら博士の診断: 「events.db/mocka_write_event経由の正本ルール(5W1H形式での記録)が正しく機能していれば、この補助ルールは本来不要。正本ルールの上に補助ルールがあるようなものだが、実際は正本ルールが正しく稼働しておらず、補助ルールの方が本流(支流が主流化)になってしまっている」。\n\n【本日の調査全体に共通する構造的パターンとの一致】\n本日発見した以下のいずれも、同型の「正本への不信から生まれた独自の補助記録」というパターンを持つ：\n- relay-logbook.js(TODO_366): MoCKA本体のTODO/イベント記録が信頼できないことから生まれた、Relay独自のLB_記録\n- Memory拡張機能(TODO_367で発見): PHI-OSが情報を一元管理していないことから生まれた、独自のmemory_registryキャプチャ\n- AUTO_SEAL_50EVT/sync_watch.py(本TODO): events.dbへの記録漏れの不安から生まれた、Git全体保存という力技の保険機構\n\nこれらは個別にはバグ修正(TODO_366/367/370)で対応中だが、根本には「events.db/mocka_write_event経由の正本記録が、実際にどの程度信頼できるのか」という、検証されていない共通の前提がある。\n\n【調査内容】\n①events.db/mocka_write_event経由の記録が、実際にどの程度漏れている(または漏れていない)のかを実測する。具体的な検証方法（例: 一定期間の実際の作業内容と、events.dbの記録内容を突き合わせて、記録漏れの実件数を数える等）はくろこの判断で設計してよい。\n②漏れが実際にはほとんど無い場合: AUTO_SEAL_50EVT/sync_watch.pyのようなGit丸ごと保存型の補助機構は、段階的に廃止できる可能性がある(これは設計判断としてきむら博士に最終確認する)。\n③漏れが実際にある場合: その漏れの直接原因(mocka_write_eventが呼ばれていない経路の特定等)を優先して修正する方が、補助機構の維持より優先度が高い。",
-      "assigned_to": "くろこ(実測調査)+ きむら博士(設計判断)",
-      "note": "これは個別バグ修正(TODO_366/367/370)とは異なる、上位の診断TODO。「正本が信頼できないという不安が、複数の独立した補助記録機構を生み出している」という、本日発見した複数インシデントに共通する根本原因への対応。緊急の実装は不要だが、優先度は高い(これを放置すると、今後も同種の補助機構が個別に増殖し続ける可能性がある)。\n\n[2026-06-26追記1] TODO_347-c実機確認作業中に新たな調査対象を発見。health_check.pyのcheck_phi_os_audit()が「Direct Write違反(新規)32件」のFAILを返したが、これはcompute_gate_audit()（violation_events=0）とは無関係に、audit_violationsテーブル(audit_trigger.pyによるDB直接INSERT検知トリガー)が独立して記録しているものだった。該当32件は2026-06-20付・status='NEW'のまま未対応で放置されていた。relay-logbook.js（独自TODO抽出パイプライン）・Memory拡張機能（memory_registry自己完結ストレージ）・AUTO_SEAL_50EVT（anchor_update.py/sync_watch.py）と同型の「正本ロジックとは別に並走する独立記録機構」パターンに該当する可能性があるため、個別修正せず本TODOの調査範囲に追加する。\n\n[2026-06-26追記2] きむら博士の指摘を受け、472a6d0f9(sync_watch.pyによる自動push)がHuman Gate迂回でないか一次情報で検証。結果: (A)data/4ファイルをCloudflare同期用に追跡例外とする設計自体は.gitignoreの古い既存コメントに基づく別文脈の意図的設計で問題なし。(B)しかし「sync_watch.pyのgit commit自体もGIT_TARGETSにスコープし、has_pending_core_system_changes()でCore System File未承認時はサイクルをスキップする」という具体的な修正方式の選択(commit 90a39ef27)は、その直前の調査記録からわずか47分後に出現しており、修正方式選択そのものをきむら博士が事前承認した記録が見つからなかった。この論点は別TODOとして切り出し、TODO_372として起票した(統合はせず相互参照)。\n\n[2026-06-30追記] AUTO_SEAL_50EVTがTODO_393関連commitに無関係ファイル(ping_latest.json、records/master/配下3件)を巻き込んだ実例を確認。\n\n[2026-07-07追記3] Living Context整合性監査(Essence Resolver導入、DC_20260707_019/020)の副産物として、COMMAND CENTERのseal表示に関する新証拠を発見(IC_20260707_005)。当初仮説「AUTO_SEAL等補助機構が本流化している」は一部訂正が必要: 実際にはgovernance/anchor_record.json(anchor_update.py起点)が現役・健全な監査証跡seal(直近更新2026-07-07T09:04:00Z)として機能しており、「本流が死んでいる」わけではない。問題はCOMMAND CENTERがruntime/main/ledger.json(2026-04-16以降更新なし、関連24スクリプトも現在無稼働)という廃止済みファイルを参照し続けている表示配線ミスである可能性が高い。Essence Resolverと同型の構造的問題。\n\n[2026-07-07追記4] Seal Canonical Source確定のDecision化準備完了。docs/governance/SEAL_CANONICAL_SOURCE_PROPOSAL_v0.1.mdを作成・レビュー・補強(機能分類表/決定根拠/Legacy保持理由/Phase境界/data/seal_log.json別Decision化/実装前リスクの6点反映)し、Human Gate Phase1(Decision承認)としてDC_20260707_021で正式承認済み。承認内容: (1)governance/anchor_record.jsonを監査証跡seal正本候補とする (2)runtime/main/ledger.jsonをLegacy Ledgerとして扱う (3)Legacy Ledgerは削除せずrollback/比較監査/移行検証用途として保持 (4)MOCKA_OVERVIEW.jsonは状態説明・表示同期用途 (5)data/seal_log.jsonは別Decision対象としてスコープ外。承認後もapp.py変更・COMMAND CENTER参照変更・anchor_record.json/ledger.json変更・seal_log作成・Legacy削除は禁止継続。次工程: Phase2(参照切替設計、Seal Migration Spec作成)。Phase2開始前にcalc_summary_hash.py健全性確認/Legacy Ledger不定期起動経路確認/seal_log実行履歴確認を別途実施する。",
-      "reference_event": "TODO_370対応中のきむら博士の指摘(2026-06-26)",
-      "created_at": "2026-06-26T11:30:41.253043",
-      "updated_at": "2026-07-07T19:40:15.816758"
     },
     {
       "id": "TODO_372",
@@ -903,10 +818,71 @@
       "category": "governance",
       "description": "",
       "assigned_to": "Claude",
-      "note": "DC_20260707_017/018参照。content.js/manifest.jsonのngrok URL→mcp.nsjp.org更新・push完了(commit f5bcb0e、E20260707_8278442400d17)。Web Store配布版は現状不在のため配布経路への反映は完了。【監査官R01優先順位②】残るのはclaude.ai実機でのfetchLivingContext成功確認のみ(未着手)。ブラウザ操作が必要なため、次セッションで実施するか、くろこがcomputer-use/claude-in-chrome経由で実施するかをきむら博士の指示待ち。content_orchestra.js(localhost:5000)の役割確認も未着手のまま。",
+      "note": "DC_20260707_017/018参照。content.js/manifest.jsonのngrok URL→mcp.nsjp.org更新・push完了(commit f5bcb0e、E20260707_8278442400d17)。Web Store配布版は現状不在のため配布経路への反映は完了。2026-07-08、外部状態報告との一次データ照合により、残作業を「fetchLivingContext確認のみ」と記載していたのは不正確と判明したため訂正。【監査官R01優先順位②】残作業は以下2件、いずれも未着手: (1)claude.ai実機でのfetchLivingContext成功確認(ブラウザ操作が必要なため、次セッションで実施するか、くろこがcomputer-use/claude-in-chrome経由で実施するかをきむら博士の指示待ち)。(2)content_orchestra.js(localhost:5000)の役割確認。",
       "reference_event": "E20260707_5690049345a67",
       "created_at": "2026-07-07T10:46:47.223167",
       "updated_at": "2026-07-07T16:57:47.809572"
+    },
+    {
+      "id": "TODO_426",
+      "title": "Git Safe Commit Post Condition Verification — 除外ロジックの実効性検証欠落是正",
+      "status": "完了",
+      "priority": "高",
+      "category": "Governance Integrity",
+      "description": "mocka_git_safe_commit.py内のCore System File除外ロジック(git restore --staged)が、実行の成否(returncode)・除外後のstaged状態を検証せずcommitへ進んでいた設計上の欠陥。IC_20260707_006(AUTO_SEAL_50EVTによるapp.py無断commit)で、除外ロジック自体はコード上存在していたにもかかわらず実際には効かなかった事案として発覚。",
+      "assigned_to": "Claude-sonnet-5(実装)+ きむら博士(承認)",
+      "note": "2026-07-08、commit 1707fcc38にてgovernance/mocka_git_safe_commit.pyへpost-condition verification(restore returncode確認+git diff --cached --name-onlyによる再チェック)を追加。除外対象が残存していればcommitを中止しresult[\"error\"]を返す設計に変更。さらに全safe commit共通でpost_commit_files/post_commit_violationを返すcommit後標準検証も追加(監査官R01承認版Phase4安全改善パッチstep1/3対応)。隔離テストリポジトリでの動作検証(override無し/有りの両ケース)も実施済み。TODO_371(是正完了)・IC_20260707_006(DC_20260708_001でclose)と関連。",
+      "reference_event": "E20260708_6613941345364",
+      "created_at": "2026-07-08T07:43:38.662880"
+    },
+    {
+      "id": "TODO_427",
+      "title": "日次seal系(app.py auto_audit_loop日次条件 + watchdog_mocka.py try_daily_seal)のHuman Gate化",
+      "status": "完了",
+      "priority": "高",
+      "category": "Governance Integrity",
+      "description": "IC_20260707_006(AUTO_SEAL_50EVT Human Gate Bypass)是正のExplore一次データ照合中に、同型・別発火経路として、app.py:2058-2066の日次AUTO_SEAL_{today}トリガーと、watchdog_mocka.py:82-95のtry_daily_sealが、いずれもHuman Gate未経由でanchor_update.pyをsubprocess経由で直接起動していることが判明(IC_20260708_001)。50EVT分岐(app.py:2072-2109)で確立したAUTO_SEAL_PENDING方式(イベント記録+停止+人間の明示指示待ち)を、両経路へ対称的に適用する。承認パック3本立て(パック1=本件実装対象/パック2=_auto_approve_prevention()制度監査/パック3=write_condense_worker.py実装監査)のうちパック1に該当し、監査官R01(きむら博士)がパック1の実装開始を承認済み(2026-07-08)。",
+      "assigned_to": "Claude-sonnet-5(実装)+ きむら博士(承認)",
+      "note": "実施順序通り完了: Incident/TODO登録 → app.py修正(2058-2091行、AUTO_SEAL_PENDING_DAILY方式) → watchdog_mocka.py修正(82-122行、同方式) → 単体テスト(正常系/境界値系、app.py・watchdog双方でsubprocess呼出0回・イベント記録を確認) → 統合テスト(audit_seal_manual()等スコープ外箇所の非変更を確認) → 再監査(独立Exploreエージェントによる実装/記録/整合性の一次データ照合、矛盾なし) → Integrity追記(IC_20260708_001→Resolved、続いてIC_20260707_006→Resolvedの順で追記)完了。MoCKA MCPセッションのmocka_write_event/mocka_integrity_write等が本セッション中Session terminated(サーバー本体localhost:5002は健全、capability drift類似の別種障害)のため、本登録・追記は一次データファイルへの直接編集で代替した。MCP復旧後にCHANGE_START/CHANGE_DONE相当の遡及記録、およびgit commit(mocka_git_safe_commit経由)が必要。",
+      "reference_event": "PENDING(MCPセッション不通のため未発行、復旧後に遡及記録予定)",
+      "created_at": "2026-07-08T08:57:49.412313"
+    },
+    {
+      "id": "TODO_428",
+      "title": "MOCKA_OVERVIEW_CURRENT_GENERATION — 一次データからの状態表示層自動生成",
+      "status": "未着手",
+      "priority": "中",
+      "category": "SSOTガバナンス",
+      "description": "MOCKA_OVERVIEW_STALENESS_REPORT.md(docs/governance/、2026-07-08作成)にて、MOCKA_OVERVIEW.jsonの本文(session_history/next_actions/current_issues)がv4.0(2026-06-18)時点で凍結されたまま、meta欄のみseal更新される運用が続いており、TODO_242/325/266/171/215/346(計6件)の状態乖離+TODO_209の見落とし1件が発見された。監査官R01の方針により、乖離箇所を個別に手修正するのではなく、MOCKA_TODO_ACTIVE.json(+ARCHIVE)・decision_ledger.jsonl・events.db・seal/anchor metadataを唯一の真実(SSOT)とし、状態表示層(Current View)を自動生成する仕組みへ昇華する。MOCKA_OVERVIEW.json自体への手修正は行わない方針(過去の記憶埋め込みを繰り返すだけのため)。既存のMOCKA_OVERVIEW.json(legacy)はHistorical Snapshotとして保持し、新設のMOCKA_OVERVIEW_CURRENT.json(またはMOCKA_STATE_CURRENT.json)をGeneratorの出力先とする設計を想定。",
+      "assigned_to": "未定(実装はAUTO_SEAL Pack1完了後に着手)",
+      "note": "土台候補: PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.pyのexport_events()(events.db→JSON生成の既存パターン、26-43行)。既存設計文書: docs/governance/TODO_SSOT_INTEGRATION_DESIGN_v0.1.md。staleness_note自身が「自動生成候補→Integrity Check→Human Gate→seal更新」方式を既に予告済み。関連: 状態昇格ルール(Artifact存在→Review→Test→Decision Record→Commit→TODO Status更新のみ昇格可能)をIntegrity Check設計(別途)と合わせて適用する。現時点では案の登録のみで実装未着手。実行順序はAUTO_SEAL Pack1(TODO_427)のcommit・Phase 4 Close確定後。",
+      "reference_event": "N/A(MCPセッション不通のため未発行)",
+      "created_at": "2026-07-08T12:45:00"
+    },
+    {
+      "id": "TODO_PROS_PUBLISH_JOB_0002",
+      "title": "PR-OS公開スケジュール: KS_TEST_TODO241_VERIFY → wordpress @ 2099-01-01T00:00:00+09:00",
+      "status": "廃止",
+      "priority": "中",
+      "category": "PR-OS",
+      "description": "KS記事(KS_TEST_TODO241_VERIFY)をwordpressへ2099-01-01T00:00:00+09:00に配信予約。 note=TODO_241統合テスト(検証用、後で取消)",
+      "assigned_to": "Claude",
+      "note": "TODO_241統合実装の動作検証用テストエントリ。実データではない。",
+      "reference_event": "",
+      "created_at": "2026-07-08T10:46:41.203160",
+      "updated_at": "2026-07-08T10:47:42.553486"
+    },
+    {
+      "id": "TODO_429",
+      "title": "governance/human_gate_cli.py の制度整理(既存Human Gateへの入口追加)",
+      "status": "未着手",
+      "priority": "中",
+      "category": "Governance Integrity",
+      "description": "2026-07-08、AUTO_SEAL Pack1作業中の並行セッションによりgovernance/human_gate_cli.pyが新規作成されているのを発見。既存Human Gate機構(phi_os/human_gate.py)への新規CLI/TTY入口追加であり新規の第4機構ではない(HUMAN_GATE_CLI_ALIGNMENT_REPORT.md参照)。ファイル自体が「Decision Unit B/C承認」と自称しているが、decision_ledger.jsonl全件検索の結果、該当するDecision Ledgerレコードは存在しない(自称ラベルのみ)。",
+      "assigned_to": "未定(きむら博士判断待ち)",
+      "note": "判断が必要な事項: (1)自称ラベル「Decision Unit B/C」をファイルから除去するか、正式なDecision Unitとして登録するか。(2)TTY強制によるHuman Gate入口追加という設計自体は妥当と評価できる(feedback_flag_autonomy_risk_in_governance_design原則に合致)。(3)本ファイルは未commitのまま(別セッションの作業中の可能性があるため、本セッションからは編集・commitを行わない)。TEST_CLI_VERIFY_001というIDは一次データ上どこにも存在せず、本TODOはそれを復活させるものではない。",
+      "reference_event": "HUMAN_GATE_CLI_ALIGNMENT_REPORT.md",
+      "created_at": "2026-07-08T15:39:46.079964"
     }
   ],
   "orchestra_handoff": {
@@ -1486,6 +1462,104 @@
       "created_at": "2026-07-07T10:05:20.549988",
       "updated_at": "2026-07-07T10:55:02.804977",
       "completed_at": "2026-07-07"
+    },
+    {
+      "id": "TODO_371",
+      "title": "正本記録(events.db/mocka_write_event)の信頼性実測 — AUTO_SEAL等の補助機構が本流化している根本原因の検証",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/ガバナンス/正本信頼性",
+      "description": "2026-06-26、TODO_370(AUTO_SEAL_50EVTのHuman Gateバイパス再発)の対応中に、きむら博士から本質的な指摘があった。\n\n【きむら博士の説明(2026-06-26)】\nAUTO_SEAL_50EVT/sync_watch.pyは、きむら博士自身が意図的に設計したもの。理由は「MoCKAの最重要記録(会話・変更・イベントログ)が正しく記録されていない不安があったため、Gitに丸ごと保存させることで漏れなく全てを残す保険機構」として組んだ。\n\nきむら博士の診断: 「events.db/mocka_write_event経由の正本ルール(5W1H形式での記録)が正しく機能していれば、この補助ルールは本来不要。正本ルールの上に補助ルールがあるようなものだが、実際は正本ルールが正しく稼働しておらず、補助ルールの方が本流(支流が主流化)になってしまっている」。\n\n【本日の調査全体に共通する構造的パターンとの一致】\n本日発見した以下のいずれも、同型の「正本への不信から生まれた独自の補助記録」というパターンを持つ：\n- relay-logbook.js(TODO_366): MoCKA本体のTODO/イベント記録が信頼できないことから生まれた、Relay独自のLB_記録\n- Memory拡張機能(TODO_367で発見): PHI-OSが情報を一元管理していないことから生まれた、独自のmemory_registryキャプチャ\n- AUTO_SEAL_50EVT/sync_watch.py(本TODO): events.dbへの記録漏れの不安から生まれた、Git全体保存という力技の保険機構\n\nこれらは個別にはバグ修正(TODO_366/367/370)で対応中だが、根本には「events.db/mocka_write_event経由の正本記録が、実際にどの程度信頼できるのか」という、検証されていない共通の前提がある。\n\n【調査内容】\n①events.db/mocka_write_event経由の記録が、実際にどの程度漏れている(または漏れていない)のかを実測する。具体的な検証方法（例: 一定期間の実際の作業内容と、events.dbの記録内容を突き合わせて、記録漏れの実件数を数える等）はくろこの判断で設計してよい。\n②漏れが実際にはほとんど無い場合: AUTO_SEAL_50EVT/sync_watch.pyのようなGit丸ごと保存型の補助機構は、段階的に廃止できる可能性がある(これは設計判断としてきむら博士に最終確認する)。\n③漏れが実際にある場合: その漏れの直接原因(mocka_write_eventが呼ばれていない経路の特定等)を優先して修正する方が、補助機構の維持より優先度が高い。",
+      "assigned_to": "くろこ(実測調査)+ きむら博士(設計判断)",
+      "note": "2026-07-08: AUTO_SEAL_50EVTが正本記録経路(Human Gate)を迂回しapp.py変更を無断commit(f1f0b6932、IC_20260707_006)した事案を根本原因まで特定・是正完了。\n\n根本原因: (1)app.py auto_audit_loop()のevent_count>=50到達ブロックがHuman Gate判定を一切経由せずanchor_update.pyを直接subprocess実行していた。(2)さらにmocka_git_safe_commit()のCore System File除外ロジック(git restore --staged)が戻り値未検証だったため、除外ロジック自体がコード上存在するにもかかわらずapp.pyがcommitに混入した(除外の実効性未検証バグ)。\n\n是正内容: governance/mocka_git_safe_commit.pyにrestore returncode確認+staged再チェックのpost-condition verificationを追加(commit 1707fcc38)。app.pyのAUTO_SEAL_50EVTを自動anchor_update実行からAUTO_SEAL_PENDING記録+停止(人間の明示指示によるhuman_gate_override_event_id付き手動実行のみ)へ変更(同commit)。app.py再起動後、実機で「50件到達→AUTO_SEAL_PENDING記録・anchor_update.py自動実行なし」を実地確認済み(E20260708_0863229008a97)。\n\n「正本記録が本流化している」という当初の懸念は、Human Gate迂回だけでなく安全機構自体の実効性検証欠落という形でも実証された。両方を是正済み。詳細根拠: E20260708_6613941345364(根本原因調査)。",
+      "reference_event": "TODO_370対応中のきむら博士の指摘(2026-06-26)",
+      "created_at": "2026-06-26T11:30:41.253043",
+      "updated_at": "2026-07-08T07:42:19.591156",
+      "completed_at": "2026-07-08"
+    },
+    {
+      "id": "TODO_241",
+      "title": "PR-OS Phase4: MoCKA Command Center統合",
+      "status": "完了",
+      "priority": "低",
+      "category": "PR-OS",
+      "description": "PR-OS Command CenterをMoCKA既存Command Centerと統合。mocka_events.dbへの公開後フィードバック記録・双方向データフロー完成。",
+      "assigned_to": "Claude",
+      "note": "実装完了。既存コードのみを仕様として実装: (1)read_mocka_events()をSQLite直読みに修正(event_gate.py書込みロジックの逆写像、title/short_summary/free_note/what_type/who_actorから導出)。(2)notify_schedule()新規実装、scheduler.enqueue()から呼出、mocka_add_todo経由でMoCKA側TODO自動生成をEnd-to-Endで確認済み。(3)feedback_publish(公開後フィードバック記録)は既存実装が稼働中であることを実地確認。(4)MoCKA Caliber品質スコア参照は、get_caliber_snapshot()が期待するscore/items形状を生成する既存実装が見つからず(caliber_pipeline:5679=PHL/scan/processAPI、Integrity Classification、PlanningCaliber/caliber/caliber_score.py=caliber_score/scoresという別スキーマ、いずれも形状不一致)、既存仕様不在のため実装対象外。dashboard.py CONNECTORSにpr_os_command_center(8740)を追加済み。",
+      "reference_event": "",
+      "created_at": "2026-06-06T14:20:13.628642",
+      "updated_at": "2026-07-08T10:51:07.828410",
+      "completed_at": "2026-07-08"
+    },
+    {
+      "id": "GL7-VALIDATION-MISSING-BUG",
+      "title": "[不具合]mocka_write_eventに空文字/欠損バリデーションが存在しない",
+      "status": "完了",
+      "priority": "高",
+      "category": "不具合",
+      "description": "■検証結果（Phase 2：不正入力耐性テスト）\n入力：title=\"test_event_2\", description=\"\", author=\"\"\n期待：FAIL or REJECT（空値検出、書き込み阻止、event_id発行なし）\n実際：status=\"ok\", event_id=\"E20260623_3961913609a48\"で正常に書き込まれた（gate/sqlite）\n\n■結論\nHAB-3FIELD-TRANSFORM-MIN-SPECで設計したGL7の役割（title/description/author検証、nullチェック）は現状mocka_write_event側に実装されていない。空文字・欠損フィールドがそのままDBに書き込まれてしまう。\n\n■影響\n- データ品質の汚染（空のdescription/authorイベントが蓄積される）\n- author=\"\" は本来「正確なAI識別子」必須のはずだが強制されていない\n\n■対応候補\n- mocka_write_event呼び出し前段（GL7相当）でのfield validation実装\n- もしくはmocka_write_event内部でのrequired/non-empty validation追加",
+      "assigned_to": "Claude",
+      "note": "実装完了。既存のTODOノート記載の対応候補(author/descriptionが本当に空の場合は自動補填せずREJECTする)をそのまま実装。mocka_mcp_server.pyのmocka_write_eventハンドラでtitle/description/authorが空文字の場合にgate_rejectedを返すよう変更(ツール定義のrequired宣言を既存仕様として使用、新規設計なし)。レガシー値(\"Claude\"/\"claude\")の自動正規化は維持。分離モジュールインポートでの4ケーステスト(空author/空description/空title/legacy Claude値)すべて期待通りの結果を確認。CLAUDE.md既存手順に従いmcp_schema_hash.jsonを更新済み。注意: 現在稼働中のmocka_mcp_server.pyプロセス(port 5002)は未再起動のため、この修正はまだ稼働系には反映されていない(再起動が必要、今回は実施せず)。コミットは未実施(working tree変更のみ)。",
+      "reference_event": "HAB-3FIELD-TRANSFORM-MIN-SPEC",
+      "created_at": "2026-06-23T08:53:34.609029",
+      "updated_at": "2026-07-08T10:56:10.224238",
+      "completed_at": "2026-07-08"
+    },
+    {
+      "id": "TODO_160",
+      "title": "Orchestra — CSV/JSON export正規化（3種exportProfile）",
+      "status": "完了",
+      "priority": "高",
+      "category": "製品/Orchestra/PHI_OS/export",
+      "description": "CSV/JSON export を同一正規化関数から生成する仕組みを実装。exportProfile3種: raw（取得そのまま）/normalized（PHI OSスキーマ準拠）/share-ready（内部フィールド除去済み）。同一フィルタ条件・同一並び順・同一ID群で出力。background.jsのexport関数をexport.jsに分離してprofile切り替えを実装。CSV/JSONのズレを構造的に防止する。",
+      "assigned_to": "Claude（実装）",
+      "note": "実装完了。既存のshared/schema.js(normalizeArtifact/toShareReady)・constants.js(EXPORT_PROFILE定義)を唯一の仕様として使用、新規スキーマ設計なし。export.js新規作成(buildExportJSON/buildExportCSV、raw/normalized/share-readyの3profile)。background.jsのexportJSON/exportCSVをexport.js呼出しへ差替え、EXPORT_JSON/EXPORT_CSVメッセージにprofile引数を追加(省略時raw、既存呼出し元との後方互換維持)。manifest.jsonのbackground serviceworkerにtype:module追加(ESM importに必要)。Node.jsでの分離テストで、raw出力が旧実装と完全一致すること、normalized/share-readyが正しいフィールド変換を行うこと、3profileとも同一ID集合・同一順序で出力されることを確認済み。テスト用一時ファイルは削除済み。",
+      "reference_event": "E20260519_020",
+      "created_at": "2026-05-19T17:17:10.632487",
+      "updated_at": "2026-07-08T11:48:23.660025",
+      "completed_at": "2026-07-08"
+    },
+    {
+      "id": "TODO_161",
+      "title": "Orchestra — 販売品質耐久性6要素実装",
+      "status": "完了",
+      "priority": "高",
+      "category": "製品/Orchestra/耐久性",
+      "description": "販売品質耐久性のための6要素を実装。①schema version: 全保存データにversionを持たせ起動時migration②diagnostics: popup診断タブ（last save/export/selector hit/error/observer active可視化）③selector registry: SELECTORS.jsにclauде.aiセレクタを集中管理・confidence/updated管理④stream stability: テキスト安定化+idle time複合判定（800〜1200ms）⑤feature flags: share/export/vault/debug/built-in AI を機能単位でon/off⑥audit log: 保存・共有・更新のwho/when/whatを記録。壊れたレコードの隔離処理も実装（全体停止防止）。",
+      "assigned_to": "Claude（実装）",
+      "note": "6要素すべて実装完了。既存のshared/schema.js・validators.js・constants.jsを唯一の仕様として使用、新規スキーマ設計なし。(1)schema version: DB_VERSION 1→2、schema_versionフィールド付与、onupgradeneededで既存messagesストア無変更のままaudit_log/quarantineストア追加(migration-safe)。(2)diagnostics: background.jsにgetDiagnostics()追加、popup.htmlに新規Diagnosticsタブ追加(last save/export/share、selector hit、observer active、quarantine件数、error件数を表示)。(3)selector registry: content.jsがSELECTORS(shared/constants.js)を動的import経由で使用するよう変更。実際に動作確認済みのassistantMessageセレクタ(div.group.relative.pb-3)が未登録だったためconstants.jsへ追加。manifest.jsonにweb_accessible_resources追加(動的import実行に必須)。(4)stream stability: STREAM.IDLE_MS/MIN_LENGTH/DEBOUNCE_MSを用いたテキスト安定化+idle time複合判定を実装。(5)feature flags: FEATURE.EXPORT/SHAREを既存のexport/share機能にゲート追加(未設定時は既存動作維持)。VAULT/BUILTIN_AIは対応する既存機能がコード上に存在しないため、既存仕様不在としてゲート対象外(フラグ定義のみ維持)。(6)audit log+quarantine: validateArtifact()で保存前検証、不正レコードはmessagesストアへ保存せずquarantineへ隔離(全体停止防止)。save/export/share/clear_all時にcreateAuditEntry()で監査記録。Node.js分離テストで、正常レコード保存・不正レコード隔離・NUL文字サニタイズ・audit entry生成を確認済み。副次的発見: background.js.bak/content.js.bak/orchestra_search_bridge.js(いずれも本TODOで未編集)にgit上の差分が存在するが、-w(空白無視)で差分消失を確認済みのため改行コード変換のみで内容変更ではない。",
+      "reference_event": "E20260519_020",
+      "created_at": "2026-05-19T17:17:22.112694",
+      "updated_at": "2026-07-08T12:02:47.862643",
+      "completed_at": "2026-07-08"
+    },
+    {
+      "id": "TODO_171",
+      "title": "Orchestra Phase4 — JS難読化ビルドパイプライン",
+      "status": "完了",
+      "priority": "中",
+      "category": "製品/Orchestra/monetization",
+      "description": "JS難読化でコード解読コストを上げる。①terser（JS難読化ツール）でbackground.js/content.js/popup.jsをminify+obfuscate ②変数名・関数名をランダム文字列に変換 ③ライセンス検証ロジック部分を特に強く難読化 ④ビルドスクリプト（build.py）作成で毎回自動難読化 ⑤Store提出用ZIPは難読化済みファイルを使用",
+      "assigned_to": "Claude（実装）",
+      "note": "実装完了。既存ファイル構成を唯一の仕様として使用(新規JS設計なし)。build.py新規作成、terser(npx経由)でbackground.js/content.js/popup.js(TODO明示分)+export.js/shared/*.js/content_orchestra.js/orchestra_search_bridge.js/i18n.js/trial.jsをobfuscate。ライセンス検証ロジックの実体はtrial.js(popup.htmlからクラシックscript読込、ES export無し)と判明したためtoplevel mangleで特に強く難読化。ESモジュール(background.js/export.js/shared/*.js)はimport/export名を壊さないようtoplevel manglingは不使用。obfuscated buildに対しterser出力のexport名確認+機能テスト(export/validate/audit)を実施し正常動作を確認。store_submission/orchestra_extension.zipを難読化版で更新。build/ディレクトリは生成物のためOrchestra_Project/.gitignoreを新規作成し除外(既存の兄弟プロジェクトの.gitignore運用と同一パターン)。コミット3a1fd75(.gitignore/build.py/zip)、push未実施。",
+      "reference_event": "E20260522_029",
+      "created_at": "2026-05-22T17:32:10.285703",
+      "updated_at": "2026-07-08T12:14:13.636872",
+      "completed_at": "2026-07-08"
+    },
+    {
+      "id": "TODO_206",
+      "title": "TIC Layer 3 — impact_analyzer.py（依存マップ・影響範囲自動洗い出し）",
+      "status": "完了",
+      "priority": "高",
+      "category": "制度/TIC/impact",
+      "description": "TIC Layer 3。「面白い機能」ではなく「MoCKAがどう変わるか」を自動洗い出し。\n\n【impact_analyzer.py の動作】\nevaluation_queue.jsonlから技術エントリを読み込み、\nMoCKAの依存マップ（dependency_map.json）と照合して\n影響を受けるコンポーネントを列挙する。\n\n【dependency_map.json 構造】\n{\n  \"claude.ai_dom\": [\"Relay\", \"Orchestra\", \"content.js\"],\n  \"anthropic_api\": [\"Caliber\", \"vasAI\"],\n  \"mcp_schema\": [\"mocka_mcp_server\", \"Caliber\", \"Claude接続\"],\n  \"stripe_webhook\": [\"Orchestra\", \"Relay(予定)\"],\n  \"chrome_mv3\": [\"Orchestra\", \"Relay\", \"PHI-OS\", \"Memory\"],\n  \"sqlite\": [\"events.db\", \"morphology.db\", \"Caliber\"],\n  \"cloudflare_workers\": [\"orchestra-license\", \"relay-license(予定)\"]\n}\n\n【出力】\n各技術変更に対して影響コンポーネントリストを自動生成。\nHuman Gate提示時に「このAPIが変わるとOrchestra/Relayが壊れます」と明示。",
+      "assigned_to": "Claude（実装）",
+      "note": "DC_20260708_003により昇格承認。interface/impact_analyzer.py実装(Review: TODO_206_REVIEW_REPORT.md、既存risk_scorer.pyと同一規約を確認/Test: 単体テスト・再現性・冪等性・出力形式いずれも合格)。commit 022a6cc0c(human_gate_override_event_id=E20260708_302017882ff0d)。data/tic/evaluation_queue.jsonlは.gitignore対象のためgit管理外(仕様通り)。",
+      "reference_event": "E20260601_011",
+      "created_at": "2026-06-01T07:35:46.706472",
+      "updated_at": "2026-07-08T15:33:47.053121",
+      "completed_at": "2026-07-08"
     }
   ]
 }

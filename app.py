@@ -2058,11 +2058,36 @@ def auto_audit_loop():
             now = datetime.now()
             today = now.strftime("%Y-%m-%d")
             if now.hour == 0 and _last_seal_date[0] != today:
-                seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
-                if seal_script.exists():
-                    subprocess.run(["python", str(seal_script), "AUTO_SEAL_" + today],
-                                   cwd=str(ROOT_DIR), timeout=30)
-                    print(f"[AUTO-AUDIT] 日次seal完了")
+                # TODO_427, IC_20260708_001是正(監査官R01承認パック1):
+                # 日次AUTO_SEAL_{today}のanchor_update.py自動実行はHuman Gateを
+                # 迂回するため廃止。50EVT分岐と対称的に、PENDINGイベントを記録
+                # して停止するのみとし、実際のseal実行はきむら博士の明示指示
+                # (human_gate_override_event_id付与)による手動実行でのみ行う。
+                get_buffer().push({
+                    "event_id": f"AUTO_SEAL_PENDING_DAILY_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+                    "when": datetime.now().isoformat(),
+                    "who_actor": "system:auto_audit_loop",
+                    "what_type": "AUTO_SEAL_PENDING_DAILY",
+                    "where_component": "app.py:auto_audit_loop",
+                    "where_path": "scripts/ledger/anchor_update.py",
+                    "why_purpose": "日次(0時)seal要求。自動実行はしない(Human Gate迂回防止、TODO_427/IC_20260708_001是正)。",
+                    "how_trigger": f"daily_condition date={today}",
+                    "channel_type": "internal",
+                    "lifecycle_phase": "in_operation",
+                    "risk_level": "normal",
+                    "category_ab": "B",
+                    "target_class": "governance",
+                    "title": "AUTO_SEAL_PENDING_DAILY: 日次seal条件成立、seal実行は人間指示待ち",
+                    "short_summary": f"date={today}。anchor_update.pyは自動実行しない。",
+                    "before_state": "accumulating",
+                    "after_state": "pending_human_instruction",
+                    "change_type": "governance",
+                    "impact_scope": "seal_pipeline",
+                    "impact_result": "no_auto_execution",
+                    "related_event_id": "N/A", "trace_id": "N/A",
+                    "free_note": "require_human_gate=True|source=AUTO_SEAL_DAILY",
+                })
+                print(f"[AUTO-AUDIT] 日次条件成立 → AUTO_SEAL_PENDING_DAILY記録のみ(自動seal実行なし、人間指示待ち)")
                 _last_seal_date[0] = today
             # CSV廃止済み → SQLite件数でトリガー判定
             try:

@@ -1,4 +1,4 @@
-import time, os, json, subprocess, sqlite3, hashlib, requests
+import time, os, sys, json, subprocess, sqlite3, hashlib, requests
 from pathlib import Path
 from datetime import datetime, date
 
@@ -83,16 +83,43 @@ def try_daily_seal():
     global last_seal_date
     now = datetime.now()
     if now.hour == SEAL_HOUR and now.date() != last_seal_date:
-        print("[⑦ mocka-seal] 日次実行...")
+        # TODO_427, IC_20260708_001是正(監査官R01承認パック1):
+        # anchor_update.pyの自動実行はHuman Gateを迂回するため廃止。
+        # app.py側の日次AUTO_SEAL分岐(auto_audit_loop)と対称的に、PENDING
+        # イベントを記録して停止するのみとし、実際のseal実行はきむら博士の
+        # 明示指示(human_gate_override_event_id付与)による手動実行でのみ行う。
         try:
-            subprocess.run(
-                ["python", "scripts/ledger/anchor_update.py", "watchdog daily seal"],
-                check=True, cwd=MOCKA_DIR
-            )
-            last_seal_date = now.date()
-            print("[⑦ mocka-seal OK]")
+            if MOCKA_DIR not in sys.path:
+                sys.path.insert(0, MOCKA_DIR)
+            from interface.event_buffer import get_buffer
+            get_buffer().push({
+                "event_id": f"AUTO_SEAL_PENDING_DAILY_{now.strftime('%Y%m%d%H%M%S')}",
+                "when": now.isoformat(),
+                "who_actor": "system:watchdog_mocka",
+                "what_type": "AUTO_SEAL_PENDING_DAILY",
+                "where_component": "watchdog_mocka.py:try_daily_seal",
+                "where_path": "scripts/ledger/anchor_update.py",
+                "why_purpose": "日次(SEAL_HOUR時)seal要求。自動実行はしない(Human Gate迂回防止、TODO_427/IC_20260708_001是正)。",
+                "how_trigger": f"daily_condition date={now.date().isoformat()}",
+                "channel_type": "internal",
+                "lifecycle_phase": "in_operation",
+                "risk_level": "normal",
+                "category_ab": "B",
+                "target_class": "governance",
+                "title": "AUTO_SEAL_PENDING_DAILY: 日次seal条件成立(watchdog)、seal実行は人間指示待ち",
+                "short_summary": f"date={now.date().isoformat()}。anchor_update.pyは自動実行しない。",
+                "before_state": "accumulating",
+                "after_state": "pending_human_instruction",
+                "change_type": "governance",
+                "impact_scope": "seal_pipeline",
+                "impact_result": "no_auto_execution",
+                "related_event_id": "N/A", "trace_id": "N/A",
+                "free_note": "require_human_gate=True|source=AUTO_SEAL_DAILY_WATCHDOG",
+            })
+            print("[⑦ mocka-seal] AUTO_SEAL_PENDING_DAILY記録のみ(自動seal実行なし、人間指示待ち)")
         except Exception as e:
-            print(f"[⑦ mocka-seal ERROR] {e}")
+            print(f"[⑦ mocka-seal EVENT ERROR] {e}")
+        last_seal_date = now.date()
 
 # ===== メインループ =====
 def main():
