@@ -885,6 +885,30 @@
       "note": "判断が必要な事項: (1)自称ラベル「Decision Unit B/C」をファイルから除去するか、正式なDecision Unitとして登録するか。(2)TTY強制によるHuman Gate入口追加という設計自体は妥当と評価できる(feedback_flag_autonomy_risk_in_governance_design原則に合致)。(3)本ファイルは未commitのまま(別セッションの作業中の可能性があるため、本セッションからは編集・commitを行わない)。TEST_CLI_VERIFY_001というIDは一次データ上どこにも存在せず、本TODOはそれを復活させるものではない。",
       "reference_event": "HUMAN_GATE_CLI_ALIGNMENT_REPORT.md",
       "created_at": "2026-07-08T15:39:46.079964"
+    },
+    {
+      "id": "TODO_431",
+      "title": "current_phase の Single Source of Truth化(handshake.py:66ハードコード文字列の外部化)",
+      "status": "未着手",
+      "priority": "中",
+      "category": "SSOTガバナンス",
+      "description": "Incident A(E20260709_0004370692654)の調査で判明: interface/handshake.py:66のCURRENT_PHASE=\"Phase 4: 商用製品展開フェーズ\"はハードコード文字列であり、いかなるデータファイルからも読まれない。Living Contextウィジェット(/api/handshake経由)のフッターおよびmentor_engine.generate_briefing()のmission文言はこの値をそのまま使用する。Phase移行時にTODO/Dashboard/README/UIとの乖離が生じうるSSOT違反リスクがある。R01所見(2026-07-09)により改善候補として起票。governance.json/PROJECT_STATUS.json等、単一の外部情報源から取得する構造への移行が将来的に望まれる。",
+      "assigned_to": "未定",
+      "note": "R01裁定(2026-07-09): 状態=TODO登録(設計改善)、優先度=低〜中、実装承認=未承認。mocka.nsjp.org/mini-mocka/orchestraコンテンツ投入(TODO_221)等が最優先のため、本TODOへの着手は保留。interface/handshake.pyはCore System File(CORE_SYSTEM_DIRS該当)のため、着手時はHuman Gate承認・具体的な変更設計(ファイル構造・API互換性)の事前提示が必要。",
+      "reference_event": "E20260709_0004370692654",
+      "created_at": "2026-07-09T19:01:20.495520"
+    },
+    {
+      "id": "TODO_432",
+      "title": "Briefing生成責務の分離(handshake/mentor_engine/prediction_engineの責務混在解消)",
+      "status": "未着手",
+      "priority": "低",
+      "category": "アーキテクチャ改善",
+      "description": "Incident A(E20260709_0004370692654)の調査で判明: 現在のLiving Context生成経路(/api/handshake)は、interface/handshake.py(top_todo抽出・current_phase)→interface/mentor_engine.py(briefing/mission/strategy合成)→interface/prediction_engine.py(risk/warnings算出)という3ファイルにまたがる責務混在構造になっている。R01所見(2026-07-09)により、Phase4ではhandshake→Context Composer→Briefing Generatorのように責務分離した方が保守性・監査性が向上するとの改善提案。現時点で不適合とは判断されていない。",
+      "assigned_to": "未定",
+      "note": "R01裁定(2026-07-09): 状態=設計検討事項、優先度=低、実装承認=未承認。最優先TODO(TODO_221等)への復帰を優先するため保留。着手時はCore System File(interface/配下複数ファイル)変更のためHuman Gate承認必須。",
+      "reference_event": "E20260709_0004370692654",
+      "created_at": "2026-07-09T19:01:31.420642"
     }
   ],
   "orchestra_handoff": {
