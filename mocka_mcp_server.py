@@ -20,6 +20,15 @@ if sys.stderr.encoding != 'utf-8':
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
 sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
 from event_recency import valid_when_ts_clause  # noqa: E402
+
+# TODO_428/DC_20260709_001: 一次データ駆動のCurrent View Generator(additive、mocka_get_overviewの
+# 既存戻り値は変更せずcurrent_viewキーとして追加するのみ)。
+sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\scripts\state")))
+try:
+    import overview_current_generator as _overview_current_gen
+except Exception as _ocg_err:
+    print(f"[WARN] overview_current_generator unavailable (current_view will be omitted): {_ocg_err}", flush=True)
+    _overview_current_gen = None
 try:
     from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
     _governance = GovernancePipeline()
@@ -404,7 +413,17 @@ def execute_tool(name, args):
         if name == "mocka_get_overview":
             if not OVERVIEW_PATH.exists(): return json.dumps({"error": f"not found: {OVERVIEW_PATH}"})
             result = json.loads(OVERVIEW_PATH.read_text(encoding="utf-8-sig"))
-            auto_log(name, args, "overview loaded")
+            # TODO_428/DC_20260709_001: 一次データから機械的に再集計したCurrent Viewをadditiveに付加する。
+            # 既存キー(what_is_mocka/repositories/products等)は一切変更しない。生成失敗時はエラー情報を
+            # current_view内に格納し、本体の戻り値には影響させない(フォールバック)。
+            if _overview_current_gen is not None:
+                try:
+                    result["current_view"] = _overview_current_gen.generate()
+                except Exception as _cv_err:
+                    result["current_view"] = {"error": f"overview_current_generator.generate() failed: {_cv_err}"}
+            else:
+                result["current_view"] = {"error": "overview_current_generator module unavailable at import time"}
+            auto_log(name, args, "overview loaded (with current_view)")
             return json.dumps(result, ensure_ascii=False, indent=2)
 
         elif name == "mocka_get_essence":
