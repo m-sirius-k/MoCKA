@@ -851,14 +851,15 @@
     {
       "id": "TODO_428",
       "title": "MOCKA_OVERVIEW_CURRENT_GENERATION — 一次データからの状態表示層自動生成",
-      "status": "完了",
+      "status": "進行中",
       "priority": "中",
       "category": "SSOTガバナンス",
       "description": "MOCKA_OVERVIEW_STALENESS_REPORT.md(docs/governance/、2026-07-08作成)にて、MOCKA_OVERVIEW.jsonの本文(session_history/next_actions/current_issues)がv4.0(2026-06-18)時点で凍結されたまま、meta欄のみseal更新される運用が続いており、TODO_242/325/266/171/215/346(計6件)の状態乖離+TODO_209の見落とし1件が発見された。監査官R01の方針により、乖離箇所を個別に手修正するのではなく、MOCKA_TODO_ACTIVE.json(+ARCHIVE)・decision_ledger.jsonl・events.db・seal/anchor metadataを唯一の真実(SSOT)とし、状態表示層(Current View)を自動生成する仕組みへ昇華する。MOCKA_OVERVIEW.json自体への手修正は行わない方針(過去の記憶埋め込みを繰り返すだけのため)。既存のMOCKA_OVERVIEW.json(legacy)はHistorical Snapshotとして保持し、新設のMOCKA_OVERVIEW_CURRENT.json(またはMOCKA_STATE_CURRENT.json)をGeneratorの出力先とする設計を想定。",
       "assigned_to": "未定(実装はAUTO_SEAL Pack1完了後に着手)",
-      "note": "土台候補: PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.pyのexport_events()(events.db→JSON生成の既存パターン、26-43行)。既存設計文書: docs/governance/TODO_SSOT_INTEGRATION_DESIGN_v0.1.md。staleness_note自身が「自動生成候補→Integrity Check→Human Gate→seal更新」方式を既に予告済み。関連: 状態昇格ルール(Artifact存在→Review→Test→Decision Record→Commit→TODO Status更新のみ昇格可能)をIntegrity Check設計(別途)と合わせて適用する。現時点では案の登録のみで実装未着手。実行順序はAUTO_SEAL Pack1(TODO_427)のcommit・Phase 4 Close確定後。 [2026-07-08追記] 実装完了: scripts/state/overview_current_generator.py新設、tests/test_overview_current_generator.py(3件PASS)、docs/governance/TODO_428_{IMPLEMENTATION_SCOPE,IMPLEMENTATION_REPORT,DATA_FINDINGS,FINAL_SEAL_REPORT}.md、data/MOCKA_OVERVIEW_CURRENT.json(Derived Artifact、非Git管理)。commit: 571351a95(6ファイル)、cea03e6d8・5810416ba(Edge Audit関連の文書修正)。Decision Record: PENDING(MCPセッション不通のため未発行、復旧後に遡及記録予定)。",
-      "reference_event": "PENDING(MCPセッション不通のため未発行、復旧後に遡及記録予定)",
-      "created_at": "2026-07-08T12:45:00"
+      "note": "土台候補: PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.pyのexport_events()(events.db→JSON生成の既存パターン、26-43行)。既存設計文書: docs/governance/TODO_SSOT_INTEGRATION_DESIGN_v0.1.md。staleness_note自身が「自動生成候補→Integrity Check→Human Gate→seal更新」方式を既に予告済み。関連: 状態昇格ルール(Artifact存在→Review→Test→Decision Record→Commit→TODO Status更新のみ昇格可能)をIntegrity Check設計(別途)と合わせて適用する。現時点では案の登録のみで実装未着手。実行順序はAUTO_SEAL Pack1(TODO_427)のcommit・Phase 4 Close確定後。 [2026-07-08追記] 実装完了: scripts/state/overview_current_generator.py新設、tests/test_overview_current_generator.py(3件PASS)、docs/governance/TODO_428_{IMPLEMENTATION_SCOPE,IMPLEMENTATION_REPORT,DATA_FINDINGS,FINAL_SEAL_REPORT}.md、data/MOCKA_OVERVIEW_CURRENT.json(Derived Artifact、非Git管理)。commit: 571351a95(6ファイル)、cea03e6d8・5810416ba(Edge Audit関連の文書修正)。Decision Record: PENDING(MCPセッション不通のため未発行、復旧後に遡及記録予定)。 [2026-07-09追記/DC_20260709_001] status是正: 完了→進行中に差し戻し。理由: (1)decision_ledger.jsonl全43件を裏取りした結果、上記「Decision Record: PENDING」は本追記時点まで実際に未発行のままだったことを確認(DC_20260708_004内の引用はTODO_206向けDC_20260708_003への誤引用と判明)。(2)mocka_mcp_server.py(mocka_get_overview/mocka_get_command_center)・app.pyのいずれもMOCKA_OVERVIEW_CURRENT.json/overview_current_generatorを参照しておらず、本番Serving Pathに未配線であることをリポジトリ全文検索で確認(参照元は生成器自身とテストファイルの2件のみ)。(3)data/MOCKA_OVERVIEW_CURRENT.jsonは2026-07-08T07:23:30 UTCに一度生成されたのみで再生成の形跡なし。監査官R01の裁定によりCompleted維持を却下、進行中へ差し戻し。残作業: (i)本Decision Record(DC_20260709_001)により本項目自体は発行済み、(ii)mocka_get_overview/mocka_get_command_centerへのServing Path配線接続(Stage3、Core System File変更のため別途Human Gate承認要)、(iii)配線後の動作検証・ハッシュ再計算、(iv)完了条件充足確認後にCompletedへ復帰。関連Incident: E20260709_820896266ef48。",
+      "reference_event": "DC_20260709_001",
+      "created_at": "2026-07-08T12:45:00",
+      "updated_at": "2026-07-09T18:06:00"
     },
     {
       "id": "TODO_PROS_PUBLISH_JOB_0002",
