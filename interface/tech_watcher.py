@@ -409,7 +409,7 @@ def write_event(title: str, description: str, tags: str = "tic,tech_watcher"):
             MCP_URL, data=payload,
             headers={"Content-Type": "application/json"}, method="POST",
         )
-        urllib.request.urlopen(req, timeout=3)
+        urllib.request.urlopen(req, timeout=12)
     except Exception:
         pass  # MoCKA未起動でも監視は継続
 

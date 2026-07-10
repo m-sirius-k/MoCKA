@@ -86,7 +86,7 @@ def write_event(title: str, description: str, tags: str = "tic,risk_score"):
             headers={"Content-Type": "application/json"},
             method="POST",
         )
-        urllib.request.urlopen(req, timeout=3)
+        urllib.request.urlopen(req, timeout=12)
     except Exception:
         pass  # MoCKAサーバー未起動でも継続
 

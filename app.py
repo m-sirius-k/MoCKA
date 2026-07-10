@@ -1736,7 +1736,7 @@ def file_register():
             "http://localhost:5002/agent/mocka_write_event",
             data=payload, headers={"Content-Type": "application/json"}, method="POST"
         )
-        with _ur.urlopen(req_obj, timeout=3) as r:
+        with _ur.urlopen(req_obj, timeout=12) as r:
             result = json.loads(r.read())
         return jsonify({"status": "ok", "event_id": result.get("event_id"), "file": fname}), 200
     except Exception as e:
@@ -2149,19 +2149,31 @@ def audit_status():
 
 @app.route("/audit/seal", methods=["POST"])
 def audit_seal_manual():
-    import subprocess
+    # Phase C-2(AUTO_SEAL Boundary Audit是正): MANUAL_SEAL経路もGL7評価を
+    # 経由するSealGovernanceGate経由に変更(TODO_411/412/413 Gap-1是正)。
+    # seal/hash/anchor更新のロジック自体(anchor_update.py)は無変更のまま、
+    # 呼び出すか呼ばないかの判断のみをGateへ委譲する。
     from pathlib import Path as _P
-    seal_script = _P(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
-    seal_log    = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
-    if seal_script.exists():
-        result = subprocess.run(
-            ["python", str(seal_script), "MANUAL_SEAL_" + datetime.now().strftime("%Y%m%d_%H%M%S")],
-            cwd=str(ROOT_DIR), capture_output=True, text=True, timeout=30
-        )
-        log = {"sealed_at": datetime.now().isoformat(), "result": result.stdout[:200]}
-        seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
-        return jsonify({"status": "ok", "sealed_at": log["sealed_at"]})
-    return jsonify({"status": "error", "message": "seal script not found"})
+    import sys as _sys
+    _sys.path.insert(0, str(_P(str(ROOT_DIR)) / "governance"))
+    from seal_governance_gate import SealGovernanceGate
+    seal_log = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+    message = "MANUAL_SEAL_" + datetime.now().strftime("%Y%m%d_%H%M%S")
+    gate_result = SealGovernanceGate().execute(message=message)
+    log = {
+        "sealed_at": datetime.now().isoformat(),
+        "approved": gate_result.approved,
+        "execution_id": gate_result.execution_id,
+        "aborts": gate_result.aborts,
+        "result": gate_result.seal_stdout[:200] if gate_result.approved else gate_result.reason,
+    }
+    seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
+    if not gate_result.approved:
+        return jsonify({
+            "status": "blocked", "reason": gate_result.reason,
+            "aborts": gate_result.aborts, "execution_id": gate_result.execution_id,
+        }), 403
+    return jsonify({"status": "ok", "sealed_at": log["sealed_at"], "execution_id": gate_result.execution_id})
 
 
 # ============================================================

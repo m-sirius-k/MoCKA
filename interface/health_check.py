@@ -534,7 +534,7 @@ def write_event(title: str, description: str, tags: str = "tic,health_check"):
             MCP_URL, data=payload,
             headers={"Content-Type": "application/json"}, method="POST",
         )
-        urllib.request.urlopen(req, timeout=3)
+        urllib.request.urlopen(req, timeout=12)
     except Exception:
         pass
 
