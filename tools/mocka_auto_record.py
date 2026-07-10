@@ -96,7 +96,7 @@ def _log(line: str):
         pass
 
 
-def _post(url: str, payload: bytes, timeout: int = 3) -> dict:
+def _post(url: str, payload: bytes, timeout: int = 12) -> dict:
     req = urllib.request.Request(
         url, data=payload,
         headers={"Content-Type": "application/json"}, method="POST"

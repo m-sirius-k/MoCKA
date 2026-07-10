@@ -698,19 +698,6 @@
       "updated_at": "2026-07-02T13:35:27.432034"
     },
     {
-      "id": "TODO_413",
-      "title": "CHANGE_START/CHANGE_DONEプロトコルとの接続確認(AUTO_SEALがこのプロトコルをバイパスしているか)",
-      "status": "未着手",
-      "priority": "要判定",
-      "category": "制度/ガバナンス",
-      "description": "TODO_144が定めるファイル変更前後の強制記録制度(CHANGE_START/CHANGE_DONE)と、AUTO_SEAL_50EVTによる無条件自動commitの関係を確認する。AUTO_SEALでcommitされる変更(例: commit 8c00633e3のmocka_mcp_server.py変更)がCHANGE_START/CHANGE_DONEの記録を経由しているか、あるいはAUTO_SEALがこのプロトコルをバイパスする経路として機能しているかを検証する。2026-07-01のAUTOSEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)では、この関係は未確認のまま残されている。",
-      "assigned_to": "Claude",
-      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はむしろ判明待ちのため暫定的に'要判定'とする。\n\n[2026-07-02 Step1追記(event_id: E20260702_89262031271ab)]\nCHANGE_START/CHANGE_DONEプロトコルとの接続を確認(事実確認のみ):\n- anchor_update.py・mocka_git_safe_commit.py・app.pyのauto_audit_loop()いずれのコードにも、mocka_write_event呼び出しは存在しない(grep確認済み)\n- structural/execution_governance.pyのTODO_144フック(record_file_change/record_execution)を参照・使用している箇所は governance_pipeline.py 等5ファイルのみで、anchor_update.py/mocka_git_safe_commit.py/app.pyのauto_audit_loopはいずれも参照していない\n- 上記2点の事実により、AUTO_SEALの3経路(AUTO_SEAL_50EVT/AUTO_SEAL_{today}/MANUAL_SEAL)はCHANGE_START/CHANGE_DONEプロトコルを経由しない(バイパスしているというより、そもそも接続コード自体が存在しない)\n- events.db非連動が「設計」「バグ」「意図的な別正本分離」のいずれであるかは、コード上にその設計意図を明記した記述が見当たらず、既存文書(AUTOSEAL_Observation_Record_2026-07-01.md「未観測領域」)でも2026-07-01時点で既に未確定と明記されている。本調査でも新たな決定的根拠は見つからず、未確定のまま\n詳細はdocs/governance/GL7_STATE_INTEGRITY_NOTE_v1.0.md参照。",
-      "reference_event": "E20260701_4496972051ad7",
-      "created_at": "2026-07-01T18:18:18.534319",
-      "updated_at": "2026-07-02T13:35:31.801074"
-    },
-    {
       "id": "KN_IA_NAMING_CONFIRMED",
       "title": "IA正式名称の再確認 — 「Impact」（KN-002準拠）で確定、曖昧さなし",
       "status": "完了",
@@ -955,9 +942,10 @@
       "category": "制度/インフラ/性能",
       "description": "TODO_413対応中に発見。/agent/mocka_write_event(mocka_mcp_server.py port 5002)の応答が実測約5秒かかるのに対し、少なくとも10箇所の呼び出し元(tools/mocka_auto_record.py=TODO_153 PostToolUseフック本体を含む)がtimeout=3で呼んでおり、構造的に常時タイムアウト→fallback/例外に陥っている可能性が高い。詳細はINCIDENT(event_id: E20260710_65296147459ca)参照。原因の一次特定(WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotのいずれが約4秒を消費しているか)のプロファイリングと、timeout値の恒久的な対応方針(呼び出し元ごとの値引き上げか、共通クライアントヘルパーへの集約か)の設計判断が必要。",
       "assigned_to": "きむら博士(方針判断)+ Claude(プロファイリング実施)",
-      "note": "TODO_413(mocka_git_safe_commit.py制度保証化)の実装検証中、timeout=3では実測latencyに対して常時fallbackに陥ることを発見(2026-07-10)。TODO_413自体はtimeout=12への引き上げで対処済みだが、他の呼び出し元は未対応のまま残っている。",
+      "note": "TODO_413(mocka_git_safe_commit.py制度保証化)の実装検証中、timeout=3では実測latencyに対して常時fallbackに陥ることを発見(2026-07-10)。TODO_413自体はtimeout=12への引き上げで対処済みだが、他の呼び出し元は未対応のまま残っている。\n\n[2026-07-10 最優先レビュー対象へ移動(整理のみ、実装未着手のまま)]\n\n影響範囲: /agent/mocka_write_event(mocka_mcp_server.py port 5002)実測応答約5秒に対し、timeout=3で呼ぶ既知の呼び出し元10箇所すべてで構造的タイムアウト→fallback/例外の疑い。「記録されているように見えて実際には送信できていない」状態が常態化している可能性(2026-06-17 CP932検知盲点インシデントと同種のメカニズムの懸念)。\n\n対象ファイル(timeout=3の既知呼び出し元10箇所): tools/mocka_auto_record.py(TODO_153 PostToolUseフック本体、記録制度の中核)、app.py:1739(/file/register)、interface/health_check.py:537、interface/impact_analyzer.py:62、interface/risk_scorer.py:89、interface/tech_watcher.py:412、interface/user_voice_importer.py:163、phi_os/audit_trigger.py:152、phi_os/process_manager.py:248、structural/bee.py:512。\n\n優先順位: 最高(本TODOの本件対応で暫定「高」から引き上げ)。理由: tools/mocka_auto_record.pyはTODO_153のPostToolUseフック本体であり、MoCKAの記録制度の中核が沈黙している可能性がある。\n\n担当: きむら博士(timeout値恒久対応方針の設計判断)+ Claude(WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotのいずれが約4秒消費しているかのプロファイリング実施)。\n\n次Gate: プロファイリングで一次原因(WorkingContext.live_update本体かContextRuntime.snapshot()か)を特定した上で、きむら博士による恒久対応方針(短期:各呼び出し元timeout引き上げ/中期:同期処理の非同期化設計/長期:共通クライアントヘルパーへの集約、TODO_364のgit経路集約と同型)のHuman Gate判断を仰ぐ。\n\nDecision待ち事項: (1)timeout値の恒久対応方針そのものの採否、(2)tools/mocka_auto_record.py(TODO_153本体)が既に同種の理由で記録漏れを起こしていないかの緊急個別確認要否、(3)恒久対応の実装着手をどのTODOとして起票するか。\n\n本整理は現状把握・優先順位付けのみであり、実装(timeout値変更・プロファイリング等)は今回実施していない。",
       "reference_event": "E20260710_65296147459ca",
-      "created_at": "2026-07-10T10:59:20.125018"
+      "created_at": "2026-07-10T10:59:20.125018",
+      "updated_at": "2026-07-10T11:24:03.171071"
     },
     {
       "id": "TODO_MOVK_V0_2_PILOT",
@@ -973,17 +961,16 @@
       "updated_at": "2026-07-10T11:05:30.426357"
     },
     {
-      "id": "TODO_MOVK_V0_3_PILOT",
-      "title": "MOVK v0.3 — 被験者1名パイロット実施（体験→種明かしの順序反転検証）",
+      "id": "TODO_438",
+      "title": "execution_governance.py(record_file_change/record_execution)とCHANGE_START/CHANGE_DONEプロトコル本体との制度的接続(TODO_413 Gap-3切り出し)",
       "status": "未着手",
-      "priority": "高",
-      "category": "MOVK/実験準備",
-      "description": "目的：v0.3（Step1:Eventのみ→Step2:Decision追加→Step3:構造理解→Reveal:MoCKA名を明かす、という順序反転設計）を被験者1名に実施し、順序変更の効果を測定する。\n\n重要：後のステップを先読みできないよう、01〜04は必ず順番に手渡すこと（同一ファイルにEvent/Decisionを同時掲載しない）。「MoCKA」という名称はStep3完了までは出さない。\n\n観察重点（v0.1との比較）：\n①Step1で「困っていること」を具体的に言えるか（v0.1のTask1「分からない」からの変化）\n②Step2でDecisionの妥当性を理由付きで判断できるか\n③Step3で「分けて残す利点」を自発的に言語化できるか（v0.1のTask3「後のデータの呼び出し」からの変化）\n④Reveal閲覧時に「MoCKA」という名前への反応\n\n完了条件：①順序通り全Step完了 ②回答＋観察データ記録 ③v0.1との比較を「維持/修正/追加調査」で整理。",
-      "assigned_to": "きむら博士（被験者選定・実施、順序厳守）",
-      "note": "きむら博士(2026-07-10)の根本指摘に基づき起票。問題は設問の巧拙ではなく「MoCKAを先に教えてから理解を問う」という検証順序そのものにあった。v0.3はEvent→Decision→構造理解→MoCKA名の種明かし、という体験してから名前を知る順序へ反転。v0.2(Event記述のみ修正)は保留(TODO_MOVK_V0_2_PILOT)。\n\n【2026-07-10 R01最終レビュー反映・パイロット実施可】\n①タイトル「AIの判断を後から確認する仕組みを体験してみる」→「出来事と対応を分けて考える体験」に修正（体験内容はAIの判断そのものではなく、出来事と対応を分けることである点を正確に反映）\n②Step3の問いを抽象的な「利点」から「あとから振り返る人にとって分かりやすくなる点」という具体的な視点に変更\n③04_Reveal.mdの文言を、体験と説明が自然につながるよう書き直し（「ここまで体験していただいたように〜」から始め、Event/Decisionの対応付け→MoCKAの定義、という流れに整理）\n\nR01評価：「MoCKAという名前より先に体験を置いたこと」「制度ではなく具体的な記録方法として理解できる流れにしたこと」を評価し、パイロット実施に進める価値のある版と判定。",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "TODO_413の対応(DC_20260710_003、mocka_git_safe_commit()のgit commit操作をmocka_write_event経由のHTTP POSTで自己記録する実装)は、git commit経路の記録漏れという実害を解消したが、structural/execution_governance.pyのrecord_file_change()/record_execution()が担う正式なCHANGE_START/CHANGE_DONEプロトコル本体への制度的接続ではない。この2つは並行する別の記録経路であり、統合すべきか、意図的に分離した経路として運用するかの設計判断が未確定のまま残っている。2026-07-08のdocs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md Gap-3で指摘された論点そのもの。",
+      "assigned_to": "きむら博士(方針判断)+ Claude(調査)",
+      "note": "2026-07-10、TODO_413を「Git Commit経路のLedger記録制度保証」の範囲でCloseするにあたり、Gap-3(CHANGE_START/CHANGE_DONE本体プロトコルとの接続)を実装範囲外・独立課題として切り出したもの。TODO_413を完全解決として記録しないための切り分け。関連: DC_20260710_003、TODO_413、docs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md(Gap-3)。",
       "reference_event": "",
-      "created_at": "2026-07-10T11:07:45.488078",
-      "updated_at": "2026-07-10T11:12:52.611701"
+      "created_at": "2026-07-10T11:22:57.466592"
     }
   ],
   "orchestra_handoff": {
@@ -1689,7 +1676,35 @@
       "created_at": "2026-07-10T10:09:52.780283",
       "updated_at": "2026-07-10T11:00:50.786930",
       "completed_at": "2026-07-10"
+    },
+    {
+      "id": "TODO_413",
+      "title": "CHANGE_START/CHANGE_DONEプロトコルとの接続確認(AUTO_SEALがこのプロトコルをバイパスしているか)",
+      "status": "完了",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "TODO_144が定めるファイル変更前後の強制記録制度(CHANGE_START/CHANGE_DONE)と、AUTO_SEAL_50EVTによる無条件自動commitの関係を確認する。AUTO_SEALでcommitされる変更(例: commit 8c00633e3のmocka_mcp_server.py変更)がCHANGE_START/CHANGE_DONEの記録を経由しているか、あるいはAUTO_SEALがこのプロトコルをバイパスする経路として機能しているかを検証する。2026-07-01のAUTOSEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)では、この関係は未確認のまま残されている。",
+      "assigned_to": "Claude",
+      "note": "[2026-07-10 Close(きむら博士裁定)] Close範囲を「Git Commit経路におけるLedger記録漏れの制度保証」に限定する。\n\n実施内容: governance/mocka_git_safe_commit.py内部で、呼び出し元(anchor_update.py/sync_watch.py/incident_engine.py/incident_git_sync.py等)を無改修のまま、commit開始/成功/失敗/スキップの各時点でmocka_write_event相当のHTTP POST(/agent/mocka_write_event)を自動発行するよう改修(caller自動検出はinspect.stack、Decision: DC_20260710_003、承認: きむら博士 2026-07-10T01:22:48Z)。サンドボックスrepo(mocka_test_repo/mocka_test_repo2)で正常commit/差分なしskip/pre-commit失敗/サーバー不通時fallback/caller自動検出の各ケースをテストし、Ledger(またはfallbackログ)への記録と読み戻しによる実データ確認まで完了(events_latest.json内test_todo413.py関連イベント群を参照)。\n\nClose対象外(未解決のまま): structural/execution_governance.pyのrecord_file_change()/record_execution()が担う、CHANGE_START/CHANGE_DONEプロトコル本体との制度的接続。今回の実装はmocka_write_event経由の並行した別記録経路であり、プロトコル本体への統合ではない。この論点は2026-07-08のdocs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md Gap-3で既に指摘されており、TODO_438として独立管理へ切り出した。TODO_413を「CHANGE_START/CHANGE_DONEプロトコルとの接続確認」という原題の全範囲で完了したとは扱わない。\n\n根拠: DC_20260710_003(実装)、本Close裁定を明記した新規Decision Ledgerエントリ、events_latest.json内のtest_todo413.py関連イベント群。",
+      "reference_event": "E20260701_4496972051ad7",
+      "created_at": "2026-07-01T18:18:18.534319",
+      "updated_at": "2026-07-10T11:23:05.761446",
+      "completed_at": "2026-07-10"
+    },
+    {
+      "id": "TODO_MOVK_V0_3_PILOT",
+      "title": "MOVK v0.3 — 被験者1名パイロット実施（体験→種明かしの順序反転検証）",
+      "status": "完了",
+      "priority": "高",
+      "category": "MOVK/実験準備",
+      "description": "目的：v0.3（Step1:Eventのみ→Step2:Decision追加→Step3:構造理解→Reveal:MoCKA名を明かす、という順序反転設計）を被験者1名に実施し、順序変更の効果を測定する。\n\n重要：後のステップを先読みできないよう、01〜04は必ず順番に手渡すこと（同一ファイルにEvent/Decisionを同時掲載しない）。「MoCKA」という名称はStep3完了までは出さない。\n\n観察重点（v0.1との比較）：\n①Step1で「困っていること」を具体的に言えるか（v0.1のTask1「分からない」からの変化）\n②Step2でDecisionの妥当性を理由付きで判断できるか\n③Step3で「分けて残す利点」を自発的に言語化できるか（v0.1のTask3「後のデータの呼び出し」からの変化）\n④Reveal閲覧時に「MoCKA」という名前への反応\n\n完了条件：①順序通り全Step完了 ②回答＋観察データ記録 ③v0.1との比較を「維持/修正/追加調査」で整理。",
+      "assigned_to": "きむら博士（被験者選定・実施、順序厳守）",
+      "note": "きむら博士(2026-07-10)の根本指摘に基づき起票。問題は設問の巧拙ではなく「MoCKAを先に教えてから理解を問う」という検証順序そのものにあった。v0.3はEvent→Decision→構造理解→MoCKA名の種明かし、という体験してから名前を知る順序へ反転。v0.2(Event記述のみ修正)は保留(TODO_MOVK_V0_2_PILOT)。\n\n【R01最終レビュー反映・パイロット実施可】タイトル/Step3/Reveal文言の3点修正済み。R01評価：パイロット実施に進める価値のある版と判定。\n\n【2026-07-10 v0.3パイロット結果】\n回答データ：\nStep1「空のデータがあとから問題を起こす」\nConfidence「80%」\nStep2「（空データでも）からでもわかる範囲で記録しておけば、あとから使えると思う」\nStep3「なにをやって、なにができてないか、あとからわかる」\nFeedback：未取得（①②③とも記入なし）\n観察データ：読了時間 約5分（他の観察項目は未記録）\n\n【v0.1との比較】\nStep1：v0.1「システムにからのデータ送信とは？分からない」→v0.3「空のデータがあとから問題を起こす」＝明確に改善。状況が具体的に理解された。\nConfidence：v0.1「ほとんど分からなかった」→v0.3「80%」＝Step1の的確さと整合し、大幅向上。\nStep2：v0.1「はい」(理由未記入)→v0.3は理由を伴う記述あり。ただし「解決するか」への賛否自体はやや不明瞭。\nStep3：v0.1「後のデータの呼び出し」(一般的なDB論)→v0.3「なにをやって、なにができてないか、あとからわかる」＝意図していた「判断根拠の追跡」に近い回答へ変化。最も改善が顕著な設問。\n\n【完了条件③：維持/修正/追加調査】\n・維持：Step1〜3の順序反転設計（体験→種明かし）。v0.1比較でStep1・Step3に明確な改善が見られたため、この構造変更自体は効果があったと判断。\n・修正：Step2の設問文言。「解決すると思いますか」への直接的な賛否が回答に表れにくい。設問をより明確な二択寄りの聞き方に調整する余地あり。\n・追加調査：Feedback（理解しやすさ/読む量/改善点）が今回も未取得。読了時間5分以外の観察データ（Reveal閲覧時の反応等）も未取得。n=1のため、Step1/Step3の改善が順序反転の効果か個人差かは次パイロットで要確認。Feedback・観察ログの取得方法自体を実施者へ再度依頼する必要がある。\n\n完了条件①②のうちFeedback・詳細観察ログは未取得のまま、得られた回答データと読了時間のみで本TODOを完了とする。",
+      "reference_event": "",
+      "created_at": "2026-07-10T11:07:45.488078",
+      "updated_at": "2026-07-10T11:28:32.619448",
+      "completed_at": "2026-07-10"
     }
   ],
-  "_snapshot_at": "2026-07-10T02:20:23.766941+00:00"
+  "_snapshot_at": "2026-07-10T02:40:24.547115+00:00"
 }
