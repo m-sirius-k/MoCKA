@@ -951,7 +951,7 @@
       "id": "TODO_437",
       "title": "/agent/mocka_write_event 応答遅延(実測約5秒)とtimeout=3不一致の恒久対策",
       "status": "未着手",
-      "priority": "高",
+      "priority": "最高",
       "category": "制度/インフラ/性能",
       "description": "TODO_413対応中に発見。/agent/mocka_write_event(mocka_mcp_server.py port 5002)の応答が実測約5秒かかるのに対し、少なくとも10箇所の呼び出し元(tools/mocka_auto_record.py=TODO_153 PostToolUseフック本体を含む)がtimeout=3で呼んでおり、構造的に常時タイムアウト→fallback/例外に陥っている可能性が高い。詳細はINCIDENT(event_id: E20260710_65296147459ca)参照。原因の一次特定(WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotのいずれが約4秒を消費しているか)のプロファイリングと、timeout値の恒久的な対応方針(呼び出し元ごとの値引き上げか、共通クライアントヘルパーへの集約か)の設計判断が必要。",
       "assigned_to": "きむら博士(方針判断)+ Claude(プロファイリング実施)",
