@@ -237,6 +237,43 @@ def _update_working_context_live(title: str, why_purpose: str, ai: str = "",
     except Exception:
         pass
 
+def _write_reopen_event(todo_id: str, new_status: str, reason: str) -> str:
+    # TODO_442案(a): completedからの差し戻しを訂正イベントとしてGATE経由でappendする。
+    # Event ledgerのappend-only原則を守るため、差し戻し自体を必ず新規イベントとして
+    # 記録し、既存イベントの書き換え・削除は一切行わない。GATE書込に失敗した場合は
+    # 例外を上位(mocka_update_todo側)へ伝播させ、記録なき差し戻しを許可しない。
+    title = f"REOPEN: {todo_id} completedから{new_status}へ差し戻し"
+    desc  = f"対象: {todo_id}\n差し戻し後status: {new_status}\n理由: {reason}"
+    gate_payload = {
+        "who_actor":       _DEFAULT_ACTOR,
+        "who_role":        "executor",
+        "who_session":     SESSION_ID,
+        "what_type":       "claude_mcp",
+        "what_title":      title,
+        "where_path":      "mocka_mcp_server.py",
+        "where_component": "mcp_caliber",
+        "why_purpose":     reason[:80],
+        "how_trigger":     "mocka_update_todo(reopen)",
+        "after_state":     desc[:200],
+        "description":     desc,
+        "tags":            f"todo_reopen,{todo_id},append_only,todo_442",
+    }
+    try:
+        r = requests.post(GATE_URL, json=gate_payload, timeout=5)
+        if r.status_code == 201:
+            return r.json().get("event_id", "?")
+        raise RuntimeError(f"GATE rejected {r.status_code}: {r.text[:120]}")
+    except requests.exceptions.ConnectionError:
+        import sys as _sys
+        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        if _repo_root not in _sys.path:
+            _sys.path.insert(0, _repo_root)
+        from phi_os.event_gate import process_event as _gate_process_event
+        result = _gate_process_event(gate_payload, event_source="direct_allowed:recovery")
+        if result["status"] == "ok":
+            return result["event_id"]
+        raise RuntimeError(f"GATE offline fallback rejected: {result.get('errors')}")
+
 def auto_log(tool_name, args, result_summary):
     # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録
     try:
@@ -360,7 +397,7 @@ TOOLS = [
     {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_todo","description":"MOCKA_TODO_ACTIVE.json を返す(ACTIVE層のみ。LOCKED/ARCHIVE層は対象外)。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO_ACTIVE.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。通常TODOには指定しない（省略時はフィールド自体を付与しない）"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
-    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/contract_status/noteを個別に更新可。未指定フィールドは既存値を保持。completedに移動済みのTODOは対象外。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"}},"required":["id"]}},
+    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/contract_status/noteを個別に更新可。未指定フィールドは既存値を保持。completedへ移動済みのTODOは直接編集不可(TODO_442)。reason付きでstatusを完了以外へ指定した場合のみ差し戻し(todosへ復帰)を許可する。差し戻し後は通常のPATCH経路で再度完了にすることも可能(往復は正常業務)。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"},"reason":{"type":"string","description":"completed状態のTODOを差し戻す場合のみ必須。3文字以上、実質的な理由が必要"}},"required":["id"]}},
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
@@ -480,6 +517,7 @@ def execute_tool(name, args):
             new_status = args.get("status", "")   # 空文字 = 未指定 → 既存値を保持
             new_contract_status = args.get("contract_status", "")  # 空文字 = 未指定 → 既存値を保持
             note       = args.get("note", "")
+            reason     = args.get("reason", "").strip()  # TODO_442: completed差し戻し時のみ必須
             if new_status and new_status not in TODO_STATUS_ENUM:
                 return json.dumps({"error": f"invalid status: {new_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
             if new_contract_status and new_contract_status not in CONTRACT_STATUS_ENUM:
@@ -487,6 +525,8 @@ def execute_tool(name, args):
             data = load_todo()
             updated = False
             effective_status = ""
+            reopen_event_id = None
+            # 通常経路: ACTIVE(todos)配列内を検索(既存動作、無変更)
             for item in data.get("todos", []):
                 if item.get("id") == todo_id:
                     if new_status:                 # 指定された場合のみ更新（PATCH動作）
@@ -503,10 +543,48 @@ def execute_tool(name, args):
                         data["todos"].remove(item)
                     updated = True
                     break
+
+            # TODO_442案(a): todosで見つからない場合のみ、completed配列からの差し戻し
+            # を試みる。completedからの直接編集はこの1経路のみに限定し、通常のnote
+            # 追記のみ・completedのまま等は一切許可しない(completed維持のまま編集
+            # させる案(b)はHuman Gateで却下済み、DC参照)。差し戻し=todos配列へ復帰
+            # した後は、上のtodosループが通常通り処理するため、再度"完了"へ戻す
+            # (再完了)ことも当然可能。この差し戻し→再完了の往復は正常業務である。
+            if not updated:
+                for item in data.get("completed", []):
+                    if item.get("id") == todo_id:
+                        if not new_status or new_status == "完了":
+                            return json.dumps({
+                                "error": "completed item requires a non-完了 status "
+                                         "to reopen (note-only or re-completing a completed "
+                                         "item directly is not allowed; TODO_442)"
+                            }, ensure_ascii=False)
+                        if len(reason) < 3 or reason.strip(".-") == "" or reason.lower() in ("n/a", "na"):
+                            return json.dumps({
+                                "error": "reason is required to reopen a completed item "
+                                         "(non-trivial, min 3 chars; TODO_442)"
+                            }, ensure_ascii=False)
+                        reopen_event_id = _write_reopen_event(todo_id, new_status, reason)
+                        data["completed"].remove(item)
+                        item["status"] = new_status
+                        if new_contract_status:
+                            item["contract_status"] = new_contract_status
+                        if note:
+                            item["note"] = note
+                        item.pop("completed_at", None)
+                        item["updated_at"] = datetime.datetime.now().isoformat()
+                        data.setdefault("todos", []).append(item)
+                        effective_status = new_status
+                        updated = True
+                        break
+
             if not updated: return json.dumps({"error": f"{todo_id} not found"})
             save_todo(data)
             auto_log(name, args, f"updated {todo_id} -> {effective_status}")
-            return json.dumps({"status": "ok", "id": todo_id, "new_status": effective_status}, ensure_ascii=False)
+            result = {"status": "ok", "id": todo_id, "new_status": effective_status}
+            if reopen_event_id:
+                result["reopen_event_id"] = reopen_event_id
+            return json.dumps(result, ensure_ascii=False)
 
         elif name == "mocka_list_events":
             events = read_events(int(args.get("n", 20)))
