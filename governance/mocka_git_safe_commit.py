@@ -19,9 +19,20 @@ verify_all.py等の検証ステップを経由した上で明示的に呼ぶこ�
 検証を経由しないpush=True呼出を新規に追加しないこと(TODO_364運用ルール)。
 """
 import subprocess
+import json
+import inspect
+import datetime
+import urllib.request
 from pathlib import Path
 
 ROOT = Path(r"C:\Users\sirok\MoCKA")
+
+# TODO_413: mocka_git_safe_commit()をGit操作の制度的責任点(Institutional
+# Recording Point)とする。呼び出し元(anchor_update.py/sync_watch.py/
+# incident_engine.py/incident_git_sync.py等)には一切手を入れず、本ファイル
+# 内部の記録のみでCHANGE_START/CHANGE_DONE相当のLedger記録を完結させる。
+_GIT_EVENT_ENDPOINT = "http://localhost:5002/agent/mocka_write_event"
+_GIT_EVENT_FALLBACK_LOG = Path(__file__).resolve().parent / "mocka_git_safe_commit_ledger_fallback.log"
 
 # Core System File Change Approval(Human Gate)対象。
 # 自動シール(AUTO_SEAL_50EVT等)が無承認でこれらの変更を確定させてしまう
@@ -52,6 +63,88 @@ def _run(cmd, cwd):
         cmd, cwd=str(cwd), capture_output=True, text=True,
         encoding="utf-8", errors="replace"
     )
+
+
+def _current_branch(root):
+    try:
+        r = _run(["git", "rev-parse", "--abbrev-ref", "HEAD"], root)
+        return r.stdout.strip() or "unknown"
+    except Exception:
+        return "unknown"
+
+
+def _detect_caller():
+    """mocka_git_safe_commit()の呼び出し元を、呼び出し元に一切変更を求めず
+    スタックから自動検出する(TODO_413: 呼び出し元にmocka_write_eventを
+    呼ばせる設計は禁止のため)。"""
+    try:
+        stack = inspect.stack()
+        # stack[0]=_detect_caller, stack[1]=mocka_git_safe_commit, stack[2]=実際の呼び出し元
+        if len(stack) > 2:
+            f = stack[2]
+            return f"{Path(f.filename).name}:{f.lineno}"
+    except Exception:
+        pass
+    return "unknown"
+
+
+def _record_git_event(title, root, branch, caller, result_state,
+                       message=None, commit_hash=None, error=None, extra=None):
+    """
+    TODO_413完了対応: git commitの開始/成功/失敗/スキップを、呼び出し元の
+    実装有無に依存せず本関数の内部呼び出しのみでLedgerへ記録する。
+    MoCKAサーバー(localhost:5002)が応答しない場合はfallbackログに書き、
+    git操作自体はブロックしない(tools/mocka_auto_record.pyと同じ方針)。
+    """
+    now = datetime.datetime.now().isoformat()
+    desc_parts = [
+        "operation=git_commit",
+        f"repository={root}",
+        f"branch={branch}",
+        f"commit_sha={commit_hash or 'N/A'}",
+        "actor=script:mocka_git_safe_commit",
+        f"caller={caller}",
+        f"timestamp={now}",
+        f"result={result_state}",
+    ]
+    if message is not None:
+        desc_parts.append(f"commit_message={message!r}")
+    if error:
+        desc_parts.append(f"error={error}")
+    if extra:
+        desc_parts.append(extra)
+    description = " | ".join(desc_parts)
+
+    payload = json.dumps({
+        "title": title,
+        "description": description,
+        "tags": f"todo_413,git_commit,institutional_recording_point,{result_state}",
+        "author": "script:mocka_git_safe_commit",
+        "why_purpose": "TODO_413: Git操作の制度的記録(呼び出し元非依存)",
+        "how_trigger": f"mocka_git_safe_commit/{caller}",
+    }, ensure_ascii=False).encode("utf-8")
+    try:
+        req = urllib.request.Request(
+            _GIT_EVENT_ENDPOINT, data=payload,
+            headers={"Content-Type": "application/json"}, method="POST"
+        )
+        # 2026-07-10実測: /agent/mocka_write_eventの応答は約5秒かかる場合がある
+        # (tools/mocka_auto_record.py等の既存timeout=3と同条件で計測、常時fallback
+        # に落ちることを確認)。commit経路をブロックしない範囲で確実に記録できる
+        # よう、余裕を持たせてtimeout=12とする。
+        with urllib.request.urlopen(req, timeout=12) as r:
+            body = json.loads(r.read())
+        eid = body.get("event_id", "?")
+        print(f"[mocka_git_safe_commit] ledger recorded: {eid} ({result_state})")
+        return eid
+    except Exception as e:
+        try:
+            with open(_GIT_EVENT_FALLBACK_LOG, "a", encoding="utf-8") as f:
+                f.write(f"[{now}] OFFLINE {title} | {description} | send_error={e}\n")
+        except Exception:
+            pass
+        print(f"[mocka_git_safe_commit] WARN ledger record failed ({e}), logged to fallback")
+        return None
 
 
 def has_pending_core_system_changes(root: Path = ROOT):
@@ -98,6 +191,13 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
     result = {"committed": False, "excluded": [], "commit_hash": None,
               "pushed": False, "error": None,
               "post_commit_files": [], "post_commit_violation": []}
+    caller = _detect_caller()
+    branch = _current_branch(root)
+    _record_git_event(
+        title="CHANGE_START: git commit 開始",
+        root=root, branch=branch, caller=caller,
+        result_state="started", message=message,
+    )
     try:
         if paths:
             _run(["git", "add"] + list(paths), root)
@@ -114,6 +214,11 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
                 result["error"] = (f"git restore --staged failed for core system file(s), "
                                    f"commit aborted: {restore_res.stderr.strip()}")
                 print(f"[mocka_git_safe_commit] ERROR: {result['error']}")
+                _record_git_event(
+                    title="CHANGE_FAILED: git commit中断(core system file除外失敗)",
+                    root=root, branch=branch, caller=caller,
+                    result_state="failure", message=message, error=result["error"],
+                )
                 return result
 
             # Post-condition verification (E20260708_6613941345364): don't trust the
@@ -125,6 +230,11 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
                 result["error"] = (f"core system file(s) still staged after restore, "
                                    f"commit aborted: {still_staged}")
                 print(f"[mocka_git_safe_commit] ERROR: {result['error']}")
+                _record_git_event(
+                    title="CHANGE_FAILED: git commit中断(core system file再検証失敗)",
+                    root=root, branch=branch, caller=caller,
+                    result_state="failure", message=message, error=result["error"],
+                )
                 return result
 
             result["excluded"] = core_files
@@ -148,12 +258,22 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
         )
         if diff_check.returncode == 0:
             print("[mocka_git_safe_commit] no staged changes, skip commit")
+            _record_git_event(
+                title="CHANGE_DONE: git commit スキップ(差分なし)",
+                root=root, branch=branch, caller=caller,
+                result_state="skipped", message=message,
+            )
             return result
 
         commit_res = _run(["git", "commit", "-m", message], root)
         print(commit_res.stdout.strip() or "nothing to commit")
         if commit_res.returncode != 0:
             result["error"] = commit_res.stderr.strip()
+            _record_git_event(
+                title="CHANGE_FAILED: git commit失敗",
+                root=root, branch=branch, caller=caller,
+                result_state="failure", message=message, error=result["error"],
+            )
             return result
 
         result["committed"] = True
@@ -194,6 +314,14 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
                   f"{len(committed_files)} file(s) in {result['commit_hash'][:7]}, "
                   f"no core system file(s) present")
 
+        _record_git_event(
+            title=f"CHANGE_DONE: git commit成功 {result['commit_hash'][:7]}",
+            root=root, branch=branch, caller=caller,
+            result_state="success", message=message, commit_hash=result["commit_hash"],
+            extra=(f"files={result['post_commit_files']} | "
+                   f"post_commit_violation={result['post_commit_violation']}"),
+        )
+
         if push:
             push_res = _run(["git", "push", "origin", "main"], root)
             if push_res.returncode == 0:
@@ -207,4 +335,9 @@ def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
     except Exception as e:
         result["error"] = str(e)
         print(f"[mocka_git_safe_commit] GIT_RECORD_FAILED {e}")
+        _record_git_event(
+            title="CHANGE_FAILED: git commit例外",
+            root=root, branch=branch, caller=caller,
+            result_state="failure", message=message, error=str(e),
+        )
         return result

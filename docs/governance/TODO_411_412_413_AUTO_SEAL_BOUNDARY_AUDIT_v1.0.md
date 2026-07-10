@@ -87,3 +87,18 @@ Gap-1がHighである理由は実害が発生しているからではなく、Hu
    優先度は低いが、認証チェック追加も選択肢として記録
 
 いずれも実装は行っていない。次工程着手の要否・優先順位はHuman Gateの判断に委ねる。
+
+## 追記(2026-07-10): Gap-3の追跡先確定
+
+TODO_413はDC_20260710_003(mocka_git_safe_commit()内部でgit commit操作をmocka_write_event
+経由のHTTP POSTで自己記録する実装)により、「Git Commit経路におけるLedger記録漏れ」という
+実害についてはClose済み(DC_20260710_004)。
+
+ただし本Gap-3が指摘した`structural/execution_governance.py`のrecord_file_change()/
+record_execution()経由の、CHANGE_START/CHANGE_DONEプロトコル本体との制度的接続は、
+DC_20260710_003の対象外であり未解決のまま残っている。DC_20260710_003が追加した記録経路
+(mocka_write_event経由のHTTP POST)は、record_file_change/record_executionとは別系統の
+並行した記録経路であり、両者の統合可否はまだ制度的に確定していない。
+
+この論点はTODO_438(execution_governance.pyとCHANGE_START/CHANGE_DONEプロトコル本体との
+制度的接続)として独立管理へ切り出した。Gap-1・Gap-2・Gap-4は本追記時点で未着手のまま。

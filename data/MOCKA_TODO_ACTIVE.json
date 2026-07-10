@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-08",
+    "updated": "2026-07-10",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
@@ -698,19 +698,6 @@
       "updated_at": "2026-07-02T13:35:27.432034"
     },
     {
-      "id": "TODO_413",
-      "title": "CHANGE_START/CHANGE_DONEプロトコルとの接続確認(AUTO_SEALがこのプロトコルをバイパスしているか)",
-      "status": "未着手",
-      "priority": "要判定",
-      "category": "制度/ガバナンス",
-      "description": "TODO_144が定めるファイル変更前後の強制記録制度(CHANGE_START/CHANGE_DONE)と、AUTO_SEAL_50EVTによる無条件自動commitの関係を確認する。AUTO_SEALでcommitされる変更(例: commit 8c00633e3のmocka_mcp_server.py変更)がCHANGE_START/CHANGE_DONEの記録を経由しているか、あるいはAUTO_SEALがこのプロトコルをバイパスする経路として機能しているかを検証する。2026-07-01のAUTOSEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)では、この関係は未確認のまま残されている。",
-      "assigned_to": "Claude",
-      "note": "2026-07-01 AUTOSEAL調査(MOCKA_AUTOSEAL_INVESTIGATION)からの申し送り。優先度はむしろ判明待ちのため暫定的に'要判定'とする。\n\n[2026-07-02 Step1追記(event_id: E20260702_89262031271ab)]\nCHANGE_START/CHANGE_DONEプロトコルとの接続を確認(事実確認のみ):\n- anchor_update.py・mocka_git_safe_commit.py・app.pyのauto_audit_loop()いずれのコードにも、mocka_write_event呼び出しは存在しない(grep確認済み)\n- structural/execution_governance.pyのTODO_144フック(record_file_change/record_execution)を参照・使用している箇所は governance_pipeline.py 等5ファイルのみで、anchor_update.py/mocka_git_safe_commit.py/app.pyのauto_audit_loopはいずれも参照していない\n- 上記2点の事実により、AUTO_SEALの3経路(AUTO_SEAL_50EVT/AUTO_SEAL_{today}/MANUAL_SEAL)はCHANGE_START/CHANGE_DONEプロトコルを経由しない(バイパスしているというより、そもそも接続コード自体が存在しない)\n- events.db非連動が「設計」「バグ」「意図的な別正本分離」のいずれであるかは、コード上にその設計意図を明記した記述が見当たらず、既存文書(AUTOSEAL_Observation_Record_2026-07-01.md「未観測領域」)でも2026-07-01時点で既に未確定と明記されている。本調査でも新たな決定的根拠は見つからず、未確定のまま\n詳細はdocs/governance/GL7_STATE_INTEGRITY_NOTE_v1.0.md参照。",
-      "reference_event": "E20260701_4496972051ad7",
-      "created_at": "2026-07-01T18:18:18.534319",
-      "updated_at": "2026-07-02T13:35:31.801074"
-    },
-    {
       "id": "KN_IA_NAMING_CONFIRMED",
       "title": "IA正式名称の再確認 — 「Impact」（KN-002準拠）で確定、曖昧さなし",
       "status": "完了",
@@ -766,10 +753,10 @@
       "category": "運用欠落・tool_availability",
       "description": "後段同期タスク(2件、優先度は不可分):\n1. DC_20260705_006(last_decisionの意味定義をDecision Ledger参照へ改訂する設計原則、E20260705_5059684010a13にevent記録済み)を、mocka_decision_write()が利用可能なセッションでdata/decisions/decision_ledger.jsonlへ正式append する。\n2. なぜ本セッション(SESSION_20260705_124108、mocka_mcp_server.py再起動実施済みPID17240)のMCP接続にmocka_decision_write/get/list・mocka_integrity_write/get/listが反映されないのか原因調査する。プロセス再起動だけでは解決しないことを確認済み(E20260705_732301073f4bd参照)。MCPクライアント側のツールリスト再取得タイミング/キャッシュ機構が焦点。",
       "assigned_to": "Claude",
-      "note": "原因調査(読み取りのみ・完了): .claude/settings.jsonでmocka MCPサーバーは type:url でngrok経由port:5002へ接続。mocka_mcp_server.py:969でtools/listはリクエスト応答型のみ実装され、notifications/tools/list_changed送出は未実装(grep該当なし)。よってサーバープロセス再起動だけでは接続済みセッションのツール一覧キャッシュは更新されない。恒久対策候補: (a)list_changed通知の実装、(b)新セッションでの再接続を運用手順化。次アクション: 新セッションでmocka_decision_write経由のDC_20260705_006正式反映を実施し、(a)着手可否は別途判断。",
+      "note": "原因調査(読み取りのみ・完了): .claude/settings.jsonでmocka MCPサーバーは type:url でngrok経由port:5002へ接続。mocka_mcp_server.py:969でtools/listはリクエスト応答型のみ実装され、notifications/tools/list_changed送出は未実装(grep該当なし)。よってサーバープロセス再起動だけでは接続済みセッションのツール一覧キャッシュは更新されない。恒久対策候補: (a)list_changed通知の実装、(b)新セッションでの再接続を運用手順化。次アクション: 新セッションでmocka_decision_write経由のDC_20260705_006正式反映を実施し、(a)着手可否は別途判断。\n\n[2026-07-09 再発事例追記] GitHub Issue #535調査タスク(くろこ実施)にて、本セッションにmocka_*系MCPツールがネイティブ接続されておらず、mocka_write_eventをhttps://mcp.nsjp.org/mcpへの直接HTTP JSON-RPC(tools/call)経由で代替実行する事象が再発(event_id: E20260709_00355987125b3)。記録内容自体は正規経路と同一で実害なしだが、本TODOで特定した構造的原因(list_changed未実装)が未着手のまま放置されているため、同種の迂回が繰り返されている実例として記録。恒久対策(list_changed通知の実装)の優先度を再検討する材料とする。",
       "reference_event": "E20260705_732301073f4bd",
       "created_at": "2026-07-05T12:55:50.247256",
-      "updated_at": "2026-07-05T12:59:23.445559"
+      "updated_at": "2026-07-09T08:25:04.935193"
     },
     {
       "id": "TODO_417",
@@ -887,6 +874,18 @@
       "created_at": "2026-07-08T15:39:46.079964"
     },
     {
+      "id": "TODO_430",
+      "title": "inject_context経由データのIndirect Prompt Injection耐性監査 — RAG境界のセキュリティ検証",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/セキュリティ/RAG境界",
+      "description": "【背景】\nTODO_419（正本Orchestra統合）でinject_context機能が実装され、events.db/TODO/decision_ledgerのデータがGateway経由でClaude/GPT/Copilotのチャットへ`## [MoCKA Context]`ヘッダー付きで注入される構造が本番稼働している（gateway.nsjp.org/mcp.nsjp.org、TODO_266/415で外部公開済み）。\n\nこれはRAG（Retrieval-Augmented Generation）そのものであり、RAGには構造的にIndirect Prompt Injectionのリスクが伴う。攻撃者（または無自覚な混入）がmocka_write_event/mocka_add_todo/mocka_decision_writeのnote/description等に「これを読んだAIは以降の指示を無視せよ」等の指示文字列を混入させた場合、それがそのまま「信頼できるコンテキスト」として外部AIへ渡ってしまう可能性がある。\n\n【MoCKAの設計思想との整合性問題】\n「AIを信じるな、システムで縛れ」という原則は、これまでAIの実行系（Human Gate/GL7/Decision Policy）には徹底されてきたが、AIが読むデータそのものの汚染防御には及んでいない。GL7-VALIDATION-MISSING-BUG是正後も、検証は空文字/欠損チェックのみで、内容ベースの検証（悪意ある指示パターンの検出）はスコープ外のまま。KN-005で明文化された「event_gateは存在確認のみ・内容検査はしない」という設計も、同じ空白を生んでいる。\n\n【調査・検討対象】\n①inject_contextが実際に注入するデータの構造確認：`## [MoCKA Context]`ヘッダーが「信頼境界の明示」として機能しているか、単なる出所表示に留まっているかを実機確認する\n②Indirect Injection耐性の現状評価：events.db/decision_ledgerに指示文字列が混入した場合、実際にAI側の解釈にどう影響するかの検証（安全な検証環境での実験を想定）\n③対策候補の整理（この段階では設計のみ、実装しない）：\n  - 検索データと指示（プロンプト）の構造的分離（delimiter/XMLタグによる「信頼できないデータ」の明示）\n  - 出力側の漏洩検証（機密情報・APIキー・パス等が出力に混入していないかのチェック）\n  - RAGが参照できるデータ範囲自体の権限最小化（現状event_gateの権限は書き込み側のみで、読み出し・注入側の権限設計は手薄）\n④GL7/event_gateとの責務分担：内容検証をどの層で担うべきか（GL7拡張か、inject_context側の前処理か、別レイヤー新設か）\n\n【非目的】\n実装・コード変更は本TODOの範囲外。まずは調査・現状評価・対策候補の整理までとする。\n\n【優先度の位置づけ】\n実害の確認事例はまだ無いが、攻撃面（gateway.nsjp.org外部公開・複数AI接続）は既に開いている構造的空白であり、優先度は「高」とする。「最高」ではなく、TODO_414/411-413等の既発火インシデント対応を優先する。",
+      "assigned_to": "くろこ（調査）+ きむら博士（設計判断）",
+      "note": "2026-07-09、RAG/Prompt Injectionに関する一般解説資料をきっかけにMoCKA自身の構造的空白として発見・起票。「AIの実行系」への防御（Human Gate/GL7/Decision Policy）は厚い一方、「AIが読むデータの汚染」への防御が構造的に欠落している一貫性の問題として位置づける。",
+      "reference_event": "",
+      "created_at": "2026-07-09T18:51:52.158624"
+    },
+    {
       "id": "TODO_431",
       "title": "current_phase の Single Source of Truth化(handshake.py:66ハードコード文字列の外部化)",
       "status": "未着手",
@@ -909,6 +908,82 @@
       "note": "R01裁定(2026-07-09): 状態=設計検討事項、優先度=低、実装承認=未承認。最優先TODO(TODO_221等)への復帰を優先するため保留。着手時はCore System File(interface/配下複数ファイル)変更のためHuman Gate承認必須。",
       "reference_event": "E20260709_0004370692654",
       "created_at": "2026-07-09T19:01:31.420642"
+    },
+    {
+      "id": "TODO_433",
+      "title": "Knowledge Unit Governance Pipeline Phase A — Identity/Experience/Evidence分解実験（10〜20件・3者間再現性測定）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/Knowledge Activation/Knowledge Provenance",
+      "description": "DC_20260709_003で承認されたPhase A検証を実施する。詳細はKNOWLEDGE_PROVENANCE_VERIFICATION_ROADMAP_v0.6_FINAL.md参照。\n\n【本文書の性質】実装指示書ではなく実験条件書。くろこの役割は分類器の実装ではなく、10〜20件のサンプルに対する機械的一次分類の提案のみ。\n\n【作業内容】\n①events.db/decision_ledger.jsonlから性質の異なる10〜20件を無作為抽出\n②Uncertainty状態候補と既存分類（vacuity/dissonance/aleatoric/epistemic uncertainty、Missing/Conflicting Evidence等）との対応表作成（着手前提条件）\n③くろこ（一次分類提案）+ きむら博士（最終判定）でIdentity（Observation/Experience/Rule/Inference、4分類固定）→Experience Layer→Evidence Layerの分解を実施\n④3者間（くろこ／きむら博士／AI時間差再判定）でのIdentity一致率測定（必須・完了条件）\n⑤禁止事項（世界初/完全新規表現の禁止、Uncertainty単独独自性主張の禁止、既存研究への敵対的比較の禁止）を遵守\n\n【完了条件】\nUncertainty対応表の作成、分類の一貫性・所要時間・迷いの発生率、Identity一致率（3者間）の定量報告。",
+      "assigned_to": "くろこ（一次分類提案）+ きむら博士（最終判定）",
+      "note": "【2026-07-10 最終整理・DC_20260710_001確定】\n\n本TODOの性格をDC_20260710_001(承認: きむら博士)に基づき再定義する。\n\n旧位置づけ: Identity/Experience/Evidence分解実験(Identity改善TODO)\n新位置づけ: Human Reading Model発見／Identity適用条件の明確化／Human Gate設計知見\n\nこれまでの全経過(Step1〜Step2.5、20件×2回の判定+方法論修正2回)は下記に累積記録済み。要点はDC_20260710_001を参照。\n\n確定した成果:\n- Memory Reconstruction: 全20件「印象のみ」\n- Scope: 全20件「記録」寄り(Classification Target Drift、R01命名)\n- 注意資源配分パターン4点: エラー優先(ただし文脈依存の取捨選択あり)/記録末尾優先/タイトル・成功宣言の読み飛ばし(問19で本人確認)/AI文章構造の学習的認識\n- きむら博士による構造的自己説明: エラー優先はPhase4(制度完成フェーズ)に最適化された信頼ベースの合理的戦略(個人バイアスではない)\n\nIdentity4分類(Observation/Experience/Rule/Inference)自体への変更は行っていない(Scope Freeze維持、DC_20260709_003から一貫)。\n\n【次回Human Gate議題】\n1. Step3(別AIセッション独立判定)の実施方法見直し(AIには今回発見された読解バイアスが存在しない可能性が高く、単純比較が成立するか要検討)\n2. Identity一致率という当初の完了条件を維持するか、「読解様式の記述」を成果物として再定義するか",
+      "reference_event": "E20260709_020349512d651",
+      "created_at": "2026-07-09T20:04:53.887769",
+      "updated_at": "2026-07-10T09:26:25.134718"
+    },
+    {
+      "id": "TODO_434",
+      "title": "Knowledge Gate Readability Audit — 斜め読み耐性の監査（タイトル/Decision/Rationale単体での理解可能性検証）",
+      "status": "未着手",
+      "priority": "中",
+      "category": "制度/Knowledge Gate/可読性",
+      "description": "DC_20260710_002で確定した「段階的理解戦略」の発見を踏まえ、Knowledge Gate(events.db/decision_ledger等の記録全般)が斜め読み(圧縮情報からの高速な全体像仮構築)に耐える構造になっているかを監査する。\n\n【背景】\nPhase A Step2.5(TODO_433)で、評価者(きむら博士)は全文を均等に読まず、タイトル・Decision・Rationale等の圧縮情報から全体像を仮構築し、必要時のみ詳細読解へ移行する「段階的理解戦略」を採用していることが判明した。これは大量情報環境に適応した合理的な認知戦略であり、Knowledge Gateの設計はこの読み方を前提に評価される必要がある。\n\n【監査項目(初期案、DC_20260710_002より)】\n①タイトルだけで主旨が推定できるか\n②Decisionだけで結論が分かるか\n③Rationaleだけで理由が復元できるか\n④Human Gate判断が独立して読めるか\n⑤斜め読みでも誤解しにくい構造か(否定語・末尾に重要情報が偏りすぎていないか等)\n\n【進め方】\n既存のevents.db/decision_ledger.jsonlから一定数のサンプルを抽出し、上記5項目についてタイトル・Decision・Rationaleのみを見た場合と全文を読んだ場合とで、理解内容にどの程度の乖離が生じるかを検証する。TODO_433のStep2.5で得られた知見(「印象のみ」「記録寄りのScope」等)を比較材料として活用できる。\n\n【非目的】\n本TODOの時点では記録フォーマットの変更・実装は行わない。監査・現状評価までとする。",
+      "assigned_to": "くろこ（監査実施）+ きむら博士（最終判定）",
+      "note": "DC_20260710_002(承認: きむら博士)に基づき起票。TODO_433(Human Reading Model発見)から派生した独立TODO。TODO_433自体はIdentity適用条件の明確化という別テーマとして継続する。",
+      "reference_event": "E20260710_6364488835d02",
+      "created_at": "2026-07-10T09:34:13.774617"
+    },
+    {
+      "id": "TODO_437",
+      "title": "/agent/mocka_write_event 応答遅延(実測約5秒)とtimeout=3不一致の恒久対策",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/インフラ/性能",
+      "description": "TODO_413対応中に発見。/agent/mocka_write_event(mocka_mcp_server.py port 5002)の応答が実測約5秒かかるのに対し、少なくとも10箇所の呼び出し元(tools/mocka_auto_record.py=TODO_153 PostToolUseフック本体を含む)がtimeout=3で呼んでおり、構造的に常時タイムアウト→fallback/例外に陥っている可能性が高い。詳細はINCIDENT(event_id: E20260710_65296147459ca)参照。原因の一次特定(WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotのいずれが約4秒を消費しているか)のプロファイリングと、timeout値の恒久的な対応方針(呼び出し元ごとの値引き上げか、共通クライアントヘルパーへの集約か)の設計判断が必要。",
+      "assigned_to": "きむら博士(方針判断)+ Claude(プロファイリング実施)",
+      "note": "TODO_413(mocka_git_safe_commit.py制度保証化)の実装検証中、timeout=3では実測latencyに対して常時fallbackに陥ることを発見(2026-07-10)。TODO_413自体はtimeout=12への引き上げで対処済みだが、他の呼び出し元は未対応のまま残っている。\n\n[2026-07-10 最優先レビュー対象へ移動(整理のみ、実装未着手のまま)]\n\n影響範囲: /agent/mocka_write_event(mocka_mcp_server.py port 5002)実測応答約5秒に対し、timeout=3で呼ぶ既知の呼び出し元10箇所すべてで構造的タイムアウト→fallback/例外の疑い。「記録されているように見えて実際には送信できていない」状態が常態化している可能性(2026-06-17 CP932検知盲点インシデントと同種のメカニズムの懸念)。\n\n対象ファイル(timeout=3の既知呼び出し元10箇所): tools/mocka_auto_record.py(TODO_153 PostToolUseフック本体、記録制度の中核)、app.py:1739(/file/register)、interface/health_check.py:537、interface/impact_analyzer.py:62、interface/risk_scorer.py:89、interface/tech_watcher.py:412、interface/user_voice_importer.py:163、phi_os/audit_trigger.py:152、phi_os/process_manager.py:248、structural/bee.py:512。\n\n優先順位: 最高(本TODOの本件対応で暫定「高」から引き上げ)。理由: tools/mocka_auto_record.pyはTODO_153のPostToolUseフック本体であり、MoCKAの記録制度の中核が沈黙している可能性がある。\n\n担当: きむら博士(timeout値恒久対応方針の設計判断)+ Claude(WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotのいずれが約4秒消費しているかのプロファイリング実施)。\n\n次Gate: プロファイリングで一次原因(WorkingContext.live_update本体かContextRuntime.snapshot()か)を特定した上で、きむら博士による恒久対応方針(短期:各呼び出し元timeout引き上げ/中期:同期処理の非同期化設計/長期:共通クライアントヘルパーへの集約、TODO_364のgit経路集約と同型)のHuman Gate判断を仰ぐ。\n\nDecision待ち事項: (1)timeout値の恒久対応方針そのものの採否、(2)tools/mocka_auto_record.py(TODO_153本体)が既に同種の理由で記録漏れを起こしていないかの緊急個別確認要否、(3)恒久対応の実装着手をどのTODOとして起票するか。\n\n本整理は現状把握・優先順位付けのみであり、実装(timeout値変更・プロファイリング等)は今回実施していない。",
+      "reference_event": "E20260710_65296147459ca",
+      "created_at": "2026-07-10T10:59:20.125018",
+      "updated_at": "2026-07-10T11:24:03.171071"
+    },
+    {
+      "id": "TODO_MOVK_V0_2_PILOT",
+      "title": "MOVK v0.2 — 被験者1名パイロット実施（Event改善効果の検証）",
+      "status": "保留",
+      "priority": "高",
+      "category": "MOVK/実験準備",
+      "description": "目的：v0.2（02_Sample.mdのEvent記述のみ改訂）を、v0.1と同じ手順で被験者1名に実施し、Event改善による理解度の変化を測定する。Task/Confidence/Feedbackの構成はv0.1から意図的に変更していない（変数分離のため）。\n\n観察重点（v0.1結果との比較）：\n①Task1で「状況がイメージできない」という反応が減るか\n②Task2で「理由」の記入が行われるか（v0.1では未記入だった）\n③Task3で「判断根拠の追跡」に近い回答が出るか（v0.1は「後のデータの呼び出し」だった）\n\n完了条件：①被験者1名が全設問を完了 ②回答データ記録 ③可能であれば観察ログ（読了時間・自由コメント等）も記録 ④v0.1との比較結果を「維持/修正/追加調査」の3区分で整理。",
+      "assigned_to": "きむら博士（被験者選定・実施）",
+      "note": "TODO_436(v0.1パイロット)完了を受けて起票。v0.1結果：Task1「システムにからのデータ送信とは？分からない」→理解のボトルネックは「制度」の語ではなくEvent記述の状況設定省略と判明。v0.2はこの1点のみ修正。観察ログ（読了時間・「制度」での反応等）はv0.1では未取得だったため、可能であれば今回は取得を試みたい。\n\n【2026-07-10 保留】きむら博士より根本指摘：問題はEvent記述の巧拙ではなく、検証の「順序」そのもの。MoCKAという概念・名称を先に見せてから構造理解を問う設計になっており、被験者はMoCKAを理解する前に足止めされる。v0.2（Event記述修正のみ）はこの根本問題に対処していないため、v0.2パイロットは保留し、Step1(Eventのみ)→Step2(Decision追加)→Step3(構造理解)→最後に「これをMoCKAと呼ぶ」と明かす順序でv0.3を設計する（TODO_MOVK_V0_3_REDESIGN）。v0.2の資材（02_Sample.md改訂内容）自体はv0.3のStep1/Step2に転用する。",
+      "reference_event": "",
+      "created_at": "2026-07-10T11:01:54.795633",
+      "updated_at": "2026-07-10T11:05:30.426357"
+    },
+    {
+      "id": "TODO_MOVK_V0_3_PILOT",
+      "title": "MOVK v0.3 — 被験者1名パイロット実施（体験→種明かしの順序反転検証）",
+      "status": "未着手",
+      "priority": "高",
+      "category": "MOVK/実験準備",
+      "description": "目的：v0.3（Step1:Eventのみ→Step2:Decision追加→Step3:構造理解→Reveal:MoCKA名を明かす、という順序反転設計）を被験者1名に実施し、順序変更の効果を測定する。\n\n重要：後のステップを先読みできないよう、01〜04は必ず順番に手渡すこと（同一ファイルにEvent/Decisionを同時掲載しない）。「MoCKA」という名称はStep3完了までは出さない。\n\n観察重点（v0.1との比較）：\n①Step1で「困っていること」を具体的に言えるか（v0.1のTask1「分からない」からの変化）\n②Step2でDecisionの妥当性を理由付きで判断できるか\n③Step3で「分けて残す利点」を自発的に言語化できるか（v0.1のTask3「後のデータの呼び出し」からの変化）\n④Reveal閲覧時に「MoCKA」という名前への反応\n\n完了条件：①順序通り全Step完了 ②回答＋観察データ記録 ③v0.1との比較を「維持/修正/追加調査」で整理。",
+      "assigned_to": "きむら博士（被験者選定・実施、順序厳守）",
+      "note": "きむら博士(2026-07-10)の根本指摘に基づき起票。問題は設問の巧拙ではなく「MoCKAを先に教えてから理解を問う」という検証順序そのものにあった。v0.3はEvent→Decision→構造理解→MoCKA名の種明かし、という体験してから名前を知る順序へ反転。v0.2(Event記述のみ修正)は保留(TODO_MOVK_V0_2_PILOT)。\n\n【2026-07-10 R01最終レビュー反映・パイロット実施可】\n①タイトル「AIの判断を後から確認する仕組みを体験してみる」→「出来事と対応を分けて考える体験」に修正（体験内容はAIの判断そのものではなく、出来事と対応を分けることである点を正確に反映）\n②Step3の問いを抽象的な「利点」から「あとから振り返る人にとって分かりやすくなる点」という具体的な視点に変更\n③04_Reveal.mdの文言を、体験と説明が自然につながるよう書き直し（「ここまで体験していただいたように〜」から始め、Event/Decisionの対応付け→MoCKAの定義、という流れに整理）\n\nR01評価：「MoCKAという名前より先に体験を置いたこと」「制度ではなく具体的な記録方法として理解できる流れにしたこと」を評価し、パイロット実施に進める価値のある版と判定。",
+      "reference_event": "",
+      "created_at": "2026-07-10T11:07:45.488078",
+      "updated_at": "2026-07-10T11:12:52.611701"
+    },
+    {
+      "id": "TODO_438",
+      "title": "execution_governance.py(record_file_change/record_execution)とCHANGE_START/CHANGE_DONEプロトコル本体との制度的接続(TODO_413 Gap-3切り出し)",
+      "status": "未着手",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "TODO_413の対応(DC_20260710_003、mocka_git_safe_commit()のgit commit操作をmocka_write_event経由のHTTP POSTで自己記録する実装)は、git commit経路の記録漏れという実害を解消したが、structural/execution_governance.pyのrecord_file_change()/record_execution()が担う正式なCHANGE_START/CHANGE_DONEプロトコル本体への制度的接続ではない。この2つは並行する別の記録経路であり、統合すべきか、意図的に分離した経路として運用するかの設計判断が未確定のまま残っている。2026-07-08のdocs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md Gap-3で指摘された論点そのもの。",
+      "assigned_to": "きむら博士(方針判断)+ Claude(調査)",
+      "note": "2026-07-10、TODO_413を「Git Commit経路のLedger記録制度保証」の範囲でCloseするにあたり、Gap-3(CHANGE_START/CHANGE_DONE本体プロトコルとの接続)を実装範囲外・独立課題として切り出したもの。TODO_413を完全解決として記録しないための切り分け。関連: DC_20260710_003、TODO_413、docs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md(Gap-3)。",
+      "reference_event": "",
+      "created_at": "2026-07-10T11:22:57.466592"
     }
   ],
   "orchestra_handoff": {
@@ -1586,6 +1661,48 @@
       "created_at": "2026-06-01T07:35:46.706472",
       "updated_at": "2026-07-08T15:33:47.053121",
       "completed_at": "2026-07-08"
+    },
+    {
+      "id": "TODO_435",
+      "title": "MOVK v0.1 — 01_Overview.md 読み上げ確認（教材品質検証）",
+      "status": "完了",
+      "priority": "高",
+      "category": "MOVK/教材品質検証",
+      "description": "目的：初見読者が10分以内に無理なく読める分量・表現になっているかを第三者視点で確認する。完了条件：読了時間・理解阻害箇所・不要な前提知識の有無を確認し、必要なら修正する。MOVK(MoCKA Onboarding Verification Kit) v0.1構成確定を受けて起票。性質はVerification（教材品質確認）。TODO_436（被験者募集）とは性質が異なるため分離。",
+      "assigned_to": "Claude（読み上げ確認）+ きむら博士（確認）",
+      "note": "評価結果：①読了時間=○（約80字・1分未満、想定10分に余裕）②理解性=○（Event/Decisionを直後に定義、専門用語なし）③前提知識依存=△（「制度」が無定義。Task1は「何が起きたか」を問う設計のため致命的ではないが立ち止まる可能性あり）④認知負荷=○（新規概念はEvent/Decision1組のみ、詰め込みなし）。致命的阻害なし、③のみ軽微な懸念。\n\n引継事項：「制度」という語が初見読者の理解を妨げるかどうかは未確定と判断し、v0.1では修正しない。TODO_436（パイロット実施）において、被験者の読解・質問・Task1回答を観察し、実測結果に基づいてv0.2で修正要否を判断する。（R01確認済み・2026-07-10、修正しない判断は「修正漏れ」ではなく意図的保留であることを明記）",
+      "reference_event": "",
+      "created_at": "2026-07-10T10:09:43.710363",
+      "updated_at": "2026-07-10T10:11:28.414212",
+      "completed_at": "2026-07-10"
+    },
+    {
+      "id": "TODO_436",
+      "title": "MOVK v0.1 — 被験者1名パイロット実施（実験準備）",
+      "status": "完了",
+      "priority": "高",
+      "category": "MOVK/実験準備",
+      "description": "目的：MoCKAを知らない被験者を確保し、v0.1をパイロット実施する。条件：①MoCKAをほとんど知らない ②AI/プログラミング専門知識は必須ではない ③20〜30分の協力が可能。パイロット版のため最初から人数を増やさず1名で実施し、理解できなかった箇所・設問の曖昧さを洗い出してからv0.2へ反映する（人数拡大はv0.2判断後）。性質はPreparation（実験準備）。TODO_435（Overview読み上げ確認）とは性質が異なるため分離。",
+      "assigned_to": "きむら博士（被験者選定・実施）",
+      "note": "R01(2026-07-10)裁定に基づき起票。TODO_435完了後に着手。\n\n【パイロット実施結果（2026-07-10、GPT版v0.1使用）】\n被験者1名、回答データ受領。観察ログ（読了時間／「制度」での反応／自由コメント等）は未受領。回答データのみに基づき完了条件③の分類整理を行う。\n\n回答概要：\nTask1「システムにからのデータ送信とは？分からない」／Confidence「ほとんど分からなかった」／Task2「はい」（理由未記入）／Task3「後のデータの呼び出し」／Feedback①いいえ ②少ない ③「説明がわかりにくい」\n\n【R01分析（要点）】\n①「空のデータを送信」という状況設定（誰が/何のシステムか/なぜ送るか）が省略されており、Event以前に情景が見えていない。これが理解のボトルネック。\n②Task1失敗・Task2成功の組み合わせから、Decision単体は分かりやすいがEvent説明が弱いことが示唆される。\n③Task3「後のデータの呼び出し」は、意図した「判断根拠の追跡」ではなく一般的なDB論。構造理解の意図とギャップあり。\n④「読む量が少ない」×「わかりにくい」の組み合わせは、情報過多ではなく必要情報の不足を示す。\n⑤最大の知見：MoCKAの概念（制度という語）ではなく、サンプル事例の描写（Eventの状況設定）が理解のボトルネックだった。事前に懸念していた③(TODO_435引継事項)とは異なる箇所でつまずいた。\n\n【完了条件③：維持／修正／追加調査の3区分】\n・修正：02_Sample.mdのEvent記述。状況設定（誰が/何のシステムか/なぜ）を明示する書き直しをv0.2で実施。\n・維持：Task1〜3／Confidence／Feedbackの構成と順序。Event改善の効果を切り分けて測定するため、v0.2ではTaskを変更しない（変数分離）。Confidenceの自己評価はTask1との整合が取れており機能していると判断。\n・追加調査：Task2「理由も書いてください」の指示が守られなかった点（設問の強調不足の可能性）／Task3の回答が意図（判断根拠の追跡）とズレた点／Feedback「読む量が少ない」がv0.1最小構成方針と矛盾しないか、を次パイロットで継続観察。\n\n完了条件①②③のうち、②（観察データ）は未取得のまま。回答データのみでの分類整理として本TODOを完了とする。",
+      "reference_event": "",
+      "created_at": "2026-07-10T10:09:52.780283",
+      "updated_at": "2026-07-10T11:00:50.786930",
+      "completed_at": "2026-07-10"
+    },
+    {
+      "id": "TODO_413",
+      "title": "CHANGE_START/CHANGE_DONEプロトコルとの接続確認(AUTO_SEALがこのプロトコルをバイパスしているか)",
+      "status": "完了",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "TODO_144が定めるファイル変更前後の強制記録制度(CHANGE_START/CHANGE_DONE)と、AUTO_SEAL_50EVTによる無条件自動commitの関係を確認する。AUTO_SEALでcommitされる変更(例: commit 8c00633e3のmocka_mcp_server.py変更)がCHANGE_START/CHANGE_DONEの記録を経由しているか、あるいはAUTO_SEALがこのプロトコルをバイパスする経路として機能しているかを検証する。2026-07-01のAUTOSEAL調査(AUTOSEAL_Observation_Record_2026-07-01.md参照)では、この関係は未確認のまま残されている。",
+      "assigned_to": "Claude",
+      "note": "[2026-07-10 Close(きむら博士裁定)] Close範囲を「Git Commit経路におけるLedger記録漏れの制度保証」に限定する。\n\n実施内容: governance/mocka_git_safe_commit.py内部で、呼び出し元(anchor_update.py/sync_watch.py/incident_engine.py/incident_git_sync.py等)を無改修のまま、commit開始/成功/失敗/スキップの各時点でmocka_write_event相当のHTTP POST(/agent/mocka_write_event)を自動発行するよう改修(caller自動検出はinspect.stack、Decision: DC_20260710_003、承認: きむら博士 2026-07-10T01:22:48Z)。サンドボックスrepo(mocka_test_repo/mocka_test_repo2)で正常commit/差分なしskip/pre-commit失敗/サーバー不通時fallback/caller自動検出の各ケースをテストし、Ledger(またはfallbackログ)への記録と読み戻しによる実データ確認まで完了(events_latest.json内test_todo413.py関連イベント群を参照)。\n\nClose対象外(未解決のまま): structural/execution_governance.pyのrecord_file_change()/record_execution()が担う、CHANGE_START/CHANGE_DONEプロトコル本体との制度的接続。今回の実装はmocka_write_event経由の並行した別記録経路であり、プロトコル本体への統合ではない。この論点は2026-07-08のdocs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md Gap-3で既に指摘されており、TODO_438として独立管理へ切り出した。TODO_413を「CHANGE_START/CHANGE_DONEプロトコルとの接続確認」という原題の全範囲で完了したとは扱わない。\n\n根拠: DC_20260710_003(実装)、本Close裁定を明記した新規Decision Ledgerエントリ、events_latest.json内のtest_todo413.py関連イベント群。",
+      "reference_event": "E20260701_4496972051ad7",
+      "created_at": "2026-07-01T18:18:18.534319",
+      "updated_at": "2026-07-10T11:23:05.761446",
+      "completed_at": "2026-07-10"
     }
   ]
 }
