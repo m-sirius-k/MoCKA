@@ -1,0 +1,15 @@
+status: 完了
+title: ファイル変更前後の強制記録制度 — 変更着手前INCIDENT・完了後FIX記録を必須化
+desc: Claudeがファイルを変更する際の強制プロトコル確立。
+【ルール】
+①変更着手前: mocka_write_event(INCIDENT/PLAN)でWHO/WHAT/WHERE/WHY/HOW+変更前状態を記録
+②変更実施
+③完了後: mocka_write_event(FIX/CHANGE)で変更後状態・差分・結果を記録
+【記録必須項目】
+- ファイルパス・行番号
+- 変更前コード（抜粋）
+- 変更後コード（抜粋）
+- 変更理由（WHY）
+- 確認結果
+【目的】戻れる文化の実現。Gitと同じ思想をMoCKAイベントDBで実現。「なぜその変更をしたか」を常に追跡可能にする。
+note: 2026-06-03 Claude Code実装完了。change-record-store.js/change-tracker.js/mocka-bridge.js/README 4ファイル。全5テストPASS。PHI-OS統合・単独動作両対応。残課題: PostToolUse:Edit自動フック連携は将来フェーズ。E20260603_068。
