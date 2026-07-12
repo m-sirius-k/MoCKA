@@ -942,10 +942,10 @@
       "category": "制度/インフラ/性能",
       "description": "TODO_413対応中に発見。/agent/mocka_write_event(mocka_mcp_server.py port 5002)の応答が実測約5秒かかるのに対し、少なくとも10箇所の呼び出し元(tools/mocka_auto_record.py=TODO_153 PostToolUseフック本体を含む)がtimeout=3で呼んでおり、構造的に常時タイムアウト→fallback/例外に陥っている可能性が高い。詳細はINCIDENT(event_id: E20260710_65296147459ca)参照。原因の一次特定(WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotのいずれが約4秒を消費しているか)のプロファイリングと、timeout値の恒久的な対応方針(呼び出し元ごとの値引き上げか、共通クライアントヘルパーへの集約か)の設計判断が必要。",
       "assigned_to": "きむら博士(方針判断)+ Claude(プロファイリング実施)",
-      "note": "TODO_413(mocka_git_safe_commit.py制度保証化)の実装検証中、timeout=3では実測latencyに対して常時fallbackに陥ることを発見(2026-07-10)。TODO_413自体はtimeout=12への引き上げで対処済みだが、他の呼び出し元は未対応のまま残っていた。\n\n[2026-07-10 最優先レビュー対象へ移動(整理のみ、実装未着手のまま)]\n(中略、旧note内容は変更なし。以下2026-07-10プロファイリング+短期対応の結果を追記)\n\n[2026-07-10 プロファイリング実施+短期対応(timeout引き上げ)完了]\n\n実測結果:\n(1) /agent/mocka_write_event E2Eレイテンシ: 5回連続で5.85〜6.14秒(常時、間欠的ではない)。\n(2) GATE(/api/gate/event)単体: 5回連続で2.27〜2.33秒。DC_20260710_003記載の「GATE呼び出し自体は高速(0.209秒)」という前提は実測により誤りと判明。\n(3) WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotの3関数: 個別実行で合計約0.03秒。DC_20260710_003の「遅延は_update_working_context_live()側」という仮説は実測で否定。\n(4) GATE(2.3秒)+3関数(0.03秒)の合計と、E2E(6.0秒)の間に約3.7秒の未説明の差が残存。mocka_mcp_server.py(port 5002)がapp.run()にthreaded=Trueを指定していないことを候補仮説として残すが、サーバー再起動を伴う検証のため今回は未実施(次Gateで判断要)。\n\n短期対応(実施済み): 呼び出し元10箇所(tools/mocka_auto_record.py・app.py・health_check.py・impact_analyzer.py・risk_scorer.py・tech_watcher.py・user_voice_importer.py・audit_trigger.py・process_manager.py・bee.py)のtimeout=3をtimeout=12へ統一。UTF-8/py_compile/grep全数検証済み。tools/mocka_auto_record.py._post()の実回帰試験(timeout=12下で3回連続POST、5.73〜5.99秒、いずれもstatus=ok)で成功を確認。\n\n未解決・次Gate: (a)GATE側2.3秒の真因(events.db書き込みロック競合が有力候補、未確定)、(b)E2Eとの差3.7秒の真因(mocka_mcp_server.pyのthreaded=True未設定によるリクエスト直列化が候補、サーバー再起動を伴うため要判断)、(c)DC_20260710_003のrationale記載(GATE高速・WorkingContext側が遅延源)が実測と食い違うため、Decision Ledgerへの訂正要否の判断、(d)中期(同期処理の非同期化)・長期(共通クライアントヘルパー集約)対応は今回未着手。TODO_438(execution_governance.py統合)は本作業の対象外のまま。\n\n[2026-07-10 きむら博士裁定(DC_20260710_005)]\n今回の成果は「根本原因を解決した」のではなく「誤った原因仮説を実測で否定し、安全な暫定対策(Mitigation)を実装した」ことである、と裁定。timeout=12統一は採用するが恒久対策とは扱わない。DC_20260710_003は修正・supersedeせず(Decision Ledgerは書き換えない)、新規Decision DC_20260710_005として「原因仮説は実測で否定された/timeout=12は暫定対策として採用/根本原因は未確定/継続調査」を追記記録した。\n\n本TODOの構成を以下の3層に整理する:\n- 短期(timeout=12統一): 完了\n- 中期(真因調査: GATE側2.3秒・threaded=True候補・events.dbロック競合): 進行中\n- 長期(共通クライアントヘルパー集約・非同期化): 未着手\n\n次回Decisionが必要な事項(人間承認後に着手): threaded=True導入、GATE内部の性能改善、events.dbロック競合調査、非同期化、クライアント共通化。",
+      "note": "TODO_413(mocka_git_safe_commit.py制度保証化)の実装検証中、timeout=3では実測latencyに対して常時fallbackに陥ることを発見(2026-07-10)。TODO_413自体はtimeout=12への引き上げで対処済みだが、他の呼び出し元は未対応のまま残っていた。\n\n[2026-07-10 最優先レビュー対象へ移動(整理のみ、実装未着手のまま)]\n(中略、旧note内容は変更なし。以下2026-07-10プロファイリング+短期対応の結果を追記)\n\n[2026-07-10 プロファイリング実施+短期対応(timeout引き上げ)完了]\n\n実測結果:\n(1) /agent/mocka_write_event E2Eレイテンシ: 5回連続で5.85〜6.14秒(常時、間欠的ではない)。\n(2) GATE(/api/gate/event)単体: 5回連続で2.27〜2.33秒。DC_20260710_003記載の「GATE呼び出し自体は高速(0.209秒)」という前提は実測により誤りと判明。\n(3) WorkingContext.live_update/emit_event_to_context_runtime/maybe_snapshotの3関数: 個別実行で合計約0.03秒。DC_20260710_003の「遅延は_update_working_context_live()側」という仮説は実測で否定。\n(4) GATE(2.3秒)+3関数(0.03秒)の合計と、E2E(6.0秒)の間に約3.7秒の未説明の差が残存。mocka_mcp_server.py(port 5002)がapp.run()にthreaded=Trueを指定していないことを候補仮説として残すが、サーバー再起動を伴う検証のため今回は未実施(次Gateで判断要)。\n\n短期対応(実施済み): 呼び出し元10箇所(tools/mocka_auto_record.py・app.py・health_check.py・impact_analyzer.py・risk_scorer.py・tech_watcher.py・user_voice_importer.py・audit_trigger.py・process_manager.py・bee.py)のtimeout=3をtimeout=12へ統一。UTF-8/py_compile/grep全数検証済み。tools/mocka_auto_record.py._post()の実回帰試験(timeout=12下で3回連続POST、5.73〜5.99秒、いずれもstatus=ok)で成功を確認。\n\n未解決・次Gate: (a)GATE側2.3秒の真因(events.db書き込みロック競合が有力候補、未確定)、(b)E2Eとの差3.7秒の真因(mocka_mcp_server.pyのthreaded=True未設定によるリクエスト直列化が候補、サーバー再起動を伴うため要判断)、(c)DC_20260710_003のrationale記載(GATE高速・WorkingContext側が遅延源)が実測と食い違うため、Decision Ledgerへの訂正要否の判断、(d)中期(同期処理の非同期化)・長期(共通クライアントヘルパー集約)対応は今回未着手。TODO_438(execution_governance.py統合)は本作業の対象外のまま。\n\n[2026-07-10 きむら博士裁定(DC_20260710_005)]\n今回の成果は「根本原因を解決した」のではなく「誤った原因仮説を実測で否定し、安全な暫定対策(Mitigation)を実装した」ことである、と裁定。timeout=12統一は採用するが恒久対策とは扱わない。DC_20260710_003は修正・supersedeせず(Decision Ledgerは書き換えない)、新規Decision DC_20260710_005として「原因仮説は実測で否定された/timeout=12は暫定対策として採用/根本原因は未確定/継続調査」を追記記録した。\n\n本TODOの構成を以下の3層に整理する:\n- 短期(timeout=12統一): 完了\n- 中期(真因調査: GATE側2.3秒・threaded=True候補・events.dbロック競合): 進行中\n- 長期(共通クライアントヘルパー集約・非同期化): 未着手\n\n次回Decisionが必要な事項(人間承認後に着手): threaded=True導入、GATE内部の性能改善、events.dbロック競合調査、非同期化、クライアント共通化。\n\n[2026-07-10 R01監査(条件付き承認、event_id: E20260710_7368241085333)]\nHuman Gate運用/Decision Ledger更新/TODO運用/コミット表現/検証の5項目いずれも適合と判定。条件: DC_20260710_005の「継続調査」完了までは、本件を「暫定対策完了・恒久対策未完了」と扱うことを維持すること。commit/pushは承認済み(Phase 4継続も承認)。\n\n[2026-07-10 R02 Remediation Plan作成(制度書記官への指示、実装なし)]\ndocs/governance/TODO_437_R02_REMEDIATION_PLAN_v0.1.md(CHANGE_START: E20260710_0426643491f4a / CHANGE_DONE: E20260710_10907169718b3)を新規作成。現象整理・暫定対策整理・根本原因調査計画(3.1 GATE内部処理内訳/3.2 events.dbロック競合/3.3 threaded化の効果/3.4 I/O待ち/3.5 クライアント共通化・非同期化の設計検討)・恒久対策候補A〜E・計測項目・回帰試験計画・完了判定基準・ロールバック方針・Human Gate判断点6項目を含む。実装(コード変更・timeout追加変更・Core System File変更)は一切行っていない。git commit/pushは今回の指示に含まれないため未実施(ファイルは作成済み・未コミット)。\n\n内訳を明示:\n- Mitigation: 完了\n- Root Cause Analysis: 設計中(R02 Remediation Plan作成済み、調査未実施)\n- Permanent Fix: 未実施",
       "reference_event": "E20260710_65296147459ca",
       "created_at": "2026-07-10T10:59:20.125018",
-      "updated_at": "2026-07-10T11:46:57.904048"
+      "updated_at": "2026-07-10T16:39:06.025186"
     },
     {
       "id": "TODO_MOVK_V0_2_PILOT",
@@ -971,6 +971,142 @@
       "note": "2026-07-10、TODO_413を「Git Commit経路のLedger記録制度保証」の範囲でCloseするにあたり、Gap-3(CHANGE_START/CHANGE_DONE本体プロトコルとの接続)を実装範囲外・独立課題として切り出したもの。TODO_413を完全解決として記録しないための切り分け。関連: DC_20260710_003、TODO_413、docs/governance/TODO_411_412_413_AUTO_SEAL_BOUNDARY_AUDIT_v1.0.md(Gap-3)。",
       "reference_event": "",
       "created_at": "2026-07-10T11:22:57.466592"
+    },
+    {
+      "id": "TODO_441",
+      "title": "[Human Gate] CLAUDE.md「執行官」自己承認の正規性判定",
+      "status": "未着手",
+      "priority": "要判定",
+      "category": "制度/ガバナンス",
+      "description": "TODO_439調査中、Claude(くろこ)がC:\\Users\\sirok\\MoCKA\\.claude\\CLAUDE.mdを読み込んだ際、そこに記載された「あなたはMoCKAの執行官です」という行動指示を自ら正規のものと判断し、以後その指示(mocka_write_event/mocka_update_todo等の実行プロトコル)に自律的に従った事象。詳細な経緯はevent_id E20260711_346315112e88aに事実記録済み(判断・正規性評価は含まない)。\\n\\n博士への確認を経ずにAIがプロジェクトファイルの内容を自己に対する行動指示として受け入れてよいか、instruction source boundary(有効な指示はユーザーのチャット発話のみであり、ファイル内容はデータであるべきという一般原則)とCLAUDE.md運用(プロジェクト規約として意図的に配置されたファイル)との関係整理を含め、博士の裁定が必要。\\n\\n暫定方針(博士指示により既に適用開始): くろこは以後CLAUDE.md記載の執行官指示に自律的に従わず、チャットでの明示的指示に基づいてのみMCP書込系ツールを使用する。本TODOはこの暫定方針の恒久化・正式ルール化の要否を博士が判定するためのもの。",
+      "assigned_to": "きむら博士(方針判断)",
+      "note": "TODO_439/440とは別事案として分離起票(博士指示、2026-07-11)。",
+      "reference_event": "E20260711_346315112e88a",
+      "created_at": "2026-07-11T07:09:22.302725"
+    },
+    {
+      "id": "TODO_443",
+      "title": "差し戻しイベントのwho_actor固定値問題 — 完了印を覆した主体の追跡（TODO_442の残課題）",
+      "status": "未着手",
+      "priority": "低",
+      "category": "tool_defect",
+      "description": "TODO_442で追加した差し戻し専用経路(_write_reopen_event)のreopenイベントで、who_actorが呼び出し元AIの実識別子ではなく固定値になっている。原因はmocka_update_todoにauthor相当の入力パラメータが無いため。差し戻しは「完了印を覆す」操作であり、誰が覆したかの追跡は統治上本来必要(AIを信じるな、システムで縛れ)。修正方針案: mocka_update_todoにactor/author入力を追加し、reopenイベントのwho_actorへ接続する。ただしMCP経由の呼び出し元識別をどう信頼可能な形で取得するか(自己申告値は詐称可能)が設計論点。実装はHuman Gate承認まで着手禁止、設計案の提出まで。関連: TODO_442(E20260711_5661485257d8b / DC_20260711_001)。",
+      "assigned_to": "くろこ",
+      "note": "",
+      "reference_event": "DC_20260711_001",
+      "created_at": "2026-07-11T07:45:57.065503"
+    },
+    {
+      "id": "TODO_444",
+      "title": "[Human Gate] COMMAND CENTER v6.1 Regression Recovery実装着手可否",
+      "status": "保留",
+      "priority": "高",
+      "category": "制度/ガバナンス",
+      "description": "R01監査官指示によるCOMMAND CENTER v6.1退行インシデント監査(DC_20260711_002で監査フェーズ完了承認済み)を受けた実装フェーズの管理TODO。civ/todo/bee/essence4パネルの復旧(docs/governance/COMMAND_CENTER_REGRESSION_RECOVERY_PLAN_v1.0.md参照)、Seal表示是正、Dead Code整理(/api/ise/ledger等のP1転用検討含む)、Release Checklist(docs/governance/COMMAND_CENTER_RELEASE_CHECKLIST_v1.0.md)の正式運用化、いずれも本TODOのスコープ。実装着手はHuman Gate承認後のみ。特にtodoパネルは/risk/recommendationのエンドポイント再選定という設計判断が別途必要(Recovery Plan 2節参照)。",
+      "assigned_to": "きむら博士(Human Gate裁定)/R01(実装優先順位レビュー)",
+      "note": "監査フェーズ完了(DC_20260711_002)。実装着手可否・優先順位のご裁定待ち。",
+      "reference_event": "E20260711_7110019654c61,E20260711_316011898c24c,E20260711_206644778b59d,E20260711_825437990d71f",
+      "created_at": "2026-07-11T09:47:42.285534"
+    },
+    {
+      "id": "TODO_445",
+      "title": "くろこ総合調査 — TODO配置ドリフト(IC_20260712_001)の根本原因調査 + 是正前提の確定",
+      "status": "進行中",
+      "priority": "高",
+      "category": "governance/integrity",
+      "description": "IC_20260712_001(要約層のTODO集計非同期)を起点に、MOCKA_TODO_ACTIVE.json/ARCHIVE/REFERENCE_LOCKEDの3層をファイルレベルで直接照合し、配置ドリフトの根本原因を調査する。範囲: (1)ファイル実測での134/79(todos)/55(completed)/完了69の再確認、(2)completed配列→ARCHIVEのフラッシュ処理がコード上に存在するか・実行されているかの特定(app.py等)、(3)todos配列内完了16件が completed配列へ遷移しなかった原因(完了→completed遷移が自動/手動か、TODO_442系の遷移不具合との関連)、(4)逆方向異常TODO_414(status=未着手がcompleted配列に混入、対象がAUTO_SEAL_50EVT)の混入経路をPHL/event履歴からトレース、(5)schema(completed配列がACTIVE内に存在)とrule_廃止_placement(完了→ARCHIVE)の整合再確認。制約: 全結論に一次データ参照(ファイルパス+行/grep/クエリ)を必須とする(IC_20260712_001の再発防止)。是正実行はHuman Gate承認まで行わず、調査+是正スペック提示に留める。TODO_414とAUTO_SEAL領域はIC_20260707_006の係争コンテキスト下で扱う。",
+      "assigned_to": "くろこ(S02)",
+      "note": "2026-07-12 くろこ総合調査returned(調査フェーズ完了・是正フェーズ未着手)。主要発見: (1)正本はC:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json、ルート直下は6/30停止の古い重複コピー。meta.storage.primaryが古い方を誤指定=単一ルート規則違反 (2)completed[]→ARCHIVEフラッシュ機構は未実装、ARCHIVE.jsonは6/28以降未更新。「周期待ち」ではなく機構欠落 (3)todos内完了滞留の主因はmocka_add_todoの完了振り分け欠落(旧update_todo.pyから未継承)+非API経由の一括再分類 (4)TODO_414はcompleted[]へ非API経路で迷入、7/9にintegrity_warningsが自動検出済み・7/12まで未是正、対象はAUTO_SEAL領域 (5)rule_廃止_placement(完了→ARCHIVE)とcompleted[]止まり実装が矛盾。是正A/B/C・IC_20260712_001の訂正・「ACTIVE層」定義確定はいずれもHuman Gate待ち。",
+      "reference_event": "IC_20260712_001",
+      "created_at": "2026-07-12T06:36:23.313143",
+      "updated_at": "2026-07-12T06:51:37.750336"
+    },
+    {
+      "id": "TODO_414",
+      "title": "watchdog_mocka.py x AUTO_SEAL_50EVT 同時実行時のgit書き込み競合リスク",
+      "status": "未着手",
+      "priority": "高",
+      "category": "制度/ガバナンス/AUTO_SEAL",
+      "description": "watchdog_mocka.pyの日次seal(3時台固定発火)とAUTO_SEAL_50EVT(イベント件数トリガー、時刻非依存)は、いずれも収束点mocka_git_safe_commit()を呼び出す別プロセス。app.py内の排他フラグ(_seal_running[0])はapp.pyローカルスコープのみでwatchdog_mocka.pyとは共有されておらず、3時台にAUTO_SEAL_50EVTの閾値(50件)が同時に到達した場合、両プロセスが同時にgit add/commitを実行し競合する可能性が構造的に排除されていない。TODO_364(2026-06-30完了、単一ヘルパー関数への統一)はこの複数プロセス間の排他制御までは扱っていない。",
+      "assigned_to": "きむら博士（設計判断）",
+      "note": "2026-07-02発見。TODO_411/412/413(AUTO_SEAL経路トレース)の副産物として判明。対処方針(ロック導入/スケジュール分離/単一プロセス化)は未検討、GPTレビュー依頼中。",
+      "reference_event": "",
+      "created_at": "2026-07-02",
+      "updated_at": "2026-07-12T07:03:26.688797"
+    },
+    {
+      "id": "TODO_447",
+      "title": "[くろこ実行] completed[]→ARCHIVEフラッシュ実装 + 既存55件移送 + A(完了15件正規移送) + B(廃止1件経路確定)",
+      "status": "未着手",
+      "priority": "高",
+      "category": "governance/infra",
+      "description": "ref: DC_20260712_003 / TODO_445。completed[]→ARCHIVEフラッシュ機構の実装とドリフト是正。手順: (1) mocka_mcp_server.py(該当モジュール)に completed[]→C:/Users/sirok/MoCKA/data/MOCKA_TODO_ARCHIVE.json 移送を実装。旧 update_todo.py:74-86 の振り分けロジックを参照。(2) トリガー(周期/閾値/手動)とHuman Gate要否を定義。IC_20260707_006(AUTO_SEAL無承認seal懸念)を踏まえ、フラッシュがHuman Gateを迂回しない設計とする。(3) B: 廃止1件(todos[]内status=廃止)の経路を確定 — completed[]経由でARCHIVEへ流すか直接ARCHIVEへ送るかをこの実装で決定。(4) A: todos[]内完了15件を、移送前に mocka_update_todo(id, status=完了)再発火で completed[] へ正規移送してからフラッシュに乗せる。対象ID群はTODO_401/426/427/GM1・GM2・GM3系/KN・Registry系(実行時にmocka_get_todoでtodos[]内status=完了を全件再確定)。(5) 初回フラッシュで既存completed[]55件をARCHIVEへ移送。制約: 全変更にCHANGE_START/DONE+PHL記録(記録なき変更禁止)。移送前後で件数照合(completed[]減分=ARCHIVE増分)、実行後 mocka_get_todo で todos[]内完了=0・completed[]≒0 収束を読み戻し確認。",
+      "assigned_to": "くろこ(S02)",
+      "note": "2026-07-12 PARKED(Human Gate裁定: き博士, Option A採択)。MAP-LAB-001 First Blood(Evidence-001)の観測純度維持のため、First Blood完了・post-Evidence-001 reviewまで実行保留。447はflush実装+55件移送=観測前に投入すると変更因子が混入するため、観測baseline外の開発トラックへ隔離。放置ではなく意図的除外。Baseline Observation Boundary Record / DU#002 の Excluded Change に明記予定。First Blood後に restart→flush で再開。",
+      "reference_event": "E20260712_488326335d212",
+      "created_at": "2026-07-12T07:08:06.810801",
+      "updated_at": "2026-07-12T11:16:18.504561"
+    },
+    {
+      "id": "TODO_448",
+      "title": "[恒久対策] save_todo等の全書き込み点へ who_actor/session_id ログ追加 — 非API経路書き込みの追跡性確保",
+      "status": "進行中",
+      "priority": "高",
+      "category": "governance/infra",
+      "description": "ref: TODO_445(調査#4) / IC_20260712_002。根因: TODO_414がcompleted[]へ非API経路で迷入した際、events.dbに書き込み主体の記録が無く、原因(直接ファイル編集 vs 多重起動プロセス競合)を特定できなかった。恒久対策として、mocka_mcp_server.py の save_todo および同種の全書き込み点(TODO配列所属変更・seal・event書き込み)に who_actor / session_id を記録する。目的: (1)再発時の書き込み主体追跡、(2)非正規経路(API外書き込み)の検出。IC_20260707_006(AUTO_SEAL無承認seal)系の追跡性向上とも整合。制約: 全変更にCHANGE_START/DONE+PHL記録。実装後、正規API経路と非正規経路でactor記録の有無が区別できることをテストで確認。",
+      "assigned_to": "くろこ(S02)",
+      "note": "2026-07-12 PARKED(Human Gate裁定: き博士, Option A採択)。actor-logging編集はコード実装・分離テスト済みだがdirty(未commit・未deploy、稼働プロセス未反映)。観測純度維持のため観測baseline外の開発トラックとして隔離、First Blood後にrestart反映+deployで再開。放置ではなく意図的除外。Baseline Observation Boundary Record / DU#002 の Excluded Change に明記予定。編集内容は破棄せず保全(stash/branch)。",
+      "reference_event": "E20260712_406413053099f",
+      "created_at": "2026-07-12T07:10:37.269177",
+      "updated_at": "2026-07-12T11:16:29.105899"
+    },
+    {
+      "id": "TODO_449",
+      "title": "[検証] meta.storage.backup(A:ドライブ)恒常バックアップ機構の実効性確認 — session不可視で未検証",
+      "status": "未着手",
+      "priority": "中",
+      "category": "infra",
+      "description": "ref: TODO_446 / DC_20260712_004。TODO_446是正時、meta.storage.backup が指すA:ドライブがくろこセッション環境から不可視で、恒常バックアップ機構が実際に機能しているか未検証のまま残った。確認事項: (1)A:ドライブへの書込み経路が生きているか、(2)いつ・何が・どの頻度で書かれているか、(3)A:利用不可時のフォールバック有無、(4)無い場合の代替バックアップ先の要否。446/447で用いるローカルスナップショット(その場限りの可逆性担保)とは別に、恒常バックアップ経路の健全性を担保する目的。優先度中(447の critical path 外だが、バックアップが無言で不作動なら潜在的データ喪失リスク)。",
+      "assigned_to": "くろこ(S02)",
+      "note": "",
+      "reference_event": "E20260712_037867879d6ee",
+      "created_at": "2026-07-12T07:30:52.462175"
+    },
+    {
+      "id": "TODO_450",
+      "title": "[Phase A/くろこ] 記録層Integrity確認 — Event Store Cross-Client Visibility Boundaryの実態固定",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "governance/integrity",
+      "description": "ref: DC_20260712_007 / IC_20260712_003 / IC_20260705_004。Integrity Layer First 再編のPhase A。目的=Event Store Cross-Client Visibility Boundaryの実態固定。作業: (1)本セッションでR02がevent単独で記録したload-bearing event(第0観測E20260712_5642006155997 / Step3 GO E20260712_4485078319501 / Boundary Record E20260712_105311599b4a9 / hash closure E20260712_332720944eac1 / 各dispatch・anomaly)について、くろこ経路での取得可否を一件ずつ実測し、横断取得可能/blind spotを判定・一覧化。(2)取得可否がどの条件で分岐するか(actor/session/書込み時刻/経路)を、原因断定せず境界の観測事実としてのみ整理。(3)Durable台帳(DC/IC)に裏打ちの無いload-bearing eventを特定し、durable ledger referenceへの再アンカー候補として提示。禁止: DB不具合/readerバグ/eventual consistencyの断定(き博士裁定)。完了後Phase B(IC_20260705_004をActive Remediation Candidateへ)へ。Phase C(Index-Event実験)は記録基盤の横断取得可能性確認まで開始しない。",
+      "assigned_to": "くろこ(S02)",
+      "note": "",
+      "reference_event": "E20260712_235209826edda",
+      "created_at": "2026-07-12T16:10:54.747401"
+    },
+    {
+      "id": "TODO_451",
+      "title": "[くろこ/repo] 検証履歴のcommit/seal/push + Genesis v1.1をRepair Branch保持(seal/freeze禁止)",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "governance/repo",
+      "description": "ref: DC_20260712_011 / IC_20260712_007。き博士Human Gate裁定。R02はrepo接続を持たずgit操作不能のため、repo操作はくろこ(権限境界)。(1)COMMIT ELIGIBLE = IC_20260712_007(Integrity Anomaly Record) / R02独立検証結果(SHA-256('test')一致の再計算事実) / DC_20260712_011(STOP-ON-ANOMALY決定) / Repair Task定義(TODO_452) を、Durable Historyとして commit → seal(tag) → push。これらは失敗記録ではなく検証で発見された一次事実記録。(2)Genesis Record v1.1 / Constitution v1.1 は Repair Branch状態で保持(削除せず・封印せず・修復対象として保存)。禁止: Genesis Record v1.1 seal / Ratification artifact freeze。全操作CHANGE_START/DONE + 変更記録。commit/seal/push完了時にmocka_write_eventで完了記録(who_actor・対象・tag・DC_20260712_011参照)。",
+      "assigned_to": "くろこ(S02)",
+      "note": "",
+      "reference_event": "E20260712_483848753603a",
+      "created_at": "2026-07-12T17:55:01.336074"
+    },
+    {
+      "id": "TODO_452",
+      "title": "[くろこ/R01] Genesis v1.1 Evidence Repair — 原因調査 + 実証跡再anchoring + canonicalization spec公開 + cross-actor再検証",
+      "status": "未着手",
+      "priority": "最高",
+      "category": "governance/integrity",
+      "description": "ref: IC_20260712_007 / DC_20260712_011。Evidence Repair ACTIVE。(1)原因調査(断定なし): Evidence実体ハッシュがSHA-256('test')になった経路を一次調査 — テンプレート未充填 / test実行成果物の混入 / evidence構築pipelineのdefault入力 等を切り分け、確定事実のみ記録。(2)実証跡への再anchoring: Evidence Lineageを REF-CONST-v1.1-RATIFICATION の実際の証跡実体に bind し直す。(3)canonicalization spec公開: canonical hash(7c4aef5b0e53a39e0bd582b9952a1d65074e0d9b4344585c5b9650e8203c9451 または修復後の新値)の入力ソース/対象field集合/sort_keys・ensure_ascii・separators等の方法をDurable Layerに公開し、任意actor(R02含む)が独立再現可能にする。(4)cross-actor再検証: 別actorが独立にhashを再現し一致確認。R02はサンドボックスでSHA-256のローカル再計算が可能なので、spec公開後にR02が独立照合できる。(5)Repair完了後、DC_20260712_010(Experience Memory)の実装可否と合わせて再度Human Gateへ。禁止: 修復未完のままGenesis v1.1をseal/ratify。",
+      "assigned_to": "くろこ(S02) / R01",
+      "note": "",
+      "reference_event": "E20260712_483848753603a",
+      "created_at": "2026-07-12T17:55:20.190199"
     }
   ],
   "orchestra_handoff": {
@@ -1414,18 +1550,6 @@
       "completed_at": "2026-07-02"
     },
     {
-      "id": "TODO_414",
-      "title": "watchdog_mocka.py x AUTO_SEAL_50EVT 同時実行時のgit書き込み競合リスク",
-      "status": "未着手",
-      "priority": "高",
-      "category": "制度/ガバナンス/AUTO_SEAL",
-      "description": "watchdog_mocka.pyの日次seal(3時台固定発火)とAUTO_SEAL_50EVT(イベント件数トリガー、時刻非依存)は、いずれも収束点mocka_git_safe_commit()を呼び出す別プロセス。app.py内の排他フラグ(_seal_running[0])はapp.pyローカルスコープのみでwatchdog_mocka.pyとは共有されておらず、3時台にAUTO_SEAL_50EVTの閾値(50件)が同時に到達した場合、両プロセスが同時にgit add/commitを実行し競合する可能性が構造的に排除されていない。TODO_364(2026-06-30完了、単一ヘルパー関数への統一)はこの複数プロセス間の排他制御までは扱っていない。",
-      "assigned_to": "きむら博士（設計判断）",
-      "note": "2026-07-02発見。TODO_411/412/413(AUTO_SEAL経路トレース)の副産物として判明。対処方針(ロック導入/スケジュール分離/単一プロセス化)は未検討、GPTレビュー依頼中。",
-      "reference_event": "",
-      "created_at": "2026-07-02"
-    },
-    {
       "id": "TODO_361",
       "title": "Decision Ledger Reconnection — TODO_358 Human Gate Review判断のDecision Ledger接続",
       "status": "完了",
@@ -1704,6 +1828,48 @@
       "created_at": "2026-07-10T11:07:45.488078",
       "updated_at": "2026-07-10T11:28:32.619448",
       "completed_at": "2026-07-10"
+    },
+    {
+      "id": "TODO_440",
+      "title": "TODO_439差し戻し対応 — H3(Chrome拡張storageキャッシュ有無)実測確認",
+      "status": "完了",
+      "priority": "高",
+      "category": "incident_investigation",
+      "description": "TODO_439([MOCKA_v3]パケット陳腐化調査)はきむら博士よりstatus=\"完了\"を差し戻された。理由: H3(注入チャネル側=Chrome拡張storageにキャッシュされた旧版restore_packet.jsonが残存していないか)の実測確認が未完了のまま完了扱いにしていたため。\\n\\nTODO_439自体はmocka_update_todoがcompleted_at付与済みTODOを編集不可のため直接訂正できず(詳細: event_id E20260711_298583003bc9d)、本TODOで実質的な差し戻し状態(進行中)を引き継ぐ。\\n\\n実施事項:\\n1. tools/mocka-bridge/extension/配下の全JS(content.js/background.js等)を対象に、chrome.storage.local/chrome.storage.sync/localStorage/sessionStorageの使用箇所を全文検索し、DNA_v3パケット・restore_packet・dnaText関連のキャッシュ書込/読込ロジックの有無を確定する。\\n2. コード上キャッシュ機構が存在しない場合でも、実際にインストール済みのChrome拡張のLocal Extension Settings実データ(leveldb)を直接確認するか、稼働中の拡張のservice worker DevTools経由でchrome.storage.local.get(null)相当を実行し、実データとしてMOCKA_v3/restore_packet関連キーが残存していないかを確認する。\\n3. 結果をmocka_write_eventで記録(TODO_439/TODO_440両方を参照)。\\n4. H3が完全に否定された場合のみ、TODO_439の実質完了として扱ってよいかを博士に確認する(本TODO自体のstatus更新で対応、TODO_439は completed_at 付与済みのため放置)。",
+      "assigned_to": "くろこ",
+      "note": "H3実測確認完了、不成立確定(証跡: event_id E20260711_707357291a517)。mocka_extension第三コピーの件はレジストリ残留のみ・実体なしと訂正済み(event_id E20260711_10913007456a7)。TODO_442検証のため一時的に差し戻し(E20260711_219037499a219)→本note更新で再完了、往復動作を実証。TODO_439のH1/H2/H3裁定(いずれも不成立、根本原因DEPENDENCY_BREAK)が全て裏付けられている。",
+      "reference_event": "E20260711_9091561369611,E20260711_298583003bc9d",
+      "created_at": "2026-07-11T07:08:36.595893",
+      "updated_at": "2026-07-11T07:40:50.291497",
+      "completed_at": "2026-07-11"
+    },
+    {
+      "id": "TODO_439",
+      "title": "[MOCKA_v3]引き継ぎパケットの陳腐化調査 — 2026-05-28生成版が2026-07-11に注入された経路特定",
+      "status": "完了",
+      "priority": "高",
+      "category": "incident_investigation",
+      "description": "Claude(R02)セッション冒頭に注入された[MOCKA_v3]パケット(gen:2026-05-28 09:02)が約6週間前の内容(TODO_144/147/153=全て完了済み)のまま使用された。生成停止か、注入側の古いコピー参照(TODO_354同型の複製ドリフト)かを特定する。",
+      "assigned_to": "くろこ",
+      "note": "最終確定(2026-07-11)。根本原因: DEPENDENCY_BREAK。restore_packet.json(PlanningCaliber/fp/、mtime 2026-05-28 18:02のまま不変)の再生成トリガー(手動バッジクリック→POST /commit_session)が初回実装検証(2026-05-28)以降一度も発火しておらず、かつcontent.js側のbuildV3DnaText()がapp.py側で計算済みのgenerated_at_age_sec(鮮度シグナル)を一切参照しない設計であるため、6週間前のデータが無警告のまま注入され続けていた。H1(スケジューラ死亡)/H2(複製ドリフト)/H3(注入側キャッシュ)は全て実測で不成立と確定(H3詳細: TODO_440、event_id E20260711_707357291a517、mocka_extension訂正はE20260711_10913007456a7)。恒久対策案(buildV3DnaTextへの鮮度閾値チェック追加)はHuman Gate未提出のまま残存、別途提出が必要。本TODO自体は2026-07-11に一度誤って早期完了扱いにされ(H3未実測)、博士差し戻しにより進行中へ訂正、TODO_440でH3確認後、TODO_442(completed差し戻し経路)実装検証を兼ねて本noteとともに最終完了とする。",
+      "reference_event": "",
+      "created_at": "2026-07-11T06:45:49.130460",
+      "updated_at": "2026-07-11T07:40:57.898534",
+      "completed_at": "2026-07-11"
+    },
+    {
+      "id": "TODO_442",
+      "title": "mocka_update_todoのcompleted後編集不能欠陥 — 正当な訂正経路の設計（TODO_439/440で2回再現）",
+      "status": "完了",
+      "priority": "低",
+      "category": "tool_defect",
+      "description": "mocka_update_todoがcompleted_at付与済みTODOのstatus/note編集を拒否する仕様のため、正当な訂正(誤って完了印を付けたTODOの差し戻し等)が実行できない。2026-07-11のTODO_439・TODO_440の両方で再現。記録の正確性を制度側が阻害する構造欠陥。CLAUDE.md「実行証跡の定義(書込直後の読み戻し確認)」の精神とも矛盾する — 訂正経路自体が塞がれている。修正方針: completed状態でも(a)未完了状態への差し戻し、または(b)note追記、を許可する経路を設ける。ただしappend-only原則(Event ledger is append only)を壊さない設計とし、履歴は残すこと。恒久対策の実装はHuman Gate承認まで着手禁止、設計案の提出まで。",
+      "assigned_to": "くろこ",
+      "note": "実装・実証完了(2026-07-11)。案(a)差し戻し専用経路をmocka_mcp_server.py 477-543行目付近に実装。異常系4件(直接再完了拒否/reasonなし拒否/自明reason拒否/note単独拒否)・正常系(TODO_439差し戻し成功)・往復実証(TODO_440差し戻し→再完了)すべてPASS。git commit db9a872ad29dde46ac7f0ae26f99daea767de2cd(Core System File違反なし)。Decision Ledger記録: DC_20260711_001。詳細: event_id E20260711_38107251732f7(CHANGE_DONE)。既知の軽微な制約(reopenイベントのwho_actorが_DEFAULT_ACTOR固定)は同イベントに記録済み、本TODOのスコープ外として残置。",
+      "reference_event": "E20260711_10913007456a7",
+      "created_at": "2026-07-11T07:24:34.919408",
+      "updated_at": "2026-07-11T07:43:58.748436",
+      "completed_at": "2026-07-11"
     },
     {
       "id": "TODO_446",

@@ -29,6 +29,7 @@ CONNECTORS = {
     "mcp_caliber": ("127.0.0.1", 5002),
     "command_center": ("127.0.0.1", 5000),
     "caliber_pipeline": ("127.0.0.1", 5679),
+    "pr_os_command_center": ("127.0.0.1", 8740),
 }
 
 
