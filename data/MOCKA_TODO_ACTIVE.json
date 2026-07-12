@@ -1,13 +1,13 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-10",
+    "updated": "2026-07-12",
     "updated_by": "Claude",
     "storage": {
-      "primary": "C:/Users/sirok/MOCKA_TODO_ACTIVE.json",
+      "primary": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json",
       "backup": "A:/MOCKA_TODO_ACTIVE.json",
-      "reference_locked": "C:/Users/sirok/MOCKA_TODO_REFERENCE_LOCKED.json",
-      "archive": "C:/Users/sirok/MOCKA_TODO_ARCHIVE.json"
+      "reference_locked": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_REFERENCE_LOCKED.json",
+      "archive": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ARCHIVE.json"
     },
     "how_to_use": "新しいchatやオーケストラ依頼時にMOCKA_OVERVIEW.jsonと一緒に貼る。TODO_IDを指定して作業を依頼する。",
     "rule_廃止_placement": "完了/廃止TODOはARCHIVE層(MOCKA_TODO_ARCHIVE.json)に配置する（statusが廃止でもARCHIVEに入れる。TODO_390(2026-06-28)で3層分離を実施。ARCHITECTURE_CONTRACT/LOCKED系はARCHIVEではなくREFERENCE_LOCKED層で別管理）",
@@ -1704,6 +1704,20 @@
       "created_at": "2026-07-10T11:07:45.488078",
       "updated_at": "2026-07-10T11:28:32.619448",
       "completed_at": "2026-07-10"
+    },
+    {
+      "id": "TODO_446",
+      "title": "[くろこ実行] 単一ルート是正 — 古い重複ACTIVE.json削除 + meta.storage.primary修正 + 削除イベント記録",
+      "status": "完了",
+      "priority": "最高",
+      "category": "governance/infra",
+      "description": "ref: DC_20260712_002 / TODO_445。単一ルート規則の是正。手順: (1) diff で正本 C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json と古い重複 C:/Users/sirok/MOCKA_TODO_ACTIVE.json(6/30停止)を比較し、古い側にしか無い固有データ・index・参照が無いことを検証。あれば正本へ退避後に次へ。(2) 古い重複 C:/Users/sirok/MOCKA_TODO_ACTIVE.json を削除。(3) 正本meta内 storage.primary を正本パスへ修正、backup/reference_locked/archive 各パスも実体一致を確認・修正。(4) 削除完了時にmocka_write_eventで削除完了イベントを必ず記録(who_actor・削除パス・diff検証結果・DC_20260712_002参照)=きむら博士指示「消したこともイベントに残す」。制約: 全変更にCHANGE_START/DONE+PHL記録(記録なき変更禁止)、index/参照を喪失させない。",
+      "assigned_to": "くろこ(S02)",
+      "note": "2026-07-12実行完了。diff検証(旧重複56件全てが正本138件に包含、固有ID0件)→削除→meta.storage修正(primary/reference_locked/archiveをdata/配下へ統一、backupはA:ドライブ未検証で据え置き)→削除完了イベント記録。想定外の事象なし(stop-on-anomaly該当なし)。",
+      "reference_event": "E20260712_4452472230a63",
+      "created_at": "2026-07-12T07:07:47.627570",
+      "updated_at": "2026-07-12T07:18:40.108773",
+      "completed_at": "2026-07-12"
     }
   ]
 }
