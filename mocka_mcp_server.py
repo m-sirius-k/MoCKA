@@ -292,12 +292,65 @@ def auto_log(tool_name, args, result_summary):
 def load_todo():
     return json.loads(TODO_PATH.read_text(encoding="utf-8-sig"))
 
-def save_todo(data):
+# TODO_448: 書き込み監査ログ(save_todo等API経由の書込みのみ記録されるため、
+# 記録が無いのに内容が変化していれば非API経路での書込みが疑われる、という
+# 消去法的な検知を可能にする。IC_20260712_002/TODO_414(非API経路での配列
+# 迷入が疑われ、実際の書込み主体をevents.dbから特定できなかった事例)への対策)
+WRITE_AUDIT_PATH = BASE / "data" / "tic" / "write_audit_log.jsonl"
+
+def _log_write_audit(target_path, content, actor=None):
+    try:
+        WRITE_AUDIT_PATH.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "timestamp":  datetime.datetime.now().isoformat(),
+            "target_path": str(target_path),
+            "session_id": SESSION_ID,
+            "actor":      actor or _DEFAULT_ACTOR,
+            "source":     "api",  # このログ自体がsave_todo経由でのみ生成されるためAPI経路確定
+            "sha256":     hashlib.sha256(content.encode("utf-8")).hexdigest()[:16],
+        }
+        with open(WRITE_AUDIT_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except Exception:
+        pass  # 監査ログの失敗で本処理(TODO書込み)自体を止めない
+
+def verify_write_provenance():
+    """TODO_PATHの現在ハッシュとwrite_audit_log.jsonlの最終記録ハッシュを比較する。
+    不一致であれば、save_todo()を経由しない書込み(非API経路)が発生した可能性を示す。"""
+    if not WRITE_AUDIT_PATH.exists():
+        return {"status": "no_audit_log"}
+    last = None
+    with open(WRITE_AUDIT_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                last = json.loads(line)
+            except Exception:
+                pass
+    if last is None:
+        return {"status": "no_valid_entries"}
+    current_content = TODO_PATH.read_text(encoding="utf-8-sig")
+    current_hash = hashlib.sha256(current_content.encode("utf-8")).hexdigest()[:16]
+    match = (current_hash == last.get("sha256"))
+    return {
+        "status": "match" if match else "mismatch_possible_non_api_write",
+        "last_logged_hash": last.get("sha256"),
+        "current_hash": current_hash,
+        "last_logged_actor": last.get("actor"),
+        "last_logged_session_id": last.get("session_id"),
+        "last_logged_at": last.get("timestamp"),
+    }
+
+def save_todo(data, actor=None):
     data["meta"]["updated"] = datetime.date.today().isoformat()
     data["meta"]["updated_by"] = "Claude"
     tmp_path = TODO_PATH.with_suffix(".json.tmp")
-    tmp_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    content = json.dumps(data, ensure_ascii=False, indent=2)
+    tmp_path.write_text(content, encoding="utf-8")
     os.replace(tmp_path, TODO_PATH)
+    _log_write_audit(TODO_PATH, content, actor=actor)
 
 # ===== TODO_361: Decision Ledger（DECISION_LEDGER_SCHEMA_v1.md準拠） =====
 DECISION_STATUS_ENUM = {"Active", "Superseded", "Withdrawn"}
