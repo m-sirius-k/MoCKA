@@ -1,7 +1,7 @@
 # AUTO_SEAL Boundary Design v1.0
 
 - Document ID: GOV-DESIGN-ASBD-001
-- Status: Proposed (implementation pending human approval)
+- Status: Approved (design finalized 2026-07-13; implementation pending separate approval per M1)
 - Date: 2026-07-13
 - Author: Claude-opus-4-8 (くろこ)
 - Commissioned / approval owner: きむら博士
@@ -225,3 +225,15 @@ Audit Event(緊急seal + reason + approved_by + 事後decision_id)。事前Decis
   2026-07-08/10)を Current State入力として、上流の Boundary/Human Gate/Auth/Emergency/Migration
   設計を確定(DC_20260713_003)。監査v1.0 で未閉鎖とされた Gap-1(MANUAL_SEAL)は SealGovernanceGate
   接続で構造対応済だが、承認主体が GL7自動(approved_by=system)である点を RB-2として本書で明示。
+- 2026-07-13: きむら博士がModel B採用を裁定(DC_20260713_003、Approved)。確定事項:
+  (1) Model B(Decision単位承認)を主経路として採用。主経路 = Decision生成 -> Human承認 ->
+      承認済Decision発行 -> Seal Request -> AUTO_SEAL実行 -> Anchor更新。
+  (2) GL7 を承認者ではなく事前境界フィルタ(危険操作検知/境界逸脱検知/承認対象分類/承認要求生成)
+      として再定義。GL7自身はSeal授権者ではない。
+  (3) approved_by=human をAUTO_SEAL成立条件として必須化(approved_by != human は Seal不可)。
+  (4) Decision承認境界は scope単位を採用(commit単位は不採用=技術的変更単位であり意思決定単位でない、
+      有効期間単位はPhase 2以降で検討)。Approved Decision -> authorized_scope -> seal対象群。
+  責任境界: Human=最終意思決定 / GL7=事前境界確認 / Decision=承認証跡 /
+  SealGovernanceGate=規則検証 / AUTO_SEAL=実行処理 / Anchor=不変記録。
+  本裁定は設計確定のみ。schema/anchor_update.py/app.py/Gate実装/Migrationの変更は行わない。
+  次段階は M1 Implementation Proposal の別Decision作成と承認を要する(未着手)。
