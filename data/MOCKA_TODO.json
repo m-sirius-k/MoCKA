@@ -1131,6 +1131,18 @@
       "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Prohibited until approval: Ledger change, existing-decision status change, superseded_by backfill, schema change, Decision Ledger entry, implementation. Design fork to evaluate: (a) physical reverse-link persistence vs (b) resolver/index derived reverse lookup. Supplementary: DC_20260712_008 self-supersession retained as observed fact, not corrected. Investigation record: E20260714_716973138f8f4.",
       "reference_event": "E20260714_716973138f8f4",
       "created_at": "2026-07-14T06:05:38.842684"
+    },
+    {
+      "id": "TODO_W4",
+      "title": "Search inheritance / continuity model design",
+      "status": "未着手",
+      "priority": "中",
+      "category": "改善候補",
+      "description": "Evaluate how past records remain retrievable with the same meaning under future search/re-verification.\n\nDirections to evaluate (not approved):\n- Tokenized AND-of-terms search vs current whole-phrase single-field substring match.\n- Derived read-layer FTS index / resolver that does not mutate canonical events.db rows.\n- Search-result reproducibility policy (whether prior \"0-hit\" behavior must remain reproducible after any search change).\n- Schema-generation semantic continuity (normal 8269 / alt_schema_intentional 7473 / corrupted_migration 22 of 15764).\n- Handling of 187 unrestorable mojibake records in time-series reconstruction.\n\nBackground:\nW-4 audit found search_events (mocka_mcp_server.py:162-181) matches the whole query as a contiguous substring within a single field; multi-term concept queries return nothing unless the exact phrase exists. Live reproduced: \"reverse traceability\" -> 1 hit; \"reverse traceability improvement candidate\" -> 0 hits (same record). See investigation record E20260714_9980076371d31.\n\nConstraint:\n- Investigation/design only. No code change before Human Gate approval.\n- No existing artifact change.\n- No existing event modification.\n- No schema change.\n- No Decision Ledger entry until Human Gate approval.",
+      "assigned_to": "Human Gate (review pending)",
+      "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Prohibited until approval: code change, artifact change, existing-event modification, schema change, new search convention adoption, Decision Ledger entry, implementation. Design fork: derived read-layer index (non-mutating, lower risk) vs canonical change. Investigation record: E20260714_9980076371d31.",
+      "reference_event": "E20260714_9980076371d31",
+      "created_at": "2026-07-14T06:10:19.397506"
     }
   ],
   "orchestra_handoff": {
@@ -1910,5 +1922,5 @@
       "completed_at": "2026-07-12"
     }
   ],
-  "_snapshot_at": "2026-07-13T21:07:38.699121+00:00"
+  "_snapshot_at": "2026-07-13T21:17:58.790318+00:00"
 }
