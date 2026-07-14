@@ -1,0 +1,85 @@
+{
+  "seal_id": "SEAL_DC_20260714_005_SEMANTIC_VOCABULARY_LAYER_v0.2",
+  "seal_version": "1.0",
+  "seal_type": "design_baseline_content_seal",
+  "purpose": "Immutable boundary formation (evidence fixation) for DC_20260714_005 Semantic Vocabulary Layer Design Baseline. This is not a content change; it fixes target hashes as of seal time.",
+  "hash_algorithm": "sha256",
+  "sealed_at": "2026-07-15T07:42:00Z",
+  "sealed_by": "Claude-opus-4-8 (executor)",
+  "status": "SEALED",
+  "human_gate_approval": {
+    "approved_by": "kimura-hakase (Human Gate)",
+    "approval_channel": "chat directive",
+    "instruction": "DC_20260714_005 Baseline Seal jikkou koutei (Step2 execution approved)"
+  },
+  "decision_correspondence": {
+    "decision_id": "DC_20260714_005",
+    "status": "Active",
+    "approved_by": "kimura-hakase (Human Gate)",
+    "approved_at": "2026-07-14T22:17:35Z",
+    "title": "Semantic Vocabulary Layer Design Baseline kakuritsu (Human Gate seishiki saitaku / v0.2 Baseline-ka, Principle 1/2/3 saitaku)",
+    "ledger_path": "data/decisions/decision_ledger.jsonl"
+  },
+  "sealed_targets": {
+    "baseline_document": {
+      "path": "docs/governance/SEMANTIC_VOCABULARY_LAYER_DESIGN_v0.2.md",
+      "sha256": "b9a0412ae7442886796d415bf8aea7a191cb49cbeb7502e5146c4666a2f9dcf5",
+      "size_bytes": 13164,
+      "line_count": 285,
+      "encoding": "utf-8",
+      "bom": false
+    },
+    "decision_ledger_snapshot": {
+      "path": "data/decisions/decision_ledger.jsonl",
+      "sha256": "b77c5fee18dbf93ce916408833d811b80e2c67757361540c4437c1d59532e130",
+      "size_bytes": 325014,
+      "record_count": 102,
+      "note": "Point-in-time snapshot. The ledger is an append-only living file; this whole-file hash is valid as of seal time and will differ after any future decision append. It contains DC_20260714_005 (Active). It also contains DC_20260715_001 (unrelated Living Context decision) appended after DC_005."
+    },
+    "decision_record_line": {
+      "decision_id": "DC_20260714_005",
+      "sha256": "6517a2066cc6f1812cecd435f6d9c0b593a551707709c04e1fc4daf84b31c65b",
+      "note": "Durable per-decision anchor: sha256 of the canonical (latest) jsonl line for DC_20260714_005, independent of later ledger appends."
+    }
+  },
+  "public_boundary_change_ref": {
+    "description": "docs/internal -> docs/governance publication move of the Baseline document, Human Gate approved, byte-identical (baseline hash unchanged before and after move).",
+    "change_start_event": "E20260715_41542266357b7",
+    "change_done_event": "E20260715_5070921590706"
+  },
+  "seal_process_events": {
+    "change_start_event": "E20260715_912556113722f"
+  },
+  "observations": [
+    {
+      "id": "L23_24_history_expression_diff",
+      "classification": "known history-expression difference",
+      "description": "Baseline body lines 23-24 state the document stays in docs/internal and that the docs/governance move is a separate process. After the Human-Gate-approved move this is a stale but intentionally preserved historical expression (Principle 3 append-only; v0.2 body modification prohibited).",
+      "human_gate_ruling": "no change now; overwrite prohibited; candidate for append-only supplement in v0.3 or a later Decision",
+      "action_taken": "preserved unchanged"
+    },
+    {
+      "id": "ledger_related_events_diff",
+      "classification": "integrity observation candidate",
+      "description": "Baseline record references two events (E20260715_412839812a986 CHANGE_START, E20260715_457470530b547 decision write); DC_20260714_005 related_events lists only E20260715_412839812a986.",
+      "action_taken": "recorded as observation; not fixed in this process"
+    }
+  ],
+  "non_goals": [
+    "KN-004 Registry update",
+    "Option A implementation",
+    "Validator creation",
+    "API/MCP change",
+    "data Migration",
+    "new Decision creation",
+    "v0.2 body modification"
+  ],
+  "verification": {
+    "step1_readonly_confirm": "PASS",
+    "baseline_utf8": "OK",
+    "baseline_bom": false,
+    "dc005_present_active": true,
+    "governance_placement_public": true,
+    "dc_draft_private": true
+  }
+}
