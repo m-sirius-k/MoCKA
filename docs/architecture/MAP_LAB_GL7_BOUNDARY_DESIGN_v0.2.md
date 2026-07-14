@@ -52,6 +52,10 @@ Human Gate で決定された方針を、設計判断として固定するもの
 
 ### GL7 Core Integrity Layer
 
+注記(2026-07-14, DC_20260714_003 / Judgment A): 本見出しの "GL7 Core Integrity Layer"
+は GL7 の canonical definition ではなく Policy View として機能する。GL7 の正本定義は
+Execution Governance であり、本節は GL7 scope を参照する政策的視点を記述する。
+
 責務:
 - canonical data の保護
 - 確定済みデータの検証
