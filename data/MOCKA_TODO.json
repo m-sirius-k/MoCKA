@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-14",
+    "updated": "2026-07-16",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json",
@@ -1143,6 +1143,18 @@
       "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Prohibited until approval: code change, artifact change, existing-event modification, schema change, new search convention adoption, Decision Ledger entry, implementation. Design fork: derived read-layer index (non-mutating, lower risk) vs canonical change. Investigation record: E20260714_9980076371d31.",
       "reference_event": "E20260714_9980076371d31",
       "created_at": "2026-07-14T06:10:19.397506"
+    },
+    {
+      "id": "TODO_453",
+      "title": "Google Scholar収録状況の調査とプロフィール作成可否の報告(AAAI 2027 OpenReview登録支援)",
+      "status": "未着手",
+      "priority": "中",
+      "category": "調査",
+      "description": "目的: AAAI 2027向けOpenReviewプロフィール登録の任意欄(Google Scholar URL)補強。調査内容: (1) Zenodo公開物(p-DERSプレプリント等)がGoogle Scholar検索に収録されているか確認 (2) 収録されている場合、著者プロフィール(scholar.google.com/citations)作成手順と紐付け可能な文献リストを報告 (3) 未収録の場合、収録される条件(メタデータ・PDF公開状態)と対応案を報告。判断はHuman Gate(博士)が行う。調査報告のみで変更作業は行わない。",
+      "assigned_to": "くろこ(S02)",
+      "note": "補足: OpenReview必須要件(氏名+メール表示URL)はORCID公開メール設定またはmocka.nsjp.orgへの氏名・メール明記で満たす方針。Google Scholarはあくまで任意欄の実績補強。LinkedIn: linkedin.com/in/kimura-m-7a902a415 は任意欄併記予定。",
+      "reference_event": "",
+      "created_at": "2026-07-16T07:48:22.886453"
     }
   ],
   "orchestra_handoff": {
@@ -1922,5 +1934,5 @@
       "completed_at": "2026-07-12"
     }
   ],
-  "_snapshot_at": "2026-07-15T22:43:39.974103+00:00"
+  "_snapshot_at": "2026-07-15T22:54:00.778828+00:00"
 }
