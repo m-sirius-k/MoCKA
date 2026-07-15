@@ -1145,16 +1145,16 @@
       "created_at": "2026-07-14T06:10:19.397506"
     },
     {
-      "id": "TODO_453",
-      "title": "Google Scholar収録状況の調査とプロフィール作成可否の報告(AAAI 2027 OpenReview登録支援)",
+      "id": "TODO_454",
+      "title": "Zenodo公開4件へのORCID紐付けとPDF体裁点検(TODO_453後続)",
       "status": "未着手",
       "priority": "中",
-      "category": "調査",
-      "description": "目的: AAAI 2027向けOpenReviewプロフィール登録の任意欄(Google Scholar URL)補強。調査内容: (1) Zenodo公開物(p-DERSプレプリント等)がGoogle Scholar検索に収録されているか確認 (2) 収録されている場合、著者プロフィール(scholar.google.com/citations)作成手順と紐付け可能な文献リストを報告 (3) 未収録の場合、収録される条件(メタデータ・PDF公開状態)と対応案を報告。判断はHuman Gate(博士)が行う。調査報告のみで変更作業は行わない。",
-      "assigned_to": "くろこ(S02)",
-      "note": "補足: OpenReview必須要件(氏名+メール表示URL)はORCID公開メール設定またはmocka.nsjp.orgへの氏名・メール明記で満たす方針。Google Scholarはあくまで任意欄の実績補強。LinkedIn: linkedin.com/in/kimura-m-7a902a415 は任意欄併記予定。",
+      "category": "実施",
+      "description": "TODO_453の対応案C+Aの実施。手順: (1)博士: orcid.orgでORCID作成(Masahito Kimura名義) (2)博士: ZenodoアカウントにORCIDを連携し、公開4レコード(10.5281/zenodo.20686662, 19503667, 19507632, 19606271)のCreator欄にORCID iDを付与(メタデータ編集のみ、DOI不変) (3)博士: ORCID側でSearch&Link(DataCite)により4件のDOIをORCID recordへ取り込み (4)くろこ: Zenodo APIでcreatorsのorcidフィールド反映を実測確認し報告 (5)くろこ: #4 PHL preprint(20KB)のPDF体裁点検(References節・先頭ページ構造の有無)を報告(TODO_453案A)。#2/#3は同一論文のバージョン違いのため紐付けは両方でも最新版のみでも可、博士判断。",
+      "assigned_to": "博士(Human Gate)+くろこ(S02)",
+      "note": "目的: Zenodo公開物の発見性向上とGoogle Scholar収録の下準備。AAAI 2027 OpenReview登録要件とは独立(要件はTODO_453で充足済み)。reference: TODO_453調査報告。",
       "reference_event": "",
-      "created_at": "2026-07-16T07:48:22.886453"
+      "created_at": "2026-07-16T08:10:15.060633"
     }
   ],
   "orchestra_handoff": {
@@ -1932,7 +1932,21 @@
       "created_at": "2026-07-12T07:07:47.627570",
       "updated_at": "2026-07-12T07:18:40.108773",
       "completed_at": "2026-07-12"
+    },
+    {
+      "id": "TODO_453",
+      "title": "Google Scholar収録状況の調査とプロフィール作成可否の報告(AAAI 2027 OpenReview登録支援)",
+      "status": "完了",
+      "priority": "中",
+      "category": "調査",
+      "description": "目的: AAAI 2027向けOpenReviewプロフィール登録の任意欄(Google Scholar URL)補強。調査内容: (1) Zenodo公開物(p-DERSプレプリント等)がGoogle Scholar検索に収録されているか確認 (2) 収録されている場合、著者プロフィール(scholar.google.com/citations)作成手順と紐付け可能な文献リストを報告 (3) 未収録の場合、収録される条件(メタデータ・PDF公開状態)と対応案を報告。判断はHuman Gate(博士)が行う。調査報告のみで変更作業は行わない。",
+      "assigned_to": "くろこ(S02)",
+      "note": "調査報告をHuman Gate(博士)が承認。結論: Scholar未収録4件を確認、AAAI 2027登録はブロックなし(URL要件は会社概要ページ+info@nsjp.orgで充足)。対応方針: 案C(ORCID紐付け)を採用し後続TODO_454へ切り出し。案A(#4のPDF体裁点検)はTODO_454に統合、案B(arXiv)はAAAI投稿計画確定後に再判断、案D(Scholar手動プロフィール)は不採用。",
+      "reference_event": "",
+      "created_at": "2026-07-16T07:48:22.886453",
+      "updated_at": "2026-07-16T08:09:58.225656",
+      "completed_at": "2026-07-16"
     }
   ],
-  "_snapshot_at": "2026-07-15T23:04:18.454105+00:00"
+  "_snapshot_at": "2026-07-15T23:14:38.363758+00:00"
 }
