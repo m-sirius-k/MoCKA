@@ -1147,14 +1147,15 @@
     {
       "id": "TODO_454",
       "title": "Zenodo公開4件へのORCID紐付けとPDF体裁点検(TODO_453後続)",
-      "status": "未着手",
+      "status": "進行中",
       "priority": "中",
       "category": "実施",
       "description": "TODO_453の対応案C+Aの実施。手順: (1)博士: orcid.orgでORCID作成(Masahito Kimura名義) (2)博士: ZenodoアカウントにORCIDを連携し、公開4レコード(10.5281/zenodo.20686662, 19503667, 19507632, 19606271)のCreator欄にORCID iDを付与(メタデータ編集のみ、DOI不変) (3)博士: ORCID側でSearch&Link(DataCite)により4件のDOIをORCID recordへ取り込み (4)くろこ: Zenodo APIでcreatorsのorcidフィールド反映を実測確認し報告 (5)くろこ: #4 PHL preprint(20KB)のPDF体裁点検(References節・先頭ページ構造の有無)を報告(TODO_453案A)。#2/#3は同一論文のバージョン違いのため紐付けは両方でも最新版のみでも可、博士判断。",
       "assigned_to": "博士(Human Gate)+くろこ(S02)",
-      "note": "目的: Zenodo公開物の発見性向上とGoogle Scholar収録の下準備。AAAI 2027 OpenReview登録要件とは独立(要件はTODO_453で充足済み)。reference: TODO_453調査報告。",
+      "note": "R01監査完了(2026-07-16): R02確定仕様を承認。Employment=NihonSystem Trading Co., Ltd.手入力/Independent Researcher削除/Biography修正版/Zenodo Works即時登録=承認。Featured Works=条件付き承認(当面p-DERS指定可)。GitHubリンク=公開境界確認後承認(可: MRS-001公開リポジトリのみ。不可: mocka-core-private, governance内部, Decision Ledger, Seal, MCP内部接続情報)。Sirius Lab不採用。実行順序固定: (1)ORCID Employment更新 (2)Biography (3)Keywords (4)Website/GitHub公開境界確認 (5)Zenodo DOIインポート+レコード側Creator ORCID付与 (6)Featured Works (7)OpenReview側同期確認。ORCID発行済: 0009-0006-7288-605X。",
       "reference_event": "",
-      "created_at": "2026-07-16T08:10:15.060633"
+      "created_at": "2026-07-16T08:10:15.060633",
+      "updated_at": "2026-07-16T08:37:56.526327"
     }
   ],
   "orchestra_handoff": {
@@ -1948,5 +1949,5 @@
       "completed_at": "2026-07-16"
     }
   ],
-  "_snapshot_at": "2026-07-15T23:35:13.613950+00:00"
+  "_snapshot_at": "2026-07-15T23:45:29.079221+00:00"
 }
