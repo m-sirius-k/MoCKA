@@ -1948,7 +1948,21 @@
       "created_at": "2026-07-16T08:10:15.060633",
       "updated_at": "2026-07-16T10:02:44.586591",
       "completed_at": "2026-07-16"
+    },
+    {
+      "id": "TODO_455",
+      "title": "OpenReview Homepage URL本人確認要件の充足確認(nsjp.org/cn29 + mocka.nsjp.org 実測)",
+      "status": "完了",
+      "priority": "高",
+      "category": "調査",
+      "description": "目的: AAAI 2027 OpenReviewのHomepage URL本人確認要件の充足確認。OpenReview公式要件=「氏名・所属・OpenReview登録メールが同一の公開ページで確認できること」。読み取り専用・変更禁止。検証対象2ページ: (1)https://nsjp.org/cn29/index.html (会社概要ページ・Homepage本命候補) — 以下3点が現在も公開表示されているか実測確認: (a)氏名 MASAHITO KIMURA(役員欄) (b)メール info@nsjp.org (c)所属主体(NihonSystem本社情報)。(2)https://mocka.nsjp.org/ (Sirius Labサイト・任意併記候補) — 氏名Masahito Kimuraは有, ただし掲載メールがnsjpkimura@gmail.com(Gmail)でOpenReview登録メールと不一致・info@非掲載である点を再確認。判定: 各ページがOpenReview本人確認要件(氏名+所属+登録メール同一ページ)を満たすか合否で報告。付随確認: nsjp.org/cn29ページ上の氏名表記がローマ字MASAHITO KIMURAでORCID/OpenReview登録名Masahito Kimuraと照合可能か。修正・提出判断はHuman Gate。",
+      "assigned_to": "くろこ(S02)",
+      "note": "【完了 2026-07-16】くろこ検証PASS。https://nsjp.org/cn29/index.html はOpenReview本人確認要件を完全充足(氏名MASAHITO KIMURA・メールinfo@nsjp.org・所属=日本システム本社 の3点が同一公開ページに掲載、実測確認)。氏名はORCID/OpenReview登録名Masahito Kimuraと大小無視で照合可能。前提=OpenReviewアカウント登録メールがinfo@nsjp.orgであること(充足済み)。mocka.nsjp.orgはFAIL(掲載メール=nsjpkimura@gmail.comでinfo@非掲載・登録メール不一致、所属=Sirius Lab表記のみ)→任意の実績併記のみ、単独Homepage不可。【Human Gate申し送り(非ブロッキング)】社名クロスサーフェス不統一: cn29=Nihon System Co.,Limited(スペース有・Limited)、Zenodo/DataCite/ORCID=NihonSystem Co., Ltd.(スペース無・Ltd.)。同一法人・照合可能のため必須ではないが、OpenReview所属欄の表記選択時に一考の余地。結論: OpenReview個人リンク欄=Homepage:cn29(本命)+ORCID URL+LinkedIn+mocka.nsjp.org(任意)。入力・提出はHuman Gate。",
+      "reference_event": "",
+      "created_at": "2026-07-16T11:01:46.271814",
+      "updated_at": "2026-07-16T11:06:08.383505",
+      "completed_at": "2026-07-16"
     }
   ],
-  "_snapshot_at": "2026-07-16T01:59:17.414503+00:00"
+  "_snapshot_at": "2026-07-16T02:09:33.460543+00:00"
 }
