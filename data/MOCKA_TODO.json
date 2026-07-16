@@ -1143,19 +1143,6 @@
       "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Prohibited until approval: code change, artifact change, existing-event modification, schema change, new search convention adoption, Decision Ledger entry, implementation. Design fork: derived read-layer index (non-mutating, lower risk) vs canonical change. Investigation record: E20260714_9980076371d31.",
       "reference_event": "E20260714_9980076371d31",
       "created_at": "2026-07-14T06:10:19.397506"
-    },
-    {
-      "id": "TODO_454",
-      "title": "Zenodo公開4件へのORCID紐付けとPDF体裁点検(TODO_453後続)",
-      "status": "進行中",
-      "priority": "中",
-      "category": "実施",
-      "description": "TODO_453の対応案C+Aの実施。手順: (1)博士: orcid.orgでORCID作成(Masahito Kimura名義) (2)博士: ZenodoアカウントにORCIDを連携し、公開4レコード(10.5281/zenodo.20686662, 19503667, 19507632, 19606271)のCreator欄にORCID iDを付与(メタデータ編集のみ、DOI不変) (3)博士: ORCID側でSearch&Link(DataCite)により4件のDOIをORCID recordへ取り込み (4)くろこ: Zenodo APIでcreatorsのorcidフィールド反映を実測確認し報告 (5)くろこ: #4 PHL preprint(20KB)のPDF体裁点検(References節・先頭ページ構造の有無)を報告(TODO_453案A)。#2/#3は同一論文のバージョン違いのため紐付けは両方でも最新版のみでも可、博士判断。",
-      "assigned_to": "博士(Human Gate)+くろこ(S02)",
-      "note": "【くろこへ検証指示 2026-07-16 / Human Gate承認済み】博士がZenodo 4レコードのCreator修正を実施完了と申告。ピンポイント実測検証を依頼: 対象DOI = 10.5281/zenodo.20686662(p-DERS), 19507632(v9), 19606271(PHL), 19503667(v8)。Zenodo API(records エンドポイント)で各レコードのmetadata.creatorsを取得し、以下5点を4件すべてで確認して合否を報告: (1)ORCID=0009-0006-7288-605Xが付与されている (2)氏名=Kimura, Masahito(大文字化済み、小文字kimura/masahitoでない) (3)Affiliation=Sirius LabとNihonSystem Co., Ltd.の2件のみ(MoCKA Project無し、Trading表記でない) (4)Role/寄与区分が付与されていない (5)4件のCreator構造が相互に同一。追加: PHL preprint(20KB)のPDF体裁点検(References節・先頭ページのタイトル→著者→アブスト構造の有無)。読み取りのみ・変更禁止。不一致があればレコードと項目を特定して報告、修正はHuman Gate経由。— 経緯: 日本法人=NihonSystem Co., Ltd.が正(Trading=海外現地法人)。Zenodo所属はSirius Lab併記をHuman Gate判断で採用。R01監査承認済み。ORCID側(Employment/Bio/Works4件/Featured=p-DERS)完了。残: 本検証→OpenReview同期(ORCID URL追記+所属確認)→クローズ。",
-      "reference_event": "",
-      "created_at": "2026-07-16T08:10:15.060633",
-      "updated_at": "2026-07-16T09:56:19.864806"
     }
   ],
   "orchestra_handoff": {
@@ -1947,7 +1934,21 @@
       "created_at": "2026-07-16T07:48:22.886453",
       "updated_at": "2026-07-16T08:09:58.225656",
       "completed_at": "2026-07-16"
+    },
+    {
+      "id": "TODO_454",
+      "title": "Zenodo公開4件へのORCID紐付けとPDF体裁点検(TODO_453後続)",
+      "status": "完了",
+      "priority": "中",
+      "category": "実施",
+      "description": "TODO_453の対応案C+Aの実施。手順: (1)博士: orcid.orgでORCID作成(Masahito Kimura名義) (2)博士: ZenodoアカウントにORCIDを連携し、公開4レコード(10.5281/zenodo.20686662, 19503667, 19507632, 19606271)のCreator欄にORCID iDを付与(メタデータ編集のみ、DOI不変) (3)博士: ORCID側でSearch&Link(DataCite)により4件のDOIをORCID recordへ取り込み (4)くろこ: Zenodo APIでcreatorsのorcidフィールド反映を実測確認し報告 (5)くろこ: #4 PHL preprint(20KB)のPDF体裁点検(References節・先頭ページ構造の有無)を報告(TODO_453案A)。#2/#3は同一論文のバージョン違いのため紐付けは両方でも最新版のみでも可、博士判断。",
+      "assigned_to": "博士(Human Gate)+くろこ(S02)",
+      "note": "【完了 2026-07-16】くろこ検証パートPASS。Zenodo 4レコード(p-DERS/v9/PHL/v8)のCreatorメタデータは5点全合格(ORCID=0009-0006-7288-605X付与/氏名Kimura,Masahito大文字化/所属=Sirius Lab+NihonSystem Co., Ltd.の2件/Role無し/4件相互同一)。DataCite一次証跡で確定(records API要約欠落をくろこが検知しDataCiteで再精査)。PHL PDF体裁PASS(References節9件・標準構造有、TODO_453案Aの短報除外リスク否定)。【Human Gate静観判断】(a)PHL PDF表紙の旧所属表記(Independent Researcher/MoCKA Project)は再版が現フェーズ禁止のため静観。触る場合は案B(arXiv)実施時にPDF再カットと同時対応。(b)References[9]のv8 concept DOI(...666)参照は索引上の実害ほぼ無しで静観。他3件PDF表紙の同種旧表記も同扱い。ORCID→DataCite→Zenodo証跡チェーン整合完了。残: OpenReview同期(ORCID URL追記+所属=NihonSystem Co., Ltd.確認+登録提出)は登録タスク側で継続。",
+      "reference_event": "",
+      "created_at": "2026-07-16T08:10:15.060633",
+      "updated_at": "2026-07-16T10:02:44.586591",
+      "completed_at": "2026-07-16"
     }
   ],
-  "_snapshot_at": "2026-07-16T00:57:35.399685+00:00"
+  "_snapshot_at": "2026-07-16T01:07:51.655676+00:00"
 }
