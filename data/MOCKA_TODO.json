@@ -1152,10 +1152,10 @@
       "category": "実施",
       "description": "TODO_453の対応案C+Aの実施。手順: (1)博士: orcid.orgでORCID作成(Masahito Kimura名義) (2)博士: ZenodoアカウントにORCIDを連携し、公開4レコード(10.5281/zenodo.20686662, 19503667, 19507632, 19606271)のCreator欄にORCID iDを付与(メタデータ編集のみ、DOI不変) (3)博士: ORCID側でSearch&Link(DataCite)により4件のDOIをORCID recordへ取り込み (4)くろこ: Zenodo APIでcreatorsのorcidフィールド反映を実測確認し報告 (5)くろこ: #4 PHL preprint(20KB)のPDF体裁点検(References節・先頭ページ構造の有無)を報告(TODO_453案A)。#2/#3は同一論文のバージョン違いのため紐付けは両方でも最新版のみでも可、博士判断。",
       "assigned_to": "博士(Human Gate)+くろこ(S02)",
-      "note": "【訂正 2026-07-16】所属組織名の誤り修正: 日本法人=NihonSystem Co., Ltd.(名古屋本社)が正。NihonSystem Trading Co., Ltd.は海外現地法人であり所属表記に使用しない(Human Gate指摘)。R02が会社概要ページの海外拠点表記から誤読したもの。以後、ORCID Employment/Biography/OpenReview所属欄はすべて NihonSystem Co., Ltd. で統一。— R01監査(2026-07-16): R02仕様承認。Employment手入力/Biography修正版/Zenodo Works即時登録=承認。Featured=条件付き承認(p-DERS可)。GitHub=公開境界確認後承認(可: MRS-001公開リポジトリのみ)。Sirius Lab不採用。実行順序: (1)Employment (2)Biography (3)Keywords (4)Website/GitHub境界確認 (5)Zenodo DOIインポート+Creator ORCID付与 (6)Featured (7)OpenReview同期。ORCID: 0009-0006-7288-605X。",
+      "note": "【追加発見 2026-07-16】Zenodo全レコードのCreator所属欄に「Sirius Lab」が残存(R01監査で不採用判定済みの名称)。Creator編集時に3点同時修正: ORCID付与+Affiliation=NihonSystem Co., Ltd.へ変更+氏名大文字化(kimura, masahito→Kimura, Masahito)。— 【訂正】日本法人=NihonSystem Co., Ltd.が正、Trading Co., Ltd.は海外現地法人(混同禁止、Human Gate指摘)。— R01監査承認: Employment手入力/Biography/Zenodo Works即時登録=承認、Featured=p-DERS可、GitHub=公開境界確認後のみ、Sirius Lab不採用。実行順序(1)Employment(2)Biography(3)Keywords(4)Website/GitHub境界(5)Zenodo DOIインポート+Creator修正(6)Featured(7)OpenReview同期。進捗: ORCID側(1)(2)(5)(6)完了、ORCID=0009-0006-7288-605X。残: Zenodo側Creator修正4件、OpenReview同期、くろこ検証(API実測+PHL PDF点検)。",
       "reference_event": "",
       "created_at": "2026-07-16T08:10:15.060633",
-      "updated_at": "2026-07-16T09:20:49.260002"
+      "updated_at": "2026-07-16T09:35:59.545982"
     }
   ],
   "orchestra_handoff": {
@@ -1949,5 +1949,5 @@
       "completed_at": "2026-07-16"
     }
   ],
-  "_snapshot_at": "2026-07-16T00:26:42.608332+00:00"
+  "_snapshot_at": "2026-07-16T00:37:00.292409+00:00"
 }
