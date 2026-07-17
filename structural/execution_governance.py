@@ -67,6 +67,12 @@ ABORT_CONDITIONS = [
     "grounding_not_completed",
 ]
 
+BINARY_EXTENSIONS = {
+    ".sqlite-shm",
+    ".sqlite-wal",
+    ".db",
+}
+
 
 @dataclass
 class DryRunResult:
@@ -165,6 +171,8 @@ class ExecutionGovernanceEngine:
         for path in dry_run.changed_files:
             fp = self.repo_root / path
             if fp.exists() and fp.is_file():
+                if fp.suffix in {".sqlite-shm", ".sqlite-wal", ".db"}:
+                    continue
                 try:
                     fp.read_bytes().decode("utf-8")
                 except UnicodeDecodeError:
