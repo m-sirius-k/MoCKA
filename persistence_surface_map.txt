@@ -1,0 +1,1466 @@
+Essence_Direct_Parser.py:131:            self.essence_path.write_text(
+Essence_Direct_Parser.py:132:                json.dumps(existing, ensure_ascii=False, indent=2),
+PlanningCaliber/caliber/caliber_score.py:22:                            "evaluation_history.jsonl")
+PlanningCaliber/caliber/caliber_score.py:166:        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+PlanningCaliber/caliber/caliber_score.py:215:    with open(json_path, encoding="utf-8") as f:
+PlanningCaliber/lock_verification/broker_experiment.py:21:    (QUEUE_DIR / f"req_{worker_id}_{time.time()}.json").write_text(
+PlanningCaliber/lock_verification/broker_experiment.py:22:        json.dumps(req), encoding="utf-8")
+PlanningCaliber/lock_verification/broker_experiment.py:33:        (ROOT / "dummy.txt").write_text(
+PlanningCaliber/lock_verification/broker_experiment.py:48:        print(json.dumps(worker_submit(sys.argv[2])))
+PlanningCaliber/lock_verification/broker_experiment.py:50:        print(json.dumps(broker_process_once()))
+PlanningCaliber/lock_verification/broker_experiment.py:53:        print(json.dumps({"pending_requests": n}))
+PlanningCaliber/lock_verification/candidate1_stale_redesign.py:73:            lock_path.write_text(f"{os.getpid()}:legit:{time.time()}")
+PlanningCaliber/lock_verification/candidate1_stale_redesign.py:92:    lock_path.write_text(f"{os.getpid()}:crashseed:{time.time()}")
+PlanningCaliber/lock_verification/candidate1_stale_redesign.py:288:    print(json.dumps(out, indent=2, ensure_ascii=False))
+PlanningCaliber/lock_verification/run_experiment.py:24:    (ROOT / "dummy.txt").write_text(f"trial {trial_no} {time.time()}\n", encoding="utf-8")
+PlanningCaliber/lock_verification/run_experiment.py:78:    print(json.dumps(stats, indent=2, ensure_ascii=False))
+PlanningCaliber/lock_verification/sandbox_commit_harness.py:86:    print(json.dumps(res))
+PlanningCaliber/lock_verification/sandbox_commit_harness_v2.py:92:    print(json.dumps(res))
+PlanningCaliber/lock_verification/schedule_offset/commit_latency_experiments.py:49:    (ROOT / "dummy.txt").write_text(header + body, encoding="utf-8")
+PlanningCaliber/lock_verification/schedule_offset/commit_latency_experiments.py:173:    print(json.dumps(result, indent=2, ensure_ascii=False))
+PlanningCaliber/lock_verification/schedule_offset/schedule_offset_collision.py:34:    (ROOT / "dummy.txt").write_text(f"trial {trial_no} {time.time()}\n", encoding="utf-8")
+PlanningCaliber/lock_verification/schedule_offset/schedule_offset_collision.py:129:    print(json.dumps(stats, indent=2, ensure_ascii=False))
+add_synctodo.py:28:APP.write_text(content, encoding='utf-8')
+app.py:1:import sqlite3
+app.py:173:            json.dump(result, f, ensure_ascii=False, indent=2)
+app.py:211:                    json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app.py:216:        json.dump(morph, open(morph_score_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app.py:265:        json.dump(master_obj, f, ensure_ascii=False, indent=2)
+app.py:295:        import sqlite3 as _sq, json as _json
+app.py:385:        import sqlite3 as _sqlite3
+app.py:386:        conn = sqlite3.connect(db_helper.DB_PATH)
+app.py:541:            _ping_path.write_text(_json.dumps(_ping, ensure_ascii=False, indent=2), encoding='utf-8')
+app.py:731:        pcon = sqlite3.connect(pdb)
+app.py:749:        json.dump(essence, open(essence_path,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
+app.py:757:        con = sqlite3.connect(db_path)
+app.py:804:        import sqlite3
+app.py:806:        con = sqlite3.connect(db_path)
+app.py:865:            json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app.py:882:            pcon = sqlite3.connect(pdb)
+app.py:988:        json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app.py:1030:    _json.dump(rec,open(fname,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
+app.py:1068:        json.dump(patterns, f, ensure_ascii=False, indent=2)
+app.py:1186:        import sqlite3
+app.py:1188:        con = sqlite3.connect(db_path)
+app.py:1257:    import sqlite3 as _sq, datetime as _dt
+app.py:1314:    import sqlite3 as _sq, datetime as _dt
+app.py:1345:    import sqlite3 as _sq
+app.py:1403:    import sqlite3 as _sq, datetime as _dt
+app.py:1448:    import sqlite3 as _sq, datetime as _dt
+app.py:1590:    INJECT_FLAG.write_text(new_mode, encoding="utf-8-sig")
+app.py:1630:        payload = json.dumps(data, ensure_ascii=False)
+app.py:1697:        (REPORT_DIR / fname).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app.py:1729:        payload = json.dumps({
+app.py:1752:        return json.dumps({'status': 'online' if t else 'offline', 'public_url': t['public_url'] if t else '', 'addr': t['config']['addr'] if t else ''}), 200, {'Content-Type': 'application/json'}
+app.py:1754:        return json.dumps({'status': 'offline', 'public_url': '', 'addr': ''}), 200, {'Content-Type': 'application/json'}
+app.py:1893:        return jsonify({"count": len(clean), "events": clean[:n], "source": "sqlite"})
+app.py:1940:        return jsonify({"status": "ok", "sha256": h, "source": "sqlite",
+app.py:2005:        essence_path.write_text(_j.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app.py:2044:            PREVENTION_QUEUE_PATH.write_text(
+app.py:2045:                json.dumps(save_data, ensure_ascii=False, indent=2),
+app.py:2170:    seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
+app.py:2221:    PREVENTION_QUEUE_PATH.write_text(
+app.py:2222:        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app.py:2290:    PREVENTION_QUEUE_PATH.write_text(
+app.py:2291:        json.dumps({"queue": pq}, ensure_ascii=False, indent=2),
+app.py:2400:        _RELAY_PING_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app.py:2436:    """TIC Layer 0 — health_log.jsonl の最新行をキャッシュとして返す"""
+app.py:2440:        log_path = _Path('C:/Users/sirok/MoCKA/data/tic/health_log.jsonl')
+app.py:2454:        # auth_key_drive はhealth_check.py起動時の1回限りの値がhealth_log.jsonlに
+app.py:2610:                    sp_path.write_text(json.dumps(sp,ensure_ascii=False,indent=2),encoding="utf-8")
+app.py:2687:        return _json.dumps({"ok": True, "count": _count, "message": "local only"}), 200, {"Content-Type": "application/json"}
+app.py:2689:        return _json.dumps({"ok": False, "error": str(e)}), 500, {"Content-Type": "application/json"}
+app.py:2697:    import sqlite3 as _sq
+app.py:2740:    import sqlite3 as _sq
+app.py:2755:    import sqlite3 as _sq, datetime as _dt
+app.py:2908:        import sqlite3
+app.py:2910:        conn = sqlite3.connect(db_path)
+app.py:3068:        conn = sqlite3.connect(db_helper.DB_PATH)
+app.py:3069:        conn.row_factory = sqlite3.Row
+app.py:3273:        conn = sqlite3.connect(db_helper.DB_PATH)
+app.py:3274:        conn.row_factory = sqlite3.Row
+app.py:3305:        conn = sqlite3.connect(db_helper.DB_PATH)
+app.py:3306:        conn.row_factory = sqlite3.Row
+app.py:3333:        conn = sqlite3.connect(db_helper.DB_PATH)
+app.py:3397:TIC_LOG_PATH = os.path.join(TIC_DIR, "health_log.jsonl")
+app.py:3398:TIC_QUEUE_PATH = os.path.join(TIC_DIR, "evaluation_queue.jsonl")
+app.py:3595:        queue_path  = os.path.join(tic_dir, 'evaluation_queue.jsonl')
+app.py:4041:        import sqlite3 as _sl
+app.py:4104:        import sqlite3 as _sq3
+app_backup_20260427_063833.py:1:﻿import sqlite3
+app_backup_20260427_063833.py:81:            json.dump(result, f, ensure_ascii=False, indent=2)
+app_backup_20260427_063833.py:149:        json.dump(master_obj, f, ensure_ascii=False, indent=2)
+app_backup_20260427_063833.py:372:    _json.dump(rec,open(fname,"w",encoding="utf-8-sig"),ensure_ascii=False,indent=2)
+app_backup_20260427_063833.py:401:        json.dump(patterns, f, ensure_ascii=False, indent=2)
+app_backup_20260427_063833.py:557:    INJECT_FLAG.write_text(new_mode, encoding="utf-8-sig")
+app_backup_20260427_063833.py:618:        (REPORT_DIR / fname).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app_backup_20260427_063833.py:630:        return json.dumps({'status': 'online' if t else 'offline', 'public_url': t['public_url'] if t else '', 'addr': t['config']['addr'] if t else ''}), 200, {'Content-Type': 'application/json'}
+app_backup_20260427_063833.py:632:        return json.dumps({'status': 'offline', 'public_url': '', 'addr': ''}), 200, {'Content-Type': 'application/json'}
+app_bak_0501.py:1:import sqlite3
+app_bak_0501.py:139:            json.dump(result, f, ensure_ascii=False, indent=2)
+app_bak_0501.py:177:                    json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app_bak_0501.py:182:        json.dump(morph, open(morph_score_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app_bak_0501.py:231:        json.dump(master_obj, f, ensure_ascii=False, indent=2)
+app_bak_0501.py:426:        pcon = sqlite3.connect(pdb)
+app_bak_0501.py:444:        json.dump(essence, open(essence_path,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
+app_bak_0501.py:452:        con = sqlite3.connect(db_path)
+app_bak_0501.py:499:        import sqlite3
+app_bak_0501.py:501:        con = sqlite3.connect(db_path)
+app_bak_0501.py:560:            json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app_bak_0501.py:577:            pcon = sqlite3.connect(pdb)
+app_bak_0501.py:682:        json.dump(pq, open(pq_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
+app_bak_0501.py:724:    _json.dump(rec,open(fname,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
+app_bak_0501.py:762:        json.dump(patterns, f, ensure_ascii=False, indent=2)
+app_bak_0501.py:880:        import sqlite3
+app_bak_0501.py:882:        con = sqlite3.connect(db_path)
+app_bak_0501.py:951:    import sqlite3 as _sq, datetime as _dt
+app_bak_0501.py:1008:    import sqlite3 as _sq, datetime as _dt
+app_bak_0501.py:1039:    import sqlite3 as _sq
+app_bak_0501.py:1097:    import sqlite3 as _sq, datetime as _dt
+app_bak_0501.py:1142:    import sqlite3 as _sq, datetime as _dt
+app_bak_0501.py:1286:    INJECT_FLAG.write_text(new_mode, encoding="utf-8-sig")
+app_bak_0501.py:1347:        (REPORT_DIR / fname).write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app_bak_0501.py:1359:        return json.dumps({'status': 'online' if t else 'offline', 'public_url': t['public_url'] if t else '', 'addr': t['config']['addr'] if t else ''}), 200, {'Content-Type': 'application/json'}
+app_bak_0501.py:1361:        return json.dumps({'status': 'offline', 'public_url': '', 'addr': ''}), 200, {'Content-Type': 'application/json'}
+app_bak_0501.py:1498:        return jsonify({"count": len(rows), "events": rows[-n:], "source": "sqlite"})
+app_bak_0501.py:1546:        return jsonify({"status": "ok", "sha256": h, "source": "sqlite",
+app_bak_0501.py:1611:        essence_path.write_text(_j.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app_bak_0501.py:1685:        seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
+app_bak_0501.py:1731:    PREVENTION_QUEUE_PATH.write_text(
+app_bak_0501.py:1732:        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+app_bak_0501.py:1848:                    sp_path.write_text(json.dumps(sp,ensure_ascii=False,indent=2),encoding="utf-8")
+app_bak_0501.py:1926:        return _json.dumps({"ok": True, "count": _count, "message": "local only"}), 200, {"Content-Type": "application/json"}
+app_bak_0501.py:1928:        return _json.dumps({"ok": False, "error": str(e)}), 500, {"Content-Type": "application/json"}
+app_bak_0501.py:1937:    import sqlite3 as _sq
+app_bak_0501.py:1985:    import sqlite3 as _sq
+app_bak_0501.py:2010:    import sqlite3 as _sq, datetime as _dt
+app_bak_0501.py:2054:    import sqlite3 as _sq
+app_broken.py:1:import sqlite3
+app_broken.py:139:        json.dump(master_obj, f, ensure_ascii=False, indent=2)
+app_broken.py:306:    _json.dump(rec,open(fname,"w",encoding="utf-8-sig"),ensure_ascii=False,indent=2)
+app_broken.py:463:    INJECT_FLAG.write_text(new_mode, encoding="utf-8-sig")
+app_broken.py:495:        return json.dumps({
+app_broken.py:501:        return json.dumps({'status': 'offline', 'public_url': '', 'addr': ''}), 200, {'Content-Type': 'application/json'}
+app_patch_phase2.py:145:    APP_PATH.write_text(content, encoding="utf-8")
+audit/consistency_check.py:12:    data/logs/semantic_timeline.jsonl の存在と読み取り可能性を確認する。
+audit/consistency_check.py:15:    path = Path(__file__).resolve().parent.parent / "data" / "logs" / "semantic_timeline.jsonl"
+audit/drift_report.py:13:    semantic_timeline.jsonlを読み、drift率とriskレベルを返す。
+audit/drift_report.py:16:    path = Path(__file__).resolve().parent.parent / "data" / "logs" / "semantic_timeline.jsonl"
+audit/ed25519/add_key_policy_event.py:1:import sqlite3
+audit/ed25519/add_key_policy_event.py:7:conn = sqlite3.connect(db)
+audit/ed25519/add_key_policy_event.py:19:content = json.dumps(payload, sort_keys=True)
+audit/ed25519/daily_sig_db_sqlite.py:1:﻿import sqlite3
+audit/ed25519/daily_sig_db_sqlite.py:22:    conn = sqlite3.connect(db_path)
+audit/ed25519/daily_signature.py:11:    return json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+audit/ed25519/delete_last_key_policy.py:1:import sqlite3
+audit/ed25519/delete_last_key_policy.py:4:conn=sqlite3.connect(db)
+audit/ed25519/governance/backup_index_append_file.py:8:import sqlite3
+audit/ed25519/governance/backup_index_append_file.py:29:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/governance_chain_verify.py:5:import sqlite3
+audit/ed25519/governance/governance_chain_verify.py:20:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/governance_csv_append.py:6:import sqlite3
+audit/ed25519/governance/governance_csv_append.py:17:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/governance_writer.py:5:import sqlite3
+audit/ed25519/governance/governance_writer.py:20:def open_db() -> sqlite3.Connection:
+audit/ed25519/governance/governance_writer.py:23:    return sqlite3.connect(DB_PATH)
+audit/ed25519/governance/governance_writer.py:25:def get_tip(cur: sqlite3.Cursor) -> Tuple[str, str]:
+audit/ed25519/governance/governance_writer.py:39:    payload_json = json.dumps(payload, sort_keys=True, ensure_ascii=True)
+audit/ed25519/governance/impact_registry_append_artifact.py:7:import sqlite3
+audit/ed25519/governance/impact_registry_append_artifact.py:18:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/impact_registry_append_phase14_completion.py:6:import sqlite3
+audit/ed25519/governance/impact_registry_append_phase14_completion.py:15:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/impact_registry_append_tip.py:6:import sqlite3
+audit/ed25519/governance/impact_registry_append_tip.py:17:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/init_governance_db.py:5:import sqlite3
+audit/ed25519/governance/init_governance_db.py:19:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/governance/init_governance_db.py:53:    payload_json = json.dumps(payload, sort_keys=True)
+audit/ed25519/governance/verify_governance_genesis.py:5:import sqlite3
+audit/ed25519/governance/verify_governance_genesis.py:15:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/inspect_tail.py:1:import sqlite3
+audit/ed25519/inspect_tail.py:4:conn=sqlite3.connect(db)
+audit/ed25519/ledger_integration_daily_signature.py:4:import sqlite3
+audit/ed25519/ledger_integration_daily_signature.py:12:    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+audit/ed25519/ledger_integration_daily_signature.py:62:    conn = sqlite3.connect(db_path)
+audit/ed25519/ledger_integration_daily_signature.py:119:    print(json.dumps(out, sort_keys=True, separators=(",", ":")))
+audit/ed25519/upsert_key_policy_event_auto.py:1:import sqlite3
+audit/ed25519/upsert_key_policy_event_auto.py:35:    return json.dumps(obj, ensure_ascii=False, sort_keys=sort_keys, separators=separators)
+audit/ed25519/upsert_key_policy_event_auto.py:76:            json_variants.append(("json_nosort_nospace", json.dumps(obj, ensure_ascii=False, sort_keys=False, separators=(",", ":"))))
+audit/ed25519/upsert_key_policy_event_auto.py:196:    conn = sqlite3.connect(DB_PATH)
+audit/ed25519/upsert_key_policy_event_auto.py:235:    event_content = json.dumps(payload, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+audit/ed25519/verify_full_chain_and_signature.py:1:﻿import sqlite3
+audit/ed25519/verify_full_chain_and_signature.py:17:    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+audit/ed25519/verify_full_chain_and_signature.py:49:    conn = sqlite3.connect(DB)
+audit/ed25519/verify_full_chain_and_signature.py:88:    print(json.dumps({
+audit/ed25519/verify_pack/verify_full_chain_and_signature.py:1:﻿import sqlite3
+audit/ed25519/verify_pack/verify_full_chain_and_signature.py:17:    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+audit/ed25519/verify_pack/verify_full_chain_and_signature.py:49:    conn = sqlite3.connect(DB)
+audit/ed25519/verify_pack/verify_full_chain_and_signature.py:88:    print(json.dumps({
+bridge/mapping_registry.py:10:import sqlite3
+bridge/mapping_registry.py:34:        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+bridge/mapping_registry.py:35:        self.conn.row_factory = sqlite3.Row
+caliber/caliber_engine.py:64:    print(json.dumps(result, indent=2, ensure_ascii=False))
+caliber/chat_pipeline/chat_raw_ingest.py:28:        json.dump(rec,open(INFIELD/f'{ts_f}_{eid}.json','w',encoding='utf-8'),ensure_ascii=False,indent=2)
+caliber/chat_pipeline/mocka_caliber_server.py:290:    json.dump(out_data, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/chat_pipeline/mocka_caliber_server.py:573:        import sqlite3 as _sq
+caliber/chat_pipeline/mocka_caliber_server.py:680:        import sqlite3 as _sq
+caliber/chat_pipeline/mocka_caliber_server.py:715:    reasons_str = json.dumps(trace.get("selected_reasons", {}), ensure_ascii=False)
+caliber/chat_pipeline/mocka_caliber_server.py:716:    trace_str   = json.dumps(trace, ensure_ascii=False)
+caliber/chat_pipeline/mocka_caliber_server_backup.py:271:    json.dump(out_data, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/chat_pipeline/mocka_caliber_server_v4_backup.py:271:    json.dump(out_data, open(out, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/chat_pipeline/mocka_chat_capture.py:78:    json.dump(rec, open(fname, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/chat_pipeline/mocka_condense_worker.py:82:    json.dump(result, open(out,"w",encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/chat_pipeline/mocka_condense_worker.py:122:    json.dump(result, open(out,"w",encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/incident_analyzer.py:28:    json.dump(data, open(GUIDELINES, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+caliber/intercept/mocka_intercept_v02.py:11:    with open(r"C:\Users\sirok\MoCKA\tools\intercept_log.json", "w", encoding="utf-8") as f:
+caliber/intercept/mocka_intercept_v02.py:12:        json.dump(logs, f, ensure_ascii=False, indent=2)
+caliber/orchestra/mocka_orchestra_v10.py:16:EVENTS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "orchestra_events.jsonl")
+caliber/orchestra/mocka_orchestra_v10.py:52:            f.write(json.dumps(event, ensure_ascii=False) + "\n")
+caliber/orchestra/mocka_orchestra_v10.py:66:        json.dump(urls, f, ensure_ascii=False, indent=2)
+check_all_dbs.py:1:import sqlite3
+check_all_dbs.py:19:    conn = sqlite3.connect(db)
+check_all_dbs.py:20:    tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+check_db.py:1:import sqlite3
+check_db.py:8:conn = sqlite3.connect(db)
+check_db.py:9:tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+check_essence_db.py:1:import sqlite3, json
+check_essence_db.py:16:conn = sqlite3.connect(db)
+check_events_db.py:1:import sqlite3
+check_events_db.py:5:conn = sqlite3.connect(db)
+check_events_db.py:7:tables = conn.execute("SELECT name FROM sqlite_master WHERE type='table'").fetchall()
+check_unicode.py:1:import sqlite3
+check_unicode.py:5:conn = sqlite3.connect(db)
+check_unicode2.py:1:import sqlite3
+check_unicode2.py:5:conn = sqlite3.connect(db)
+check_utf8_mandate.py:172:DETAIL_LOG_PATH.write_text(
+check_utf8_mandate.py:178:    BASELINE_PATH.write_text(
+check_utf8_mandate.py:179:        _json.dumps(sorted(current_set), ensure_ascii=False, indent=2),
+check_uv.py:1:import sqlite3
+check_uv.py:4:conn = sqlite3.connect(r'C:\Users\sirok\MoCKA\data\mocka_events.db')
+cognitive/cognitive_loop_engine.py:49:    - 評価履歴を cognitive_history.jsonl に追記する（append only）
+cognitive/cognitive_loop_engine.py:52:    HISTORY_PATH = Path(__file__).resolve().parent.parent / "data" / "cognitive_history.jsonl"
+cognitive/cognitive_loop_engine.py:129:            f.write(json.dumps(state.to_dict(), ensure_ascii=False) + "\n")
+cognitive/cognitive_signal.py:70:        self._path.write_text(
+cognitive/cognitive_signal.py:71:            json.dumps(payload, ensure_ascii=False, indent=2),
+core/timeline/semantic_timeline_engine.py:45:    DEFAULT_PATH = Path(__file__).resolve().parent.parent.parent / "data" / "logs" / "semantic_timeline.jsonl"
+core/timeline/semantic_timeline_engine.py:70:            f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+core_kernel/core_store/registry.py:217:        text = json.dumps(self.snapshot(), ensure_ascii=False, indent=2)
+core_kernel/core_store/registry.py:219:            Path(path).write_text(text, encoding="utf-8")
+core_kernel/core_store/tests/test_core_store.py:305:    config_file.write_text(json.dumps({"emit_event": True}), encoding="utf-8")
+core_kernel/core_store/tests/test_core_store.py:321:    broken.write_text("{not valid json", encoding="utf-8")
+core_kernel/governance/audit/audit_store.py:31:        line = json.dumps(asdict(record), ensure_ascii=False)
+core_kernel/governance/intelligence/intelligence_report.py:87:    output_path.write_text(
+core_kernel/governance/intelligence/intelligence_report.py:88:        json.dumps(intelligence_report_to_dict(report), ensure_ascii=False, indent=2),
+core_kernel/governance/intelligence/requirement_history.py:49:            f.write(json.dumps(asdict(change), ensure_ascii=False) + "\n")
+core_kernel/governance/self_verification/audit_report.py:64:        output_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+core_kernel/governance/self_verification/evidence.py:47:        store_path = Path(tempfile.mkdtemp(prefix="mocka_governance_evidence_")) / "audit.jsonl"
+core_kernel/governance/tests/integration/test_event_to_audit_flow.py:35:    store = AuditStore(tmp_path / "audit.jsonl")
+core_kernel/governance/tests/unit/test_audit.py:30:    store = AuditStore(tmp_path / "audit.jsonl")
+core_kernel/governance/tests/unit/test_audit.py:42:    store = AuditStore(tmp_path / "audit.jsonl")
+core_kernel/governance/tests/unit/test_audit.py:65:    store = AuditStore(tmp_path / "audit.jsonl")
+core_kernel/governance/tests/unit/test_intelligence.py:33:    store = RequirementHistoryStore(tmp_path / "history.jsonl")
+core_kernel/governance/tests/unit/test_intelligence.py:66:    history = RequirementHistoryStore(tmp_path / "history.jsonl")
+core_kernel/memory_core/memory_store.py:103:            json.dump({"records": self._records}, f, ensure_ascii=False, indent=2)
+core_kernel/memory_core/tests/test_memory_store.py:59:    path.write_text("{ this is not valid json", encoding="utf-8")
+core_kernel/memory_core/tests/test_memory_store.py:71:    path.write_text("[1, 2, 3]", encoding="utf-8")
+core_kernel/orchestra/__init__.py:17:from .persistence.sqlite_store import SQLiteStore
+core_kernel/orchestra/orchestra_engine.py:11:from .persistence.sqlite_store import SQLiteStore
+core_kernel/orchestra/persistence/__init__.py:7:from .sqlite_store import SQLiteStore
+core_kernel/orchestra/persistence/sqlite_store.py:2:MoCKA Core Kernel — orchestra.persistence.sqlite_store
+core_kernel/orchestra/persistence/sqlite_store.py:9:import sqlite3
+core_kernel/orchestra/persistence/sqlite_store.py:23:    return json.dumps(value, default=_json_default, ensure_ascii=False)
+core_kernel/orchestra/persistence/sqlite_store.py:29:    return json.dumps(value, ensure_ascii=False)
+core_kernel/orchestra/persistence/sqlite_store.py:35:        # ":memory:" はsqlite3.connect()ごとに別DBとなるため、
+core_kernel/orchestra/persistence/sqlite_store.py:37:        self._shared_conn = sqlite3.connect(":memory:") if db_path == ":memory:" else None
+core_kernel/orchestra/persistence/sqlite_store.py:43:        return sqlite3.connect(self.db_path)
+core_kernel/orchestra/replay_engine.py:9:from .persistence.sqlite_store import SQLiteStore
+cross_audit.py:19:import sqlite3
+cross_audit.py:44:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:96:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:100:        [task_id, task_text, ts, json.dumps(agents)]
+cross_audit.py:116:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:136:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:211:                conn2 = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:231:    conn3 = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:234:        [status, json.dumps({"discrepancies": len(discrepancies)}), task_id]
+cross_audit.py:244:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:281:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+cross_audit.py:297:        conn = sqlite3.connect(str(DB), timeout=10)
+cross_audit_patch.py:76:    APP.write_text(content, encoding="utf-8")
+cross_audit_patch.py:80:    APP.write_text(content + INSERT, encoding="utf-8")
+debug_jsonify.py:38:                json.dumps(g)
+debug_jsonify.py:43:                        json.dumps(v)
+deploy/mocka_mcp_server_vps.py:7:import json, hashlib, datetime, re, sqlite3, os
+deploy/mocka_mcp_server_vps.py:32:    con = sqlite3.connect(str(DB_PATH))
+deploy/mocka_mcp_server_vps.py:33:    con.row_factory = sqlite3.Row
+deploy/mocka_mcp_server_vps.py:144:        arg = json.dumps(args, ensure_ascii=False)[:200]
+deploy/mocka_mcp_server_vps.py:162:    TODO_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+deploy/mocka_mcp_server_vps.py:182:                return json.dumps({"error": f"not found: {OVERVIEW_PATH}"})
+deploy/mocka_mcp_server_vps.py:185:            return json.dumps(result, ensure_ascii=False, indent=2)
+deploy/mocka_mcp_server_vps.py:190:                return json.dumps({"error": "lever_essence.json not found"})
+deploy/mocka_mcp_server_vps.py:198:            return json.dumps(result, ensure_ascii=False, indent=2)
+deploy/mocka_mcp_server_vps.py:202:                return json.dumps({"error": f"not found: {TODO_PATH}"})
+deploy/mocka_mcp_server_vps.py:205:            return json.dumps(result, ensure_ascii=False, indent=2)
+deploy/mocka_mcp_server_vps.py:209:                return json.dumps({"error": f"not found: {TODO_PATH}"})
+deploy/mocka_mcp_server_vps.py:213:                return json.dumps({"error": "id and title are required"})
+deploy/mocka_mcp_server_vps.py:217:                return json.dumps({"error": f"{todo_id} already exists"})
+deploy/mocka_mcp_server_vps.py:232:            return json.dumps({"status": "ok", "id": todo_id, "action": "added"}, ensure_ascii=False)
+deploy/mocka_mcp_server_vps.py:236:                return json.dumps({"error": f"not found: {TODO_PATH}"})
+deploy/mocka_mcp_server_vps.py:255:                return json.dumps({"error": f"{todo_id} not found"})
+deploy/mocka_mcp_server_vps.py:258:            return json.dumps({"status": "ok", "id": todo_id, "new_status": new_status}, ensure_ascii=False)
+deploy/mocka_mcp_server_vps.py:263:            return json.dumps({"count": len(events), "events": events}, ensure_ascii=False, indent=2)
+deploy/mocka_mcp_server_vps.py:269:            return json.dumps(found[0] if found else {"error": "not found"}, ensure_ascii=False, indent=2)
+deploy/mocka_mcp_server_vps.py:276:            return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
+deploy/mocka_mcp_server_vps.py:299:            return json.dumps({"status": "ok" if ok else "error", "event_id": eid, "when": ts, "storage": "sqlite"}, ensure_ascii=False)
+deploy/mocka_mcp_server_vps.py:303:            payload = json.dumps(rows, ensure_ascii=False, sort_keys=True).encode("utf-8")
+deploy/mocka_mcp_server_vps.py:305:            result  = {"sha256": h, "source": "sqlite", "event_count": len(rows),
+deploy/mocka_mcp_server_vps.py:308:            return json.dumps(result, ensure_ascii=False)
+deploy/mocka_mcp_server_vps.py:310:        return json.dumps({"error": f"unknown tool: {name}"})
+deploy/mocka_mcp_server_vps.py:313:        return json.dumps({"error": str(e)})
+deploy/mocka_mcp_server_vps.py:322:        return json.dumps({"name": "mocka-memory-caliber", "version": "1.5.1-vps"}), 200, {"Content-Type": "application/json"}
+deploy/mocka_mcp_server_vps.py:334:        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+deploy/mocka_mcp_server_vps.py:335:    return json.dumps({"jsonrpc": "2.0", "id": req_id, "result": result}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+deploy/mocka_mcp_server_vps.py:340:    return json.dumps({"resource": PUBLIC_URL, "authorization_servers": []}), 200, {"Content-Type": "application/json"}
+deploy/mocka_mcp_server_vps.py:344:    return json.dumps({}), 200, {"Content-Type": "application/json"}
+deploy/mocka_mcp_server_vps.py:348:    return json.dumps({"client_id": "mocka-mcp", "client_secret": "none"}), 200, {"Content-Type": "application/json"}
+deploy/mocka_mcp_server_vps.py:353:    return json.dumps({
+deploy/mocka_mcp_server_vps.py:357:        "storage": "sqlite", "event_count": len(rows),
+deploy/mocka_mcp_server_vps.py:364:    return json.dumps({"tools": [t["name"] for t in TOOLS], "usage": "POST /agent/<tool_name>"}), 200, {"Content-Type": "application/json"}
+docs/archive/best_replay.py:56:        json.dump(dsl, f, indent=2)
+docs/archive/cross_context_engine.py:18:        json.dump(data, f, indent=2)
+docs/archive/crossover_dsl.py:42:        json.dump(new_dsl, f, indent=2)
+docs/archive/extract_rules.py:15:        json.dump(data, f, indent=2)
+docs/archive/generation_manager.py:9:        json.dump(gen,f,indent=2)
+docs/archive/goal_engine.py:8:        json.dump(goal,f,indent=2)
+docs/archive/goal_evolution_engine.py:16:        json.dump(goal,f,indent=2)
+docs/archive/learn_weights.py:45:        json.dump(dsl, f, indent=2)
+docs/archive/simulate_branch.py:21:        json.dump(data, f, indent=2)
+docs/archive/simulate_branch.py:25:    s = json.dumps(event, sort_keys=True)
+docs/archive/tamper_demo.py:12:    json.dump(ledger, f, ensure_ascii=False, indent=2)
+experiments/analyze_by_date.py:73:with open('results/A1_by_date_' + datetime.now().strftime('%Y%m%d') + '.json', 'w', encoding='utf-8') as f:
+experiments/analyze_by_date.py:74:    json.dump({'experiment':'A1_by_date','summary':summary,'avg_basic_rr':avg_rr,'avg_weighted_rr':avg_wrr}, f, ensure_ascii=False, indent=2)
+experiments/analyze_per_session.py:59:with open('results/A1_per_session_' + datetime.now().strftime('%Y%m%d') + '.json', 'w', encoding='utf-8') as f:
+experiments/analyze_per_session.py:60:    json.dump({'experiment':'A1_per_session','sessions':results_all,'avg_wrr':avg}, f, ensure_ascii=False, indent=2)
+experiments/bulk_human_docs.py:119:    json.dump({'experiment':'A0_bulk_human','count':len(results_all),'avg_wrr':avg,'results':results_all}, f, ensure_ascii=False, indent=2)
+experiments/bulk_with_excel.py:132:    json.dump({'experiment':'A0_with_excel','count':len(valid),'avg_wrr':avg,'results':valid},f,ensure_ascii=False,indent=2)
+experiments/clean_human_docs.py:3:with open('results/A0_bulk_human_docs_20260404.json', 'r', encoding='utf-8') as f:
+experiments/clean_human_docs.py:34:with open('results/A0_valid_human_docs_20260404.json', 'w', encoding='utf-8') as f:
+experiments/clean_human_docs.py:35:    json.dump({'experiment':'A0_valid_human','count':len(valid),'avg_wrr':avg,'results':valid}, f, ensure_ascii=False, indent=2)
+experiments/collect_all_mocka.py:51:        json.dump({"experiment":"A1_all_mocka","count":len(all_rates),"avg_rr_pct":avg,"results":all_rates}, f, ensure_ascii=False, indent=2)
+experiments/generate_core.py:89:        json.dump(core_data, f, ensure_ascii=False, indent=2)
+experiments/generate_core_v2.py:87:        json.dump(core_data, f, ensure_ascii=False, indent=2)
+experiments/generate_core_v2.py:139:    json.dump(essence, f, ensure_ascii=False, indent=2)
+experiments/generate_essence.py:60:    'hash': hashlib.sha256(json.dumps(stage_summary).encode()).hexdigest()[:16]
+experiments/generate_essence.py:67:    json.dump(essence, f, ensure_ascii=False, indent=2)
+experiments/generate_essence.py:83:    json.dump(outbox, f, ensure_ascii=False, indent=2)
+experiments/run_15cases.py:74:    json.dump({"total": len(summary), "mean_rr": sum(rrs)/len(rrs) if rrs else 0,
+experiments/run_experiment_A_v2.py:21:        return json.dumps(data, ensure_ascii=False)
+experiments/run_experiment_A_v2.py:62:        json.dump({'experiment_id':eid,'file':path,'size':len(text),'stage_results':results,'recovery_rate':rr,'weighted_recovery_rate':wrr,'missing_stages':missing,'timestamp':datetime.now().isoformat()}, f, ensure_ascii=False, indent=2)
+fix2.py:27:APP.write_text(content_new, encoding='utf-8')
+fix_crossaudit.py:25:APP.write_text(content_new, encoding="utf-8")
+fix_debug.py:12:APP.write_text('\n'.join(lines), encoding='utf-8')
+fix_fields.py:16:        APP.write_text('\n'.join(lines), encoding='utf-8')
+fix_filter.py:28:old_inject = '    essence = json.loads(essence_path.read_text(encoding="utf-8"))\n    top5 = sorted(guidelines_data["guidelines"],\n                  key=lambda g:g.get("score",0), reverse=True)[:5]\n    if not top5: return\n    now = datetime.now(timezone.utc).strftime("%Y-%m-%d")\n    lines = [l for l in essence.get("PHILOSOPHY","").split("\\n") if not l.startswith("[GL:")]\n    lines.append(f"[{now}] Guidelines Engine v1.1 TOP5:")\n    for g in top5: lines.append(f"[GL:{g[\'category\']}] {g[\'action_directive\'][:100]}")\n    essence["PHILOSOPHY"] = "\\n".join(lines[-20:])\n    essence_path.write_text(json.dumps(essence, ensure_ascii=False, indent=2), encoding="utf-8")\n    print(f"[OK] essence PHILOSOPHY: {len(top5)}件注入")'
+fix_filter.py:54:    essence_path.write_text(json.dumps(essence, ensure_ascii=False, indent=2), encoding="utf-8")
+fix_subprocess.py:26:APP.write_text(content, encoding='utf-8')
+fix_sync2.py:11:    TARGET.write_text(content, encoding='utf-8')
+fix_sync3.py:11:    TARGET.write_text(content, encoding='utf-8')
+fix_sync4.py:14:TARGET.write_text('\n'.join(fixed), encoding='utf-8')
+fix_sync5.py:11:    TARGET.write_text(content, encoding='utf-8')
+fix_sync6.py:10:TARGET.write_text(content, encoding='utf-8')
+fix_sync_encoding.py:15:    TARGET.write_text(content, encoding='utf-8')
+fix_synctodo2.py:47:    APP.write_text(content, encoding='utf-8')
+fix_synctodo3.py:48:                _body = _json.dumps({'fields': _fields}).encode('utf-8')
+fix_synctodo3.py:62:    APP.write_text(content, encoding='utf-8')
+fix_synctodo4.py:35:    APP.write_text(content, encoding='utf-8')
+gateway/_check_schema.py:1:import sqlite3
+gateway/_check_schema.py:2:conn = sqlite3.connect(r'C:\Users\sirok\MoCKA\data\mocka_events.db')
+gateway/_check_schema.py:4:cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+gateway/auth.py:5:import sqlite3
+gateway/auth.py:26:        conn = sqlite3.connect(str(DB_PATH), timeout=10)
+gateway/auth.py:95:        conn = sqlite3.connect(str(DB_PATH), timeout=10)
+gateway/auth.py:111:        conn = sqlite3.connect(str(DB_PATH), timeout=10)
+gateway/connector_log.py:34:import sqlite3
+gateway/connector_log.py:84:            conn = sqlite3.connect(str(self._db))
+gateway/connector_log.py:123:            conn = sqlite3.connect(str(self._db))
+gateway/connector_log.py:158:            conn = sqlite3.connect(str(self._db))
+gateway/connector_log.py:159:            conn.row_factory = sqlite3.Row
+gateway/connector_log.py:181:            conn = sqlite3.connect(str(self._db))
+gateway/context_builder.py:3:import sqlite3
+gateway/context_builder.py:51:            conn = sqlite3.connect(str(DB_PATH))
+gateway/context_builder.py:94:                return json.dumps(raw, ensure_ascii=False)
+gateway/context_builder.py:104:            conn = sqlite3.connect(str(DB_PATH))
+gateway/context_builder.py:148:        size = len(json.dumps(body, ensure_ascii=False).encode("utf-8"))
+gateway/gateway.py:9:import sqlite3
+gateway/gateway.py:96:        conn = sqlite3.connect(str(DB_PATH))
+gateway/lifecycle_manager.py:237:                "free_note":       json.dumps({
+gateway/mocka_index_writer.py:5:import sqlite3
+gateway/mocka_index_writer.py:67:        conn = sqlite3.connect(self.db_path)
+governance/chaos_gate.py:33:    tampered.write_text(tampered.read_text(encoding="utf-8") + "\n ", encoding="utf-8")
+governance/chaos_gate.py:42:        gov.write_text(original + " ", encoding="utf-8")
+governance/chaos_gate.py:45:        gov.write_text(original, encoding="utf-8")
+governance/human_gate_continuity.py:30:Pending Decision Unitの永続化先はdata/decisions/decision_ledger.jsonl
+governance/human_gate_continuity.py:32:参照)とは分離し、data/decisions/pending_decision_units.jsonlへ記録する。
+governance/human_gate_continuity.py:48:PENDING_LEDGER_PATH = _MOCKA_ROOT / "data" / "decisions" / "pending_decision_units.jsonl"
+governance/human_gate_continuity.py:110:            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+governance/keys/gen_role_keys.py:39:    pub_path.write_text(b64u(pub_raw), encoding="utf-8")
+governance/keys/gen_role_keys.py:66:    REG.write_text(json.dumps(reg, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/keys/rotate_root_key_v2.py:38:    pub_path.write_text(b64u(pub_raw), encoding="utf-8")
+governance/keys/rotate_root_key_v2.py:51:    REG.write_text(json.dumps(reg, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/mocka_git_safe_commit.py:118:    payload = json.dumps({
+governance/seal_auth_record.py:6:接続しない(M2)。本番 decision_ledger.jsonl には書かない。記録層のみで、
+governance/seal_auth_record.py:28:        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+governance/seal_governance_gate.py:12:- Decision Unit記録(data/decisions/decision_ledger.jsonlへ既存スキーマの追加
+governance/seal_governance_gate.py:39:DECISION_LEDGER_PATH = _MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl"
+governance/seal_governance_gate.py:149:            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+governance/seal_governance_wrapper.py:7:(data/decisions/decision_ledger.jsonl、governance/anchor_record.json、
+governance/seal_governance_wrapper.py:15:既存decision_ledger.jsonlスキーマへの追加フィールドとしてsandbox ledgerへ
+governance/seal_governance_wrapper.py:72:        return self.sandbox_root / "data" / "decisions" / "decision_ledger.jsonl"
+governance/seal_governance_wrapper.py:123:            p.write_text(json.dumps(ar, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/seal_governance_wrapper.py:142:            p.write_text(json.dumps(ar, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/seal_governance_wrapper.py:151:        既存decision_ledger.jsonlスキーマへの追加フィールドとして拡張し、sandbox ledgerへ
+governance/seal_governance_wrapper.py:182:            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+governance/shadow_seal_adapter.py:25:いずれも本番の`data/decisions/decision_ledger.jsonl`・`governance/anchor_record.json`・
+governance/shadow_seal_adapter.py:136:        p.write_text(json.dumps(ar, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/sign_governance_event.py:26:    msg = json.dumps(event_copy, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+governance/sign_governance_event.py:30:    EVENT_PATH.write_text(json.dumps(event, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/sign_revoke_event.py:22:msg = json.dumps(ev_copy, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode()
+governance/sign_revoke_event.py:26:EV_PATH.write_text(json.dumps(ev, ensure_ascii=False, indent=2), encoding="utf-8")
+governance/verify_governance_event_required.py:125:    msg = json.dumps(ev_copy, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+governance/verify_revoke_event.py:21:msg=json.dumps(ev_copy,ensure_ascii=False,separators=(",",":"),sort_keys=True).encode()
+inject_success.py:5:data = json.loads(open('data/success_patterns.json', encoding='utf-8').read())
+interface/Essence_Direct_Parser.py:216:        "keywords_found": json.dumps(keywords, ensure_ascii=False),
+interface/Essence_Direct_Parser.py:288:    ESSENCE_PATH.write_text(
+interface/Essence_Direct_Parser.py:289:        json.dumps(essence, ensure_ascii=False, indent=2),
+interface/ai_capability_registry.py:308:    print(json.dumps(reg.snapshot(), ensure_ascii=False, indent=2))
+interface/check_review.py:1:import sqlite3
+interface/check_review.py:4:conn = sqlite3.connect(db)
+interface/commission_manager.py:34:    REGISTRY_PATH.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+interface/cross_audit.py:19:import sqlite3
+interface/cross_audit.py:44:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:96:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:100:        [task_id, task_text, ts, json.dumps(agents)]
+interface/cross_audit.py:116:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:136:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:211:                conn2 = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:231:    conn3 = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:234:        [status, json.dumps({"discrepancies": len(discrepancies)}), task_id]
+interface/cross_audit.py:244:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/cross_audit.py:281:    conn = sqlite3.connect(str(AUDIT_DB), timeout=10)
+interface/db_helper.py:15:import sqlite3
+interface/db_helper.py:59:def _get_conn() -> sqlite3.Connection:
+interface/db_helper.py:60:    conn = sqlite3.connect(str(DB_PATH))
+interface/db_helper.py:61:    conn.row_factory = sqlite3.Row
+interface/distribution_engine.py:134:        json.dump(state, f, ensure_ascii=False, indent=2)
+interface/dynamic_lever_caliber_v9.py:22:        return json.dumps(packet, ensure_ascii=False)
+interface/essence_auto_updater.py:10:import re, sqlite3, threading, time, subprocess, sys, shutil
+interface/essence_auto_updater.py:122:        con = sqlite3.connect(str(DB_PATH))
+interface/essence_auto_updater.py:138:            json.dump(data, f, ensure_ascii=False, indent=2)
+interface/essence_auto_updater.py:159:    con = sqlite3.connect(str(DB_PATH))
+interface/essence_classifier.py:125:    ESSENCE_PATH.write_text(
+interface/essence_classifier.py:126:        json.dumps(data, ensure_ascii=False, indent=2),
+interface/essence_condenser.py:183:            self.essence_path.write_text(
+interface/essence_condenser.py:184:                json.dumps(self.existing, ensure_ascii=False, indent=2),
+interface/essence_extractor.py:14:    EXTRACT_LOG.write_text(json.dumps(log, ensure_ascii=False, indent=2), encoding="utf-8")
+interface/essence_pipeline.py:101:    LEVER_PATH.write_text(
+interface/essence_pipeline.py:102:        json.dumps(essence, ensure_ascii=False, indent=2),
+interface/essence_trigger.py:54:    PING_PATH.write_text(
+interface/essence_trigger.py:55:        json.dumps(existing, ensure_ascii=False, indent=2),
+interface/evaluator_dynamic.py:92:                "coordinate_state":json.dumps({"X":x,"Y":y,"Z":z,"n":n})})
+interface/event_buffer.py:14:どちらか早い方で実行される。Gate未応答時はイベントをdata/event_buffer_fallback.jsonl
+interface/event_buffer.py:27:FALLBACK_PATH = Path(r"C:\Users\sirok\MoCKA\data\event_buffer_fallback.jsonl")
+interface/event_buffer.py:133:                    f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+interface/executor_bridge.py:29:                with open(json_file, "r", encoding="utf-8") as f:
+interface/fix_line37.py:29:TARGET.write_text(result, encoding="utf-8")
+interface/full_injection_caliber_v9.py:27:    return json.dumps(injection_payload, ensure_ascii=False)
+interface/full_injection_caliber_v9.py:38:    with open(r'data\full_injection_payload.json', 'w', encoding='utf-8') as f:
+interface/graph_loader.py:4:dependency_graph.jsonl（append-only構造グラフ）を読み込み、
+interface/graph_loader.py:13:GRAPH_PATH = Path("C:/Users/sirok/MoCKA/data/tic/dependency_graph.jsonl")
+interface/guidelines_engine.py:6:import sqlite3, json, re, hashlib
+interface/guidelines_engine.py:160:    conn = sqlite3.connect(db_path)
+interface/guidelines_engine.py:161:    conn.row_factory = sqlite3.Row
+interface/guidelines_engine.py:193:    path.write_text(json.dumps({
+interface/guidelines_engine.py:285:    path.write_text(
+interface/guidelines_engine.py:286:        json.dumps(data, ensure_ascii=False, indent=2),
+interface/guidelines_engine.py:338:    essence_path.write_text(
+interface/guidelines_engine.py:339:        json.dumps(essence, ensure_ascii=False, indent=2),
+interface/guidelines_reviewer.py:23:import sqlite3
+interface/guidelines_reviewer.py:260:    conn = sqlite3.connect(DB_PATH)
+interface/guidelines_to_essence.py:6:import sqlite3
+interface/guidelines_to_essence.py:13:    conn = sqlite3.connect(DB_PATH)
+interface/health_check.py:14:import sqlite3
+interface/health_check.py:29:HEALTH_LOG    = TIC_DIR / "health_log.jsonl"
+interface/health_check.py:46:        _health_ok_counter_file.write_text(str(n), encoding="utf-8")
+interface/health_check.py:99:    "sqlite_integrity": {
+interface/health_check.py:100:        "method": "sqlite_check",
+interface/health_check.py:179:def check_sqlite(cfg: dict) -> tuple:
+interface/health_check.py:184:        con = sqlite3.connect(path)
+interface/health_check.py:207:    store_path.write_text(
+interface/health_check.py:208:        json.dumps({"path": str(path), "hash": h, "updated": datetime.datetime.now().isoformat()},
+interface/health_check.py:240:        PHI_OS_AUDIT_SEEN_PATH.write_text(
+interface/health_check.py:241:            json.dumps(sorted(ids), ensure_ascii=False), encoding="utf-8"
+interface/health_check.py:267:        con = sqlite3.connect(str(db_path))
+interface/health_check.py:271:            "SELECT name FROM sqlite_master WHERE type='table' AND name='audit_violations'"
+interface/health_check.py:440:    out.write_text(
+interface/health_check.py:441:        json.dumps(payload, ensure_ascii=False, indent=2, default=str),
+interface/health_check.py:484:    BASELINE_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+interface/health_check.py:494:        elif method == "sqlite_check":
+interface/health_check.py:495:            ok, detail = check_sqlite(cfg)
+interface/health_check.py:528:        payload = json.dumps({
+interface/health_check.py:561:    PREV_QUEUE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+interface/health_check.py:575:        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/health_check.py:588:    store_path.write_text(
+interface/health_check.py:589:        json.dumps({"path": str(path), "hash": h, "updated": datetime.datetime.now().isoformat()},
+interface/heinrich_engine.py:3:import json, sqlite3, sys, datetime
+interface/heinrich_engine.py:91:    con = sqlite3.connect(DB_PATH)
+interface/heinrich_engine.py:92:    con.row_factory = sqlite3.Row
+interface/heinrich_engine.py:156:    json.dump(report, open(OUT,'w',encoding='utf-8'), ensure_ascii=False, indent=2)
+interface/impact_analyzer.py:3:evaluation_queue.jsonl の各エントリ(source_id)を dependency_map.json の
+interface/impact_analyzer.py:24:QUEUE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/evaluation_queue.jsonl")
+interface/impact_analyzer.py:49:        payload = json.dumps({
+interface/impact_analyzer.py:105:            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/incident_learner.py:73:        json.dump(patterns, f, ensure_ascii=False, indent=2)
+interface/incident_learner.py:91:        json.dump(data, f, ensure_ascii=False, indent=2)
+interface/incident_learner.py:100:    LEARNED_LOG.write_text(
+interface/incident_learner.py:101:        json.dumps({"learned_event_ids": sorted(list(learned)),
+interface/injection_caliber_v9.py:18:        return json.dumps(packet)
+interface/language_detector.py:86:        json.dump(patterns, f, ensure_ascii=False, indent=2)
+interface/language_detector.py:269:        json.dump(report, f, ensure_ascii=False, indent=2)
+interface/language_matcher.py:13:import sqlite3, sys, json, re
+interface/language_matcher.py:89:    conn = sqlite3.connect(DB_PATH)
+interface/language_matcher.py:90:    conn.row_factory = sqlite3.Row
+interface/ledger_writer.py:19:            json.dump([], f, ensure_ascii=False, indent=2)
+interface/ledger_writer.py:26:        json.dump(data, f, ensure_ascii=False, indent=2)
+interface/matcher_v2.py:14:import sqlite3, sys, json, importlib.util
+interface/matcher_v2.py:105:    conn = sqlite3.connect(DB_PATH)
+interface/matcher_v3.py:10:import sqlite3, sys, json, importlib.util
+interface/matcher_v3.py:80:    conn = sqlite3.connect(DB_PATH)
+interface/memory_engine.py:26:        json.dump(history[-100:], f, ensure_ascii=False, indent=2)
+interface/mocka_events_sync.py:38:    SYNCED_LOG.write_text(
+interface/mocka_events_sync.py:39:        json.dumps({"synced_ids": sorted(list(synced_ids)),
+interface/mocka_events_sync.py:56:    content = json.dumps(event, ensure_ascii=False, sort_keys=True)
+interface/mocka_firestore_sync.py:57:    body = json.dumps({"fields": {k: to_fs(v) for k, v in todo.items()}}).encode("utf-8")
+interface/mocka_firestore_sync.py:62:    with open(TODO_PATH, encoding="utf-8") as f: return json.load(f)
+interface/mocka_firestore_sync.py:68:        json.dump(data, f, ensure_ascii=False, indent=2)
+interface/mocka_todo_sync.py:83:            json.dump(data, f, ensure_ascii=False, indent=2)
+interface/mocka_watcher.py:49:        json.dump(list(ids), f, ensure_ascii=False)
+interface/mocka_watcher.py:59:        json.dump(payload, f, ensure_ascii=False, indent=2)
+interface/mocka_watcher_bak.py:34:        json.dump(list(processed_ids), f, ensure_ascii=False, indent=2)
+interface/mocka_watcher_bak.py:55:                        json.dump({
+interface/morphology_engine.py:11:import json, sqlite3, sys, datetime, itertools
+interface/morphology_engine.py:64:    con = sqlite3.connect(PATTERN_DB)
+interface/morphology_engine.py:96:    # events.db邵ｺ荵晢ｽ芽怦・ｨLayer1/Layer2郢昴・縺冗ｹｧ・ｹ郢晏現・定愾髢・ｾ繝ｻ    con = sqlite3.connect(DB_PATH)
+interface/morphology_engine.py:111:    # 郢昜ｻ｣縺｡郢晢ｽｼ郢晢ｽｳDB隶堤距・ｯ繝ｻ    pcon = sqlite3.connect(PATTERN_DB)
+interface/morphology_engine.py:166:    pcon = sqlite3.connect(PATTERN_DB)
+interface/morphology_engine.py:205:    pcon = sqlite3.connect(PATTERN_DB)
+interface/morphology_engine.py:210:                 json.dumps([t['surface'] for t in tokens], ensure_ascii=False),
+interface/morphology_engine.py:212:                 json.dumps({'l1': matched_l1[:5], 'l2': matched_l2[:5]}, ensure_ascii=False),
+interface/morphology_engine.py:237:    # 3. 郢昜ｻ｣縺｡郢晢ｽｼ郢晢ｽｳ隰ｨ・ｰ驕抵ｽｺ髫ｱ繝ｻ    pcon = sqlite3.connect(PATTERN_DB)
+interface/node_registry.py:14:        json.dump(nodes, f, ensure_ascii=False, indent=2)
+interface/patch_app.py:227:    APP_PY.write_text(src, encoding="utf-8")
+interface/patch_app.py:239:            index_html.write_text(html_src, encoding="utf-8")
+interface/patch_background.py:86:    BG_PATH.write_text(src, encoding="utf-8")
+interface/patch_guidelines_noise.py:55:    TARGET.write_text(txt2, encoding="utf-8")
+interface/pattern_engine_v2.py:200:        print(json.dumps(r, ensure_ascii=False, indent=2))
+interface/pattern_engine_v2.py:206:        print(json.dumps(r, ensure_ascii=False, indent=2))
+interface/ping_generator.py:33:        json.dump(data, open(pj, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+interface/ping_generator.py:40:import sqlite3
+interface/ping_generator.py:65:        con = sqlite3.connect(str(DB_PATH))
+interface/ping_generator.py:120:    PACKET_PATH.write_text(json.dumps(packet, ensure_ascii=False, indent=2), encoding="utf-8")
+interface/policy_gen2.py:113:        json.dump(candidates, f, ensure_ascii=False, indent=2)
+interface/policy_gen2.py:136:        json.dump(candidates, f, ensure_ascii=False, indent=2)
+interface/policy_generator.py:165:        json.dump(candidates, f, ensure_ascii=False, indent=2)
+interface/policy_generator.py:190:        json.dump(candidates, f, ensure_ascii=False, indent=2)
+interface/prediction/gate.py:26:        print("[gate] risk_history.jsonl が空。終了。")
+interface/prediction/history.py:4:prediction_history.jsonl への append-only 記録。
+interface/prediction/history.py:12:PREDICTION_PATH = Path("C:/Users/sirok/MoCKA/data/tic/prediction_history.jsonl")
+interface/prediction/history.py:15:def _load_jsonl(path: Path) -> list:
+interface/prediction/history.py:32:    return _load_jsonl(PREDICTION_PATH)
+interface/prediction/history.py:42:    """resultをprediction_history.jsonlにappendする（冪等）。
+interface/prediction/history.py:65:        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/prediction/provider.py:4:risk_history.jsonl からTrace（スコア系列）・対象コンポーネント一覧を
+interface/prediction_engine.py:145:# 上記の既存コード（TODO_288）とは独立。risk_history.jsonl ベースの
+interface/prediction_engine.py:165:    結果はprediction_history.jsonlにappendされる（冪等）。"""
+interface/prediction_engine.py:214:        print("[prediction_engine] risk_history.jsonl が空。終了。")
+interface/proposal_schema.py:19:  2. data/proposals.jsonl — append-only、検索・監査用
+interface/proposal_schema.py:34:_PROPOSALS_FILE = os.path.join(_DATA_DIR, "proposals.jsonl")
+interface/proposal_schema.py:150:        # 1. proposals.jsonl に append-only 記録
+interface/proposal_schema.py:152:            f.write(json.dumps(prp.to_dict(), ensure_ascii=False) + "\n")
+interface/proposal_schema.py:190:        proposals.jsonlの対象レコードを更新版として追記する（append-only）。
+interface/proposal_schema.py:210:            f.write(json.dumps(updated.to_dict(), ensure_ascii=False) + "\n")
+interface/proposal_schema.py:341:    print(_json.dumps(schema.stats(), ensure_ascii=False, indent=2))
+interface/reflux.py:46:    ESSENCE_PATH.write_text(json.dumps(d, ensure_ascii=False, indent=2), encoding="utf-8")
+interface/risk_interpreter.py:14:を順に表示する。risk_history.jsonl に日次スコアをappendし、前日比を計算する。
+interface/risk_interpreter.py:35:HISTORY_PATH  = Path("C:/Users/sirok/MoCKA/data/tic/risk_history.jsonl")
+interface/risk_interpreter.py:36:EVENTS_PATH   = Path("C:/Users/sirok/MoCKA/data/tic/dependency_events.jsonl")
+interface/risk_interpreter.py:37:HEALTH_LOG    = Path("C:/Users/sirok/MoCKA/data/tic/health_log.jsonl")
+interface/risk_interpreter.py:133:    """risk_history.jsonl の最後の行（今日以前の最新エントリ）からscoresを返す。"""
+interface/risk_interpreter.py:161:        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/risk_interpreter.py:197:    """前日比でスコア変化があったコンポーネントを dependency_events.jsonl に記録する。
+interface/risk_interpreter.py:239:                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/risk_interpreter.py:268:    # Health Check: health_log.jsonl の最新エントリの overall
+interface/risk_scorer.py:76:        payload = json.dumps({
+interface/risk_scorer.py:114:    MAP_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+interface/root_cause_engine.py:4:dependency_events.jsonl（Phase2）の当日変化イベントを読み、
+interface/root_cause_engine.py:5:dependency_graph.jsonl（Phase3）を辿ってcause_chainを生成し、
+interface/root_cause_engine.py:6:決定論的なreasonテキストとともに root_cause.jsonl にappendする。
+interface/root_cause_engine.py:24:EVENTS_PATH     = Path("C:/Users/sirok/MoCKA/data/tic/dependency_events.jsonl")
+interface/root_cause_engine.py:25:ROOT_CAUSE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/root_cause.jsonl")
+interface/root_cause_engine.py:30:def _load_jsonl(path: Path) -> list:
+interface/root_cause_engine.py:48:    return [e for e in _load_jsonl(EVENTS_PATH) if e.get("date") == today_str]
+interface/root_cause_engine.py:90:        print("[root_cause_engine] dependency_events.jsonl に本日の変化なし。終了。")
+interface/root_cause_engine.py:93:    existing   = _load_jsonl(ROOT_CAUSE_PATH)
+interface/root_cause_engine.py:132:                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/router.py:1:import sqlite3
+interface/router.py:111:def write_sqlite(row: list):
+interface/router.py:114:        conn = sqlite3.connect(str(DB_PATH))
+interface/router.py:128:def write_safe_csv(row); write_sqlite(row):
+interface/router.py:157:    write_sqlite(base)
+interface/router.py:191:    write_sqlite(base)
+interface/schema_audit.py:25:import sqlite3
+interface/schema_audit.py:55:        conn = sqlite3.connect(str(db_path))
+interface/schema_audit.py:57:            "SELECT sql FROM sqlite_master WHERE type='table' AND name='events'"
+interface/schema_audit.py:60:        return False, f"sqlite_master読み取りエラー: {e}"
+interface/score_engine.py:14:        json.dump(scores, f, ensure_ascii=False, indent=2)
+interface/share_observer.py:54:        print(f"[share_observer] パケット受信: {json.dumps(packet, ensure_ascii=False)[:80]}")
+interface/share_observer_v9.py:54:        print(f"[share_observer] パケット受信: {json.dumps(packet, ensure_ascii=False)[:80]}")
+interface/simulation_layer.py:114:            json.dump(detect_results, f, ensure_ascii=False, indent=2)
+interface/tech_watcher.py:51:QUEUE_PATH   = TIC_DIR / "evaluation_queue.jsonl"
+interface/tech_watcher.py:170:    fp_str = json.dumps(fingerprint_data, ensure_ascii=False, sort_keys=True)
+interface/tech_watcher.py:356:    HASHES_PATH.write_text(
+interface/tech_watcher.py:357:        json.dumps(hashes, ensure_ascii=False, indent=2), encoding="utf-8"
+interface/tech_watcher.py:372:        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/tech_watcher.py:391:    PREV_QUEUE.write_text(
+interface/tech_watcher.py:392:        json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+interface/tech_watcher.py:401:        payload = json.dumps({
+interface/text_to_5w1h.py:40:    'events.db': 'events.db', 'sqlite': 'SQLite',
+interface/text_to_5w1h.py:85:    'sqliteで': 'SQLite_direct', 'curl': 'curl',
+interface/trend_engine.py:4:risk_history.jsonl（Phase2）から各コンポーネントの過去最大7日分のスコアを読み、
+interface/trend_engine.py:5:純粋Pythonの最小二乗法でslopeを計算し、trend_history.jsonlにappendする。
+interface/trend_engine.py:21:HISTORY_PATH       = Path("C:/Users/sirok/MoCKA/data/tic/risk_history.jsonl")
+interface/trend_engine.py:22:TREND_HISTORY_PATH = Path("C:/Users/sirok/MoCKA/data/tic/trend_history.jsonl")
+interface/trend_engine.py:27:def _load_jsonl(path: Path) -> list:
+interface/trend_engine.py:45:    entries = _load_jsonl(HISTORY_PATH)
+interface/trend_engine.py:97:        print("[trend_engine] risk_history.jsonl が空。終了。")
+interface/trend_engine.py:101:    existing   = _load_jsonl(TREND_HISTORY_PATH)
+interface/trend_engine.py:134:                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+interface/trust_score_caliber.py:41:        json.dump(result, f, ensure_ascii=False, indent=2)
+interface/trust_score_caliber.py:60:    print(json.dumps(result, ensure_ascii=False, indent=2))
+interface/user_voice_importer.py:15:import sqlite3
+interface/user_voice_importer.py:116:    conn = sqlite3.connect(str(DB_PATH))
+interface/user_voice_importer.py:153:        payload = json.dumps({
+interface/v10_final_bridge.py:21:    return json.dumps(injection_payload, ensure_ascii=False)
+interface/validate_input_integrity.py:41:                json.dumps(data, ensure_ascii=False, sort_keys=True).encode()
+interface/validate_input_integrity.py:45:        raise MoCKA_IntegrityError(json.dumps(report, ensure_ascii=False, indent=2))
+issue_certificate.py:5:with open("token.json","r",encoding="utf-8-sig") as f:
+issue_certificate.py:8:with open("testkey.json","r",encoding="utf-8") as f:
+issue_certificate.py:11:with open("ledger.json","r",encoding="utf-8") as f:
+issue_certificate.py:25:    json.dumps(certificate, sort_keys=True).encode()
+issue_certificate.py:28:with open("certificate.json","w",encoding="utf-8") as f:
+issue_certificate.py:29:    json.dump(certificate,f,indent=2)
+keygen.py:36:    SERIAL_FILE.write_text(json.dumps({'next_serial': n}), encoding='utf-8')
+learning_kernel/learning_queue.py:41:        self._queue_file.write_text(
+learning_kernel/learning_queue.py:42:            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+learning_kernel/weight_state_store.py:45:        self._state_file.write_text(
+learning_kernel/weight_state_store.py:46:            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+living_room/hub.py:20:import sqlite3
+living_room/hub.py:50:    conn = sqlite3.connect(DB_PATH)
+living_room/hub.py:51:    conn.row_factory = sqlite3.Row
+living_room/hub.py:76:    canon = json.dumps(payload, ensure_ascii=False, sort_keys=True)
+make_movement_map.py:336:with open("MOCKA_MOVEMENT_MAP.json", "w", encoding="utf-8") as f:
+make_movement_map.py:337:    json.dump(data, f, indent=2, ensure_ascii=False)
+memory/memory_ingestor.py:6:  Orchestra Event Stream(orchestra_events.jsonl)を読み取り、
+memory/memory_ingestor.py:26:    / "caliber" / "orchestra" / "orchestra_events.jsonl"
+memory/memory_ingestor.py:31:    """orchestra_events.jsonlを読み取り、Event(dict)のリストを返す。
+memory/memory_store.py:66:            json.dump(raw, f, ensure_ascii=False, indent=2)
+migrate_sessions.py:5:import sqlite3, csv
+migrate_sessions.py:11:con = sqlite3.connect(str(DB_PATH))
+mocka-governance-kernel/governance/backup_index_append_file.py:8:import sqlite3
+mocka-governance-kernel/governance/backup_index_append_file.py:29:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/governance_chain_verify.py:5:import sqlite3
+mocka-governance-kernel/governance/governance_chain_verify.py:20:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/governance_csv_append.py:6:import sqlite3
+mocka-governance-kernel/governance/governance_csv_append.py:17:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/governance_writer.py:5:import sqlite3
+mocka-governance-kernel/governance/governance_writer.py:20:def open_db() -> sqlite3.Connection:
+mocka-governance-kernel/governance/governance_writer.py:23:    return sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/governance_writer.py:25:def get_tip(cur: sqlite3.Cursor) -> Tuple[str, str]:
+mocka-governance-kernel/governance/governance_writer.py:39:    payload_json = json.dumps(payload, sort_keys=True, ensure_ascii=True)
+mocka-governance-kernel/governance/impact_registry_append_artifact.py:7:import sqlite3
+mocka-governance-kernel/governance/impact_registry_append_artifact.py:18:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/impact_registry_append_phase14_completion.py:6:import sqlite3
+mocka-governance-kernel/governance/impact_registry_append_phase14_completion.py:15:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/impact_registry_append_tip.py:6:import sqlite3
+mocka-governance-kernel/governance/impact_registry_append_tip.py:17:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/init_governance_db.py:5:import sqlite3
+mocka-governance-kernel/governance/init_governance_db.py:19:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/governance/init_governance_db.py:53:    payload_json = json.dumps(payload, sort_keys=True)
+mocka-governance-kernel/governance/verify_governance_genesis.py:5:import sqlite3
+mocka-governance-kernel/governance/verify_governance_genesis.py:15:    conn = sqlite3.connect(DB_PATH)
+mocka-governance-kernel/tools/calc_anchor_record_hash.py:8:    s = json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+mocka-governance-kernel/tools/calc_anchor_record_hash.py:34:    out_path.write_text(h + "\n", encoding="utf-8")
+mocka_caliber_sqlite_patch.py:1:# mocka_caliber_sqlite_patch.py
+mocka_caliber_sqlite_patch.py:3:# python mocka_caliber_sqlite_patch.py
+mocka_caliber_sqlite_patch.py:12:NEW_IMPORTS = '''import csv, hashlib, json, os, re, shutil, sqlite3'''
+mocka_caliber_sqlite_patch.py:64:        conn = sqlite3.connect(str(EVENTS_DB), timeout=10)
+mocka_caliber_sqlite_patch.py:77:    if "sqlite3" not in content:
+mocka_caliber_sqlite_patch.py:79:        print("[patch] ✓ sqlite3 import追加")
+mocka_caliber_sqlite_patch.py:81:        print("[patch] - sqlite3 import既存")
+mocka_caliber_sqlite_patch.py:97:    TARGET.write_text(content, encoding="utf-8")
+mocka_mcp_server.py:7:import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys, time, secrets
+mocka_mcp_server.py:78:DECISION_LEDGER_PATH = DECISIONS_DIR / "decision_ledger.jsonl"
+mocka_mcp_server.py:84:INTEGRITY_CLASSIFICATION_PATH = INTEGRITY_DIR / "integrity_classification.jsonl"
+mocka_mcp_server.py:95:    con = sqlite3.connect(str(DB_PATH))
+mocka_mcp_server.py:96:    con.row_factory = sqlite3.Row
+mocka_mcp_server.py:281:        arg = json.dumps(args, ensure_ascii=False)[:200]
+mocka_mcp_server.py:299:WRITE_AUDIT_PATH = BASE / "data" / "tic" / "write_audit_log.jsonl"
+mocka_mcp_server.py:313:            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+mocka_mcp_server.py:318:    """TODO_PATHの現在ハッシュとwrite_audit_log.jsonlの最終記録ハッシュを比較する。
+mocka_mcp_server.py:350:    content = json.dumps(data, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:351:    tmp_path.write_text(content, encoding="utf-8")
+mocka_mcp_server.py:359:    """decision_ledger.jsonlの全行を読む（append-only。同一decision_idの複数行は
+mocka_mcp_server.py:391:    """decision_ledger.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+mocka_mcp_server.py:394:        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+mocka_mcp_server.py:411:    """integrity_classification.jsonlの全行を読む（append-only。壊れた行は
+mocka_mcp_server.py:443:    """integrity_classification.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+mocka_mcp_server.py:446:        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+mocka_mcp_server.py:480:                return json.dumps({
+mocka_mcp_server.py:488:                    return json.dumps({
+mocka_mcp_server.py:498:                    return json.dumps({
+mocka_mcp_server.py:504:            if not OVERVIEW_PATH.exists(): return json.dumps({"error": f"not found: {OVERVIEW_PATH}"})
+mocka_mcp_server.py:517:            return json.dumps(result, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:523:            return json.dumps(data.get("ping", {}).get("ESSENCE_SUMMARY", {}), ensure_ascii=False, indent=2)
+mocka_mcp_server.py:526:            if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
+mocka_mcp_server.py:529:            return json.dumps(result, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:532:            if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
+mocka_mcp_server.py:536:                return json.dumps({"error": "id and title are required"})
+mocka_mcp_server.py:539:                return json.dumps({"error": f"invalid status: {add_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:542:                return json.dumps({"error": f"invalid contract_status: {add_contract_status!r}. allowed: {sorted(CONTRACT_STATUS_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:546:                return json.dumps({"error": f"{todo_id} already exists"})
+mocka_mcp_server.py:565:            return json.dumps({"status": "ok", "id": todo_id, "action": "added"}, ensure_ascii=False)
+mocka_mcp_server.py:568:            if not TODO_PATH.exists(): return json.dumps({"error": f"not found: {TODO_PATH}"})
+mocka_mcp_server.py:575:                return json.dumps({"error": f"invalid status: {new_status!r}. allowed: {sorted(TODO_STATUS_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:577:                return json.dumps({"error": f"invalid contract_status: {new_contract_status!r}. allowed: {sorted(CONTRACT_STATUS_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:610:                            return json.dumps({
+mocka_mcp_server.py:616:                            return json.dumps({
+mocka_mcp_server.py:634:            if not updated: return json.dumps({"error": f"{todo_id} not found"})
+mocka_mcp_server.py:640:            return json.dumps(result, ensure_ascii=False)
+mocka_mcp_server.py:645:            return json.dumps({"count": len(events), "events": events}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:651:            return json.dumps(found[0] if found else {"error": "not found"}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:658:            return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:672:                return json.dumps({"status": "gate_rejected", "errors": ["title is required (empty)"]}, ensure_ascii=False)
+mocka_mcp_server.py:674:                return json.dumps({"status": "gate_rejected", "errors": ["description is required (empty)"]}, ensure_ascii=False)
+mocka_mcp_server.py:676:                return json.dumps({"status": "gate_rejected", "errors": ["author is required (empty)"]}, ensure_ascii=False)
+mocka_mcp_server.py:701:                    return json.dumps({"status": "ok", "event_id": eid,
+mocka_mcp_server.py:703:                                       "storage": "gate/sqlite"}, ensure_ascii=False)
+mocka_mcp_server.py:707:                    return json.dumps({"status": "gate_rejected", "errors": r.json().get("errors", []),
+mocka_mcp_server.py:726:                    return json.dumps({"status": "ok", "event_id": eid,
+mocka_mcp_server.py:728:                                       "storage": "gate/sqlite(in-process)"}, ensure_ascii=False)
+mocka_mcp_server.py:731:                    return json.dumps({"status": "gate_rejected", "errors": result.get("errors", [])},
+mocka_mcp_server.py:738:            payload = json.dumps(rows, ensure_ascii=False, sort_keys=True).encode("utf-8")
+mocka_mcp_server.py:740:            result = {"sha256": h, "source": "sqlite", "event_count": len(rows),
+mocka_mcp_server.py:743:            return json.dumps(result, ensure_ascii=False)
+mocka_mcp_server.py:778:            return json.dumps({"incidents": result, "count": len(result)}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:783:                return json.dumps({"error": "guidelines.json not found", "path": str(guidelines_path)}, ensure_ascii=False)
+mocka_mcp_server.py:788:            return json.dumps({"guidelines": top, "total": total}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:805:            return json.dumps(results, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:811:                return json.dumps({"ok": False, "error": f"File not found: {filepath}"}, ensure_ascii=False)
+mocka_mcp_server.py:837:            return json.dumps(result, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:850:            return json.dumps(result, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:881:            return json.dumps(incidents, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:887:                with open(_os.path.join(BASE_DIR, "interface", "lever_essence.json"), encoding="utf-8") as f:
+mocka_mcp_server.py:902:            return json.dumps(phl, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:921:            return json.dumps(spp, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:925:                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+mocka_mcp_server.py:928:                return json.dumps({"error": f"invalid env: {env!r}"}, ensure_ascii=False)
+mocka_mcp_server.py:931:            return json.dumps(result, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:935:                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+mocka_mcp_server.py:940:                return json.dumps({"error": f"invalid layer: {layer!r}"}, ensure_ascii=False)
+mocka_mcp_server.py:942:                return json.dumps({"error": f"invalid env: {env!r}"}, ensure_ascii=False)
+mocka_mcp_server.py:946:                return json.dumps({"error": "REGISTRY_VALIDATION_FAILED", "reason": str(e)}, ensure_ascii=False)
+mocka_mcp_server.py:949:            return json.dumps({"status": "ok", "layer": layer, "env": env, "record": added}, ensure_ascii=False)
+mocka_mcp_server.py:953:                return json.dumps({"error": "registry_store unavailable"}, ensure_ascii=False)
+mocka_mcp_server.py:957:                return json.dumps({"error": f"invalid env: {env!r}"}, ensure_ascii=False)
+mocka_mcp_server.py:960:            return json.dumps(result if result else {"error": "not found"}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:971:                return json.dumps({"error": "title/context/decision/rationale/impact/approved_by は全て必須(DECISION_LEDGER_SCHEMA_v1.md準拠)"}, ensure_ascii=False)
+mocka_mcp_server.py:973:                return json.dumps({"error": "alternatives は1件以上の配列が必須(却下案が無い場合は option:N/A の1件を入れる)"}, ensure_ascii=False)
+mocka_mcp_server.py:976:                    return json.dumps({"error": "alternatives の各要素は option/rejected_reason を持つオブジェクトである必要がある"}, ensure_ascii=False)
+mocka_mcp_server.py:979:                return json.dumps({"error": f"invalid status: {status!r}. allowed: {sorted(DECISION_STATUS_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:1023:            return json.dumps({"status": "ok", "decision_id": decision_id, "event_id": event_id}, ensure_ascii=False)
+mocka_mcp_server.py:1030:            return json.dumps(matches[-1] if matches else {"error": "not found"}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:1045:            return json.dumps({"count": len(result), "broken_lines": broken, "decisions": result}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:1056:                return json.dumps({"error": "title/state/type/description/detection_method/impact_scope/discovered_by は全て必須"}, ensure_ascii=False)
+mocka_mcp_server.py:1058:                return json.dumps({"error": f"invalid state: {state!r}. allowed: {sorted(STATE_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:1060:                return json.dumps({"error": f"invalid type {itype!r} for state {state!r}. allowed: {sorted(TYPE_ENUM_BY_STATE.get(state, set()))}"}, ensure_ascii=False)
+mocka_mcp_server.py:1063:                return json.dumps({"error": f"invalid status: {status!r}. allowed: {sorted(CLASSIFICATION_STATUS_ENUM)}"}, ensure_ascii=False)
+mocka_mcp_server.py:1085:            return json.dumps({"status": "ok", "classification_id": classification_id}, ensure_ascii=False)
+mocka_mcp_server.py:1092:            return json.dumps(matches[-1] if matches else {"error": "not found"}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:1113:            return json.dumps({"count": len(result), "broken_lines": broken, "classifications": result}, ensure_ascii=False, indent=2)
+mocka_mcp_server.py:1115:        return json.dumps({"error": f"unknown tool: {name}"})
+mocka_mcp_server.py:1118:        return json.dumps({"error": str(e)})
+mocka_mcp_server.py:1123:        return json.dumps({"name": "mocka-memory-caliber", "version": "1.3.0"}), 200, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1135:        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1136:    return json.dumps({"jsonrpc": "2.0", "id": req_id, "result": result}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1141:    return json.dumps({"resource": MOCKA_ENDPOINT or "https://localhost:5002", "authorization_servers": []}), 200, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1145:    return json.dumps({}), 200, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1149:    return json.dumps({"client_id": "mocka-mcp", "client_secret": "none"}), 200, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1171:        return json.dumps({"error": f"proxy error: {str(e)}"}, ensure_ascii=False), 502, {"Content-Type": "application/json"}
+mocka_mcp_server.py:1177:    return json.dumps({"status": "ok", "version": "1.5.0", "port": 5002,
+mocka_mcp_server.py:1179:                       "storage": "sqlite", "event_count": len(rows),
+mocka_mcp_server.py:1189:    return json.dumps({"tools": [t["name"] for t in TOOLS], "usage": "POST /agent/<tool_name>"}), 200, {"Content-Type": "application/json"}
+mocka_v3_eval/csv_cross_analysis.py:441:        "sha256": hashlib.sha256(json.dumps(s6,ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+mocka_v3_eval/csv_cross_analysis.py:444:    OUTPUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+mocka_v3_eval/essence_to_packet.py:167:    out_path.write_text(content, encoding="utf-8")
+mocka_v3_eval/extract_incidents.py:123:    OUTPUT.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
+mocka_v3_eval/fix_encoding.py:40:        DEST.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+mocka_v3_eval/fix_encoding.py:50:        DEST.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+mocka_v3_eval/fix_perplexity_clipboard.py:162:    f.write_text(c, encoding="utf-8")
+mocka_v3_eval/fix_perplexity_selector.py:16:    f.write_text(c, encoding="utf-8")
+mocka_v3_eval/make_overview_v23.py:7:with open("C:/Users/sirok/MOCKA_OVERVIEW.json", encoding="utf-8") as f:
+mocka_v3_eval/make_overview_v23.py:65:with open("C:/Users/sirok/MOCKA_OVERVIEW.json", "w", encoding="utf-8") as f:
+mocka_v3_eval/make_overview_v23.py:66:    json.dump(data, f, ensure_ascii=False, indent=2)
+mocka_v3_eval/make_overview_v23.py:70:    with open("A:/MOCKA_OVERVIEW.json", "w", encoding="utf-8") as f:
+mocka_v3_eval/make_overview_v23.py:71:        json.dump(data, f, ensure_ascii=False, indent=2)
+mocka_v3_eval/mocka_full_math_analysis.py:567:            json.dumps({"p1":p1,"p2":p2,"p3":p3,"p4":p4,"p5":p5},
+mocka_v3_eval/mocka_full_math_analysis.py:571:    OUTPUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+mocka_v3_eval/mocka_n_expansion_pipeline.py:59:    GIT_LOG_FILE.write_text(raw, encoding="utf-8")
+mocka_v3_eval/mocka_n_expansion_pipeline.py:338:            json.dumps({"n":len(unique),"z":z_result},
+mocka_v3_eval/mocka_n_expansion_pipeline.py:343:    REPORT_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+mocka_v3_eval/mocka_observability_analysis.py:291:            json.dumps({"s1":s1,"s2":s2,"s3":s3},ensure_ascii=False,sort_keys=True).encode()
+mocka_v3_eval/mocka_observability_analysis.py:295:    OUTPUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+mocka_v3_eval/mocka_verification_v1to6.py:150:        "sha256":hashlib.sha256(json.dumps({"r1":r1,"r2":r2,"r3":r3,"r4":r4,"r5":r5,"r6":r6},ensure_ascii=False,sort_keys=True).encode()).hexdigest()
+mocka_v3_eval/mocka_verification_v1to6.py:152:    OUTPUT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding="utf-8")
+mocka_v3_eval/recurrence_injector.py:18:        json.dump(packet, f, ensure_ascii=False, indent=2)
+mocka_v3_eval/recurrence_injector.py:35:        json.dump(log, f, ensure_ascii=False, indent=2)
+mocka_v3_eval/run_experiment_A_v3.py:42:    raw = json.dumps(obj, ensure_ascii=False, sort_keys=True)
+mocka_v3_eval/run_experiment_A_v3.py:149:        json.dump(output, f, ensure_ascii=False, indent=2)
+mocka_v3_eval/run_experiment_A_v4.py:31:    return hashlib.sha256(json.dumps(obj, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+mocka_v3_eval/run_experiment_A_v4.py:120:        json.dump(output, f, ensure_ascii=False, indent=2)
+mocka_v3_eval/update_todo.py:90:TODO_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+node_health_monitor.py:20:        json.dump(data,f,indent=2)
+node_heartbeat.py:16:        json.dump(d,f,indent=2)
+node_map_add.py:15:        json.dump(d,f,indent=2)
+node_registry.py:23:        json.dump(data,f,indent=2)
+node_state_server.py:26:            body = json.dumps(data).encode()
+node_sync_server.py:16:            data = json.dumps(files).encode()
+node_timeout.py:15:        json.dump(d,f,indent=2)
+observer_logger.py:67:    event = append_event("OBSERVER", json.dumps(action_data))
+ops/fix_key_manifest_linkage_v3.py:40:        json.dump(data, f, indent=2)
+ops/key_anchor_v3.py:29:    ANCHOR_PATH.write_text(json.dumps(anchor, indent=2) + "\n", encoding="utf-8")
+ops/key_history_append_v3.py:7:LOG_PATH = Path("phase3_key_policy/KEY_HISTORY_LOG_v3.jsonl")
+ops/key_history_append_v3.py:47:    event_bytes = json.dumps(event, sort_keys=True).encode("utf-8")
+ops/key_history_append_v3.py:51:        f.write(json.dumps(event, sort_keys=True) + "\n")
+ops/key_rotate_v3.py:41:        json.dump(data, f, indent=2)
+patch_app.py:55:    INJECT_FLAG.write_text(new_mode, encoding="utf-8")
+patch_app_guidelines.py:103:app_py.write_text(patched, encoding="utf-8")
+patch_index_guidelines.py:100:    index_html.write_text(patched, encoding="utf-8")
+patch_l5_hash.py:22:    hash_input = json.dumps({
+patch_l5_hash.py:36:    repro_input = json.dumps({
+patch_l5_hash.py:53:    audit_input = json.dumps({
+patch_l5_hash.py:118:TARGET.write_text(src, encoding="utf-8")
+patch_matcher_log.py:11:    path.write_text(txt, encoding='utf-8')
+patch_matcher_log2.py:11:    path.write_text(txt, encoding='utf-8')
+patch_sync_todo.py:24:        return _json.dumps({"ok": True, "count": _count, "message": "local only"}), 200, {"Content-Type": "application/json"}
+patch_sync_todo.py:26:        return _json.dumps({"ok": False, "error": str(e)}), 500, {"Content-Type": "application/json"}
+pattern_engine.py:133:        json.dump(summary, f, ensure_ascii=False, indent=2)
+pattern_engine.py:155:    print(json.dumps(summary, ensure_ascii=False, indent=2))
+pattern_hook.py:13:            json.dump(result, f, ensure_ascii=False, indent=2)
+personal_lexicon/personal_lexicon.py:11:#   外部依存なし（sqlite3標準のみ）
+personal_lexicon/personal_lexicon.py:14:import sqlite3
+personal_lexicon/personal_lexicon.py:33:        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+personal_lexicon/personal_lexicon.py:34:        self.conn.row_factory = sqlite3.Row
+phi_os/audit_trigger.py:17:import sqlite3
+phi_os/audit_trigger.py:36:def install_audit_schema(conn: sqlite3.Connection):
+phi_os/audit_trigger.py:101:def get_violation_count(conn: sqlite3.Connection) -> dict:
+phi_os/audit_trigger.py:136:    PREV_QUEUE.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+phi_os/audit_trigger.py:142:        payload = json.dumps({
+phi_os/audit_trigger.py:157:def check_and_alert(conn: sqlite3.Connection) -> dict:
+phi_os/audit_trigger.py:178:    conn = sqlite3.connect(str(DB_PATH))
+phi_os/audit_trigger.py:179:    conn.row_factory = sqlite3.Row
+phi_os/context/context_runtime.py:195:        _EVENT_LOG_PATH.write_text(
+phi_os/context/context_runtime.py:196:            json.dumps(log[:_EVENT_LOG_MAX], ensure_ascii=False, indent=2),
+phi_os/context/context_scheduler.py:28:    _STATE_PATH.write_text(
+phi_os/context/context_scheduler.py:29:        json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8"
+phi_os/context/context_snapshot.py:32:        serialized = json.dumps(payload, ensure_ascii=False, indent=2)
+phi_os/context/context_snapshot.py:34:        path.write_text(serialized, encoding="utf-8")
+phi_os/context/context_snapshot.py:38:        latest.write_text(serialized, encoding="utf-8")
+phi_os/context/context_snapshot.py:45:                lpath.write_text(
+phi_os/context/context_snapshot.py:46:                    json.dumps(layer_data, ensure_ascii=False, indent=2),
+phi_os/context/context_snapshot.py:92:        canonical = json.dumps(
+phi_os/context/context_snapshot.py:111:        path.write_text(
+phi_os/context/context_snapshot.py:112:            json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8"
+phi_os/context/memory_context.py:8:import sqlite3
+phi_os/context/memory_context.py:99:            conn = sqlite3.connect(str(_DB_PATH))
+phi_os/context/memory_context.py:100:            conn.row_factory = sqlite3.Row
+phi_os/context/working_context.py:139:        latest.write_text(
+phi_os/context/working_context.py:140:            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+phi_os/context/working_context.py:227:        path.write_text(
+phi_os/context/working_context.py:228:            json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
+phi_os/dictionary.py:5:import sqlite3
+phi_os/dictionary.py:86:        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+phi_os/dictionary.py:87:        self.conn.row_factory = sqlite3.Row
+phi_os/event_bus.py:7:import sqlite3
+phi_os/event_bus.py:19:    conn = sqlite3.connect(DB_PATH)
+phi_os/event_bus.py:20:    conn.row_factory = sqlite3.Row
+phi_os/event_bus.py:53:            "payload": json.dumps(payload, ensure_ascii=False, sort_keys=True),
+phi_os/event_gate.py:7:import sqlite3, time, secrets, sys
+phi_os/event_gate.py:29:    conn = sqlite3.connect(DB_PATH)
+phi_os/event_gate.py:30:    conn.row_factory = sqlite3.Row
+phi_os/event_replay.py:9:import sqlite3
+phi_os/event_replay.py:25:def _get_conn(db_path: str = None) -> sqlite3.Connection:
+phi_os/event_replay.py:26:    conn = sqlite3.connect(db_path or DB_PATH)
+phi_os/event_replay.py:27:    conn.row_factory = sqlite3.Row
+phi_os/human_gate.py:11:import sqlite3
+phi_os/human_gate.py:50:    conn = sqlite3.connect(DB_PATH)
+phi_os/human_gate.py:51:    conn.row_factory = sqlite3.Row
+phi_os/human_gate.py:110:        "payload": json.dumps(payload, ensure_ascii=False, sort_keys=True),
+phi_os/integrity.py:22:import sqlite3
+phi_os/integrity.py:53:    return json.dumps(subset, ensure_ascii=False, sort_keys=True)
+phi_os/integrity.py:66:def ensure_signatures_table(conn: sqlite3.Connection) -> None:
+phi_os/integrity.py:83:def _last_signature(conn: sqlite3.Connection) -> sqlite3.Row:
+phi_os/integrity.py:89:def sign_event(conn: sqlite3.Connection, event_row: dict,
+phi_os/integrity.py:121:def verify_chain(conn: sqlite3.Connection, start_seq: int = None, end_seq: int = None) -> dict:
+phi_os/integrity.py:331:    conn = sqlite3.connect(str(DB_PATH))
+phi_os/integrity.py:332:    conn.row_factory = sqlite3.Row
+phi_os/integrity_routes.py:7:import sqlite3
+phi_os/integrity_routes.py:20:    conn = sqlite3.connect(DB_PATH)
+phi_os/integrity_routes.py:21:    conn.row_factory = sqlite3.Row
+phi_os/migrate_prevention_queue.py:87:    print(json.dumps(result, ensure_ascii=False, indent=2))
+phi_os/process_manager.py:113:    PID_FILE.write_text(json.dumps(pids, ensure_ascii=False, indent=2), encoding="utf-8")
+phi_os/process_manager.py:238:        payload = json.dumps({
+phi_os/reference_resolver.py:46:        MOCKA_TODO_ACTIVE.jsonのid一覧、decision_ledger.jsonlのdecision_id一覧等)。
+phi_os/reference_resolver.py:70:        self.alias_file.write_text(
+phi_os/reference_resolver.py:71:            json.dumps(self._aliases, ensure_ascii=False, indent=2),
+phi_os/tests/test_event_gate.py:22:    import sqlite3
+phi_os/tests/test_event_gate.py:24:    conn = sqlite3.connect(db_file)
+phi_os/tests/test_event_gate.py:96:                    data=json.dumps(valid_payload()),
+phi_os/tests/test_event_gate.py:107:                    data=json.dumps(valid_payload()),
+phi_os/tests/test_event_gate.py:118:                    data=json.dumps(valid_payload(who_actor='')),
+phi_os/tests/test_event_gate.py:129:                    data=json.dumps(valid_payload(who_actor='Claude')),
+phi_os/tests/test_event_gate.py:138:                    data=json.dumps(valid_payload(who_session='bad-session')),
+phi_os/tests/test_event_gate.py:147:                    data=json.dumps(valid_payload(why_purpose='短い')),
+phi_os/tests/test_event_gate.py:158:                    data=json.dumps(p),
+phi_os/tests/test_human_gate.py:4:import sqlite3
+phi_os/tests/test_human_gate.py:16:    c = sqlite3.connect(db_file)
+phi_os/tests/test_human_gate.py:17:    c.row_factory = sqlite3.Row
+phi_os/tests/test_human_gate.py:120:        "SELECT name FROM sqlite_master WHERE type='table'"
+phi_os/tests/test_integrity.py:11:import sqlite3
+phi_os/tests/test_integrity.py:18:# ── fixture: temp sqlite db with full events schema ──────────────────────────
+phi_os/tests/test_integrity.py:64:    c = sqlite3.connect(db_file)
+phi_os/tests/test_integrity.py:65:    c.row_factory = sqlite3.Row
+phi_os/tests/test_integrity.py:176:    with pytest.raises(sqlite3.IntegrityError):
+phi_os/tests/test_integrity.py:228:    c = sqlite3.connect(str(db_file))
+raw_processor.py:174:        essence_path.write_text(
+raw_processor.py:175:            json.dumps(existing, ensure_ascii=False, indent=2),
+raw_processor.py:227:    RESULT_LOG.write_text(
+raw_processor.py:228:        json.dumps({
+reality_sync/sync_logger.py:17:LOG_FILE = LOG_DIR / "sync_log.jsonl"
+reality_sync/sync_logger.py:22:    sync_log.jsonl に追記する。戻り値はログファイルパス。
+reality_sync/sync_logger.py:42:        lines.append(json.dumps(record, ensure_ascii=False))
+reality_sync/sync_pipeline.py:11:  - EVIDENCE_ONLY ログ (reality_sync/logs/sync_log.jsonl)
+relay/relay_kernel.py:38:from .repositories_sqlite import (
+relay/replay_audit.py:14:import sqlite3
+relay/replay_audit.py:22:    payload = json.dumps(state, sort_keys=True, ensure_ascii=False)
+relay/replay_audit.py:32:    def _connect(self) -> sqlite3.Connection:
+relay/replay_audit.py:33:        return sqlite3.connect(self.db_path)
+relay/repositories_sqlite.py:1:# relay/repositories_sqlite.py
+relay/repositories_sqlite.py:12:import sqlite3
+relay/repositories_sqlite.py:29:    def _connect(self) -> sqlite3.Connection:
+relay/repositories_sqlite.py:30:        return sqlite3.connect(self.db_path)
+relay/repositories_sqlite.py:49:                (int(time.time()), json.dumps(event, ensure_ascii=False)),
+relay/repositories_sqlite.py:84:    def _connect(self) -> sqlite3.Connection:
+relay/repositories_sqlite.py:85:        return sqlite3.connect(self.db_path)
+relay/repositories_sqlite.py:113:                    json.dumps(snapshot["state"], ensure_ascii=False),
+relay/repositories_sqlite.py:148:    def _connect(self) -> sqlite3.Connection:
+relay/repositories_sqlite.py:149:        return sqlite3.connect(self.db_path)
+relay/repositories_sqlite.py:181:                    json.dumps(event, ensure_ascii=False),
+reproduce_mocka.py:622:    import sqlite3
+reproduce_mocka.py:623:    print(f"  SQLite: {sqlite3.sqlite_version}")
+reproduce_mocka.py:640:    repro_input = json.dumps({
+reproduce_mocka.py:657:    audit_input = json.dumps({
+runtime/action_executor.py:38:        json.dump(result, f, ensure_ascii=False, indent=2)
+runtime/action_mapper.py:32:        json.dump(override, f, indent=2, ensure_ascii=False)
+runtime/action_selector.py:119:        json.dump(state,f,indent=2)
+runtime/adaptive_repair_selector.py:53:        json.dump(sel,f,indent=2)
+runtime/ai_evaluator.py:55:            json.dump(new_data, f, indent=2)
+runtime/analysis/caliber_drift_bridge.py:48:        json.dump(caliber, f, indent=2, ensure_ascii=False)
+runtime/analysis/drift_logger.py:34:        json.dump(data, f, indent=2, ensure_ascii=False)
+runtime/analysis/drift_predictor.py:68:        json.dump(state, f, indent=2, ensure_ascii=False)
+runtime/analysis/intent_graph_engine.py:47:        json.dump(result, f, indent=2)
+runtime/audit_engine.py:37:    raw = json.dumps(data,sort_keys=True).encode()
+runtime/audit_engine.py:66:        json.dump(audit,fp,indent=2)
+runtime/branch_engine.py:32:        json.dump(branches, f, indent=2)
+runtime/causal_inference.py:18:        json.dump(data, f, indent=2)
+runtime/civilization_analytics_engine.py:51:        json.dump(data,f,indent=2)
+runtime/civilization_archive_engine.py:43:        json.dump(memory,f,indent=2)
+runtime/civilization_audit_engine.py:47:        json.dump(audit,fp,indent=2)
+runtime/civilization_boot_engine.py:58:        json.dump(boot_log,f,indent=2)
+runtime/civilization_bridge.py:47:    GOAL_PATH.write_text(json.dumps(state, indent=2, ensure_ascii=False), encoding="utf-8")
+runtime/civilization_consensus_engine.py:69:        json.dump(result,f,indent=2)
+runtime/civilization_council_engine.py:24:        json.dump(data,f,indent=2)
+runtime/civilization_culture_engine.py:24:        json.dump(data,f,indent=2)
+runtime/civilization_curiosity_engine.py:52:        json.dump(result,f,indent=2)
+runtime/civilization_decision_engine.py:22:        json.dump(data,f,indent=2)
+runtime/civilization_diagnostics_engine.py:62:        json.dump(diag,fp,indent=2)
+runtime/civilization_economy_engine.py:22:        json.dump(data,f,indent=2)
+runtime/civilization_evolution_engine.py:23:        json.dump(data,f,indent=2)
+runtime/civilization_export_engine.py:57:    with open(os.path.join(EXPORT_DIR,"export_manifest.json"),"w",encoding="utf-8") as fp:
+runtime/civilization_export_engine.py:58:        json.dump(manifest,fp,indent=2)
+runtime/civilization_feedback_engine.py:22:        json.dump(data,f,indent=2)
+runtime/civilization_fitness_engine.py:47:        json.dump(fitness,f,indent=2)
+runtime/civilization_forecast_governor.py:53:        json.dump(governor,f,indent=2)
+runtime/civilization_goal_engine.py:52:        json.dump(result,f,indent=2)
+runtime/civilization_governor_engine.py:52:        json.dump(decision,f,indent=2)
+runtime/civilization_governor_v2.py:45:        json.dump(governor,f,indent=2)
+runtime/civilization_guardian_engine.py:23:        json.dump(data,f,indent=2)
+runtime/civilization_heartbeat_engine.py:18:        json.dump(heartbeat,f,indent=2)
+runtime/civilization_history_archive_engine.py:50:        json.dump(archive,f,indent=2)
+runtime/civilization_history_engine.py:32:        json.dump(data,f,indent=2)
+runtime/civilization_identity_engine.py:24:        json.dump(data,f,indent=2)
+runtime/civilization_import_engine.py:54:        json.dump(log,f,indent=2)
+runtime/civilization_institution_engine.py:22:        json.dump(data,f,indent=2)
+runtime/civilization_integrity_engine.py:66:        json.dump(report,fp,indent=2)
+runtime/civilization_knowledge_graph_analyzer.py:54:        json.dump(result,f,indent=2)
+runtime/civilization_knowledge_graph_engine.py:60:        json.dump(graph,f,indent=2)
+runtime/civilization_knowledge_reuse_engine.py:44:        json.dump(result,f,indent=2)
+runtime/civilization_lab_target_engine.py:33:        json.dump(result,f,indent=2)
+runtime/civilization_learning_engine.py:22:        json.dump(data,f,indent=2)
+runtime/civilization_loop_engine.py:62:        json.dump(log,f,indent=2)
+runtime/civilization_memory_engine.py:24:        json.dump(data,f,indent=2)
+runtime/civilization_meta_engine.py:24:        json.dump(data,f,indent=2)
+runtime/civilization_monitor_engine.py:44:        json.dump(report,fp,indent=2)
+runtime/civilization_observer_engine.py:24:        json.dump(data,f,indent=2)
+runtime/civilization_philosophy_engine.py:44:        json.dump(philosophy,f,indent=2)
+runtime/civilization_planning_engine.py:46:        json.dump(plan,f,indent=2)
+runtime/civilization_population_control_engine.py:43:        json.dump(model,f,indent=2)
+runtime/civilization_prediction_engine.py:55:        json.dump(result,f,indent=2)
+runtime/civilization_progress_engine.py:49:        json.dump(result,f,indent=2)
+runtime/civilization_reflection_engine.py:33:        json.dump(history,f,indent=2)
+runtime/civilization_reflection_engine.py:72:        json.dump(result,f,indent=2)
+runtime/civilization_registry_cleaner.py:21:        json.dump(data,f,indent=2)
+runtime/civilization_registry_engine.py:54:        json.dump(registry,f,indent=2)
+runtime/civilization_research_integration_engine.py:43:        json.dump(model,f,indent=2)
+runtime/civilization_research_lab_engine.py:66:        json.dump(log,f,indent=2)
+runtime/civilization_restart_engine.py:35:        json.dump(log,f,indent=2)
+runtime/civilization_scheduler_engine.py:48:            json.dump(log,f,indent=2)
+runtime/civilization_self_diagnostics_engine.py:64:        json.dump(result,f,indent=2)
+runtime/civilization_shutdown_engine.py:21:        json.dump(shutdown,f,indent=2)
+runtime/civilization_signal_engine.py:22:        json.dump(data,f,indent=2)
+runtime/civilization_status_engine.py:56:        json.dump(status,f,indent=2)
+runtime/civilization_theory_engine.py:54:        json.dump(theory,f,indent=2)
+runtime/civilization_timeline_engine.py:23:        json.dump(data,f,indent=2)
+runtime/civilization_trend_engine.py:60:        json.dump(trend,f,indent=2)
+runtime/context_analyzer.py:40:        json.dump(data, f, indent=2)
+runtime/context_generator.py:32:        json.dump(ctx, f, indent=2)
+runtime/context_splitter.py:29:        json.dump(data, f, indent=2)
+runtime/decision_mode_engine.py:32:        json.dump(data, f, indent=2)
+runtime/decision_updater.py:19:        json.dump(state, f, indent=2)
+runtime/dsl_guard.py:28:        json.dump(d,f,indent=2)
+runtime/dsl_loader.py:25:        json.dump(data, f, indent=2)
+runtime/ensure_actions.py:28:        json.dump(data, f, indent=2)
+runtime/eval_to_history.py:27:        json.dump(history, f, ensure_ascii=False, indent=2)
+runtime/evaluation_integrator.py:19:        json.dump(data, f, indent=2)
+runtime/event_ingestor.py:19:        json.dump(data, f, indent=2)
+runtime/executor.py:27:        json.dump(history, f, indent=2)
+runtime/feedback.py:20:        json.dump(data, f, indent=2)
+runtime/goal_engine.py:21:        json.dump(data,f,indent=2)
+runtime/goal_to_plan.py:68:        json.dump(plan, f, ensure_ascii=False, indent=2)
+runtime/governance/ledger_engine.py:14:    data = prev_hash + json.dumps(row, ensure_ascii=False)
+runtime/governance/ledger_engine.py:39:        json.dump(ledger, f, ensure_ascii=False, indent=2)
+runtime/governance/library_engine.py:37:                text = json.dumps(data, ensure_ascii=False)
+runtime/governance/loop_guard.py:19:        json.dump(state, f, ensure_ascii=False, indent=2)
+runtime/graph_to_plan.py:32:        json.dump(plan, f, ensure_ascii=False, indent=2)
+runtime/hash_utils.py:5:    return json.dumps(
+runtime/human_evaluator.py:37:        json.dump(evaluation, f, indent=2)
+runtime/incident_analyzer.py:46:        json.dump(report,f,indent=2)
+runtime/incident_anomaly_detector.py:40:        print(json.dumps(new_incidents,indent=2))
+runtime/incident_baseline_builder.py:31:        json.dump(baseline,f,indent=2)
+runtime/incident_classifier.py:53:        json.dump(classes,f,indent=2)
+runtime/incident_engine.py:32:        json.dump(data,f,indent=2)
+runtime/incident_guard.py:48:            print(json.dumps(detail["content"], ensure_ascii=False, indent=2))
+runtime/incident_index_engine.py:36:        json.dump(index,f,indent=2)
+runtime/incident_knowledge_base_engine.py:33:        json.dump(data,f,indent=2)
+runtime/incident_root_cause_engine.py:40:        json.dump(queue,f,indent=2)
+runtime/incident_severity_engine.py:41:        json.dump(alerts,f,indent=2)
+runtime/incident_timeline_builder.py:38:        json.dump(timeline,f,indent=2)
+runtime/incident_trend_detector.py:36:        json.dump(alert,f,indent=2)
+runtime/infield_ingestor.py:27:        json.dump(done, f, indent=2)
+runtime/infield_ingestor.py:61:        json.dump(intent, f, ensure_ascii=False, indent=2)
+runtime/intent_engine.py:31:        json.dump(mem, f, ensure_ascii=False, indent=2)
+runtime/intent_evaluator.py:21:        json.dump(mem, f, ensure_ascii=False, indent=2)
+runtime/intent_ingestor.py:49:        json.dump(data, f, ensure_ascii=False, indent=2)
+runtime/intent_logger.py:32:        json.dump(ledger, f, ensure_ascii=False, indent=2)
+runtime/intent_mutator.py:27:        json.dump(mem, f, ensure_ascii=False, indent=2)
+runtime/intent_selector.py:34:        json.dump(best, f, indent=2)
+runtime/intent_to_goal.py:29:        json.dump(new_goal, f, ensure_ascii=False, indent=2)
+runtime/knowledge_broadcast_engine.py:31:    data = json.dumps(msg).encode()
+runtime/knowledge_builder.py:18:        json.dump(data, f, indent=2)
+runtime/knowledge_core_engine.py:38:        json.dump(core,fp,indent=2)
+runtime/knowledge_graph_builder.py:18:        json.dump(data, f, indent=2)
+runtime/knowledge_learning_engine.py:48:        json.dump(model,f,indent=2)
+runtime/knowledge_ranker.py:18:        json.dump(data, f, indent=2)
+runtime/knowledge_sync_listener.py:20:        json.dump(m,f,indent=2)
+runtime/llm_evaluator.py:18:            json.dump([], f)
+runtime/llm_evaluator.py:21:            json.dump([], f)
+runtime/llm_evaluator.py:29:        json.dump(data, f, indent=2)
+runtime/logging.py:12:_LOG_PATH = Path(__file__).resolve().parent.parent / "data" / "logs" / "runtime.jsonl"
+runtime/logging.py:17:    run_cycle の入出力を data/logs/runtime.jsonl に追記する。
+runtime/logging.py:34:            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+runtime/memory_engine.py:14:        json.dump(state,f,indent=2)
+runtime/mocka_seal.py:13:    return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+runtime/mocka_seal.py:27:        json.dump(ledger, f, ensure_ascii=False, indent=2)
+runtime/mode_transition_engine.py:18:        json.dump(data, f, indent=2)
+runtime/mutation_engine.py:45:        json.dump(mutations, f, indent=2)
+runtime/news_ingestor.py:22:        json.dump(data, f, indent=2)
+runtime/node_auto_registry_engine.py:20:        json.dump(data,f,indent=2)
+runtime/node_bridge.py:25:        json.dump(data, f, indent=2)
+runtime/node_discovery_engine.py:20:    data = json.dumps(state).encode()
+runtime/node_state_exporter.py:34:        json.dump(state,f,indent=2)
+runtime/observatory_engine.py:57:        json.dump(report,fp,indent=2)
+runtime/ocr_to_intent.py:89:        json.dump(intent, f, indent=2, ensure_ascii=False)
+runtime/planner.py:18:        json.dump(data, f, indent=2)
+runtime/reason_engine.py:24:        json.dump(data,f,indent=2)
+runtime/rebuild_logger.py:21:        json.dump(ledger, f, ensure_ascii=False, indent=2)
+runtime/repair_engine.py:55:        json.dump(proposals,f,indent=2)
+runtime/repair_executor.py:47:        json.dump(result,f,indent=2)
+runtime/repair_strategy_generator.py:46:        json.dump(p,f,indent=2)
+runtime/result_evaluator.py:35:        json.dump(evaluation, f, ensure_ascii=False, indent=2)
+runtime/result_to_state.py:31:        json.dump(state, f, ensure_ascii=False, indent=2)
+runtime/runtime_engine.py:69:            json.dump(runtime_log,f,indent=2)
+runtime/save_engine.py:39:    base = json.dumps({
+runtime/save_engine.py:91:        json.dump(data, f, ensure_ascii=False, indent=2)
+runtime/security_ledger.py:19:        json.dump(data,f,indent=2)
+runtime/selection_filter.py:19:        json.dump(data, f, indent=2)
+runtime/server.py:14:            json.dump([], f)
+runtime/server.py:35:                json.dump(current, f, indent=2)
+runtime/state_to_graph.py:41:        json.dump(graph, f, ensure_ascii=False, indent=2)
+runtime/storage_engine.py:76:        json.dump(snapshot,fp,indent=2)
+runtime/strategy_enforcer.py:28:        json.dump(data, f, indent=2)
+runtime/strategy_guard.py:35:        json.dump(data, f, indent=2)
+runtime/strategy_lineage_engine.py:57:        json.dump(lineage,f,indent=2)
+runtime/strategy_mutation_engine.py:45:        json.dump(model,f,indent=2)
+runtime/strategy_selection_engine.py:64:        json.dump(result,f,indent=2)
+runtime/strategy_testing_engine.py:50:        json.dump(model,f,indent=2)
+runtime/verification_api.py:22:            self.wfile.write(json.dumps(res).encode())
+runtime/verify_chain.py:13:    raw = prev_hash + json.dumps(d, sort_keys=True)
+runtime/verify_engine.py:43:        json.dump(data,f,indent=2)
+schema/schema.py:49:        json.dump(ledger, f, indent=2, ensure_ascii=False)
+scripts/ledger/anchor_update.py:61:        p.write_text(json.dumps(ar, indent=2, ensure_ascii=False), encoding="utf-8")
+scripts/ledger/anchor_update.py:96:        p.write_text(json.dumps(ar, indent=2, ensure_ascii=False), encoding="utf-8")
+scripts/ledger/audit_db_scan.py:7:import sqlite3
+scripts/ledger/audit_db_scan.py:21:        conn = sqlite3.connect(path)
+scripts/ledger/audit_db_scan.py:26:            "select name from sqlite_master where type='table' and name='audit_ledger_event'"
+scripts/ledger/audit_db_scan.py:64:    print(json.dumps(findings, indent=2, sort_keys=True))
+scripts/ledger/audit_guard.py:42:        json.dump(items, f, indent=2)
+scripts/ledger/audit_guard.py:56:        calc = hashlib.sha256(json.dumps(tmp, sort_keys=True).encode()).hexdigest()
+scripts/ledger/calc_anchor_bundle_hash.py:28:    canonical = json.dumps(
+scripts/ledger/calc_anchor_bundle_hash.py:39:    BUNDLE_PATH.write_text(
+scripts/ledger/calc_anchor_bundle_hash.py:40:        json.dumps(obj, ensure_ascii=True, indent=2, sort_keys=True) + "\n",
+scripts/ledger/causal_recorder.py:20:        json.dump(data, f, indent=2)
+scripts/ledger/decision_recorder.py:23:        json.dump(data,f,indent=2)
+scripts/ledger/fix_ledger.py:33:    json.dump(items, f, indent=2)
+scripts/ledger/hash_ledger_writer.py:20:        json.dump(d,f,indent=2)
+scripts/ledger/hash_ledger_writer.py:28:    s = json.dumps(data, sort_keys=True)
+scripts/ledger/inject_event.py:19:        json.dump(data,f,indent=2)
+scripts/ledger/inject_event.py:50:h = hashlib.sha256(json.dumps(event,sort_keys=True).encode()).hexdigest()
+scripts/ledger/inspect_knowledge_audit.py:5:﻿import sqlite3
+scripts/ledger/inspect_knowledge_audit.py:18:conn = sqlite3.connect(DB)
+scripts/ledger/inspect_knowledge_audit.py:21:cur.execute("select name from sqlite_master where type='table' and name='audit_ledger_event'")
+scripts/ledger/inspect_knowledge_audit.py:25:    cur.execute("select sql from sqlite_master where type='table' and name='audit_ledger_event'")
+scripts/ledger/inspect_knowledge_audit.py:41:print(json.dumps(result, indent=2, default=str))
+scripts/ledger/lamport_clock.py:19:        json.dump(data,f,indent=2)
+scripts/ledger/ledger_compress.py:29:    json.dump(snap,f,indent=2)
+scripts/ledger/ledger_compress.py:32:    json.dump(rest,f,indent=2)
+scripts/ledger/ledger_consensus.py:17:        json.dump(d,f,indent=2)
+scripts/ledger/ledger_diff.py:28:        with open(r"runtime\remote_ledger.json","r",encoding="utf-8") as f:
+scripts/ledger/ledger_migrate.py:21:        json.dump(l,f,indent=2)
+scripts/ledger/ledger_normalize.py:20:        json.dump(l,f,indent=2)
+scripts/ledger/ledger_repair.py:19:        json.dump(data, f, indent=2)
+scripts/ledger/ledger_segment.py:26:    json.dump(ledger,f,indent=2)
+scripts/ledger/ledger_self_repair.py:22:        json.dump(ledger, f, indent=2)
+scripts/ledger/ledger_snapshot.py:27:        json.dump(d, f, indent=2)
+scripts/ledger/ledger_sync.py:16:        json.dump(d,f,indent=2)
+scripts/ledger/manual_sign.py:13:with open("request.json", "r", encoding="utf-8-sig") as f:
+scripts/ledger/manual_sign.py:20:print(json.dumps({
+scripts/ledger/migrate_ledger.py:18:    json.dump(ledger, f, indent=2)
+scripts/ledger/migrate_ledger.py:38:    json.dump(new_ledger, f, indent=2)
+scripts/ledger/normalize_ledger.py:7:with open("runtime/incident_ledger.json", "r", encoding="utf-8") as f:
+scripts/ledger/normalize_ledger.py:10:with open("runtime/incident_ledger.json", "w", encoding="utf-8", newline="\n") as f:
+scripts/ledger/normalize_ledger.py:11:    json.dump(
+scripts/ledger/normalize_promotion_log.py:35:    json.dump(normalized,f,indent=2)
+scripts/ledger/rebuild_chain.py:17:        json.dump(d,f,indent=2)
+scripts/ledger/rebuild_chain.py:25:    s = json.dumps(data, sort_keys=True)
+scripts/ledger/rebuild_state.py:28:    json.dump(new_ledger, f, ensure_ascii=False, indent=2)
+scripts/ledger/reissue_token.py:36:with open("token.json","w",encoding="utf-8") as f:
+scripts/ledger/reissue_token.py:37:    json.dump(out,f,indent=2)
+scripts/ledger/trim_remote.py:15:    json.dump(d,f,indent=2)
+scripts/list_tables.py:5:import sqlite3
+scripts/list_tables.py:15:    conn = sqlite3.connect(db_path)
+scripts/list_tables.py:17:    cur.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;")
+scripts/migrate_event_integrity.py:20:import sqlite3
+scripts/migrate_event_integrity.py:37:def _signed_count(conn: sqlite3.Connection) -> int:
+scripts/migrate_event_integrity.py:39:        "SELECT name FROM sqlite_master WHERE type='table' AND name='event_signatures'"
+scripts/migrate_event_integrity.py:50:    conn = sqlite3.connect(str(DB_PATH))
+scripts/migrate_event_integrity.py:51:    conn.row_factory = sqlite3.Row
+scripts/migrate_event_integrity.py:79:            REPORT_PATH.write_text(
+scripts/migrate_event_integrity.py:80:                json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+scripts/migrate_event_integrity.py:120:        REPORT_PATH.write_text(
+scripts/migrate_event_integrity.py:121:            json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+scripts/migrate_event_integrity.py:134:    print(json.dumps(result, ensure_ascii=False, indent=2))
+scripts/migrate_source_check.py:24:import sqlite3
+scripts/migrate_source_check.py:91:def audit_existing_values(conn: sqlite3.Connection) -> dict:
+scripts/migrate_source_check.py:106:def already_hardened(conn: sqlite3.Connection) -> bool:
+scripts/migrate_source_check.py:108:        "SELECT sql FROM sqlite_master WHERE name='events'"
+scripts/migrate_source_check.py:117:    conn = sqlite3.connect(str(DB_PATH))
+scripts/migrate_source_check.py:137:            REPORT_PATH.write_text(
+scripts/migrate_source_check.py:138:                json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+scripts/migrate_source_check.py:145:            REPORT_PATH.write_text(
+scripts/migrate_source_check.py:146:                json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+scripts/migrate_source_check.py:191:        REPORT_PATH.write_text(
+scripts/migrate_source_check.py:192:            json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+scripts/migrate_source_check.py:205:    print(json.dumps(result, ensure_ascii=False, indent=2))
+scripts/phase_event_engine.py:21:        json.dump(state,f)
+scripts/policy_ai_engine.py:34:        json.dump(state,f,indent=2)
+scripts/policy_engine.py:25:        json.dump(data,f,indent=2)
+scripts/promotion_engine.py:24:        json.dump(data,f,indent=2)
+scripts/scenario_engine.py:19:        json.dump(data,f,indent=2)
+scripts/scenario_engine.py:22:    return hashlib.sha256(json.dumps(event,sort_keys=True).encode()).hexdigest()
+scripts/seal/seal_commit.py:43:    json.dump(seals,f,indent=2)
+scripts/seal/seal_head_with_observer.py:20:    raw = json.dumps(last_event, sort_keys=True).encode()
+scripts/seal_baseline.py:84:    BASELINE_PATH.write_text(
+scripts/seal_baseline.py:85:        json.dumps(baseline, ensure_ascii=False, indent=2), encoding="utf-8"
+scripts/seal_baseline.py:87:    print(json.dumps(baseline, ensure_ascii=False, indent=2))
+scripts/shadow/network_topology_init.py:20:    json.dump(data,f,indent=2)
+scripts/shadow/peer_discovery.py:16:        json.dump(d,f,indent=2)
+scripts/shadow/shadow_guard.py:37:            json.dumps(raw,sort_keys=True).encode()
+scripts/shadow/shadow_verify.py:29:            json.dumps(raw,sort_keys=True).encode()
+scripts/show_table_info.py:5:import sqlite3
+scripts/show_table_info.py:15:conn = sqlite3.connect(db_path)
+scripts/show_table_info.py:18:cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?;", (table,))
+scripts/snapshot/snapshot_create.py:19:    json.dump(state,f,indent=2)
+scripts/snapshot/snapshot_seal.py:38:        json.dump(reg,f,indent=2)
+scripts/state/overview_current_generator.py:4:一次データ(MOCKA_TODO_ACTIVE/ARCHIVE.json, decision_ledger.jsonl, mocka_events.db,
+scripts/state/overview_current_generator.py:13:import sqlite3
+scripts/state/overview_current_generator.py:23:DECISION_LEDGER_PATH = DATA_DIR / "decisions" / "decision_ledger.jsonl"
+scripts/state/overview_current_generator.py:93:    con = sqlite3.connect(str(EVENTS_DB_PATH))
+scripts/state/overview_current_generator.py:141:    OUTPUT_PATH.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+scripts/state/state_engine.py:42:        json.dump(state,f,indent=2)
+scripts/technology_tree_engine.py:38:        json.dump(state, f, indent=2)
+scripts/timeline_promotion_engine.py:28:        json.dump(state,f,indent=2)
+scripts/timeline_promotion_engine.py:49:        json.dump(data,f,indent=2)
+scripts/verify_integrity.py:14:import sqlite3
+scripts/verify_integrity.py:30:    conn = sqlite3.connect(str(DB_PATH))
+scripts/verify_integrity.py:31:    conn.row_factory = sqlite3.Row
+scripts/write_condense_worker.py:73:    "    json.dump(result, open(out,'w',encoding='utf-8'), ensure_ascii=False, indent=2)\n"
+scripts/write_condense_worker.py:127:dst.write_text(code, encoding='utf-8')
+semantic/query_engine/drift_recorder.py:17:import sqlite3
+semantic/query_engine/drift_recorder.py:55:    def _connect(self) -> sqlite3.Connection:
+semantic/query_engine/drift_recorder.py:56:        return sqlite3.connect(self.db_path)
+semantic/query_engine/structural_recovery.py:7:# decision_trace.json / merge_graph.json / adapter_enrichment.jsonlの
+semantic/query_engine/structural_recovery.py:31:    Path(__file__).resolve().parents[2] / "canonical" / "trace" / "_phase6" / "adapter_enrichment.jsonl"
+semantic/query_engine/structural_recovery.py:44:    """decision_trace.json / merge_graph.json / adapter_enrichment.jsonlの
+send_patterns.py:67:    body = json.dumps({
+structural/bee.py:15:import sqlite3
+structural/bee.py:56:    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+structural/bee.py:92:            con = sqlite3.connect(str(DB_PATH))
+structural/bee.py:204:            con = sqlite3.connect(str(DB_PATH))
+structural/bee.py:501:            payload = json.dumps({
+structural/beta_engine.py:63:    path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+structural/dogfood_run.py:98:    with open("dogfood_result.json", "w", encoding="utf-8") as f:
+structural/dogfood_run.py:99:        json.dump({"summary": result, "log": log}, f, ensure_ascii=False, indent=2)
+structural/dogfood_run.py:106:    print(json.dumps(summary, ensure_ascii=False, indent=2))
+structural/encoding_policy_validator.py:124:INCIDENT_LOG = Path(r"C:\Users\sirok\MoCKA\data\mocka\encoding_violations.jsonl")
+structural/encoding_policy_validator.py:140:            f.write(json.dumps(incident, ensure_ascii=False) + "\n")
+structural/event_file_resolver.py:21:import sqlite3
+structural/event_file_resolver.py:77:    conn = sqlite3.connect(str(db_path))
+structural/event_file_resolver.py:78:    conn.row_factory = sqlite3.Row
+structural/event_file_resolver.py:81:    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+structural/event_file_resolver.py:192:        json.dump(result, f, ensure_ascii=False, indent=2)
+structural/governance_regression.py:104:    summary_path.write_text("\n".join(lines), encoding="utf-8")
+structural/grounding_engine.py:108:    print(json.dumps(
+structural/mocka_3_run.py:54:        json.dump(result, f, ensure_ascii=False, indent=2)
+structural/phi_dna_migrate.py:11:import sqlite3
+structural/phi_dna_migrate.py:49:    con = sqlite3.connect(str(db_path))
+structural/phi_dna_migrate.py:72:        except sqlite3.OperationalError as e:
+structural/phi_dna_migrate.py:89:    con = sqlite3.connect(str(db_path))
+structural/phi_dna_migrate.py:107:    con = sqlite3.connect(str(db_path))
+structural/repository_indexer.py:142:        json.dump(index, f, ensure_ascii=False, indent=2)
+structural/state_reconstructor.py:21:import sqlite3
+structural/state_reconstructor.py:70:    conn = sqlite3.connect(str(db_path))
+structural/state_reconstructor.py:71:    conn.row_factory = sqlite3.Row
+structural/state_reconstructor.py:73:    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+structural/state_reconstructor.py:105:    conn = sqlite3.connect(str(db_path))
+structural/state_reconstructor.py:106:    conn.row_factory = sqlite3.Row
+structural/state_reconstructor.py:108:    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+structural/state_reconstructor.py:285:        json.dump(result, f, ensure_ascii=True, indent=2)
+structural/working_memory.py:107:                json.dump(memory, f, ensure_ascii=False, indent=2)
+structural/working_memory.py:137:    print(json.dumps(wm.snapshot(), ensure_ascii=False, indent=2))
+test_uv_post.py:3:data = json.dumps({
+testkey.py:6:with open("token.json","r",encoding="utf-8-sig") as f:
+testkey.py:24:with open("testkey.json","w",encoding="utf-8") as f:
+testkey.py:25:    json.dump(out,f,indent=2)
+tests/test_canary_overrides.py:35:    import sqlite3
+tests/test_canary_overrides.py:38:    conn = sqlite3.connect(db_file)
+tests/test_canary_overrides.py:181:    p.write_text(json.dumps(record, ensure_ascii=False, indent=2), encoding="utf-8")
+tests/test_human_gate_continuity.py:5:data/decisions/pending_decision_units.jsonlには一切書き込まない。
+tests/test_human_gate_continuity.py:15:Test D: 非侵襲性確認 -> 本番のdata/decisions/pending_decision_units.jsonl・
+tests/test_human_gate_continuity.py:16:        decision_ledger.jsonl・app.pyが無変更
+tests/test_human_gate_continuity.py:34:    MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl",
+tests/test_human_gate_continuity.py:35:    MOCKA_ROOT / "data" / "decisions" / "pending_decision_units.jsonl",
+tests/test_human_gate_continuity.py:53:        ledger_path = Path(tmp) / "pending_decision_units.jsonl"
+tests/test_human_gate_continuity.py:77:        ledger_path = Path(tmp) / "pending_decision_units.jsonl"
+tests/test_human_gate_continuity.py:98:            assert forbidden not in json.dumps(state), (
+tests/test_human_gate_continuity.py:106:        ledger_path = Path(tmp) / "pending_decision_units.jsonl"
+tests/test_human_gate_continuity.py:133:        ledger_path = Path(tmp) / "pending_decision_units.jsonl"
+tests/test_overview_current_generator.py:27:    payload = json.dumps(stripped, ensure_ascii=False, sort_keys=True)
+tests/test_seal_auth_record.py:4:sandbox/tmp_path のみを対象とし、本番 decision_ledger.jsonl には触れない。
+tests/test_seal_auth_record.py:28:    p = tmp_path / "l.jsonl"
+tests/test_seal_auth_record.py:54:    p = tmp_path / "l.jsonl"
+tests/test_seal_auth_record.py:69:def test_jsonl_integrity(tmp_path):
+tests/test_seal_auth_record.py:71:    p = tmp_path / "l.jsonl"
+tests/test_seal_governance_gate.py:14:data/decisions/decision_ledger.jsonlには一切書き込まない。
+tests/test_seal_governance_gate.py:19:Test C: 非侵襲性確認(実MoCKAリポジトリのdata/decisions/decision_ledger.jsonl・
+tests/test_seal_governance_gate.py:37:    MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl",
+tests/test_seal_governance_gate.py:50:    (root / "README.md").write_text("sandbox test repo\n", encoding="utf-8")
+tests/test_seal_governance_gate.py:69:        ledger_path = sandbox / "decision_ledger.jsonl"
+tests/test_seal_governance_gate.py:100:        ledger_path = sandbox / "decision_ledger.jsonl"
+tests/test_seal_governance_gate.py:102:        (sandbox / "file1.txt").write_text("a\n", encoding="utf-8")
+tests/test_seal_governance_gate.py:103:        (sandbox / "file2.txt").write_text("b\n", encoding="utf-8")
+tests/test_seal_governance_gate.py:131:        ledger_path = sandbox / "decision_ledger.jsonl"
+tests/test_seal_governance_gate.py:135:        (sandbox / "f.txt").write_text("x\n", encoding="utf-8")
+tests/test_seal_governance_wrapper.py:6:scripts/ledger/anchor_update.py・data/decisions/decision_ledger.jsonl・
+tests/test_seal_governance_wrapper.py:49:        (root / rel).write_text(json.dumps(anchor_stub, ensure_ascii=False, indent=2), encoding="utf-8")
+tests/test_seal_governance_wrapper.py:51:    (root / "README.md").write_text("sandbox test repo\n", encoding="utf-8")
+tests/test_seal_governance_wrapper.py:61:        (sandbox / "feature.txt").write_text("test change\n", encoding="utf-8")
+tests/test_seal_governance_wrapper.py:73:        ledger_path = sandbox / "data" / "decisions" / "decision_ledger.jsonl"
+tests/test_seal_governance_wrapper.py:83:        # 既存decision_ledger.jsonlスキーマの必須フィールドも保持されていることを確認(後方互換)
+tests/test_seal_governance_wrapper.py:98:        (sandbox / "feature.txt").write_text("test change\n", encoding="utf-8")
+tests/test_seal_governance_wrapper.py:99:        (sandbox / "extra.txt").write_text("another change\n", encoding="utf-8")
+tests/test_seal_governance_wrapper.py:118:        ledger_path = sandbox / "data" / "decisions" / "decision_ledger.jsonl"
+tests/test_seal_governance_wrapper.py:132:        (sandbox / "feature.txt").write_text("test change\n", encoding="utf-8")
+tests/test_shadow_seal_adapter.py:12:        decision_ledger.jsonlが本テスト前後で無変更)
+tests/test_shadow_seal_adapter.py:34:    MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl",
+tests/test_shadow_seal_adapter.py:49:    (root / "governance" / "anchor_record.json").write_text(stub, encoding="utf-8")
+tests/test_shadow_seal_adapter.py:50:    (root / "mocka-governance-kernel" / "anchors" / "anchor_record.json").write_text(stub, encoding="utf-8")
+tests/test_shadow_seal_adapter.py:51:    (root / "README.md").write_text("sandbox\n", encoding="utf-8")
+tests/test_shadow_seal_adapter.py:70:        (sandbox / "change.txt").write_text("test\n", encoding="utf-8")
+tests/test_shadow_seal_adapter.py:84:        (sandbox / "change.txt").write_text("test\n", encoding="utf-8")
+timeline/semantic_timeline_engine.py:64:    DEFAULT_PATH = Path(__file__).resolve().parent.parent / "data" / "semantic_timeline.jsonl"
+timeline/semantic_timeline_engine.py:91:            f.write(json.dumps(event.to_dict(), ensure_ascii=False) + "\n")
+tools/build_public_index.py:58:        json.dump(payload, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_generator_phase5a.py:19:import sqlite3
+tools/canonical_trace_generator_phase5a.py:224:        out_path = out_dir / "canonical_trace.jsonl"
+tools/canonical_trace_generator_phase5a.py:227:                f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+tools/canonical_trace_generator_phase5a.py:233:    con = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+tools/canonical_trace_merger_phase5b.py:5:  - Input: Phase 5-A output (canonical/trace/**/canonical_trace.jsonl),
+tools/canonical_trace_merger_phase5b.py:32:import sqlite3
+tools/canonical_trace_merger_phase5b.py:51:    for path in TRACE_ROOT.glob("*/*/canonical_trace.jsonl"):
+tools/canonical_trace_merger_phase5b.py:213:    con = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+tools/canonical_trace_merger_phase5b.py:264:    with open(OUT_DIR / "compressed_canonical_clusters.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b.py:265:        json.dump(final_clusters, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b.py:267:    with open(OUT_DIR / "merge_graph.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b.py:268:        json.dump(merge_graph, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b.py:273:    with open(OUT_DIR / "embedding_index.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b.py:274:        json.dump({eid: vectors[eid] for eid in vectors}, f, ensure_ascii=False)
+tools/canonical_trace_merger_phase5b.py:277:        1 for path in TRACE_ROOT.glob("**/canonical_trace.jsonl")
+tools/canonical_trace_merger_phase5b.py:291:    with open(OUT_DIR / "TCL_clean_report.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b.py:292:        json.dump(tcl_report, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b.py:294:    print(json.dumps(tcl_report, ensure_ascii=False, indent=2))
+tools/canonical_trace_merger_phase5b_v2.py:39:import sqlite3
+tools/canonical_trace_merger_phase5b_v2.py:60:    for path in (ROOT / "canonical" / "trace").glob("*/*/canonical_trace.jsonl"):
+tools/canonical_trace_merger_phase5b_v2.py:247:    con = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+tools/canonical_trace_merger_phase5b_v2.py:306:    with open(OUT_DIR / "compressed_canonical_clusters.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v2.py:307:        json.dump(final_clusters, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b_v2.py:308:    with open(OUT_DIR / "merge_graph.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v2.py:309:        json.dump(merge_graph, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b_v2.py:310:    with open(OUT_DIR / "embedding_index.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v2.py:311:        json.dump(vectors, f, ensure_ascii=False)
+tools/canonical_trace_merger_phase5b_v2.py:328:    with open(OUT_DIR / "TCL_clean_report.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v2.py:329:        json.dump(report, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b_v2.py:331:    print(json.dumps(report, ensure_ascii=False, indent=2))
+tools/canonical_trace_merger_phase5b_v3.py:42:import sqlite3
+tools/canonical_trace_merger_phase5b_v3.py:62:    for path in (ROOT / "canonical" / "trace").glob("*/*/canonical_trace.jsonl"):
+tools/canonical_trace_merger_phase5b_v3.py:238:    con = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
+tools/canonical_trace_merger_phase5b_v3.py:279:    with open(OUT_DIR / "compressed_canonical_clusters.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v3.py:280:        json.dump(final_clusters, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b_v3.py:281:    with open(OUT_DIR / "merge_graph.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v3.py:282:        json.dump(all_edges, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b_v3.py:283:    with open(OUT_DIR / "embedding_index.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v3.py:284:        json.dump(vectors, f, ensure_ascii=False)
+tools/canonical_trace_merger_phase5b_v3.py:302:    with open(OUT_DIR / "TCL_clean_report.json", "w", encoding="utf-8") as f:
+tools/canonical_trace_merger_phase5b_v3.py:303:        json.dump(report, f, ensure_ascii=False, indent=2)
+tools/canonical_trace_merger_phase5b_v3.py:305:    print(json.dumps(report, ensure_ascii=False, indent=2))
+tools/causal_snapshot.py:42:    json.dump({"total": len(snapshots), "threshold": SPEED_THRESHOLD,
+tools/extract_terms.py:71:    ("Database",      ["db", "sqlite", "csv", "json", "store"]),
+tools/extract_terms.py:350:with open(json_path, "w", encoding="utf-8") as f:
+tools/extract_terms.py:351:    json.dump(records, f, ensure_ascii=False, indent=2)
+tools/file_editor.py:45:    log_path = "C:/Users/sirok/MoCKA/data/file_edit_log.jsonl"
+tools/file_editor.py:56:            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+tools/fix_inc001_007.py:102:    json.dump(data, f, ensure_ascii=False, indent=2)
+tools/fix_research_experiments.py:43:p.write_text(json.dumps(j, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+tools/hab_concurrency_audit.py:93:    verdicts = {json.dumps(r, sort_keys=True, ensure_ascii=False) for r in results}
+tools/hab_concurrency_audit.py:205:            json.dumps(s, ensure_ascii=False)
+tools/hab_concurrency_audit.py:262:        print(json.dumps(r, ensure_ascii=False, indent=2))
+tools/hab_concurrency_audit.py:275:    LOG_PATH.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+tools/make_remaining.py:35:(RAW / "term_relationships.md").write_text("".join(lines), encoding="utf-8")
+tools/make_remaining.py:47:(RAW / "category_candidates.md").write_text("".join(lines), encoding="utf-8")
+tools/mocka_auto_record.py:59:        | sqlite3\b.*?\b(?:INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)\b  # SQLite書き込み
+tools/mocka_auto_record.py:187:    payload = json.dumps({
+tools/mocka_change_verifier.py:5:import subprocess, sqlite3, json, datetime, sys, os, argparse
+tools/mocka_change_verifier.py:21:        con = sqlite3.connect(DB_PATH); con.row_factory = sqlite3.Row; cur = con.cursor()
+tools/mocka_change_verifier.py:66:        json.dump(report,f,ensure_ascii=False,indent=2)
+tools/mocka_change_verifier.py:84:        payload = json.dumps({"title":f"WARNING: 未記録変更検出 {len(files)}件",
+tools/mocka_file_editor.py:55:            data = json.dumps(payload).encode("utf-8")
+tools/mocka_orchestra_v10.py:32:        json.dump(urls, f, ensure_ascii=False, indent=2)
+tools/mocka_orchestra_v10_backup.py:24:        json.dump(urls, f, ensure_ascii=False, indent=2)
+tools/normalize_research_registry.py:49:p.write_text(json.dumps(j, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+tools/phase15_auto_sync.py:5:import sqlite3
+tools/phase15_auto_sync.py:14:    conn = sqlite3.connect(GOV_DB)
+tools/phase18_wrap_and_sign_pack.py:15:    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+tools/phase18_wrap_and_sign_pack.py:28:    p.write_text(json.dumps(obj, indent=2, ensure_ascii=False), encoding="utf-8")
+tools/phase6_adapter_layer.py:14:  - adapter_enrichment.jsonl : one enrichment record per event, in the
+tools/phase6_adapter_layer.py:53:    with open(SRC_DIR / "compressed_canonical_clusters.json", encoding="utf-8") as f:
+tools/phase6_adapter_layer.py:58:    with open(SRC_DIR / "merge_graph.json", encoding="utf-8") as f:
+tools/phase6_adapter_layer.py:84:        # source jsonl instead (read once, indexed by event_id).
+tools/phase6_adapter_layer.py:92:    for path in (ROOT / "canonical" / "trace").glob("*/*/canonical_trace.jsonl"):
+tools/phase6_adapter_layer.py:141:    with open(OUT_DIR / "cluster_summary.json", "w", encoding="utf-8") as f:
+tools/phase6_adapter_layer.py:142:        json.dump(cluster_summaries, f, ensure_ascii=False, indent=2)
+tools/phase6_adapter_layer.py:143:    with open(OUT_DIR / "decision_trace.json", "w", encoding="utf-8") as f:
+tools/phase6_adapter_layer.py:144:        json.dump(decision_trace, f, ensure_ascii=False, indent=2)
+tools/phase6_adapter_layer.py:145:    with open(OUT_DIR / "adapter_enrichment.jsonl", "w", encoding="utf-8") as f:
+tools/phase6_adapter_layer.py:147:            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+tools/phase6_adapter_layer.py:149:    print(json.dumps({
+tools/record_event.py:25:def write_text(path: str, content: str) -> None:
+tools/record_event.py:248:    write_text(canonical_rel, canonical_sealed)
+tools/sandbox/mocka_intercept_v02.py:11:    with open(r"C:\Users\sirok\MoCKA\tools\intercept_log.json", "w", encoding="utf-8") as f:
+tools/sandbox/mocka_intercept_v02.py:12:        json.dump(logs, f, ensure_ascii=False, indent=2)
+tools/sanitize_research_registry.py:57:p.write_text(json.dumps(j,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+tools/sync_research_map_from_registry.py:54:    path.write_text(text + "\n" + "\n".join(entry_lines), encoding="utf-8")
+use_testkey.py:4:with open("testkey.json","r",encoding="utf-8") as f:
+use_testkey.py:21:with open("testkey.json","w",encoding="utf-8") as f:
+use_testkey.py:22:    json.dump(data,f,indent=2)
+verify/accept_outfield_pass.py:61:        json.dump(obj, f, indent=2, ensure_ascii=True)
+verify/accept_outfield_pass.py:203:    reject_if_tokens_present(json.dumps(row, ensure_ascii=True), "row_outfield values")
+verify/accept_outfield_pass.py:214:    reject_if_tokens_present(json.dumps(row, ensure_ascii=True), "row_internal values")
+verify/ci_minimal_chain_test.py:2:import sqlite3
+verify/ci_minimal_chain_test.py:14:    conn = sqlite3.connect(DB)
+verify/key_history_verify_v3.py:6:LOG_PATH = Path("phase3_key_policy/KEY_HISTORY_LOG_v3.jsonl")
+verify/key_history_verify_v3.py:55:        recalculated = sha256_hex(json.dumps(event_copy, sort_keys=True).encode("utf-8"))
+verify/manifest_resolver.py:27:def atomic_write_text(path: Path, text: str) -> None:
+verify/manifest_resolver.py:30:    tmp.write_text(text, encoding="utf-8")
+verify/manifest_resolver.py:35:    atomic_write_text(path, json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+verify/manifest_resolver.py:43:    s = json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+verify_full_chain.py:1:﻿import sqlite3
+verify_full_chain.py:17:    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+verify_full_chain.py:20:    conn = sqlite3.connect(DB)
+verify_full_chain.py:49:    print(json.dumps({
+verify_full_chain_and_signature.py:2:import sqlite3
+verify_full_chain_and_signature.py:18:    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+verify_full_chain_and_signature.py:50:    conn = sqlite3.connect(DB)
+verify_full_chain_and_signature.py:59:        print(json.dumps({"status": "SKIPPED", "reason": "public key not found", "path": PUBKEY_PATH}))
+verify_full_chain_and_signature.py:93:    print(json.dumps({
+verify_token.py:9:with open("token.json","r",encoding="utf-8-sig") as f:
+verify_token.py:14:    with open("revocation.json","r",encoding="utf-8") as f:
+watchdog_mocka.py:1:import time, os, sys, json, subprocess, sqlite3, hashlib, requests
+watchdog_mocka.py:56:        con = sqlite3.connect(DB_PATH)
+watchdog_mocka_v2.py:68:        PROCESSED_LOG.write_text(
+watchdog_mocka_v2.py:69:            json.dumps(self.seen, ensure_ascii=False, indent=2),

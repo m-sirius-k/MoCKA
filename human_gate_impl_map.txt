@@ -1,0 +1,24 @@
+cross_audit.py:111:def submit_result(task_id: str, agent_name: str, response: str, score: float = 0.0) -> dict:
+governance/human_gate_continuity.py:56:class HumanGateContinuityError(Exception):
+governance/human_gate_continuity.py:95:class HumanGateContinuity:
+interface/cross_audit.py:111:def submit_result(task_id: str, agent_name: str, response: str, score: float = 0.0) -> dict:
+interface/policy_gen2.py:126:def approve(policy_id):
+interface/policy_generator.py:171:def approve(policy_id: str):
+interface/proposal_schema.py:287:def submit_proposal(category:           str,
+learning_kernel/learning_pipeline.py:99:    def approve_and_apply(self, update_id: str, governance_status: str) -> LearningUpdate:
+learning_kernel/learning_queue.py:72:    def approve(self, update_id: str) -> LearningUpdate:
+learning_kernel/learning_queue.py:86:    def reject(self, update_id: str) -> LearningUpdate:
+phi_os/human_gate.py:43:class HumanGateError(Exception):
+phi_os/human_gate.py:125:def submit(payload: dict, conn=None) -> dict:
+phi_os/human_gate.py:163:def approve(request_id: str, payload: dict | None = None, conn=None) -> dict:
+phi_os/human_gate.py:167:def reject(request_id: str, payload: dict | None = None, conn=None) -> dict:
+phi_os/human_gate.py:219:def submit_reason_promotion(reason_unit_id: str, evidence_ref: str | None = None,
+phi_os/human_gate.py:233:def approve_promotion(request_id: str, decision_evidence_consistency: bool,
+phi_os/human_gate.py:251:def reject_promotion(request_id: str, reason: str, conn=None) -> dict:
+semantic/query_engine/drift_monitor.py:56:class HumanGateHook:
+semantic/query_engine/human_gate.py:39:class HumanGateRulingStore:
+semantic/query_engine/human_gate.py:49:    def submit_ruling(
+semantic/query_engine/human_gate_interface.py:102:class HumanGateEventLog:
+semantic/query_engine/human_gate_interface.py:112:    def submit_ruling(
+verify/accept_outfield_pass.py:64:def reject_if_tokens_present(raw_text, context):
+watchdog_mocka.py:31:def submit_to_caliber(path: Path) -> bool:

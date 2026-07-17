@@ -1,0 +1,678 @@
+PlanningCaliber/lock_verification/schedule_offset/schedule_offset_collision.py:4:app.pyの日次seal(固定時刻A)とwatchdog_mocka.pyの日次seal(固定時刻B、Aとは
+app.py:69:from phi_os.integrity_routes import integrity_bp
+app.py:81:app.register_blueprint(integrity_bp)
+app.py:1401:@app.route("/integrity/status")
+app.py:1402:def integrity_status():
+app.py:1413:        # seal hash確認
+app.py:1414:        seal_path = os.path.join(ROOT_DIR, 'governance', 'anchor_record.json')
+app.py:1415:        last_seal = {}
+app.py:1416:        if os.path.exists(seal_path):
+app.py:1417:            try: last_seal = json.load(open(seal_path,encoding='utf-8'))
+app.py:1436:            'last_seal': last_seal,
+app.py:1464:@app.route("/seal/history")
+app.py:1465:def seal_history():
+app.py:1467:        seal_path = os.path.join(ROOT_DIR, 'governance', 'anchor_record.json')
+app.py:1468:        if os.path.exists(seal_path):
+app.py:1469:            data = json.load(open(seal_path, encoding='utf-8'))
+app.py:1512:    ANCHOR_RECORD_JSON = Path(r"C:\Users\sirok\MoCKA\governance\anchor_record.json")
+app.py:1553:    # ⑧ Audit: 最終seal時刻(Seal Migration: DC_20260707_021準拠、Canonical Seal Source=
+app.py:1554:    # governance/anchor_record.jsonへ切替。/integrity/statusと同一の読み取りパターン)
+app.py:1555:    last_seal = None
+app.py:1556:    last_seal_hash = None
+app.py:1560:            last_seal = adata.get("sealed_at_utc")
+app.py:1561:            last_seal_hash = (adata.get("sealed_summary_hash") or "")[:16]
+app.py:1572:        "audit":      {"label": "Audit",      "last_seal": last_seal,      "last_seal_hash": last_seal_hash},
+app.py:1932:@app.route("/public/seal", methods=["POST"])
+app.py:1933:def public_seal():
+app.py:1954:            "seal": "/public/seal (POST)", "pipeline_status": "/pipeline/status",
+app.py:2016:# 全自動LOOP: Audit（日次seal + 50件トリガー）
+app.py:2018:_last_seal_date = [None]
+app.py:2020:_seal_running = [False]
+app.py:2055:    print("[AUTO-AUDIT] 日次自動sealループ開始")
+app.py:2060:            if now.hour == 0 and _last_seal_date[0] != today:
+app.py:2064:                # して停止するのみとし、実際のseal実行はきむら博士の明示指示
+app.py:2065:                # (human_gate_override_event_id付与)による手動実行でのみ行う。
+app.py:2073:                    "why_purpose": "日次(0時)seal要求。自動実行はしない(Human Gate迂回防止、TODO_427/IC_20260708_001是正)。",
+app.py:2080:                    "title": "AUTO_SEAL_PENDING_DAILY: 日次seal条件成立、seal実行は人間指示待ち",
+app.py:2085:                    "impact_scope": "seal_pipeline",
+app.py:2088:                    "free_note": "require_human_gate=True|source=AUTO_SEAL_DAILY",
+app.py:2090:                print(f"[AUTO-AUDIT] 日次条件成立 → AUTO_SEAL_PENDING_DAILY記録のみ(自動seal実行なし、人間指示待ち)")
+app.py:2091:                _last_seal_date[0] = today
+app.py:2097:            if count - _last_event_count[0] >= 50 and not _seal_running[0]:
+app.py:2098:                _seal_running[0] = True
+app.py:2103:                    # seal実行はきむら博士の明示指示(human_gate_override_event_id
+app.py:2105:                    # 生成は行わない(require_human_gate、自動承認機構ではない)。
+app.py:2114:                        "why_purpose": "event_count差分50到達によるseal要求。自動実行はしない(Human Gate迂回防止、TODO_370/371是正)。",
+app.py:2121:                        "title": "AUTO_SEAL_PENDING: 50件イベント到達、seal実行は人間指示待ち",
+app.py:2122:                        "short_summary": f"event_count={count}, 前回seal時点から+{delta}件。anchor_update.pyは自動実行しない。",
+app.py:2126:                        "impact_scope": "seal_pipeline",
+app.py:2129:                        "free_note": "require_human_gate=True|source=AUTO_SEAL_50EVT",
+app.py:2131:                    print(f"[AUTO-AUDIT] 50件到達 → AUTO_SEAL_PENDING記録のみ(自動seal実行なし、人間指示待ち)")
+app.py:2134:                    _seal_running[0] = False
+app.py:2142:    seal_log = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+app.py:2144:    if seal_log.exists():
+app.py:2146:            log = __import__("json").loads(seal_log.read_text(encoding="utf-8"))
+app.py:2148:    return jsonify({"last_seal": log, "seal_log_exists": seal_log.exists()})
+app.py:2150:@app.route("/audit/seal", methods=["POST"])
+app.py:2151:def audit_seal_manual():
+app.py:2154:    # seal/hash/anchor更新のロジック自体(anchor_update.py)は無変更のまま、
+app.py:2159:    from seal_governance_gate import SealGovernanceGate
+app.py:2160:    seal_log = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+app.py:2164:        "sealed_at": datetime.now().isoformat(),
+app.py:2168:        "result": gate_result.seal_stdout[:200] if gate_result.approved else gate_result.reason,
+app.py:2170:    seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
+app.py:2176:    return jsonify({"status": "ok", "sealed_at": log["sealed_at"], "execution_id": gate_result.execution_id})
+app.py:2738:@app.route('/integrity/monitor')
+app.py:2739:def integrity_monitor():
+app.py:3807:    from ise.decision_ledger import read_ledger, verify_chain
+app.py:4055:                OR lower(title) LIKE '%seal%'
+app.py:4069:    for section in ("guideline", "essence", "registry", "capability", "todo", "seal"):
+app.py:4079:            for s in ("guideline", "essence", "registry", "capability", "todo", "seal")
+app_backup_20260427_063833.py:816:@app.route("/public/seal", methods=["POST"])
+app_backup_20260427_063833.py:817:def public_seal():
+app_backup_20260427_063833.py:838:            "seal": "/public/seal (POST)", "pipeline_status": "/pipeline/status",
+app_bak_0501.py:1095:@app.route("/integrity/status")
+app_bak_0501.py:1096:def integrity_status():
+app_bak_0501.py:1107:        # seal hash確認
+app_bak_0501.py:1108:        seal_path = os.path.join(ROOT_DIR, 'governance', 'anchor_record.json')
+app_bak_0501.py:1109:        last_seal = {}
+app_bak_0501.py:1110:        if os.path.exists(seal_path):
+app_bak_0501.py:1111:            try: last_seal = json.load(open(seal_path,encoding='utf-8'))
+app_bak_0501.py:1130:            'last_seal': last_seal,
+app_bak_0501.py:1158:@app.route("/seal/history")
+app_bak_0501.py:1159:def seal_history():
+app_bak_0501.py:1161:        seal_path = os.path.join(ROOT_DIR, 'governance', 'anchor_record.json')
+app_bak_0501.py:1162:        if os.path.exists(seal_path):
+app_bak_0501.py:1163:            data = json.load(open(seal_path, encoding='utf-8'))
+app_bak_0501.py:1251:    # ⑧ Audit: 最終seal時刻
+app_bak_0501.py:1252:    last_seal = None
+app_bak_0501.py:1253:    last_seal_hash = None
+app_bak_0501.py:1257:            last_seal = ldata.get("last_updated") or ldata.get("timestamp")
+app_bak_0501.py:1258:            last_seal_hash = ldata.get("hash") or ldata.get("anchor_hash")
+app_bak_0501.py:1269:        "audit":      {"label": "Audit",      "last_seal": last_seal,      "last_seal_hash": last_seal_hash},
+app_bak_0501.py:1538:@app.route("/public/seal", methods=["POST"])
+app_bak_0501.py:1539:def public_seal():
+app_bak_0501.py:1560:            "seal": "/public/seal (POST)", "pipeline_status": "/pipeline/status",
+app_bak_0501.py:1622:# 全自動LOOP: Audit（日次seal + 50件トリガー）
+app_bak_0501.py:1624:_last_seal_date = [None]
+app_bak_0501.py:1629:    print("[AUTO-AUDIT] 日次自動sealループ開始")
+app_bak_0501.py:1634:            if now.hour == 0 and _last_seal_date[0] != today:
+app_bak_0501.py:1635:                seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
+app_bak_0501.py:1636:                if seal_script.exists():
+app_bak_0501.py:1637:                    subprocess.run(["python", str(seal_script), "AUTO_SEAL_" + today],
+app_bak_0501.py:1639:                    print(f"[AUTO-AUDIT] 日次seal完了")
+app_bak_0501.py:1640:                _last_seal_date[0] = today
+app_bak_0501.py:1648:                    seal_script = __import__("pathlib").Path(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
+app_bak_0501.py:1649:                    if seal_script.exists():
+app_bak_0501.py:1650:                        subprocess.run(["python", str(seal_script), "AUTO_SEAL_50EVT"],
+app_bak_0501.py:1652:                        print(f"[AUTO-AUDIT] 50件seal完了")
+app_bak_0501.py:1665:    seal_log = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+app_bak_0501.py:1667:    if seal_log.exists():
+app_bak_0501.py:1669:            log = __import__("json").loads(seal_log.read_text(encoding="utf-8"))
+app_bak_0501.py:1671:    return jsonify({"last_seal": log, "seal_log_exists": seal_log.exists()})
+app_bak_0501.py:1673:@app.route("/audit/seal", methods=["POST"])
+app_bak_0501.py:1674:def audit_seal_manual():
+app_bak_0501.py:1677:    seal_script = _P(str(ROOT_DIR)) / "scripts" / "ledger" / "anchor_update.py"
+app_bak_0501.py:1678:    seal_log    = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
+app_bak_0501.py:1679:    if seal_script.exists():
+app_bak_0501.py:1681:            ["python", str(seal_script), "MANUAL_SEAL_" + datetime.now().strftime("%Y%m%d_%H%M%S")],
+app_bak_0501.py:1684:        log = {"sealed_at": datetime.now().isoformat(), "result": result.stdout[:200]}
+app_bak_0501.py:1685:        seal_log.write_text(__import__("json").dumps(log, ensure_ascii=False), encoding="utf-8")
+app_bak_0501.py:1686:        return jsonify({"status": "ok", "sealed_at": log["sealed_at"]})
+app_bak_0501.py:1687:    return jsonify({"status": "error", "message": "seal script not found"})
+app_bak_0501.py:1982:@app.route('/integrity/monitor')
+app_bak_0501.py:1983:def integrity_monitor():
+audit/consistency_check.py:10:def check_system_integrity() -> bool:
+audit/ed25519/governance/impact_registry_append_phase14_completion.py:45:        "note: Phase14.6 completion document sealed and TIP-anchored"
+audit/system_audit.py:11:from audit.consistency_check import check_system_integrity
+audit/system_audit.py:29:        ok = check_system_integrity()
+deploy/mocka_mcp_server_vps.py:175:    {"name":"mocka_seal","description":"SHA-256ハッシュ検証","inputSchema":{"type":"object","properties":{},"required":[]}},
+deploy/mocka_mcp_server_vps.py:301:        elif name == "mocka_seal":
+external/logic_node.py:14:            f"[LOGIC-EXP] Structural integrity confirmed for: {prompt}"
+fix_audit_loop.py:6:# _seal_runningフラグ追加
+fix_audit_loop.py:7:if '_seal_running' not in src:
+fix_audit_loop.py:10:        '_last_event_count = [0]\n_seal_running = [False]'
+fix_audit_loop.py:16:    '            if count - _last_event_count[0] >= 50 and not _seal_running[0]:\n                if True:'
+governance/calc_summary_hash.py:5:ANCHOR_PATH = Path("mocka-governance-kernel/anchors/anchor_record.json")
+governance/calc_summary_hash.py:6:EXCLUDE_PATHS = {"mocka-governance-kernel/anchors/anchor_record.json"}
+governance/calc_summary_hash.py:23:    sealing_commit = extract_commit(ar.get("external_ref", ""))
+governance/calc_summary_hash.py:27:        ["git", "ls-tree", "-r", sealing_commit],
+governance/calc_summary_hash.py:43:    print(f"sealed_summary_hash: {summary_hash}")
+governance/human_gate_cli.py:6:governance/human_gate_cli.py
+governance/human_gate_cli.py:14:- phi_os/human_gate.py の変更（既存の submit/approve/reject/get_state/
+governance/human_gate_cli.py:16:- Event Store（data/mocka_events.db, human_gate_events テーブル）の複製・変更
+governance/human_gate_cli.py:33:from phi_os.human_gate import submit, approve, reject, get_state, list_pending, HumanGateError
+governance/human_gate_cli.py:38:        print(f"[human_gate_cli] ERROR: '{action}' は対話端末(TTY)からの実行のみ許可されています。"
+governance/human_gate_cli.py:128:        print(f"[human_gate_cli] ERROR: {e.reason}")
+governance/human_gate_continuity.py:2:governance/human_gate_continuity.py
+governance/human_gate_continuity.py:19:責務外(TODO_429「governance/human_gate_cli.py の制度整理」の裁定対象、
+governance/human_gate_continuity.py:30:Pending Decision Unitの永続化先はdata/decisions/decision_ledger.jsonl
+governance/human_gate_continuity.py:31:(確定済みDecisionのみを記録する既存台帳、governance/seal_governance_gate.py
+governance/human_gate_continuity.py:71:    human_gate_event_status: str
+governance/human_gate_continuity.py:135:            human_gate_event_status="NOT_ISSUED",
+governance/human_gate_continuity.py:148:            "human_gate_event_status": unit.human_gate_event_status,
+governance/human_gate_continuity.py:201:        実際の承認機構(phi_os/human_gate.py等)を経由しない状態遷移は、
+governance/human_gate_continuity.py:209:            f"WAITING_FOR_HUMAN_GATE to '{target_state}' by human_gate_continuity.py. "
+governance/human_gate_continuity.py:211:            f"(not yet decided) and an actual human_gate.py approve() event."
+governance/mocka_git_safe_commit.py:162:                           human_gate_override_event_id: str = None):
+governance/mocka_git_safe_commit.py:172:    human_gate_override_event_id: Core System File Human Gateの明示的な人間承認
+governance/mocka_git_safe_commit.py:211:        if core_files and not human_gate_override_event_id:
+governance/mocka_git_safe_commit.py:245:        elif core_files and human_gate_override_event_id:
+governance/mocka_git_safe_commit.py:248:                       f"event_id={human_gate_override_event_id} "
+governance/mocka_git_safe_commit.py:252:                  f"(event_id={human_gate_override_event_id}):")
+governance/mocka_git_safe_commit.py:295:        # authorized via human_gate_override_event_id for this call. Authorized
+governance/mocka_git_safe_commit.py:299:            [] if human_gate_override_event_id else core_in_commit
+governance/mocka_git_safe_commit.py:306:                  f"an integrity incident, not a normal CHANGE_DONE.")
+governance/mocka_git_safe_commit.py:311:                  f"override (event_id={human_gate_override_event_id})")
+governance/seal_auth_record.py:2:governance/seal_auth_record.py
+governance/seal_auth_record.py:5:sandbox/一時パス限定。既存seal経路(SealGovernanceGate/anchor_update.py)には
+governance/seal_auth_record.py:6:接続しない(M2)。本番 decision_ledger.jsonl には書かない。記録層のみで、
+governance/seal_auth_record.py:7:seal/hash/commit の実処理は呼ばない。
+governance/seal_auth_record.py:11:成立させる構造を禁止する。verify はその判定を返すのみで、実seal停止(強制)は
+governance/seal_auth_record.py:18:    "seal_request_id", "requester", "decision_id",
+governance/seal_auth_record.py:47:    Model B成立条件を判定する。強制(実seal停止)はしない(M2)。
+governance/seal_auth_record.py:64:    """seal_request_id の重複を検出する(一意性チェック)。"""
+governance/seal_auth_record.py:65:    ids = [r.get("seal_request_id") for r in read_auth_records(ledger_path)
+governance/seal_auth_record.py:66:           if r.get("seal_request_id")]
+governance/seal_governance_gate.py:2:governance/seal_governance_gate.py
+governance/seal_governance_gate.py:4:Phase C-2: SealGovernanceGate。/audit/seal(MANUAL_SEAL)からGL7評価を経由して
+governance/seal_governance_gate.py:5:既存seal pipeline(scripts/ledger/anchor_update.py)を呼ぶための正式なGovernance Gate。
+governance/seal_governance_gate.py:12:- Decision Unit記録(data/decisions/decision_ledger.jsonlへ既存スキーマの追加
+governance/seal_governance_gate.py:18:"呼ぶか呼ばないか"を制御するのみで、seal/hash/anchor更新の実処理は
+governance/seal_governance_gate.py:39:DECISION_LEDGER_PATH = _MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl"
+governance/seal_governance_gate.py:48:    seal_stdout: str = ""
+governance/seal_governance_gate.py:49:    seal_returncode: int | None = None
+governance/seal_governance_gate.py:54:    seal request -> GL7 validation -> (承認時のみ)既存anchor_update.pyをそのまま起動
+governance/seal_governance_gate.py:57:    repo_root/decision_ledger_pathはテスト時にsandbox pathへ差し替え可能。
+governance/seal_governance_gate.py:58:    _seal_runnerはテスト用フックで、Noneの場合は実際にanchor_update.pyを
+governance/seal_governance_gate.py:60:    内部で固定的に参照しているため、テスト時は必ず_seal_runnerへモック関数を
+governance/seal_governance_gate.py:65:                 decision_ledger_path: Path = DECISION_LEDGER_PATH):
+governance/seal_governance_gate.py:67:        self.decision_ledger_path = Path(decision_ledger_path)
+governance/seal_governance_gate.py:72:                _seal_runner=None) -> GateResult:
+governance/seal_governance_gate.py:89:        runner = _seal_runner or self._run_seal_script
+governance/seal_governance_gate.py:95:            reason="dry run clean, seal executed",
+governance/seal_governance_gate.py:96:            seal_stdout=stdout,
+governance/seal_governance_gate.py:97:            seal_returncode=returncode,
+governance/seal_governance_gate.py:102:    def _run_seal_script(self, message: str):
+governance/seal_governance_gate.py:123:            commit_hash, summary_hash = self._extract_hashes(result.seal_stdout)
+governance/seal_governance_gate.py:127:            "title": "SealGovernanceGate seal request",
+governance/seal_governance_gate.py:132:            "impact": "anchor_update.py実行有無の制御のみ、seal/hashロジック自体は無変更",
+governance/seal_governance_gate.py:135:            "approved_by": "system:seal_governance_gate",
+governance/seal_governance_gate.py:144:            "seal_hash": summary_hash,
+governance/seal_governance_gate.py:147:        self.decision_ledger_path.parent.mkdir(parents=True, exist_ok=True)
+governance/seal_governance_gate.py:148:        with self.decision_ledger_path.open("a", encoding="utf-8") as f:
+governance/seal_governance_wrapper.py:2:governance/seal_governance_wrapper.py
+governance/seal_governance_wrapper.py:7:(data/decisions/decision_ledger.jsonl、governance/anchor_record.json、
+governance/seal_governance_wrapper.py:8:mocka-governance-kernel/anchors/anchor_record.json)も一切変更しない。
+governance/seal_governance_wrapper.py:14:(execution_id/change_start/change_done/artifact_hash/seal_hash)の記録を
+governance/seal_governance_wrapper.py:15:既存decision_ledger.jsonlスキーマへの追加フィールドとしてsandbox ledgerへ
+governance/seal_governance_wrapper.py:53:    seal request -> GL7 validation(Gate B) -> mocka_git_safe_commit(Gate A)
+governance/seal_governance_wrapper.py:54:    -> sandbox anchor_record更新 -> Decision Unit記録(ledger拡張)
+governance/seal_governance_wrapper.py:67:            self.sandbox_root / "governance" / "anchor_record.json",
+governance/seal_governance_wrapper.py:68:            self.sandbox_root / "mocka-governance-kernel" / "anchors" / "anchor_record.json",
+governance/seal_governance_wrapper.py:72:        return self.sandbox_root / "data" / "decisions" / "decision_ledger.jsonl"
+governance/seal_governance_wrapper.py:74:    def request_seal(self, message: str, expected_max_changes: int | None = None) -> SealRequestResult:
+governance/seal_governance_wrapper.py:107:            reason="dry run clean, seal completed",
+governance/seal_governance_wrapper.py:122:            ar["sealed_summary_hash"] = "0" * 64
+governance/seal_governance_wrapper.py:125:        # calc_summary_hash.py はcwd相対でmocka-governance-kernel/anchors/anchor_record.jsonを
+governance/seal_governance_wrapper.py:133:            if line.startswith("sealed_summary_hash:"):
+governance/seal_governance_wrapper.py:140:            ar["sealed_summary_hash"] = summary_hash
+governance/seal_governance_wrapper.py:141:            ar["sealed_at_utc"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+governance/seal_governance_wrapper.py:145:        mocka_git_safe_commit(message=f"anchor: re-seal after {short}", push=False, root=self.sandbox_root)
+governance/seal_governance_wrapper.py:150:        Decision Unit形式(execution_id/change_start/change_done/artifact_hash/seal_hash)を
+governance/seal_governance_wrapper.py:151:        既存decision_ledger.jsonlスキーマへの追加フィールドとして拡張し、sandbox ledgerへ
+governance/seal_governance_wrapper.py:160:            "title": "Governance Wrapper seal request(sandbox検証)",
+governance/seal_governance_wrapper.py:168:            "approved_by": "system:seal_governance_wrapper(sandbox)",
+governance/seal_governance_wrapper.py:178:            "seal_hash": result.summary_hash,
+governance/shadow_seal_adapter.py:2:governance/shadow_seal_adapter.py
+governance/shadow_seal_adapter.py:4:Phase C-3: Shadow Seal Adapter。本番sealを一切発火させずに、
+governance/shadow_seal_adapter.py:22:   アルゴリズム自体とanchor_record.jsonのフィールド構成が本番と同一のロジックで
+governance/shadow_seal_adapter.py:25:いずれも本番の`data/decisions/decision_ledger.jsonl`・`governance/anchor_record.json`・
+governance/shadow_seal_adapter.py:26:`mocka-governance-kernel/anchors/anchor_record.json`・`scripts/ledger/anchor_update.py`は
+governance/shadow_seal_adapter.py:27:一切変更しない(anchor_record.jsonの読み取りのみ行う箇所がある)。
+governance/shadow_seal_adapter.py:47:    _MOCKA_ROOT / "governance" / "anchor_record.json",
+governance/shadow_seal_adapter.py:48:    _MOCKA_ROOT / "mocka-governance-kernel" / "anchors" / "anchor_record.json",
+governance/shadow_seal_adapter.py:52:EXPECTED_ANCHOR_FIELDS = ("external_ref", "sealed_summary_hash", "sealed_at_utc")
+governance/shadow_seal_adapter.py:77:        return ContractCheckResult(ok=False, details=f"seal script not found: {SEAL_SCRIPT}")
+governance/shadow_seal_adapter.py:88:    実anchor_record.json(読み取りのみ、書き込みなし)が、anchor_update.pyの
+governance/shadow_seal_adapter.py:90:    sealed_summary_hash/sealed_at_utc)を持っているかを確認する。
+governance/shadow_seal_adapter.py:111:    無変更のまま実行し、hash算出アルゴリズムとanchor_record.jsonの
+governance/shadow_seal_adapter.py:117:        sandbox_root / "governance" / "anchor_record.json",
+governance/shadow_seal_adapter.py:118:        sandbox_root / "mocka-governance-kernel" / "anchors" / "anchor_record.json",
+governance/shadow_seal_adapter.py:130:        return HashCompatibilityResult(ok=False, detail="no changes to commit in sandbox (nothing to seal)")
+governance/shadow_seal_adapter.py:135:        ar["sealed_summary_hash"] = "0" * 64
+governance/shadow_seal_adapter.py:144:        if line.startswith("sealed_summary_hash:"):
+governance/shadow_seal_adapter.py:173:        "note": "real anchor_update.py was not executed; no production seal was triggered",
+governance/verify_anchor_interface.py:12:    ap = ROOT / "governance" / "anchor_record.json"
+governance/verify_anchor_interface.py:14:        print("FAIL: anchor_record.json not found (required)")
+governance/verify_anchor_interface.py:18:    if d.get("schema") != "mocka.governance.anchor_record.v1":
+governance/verify_anchor_interface.py:19:        print("FAIL: invalid anchor_record schema")
+governance/verify_anchor_interface.py:22:    sealed = d.get("sealed_summary_hash")
+governance/verify_anchor_interface.py:23:    if not isinstance(sealed, str) or len(sealed) != 64:
+governance/verify_anchor_interface.py:24:        print("FAIL: sealed_summary_hash must be 64-hex string")
+governance/verify_anchor_interface.py:30:    sh = [l.split(": ",1)[1] for l in raw.splitlines() if l.startswith("sealed_summary_hash:")][0]
+governance/verify_anchor_interface.py:31:    if sh != sealed:
+governance/verify_anchor_interface.py:32:        print("FAIL: anchor_record sealed_summary_hash mismatch")
+governance/verify_anchor_interface.py:33:        print("anchor:", sealed)
+governance/verify_anchor_interface.py:37:    print("PASS: anchor_record present + summary_hash matches")
+governance/verify_taxonomy_integrity.py:36:    print("OK: taxonomy_integrity")
+interface/Essence_Direct_Parser.py:33:        r'\b(essence|incident|philosophy|operation|zyxts|drift|caliber|seal|dna|inject|\u30d1\u30a4\u30d7\u30e9\u30a4\u30f3|\u30a2\u30fc\u30ad\u30c6\u30af\u30c1\u30e3|\u6587\u660e|\u5236\u5ea6)\b',
+interface/ai_session.py:68:        "R01": {"name": "General", "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False}},
+interface/ai_session.py:69:        "R02": {"name": "Design Reviewer", "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False}},
+interface/dashboard.py:146:            "seal": CONTRACT_SEAL,
+interface/db_helper.py:106:        "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
+interface/db_helper.py:178:            from integrity import sign_event
+interface/db_helper.py:185:            print(f"[db_helper] integrity署名エラー（イベント書き込みは成功済み）: {e}")
+interface/handshake.py:31:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:37:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:43:        "capability": {"read": True, "write": False, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:49:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:55:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:61:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:136:        "contract_seal": CONTRACT_SEAL,
+interface/health_check.py:99:    "sqlite_integrity": {
+interface/health_check.py:102:        "pragma": "integrity_check",
+interface/health_check.py:104:        "opportunity":     "integrity_check通過の積み上げがデータ整合性の証拠になる",
+interface/health_check.py:105:        "beta_candidate":  "data_integrity_protocol",
+interface/health_check.py:135:        "beta_candidate":  "governance_integrity",
+interface/health_check.py:151:        "beta_candidate":  "governance_integrity",
+interface/health_check.py:185:        cur = con.execute("PRAGMA integrity_check")
+interface/health_check.py:190:        return False, f"integrity_check: {result}"
+interface/heinrich_engine.py:21:    'unauthorized', 'violation', 'integrity',
+interface/language_detector.py:55:    "commit","git","seal","Phase","phase",
+interface/mentor_engine.py:93:        "last_seal": CONTRACT_SEAL,
+interface/policy_generator.py:121:                "seal_hash":     None,
+interface/policy_generator.py:148:            "seal_hash":     None,
+interface/policy_generator.py:158:    print(f"承認後に mocka-seal で封印してください。")
+interface/policy_generator.py:186:            print(f"  mocka-seal で封印してください。")
+interface/reflux.py:12:OPERATION_KEYWORDS  = ['router.py', 'commit', '修正', '実装', '手順', 'PowerShell', 'python', 'BAT', 'seal', 'ledger', 'CSV', 'ping_generator', 'essence_classifier']
+interface/risk_scorer.py:29:# 計算式を超える判断は human_gate_overrides で明示管理する
+interface/router.py:40:def validate_input_integrity(data: dict) -> dict:
+interface/router.py:130:    result = validate_input_integrity(row)
+interface/router.py:140:        _record_integrity_incident(result, row)
+interface/router.py:160:def _record_integrity_incident(violation: dict, original_row: dict):
+interface/router.py:161:    """整合性違反をインシデントとして自動記録する（validate_input_integrityをバイパスして直接書き込む）"""
+interface/router.py:169:        "who_actor": "router.validate_input_integrity",
+interface/router.py:174:        "how_trigger": "write_safe_csv()呼び出し時にvalidate_input_integrity()が違反を検知",
+interface/user_voice_importer.py:5:claude export / gpt export JSON -> MoCKA DB投入 -> essence更新 -> seal
+interface/user_voice_importer.py:32:    "mocka", "todo", "phase", "seal", "event", "incident",
+interface/user_voice_importer.py:169:    """essence自動更新 (ping_generator + seal)"""
+interface/validate_input_integrity.py:1:﻿# validate_input_integrity.py
+interface/validate_input_integrity.py:12:def validate_input_integrity(data: dict) -> dict:
+interface/validate_input_integrity.py:53:    print("テスト1（正常）:", validate_input_integrity(ok_data))
+interface/validate_input_integrity.py:58:        validate_input_integrity(bad_data)
+interface/validate_input_integrity.py:65:        validate_input_integrity(empty_data)
+make_movement_map.py:85:                "anchor_record": "governance/anchor_record.json",
+make_movement_map.py:93:                "mocka-seal": "scripts/ledger/anchor_update.py MESSAGE",
+make_movement_map.py:102:                "mocka-seal -> auto seal + ALL CHECKS PASSED"
+make_movement_map.py:264:                "ecosystem_integrity_check.ps1": "git/docs/links/mermaid/repo整合性確認",
+make_movement_map.py:305:            "integrity": "PGP署名 + SHA256",
+make_movement_map.py:314:        "governance": "ledger -> verify_all.py -> governance/anchor_record.json",
+mocka-governance-kernel/governance/impact_registry_append_phase14_completion.py:45:        "note: Phase14.6 completion document sealed and TIP-anchored"
+mocka-governance-kernel/tools/authoritative_final_check.py:42:    ap.add_argument("--anchor", default="mocka-governance-kernel/anchors/anchor_record.json")
+mocka-governance-kernel/tools/authoritative_final_check.py:43:    ap.add_argument("--anchor_hash", default="mocka-governance-kernel/anchors/anchor_record.sha256")
+mocka-governance-kernel/tools/authoritative_final_check.py:61:    for k in ["external_ref", "sealed_summary_hash", "external_ref_semantics", "summary_hash_spec_version"]:
+mocka-governance-kernel/tools/authoritative_final_check.py:62:        assert_true(k in ar, f"anchor_record missing key: {k}")
+mocka-governance-kernel/tools/authoritative_final_check.py:64:    assert_true(ar["external_ref_semantics"] == "sealing_commit_reference",
+mocka-governance-kernel/tools/authoritative_final_check.py:68:    assert_true(HEX64_RE.match(ar["sealed_summary_hash"]) is not None,
+mocka-governance-kernel/tools/authoritative_final_check.py:69:                "sealed_summary_hash must be 64-hex")
+mocka-governance-kernel/tools/authoritative_final_check.py:77:    assert_true(anchor_hash_path.exists(), f"missing anchor_record hash file: {anchor_hash_path}")
+mocka-governance-kernel/tools/authoritative_final_check.py:79:    assert_true(HEX64_RE.match(ah) is not None, "anchor_record.sha256 must be 64-hex")
+mocka-governance-kernel/tools/authoritative_final_check.py:81:    calc_anchor = Path("mocka-governance-kernel/tools/calc_anchor_record_hash.py")
+mocka-governance-kernel/tools/authoritative_final_check.py:85:    assert_true(ah2 == ah, "anchor_record.sha256 mismatch after recompute")
+mocka-governance-kernel/tools/authoritative_final_check.py:96:            expected = ar["sealed_summary_hash"].lower()
+mocka-governance-kernel/tools/authoritative_final_check.py:97:            assert_true(computed == expected, f"sealed_summary_hash mismatch: computed={computed} expected={expected}")
+mocka-governance-kernel/tools/authoritative_final_check.py:99:        print("WARN: calc_summary_hash.py not found; sealed_summary_hash recomputation not enforced here.")
+mocka-governance-kernel/tools/calc_anchor_record_hash.py:16:    ap.add_argument("--anchor", default="mocka-governance-kernel/anchors/anchor_record.json")
+mocka-governance-kernel/tools/calc_anchor_record_hash.py:17:    ap.add_argument("--out", default="mocka-governance-kernel/anchors/anchor_record.sha256")
+mocka_mcp_server.py:78:DECISION_LEDGER_PATH = DECISIONS_DIR / "decision_ledger.jsonl"
+mocka_mcp_server.py:83:INTEGRITY_DIR                = BASE / "data" / "integrity"
+mocka_mcp_server.py:84:INTEGRITY_CLASSIFICATION_PATH = INTEGRITY_DIR / "integrity_classification.jsonl"
+mocka_mcp_server.py:124:        integrity_filter = "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
+mocka_mcp_server.py:126:            cur.execute(f"SELECT * FROM events WHERE {integrity_filter} ORDER BY rowid DESC LIMIT ?", (n,))
+mocka_mcp_server.py:128:            cur.execute(f"SELECT * FROM events WHERE {integrity_filter} ORDER BY rowid")
+mocka_mcp_server.py:359:    """decision_ledger.jsonlの全行を読む（append-only。同一decision_idの複数行は
+mocka_mcp_server.py:391:    """decision_ledger.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+mocka_mcp_server.py:411:    """integrity_classification.jsonlの全行を読む（append-only。壊れた行は
+mocka_mcp_server.py:443:    """integrity_classification.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+mocka_mcp_server.py:458:    {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:469:    {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
+mocka_mcp_server.py:470:    {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
+mocka_mcp_server.py:471:    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
+mocka_mcp_server.py:714:                # 経由させる（事後のmigrate_event_integrity.py補完を不要にする）。
+mocka_mcp_server.py:734:        elif name == "mocka_seal":
+mocka_mcp_server.py:857:            integrity_filter = "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
+mocka_mcp_server.py:861:                    f"WHERE {integrity_filter} "
+mocka_mcp_server.py:871:                    f"WHERE {integrity_filter} "
+mocka_mcp_server.py:1015:                    "tags":            f"decision_ledger,{decision_id},{status}",
+mocka_mcp_server.py:1047:        elif name == "mocka_integrity_write":
+mocka_mcp_server.py:1087:        elif name == "mocka_integrity_get":
+mocka_mcp_server.py:1094:        elif name == "mocka_integrity_list":
+mocka_supervisor.py:29:    run("snapshot_seal.py")
+mocka_v3_eval/append_incidents.py:232:        "why_purpose"   : "institutional_integrity",
+mocka_v3_eval/make_overview_v23.py:57:    "TODO_015: mocka-seal 2026-04-09分"
+mocka_v3_eval/mocka_n_expansion_pipeline.py:143:        "target_class"    : "code_integrity",
+mocka_v3_eval/mocka_n_expansion_pipeline.py:150:        "impact_result"   : "integrity_risk" if risk == "CRITICAL" else "quality_concern",
+mocka_v3_eval/run_experiment_A_v3.py:143:        "integrity": {
+mocka_v3_eval/run_experiment_A_v3.py:152:    print(f"  SHA256: {output['integrity']['sha256']}")
+mocka_v3_eval/run_experiment_A_v4.py:116:        "integrity"        : {"sha256": sha256_of(result)},
+mocka_v3_eval/run_experiment_A_v4.py:123:    print(f"  SHA256: {output['integrity']['sha256']}")
+mocka_v3_eval/update_todo.py:55:        "title": "mocka-seal（2026-04-09分）",
+mocka_v3_eval/update_todo.py:59:        "description": "E20260407_001〜009・レバー検証・試料パケット生成・Recurrence補完をgit commitしてmocka-sealで封印。",
+phi_os/context/context_runtime.py:84:                "seal": self.institution.latest_seal,
+phi_os/context/context_snapshot.py:68:    # snapshot_id/integrity_hash = hash(不可逆・整合性確認のみ)。
+phi_os/context/context_snapshot.py:90:        # integrity_hashはraw event chainそのものではなく、その時点のworking/memory
+phi_os/context/context_snapshot.py:95:        integrity_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+phi_os/context/context_snapshot.py:97:            f"{actor_id}:{integrity_hash}".encode("utf-8")
+phi_os/context/context_snapshot.py:105:            "integrity_hash": integrity_hash,
+phi_os/context/context_validator.py:64:        if not ctx.latest_seal:
+phi_os/context/context_validator.py:66:                "Institution", "latest_seal", "WARN",
+phi_os/context/context_validator.py:67:                "seal未確認。最新コミット整合性が不明。"
+phi_os/context/institution_context.py:48:    latest_seal: str = ""
+phi_os/context/institution_context.py:79:            seal = gov.get("latest_seal", {})
+phi_os/context/institution_context.py:80:            self.latest_seal = seal.get("commit", "")
+phi_os/context/institution_context.py:81:            self.verification_status = "VERIFIED" if seal.get("status") == "ALL CHECKS PASSED" else "UNVERIFIED"
+phi_os/context/institution_context.py:118:            "latest_seal": self.latest_seal,
+phi_os/event_gate.py:6:from . import integrity
+phi_os/event_gate.py:91:        sig = integrity.sign_event(conn, row)
+phi_os/event_replay.py:6:# 本モジュールはそれを「読むだけ」で状態再構築（replay）と既存integrity検証の
+phi_os/event_replay.py:12:from . import integrity
+phi_os/event_replay.py:79:    """既存Event Integrity Framework(integrity.verify_chain/diagnose)とReplayを一体公開する。"""
+phi_os/event_replay.py:91:            return integrity.verify_chain(conn, start_seq, end_seq)
+phi_os/event_replay.py:97:        return integrity.diagnose(result["anomalies"])
+phi_os/human_gate.py:1:# phi_os/human_gate.py
+phi_os/human_gate.py:18:human_gate_bp = Blueprint('human_gate', __name__)
+phi_os/human_gate.py:57:        CREATE TABLE IF NOT EXISTS human_gate_events (
+phi_os/human_gate.py:82:        'SELECT * FROM human_gate_events WHERE request_id = ? ORDER BY timestamp DESC, event_id DESC LIMIT 1',
+phi_os/human_gate.py:115:        '''INSERT INTO human_gate_events
+phi_os/human_gate.py:187:            SELECT e.* FROM human_gate_events e
+phi_os/human_gate.py:195:                    FROM human_gate_events
+phi_os/human_gate.py:278:@human_gate_bp.route('/api/human_gate/submit', methods=['POST'])
+phi_os/human_gate.py:288:@human_gate_bp.route('/api/human_gate/approve', methods=['POST'])
+phi_os/human_gate.py:299:@human_gate_bp.route('/api/human_gate/reject', methods=['POST'])
+phi_os/human_gate.py:310:@human_gate_bp.route('/api/human_gate/status/<request_id>', methods=['GET'])
+phi_os/human_gate.py:318:@human_gate_bp.route('/api/human_gate/pending', methods=['GET'])
+phi_os/integrity.py:4:phi_os/integrity.py -- Phase5-2 Event Integrity Framework
+phi_os/integrity.py:250:            "scripts/migrate_event_integrity.py",
+phi_os/integrity.py:260:            "(legacy data, or a write path that bypassed integrity.sign_event)",
+phi_os/integrity.py:261:            "run scripts/migrate_event_integrity.py to backfill signatures for "
+phi_os/integrity.py:267:            "confirm KNOWN_SIGNATURE_VERSIONS in phi_os/integrity.py covers this "
+phi_os/integrity.py:272:            "add the algorithm to phi_os/integrity.ALGORITHMS if it is a deliberate "
+phi_os/integrity.py:307:def seal_baseline(git_commit: str, schema_version: str, gate_policy_version: str,
+phi_os/integrity.py:313:    呼び出し側（scripts/seal_baseline.py）がdata/integrity_baseline.jsonへの
+phi_os/integrity_routes.py:1:# phi_os/integrity_routes.py
+phi_os/integrity_routes.py:10:from . import integrity
+phi_os/integrity_routes.py:12:integrity_bp = Blueprint('event_integrity', __name__)
+phi_os/integrity_routes.py:16:BASELINE_PATH = _REPO_ROOT / 'data' / 'integrity_baseline.json'
+phi_os/integrity_routes.py:25:@integrity_bp.route('/api/integrity/verify', methods=['GET'])
+phi_os/integrity_routes.py:29:        result = integrity.verify_chain(conn)
+phi_os/integrity_routes.py:35:@integrity_bp.route('/api/integrity/diagnose', methods=['GET'])
+phi_os/integrity_routes.py:39:        result = integrity.verify_chain(conn)
+phi_os/integrity_routes.py:40:        report = integrity.diagnose(result["anomalies"])
+phi_os/integrity_routes.py:51:@integrity_bp.route('/api/integrity/baseline', methods=['GET'])
+phi_os/integrity_routes.py:55:            "status": "not_sealed",
+phi_os/integrity_routes.py:56:            "detail": "data/integrity_baseline.json not found. "
+phi_os/integrity_routes.py:57:                      "Run scripts/seal_baseline.py to create it.",
+phi_os/migrate_prevention_queue.py:2:# Phase3移行スクリプト: data/prevention_queue.json -> phi_os.human_gate event
+phi_os/migrate_prevention_queue.py:21:from phi_os import human_gate as hg
+phi_os/reference_resolver.py:46:        MOCKA_TODO_ACTIVE.jsonのid一覧、decision_ledger.jsonlのdecision_id一覧等)。
+phi_os/tests/test_human_gate.py:1:# phi_os/tests/test_human_gate.py
+phi_os/tests/test_human_gate.py:10:import phi_os.human_gate as hg
+phi_os/tests/test_human_gate.py:15:    db_file = str(tmp_path / 'test_human_gate.db')
+phi_os/tests/test_human_gate.py:116:    # human_gate_eventsテーブルにはnext_state列はあるが、別のstateテーブルは存在しない。
+phi_os/tests/test_human_gate.py:122:    assert tables == {"human_gate_events"}
+phi_os/tests/test_integrity.py:1:# phi_os/tests/test_integrity.py
+phi_os/tests/test_integrity.py:14:from phi_os import integrity
+phi_os/tests/test_integrity.py:63:    db_file = str(tmp_path / 'test_integrity.db')
+phi_os/tests/test_integrity.py:82:        'short_summary': 'integrity test fixture',
+phi_os/tests/test_integrity.py:100:    sig = integrity.sign_event(conn, row)
+phi_os/tests/test_integrity.py:110:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:126:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:140:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:153:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:168:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:191:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:200:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:212:    result = integrity.verify_chain(conn)
+phi_os/tests/test_integrity.py:213:    report = integrity.diagnose(result['anomalies'])
+phi_os/tests/test_integrity.py:223:    """legacy行(署名なし)をmigrate_event_integrity.run_migrationで遡及署名し、
+phi_os/tests/test_integrity.py:225:    import scripts.migrate_event_integrity as mig
+phi_os/tests/test_integrity.py:258:    result = integrity.verify_chain(conn)
+production_certification/certification/deployment_certifier.py:6:to enforce replay-ability and event-integrity checks.
+production_certification/certification/deployment_certifier.py:32:    """Hash the full replayable event stream. Used as a tamper/integrity check."""
+production_certification/sla/sla_definition.py:14:    integrity_score: float        # 0-100
+production_certification/sla/sla_evaluator.py:40:    - integrity: 15%
+production_certification/sla/sla_evaluator.py:48:        "integrity": 0.15,
+production_certification/sla/sla_evaluator.py:57:            "integrity": _clamp(sla.integrity_score),
+production_certification/tests/test_certification.py:30:    integrity_score=99.0,
+production_certification/tests/test_certification.py:39:    integrity_score=60.0,
+reproduce_mocka.py:256:            "VERIFY":   "increase_integrity",
+reproduce_mocka.py:455:        goals = ["increase_knowledge", "increase_stability", "increase_progress", "increase_integrity"]
+runtime/civilization_audit_engine.py:14:"civilization_integrity_report.json",
+runtime/civilization_audit_engine.py:15:"civilization_seal.json"
+runtime/civilization_bridge.py:26:    "VERIFY":   "increase_integrity",
+runtime/civilization_diagnostics_engine.py:16:"civilization_integrity_report.json"
+runtime/civilization_export_engine.py:20:"civilization_integrity_report.json",
+runtime/civilization_export_engine.py:21:"civilization_seal.json"
+runtime/civilization_integrity_engine.py:9:INTEGRITY_FILE = "civilization_integrity_report.json"
+runtime/civilization_integrity_engine.py:48:        "civilization_integrity":{
+runtime/civilization_integrity_engine.py:63:        report["civilization_integrity"]["checks"].append(entry)
+runtime/mocka_seal.py:29:def seal_event(event):
+scripts/ledger/anchor_update.py:7:変更をコミット後にanchor_recordを自動更新して再封印する
+scripts/ledger/anchor_update.py:21:    ROOT / "governance" / "anchor_record.json",
+scripts/ledger/anchor_update.py:22:    ROOT / "mocka-governance-kernel" / "anchors" / "anchor_record.json",
+scripts/ledger/anchor_update.py:60:        ar["sealed_summary_hash"] = "0" * 64
+scripts/ledger/anchor_update.py:65:        if line.startswith("sealed_summary_hash:"):
+scripts/ledger/anchor_update.py:90:    # 3. anchor_record更新
+scripts/ledger/anchor_update.py:93:        ar["sealed_summary_hash"] = summary_hash
+scripts/ledger/anchor_update.py:95:        ar["sealed_at_utc"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+scripts/ledger/anchor_update.py:98:    # 4. anchor_record自体をコミット(TODO_364: mocka_git_safe_commit経由)
+scripts/ledger/anchor_update.py:99:    mocka_git_safe_commit(message=f"anchor: re-seal after {commit[:7]}", push=False)
+scripts/ledger/ledger_seal.py:18:seal = hashlib.sha256(chain.encode()).hexdigest()
+scripts/ledger/ledger_seal.py:21:print("LEDGER SEAL :",seal)
+scripts/ledger/ledger_self_repair.py:53:        "reason": "ledger_integrity_failure",
+scripts/migrate_event_integrity.py:4:scripts/migrate_event_integrity.py -- Phase5-2 Event Integrity Framework Migration
+scripts/migrate_event_integrity.py:13:     1件ずつ integrity.sign_event でチェーンを構築する。
+scripts/migrate_event_integrity.py:14:  5. 構築直後に integrity.verify_chain で整合性を検証する。
+scripts/migrate_event_integrity.py:29:import integrity  # noqa: E402
+scripts/migrate_event_integrity.py:32:REPORT_PATH = _REPO_ROOT / "data" / "migrate_event_integrity_report.json"
+scripts/migrate_event_integrity.py:34:MIGRATION_VERSION = "migrate_event_integrity_v1"
+scripts/migrate_event_integrity.py:67:            "signature_version": integrity.SIGNATURE_VERSION,
+scripts/migrate_event_integrity.py:68:            "algorithm": integrity.DEFAULT_ALGORITHM,
+scripts/migrate_event_integrity.py:86:            DB_PATH.stem + f"_pre_event_integrity_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+scripts/migrate_event_integrity.py:91:        integrity.ensure_signatures_table(conn)
+scripts/migrate_event_integrity.py:107:            integrity.sign_event(conn, row)
+scripts/migrate_event_integrity.py:112:        verify_result = integrity.verify_chain(conn)
+scripts/migrate_source_check.py:69:    data_integrity      TEXT DEFAULT 'normal',
+scripts/migrate_source_check.py:70:    integrity_note      TEXT,
+scripts/migrate_source_check.py:82:    "data_integrity", "integrity_note", "recovered_short_summary",
+scripts/seal/seal_commit.py:11:seal_path = "runtime/seal_registry.json"
+scripts/seal/seal_commit.py:17:# chain seal 計算
+scripts/seal/seal_commit.py:22:seal = hashlib.sha256(chain.encode()).hexdigest()
+scripts/seal/seal_commit.py:25:if not os.path.exists(seal_path):
+scripts/seal/seal_commit.py:26:    seals = []
+scripts/seal/seal_commit.py:29:        with open(seal_path,"r") as f:
+scripts/seal/seal_commit.py:30:            seals = json.load(f)
+scripts/seal/seal_commit.py:32:        seals = []
+scripts/seal/seal_commit.py:37:    "seal": seal
+scripts/seal/seal_commit.py:40:seals.append(entry)
+scripts/seal/seal_commit.py:42:with open(seal_path,"w") as f:
+scripts/seal/seal_commit.py:43:    json.dump(seals,f,indent=2)
+scripts/seal/seal_commit.py:45:print("SEAL COMMITTED",seal)
+scripts/seal/seal_scheduler.py:18:        subprocess.run(["python","seal_commit.py"])
+scripts/seal/seal_verify.py:11:REGISTRY = "runtime/seal_registry.json"
+scripts/seal_baseline.py:4:scripts/seal_baseline.py -- Phase5-2 STEP5 Baseline Seal
+scripts/seal_baseline.py:7:data/integrity_baseline.jsonを書き出し、対応するgit annotated tagを作成する
+scripts/seal_baseline.py:11:  python scripts/seal_baseline.py --test-summary '{"passed": N, "failed": 0, "suite": "..."}'
+scripts/seal_baseline.py:12:  python scripts/seal_baseline.py --tag   # JSON生成後にgit tagも作成する
+scripts/seal_baseline.py:25:import integrity  # noqa: E402
+scripts/seal_baseline.py:28:BASELINE_PATH = _REPO_ROOT / "data" / "integrity_baseline.json"
+scripts/seal_baseline.py:30:MIGRATION_VERSION = "migrate_event_integrity_v1"
+scripts/seal_baseline.py:31:TAG_NAME = "mocka-baseline-v1.0-event-integrity"
+scripts/seal_baseline.py:51:    return integrity.seal_baseline(
+scripts/seal_baseline.py:78:    test_summary = {"passed": 0, "failed": 0, "suite": "phi_os/tests/test_integrity.py"}
+scripts/snapshot/snapshot_seal.py:11:REGISTRY = "runtime/seal_registry.json"
+scripts/snapshot/snapshot_seal.py:57:                    "sealed_at":int(time.time())
+scripts/state/overview_current_generator.py:4:一次データ(MOCKA_TODO_ACTIVE/ARCHIVE.json, decision_ledger.jsonl, mocka_events.db,
+scripts/state/overview_current_generator.py:5:governance/anchor_record.json)から data/MOCKA_OVERVIEW_CURRENT.json を機械的に再集計する。
+scripts/state/overview_current_generator.py:23:DECISION_LEDGER_PATH = DATA_DIR / "decisions" / "decision_ledger.jsonl"
+scripts/state/overview_current_generator.py:25:ANCHOR_RECORD_PATH = MOCKA_ROOT / "governance" / "anchor_record.json"
+scripts/state/overview_current_generator.py:105:def _load_seal_status():
+scripts/state/overview_current_generator.py:111:        "sealed_at_utc": anchor.get("sealed_at_utc"),
+scripts/state/overview_current_generator.py:112:        "sealed_summary_hash": anchor.get("sealed_summary_hash"),
+scripts/state/overview_current_generator.py:126:                "decision_ledger": _sha256(DECISION_LEDGER_PATH),
+scripts/state/overview_current_generator.py:127:                "anchor_record": _sha256(ANCHOR_RECORD_PATH),
+scripts/state/overview_current_generator.py:133:        "seal_status": _load_seal_status(),
+scripts/state/overview_current_generator.py:134:        "integrity_warnings": todo_warnings,
+scripts/verify_integrity.py:4:scripts/verify_integrity.py -- Phase5-2 Event Integrity Framework CLI
+scripts/verify_integrity.py:10:  python scripts/verify_integrity.py            -- 検証のみ
+scripts/verify_integrity.py:11:  python scripts/verify_integrity.py --diagnose -- 検証+異常診断
+scripts/verify_integrity.py:22:import integrity  # noqa: E402
+scripts/verify_integrity.py:33:        result = integrity.verify_chain(conn)
+scripts/verify_integrity.py:45:        for d in integrity.diagnose(result["anomalies"]):
+semantic/query_engine/drift_monitor.py:156:        human_gate_hook: Optional[HumanGateHook] = None,
+semantic/query_engine/drift_monitor.py:160:        self._human_gate_hook = human_gate_hook or HumanGateHook()
+semantic/query_engine/drift_monitor.py:172:            self._human_gate_hook.notify(records)
+semantic/query_engine/human_gate.py:1:# MoCKA/semantic/query_engine/human_gate.py
+semantic/query_engine/human_gate.py:4:# 契約: docs/contracts/phase7_b6_human_gate_ruling_v1.md
+semantic/query_engine/human_gate.py:59:                f"(merge is permanently excluded, see docs/contracts/phase7_b6_human_gate_ruling_v1.md section 1)"
+semantic/query_engine/human_gate_interface.py:1:# MoCKA/semantic/query_engine/human_gate_interface.py
+semantic/query_engine/human_gate_interface.py:4:# 契約: docs/contracts/phase7_b7_human_gate_interface_v1.md
+semantic/query_engine/human_gate_interface.py:21:from semantic.query_engine.human_gate import (
+semantic/query_engine/observation_surface.py:22:from semantic.query_engine.human_gate import HumanGateRulingStore, RulingRecord
+semantic/query_engine/observation_surface.py:23:from semantic.query_engine.human_gate_interface import (
+structural/beta_engine.py:32:    ("encoding_corruption",    "data_integrity_assured",   "エンコード汚染→整合性保証"),
+structural/beta_engine.py:48:    ("data_integrity","エンコード汚染→整合性保証"):("data_integrity_protocol",        "データ整合性プロトコル"),
+structural/governance_pipeline.py:48:    "mocka_integrity_get",
+structural/governance_pipeline.py:49:    "mocka_integrity_list",
+structural/governance_pipeline.py:57:    "mocka_seal",
+tests/test_human_gate_continuity.py:2:Phase C-4: governance/human_gate_continuity.py のテスト(縮小版・DHGP)。
+tests/test_human_gate_continuity.py:16:        decision_ledger.jsonl・app.pyが無変更
+tests/test_human_gate_continuity.py:27:from human_gate_continuity import (  # noqa: E402
+tests/test_human_gate_continuity.py:34:    MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl",
+tests/test_human_gate_continuity.py:64:        assert unit.human_gate_event_status == "NOT_ISSUED"
+tests/test_human_gate_continuity.py:70:        for f in ("governance_state", "approval_required", "human_gate_event_status", "mcp_availability"):
+tests/test_overview_current_generator.py:35:        "同一入力に対してtodo_summary/recent_decisions/recent_events/seal_status/"
+tests/test_overview_current_generator.py:36:        "integrity_warningsが2回の実行で一致しなかった"
+tests/test_seal_auth_record.py:2:tests/test_seal_auth_record.py
+tests/test_seal_auth_record.py:4:sandbox/tmp_path のみを対象とし、本番 decision_ledger.jsonl には触れない。
+tests/test_seal_auth_record.py:11:from seal_auth_record import (  # noqa: E402
+tests/test_seal_auth_record.py:18:        "seal_request_id": "SR_1", "requester": "kimura_hakase",
+tests/test_seal_auth_record.py:36:    ok, r = verify_auth_record(_rec(approved_by="system:seal_governance_gate"))
+tests/test_seal_auth_record.py:48:    ok, r = verify_auth_record(_rec(seal_request_id=""))
+tests/test_seal_auth_record.py:49:    assert not ok and "missing:seal_request_id" in r
+tests/test_seal_auth_record.py:53:    # T5: seal_request_id の重複を検出
+tests/test_seal_auth_record.py:55:    write_auth_record(p, _rec(seal_request_id="SR_dup"))
+tests/test_seal_auth_record.py:56:    write_auth_record(p, _rec(seal_request_id="SR_dup"))
+tests/test_seal_auth_record.py:69:def test_jsonl_integrity(tmp_path):
+tests/test_seal_governance_gate.py:2:Phase C-2: seal_governance_gate.py のテスト。
+tests/test_seal_governance_gate.py:7:したがって、本テストではSealGovernanceGate.execute()の_seal_runnerフックへ
+tests/test_seal_governance_gate.py:12:repo_root(GL7のgit dry run対象)・decision_ledger_path(記録先)は
+tests/test_seal_governance_gate.py:14:data/decisions/decision_ledger.jsonlには一切書き込まない。
+tests/test_seal_governance_gate.py:16:Test A: 正常系(GL7承認 -> モックseal実行 -> Decision Unit記録、
+tests/test_seal_governance_gate.py:18:Test B: 異常系(GL7 Abort -> モックseal実行は一切呼ばれない -> abort記録のみ)
+tests/test_seal_governance_gate.py:19:Test C: 非侵襲性確認(実MoCKAリポジトリのdata/decisions/decision_ledger.jsonl・
+tests/test_seal_governance_gate.py:20:        governance/anchor_record.json・app.py・anchor_update.pyが無変更)
+tests/test_seal_governance_gate.py:32:from seal_governance_gate import SealGovernanceGate  # noqa: E402
+tests/test_seal_governance_gate.py:37:    MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl",
+tests/test_seal_governance_gate.py:38:    MOCKA_ROOT / "governance" / "anchor_record.json",
+tests/test_seal_governance_gate.py:55:def _mock_seal_runner_success(message: str):
+tests/test_seal_governance_gate.py:69:        ledger_path = sandbox / "decision_ledger.jsonl"
+tests/test_seal_governance_gate.py:75:            return _mock_seal_runner_success(message)
+tests/test_seal_governance_gate.py:77:        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+tests/test_seal_governance_gate.py:78:        result = gate.execute(message="MANUAL_SEAL_test", _seal_runner=spy_runner)
+tests/test_seal_governance_gate.py:81:        assert len(calls) == 1, "seal runner should be called exactly once on approval"
+tests/test_seal_governance_gate.py:82:        assert result.seal_returncode == 0
+tests/test_seal_governance_gate.py:89:        assert entry["seal_hash"] == "a" * 64
+tests/test_seal_governance_gate.py:96:def test_b_abort_path_seal_runner_never_called():
+tests/test_seal_governance_gate.py:100:        ledger_path = sandbox / "decision_ledger.jsonl"
+tests/test_seal_governance_gate.py:109:            return _mock_seal_runner_success(message)
+tests/test_seal_governance_gate.py:111:        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+tests/test_seal_governance_gate.py:112:        result = gate.execute(message="MANUAL_SEAL_test", expected_max_changes=1, _seal_runner=spy_runner)
+tests/test_seal_governance_gate.py:116:        assert len(calls) == 0, "seal runner must NOT be called when GL7 aborts"
+tests/test_seal_governance_gate.py:122:        assert entries[0]["seal_hash"] is None
+tests/test_seal_governance_gate.py:131:        ledger_path = sandbox / "decision_ledger.jsonl"
+tests/test_seal_governance_gate.py:132:        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+tests/test_seal_governance_gate.py:133:        gate.execute(message="non-invasiveness check", _seal_runner=_mock_seal_runner_success)
+tests/test_seal_governance_gate.py:136:        gate.execute(message="abort check", expected_max_changes=0, _seal_runner=_mock_seal_runner_success)
+tests/test_seal_governance_gate.py:146:    test_b_abort_path_seal_runner_never_called()
+tests/test_seal_governance_gate.py:147:    print("Test B (abort path, seal runner never called): PASS")
+tests/test_seal_governance_wrapper.py:2:Phase C-1: seal_governance_wrapper.py のsandbox検証テスト。
+tests/test_seal_governance_wrapper.py:6:scripts/ledger/anchor_update.py・data/decisions/decision_ledger.jsonl・
+tests/test_seal_governance_wrapper.py:7:governance/anchor_record.json等)は一切変更しない。
+tests/test_seal_governance_wrapper.py:23:from seal_governance_wrapper import SealGovernanceWrapper  # noqa: E402
+tests/test_seal_governance_wrapper.py:45:        "sealed_summary_hash": "0" * 64,
+tests/test_seal_governance_wrapper.py:46:        "sealed_at_utc": "2026-01-01T00:00:00Z",
+tests/test_seal_governance_wrapper.py:48:    for rel in ("governance/anchor_record.json", "mocka-governance-kernel/anchors/anchor_record.json"):
+tests/test_seal_governance_wrapper.py:56:def test_a_normal_path_approved_and_sealed():
+tests/test_seal_governance_wrapper.py:64:        result = wrapper.request_seal(message="test seal request")
+tests/test_seal_governance_wrapper.py:70:        anchor = json.loads((sandbox / "governance" / "anchor_record.json").read_text(encoding="utf-8"))
+tests/test_seal_governance_wrapper.py:71:        assert anchor["sealed_summary_hash"] == result.summary_hash
+tests/test_seal_governance_wrapper.py:73:        ledger_path = sandbox / "data" / "decisions" / "decision_ledger.jsonl"
+tests/test_seal_governance_wrapper.py:78:        for field in ("execution_id", "change_start", "change_done", "artifact_hash", "seal_hash"):
+tests/test_seal_governance_wrapper.py:81:        assert entry["seal_hash"] == result.summary_hash
+tests/test_seal_governance_wrapper.py:83:        # 既存decision_ledger.jsonlスキーマの必須フィールドも保持されていることを確認(後方互換)
+tests/test_seal_governance_wrapper.py:88:def test_b_abort_path_no_seal_produced():
+tests/test_seal_governance_wrapper.py:93:        before_anchor = (sandbox / "governance" / "anchor_record.json").read_text(encoding="utf-8")
+tests/test_seal_governance_wrapper.py:103:        result = wrapper.request_seal(message="test seal request (should abort)", expected_max_changes=1)
+tests/test_seal_governance_wrapper.py:110:        after_anchor = (sandbox / "governance" / "anchor_record.json").read_text(encoding="utf-8")
+tests/test_seal_governance_wrapper.py:111:        assert before_anchor == after_anchor, "anchor_record.json must not change on abort"
+tests/test_seal_governance_wrapper.py:118:        ledger_path = sandbox / "data" / "decisions" / "decision_ledger.jsonl"
+tests/test_seal_governance_wrapper.py:123:        assert entries[0]["seal_hash"] is None
+tests/test_seal_governance_wrapper.py:133:        SealGovernanceWrapper(sandbox_root=sandbox).request_seal(message="non-invasiveness check")
+tests/test_seal_governance_wrapper.py:141:    test_a_normal_path_approved_and_sealed()
+tests/test_seal_governance_wrapper.py:142:    print("Test A (normal path, approved and sealed): PASS")
+tests/test_seal_governance_wrapper.py:143:    test_b_abort_path_no_seal_produced()
+tests/test_seal_governance_wrapper.py:144:    print("Test B (abort path, no seal produced): PASS")
+tests/test_shadow_seal_adapter.py:2:Phase C-3: shadow_seal_adapter.py のテスト。
+tests/test_shadow_seal_adapter.py:8:Test B: anchor_record.jsonスキーマ互換性確認(実ファイルを読み取りのみで確認)
+tests/test_shadow_seal_adapter.py:11:Test D: 非侵襲性確認(実MoCKAリポジトリのanchor_update.py・anchor_record.json・
+tests/test_shadow_seal_adapter.py:12:        decision_ledger.jsonlが本テスト前後で無変更)
+tests/test_shadow_seal_adapter.py:23:from shadow_seal_adapter import (  # noqa: E402
+tests/test_shadow_seal_adapter.py:32:    MOCKA_ROOT / "governance" / "anchor_record.json",
+tests/test_shadow_seal_adapter.py:33:    MOCKA_ROOT / "mocka-governance-kernel" / "anchors" / "anchor_record.json",
+tests/test_shadow_seal_adapter.py:34:    MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl",
+tests/test_shadow_seal_adapter.py:48:    stub = '{"anchor_type": "sandbox_test", "external_ref": "https://github.com/m-sirius-k/MoCKA/commit/0000000000000000000000000000000000000000", "sealed_summary_hash": "' + ("0" * 64) + '", "sealed_at_utc": "2026-01-01T00:00:00Z"}'
+tests/test_shadow_seal_adapter.py:49:    (root / "governance" / "anchor_record.json").write_text(stub, encoding="utf-8")
+tests/test_shadow_seal_adapter.py:50:    (root / "mocka-governance-kernel" / "anchors" / "anchor_record.json").write_text(stub, encoding="utf-8")
+tools/extract_terms.py:64:    ("Governance",    ["governance", "compliance", "audit", "seal", "ledger", "constitution", "protocol"]),
+tools/mocka_file_editor.py:11:        --new  "_seal_running[0] = True" \
+tools/mocka_file_editor.py:12:        --why  "CPU100%再発防止。_seal_runningフラグが未設定だった" \
+tools/mocka_restrictions.py:35:    lines.append("- mocka-seal の実行禁止（Claude専任）")
+tools/phase6_adapter_layer.py:6:PHI-OS sealing/ordering logic. It only consumes Phase5-B rev.3 output
+tools/record_event.py:123:def seal_hash(canonical_content_empty_hash: str) -> Tuple[str, str]:
+tools/record_event.py:125:    sealed = canonical_content_empty_hash.replace('value: ""', f'value: "{digest}"', 1)
+tools/record_event.py:126:    return digest, sealed
+tools/record_event.py:246:    digest, canonical_sealed = seal_hash(canonical_empty_hash)
+tools/record_event.py:248:    write_text(canonical_rel, canonical_sealed)
+verify/accept_outfield_pass.py:85:def sealed_pack_info():
+verify/accept_outfield_pass.py:110:    die("sealed pack info not found in freeze_manifest.json")
+verify/accept_outfield_pass.py:171:def validate_row_outfield_v2(row, sealed):
+verify/accept_outfield_pass.py:197:    if row.get("pack_zip_name") != sealed["zip_name"]:
+verify/accept_outfield_pass.py:200:    if str(row.get("pack_sha256", "")).upper() != str(sealed["sha256"]).upper():
+verify/accept_outfield_pass.py:259:    sealed = sealed_pack_info()
+verify/accept_outfield_pass.py:294:            "zip_name": sealed["zip_name"],
+verify/accept_outfield_pass.py:295:            "sha256": sealed["sha256"],
+verify/accept_outfield_pass.py:352:    sealed = sealed_pack_info()
+verify/accept_outfield_pass.py:361:    validate_row_outfield_v2(row_out, sealed)
+verify/accept_outfield_pass.py:402:    sealed = sealed_pack_info()
+verify/accept_outfield_pass.py:406:    validate_row_outfield_v2(row_out, sealed)
+verify/ci_minimal_chain_test.py:31:    # simple integrity check
+verify_all.py:25:    run_step("taxonomy_integrity", [sys.executable, str(ROOT / "governance" / "verify_taxonomy_integrity.py")])
+watchdog_mocka.py:13:SEAL_HOUR      = 3    # 日次seal実行時刻（3時）
+watchdog_mocka.py:16:last_seal_date = None
+watchdog_mocka.py:81:# ===== ⑦ 日次seal =====
+watchdog_mocka.py:82:def try_daily_seal():
+watchdog_mocka.py:83:    global last_seal_date
+watchdog_mocka.py:85:    if now.hour == SEAL_HOUR and now.date() != last_seal_date:
+watchdog_mocka.py:89:        # イベントを記録して停止するのみとし、実際のseal実行はきむら博士の
+watchdog_mocka.py:90:        # 明示指示(human_gate_override_event_id付与)による手動実行でのみ行う。
+watchdog_mocka.py:100:                "where_component": "watchdog_mocka.py:try_daily_seal",
+watchdog_mocka.py:102:                "why_purpose": "日次(SEAL_HOUR時)seal要求。自動実行はしない(Human Gate迂回防止、TODO_427/IC_20260708_001是正)。",
+watchdog_mocka.py:109:                "title": "AUTO_SEAL_PENDING_DAILY: 日次seal条件成立(watchdog)、seal実行は人間指示待ち",
+watchdog_mocka.py:114:                "impact_scope": "seal_pipeline",
+watchdog_mocka.py:117:                "free_note": "require_human_gate=True|source=AUTO_SEAL_DAILY_WATCHDOG",
+watchdog_mocka.py:119:            print("[⑦ mocka-seal] AUTO_SEAL_PENDING_DAILY記録のみ(自動seal実行なし、人間指示待ち)")
+watchdog_mocka.py:121:            print(f"[⑦ mocka-seal EVENT ERROR] {e}")
+watchdog_mocka.py:122:        last_seal_date = now.date()
+watchdog_mocka.py:150:            try_daily_seal()                             # ⑦

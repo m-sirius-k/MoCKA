@@ -1,0 +1,587 @@
+PlanningCaliber/lock_verification/sandbox_commit_harness.py:3:検証専用スクリプト。本番 governance/mocka_git_safe_commit.py のロジック
+PlanningCaliber/lock_verification/sandbox_commit_harness.py:25:    """本番mocka_git_safe_commit()のgit add-A/commit部分のみを模したロジック。
+add_synctodo.py:16:            [sys.executable, 'interface/mocka_firestore_sync.py', 'push'],
+app.py:615:        subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
+app.py:668:    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
+app.py:713:            _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app.py:756:        db_path = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:805:        db_path = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:1038:        "where_path": "mocka_bridge_v2", "why_purpose": url[:80],
+app.py:1049:        _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
+app.py:1103:        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app.py:1259:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:1316:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:1347:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:1405:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:1450:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:1566:        "record":     {"label": "Record",     "count": record_count,       "detail": "mocka_events.db総件数"},
+app.py:1704:    """TODO_153実装: ファイル生成後の自動mocka_write_event強制実行エンドポイント。
+app.py:1736:            "http://localhost:5002/agent/mocka_write_event",
+app.py:1926:        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app.py:2702:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:2742:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:2757:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app.py:2909:        db_path = os.path.join(ROOT_DIR, "data", "mocka_events.db")
+app.py:3386:            "mocka_endpoint": "http://127.0.0.1:5000"
+app.py:4037:    db_path = os.path.join(ROOT_DIR, "data", "mocka_events.db")
+app.py:4106:        _audit_con = _sq3.connect(os.path.join(ROOT_DIR, 'data', 'mocka_events.db'))
+app_backup_20260427_063833.py:236:        subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR)
+app_backup_20260427_063833.py:289:    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR)
+app_backup_20260427_063833.py:334:            _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_backup_20260427_063833.py:377:        _csv.writer(f).writerow([eid,ts_str,source,"collect","chat_import","mocka_bridge_v2",
+app_backup_20260427_063833.py:382:        _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
+app_backup_20260427_063833.py:436:        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_backup_20260427_063833.py:810:        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_bak_0501.py:310:        subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
+app_bak_0501.py:363:    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
+app_bak_0501.py:408:            _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_bak_0501.py:451:        db_path = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:500:        db_path = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:732:        "where_path": "mocka_bridge_v2", "why_purpose": url[:80],
+app_bak_0501.py:743:        _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
+app_bak_0501.py:797:        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_bak_0501.py:953:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:1010:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:1041:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:1099:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:1144:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:1263:        "record":     {"label": "Record",     "count": record_count,       "detail": "mocka_events.db総件数"},
+app_bak_0501.py:1532:        _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_bak_0501.py:1942:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:1987:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:2012:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_bak_0501.py:2059:        db = os.path.join(ROOT_DIR, 'data', 'mocka_events.db')
+app_broken.py:219:        [sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode],
+app_broken.py:267:            _pl = os.path.join(ROOT_DIR, "mocka_pipeline.py")
+app_broken.py:312:        _csv.writer(f).writerow([eid,ts_str,source,"collect","chat_import","mocka_bridge_v2",
+bootstrap/load_rules.py:5:    rule_path = Path(__file__).parent.parent / "docs" / "mocka_global_rules.md"
+caliber/chat_pipeline/mocka_caliber_server.py:2:mocka_caliber_server.py v5
+caliber/chat_pipeline/mocka_caliber_server.py:294:            "mocka_caliber_server.py", fpath.name, "server", "internal",
+caliber/chat_pipeline/mocka_caliber_server.py:571:    """mocka_events.dbのessenceテーブルから直接取得。HTTP依存ゼロ。"""
+caliber/chat_pipeline/mocka_caliber_server.py:574:        db = str(Path(__file__).parent.parent.parent / "data" / "mocka_events.db")
+caliber/chat_pipeline/mocka_caliber_server.py:682:        db  = str(Path(__file__).parent.parent.parent / "data" / "mocka_events.db")
+caliber/chat_pipeline/mocka_caliber_server.py:719:        "mocka_caliber_server.py", reasons_str, "phl_analyze",
+caliber/chat_pipeline/mocka_caliber_server_backup.py:2:mocka_caliber_server.py v5
+caliber/chat_pipeline/mocka_caliber_server_backup.py:275:            "mocka_caliber_server.py", fpath.name, "server", "internal",
+caliber/chat_pipeline/mocka_caliber_server_v4_backup.py:2:mocka_caliber_server.py v5
+caliber/chat_pipeline/mocka_caliber_server_v4_backup.py:275:            "mocka_caliber_server.py", fpath.name, "server", "internal",
+caliber/chat_pipeline/mocka_chat_capture.py:2:mocka_chat_capture.py
+caliber/chat_pipeline/mocka_chat_capture.py:4:  python scripts/mocka_chat_capture.py --url https://chatgpt.com/c/XXXX
+caliber/chat_pipeline/mocka_chat_capture.py:5:  python scripts/mocka_chat_capture.py --url https://claude.ai/chat/XXXX
+caliber/chat_pipeline/mocka_chat_capture.py:6:  python scripts/mocka_chat_capture.py --url https://gemini.google.com/app/XXXX
+caliber/chat_pipeline/mocka_chat_capture.py:9:  python scripts/mocka_chat_capture.py --login --source chatgpt
+caliber/chat_pipeline/mocka_chat_capture.py:82:            "mocka_chat_capture.py", url[:80], "cli", "external",
+caliber/chat_pipeline/mocka_chat_capture.py:121:        print(f"       python scripts/mocka_chat_capture.py --login --source {source}")
+caliber/chat_pipeline/mocka_condense_worker.py:87:            "mocka_condense_worker.py",fpath.name,"worker","internal",
+caliber/chat_pipeline/mocka_condense_worker.py:127:            "mocka_condense_worker.py",reduced_path.name,"worker","internal",
+check_all_dbs.py:6:    Path(r"C:\Users\sirok\MoCKA\data\mocka_events.db"),
+check_db.py:4:db = Path(r'C:\Users\sirok\MoCKA\mocka_events.db')
+check_mcp.py:1:﻿src = open('C:/Users/sirok/MoCKA/mocka_mcp_server.py', encoding='utf-8').read()
+check_utf8_mandate.py:40:CLI_DIRS = {"mocka_v3_eval", "runtime", "structural", "scripts"}
+check_utf8_mandate.py:44:    "main_loop", "mocka_watcher", "essence_auto_updater", "ping_generator",
+check_utf8_mandate.py:45:    "mecab_service", "gateway", "mocka_mcp_server", "mocka_caliber_server",
+check_uv.py:4:conn = sqlite3.connect(r'C:\Users\sirok\MoCKA\data\mocka_events.db')
+core_kernel/governance/contracts/event_contract.py:4:mocka_write_event records (Event Reference / EVENT_FOUNDATION_v1).
+core_kernel/governance/self_verification/evidence.py:47:        store_path = Path(tempfile.mkdtemp(prefix="mocka_governance_evidence_")) / "audit.jsonl"
+core_kernel/orchestra/persistence/sqlite_store.py:13:DEFAULT_DB_PATH = "core_kernel/orchestra/data/mocka_orchestra.db"
+cross_audit.py:27:DB       = ROOT / "data" / "mocka_events.db"
+cross_audit.py:105:    # mocka_events.dbにも記録
+cross_audit.py:221:                # DANGER以上はmocka_events.dbに記録
+cross_audit.py:293:    """クロス監査イベントをmocka_events.dbにも記録する。"""
+deploy/mocka_mcp_server_vps.py:2:mocka_mcp_server_vps.py v1.5.1
+deploy/mocka_mcp_server_vps.py:18:DB_PATH        = _HOME / "data" / "mocka_events.db"
+deploy/mocka_mcp_server_vps.py:166:    {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+deploy/mocka_mcp_server_vps.py:167:    {"name":"mocka_get_essence","description":"MoCKA本質サマリーを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+deploy/mocka_mcp_server_vps.py:168:    {"name":"mocka_get_todo","description":"MOCKA_TODO.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+deploy/mocka_mcp_server_vps.py:169:    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO.jsonに追加する","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
+deploy/mocka_mcp_server_vps.py:170:    {"name":"mocka_update_todo","description":"TODO statusを更新する","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string"},"note":{"type":"string"}},"required":["id","status"]}},
+deploy/mocka_mcp_server_vps.py:171:    {"name":"mocka_list_events","description":"最新Nイベントを返す","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
+deploy/mocka_mcp_server_vps.py:172:    {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
+deploy/mocka_mcp_server_vps.py:173:    {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
+deploy/mocka_mcp_server_vps.py:174:    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description"]}},
+deploy/mocka_mcp_server_vps.py:175:    {"name":"mocka_seal","description":"SHA-256ハッシュ検証","inputSchema":{"type":"object","properties":{},"required":[]}},
+deploy/mocka_mcp_server_vps.py:180:        if name == "mocka_get_overview":
+deploy/mocka_mcp_server_vps.py:187:        elif name == "mocka_get_essence":
+deploy/mocka_mcp_server_vps.py:200:        elif name == "mocka_get_todo":
+deploy/mocka_mcp_server_vps.py:207:        elif name == "mocka_add_todo":
+deploy/mocka_mcp_server_vps.py:234:        elif name == "mocka_update_todo":
+deploy/mocka_mcp_server_vps.py:260:        elif name == "mocka_list_events":
+deploy/mocka_mcp_server_vps.py:265:        elif name == "mocka_read_event":
+deploy/mocka_mcp_server_vps.py:271:        elif name == "mocka_search":
+deploy/mocka_mcp_server_vps.py:278:        elif name == "mocka_write_event":
+deploy/mocka_mcp_server_vps.py:287:                "where_path": "mocka_mcp_server_vps.py",
+deploy/mocka_mcp_server_vps.py:301:        elif name == "mocka_seal":
+docs/archive/timeline_visualizer.py:9:dot.append("digraph mocka_time_tree {")
+experiments/collect_all_mocka.py:49:    out = "results/A1_all_mocka_" + ts + ".json"
+experiments/generate_core.py:85:        'pipeline': 'mocka_core_v1_local'
+experiments/generate_core_v2.py:83:        'pipeline': 'mocka_core_v2_recurrence_enhanced'
+experiments/generate_core_v2.py:127:    'pipeline': 'mocka_essence_v2',
+experiments/generate_essence.py:51:    'pipeline': 'mocka_essence_v1_local',
+experiments/scan_csvs.py:8:    r'C:\Users\sirok\MoCKA\scripts\analysis\mocka_repo_analysis_20260328_1754.csv',
+fix_db_switch.py:8:    'MOCKA_ROOT / "data" / "mocka_events.db"'
+fix_db_switch.py:53:print('DBパス:', 'mocka_events.db' in txt)
+fix_dbpath.py:5:old = r'MOCKA_ROOT / "mocka_events.db"'
+fix_mcp.py:1:﻿src = open('C:/Users/sirok/MoCKA/mocka_mcp_server.py', encoding='utf-8').read()
+fix_mcp.py:2:old = '"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"}},"required":["title","description"]}'
+fix_mcp.py:3:new = '"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description"]}'
+fix_mcp.py:5:    open('C:/Users/sirok/MoCKA/mocka_mcp_server.py', 'w', encoding='utf-8').write(src.replace(old, new))
+fix_mcp.py:9:    print(repr(src[src.find('mocka_write_event'):src.find('mocka_write_event')+200]))
+fix_mcp2.py:1:﻿src = open('C:/Users/sirok/MoCKA/mocka_mcp_server.py', encoding='utf-8').read()
+fix_mcp2.py:5:    open('C:/Users/sirok/MoCKA/mocka_mcp_server.py', 'w', encoding='utf-8').write(src.replace(old, new))
+fix_subprocess.py:10:OLD = 'subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR)'
+fix_subprocess.py:11:NEW = 'subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", text, "collaborate"], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})'
+fix_sync2.py:3:TARGET = Path('C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py')
+fix_sync3.py:3:TARGET = Path('C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py')
+fix_sync4.py:3:TARGET = Path('C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py')
+fix_sync5.py:3:TARGET = Path('C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py')
+fix_sync6.py:3:TARGET = Path('C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py')
+fix_sync_encoding.py:4:TARGET = Path('C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py')
+fix_synctodo2.py:11:            [sys.executable, 'interface/mocka_firestore_sync.py', 'push'],
+fix_synctodo2.py:26:            'mocka_firestore_sync',
+fix_synctodo2.py:27:            'C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py'
+fix_synctodo3.py:13:            'mocka_firestore_sync',
+fix_synctodo3.py:14:            'C:/Users/sirok/MoCKA/interface/mocka_firestore_sync.py'
+gateway/_check_schema.py:2:conn = sqlite3.connect(r'C:\Users\sirok\MoCKA\data\mocka_events.db')
+gateway/adapter_gemini.py:22:    "name": "mocka_record_event",
+gateway/adapter_gemini.py:99:            "name": "mocka_record_event",
+gateway/adapter_genspark.py:26:    "name": "mocka_record_event",
+gateway/adapter_genspark.py:124:        "レポート・比較・情報整理を完了した際は必ずmocka_record_event関数を呼び出して記録してください。"
+gateway/adapter_gpt.py:32:    "name": "mocka_record_event",
+gateway/adapter_gpt.py:115:    "name": "mocka_read_context",
+gateway/adapter_gpt.py:250:        "禁止事項を確認したうえで、mocka_read_context関数を呼び出し、"
+gateway/adapter_gpt.py:252:        "重要な判断・回答・変更を行った際は必ずmocka_record_event関数を呼び出して記録してください。"
+gateway/adapter_perplexity.py:22:    "name": "mocka_record_event",
+gateway/adapter_perplexity.py:114:        "Web調査・情報収集・一次ソース確認を行った際は必ずmocka_record_event関数を呼び出して記録してください。"
+gateway/auth.py:15:DB_PATH      = Path(__file__).parent.parent / "data" / "mocka_events.db"
+gateway/connector_caliber.py:7:from mocka_index_writer import MoCKAIndex, IndexWriter
+gateway/connector_log.py:39:_DB_PATH = Path(os.environ.get("MOCKA_ROOT", r"C:\Users\sirok\MoCKA")) / "data" / "mocka_events.db"
+gateway/context_builder.py:15:DB_PATH       = DATA_DIR / "mocka_events.db"
+gateway/gateway.py:41:DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
+gateway/lifecycle_manager.py:22:  mocka_write_event             → 監査イベント記録
+gateway/mocka_index_writer.py:109:    DB_PATH = Path(__file__).parent.parent / "data" / "mocka_events.db"
+governance/human_gate_cli.py:16:- Event Store（data/mocka_events.db, human_gate_events テーブル）の複製・変更
+governance/human_gate_cli.py:19:- mocka_git_safe_commit()の実行（承認結果の event_id を後続でどう渡すかは
+governance/mocka_git_safe_commit.py:6:mocka_git_safe_commit.py
+governance/mocka_git_safe_commit.py:30:# TODO_413: mocka_git_safe_commit()をGit操作の制度的責任点(Institutional
+governance/mocka_git_safe_commit.py:34:_GIT_EVENT_ENDPOINT = "http://localhost:5002/agent/mocka_write_event"
+governance/mocka_git_safe_commit.py:35:_GIT_EVENT_FALLBACK_LOG = Path(__file__).resolve().parent / "mocka_git_safe_commit_ledger_fallback.log"
+governance/mocka_git_safe_commit.py:77:    """mocka_git_safe_commit()の呼び出し元を、呼び出し元に一切変更を求めず
+governance/mocka_git_safe_commit.py:78:    スタックから自動検出する(TODO_413: 呼び出し元にmocka_write_eventを
+governance/mocka_git_safe_commit.py:82:        # stack[0]=_detect_caller, stack[1]=mocka_git_safe_commit, stack[2]=実際の呼び出し元
+governance/mocka_git_safe_commit.py:97:    git操作自体はブロックしない(tools/mocka_auto_record.pyと同じ方針)。
+governance/mocka_git_safe_commit.py:105:        "actor=script:mocka_git_safe_commit",
+governance/mocka_git_safe_commit.py:122:        "author": "script:mocka_git_safe_commit",
+governance/mocka_git_safe_commit.py:124:        "how_trigger": f"mocka_git_safe_commit/{caller}",
+governance/mocka_git_safe_commit.py:131:        # 2026-07-10実測: /agent/mocka_write_eventの応答は約5秒かかる場合がある
+governance/mocka_git_safe_commit.py:132:        # (tools/mocka_auto_record.py等の既存timeout=3と同条件で計測、常時fallback
+governance/mocka_git_safe_commit.py:138:        print(f"[mocka_git_safe_commit] ledger recorded: {eid} ({result_state})")
+governance/mocka_git_safe_commit.py:146:        print(f"[mocka_git_safe_commit] WARN ledger record failed ({e}), logged to fallback")
+governance/mocka_git_safe_commit.py:160:def mocka_git_safe_commit(paths=None, message="MoCKA auto commit",
+governance/mocka_git_safe_commit.py:174:          承認の根拠となったPHL event_id(mocka_write_eventで記録済みのもの)を渡した
+governance/mocka_git_safe_commit.py:216:                print(f"[mocka_git_safe_commit] ERROR: {result['error']}")
+governance/mocka_git_safe_commit.py:232:                print(f"[mocka_git_safe_commit] ERROR: {result['error']}")
+governance/mocka_git_safe_commit.py:241:            print(f"[mocka_git_safe_commit] {len(core_files)} core system file(s) "
+governance/mocka_git_safe_commit.py:250:            print(f"[mocka_git_safe_commit] {len(core_files)} core system file(s) "
+governance/mocka_git_safe_commit.py:260:            print("[mocka_git_safe_commit] no staged changes, skip commit")
+governance/mocka_git_safe_commit.py:302:            print(f"[mocka_git_safe_commit] POST-COMMIT VIOLATION: core system "
+governance/mocka_git_safe_commit.py:308:            print(f"[mocka_git_safe_commit] post-commit check OK: "
+governance/mocka_git_safe_commit.py:313:            print(f"[mocka_git_safe_commit] post-commit check OK: "
+governance/mocka_git_safe_commit.py:329:                print(f"[mocka_git_safe_commit] pushed {result['commit_hash'][:7]}")
+governance/mocka_git_safe_commit.py:332:                print(f"[mocka_git_safe_commit] push failed: {result['error']}")
+governance/mocka_git_safe_commit.py:337:        print(f"[mocka_git_safe_commit] GIT_RECORD_FAILED {e}")
+governance/seal_governance_gate.py:16:禁止(Decision裁定通り): anchor_update.py・mocka_git_safe_commit.py・
+governance/seal_governance_wrapper.py:12:mocka_git_safe_commit()(root引数でsandbox化)・calc_summary_hash.py
+governance/seal_governance_wrapper.py:34:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+governance/seal_governance_wrapper.py:53:    seal request -> GL7 validation(Gate B) -> mocka_git_safe_commit(Gate A)
+governance/seal_governance_wrapper.py:91:        commit_result = mocka_git_safe_commit(message=message, push=False, root=self.sandbox_root)
+governance/seal_governance_wrapper.py:145:        mocka_git_safe_commit(message=f"anchor: re-seal after {short}", push=False, root=self.sandbox_root)
+governance/shadow_seal_adapter.py:20:   内部で使う既存の安全な部品(mocka_git_safe_commit・calc_summary_hash.py)は
+governance/shadow_seal_adapter.py:42:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+governance/shadow_seal_adapter.py:110:    (mocka_git_safe_commit・calc_summary_hash.py)をsandbox_root配下で
+governance/shadow_seal_adapter.py:124:    commit_result = mocka_git_safe_commit(message="shadow adapter test commit", push=False, root=sandbox_root)
+interface/Essence_Direct_Parser.py:29:        r'\b(events\.csv|lever_essence|ping_latest|app\.py|router\.py|mocka_mcp|content\.js|background\.js|essence_classifier|ping_generator)\b',
+interface/check_review.py:3:db = r'C:\Users\sirok\MoCKA\data\mocka_events.db'
+interface/cross_audit.py:27:DB       = ROOT / "data" / "mocka_events.db"
+interface/cross_audit.py:105:    # mocka_events.dbにも記録
+interface/cross_audit.py:221:                # DANGER以上はmocka_events.dbに記録
+interface/cross_audit.py:293:    """クロス監査イベントをmocka_events.dbにも記録する（Phase5-1: 生SQL INSERT禁止 → Gate経由）。"""
+interface/db_helper.py:30:DB_PATH     = MOCKA_ROOT / "data" / "mocka_events.db"
+interface/deviation_classifier.py:22:    "PROTOCOL_SKIP":      "プロトコルスキップ。mocka_get_overview/get_todoを呼ばずに作業開始",
+interface/essence_auto_updater.py:15:DB_PATH     = ROOT_DIR / "data" / "mocka_events.db"
+interface/essence_condenser.py:291:            "python watchdog_mocka_v2.py で監視開始。BOMゼロ・API通信ゼロ・D_i=1。"
+interface/evaluator_dynamic.py:9:PROTOCOL_KW = ["mocka_get_overview","mocka_get_todo","mocka_write_event","mocka_update_todo","session_start","protocol"]
+interface/evaluator_dynamic.py:16:    elif ac == "mocka_router": s += 0.1
+interface/evaluator_dynamic.py:51:    if wt=="save" and row.get("who_actor")=="mocka_router":
+interface/gate_policy.py:70:# data/mocka_events.db移行時(2026-06-16)に実在が確認された値のみを列挙する。
+interface/guidelines_engine.py:11:DB_PATH    = MOCKA_ROOT / "data" / "mocka_events.db"
+interface/guidelines_reviewer.py:18:DB:     C:\\Users\\sirok\\MoCKA\\data\\mocka_events.db
+interface/guidelines_reviewer.py:33:DB_PATH         = os.path.join(MOCKA_ROOT, "data", "mocka_events.db")
+interface/guidelines_reviewer.py:379:    print(f"\n  保存先: mocka_events.db → guidelines_reviewed テーブル")
+interface/guidelines_to_essence.py:9:DB_PATH = 'data/mocka_events.db'
+interface/health_check.py:8:  python health_check.py --component mocka_server  # 単体チェック
+interface/health_check.py:22:from mocka_endpoints import get_endpoint_url
+interface/health_check.py:32:MCP_URL       = get_endpoint_url("mocka_event_gateway", "write_event")
+interface/health_check.py:62:    "mocka_server": {
+interface/health_check.py:64:        "url": get_endpoint_url("mocka_server", "status"),
+interface/health_check.py:101:        "path": "C:/Users/sirok/MoCKA/data/mocka_events.db",
+interface/health_check.py:109:        "path": "C:/Users/sirok/MoCKA/mocka_mcp_server.py",
+interface/health_check.py:117:        "url": get_endpoint_url("mocka_server", "relay"),
+interface/health_check.py:263:    db_path = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
+interface/health_check.py:374:    mocka_watcher.py の KEY_PATH 由来のドライブ文字が接続されているか確認する。
+interface/health_check.py:582:    """現在のmocka_mcp_server.pyのハッシュをHASH_STOREに書き込んで承認する"""
+interface/health_check.py:663:        server_fails = [r for r in fails if r["component"] in ("mocka_server", "caliber_pipeline")]
+interface/heinrich_engine.py:8:DB_PATH = BASE / 'data' / 'mocka_events.db'
+interface/impact_analyzer.py:25:MCP_URL = "http://localhost:5002/agent/mocka_write_event"
+interface/language_matcher.py:21:DB_PATH = BASE / 'data' / 'mocka_events.db'
+interface/matcher_v2.py:22:DB_PATH = BASE / 'data' / 'mocka_events.db'
+interface/matcher_v3.py:17:DB_PATH = BASE / 'data' / 'mocka_events.db'
+interface/mentor_engine.py:137:    "R01": "top_todoの最優先項目から着手し、ファイル変更前後でmocka_write_event(CHANGE_START/CHANGE_DONE)を必ず記録すること。",
+interface/mocka_endpoints.py:2:mocka_endpoints.py -- Endpoint Registry Resolver
+interface/mocka_events_sync.py:2:MOCKA events.csv → Firestore mocka_events 同期スクリプト v2
+interface/mocka_events_sync.py:23:COLLECTION = "mocka_events"
+interface/mocka_events_sync.py:66:    print("=== events.csv → Firestore mocka_events 同期 ===\n")
+interface/mocka_firestore_sync.py:6:  python mocka_firestore_sync.py push   # ローカル→Firebase
+interface/mocka_firestore_sync.py:7:  python mocka_firestore_sync.py pull   # Firebase→ローカル
+interface/mocka_firestore_sync.py:8:  python mocka_firestore_sync.py watch  # 60秒ごとに自動同期
+interface/mocka_firestore_sync.py:135:    else: print("使い方: python mocka_firestore_sync.py [push|pull|watch]")
+interface/mocka_todo_sync.py:2:mocka_todo_sync.py - ローカルTODO.json -> Firestore 双方向同期
+interface/mocka_todo_sync.py:3:配置: C:/Users/sirok/MoCKA/interface/mocka_todo_sync.py
+interface/morphology_engine.py:18:DB_PATH = BASE / 'data' / 'mocka_events.db'
+interface/morphology_engine.py:251:        'mocka_sender邵ｺ・ｮ驕橸ｽｼ陷貞調・｢・ｺ髫ｱ讎奇ｽｮ蠕｡・ｺ繝ｻ,
+interface/patch_background.py:18:MENU_ITEMS = """    chrome.contextMenus.create({ id:'mocka_hint',  title:'ヒント！（成功シグナル）', contexts:['selection','page'] });
+interface/patch_background.py:19:    chrome.contextMenus.create({ id:'mocka_great', title:'グレイト！（強い成功シグナル）', contexts:['selection','page'] });"""
+interface/patch_background.py:24:  if (info.menuItemId === 'mocka_hint' || info.menuItemId === 'mocka_great') {
+interface/patch_background.py:26:    const outcome = info.menuItemId === 'mocka_great' ? 'success_great' : 'success_hint';
+interface/patch_background.py:27:    const label   = info.menuItemId === 'mocka_great' ? 'グレイト！' : 'ヒント！';
+interface/patch_background.py:61:    if "mocka_hint" in src:
+interface/patch_background.py:65:    # PATCH 1: mocka_collaborate の直後にメニュー2件追加
+interface/patch_background.py:66:    target = "id:'mocka_collaborate'"
+interface/patch_background.py:69:        print("[ERROR] mocka_collaborate が見つかりません")
+interface/patch_background.py:77:    # "if (info.menuItemId === 'mocka_share')" の直前
+interface/patch_background.py:78:    target2 = "if (info.menuItemId === 'mocka_share')"
+interface/patch_background.py:81:        print("[ERROR] mocka_share ハンドラが見つかりません")
+interface/ping_generator.py:41:DB_PATH       = Path("C:/Users/sirok/MoCKA/data/mocka_events.db")
+interface/policy_generator.py:27:            "mocka_mcp_server.pyへのwrite操作前にSHA-256ハッシュを検証する",
+interface/policy_generator.py:31:        "target_files": ["mocka_mcp_server.py", "interface/router.py", "app.py"],
+interface/policy_generator.py:38:            "orchestratorはmocka_get_overviewを呼ぶまで作業開始を禁止する",
+interface/policy_generator.py:42:        "target_files": ["tools/mocka_orchestra_v10.py"],
+interface/proposal_schema.py:18:  1. MoCKA イベント台帳 (events.db) — mocka_write_eventで記録
+interface/proposal_schema.py:160:        """mocka_mcp_server経由でイベント台帳に記録する"""
+interface/proposal_schema.py:163:            mocka_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+interface/proposal_schema.py:164:            if mocka_root not in sys.path:
+interface/proposal_schema.py:165:                sys.path.insert(0, mocka_root)
+interface/risk_scorer.py:23:MCP_URL  = "http://localhost:5002/agent/mocka_write_event"
+interface/router.py:3:# MoCKA Essence Injected: E20260401_008,2026-04-01T11:33:18,mocka_router,save,router,interface/router.py,Phase5ASSED,cli,internal,in_operation,normal,A,outfield,[save] Phase5ASSED,11/11 PASS墓慣つ晢oCKA壹晢憺屮会滄晏擅つ晢026-04-01 Claude Sonnet 4.6,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
+interface/router.py:196:        "who_actor": "mocka_router",
+interface/router.py:216:            "who_actor": "mocka_router",
+interface/router.py:228:        orchestra_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools", "mocka_orchestra_v10.py")
+interface/router.py:235:            "who_actor": "mocka_router",
+interface/router.py:247:        orchestra_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools", "mocka_orchestra_v10.py")
+interface/schema_audit.py:33:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+interface/tech_watcher.py:53:MCP_URL      = "http://localhost:5002/agent/mocka_write_event"
+interface/user_voice_importer.py:25:DB_PATH = ROOT / "data" / "mocka_events.db"
+interface/user_voice_importer.py:26:IMPORT_DIR = Path("X:/down/mocka_import")
+interface/user_voice_importer.py:28:MCP_URL    = "http://localhost:5002/agent/mocka_write_event"
+living_room/hub.py:43:DB_PATH = str(_REPO_ROOT / "data" / "mocka_events.db")
+make_movement_map.py:15:        "classification": "mocka_Movement",
+make_movement_map.py:25:        "source": "mocka-joints/mocka-infield/identity/mocka_constitution.md",
+make_movement_map.py:51:    "mocka_Movement": {
+make_movement_map.py:253:                "identity/mocka_constitution.md": "MoCKA憲法",
+make_movement_map.py:255:                "state/mocka_state.db": "SQLite状態DB"
+make_movement_map.py:265:                "mocka_doctor.ps1": "システム健全性診断",
+make_movement_map.py:285:        "primary": "mocka_Movement（通常運用）",
+make_movement_map.py:293:            "MoCKA_clean_test__FROZEN","mocka_verify_tmp",
+make_movement_map.py:294:            "_mocka_phase22_checkout","phase2c_verify",
+migrate_sessions.py:2:claude_sessions.csv → mocka_events.db(claude_sessionsテーブル) 移行スクリプト
+migrate_sessions.py:8:DB_PATH  = Path(r"C:\Users\sirok\MoCKA\data\mocka_events.db")
+mocka3/glk_runtime_bridge/events.py:5:Wiring to MoCKA's mocka_write_event (the real ledger) remains future work.
+mocka_caliber_sqlite_patch.py:1:# mocka_caliber_sqlite_patch.py
+mocka_caliber_sqlite_patch.py:3:# python mocka_caliber_sqlite_patch.py
+mocka_caliber_sqlite_patch.py:8:TARGET = Path("C:/Users/sirok/MoCKA/mocka_caliber_server.py")
+mocka_caliber_sqlite_patch.py:17:EVENTS_DB  = ROOT / "data" / "mocka_events.db"'''
+mocka_caliber_sqlite_patch.py:73:    print("[patch] mocka_caliber_server.py SQLite対応パッチ適用開始")
+mocka_mcp_server.py:2:mocka_mcp_server.py v1.5.0
+mocka_mcp_server.py:4:変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
+mocka_mcp_server.py:24:# TODO_428/DC_20260709_001: 一次データ駆動のCurrent View Generator(additive、mocka_get_overviewの
+mocka_mcp_server.py:39:        "mocka_get_overview", "mocka_get_essence", "mocka_get_todo", "mocka_list_events",
+mocka_mcp_server.py:40:        "mocka_read_event", "mocka_search", "mocka_get_incidents", "mocka_get_guidelines",
+mocka_mcp_server.py:41:        "mocka_get_command_center", "mocka_check_utf8",
+mocka_mcp_server.py:74:DB_PATH        = BASE / "data" / "mocka_events.db"
+mocka_mcp_server.py:208:    # mocka_write_event発火の唯一の集約点でWorkingContextを更新し、
+mocka_mcp_server.py:210:    # next_event_id()には一切触れない。mocka_events.dbへの新規書き込みも行わない
+mocka_mcp_server.py:244:    # 例外を上位(mocka_update_todo側)へ伝播させ、記録なき差し戻しを許可しない。
+mocka_mcp_server.py:253:        "where_path":      "mocka_mcp_server.py",
+mocka_mcp_server.py:256:        "how_trigger":     "mocka_update_todo(reopen)",
+mocka_mcp_server.py:449:    {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:450:    {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:451:    {"name":"mocka_get_todo","description":"MOCKA_TODO_ACTIVE.json を返す(ACTIVE層のみ。LOCKED/ARCHIVE層は対象外)。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:452:    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO_ACTIVE.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。通常TODOには指定しない（省略時はフィールド自体を付与しない）"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
+mocka_mcp_server.py:453:    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/contract_status/noteを個別に更新可。未指定フィールドは既存値を保持。completedへ移動済みのTODOは直接編集不可(TODO_442)。reason付きでstatusを完了以外へ指定した場合のみ差し戻し(todosへ復帰)を許可する。差し戻し後は通常のPATCH経路で再度完了にすることも可能(往復は正常業務)。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"},"reason":{"type":"string","description":"completed状態のTODOを差し戻す場合のみ必須。3文字以上、実質的な理由が必要"}},"required":["id"]}},
+mocka_mcp_server.py:454:    {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
+mocka_mcp_server.py:455:    {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
+mocka_mcp_server.py:456:    {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
+mocka_mcp_server.py:457:    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description","author"]}},
+mocka_mcp_server.py:458:    {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:459:    {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
+mocka_mcp_server.py:460:    {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:461:    {"name":"mocka_get_command_center","description":"COMMAND CENTER（localhost:5000）の現在状態を取得する","inputSchema":{"type":"object","properties":{},"required":[]}},
+mocka_mcp_server.py:462:    {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}},
+mocka_mcp_server.py:463:    {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。envを明示しない場合は必ずtest環境を参照する(deny-by-default)。","inputSchema":{"type":"object","properties":{"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。本番を見る場合は明示的にprodを指定すること。"}},"required":[]}},
+mocka_mcp_server.py:464:    {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。envを明示しない場合は必ずtest環境に書き込む(deny-by-default、本番誤爆防止)。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データへ書き込み, test=検証用データへ書き込み(既定)。本番へ書く場合は明示的にprodを指定すること。"}},"required":["layer","record"]}},
+mocka_mcp_server.py:465:    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}},
+mocka_mcp_server.py:466:    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
+mocka_mcp_server.py:467:    {"name":"mocka_decision_get","description":"decision_idを指定してDecision Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string"}},"required":["decision_id"]}},
+mocka_mcp_server.py:468:    {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
+mocka_mcp_server.py:469:    {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
+mocka_mcp_server.py:470:    {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
+mocka_mcp_server.py:471:    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
+mocka_mcp_server.py:503:        if name == "mocka_get_overview":
+mocka_mcp_server.py:519:        elif name == "mocka_get_essence":
+mocka_mcp_server.py:525:        elif name == "mocka_get_todo":
+mocka_mcp_server.py:531:        elif name == "mocka_add_todo":
+mocka_mcp_server.py:564:            print(f"[MCP] mocka_add_todo: {todo_id} added")
+mocka_mcp_server.py:567:        elif name == "mocka_update_todo":
+mocka_mcp_server.py:642:        elif name == "mocka_list_events":
+mocka_mcp_server.py:647:        elif name == "mocka_read_event":
+mocka_mcp_server.py:653:        elif name == "mocka_search":
+mocka_mcp_server.py:660:        elif name == "mocka_write_event":
+mocka_mcp_server.py:685:                "where_path":      "mocka_mcp_server.py",
+mocka_mcp_server.py:734:        elif name == "mocka_seal":
+mocka_mcp_server.py:745:        elif name == "mocka_get_incidents":
+mocka_mcp_server.py:780:        elif name == "mocka_get_guidelines":
+mocka_mcp_server.py:790:        elif name == "mocka_get_command_center":
+mocka_mcp_server.py:807:        elif name == "mocka_check_utf8":
+mocka_mcp_server.py:839:        elif name == "mocka_get_command_center":
+mocka_mcp_server.py:852:        elif name == "mocka_search_incidents":
+mocka_mcp_server.py:883:        elif name == "mocka_get_phl":
+mocka_mcp_server.py:904:        elif name == "mocka_get_spp":
+mocka_mcp_server.py:913:                    "全AIインタラクションはmocka_write_eventで記録必須",
+mocka_mcp_server.py:918:                "aies_paper": "Submission 282 / mocka_paper_FINAL_v9_20260509.pdf"
+mocka_mcp_server.py:923:        elif name == "mocka_registry_get":
+mocka_mcp_server.py:933:        elif name == "mocka_registry_add":
+mocka_mcp_server.py:948:            print(f"[MCP] mocka_registry_add: layer={layer} env={env} added")
+mocka_mcp_server.py:951:        elif name == "mocka_registry_current_state":
+mocka_mcp_server.py:962:        elif name == "mocka_decision_write":
+mocka_mcp_server.py:999:            # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
+mocka_mcp_server.py:1009:                    "where_path":      "mocka_mcp_server.py",
+mocka_mcp_server.py:1021:                print(f"[MCP] mocka_decision_write companion event failed: {_companion_err}", flush=True)
+mocka_mcp_server.py:1025:        elif name == "mocka_decision_get":
+mocka_mcp_server.py:1032:        elif name == "mocka_decision_list":
+mocka_mcp_server.py:1047:        elif name == "mocka_integrity_write":
+mocka_mcp_server.py:1087:        elif name == "mocka_integrity_get":
+mocka_mcp_server.py:1094:        elif name == "mocka_integrity_list":
+mocka_pipeline.py:2:mocka_pipeline.py
+mocka_pipeline.py:99:        row = [eid, ts, "pipeline", "essence_update", "mocka_pipeline",
+mocka_v3_eval/make_overview_v23.py:48:data["repositories"]["heart"]["key_paths"]["essence_to_packet"] = "mocka_v3_eval/essence_to_packet.py"
+mocka_v3_eval/make_overview_v23.py:49:data["repositories"]["heart"]["key_paths"]["recurrence_injector"] = "mocka_v3_eval/recurrence_injector.py"
+mocka_v3_eval/mocka_full_math_analysis.py:3:mocka_full_math_analysis.py
+mocka_v3_eval/mocka_n_expansion_pipeline.py:3:mocka_n_expansion_pipeline.py
+mocka_v3_eval/mocka_observability_analysis.py:3:mocka_observability_analysis.py
+mocka_v3_eval/mocka_observability_analysis.py:283:        "mocka_start"   : MOCKA_START.isoformat(),
+mocka_v3_eval/mocka_verification_v1to6.py:3:mocka_verification_v1to6.py
+mocka_v3_eval/mocka_verification_v1to6.py:146:        "mocka_start":MOCKA_START.isoformat(),
+mocka_v3_eval/run_experiment_A_v3.py:37:CONDITION       = "no_mocka_baseline"
+mocka_v3_eval/run_experiment_A_v4.py:26:CONDITION              = "no_mocka_baseline"
+phi_os/audit_trigger.py:27:DB_PATH = ROOT / "data" / "mocka_events.db"
+phi_os/audit_trigger.py:29:MCP_URL = "http://localhost:5002/agent/mocka_write_event"
+phi_os/context/context_runtime.py:173:# mocka_mcp_server.py（別プロセス）から mocka_write_event 完了直後に呼ばれる。
+phi_os/context/context_runtime.py:174:# mocka_events.db への新規イベント書き込み・next_event_id()の呼び出しは一切行わない
+phi_os/context/context_scheduler.py:4:WorkingContext.live_update() と同じ呼び出し元(mocka_write_event)から呼ばれる軽量トリガー。
+phi_os/context/memory_context.py:14:_DB_PATH = Path(__file__).parents[2] / "data" / "mocka_events.db"
+phi_os/context/working_context.py:114:        mocka_write_event発火時に呼ばれ、working_context_latest.json を直接更新する。
+phi_os/event_bus.py:15:DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+phi_os/event_gate.py:18:# Single Truth DB — data/mocka_events.db (絶対パス解決)
+phi_os/event_gate.py:20:DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+phi_os/event_gate.py:120:    Flask route(/api/gate/event)とMCP server(mocka_write_event)のいずれの
+phi_os/event_replay.py:5:# 唯一の真実層は phi_os.event_gate.process_event() / data/mocka_events.db のままであり、
+phi_os/event_replay.py:15:DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+phi_os/human_gate.py:21:DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+phi_os/integrity.py:40:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+phi_os/integrity.py:248:            "compare with backup data/mocka_events_pre_*.db to find the diverging seq, "
+phi_os/integrity_routes.py:15:DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+phi_os/process_manager.py:31:MCP_URL  = "http://localhost:5002/agent/mocka_write_event"
+phi_os/process_manager.py:71:    "mocka_app": {
+phi_os/process_manager.py:78:    "mocka_mcp": {
+phi_os/process_manager.py:79:        "cmd": ["python", "mocka_mcp_server.py"],
+phi_os/process_manager.py:85:    "mocka_caliber": {
+phi_os/process_manager.py:86:        "cmd": ["python", "caliber/chat_pipeline/mocka_caliber_server.py"],
+phi_os/process_manager.py:92:    "mocka_connector": {
+phi_os/reference_resolver.py:3:# DC_20260705_010準拠。KN-004 Registry(mocka_registry_get/add)とは別レイヤーであり、
+phi_os/tests/test_gate_validator.py:21:        "where_path": "mocka_mcp_server.py",
+reality_sync/sync_registry.py:58:    "mocka_mcp_server.py",
+reality_sync/sync_registry.py:71:    "caliber/chat_pipeline/mocka_caliber_server.py",
+relay/replay_engine.py:6:# あちらはDB(data/mocka_events.db)に永続化された本番イベントを対象とする
+reproduce_mocka.py:74:def mocka_calc_hash(event: dict) -> str:
+reproduce_mocka.py:82:def mocka_new_event(type_: str, action, prev_hash: str) -> dict:
+reproduce_mocka.py:90:    event["event_hash"] = mocka_calc_hash(event)
+reproduce_mocka.py:93:def mocka_verify_chain(ledger: list) -> tuple:
+reproduce_mocka.py:96:        expected = mocka_calc_hash(e)
+reproduce_mocka.py:117:        ("mocka_mcp_server.py",       "MCPサーバー (port 5002)"),
+reproduce_mocka.py:148:        e1 = mocka_new_event("TEST", "GENESIS_TEST", GENESIS_HASH)
+reproduce_mocka.py:151:              e1["event_hash"] == mocka_calc_hash(e1))
+reproduce_mocka.py:159:            e = mocka_new_event("TEST", f"ACTION_{i}", prev)
+reproduce_mocka.py:162:        ok, detail = mocka_verify_chain(ledger)
+reproduce_mocka.py:170:            e = mocka_new_event("TEST", f"ACT_{i}", prev)
+reproduce_mocka.py:175:        ok, detail = mocka_verify_chain(ledger)
+reproduce_mocka.py:184:            e = mocka_new_event("TEST", f"ACT_{i}", prev)
+reproduce_mocka.py:189:        ledger[2]["event_hash"] = mocka_calc_hash(ledger[2])  # ハッシュは正しいが連鎖が切れる
+reproduce_mocka.py:190:        ok, detail = mocka_verify_chain(ledger)
+reproduce_mocka.py:197:        e = mocka_new_event("TEST", "CRLF_TEST\r\naction", GENESIS_HASH)
+reproduce_mocka.py:198:        h1 = mocka_calc_hash(e)
+reproduce_mocka.py:200:        h2 = mocka_calc_hash(e)
+reproduce_mocka.py:213:# ─── M-SCENARIO-03: mocka_Movement 8ステージ試験 ─────────────────────────────
+reproduce_mocka.py:216:    print(f"\n{BOLD}[M-S-03] mocka_Movement 8ステージ試験{RESET}")
+reproduce_mocka.py:228:            e = mocka_new_event("MOVEMENT", stage, prev)
+reproduce_mocka.py:231:        ok, detail = mocka_verify_chain(ledger)
+reproduce_mocka.py:386:        ok, detail = mocka_verify_chain(ledger)
+reproduce_mocka.py:486:            e = mocka_new_event("LOAD_TEST", f"action_{i:04d}", prev)
+reproduce_mocka.py:490:        ok, detail = mocka_verify_chain(ledger)
+reproduce_mocka.py:500:            e = mocka_new_event("UNIQUE_TEST", f"act_{i}", prev)
+reproduce_mocka.py:513:        h1 = mocka_calc_hash(e)
+reproduce_mocka.py:514:        h2 = mocka_calc_hash(e)
+reproduce_mocka.py:577:        run_test("M-S-09-c", "mocka_mcp_server (port 5002) /health", t_mcp)
+reproduce_mocka.py:579:        skip_test("M-S-09-c", "mocka_mcp_server (port 5002)", "サーバー未起動 — 手動確認が必要")
+reproduce_mocka.py:593:        "mocka_mcp_server.py",
+reproduce_mocka_l5_runner.py:6:  python reproduce_mocka_l5_runner.py
+reproduce_mocka_l5_runner.py:79:    # mocka_events.db がない環境用に最小限の環境変数を設定
+reproduce_mocka_l5_runner.py:82:        "MOCKA_DB": os.path.join(BASE_DIR, "data", "mocka_events.db"),
+reproduce_mocka_l5_runner.py:93:    # ── サーバー2: mocka_caliber_server.py (port 5679) ─────────────
+reproduce_mocka_l5_runner.py:94:    caliber_path = os.path.join(BASE_DIR, "caliber", "chat_pipeline", "mocka_caliber_server.py")
+reproduce_mocka_l5_runner.py:106:    # ── サーバー3: mocka_mcp_server.py (port 5002) ─────────────────
+reproduce_mocka_l5_runner.py:109:        [sys.executable, "-X", "utf8", "mocka_mcp_server.py"],
+runtime/analysis/mocka_drift_loop.py:5:﻿# mocka_drift_loop.py
+runtime/civilization_analytics_engine.py:9:ANALYTICS_FILE="mocka_civilization_analytics.json"
+runtime/civilization_forecast_governor.py:9:GOV_FILE = "mocka_civilization_governor.json"
+runtime/civilization_governor_engine.py:8:ANALYTICS_FILE="mocka_civilization_analytics.json"
+runtime/civilization_governor_engine.py:9:TREND_FILE="mocka_civilization_trend.json"
+runtime/civilization_governor_engine.py:10:GOVERNOR_FILE="mocka_civilization_governor.json"
+runtime/civilization_governor_v2.py:8:ANALYTICS_FILE = "mocka_civilization_analytics.json"
+runtime/civilization_governor_v2.py:9:GOVERNOR_FILE = "mocka_civilization_governor.json"
+runtime/civilization_history_engine.py:11:HISTORY_FILE="mocka_civilization_history.json"
+runtime/civilization_registry_cleaner.py:8:REGISTRY="mocka_civilization_registry.json"
+runtime/civilization_self_diagnostics_engine.py:8:ANALYTICS_FILE = "mocka_civilization_analytics.json"
+runtime/civilization_trend_engine.py:8:ANALYTICS_FILE="mocka_civilization_analytics.json"
+runtime/civilization_trend_engine.py:9:HISTORY_FILE="mocka_civilization_history.json"
+runtime/civilization_trend_engine.py:10:TREND_FILE="mocka_civilization_trend.json"
+runtime/governor_action_engine.py:9:GOVERNOR_FILE = "mocka_civilization_governor.json"
+runtime/incident_engine.py:17:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+runtime/incident_engine.py:35:    # TODO_364: git add/commit/pushをmocka_git_safe_commit経由に統一。
+runtime/incident_engine.py:36:    result = mocka_git_safe_commit(
+runtime/incident_git_sync.py:13:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+runtime/incident_git_sync.py:16:# リポジトリ内に存在しない(呼び出し元0件、死経路)。mocka_git_safe_commit()自体は
+runtime/incident_git_sync.py:19:# TODO_364: git add/commit/pushをmocka_git_safe_commit経由に統一。
+runtime/incident_git_sync.py:21:    result = mocka_git_safe_commit(
+runtime/mocka_control_center.py:15:"civilization": "mocka_civilization_registry.json"
+runtime/node_auto_registry_engine.py:10:REGISTRY = "mocka_civilization_registry.json"
+runtime/node_discovery_engine.py:17:        "service": "mocka_runtime"
+runtime/node_state_exporter.py:11:STATE_FILE="mocka_node_state.json"
+runtime/security_gate.py:8:POLICY_PATH = "mocka_governance/security_policy.json"
+runtime/self_healing_orchestrator.py:11:    "mocka_guard.py",
+scripts/audit_contract_selftest.py:9:from src.mocka_audit.contract_v1 import (
+scripts/ledger/anchor_update.py:17:from mocka_git_safe_commit import is_core_system_file, mocka_git_safe_commit  # noqa: E402
+scripts/ledger/anchor_update.py:72:    # 1. 変更をコミット(git add/Core System File除外/commitはmocka_git_safe_commit経由、TODO_364)
+scripts/ledger/anchor_update.py:75:    commit_result = mocka_git_safe_commit(message=msg, push=False)
+scripts/ledger/anchor_update.py:98:    # 4. anchor_record自体をコミット(TODO_364: mocka_git_safe_commit経由)
+scripts/ledger/anchor_update.py:99:    mocka_git_safe_commit(message=f"anchor: re-seal after {commit[:7]}", push=False)
+scripts/migrate_event_integrity.py:6:既存data/mocka_events.dbの全イベントへevent_signatures(署名+ハッシュチェーン)を
+scripts/migrate_event_integrity.py:31:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+scripts/migrate_source_check.py:10:  1. 既存data/mocka_events.dbの_source値を全件検査し、
+scripts/migrate_source_check.py:33:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+scripts/phase_event_engine.py:9:STATE_FILE = "runtime/mocka_phase_state.json"
+scripts/seal_baseline.py:29:SCHEMA_SQL_PATH = _REPO_ROOT / "data" / "mocka_schema_v1.sql"
+scripts/state/overview_current_generator.py:4:一次データ(MOCKA_TODO_ACTIVE/ARCHIVE.json, decision_ledger.jsonl, mocka_events.db,
+scripts/state/overview_current_generator.py:24:EVENTS_DB_PATH = DATA_DIR / "mocka_events.db"
+scripts/verify_integrity.py:24:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+scripts/write_condense_worker.py:78:    "            'mocka_condense_worker.py',fpath.name,'worker','internal',\n"
+scripts/write_condense_worker.py:126:dst = Path(r'C:\Users\sirok\MoCKA\scripts\mocka_condense_worker.py')
+scripts/write_condense_worker.py:132:subprocess.run(['git','add','scripts/mocka_condense_worker.py'], cwd=r'C:\Users\sirok\MoCKA')
+self_audit/audit_analyzer.py:13:    structural/GOVERNANCE_REGRESSION_SUMMARY.md, mocka_mcp_server.py)。
+self_audit/audit_analyzer.py:300:          - mocka_mcp_server.py (Fail Closed維持)
+self_audit/audit_analyzer.py:312:        server_path = _ROOT / "mocka_mcp_server.py"
+self_audit/audit_analyzer.py:320:            strengths.append("mocka_mcp_server.pyにGL_FAIL_CLOSED/READ_ONLY_TOOLSの記述を確認")
+self_audit/audit_analyzer.py:325:                "mocka_mcp_server.pyにGL_FAIL_CLOSEDまたはREAD_ONLY_TOOLSの記述が見つからない",
+semantic/query_engine/drift_recorder.py:7:  - optional pass-through to mocka_write_event (no semantic enrichment)
+semantic/query_engine/drift_recorder.py:109:    """Pure field pass-through for mocka_write_event. No semantic enrichment."""
+structural/bee.py:34:DB_PATH        = ROOT / "data" / "mocka_events.db"
+structural/bee.py:35:MCP_URL        = "http://localhost:5002/agent/mocka_write_event"
+structural/bee.py:442:        6. mocka_write_event(BEE_DAILY_SCAN) で記録
+structural/dogfood_run.py:28:    "mocka_get_overview",
+structural/dogfood_run.py:29:    "mocka_get_todo",
+structural/dogfood_run.py:30:    "mocka_get_essence",
+structural/dogfood_run.py:31:    "mocka_get_guidelines",
+structural/dogfood_run.py:32:    "mocka_get_incidents",
+structural/dogfood_run.py:33:    "mocka_search",
+structural/dogfood_run.py:34:    "mocka_list_events",
+structural/dogfood_run.py:35:    "mocka_read_event",
+structural/dogfood_run.py:36:    "mocka_get_command_center",
+structural/dogfood_run.py:43:    CALL_SEQUENCE.append(("mocka_write_event", {"round": i, "title": f"dogfood round {i}"}))
+structural/event_file_resolver.py:26:MOCKA_DB       = REPO_ROOT / "data" / "mocka_events.db"
+structural/event_recency.py:14:mocka_mcp_server.pyの双方が独立にハードコードしていた状態(Single Source
+structural/execution_governance.py:53:    "create_mocka_3_or_similar",
+structural/execution_governance.py:225:        """実行結果の記録(呼び出し側がmocka_write_eventと連携する想定のフック)。"""
+structural/governance_audit_check.py:31:    server_src = (REPO_ROOT / "mocka_mcp_server.py").read_text(encoding="utf-8")
+structural/governance_audit_check.py:35:    # #1 Fail Closed: mocka_mcp_server must guard execute_tool with Fail Closed
+structural/governance_audit_check.py:37:        "Fail Closed: mocka_mcp_server references GL_FAIL_CLOSED / READ_ONLY_TOOLS",
+structural/governance_pipeline.py:10:  GL1~GL7を実際の推論フロー(Caliber / mocka_mcp_server)へ接続する単一の窓口。
+structural/governance_pipeline.py:34:    "mocka_get_overview",
+structural/governance_pipeline.py:35:    "mocka_get_essence",
+structural/governance_pipeline.py:36:    "mocka_get_todo",
+structural/governance_pipeline.py:37:    "mocka_list_events",
+structural/governance_pipeline.py:38:    "mocka_read_event",
+structural/governance_pipeline.py:39:    "mocka_search",
+structural/governance_pipeline.py:40:    "mocka_get_incidents",
+structural/governance_pipeline.py:41:    "mocka_get_guidelines",
+structural/governance_pipeline.py:42:    "mocka_get_command_center",
+structural/governance_pipeline.py:43:    "mocka_check_utf8",
+structural/governance_pipeline.py:44:    "mocka_registry_get",
+structural/governance_pipeline.py:45:    "mocka_registry_current_state",
+structural/governance_pipeline.py:46:    "mocka_decision_get",
+structural/governance_pipeline.py:47:    "mocka_decision_list",
+structural/governance_pipeline.py:48:    "mocka_integrity_get",
+structural/governance_pipeline.py:49:    "mocka_integrity_list",
+structural/governance_pipeline.py:54:    "mocka_write_event",
+structural/governance_pipeline.py:55:    "mocka_add_todo",
+structural/governance_pipeline.py:56:    "mocka_update_todo",
+structural/governance_pipeline.py:57:    "mocka_seal",
+structural/governance_pipeline.py:146:    decision = pipeline.before_tool("mocka_write_event", {"title": "test"})
+structural/governance_pipeline.py:151:    pipeline.after_tool("mocka_write_event", {"title": "test"}, "ok")
+structural/mocka_3_run.py:2:MoCKA 3.0 — mocka_3_run.py
+structural/mocka_3_run.py:6:  python mocka_3_run.py            # Phase1〜3全実行
+structural/mocka_3_run.py:7:  python mocka_3_run.py --phase 1  # Phase1のみ
+structural/mocka_3_run.py:8:  python mocka_3_run.py --p1       # P1インシデント分析のみ
+structural/phi_dna_migrate.py:16:DB_PATH = Path(r"C:\Users\sirok\MoCKA\data\mocka_events.db")
+structural/repository_indexer.py:33:    "MoCKA-Core":     ["mocka_caliber_server.py", "anchor_update.py", "health_check.py"],
+structural/state_reconstructor.py:27:MOCKA_DB        = REPO_ROOT / "data" / "mocka_events.db"
+tests/test_shadow_seal_adapter.py:9:Test C: hash互換性確認(sandbox内でmocka_git_safe_commit・calc_summary_hash.pyを
+tools/canonical_trace_generator_phase5a.py:7:  - Reads data/mocka_events.db READ-ONLY. Never writes to it.
+tools/canonical_trace_generator_phase5a.py:26:DB_PATH = ROOT / "data" / "mocka_events.db"
+tools/canonical_trace_merger_phase5b.py:41:DB_PATH = ROOT / "data" / "mocka_events.db"
+tools/canonical_trace_merger_phase5b_v2.py:48:DB_PATH = ROOT / "data" / "mocka_events.db"
+tools/canonical_trace_merger_phase5b_v3.py:51:DB_PATH = ROOT / "data" / "mocka_events.db"
+tools/hab_concurrency_audit.py:241:            "actorパラメータではない。mocka_write_eventのauthorパラメータと同様の仕組みは"
+tools/mocka_auto_record.py:2:mocka_auto_record.py — TODO_153 + Bash/PowerShell裏口対応
+tools/mocka_auto_record.py:5:自動で mocka_write_event を発火する。
+tools/mocka_auto_record.py:32:LOCAL_MCP   = "http://localhost:5002/agent/mocka_write_event"
+tools/mocka_auto_record.py:35:REMOTE_MCP  = f"{_ENDPOINT}/agent/mocka_write_event" if _ENDPOINT else ""
+tools/mocka_auto_record.py:201:            print(f"[mocka_auto_record] OK {eid} — {fname}", flush=True)
+tools/mocka_auto_record.py:206:            print(f"[mocka_auto_record] WARN {url}: {e}", flush=True)
+tools/mocka_auto_record.py:210:        print(f"[mocka_auto_record] OFFLINE — {fname} (全エンドポイント失敗)", flush=True)
+tools/mocka_change_verifier.py:2:mocka_change_verifier.py
+tools/mocka_change_verifier.py:8:DB_PATH  = os.path.join(ROOT_DIR, "data", "mocka_events.db")
+tools/mocka_change_verifier.py:86:            "why_purpose":"二重保証検証","how_trigger":"mocka_change_verifier.py",
+tools/mocka_file_editor.py:2:mocka_file_editor.py — MoCKA強制記録ラッパー
+tools/mocka_file_editor.py:8:    python mocka_file_editor.py \
+tools/mocka_file_editor.py:15:配置先: C:\\Users\\sirok\\MoCKA\\tools\\mocka_file_editor.py
+tools/mocka_file_editor.py:140:HOW  : mocka_file_editor.py による制度的変更
+tools/mocka_file_editor.py:156:            how_trigger="mocka_file_editor.py 変更着手前自動記録",
+tools/mocka_file_editor.py:200:            how_trigger="mocka_file_editor.py 変更完了後自動記録",
+tools/mocka_file_editor.py:256:        how_trigger="mocka_file_editor.py バッチ変更着手前",
+tools/mocka_file_editor.py:289:        how_trigger="mocka_file_editor.py バッチ変更完了後",
+tools/mocka_repair_events.py:36:        if len(row) >= 20 and (row[2] in ("mocka_router", "human_nsjsiro")):
+tools/mocka_restrictions.py:31:    lines.append("- tools/mocka_orchestra_v10.py への変更禁止")
+tools/mocka_risk_engine.py:8:RESTRICTIONS = r"C:\Users\sirok\MoCKA\tools\mocka_restrictions.py"
+tools/mocka_risk_engine.py:158:        w5h1_script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mocka_5w1h.py")
+tools/orchestra_context_bridge.py:40:def _fetch_mocka_context(mode: str = "compact") -> Optional[dict]:
+tools/orchestra_context_bridge.py:127:    ctx = _fetch_mocka_context(mode)
+tools/orchestra_context_bridge.py:148:    ctx = _fetch_mocka_context(mode)
+watchdog_mocka_v2.py:2:watchdog_mocka_v2.py

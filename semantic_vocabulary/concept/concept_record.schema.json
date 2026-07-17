@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "semantic_vocabulary/concept/concept_record.schema.json",
+  "title": "Concept Record (Semantic Vocabulary Foundation, minimal C-1)",
+  "description": "Minimal Concept Record schema materialized per DC_20260715_008 (C-1 adoption conditions) and design spec SEMANTIC_VOCABULARY_CONCEPT_RECORD_SCHEMA_DESIGN_v0.1. This file is a type definition only (no data). No relation field (adoption condition 6). Some invariants (exactly-one-active for definition and naming_history, and canonical_name equals the active naming entry) are documented here but are NOT enforced by this schema; their enforcement is the responsibility of a future Validator (Option A, deferred). This materialization does not include storage, API, MCP, or a validator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "concept_id",
+    "canonical_name",
+    "concept_layer",
+    "status",
+    "schema_version",
+    "provenance",
+    "definition",
+    "naming_history"
+  ],
+  "properties": {
+    "concept_id": {
+      "type": "string",
+      "pattern": "^CN_[0-9]{8}_[0-9]{3}$",
+      "description": "Immutable unique identifier in the form CN_YYYYMMDD_NNN (adoption condition 1). Not changed after creation."
+    },
+    "canonical_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Current active name. Points to the active naming_history entry (invariant enforced by future Validator)."
+    },
+    "concept_layer": {
+      "type": "string",
+      "enum": ["Philosophy", "Framework", "Technical", "Policy"],
+      "description": "Meaning layer (Principle 2). Set changes are Human Gate (Principle 1)."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "active", "superseded", "obsolete"],
+      "description": "Lifecycle status. Allowed transitions are defined in the design spec; transition enforcement is the future Validator."
+    },
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "SemVer of the semantic vocabulary schema (adoption condition 2; initial value 1.0.0). Changes are Human Gate (Principle 1)."
+    },
+    "provenance": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Evidence Origin (adoption condition 3). At least one reference required.",
+      "items": { "$ref": "#/$defs/reference" }
+    },
+    "definition": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Append-only definition history (Principle 3). Exactly one entry has status=active (adoption condition 4). The exactly-one-active invariant is not expressible in vanilla JSON Schema and is enforced by the future Validator.",
+      "items": { "$ref": "#/$defs/definition_entry" }
+    },
+    "naming_history": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Embedded append-only naming history (adoption condition 5). Exactly one entry has status=active and equals canonical_name; enforced by the future Validator.",
+      "items": { "$ref": "#/$defs/naming_entry" }
+    }
+  },
+  "$defs": {
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref"],
+      "properties": {
+        "type": { "type": "string", "enum": ["decision", "artifact"] },
+        "ref": { "type": "string", "minLength": 1 }
+      }
+    },
+    "definition_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "body", "status", "provenance", "at"],
+      "properties": {
+        "version": { "type": ["string", "integer"] },
+        "body": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "enum": ["active", "superseded"] },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "at": { "type": "string", "description": "ISO 8601 timestamp" }
+      }
+    },
+    "naming_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "at", "provenance"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "enum": ["active", "superseded"] },
+        "at": { "type": "string", "description": "ISO 8601 timestamp" },
+        "provenance": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/reference" }
+        }
+      }
+    }
+  }
+}

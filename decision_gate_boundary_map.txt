@@ -1,0 +1,86 @@
+app.py:2065:                # (human_gate_override_event_id付与)による手動実行でのみ行う。
+app.py:2088:                    "free_note": "require_human_gate=True|source=AUTO_SEAL_DAILY",
+app.py:2103:                    # seal実行はきむら博士の明示指示(human_gate_override_event_id
+app.py:2105:                    # 生成は行わない(require_human_gate、自動承認機構ではない)。
+app.py:2129:                        "free_note": "require_human_gate=True|source=AUTO_SEAL_50EVT",
+app.py:2153:    # 経由するSealGovernanceGate経由に変更(TODO_411/412/413 Gap-1是正)。
+app.py:2159:    from seal_governance_gate import SealGovernanceGate
+app.py:2162:    gate_result = SealGovernanceGate().execute(message=message)
+app.py:2308:@app.route("/decision/approve", methods=["POST"])
+app.py:2343:@app.route("/decision/reject", methods=["POST"])
+app_bak_0501.py:1740:@app.route("/decision/approve", methods=["POST"])
+app_bak_0501.py:1775:@app.route("/decision/reject", methods=["POST"])
+governance/human_gate_cli.py:6:governance/human_gate_cli.py
+governance/human_gate_cli.py:14:- phi_os/human_gate.py の変更（既存の submit/approve/reject/get_state/
+governance/human_gate_cli.py:16:- Event Store（data/mocka_events.db, human_gate_events テーブル）の複製・変更
+governance/human_gate_cli.py:33:from phi_os.human_gate import submit, approve, reject, get_state, list_pending, HumanGateError
+governance/human_gate_cli.py:38:        print(f"[human_gate_cli] ERROR: '{action}' は対話端末(TTY)からの実行のみ許可されています。"
+governance/human_gate_cli.py:128:        print(f"[human_gate_cli] ERROR: {e.reason}")
+governance/human_gate_continuity.py:2:governance/human_gate_continuity.py
+governance/human_gate_continuity.py:19:責務外(TODO_429「governance/human_gate_cli.py の制度整理」の裁定対象、
+governance/human_gate_continuity.py:71:    human_gate_event_status: str
+governance/human_gate_continuity.py:135:            human_gate_event_status="NOT_ISSUED",
+governance/human_gate_continuity.py:148:            "human_gate_event_status": unit.human_gate_event_status,
+governance/human_gate_continuity.py:201:        実際の承認機構(phi_os/human_gate.py等)を経由しない状態遷移は、
+governance/human_gate_continuity.py:209:            f"WAITING_FOR_HUMAN_GATE to '{target_state}' by human_gate_continuity.py. "
+governance/human_gate_continuity.py:211:            f"(not yet decided) and an actual human_gate.py approve() event."
+governance/mocka_git_safe_commit.py:162:                           human_gate_override_event_id: str = None):
+governance/mocka_git_safe_commit.py:172:    human_gate_override_event_id: Core System File Human Gateの明示的な人間承認
+governance/mocka_git_safe_commit.py:211:        if core_files and not human_gate_override_event_id:
+governance/mocka_git_safe_commit.py:245:        elif core_files and human_gate_override_event_id:
+governance/mocka_git_safe_commit.py:248:                       f"event_id={human_gate_override_event_id} "
+governance/mocka_git_safe_commit.py:252:                  f"(event_id={human_gate_override_event_id}):")
+governance/mocka_git_safe_commit.py:295:        # authorized via human_gate_override_event_id for this call. Authorized
+governance/mocka_git_safe_commit.py:299:            [] if human_gate_override_event_id else core_in_commit
+governance/mocka_git_safe_commit.py:311:                  f"override (event_id={human_gate_override_event_id})")
+governance/seal_auth_record.py:5:sandbox/一時パス限定。既存seal経路(SealGovernanceGate/anchor_update.py)には
+governance/seal_governance_gate.py:4:Phase C-2: SealGovernanceGate。/audit/seal(MANUAL_SEAL)からGL7評価を経由して
+governance/seal_governance_gate.py:52:class SealGovernanceGate:
+governance/seal_governance_gate.py:127:            "title": "SealGovernanceGate seal request",
+governance/shadow_seal_adapter.py:14:   SealGovernanceGate._extract_hashes()が期待する出力形式("COMMIT: "・
+governance/shadow_seal_adapter.py:72:    anchor_update.pyを実行せず、ソースを静的に読んでSealGovernanceGateが
+interface/risk_scorer.py:29:# 計算式を超える判断は human_gate_overrides で明示管理する
+mocka_mcp_server.py:466:    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
+mocka_mcp_server.py:962:        elif name == "mocka_decision_write":
+mocka_mcp_server.py:1021:                print(f"[MCP] mocka_decision_write companion event failed: {_companion_err}", flush=True)
+phi_os/human_gate.py:1:# phi_os/human_gate.py
+phi_os/human_gate.py:18:human_gate_bp = Blueprint('human_gate', __name__)
+phi_os/human_gate.py:57:        CREATE TABLE IF NOT EXISTS human_gate_events (
+phi_os/human_gate.py:82:        'SELECT * FROM human_gate_events WHERE request_id = ? ORDER BY timestamp DESC, event_id DESC LIMIT 1',
+phi_os/human_gate.py:115:        '''INSERT INTO human_gate_events
+phi_os/human_gate.py:187:            SELECT e.* FROM human_gate_events e
+phi_os/human_gate.py:195:                    FROM human_gate_events
+phi_os/human_gate.py:278:@human_gate_bp.route('/api/human_gate/submit', methods=['POST'])
+phi_os/human_gate.py:288:@human_gate_bp.route('/api/human_gate/approve', methods=['POST'])
+phi_os/human_gate.py:299:@human_gate_bp.route('/api/human_gate/reject', methods=['POST'])
+phi_os/human_gate.py:310:@human_gate_bp.route('/api/human_gate/status/<request_id>', methods=['GET'])
+phi_os/human_gate.py:318:@human_gate_bp.route('/api/human_gate/pending', methods=['GET'])
+phi_os/migrate_prevention_queue.py:2:# Phase3移行スクリプト: data/prevention_queue.json -> phi_os.human_gate event
+phi_os/migrate_prevention_queue.py:21:from phi_os import human_gate as hg
+phi_os/tests/test_human_gate.py:1:# phi_os/tests/test_human_gate.py
+phi_os/tests/test_human_gate.py:10:import phi_os.human_gate as hg
+phi_os/tests/test_human_gate.py:15:    db_file = str(tmp_path / 'test_human_gate.db')
+phi_os/tests/test_human_gate.py:116:    # human_gate_eventsテーブルにはnext_state列はあるが、別のstateテーブルは存在しない。
+phi_os/tests/test_human_gate.py:122:    assert tables == {"human_gate_events"}
+semantic/query_engine/drift_monitor.py:156:        human_gate_hook: Optional[HumanGateHook] = None,
+semantic/query_engine/drift_monitor.py:160:        self._human_gate_hook = human_gate_hook or HumanGateHook()
+semantic/query_engine/drift_monitor.py:172:            self._human_gate_hook.notify(records)
+semantic/query_engine/human_gate.py:1:# MoCKA/semantic/query_engine/human_gate.py
+semantic/query_engine/human_gate.py:4:# 契約: docs/contracts/phase7_b6_human_gate_ruling_v1.md
+semantic/query_engine/human_gate.py:59:                f"(merge is permanently excluded, see docs/contracts/phase7_b6_human_gate_ruling_v1.md section 1)"
+semantic/query_engine/human_gate_interface.py:1:# MoCKA/semantic/query_engine/human_gate_interface.py
+semantic/query_engine/human_gate_interface.py:4:# 契約: docs/contracts/phase7_b7_human_gate_interface_v1.md
+semantic/query_engine/human_gate_interface.py:21:from semantic.query_engine.human_gate import (
+semantic/query_engine/observation_surface.py:22:from semantic.query_engine.human_gate import HumanGateRulingStore, RulingRecord
+semantic/query_engine/observation_surface.py:23:from semantic.query_engine.human_gate_interface import (
+tests/test_human_gate_continuity.py:2:Phase C-4: governance/human_gate_continuity.py のテスト(縮小版・DHGP)。
+tests/test_human_gate_continuity.py:27:from human_gate_continuity import (  # noqa: E402
+tests/test_human_gate_continuity.py:64:        assert unit.human_gate_event_status == "NOT_ISSUED"
+tests/test_human_gate_continuity.py:70:        for f in ("governance_state", "approval_required", "human_gate_event_status", "mcp_availability"):
+tests/test_seal_governance_gate.py:7:したがって、本テストではSealGovernanceGate.execute()の_seal_runnerフックへ
+tests/test_seal_governance_gate.py:32:from seal_governance_gate import SealGovernanceGate  # noqa: E402
+tests/test_seal_governance_gate.py:77:        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+tests/test_seal_governance_gate.py:111:        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+tests/test_seal_governance_gate.py:132:        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+watchdog_mocka.py:90:        # 明示指示(human_gate_override_event_id付与)による手動実行でのみ行う。
+watchdog_mocka.py:117:                "free_note": "require_human_gate=True|source=AUTO_SEAL_DAILY_WATCHDOG",

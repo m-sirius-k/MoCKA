@@ -1,0 +1,453 @@
+app.py:2023:def _auto_approve_prevention():
+app.py:2037:            item["status"] = "approved"
+app.py:2038:            item["approved_at"] = datetime.now().isoformat()
+app.py:2039:            item["approved_by"] = "AUTO_GATE"
+app.py:2054:    _auto_approve_prevention()
+app.py:2165:        "approved": gate_result.approved,
+app.py:2168:        "result": gate_result.seal_stdout[:200] if gate_result.approved else gate_result.reason,
+app.py:2171:    if not gate_result.approved:
+app.py:2308:@app.route("/decision/approve", methods=["POST"])
+app.py:2309:def decision_approve():
+app.py:2313:    approved = None
+app.py:2316:            item["status"] = "approved"
+app.py:2317:            item["approved_at"] = datetime.now().isoformat()
+app.py:2318:            approved = item
+app.py:2320:    if not approved:
+app.py:2325:        "title": "[承認] " + approved.get("title", ""),
+app.py:2326:        "short_summary": approved.get("description", "")[:100],
+app.py:2327:        "risk_level": approved.get("risk_level", "normal"),
+app.py:2341:    return jsonify({"status": "ok", "approved": pid})
+app_bak_0501.py:1740:@app.route("/decision/approve", methods=["POST"])
+app_bak_0501.py:1741:def decision_approve():
+app_bak_0501.py:1745:    approved = None
+app_bak_0501.py:1748:            item["status"] = "approved"
+app_bak_0501.py:1749:            item["approved_at"] = datetime.now().isoformat()
+app_bak_0501.py:1750:            approved = item
+app_bak_0501.py:1752:    if not approved:
+app_bak_0501.py:1757:        "title": "[承認] " + approved.get("title", ""),
+app_bak_0501.py:1758:        "short_summary": approved.get("description", "")[:100],
+app_bak_0501.py:1759:        "risk_level": approved.get("risk_level", "normal"),
+app_bak_0501.py:1773:    return jsonify({"status": "ok", "approved": pid})
+cross_layer_consistency/consistency_applier.py:5:  - governance approved        : QueueItem.status == "validated"
+feedback/feedback_safety_test.py:61:    forbidden_statuses = ("applied", "approved", "executed", "auto_applied")
+gateway/adapter_copilot.py:67:        "request_id": __import__("uuid").uuid4().hex,
+gateway/adapter_gemini.py:76:        "request_id": rid,
+gateway/adapter_gemini.py:106:    keys = ["title", "description", "timestamp", "nonce", "request_id"]
+gateway/adapter_genspark.py:92:        "request_id": rid,
+gateway/adapter_genspark.py:114:    keys = ["title", "description", "timestamp", "nonce", "request_id"]
+gateway/adapter_gpt.py:83:        "request_id": rid,
+gateway/adapter_gpt.py:105:    keys = ["title", "description", "timestamp", "nonce", "request_id"]
+gateway/adapter_gpt.py:187:        decision_id(DC_YYYYMMDD_NNN)パターンをtitle/short_summaryに含む
+gateway/adapter_perplexity.py:82:        "request_id": rid,
+gateway/adapter_perplexity.py:104:    keys = ["title", "description", "timestamp", "nonce", "request_id"]
+gateway/auth.py:86:    payload_keys = ["title", "description", "timestamp", "nonce", "request_id"]
+governance/human_gate_cli.py:14:- phi_os/human_gate.py の変更（既存の submit/approve/reject/get_state/
+governance/human_gate_cli.py:16:- Event Store（data/mocka_events.db, human_gate_events テーブル）の複製・変更
+governance/human_gate_cli.py:22:approve/rejectはTTY（対話端末）からの実行のみ許可する。非対話実行（パイプ・
+governance/human_gate_cli.py:33:from phi_os.human_gate import submit, approve, reject, get_state, list_pending, HumanGateError
+governance/human_gate_cli.py:47:    if args.request_id:
+governance/human_gate_cli.py:48:        payload["request_id"] = args.request_id
+governance/human_gate_cli.py:50:    print(f"[submit] request_id={event['request_id']} state={event['next_state']}")
+governance/human_gate_cli.py:54:    state = get_state(args.request_id)
+governance/human_gate_cli.py:55:    print(f"[status] request_id={args.request_id} state={state if state else 'not_found'}")
+governance/human_gate_cli.py:61:        print("[pending] PENDING状態のrequest_idはありません。")
+governance/human_gate_cli.py:64:        print(f"  {row['request_id']}  submitted_at={row['timestamp']}")
+governance/human_gate_cli.py:67:def cmd_approve(args):
+governance/human_gate_cli.py:68:    _require_tty("approve")
+governance/human_gate_cli.py:69:    current = get_state(args.request_id)
+governance/human_gate_cli.py:71:        print(f"[approve] ERROR: request_id not found: {args.request_id}")
+governance/human_gate_cli.py:73:    print(f"[approve] request_id={args.request_id} 現在の状態={current}")
+governance/human_gate_cli.py:76:        print("[approve] キャンセルしました。")
+governance/human_gate_cli.py:79:    event = approve(args.request_id, payload)
+governance/human_gate_cli.py:80:    print(f"[approve] request_id={args.request_id} state={event['next_state']} event_id={event['event_id']}")
+governance/human_gate_cli.py:85:    current = get_state(args.request_id)
+governance/human_gate_cli.py:87:        print(f"[reject] ERROR: request_id not found: {args.request_id}")
+governance/human_gate_cli.py:89:    confirm = input(f"request_id={args.request_id}(現在={current})を却下しますか？ [yes/no]: ")
+governance/human_gate_cli.py:94:    event = reject(args.request_id, payload)
+governance/human_gate_cli.py:95:    print(f"[reject] request_id={args.request_id} state={event['next_state']} event_id={event['event_id']}")
+governance/human_gate_cli.py:103:    p_submit.add_argument("--request-id", dest="request_id")
+governance/human_gate_cli.py:107:    p_status = sub.add_parser("status", help="request_idの現在状態を確認する")
+governance/human_gate_cli.py:108:    p_status.add_argument("request_id")
+governance/human_gate_cli.py:114:    p_approve = sub.add_parser("approve", help="request_idを承認する(TTY必須)")
+governance/human_gate_cli.py:115:    p_approve.add_argument("request_id")
+governance/human_gate_cli.py:116:    p_approve.add_argument("--note")
+governance/human_gate_cli.py:117:    p_approve.set_defaults(func=cmd_approve)
+governance/human_gate_cli.py:119:    p_reject = sub.add_parser("reject", help="request_idを却下する(TTY必須)")
+governance/human_gate_cli.py:120:    p_reject.add_argument("request_id")
+governance/human_gate_continuity.py:34:Decision Ledgerに混在させるとapproved/abortedのみを前提とする既存の
+governance/human_gate_continuity.py:64:    request_id: str
+governance/human_gate_continuity.py:71:    human_gate_event_status: str
+governance/human_gate_continuity.py:128:            request_id=f"PDU_{_next_execution_id()}",
+governance/human_gate_continuity.py:135:            human_gate_event_status="NOT_ISSUED",
+governance/human_gate_continuity.py:141:            "request_id": unit.request_id,
+governance/human_gate_continuity.py:148:            "human_gate_event_status": unit.human_gate_event_status,
+governance/human_gate_continuity.py:154:    def get_state(self, request_id: str) -> dict | None:
+governance/human_gate_continuity.py:155:        """request_idに対応する最新状態(元のdeferレコード + 観測イベント)を返す。
+governance/human_gate_continuity.py:158:        records = [r for r in self._read_all() if r.get("request_id") == request_id]
+governance/human_gate_continuity.py:169:    def record_mcp_recovery_observed(self, request_id: str, mcp_check=None) -> dict:
+governance/human_gate_continuity.py:175:        current = self.get_state(request_id)
+governance/human_gate_continuity.py:177:            raise HumanGateContinuityError(f"request_id not found: {request_id}")
+governance/human_gate_continuity.py:188:            "request_id": request_id,
+governance/human_gate_continuity.py:197:    def attempt_state_transition(self, request_id: str, target_state: str) -> None:
+governance/human_gate_continuity.py:204:        current = self.get_state(request_id)
+governance/human_gate_continuity.py:206:            raise HumanGateContinuityError(f"request_id not found: {request_id}")
+governance/human_gate_continuity.py:211:            f"(not yet decided) and an actual human_gate.py approve() event."
+governance/seal_auth_record.py:10:approved_by=human を成立条件とし、AI/自動処理系が自己判断だけで封印権限を
+governance/seal_auth_record.py:18:    "seal_request_id", "requester", "decision_id",
+governance/seal_auth_record.py:19:    "approved_by", "approval_timestamp",
+governance/seal_auth_record.py:54:    approved_by = str(record.get("approved_by", ""))
+governance/seal_auth_record.py:55:    if approved_by == "" or approved_by.startswith("system"):
+governance/seal_auth_record.py:56:        reasons.append("approved_by_not_human")
+governance/seal_auth_record.py:63:def find_duplicate_request_ids(ledger_path):
+governance/seal_auth_record.py:64:    """seal_request_id の重複を検出する(一意性チェック)。"""
+governance/seal_auth_record.py:65:    ids = [r.get("seal_request_id") for r in read_auth_records(ledger_path)
+governance/seal_auth_record.py:66:           if r.get("seal_request_id")]
+governance/seal_governance_gate.py:44:    approved: bool
+governance/seal_governance_gate.py:79:        if not approval.approved:
+governance/seal_governance_gate.py:81:                approved=False,
+governance/seal_governance_gate.py:93:            approved=True,
+governance/seal_governance_gate.py:122:        if result.approved:
+governance/seal_governance_gate.py:126:            "decision_id": f"DC_{execution_id}",
+governance/seal_governance_gate.py:130:            "decision": "approved" if result.approved else "aborted",
+governance/seal_governance_gate.py:135:            "approved_by": "system:seal_governance_gate",
+governance/seal_governance_gate.py:136:            "approved_at": datetime.now(timezone.utc).isoformat(),
+governance/seal_governance_wrapper.py:42:    approved: bool
+governance/seal_governance_wrapper.py:81:        if not approval.approved:
+governance/seal_governance_wrapper.py:83:                approved=False,
+governance/seal_governance_wrapper.py:94:                approved=False,
+governance/seal_governance_wrapper.py:105:            approved=True,
+governance/seal_governance_wrapper.py:152:        追記する。既存フィールド(decision_id等)は変更せず、新フィールドのみ追加する
+governance/seal_governance_wrapper.py:159:            "decision_id": f"DC_{execution_id}",
+governance/seal_governance_wrapper.py:163:            "decision": "approved" if result.approved else "aborted",
+governance/seal_governance_wrapper.py:168:            "approved_by": "system:seal_governance_wrapper(sandbox)",
+governance/seal_governance_wrapper.py:169:            "approved_at": datetime.now(timezone.utc).isoformat(),
+governance/verify_approval_flow.py:21:    if "multi_approver_flow" not in flows or "single_approver_flow" not in flows:
+governance/verify_governance_event_required.py:65:    approvers = ev.get("approvers")
+governance/verify_governance_event_required.py:66:    if not isinstance(approvers, list):
+governance/verify_governance_event_required.py:67:        errs.append("approvers must be list")
+governance/verify_governance_event_required.py:69:        if cc == "major" and len(approvers) == 0:
+governance/verify_governance_event_required.py:70:            errs.append("major change requires approvers non-empty")
+governance/verify_governance_event_required.py:71:        for i, a in enumerate(approvers):
+governance/verify_governance_event_required.py:73:                errs.append(f"approvers[{i}] must be non-empty string")
+interface/ai_session.py:68:        "R01": {"name": "General", "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False}},
+interface/ai_session.py:69:        "R02": {"name": "Design Reviewer", "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False}},
+interface/handshake.py:31:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:37:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:43:        "capability": {"read": True, "write": False, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:49:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:55:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/handshake.py:61:        "capability": {"read": True, "write": True, "propose": True, "approve": False, "delete": False, "seal": False},
+interface/incident_learner.py:14:  python incident_learner.py approve   # 候補を確認・承認
+interface/incident_learner.py:196:                    "approved":    None  # None=未判断 True=承認 False=却下
+interface/incident_learner.py:217:    print(f"\n承認するには: python incident_learner.py approve")
+interface/incident_learner.py:222:def cmd_approve():
+interface/incident_learner.py:226:    pending = [c for c in data["pending"] if c["approved"] is None]
+interface/incident_learner.py:233:    approved_count = 0
+interface/incident_learner.py:257:            c["approved"] = True
+interface/incident_learner.py:258:            approved_count += 1
+interface/incident_learner.py:261:            c["approved"] = False
+interface/incident_learner.py:268:    print(f"\n承認: {approved_count}件 / 却下: {rejected_count}件")
+interface/incident_learner.py:281:    pending = [c for c in data.get("pending",[]) if c["approved"] is None]
+interface/incident_learner.py:282:    approved = [c for c in data.get("pending",[]) if c["approved"] is True]
+interface/incident_learner.py:286:    print(f"承認済み語彙:         {len(approved)}件")
+interface/incident_learner.py:299:    elif cmd == "approve": cmd_approve()
+interface/incident_learner.py:301:    else: print("使い方: python incident_learner.py [scan|approve|status]")
+interface/policy_gen2.py:85:                "approved_by": None,
+interface/policy_gen2.py:86:                "approved_at": None,
+interface/policy_gen2.py:107:            "approved_by": None,
+interface/policy_gen2.py:108:            "approved_at": None,
+interface/policy_gen2.py:123:        print(f"  python interface/policy_gen2.py --approve {c['id']}")
+interface/policy_gen2.py:126:def approve(policy_id):
+interface/policy_gen2.py:132:            c["approved_by"] = "nsjp_kimura"
+interface/policy_gen2.py:133:            c["approved_at"] = datetime.now().isoformat()
+interface/policy_gen2.py:140:    if len(sys.argv) >= 3 and sys.argv[1] == "--approve":
+interface/policy_gen2.py:141:        approve(sys.argv[2])
+interface/policy_generator.py:119:                "approved_by":   None,
+interface/policy_generator.py:120:                "approved_at":   None,
+interface/policy_generator.py:146:            "approved_by":   None,
+interface/policy_generator.py:147:            "approved_at":   None,
+interface/policy_generator.py:161:        print(f"  python interface/policy_generator.py --approve {c['id']}")
+interface/policy_generator.py:171:def approve(policy_id: str):
+interface/policy_generator.py:182:            c["approved_by"] = "nsjp_kimura"
+interface/policy_generator.py:183:            c["approved_at"] = datetime.now().isoformat()
+interface/policy_generator.py:194:    if len(sys.argv) >= 3 and sys.argv[1] == "--approve":
+interface/policy_generator.py:195:        approve(sys.argv[2])
+learning_kernel/learning_applier.py:6:  Learning Queueで status="approved" となったLearningUpdateのみを
+learning_kernel/learning_applier.py:10:    - update.status == "approved"
+learning_kernel/learning_applier.py:40:                f"update '{update.update_id}' is not approved (status={update.status})"
+learning_kernel/learning_integration_test.py:7:  - approve_and_apply によりWeight State(LearningState)が更新されること
+learning_kernel/learning_integration_test.py:102:        applied = pipeline.approve_and_apply(update.update_id, governance_status="PASS")
+learning_kernel/learning_integration_test.py:105:        results.append(check("approve_and_apply marks update as 'applied'", applied.status == "applied"))
+learning_kernel/learning_pipeline.py:22:    Governance Check         (approve_and_apply時に再確認)
+learning_kernel/learning_pipeline.py:25:    Learning Applier         (approved のみ WeightStateStore へ適用)
+learning_kernel/learning_pipeline.py:33:  承認・適用・rollbackは別メソッド(approve_and_apply / rollback)として
+learning_kernel/learning_pipeline.py:99:    def approve_and_apply(self, update_id: str, governance_status: str) -> LearningUpdate:
+learning_kernel/learning_pipeline.py:104:        self.queue.approve(update_id)
+learning_kernel/learning_queue.py:11:  - LearningUpdate.status: "pending" | "approved" | "rejected" | "applied" | "rolled_back"
+learning_kernel/learning_queue.py:72:    def approve(self, update_id: str) -> LearningUpdate:
+learning_kernel/learning_queue.py:103:            raise ValueError(f"update '{update_id}' is not approved (status={update.status})")
+learning_kernel/learning_queue_test.py:7:  - approve/reject/mark_applied/mark_rolled_backの状態遷移が正しいこと
+learning_kernel/learning_queue_test.py:8:  - 不正な状態遷移(pending以外をapprove等)がエラーになること
+learning_kernel/learning_queue_test.py:74:        # --- approve / mark_applied ---
+learning_kernel/learning_queue_test.py:75:        approved = queue_reloaded.approve(u1.update_id)
+learning_kernel/learning_queue_test.py:76:        results.append(check("approve() sets status='approved'", approved.status == "approved"))
+learning_kernel/learning_queue_test.py:81:        approve_applied_failed = False
+learning_kernel/learning_queue_test.py:83:            queue_reloaded.approve(u1.update_id)
+learning_kernel/learning_queue_test.py:85:            approve_applied_failed = True
+learning_kernel/learning_queue_test.py:86:        results.append(check("approve() on an already-applied update raises ValueError", approve_applied_failed))
+learning_kernel/learning_queue_test.py:93:        results.append(check("mark_applied() on a non-approved update raises ValueError", mark_applied_pending_failed))
+learning_kernel/learning_registry.py:24:    APPROVED = "approved"
+learning_kernel/learning_safety_test.py:10:  - status="rejected"のUpdateはapprove/applyできないこと
+learning_kernel/learning_safety_test.py:11:  - approve済みでもgovernance_status!='PASS'ならApplierが適用しないこと
+learning_kernel/learning_safety_test.py:151:        # --- rejectedはapprove不可 ---
+learning_kernel/learning_safety_test.py:154:        approve_failed = False
+learning_kernel/learning_safety_test.py:156:            queue.approve(rejected_update.update_id)
+learning_kernel/learning_safety_test.py:158:            approve_failed = True
+learning_kernel/learning_safety_test.py:159:        results.append(check("approve() raises ValueError for a rejected update", approve_failed))
+learning_kernel/learning_safety_test.py:161:        # --- approve済みでもgovernance未承認ならApplierが拒否 ---
+learning_kernel/learning_safety_test.py:163:        queue.approve(good_update.update_id)
+learning_kernel/learning_safety_test.py:164:        approved_update = queue.get(good_update.update_id)
+learning_kernel/learning_safety_test.py:168:            applier.apply(approved_update, store, queue, governance_status="FAIL")
+learning_kernel/learning_safety_test.py:183:        applied = applier.apply(approved_update, store, queue, governance_status="PASS")
+mocka3/meta_intent_schema.py:18:    status: str = "draft"                   # draft|reviewed|approved|rejected|applied
+mocka3/meta_intent_schema.py:19:    approved_by: str | None = None
+mocka_mcp_server.py:359:    """decision_ledger.jsonlの全行を読む（append-only。同一decision_idの複数行は
+mocka_mcp_server.py:376:def _next_decision_id():
+mocka_mcp_server.py:382:        int(r["decision_id"][len(prefix):])
+mocka_mcp_server.py:384:        if isinstance(r.get("decision_id"), str) and r["decision_id"].startswith(prefix)
+mocka_mcp_server.py:385:        and r["decision_id"][len(prefix):].isdigit()
+mocka_mcp_server.py:466:    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
+mocka_mcp_server.py:467:    {"name":"mocka_decision_get","description":"decision_idを指定してDecision Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string"}},"required":["decision_id"]}},
+mocka_mcp_server.py:468:    {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
+mocka_mcp_server.py:968:            approved_by = args.get("approved_by", "").strip()
+mocka_mcp_server.py:970:            if not all([title, context, decision, rationale, impact, approved_by]):
+mocka_mcp_server.py:971:                return json.dumps({"error": "title/context/decision/rationale/impact/approved_by は全て必須(DECISION_LEDGER_SCHEMA_v1.md準拠)"}, ensure_ascii=False)
+mocka_mcp_server.py:980:            decision_id = args.get("decision_id", "").strip() or _next_decision_id()
+mocka_mcp_server.py:981:            approved_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+mocka_mcp_server.py:983:                "decision_id":       decision_id,
+mocka_mcp_server.py:992:                "approved_by":       approved_by,
+mocka_mcp_server.py:993:                "approved_at":       approved_at,
+mocka_mcp_server.py:1004:                    "who_actor":       args.get("approved_by", _DEFAULT_ACTOR),
+mocka_mcp_server.py:1008:                    "what_title":      f"[DECISION_MADE] {decision_id}: {title}",
+mocka_mcp_server.py:1014:                    "description":     f"decision_id={decision_id}\ncontext={context}\ndecision={decision}\nrationale={rationale}\nimpact={impact}",
+mocka_mcp_server.py:1015:                    "tags":            f"decision_ledger,{decision_id},{status}",
+mocka_mcp_server.py:1022:            auto_log(name, args, f"decision written {decision_id}")
+mocka_mcp_server.py:1023:            return json.dumps({"status": "ok", "decision_id": decision_id, "event_id": event_id}, ensure_ascii=False)
+mocka_mcp_server.py:1026:            decision_id = args.get("decision_id", "")
+mocka_mcp_server.py:1028:            matches = [r for r in records if r.get("decision_id") == decision_id]
+mocka_mcp_server.py:1037:                did = r.get("decision_id")
+mocka_mcp_server.py:1043:            result.sort(key=lambda r: r.get("decision_id", ""), reverse=True)
+phi_os/human_gate.py:28:    "approve": {"PENDING"},
+phi_os/human_gate.py:36:    "approve": "APPROVED",
+phi_os/human_gate.py:57:        CREATE TABLE IF NOT EXISTS human_gate_events (
+phi_os/human_gate.py:62:            request_id TEXT,
+phi_os/human_gate.py:80:def _latest_event(conn, request_id: str):
+phi_os/human_gate.py:82:        'SELECT * FROM human_gate_events WHERE request_id = ? ORDER BY timestamp DESC, event_id DESC LIMIT 1',
+phi_os/human_gate.py:83:        (request_id,)
+phi_os/human_gate.py:88:def get_state(request_id: str, conn=None) -> str | None:
+phi_os/human_gate.py:89:    """request_idの現在状態をevent列から再構築する。eventが無ければNone。"""
+phi_os/human_gate.py:95:        row = _latest_event(conn, request_id)
+phi_os/human_gate.py:102:def _record_transition(conn, action: str, request_id: str, payload: dict, previous_state: str | None) -> dict:
+phi_os/human_gate.py:109:        "request_id": request_id,
+phi_os/human_gate.py:115:        '''INSERT INTO human_gate_events
+phi_os/human_gate.py:116:           (event_id, timestamp, type, action, request_id, payload, previous_state, next_state)
+phi_os/human_gate.py:119:         event["request_id"], event["payload"], event["previous_state"], event["next_state"]),
+phi_os/human_gate.py:132:        request_id = payload.get("request_id") or _next_event_id()
+phi_os/human_gate.py:133:        existing = get_state(request_id, conn=conn)
+phi_os/human_gate.py:135:            raise HumanGateError(f"request_id already exists with state={existing}")
+phi_os/human_gate.py:136:        return _record_transition(conn, "submit", request_id, payload, previous_state=None)
+phi_os/human_gate.py:142:def _transition(action: str, request_id: str, payload: dict | None, conn=None) -> dict:
+phi_os/human_gate.py:149:        current = get_state(request_id, conn=conn)
+phi_os/human_gate.py:151:            raise HumanGateError(f"request_id not found: {request_id}")
+phi_os/human_gate.py:157:        return _record_transition(conn, action, request_id, payload, previous_state=current)
+phi_os/human_gate.py:163:def approve(request_id: str, payload: dict | None = None, conn=None) -> dict:
+phi_os/human_gate.py:164:    return _transition("approve", request_id, payload, conn=conn)
+phi_os/human_gate.py:167:def reject(request_id: str, payload: dict | None = None, conn=None) -> dict:
+phi_os/human_gate.py:168:    return _transition("reject", request_id, payload, conn=conn)
+phi_os/human_gate.py:171:def expire(request_id: str, payload: dict | None = None, conn=None) -> dict:
+phi_os/human_gate.py:172:    return _transition("expire", request_id, payload, conn=conn)
+phi_os/human_gate.py:175:def cancel(request_id: str, payload: dict | None = None, conn=None) -> dict:
+phi_os/human_gate.py:176:    return _transition("cancel", request_id, payload, conn=conn)
+phi_os/human_gate.py:180:    """pending_queueは存在しない。event列からPENDING状態のrequest_idを動的に再構築する。"""
+phi_os/human_gate.py:187:            SELECT e.* FROM human_gate_events e
+phi_os/human_gate.py:190:                    SELECT event_id, request_id,
+phi_os/human_gate.py:192:                               PARTITION BY request_id
+phi_os/human_gate.py:195:                    FROM human_gate_events
+phi_os/human_gate.py:208:# 汎用承認エンジン（submit/approve/reject、PENDING/APPROVED/REJECTED状態）を
+phi_os/human_gate.py:220:                             request_id: str | None = None, conn=None) -> dict:
+phi_os/human_gate.py:228:    if request_id:
+phi_os/human_gate.py:229:        payload["request_id"] = request_id
+phi_os/human_gate.py:233:def approve_promotion(request_id: str, decision_evidence_consistency: bool,
+phi_os/human_gate.py:237:    既存Knowledge Assetsとの矛盾の有無/昇格させる価値があるか)を記録した上でapproveする。
+phi_os/human_gate.py:248:    return approve(request_id, payload, conn=conn)
+phi_os/human_gate.py:251:def reject_promotion(request_id: str, reason: str, conn=None) -> dict:
+phi_os/human_gate.py:259:    return reject(request_id, payload, conn=conn)
+phi_os/human_gate.py:288:@human_gate_bp.route('/api/human_gate/approve', methods=['POST'])
+phi_os/human_gate.py:289:def http_approve():
+phi_os/human_gate.py:291:    request_id = payload.get("request_id", "")
+phi_os/human_gate.py:293:        event = approve(request_id, payload)
+phi_os/human_gate.py:302:    request_id = payload.get("request_id", "")
+phi_os/human_gate.py:304:        event = reject(request_id, payload)
+phi_os/human_gate.py:310:@human_gate_bp.route('/api/human_gate/status/<request_id>', methods=['GET'])
+phi_os/human_gate.py:311:def http_status(request_id):
+phi_os/human_gate.py:312:    state = get_state(request_id)
+phi_os/human_gate.py:315:    return jsonify({"status": "ok", "request_id": request_id, "state": state}), 200
+phi_os/migrate_prevention_queue.py:6:#   status="approved" -> submit + approve(疑似遷移として補完。元のPENDING履行
+phi_os/migrate_prevention_queue.py:8:#                          即approveする2イベントとして再構成する)
+phi_os/migrate_prevention_queue.py:11:# 冪等性: request_id(=元のid)で既存eventがあればスキップする(hg.get_state()で判定)。
+phi_os/migrate_prevention_queue.py:30:    if s == "approved":
+phi_os/migrate_prevention_queue.py:44:        request_id = item.get("id", "")
+phi_os/migrate_prevention_queue.py:45:        if not request_id:
+phi_os/migrate_prevention_queue.py:54:        if hg.get_state(request_id) is not None:
+phi_os/migrate_prevention_queue.py:63:            "request_id": request_id,
+phi_os/migrate_prevention_queue.py:73:            hg.approve(request_id, {"note": "pseudo-transition from migration, no original PENDING history"})
+phi_os/migrate_prevention_queue.py:75:            hg.reject(request_id, {"note": "pseudo-transition from migration, no original PENDING history"})
+phi_os/reference_resolver.py:46:        MOCKA_TODO_ACTIVE.jsonのid一覧、decision_ledger.jsonlのdecision_id一覧等)。
+phi_os/tests/test_human_gate.py:24:    event = hg.submit({"request_id": "R1", "what": "test"}, conn=conn)
+phi_os/tests/test_human_gate.py:30:def test_submit_duplicate_request_id_rejected(conn):
+phi_os/tests/test_human_gate.py:31:    hg.submit({"request_id": "R1"}, conn=conn)
+phi_os/tests/test_human_gate.py:33:        hg.submit({"request_id": "R1"}, conn=conn)
+phi_os/tests/test_human_gate.py:36:def test_approve_from_pending_succeeds(conn):
+phi_os/tests/test_human_gate.py:37:    hg.submit({"request_id": "R2"}, conn=conn)
+phi_os/tests/test_human_gate.py:38:    event = hg.approve("R2", conn=conn)
+phi_os/tests/test_human_gate.py:45:    hg.submit({"request_id": "R3"}, conn=conn)
+phi_os/tests/test_human_gate.py:51:    hg.submit({"request_id": "R4"}, conn=conn)
+phi_os/tests/test_human_gate.py:56:def test_approve_on_nonexistent_request_id_rejected(conn):
+phi_os/tests/test_human_gate.py:58:        hg.approve("DOES_NOT_EXIST", conn=conn)
+phi_os/tests/test_human_gate.py:61:def test_approve_already_approved_rejected(conn):
+phi_os/tests/test_human_gate.py:62:    hg.submit({"request_id": "R5"}, conn=conn)
+phi_os/tests/test_human_gate.py:63:    hg.approve("R5", conn=conn)
+phi_os/tests/test_human_gate.py:65:        hg.approve("R5", conn=conn)
+phi_os/tests/test_human_gate.py:69:    hg.submit({"request_id": "R6"}, conn=conn)
+phi_os/tests/test_human_gate.py:76:    ("PENDING", lambda c, rid: hg.submit({"request_id": rid}, conn=c)),
+phi_os/tests/test_human_gate.py:77:    ("APPROVED", lambda c, rid: (hg.submit({"request_id": rid}, conn=c), hg.approve(rid, conn=c))),
+phi_os/tests/test_human_gate.py:78:    ("REJECTED", lambda c, rid: (hg.submit({"request_id": rid}, conn=c), hg.reject(rid, conn=c))),
+phi_os/tests/test_human_gate.py:80:def test_cancel_allowed_from_pending_approved_rejected(conn, from_state, setup):
+phi_os/tests/test_human_gate.py:88:    hg.submit({"request_id": "R7"}, conn=conn)
+phi_os/tests/test_human_gate.py:95:    hg.submit({"request_id": "R8"}, conn=conn)
+phi_os/tests/test_human_gate.py:98:        hg.approve("R8", conn=conn)
+phi_os/tests/test_human_gate.py:104:    hg.submit({"request_id": "P1"}, conn=conn)
+phi_os/tests/test_human_gate.py:105:    hg.submit({"request_id": "P2"}, conn=conn)
+phi_os/tests/test_human_gate.py:106:    hg.submit({"request_id": "P3"}, conn=conn)
+phi_os/tests/test_human_gate.py:107:    hg.approve("P2", conn=conn)
+phi_os/tests/test_human_gate.py:110:    pending_ids = {row["request_id"] for row in pending}
+phi_os/tests/test_human_gate.py:116:    # human_gate_eventsテーブルにはnext_state列はあるが、別のstateテーブルは存在しない。
+phi_os/tests/test_human_gate.py:117:    hg.submit({"request_id": "R9"}, conn=conn)
+phi_os/tests/test_human_gate.py:118:    hg.approve("R9", conn=conn)
+phi_os/tests/test_human_gate.py:122:    assert tables == {"human_gate_events"}
+production_certification/certification/deployment_certifier.py:74:        approved = all([
+production_certification/certification/deployment_certifier.py:83:        status = "APPROVED" if approved else "REJECTED"
+production_certification/tests/test_certification.py:117:        collector.emit(TelemetryEvent.create(EventType.REQUEST_START, layer="gateway", request_id=f"r{i}"))
+production_certification/tests/test_certification.py:118:        collector.emit(TelemetryEvent.create(EventType.REQUEST_END, layer="gateway", request_id=f"r{i}"))
+production_certification/tests/test_certification.py:122:def test_certification_approved():
+production_certification/tests/test_certification.py:243:    input_schema={"type": "object", "required": ["request_id"], "properties": {"request_id": {"type": "string"}}},
+production_certification/tests/test_certification.py:249:    validate({"request_id": "abc"}, CONTRACT_V1.input_schema)
+production_certification/tests/test_certification.py:259:        validate({"request_id": 123}, CONTRACT_V1.input_schema)
+production_certification/tests/test_certification.py:269:        input_schema={"type": "object", "required": ["request_id", "extra"], "properties": {}},
+production_observability/system_health_monitor.py:42:                if event.request_id:
+production_observability/system_health_monitor.py:43:                    self._enter_times[(layer, event.request_id)] = event.timestamp
+production_observability/system_health_monitor.py:46:                key = (layer, event.request_id)
+production_observability/system_health_monitor.py:47:                if event.request_id and key in self._enter_times:
+production_observability/telemetry_aggregator.py:28:            if event.request_id:
+production_observability/telemetry_aggregator.py:29:                self._by_request[event.request_id].append(event)
+production_observability/telemetry_aggregator.py:39:    def events_for_request(self, request_id: str) -> list[TelemetryEvent]:
+production_observability/telemetry_aggregator.py:41:            return list(self._by_request.get(request_id, []))
+production_observability/telemetry_aggregator.py:45:        across layers, regardless of request_id (failure correlation mapping)."""
+production_observability/telemetry_registry.py:37:    request_id: Optional[str] = None
+production_observability/telemetry_registry.py:45:        request_id: Optional[str] = None,
+production_observability/telemetry_registry.py:54:            request_id=request_id,
+production_observability/telemetry_registry.py:88:    request_id: str
+production_observability/tests/test_pipeline.py:13:def _decision_event(layer: str, request_id: str, consistency_score: float) -> TelemetryEvent:
+production_observability/tests/test_pipeline.py:17:        request_id=request_id,
+production_observability/tests/test_pipeline.py:25:        pipeline.emit(TelemetryEvent.create(EventType.REQUEST_START, layer="gateway", request_id=f"r{i}"))
+production_observability/tests/test_pipeline.py:39:    pipeline.emit(TelemetryEvent.create(EventType.REQUEST_START, layer="gateway", request_id=rid))
+production_observability/tests/test_pipeline.py:40:    pipeline.emit(TelemetryEvent.create(EventType.LAYER_ENTER, layer="semantic", request_id=rid))
+production_observability/tests/test_pipeline.py:41:    pipeline.emit(TelemetryEvent.create(EventType.DECISION, layer="semantic", request_id=rid,
+production_observability/tests/test_pipeline.py:43:    pipeline.emit(TelemetryEvent.create(EventType.LAYER_EXIT, layer="semantic", request_id=rid))
+production_observability/tests/test_pipeline.py:44:    pipeline.emit(TelemetryEvent.create(EventType.LAYER_ENTER, layer="decision", request_id=rid))
+production_observability/tests/test_pipeline.py:45:    pipeline.emit(TelemetryEvent.create(EventType.LAYER_EXIT, layer="decision", request_id=rid))
+production_observability/tests/test_pipeline.py:46:    pipeline.emit(TelemetryEvent.create(EventType.REQUEST_END, layer="gateway", request_id=rid))
+production_observability/tests/test_pipeline.py:49:    assert trace.request_id == rid
+production_observability/tests/test_pipeline.py:83:    pipeline.emit(TelemetryEvent.create(EventType.FAILURE, layer="gateway", request_id="r1",
+production_observability/tests/test_pipeline.py:85:    pipeline.emit(TelemetryEvent.create(EventType.FAILURE, layer="memory", request_id="r2",
+production_observability/tests/test_pipeline.py:88:    pipeline.emit(TelemetryEvent.create(EventType.FAILURE, layer="decision", request_id="r3",
+production_observability/tests/test_pipeline.py:104:        pipeline.emit(TelemetryEvent.create(EventType.LAYER_ENTER, layer=layer, request_id=f"req-{i}"))
+production_observability/tests/test_pipeline.py:105:        pipeline.emit(TelemetryEvent.create(EventType.LAYER_EXIT, layer=layer, request_id=f"req-{i}"))
+production_observability/tests/test_pipeline.py:126:        pipeline.emit(TelemetryEvent.create(EventType.REQUEST_START, layer=layer, request_id=rid))
+production_observability/tests/test_pipeline.py:127:        pipeline.emit(TelemetryEvent.create(EventType.LAYER_ENTER, layer=layer, request_id=rid))
+production_observability/tests/test_pipeline.py:132:            pipeline.emit(TelemetryEvent.create(EventType.FAILURE, layer=layer, request_id=rid,
+production_observability/tests/test_pipeline.py:134:        pipeline.emit(TelemetryEvent.create(EventType.LAYER_EXIT, layer=layer, request_id=rid))
+production_observability/tests/test_pipeline.py:135:        pipeline.emit(TelemetryEvent.create(EventType.REQUEST_END, layer=layer, request_id=rid))
+production_observability/trace_builder.py:13:    def build(self, request_id: str) -> TraceObject:
+production_observability/trace_builder.py:15:            self._aggregator.events_for_request(request_id),
+production_observability/trace_builder.py:41:            request_id=request_id,
+production_observability/trace_builder.py:50:        request_ids = {e.request_id for e in self._aggregator.timeline() if e.request_id}
+production_observability/trace_builder.py:51:        return [self.build(rid) for rid in request_ids]
+relay/action_router.py:32:        return {"action": "STORE_EVENT", "status": "approved"}
+runtime/governance/meta_audit_engine.py:45:        "status": "approved",
+runtime/repair_executor.py:58:    if status != "approved":
+scripts/state/overview_current_generator.py:83:            "decision_id": latest.get("decision_id"),
+scripts/state/overview_current_generator.py:85:            "approved_at": latest.get("approved_at"),
+structural/bee.py:167:        if entry.get("approved_by") and current in ("確立", "制度化", "成長中"):
+structural/bee.py:295:                    "approved_by":   None,
+structural/bee.py:296:                    "approved_at":   None,
+structural/bee.py:332:                        "approved_by":   None,
+structural/bee.py:333:                        "approved_at":   None,
+structural/bee.py:416:    def on_phi_approved(self, beta_id: str):
+structural/bee.py:417:        """judgement_reason で beta_id が approved → evidence +5"""
+structural/bee.py:420:            self.breg[beta_id]["approved_by"] = "きむら博士 (PHI DNA)"
+structural/bee.py:421:            self.breg[beta_id]["approved_at"] = datetime.now().strftime("%Y-%m-%d")
+structural/beta_engine.py:259:            "approved_by":  None,
+structural/beta_engine.py:260:            "approved_at":  None,
+structural/execution_governance.py:87:    approved: bool
+structural/execution_governance.py:207:        approved=TrueでもHuman Gateの承認が別途必要(本関数は機械的検査のみ)。
+structural/execution_governance.py:215:                approved=False,
+structural/execution_governance.py:222:        return ApprovalResult(approved=True, reason="dry run clean", dry_run=result)
+structural/execution_governance.py:239:    print("approved:", approval.approved)
+structural/gl_integration_test.py:83:        "GL7 approves when scope covers all changed top-level dirs",
+structural/gl_integration_test.py:84:        approval_full_scope.dry_run.aborts == [] or approval_full_scope.approved,
+tests/test_human_gate_continuity.py:64:        assert unit.human_gate_event_status == "NOT_ISSUED"
+tests/test_human_gate_continuity.py:70:        for f in ("governance_state", "approval_required", "human_gate_event_status", "mcp_availability"):
+tests/test_human_gate_continuity.py:86:        event = dhgp.record_mcp_recovery_observed(unit.request_id, mcp_check=_mock_mcp_online)
+tests/test_human_gate_continuity.py:90:        state = dhgp.get_state(unit.request_id)
+tests/test_human_gate_continuity.py:117:                dhgp.attempt_state_transition(unit.request_id, target)
+tests/test_human_gate_continuity.py:122:        state = dhgp.get_state(unit.request_id)
+tests/test_human_gate_continuity.py:137:        dhgp.record_mcp_recovery_observed(unit.request_id, mcp_check=_mock_mcp_online)
+tests/test_human_gate_continuity.py:139:            dhgp.attempt_state_transition(unit.request_id, "APPROVED")
+tests/test_seal_auth_record.py:12:    write_auth_record, read_auth_records, verify_auth_record, find_duplicate_request_ids,
+tests/test_seal_auth_record.py:18:        "seal_request_id": "SR_1", "requester": "kimura_hakase",
+tests/test_seal_auth_record.py:19:        "decision_id": "DC_x", "approved_by": "kimura_hakase",
+tests/test_seal_auth_record.py:29:    write_auth_record(p, {"decision_id": "DC_old", "approved_by": "kimura_hakase"})
+tests/test_seal_auth_record.py:34:def test_approved_by_system_rejected():
+tests/test_seal_auth_record.py:35:    # T2: approved_by=system は不合格
+tests/test_seal_auth_record.py:36:    ok, r = verify_auth_record(_rec(approved_by="system:seal_governance_gate"))
+tests/test_seal_auth_record.py:37:    assert not ok and "approved_by_not_human" in r
+tests/test_seal_auth_record.py:40:def test_approved_by_human_ok():
+tests/test_seal_auth_record.py:41:    # T3: approved_by=human は合格
+tests/test_seal_auth_record.py:48:    ok, r = verify_auth_record(_rec(seal_request_id=""))
+tests/test_seal_auth_record.py:49:    assert not ok and "missing:seal_request_id" in r
+tests/test_seal_auth_record.py:52:def test_duplicate_request_ids(tmp_path):
+tests/test_seal_auth_record.py:53:    # T5: seal_request_id の重複を検出
+tests/test_seal_auth_record.py:55:    write_auth_record(p, _rec(seal_request_id="SR_dup"))
+tests/test_seal_auth_record.py:56:    write_auth_record(p, _rec(seal_request_id="SR_dup"))
+tests/test_seal_auth_record.py:57:    assert "SR_dup" in find_duplicate_request_ids(p)
+tests/test_seal_governance_gate.py:65:def test_a_normal_path_approved_records_decision_unit():
+tests/test_seal_governance_gate.py:80:        assert result.approved, f"expected approval, got aborts={result.aborts} reason={result.reason}"
+tests/test_seal_governance_gate.py:87:        assert entry["decision"] == "approved"
+tests/test_seal_governance_gate.py:92:        for field in ("decision_id", "title", "approved_by", "approved_at", "status"):
+tests/test_seal_governance_gate.py:114:        assert not result.approved
+tests/test_seal_governance_gate.py:144:    test_a_normal_path_approved_records_decision_unit()
+tests/test_seal_governance_gate.py:145:    print("Test A (normal path, approved, Decision Unit recorded): PASS")
+tests/test_seal_governance_wrapper.py:56:def test_a_normal_path_approved_and_sealed():
+tests/test_seal_governance_wrapper.py:66:        assert result.approved, f"expected approval, got aborts={result.aborts} reason={result.reason}"
+tests/test_seal_governance_wrapper.py:82:        assert entry["decision"] == "approved"
+tests/test_seal_governance_wrapper.py:84:        for field in ("decision_id", "title", "approved_by", "approved_at", "status"):
+tests/test_seal_governance_wrapper.py:105:        assert not result.approved
+tests/test_seal_governance_wrapper.py:141:    test_a_normal_path_approved_and_sealed()
+tests/test_seal_governance_wrapper.py:142:    print("Test A (normal path, approved and sealed): PASS")
+tools/sync_public_to_sheets.py:14:def is_approved() -> bool:
+tools/sync_public_to_sheets.py:23:def audit_log(approved: bool, target: str, count: int) -> None:
+tools/sync_public_to_sheets.py:25:    line = f"{ts} approved={str(approved).lower()} target={target} count={count}\n"
+tools/sync_public_to_sheets.py:31:    approved = is_approved()
+tools/sync_public_to_sheets.py:35:    audit_log(approved, "sheets", count)
+tools/sync_public_to_sheets.py:37:    if not approved:

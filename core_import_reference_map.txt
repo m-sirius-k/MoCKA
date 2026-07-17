@@ -1,0 +1,112 @@
+﻿app.py:67:from phi_os.event_gate import gate_bp
+app.py:69:from phi_os.integrity_routes import integrity_bp
+app.py:71:from phi_os.api.time_api import time_api_bp
+app.py:4105:        from phi_os.audit_trigger import install_audit_schema as _install_audit_schema
+app.py:4135:        from phi_os.context.context_runtime import ContextRuntime
+architecture_verify.py:18:from phi_os.phi_bridge_governance import (
+architecture_verify.py:144:    from phi_os.phi_bridge_governance import ConflictEvent, DecisionKind
+archive/_untracked_stash_20260226_170942/.wsl_ots_venv/lib/python3.12/site-packages/gitdb/pack.py:735:            # To prevent it from applying the deltas when querying the size,
+archive/_untracked_stash_20260226_170942/.wsl_ots_venv/lib/python3.12/site-packages/gitdb/stream.py:34:    from gitdb_speedups._perf import apply_delta as c_apply_delta
+archive/_untracked_stash_20260226_170942/.wsl_ots_venv/lib/python3.12/site-packages/otsclient/args.py:12:import appdirs
+archive/_untracked_stash_20260226_170942/.wsl_ots_venv/lib/python3.12/site-packages/pip/_internal/configuration.py:27:from pip._internal.utils import appdirs
+archive/_untracked_stash_20260226_170942/.wsl_ots_venv/lib/python3.12/site-packages/pip/_internal/locations/base.py:10:from pip._internal.utils import appdirs
+archive/_untracked_stash_20260226_170942/.wsl_ots_venv/lib/python3.12/site-packages/pip/_vendor/pygments/lexer.py:15:from pip._vendor.pygments.filter import apply_filters, Filter
+archive/_untracked_stash_20260226_170942/app/.venv311/Lib/site-packages/pip/_internal/configuration.py:27:from pip._internal.utils import appdirs
+archive/_untracked_stash_20260226_170942/app/.venv311/Lib/site-packages/pip/_internal/locations/base.py:10:from pip._internal.utils import appdirs
+archive/_untracked_stash_20260226_170942/app/.venv311/Lib/site-packages/pip/_vendor/pygments/lexer.py:15:from pip._vendor.pygments.filter import apply_filters, Filter
+archive/_untracked_stash_20260226_170942/app/.venv311/Lib/site-packages/pkg_resources/__init__.py:80:from pkg_resources.extern import appdirs
+archive/_untracked_stash_20260226_170942/app/.venv311/Lib/site-packages/setuptools/config/pyprojecttoml.py:16:from ._apply_pyprojecttoml import apply as _apply
+audit/ed25519/governance/governance_cli.py:9:from governance_writer import append_event
+audit/ed25519/governance/governance_op_start.py:4:from governance_writer import append_event
+audit/ed25519/governance/governance_ops.py:7:from governance_writer import append_event
+bridge/tests/test_final_architecture.py:23:from phi_os.phi_bridge_governance import (
+bridge/tests/test_phi_ui_integration.py:16:from phi_os.phi_bridge_governance import (
+cognitive/cognitive_loop_engine.py:15:from phi_os.decision_log_analyzer import DecisionLogAnalyzer
+cross_layer_consistency/consistency_pipeline.py:34:from cross_layer_consistency.consistency_applier import apply as apply_item
+cross_layer_consistency/consistency_stress_test.py:31:from cross_layer_consistency.consistency_applier import apply as apply_item
+gateway/connector_caliber.py:7:from mocka_index_writer import MoCKAIndex, IndexWriter
+governance/human_gate_cli.py:33:from phi_os.human_gate import submit, approve, reject, get_state, list_pending, HumanGateError
+governance/seal_governance_wrapper.py:34:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+governance/shadow_seal_adapter.py:42:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+interface/health_check.py:22:from mocka_endpoints import get_endpoint_url
+living_room/hub.py:33:from phi_os.gate_validator import validate
+mocka-governance-kernel/governance/governance_cli.py:9:from governance_writer import append_event
+mocka-governance-kernel/governance/governance_op_start.py:4:from governance_writer import append_event
+mocka-governance-kernel/governance/governance_ops.py:7:from governance_writer import append_event
+mocka3/drift_engine/drift_engine.py:8:from mocka3.glk_runtime_bridge.events import emit_event
+mocka3/drift_engine/drift_engine.py:9:from mocka3.drift_engine.types import DriftSummary, DriftType, DriftVector, ExpectedState, ObservedState
+mocka3/drift_engine/expected_state_resolver.py:8:from mocka3.glk_runtime_bridge.types import ExecutablePlan
+mocka3/drift_engine/expected_state_resolver.py:9:from mocka3.drift_engine.types import ExpectedState
+mocka3/drift_engine/observed_state_resolver.py:8:from mocka3.glk_runtime_bridge.types import ObservationLedgerEntry
+mocka3/drift_engine/observed_state_resolver.py:9:from mocka3.drift_engine.types import ObservedState
+mocka3/drift_engine/re_glk_hook.py:11:from mocka3.glk_runtime_bridge.events import emit_event
+mocka3/drift_engine/re_glk_hook.py:12:from mocka3.drift_engine.types import DriftSummary
+mocka3/drift_engine/test_drift_minimal.py:2:from mocka3.glk_generator import generate_blueprint
+mocka3/drift_engine/test_drift_minimal.py:3:from mocka3.meta_intent_schema import MetaIntent
+mocka3/drift_engine/test_drift_minimal.py:4:from mocka3.glk_runtime_bridge import run
+mocka3/drift_engine/test_drift_minimal.py:5:from mocka3.glk_runtime_bridge.bridge import translate_to_plan
+mocka3/drift_engine/test_drift_minimal.py:6:from mocka3.glk_runtime_bridge.ledger import ObservationLedger
+mocka3/drift_engine/test_drift_minimal.py:7:from mocka3.drift_engine.types import DriftType
+mocka3/drift_engine/test_drift_minimal.py:8:from mocka3.drift_engine.expected_state_resolver import resolve_expected_state
+mocka3/drift_engine/test_drift_minimal.py:9:from mocka3.drift_engine.observed_state_resolver import resolve_observed_state
+mocka3/drift_engine/test_drift_minimal.py:10:from mocka3.drift_engine.drift_engine import analyze
+mocka3/drift_engine/test_drift_minimal.py:11:from mocka3.drift_engine.re_glk_hook import evaluate
+mocka3/glk_generator.py:11:from mocka3.meta_intent_schema import MetaIntent
+mocka3/glk_generator.py:12:from mocka3.system_blueprint_schema import SystemBlueprint
+mocka3/glk_runtime_bridge/__init__.py:8:from mocka3.system_blueprint_schema import SystemBlueprint
+mocka3/glk_runtime_bridge/__init__.py:9:from mocka3.glk_runtime_bridge.bridge import translate_to_plan
+mocka3/glk_runtime_bridge/__init__.py:10:from mocka3.glk_runtime_bridge.context import build_context
+mocka3/glk_runtime_bridge/__init__.py:11:from mocka3.glk_runtime_bridge.executor import execute
+mocka3/glk_runtime_bridge/__init__.py:12:from mocka3.glk_runtime_bridge.observation import emit_observation
+mocka3/glk_runtime_bridge/__init__.py:13:from mocka3.glk_runtime_bridge.events import emit_event
+mocka3/glk_runtime_bridge/__init__.py:14:from mocka3.glk_runtime_bridge.ledger import ObservationLedger
+mocka3/glk_runtime_bridge/__init__.py:15:from mocka3.glk_runtime_bridge.types import ObservationLedgerEntry
+mocka3/glk_runtime_bridge/bridge.py:7:from mocka3.system_blueprint_schema import SystemBlueprint
+mocka3/glk_runtime_bridge/bridge.py:8:from mocka3.glk_runtime_bridge.types import ExecutablePlan, ExecutableStep
+mocka3/glk_runtime_bridge/context.py:4:from mocka3.glk_runtime_bridge.types import ExecutablePlan, ExecutionContext
+mocka3/glk_runtime_bridge/executor.py:8:from mocka3.glk_runtime_bridge.types import ExecutablePlan, ExecutionContext, ExecutionResult
+mocka3/glk_runtime_bridge/ledger.py:11:from mocka3.glk_runtime_bridge.types import ObservationLedgerEntry, ObservationRecord
+mocka3/glk_runtime_bridge/observation.py:8:from mocka3.glk_runtime_bridge.types import (
+mocka3/glk_runtime_bridge/test_bridge_minimal.py:4:from mocka3.glk_generator import generate_blueprint
+mocka3/glk_runtime_bridge/test_bridge_minimal.py:5:from mocka3.meta_intent_schema import MetaIntent
+mocka3/glk_runtime_bridge/test_bridge_minimal.py:6:from mocka3.glk_runtime_bridge import run
+mocka3/glk_runtime_bridge/test_bridge_minimal.py:7:from mocka3.glk_runtime_bridge.bridge import BridgeError, translate_to_plan
+mocka3/glk_runtime_bridge/test_bridge_minimal.py:8:from mocka3.glk_runtime_bridge.ledger import LedgerIntegrityError, ObservationLedger, reconstruct_trace
+mocka3/test_glk_minimal.py:4:from mocka3.glk_generator import ConstraintViolation, generate_blueprint
+mocka3/test_glk_minimal.py:5:from mocka3.meta_intent_schema import MetaIntent
+mocka_mcp_server.py:217:        from phi_os.context.working_context import WorkingContext
+mocka_mcp_server.py:218:        from phi_os.context.context_scheduler import maybe_snapshot
+mocka_mcp_server.py:219:        from phi_os.context.context_runtime import emit_event_to_context_runtime
+mocka_mcp_server.py:271:        from phi_os.event_gate import process_event as _gate_process_event
+mocka_mcp_server.py:719:                from phi_os.event_gate import process_event as _gate_process_event
+observer_logger.py:17:from schema.schema import append_event, verify_ledger
+orchestra/conflict_interpreter.py:21:from phi_os.phi_bridge_governance import ConflictEvent, Decision, DecisionKind
+orchestra/conflict_interpreter.py:170:    from phi_os.phi_bridge_governance import event_from_bridge_record
+phi_os/api/time_api.py:24:from phi_os.semantic.query_resolver import resolve as resolve_semantic_query
+phi_os/migrate_prevention_queue.py:21:from phi_os import human_gate as hg
+phi_os/tests/test_dictionary.py:7:from phi_os.dictionary import (
+phi_os/tests/test_event_gate.py:11:from phi_os.event_gate import gate_bp
+phi_os/tests/test_event_gate.py:19:    import phi_os.event_gate as eg
+phi_os/tests/test_gate_validator.py:11:from phi_os.gate_validator import validate
+phi_os/tests/test_gate_validator.py:12:from phi_os.gate_schema import ALLOWED_WHAT_TYPES
+phi_os/tests/test_human_gate.py:10:import phi_os.human_gate as hg
+phi_os/tests/test_institution_runtime.py:6:from phi_os.runtime import (
+phi_os/tests/test_institution_runtime.py:144:        from phi_os.runtime.runtime_types import GateStatus
+phi_os/tests/test_integrity.py:14:from phi_os import integrity
+phi_os/tests/test_time_api.py:9:from phi_os.api.time_api import time_api_bp, _kernel
+relay/mcp_bridge.py:9:from phi_os.event_gate import process_buffered_event, _get_conn, _ensure_idempotency_table
+runtime/incident_engine.py:17:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+runtime/incident_git_sync.py:13:from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
+runtime/main_loop.py:4:from intent_logger import append_intent
+runtime/main_loop.py:5:from intent_to_goal import apply_intent_to_goal
+scripts/ledger/anchor_update.py:17:from mocka_git_safe_commit import is_core_system_file, mocka_git_safe_commit  # noqa: E402
+structural/execution_governance.py:39:        from phi_os import event_bus
+tests/test_canary_overrides.py:22:import phi_os.event_gate as eg
+tests/test_canary_overrides.py:23:from phi_os.event_gate import gate_bp, process_event
+tools/hab_concurrency_audit.py:37:    from phi_os.context.context_runtime import ContextRuntime
+tools/hab_concurrency_audit.py:71:    from phi_os.context.context_runtime import ContextRuntime
+tools/hab_concurrency_audit.py:106:    from phi_os.context.working_context import WorkingContext
+tools/hab_concurrency_audit.py:157:    from phi_os.context.context_runtime import ContextRuntime
+tools/hab_concurrency_audit.py:158:    from phi_os.context.working_context import WorkingContext
+tools/hab_concurrency_audit.py:227:    from phi_os.context import working_context as wc_module
+ui/conflict_view_model.py:113:    from phi_os.phi_bridge_governance import severity_from_state
