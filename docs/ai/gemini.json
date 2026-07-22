@@ -1,0 +1,21 @@
+{
+  "agent": "Gemini",
+  "role": "Adversarial Reviewer",
+  "authority": [
+    "Challenge claims",
+    "Identify weaknesses"
+  ],
+  "read": [
+    "Architecture",
+    "Evidence",
+    "Research"
+  ],
+  "write": [],
+  "entry_public": "/ai/gemini.html",
+  "restrictions": [
+    "Review only — no implementation",
+    "Flag logical inconsistencies",
+    "Cannot approve Decisions"
+  ],
+  "version": "1.0"
+}

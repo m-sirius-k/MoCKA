@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<title>MoCKA — AI Agent Index</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+       color: #24292f; background: #fff; line-height: 1.6; }
+.header { background: #0d1117; color: #e6edf3; padding: 16px 32px;
+          display: flex; align-items: center; gap: 16px; }
+.header h1 { font-size: 18px; font-weight: 600; }
+.header .badge { background: #238636; color: #fff; padding: 2px 8px;
+                 border-radius: 12px; font-size: 12px; }
+.nav { background: #f6f8fa; border-bottom: 1px solid #d0d7de;
+       padding: 8px 32px; display: flex; gap: 24px; }
+.nav a { color: #24292f; text-decoration: none; font-size: 14px; }
+.nav a:hover { color: #0969da; }
+.container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+               gap: 16px; margin: 24px 0; }
+.stat-card { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px;
+             padding: 16px; text-align: center; }
+.stat-card .value { font-size: 28px; font-weight: 700; color: #0969da; }
+.stat-card .label { font-size: 12px; color: #57606a; margin-top: 4px; }
+.section { margin: 32px 0; }
+.section h2 { font-size: 20px; font-weight: 600; border-bottom: 1px solid #d0d7de;
+              padding-bottom: 8px; margin-bottom: 16px; }
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 16px; }
+.agent-card { border: 1px solid #d0d7de; border-radius: 8px; padding: 16px; }
+.agent-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.agent-card .role { background: #ddf4ff; color: #0550ae; padding: 2px 8px;
+                    border-radius: 4px; font-size: 12px; display: inline-block; }
+.agent-card a { display: block; margin-top: 8px; color: #0969da; font-size: 13px; }
+.tree { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px;
+        padding: 16px; font-family: monospace; font-size: 13px; line-height: 1.8; }
+.footer { background: #f6f8fa; border-top: 1px solid #d0d7de; padding: 16px 32px;
+          font-size: 12px; color: #57606a; text-align: center; margin-top: 48px; }
+.health-green { color: #238636; font-weight: 600; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { border: 1px solid #d0d7de; padding: 8px 12px; text-align: left; font-size: 14px; }
+th { background: #f6f8fa; font-weight: 600; }
+</style></head><body>
+<div class="header"><h1>MoCKA Explorer — AI Agent Index</h1></div>
+<nav class="nav">
+  <a href="../index.html">Home</a>
+</nav>
+<div class="container">
+  <div class="section">
+    <h2>AI Agent Entry Points</h2>
+    <p style="font-size:14px;color:#57606a;margin-bottom:16px">
+      Each AI agent has a dedicated entry point with role, authority, and restrictions.
+    </p>
+    <table>
+      <tr><th>Agent</th><th>Role</th><th>HTML</th><th>JSON Manifest</th></tr>
+      <tr><td>Claude</td><td>R02 — Documentation</td>
+          <td><a href="claude.html">claude.html</a></td>
+          <td><a href="claude.json">claude.json</a></td></tr>
+      <tr><td>ChatGPT</td><td>R01 — Audit</td>
+          <td><a href="chatgpt.html">chatgpt.html</a></td>
+          <td><a href="chatgpt.json">chatgpt.json</a></td></tr>
+      <tr><td>Gemini</td><td>Adversarial Reviewer</td>
+          <td><a href="gemini.html">gemini.html</a></td>
+          <td><a href="gemini.json">gemini.json</a></td></tr>
+      <tr><td>NotebookLM</td><td>Literature Analyst</td>
+          <td><a href="notebooklm.md">notebooklm.md</a></td>
+          <td><a href="notebooklm.json">notebooklm.json</a></td></tr>
+    </table>
+  </div>
+</div>
+<div class="footer">MoCKA Explorer — 2026-07-22</div>
+</body></html>

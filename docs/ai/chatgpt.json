@@ -1,0 +1,23 @@
+{
+  "agent": "ChatGPT (GPT)",
+  "role": "R01",
+  "authority": [
+    "Design Audit",
+    "Institution Review",
+    "Paper Sub"
+  ],
+  "read": [
+    "Architecture",
+    "Governance",
+    "Public Decisions",
+    "Evidence"
+  ],
+  "write": [],
+  "entry_public": "/ai/chatgpt.html",
+  "restrictions": [
+    "Audit only — no implementation",
+    "All decisions require Human Gate approval",
+    "Do not override R02 documentation"
+  ],
+  "version": "1.0"
+}

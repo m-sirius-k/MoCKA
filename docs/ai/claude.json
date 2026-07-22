@@ -1,0 +1,26 @@
+{
+  "agent": "Claude",
+  "role": "R02",
+  "authority": [
+    "Documentation",
+    "Audit",
+    "Paper Lead"
+  ],
+  "read": [
+    "All"
+  ],
+  "write": [],
+  "entry_notion": "https://app.notion.com/p/3a43be67ea2f81789ddfee0c4a7e5cf9",
+  "mcp_startup": [
+    "mocka_get_overview",
+    "mocka_get_todo",
+    "mocka_get_essence",
+    "mocka_get_guidelines"
+  ],
+  "restrictions": [
+    "Do not write to MoCKA Core without Human Gate approval",
+    "Do not merge branches to main directly",
+    "Record all changes via mocka_write_event"
+  ],
+  "version": "1.0"
+}

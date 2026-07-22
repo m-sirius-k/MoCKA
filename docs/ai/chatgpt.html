@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8">
+<title>MoCKA — ChatGPT (GPT)</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+       color: #24292f; background: #fff; line-height: 1.6; }
+.header { background: #0d1117; color: #e6edf3; padding: 16px 32px;
+          display: flex; align-items: center; gap: 16px; }
+.header h1 { font-size: 18px; font-weight: 600; }
+.header .badge { background: #238636; color: #fff; padding: 2px 8px;
+                 border-radius: 12px; font-size: 12px; }
+.nav { background: #f6f8fa; border-bottom: 1px solid #d0d7de;
+       padding: 8px 32px; display: flex; gap: 24px; }
+.nav a { color: #24292f; text-decoration: none; font-size: 14px; }
+.nav a:hover { color: #0969da; }
+.container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+.status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+               gap: 16px; margin: 24px 0; }
+.stat-card { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px;
+             padding: 16px; text-align: center; }
+.stat-card .value { font-size: 28px; font-weight: 700; color: #0969da; }
+.stat-card .label { font-size: 12px; color: #57606a; margin-top: 4px; }
+.section { margin: 32px 0; }
+.section h2 { font-size: 20px; font-weight: 600; border-bottom: 1px solid #d0d7de;
+              padding-bottom: 8px; margin-bottom: 16px; }
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 16px; }
+.agent-card { border: 1px solid #d0d7de; border-radius: 8px; padding: 16px; }
+.agent-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.agent-card .role { background: #ddf4ff; color: #0550ae; padding: 2px 8px;
+                    border-radius: 4px; font-size: 12px; display: inline-block; }
+.agent-card a { display: block; margin-top: 8px; color: #0969da; font-size: 13px; }
+.tree { background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 8px;
+        padding: 16px; font-family: monospace; font-size: 13px; line-height: 1.8; }
+.footer { background: #f6f8fa; border-top: 1px solid #d0d7de; padding: 16px 32px;
+          font-size: 12px; color: #57606a; text-align: center; margin-top: 48px; }
+.health-green { color: #238636; font-weight: 600; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { border: 1px solid #d0d7de; padding: 8px 12px; text-align: left; font-size: 14px; }
+th { background: #f6f8fa; font-weight: 600; }
+code{background:#f6f8fa;padding:2px 6px;border-radius:4px;font-size:13px}</style>
+</head><body>
+<div class="header">
+  <h1>MoCKA Explorer — ChatGPT (GPT)</h1>
+  <span class="badge">R01</span>
+</div>
+<nav class="nav">
+  <a href="../index.html">Home</a>
+  <a href="index.html">AI Agents</a>
+  <a href="chatgpt.json">manifest.json</a>
+</nav>
+<div class="container">
+  <div class="section">
+    <h2>Agent Profile</h2>
+    <table>
+      <tr><th>Agent</th><td>ChatGPT (GPT)</td></tr>
+      <tr><th>Role</th><td>R01</td></tr>
+      <tr><th>Authority</th><td>Design Audit, Institution Review, Paper Sub</td></tr>
+      <tr><th>Write Access</th><td>None</td></tr>
+    </table>
+  </div>
+  <div class="section">
+    <h2>Read Access</h2>
+    <ul style="padding-left:20px;font-size:14px;line-height:2"><li>Architecture</li><li>Governance</li><li>Public Decisions</li><li>Evidence</li></ul>
+  </div>
+  
+  <div class="section">
+    <h2>Restrictions</h2>
+    <ul style="padding-left:20px;font-size:14px;line-height:2;color:#cf222e"><li>Audit only — no implementation</li><li>All decisions require Human Gate approval</li><li>Do not override R02 documentation</li></ul>
+  </div>
+  <div class="section">
+    <h2>MoCKA Overview</h2>
+    <p style="font-size:14px">
+      MoCKA (Model of Cybernetic Knowledge Architecture) is an AI governance framework
+      designed by Masahito Kimura. Philosophy: <strong>Do not trust AI — constrain it with systems.</strong>
+    </p>
+    <p style="font-size:14px;margin-top:8px">
+      Single Source of Truth: SQLite database on local MoCKA server.<br>
+      Human Gate: きむら博士 — all final approvals.<br>
+      Current Phase: 4 (Commercial) | AAAI 2027 paper submitted.
+    </p>
+  </div>
+</div>
+<div class="footer">MoCKA Explorer — ChatGPT (GPT) Entry — 2026-07-22</div>
+</body></html>

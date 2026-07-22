@@ -1,0 +1,16 @@
+{
+  "agent": "NotebookLM",
+  "role": "Literature Analyst",
+  "authority": [
+    "Literature search",
+    "Citation analysis"
+  ],
+  "read": [
+    "Research",
+    "Evidence",
+    "Papers"
+  ],
+  "write": [],
+  "format": "markdown",
+  "version": "1.0"
+}
