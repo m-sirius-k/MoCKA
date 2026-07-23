@@ -1667,6 +1667,41 @@ def get_restore_packet():
     except Exception as e:
         return jsonify({"status": "ERROR", "message": str(e)}), 500
 
+# ===== Write Path v1.0: Restore Packet v1 配信(Phase8-4、既存/get_restore_packetは無変更) =====
+@app.route("/get_restore_packet_v1")
+def get_restore_packet_v1():
+    """governance/write_path/restore/materialized/ 配下の最新Materialized Artifactと、
+    現在のGovernance Seal値(anchor_record.jsonのsealed_summary_hash)を返す。
+    Fresh/Staleの判定自体はConsumer側(Reader)の責務とする(DC_20260723_007準拠)。"""
+    from pathlib import Path
+    materialized_dir = Path(r"C:\Users\sirok\MoCKA\governance\write_path\restore\materialized")
+    anchor_path = Path(r"C:\Users\sirok\MoCKA\governance\anchor_record.json")
+    try:
+        current_anchor = ""
+        if anchor_path.exists():
+            current_anchor = json.loads(anchor_path.read_text(encoding="utf-8")).get("sealed_summary_hash", "")
+
+        if not materialized_dir.exists():
+            return jsonify({"status": "NO_ARTIFACT"}), 404
+
+        packets = []
+        for f in materialized_dir.glob("RP_*.json"):
+            try:
+                packets.append(json.loads(f.read_text(encoding="utf-8")))
+            except Exception:
+                continue
+        if not packets:
+            return jsonify({"status": "NO_ARTIFACT"}), 404
+
+        latest = max(packets, key=lambda p: p.get("sequence", 0))
+        return jsonify({
+            "status": "OK",
+            "packet": latest,
+            "current_governance_anchor_hash": current_anchor,
+        }), 200
+    except Exception as e:
+        return jsonify({"status": "ERROR", "message": str(e)}), 500
+
 @app.route("/gemini/briefing")
 def gemini_briefing():
     from pathlib import Path

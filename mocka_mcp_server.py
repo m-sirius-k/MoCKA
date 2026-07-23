@@ -4,11 +4,11 @@ MoCKA Memory Caliber -- MCP Server
 変更点: mocka_add_todo追加（新規TODO登録をClaudeから直接実行可能に）
 """
 
-import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys, time, secrets
+import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys, time, secrets, base64
 from pathlib import Path
 from dotenv import load_dotenv
 import requests
-from flask import Flask, request, Response
+from flask import Flask, request, Response, redirect
 from flask_cors import CORS
 
 load_dotenv()
@@ -142,6 +142,12 @@ def _db_read_events(n=None):
 
 app = Flask(__name__)
 CORS(app, origins="*")
+
+@app.before_request
+def log_request():
+    print(f">>> {request.method} {request.path}", flush=True)
+    if request.method == "POST":
+        print(f">>> BODY: {request.get_data(as_text=True)}", flush=True)
 
 @app.after_request
 def add_ngrok_header(response):
@@ -1126,6 +1132,8 @@ def mcp_endpoint():
     req_id = body.get("id")
     params = body.get("params", {})
     if method == "initialize":
+        print("=== INITIALIZE REQUEST ===", flush=True)
+        print(json.dumps(body, indent=2, ensure_ascii=False), flush=True)
         result = {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-caliber", "version": "1.3.0"}}
     elif method == "tools/list":
         result = {"tools": TOOLS}
@@ -1133,7 +1141,11 @@ def mcp_endpoint():
         result = {"content": [{"type": "text", "text": execute_tool(params.get("name", ""), params.get("arguments", {}))}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
-    return json.dumps({"jsonrpc": "2.0", "id": req_id, "result": result}, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+    if method == "initialize":
+        print("=== INITIALIZE RESPONSE ===", flush=True)
+        print(json.dumps(response, indent=2, ensure_ascii=False), flush=True)
+    return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 @app.route("/.well-known/oauth-protected-resource", defaults={"subpath": ""})
 @app.route("/.well-known/oauth-protected-resource/<path:subpath>")
@@ -1142,11 +1154,86 @@ def oauth_resource(subpath):
 
 @app.route("/.well-known/oauth-authorization-server")
 def oauth_server():
-    return json.dumps({}), 200, {"Content-Type": "application/json"}
+    return json.dumps({
+        "issuer": "https://mcp.nsjp.org",
+        "authorization_endpoint": "https://mcp.nsjp.org/oauth/authorize",
+        "token_endpoint": "https://mcp.nsjp.org/oauth/token",
+        "registration_endpoint": "https://mcp.nsjp.org/register",
+        "grant_types_supported": ["authorization_code", "refresh_token"],
+        "response_types_supported": ["code"],
+        "token_endpoint_auth_methods_supported": ["client_secret_post"]
+    }), 200, {"Content-Type": "application/json"}
+
+auth_codes = {}
+
+@app.route("/oauth/authorize", methods=["GET"])
+def oauth_authorize():
+    client_id = request.args.get("client_id")
+    redirect_uri = request.args.get("redirect_uri")
+    state = request.args.get("state")
+    code_challenge = request.args.get("code_challenge")
+    code_challenge_method = request.args.get("code_challenge_method", "S256")
+
+    code = secrets.token_urlsafe(32)
+    auth_codes[code] = {
+        "client_id": client_id,
+        "redirect_uri": redirect_uri,
+        "code_challenge": code_challenge,
+        "code_challenge_method": code_challenge_method,
+        "expires_at": time.time() + 300
+    }
+
+    return redirect(f"{redirect_uri}?code={code}&state={state}")
+
+@app.route("/oauth/token", methods=["POST"])
+def oauth_token():
+    grant_type = request.form.get("grant_type")
+    code = request.form.get("code")
+    client_id = request.form.get("client_id")
+    code_verifier = request.form.get("code_verifier")
+    redirect_uri = request.form.get("redirect_uri")
+
+    if grant_type != "authorization_code":
+        return json.dumps({"error": "unsupported_grant_type"}), 400, {"Content-Type": "application/json"}
+
+    stored = auth_codes.get(code)
+    if not stored:
+        return json.dumps({"error": "invalid_grant"}), 400, {"Content-Type": "application/json"}
+
+    if stored["expires_at"] < time.time():
+        del auth_codes[code]
+        return json.dumps({"error": "invalid_grant", "error_description": "code expired"}), 400, {"Content-Type": "application/json"}
+
+    if stored["client_id"] != client_id or stored["redirect_uri"] != redirect_uri:
+        del auth_codes[code]
+        return json.dumps({"error": "invalid_grant", "error_description": "client_id or redirect_uri mismatch"}), 400, {"Content-Type": "application/json"}
+
+    challenge = stored.get("code_challenge")
+    if challenge:
+        if not code_verifier:
+            return json.dumps({"error": "invalid_grant", "error_description": "code_verifier required"}), 400, {"Content-Type": "application/json"}
+        computed = base64.urlsafe_b64encode(hashlib.sha256(code_verifier.encode()).digest()).rstrip(b"=").decode()
+        if computed != challenge:
+            return json.dumps({"error": "invalid_grant", "error_description": "PKCE verification failed"}), 400, {"Content-Type": "application/json"}
+
+    del auth_codes[code]
+    access_token = secrets.token_urlsafe(32)
+    return json.dumps({
+        "access_token": access_token,
+        "token_type": "Bearer",
+        "expires_in": 3600
+    }), 200, {"Content-Type": "application/json"}
 
 @app.route("/register", methods=["POST"])
 def register():
-    return json.dumps({"client_id": "mocka-mcp", "client_secret": "none"}), 200, {"Content-Type": "application/json"}
+    data = request.get_json(silent=True) or {}
+    client_id = data.get("client_id", f"mocka-{os.urandom(4).hex()}")
+    resp = {"client_id": client_id, "client_secret": "none"}
+    for field in ("redirect_uris", "grant_types", "response_types", "token_endpoint_auth_method", "client_name", "application_type"):
+        if field in data:
+            resp[field] = data[field]
+    print(f">>> REGISTER response: {resp}", flush=True)
+    return json.dumps(resp, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 @app.route("/api/<path:subpath>", methods=["GET", "POST", "PUT", "DELETE"])
 def proxy_to_app(subpath):

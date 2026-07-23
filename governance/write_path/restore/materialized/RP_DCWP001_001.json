@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "packet_id": "RP_DCWP001_001",
+  "governance_anchor_hash": "37b603b8b0d5782bff54bd24efb4ca38adb52d00dad7a3a47702194aa471e7d5",
+  "runtime_evidence_ref": "RER_20260722_24e3edfc",
+  "decision_refs": [
+    "GTR_DC-WP-001_001"
+  ],
+  "event_range": {
+    "from_event_id": "E20260326_001",
+    "to_event_id": "E20260723_4673069207f86",
+    "event_count": 17664
+  },
+  "generated_at": "2026-07-22T23:39:22Z",
+  "content_hash": "ab1216a03bee21fa90f22b0bc0997fccc1902b7d02b3ea50cafc02e4714b5f0a",
+  "immutable": true,
+  "supersedes": null,
+  "sequence": 1,
+  "payload": {
+    "immutable": {
+      "philosophy": [],
+      "forbidden": [],
+      "values": []
+    },
+    "restore_5points": {},
+    "session_context": "write_path_v1 phase8-2 draft (DC-WP-001)"
+  }
+}

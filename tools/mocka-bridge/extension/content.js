@@ -252,15 +252,53 @@
         return lines.join('\n');
     }
 
-    // ── injectDNA: v3優先 → v2フォールバック ──────────────────────
+    // ── injectDNA: v1優先 → v3フォールバック → v2フォールバック ──────────
     async function injectDNA(el) {
         dnaSentInThisSession = true;
         try {
-            // DNA_v3 パスを試みる
+            // Write Path v1.0 / DNA_v3 パスを試みる
             let dnaText = null;
             let hookLabel = '⚡MOCKA HOOKED';
             let prefix = '';
 
+            // Write Path v1.0: Restore Packet v1 パスを試みる(DC_20260723_007準拠)
+            try {
+                const r1 = await fetch('http://127.0.0.1:5000/get_restore_packet_v1');
+                const d1 = await r1.json();
+                if (d1.status === 'OK' && d1.packet) {
+                    const fresh = d1.packet.governance_anchor_hash === d1.current_governance_anchor_hash;
+                    if (fresh) {
+                        dnaText = buildV3DnaText({
+                            immutable: d1.packet.payload.immutable,
+                            restore_5points: d1.packet.payload.restore_5points,
+                            session_context: d1.packet.payload.session_context,
+                            generated_at: d1.packet.generated_at,
+                        });
+                        hookLabel = '⚡MOCKA_v1 HOOKED';
+                        console.log("[MOCKA] Restore Packet v1 取得成功(FRESH)");
+                    } else {
+                        // STALE(LIMITED TRUST): Governance継続性が未確認のため、
+                        // immutable層のみ縮退注入し、restore_5points/session_contextは注入しない
+                        const imm = d1.packet.payload.immutable || {};
+                        const philosophy = (imm.philosophy || []).join(' | ');
+                        const forbidden  = (imm.forbidden  || []).map(s => s.slice(0, 25)).join(' | ');
+                        const values     = (imm.values     || []).join(' | ');
+                        dnaText = [
+                            `[MOCKA_v1_LIMITED_TRUST]{"packet_id":"${d1.packet.packet_id}"}`,
+                            `▮IMMUTABLE: ${philosophy}`,
+                            `▮禁止: ${forbidden}`,
+                            `▮価値: ${values}`,
+                        ].join('\n');
+                        hookLabel = '⚡MOCKA_v1 LIMITED TRUST(STALE)';
+                        console.log("[MOCKA] Restore Packet v1 STALE検出 → LIMITED TRUST縮退表示");
+                    }
+                }
+            } catch (_) {
+                console.log("[MOCKA] Restore Packet v1 未応答 → v3フォールバック");
+            }
+
+            // DNA_v3 パスを試みる(v1が取得できなかった場合のみ)
+            if (!dnaText) {
             try {
                 const r3 = await fetch('http://127.0.0.1:5000/get_restore_packet');
                 const d3 = await r3.json();
@@ -271,6 +309,7 @@
                 }
             } catch (_) {
                 console.log("[MOCKA] DNA_v3 未応答 → v2フォールバック");
+            }
             }
 
             // v2 フォールバック
