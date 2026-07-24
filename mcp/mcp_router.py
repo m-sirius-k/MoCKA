@@ -5,11 +5,13 @@
 from .adapters.github import GitHubAdapter
 from .adapters.filesystem import FileSystemAdapter
 from .adapters.http import HTTPAdapter
+from .adapters.browser import BrowserAdapter
 
 SOURCE_TYPE_MAP = {
     "github": "github_event",
     "filesystem": "filesystem_event",
     "http": "http_event",
+    "browser": "browser_event",
 }
 
 
@@ -19,6 +21,7 @@ class MCPRouterV2:
             "github": GitHubAdapter(),
             "filesystem": FileSystemAdapter(),
             "http": HTTPAdapter(),
+            "browser": BrowserAdapter(),
         }
 
     def route(self, source: str, payload: dict) -> dict:
