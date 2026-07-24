@@ -1147,6 +1147,148 @@ def mcp_endpoint():
         print(json.dumps(response, indent=2, ensure_ascii=False), flush=True)
     return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
+# ============================================================
+# Step5: MCP Scope Separation Test Endpoints (TODO未採番・博士承認2026-07-24)
+# 目的: Claude.ai tools/list ingestion停止点の切り分け実験。
+# schemaはproduction TOOLS配列(454-477行)からの完全コピー(1バイトも変更しない。
+# 変更すると実験の妥当性が崩れるため)。tools/callは実データ・GL7に一切触れない
+# stub応答のみを返す(execute_toolは呼ばない)。production /mcp・/mcp-test・TOOLS・
+# execute_toolは本ブロック追加によって一切変更されない。
+# ============================================================
+
+TOOLS_CORE_TEST = [
+    {"name":"mocka_get_overview","description":"MOCKA_OVERVIEW.json を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_get_todo","description":"MOCKA_TODO_ACTIVE.json を返す(ACTIVE層のみ。LOCKED/ARCHIVE層は対象外)。全AIが現在地とTODOを即理解できる","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_add_todo","description":"新規TODOをMOCKA_TODO_ACTIVE.jsonに追加する。IDが既存の場合はエラー。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"title":{"type":"string"},"status":{"type":"string","default":"未着手"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。通常TODOには指定しない（省略時はフィールド自体を付与しない）"},"priority":{"type":"string","default":"中"},"category":{"type":"string"},"description":{"type":"string"},"assigned_to":{"type":"string"},"note":{"type":"string"},"reference_event":{"type":"string"}},"required":["id","title"]}},
+    {"name":"mocka_update_todo","description":"TODO_IDのフィールドを部分更新する（PATCH動作）。status/contract_status/noteを個別に更新可。未指定フィールドは既存値を保持。completedへ移動済みのTODOは直接編集不可(TODO_442)。reason付きでstatusを完了以外へ指定した場合のみ差し戻し(todosへ復帰)を許可する。差し戻し後は通常のPATCH経路で再度完了にすることも可能(往復は正常業務)。","inputSchema":{"type":"object","properties":{"id":{"type":"string"},"status":{"type":"string","description":"省略時は既存値を保持する"},"contract_status":{"type":"string","description":"Architecture Contract系9語彙のいずれか。省略時は既存値を保持する"},"note":{"type":"string","description":"省略時は既存値を保持する"},"reason":{"type":"string","description":"completed状態のTODOを差し戻す場合のみ必須。3文字以上、実質的な理由が必要"}},"required":["id"]}},
+    {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_get_command_center","description":"COMMAND CENTER（localhost:5000）の現在状態を取得する","inputSchema":{"type":"object","properties":{},"required":[]}},
+]
+
+TOOLS_MEMORY_TEST = [
+    {"name":"mocka_get_essence","description":"lever_essence.jsonの最新INCIDENT/PHILOSOPHY/OPERATIONを返す","inputSchema":{"type":"object","properties":{},"required":[]}},
+    {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
+    {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
+    {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
+    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description","author"]}},
+    {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}},
+]
+
+TOOLS_GOVERNANCE_TEST = [
+    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
+    {"name":"mocka_decision_get","description":"decision_idを指定してDecision Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string"}},"required":["decision_id"]}},
+    {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
+    {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
+    {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
+    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}},
+]
+
+TOOLS_ADMIN_TEST = [
+    {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。envを明示しない場合は必ずtest環境を参照する(deny-by-default)。","inputSchema":{"type":"object","properties":{"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。本番を見る場合は明示的にprodを指定すること。"}},"required":[]}},
+    {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。envを明示しない場合は必ずtest環境に書き込む(deny-by-default、本番誤爆防止)。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データへ書き込み, test=検証用データへ書き込み(既定)。本番へ書く場合は明示的にprodを指定すること。"}},"required":["layer","record"]}},
+    {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}},
+    {"name":"mocka_check_utf8","description":"指定ファイルのUTF-8妥当性を検証する（BOM・cp932・制御文字検出）","inputSchema":{"type":"object","properties":{"filepath":{"type":"string"}},"required":["filepath"]}},
+    {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
+]
+
+def execute_scope_test_tool(server_name, name, arguments):
+    """Step5診断用stub。実データ・GL7に一切触れない。"""
+    return json.dumps({
+        "stub": True,
+        "server": server_name,
+        "tool": name,
+        "note": "Logical Scope Separation test route. Schema is byte-identical to production /mcp. This call did not touch any real MoCKA data or GL7 Governance Pipeline.",
+        "received_arguments_keys": list(arguments.keys())
+    }, ensure_ascii=False)
+
+@app.route("/mcp-core-test", methods=["GET", "POST"])
+def mcp_core_test_endpoint():
+    if request.method == "GET":
+        return json.dumps({"name": "mocka-core-test", "version": "0.1.0", "note": "Logical Scope Separation test route (core subset, 6 tools). Not connected to MoCKA core."}), 200, {"Content-Type": "application/json"}
+    body   = request.get_json()
+    method = body.get("method", "")
+    req_id = body.get("id")
+    params = body.get("params", {})
+    if req_id is None:
+        print(f"=== MCP-CORE-TEST NOTIFICATION (no response) === {method}", flush=True)
+        return "", 202
+    if method == "initialize":
+        result = {"protocolVersion": "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-core-test", "version": "0.1.0"}}
+    elif method == "tools/list":
+        result = {"tools": TOOLS_CORE_TEST}
+    elif method == "tools/call":
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-core-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+    else:
+        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+    return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+@app.route("/mcp-memory-test", methods=["GET", "POST"])
+def mcp_memory_test_endpoint():
+    if request.method == "GET":
+        return json.dumps({"name": "mocka-memory-test", "version": "0.1.0", "note": "Logical Scope Separation test route (memory subset, 6 tools). Not connected to MoCKA core."}), 200, {"Content-Type": "application/json"}
+    body   = request.get_json()
+    method = body.get("method", "")
+    req_id = body.get("id")
+    params = body.get("params", {})
+    if req_id is None:
+        print(f"=== MCP-MEMORY-TEST NOTIFICATION (no response) === {method}", flush=True)
+        return "", 202
+    if method == "initialize":
+        result = {"protocolVersion": "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-test", "version": "0.1.0"}}
+    elif method == "tools/list":
+        result = {"tools": TOOLS_MEMORY_TEST}
+    elif method == "tools/call":
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-memory-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+    else:
+        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+    return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+@app.route("/mcp-governance-test", methods=["GET", "POST"])
+def mcp_governance_test_endpoint():
+    if request.method == "GET":
+        return json.dumps({"name": "mocka-governance-test", "version": "0.1.0", "note": "Logical Scope Separation test route (governance subset, 6 tools). Not connected to MoCKA core."}), 200, {"Content-Type": "application/json"}
+    body   = request.get_json()
+    method = body.get("method", "")
+    req_id = body.get("id")
+    params = body.get("params", {})
+    if req_id is None:
+        print(f"=== MCP-GOVERNANCE-TEST NOTIFICATION (no response) === {method}", flush=True)
+        return "", 202
+    if method == "initialize":
+        result = {"protocolVersion": "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-governance-test", "version": "0.1.0"}}
+    elif method == "tools/list":
+        result = {"tools": TOOLS_GOVERNANCE_TEST}
+    elif method == "tools/call":
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-governance-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+    else:
+        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+    return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+@app.route("/mcp-admin-test", methods=["GET", "POST"])
+def mcp_admin_test_endpoint():
+    if request.method == "GET":
+        return json.dumps({"name": "mocka-admin-test", "version": "0.1.0", "note": "Logical Scope Separation test route (admin subset, 5 tools). Not connected to MoCKA core."}), 200, {"Content-Type": "application/json"}
+    body   = request.get_json()
+    method = body.get("method", "")
+    req_id = body.get("id")
+    params = body.get("params", {})
+    if req_id is None:
+        print(f"=== MCP-ADMIN-TEST NOTIFICATION (no response) === {method}", flush=True)
+        return "", 202
+    if method == "initialize":
+        result = {"protocolVersion": "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-admin-test", "version": "0.1.0"}}
+    elif method == "tools/list":
+        result = {"tools": TOOLS_ADMIN_TEST}
+    elif method == "tools/call":
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-admin-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+    else:
+        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
+    return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
 @app.route("/.well-known/oauth-protected-resource", defaults={"subpath": ""})
 @app.route("/.well-known/oauth-protected-resource/<path:subpath>")
 def oauth_resource(subpath):
