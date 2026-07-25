@@ -1197,6 +1197,54 @@ python rebuild_state.py
 - MoCKA思想進化史: [docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md](docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md)
 - Knowledge Activation Policy: [docs/governance/ACTIVATION_POLICY_v0.1.md](docs/governance/ACTIVATION_POLICY_v0.1.md)
 
+## PHI-OS Architectureについて
+
+PHI-OSはMoCKAにおける制度・統治層に関わる概念であり、Chrome拡張間の連携機構としての実装や、制度執行機関(Institutional Authority)としての実装など、複数の歴史的な実装が存在する。これらは現在Architecture Design Phaseの調査・整理対象であり、単一の正式名称・定義は本セクション作成時点(2026-07-25)では確定していない。現行の詳細な状態は、Architecture文書(Architecture Current State Map)で管理される。
+
+### 設計原則
+
+MoCKAのArchitecture文書は、以下の原則に基づいて維持される。
+
+- Evidence-Bound: 調査結果(事実)と設計判断(将来決定)を区別し、調査結果を設計方針の理由として先回りして使わない
+- Confirmed / Hypothesis / Pending Decisionの3区分: 直接確認できた事実、推測、制度的記録が未成立の判断を明確に分けて記述する
+- Human Gate承認: Architecture文書・Decision Ledgerの更新は、人間(プロダクトオーナー)による承認を経てのみ行われる
+
+### Architecture Evolution方針
+
+MoCKAのArchitectureは、以下の標準フローに従って更新される。
+
+```
+調査(Evidence整理)
+    ↓
+提案(Boundary Proposal等)
+    ↓
+Human Gate承認
+    ↓
+Architecture文書(AD)更新
+    ↓
+Decision Ledger記録
+```
+
+このフローは場当たり的な変更を防ぐための制度であり、個別のArchitecture変更はすべてDecision Ledgerに記録として残る。
+
+### Documentation体系
+
+MoCKAのArchitecture関連文書は、以下の4層で構成される。
+
+```
+README(公開・理解層)
+    ↓ 参照
+Architecture文書群(正式現状管理層。例: Architecture Current State Map)
+    ↓ 参照
+Evidence文書群(根拠管理層。例: Evidence Matrix)
+    ↓ 記録
+Decision Ledger(変更理由管理層、append-only)
+```
+
+Decision Ledgerは制度上の意思決定を記録する仕組みであり、MCPツール(`mocka_decision_get`/`mocka_decision_list`等)経由で参照できる。README本文には個別の判断内容を複製せず、詳細はArchitecture文書・Evidence文書・Decision Ledgerを参照する構成とする。
+
+なお、Architecture文書群・Evidence文書群は本セクション作成時点ではリポジトリ内の正式な格納場所が未確定であり、具体的なファイルパスへのリンクは含めていない。
+
 
 
 
