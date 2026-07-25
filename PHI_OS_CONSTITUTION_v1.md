@@ -291,3 +291,20 @@ BINDING_GAP_REPORT_v1.md、IMPLEMENTATION_PRIORITY_v1.mdを基礎資料とする
 *文書バージョン: v1.0*  
 *最終更新: 2026-06-16*  
 *次回見直し: Gate Authority承認後またはPhase 5移行時*  
+
+---
+
+## 追加記録: PHI-OS名称の二義性について
+
+**記録日:** 2026-07-25  
+**記録根拠:** MoCKA Caliber統合監査 Product Boundary Recovery Report v1.0(2026-07-24)  
+**Human Gate承認:** きむら博士(Architecture Design Phase AD-0E、HG-3)
+
+本憲法が定義するPHI-OSとは別に、sirius-lab側の設計文書に同名のPHI-OSという概念が存在することが、Product Boundary Recovery調査で確認された。制度上の混乱を避けるため、両者の系譜を以下に記録する。
+
+- PHI-OS(sirius-lab系): Platform Hub Integration OSの略。Chrome拡張(Orchestra/Relay/Memory/Prism)間の共有Event Busとして設計された。系譜: phi-os/DESIGN_v1.md(2026-06-01作成)。
+- PHI-OS(MoCKA governance系、本憲法が定義する対象): Persistent History Intelligence OSの略。Institutional Authority、Human Gate等の制度執行機能を担う。系譜: 本文書PHI_OS_CONSTITUTION_v1.md(2026-06-16作成)。
+
+両者は名称が同一であるが、頭字語の展開・作成日(19日差)・機能領域がそれぞれ異なり、現時点では直接の系譜関係はConfirmedされていない(Hypothesisの段階に留まる)。両者は現時点で未統合である。
+
+なお、Architecture Design Phaseで作成されたADR-006(状態遷移カーネルのPHI-OS所属判断)は、Architecture Proposal(設計判断)であり、本憲法が定めるConfirmed Architecture(確定した制度事実)ではない。この扱いはAD-0C(Architecture Boundary Analysis v1.0)でも維持されている。
