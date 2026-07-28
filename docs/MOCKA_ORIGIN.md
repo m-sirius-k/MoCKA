@@ -2,7 +2,8 @@
 **記録日**: 2026-04-03  
 **記録者**: DRきむら（口述）+ 執行官Claude（記録）  
 **文書種別**: 公文書 / 創始者宣言  
-**イベントID**: E20260403_ORIGIN
+**イベントID**: E20260403_ORIGIN  
+**分類（Genesis Phase調査 統合方針 v1.0 / DC_20260728_006）**: Founder Narrative — 開発過程の歴史的再構成（Historical Reconstruction）は分離してdocs/governance/GENESIS_PHASE_INVESTIGATION_v0.1.mdで管理する。本文は無改変。
 
 ---
 
