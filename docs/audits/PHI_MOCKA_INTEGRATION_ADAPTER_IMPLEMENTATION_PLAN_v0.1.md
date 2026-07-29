@@ -6,7 +6,19 @@
 - D-02 Translation Boundary — Allowed: Interface transformation / Request-Response transformation / Context transfer / Evidence reference linking / Runtime connection management。Forbidden: Decision generation / Policy modification / Authority judgment / Human Gate replacement / Evidence modification
 - D-03 Authority Ownership — PHI-OS(Runtime Coordination/Execution Control/Human Gate Routing)、MoCKA(Evidence Management/Decision Evidence/Audit Intelligence/Governance Analysis)、Human(Architecture Authority/Policy Change Approval/Irreversible Decision)。Adapterはこの3者いずれの権限も持たない
 
-**未解決の残存項目(発見、本文書で確定させない)**: `DC_20260729_013`のD-01〜D-04にAdapterの具体的ファイルパス・モジュール名は含まれていない。§1でCandidate2案を提示するが、いずれの採否も本文書では決定しない(Architecture決定そのものではなく、Human Gate承認済みのCandidate Aパターン内の実装詳細の選択であるため、軽微な確認事項として次回応答で提示する)。
+**配置パス確定(2026-07-29、実装詳細の軽微確認、Architecture再審査対象ではない)**:
+```
+Adapter Location:  phi-os/phios/adapter/mocka_integration_adapter.py
+Ownership:         PHI-OS Core
+Forbidden:         MoCKA internal package (MoCKA/phi_os/) modification
+```
+きむら博士が確定。当初提示した相対パス表記(`phi_os/adapters/...`)には、MoCKA本体側の`C:\Users\sirok\MoCKA\phi_os\`(`PHIOS_MOCKA_BOUNDARY_DESIGN_v1.md`が直接import禁止と定めるMoCKA内部パッケージ)との文字列上の曖昧性があったため、Claude側で一度確認し、上記の絶対パスへ確定した。
+
+**事実誤認の訂正**: 当初§1で「`phios/adapter/`には既存`adapter_interface.py`/`anthropic_adapter.py`/`openai_adapter.py`がありAIプロバイダ用」と記載していたが誤り。実際には以下の2つの別ディレクトリが存在する。
+- `phi-os/adapter/`(リポジトリroot直下): `adapter_interface.py`(`AIAdapter`基底クラス)・`anthropic_adapter.py`・`openai_adapter.py`
+- `phi-os/phios/adapter/`(phiosパッケージ内、確定した配置先): `mock_adapter.py`・`openai_adapter.py`(いずれも`adapter.adapter_interface.AIAdapter`を実装し、`phios.core.adapter_manager`へ`AI_ID`キーで登録される。handshake/receive_commission/execute/ackの4メソッドを持つAIプロバイダ用Adapter)
+
+**責務混同回避の設計判断**: 新規`mocka_integration_adapter.py`は`AIAdapter`を実装せず、`adapter_manager.register()`への登録も行わない。理由: `AIAdapter.execute()`は「commissionを実行して結果を返す」という意味論を持ち、これはD-02 Forbidden(Decision generation / Authority judgment)と抵触するリスクがある。ディレクトリ配置は共有するが、機能的な関係は持たない(コロケーションのみ)。
 
 ---
 
@@ -18,14 +30,9 @@
 - Adapterは`phios/runtime/`4ファイル(Runtime Foundation、`DC_20260729_011`で凍結)を呼び出し元としてのみ使用し、変更しない
 - Adapterは`phios/phl/relay_client.py`(RC-011、commit `9faa421`)を無変更のまま呼び出す
 
-### Proposal(配置候補、未確定)
+### Confirmed(配置、上記メタデータ欄で確定済み)
 
-| 候補 | パス | 根拠 |
-|---|---|---|
-| 候補1 | `phios/bridge/mocka_integration_adapter.py`(新規パッケージ) | Runtime Foundation(`phios/runtime/`、凍結対象)・既存Adapter(`phios/adapter/`、AIプロバイダ用、別責務)のいずれとも独立させ、命名衝突(Decision Support Matrix §3 Candidate B Unknown項目で指摘した"Relay"名称衝突と同種のリスク)を避ける |
-| 候補2 | `phios/phl/mocka_adapter.py`(RC-011と同一パッケージ内) | Adapterの唯一の下流依存先がRC-011であるため、物理的に隣接させることで依存関係を追いやすくする |
-
-**注記:** `phios/adapter/`(既存、`adapter_interface.py`/`anthropic_adapter.py`/`openai_adapter.py`)はAIプロバイダ切替用であり、本Integration Adapterとは責務が異なる。同一ディレクトリへの配置は責務混同のリスクがあるため候補から除外した。
+配置先は`phios/adapter/mocka_integration_adapter.py`。既存の`mock_adapter.py`/`openai_adapter.py`(`AIAdapter`実装、`adapter_manager`登録対象)とディレクトリを共有するが、新規モジュールは`AIAdapter`を実装せず、`adapter_manager`へも登録しない(上記「責務混同回避の設計判断」参照)。
 
 ### Interface概形(Proposal、シグネチャ確定ではない)
 
@@ -70,7 +77,7 @@ Adapterが提供する操作はRC-011(`relay_client.py`)の既存公開関数(St
 
 ### Proposal
 
-1. §1候補パスの確定(Human Gate相当ではないが、次回応答時に博士へ簡易確認)
+1. §1配置パス確定(完了、2026-07-29)
 2. CHANGE_START記録 → Adapterファイル新規作成(Writeツールのみ)→ `mocka_check_utf8`検証
 3. Adapter単体テスト作成・実行(§3)
 4. Runtime-Adapter結合テスト・Adapter-RC-011結合テスト作成・実行(既存242+23テストの回帰確認を含む)
