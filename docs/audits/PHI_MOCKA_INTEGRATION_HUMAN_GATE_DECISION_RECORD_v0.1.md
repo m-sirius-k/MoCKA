@@ -29,7 +29,7 @@ Review:                commit 8b927ff14 (PHI_MOCKA_INTEGRATION_HUMAN_GATE_REVIEW
 
 ```
 選択:
-[ ] Candidate A — PHI-OS Adapter Pattern
+[x] Candidate A — PHI-OS Adapter Pattern
 [ ] Candidate B — Relay-mediated Pattern
 [ ] Candidate C — Event Bridge Pattern
 [ ] Reject / Redesign(理由: ______________________)
@@ -39,22 +39,47 @@ Review:                commit 8b927ff14 (PHI_MOCKA_INTEGRATION_HUMAN_GATE_REVIEW
 
 ```
 記述:
-(D-01で選択したCandidateにおいて、MoCKA応答の解釈・evidence insufficient判定・
- Runtime Stateへの反映可否を、どのコンポーネントの責務とするかを記述)
+Adapter = Translation Boundary(翻訳境界)。
 
+Allowed(Adapterに許可される責務):
+- Interface transformation(インターフェース変換)
+- Request/Response transformation(要求/応答の変換)
+- Context transfer(コンテキスト伝達)
+- Evidence reference linking(証跡参照の紐付け)
+- Runtime connection management(Runtime接続管理)
 
+Forbidden(Adapterに禁止される責務):
+- Decision generation(意思決定の生成)
+- Policy modification(ポリシー変更)
+- Authority judgment(権限判断)
+- Human Gate replacement(Human Gateの代替)
+- Evidence modification(証跡の改変)
 
+Adapterは変換・伝達・接続管理のみを担い、判断・裁定・証跡改変のいずれも行わない。
 ```
 
 ### D-03: Authority Ownership
 
 ```
 記述:
-(Decision Evidence生成/Runtime制御/履歴保持/監査証跡/Human Gateの5領域について、
- 新設コンポーネントがどこまで権限を持つかを記述)
+PHI-OS:
+- Runtime Coordination(Runtime調整)
+- Execution Control(実行制御)
+- Human Gate Routing(Human Gateへの経路制御)
 
+MoCKA:
+- Evidence Management(証跡管理)
+- Decision Evidence(意思決定証跡)
+- Audit Intelligence(監査インテリジェンス)
+- Governance Analysis(ガバナンス分析)
 
+Human:
+- Architecture Authority(アーキテクチャ権限)
+- Policy Change Approval(ポリシー変更承認)
+- Irreversible Decision(不可逆判断)
 
+Adapter(D-02のTranslation Boundary)はこの3者いずれの権限も保有しない。PHI-OS/MoCKA/Human間の
+既存の権限配分そのものは変更せず、Adapterはその配分の間を仲介するのみ。
 ```
 
 ### D-04: Implementation Authorization
@@ -62,9 +87,18 @@ Review:                commit 8b927ff14 (PHI_MOCKA_INTEGRATION_HUMAN_GATE_REVIEW
 ```
 選択:
 [ ] Approved
-[ ] Approved with Conditions(条件: ______________________)
+[x] Approved with Conditions
 [ ] Revise(差し戻し理由: ______________________)
 [ ] Reject(理由: ______________________)
+
+条件:
+D-02(Adapter = Translation BoundaryのAllowed/Forbidden境界)およびD-03(Authority
+Ownershipの3者配分)を実装の拘束条件とする。実装がこの境界・配分を逸脱する場合は、
+本Decisionの範囲外として再度Human Gateへ差し戻す。
+
+[記録上の注記: 本欄の条件テキストは、博士提示のD-02/D-03の内容がD-04の実質的な
+承認条件であるとClaude側で解釈し明文化したものである。博士自身が別途「条件」として
+明示した独立の文言ではない。この解釈に相違があれば訂正されたい。]
 ```
 
 ---
@@ -120,17 +154,23 @@ Next Phase:     Implementation Plan(D-04がApproved/Approved with Conditionsの�
 
 ---
 
-## 停止点
+## 停止点(更新済み)
 
 ```
 Phase 3-A: Human Gate Decision Input Preparation
 COMPLETE
 
 Human Gate Decision:
-WAITING FOR 博士入力(本文書§2への記入)
+RECORDED(D-01: Candidate A / D-02: Translation Boundary / D-03: Authority Ownership 3者配分 / D-04: Approved with Conditions)
+
+Decision Ledger:
+DC_20260729_013(approved_by=きむら博士, approved_at=2026-07-29T07:17:06Z、読み戻し確認済み)
+
+Next Phase:
+Implementation Plan(D-02/D-03を拘束条件として)
 ```
 
-博士が§2(D-01〜D-04)へ記入した後にのみ、その内容を§4テンプレートに沿って`mocka_decision_write`でDecision Ledgerへ記録し、承認内容(D-04)に応じてImplementation Planへ進む。本文書作成者(Claude)はCandidate採択・Architecture確定のいずれも行っていない。
+D-01〜D-04はきむら博士により記入された(2026-07-29)。本文書作成者(Claude)はCandidate採択・Architecture確定のいずれも行っていない(判断はD-01〜D-04として博士から提示された内容をそのまま転記)。
 
 ---
 
