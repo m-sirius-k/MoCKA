@@ -1,0 +1,204 @@
+MoCKA MCP Server v1.5.0 -- http://localhost:5002/mcp
+Tools: 23
+ * Serving Flask app 'mocka_mcp_server'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5002
+ * Running on http://<MASKED_PRIVATE_IP>:5002
+Press CTRL+C to quit
+>>> GET /health
+127.0.0.1 - - [22/Jul/2026 20:55:54] "GET /health HTTP/1.1" 200 -
+>>> GET /oauth/authorize
+127.0.0.1 - - [22/Jul/2026 20:56:05] "GET /oauth/authorize?response_type=code&client_id=test-e2e&redirect_uri=https://claude.ai/api/mcp/auth_callback&code_challenge=<MASKED_CODE_CHALLENGE>&code_challenge_method=S256&state=<MASKED_STATE> HTTP/1.1" 302 -
+>>> GET /oauth/authorize
+127.0.0.1 - - [22/Jul/2026 20:56:22] "GET /oauth/authorize?response_type=code&client_id=test-e2e&redirect_uri=https://claude.ai/api/mcp/auth_callback&code_challenge=<MASKED_CODE_CHALLENGE>&code_challenge_method=S256&state=<MASKED_STATE> HTTP/1.1" 302 -
+>>> POST /oauth/token
+>>> BODY: grant_type=authorization_code&code=<MASKED_AUTH_CODE>&client_id=test-e2e&code_verifier=<MASKED_CODE_VERIFIER>&redirect_uri=https%3A%2F%2Fclaude.ai%2Fapi%2Fmcp%2Fauth_callback&client_secret=<MASKED_CLIENT_SECRET>
+127.0.0.1 - - [22/Jul/2026 20:56:31] "POST /oauth/token HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"Anthropic","version":"1.0.0"}},"jsonrpc":"2.0","id":1}
+=== INITIALIZE REQUEST ===
+{
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "Anthropic",
+      "version": "1.0.0"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+}
+=== INITIALIZE RESPONSE ===
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "mocka-memory-caliber",
+      "version": "1.3.0"
+    }
+  }
+}
+127.0.0.1 - - [22/Jul/2026 20:57:08] "POST /mcp HTTP/1.1" 200 -
+>>> GET /.well-known/oauth-protected-resource/mcp
+127.0.0.1 - - [22/Jul/2026 20:57:08] "GET /.well-known/oauth-protected-resource/mcp HTTP/1.1" 200 -
+>>> GET /.well-known/oauth-protected-resource
+127.0.0.1 - - [22/Jul/2026 20:57:09] "GET /.well-known/oauth-protected-resource HTTP/1.1" 200 -
+>>> GET /.well-known/oauth-authorization-server
+127.0.0.1 - - [22/Jul/2026 20:57:09] "GET /.well-known/oauth-authorization-server HTTP/1.1" 200 -
+>>> POST /register
+>>> BODY: {"redirect_uris":["https://claude.ai/api/mcp/auth_callback"],"token_endpoint_auth_method":"client_secret_post","grant_types":["authorization_code","refresh_token"],"response_types":["code"],"client_name":"Claude","application_type":"web"}
+>>> REGISTER response: {'client_id': 'mocka-b2457a1a', 'client_secret': '<MASKED_CLIENT_SECRET>', 'redirect_uris': ['https://claude.ai/api/mcp/auth_callback'], 'grant_types': ['authorization_code', 'refresh_token'], 'response_types': ['code'], 'token_endpoint_auth_method': 'client_secret_post', 'client_name': 'Claude', 'application_type': 'web'}
+127.0.0.1 - - [22/Jul/2026 20:57:10] "POST /register HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"Anthropic","version":"1.0.0"}},"jsonrpc":"2.0","id":1}
+=== INITIALIZE REQUEST ===
+{
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "Anthropic",
+      "version": "1.0.0"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 1
+}
+=== INITIALIZE RESPONSE ===
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "mocka-memory-caliber",
+      "version": "1.3.0"
+    }
+  }
+}
+127.0.0.1 - - [22/Jul/2026 20:57:12] "POST /mcp HTTP/1.1" 200 -
+>>> GET /.well-known/oauth-protected-resource/mcp
+127.0.0.1 - - [22/Jul/2026 20:57:12] "GET /.well-known/oauth-protected-resource/mcp HTTP/1.1" 200 -
+>>> GET /.well-known/oauth-protected-resource
+127.0.0.1 - - [22/Jul/2026 20:57:13] "GET /.well-known/oauth-protected-resource HTTP/1.1" 200 -
+>>> GET /.well-known/oauth-authorization-server
+127.0.0.1 - - [22/Jul/2026 20:57:14] "GET /.well-known/oauth-authorization-server HTTP/1.1" 200 -
+>>> POST /register
+>>> BODY: {"redirect_uris":["https://claude.ai/api/mcp/auth_callback"],"token_endpoint_auth_method":"client_secret_post","grant_types":["authorization_code","refresh_token"],"response_types":["code"],"client_name":"Claude","application_type":"web"}
+>>> REGISTER response: {'client_id': 'mocka-d5f3cbd2', 'client_secret': '<MASKED_CLIENT_SECRET>', 'redirect_uris': ['https://claude.ai/api/mcp/auth_callback'], 'grant_types': ['authorization_code', 'refresh_token'], 'response_types': ['code'], 'token_endpoint_auth_method': 'client_secret_post', 'client_name': 'Claude', 'application_type': 'web'}
+127.0.0.1 - - [22/Jul/2026 20:57:14] "POST /register HTTP/1.1" 200 -
+>>> GET /oauth/authorize
+127.0.0.1 - - [22/Jul/2026 20:57:15] "GET /oauth/authorize?response_type=code&client_id=mocka-d5f3cbd2&redirect_uri=https://claude.ai/api/mcp/auth_callback&code_challenge=<MASKED_CODE_CHALLENGE>&code_challenge_method=S256&state=<MASKED_STATE> HTTP/1.1" 302 -
+>>> POST /oauth/token
+>>> BODY: grant_type=authorization_code&code=<MASKED_AUTH_CODE>&client_id=mocka-d5f3cbd2&code_verifier=<MASKED_CODE_VERIFIER>&redirect_uri=https%3A%2F%2Fclaude.ai%2Fapi%2Fmcp%2Fauth_callback&client_secret=<MASKED_CLIENT_SECRET>
+127.0.0.1 - - [22/Jul/2026 20:57:16] "POST /oauth/token HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"Anthropic/Toolbox","version":"1.0.0"},"_meta":{"x-cloud-trace-context":"dd0317e9fff497b6a02aa2289eea31ec/1110466398156181214;o=1","traceparent":"00-dd0317e9fff497b6a02aa2289eea31ec-0f692b4e3d1b4ede-01"}}}
+=== INITIALIZE REQUEST ===
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "Anthropic/Toolbox",
+      "version": "1.0.0"
+    },
+    "_meta": {
+      "x-cloud-trace-context": "dd0317e9fff497b6a02aa2289eea31ec/1110466398156181214;o=1",
+      "traceparent": "00-dd0317e9fff497b6a02aa2289eea31ec-0f692b4e3d1b4ede-01"
+    }
+  }
+}
+=== INITIALIZE RESPONSE ===
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "mocka-memory-caliber",
+      "version": "1.3.0"
+    }
+  }
+}
+127.0.0.1 - - [22/Jul/2026 20:57:18] "POST /mcp HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"jsonrpc":"2.0","method":"notifications/initialized"}
+127.0.0.1 - - [22/Jul/2026 20:57:18] "POST /mcp HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"jsonrpc":"2.0","id":2,"method":"tools/list","params":{"_meta":{"x-cloud-trace-context":"dd0317e9fff497b6a02aa2289eea31ec/10298505161639460942;o=1","traceparent":"00-dd0317e9fff497b6a02aa2289eea31ec-8eeba3e1750c004e-01"}}}
+127.0.0.1 - - [22/Jul/2026 20:57:19] "POST /mcp HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{"extensions":{"io.modelcontextprotocol/ui":{"mimeTypes":["text/html;profile=mcp-app"]}}},"clientInfo":{"name":"Anthropic/ClaudeAI","version":"1.0.0"}},"jsonrpc":"2.0","id":0}
+=== INITIALIZE REQUEST ===
+{
+  "method": "initialize",
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {
+      "extensions": {
+        "io.modelcontextprotocol/ui": {
+          "mimeTypes": [
+            "text/html;profile=mcp-app"
+          ]
+        }
+      }
+    },
+    "clientInfo": {
+      "name": "Anthropic/ClaudeAI",
+      "version": "1.0.0"
+    }
+  },
+  "jsonrpc": "2.0",
+  "id": 0
+}
+=== INITIALIZE RESPONSE ===
+{
+  "jsonrpc": "2.0",
+  "id": 0,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "mocka-memory-caliber",
+      "version": "1.3.0"
+    }
+  }
+}
+127.0.0.1 - - [22/Jul/2026 20:57:23] "POST /mcp HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"method":"notifications/initialized","jsonrpc":"2.0"}
+127.0.0.1 - - [22/Jul/2026 20:57:24] "POST /mcp HTTP/1.1" 200 -
+>>> POST /mcp
+>>> BODY: {"method":"tools/list","jsonrpc":"2.0","id":1}
+127.0.0.1 - - [22/Jul/2026 20:57:25] "POST /mcp HTTP/1.1" 200 -
+>>> OPTIONS /api/handshake
+127.0.0.1 - - [22/Jul/2026 20:58:55] "OPTIONS /api/handshake HTTP/1.1" 200 -
+>>> POST /api/handshake
+>>> BODY: {"ai_id":"claude","role":"R02","scope":"mocka","contract_version":"1.0"}
+127.0.0.1 - - [22/Jul/2026 20:58:57] "POST /api/handshake HTTP/1.1" 200 -
+>>> GET /mcp
+127.0.0.1 - - [22/Jul/2026 21:06:22] "GET /mcp HTTP/1.1" 200 -
+>>> GET /health
+127.0.0.1 - - [22/Jul/2026 21:06:23] "GET /health HTTP/1.1" 200 -
