@@ -6,7 +6,7 @@
 - Owner instruction: きむら博士 (作業指示 2026-07-31、基準点 commit 7d1302e3e)
 - Trigger: AUDIT REPORT E20260731_64716908835df Finding [4]
 - Related: GOV-PROC-EHCR-001 (DC_20260713_002), TODO_413 (git操作の制度的記録)
-- Decision Ledger: 未登録 (本作業のスコープ外。5.3 参照)
+- Decision: DC_20260731_008 (5.3 参照)
 - Classification: Governance Integrity Enhancement (not an incident fix)
 
 ## 1. Purpose
@@ -152,8 +152,16 @@ Event: E20260731_2039571188cd3
 
 ### 5.3 Decision Ledger 登録
 
-本 Policy は作業指示に基づく運用規約の新設であり、制度裁定としての Decision Ledger
-登録は本作業のスコープ外である。登録の要否はきむら博士の判断による。
+本 Policy は制定時点では Decision Ledger 未登録であり、登録の要否はきむら博士の
+判断に委ねられていた。2026-07-31、Human Gate 裁定により DC_20260731_008 として
+登録された (approved_at: 2026-07-31T11:01:16Z、status: Active)。
+
+DC_20260731_008 は本 Policy の制定を制度記録として確定するものであり、
+規定内容 (3章から9章) を変更しない。同 Decision は Gap-3 (TODO_438) を
+解決するものではない。
+
+制定 commit (108445699) は登録前に作成されたため、その message は Decision ID を
+含まない。本節の記述が commit と Decision の対応を与える。
 
 ## 6. 緊急 commit 時の例外
 
