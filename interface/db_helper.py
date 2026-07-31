@@ -74,7 +74,8 @@ def _row_to_csv_dict(row: dict) -> dict:
 def _ensure_csv():
     """CSVが存在しない場合にヘッダーだけ作成"""
     if not CSV_PATH.exists():
-        with open(CSV_PATH, "w", newline="", encoding="utf-8-sig") as f:
+        # Stage 1b(DC_20260731_004 / 条項E-2): 正規形はBOMなしUTF-8。BOMを付与しない
+        with open(CSV_PATH, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=CSV_FIELDNAMES)
             writer.writeheader()
 
@@ -193,7 +194,8 @@ def write_event(row: dict, channel: str = None) -> bool:
     if CSV_WRITE_ENABLED:
         try:
             _ensure_csv()
-            with open(CSV_PATH, "a", newline="", encoding="utf-8-sig") as f:
+            # Stage 1b(DC_20260731_004 / 条項E-3): 追記も正規形と同じ utf-8 に統一する
+            with open(CSV_PATH, "a", newline="", encoding="utf-8") as f:
                 writer = csv.DictWriter(f, fieldnames=CSV_FIELDNAMES)
                 csv_row = {k: row.get(k, "") for k in CSV_FIELDNAMES}
                 writer.writerow(csv_row)

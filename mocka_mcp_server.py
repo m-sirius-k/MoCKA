@@ -1131,10 +1131,13 @@ def mcp_endpoint():
     method = body.get("method", "")
     req_id = body.get("id")
     params = body.get("params", {})
+    if req_id is None:
+        print(f"=== NOTIFICATION (no response) === {method}", flush=True)
+        return "", 202
     if method == "initialize":
         print("=== INITIALIZE REQUEST ===", flush=True)
         print(json.dumps(body, indent=2, ensure_ascii=False), flush=True)
-        result = {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-caliber", "version": "1.3.0"}}
+        result = {"protocolVersion": "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-caliber", "version": "1.3.0"}}
     elif method == "tools/list":
         result = {"tools": TOOLS}
     elif method == "tools/call":
@@ -1145,6 +1148,40 @@ def mcp_endpoint():
     if method == "initialize":
         print("=== INITIALIZE RESPONSE ===", flush=True)
         print(json.dumps(response, indent=2, ensure_ascii=False), flush=True)
+    return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
+
+TEST_TOOLS = [
+    {"name": "ping", "description": "Logical Isolation test tool: returns pong. Does not call any MoCKA core functionality.", "inputSchema": {"type": "object", "properties": {}, "required": []}},
+    {"name": "echo", "description": "Logical Isolation test tool: echoes back the given text. Does not call any MoCKA core functionality.", "inputSchema": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"]}}
+]
+
+def execute_test_tool(name, arguments):
+    if name == "ping":
+        return json.dumps({"result": "pong"})
+    elif name == "echo":
+        return json.dumps({"result": arguments.get("text", "")})
+    return json.dumps({"error": f"unknown test tool: {name}"})
+
+@app.route("/mcp-test", methods=["GET", "POST"])
+def mcp_test_endpoint():
+    if request.method == "GET":
+        return json.dumps({"name": "mocka-mcp-test", "version": "0.1.0", "note": "Logical Endpoint Isolation test route. Not connected to MoCKA core."}), 200, {"Content-Type": "application/json"}
+    body   = request.get_json()
+    method = body.get("method", "")
+    req_id = body.get("id")
+    params = body.get("params", {})
+    if req_id is None:
+        print(f"=== MCP-TEST NOTIFICATION (no response) === {method}", flush=True)
+        return "", 202
+    if method == "initialize":
+        result = {"protocolVersion": "2025-11-25", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-mcp-test", "version": "0.1.0"}}
+    elif method == "tools/list":
+        result = {"tools": TEST_TOOLS}
+    elif method == "tools/call":
+        result = {"content": [{"type": "text", "text": execute_test_tool(params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+    else:
+        return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
+    response = {"jsonrpc": "2.0", "id": req_id, "result": result}
     return json.dumps(response, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 # ============================================================

@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-12",
+    "updated": "2026-07-29",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json",
@@ -1107,6 +1107,67 @@
       "note": "",
       "reference_event": "E20260712_483848753603a",
       "created_at": "2026-07-12T17:55:20.190199"
+    },
+    {
+      "id": "TODO_W1",
+      "title": "Unify Relay provenance model",
+      "status": "未着手",
+      "priority": "中",
+      "category": "改善候補",
+      "description": "Scope:\nDefine Origin Author / Relay Operator / Operation Actor separation across all Relay ingestion paths.\n\nBackground:\nW-1 audit found Relay ingestion paths (/ask, /success, /ny_extract, legacy chat_import) do not preserve identical provenance semantics. who_actor conflates origin author with relay operator depending on endpoint. Primary path /ask (app.py:687) loses both author and origin URL. /success (app.py:1085) receives url param but drops it from the event.\n\nCandidate improvement directions (not approved):\n- who_actor always = relay operator; new fields origin_author / origin_url carry the original source; unify across all paths.\n- Minimal: ensure /ask and /success write source= and url= into free_note.\n\nConstraint:\nNo implementation before Human Gate approval. This is a registered improvement candidate only.",
+      "assigned_to": "Human Gate (review pending)",
+      "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Do not implement, do not write to Decision Ledger until Human Gate approval. Investigation record: E20260714_295687584717c.",
+      "reference_event": "E20260714_295687584717c",
+      "created_at": "2026-07-14T05:58:33.280283"
+    },
+    {
+      "id": "TODO_W2",
+      "title": "Decision Ledger reverse traceability model design",
+      "status": "未着手",
+      "priority": "中",
+      "category": "改善候補",
+      "description": "Evaluate:\n- Physical reverse-link persistence\n- Resolver/index based derived reverse lookup\n\nBackground:\nW-2 audit found forward supersession links exist but reverse traceability and lifecycle state representation are insufficient. superseded_by populated in 0 of 4 supersession pairs; 93/93 decisions status=Active including 3 superseded ones; related_todos structured field absent; Event->Decision backlink absent. See investigation record E20260714_716973138f8f4.\n\nConstraint:\n- No Ledger change before Human Gate approval.\n- No status change to existing decisions.\n- No superseded_by backfill.\n- No schema change.",
+      "assigned_to": "Human Gate (review pending)",
+      "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Prohibited until approval: Ledger change, existing-decision status change, superseded_by backfill, schema change, Decision Ledger entry, implementation. Design fork to evaluate: (a) physical reverse-link persistence vs (b) resolver/index derived reverse lookup. Supplementary: DC_20260712_008 self-supersession retained as observed fact, not corrected. Investigation record: E20260714_716973138f8f4.",
+      "reference_event": "E20260714_716973138f8f4",
+      "created_at": "2026-07-14T06:05:38.842684"
+    },
+    {
+      "id": "TODO_W4",
+      "title": "Search inheritance / continuity model design",
+      "status": "未着手",
+      "priority": "中",
+      "category": "改善候補",
+      "description": "Evaluate how past records remain retrievable with the same meaning under future search/re-verification.\n\nDirections to evaluate (not approved):\n- Tokenized AND-of-terms search vs current whole-phrase single-field substring match.\n- Derived read-layer FTS index / resolver that does not mutate canonical events.db rows.\n- Search-result reproducibility policy (whether prior \"0-hit\" behavior must remain reproducible after any search change).\n- Schema-generation semantic continuity (normal 8269 / alt_schema_intentional 7473 / corrupted_migration 22 of 15764).\n- Handling of 187 unrestorable mojibake records in time-series reconstruction.\n\nBackground:\nW-4 audit found search_events (mocka_mcp_server.py:162-181) matches the whole query as a contiguous substring within a single field; multi-term concept queries return nothing unless the exact phrase exists. Live reproduced: \"reverse traceability\" -> 1 hit; \"reverse traceability improvement candidate\" -> 0 hits (same record). See investigation record E20260714_9980076371d31.\n\nConstraint:\n- Investigation/design only. No code change before Human Gate approval.\n- No existing artifact change.\n- No existing event modification.\n- No schema change.\n- No Decision Ledger entry until Human Gate approval.",
+      "assigned_to": "Human Gate (review pending)",
+      "note": "Human Gate Review pending. State: improvement candidate registered, awaiting review. Prohibited until approval: code change, artifact change, existing-event modification, schema change, new search convention adoption, Decision Ledger entry, implementation. Design fork: derived read-layer index (non-mutating, lower risk) vs canonical change. Investigation record: E20260714_9980076371d31.",
+      "reference_event": "E20260714_9980076371d31",
+      "created_at": "2026-07-14T06:10:19.397506"
+    },
+    {
+      "id": "TODO_456",
+      "title": "ESSENCE Projection Reliability Improvement(検討のみ、実装禁止)",
+      "status": "保留",
+      "priority": "低",
+      "category": "将来検討",
+      "description": "IC_20260724_004(ESSENCE Materialization Pipeline Staleness Investigation)で発見された、ESSENCE Materializationパイプライン(ping_generator.py/essence_auto_updater.py)の常駐化未実装・鮮度リスクに対する将来的な改善候補。\n\n検討事項:\n- scheduler化(Windows Task Scheduler登録、またはessence_auto_loop()の実際の起動)\n- event trigger化(mocka_write_event発火時にESSENCE再計算をトリガーする経路)\n- materialization freshness indicator追加(Living Context表示に「最終更新からの経過時間」を明示)\n- last successful sync表示(ping_latest.json/lever_essence.jsonのgenerated_at/_synced_atをLiving Context表示自体に露出)\n\n本TODOは検討候補の記録のみであり、実装は現時点で禁止する。",
+      "assigned_to": "Claude",
+      "note": "実装禁止理由: 現在AAAI論文提出準備・Phase4製品展開フェーズであり、Write Path/Evidence Pathを変更するリスクがあるため(きむら博士指示、2026-07-24)。着手する場合は別途Human Gate承認・Decision Ledger記録を要する。関連: IC_20260724_003, IC_20260724_004。",
+      "reference_event": "E20260724_9790572658613",
+      "created_at": "2026-07-24T17:28:01.063695"
+    },
+    {
+      "id": "TODO_457",
+      "title": "MCP Connector Recovery Investigation 残調査項目(existing-chat+reconnect再現性/tool exposure層観測不能部分/回復条件再現性)",
+      "status": "未着手",
+      "priority": "中",
+      "category": "調査・MCP",
+      "description": "MCP_CONNECTOR_RECOVERY_TIMELINE_INVESTIGATION_v1.0.md(Part 1-4)で未解決のまま残された項目を保持する。DC_20260724_009のRoot Cause: UNKNOWN/Permanent Resolution: NOT CONFIRMEDは維持されており、以下はいずれもEvidence収集が先行しないと埋められないUnknownである。\n\n1. existing-chat + reconnect の再現性検証: 障害区間中に検証されたのは「新規chat+reconnectなし」(3回、いずれもFAIL)と「新規chat+reconnect」(2回、1回目FAIL/2回目SUCCESS)のみ。「既存chat+reconnect」という組み合わせは一度も試行されておらず、reconnect操作の効果を新規chat作成という条件から分離できていない。\n2. tool exposure/routing layerの観測不能部分: MCPサーバー・tools/list・backend stateは健全と確認済みだが、それより下流(Claude.ai Web側のchatへのtool injection機構)はAnthropic側の非公開実装であり、本調査のアクセス範囲では観測手段がない。外部issue(anthropics/claude-ai-mcp#572)の報告者も同様の壁に到達し、メンテナー未回答のままCloseされている。\n3. 回復条件の再現性未確認: 2026-07-24のdelete/re-register(2回目)による回復が、次回同型障害発生時にも有効な手順かどうかは未検証。Reconnect(1)(同一手順)は不成功だった実例があり、単独十分条件でないことは判明済みだが、代替の有効な手順も特定されていない。\n\n【重要】Unknown部分は本TODOでは埋めない。埋めるには新規のEvidence収集(次回再発時の観測、またはきむら博士による追加のライブ実験)が必要であり、現時点での推測による穴埋めは行わない。分類は Unknown -> Future Evidence Collection -> Verified Statement の順を維持する。",
+      "assigned_to": "Claude",
+      "note": "R01指示Step3に基づき登録。Genesis Phase Investigation関連は本セッションの一次データで裏付けが取れないため、意図的に対象外とした(きむら博士確認済み、2026-07-29)。再開条件: (1)同一症状の再発、(2)Anthropic側からの追加情報、(3)既存chat+reconnectの実地検証機会、のいずれか発生時。\n\n[自己訂正、2026-07-29] descriptionフィールド内に全角括弧「【重要】」を使用してしまった(CP932禁則、CLAUDE.md準拠違反)。mocka_update_todoはdescriptionフィールドの更新に対応していないため直接修正できない。次回この項目にアクセスする際は、当該箇所を「重要:」(ASCII記号)へ読み替えること。",
+      "reference_event": "E20260729_171787392c28d",
+      "created_at": "2026-07-29T07:36:36.743409",
+      "updated_at": "2026-07-29T07:37:08.489135"
     }
   ],
   "orchestra_handoff": {
@@ -1884,6 +1945,48 @@
       "created_at": "2026-07-12T07:07:47.627570",
       "updated_at": "2026-07-12T07:18:40.108773",
       "completed_at": "2026-07-12"
+    },
+    {
+      "id": "TODO_453",
+      "title": "Google Scholar収録状況の調査とプロフィール作成可否の報告(AAAI 2027 OpenReview登録支援)",
+      "status": "完了",
+      "priority": "中",
+      "category": "調査",
+      "description": "目的: AAAI 2027向けOpenReviewプロフィール登録の任意欄(Google Scholar URL)補強。調査内容: (1) Zenodo公開物(p-DERSプレプリント等)がGoogle Scholar検索に収録されているか確認 (2) 収録されている場合、著者プロフィール(scholar.google.com/citations)作成手順と紐付け可能な文献リストを報告 (3) 未収録の場合、収録される条件(メタデータ・PDF公開状態)と対応案を報告。判断はHuman Gate(博士)が行う。調査報告のみで変更作業は行わない。",
+      "assigned_to": "くろこ(S02)",
+      "note": "調査報告をHuman Gate(博士)が承認。結論: Scholar未収録4件を確認、AAAI 2027登録はブロックなし(URL要件は会社概要ページ+info@nsjp.orgで充足)。対応方針: 案C(ORCID紐付け)を採用し後続TODO_454へ切り出し。案A(#4のPDF体裁点検)はTODO_454に統合、案B(arXiv)はAAAI投稿計画確定後に再判断、案D(Scholar手動プロフィール)は不採用。",
+      "reference_event": "",
+      "created_at": "2026-07-16T07:48:22.886453",
+      "updated_at": "2026-07-16T08:09:58.225656",
+      "completed_at": "2026-07-16"
+    },
+    {
+      "id": "TODO_454",
+      "title": "Zenodo公開4件へのORCID紐付けとPDF体裁点検(TODO_453後続)",
+      "status": "完了",
+      "priority": "中",
+      "category": "実施",
+      "description": "TODO_453の対応案C+Aの実施。手順: (1)博士: orcid.orgでORCID作成(Masahito Kimura名義) (2)博士: ZenodoアカウントにORCIDを連携し、公開4レコード(10.5281/zenodo.20686662, 19503667, 19507632, 19606271)のCreator欄にORCID iDを付与(メタデータ編集のみ、DOI不変) (3)博士: ORCID側でSearch&Link(DataCite)により4件のDOIをORCID recordへ取り込み (4)くろこ: Zenodo APIでcreatorsのorcidフィールド反映を実測確認し報告 (5)くろこ: #4 PHL preprint(20KB)のPDF体裁点検(References節・先頭ページ構造の有無)を報告(TODO_453案A)。#2/#3は同一論文のバージョン違いのため紐付けは両方でも最新版のみでも可、博士判断。",
+      "assigned_to": "博士(Human Gate)+くろこ(S02)",
+      "note": "【完了 2026-07-16】くろこ検証パートPASS。Zenodo 4レコード(p-DERS/v9/PHL/v8)のCreatorメタデータは5点全合格(ORCID=0009-0006-7288-605X付与/氏名Kimura,Masahito大文字化/所属=Sirius Lab+NihonSystem Co., Ltd.の2件/Role無し/4件相互同一)。DataCite一次証跡で確定(records API要約欠落をくろこが検知しDataCiteで再精査)。PHL PDF体裁PASS(References節9件・標準構造有、TODO_453案Aの短報除外リスク否定)。【Human Gate静観判断】(a)PHL PDF表紙の旧所属表記(Independent Researcher/MoCKA Project)は再版が現フェーズ禁止のため静観。触る場合は案B(arXiv)実施時にPDF再カットと同時対応。(b)References[9]のv8 concept DOI(...666)参照は索引上の実害ほぼ無しで静観。他3件PDF表紙の同種旧表記も同扱い。ORCID→DataCite→Zenodo証跡チェーン整合完了。残: OpenReview同期(ORCID URL追記+所属=NihonSystem Co., Ltd.確認+登録提出)は登録タスク側で継続。",
+      "reference_event": "",
+      "created_at": "2026-07-16T08:10:15.060633",
+      "updated_at": "2026-07-16T10:02:44.586591",
+      "completed_at": "2026-07-16"
+    },
+    {
+      "id": "TODO_455",
+      "title": "OpenReview Homepage URL本人確認要件の充足確認(nsjp.org/cn29 + mocka.nsjp.org 実測)",
+      "status": "完了",
+      "priority": "高",
+      "category": "調査",
+      "description": "目的: AAAI 2027 OpenReviewのHomepage URL本人確認要件の充足確認。OpenReview公式要件=「氏名・所属・OpenReview登録メールが同一の公開ページで確認できること」。読み取り専用・変更禁止。検証対象2ページ: (1)https://nsjp.org/cn29/index.html (会社概要ページ・Homepage本命候補) — 以下3点が現在も公開表示されているか実測確認: (a)氏名 MASAHITO KIMURA(役員欄) (b)メール info@nsjp.org (c)所属主体(NihonSystem本社情報)。(2)https://mocka.nsjp.org/ (Sirius Labサイト・任意併記候補) — 氏名Masahito Kimuraは有, ただし掲載メールがnsjpkimura@gmail.com(Gmail)でOpenReview登録メールと不一致・info@非掲載である点を再確認。判定: 各ページがOpenReview本人確認要件(氏名+所属+登録メール同一ページ)を満たすか合否で報告。付随確認: nsjp.org/cn29ページ上の氏名表記がローマ字MASAHITO KIMURAでORCID/OpenReview登録名Masahito Kimuraと照合可能か。修正・提出判断はHuman Gate。",
+      "assigned_to": "くろこ(S02)",
+      "note": "【完了 2026-07-16】くろこ検証PASS。https://nsjp.org/cn29/index.html はOpenReview本人確認要件を完全充足(氏名MASAHITO KIMURA・メールinfo@nsjp.org・所属=日本システム本社 の3点が同一公開ページに掲載、実測確認)。氏名はORCID/OpenReview登録名Masahito Kimuraと大小無視で照合可能。前提=OpenReviewアカウント登録メールがinfo@nsjp.orgであること(充足済み)。mocka.nsjp.orgはFAIL(掲載メール=nsjpkimura@gmail.comでinfo@非掲載・登録メール不一致、所属=Sirius Lab表記のみ)→任意の実績併記のみ、単独Homepage不可。【Human Gate申し送り(非ブロッキング)】社名クロスサーフェス不統一: cn29=Nihon System Co.,Limited(スペース有・Limited)、Zenodo/DataCite/ORCID=NihonSystem Co., Ltd.(スペース無・Ltd.)。同一法人・照合可能のため必須ではないが、OpenReview所属欄の表記選択時に一考の余地。結論: OpenReview個人リンク欄=Homepage:cn29(本命)+ORCID URL+LinkedIn+mocka.nsjp.org(任意)。入力・提出はHuman Gate。",
+      "reference_event": "",
+      "created_at": "2026-07-16T11:01:46.271814",
+      "updated_at": "2026-07-16T11:06:08.383505",
+      "completed_at": "2026-07-16"
     }
   ]
 }

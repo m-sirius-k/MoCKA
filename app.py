@@ -996,6 +996,16 @@ def claim():
         "event_id": eid,
         "w5h1": w5h1
     })
+# IDR-003 Phase2: RelayKernel state projection用シングルトン(Canonical Ledgerとは独立)
+_RELAY_KERNEL_SINGLETON = None
+
+def _get_relay_kernel():
+    global _RELAY_KERNEL_SINGLETON
+    if _RELAY_KERNEL_SINGLETON is None:
+        from relay.relay_kernel import RelayKernel
+        _RELAY_KERNEL_SINGLETON = RelayKernel()
+    return _RELAY_KERNEL_SINGLETON
+
 @app.route("/collect", methods=["POST"])
 def collect():
     import re as _re, csv as _csv, hashlib as _hs, json as _json
@@ -1045,6 +1055,13 @@ def collect():
         "impact_result": "N/A", "related_event_id": "N/A", "trace_id": "N/A",
         "free_note": f"hash={h}|source={source}|mode={mode}",
     })
+    # IDR-003 Phase2: RelayKernel state projection(Canonical Ledger書込みとは独立、失敗してもcollect自体は成功扱い)
+    try:
+        from mcp.mcp_router import MCPRouterV2
+        _relay_normalized = MCPRouterV2().route("browser", {"source": source, "url": url, "mode": mode})
+        _get_relay_kernel().ingest(_relay_normalized)
+    except Exception as _relay_err:
+        print('[COLLECT] relay projection error: ' + str(_relay_err))
     try:
         _pl = os.path.join(ROOT_DIR, 'mocka_pipeline.py')
         subprocess.Popen([sys.executable, _pl, '--text', text[:500], '--no-ping'], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})

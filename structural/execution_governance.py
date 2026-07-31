@@ -71,6 +71,16 @@ BINARY_EXTENSIONS = {
     ".sqlite-shm",
     ".sqlite-wal",
     ".db",
+    ".pdf",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".docx",
+    ".xlsx",
+    ".pptx",
+    ".zip",
+    ".bin",
 }
 
 
@@ -171,7 +181,7 @@ class ExecutionGovernanceEngine:
         for path in dry_run.changed_files:
             fp = self.repo_root / path
             if fp.exists() and fp.is_file():
-                if fp.suffix in {".sqlite-shm", ".sqlite-wal", ".db"}:
+                if fp.suffix.lower() in BINARY_EXTENSIONS:
                     continue
                 try:
                     fp.read_bytes().decode("utf-8")
