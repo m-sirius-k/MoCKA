@@ -1,4 +1,5 @@
 ﻿import csv
+import json
 import os
 import datetime
 import re
@@ -6,6 +7,11 @@ import re
 EVENTS = r"C:\Users\sirok\MoCKA\data\events.csv"
 INCIDENTS_DIR = r"C:\Users\sirok\MoCKA\docs\incidents"
 RESTRICTIONS = r"C:\Users\sirok\MoCKA\tools\mocka_restrictions.py"
+
+# RC-B最小実装(DC_20260731_006 / DC_20260731_007): INC進行軸の保持先。
+# 承認軸(PENDING/APPROVED/REJECTED)はここに書かない。Human Gateが単一の真実源。
+INC_LIFECYCLE_DIR = r"C:\Users\sirok\MoCKA\data\inc_lifecycle"
+INC_STATE_SCHEMA_VERSION = "0.1"
 
 FIELDNAMES = [
     "event_id","when","who_actor","what_type","where_component",
@@ -108,15 +114,53 @@ def auto_generate_incident(row, risk, reasons):
 
     with open(path, "w", encoding="utf-8") as f:
         f.write(content)
+
+    # RC-B最小実装: INC本文の書込が成功した直後に進行軸を DETECTED で投入する。
+    # 逆順にすると本文書込失敗時に state だけ残る孤児が発生するため順序を固定する。
+    write_inc_state(inc_id, "DETECTED")
     return inc_id
+
+
+def write_inc_state(inc_id, state):
+    """INC進行軸の state ファイルを投入する(DC_20260731_006 / 設計6.11.1)。
+
+    冪等: 既存ファイルは上書きしない(再実行で進行状態を巻き戻さないため)。
+    失敗時: INC本文は残したまま続行する。当該INCは Fail Closed により公開されないが、
+            無言で落ちると気づけないため必ず理由を出力する。
+    """
+    path = os.path.join(INC_LIFECYCLE_DIR, f"{inc_id}.json")
+    try:
+        if os.path.exists(path):
+            print(f"[INC_STATE] skip(既存): {inc_id}")
+            return True
+        os.makedirs(INC_LIFECYCLE_DIR, exist_ok=True)
+        record = {
+            "schema_version": INC_STATE_SCHEMA_VERSION,
+            "incident_id": inc_id,
+            "state": state,
+            "updated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
+        }
+        with open(path, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(record, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        print(f"[INC_STATE] {inc_id} -> {state}")
+        return True
+    except Exception as e:
+        # 承認軸(Human Gate)へは一切書き込まない。ここでの失敗は公開されない方向に働く。
+        print(f"[INC_STATE][FAIL] {inc_id}: state書込に失敗しました({e})。"
+              f"INC本文は残ります。当該INCはFail Closedにより公開されません")
+        return False
 
 def update_events_risk():
     rows = []
     updated = 0
     incidents_generated = []
+    source_fieldnames = None
 
     with open(EVENTS, encoding="utf-8", errors="replace") as f:
         reader = csv.DictReader(f)
+        # Stage 1a(DC_20260731_004): 書き戻しで列を欠落させないため入力の列構成を保持する
+        source_fieldnames = reader.fieldnames
         for row in reader:
             risk, reasons = assess_risk(row)
             lifecycle = get_lifecycle(risk)
@@ -140,11 +184,15 @@ def update_events_risk():
 
             rows.append(row)
 
+    # Stage 1a(DC_20260731_004 / 条項E-6): 入力に存在した列をそのまま保全する。
+    # 入力が空でヘッダを取得できない場合のみ FIELDNAMES へ退避する。
+    out_fieldnames = source_fieldnames if source_fieldnames else FIELDNAMES
+
     with open(EVENTS, "w", encoding="utf-8", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer = csv.DictWriter(f, fieldnames=out_fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow({k: row.get(k,"N/A") for k in FIELDNAMES})
+            writer.writerow({k: row.get(k,"N/A") for k in out_fieldnames})
 
     print(f"[risk更新] {updated}件")
     print(f"[INC自動生成] {len(incidents_generated)}件")
