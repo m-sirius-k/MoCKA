@@ -4,31 +4,31 @@
 
 This document defines the evaluation criteria for Canonical Authority Review.
 
-The evaluation is observation-based and does not perform automatic canonical approval.
+The evaluation process is observation-based and does not perform automatic canonical approval.
 
 ---
 
 ## AuthorityScore
 
-| Score | Meaning |
-|---|---|
-| 5 | Constitutional / governing source document |
-| 4 | Official architecture or system design document |
-| 3 | Operational policy or implementation design |
-| 2 | Supporting document, diagram, reference material |
-| 1 | Historical or generated artifact |
-| 0 | Unknown classification |
+| Score | Meaning                                              |
+| ----- | ---------------------------------------------------- |
+| 5     | Constitutional or governing source document          |
+| 4     | Official architecture or system design document      |
+| 3     | Operational policy or implementation design document |
+| 2     | Supporting document, diagram, or reference material  |
+| 1     | Historical or generated artifact                     |
+| 0     | Unknown classification                               |
 
 ---
 
 ## VersionSignal
 
-| Signal | Meaning |
-|---|---|
-| FINAL | Finalized document indicator |
-| vX.X | Versioned document indicator |
-| DRAFT | Draft document indicator |
-| NONE | No version information |
+| Signal | Meaning                         |
+| ------ | ------------------------------- |
+| FINAL  | Finalized document indicator    |
+| vX.X   | Versioned document indicator    |
+| DRAFT  | Draft document indicator        |
+| NONE   | No version information detected |
 
 ---
 
@@ -36,13 +36,13 @@ The evaluation is observation-based and does not perform automatic canonical app
 
 Allowed classifications:
 
-- Constitution
-- Architecture
-- Policy
-- Evidence
-- Diagram
-- Asset
-- Unknown
+* Constitution
+* Architecture
+* Policy
+* Evidence
+* Diagram
+* Asset
+* Unknown
 
 ---
 
@@ -50,11 +50,11 @@ Allowed classifications:
 
 Allowed classifications:
 
-- Required
-- Related
-- Reference
-- None
-- Unknown
+* Required
+* Related
+* Reference
+* None
+* Unknown
 
 ---
 
@@ -62,16 +62,17 @@ Allowed classifications:
 
 Allowed classifications:
 
-- Candidate
-- Supporting
-- Historical
-- Unknown
+* Candidate
+* Supporting
+* Historical
+* Unknown
 
 ---
 
 ## Evaluation Principle
 
-No automatic promotion, deletion, or modification is performed.
+This evaluation rule does not perform automatic promotion, deletion, or modification of artifacts.
 
-All final canonical decisions require Human Gate approval.
+All final canonical authority decisions require explicit Human Gate approval.
 
+The evaluation output is limited to observation, classification, and evidence-based assessment.
