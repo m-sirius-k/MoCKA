@@ -1,10 +1,19 @@
 """
-mocka_mcp_server_vps.py v1.5.1
+mocka_mcp_server_vps.py v1.6.0
 MoCKA Memory Caliber -- MCP Server (VPS edition)
 パス設定を環境変数 / デフォルト値で解決（Linux対応）
+
+v1.6.0 変更点（Phase5-2.1 Unified Event Entry への収束）:
+  mocka_write_event のイベント保存経路を phi_os.event_gate.process_event() に統一した。
+  従来の _db_write_event() による events テーブルへの直接INSERTは、Gate Policy /
+  Integrity署名 / Hash Chain のいずれも経由しないため、HTTP経路(/api/gate/event)との
+  間に制度差が生じていた。process_event() は
+  "Flask route と MCP server のいずれの呼び出し元からも、トランスポート(HTTP/
+  インプロセス)を問わずこの関数を経由しなければならない唯一の保存経路"
+  として定義されているため、VPS版MCPもこれに収束させる。
 """
 
-import json, hashlib, datetime, re, sqlite3, os
+import json, hashlib, datetime, re, sqlite3, os, sys
 from pathlib import Path
 from flask import Flask, request
 from flask_cors import CORS
@@ -18,6 +27,9 @@ KNOWLEDGE_GATE = _HOME / "data"
 DB_PATH        = _HOME / "data" / "mocka_events.db"
 PUBLIC_URL     = os.environ.get("MOCKA_PUBLIC_URL", "https://mocka.nsjp.org")
 
+SESSION_ID     = "SESSION_" + datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+_DEFAULT_ACTOR = "Claude-code-sonnet-4-6"  # レガシー値("Claude"/"claude")の正規化先
+
 EVENTS_FIELDS = [
     "event_id","when","who_actor","what_type","where_component","where_path",
     "why_purpose","how_trigger","channel_type","lifecycle_phase","risk_level",
@@ -25,6 +37,75 @@ EVENTS_FIELDS = [
     "after_state","change_type","impact_scope","impact_result",
     "related_event_id","trace_id","free_note"
 ]
+
+# --- PHI-OS Event Gate 接続（唯一のevents保存経路） ---
+# setup_vps.sh により phi_os/ と interface/ は MOCKA_HOME 直下へ配置される。
+# リポジトリから直接起動する場合(deploy/配下にこのファイルがある場合)は
+# 1つ上の階層にphi_os/があるため、そちらも候補に含める。
+def _resolve_gate_root():
+    _here = Path(__file__).resolve().parent
+    for cand in (_HOME, _here, _here.parent):
+        if (cand / "phi_os" / "event_gate.py").exists():
+            return cand
+    return None
+
+GATE_ROOT = _resolve_gate_root()
+GATE_IMPORT_ERROR = None
+process_event = None
+
+if GATE_ROOT is None:
+    GATE_IMPORT_ERROR = (
+        "phi_os/event_gate.py not found. 探索したルート: "
+        + ", ".join(str(p) for p in (_HOME, Path(__file__).resolve().parent,
+                                      Path(__file__).resolve().parent.parent))
+    )
+else:
+    if str(GATE_ROOT) not in sys.path:
+        sys.path.insert(0, str(GATE_ROOT))
+    try:
+        # event_gate 側は MOCKA_HOME を見てDB_PATHを解決するため、
+        # 本ファイルのDB_PATHと同一のDBへ収束する（_check_gate_db_alignment で検証）。
+        from phi_os.event_gate import process_event, DB_PATH as GATE_DB_PATH
+    except Exception as e:
+        GATE_IMPORT_ERROR = f"{type(e).__name__}: {e}"
+
+GATE_AVAILABLE = process_event is not None
+
+
+def _check_gate_db_alignment():
+    """
+    Gate側DB_PATHと本サーバーのDB_PATHが同一ファイルを指すことを検証する。
+    ズレていれば "同じevents保存経路" という前提が崩れるため、起動時に検出する。
+    戻り値: (ok: bool, detail: str)
+    """
+    if not GATE_AVAILABLE:
+        return False, f"gate unavailable: {GATE_IMPORT_ERROR}"
+    mine = os.path.realpath(str(DB_PATH))
+    gate = os.path.realpath(str(GATE_DB_PATH))
+    if mine != gate:
+        return False, f"DB_PATH mismatch: server={mine} gate={gate}"
+    return True, mine
+
+
+# events書き込みに必要な列（Gate _write() が挿入する列のうち、旧スキーマに
+# 存在しない可能性があるもの）。不足していると書き込みが失敗するため事前検出する。
+_GATE_REQUIRED_COLUMNS = ("session_id", "_source", "when_ts")
+
+
+def _check_events_schema():
+    """events テーブルがGate書き込みに必要な列を備えているかを検証する"""
+    try:
+        con = sqlite3.connect(str(DB_PATH))
+        cols = {r[1] for r in con.execute("PRAGMA table_info(events)").fetchall()}
+        con.close()
+    except Exception as e:
+        return False, f"schema check error: {e}"
+    if not cols:
+        return False, "events table not found"
+    missing = [c for c in _GATE_REQUIRED_COLUMNS if c not in cols]
+    if missing:
+        return False, "missing columns: " + ",".join(missing)
+    return True, "ok"
 
 # ── DB ヘルパー ──
 def _get_db():
@@ -68,6 +149,18 @@ def _db_read_events(n=None):
         return []
 
 def _db_write_event(row: dict):
+    """
+    [DEPRECATED / 削除候補 — v1.6.0で参照停止]
+
+    Gate Policy・Integrity署名・Hash Chainのいずれも経由しない直接INSERTであり、
+    Phase5-2.1 Unified Event Entry の "events保存経路は process_event() 以外に
+    制度上存在しない" に反する。v1.6.0で mocka_write_event からの呼び出しを
+    撤去済みであり、本ファイル内の参照はゼロ。
+
+    即時削除はせず、VPS実機での参照停止を確認した後に削除する。
+    新規のイベント保存でこの関数を呼び出してはならない
+    （呼び出した時点で制度違反イベント = _source が Gate 分類外になる）。
+    """
     try:
         safe = {k: _sanitize(str(v)) for k, v in row.items()}
         con = _get_db()
@@ -125,6 +218,12 @@ def search_knowledge_gate(query):
     return results
 
 def next_event_id():
+    """
+    [DEPRECATED / 削除候補 — v1.6.0で参照停止]
+    event_id採番は phi_os.event_gate._next_event_id()（日内マイクロ秒+ランダム4hex・
+    並列安全）へ一本化された。本関数のMAX+1方式は並列書き込みで衝突するため、
+    新規の採番に使用してはならない。_db_write_event()と同時に削除する。
+    """
     today = datetime.date.today().strftime("%Y%m%d")
     try:
         con = _get_db()
@@ -171,7 +270,7 @@ TOOLS = [
     {"name":"mocka_list_events","description":"最新Nイベントを返す","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
-    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description"]}},
+    {"name":"mocka_write_event","description":"イベント追記(PHI-OS Event Gate経由)","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string","description":"10文字以上必須(Gate REJECT-03)"},"how_trigger":{"type":"string"}},"required":["title","description","author"]}},
     {"name":"mocka_seal","description":"SHA-256ハッシュ検証","inputSchema":{"type":"object","properties":{},"required":[]}},
 ]
 
@@ -276,27 +375,70 @@ def execute_tool(name, args):
             return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
 
         elif name == "mocka_write_event":
-            eid = next_event_id()
-            ts  = datetime.datetime.now().isoformat()
-            row = {f: "" for f in EVENTS_FIELDS}
-            row.update({
-                "event_id": eid, "when": ts,
-                "who_actor": args.get("author", "Claude"),
-                "what_type": "claude_mcp",
+            # [PHI-OS GATE / Phase5-2.1 Unified Event Entry — v1.6.0]
+            # 生SQLの直接INSERT(_db_write_event)は廃止し、HTTP経路(/api/gate/event)と
+            # 完全に同一の process_event() をインプロセスで呼び出す。これにより
+            # Validation -> Gate Policy -> Signature -> Hash Chain -> DB Commit が
+            # MCP経路にも等しく適用され、HTTP/MCP間の制度差が解消する。
+            if not GATE_AVAILABLE:
+                # Gateがimportできない場合、直接INSERTへフォールバックしてはならない
+                # （それは制度上存在しない保存経路であり、単一経路保証が壊れる）。
+                # 記録できないことを隠さず、明示的にエラーとして返す。
+                auto_log(name, args, f"gate unavailable: {GATE_IMPORT_ERROR}")
+                return json.dumps({
+                    "status": "gate_unavailable",
+                    "errors": [f"phi_os.event_gate is not importable: {GATE_IMPORT_ERROR}"],
+                    "note": "直接INSERTへのフォールバックは行わない（Gate単一経路保証のため）",
+                }, ensure_ascii=False)
+
+            # GL7-VALIDATION-MISSING-BUG是正（Windows正本 mocka_mcp_server.py と同一方針）:
+            # 空値を自動補填せず、検知してREJECTする。
+            _title     = args.get("title", "").strip()
+            _desc      = args.get("description", "").strip()
+            _actor_raw = args.get("author", "").strip()
+            if not _title:
+                return json.dumps({"status": "gate_rejected", "errors": ["title is required (empty)"]}, ensure_ascii=False)
+            if not _desc:
+                return json.dumps({"status": "gate_rejected", "errors": ["description is required (empty)"]}, ensure_ascii=False)
+            if not _actor_raw:
+                return json.dumps({"status": "gate_rejected", "errors": ["author is required (empty)"]}, ensure_ascii=False)
+            # 未指定検知は完了済み。レガシー値のみ既定Actorへ正規化する。
+            _actor = _DEFAULT_ACTOR if _actor_raw in ("Claude", "claude") else _actor_raw
+
+            # event_source は "live"（HTTP経路と同一のGate分類値）。
+            # MCP由来であることは transport属性として channel_type / where_component /
+            # how_trigger に保持する。channel_type="mcp" は event_gate._write() により
+            # free_note へ orig_channel=mcp として記録される。
+            # ("mcp" を event_source に用いると events._source の CHECK制約
+            #  (gate_policy.ALLOWED_SOURCE_VALUES) 外となりINSERTが失敗するうえ、
+            #  Gate Auditでも制度違反として集計されてしまう)
+            gate_payload = {
+                "who_actor":       _actor,
+                "who_role":        "executor",
+                "who_session":     SESSION_ID,
+                "what_type":       "claude_mcp",
+                "what_title":      _title,
+                "where_path":      "mocka_mcp_server_vps.py",
                 "where_component": "mcp_caliber",
-                "where_path": "mocka_mcp_server_vps.py",
-                "why_purpose": args.get("why_purpose", ""),
-                "how_trigger": args.get("how_trigger", ""),
-                "title": args.get("title", ""),
-                "short_summary": args.get("description", ""),
-                "free_note": args.get("tags", ""),
-                "lifecycle_phase": "in_operation",
-                "risk_level": "normal",
-                "channel_type": "mcp",
-            })
-            ok = _db_write_event(row)
-            auto_log(name, args, f"written {eid}")
-            return json.dumps({"status": "ok" if ok else "error", "event_id": eid, "when": ts, "storage": "sqlite"}, ensure_ascii=False)
+                "why_purpose":     args.get("why_purpose", "") or _desc[:80] or _title,
+                "how_trigger":     args.get("how_trigger", "") or "mocka_write_event",
+                "after_state":     _desc[:200] or _title,
+                "description":     _desc,
+                "tags":            args.get("tags", ""),
+                "channel_type":    "mcp",
+            }
+            result = process_event(gate_payload, event_source="live")
+            if result.get("status") == "ok":
+                eid = result["event_id"]
+                auto_log(name, args, f"GATE written {eid} event_source=live")
+                return json.dumps({
+                    "status": "ok", "event_id": eid,
+                    "when": datetime.datetime.now().isoformat(),
+                    "storage": "gate/sqlite(in-process)",
+                }, ensure_ascii=False)
+            auto_log(name, args, f"GATE rejected: {result.get('errors')}")
+            return json.dumps({"status": "gate_rejected", "errors": result.get("errors", [])},
+                              ensure_ascii=False)
 
         elif name == "mocka_seal":
             rows    = _db_read_events()
@@ -319,13 +461,13 @@ CORS(app, origins="*")
 @app.route("/mcp", methods=["GET", "POST"])
 def mcp_endpoint():
     if request.method == "GET":
-        return json.dumps({"name": "mocka-memory-caliber", "version": "1.5.1-vps"}), 200, {"Content-Type": "application/json"}
+        return json.dumps({"name": "mocka-memory-caliber", "version": "1.6.0-vps"}), 200, {"Content-Type": "application/json"}
     body   = request.get_json()
     method = body.get("method", "")
     req_id = body.get("id")
     params = body.get("params", {})
     if method == "initialize":
-        result = {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-caliber", "version": "1.5.1-vps"}}
+        result = {"protocolVersion": "2024-11-05", "capabilities": {"tools": {}}, "serverInfo": {"name": "mocka-memory-caliber", "version": "1.6.0-vps"}}
     elif method == "tools/list":
         result = {"tools": TOOLS}
     elif method == "tools/call":
@@ -350,13 +492,27 @@ def register():
 @app.route("/health")
 def health():
     rows = _db_read_events()
+    db_ok, db_detail       = _check_gate_db_alignment()
+    schema_ok, schema_note = _check_events_schema()
     return json.dumps({
-        "status": "ok", "version": "1.5.1-vps", "port": 5002,
+        "status": "ok", "version": "1.6.0-vps", "port": 5002,
         "overview_exists": OVERVIEW_PATH.exists(),
         "todo_exists": TODO_PATH.exists(),
         "storage": "sqlite", "event_count": len(rows),
         "tools": [t["name"] for t in TOOLS],
         "public_url": PUBLIC_URL,
+        # Unified Event Entry の成立条件（v1.6.0）
+        "event_gate": {
+            "available": GATE_AVAILABLE,
+            "root": str(GATE_ROOT) if GATE_ROOT else None,
+            "import_error": GATE_IMPORT_ERROR,
+            "write_path": "phi_os.event_gate.process_event",
+            "event_source": "live",
+            "db_aligned": db_ok,
+            "db_detail": db_detail,
+            "events_schema_ok": schema_ok,
+            "events_schema_note": schema_note,
+        },
     }, ensure_ascii=False), 200, {"Content-Type": "application/json"}
 
 @app.route("/agent/tools", methods=["GET"])
@@ -372,10 +528,25 @@ def agent_call(tool_name):
     result = execute_tool(tool_name, args)
     return result, 200, {"Content-Type": "application/json; charset=utf-8"}
 
-if __name__ == "__main__":
-    port = int(os.environ.get("MOCKA_PORT", 5002))
-    print(f"MoCKA MCP Server v1.5.1-vps -- http://localhost:{port}/mcp")
+def _startup_banner(port):
+    print(f"MoCKA MCP Server v1.6.0-vps -- http://localhost:{port}/mcp")
     print(f"MOCKA_HOME: {BASE}")
     print(f"DB: {DB_PATH}")
     print(f"Tools: {len(TOOLS)}")
+    if GATE_AVAILABLE:
+        db_ok, db_detail = _check_gate_db_alignment()
+        print(f"Event Gate: phi_os.event_gate.process_event (root={GATE_ROOT})")
+        print(f"Gate DB aligned: {'OK' if db_ok else 'NG'} -- {db_detail}")
+        schema_ok, schema_note = _check_events_schema()
+        print(f"events schema: {'OK' if schema_ok else 'NG'} -- {schema_note}")
+    else:
+        print(f"Event Gate: UNAVAILABLE -- {GATE_IMPORT_ERROR}")
+        print("  -> mocka_write_event is disabled (直接INSERTへのフォールバックは行わない)")
+
+
+# gunicorn等でimportされる場合も起動状態を必ずログに残す（記録なき起動を作らない）
+_startup_banner(int(os.environ.get("MOCKA_PORT", 5002)))
+
+if __name__ == "__main__":
+    port = int(os.environ.get("MOCKA_PORT", 5002))
     app.run(host="127.0.0.1", port=port, debug=False)

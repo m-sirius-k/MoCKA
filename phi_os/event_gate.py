@@ -4,7 +4,7 @@
 from flask import Blueprint, request, jsonify
 from .gate_validator import validate, validate_operational
 from . import integrity
-import sqlite3, time, secrets, sys
+import sqlite3, time, secrets, sys, os
 from datetime import datetime, date, timezone
 from pathlib import Path
 
@@ -16,8 +16,20 @@ from gate_policy import compute_gate_audit
 gate_bp = Blueprint('event_gate', __name__)
 
 # Single Truth DB — data/mocka_events.db (絶対パス解決)
+#
+# DB_PATH解決順序（VPS対応 / DB_PATH二重化の防止）:
+#   1. 環境変数 MOCKA_HOME が設定されていれば {MOCKA_HOME}/data/mocka_events.db
+#   2. 未設定なら従来どおり {リポジトリルート}/data/mocka_events.db
+#
+# VPS配備(deploy/mocka_mcp_server_vps.py)では MOCKA_HOME 配下に data/ が置かれ、
+# phi_os/ が同一ルート直下に配置されるとは限らない。ここでMOCKA_HOMEを見ることで、
+# HTTP経路(/api/gate/event)とインプロセス経路(MCP server)がどちらも
+# "同一の1本のDB" に収束することを保証する。呼び出し側が独自にDB_PATHを
+# 組み立ててはならない（そうすると保存先が二重化する）。
+# MOCKA_HOME未設定のWindows本番では解決結果が変わらないため挙動は不変。
 _REPO_ROOT = Path(__file__).resolve().parent.parent
-DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
+_DB_HOME = Path(os.environ["MOCKA_HOME"]) if os.environ.get("MOCKA_HOME") else _REPO_ROOT
+DB_PATH = str(_DB_HOME / 'data' / 'mocka_events.db')
 
 sys.path.insert(0, str(_REPO_ROOT / 'interface'))
 from gate_policy import POLICY_VERSION as GATE_POLICY_VERSION  # Phase5-1 Gate Policy
