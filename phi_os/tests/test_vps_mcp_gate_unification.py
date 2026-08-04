@@ -203,11 +203,16 @@ def test_mcp_is_not_a_valid_source_value():
     assert "mcp" not in ALLOWED_SOURCE_VALUES
 
 
-def test_unknown_event_source_is_silently_dropped(vps_env):
+def test_unknown_event_source_reports_error_and_leaves_no_signature(vps_env):
     """
-    既知の落とし穴の固定化: _write() の INSERT OR IGNORE は CHECK制約違反を
-    握りつぶすため、許可外のevent_sourceを渡すと例外も出ずに行だけが消え、
-    署名のみが孤児として残る。許可外の値を新規に導入してはならない。
+    Event creation integrity boundary の固定化。
+
+    許可外のevent_sourceは events._source の CHECK制約に違反する。
+    INSERT OR IGNORE は違反を例外にせず握りつぶすため、以前は
+    status=ok が返る一方で events行は書き込まれず、event_signatures だけが
+    孤児として残っていた(Signature != Evidence の逆転)。
+
+    修正後は status=error を返し、events行も署名も一切残さないこと。
     """
     _, eg, db = vps_env
     res = eg.process_event({
@@ -218,12 +223,20 @@ def test_unknown_event_source_is_silently_dropped(vps_env):
         "after_state": "x",
     }, event_source="mcp")
 
-    assert res["status"] == "ok"  # 呼び出し側にはエラーが返らない
+    assert res["status"] == "error", res
+    assert res["errors"], res
     con = sqlite3.connect(str(db))
     assert con.execute("SELECT COUNT(*) FROM events WHERE event_id=?",
                        (res["event_id"],)).fetchone()[0] == 0
-    assert con.execute("SELECT COUNT(*) FROM event_signatures WHERE event_id=?",
-                       (res["event_id"],)).fetchone()[0] == 1
+    # 存在しないイベントの署名を残さないこと。
+    # 書き込みが成立しない場合はsignatures表自体が作られないこともあるため、
+    # 表の有無を確認したうえで件数を検証する。
+    has_table = con.execute(
+        "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='event_signatures'"
+    ).fetchone()[0]
+    if has_table:
+        assert con.execute("SELECT COUNT(*) FROM event_signatures WHERE event_id=?",
+                           (res["event_id"],)).fetchone()[0] == 0
     con.close()
 
 

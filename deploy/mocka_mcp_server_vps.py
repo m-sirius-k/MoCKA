@@ -436,6 +436,14 @@ def execute_tool(name, args):
                     "when": datetime.datetime.now().isoformat(),
                     "storage": "gate/sqlite(in-process)",
                 }, ensure_ascii=False)
+            if result.get("status") == "error":
+                # Validationは通ったがevents行が成立しなかった場合。
+                # 検証で弾かれた(gate_rejected)のとは原因が異なるため区別して返す。
+                # 署名も生成されていない(Event creation integrity boundary)。
+                auto_log(name, args, f"GATE write failed: {result.get('errors')}")
+                return json.dumps({"status": "gate_error", "errors": result.get("errors", []),
+                                   "note": "events行が成立しなかったため署名も生成されていない"},
+                                  ensure_ascii=False)
             auto_log(name, args, f"GATE rejected: {result.get('errors')}")
             return json.dumps({"status": "gate_rejected", "errors": result.get("errors", [])},
                               ensure_ascii=False)

@@ -37,6 +37,20 @@ from gate_policy import POLICY_VERSION as GATE_POLICY_VERSION  # Phase5-1 Gate P
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
+class EventWriteError(Exception):
+    """
+    events行の書き込みが成立しなかったことを示す(Event creation integrity boundary)。
+
+    この例外が送出された時点で、当該イベントの event_signatures は生成されていない。
+    events行と署名は必ず対で成立させ、片方だけを残さないための境界例外である。
+    """
+
+    def __init__(self, reason: str, event_id: str):
+        super().__init__(f'{reason} (event_id={event_id})')
+        self.reason = reason
+        self.event_id = event_id
+
+
 def _get_conn():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -90,14 +104,35 @@ def _write(payload: dict, conn=None) -> None:
     owns_conn = conn is None
     if owns_conn:
         conn = _get_conn()
+    # 共有conn(batch経路)では、失敗時に兄弟イベントの書き込みまで巻き戻して
+    # しまわないよう、当該イベント分のSAVEPOINTで囲う。
+    savepoint = None if owns_conn else f'gate_write_{secrets.token_hex(4)}'
     try:
+        if savepoint:
+            conn.execute(f'SAVEPOINT {savepoint}')
         cols = list(row.keys())
         placeholders = ','.join('?' * len(cols))
         vals = [row[c] for c in cols]
-        conn.execute(
+        cur = conn.execute(
             f'INSERT OR IGNORE INTO events ({",".join(cols)}) VALUES ({placeholders})',
             vals
         )
+        # Event creation integrity boundary:
+        # INSERT OR IGNORE は CHECK制約(events._source) / PK重複 / NOT NULL 違反を
+        # 例外にせず握りつぶす。行が入らないまま sign_event を呼ぶと
+        # "存在しないイベントの署名" が残り(Signature != Evidence)、以後
+        # verify_chain が missing_event_row を報告し続ける状態になる。
+        # よって署名の前に、行が実際に成立したことを rowcount で必ず検証する。
+        if cur.rowcount == 0:
+            already = conn.execute(
+                'SELECT 1 FROM events WHERE event_id = ?', (row['event_id'],)
+            ).fetchone()
+            raise EventWriteError(
+                'duplicate event_id' if already else
+                'constraint violation: events行が成立しなかった'
+                '(_source等がgate_policy.ALLOWED_SOURCE_VALUES内の値かを確認すること)',
+                row['event_id']
+            )
         # Phase5-2: 署名・ハッシュチェーン適用（trace_id/related_event_idは
         # 後方互換のためsignatureのcurrent_hash/previous_hashを反映する）
         sig = integrity.sign_event(conn, row)
@@ -105,8 +140,18 @@ def _write(payload: dict, conn=None) -> None:
             'UPDATE events SET trace_id = ?, related_event_id = ? WHERE event_id = ?',
             (sig['current_hash'], sig['previous_hash'], row['event_id'])
         )
+        if savepoint:
+            conn.execute(f'RELEASE {savepoint}')
         if owns_conn:
             conn.commit()
+    except Exception:
+        # events行と署名を片方だけ残さない。署名後の失敗も同様に巻き戻す。
+        if owns_conn:
+            conn.rollback()
+        elif savepoint:
+            conn.execute(f'ROLLBACK TO {savepoint}')
+            conn.execute(f'RELEASE {savepoint}')
+        raise
     finally:
         if owns_conn:
             conn.close()
@@ -132,6 +177,12 @@ def process_event(payload: dict, event_source: str = 'live', conn=None) -> dict:
     Flask route(/api/gate/event)とMCP server(mocka_write_event)のいずれの
     呼び出し元からも、トランスポート(HTTP/インプロセス)を問わずこの関数を
     経由しなければならない。これ以外にevents保存を行う経路は制度上存在しない。
+
+    戻り値の status:
+      ok       — events行と署名の両方が成立した
+      rejected — Validationで拒否された(DBには一切触れていない)
+      error    — Validationは通ったがevents行が成立しなかった。
+                 署名も生成されていない(Event creation integrity boundary)
     """
     errors = validate(payload)
     if errors:
@@ -142,7 +193,11 @@ def process_event(payload: dict, event_source: str = 'live', conn=None) -> dict:
     payload['when_ts'] = payload.get('when_ts') or datetime.now(timezone.utc).isoformat()
     payload['event_source'] = event_source
 
-    _write(payload, conn=conn)
+    try:
+        _write(payload, conn=conn)
+    except EventWriteError as e:
+        # 書き込めなかったことをokとして返さない(記録なき成功を作らない)
+        return {'status': 'error', 'errors': [str(e)], 'event_id': e.event_id}
 
     return {'status': 'ok', 'event_id': payload['event_id']}
 
@@ -153,6 +208,8 @@ def receive_event():
     result = process_event(payload, event_source='live')
     if result['status'] == 'rejected':
         return jsonify(result), 422
+    if result['status'] == 'error':
+        return jsonify(result), 500
     return jsonify(result), 201
 
 
@@ -163,7 +220,8 @@ def process_buffered_event(ev: dict, conn) -> dict:
     呼び出し元の双方から共有される。Flask依存を持たないため、トランスポートを
     問わず呼び出せる。conn のcommit/closeは呼び出し元の責務とする。
     戻り値: {'status':'ok','event_id':...} | {'status':'duplicate'} |
-            {'status':'rejected','errors':[...]}
+            {'status':'rejected','errors':[...]} | {'status':'error','errors':[...]}
+    ('error'はevents行が成立しなかった場合。署名もidempotency記録も残さない)
     """
     idem_key = ev.get('idempotency_key')
     if idem_key:
@@ -188,7 +246,12 @@ def process_buffered_event(ev: dict, conn) -> dict:
     ev['when_ts'] = ev.get('when_ts') or ev.get('when') or datetime.now(timezone.utc).isoformat()
     ev['event_source'] = ev.get('event_source', 'buffered')
 
-    _write(ev, conn=conn)
+    try:
+        _write(ev, conn=conn)
+    except EventWriteError as e:
+        # 書き込めなかったイベントのidempotency_keyは記録しない
+        # (記録すると、再送時に "処理済み" として握りつぶされ永久に失われる)
+        return {'status': 'error', 'errors': [str(e)]}
 
     if idem_key:
         conn.execute(
@@ -219,6 +282,8 @@ def receive_event_extension():
 
     if result['status'] == 'rejected':
         return jsonify(result), 422
+    if result['status'] == 'error':
+        return jsonify(result), 500
     if result['status'] == 'duplicate':
         return jsonify(result), 200
     return jsonify(result), 201
@@ -246,7 +311,9 @@ def receive_event_batch():
             result = process_buffered_event(ev, conn)
             if result['status'] == 'duplicate':
                 duplicate_count += 1
-            elif result['status'] == 'rejected':
+            elif result['status'] in ('rejected', 'error'):
+                # 'error'(events行が成立しなかった)もacceptedに数えない。
+                # レスポンス形状は変更せず、rejectedとして呼び出し元に返す。
                 rejected.append({'idempotency_key': ev.get('idempotency_key'), 'errors': result['errors']})
             else:
                 accepted.append(result['event_id'])
