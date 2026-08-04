@@ -1,0 +1,14 @@
+﻿{
+  "version": "0.1",
+  "canonical_states": [
+    "IDLE",
+    "EVALUATING",
+    "PENDING_HUMAN_GATE",
+    "APPROVED",
+    "REJECTED",
+    "DEFERRED",
+    "EXPIRED",
+    "CANCELLED"
+  ],
+  "principle": "Human Authority Boundary requires explicit state transitions."
+}

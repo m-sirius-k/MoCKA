@@ -1,0 +1,17 @@
+﻿{
+  "version": "0.1",
+  "actors": {
+    "human": {
+      "authority": "decision",
+      "can_finalize": true
+    },
+    "jarvis": {
+      "authority": "advisory",
+      "can_finalize": false
+    },
+    "system": {
+      "authority": "execution",
+      "can_finalize": false
+    }
+  }
+}

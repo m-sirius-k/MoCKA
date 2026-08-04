@@ -1,0 +1,15 @@
+﻿{
+  "version": "0.1",
+  "required_fields": [
+    "decision_id",
+    "event_id",
+    "actor_id",
+    "actor_type",
+    "action",
+    "previous_state",
+    "next_state",
+    "evidence_reference",
+    "timestamp"
+  ],
+  "immutable": true
+}
