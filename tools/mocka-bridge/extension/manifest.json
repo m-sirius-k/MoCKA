@@ -1,14 +1,15 @@
 {
   "manifest_version": 3,
   "name": "MoCKA Bridge",
-  "version": "2.4",
+  "version": "2.4.1",
   "permissions": [
     "tabs",
     "scripting",
     "contextMenus",
     "notifications",
     "storage",
-    "clipboardRead"
+    "clipboardRead",
+    "alarms"
   ],
   "host_permissions": [
     "http://127.0.0.1:5000/*",
