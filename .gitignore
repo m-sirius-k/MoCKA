@@ -63,3 +63,7 @@ docs/reference/semantic_dictionary/raw/all_terms.md
 # workshop配下は非公開化（TODO_354）。以後はmocka-workshop-private側で管理する。
 # 過去の履行履歴（既にPublicにpush済みの5134件）はそのまま残し、書き換えはしない。
 PlanningCaliber/workshop/
+
+# Shadow比較ログ（Phase-1.6 ContextFacade）。git statusに出すとGL7の
+# encoding_mismatch走査対象になり、auto-syncのgit add -Aにも巻き込まれるため除外する。
+logs/context_shadow*.jsonl

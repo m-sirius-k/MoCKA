@@ -30,13 +30,23 @@ import adapter_copilot
 import adapter_perplexity   # TODO_269
 import adapter_genspark     # TODO_270
 
+# repository root を明示追加する。connector_caliber -> connector_router 経由で
+# root がsys.pathへ載る暗黙依存を廃止し、import順序による偶発動作を排除する。
+_MOCKA_ROOT = Path(__file__).parent.parent
+if str(_MOCKA_ROOT) not in sys.path:
+    sys.path.insert(0, str(_MOCKA_ROOT))
 sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
 from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
 
 app = Flask(__name__)
 CORS(app)
 
-builder = ContextBuilder()
+# ContextFacade を注入する。既定 mode="shadow" のため応答は従来と同一で、
+# ConnectorCaliber への context_builder 引数経路も変更しない。
+from context_facade import ContextFacade
+from context_projection import ContextProjection
+
+builder = ContextFacade(ContextBuilder(), ContextProjection())
 
 DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
 DATA_DIR = Path(__file__).parent.parent / "data"
@@ -185,4 +195,14 @@ def post_event():
 
 
 if __name__ == "__main__":
+    # lifecycle gate: gateway起動時にRuntime構築可能性を確認する。
+    # gatewayは認証境界・外部入力境界であり、Runtime bind失敗のまま起動すると
+    # 統治されない入口が存在することになる。HG-18裁定によりfail-fastとし、
+    # try/exceptで握りつぶさない(初期化失敗 = gateway起動失敗)。
+    # R-6: bindは本起動シーケンス内のみ。request handler / before_request /
+    # module import時からの呼出は禁止。
+    # 注意: bind済みは "Runtime利用済み" を意味しない。ContextFacadeは
+    # current()に依存せず、リクエスト毎にboot()する(HG-15)。
+    from phi_os.context.context_runtime import ContextRuntime
+    ContextRuntime.bind(ContextRuntime.boot())
     app.run(host="0.0.0.0", port=5010, debug=False)
