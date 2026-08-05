@@ -37,6 +37,10 @@ class ContextRuntime:
         ctx = rt.full_context()
     """
 
+    # プロセス既定インスタンス。bind()でのみ設定される(boot()は触らない)。
+    # クラス変数のためプロセスローカルであり、別プロセス(gateway等)へは伝播しない。
+    _current: "ContextRuntime | None" = None
+
     def __init__(self) -> None:
         self.institution: InstitutionContext = InstitutionContext()
         self.working: WorkingContext = WorkingContext()
@@ -56,6 +60,36 @@ class ContextRuntime:
         rt.memory = MemoryContext.load()
         rt.execution = ExecutionContext.load()
         return rt
+
+    @classmethod
+    def bind(cls, rt: "ContextRuntime") -> None:
+        """
+        boot()済みインスタンスをプロセス既定として登録する。
+
+        R-6: 起動シーケンス(if __name__ == "__main__"配下)からのみ呼び出すこと。
+        route handler / before_request / scheduler / 監査ツール / adapter /
+        facade / import時実行からの呼出は禁止する。並行呼出で_currentの
+        取り合いが起き、どのインスタンスが残るか不定になるため。
+        再呼出による上書きは許容する(プロセス再起動時の差し替えを想定)。
+        """
+        cls._current = rt
+
+    @classmethod
+    def current(cls) -> "ContextRuntime":
+        """
+        bind()済みのプロセス既定インスタンスを返す。
+
+        未bind時はNoneを返さずRuntimeErrorを送出する(fail closed)。Noneを返すと
+        呼出側で属性アクセス時に初めて失敗し、原因が追いにくくなるため。
+
+        注意: 本メソッドはbind時点のスナップショットを返す。HTTPリクエスト毎など
+        鮮度が要件となる呼出では、current()ではなくboot()を使うこと
+        (ContextBuilderはリクエスト毎に全データ源を再読込しており、
+        保持インスタンスを使うとその鮮度契約を後退させる)。
+        """
+        if cls._current is None:
+            raise RuntimeError("ContextRuntime not booted; call boot() then bind()")
+        return cls._current
 
     # ──────────────────────────────────────────
     # Memory Runtime プロトコル
