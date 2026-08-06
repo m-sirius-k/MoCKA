@@ -1,6 +1,8 @@
 # tests/test_gate_validator.py
-# CONTRACT-INTEGRATION-TEST-SPEC-V1: phi_os.gate_validator.validate()の実行可能テスト
-# 対象: phi_os/gate_validator.py:8-43 (validate)
+# CONTRACT-INTEGRATION-TEST-SPEC-V1:
+# phi_os.gate_validator.validate() の実行可能テスト
+# 対象: phi_os/gate_validator.py
+
 import sys
 from pathlib import Path
 
@@ -13,12 +15,17 @@ from phi_os.gate_schema import ALLOWED_WHAT_TYPES
 
 
 def _valid_payload(**overrides):
+    """
+    Governance Lane の正常系payload。
+    必須境界項目をすべて満たした状態を定義する。
+    """
     payload = {
         "who_actor": "Claude-sonnet-4-6",
         "who_session": "SESSION_20260623_120000",
         "why_purpose": "統合テスト用イベント記録",
         "how_trigger": "mcp_tool_call",
         "where_path": "mocka_mcp_server.py",
+        "where_component": "phi_os",
         "what_type": ALLOWED_WHAT_TYPES[0],
         "after_state": "test",
     }
@@ -33,7 +40,7 @@ def test_valid_payload_passes():
     assert errors == []
 
 
-# --- 境界系 (EDGE) — REJECT-01〜07を1項目ずつ単独違反させる ---------------
+# --- 境界系 (EDGE) — REJECT-01〜08単独違反 -------------------------------
 
 def test_reject01_who_actor_empty():
     errors = validate(_valid_payload(who_actor=""))
@@ -74,29 +81,49 @@ def test_reject06_what_type_not_allowed():
 def test_reject07_before_and_after_both_missing():
     payload = _valid_payload()
     payload.pop("after_state", None)
+
     errors = validate(payload)
-    assert errors == ["REJECT-07: before/afterどちらか必須(Replay不能)"]
+
+    assert errors == [
+        "REJECT-07: before/afterどちらか必須(Replay不能)"
+    ]
+
+
+def test_reject08_where_component_empty():
+    errors = validate(_valid_payload(where_component=""))
+
+    assert errors == [
+        "REJECT-08: where_component必須"
+    ]
 
 
 # --- 破壊系 (MALFORMED) ---------------------------------------------------
 
 def test_malformed_empty_dict_returns_errors_without_exception():
     errors = validate({})
+
     assert isinstance(errors, list)
     assert len(errors) > 0
 
 
 def test_malformed_operational_only_payload_rejected_by_governance_lane():
-    # validate_operational向けの軽量payloadをgovernance lane(validate)に
-    # 誤って渡した場合、REJECT-02〜07が正しく発生し例外なく処理されることを確認
+    """
+    validate_operational向けの軽量payloadを
+    governance lane(validate)へ誤投入した場合、
+    必須境界違反が検出されることを確認する。
+    """
     operational_payload = {
         "who_actor": "Claude-sonnet-4-6",
         "what_type": ALLOWED_WHAT_TYPES[0],
         "where_component": "mcp_caliber",
     }
+
     errors = validate(operational_payload)
+
     assert isinstance(errors, list)
+
     codes = {e.split(":")[0] for e in errors}
+
     assert "REJECT-02" in codes
     assert "REJECT-03" in codes
     assert "REJECT-04" in codes
