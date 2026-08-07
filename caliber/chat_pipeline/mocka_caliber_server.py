@@ -723,7 +723,7 @@ def phl_record_event(state, selected, guard, trace):
         prev, "guard:" + guard.get("status","?") + " stakes:" + state.get("stakes","?"),
         "phl_decision", "caliber", "decision_trace",
         "N/A", "N/A",
-        "guard=" + guard.get("status","?") + " trace=" + trace_str[:200],
+        "guard=" + guard.get("status","?") + " trace=" + trace_str,
     ]
     append_event(row)
     return eid
