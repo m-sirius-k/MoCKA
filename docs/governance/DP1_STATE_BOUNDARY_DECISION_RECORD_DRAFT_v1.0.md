@@ -3,11 +3,15 @@
 ## JARVIS Institutional Runtime における State Layer / Event Store / Human Authority Boundary
 
 **文書番号:** (未採番)
-**確定日:** (Human Authority 記入欄。第7章)
-**Status:** **DRAFT — Decision Ledger 登録前**
-**Decision Authority:** きむら博士 (Human Authority)
-**Decision Ledger:** **未登録** (登録は Human Authority の指示待ち)
+**確定日:** 2026-08-07
+**Status:** **DP-1: APPROVED**
+**Decision Authority:** Human Authority (きむら博士)
+**Decision Ledger:** **未登録** (登録準備は完了。登録は Human Authority の指示待ち。第7章 / `DP1_STATE_BOUNDARY_LEDGER_REGISTRATION_PREP_v0.1.md`)
 **Seal:** **未生成**
+
+**承認記録:** きむら博士による承認をもって Status を APPROVED とした。承認時に第7.2章 A-1 を未解決事項として保持する旨が併せて指示されている (7.1 / 7.2)。
+
+> **ファイル名に関する注記:** 本ファイル名は作成時のものであり `DRAFT` を含む。承認済みであることは本ヘッダの Status が示す。物理的な正本の重複を避けるため、承認に際してファイルの複製・改名は行っていない。改名の要否は Human Authority の判断による。
 
 **入力資料:**
 - `docs/governance/DP1_STATE_BOUNDARY_ADJUDICATION_PREP_v0.1.md` (commit 2636273)
@@ -437,27 +441,33 @@ State Management:
 
 ## 7. Human Authority
 
-### 7.1 承認欄
+### 7.1 承認記録
 
 ```
-approved_by:   ______________________________________________
+approved_by:   きむら博士 (Human Authority)
 
-approved_at:   ______________________________________________
+approved_at:   2026-08-07  (JST)
+               記録イベント E20260807_91442502442eb
+               (when_ts は UTC 表記)
 
-Decision ID:   ______________________________________________
-               (Decision Ledger 登録時に採番。DC_YYYYMMDD_NNN)
+Decision ID:   (未採番。Decision Ledger 登録時に自動採番される
+                DC_YYYYMMDD_NNN 形式)
 
-Decision Ledger:  未登録
+Decision Ledger:  未登録  (登録準備完了。登録は Human Authority の指示待ち)
 Seal:             未生成
 ```
 
+**承認の範囲:** 第3章 Decision Statement (DP-1-A / DP-1-B / DP-1-C)、第2章 Existing Decision Compatibility、第4章 Architecture Boundary、第5章 Rejected Alternatives、第6章 Implementation Boundary。
+
+**承認に伴う指示:** 第7.2章 A-1 を**未解決事項として保持**する。
+
 ### 7.2 本 Decision に伴い確認を要する事項
 
-以下は本 Decision の裁定範囲外であり、確認を要する。
+以下は本 Decision の裁定範囲外であり、確認を要する。**A-1 は承認時の明示的指示により未解決事項として保持される。**
 
 | ID | 事項 | 参照 |
 |---|---|---|
-| **A-1** | Decision Statement の **Execution Layer** と Architecture Boundary の **Action Layer** の対応関係。同一層を指すか、別層か | 0.3 / 4.4 |
+| **A-1** | Decision Statement の **Execution Layer** と Architecture Boundary の **Action Layer** の対応関係。同一層を指すか、別層か。**承認時の指示により未解決事項として保持する (7.1)。本 Decision の採択は A-1 の解決を前提としない** | 0.3 / 4.4 |
 | **A-2** | 層名 Memory Layer と、既存の `MEMORY_LAYER.md` / `memory/` (4種記憶) の関係 | 4.1 |
 | **A-3** | 層名 State Layer と、既存の HAB STATE LAYER (DRAFT) および `minimal_safe_architecture_v1.md` の STATE LAYER (PROPOSED) の関係 | 4.2 |
 | **A-4** | `INSTITUTION_RUNTIME_v1.md` の `authority_manager.py` (IMPLEMENTED v1) と Authority Layer の関係 | 4.3 |
@@ -468,7 +478,7 @@ Seal:             未生成
 
 ### 7.3 Decision Ledger 登録時の写像 (参考)
 
-登録が指示された場合の `mocka_decision_write` への写像を示す。**本文書は登録を行わない。**
+**登録準備の完全版は `docs/governance/DP1_STATE_BOUNDARY_LEDGER_REGISTRATION_PREP_v0.1.md` にある** (確定値の全文 / 前提条件の確認結果 / 登録手順 / 登録後の検証手順 / 既知リスク TODO_423)。以下は対応関係の概要である。**本文書は登録を行わない。**
 
 | Ledger フィールド | 充填元 |
 |---|---|
