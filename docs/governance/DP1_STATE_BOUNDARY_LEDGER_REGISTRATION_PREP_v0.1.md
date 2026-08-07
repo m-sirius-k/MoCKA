@@ -3,7 +3,7 @@
 **文書番号:** (未採番)
 **作成日:** 2026-08-07
 **工程:** DP-1 Decision Ledger 登録準備
-**状態:** **登録準備。`mocka_decision_write` は未実行。実行は Human Authority の指示待ち**
+**状態:** **登録実行済み — `DC_20260807_001` (2026-08-07T02:52:36Z)。登録後検証 全8項目 PASS。検証証跡 `E20260807_3096181546b72`**
 **CHANGE_START:** E20260807_91442502442eb
 
 **対象 Decision:** `docs/governance/DP1_STATE_BOUNDARY_DECISION_RECORD_DRAFT_v1.0.md` (Status: **DP-1: APPROVED**、commit 209081c)
@@ -23,12 +23,14 @@
 
 | # | 事項 | 状況 |
 |---|---|---|
-| 1 | `mocka_decision_write` の実行 | **未実行** |
+| 1 | `mocka_decision_write` の実行 | **実行済み** (2026-08-07。`DC_20260807_001`。登録後検証 全8項目 PASS) |
 | 2 | Seal 生成 | **未実施** |
 | 3 | 実装変更 | **未実施** |
-| 4 | 既存 Decision の supersede | **未実施** |
+| 4 | 既存 Decision の supersede | **未実施** (登録レコードの `supersedes` / `superseded_by` とも null であることを検証項目4で確認済み) |
 | 5 | Migration 開始 | **未実施** |
 | 6 | 追加設計判断 | **未実施** |
+| 7 | Integrity Classification 起票 | **未実施** |
+| 8 | A-1 の解決 | **未実施** (未解決状態を維持) |
 
 **先例:** `HG-C10_DECISION_RECORD_v1.0.md` は `Status: APPROVED` かつ `Decision Ledger: 未登録 (登録は Human Authority の指示待ち)` の状態で存在する。承認と Ledger 登録は分離可能である。
 
@@ -430,25 +432,53 @@ TODO_423 の現象はコードポイントの下位ニブルのみが変化す�
 ## 6. 実行承認欄
 
 ```
-登録実行の指示:  ______________________________________________
+登録実行の指示:  きむら博士 (Human Authority)
 
-指示日時:        ______________________________________________
+指示日時:        2026-08-07
 
-採番された decision_id: ________________________________________
+採番された decision_id: DC_20260807_001
+   登録応答:     status=ok / event_id=E20260807_15808415664e1
+   Ledger 記録:  approved_at=2026-08-07T02:52:36Z (UTC、サーバ自動付与)
+                 status=Active / supersedes=null / superseded_by=null
 
 登録後検証の結果 (第4章):
-   項目1 レコード存在        : ______
-   項目2 decision_id 一致    : ______
-   項目3 status = Active     : ______
-   項目4 supersedes 不在     : ______
-   項目5 approved_by 一致    : ______
-   項目6 alternatives 3件    : ______
-   項目7 本文文字列完全一致  : ______   <- TODO_423 対策 (必須)
-   項目8 related_* 件数一致  : ______
+   項目1 レコード存在        : PASS
+   項目2 decision_id 一致    : PASS  (DC_20260807_001)
+   項目3 status = Active     : PASS
+   項目4 supersedes 不在     : PASS  (supersedes / superseded_by とも null)
+   項目5 approved_by 一致    : PASS  (len 23/23, sha 1e4194bb5fcdef65)
+   項目6 alternatives 3件    : PASS
+   項目7 本文文字列完全一致  : PASS  <- TODO_423 対策 (必須)
+   項目8 related_* 件数一致  : PASS  (documents 3件 / events 4件)
 
-検証実施者:      ______________________________________________
-検証日時:        ______________________________________________
+   総合判定: PASS -- 登録成功として扱う
+
+検証実施者:      くろこ (Claude Code, Claude-opus-5)
+検証日時:        2026-08-07T02:55:09Z (UTC)
+検証証跡:        E20260807_3096181546b72
 ```
+
+### 6.1 検証項目7 の詳細 (送信長/保存長、SHA-256 先頭16。いずれも一致)
+
+| フィールド | 長さ | SHA-256 (先頭16) |
+|---|---|---|
+| `title` | 163 / 163 | `2ef5f8047658f34f` |
+| `context` | 1203 / 1203 | `e8f131808644e920` |
+| `decision` | 1120 / 1120 | `8bc96d3a7684e159` |
+| `rationale` | 769 / 769 | `2c8381689e6df55e` |
+| `impact` | 1295 / 1295 | `c269287ae6feaf35` |
+| `alt1.option` | 22 / 22 | `bb84a5336b0dd246` |
+| `alt1.rejected_reason` | 343 / 343 | `e5c55fa0bf4f9275` |
+| `alt2.option` | 85 / 85 | `c5421f15f17c2fd6` |
+| `alt2.rejected_reason` | 443 / 443 | `9ce668bdd7077ab7` |
+| `alt3.option` | 39 / 39 | `4e2e12a3ed3374f3` |
+| `alt3.rejected_reason` | 216 / 216 | `7accbd8f4b01319e` |
+
+**TODO_423 の再現:** 検出されなかった。全11文字列でコードポイントレベルの差異ゼロ。本結果は TODO_423 Phase A-3 (write 直前・保存直後のハッシュ取得による差分検知) の観測データ1件として利用可能である。
+
+### 6.2 ペイロード生成方法 (転記ドリフト対策)
+
+第2章のコードブロックから機械的に抽出し JSON 化した上で送信した。`title` のみ、本資料内の折返し3行を半角スペースで連結して1行へ正規化している (Decision Ledger の既存 title が単一行であるため)。他フィールドは本資料の記載どおり。
 
 ---
 

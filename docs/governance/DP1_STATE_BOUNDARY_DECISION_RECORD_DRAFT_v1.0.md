@@ -6,7 +6,7 @@
 **確定日:** 2026-08-07
 **Status:** **DP-1: APPROVED**
 **Decision Authority:** Human Authority (きむら博士)
-**Decision Ledger:** **未登録** (登録準備は完了。登録は Human Authority の指示待ち。第7章 / `DP1_STATE_BOUNDARY_LEDGER_REGISTRATION_PREP_v0.1.md`)
+**Decision Ledger:** **登録済み — `DC_20260807_001`** (2026-08-07T02:52:36Z。登録後検証 全8項目 PASS。証跡 `E20260807_3096181546b72`)
 **Seal:** **未生成**
 
 **承認記録:** きむら博士による承認をもって Status を APPROVED とした。承認時に第7.2章 A-1 を未解決事項として保持する旨が併せて指示されている (7.1 / 7.2)。
@@ -446,16 +446,30 @@ State Management:
 ```
 approved_by:   きむら博士 (Human Authority)
 
-approved_at:   2026-08-07  (JST)
-               記録イベント E20260807_91442502442eb
-               (when_ts は UTC 表記)
+approved_at:   2026-08-07T02:52:36Z  (UTC。Decision Ledger 記録値)
+               承認指示の記録イベント E20260807_91442502442eb
 
-Decision ID:   (未採番。Decision Ledger 登録時に自動採番される
-                DC_YYYYMMDD_NNN 形式)
+Decision ID:   DC_20260807_001  (Decision Ledger 登録時に自動採番)
 
-Decision Ledger:  未登録  (登録準備完了。登録は Human Authority の指示待ち)
+Decision Ledger:  登録済み
+                  登録イベント E20260807_15808415664e1
+                  登録後検証   全8項目 PASS
+                  検証証跡     E20260807_3096181546b72
 Seal:             未生成
 ```
+
+**登録後検証の結果 (`DP1_STATE_BOUNDARY_LEDGER_REGISTRATION_PREP_v0.1.md` 第4章の8項目):**
+
+| 項目 | 結果 |
+|---|---|
+| 1 レコードの存在 | PASS |
+| 2 `decision_id` 一致 | PASS (`DC_20260807_001`) |
+| 3 `status` = Active | PASS |
+| 4 `supersedes` 不在 | PASS (`supersedes` / `superseded_by` とも null) |
+| 5 `approved_by` 一致 | PASS |
+| 6 `alternatives` 3件 | PASS |
+| **7 本文の文字列完全一致 (TODO_423 対策)** | **PASS** — 全11文字列で長さ・SHA-256 とも一致。文字化けは検出されなかった |
+| 8 `related_documents` / `related_events` | PASS (3件 / 4件) |
 
 **承認の範囲:** 第3章 Decision Statement (DP-1-A / DP-1-B / DP-1-C)、第2章 Existing Decision Compatibility、第4章 Architecture Boundary、第5章 Rejected Alternatives、第6章 Implementation Boundary。
 
