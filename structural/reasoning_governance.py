@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -14,9 +14,9 @@ reasoning_governance.py
 
 from dataclasses import dataclass, field
 
-from grounding_engine import RepositoryGroundingEngine
-from working_memory import WorkingMemoryEngine
-from thinking_mode import ThinkingModeEngine
+from structural.grounding_engine import RepositoryGroundingEngine
+from structural.working_memory import WorkingMemoryEngine
+from structural.thinking_mode import ThinkingModeEngine
 
 MANDATORY_REASONING_ORDER = [
     "task_receive",

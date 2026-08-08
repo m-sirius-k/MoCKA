@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -18,11 +18,11 @@ Consensus条件:
 from collections import Counter
 from dataclasses import dataclass, field
 
-from grounding_engine import RepositoryGroundingEngine
-from working_memory import WorkingMemoryEngine
-from thinking_mode import ThinkingModeEngine
-from reasoning_governance import ReasoningGovernanceEngine
-from execution_governance import ExecutionGovernanceEngine
+from structural.grounding_engine import RepositoryGroundingEngine
+from structural.working_memory import WorkingMemoryEngine
+from structural.thinking_mode import ThinkingModeEngine
+from structural.reasoning_governance import ReasoningGovernanceEngine
+from structural.execution_governance import ExecutionGovernanceEngine
 
 CONSENSUS_CONDITIONS = {
     "agreement_score_threshold": 0.95,  # 95%以上で収束

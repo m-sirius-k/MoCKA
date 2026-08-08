@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 structural/bee.py — β Ecology Engine (BEE) (TODO_216)
 βのライフサイクル（観察β→成長中→確立→制度化→衰退→消滅）を管理する。

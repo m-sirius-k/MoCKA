@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -18,7 +18,7 @@ thinking_mode.py
 import re
 from enum import Enum
 
-from working_memory import WorkingMemoryEngine
+from structural.working_memory import WorkingMemoryEngine
 
 
 class ThinkingMode(Enum):

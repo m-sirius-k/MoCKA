@@ -1,5 +1,5 @@
 ﻿from language_detector import LanguageDetector
-from essence_classifier import classify
+from interface.essence_classifier import classify
 
 d = LanguageDetector()
 tests = [

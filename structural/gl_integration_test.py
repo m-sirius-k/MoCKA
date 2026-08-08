@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -10,13 +10,13 @@ GL1 -> GL2 -> GL3 -> GL6 -> GL7 -> GL4/GL5 という連鎖で
 一貫して動作することを確認する。
 """
 
-from grounding_engine import RepositoryGroundingEngine
-from working_memory import WorkingMemoryEngine
-from thinking_mode import ThinkingModeEngine, ThinkingMode
-from reasoning_governance import ReasoningGovernanceEngine
-from execution_governance import ExecutionGovernanceEngine
-from knowledge_mass import KnowledgeMassEngine
-from consensus import ConsensusEngine
+from structural.grounding_engine import RepositoryGroundingEngine
+from structural.working_memory import WorkingMemoryEngine
+from structural.thinking_mode import ThinkingModeEngine, ThinkingMode
+from structural.reasoning_governance import ReasoningGovernanceEngine
+from structural.execution_governance import ExecutionGovernanceEngine
+from structural.knowledge_mass import KnowledgeMassEngine
+from structural.consensus import ConsensusEngine
 
 
 def check(label, condition):

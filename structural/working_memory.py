@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -26,7 +26,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from grounding_engine import RepositoryGroundingEngine
+from structural.grounding_engine import RepositoryGroundingEngine
 
 REPO_ROOT      = Path(r"C:\Users\sirok\MoCKA")
 MEMORY_PATH    = REPO_ROOT / "data" / "working_memory.json"

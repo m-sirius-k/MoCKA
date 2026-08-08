@@ -1,4 +1,4 @@
-"""
+﻿"""
 event_recency.py
 
 MoCKA全体でevents.dbの「直近性(recency)」を判定する基準を一元化する
