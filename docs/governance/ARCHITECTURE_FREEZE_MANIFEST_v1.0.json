@@ -1,0 +1,32 @@
+{
+  "manifest_version": "1.0.0",
+  "architecture_state": "FROZEN",
+  "project": "MoCKA",
+  "phase": "Phase 10 Production Governance Lite",
+  "baseline": {
+    "architecture_version": "phase9-frozen",
+    "verification_target": "test_phase9_operational_integration.py"
+  },
+  "authority_model": {
+    "decision_authority": "human_only",
+    "ai_decision_permission": false
+  },
+  "hash_contract": {
+    "format": "EVT_SHA256_V1",
+    "prefix": "EVT_",
+    "length": 71
+  },
+  "operational_invariants": {
+    "auto_repair": false,
+    "fallback": false,
+    "silent_recovery": false,
+    "human_gate_bypass": false
+  },
+  "change_policy": {
+    "modification_requires": [
+      "previous_manifest",
+      "change_reason",
+      "human_approval"
+    ]
+  }
+}
