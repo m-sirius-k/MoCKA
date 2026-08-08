@@ -105,7 +105,7 @@ class ContextBuilder:
             cur  = conn.cursor()
             # 正: when_ts / short_summary  (×when_time / ×description / ×tags)
             cur.execute(
-                "SELECT event_id, title, short_summary, when_ts, what_type "
+                "SELECT event_id, title, short_summary, when_ts, what_type, session_id, trace_id, related_event_id "
                 "FROM events "
                 f"WHERE {valid_when_ts_clause()} "
                 "ORDER BY when_ts DESC LIMIT ?",
@@ -120,6 +120,9 @@ class ContextBuilder:
                     "short_summary": r[2],
                     "when":          r[3],
                     "what_type":     r[4],
+                "session_id":    r[5],
+                "trace_id":      r[6],
+                "related_event_id": r[7],
                 }
                 for r in rows
             ]
