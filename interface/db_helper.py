@@ -10,21 +10,19 @@ import sqlite3
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
-
 try:
     from phi_os.event.event_gate import process_event
 except ImportError:
     process_event = None
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
+MOCKA_ROOT = BASE_DIR
 DATA_DIR = BASE_DIR / "data"
 
 DB_PATH = DATA_DIR / "mocka_events.db"
 CSV_PATH = DATA_DIR / "events.csv"
 
 CSV_WRITE_ENABLED = False
-
 
 def _get_connection(
     db_path: Union[str, Path] = DB_PATH

@@ -2,7 +2,7 @@ import sqlite3
 # -*- coding: utf-8 -*-
 # MoCKA Essence Injected: E20260401_008,2026-04-01T11:33:18,mocka_router,save,router,interface/router.py,Phase5ASSED,cli,internal,in_operation,normal,A,outfield,[save] Phase5ASSED,11/11 PASS墓慣つ晢oCKA壹晢憺屮会滄晏擅つ晢026-04-01 Claude Sonnet 4.6,N/A,save_complete,generation,local,save,N/A,N/A,manual_save
 # Policy: MoCKA Encoding Policy v1.01
-﻿import csv, os
+import csv, os
 from datetime import datetime
 
 EVENTS_CSV = r"C:\Users\sirok\MoCKA\data\events.csv"
@@ -124,39 +124,36 @@ def write_sqlite(row: list):
     except Exception as e:
         print(f"[SQLITE ERROR] {e}")
         return False
+def write_safe_csv(row):
+        # 整合性検証 — 不整合は沈黙せず必ず警告・停止
+        result = validate_input_integrity(row)
+        if not result["ok"]:
+            msg = (
+                f"\n[INTEGRITY_VIOLATION] 書き込みを拒否しました\n"
+                f"  reason : {result['reason']}\n"
+                f"  field  : {result['field']}\n"
+                f"  message: {result.get('message','')}\n"
+            )
+            print(msg)
+            # インシデントとして自動記録
+            _record_integrity_incident(result, row)
+            return None  # 呼び出し元に停止を通知
 
-def write_safe_csv(row); write_sqlite(row):
-    # 整合性検証 — 不整合は沈黙せず必ず警告・停止
-    result = validate_input_integrity(row)
-    if not result["ok"]:
-        msg = (
-            f"\n[INTEGRITY_VIOLATION] 書き込みを拒否しました\n"
-            f"  reason : {result['reason']}\n"
-            f"  field  : {result['field']}\n"
-            f"  message: {result.get('message','')}\n"
-        )
-        print(msg)
-        # インシデントとして自動記録
-        _record_integrity_incident(result, row)
-        return None  # 呼び出し元に停止を通知
-
-    base = {k:"" for k in FIELDNAMES}
-    base.update(row)
-    base = {k: safe_value(v) for k,v in base.items()}
-    if not base["event_id"]:
-        base["event_id"] = next_event_id()
-    if not base["when"]:
-        base["when"] = datetime.now().isoformat(timespec="seconds")
-    # [PHI-OS GATE v1 2026-06-16] CSV書き込み停止 — Single DB(SQLite)のみ
-    # write_header = not os.path.exists(EVENTS_CSV)
-    # with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
-    #     writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
-    #     if write_header:
-    #         writer.writeheader()
-    #     writer.writerow(base)
-    write_sqlite(base)
-    return base["event_id"]
-
+        base = {k:"" for k in FIELDNAMES}
+        base.update(row)
+        base = {k: safe_value(v) for k,v in base.items()}
+        if not base["event_id"]:
+            base["event_id"] = next_event_id()
+        if not base["when"]:
+            base["when"] = datetime.now().isoformat(timespec="seconds")
+        # [PHI-OS GATE v1 2026-06-16] CSV書き込み停止 — Single DB(SQLite)のみ
+        # write_header = not os.path.exists(EVENTS_CSV)
+        # with open(EVENTS_CSV, "a", newline="", encoding="utf-8") as f:
+        #     writer = csv.DictWriter(f, fieldnames=FIELDNAMES, quoting=csv.QUOTE_ALL)
+        #     if write_header:
+        #         writer.writeheader()
+        #     writer.writerow(base)
+        write_sqlite(base)
 def _record_integrity_incident(violation: dict, original_row: dict):
     """整合性違反をインシデントとして自動記録する（validate_input_integrityをバイパスして直接書き込む）"""
     os.makedirs(os.path.dirname(EVENTS_CSV), exist_ok=True)
