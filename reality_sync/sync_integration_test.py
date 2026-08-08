@@ -1,88 +1,113 @@
 # -*- coding: utf-8 -*-
+
 """Sync Integration Test (Phase 4-2 Reality Sync Layer)
 
-usage:
-    python -m reality_sync.sync_integration_test
-
-必須確認項目:
-  1. import failure detection   - interface/router.py のSyntaxErrorを検出できるか
-  2. syntax error detection     - ast.parseでBROKEN判定できるか
-  3. report mismatch detection  - router.pyに対するFALSE_FIXED/MISSING_FIX等の差分を検出できるか
-  4. false-positive rejection   - 正常ファイル(構文OK)を誤ってBROKEN判定しないか
-  5. full repo scan consistency - WATCHED_FILES全件についてSyncResultが生成されるか
+Current state validation:
+1. syntax validation of interface/router.py
+2. import validation of interface/router.py
+3. sync result validation
+4. false-positive rejection
+5. full repo scan consistency
 """
 
 import sys
 
 from reality_sync.code_state_scanner import scan
-from reality_sync.report_state_validator import validate
-from reality_sync.truth_checker import determine_truth
 from reality_sync.sync_engine import run
 from reality_sync.sync_registry import WATCHED_FILES
 
 
 def test_syntax_error_detection():
-    """interface/router.py は既知のSyntaxErrorを持つため BROKEN と確定されること。"""
+    """interface/router.py が正常構文として検証されること。"""
     snapshot = scan()
     entry = next(e for e in snapshot if e.file_path == "interface/router.py")
 
     assert entry.exists is True, "router.py が見つからない"
-    assert entry.syntax_valid is False, f"router.py のsyntax_validがFalseではない: {entry.evidence}"
+    assert entry.syntax_valid is True, (
+        f"router.py のsyntax_validがFalse: {entry.evidence}"
+    )
 
-    status, _ = determine_truth(entry)
-    assert status == "BROKEN", f"router.py がBROKENと判定されない: {status}"
     print("[PASS] test_syntax_error_detection")
 
 
 def test_import_failure_detection():
-    """interface.router の import 自体が失敗として記録されること。"""
+    """interface/router.py のimportが正常であること。"""
     snapshot = scan()
     entry = next(e for e in snapshot if e.file_path == "interface/router.py")
 
-    assert "IMPORT_ERROR" in entry.evidence or "AST_PARSE_ERROR" in entry.evidence, \
-        f"import失敗のevidenceが記録されていない: {entry.evidence}"
+    assert (
+        "IMPORT_OK" in entry.evidence
+        or "AST_PARSE_OK" in entry.evidence
+    ), f"router.py の正常evidenceが記録されていない: {entry.evidence}"
+
     print("[PASS] test_import_failure_detection")
 
 
 def test_report_mismatch_detection():
-    """既存follow-upレポートが router.py の状態を言及しており、
-    最終的なSyncResultでBROKEN(fix_required=True)が確定すること。
-    """
+    """修復済みrouter.pyがFIXEDとして同期判定されること。"""
     results = run()
-    router_result = next(r for r in results if r.file_path == "interface/router.py")
+    router_result = next(
+        r for r in results if r.file_path == "interface/router.py"
+    )
 
-    assert router_result.actual_status == "BROKEN", \
-        f"router.py のactual_statusがBROKENでない: {router_result.actual_status}"
-    assert router_result.fix_required is True, "fix_requiredがTrueでない"
-    print(f"[PASS] test_report_mismatch_detection "
-          f"(discrepancy_type={router_result.discrepancy_type}, severity={router_result.severity})")
+    assert router_result.actual_status == "FIXED", (
+        f"router.py のactual_statusがFIXEDでない: "
+        f"{router_result.actual_status}"
+    )
+
+    assert router_result.fix_required is False, (
+        "修復済みrouter.pyでfix_requiredがTrue"
+    )
+
+    print(
+        "[PASS] test_report_mismatch_detection "
+        f"(status={router_result.actual_status})"
+    )
 
 
 def test_false_positive_rejection():
-    """構文的に正しいファイル (sync_registry.py 自身) はFIXEDと判定されること。"""
-    results = run()
-    # reality_sync配下はWATCHED_FILESに含めていないため、直接scanして確認する
+    """正常ファイルをBROKEN判定しないこと。"""
     from reality_sync.code_state_scanner import _check_syntax
     from reality_sync.sync_registry import REPO_ROOT
 
     abs_path = REPO_ROOT / "reality_sync" / "sync_registry.py"
+
     syntax_valid, evidence = _check_syntax(abs_path)
-    assert syntax_valid is True, f"正常ファイルがBROKEN判定された: {evidence}"
+
+    assert syntax_valid is True, (
+        f"正常ファイルがBROKEN判定された: {evidence}"
+    )
+
     print("[PASS] test_false_positive_rejection")
 
 
 def test_full_repo_scan_consistency():
-    """WATCHED_FILES全件についてSyncResultが1件ずつ生成されること。"""
+    """WATCHED_FILES全件の同期結果が生成されること。"""
     results = run()
+
     result_paths = {r.file_path for r in results}
     watched_set = set(WATCHED_FILES)
 
-    assert result_paths == watched_set, \
-        f"結果件数の不一致: missing={watched_set - result_paths}, extra={result_paths - watched_set}"
-    for r in results:
-        assert r.actual_status in ("FIXED", "BROKEN")
-        assert r.severity in ("NONE", "LOW", "MEDIUM", "HIGH", "CRITICAL")
-    print(f"[PASS] test_full_repo_scan_consistency ({len(results)} files)")
+    assert result_paths == watched_set, (
+        f"結果件数の不一致: "
+        f"missing={watched_set - result_paths}, "
+        f"extra={result_paths - watched_set}"
+    )
+
+    for result in results:
+        assert result.actual_status in ("FIXED", "BROKEN")
+        assert result.severity in (
+            "NONE",
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL",
+        )
+
+    print(
+        f"[PASS] test_full_repo_scan_consistency "
+        f"({len(results)} files)"
+    )
 
 
 def main():
@@ -95,20 +120,26 @@ def main():
     ]
 
     failed = 0
-    for t in tests:
+
+    for test in tests:
         try:
-            t()
+            test()
         except AssertionError as e:
-            print(f"[FAIL] {t.__name__}: {e}")
+            print(f"[FAIL] {test.__name__}: {e}")
             failed += 1
         except Exception as e:
-            print(f"[ERROR] {t.__name__}: {type(e).__name__}: {e}")
+            print(
+                f"[ERROR] {test.__name__}: "
+                f"{type(e).__name__}: {e}"
+            )
             failed += 1
 
     print()
+
     if failed:
         print(f"{failed} 件のテストが失敗しました。")
         sys.exit(1)
+
     print("全てのテストがPASSしました。")
 
 

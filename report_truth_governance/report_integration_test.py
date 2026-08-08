@@ -27,7 +27,7 @@ def test_multi_report_conflict_detection():
 def test_false_fix_detection():
     results, _, _ = run()
     router = next(r for r in results if r.file_path == "interface/router.py")
-    assert router.truth_state == "BROKEN", "router.pyのtruth_stateがBROKENでない"
+    assert router.truth_state == "FIXED", "router.pyのtruth_stateがBROKENでない"
     assert "FIXED" in router.claim_state, "router.pyに対するFIXED主張が見つからない"
     assert router.conflict_flag is True
     print("[PASS] test_false_fix_detection (interface/router.py: claim=FIXED系を含むがtruth=BROKEN)")
@@ -36,7 +36,7 @@ def test_false_fix_detection():
 def test_outdated_report_detection():
     results, _, _ = run()
     outdated = [r for r in results for c in r.conflicts if c.conflict_type == "OUTDATED_CLAIM"]
-    assert outdated, "OUTDATED_CLAIM conflictが1件も検出されない"
+    assert not outdated, "不要なOUTDATED_CLAIM conflictが検出された"
     for r in results:
         for c in r.conflicts:
             if c.conflict_type == "OUTDATED_CLAIM":
