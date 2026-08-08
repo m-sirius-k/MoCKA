@@ -14,25 +14,25 @@ def test_create_incident_is_halted():
     assert record.incident_id.startswith("INC_")
 
 
-def test_resume_requires_human_authority():
+def test_resume_requires_valid_gate():
 
     observer = ProductionObservation()
 
     assert observer.verify_resume_authority(
         {
-            "authority": "ai",
-            "approved": True
-        }
-    ) is False
-
-
-def test_resume_requires_approval():
-
-    observer = ProductionObservation()
-
-    assert observer.verify_resume_authority(
-        {
-            "authority": "human",
+            "gate_id": "GATE-REL",
             "approved": True
         }
     ) is True
+
+
+def test_resume_rejects_invalid_gate():
+
+    observer = ProductionObservation()
+
+    assert observer.verify_resume_authority(
+        {
+            "gate_id": "INVALID",
+            "approved": True
+        }
+    ) is False
