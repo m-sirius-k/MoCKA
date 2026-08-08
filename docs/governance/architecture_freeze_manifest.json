@@ -1,0 +1,17 @@
+{
+  "manifest_type": "architecture_freeze",
+  "version": "1.0",
+  "freeze_status": "ACTIVE",
+  "primary_source": "data/mocka_events.db",
+  "state_model": "event_history_fold",
+  "authority_model": "human_authority_boundary",
+  "decision_ledger_append_only": true,
+  "implementation_stop": true,
+  "approved_decisions": [
+    "DC_20260804_001",
+    "DC_20260805_001",
+    "DC_20260806_001",
+    "DC_20260806_002",
+    "DC_20260807_001"
+  ]
+}
