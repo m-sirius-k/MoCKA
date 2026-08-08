@@ -1,333 +1,324 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-MoCKA db_helper.py — SQLite/CSV 併用ブリッジ
-Phase 2: app.py / router.py のCSV直書きをこのモジュール経由に統一
+"""MoCKA DB Helper Interface Part1
 
-設計原則:
-  - 書き込み: SQLite + CSV 両方（併用期間）
-  - 読み込み: SQLite優先（CSVフォールバック）
-  - 整合性確認後: CSV_WRITE_ENABLED = False に切替
-
-配置先: C:/Users/sirok/MoCKA/interface/db_helper.py
+SQLite read interface and common utilities.
 """
 
-import sqlite3
 import csv
+import json
 import os
-import re
-import sys
-import time
-import secrets
-from datetime import datetime, timezone
+import sqlite3
 from pathlib import Path
-from typing import Optional
-
-# ============================================================
-# 設定
-# ============================================================
-MOCKA_ROOT  = Path(os.environ.get("MOCKA_ROOT", r"C:\Users\sirok\MoCKA"))
-DB_PATH     = MOCKA_ROOT / "data" / "mocka_events.db"
-CSV_PATH    = MOCKA_ROOT / "data" / "events.csv"
-
-# 併用期間フラグ
-# True  = SQLite + CSV 両方に書く（Phase 2移行期）
-# False = SQLite のみ（Phase 3完了後）
-CSV_WRITE_ENABLED = True
-
-# 正規event_idパターン
-VALID_ID_RE = re.compile(r'^E\d{8}_\d{3,}$')
-
-# CSVフィールド定義（既存app.pyのFIELDNAMESと同一）
-CSV_FIELDNAMES = [
-    "event_id", "when", "who_actor", "what_type",
-    "where_component", "where_path", "why_purpose", "how_trigger",
-    "channel_type", "lifecycle_phase", "risk_level", "category_ab",
-    "target_class", "title", "short_summary",
-    "before_state", "after_state", "change_type",
-    "impact_scope", "impact_result",
-    "related_event_id", "trace_id", "free_note",
-]
-
-# SQLiteカラム（when_tsにリネーム済み）
-DB_FIELDNAMES = [f if f != "when" else "when_ts" for f in CSV_FIELDNAMES]
+from typing import Any, Dict, List, Optional, Union
 
 
-# ============================================================
-# 内部ユーティリティ
-# ============================================================
-def _get_conn() -> sqlite3.Connection:
-    conn = sqlite3.connect(str(DB_PATH))
+try:
+    from phi_os.event.event_gate import process_event
+except ImportError:
+    process_event = None
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = BASE_DIR / "data"
+
+DB_PATH = DATA_DIR / "mocka_events.db"
+CSV_PATH = DATA_DIR / "events.csv"
+
+CSV_WRITE_ENABLED = False
+
+
+def _get_connection(
+    db_path: Union[str, Path] = DB_PATH
+) -> sqlite3.Connection:
+    conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
     return conn
 
 
-def _row_to_csv_dict(row: dict) -> dict:
-    """DBのwhen_ts → CSVのwhen に変換"""
-    d = dict(row)
-    if "when_ts" in d:
-        d["when"] = d.pop("when_ts")
-    # 拡張カラムはCSVに書かない
-    return {k: d.get(k, "") or "" for k in CSV_FIELDNAMES}
+def _dict_from_row(row: sqlite3.Row) -> Dict[str, Any]:
+    data = dict(row)
+
+    if "payload" in data and isinstance(data["payload"], str):
+        try:
+            data["payload"] = json.loads(data["payload"])
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    return data
 
 
-def _ensure_csv():
-    """CSVが存在しない場合にヘッダーだけ作成"""
-    if not CSV_PATH.exists():
-        # Stage 1b(DC_20260731_004 / 条項E-2): 正規形はBOMなしUTF-8。BOMを付与しない
-        with open(CSV_PATH, "w", newline="", encoding="utf-8") as f:
-            writer = csv.DictWriter(f, fieldnames=CSV_FIELDNAMES)
-            writer.writeheader()
+def _read_events_csv(
+    csv_path: Union[str, Path] = CSV_PATH
+) -> List[Dict[str, Any]]:
+    path = Path(csv_path)
+
+    if not path.exists():
+        return []
+
+    events = []
+
+    try:
+        with open(
+            path,
+            mode="r",
+            encoding="utf-8-sig",
+            newline=""
+        ) as f:
+            reader = csv.DictReader(f)
+
+            for row in reader:
+                events.append(dict(row))
+
+    except Exception:
+        return []
+
+    return events
 
 
-# ============================================================
-# PUBLIC API
-# ============================================================
+def _count_events_csv(
+    csv_path: Union[str, Path] = CSV_PATH
+) -> int:
+    return len(_read_events_csv(csv_path))
+
 
 def read_events(
     limit: Optional[int] = None,
-    what_type: Optional[str] = None,
-    risk_level: Optional[str] = None,
-    order: str = "DESC",
-    order_col: str = "when_ts",
-) -> list[dict]:
+    offset: int = 0,
+    db_path: Union[str, Path] = DB_PATH,
+) -> List[Dict[str, Any]]:
     """
-    イベント読み込み（SQLite優先）
-    app.py の csv.DictReader を置き換え
-
-    order_col: ソートカラム。"rowid" を指定すると挿入順でソートされるため
-               when_ts が混在フォーマット（"pipeline" 等）でも正しく最新順になる。
+    SQLite蜆ｪ蜈医〒繧､繝吶Φ繝亥叙蠕励・
+    DB荳榊ｭ伜惠譎ゅ・縺ｿCSV fallback縲・
     """
-    if not DB_PATH.exists():
-        # フォールバック: CSV読み込み
-        return _read_events_csv(limit=limit)
 
-    conn = _get_conn()
-    where_clauses = [
-        "(data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL)"
-    ]
-    params = []
+    path = Path(db_path)
 
-    if what_type:
-        where_clauses.append("what_type = ?")
-        params.append(what_type)
-    if risk_level:
-        where_clauses.append("risk_level = ?")
-        params.append(risk_level)
-
-    where_sql = f"WHERE {' AND '.join(where_clauses)}"
-    limit_sql  = f"LIMIT {limit}" if limit else ""
-    # order_col に "rowid" を指定すると挿入順ソートになり when_ts 形式混在の影響を受けない
-    safe_col   = order_col if order_col in ("when_ts", "rowid", "event_id") else "when_ts"
-    order_sql  = f"ORDER BY {safe_col} {order}"
-
-    sql = f"SELECT * FROM events {where_sql} {order_sql} {limit_sql}"
-    rows = [dict(r) for r in conn.execute(sql, params).fetchall()]
-    conn.close()
-
-    # when_ts → when に変換（既存コードとの互換性）
-    for r in rows:
-        if "when_ts" in r:
-            r["when"] = r.pop("when_ts")
-    return rows
-
-
-def write_event(row: dict, channel: str = None) -> bool:
-    """
-    イベント書き込み（SQLite + CSV併用）
-    app.py の csv.DictWriter.writerow を置き換え
-
-    Phase5-1 Gate Enforcement: 通常イベントはGate(get_buffer().push())経由で
-    書き込むべきであり、本関数の直接呼び出しはGate Policy(gate_policy.py)で
-    許可されたchannel（bootstrap/maintenance/migration/restore/recovery）の
-    場合のみ正当化される。channel未指定の呼び出しは監査上'direct_violation'
-    として検出される。
-
-    Args:
-        row: CSV_FIELDNAMESに準拠したdict
-             ("when" キーを使用、db_helperが内部でwhen_tsに変換)
-        channel: 許可されたDirect Writeチャネル名（gate_policy.ALLOWED_DIRECT_CHANNELS参照）
-    Returns:
-        True: 成功 / False: 失敗
-    """
-    if not row.get("event_id"):
-        return False
-
-    # ① SQLite書き込み
-    db_row = {}
-    for csv_col in CSV_FIELDNAMES:
-        db_col = "when_ts" if csv_col == "when" else csv_col
-        db_row[db_col] = row.get(csv_col) or None
-
-    try:
-        from gate_policy import tag_source
-        db_row["_source"] = tag_source(channel)
-    except Exception:
-        db_row["_source"] = "direct_violation"
-    db_row["_imported_at"] = datetime.now(timezone.utc).isoformat()
-
-    try:
-        conn = _get_conn()
-        conn.execute(
-            f"INSERT OR IGNORE INTO events ({', '.join(db_row.keys())}) "
-            f"VALUES ({', '.join(['?'] * len(db_row))})",
-            list(db_row.values())
+    if not path.exists():
+        events = _read_events_csv(CSV_PATH)
+        return (
+            events[offset:offset + limit]
+            if limit is not None
+            else events[offset:]
         )
-        # Phase5-2: Direct Write経由のイベントも署名・ハッシュチェーン対象にする
-        try:
-            sys.path.insert(0, str(MOCKA_ROOT / "phi_os"))
-            from integrity import sign_event
-            sig = sign_event(conn, db_row)
-            conn.execute(
-                "UPDATE events SET trace_id = ?, related_event_id = ? WHERE event_id = ?",
-                (sig["current_hash"], sig["previous_hash"], db_row["event_id"])
-            )
-        except Exception as e:
-            print(f"[db_helper] integrity署名エラー（イベント書き込みは成功済み）: {e}")
-        conn.commit()
-        conn.close()
-    except Exception as e:
-        print(f"[db_helper] SQLite書き込みエラー: {e}")
-        return False
 
-    # ② CSV書き込み（併用期間のみ）
-    if CSV_WRITE_ENABLED:
-        try:
-            _ensure_csv()
-            # Stage 1b(DC_20260731_004 / 条項E-3): 追記も正規形と同じ utf-8 に統一する
-            with open(CSV_PATH, "a", newline="", encoding="utf-8") as f:
-                writer = csv.DictWriter(f, fieldnames=CSV_FIELDNAMES)
-                csv_row = {k: row.get(k, "") for k in CSV_FIELDNAMES}
-                writer.writerow(csv_row)
-        except Exception as e:
-            print(f"[db_helper] CSV書き込みエラー（SQLiteは成功済み）: {e}")
-            # SQLiteに書けていればCSV失敗は致命的ではない
+    try:
+        with _get_connection(path) as conn:
 
-    return True
+            query = """
+            SELECT *
+            FROM events
+            ORDER BY rowid ASC
+            """
+
+            params = []
+
+            if limit is not None:
+                query += " LIMIT ? OFFSET ?"
+                params.extend([limit, offset])
+
+            rows = conn.execute(
+                query,
+                params
+            ).fetchall()
+
+            return [
+                _dict_from_row(row)
+                for row in rows
+            ]
+
+    except sqlite3.Error:
+        events = _read_events_csv(CSV_PATH)
+
+        return (
+            events[offset:offset + limit]
+            if limit is not None
+            else events[offset:]
+        )
+def write_event(
+    row: dict,
+    channel: str = None
+) -> bool:
+    """
+    Event Gate邨檎罰縺ｮ蜚ｯ荳縺ｮ譖ｸ縺崎ｾｼ縺ｿ蜈･蜿｣縲・
+    """
+
+    if process_event is None:
+        raise RuntimeError(
+            "event_gate.process_event unavailable"
+        )
+
+    result = process_event(
+        row,
+        event_source=channel or "db_helper"
+    )
+
+    return (
+        isinstance(result, dict)
+        and result.get("status") == "ok"
+    )
 
 
 def count_events(
-    what_type: Optional[str] = None,
-    risk_level: Optional[str] = None,
+    db_path: Union[str, Path] = DB_PATH
 ) -> int:
     """
-    イベント件数取得（SQLite優先）
-    app.py の len(list(csv.DictReader(f))) を置き換え
+    繧､繝吶Φ繝育ｷ乗焚蜿門ｾ励・
     """
-    if not DB_PATH.exists():
-        return _count_events_csv()
 
-    conn = _get_conn()
-    where_clauses = []
-    params = []
-    if what_type:
-        where_clauses.append("what_type = ?")
-        params.append(what_type)
-    if risk_level:
-        where_clauses.append("risk_level = ?")
-        params.append(risk_level)
+    path = Path(db_path)
 
-    where_sql = f"WHERE {' AND '.join(where_clauses)}" if where_clauses else ""
-    count = conn.execute(f"SELECT COUNT(*) FROM events {where_sql}", params).fetchone()[0]
-    conn.close()
-    return count
+    if not path.exists():
+        return _count_events_csv(CSV_PATH)
+
+    try:
+        with _get_connection(path) as conn:
+
+            row = conn.execute(
+                "SELECT COUNT(*) FROM events"
+            ).fetchone()
+
+            return row[0] if row else 0
+
+    except sqlite3.Error:
+        return _count_events_csv(CSV_PATH)
 
 
-def get_event(event_id: str) -> Optional[dict]:
-    """特定event_idのイベントを取得"""
-    if not DB_PATH.exists():
+def get_event(
+    event_id: Union[str, int],
+    db_path: Union[str, Path] = DB_PATH
+) -> Optional[Dict[str, Any]]:
+    """
+    event_id謖・ｮ壼叙蠕励・
+    """
+
+    path = Path(db_path)
+
+    if not path.exists():
+        for event in _read_events_csv(CSV_PATH):
+            if str(event.get("event_id")) == str(event_id):
+                return event
         return None
-    conn = _get_conn()
-    row = conn.execute(
-        "SELECT * FROM events WHERE event_id = ?", (event_id,)
-    ).fetchone()
-    conn.close()
-    if row:
-        r = dict(row)
-        if "when_ts" in r:
-            r["when"] = r.pop("when_ts")
-        return r
+
+    try:
+        with _get_connection(path) as conn:
+
+            row = conn.execute(
+                """
+                SELECT *
+                FROM events
+                WHERE event_id = ?
+                """,
+                (event_id,)
+            ).fetchone()
+
+            if row:
+                return _dict_from_row(row)
+
+    except sqlite3.Error:
+        pass
+
     return None
 
 
-def search_events(keyword: str, limit: int = 50) -> list[dict]:
+def search_events(
+    keyword: str,
+    limit: int = 50,
+    db_path: Union[str, Path] = DB_PATH
+) -> List[Dict[str, Any]]:
     """
-    キーワード検索（title / short_summary / free_note）
-    app.py の866行付近のCSV検索を置き換え
+    title / short_summary / free_note讀懃ｴ｢縲・
     """
-    if not DB_PATH.exists():
+
+    path = Path(db_path)
+
+    if not path.exists():
+        events = _read_events_csv(CSV_PATH)
+
+        result = []
+
+        for event in events:
+            text = " ".join(
+                str(event.get(k, ""))
+                for k in [
+                    "title",
+                    "short_summary",
+                    "free_note"
+                ]
+            )
+
+            if keyword.lower() in text.lower():
+                result.append(event)
+
+        return result[:limit]
+
+
+    try:
+        with _get_connection(path) as conn:
+
+            rows = conn.execute(
+                """
+                SELECT *
+                FROM events
+                WHERE title LIKE ?
+                   OR short_summary LIKE ?
+                   OR free_note LIKE ?
+                ORDER BY rowid DESC
+                LIMIT ?
+                """,
+                (
+                    f"%{keyword}%",
+                    f"%{keyword}%",
+                    f"%{keyword}%",
+                    limit
+                )
+            ).fetchall()
+
+            return [
+                _dict_from_row(row)
+                for row in rows
+            ]
+
+    except sqlite3.Error:
         return []
-    conn = _get_conn()
-    rows = [dict(r) for r in conn.execute(
-        """SELECT * FROM events
-           WHERE title LIKE ? OR short_summary LIKE ? OR free_note LIKE ?
-           ORDER BY when_ts DESC LIMIT ?""",
-        (f"%{keyword}%", f"%{keyword}%", f"%{keyword}%", limit)
-    ).fetchall()]
-    conn.close()
-    for r in rows:
-        if "when_ts" in r:
-            r["when"] = r.pop("when_ts")
-    return rows
-
-
 def get_next_event_id() -> str:
     """
-    次のevent_idを採番（time-ordered unique id / TODO_347 TASK1）。
-    ORDER BY event_id DESC LIMIT 1 + 1方式（MAX(id)+1相当）は並列書き込みで
-    衝突するため廃止。日内マイクロ秒（time-ordered）+ ランダム4hex（衝突防止）
-    でDB問い合わせ不要・並列安全・衝突率ゼロ設計とする。
+    次のevent_id生成。
+    MoCKA蠖｢蠑・
+    EYYYYMMDD + time + random
     """
-    today = datetime.now().strftime("%Y%m%d")
-    micros_of_day = time.time_ns() // 1000 % 1_000_000_000
-    return f"E{today}_{micros_of_day:09d}{secrets.token_hex(2)}"
+
+    from datetime import datetime, timezone
+    import secrets
+    import time
+
+    now = datetime.now(timezone.utc)
+
+    date_part = now.strftime("%Y%m%d")
+    time_part = (
+        time.time_ns() // 1000
+        % 1000000000
+    )
+
+    return (
+        f"E{date_part}_"
+        f"{time_part:09d}"
+        f"{secrets.token_hex(2)}"
+    )
 
 
-# ============================================================
-# フォールバック（CSV読み込み）
-# ============================================================
-def _read_events_csv(limit=None) -> list[dict]:
-    if not CSV_PATH.exists():
-        return []
-    try:
-        with open(CSV_PATH, encoding="utf-8-sig", newline="") as f:
-            rows = list(csv.DictReader(f))
-        return rows[:limit] if limit else rows
-    except Exception:
-        return []
+def main():
+    print("--- MoCKA db_helper diagnostics ---")
+    print(f"DB: {DB_PATH}")
+    print(f"CSV: {CSV_PATH}")
+    print(
+        f"Event Gate available: "
+        f"{process_event is not None}"
+    )
+
+    print(
+        f"Event Count: "
+        f"{count_events()}"
+    )
 
 
-def _count_events_csv() -> int:
-    if not CSV_PATH.exists():
-        return 0
-    try:
-        with open(CSV_PATH, encoding="utf-8-sig", newline="") as f:
-            return sum(1 for _ in csv.DictReader(f))
-    except Exception:
-        return 0
-
-
-# ============================================================
-# 動作確認
-# ============================================================
 if __name__ == "__main__":
-    print("=" * 50)
-    print("db_helper 動作確認")
-    print("=" * 50)
-    print(f"DB:  {DB_PATH} ({'exists' if DB_PATH.exists() else 'NOT FOUND'})")
-    print(f"CSV: {CSV_PATH} ({'exists' if CSV_PATH.exists() else 'NOT FOUND'})")
-    print(f"CSV_WRITE_ENABLED: {CSV_WRITE_ENABLED}")
-    print()
-
-    count = count_events()
-    print(f"総イベント数: {count}")
-
-    latest = read_events(limit=3, order="DESC")
-    print(f"\n最新3件:")
-    for r in latest:
-        print(f"  {r.get('event_id')} | {r.get('when','')[:10]} | {r.get('what_type')} | {r.get('title','')[:30]}")
-
-    next_id = get_next_event_id()
-    print(f"\n次のevent_id: {next_id}")
-
-    print("\n[OK] db_helper 動作確認完了")
+    main()
