@@ -1,6 +1,8 @@
 from orchestrator.agent_router import route_task
 from orchestrator.context_injector import inject_context
 from orchestrator.orchestrator import execute
+from orchestrator.intent_parser import parse_intent
+from orchestrator.task_planner import plan_tasks
 
 
 def test_route_fix_code_to_codex():
@@ -32,3 +34,27 @@ def test_orchestrator_execute_unknown_task():
     assert result["request"] == "unknown_task"
     assert "execution_plan" in result
     assert len(result["execution_plan"]) > 0
+
+
+def test_intent_to_plan_verification_flow():
+    intent = parse_intent("run pytest")
+
+    assert intent["intent"] == "verification"
+
+    plan = plan_tasks(intent)
+
+    assert plan["intent"] == "verification"
+    assert "run_tests" in plan["tasks"]
+    assert "collect_results" in plan["tasks"]
+
+
+def test_intent_to_plan_development_flow():
+    intent = parse_intent("fix code")
+
+    assert intent["intent"] == "development"
+
+    plan = plan_tasks(intent)
+
+    assert plan["intent"] == "development"
+    assert "inspect_code" in plan["tasks"]
+    assert "verify_change" in plan["tasks"]
