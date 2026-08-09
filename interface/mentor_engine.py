@@ -28,7 +28,7 @@ GUIDELINE_TRUST_THRESHOLD = 0.7
 def _past_commissions(role: str, limit: int = 5) -> list[dict]:
     if not db.DB_PATH.exists():
         return []
-    conn = db._get_conn()
+    conn = db._get_connection()
     rows = conn.execute(
         "SELECT event_id, when_ts, title, short_summary, what_type "
         "FROM events WHERE what_type IN ('SEAL_READY','CHANGE_DONE') "
@@ -49,7 +49,7 @@ def _past_commissions(role: str, limit: int = 5) -> list[dict]:
 
 def _applicable_guidelines(limit: int = 10) -> list[dict]:
     try:
-        conn = db._get_conn()
+        conn = db._get_connection()
         rows = conn.execute(
             "SELECT gl_id, category, score, action_summary "
             "FROM guidelines_reviewed WHERE verdict='KEEP' AND score > ? "
@@ -77,7 +77,7 @@ def _institution_memory_snapshot() -> dict:
         pass
 
     try:
-        conn = db._get_conn()
+        conn = db._get_connection()
         guidelines_count = conn.execute(
             "SELECT COUNT(*) FROM guidelines_reviewed WHERE verdict='KEEP'"
         ).fetchone()[0]
@@ -141,7 +141,7 @@ _STRATEGY_BY_ROLE = {
 
 def _institution_focus() -> str:
     try:
-        conn = db._get_conn()
+        conn = db._get_connection()
         row = conn.execute(
             "SELECT content FROM essence WHERE axis = 'PHILOSOPHY' ORDER BY rowid DESC LIMIT 1"
         ).fetchone()

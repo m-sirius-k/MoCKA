@@ -27,7 +27,7 @@ JST = timezone(timedelta(hours=9))
 def _events_for_session(session_id: str) -> list[dict]:
     if not db.DB_PATH.exists():
         return []
-    conn = db._get_conn()
+    conn = db._get_connection()
     rows = [dict(r) for r in conn.execute(
         "SELECT * FROM events WHERE trace_id = ? ORDER BY when_ts ASC",
         (session_id,)
@@ -42,7 +42,7 @@ def _events_for_session(session_id: str) -> list[dict]:
 def _recent_session_ids(limit: int = 3) -> list[str]:
     if not db.DB_PATH.exists():
         return []
-    conn = db._get_conn()
+    conn = db._get_connection()
     rows = conn.execute(
         "SELECT DISTINCT trace_id FROM events "
         "WHERE what_type = 'SESSION_START' AND trace_id IS NOT NULL "
