@@ -1,5 +1,6 @@
 from orchestrator.agent_router import route_task
 from orchestrator.context_injector import inject_context
+from orchestrator.orchestrator import execute
 
 
 def test_route_fix_code_to_codex():
@@ -23,3 +24,11 @@ def test_router_context_integration():
 
     assert route["task"] == context["task"]
     assert route["assigned_agent"] == "codex"
+
+
+def test_orchestrator_execute_unknown_task():
+    result = execute("unknown_task")
+
+    assert result["request"] == "unknown_task"
+    assert "execution_plan" in result
+    assert len(result["execution_plan"]) > 0
