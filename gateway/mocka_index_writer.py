@@ -66,7 +66,7 @@ class IndexWriter:
     def search(self, keyword='', who='', limit=10) -> list:
         conn = sqlite3.connect(self.db_path)
         cur = conn.cursor()
-        query = "SELECT event_id, when_ts, short_summary, free_note FROM events WHERE free_note LIKE '%INDEX%'"
+        query = "SELECT event_id, when_ts, short_summary, free_note FROM events WHERE what_type = 'index'"
         params = []
         if keyword:
             query += " AND short_summary LIKE ?"
