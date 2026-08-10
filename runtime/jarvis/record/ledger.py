@@ -1,5 +1,6 @@
 import datetime
 
+
 class JarvisLedger:
     def __init__(self):
         self.records = []
