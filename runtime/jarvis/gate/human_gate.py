@@ -1,6 +1,10 @@
+from runtime.jarvis.record.adapter.ledger_adapter import LedgerAdapter
+
+
 class HumanGate:
     def __init__(self):
         self.status = "WAITING"
+        self.ledger = LedgerAdapter()
 
     def request(self, decision_id):
         return {
@@ -11,14 +15,14 @@ class HumanGate:
 
     def approve(self, decision_id):
         self.status = "APPROVED"
-        return {
-            "decision_id": decision_id,
-            "status": self.status
-        }
+        return self.ledger.record(
+            decision_id,
+            self.status
+        )
 
     def reject(self, decision_id):
         self.status = "REJECTED"
-        return {
-            "decision_id": decision_id,
-            "status": self.status
-        }
+        return self.ledger.record(
+            decision_id,
+            self.status
+        )
