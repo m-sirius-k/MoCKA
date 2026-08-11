@@ -514,7 +514,13 @@ def execute_tool(name, args):
             # current_view内に格納し、本体の戻り値には影響させない(フォールバック)。
             if _overview_current_gen is not None:
                 try:
-                    result["current_view"] = _overview_current_gen.generate()
+                    current_view = _overview_current_gen.generate()
+                    result["current_view"] = current_view
+                    # HG-A A-1: Serving Path配線接続(mocka_write_event根本原因調査との並行対応)
+                    try:
+                        _overview_current_gen.write_output(current_view)
+                    except Exception as _write_err:
+                        pass
                 except Exception as _cv_err:
                     result["current_view"] = {"error": f"overview_current_generator.generate() failed: {_cv_err}"}
             else:
@@ -852,6 +858,12 @@ def execute_tool(name, args):
                 result = {"loop": loop_data, "risk": risk_data, "status": "ok"}
             except Exception as e:
                 result = {"error": str(e), "note": "COMMAND CENTER(5000)未起動の可能性"}
+            # HG-A A-1: Serving Path配線接続(active handler line 845側のみ)
+            if _overview_current_gen is not None:
+                try:
+                    _overview_current_gen.write_output()
+                except Exception:
+                    pass
             auto_log(name, args, "command_center fetched")
             return json.dumps(result, ensure_ascii=False, indent=2)
 
