@@ -26,6 +26,8 @@ from typing import Optional, Sequence
 from semantic.query_engine.execution_layer import MeaningCycleExecutor, MeaningCycleResult
 from semantic.query_engine.order_normalizer import OrderNormalizer
 from semantic.query_engine.collision_governance import CollisionGovernor, GovernedCollisionRecord
+from semantic.query_engine.human_gate import HumanGateRulingStore
+from semantic.query_engine.human_gate_interface import HumanGateEventLog
 
 
 @dataclass(frozen=True)
@@ -47,10 +49,12 @@ class ExecutionOrchestrator:
         meaning_executor: MeaningCycleExecutor,
         order_normalizer: OrderNormalizer,
         collision_governor: CollisionGovernor,
+        ruling_store: HumanGateRulingStore,
     ):
         self._meaning_executor = meaning_executor
         self._order_normalizer = order_normalizer
         self._collision_governor = collision_governor
+        self._event_log = HumanGateEventLog(ruling_store)
 
     def process(
         self,
@@ -75,3 +79,11 @@ class ExecutionOrchestrator:
             cycle_result=cycle_result,
             governed_collisions=governed_collisions,
         )
+
+    def event_log(self) -> HumanGateEventLog:
+        """Phase7-B-7 HumanGateEventLogへのアクセス（読み取り・準備のみ）。
+
+        Orchestratorが裁定を生成・代行することはない。
+        外部（人間・UIレイヤ）が submit_ruling() を呼び出す際の入口として機能する。
+        """
+        return self._event_log

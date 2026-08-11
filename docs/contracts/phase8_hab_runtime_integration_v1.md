@@ -44,15 +44,16 @@ Observation Surface        - 人間が触れる唯一の面
 
 ### 1.2 Execution Orchestrator（実行統合層）
 
-- 既存`MeaningCycleExecutor`（Phase7-D-2）・`CollisionGovernor`
-  （Phase7-B-5）・`HumanGateEventLog`（Phase7-B-7）を、固定順序で
-  ルーティングするだけの統合層。
+- 既存`MeaningCycleExecutor`（Phase7-D-2）・`OrderNormalizer`
+  （Phase7-B-4）・`CollisionGovernor`（Phase7-B-5）・`HumanGateEventLog`
+  （Phase7-B-7）を、固定順序でルーティングするだけの統合層。
 - ルーティング順序（確定）:
   ```
   1. MeaningCycleExecutor.run_cycle(...)        -> A/B/C/Dの1サイクル
-  2. サイクル結果からcollisionが検出された場合
+  2. OrderNormalizer.normalize(...)             -> B-4: 同一identifierのcollision検出
+  3. 衝突が検出された場合
      -> CollisionGovernor.govern(...)            -> B-5: 分類+エスカレーション
-  3. GovernedCollisionRecordが生成された場合
+  4. GovernedCollisionRecordが生成された場合
      -> HumanGateEventLog経由でRulingEventとして記録可能な状態にする
         （裁定の実行自体は人間が行う。Orchestratorが裁定を代行することはない）
   ```
@@ -84,8 +85,8 @@ Human Gateは唯一の裁定点    継続（Orchestratorが裁定を代行しな
 2. Phase8-2（未着手・要承認）: Runtime Bridge Layerの最小スケルトン
    （外部イベント受信口の抽象インターフェースのみ、具体的な接続手段は含めない）。
 3. Phase8-3（未着手・要承認）: Execution Orchestratorの最小スケルトン
-   （既存MeaningCycleExecutor/CollisionGovernor/HumanGateEventLogの
-   呼び出しのみ、Fake実装での統合動作確認）。
+   （既存MeaningCycleExecutor/OrderNormalizer/CollisionGovernor/
+   HumanGateEventLogの呼び出しのみ、Fake実装での統合動作確認）。
 4. Phase8-4（未着手・要承認）: Observation Surfaceの最小スケルトン
    （CollisionViewの一覧取得API程度、UI実装そのものは対象外）。
 
