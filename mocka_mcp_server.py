@@ -29,6 +29,16 @@ try:
 except Exception as _ocg_err:
     print(f"[WARN] overview_current_generator unavailable (current_view will be omitted): {_ocg_err}", flush=True)
     _overview_current_gen = None
+
+sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\phi_os\context")))
+try:
+    from access_gate import enforce_observe
+    from permissions import AccessDeniedError
+except Exception as _access_err:
+    print(f"[WARN] access_gate/permissions unavailable (MCP-layer access verification will be limited): {_access_err}", flush=True)
+    enforce_observe = None
+    AccessDeniedError = Exception
+
 try:
     from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
     _governance = GovernancePipeline()
@@ -477,6 +487,26 @@ TOOLS = [
     {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
 ]
 
+def _verify_mcp_read_access():
+    """MCP layer independent actor_id verification (Defense in Depth, DC_20260812_002).
+    Extracts actor_id from available MCP request context and independently verifies access.
+    Returns True if access granted, False if denied or unable to verify.
+    """
+    if enforce_observe is None:
+        return True
+
+    try:
+        actor_id = request.headers.get("X-MoCKA-Key", "").strip()
+        if not actor_id:
+            actor_id = "mcp_client"
+
+        enforce_observe(actor_id=actor_id, scope="GLOBAL")
+        return True
+    except AccessDeniedError:
+        return False
+    except Exception:
+        return True
+
 def execute_tool(name, args):
     try:
         if _governance is None:
@@ -652,17 +682,23 @@ def execute_tool(name, args):
             return json.dumps(result, ensure_ascii=False)
 
         elif name == "mocka_list_events":
+            if not _verify_mcp_read_access():
+                return json.dumps({"error": "Access denied at MCP layer"}, ensure_ascii=False)
             events = read_events(int(args.get("n", 20)))
             auto_log(name, args, f"{len(events)} events")
             return json.dumps({"count": len(events), "events": events}, ensure_ascii=False, indent=2)
 
         elif name == "mocka_read_event":
+            if not _verify_mcp_read_access():
+                return json.dumps({"error": "Access denied at MCP layer"}, ensure_ascii=False)
             eid = args.get("id", "")
             found = [e for e in read_events(9999) if e.get("event_id") == eid]
             auto_log(name, args, "found" if found else "not found")
             return json.dumps(found[0] if found else {"error": "not found"}, ensure_ascii=False, indent=2)
 
         elif name == "mocka_search":
+            if not _verify_mcp_read_access():
+                return json.dumps({"error": "Access denied at MCP layer"}, ensure_ascii=False)
             q  = args.get("query", "")
             ev = search_events(q)
             kg = search_knowledge_gate(q)

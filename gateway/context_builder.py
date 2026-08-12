@@ -5,8 +5,14 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from flask import request
+
 sys.path.insert(0, str(Path(__file__).parent.parent / "structural"))
 from event_recency import valid_when_ts_clause  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "phi_os" / "context"))
+from access_gate import enforce_observe, sanitize_event_for_observe  # noqa: E402
+from permissions import AccessDeniedError  # noqa: E402
 
 DATA_DIR      = Path(__file__).parent.parent / "data"
 OVERVIEW_PATH = DATA_DIR / "MOCKA_OVERVIEW.json"
@@ -48,6 +54,10 @@ class ContextBuilder:
     def _last_decision(self) -> str:
         """最新イベントのtitle + when_ts を返す（when_time は誤カラム名）"""
         try:
+            actor_id = request.headers.get("X-MoCKA-Key", "").strip()
+
+            enforce_observe(actor_id=actor_id, scope="GLOBAL")
+
             conn = sqlite3.connect(str(DB_PATH))
             cur  = conn.cursor()
             # 正: when_ts  (×when_time)
@@ -60,6 +70,8 @@ class ContextBuilder:
             conn.close()
             if row and row[0]:
                 return f"{row[0]}（{str(row[1])[:10]}）"
+        except AccessDeniedError:
+            return ""
         except Exception:
             pass
         return ""
@@ -101,6 +113,10 @@ class ContextBuilder:
     def _load_events(self, mode: str) -> list:
         limit = {"compact": 3, "standard": 5, "extended": 30}.get(mode, 5)
         try:
+            actor_id = request.headers.get("X-MoCKA-Key", "").strip()
+
+            enforce_observe(actor_id=actor_id, scope="GLOBAL")
+
             conn = sqlite3.connect(str(DB_PATH))
             cur  = conn.cursor()
             # 正: when_ts / short_summary  (×when_time / ×description / ×tags)
@@ -113,19 +129,24 @@ class ContextBuilder:
             )
             rows = cur.fetchall()
             conn.close()
-            return [
-                {
+
+            events = []
+            for r in rows:
+                event_dict = {
                     "id":            r[0],
                     "title":         r[1],
                     "short_summary": r[2],
                     "when":          r[3],
                     "what_type":     r[4],
-                "session_id":    r[5],
-                "trace_id":      r[6],
-                "related_event_id": r[7],
+                    "session_id":    r[5],
+                    "trace_id":      r[6],
+                    "related_event_id": r[7],
                 }
-                for r in rows
-            ]
+                event_dict = sanitize_event_for_observe(event_dict)
+                events.append(event_dict)
+            return events
+        except AccessDeniedError:
+            return []
         except Exception:
             return []
 

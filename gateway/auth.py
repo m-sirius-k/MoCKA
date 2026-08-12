@@ -4,10 +4,14 @@ import hmac
 import os
 import sqlite3
 import time
+import sys
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 from flask import request, abort
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "phi_os" / "context"))
+from permissions import check_observe, AccessDeniedError
 
 # ---- 設定 ----------------------------------------------------------------
 VALID_KEYS   = set(filter(None, os.environ.get("MOCKA_API_KEYS",   "").split(",")))
@@ -46,6 +50,11 @@ def require_api_key():
         abort(401, "X-MoCKA-Key header missing")
     if key not in VALID_KEYS:
         abort(403, "Invalid API key")
+
+    try:
+        check_observe(actor_id=key, scope="GLOBAL")
+    except AccessDeniedError:
+        abort(403, "Authorization denied for this actor")
 
     if request.method == "POST" and request.path in HMAC_PATHS:
         _verify_hmac_request()
