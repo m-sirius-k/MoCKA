@@ -21,7 +21,7 @@ if sys.stdout.encoding != 'utf-8':
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 if sys.stderr.encoding != 'utf-8':
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
-from auth import require_api_key
+from auth import require_api_key, verify_event_actor_id, get_request_actor_id
 import auth as auth_module
 from connector_caliber import ConnectorCaliber
 import adapter_gpt
@@ -145,7 +145,17 @@ def post_event():
     if not data:
         return jsonify({"error": "JSON body required"}), 400
 
+    # Phase 2: Actor_ID Binding Verification
+    # Extract actor_id from payload (may be None)
     actor  = data.get("actor", {})
+    payload_actor_id = actor.get("id")  # phase 2: explicit actor.id field
+
+    # Verify payload actor_id matches authenticated identity
+    verify_event_actor_id(payload_actor_id)
+
+    # Get canonical actor_id from authenticated identity (not from payload)
+    canonical_actor_id = get_request_actor_id()
+
     vendor = actor.get("vendor", "Unknown")
     model  = actor.get("model", "")
     source = actor.get("source", "Direct")
@@ -162,6 +172,7 @@ def post_event():
         now = datetime.now(timezone.utc)
         # who_actor = "vendor/model" 形式で格納
         # ai_actor  = source（Orchestra等）
+        # actor_id  = canonical_actor_id（Phase 2: authenticated identity）
         # タグ専用カラムなし → what_type に gateway_event を、free_note にタグを格納
         who_actor = f"{vendor}/{model}" if model else vendor
 
@@ -172,6 +183,7 @@ def post_event():
             "when":            now.isoformat(),
             "who_actor":       who_actor,
             "ai_actor":        source,
+            "actor_id":        canonical_actor_id,
             "what_type":       "gateway_event",
             "free_note":       tags_str,
             "where_component": "gateway",

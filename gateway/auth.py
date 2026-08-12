@@ -9,6 +9,8 @@ from pathlib import Path
 
 from flask import request, abort
 
+from actor_binding import verify_actor_id_binding, get_authenticated_actor_id
+
 # ---- 設定 ----------------------------------------------------------------
 VALID_KEYS   = set(filter(None, os.environ.get("MOCKA_API_KEYS",   "").split(",")))
 HMAC_SECRET  = os.environ.get("MOCKA_HMAC_SECRET", "").encode()
@@ -18,7 +20,6 @@ TIMESTAMP_MARGIN = 300      # ±5分（秒）
 
 PUBLIC_PATHS = {"/api/v1/phase", "/api/v1/health", "/api/v1/connector/health"}
 HMAC_PATHS   = {"/api/v1/event"}   # POST のみ HMAC 検証
-
 
 # ---- nonce テーブル初期化 -------------------------------------------------
 def _init_nonce_table():
@@ -115,3 +116,53 @@ def _record_nonce(nonce: str):
         conn.close()
     except Exception:
         pass
+
+
+# ---- Actor_ID Binding (Phase 2) -----------------------------------------------
+
+def get_request_actor_id() -> str:
+    """
+    Extract authenticated actor_id from current request's X-MoCKA-Key header.
+
+    This is the CANONICAL SOURCE for actor identity.
+    Must be called after require_api_key() has validated the key.
+
+    Returns:
+        actor_id derived from authenticated X-MoCKA-Key
+        Raises abort(401) if key is invalid or missing
+    """
+    key = request.headers.get("X-MoCKA-Key", "").strip()
+    if not key:
+        abort(401, "X-MoCKA-Key header missing")
+
+    actor_id = get_authenticated_actor_id(key)
+    if actor_id is None:
+        abort(401, "Invalid X-MoCKA-Key")
+
+    return actor_id
+
+
+def verify_event_actor_id(payload_actor_id: str = None) -> None:
+    """
+    Verify that payload actor_id matches authenticated identity.
+
+    Phase 2 Boundary Enforcement:
+    - Derive canonical authenticated actor_id from X-MoCKA-Key
+    - Verify payload actor_id matches authenticated actor_id
+    - Fail-closed (abort 401/403) on any mismatch or missing required field
+
+    Args:
+        payload_actor_id: The actor_id from request payload (may be None)
+
+    Raises:
+        abort(401) if authentication fails
+        abort(403) if payload actor_id doesn't match authenticated identity
+    """
+    key = request.headers.get("X-MoCKA-Key", "").strip()
+    if not key:
+        abort(401, "X-MoCKA-Key header missing")
+
+    # Verify the binding
+    if not verify_actor_id_binding(key, payload_actor_id):
+        abort(403, "Actor identity mismatch or invalid")
+
