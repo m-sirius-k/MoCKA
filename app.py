@@ -3048,7 +3048,14 @@ def risk_recommendation():
             todo_data = json.load(f)
 
         todos = todo_data.get("todos", [])
-        active = [t for t in todos if t.get("status") not in ("完了", "closed")]
+        completed_section = todo_data.get("completed", [])
+        completed_ids = {t.get("id") for t in completed_section}
+
+        # TODO_365: Exclude items from both status filter AND completed section
+        # Items in completed section should never be recommended even if they appear in todos
+        active = [t for t in todos
+                  if t.get("status") not in ("完了", "closed")
+                  and t.get("id") not in completed_ids]
 
         if not active:
             return jsonify({
