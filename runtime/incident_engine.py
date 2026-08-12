@@ -16,6 +16,13 @@ LEDGER_PATH = os.path.join(BASE_DIR,"incident_ledger.json")
 sys.path.insert(0, os.path.join(ROOT_DIR, "governance"))
 from mocka_git_safe_commit import mocka_git_safe_commit  # noqa: E402
 
+
+def _run(cmd, cwd):
+    return subprocess.run(
+        cmd, cwd=str(cwd), capture_output=True, text=True,
+        encoding="utf-8", errors="replace"
+    )
+
 COMMIT_INTERVAL = 10
 
 def load_ledger():
@@ -32,15 +39,27 @@ def save_ledger(data):
         json.dump(data,f,indent=2)
 
 def git_commit():
+    # TODO_363: Core System File guard applied via mocka_git_safe_commit.
     # TODO_364: git add/commit/pushをmocka_git_safe_commit経由に統一。
     result = mocka_git_safe_commit(
         paths=["runtime/incident_ledger.json"],
         message="MoCKA incident batch update",
-        push=True, root=ROOT_DIR
+        push=False, root=ROOT_DIR
     )
     if result["error"]:
         print("GIT_RECORD_FAILED", result["error"])
-    else:
+        return
+
+    if result["post_commit_violation"]:
+        print("GIT_SAFETY_VIOLATION", result["post_commit_violation"])
+        print("INCIDENT_BATCH_GIT_RECORDED (without push due to core file violation)")
+        return
+
+    if result["committed"]:
+        push_result = _run(["git", "push", "origin", "main"], ROOT_DIR)
+        if push_result.returncode != 0:
+            print("GIT_PUSH_FAILED", push_result.stderr)
+            return
         print("INCIDENT_BATCH_GIT_RECORDED")
 
 def incident_hash(title,content,source):
