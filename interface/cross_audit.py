@@ -23,7 +23,7 @@ from pathlib import Path
 
 # ─── 設定 ────────────────────────────────────────────────────────────────────
 
-ROOT     = Path("C:/Users/sirok/MoCKA")
+ROOT     = Path(__file__).parent.parent
 DB       = ROOT / "data" / "mocka_events.db"
 AUDIT_DB = ROOT / "data" / "cross_audit.db"
 

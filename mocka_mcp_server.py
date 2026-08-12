@@ -18,12 +18,12 @@ if sys.stderr.encoding != 'utf-8':
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
+sys.path.insert(0, str(Path(__file__).parent / "structural"))
 from event_recency import valid_when_ts_clause  # noqa: E402
 
 # TODO_428/DC_20260709_001: 一次データ駆動のCurrent View Generator(additive、mocka_get_overviewの
 # 既存戻り値は変更せずcurrent_viewキーとして追加するのみ)。
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\scripts\state")))
+sys.path.insert(0, str(Path(__file__).parent / "scripts" / "state"))
 try:
     import overview_current_generator as _overview_current_gen
 except Exception as _ocg_err:
@@ -42,7 +42,7 @@ except Exception as _gov_err:
     }
 
 # KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
-REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
+REGISTRY_MODULE_PATH = Path(__file__).parent / "PlanningCaliber" / "workshop" / "registry_kn004"
 sys.path.insert(0, str(REGISTRY_MODULE_PATH))
 try:
     import registry_store
@@ -64,9 +64,9 @@ MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not MOCKA_ENDPOINT:
     print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
 
-BASE           = Path(r"C:\Users\sirok\MoCKA")
-OVERVIEW_PATH  = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
-TODO_PATH      = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
+BASE           = Path(__file__).parent
+OVERVIEW_PATH  = BASE / "data" / "MOCKA_OVERVIEW.json"
+TODO_PATH      = BASE / "data" / "MOCKA_TODO_ACTIVE.json"
 KNOWLEDGE_GATE = BASE / "data"
 EVENTS_CSV     = BASE / "data" / "events.csv"  # 廃止済み（互換保持のみ）
 FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
@@ -217,7 +217,7 @@ def _update_working_context_live(title: str, why_purpose: str, ai: str = "",
     # （event_runtime_log.jsonへの追記のみ）。失敗してもイベント書込自体は妨げない。
     try:
         import sys as _sys
-        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        _repo_root = str(BASE)
         if _repo_root not in _sys.path:
             _sys.path.insert(0, _repo_root)
         from phi_os.context.working_context import WorkingContext
@@ -271,7 +271,7 @@ def _write_reopen_event(todo_id: str, new_status: str, reason: str) -> str:
         raise RuntimeError(f"GATE rejected {r.status_code}: {r.text[:120]}")
     except requests.exceptions.ConnectionError:
         import sys as _sys
-        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        _repo_root = str(BASE)
         if _repo_root not in _sys.path:
             _sys.path.insert(0, _repo_root)
         from phi_os.event_gate import process_event as _gate_process_event
@@ -719,7 +719,7 @@ def execute_tool(name, args):
                 # ことで、HTTP経路と完全に同じValidation/Signature/HashChainを
                 # 経由させる（事後のmigrate_event_integrity.py補完を不要にする）。
                 import sys as _sys
-                _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+                _repo_root = str(BASE)
                 if _repo_root not in _sys.path:
                     _sys.path.insert(0, _repo_root)
                 from phi_os.event_gate import process_event as _gate_process_event
