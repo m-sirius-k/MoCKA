@@ -5,9 +5,12 @@ import time
 import sys
 import json
 import os
+import uuid
+import requests
 
 MODE = sys.argv[2] if len(sys.argv) > 2 else "orchestra"
 PROMPT = sys.argv[1] if len(sys.argv) > 1 else "PlaywrightをMoCKA環境に組み込む場合、最も優先すべき機能を2つ、理由付きで提案してください。MoCKAの哲学「AIを信じるな、システムで縛れ」を踏まえて。"
+EXECUTION_ID = sys.argv[3] if len(sys.argv) > 3 else str(uuid.uuid4())
 
 # TODO_419: Orchestra Context Bridge統合(DC_20260707_006承認)
 _NO_CONTEXT = "--no-context" in sys.argv
@@ -18,6 +21,36 @@ except ImportError:
     ENRICHED_PROMPT = PROMPT
 
 CHAT_URLS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "chat_urls.json")
+
+def send_orchestra_event(event_type, ai_name=None, description="", failure_reason=None):
+    """Send Orchestra lifecycle event to MoCKA gate (non-blocking)"""
+    try:
+        idempotency_key = str(uuid.uuid4())
+        tags = f'execution_id={EXECUTION_ID},event_type={event_type}'
+        if ai_name:
+            tags += f',ai={ai_name}'
+        if failure_reason:
+            tags += f',failure_reason={failure_reason}'
+
+        payload = {
+            'who_actor': 'orchestra_extension',
+            'what_type': 'user_action',
+            'where_component': 'orchestra',
+            'why_purpose': 'orchestration_event_tracking',
+            'idempotency_key': idempotency_key,
+            'title': event_type,
+            'description': description,
+            'tags': tags,
+            'channel_type': 'extension'
+        }
+
+        requests.post(
+            'http://localhost:5000/api/gate/event/extension',
+            json=payload,
+            timeout=2
+        )
+    except Exception as e:
+        print(f"[MoCKA] {event_type} event send failed: {e}")
 
 def load_chat_urls():
     if os.path.exists(CHAT_URLS_FILE):
@@ -89,6 +122,7 @@ async def get_or_resume_page(context, ai_name, domain, new_url):
     return page, "new"
 
 async def run_chatgpt(context):
+    send_orchestra_event('AI_QUERY_STARTED', ai_name='ChatGPT')
     page, status = await get_or_resume_page(context, "ChatGPT", "chatgpt.com", "https://chatgpt.com/")
     # ChatGPT入力欄 - 複数セレクター対応
     chatgpt_box = None
@@ -117,9 +151,11 @@ async def run_chatgpt(context):
     result = await wait_for_completion(get_text, "ChatGPT")
     save_chat_url("ChatGPT", page.url)
     print(f"[ChatGPT] 完了 ({status})")
+    send_orchestra_event('AI_QUERY_COMPLETED', ai_name='ChatGPT')
     return "ChatGPT", result
 
 async def run_perplexity(context):
+    send_orchestra_event('AI_QUERY_STARTED', ai_name='Perplexity')
     chat_urls = load_chat_urls()
     saved_url = chat_urls.get("Perplexity")
     page = None
@@ -157,9 +193,11 @@ async def run_perplexity(context):
     result = await wait_for_completion(get_text, "Perplexity")
     save_chat_url("Perplexity", page.url)
     print(f"[Perplexity] 完了")
+    send_orchestra_event('AI_QUERY_COMPLETED', ai_name='Perplexity')
     return "Perplexity", result
 
 async def run_gemini(context):
+    send_orchestra_event('AI_QUERY_STARTED', ai_name='Gemini')
     page, status = await get_or_resume_page(context, "Gemini", "gemini.google.com", "https://gemini.google.com/app")
     # チャット画面でなければ強制遷移
     if "/app" not in page.url or "app?" in page.url:
@@ -183,9 +221,11 @@ async def run_gemini(context):
     result = await wait_for_completion(get_text, "Gemini")
     save_chat_url("Gemini", page.url)
     print(f"[Gemini] 完了 ({status})")
+    send_orchestra_event('AI_QUERY_COMPLETED', ai_name='Gemini')
     return "Gemini", result
 
 async def run_copilot(context):
+    send_orchestra_event('AI_QUERY_STARTED', ai_name='Copilot')
     page, status = await get_or_resume_page(context, "Copilot", "copilot.microsoft.com", "https://copilot.microsoft.com/")
     # Copilot入力欄 - 複数セレクター対応
     box = None
@@ -215,47 +255,61 @@ async def run_copilot(context):
     result = await wait_for_completion(get_text, "Copilot")
     save_chat_url("Copilot", page.url)
     print(f"[Copilot] 完了 ({status})")
+    send_orchestra_event('AI_QUERY_COMPLETED', ai_name='Copilot')
     return "Copilot", result
 
 async def main():
     start = time.time()
-    async with async_playwright() as p:
-        browser = await p.chromium.connect_over_cdp("http://127.0.0.1:9222")
-        context = browser.contexts[0]
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.connect_over_cdp("http://127.0.0.1:9222")
+            context = browser.contexts[0]
 
-        claude_page = None
-        if MODE == "orchestra":
-            print("[Claude] 既存タブ検索中...")
-            for pg in context.pages:
-                if "claude.ai" in pg.url:
-                    claude_page = pg
-                    print(f"[Claude] 発見: {pg.url[:60]}")
-                    break
-            if not claude_page:
-                claude_page = await context.new_page()
-                await claude_page.goto("https://claude.ai/new")
-                await asyncio.sleep(5)
+            claude_page = None
+            if MODE == "orchestra":
+                print("[Claude] 既存タブ検索中...")
+                for pg in context.pages:
+                    if "claude.ai" in pg.url:
+                        claude_page = pg
+                        print(f"[Claude] 発見: {pg.url[:60]}")
+                        break
+                if not claude_page:
+                    claude_page = await context.new_page()
+                    await claude_page.goto("https://claude.ai/new")
+                    await asyncio.sleep(5)
 
-        tasks = [
-            run_chatgpt(context),
-            run_perplexity(context),
-            run_gemini(context),
-            run_copilot(context),
-        ]
-        results = await asyncio.gather(*tasks)
+            tasks = [
+                run_chatgpt(context),
+                run_perplexity(context),
+                run_gemini(context),
+                run_copilot(context),
+            ]
+            results = await asyncio.gather(*tasks)
+            elapsed = time.time() - start
+
+            # ORCHESTRA_COMPLETED event
+            send_orchestra_event('ORCHESTRA_COMPLETED', description=f'All queries completed in {elapsed:.1f}s')
+
+            if MODE == "orchestra" and claude_page:
+                integrate_prompt = f"以下は「{PROMPT[:50]}...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n"
+                for name, ans in results:
+                    integrate_prompt += f"【{name}】\n{clean(ans)}\n\n"
+                await claude_page.bring_to_front()
+                box = claude_page.get_by_role("textbox").first
+                await box.click()
+                await box.fill(integrate_prompt)
+                # ORCHESTRA_INJECTED event
+                send_orchestra_event('ORCHESTRA_INJECTED', description='Results injected to Claude input')
+                print(f"\n[完了] {elapsed:.1f}秒 — Claude1のchat欄に配置済み。確認後にEnterを押してください。")
+            else:
+                print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
+    except Exception as e:
         elapsed = time.time() - start
-
-        if MODE == "orchestra" and claude_page:
-            integrate_prompt = f"以下は「{PROMPT[:50]}...」への各AI回答です。共通項・分布・別視点を分析し最適解を出してください。\n\n"
-            for name, ans in results:
-                integrate_prompt += f"【{name}】\n{clean(ans)}\n\n"
-            await claude_page.bring_to_front()
-            box = claude_page.get_by_role("textbox").first
-            await box.click()
-            await box.fill(integrate_prompt)
-            print(f"\n[完了] {elapsed:.1f}秒 — Claude1のchat欄に配置済み。確認後にEnterを押してください。")
-        else:
-            print(f"\n[共有完了] {elapsed:.1f}秒 — 各AIに送信しました")
+        print(f"[MoCKA] Orchestra execution failed after {elapsed:.1f}s: {e}")
+        import traceback
+        traceback.print_exc()
+        send_orchestra_event('ORCHESTRA_FAILED', failure_reason=str(e), description=f'Exception: {type(e).__name__}: {e}')
+        raise
 
 asyncio.run(main())
 

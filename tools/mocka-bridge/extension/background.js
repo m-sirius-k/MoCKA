@@ -1,4 +1,12 @@
 console.log("[MOCKA] background.js 起動開始");
+
+function generateUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 const AI_DOMAINS = {
   ChatGPT:    'chatgpt.com',
   Gemini:     'gemini.google.com',
@@ -116,10 +124,33 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
   if (info.menuItemId === 'mocka-orchestra') {
+    const executionId = generateUUID();
+    const idempotencyKey = generateUUID();
+
+    // ORCHESTRA_REQUESTED event
+    fetch('http://localhost:5000/api/gate/event/extension', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        who_actor: 'orchestra_extension',
+        what_type: 'user_action',
+        where_component: 'orchestra',
+        why_purpose: 'user_initiated_orchestration',
+        idempotency_key: idempotencyKey,
+        title: 'ORCHESTRA_REQUESTED',
+        description: 'Prompt: ' + text.slice(0, 100),
+        tags: 'execution_id=' + executionId + ',event_type=ORCHESTRA_REQUESTED',
+        channel_type: 'extension'
+      })
+    }).catch(err => {
+      console.warn('[MoCKA] ORCHESTRA_REQUESTED send failed:', err.message);
+    });
+
+    // Send to /orchestra endpoint with execution_id
     fetch('http://localhost:5000/orchestra', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({prompt: text})
+      body: JSON.stringify({prompt: text, execution_id: executionId})
     }).then(() => {
       chrome.scripting.executeScript({ target: {tabId: tab.id}, func: () => alert('MoCKA: orchestra started') });
     }).catch(() => {});

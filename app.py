@@ -662,10 +662,32 @@ def caliber_scan():
 
 @app.route("/orchestra", methods=["POST"])
 def orchestra():
+    import uuid
     payload = request.get_json(force=True, silent=True) or {}
     prompt = payload.get("prompt", "MoCKA Broadcast")
     mode = payload.get("mode", "orchestra")
-    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
+    execution_id = payload.get("execution_id", "")
+
+    # Send ORCHESTRA_STARTED event (non-blocking)
+    if execution_id:
+        try:
+            idempotency_key = str(uuid.uuid4())
+            requests.post('http://localhost:5000/api/gate/event/extension', json={
+                'who_actor': 'orchestra_extension',
+                'what_type': 'user_action',
+                'where_component': 'orchestra',
+                'why_purpose': 'orchestration_initiated',
+                'idempotency_key': idempotency_key,
+                'title': 'ORCHESTRA_STARTED',
+                'description': 'Orchestration execution started',
+                'tags': f'execution_id={execution_id},event_type=ORCHESTRA_STARTED',
+                'channel_type': 'extension'
+            }, timeout=2)
+        except Exception as e:
+            print(f"[MoCKA] ORCHESTRA_STARTED event send failed: {e}")
+
+    # Pass execution_id to subprocess
+    subprocess.Popen([sys.executable, "tools/mocka_orchestra_v10.py", prompt, mode, execution_id], cwd=ROOT_DIR, env={**__import__("os").environ, "PYTHONIOENCODING": "utf-8"})
     return jsonify({"status": "ok"})
 
 @app.route("/ask", methods=["POST"])

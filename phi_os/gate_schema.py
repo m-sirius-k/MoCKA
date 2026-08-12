@@ -10,6 +10,7 @@ ALLOWED_WHAT_TYPES = [
     'git_commit', 'git_push', 'test_run', 'deployment',
     'user_voice', 'handshake', 'audit', 'incident', 'todo_update',
     'claude_mcp',  # MCP tool経由イベント
+    'user_action',  # Orchestra拡張イベント（TODO_368）
 ]
 
 ALLOWED_WHO_ROLES = ['executor', 'auditor', 'human', 'automation']
