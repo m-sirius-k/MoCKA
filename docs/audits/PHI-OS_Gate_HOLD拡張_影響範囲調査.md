@@ -33,12 +33,15 @@ governance/mocka_git_safe_commit.py, app.py（/decision/approve, /decision/rejec
 
 ## 1. Single Write Path の実装箇所（Event記録層、機構1）
 
-`phi_os/event_gate.py`の`process_event()`（115-135行）が唯一の保存経路であることをコード
+`phi_os/event_gate.py`の`_write()`が単一書き込み点であることをコード
 コメントで確認した：
 
 > 「Flask route(/api/gate/event)とMCP server(mocka_write_event)のいずれの呼び出し元からも、
 > トランスポート(HTTP/インプロセス)を問わずこの関数を経由しなければならない。これ以外に
 > events保存を行う経路は制度上存在しない。」（event_gate.py:120-122）
+>
+> (TODO_322補訂: process_event()とprocess_buffered_event()いずれの経路も、
+> 最終的には_write()に収束する構造)
 
 `app.py`の`append_event()`（242行〜）も、TODO_347以降はLocal Buffer経由で非同期に
 `process_buffered_event()`（event_gate.pyの一部）へ収束する設計であることをコメントで

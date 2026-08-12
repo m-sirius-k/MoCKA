@@ -12,7 +12,7 @@
 
 ---
 
-## 1. 制度上の唯一の保存経路 (Confirmed / コード本文の自己宣言)
+## 1. 制度上の単一書き込み点 (Confirmed / コード本文の自己宣言)
 
 `phi_os/event_gate.py:115` `process_event()` の docstring(原文):
 
@@ -22,6 +22,10 @@
 > Flask route(/api/gate/event)とMCP server(mocka_write_event)のいずれの
 > 呼び出し元からも、トランスポート(HTTP/インプロセス)を問わずこの関数を
 > 経由しなければならない。**これ以外にevents保存を行う経路は制度上存在しない。**
+
+**TODO_322補訂**: process_event()とprocess_buffered_event()は異なるエントリーポイントだが、
+最終的には両方とも_write()関数に収束する。単一経路の実態は「process_event()という関数」
+ではなく「_write()という単一書き込み点」である。
 
 `gateway/gateway.py:170` のコメント(原文):
 > Phase5-1: 生SQL INSERT INTO events禁止 → Local Buffer経由でGateへ統一

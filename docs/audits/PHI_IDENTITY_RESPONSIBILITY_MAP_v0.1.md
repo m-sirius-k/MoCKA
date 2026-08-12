@@ -55,7 +55,8 @@ PHI-REG-04は**Identity(名称)問題ではなくConstitution Compliance(制度�
 **Confirmed(本セッションで独自に再検証、2026-07-29時点)**:
 - `PlanningCaliber/workshop/seo-os/mocka/phi_os_bridge.py`は現在も稼働コードとして存在する
 - `push_decision_audit()` / `push_policy_violation()`の両メソッドが`sqlite3.connect(MOCKA_DB)`で`data/mocka_events.db`へ直接接続し、生の`INSERT INTO events`文を実行する
-- `phi_os/event_gate.py`の`process_event()` / `_write()`(TODO_322が定める唯一の書込経路)を一切経由しない
+- `phi_os/event_gate.py`の`_write()`(TODO_322が定める単一書き込み点)を一切経由しない
+  (注: process_event()およびprocess_buffered_event()は異なるエントリーポイントだが、両方とも最終的には_write()に収束する)
 - `integrity.sign_event()`によるハッシュチェーン署名も付与されない
 
 **該当するConstitution条文(PHI_OS_CONSTITUTION_v1.md)**:
