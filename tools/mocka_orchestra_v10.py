@@ -69,6 +69,70 @@ async def wait_for_completion(get_text_func, ai_name, timeout=120, stable_sec=3,
     print(f"[{ai_name}] タイムアウト ({timeout}秒)")
     return prev
 
+async def preflight_check(page, ai_name, timeout=10):
+    """TODO_166: ページが入力可能状態であることを検査する(preflight check)"""
+    start = time.time()
+    print(f"[{ai_name}] プリフライトチェック開始...")
+
+    try:
+        captcha_selectors = [
+            'iframe[title="reCAPTCHA"]',
+            'iframe[src*="recaptcha"]',
+            'div.grecaptcha',
+            'div[data-captcha]',
+            'div.captcha',
+            '[id*="captcha"]'
+        ]
+        for sel in captcha_selectors:
+            if await page.query_selector(sel):
+                elapsed = time.time() - start
+                print(f"[{ai_name}] ⚠️ CAPTCHA検知 ({elapsed:.1f}秒)")
+                return {"status": "BLOCKED_CAPTCHA", "description": "CAPTCHA detected", "wait_time": elapsed}
+
+        dialog_keywords = ["login", "sign in", "sign up", "cookie", "accept", "agree"]
+        for kw in dialog_keywords:
+            elements = await page.query_selector_all(f'text="{kw}"')
+            if elements:
+                elapsed = time.time() - start
+                print(f"[{ai_name}] ⚠️ Dialog検知: {kw} ({elapsed:.1f}秒)")
+                return {"status": "BLOCKED_DIALOG", "description": f"Dialog detected: {kw}", "wait_time": elapsed}
+
+        input_selectors = [
+            "#prompt-textarea",
+            "textarea[placeholder*='prompt']",
+            "textarea[placeholder*='message']",
+            "[data-testid='text-input']",
+            "div[contenteditable='true']",
+            "div.ProseMirror",
+            "textarea"
+        ]
+
+        for sel in input_selectors:
+            try:
+                field = page.locator(sel).first
+                await field.wait_for(state="visible", timeout=2000)
+                await field.wait_for(state="enabled", timeout=1000)
+                elapsed = time.time() - start
+                print(f"[{ai_name}] ✓ 入力フィールド確認 ({elapsed:.1f}秒)")
+                return {
+                    "status": "READY",
+                    "description": "Input field ready",
+                    "input_field": field,
+                    "wait_time": elapsed,
+                    "selector": sel
+                }
+            except:
+                continue
+
+        elapsed = time.time() - start
+        print(f"[{ai_name}] ⚠️ 入力フィールド未検出 ({elapsed:.1f}秒)")
+        return {"status": "ERROR", "description": "Input field not found", "wait_time": elapsed}
+
+    except Exception as e:
+        elapsed = time.time() - start
+        print(f"[{ai_name}] ❌ プリフライトエラー: {str(e)[:50]} ({elapsed:.1f}秒)")
+        return {"status": "ERROR", "description": f"Preflight error: {str(e)[:50]}", "wait_time": elapsed}
+
 async def get_or_resume_page(context, ai_name, domain, new_url):
     chat_urls = load_chat_urls()
     saved_url = chat_urls.get(ai_name)
@@ -90,20 +154,13 @@ async def get_or_resume_page(context, ai_name, domain, new_url):
 
 async def run_chatgpt(context):
     page, status = await get_or_resume_page(context, "ChatGPT", "chatgpt.com", "https://chatgpt.com/")
-    # ChatGPT入力欄 - 複数セレクター対応
-    chatgpt_box = None
-    for sel in ["#prompt-textarea", "textarea", "[data-testid='text-input']", "div[contenteditable='true']", "div.ProseMirror"]:
-        try:
-            el = page.locator(sel).first
-            await el.wait_for(state="visible", timeout=5000)
-            chatgpt_box = el
-            print(f"[ChatGPT] セレクター発見: {sel}")
-            break
-        except:
-            continue
-    if chatgpt_box is None:
-        print("[ChatGPT] 入力欄が見つからない - スキップ")
-        return "ChatGPT", ""
+
+    pf = await preflight_check(page, "ChatGPT", timeout=10)
+    if pf["status"] != "READY":
+        print(f"[ChatGPT] ⚠️ ブロッカー検知: {pf['status']} — スキップ")
+        return "ChatGPT", f"BLOCKED: {pf['status']}"
+
+    chatgpt_box = pf["input_field"]
     await chatgpt_box.click()
     await chatgpt_box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(1)
@@ -139,12 +196,16 @@ async def run_perplexity(context):
             await page.goto("https://www.perplexity.ai/", wait_until="domcontentloaded", timeout=60000)
             await asyncio.sleep(3)
 
-    # orchestraモードは新規スレッドで文脈混在を防ぐ
     if MODE == "orchestra":
         await page.goto("https://www.perplexity.ai/", wait_until="domcontentloaded", timeout=60000)
         await asyncio.sleep(3)
 
-    box = page.get_by_role("textbox").first
+    pf = await preflight_check(page, "Perplexity", timeout=10)
+    if pf["status"] != "READY":
+        print(f"[Perplexity] ⚠️ ブロッカー検知: {pf['status']} — スキップ")
+        return "Perplexity", f"BLOCKED: {pf['status']}"
+
+    box = pf.get("input_field") or page.get_by_role("textbox").first
     await box.click()
     await box.fill(ENRICHED_PROMPT)
     await page.keyboard.press("Enter")
@@ -161,15 +222,20 @@ async def run_perplexity(context):
 
 async def run_gemini(context):
     page, status = await get_or_resume_page(context, "Gemini", "gemini.google.com", "https://gemini.google.com/app")
-    # チャット画面でなければ強制遷移
     if "/app" not in page.url or "app?" in page.url:
         print(f"[Gemini] チャット画面外検出 → /appに遷移")
         await page.goto("https://gemini.google.com/app", wait_until="domcontentloaded", timeout=60000)
         await asyncio.sleep(5)
-    # チャット画面確認
+
     current_url = page.url
     print(f"[Gemini] URL確認: {current_url[:60]}")
-    box = page.get_by_role("textbox").first
+
+    pf = await preflight_check(page, "Gemini", timeout=10)
+    if pf["status"] != "READY":
+        print(f"[Gemini] ⚠️ ブロッカー検知: {pf['status']} — スキップ")
+        return "Gemini", f"BLOCKED: {pf['status']}"
+
+    box = pf.get("input_field") or page.get_by_role("textbox").first
     await box.click()
     await box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(2)
@@ -187,20 +253,28 @@ async def run_gemini(context):
 
 async def run_copilot(context):
     page, status = await get_or_resume_page(context, "Copilot", "copilot.microsoft.com", "https://copilot.microsoft.com/")
-    # Copilot入力欄 - 複数セレクター対応
-    box = None
-    for selector in ["textarea", "#userInput", "[data-testid='composer-input']", "div[contenteditable='true']", "cib-text-input textarea", "div.input-area textarea"]:
-        try:
-            el = page.locator(selector).first
-            await el.wait_for(state="visible", timeout=5000)
-            box = el
-            print(f"[Copilot] セレクター発見: {selector}")
-            break
-        except:
-            continue
+
+    pf = await preflight_check(page, "Copilot", timeout=10)
+    if pf["status"] != "READY":
+        print(f"[Copilot] ⚠️ ブロッカー検知: {pf['status']} — スキップ")
+        return "Copilot", f"BLOCKED: {pf['status']}"
+
+    box = pf.get("input_field")
+    if not box:
+        for selector in ["textarea", "#userInput", "[data-testid='composer-input']", "div[contenteditable='true']", "cib-text-input textarea", "div.input-area textarea"]:
+            try:
+                el = page.locator(selector).first
+                await el.wait_for(state="visible", timeout=2000)
+                box = el
+                print(f"[Copilot] セレクター発見: {selector}")
+                break
+            except:
+                continue
+
     if box is None:
         print("[Copilot] 入力欄が見つからない - スキップ")
         return "Copilot", ""
+
     await box.click()
     await box.fill(ENRICHED_PROMPT)
     await asyncio.sleep(2)
