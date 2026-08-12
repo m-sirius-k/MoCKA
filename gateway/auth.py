@@ -11,7 +11,7 @@ from pathlib import Path
 from flask import request, abort
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "phi_os" / "context"))
-from permissions import check_observe, AccessDeniedError
+from access_gate import enforce_observe, AccessDeniedError
 
 # ---- 設定 ----------------------------------------------------------------
 VALID_KEYS   = set(filter(None, os.environ.get("MOCKA_API_KEYS",   "").split(",")))
@@ -52,7 +52,7 @@ def require_api_key():
         abort(403, "Invalid API key")
 
     try:
-        check_observe(actor_id=key, scope="GLOBAL")
+        enforce_observe(key, None, "GLOBAL")
     except AccessDeniedError:
         abort(403, "Authorization denied for this actor")
 

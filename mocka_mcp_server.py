@@ -500,7 +500,7 @@ def _verify_mcp_read_access():
         if not actor_id:
             actor_id = "mcp_client"
 
-        enforce_observe(actor_id=actor_id, scope="GLOBAL")
+        enforce_observe(actor_id, None, "GLOBAL")
         return True
     except AccessDeniedError:
         return False

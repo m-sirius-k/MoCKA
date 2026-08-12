@@ -56,7 +56,7 @@ class ContextBuilder:
         try:
             actor_id = request.headers.get("X-MoCKA-Key", "").strip()
 
-            enforce_observe(actor_id=actor_id, scope="GLOBAL")
+            enforce_observe(actor_id, None, "GLOBAL")
 
             conn = sqlite3.connect(str(DB_PATH))
             cur  = conn.cursor()
@@ -115,7 +115,7 @@ class ContextBuilder:
         try:
             actor_id = request.headers.get("X-MoCKA-Key", "").strip()
 
-            enforce_observe(actor_id=actor_id, scope="GLOBAL")
+            enforce_observe(actor_id, None, "GLOBAL")
 
             conn = sqlite3.connect(str(DB_PATH))
             cur  = conn.cursor()
