@@ -49,14 +49,15 @@
     {
       "id": "TODO_205",
       "title": "TIC Layer 2 — tech_lab/ Sandbox整備（隔離実験場）",
-      "status": "未着手",
+      "status": "完了",
       "priority": "高",
       "category": "制度/TIC/sandbox",
       "description": "TIC Layer 2。本体MoCKAに触れない隔離実験場。\n\n【フォルダ構造】\nplanningcaliber/workshop/tech_lab/\n├── README.md（sandbox規約: 本体接続禁止・実験後必ず記録）\n├── experiments/（個別実験フォルダ）\n│   ├── claude_agent_view/\n│   ├── mcp_v2_schema/\n│   └── _template/（実験テンプレート）\n└── results/（評価結果 evaluation_log.jsonl）\n\n【実験テンプレート内容】\n- 対象技術名 / 発見日 / 発見源\n- 仮説（MoCKAのどこに影響するか）\n- 実験手順\n- 結果: 有効/無効/危険\n- MoCKAへの影響範囲（Relay/Orchestra/PHI-OS/Caliber/COMMAND CENTER）\n- 推奨: 採用/保留/却下 + 理由\n\n【厳守ルール】\n本体MoCKAへの接続・変更は一切禁止。\n実験完了後にmocka_write_event(SANDBOX_RESULT)必須。",
       "assigned_to": "きむら博士（設計）+ Claude（実装）",
-      "note": "E20260601_011。本体汚染ゼロの隔離原則。「まず試す、本体は守る」。",
+      "note": "E20260601_011。本体汚染ゼロの隔離原則。「まず試す、本体は守る」。\n\n[2026-08-12 Kuroko実装完了]\nフォルダ構造・README.md・実験テンプレート・evaluation_log.jsonl作成完了。\ncommit: 1a00abb / branch: feature/kuroko-run-terminal\nPhase移行条件: フォルダ構造確立済み・実験テンプレート定着待ち・evaluation_log.jsonl初期化済み。",
       "reference_event": "E20260601_011",
-      "created_at": "2026-06-01T07:35:35.646392"
+      "created_at": "2026-06-01T07:35:35.646392",
+      "completed_at": "2026-08-12T01:00:40.079799+00:00"
     },
     {
       "id": "TODO_221",
