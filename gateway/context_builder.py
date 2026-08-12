@@ -8,6 +8,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "structural"))
 from event_recency import valid_when_ts_clause  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "phi_os" / "context"))
+from access_gate import enforce_observe, sanitize_event_for_observe, AccessDeniedError  # noqa: E402
+from permissions import GLOBAL, ACTOR_SCOPED  # noqa: E402
+
 DATA_DIR      = Path(__file__).parent.parent / "data"
 OVERVIEW_PATH = DATA_DIR / "MOCKA_OVERVIEW.json"
 ESSENCE_PATH  = DATA_DIR / "lever_essence.json"
@@ -20,12 +24,13 @@ PRIORITY_ORDER  = {"最高": 0, "高": 1, "中": 2, "低": 3}
 
 class ContextBuilder:
 
-    def build(self, mode: str = "standard", ai_hint: str = None) -> dict:
+    def build(self, mode: str = "standard", ai_hint: str = None, actor_id: str = None, scope: str = None) -> dict:
         mode    = mode if mode in ("compact", "standard", "extended") else "standard"
+        scope   = scope if scope in (GLOBAL, ACTOR_SCOPED) else GLOBAL
         base    = self._load_base()
         todo    = self._load_todo(mode)
         essence = self._load_essence(mode)
-        events  = self._load_events(mode)
+        events  = self._load_events(mode, actor_id, scope)
         return self._assemble(base, todo, essence, events, mode)
 
     # ------------------------------------------------------------------ loaders
@@ -98,14 +103,13 @@ class ContextBuilder:
         except Exception:
             return ""
 
-    def _load_events(self, mode: str) -> list:
+    def _load_events(self, mode: str, actor_id: str = None, scope: str = GLOBAL) -> list:
         limit = {"compact": 3, "standard": 5, "extended": 30}.get(mode, 5)
         try:
             conn = sqlite3.connect(str(DB_PATH))
             cur  = conn.cursor()
-            # 正: when_ts / short_summary  (×when_time / ×description / ×tags)
             cur.execute(
-                "SELECT event_id, title, short_summary, when_ts, what_type, session_id, trace_id, related_event_id "
+                "SELECT event_id, title, short_summary, when_ts, what_type, session_id, trace_id, related_event_id, who_actor "
                 "FROM events "
                 f"WHERE {valid_when_ts_clause()} "
                 "ORDER BY when_ts DESC LIMIT ?",
@@ -113,19 +117,30 @@ class ContextBuilder:
             )
             rows = cur.fetchall()
             conn.close()
-            return [
-                {
+
+            events = []
+            for r in rows:
+                event_dict = {
                     "id":            r[0],
                     "title":         r[1],
                     "short_summary": r[2],
                     "when":          r[3],
                     "what_type":     r[4],
-                "session_id":    r[5],
-                "trace_id":      r[6],
-                "related_event_id": r[7],
+                    "session_id":    r[5],
+                    "trace_id":      r[6],
+                    "related_event_id": r[7],
                 }
-                for r in rows
-            ]
+                target_actor = r[8]
+
+                try:
+                    enforce_observe(actor_id, target_actor, scope)
+                    if scope == GLOBAL:
+                        event_dict = {**event_dict, **sanitize_event_for_observe(event_dict)}
+                    events.append(event_dict)
+                except AccessDeniedError:
+                    pass
+
+            return events
         except Exception:
             return []
 

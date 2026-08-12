@@ -10,7 +10,7 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -66,18 +66,21 @@ def check_auth():
 @app.route("/api/v1/context")
 def get_context():
     mode = request.args.get("mode", "standard")
-    return jsonify(builder.build(mode))
+    actor_id = getattr(g, 'requesting_actor_id', None)
+    return jsonify(builder.build(mode, actor_id=actor_id))
 
 
 @app.route("/api/v1/todo")
 def get_todo():
-    ctx = builder.build("standard")
+    actor_id = getattr(g, 'requesting_actor_id', None)
+    ctx = builder.build("standard", actor_id=actor_id)
     return jsonify({"active_todo": ctx["active_todo"]})
 
 
 @app.route("/api/v1/phase")
 def get_phase():
-    ctx = builder.build("compact")
+    actor_id = getattr(g, 'requesting_actor_id', None)
+    ctx = builder.build("compact", actor_id=actor_id)
     return jsonify({"phase": ctx["phase"]})
 
 

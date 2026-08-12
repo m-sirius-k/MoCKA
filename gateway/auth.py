@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-from flask import request, abort
+from flask import request, abort, g
 
 # ---- 設定 ----------------------------------------------------------------
 VALID_KEYS   = set(filter(None, os.environ.get("MOCKA_API_KEYS",   "").split(",")))
@@ -18,6 +18,20 @@ TIMESTAMP_MARGIN = 300      # ±5分（秒）
 
 PUBLIC_PATHS = {"/api/v1/phase", "/api/v1/health", "/api/v1/connector/health"}
 HMAC_PATHS   = {"/api/v1/event"}   # POST のみ HMAC 検証
+
+# ---- actor_id マッピング（DC_20260812_002） --------------------------------
+def _get_actor_id_for_key(api_key: str) -> str:
+    """X-MoCKA-Key から requesting_actor_id を確定する。
+    Gateway First Trust Point (DC_20260812_002)"""
+    if not api_key:
+        return None
+    env_mapping = os.environ.get("MOCKA_API_KEY_ACTORS", "{}")
+    try:
+        import json
+        mapping = json.loads(env_mapping)
+        return mapping.get(api_key, "unknown-actor")
+    except Exception:
+        return "unknown-actor"
 
 
 # ---- nonce テーブル初期化 -------------------------------------------------
@@ -46,6 +60,9 @@ def require_api_key():
         abort(401, "X-MoCKA-Key header missing")
     if key not in VALID_KEYS:
         abort(403, "Invalid API key")
+
+    actor_id = _get_actor_id_for_key(key)
+    g.requesting_actor_id = actor_id
 
     if request.method == "POST" and request.path in HMAC_PATHS:
         _verify_hmac_request()
