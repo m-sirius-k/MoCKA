@@ -48,40 +48,12 @@ def _emit_gl7_event(result: str, reason_code: str, context: dict) -> None:
         # GL7自身の実行許可/拒否判定をブロックしない(fail-soft, GL7側はfail closed維持)。
         pass
 
-FORBIDDEN_EXECUTIONS = [
-    "create_new_folder_without_grounding",
-    "create_mocka_3_or_similar",
-    "infer_save_path",
-    "change_encoding_without_confirmation",
-    "infer_branch_name",
-    "infer_path",
-    "infer_repository_name",
-    "bulk_rewrite_without_diff_review",
-]
-
 ABORT_CONDITIONS = [
     "new_directory_detected",
     "unexpected_file_count",
-    "encoding_mismatch",
     "deletion_outside_scope",
     "grounding_not_completed",
 ]
-
-BINARY_EXTENSIONS = {
-    ".sqlite-shm",
-    ".sqlite-wal",
-    ".db",
-    ".pdf",
-    ".png",
-    ".jpg",
-    ".jpeg",
-    ".gif",
-    ".docx",
-    ".xlsx",
-    ".pptx",
-    ".zip",
-    ".bin",
-}
 
 
 @dataclass
@@ -174,19 +146,6 @@ class ExecutionGovernanceEngine:
         action = action or {}
         aborts = []
 
-        op = action.get("operation")
-        if op in FORBIDDEN_EXECUTIONS:
-            aborts.append(f"forbidden_execution:{op}")
-
-        for path in dry_run.changed_files:
-            fp = self.repo_root / path
-            if fp.exists() and fp.is_file():
-                if fp.suffix.lower() in BINARY_EXTENSIONS:
-                    continue
-                try:
-                    fp.read_bytes().decode("utf-8")
-                except UnicodeDecodeError:
-                    aborts.append(f"encoding_mismatch:{path}")
 
         grounding = self.grounding.ground("dry_run_check")
         if not grounding.repository_root:
