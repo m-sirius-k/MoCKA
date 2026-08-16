@@ -3,14 +3,19 @@ import json
 import os
 import datetime
 import re
+from pathlib import Path
 
-EVENTS = r"C:\Users\sirok\MoCKA\data\events.csv"
-INCIDENTS_DIR = r"C:\Users\sirok\MoCKA\docs\incidents"
-RESTRICTIONS = r"C:\Users\sirok\MoCKA\tools\mocka_restrictions.py"
+# Repository-relative path resolution (portable across Windows/Linux)
+# Canonical pattern per MoCKA convention (phase18_wrap_and_sign_pack.py, canonical_trace_merger_phase5b.py)
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+
+EVENTS = str(_REPO_ROOT / "data" / "events.csv")
+INCIDENTS_DIR = str(_REPO_ROOT / "docs" / "incidents")
+RESTRICTIONS = str(_REPO_ROOT / "tools" / "mocka_restrictions.py")
 
 # RC-B最小実装(DC_20260731_006 / DC_20260731_007): INC進行軸の保持先。
 # 承認軸(PENDING/APPROVED/REJECTED)はここに書かない。Human Gateが単一の真実源。
-INC_LIFECYCLE_DIR = r"C:\Users\sirok\MoCKA\data\inc_lifecycle"
+INC_LIFECYCLE_DIR = str(_REPO_ROOT / "data" / "inc_lifecycle")
 INC_STATE_SCHEMA_VERSION = "0.1"
 
 FIELDNAMES = [
