@@ -7198,5 +7198,33 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null
+  },
+  {
+    "timestamp": "2026-08-20T03:54:14.256599+00:00",
+    "event_id": "E20260820_256hg0001",
+    "event_type": "DECISION_RECORDED",
+    "title": "Human Gate Decision DI1/DI2 Design Architecture - Decision Ledger Entry",
+    "description": "PHASE4_HUMAN_GATE_REVIEW_READY: Decision Record DEC_PHASE4_DI1_DI2_DESIGN_REVIEW_001 recorded to Decision Ledger (data/decisions/decision_ledger.jsonl). Three critical design decisions approved:\n1. DI1 Evidence Conflict: Escalate to Human Gate (no automated precedence)\n2. DI2 Auto Recovery: Conservative scope (VALD_E006, TOOL_E001, TOOL_E004 only)\n3. DI2 Timeout Strategy: Limited exponential backoff (1s, max 3 retries, ~8s total)\nAll decisions maintain governance philosophy with human oversight boundaries. Design APPROVED (Implementation AUTHORIZATION remains separate future decision).",
+    "author": "Claude (claude-haiku-4-5-20251001)",
+    "category": "GOVERNANCE",
+    "tags": [
+      "phase4_controlled_development",
+      "human_gate_decision",
+      "di1",
+      "di2",
+      "decision_ledger",
+      "design_approved"
+    ],
+    "related_documents": [
+      "docs/phase4/REVIEW_SUMMARY_HUMAN_GATE.md",
+      "docs/phase4/DI1_DECISION_CANDIDATE_01.md",
+      "docs/phase4/DI2_DECISION_CANDIDATE_02.md",
+      "docs/phase4/DI2_DECISION_CANDIDATE_03.md"
+    ],
+    "related_decision_ids": [
+      "DEC_PHASE4_DI1_DI2_DESIGN_REVIEW_001"
+    ],
+    "severity": "HIGH",
+    "status": "RECORDED"
   }
 ]
