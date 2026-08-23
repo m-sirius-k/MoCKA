@@ -1,19 +1,23 @@
 # HGD-UP-TEST-003-V3-2-OPTION-B-IMPL-AUTH-DECISION-001
 ## Implementation Authorization Gate: Evidence Runtime Extension Phases 2-4
 
-**Document Classification:** DECISION RECORD - AUTHORIZATION REQUEST
+**Document Classification:** DECISION RECORD - AUTHORIZED
 
 **Issue ID:** HGD-UP-TEST-003-V3-2-OPTION-B-IMPL-AUTH-DECISION-001
 
 **Related Approval Gate:** HGD-UP-TEST-003-V3-2-PHASE1-DESIGN-REVIEW-DECISION-001
 
-**Authority:** Implementation Review Team (Decision Required)
+**Authority:** Kimura Human Gate
 
-**Status:** AWAITING AUTHORIZATION (Phases 2-4)
+**Status:** AUTHORIZED WITH CONDITIONS (Phases 2-4)
 
 **Request Date:** 2026-08-23
 
-**Request Context:** Phase 1 Design APPROVED, Implementation Planning Phase
+**Approval Date:** 2026-08-23
+
+**Decision:** APPROVE WITH CONDITIONS
+
+**Approval Context:** Phase 1 Design APPROVED, Implementation Authorization GRANTED with 6 boundary conditions
 
 ---
 
@@ -28,6 +32,127 @@ Phase 1 design specification for Evidence Runtime Extension has been APPROVED by
 4. Approve quality assurance planning?
 
 **Prerequisite:** Phase 1 Design Specification (APPROVED)
+
+---
+
+## Formal Authorization Decision
+
+### Decision Record
+
+**Authority:** Kimura Human Gate
+
+**Decision:** APPROVE WITH CONDITIONS
+
+**Scope:** Phases 2-4 Implementation Authorization
+- Phase 2: Dependency Graph Implementation (3-4 days)
+- Phase 3: Replay Engine Implementation (2-3 days)
+- Phase 4: Invariant Enforcement Implementation (1-2 days)
+
+**Timeline Approved:** 2-3 weeks total (estimated)
+
+**Effective Date:** 2026-08-23
+
+---
+
+### Six Implementation Boundary Conditions
+
+**C1: Scope Lock**
+
+Permitted: Phase 2-4 implementation per Phase 1 design specification
+Prohibited: 
+- Deviations from Phase 1 Design Specification
+- New feature additions
+- Architecture changes
+
+Verification: Code review confirms adherence to design
+
+**C2: Governance Boundary Lock**
+
+Maintained:
+- Core 7 (Governance Event Model, Evidence Collection, Audit Logging, Runtime Execution, Schema Management, Validation Framework, Store Implementation)
+- Meta 6 (Governance Runtime, TIC Integration, PHI-OS Event Gating, Incident Detection, Audit Compliance, Governance Seal)
+- Outer 2 (Evidence API, Dependency API)
+
+Prohibited:
+- Governance model changes
+- Authority model changes
+- Decision responsibility transfer
+
+Verification: Architecture boundary compliance verified at each phase
+
+**C3: UNKNOWN Integrity Protection**
+
+Required: UNKNOWN remains UNKNOWN until explicit evidence exists
+
+Prohibited:
+- Speculative auto-completion
+- Automatic state elevation (UNKNOWN -> VERIFIED without evidence)
+- Time-based resolution (waiting does not resolve UNKNOWN)
+- Replay-time inference (deterministic replay only, no new reasoning)
+
+Enforcement: Guard logic implements all 4 preservation invariants
+
+**C4: Data Protection**
+
+Permitted:
+- Append-only state_history (no mutations)
+- Evidence Record extension (add state tracking fields)
+
+Prohibited:
+- Modifying historical data (past state transitions immutable)
+- Changing Decision Ledger (immutability preserved)
+- Schema changes without separate authorization gate
+
+Verification: DBA review before any DDL changes
+
+**C5: Phase Completion Review**
+
+Execution Flow (Simplified):
+```
+Human Gate Authorization (this decision)
+        ↓
+Phase 2 Implementation
+        ↓
+Phase 2 Completion Review
+        ↓
+Phase 3 Implementation
+        ↓
+Phase 3 Completion Review
+        ↓
+Phase 4 Implementation
+        ↓
+Phase 4 Completion Review
+        ↓
+V3.2 Validation
+        ↓
+Final Closure Decision
+```
+
+No intermediate gates between phases (Phase completion review required before proceeding)
+
+**C6: Final Validation Required**
+
+Completion Criteria:
+- E1 test scenario PASS (state representation)
+- E2 test scenario PASS (UNKNOWN preservation)
+- E3 test scenario PASS (dependency tracking)
+- E4 test scenario PASS (record reproduction)
+
+V3.2 Status: All 4 tests must PASS (previously FAIL without state machine)
+
+Authorization: Final closure requires V3.2 re-validation gate approval
+
+---
+
+### Approved Resources
+
+**Development Resources:**
+- Primary Developer (full-time, 2-3 weeks)
+- Code Review Authority (3-4 hours per phase)
+- Quality Assurance (2-3 hours per phase + 1 day integration)
+- Technical Lead (optional, 2-3 hours per phase)
+
+**Assignment Authority:** Implementation team lead (assigned at Phase 2 start)
 
 ---
 
@@ -512,31 +637,17 @@ Pass Criteria:
 
 ---
 
-## Section 4: Authorization Decision Framework
+## Section 4: Implementation Authority & Responsibility
 
-### Question 1: Resource Allocation
+### Approved Resources Confirmation
 
-**Do you approve the resource allocation below?**
+**Resource Allocation - APPROVED:**
+- [X] Primary Developer (2-3 weeks, Python/codebase language)
+- [X] Code Review Authority (3-4 hours per phase)
+- [X] Quality Assurance (2-3 hours per phase + 1 day integration)
+- [X] Technical Lead (recommended, 2-3 hours per phase oversight)
 
-Required:
-- [  ] Primary Developer (2-3 weeks, Python/codebase language)
-- [  ] Code Review Authority (3-4 hours per phase)
-- [  ] Quality Assurance (2-3 hours per phase + 1 day integration)
-
-Optional but Recommended:
-- [  ] Technical Lead (2-3 hours per phase, oversight)
-
-**If resources unavailable, decision options:**
-- A) DEFER implementation until resources available
-- B) SCALE timeline (extend 2-3 weeks to accommodate part-time effort)
-- C) REJECT authorization (send back to planning)
-
----
-
-### Question 2: Timeline Commitment
-
-**Do you accept the 2-3 week implementation timeline?**
-
+**Timeline Confirmation - APPROVED:**
 ```
 Phase 2:  3-4 days
 Phase 3:  2-3 days
@@ -548,142 +659,74 @@ Total:   2-3 weeks
 Confidence: HIGH (design-driven, well-specified)
 ```
 
-**If timeline unacceptable, decision options:**
-- A) APPROVE with extended timeline (specify weeks required)
-- B) REJECT and request redesigned phases (higher risk)
-- C) REQUEST resource increase (parallel phases, faster completion)
+**Code Review Authority - APPROVED:**
 
----
-
-### Question 3: Code Review Authority Assignment
-
-**Do you assign code review authority for implementation phases?**
+Assigned to: Architecture Review Team (as per Phase 1 design approval)
 
 Responsibilities:
-- Verify implementation matches Phase 1 design specification
+- Verify implementation matches Phase 1 design specification exactly
 - Ensure no architectural redesign occurs
 - Verify guard logic correctly implements pseudocode
-- Check boundary compliance (Core7/Meta6/Outer2 locked)
-- Approve per-phase before proceeding
+- Check boundary compliance (Core7/Meta6/Outer2 locked per C2)
+- Approve each phase before proceeding to next
 
-**Assigned to:** [DECISION REQUIRED]
-- Proposed: Architecture Review Team (who approved Phase 1 design)
-- Alternative: Specific named reviewer
-- Alternative: Human Gate authority only
+**Quality Assurance Plan - APPROVED:**
 
----
+QA Coverage:
+- [X] E3.1 + E3.2 (Phase 2 completion tests - dependency tracking)
+- [X] E4.1 + E4.2 (Phase 3 completion tests - replay engine)
+- [X] E1.1 + E1.2 + E2.1 + E2.2 (Phase 4 completion tests - invariant enforcement)
+- [X] Integration testing (all phases together)
+- [X] V3.2 re-validation (governance compliance)
 
-### Question 4: Quality Assurance Planning
-
-**Do you approve the QA plan (8 test scenarios, per-phase gates)?**
-
-- [  ] E3.1 + E3.2 (Phase 2 gate tests)
-- [  ] E4.1 + E4.2 (Phase 3 gate tests)
-- [  ] E1.1 + E1.2 + E2.1 + E2.2 (Phase 4 gate tests)
-- [  ] Integration testing (all phases together)
-- [  ] V3.2 re-validation (governance compliance)
-
-**If QA plan insufficient, decision options:**
-- A) APPROVE as-is (sufficient coverage)
-- B) REQUEST additional test scenarios (specify)
-- C) REQUEST independent QA authority (external verification)
+Total: 8 test scenarios with per-phase completion gates per C5
 
 ---
 
-## Section 5: Decision Options
+## Section 5: Formal Authorization Decision (APPROVED)
 
-### OPTION A: APPROVE ALL (Recommended)
+### Human Gate Authorization Confirmed
 
-**Decision:** AUTHORIZE implementation of Phases 2-4
+**Decision Record Confirmed:**
 
-**Scope:** Full authorization for Evidence Runtime Extension implementation
-- Phase 2: Dependency Graph (3-4 days)
-- Phase 3: Replay Engine (2-3 days)
-- Phase 4: Invariant Enforcement (1-2 days)
+**OPTION SELECTED: B - APPROVE WITH CONDITIONS**
 
-**Conditions:**
-- Development follows Phase 1 design specification exactly
-- Code review required before each phase gate
-- QA testing must pass all 8 test scenarios
-- Boundary compliance verified (Core7/Meta6/Outer2 locked)
-- Timeline: 2-3 weeks target
+**Status: AUTHORIZED**
+
+**Authority: Kimura Human Gate (2026-08-23)**
+
+**Scope:** Full authorization for Evidence Runtime Extension Phases 2-4 implementation
+
+**Implementation Authorized:**
+- [X] Phase 2: Dependency Graph Implementation (3-4 days)
+- [X] Phase 3: Replay Engine Implementation (2-3 days)
+- [X] Phase 4: Invariant Enforcement Implementation (1-2 days)
+
+**Conditions Confirmed:**
+- [X] C1: Scope Lock (Phase 1 design adherence, no scope creep)
+- [X] C2: Governance Boundary Lock (Core7/Meta6/Outer2 preserved)
+- [X] C3: UNKNOWN Integrity Protection (no inference, no auto-completion)
+- [X] C4: Data Protection (append-only history, no past modifications)
+- [X] C5: Phase Completion Review (simplified execution flow)
+- [X] C6: Final Validation Required (all 4 V3.2 tests must PASS)
+
+**Timeline Confirmed:** 2-3 weeks (design-driven, high confidence)
 
 **Next Action:**
-1. Assign implementation resources (developer, code reviewer, QA)
+1. Assign implementation resources (developer, code reviewer, QA, tech lead)
 2. Provision development environment
-3. Begin Phase 2 implementation
-4. Issue Phase 2 completion gate upon finish
+3. Retrieve Phase 1 Design Specification (HGD-UP-TEST-003-V3-2-PHASE1-DESIGN-COMPLETE-001.md)
+4. Begin Phase 2 implementation (Dependency Graph)
+5. Track implementation phases to completion gates
 
-**Timeline to V3.2 Verified:** ~3 weeks after authorization
+**Expected Completion:** ~3 weeks after Phase 2 start, ready for V3.2 re-validation
 
----
-
-### OPTION B: APPROVE WITH CONDITIONS
-
-**Decision:** AUTHORIZE with specific conditions
-
-**Conditions (Examples):**
-- Timeline extension to [X weeks] if resources part-time
-- Code review by [specific authority] instead of Architecture Team
-- Additional test scenarios required (specify)
-- Phase gates required before each phase proceeds
-- Weekly status updates to human authority
-
-**Next Action:** Same as Option A, but with condition tracking
-
----
-
-### OPTION C: REQUEST REVISIONS
-
-**Decision:** DEFER authorization, request revisions to implementation plan
-
-**Possible Revisions:**
-- Resource allocation unclear (request clarity)
-- Timeline estimate too aggressive (request conservative estimate)
-- QA plan insufficient (request additional coverage)
-- Code review authority not assigned (request assignment)
-- Other concerns (specify)
-
-**Next Action:**
-1. Communicate revision request to implementation planning team
-2. Revisions addressed (1-3 days)
-3. Resubmit authorization gate
-4. Timeline impact: +1 week
-
----
-
-### OPTION D: DEFER (Not Recommended)
-
-**Decision:** DEFER authorization, no rework requested
-
-**Rationale (Examples):**
-- Competing priorities (other work takes precedence)
-- External blockers (resources allocated elsewhere)
-- Awaiting additional information (specify what)
-- Timeline not approved by leadership (request negotiation)
-
-**Next Action:**
-1. Record deferral reason in decision ledger
-2. Reschedule decision point (specify date)
-3. Timeline impact: Unknown (depends on deferral duration)
-
----
-
-### OPTION E: REJECT (Not Recommended)
-
-**Decision:** REJECT authorization, do not proceed with implementation
-
-**Rationale (Examples):**
-- Architecture risk identified (specify)
-- Resource constraints prohibit execution (specify)
-- Business priority changed (specify)
-- Alternative approach preferred (specify alternative)
-
-**Next Action:**
-1. Record rejection reason in decision ledger
-2. Return to architecture decision phase
-3. Request review of Option A vs Option C vs Option C alternatives
-4. Timeline impact: Significant (restart decision cycle)
+**NOT Authorized (Explicitly Prohibited):**
+- Architecture changes (Core7/Meta6/Outer2 locked)
+- Scope expansion beyond Phase 2-4
+- UNKNOWN state inference or auto-completion
+- Historical data modification
+- Decision Ledger changes
 
 ---
 
@@ -797,43 +840,58 @@ Responsibilities:
 
 ---
 
-## Section 8: Decision Confirmation
+## Section 8: Authorization Confirmation
 
-### Authorization Decision (DECISION REQUIRED)
+### Final Authorization Record
 
-**Choose One:**
+**Decision Confirmed:** OPTION B - APPROVE WITH CONDITIONS
 
-- [ ] OPTION A: APPROVE ALL (Recommended)
-- [ ] OPTION B: APPROVE WITH CONDITIONS (Specify)
-- [ ] OPTION C: REQUEST REVISIONS (Specify)
-- [ ] OPTION D: DEFER (Specify date/reason)
-- [ ] OPTION E: REJECT (Specify reason)
+**Approving Authority:** Kimura Human Gate
 
-**Authority Signature:** [DECISION REQUIRED]
+**Approval Date:** 2026-08-23
 
-**Approval Date:** [DECISION REQUIRED]
+**Status:** AUTHORIZED FOR IMPLEMENTATION
 
-**Assigned Code Review Authority:** [DECISION REQUIRED]
+**Code Review Authority:** Architecture Review Team (as per Phase 1 design approval)
 
-**Assigned QA Authority:** [DECISION REQUIRED]
+**QA Authority:** Quality Assurance Team (per Phase 1 design specifications)
 
-**Assigned Technical Lead (Optional):** [DECISION OPTIONAL]
+**Technical Lead:** Implementation team lead (to be assigned at Phase 2 start)
+
+**Boundary Conditions Acknowledged:** C1-C6 all apply to Phases 2-4 implementation
 
 ---
 
-## Section 9: Document Status
+## Section 9: Document Status & Next Steps
 
-**This Gate Status:** AWAITING AUTHORIZATION (ready for implementation review team decision)
+**Gate Status:** AUTHORIZED (decision approved 2026-08-23)
 
-**Phase 1 Design:** APPROVED (2026-08-23)
+**Phase 1 Design:** APPROVED (2026-08-23, HGD-UP-TEST-003-V3-2-PHASE1-DESIGN-REVIEW-DECISION-001)
 
-**Phase 2-4 Implementation:** BLOCKED (pending this authorization gate)
+**Phase 2-4 Implementation:** AUTHORIZED (this gate, conditions C1-C6 apply)
 
-**Next Actions (Upon Approval):**
-1. Assign resources (developer, code reviewer, QA)
-2. Provision development environment
-3. Begin Phase 2 implementation
-4. Track phases to completion gates
+**Immediate Next Actions:**
+1. [X] Human Gate Authorization: APPROVED WITH CONDITIONS
+2. [  ] Assign implementation resources (developer, code reviewer, QA, tech lead)
+3. [  ] Provision development environment (branch, tools, access)
+4. [  ] Retrieve Phase 1 Design Specification (reference document for implementation)
+5. [  ] Begin Phase 2 implementation (Dependency Graph)
+6. [  ] Complete Phase 2 (target: Day 1-4)
+7. [  ] Issue Phase 2 Completion Review gate
+8. [  ] Proceed to Phase 3 (upon Phase 2 approval)
+
+**Implementation Timeline:**
+- Phase 2 Complete: Day 1-4
+- Phase 2 Review: Day 4
+- Phase 3 Complete: Day 5-7
+- Phase 3 Review: Day 7
+- Phase 4 Complete: Day 8-9
+- Phase 4 Review: Day 9
+- Integration Testing: Day 10-14
+- V3.2 Re-validation: Day 15-17
+- Final Closure: Upon validation approval
+
+**Authority Responsible for Phase 2-4 Execution:** Implementation team lead (to be assigned)
 
 ---
 
