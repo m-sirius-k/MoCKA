@@ -1,0 +1,519 @@
+{
+  "matrix": [
+    {
+      "case_id": "T01",
+      "past_decision": "Allow",
+      "present_state": "premises unchanged",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "ALLOW",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "PREMISES_UNCHANGED"
+      ],
+      "expected_eligibility": [
+        "ELIGIBLE"
+      ],
+      "actual_eligibility": "ELIGIBLE",
+      "expected_execution": "EXECUTE",
+      "execution_eligibility": "EXECUTE",
+      "axis_scores": {
+        "evidence_preservation": "NOT_TESTED",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "premises unchanged; past ALLOW may be reused",
+      "note": "Control. Varies nothing, so no axis is exercised. If nothing may ever be reused, the gate proves nothing."
+    },
+    {
+      "case_id": "T02",
+      "past_decision": "Allow",
+      "present_state": "validity expired",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-08-10T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "ALLOW",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-08-10T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "TEMPORAL_EXPIRED"
+      ],
+      "expected_eligibility": [
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "RE_EVALUATE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "NOT_TESTED",
+        "temporal_validity": "PASS",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "re-evaluation required: TEMPORAL_EXPIRED",
+      "note": ""
+    },
+    {
+      "case_id": "T03",
+      "past_decision": "Allow",
+      "present_state": "authority revoked",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "ALLOW",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "REVOKED"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "AUTHORITY_REVOKED"
+      ],
+      "expected_eligibility": [
+        "BLOCK",
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "BLOCK",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "NOT_TESTED",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "PASS",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "hard block: AUTHORITY_REVOKED",
+      "note": ""
+    },
+    {
+      "case_id": "T04",
+      "past_decision": "Allow",
+      "present_state": "evidence changed",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "7ea0f7cf8a13aed6"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "ALLOW",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "EVIDENCE_CHANGED"
+      ],
+      "expected_eligibility": [
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "RE_EVALUATE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "PASS",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "re-evaluation required: EVIDENCE_CHANGED",
+      "note": ""
+    },
+    {
+      "case_id": "T05",
+      "past_decision": "Allow",
+      "present_state": "context content changed",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "ALLOW",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "ce41ea58bdddde70"
+      },
+      "findings": [
+        "CONTEXT_CHANGED"
+      ],
+      "expected_eligibility": [
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "RE_EVALUATE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "NOT_TESTED",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "PASS",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "re-evaluation required: CONTEXT_CHANGED",
+      "note": ""
+    },
+    {
+      "case_id": "T06",
+      "past_decision": "Block",
+      "present_state": "premises unchanged",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "BLOCK",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "PREMISES_UNCHANGED"
+      ],
+      "expected_eligibility": [
+        "ELIGIBLE"
+      ],
+      "actual_eligibility": "ELIGIBLE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "NOT_TESTED",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "premises unchanged; past BLOCK may be reused",
+      "note": "Reusable does not mean permitted. A reusable BLOCK still stops."
+    },
+    {
+      "case_id": "T07",
+      "past_decision": "Block",
+      "present_state": "state improved",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "7ea0f7cf8a13aed6"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "BLOCK",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "EVIDENCE_CHANGED"
+      ],
+      "expected_eligibility": [
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "RE_EVALUATE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "PASS",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "re-evaluation required: EVIDENCE_CHANGED",
+      "note": "Improvement must not auto-lift a BLOCK. Whether re-evaluation would now allow it is outside this gate."
+    },
+    {
+      "case_id": "T08",
+      "past_decision": "UNKNOWN",
+      "present_state": "no new evidence",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "UNKNOWN",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "NO_NEW_EVIDENCE"
+      ],
+      "expected_eligibility": [
+        "UNKNOWN"
+      ],
+      "actual_eligibility": "UNKNOWN",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "PASS",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "past decision was UNKNOWN and nothing new arrived",
+      "note": ""
+    },
+    {
+      "case_id": "T09",
+      "past_decision": "UNKNOWN",
+      "present_state": "new evidence present",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "7ea0f7cf8a13aed6"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "UNKNOWN",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-1",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "NEW_EVIDENCE_PRESENT"
+      ],
+      "expected_eligibility": [
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "RE_EVALUATE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "PASS",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "NOT_TESTED",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "re-evaluation required: NEW_EVIDENCE_PRESENT",
+      "note": ""
+    },
+    {
+      "case_id": "T10",
+      "past_decision": "Allow (reused)",
+      "present_state": "context mismatch",
+      "evidence": {
+        "recorded": "176fd7845dc02b67",
+        "present": "176fd7845dc02b67"
+      },
+      "timestamp": {
+        "decided_at": "2026-08-01T00:00:00Z",
+        "validity_until": "2026-09-30T00:00:00Z",
+        "now": "2026-08-28T12:00:00Z"
+      },
+      "decision": "ALLOW",
+      "authority": {
+        "recorded": "AUTH-OPERATOR-01",
+        "present": "AUTH-OPERATOR-01",
+        "present_state": "VALID"
+      },
+      "validity": "2026-09-30T00:00:00Z",
+      "current_context": {
+        "recorded_id": "CTX-1",
+        "present_id": "CTX-2",
+        "recorded_digest": "3b4021f473d3a90b",
+        "present_digest": "3b4021f473d3a90b"
+      },
+      "findings": [
+        "CONTEXT_MISMATCH"
+      ],
+      "expected_eligibility": [
+        "RE_EVALUATE"
+      ],
+      "actual_eligibility": "RE_EVALUATE",
+      "expected_execution": "STOP",
+      "execution_eligibility": "STOP",
+      "axis_scores": {
+        "evidence_preservation": "UNKNOWN",
+        "temporal_validity": "NOT_TESTED",
+        "authority_continuity": "NOT_TESTED",
+        "context_continuity": "PASS",
+        "re_evaluation_correctness": "PASS"
+      },
+      "findings_exact_match": true,
+      "result": "PASS",
+      "reason": "re-evaluation required: CONTEXT_MISMATCH",
+      "note": "Evidence preservation is UNKNOWN here: the digests are comparable mechanically, but whether comparing evidence across a context boundary is meaningful is not determinable within this experiment."
+    }
+  ],
+  "critical_test": {
+    "case_id": "T50-TIM-REUSE",
+    "path_A": {
+      "description": "Past Decision reused directly (anti-pattern control)",
+      "output": "ALLOW",
+      "comparisons_performed": 0,
+      "legitimacy": "NOT A LEGITIMATE ALLOW",
+      "axis_scores": {
+        "evidence_preservation": "FAIL",
+        "temporal_validity": "FAIL",
+        "authority_continuity": "FAIL",
+        "context_continuity": "FAIL",
+        "re_evaluation_correctness": "FAIL"
+      },
+      "behaved_as_predicted": true,
+      "note": "Path A performs no comparison against the present at all, so it fails every axis by construction. Its ALLOW is recorded as an unearned output, never as evidence of eligibility."
+    },
+    "path_B": {
+      "description": "Past Decision + current re-evaluation",
+      "eligibility": "RE_EVALUATE",
+      "execution": "STOP",
+      "findings": [
+        "CONTEXT_MISMATCH",
+        "AUTHORITY_CHANGED",
+        "TEMPORAL_EXPIRED",
+        "EVIDENCE_CHANGED"
+      ],
+      "comparisons_performed": 4,
+      "axis_scores": {
+        "evidence_preservation": "PASS",
+        "temporal_validity": "PASS",
+        "authority_continuity": "PASS",
+        "context_continuity": "PASS",
+        "re_evaluation_correctness": "PASS"
+      },
+      "reason": "re-evaluation required: CONTEXT_MISMATCH, AUTHORITY_CHANGED, TEMPORAL_EXPIRED, EVIDENCE_CHANGED",
+      "note": "Path B must re-check evidence, temporal validity, authority and context before any reuse."
+    },
+    "comparison": {
+      "A_yields": "ALLOW",
+      "B_yields": "RE_EVALUATE / STOP",
+      "verdict": "A reaches ALLOW without inspecting the present. That output is not counted as a legitimate ALLOW."
+    }
+  }
+}
