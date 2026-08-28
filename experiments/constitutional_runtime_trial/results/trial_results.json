@@ -1,0 +1,446 @@
+[
+  {
+    "test_id": "B01",
+    "title": "Valid contract",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "fully valid typed contract, bound verdict ALLOW",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [],
+    "expected_decision": [
+      "ALLOW"
+    ],
+    "actual_decision": "ALLOW",
+    "actual_execution": "EXECUTE",
+    "evidence_status": "DESIGNED",
+    "reason": "all typed checks passed and bound verdict is ALLOW",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B02",
+    "title": "Authority lost",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "authority_state=LOST",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "AUTHORITY_LOST"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "authority is not valid",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B03",
+    "title": "Inadmissible",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "admissibility_state=INADMISSIBLE",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "INADMISSIBLE"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "request is inadmissible",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B04",
+    "title": "Expired contract",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "expires_at is in the past relative to the fixed clock",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "EXPIRED"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "contract expired",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B05",
+    "title": "Integrity failure",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "integrity_status=FAILED",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "INTEGRITY_FAILURE"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "integrity not verified",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B06",
+    "title": "Missing contract",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "no contract object at all",
+    "structured_contract": "none (no inspectable contract)",
+    "primitive": [
+      "CONTRACT_INVALID"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "contract failed typed intake; 1 defect(s)",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B07",
+    "title": "Malformed contract",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "free text supplied where a structured contract is required",
+    "structured_contract": "none (no inspectable contract)",
+    "primitive": [
+      "CONTRACT_INVALID"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "contract failed typed intake; 1 defect(s)",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B08",
+    "title": "Unknown state",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "admissibility_state=UNKNOWN",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "UNKNOWN"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "UNKNOWN",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "admissibility unknown",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B09",
+    "title": "RE = Block with valid binding",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "binding_status=BOUND, bound verdict BLOCK",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "bound RE verdict BLOCK honored as a denial",
+    "result": "PASS"
+  },
+  {
+    "test_id": "B10",
+    "title": "RE = Block with missing binding",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "binding_status=MISSING, verdict not bound",
+    "structured_contract": "12 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "CONTRACT_INVALID"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "verdict is not bound; Basic folds binding failure into CONTRACT_INVALID",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E00",
+    "title": "Valid extended contract",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "fully valid typed contract, signature recomputed, fresh nonce",
+    "structured_contract": "18 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [],
+    "expected_decision": [
+      "ALLOW"
+    ],
+    "actual_decision": "ALLOW",
+    "actual_execution": "EXECUTE",
+    "evidence_status": "DESIGNED",
+    "reason": "all typed checks passed and bound verdict is ALLOW",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E01",
+    "title": "RE = Block, contract absent",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "RE denial exists only outside the contract; no contract supplied",
+    "structured_contract": "none (no inspectable contract)",
+    "primitive": [
+      "CONTRACT_MISSING"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "no inspectable contract; stopped at intake",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E02",
+    "title": "RE = Allow, authority lost",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "authority_state=LOST while the verdict says ALLOW",
+    "structured_contract": "18 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "AUTHORITY_LOST"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "1 finding(s): AUTHORITY_LOST",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E03",
+    "title": "Prose says FORCED_INADMISSIBLE, structured field absent",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "admissibility_state omitted; the string FORCED_INADMISSIBLE appears only in prose",
+    "structured_contract": "17 typed field(s), 1 prose field(s) quarantined",
+    "primitive": [
+      "CONTRACT_SEMANTICALLY_INCOMPLETE"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "bound RE verdict BLOCK honored as a denial",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E04",
+    "title": "Prose claims a signed deny state, signature field absent",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "no signature field; the claim of being signed appears only in prose",
+    "structured_contract": "17 typed field(s), 1 prose field(s) quarantined",
+    "primitive": [
+      "SIGNATURE_MISSING"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "1 finding(s): SIGNATURE_MISSING",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E05",
+    "title": "Valid contract, timestamp expired",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "expires_at is in the past",
+    "structured_contract": "18 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "EXPIRED",
+      "TIMESTAMP_MISMATCH"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "2 finding(s): EXPIRED, TIMESTAMP_MISMATCH",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E06",
+    "title": "Valid contract, nonce reused",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "same nonce as a previously evaluated contract",
+    "structured_contract": "18 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "NONCE_REUSED"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "1 finding(s): NONCE_REUSED",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E07",
+    "title": "Valid schema, wrong execution context",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "contract request_id does not match the execution context",
+    "structured_contract": "18 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "CONTEXT_MISMATCH"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "1 finding(s): CONTEXT_MISMATCH",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E08",
+    "title": "Two RE verdicts conflict",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "re_verdicts carries ALLOW and BLOCK from two engines",
+    "structured_contract": "19 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "MULTIPLE_RE_CONFLICT"
+    ],
+    "expected_decision": [
+      "BLOCK"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "1 finding(s): MULTIPLE_RE_CONFLICT",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E09",
+    "title": "Syntactically valid, semantically incomplete",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "envelope well formed, one decision-bearing field carries no value",
+    "structured_contract": "17 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "CONTRACT_SEMANTICALLY_INCOMPLETE"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "UNKNOWN",
+    "actual_execution": "STOP",
+    "evidence_status": "DESIGNED",
+    "reason": "1 finding(s): CONTRACT_SEMANTICALLY_INCOMPLETE",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E10",
+    "title": "Primitive name unknown to the runtime",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "declared primitive is not in the runtime vocabulary",
+    "structured_contract": "19 typed field(s), 0 prose field(s) quarantined",
+    "primitive": [
+      "BINDING_UNMAPPED"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "UNKNOWN",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "1 finding(s): BINDING_UNMAPPED",
+    "result": "PASS"
+  },
+  {
+    "test_id": "E2E-BOUNDARY-01",
+    "title": "Contract present, required primitive fields absent",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "metadata only; every decision-bearing field absent; RE denial is prose",
+    "structured_contract": "5 typed field(s), 1 prose field(s) quarantined",
+    "primitive": [
+      "CONTRACT_SEMANTICALLY_INCOMPLETE",
+      "SIGNATURE_MISSING",
+      "NONCE_REUSED",
+      "BINDING_MISSING",
+      "WITNESS_MISSING",
+      "VERDICT_MISSING"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "6 finding(s): BINDING_MISSING, CONTRACT_SEMANTICALLY_INCOMPLETE, NONCE_REUSED, SIGNATURE_MISSING, VERDICT_MISSING, WITNESS_MISSING",
+    "result": "PASS"
+  },
+  {
+    "test_id": "T50-BASIC",
+    "title": "Observed Test 50 boundary, Trial-Basic",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Basic",
+    "input": "RE denial present as prose only; no bound structured verdict",
+    "structured_contract": "5 typed field(s), 2 prose field(s) quarantined",
+    "primitive": [
+      "CONTRACT_INVALID"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "contract failed typed intake; 7 defect(s)",
+    "result": "PASS"
+  },
+  {
+    "test_id": "T50-EXTENDED",
+    "title": "Observed Test 50 boundary, Trial-Extended",
+    "runtime": "MoCKA Constitutional Runtime v1.0-stubs Trial-Extended",
+    "input": "RE denial present as prose only; no bound structured verdict",
+    "structured_contract": "5 typed field(s), 2 prose field(s) quarantined",
+    "primitive": [
+      "CONTRACT_SEMANTICALLY_INCOMPLETE",
+      "SIGNATURE_MISSING",
+      "NONCE_REUSED",
+      "BINDING_MISSING",
+      "WITNESS_MISSING",
+      "VERDICT_MISSING"
+    ],
+    "expected_decision": [
+      "BLOCK",
+      "UNKNOWN"
+    ],
+    "actual_decision": "BLOCK",
+    "actual_execution": "STOP",
+    "evidence_status": "DERIVED",
+    "reason": "6 finding(s): BINDING_MISSING, CONTRACT_SEMANTICALLY_INCOMPLETE, NONCE_REUSED, SIGNATURE_MISSING, VERDICT_MISSING, WITNESS_MISSING",
+    "result": "PASS"
+  }
+]
