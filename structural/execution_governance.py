@@ -25,6 +25,13 @@ from structural.grounding_engine import RepositoryGroundingEngine
 
 REPO_ROOT = Path(r"C:\Users\sirok\MoCKA")
 
+# Binary file extensions to exclude from UTF-8 encoding check
+BINARY_EXTENSIONS = {
+    ".sqlite", ".sqlite-shm", ".sqlite-wal",
+    ".db", ".pdf", ".png", ".jpg", ".jpeg", ".gif",
+    ".docx", ".xlsx", ".pptx", ".zip", ".bin",
+}
+
 # Phase2(PHI-OS-HUMAN-GATE-STATE-MODEL-V1): GL7 -> PHI-OS は pure event
 # forwarding のみ。GL7はphi_os側の関数を呼び出さない・state参照しない・
 # 同期待ちしない。event_bus.append()がここで唯一のPHI-OSとの接点であり、
@@ -51,6 +58,7 @@ def _emit_gl7_event(result: str, reason_code: str, context: dict) -> None:
 ABORT_CONDITIONS = [
     "new_directory_detected",
     "unexpected_file_count",
+    "encoding_mismatch",
     "deletion_outside_scope",
     "grounding_not_completed",
 ]
@@ -176,7 +184,28 @@ class ExecutionGovernanceEngine:
             if not (all_deletions and dry_run.change_count <= 1000):
                 aborts.append("unexpected_file_count")
 
+        encoding_mismatches = self._check_encoding_mismatches(dry_run.changed_files)
+        if encoding_mismatches:
+            aborts.append("encoding_mismatch")
+
         return aborts
+
+    def _check_encoding_mismatches(self, file_paths: list) -> list:
+        mismatches = []
+        for file_path in file_paths:
+            path_obj = self.repo_root / file_path
+            ext = path_obj.suffix.lower()
+            if ext in BINARY_EXTENSIONS:
+                continue
+            if not path_obj.exists():
+                continue
+            try:
+                with open(path_obj, "rb") as f:
+                    content = f.read()
+                content.decode("utf-8")
+            except (UnicodeDecodeError, FileNotFoundError, IsADirectoryError):
+                mismatches.append(file_path)
+        return mismatches
 
     def pre_execution_check(self, action: dict) -> ApprovalResult:
         """
