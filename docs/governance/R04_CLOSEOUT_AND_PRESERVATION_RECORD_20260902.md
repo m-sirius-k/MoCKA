@@ -14,18 +14,28 @@
 
 R04 (Phase C Current Authorization Boundary Investigation) is FORMALLY CLOSED.
 
+**Precise Status Hierarchy** (Investigation complete, awaiting Human Gate decision):
+
 ```
-R04 STATUS
-├─ Phase C Investigation = CLOSED
-├─ Phase C Implementation = FROZEN (no changes authorized)
-├─ Current Authorization Source = UNKNOWN / SPECIFICATION GAP PRESERVED
-├─ Authorization Identifier/Linkage = UNKNOWN / SPECIFICATION GAP PRESERVED
-├─ Human Gate Decision Package = SUBMITTED (awaiting response)
-├─ Phase D Investigation = NOT STARTED (NOT AUTHORIZED)
-└─ R04 Overall = CLOSED (awaiting Human Gate specification decision)
+R04 CLOSURE STATUS
+├─ Investigation Status        = CLOSED (work complete)
+├─ Evidence Status             = PRESERVED (5 documents)
+├─ Specification Status        = UNKNOWN / SPECIFICATION GAP (preserved)
+├─ Phase C Implementation      = FROZEN (no changes authorized)
+├─ Phase D Investigation       = NOT AUTHORIZED (not started)
+├─ Codex Implementation Work   = STOPPED
+├─ KUROKO Investigation Work   = STOPPED
+├─ Human Gate Action           = DECISION PENDING
+└─ Reopening Condition         = CONDITIONAL ONLY (new evidence OR Human Gate decision)
 ```
 
-**This is not "incomplete." This is "complete investigation, awaiting specification decision."**
+**Critical Distinction**: R04 is not "incomplete" or "awaiting completion." 
+
+**R04 is "investigation complete, evidence preserved, implementation frozen, awaiting Human Gate specification decision."**
+
+No KUROKO or Codex work proceeds until Human Gate decides operative authority.
+
+**This is the correct closure state under Evidence Supremacy + Human Authority Boundary.**
 
 ---
 
@@ -63,17 +73,21 @@ Status: **CLOSED**
 
 ## B. Formal Preservation Record
 
-### B.1 Evidence Documents (Official R04 Record)
+### B.1 Evidence and Closure Artifacts (Official R04 Record)
 
-All of the following are OFFICIAL R04 INVESTIGATION RECORD and shall not be modified:
+**Total Artifacts**: 5 documents, committed via 6 git commits
 
-| # | Document | Status | Date | Purpose |
+**All of the following are OFFICIAL R04 INVESTIGATION RECORD and shall not be modified:**
+
+| # | Document | Type | Date | Purpose |
 |---|---|---|---|---|
-| 1 | `PHASE_C_CURRENT_AUTHORIZATION_EVIDENCE_v1.md` | Investigation Record | 2026-09-02 | Evidence trace of current implementation |
-| 2 | `PHASE_C_CURRENT_AUTHORIZATION_EVIDENCE_SUPPLEMENT_v1.md` | Investigation Record | 2026-09-02 | Discovery and analysis of DC_20260713_003 |
-| 3 | `PHASE_C_CURRENT_AUTHORIZATION_APPLICABILITY_CHECK_v1.md` | Investigation Record | 2026-09-02 | Verification of specification applicability |
+| 1 | `PHASE_C_CURRENT_AUTHORIZATION_EVIDENCE_v1.md` | Investigation Record | 2026-09-02 | Current implementation behavior trace |
+| 2 | `PHASE_C_CURRENT_AUTHORIZATION_EVIDENCE_SUPPLEMENT_v1.md` | Investigation Record | 2026-09-02 | DC_20260713_003 discovery and analysis |
+| 3 | `PHASE_C_CURRENT_AUTHORIZATION_APPLICABILITY_CHECK_v1.md` | Investigation Record | 2026-09-02 | Specification applicability verification |
 | 4 | `R04_CURRENT_AUTHORIZATION_SPECIFICATION_GAP_HUMAN_GATE_PACKAGE_v1.md` | Decision Package | 2026-09-02 | Human Gate specification decision request |
-| 5 | `R04_CLOSEOUT_AND_PRESERVATION_RECORD_20260902.md` | Closure Record | 2026-09-02 | This document - investigation closure |
+| 5 | `R04_CLOSEOUT_AND_PRESERVATION_RECORD_20260902.md` | Closure Record | 2026-09-02 | Investigation closure and preservation record |
+
+**Git Commit History**: 6 commits in `claude/kuroko-r04-auth-reach-pmde2u` branch documenting investigation progression
 
 ### B.2 Supporting Evidence (Referenced)
 
@@ -420,40 +434,40 @@ shall be operative for R04 Phase C Current Authorization?
 
 ## J. Final Disposition
 
-### Current R04 State
+### Audit-Verified R04 Closure Status
 
 ```
-R04 DISPOSITION (2026-09-02)
-
-Phase C
-├─ Investigation       = CLOSED
-├─ Specification       = UNKNOWN / SPECIFICATION GAP PRESERVED
-├─ Implementation      = FROZEN
-├─ Authority Source    = UNKNOWN
-├─ Request Linkage     = UNKNOWN
-└─ Human Gate Action   = DECISION PACKAGE SUBMITTED
-
-Phase D
-├─ Scope              = NOT DEFINED (contingent on Phase C)
-├─ Investigation      = NOT STARTED
-├─ Authorization      = NOT GRANTED
-└─ Status             = HOLD / NOT AUTHORIZED
-
-R04 Overall
-├─ Status             = CLOSED (evidence-bounded, awaiting decision)
-├─ Evidence           = PRESERVED (5 official documents)
-├─ Implementation     = FROZEN (no changes authorized)
-├─ Reopen Conditions  = DOCUMENTED
-└─ Next Action        = Human Gate specification decision
+R04 FINAL STATE (2026-09-02) — AUDIT VERIFIED
+├─ Investigation Status        CLOSED
+├─ Evidence Status             PRESERVED (5 documents, 6 commits)
+├─ Specification Status        UNKNOWN / SPECIFICATION GAP (preserved)
+├─ Phase C Implementation      FROZEN (no changes authorized)
+├─ Phase D Investigation       NOT AUTHORIZED (not started)
+├─ Codex Implementation Work   STOPPED
+├─ KUROKO Investigation Work   STOPPED
+├─ Human Gate Status           DECISION PENDING
+└─ Reopening Condition         CONDITIONAL ONLY
+    ├─ New authoritative evidence discovered, OR
+    ├─ Human Gate specification decision made, OR
+    └─ Explicit implementation authorization granted
 ```
 
-### Formal R04 Closure
+### Formal R04 Investigation Closure
 
-This document formally CLOSES R04 Phase C investigation.
+This document formally and completely CLOSES R04 Phase C investigation.
 
-Status is NOT "incomplete" or "abandoned."
+**Status Classification** (audit-verified):
+- **NOT**: "incomplete" or "abandoned" or "awaiting completion"
+- **IS**: "investigation complete, specification gap identified and preserved, evidence formalized, implementation frozen, awaiting Human Gate specification decision"
 
-Status is **"investigation complete, specification gap identified and preserved, evidence formalized, awaiting Human Gate specification decision."**
+**Work Authorization Status**:
+- Investigation: **STOPPED (complete)**
+- Codex implementation: **STOPPED (not authorized)**
+- KUROKO investigation: **STOPPED (complete)**
+- KUROKO design work: **STOPPED (not authorized)**
+- Phase C changes: **STOPPED (frozen)**
+
+**What Remains**: Human Gate specification decision only. No additional R04 work authorized until Human Gate decides operative authority source and linkage mechanism.
 
 ---
 
