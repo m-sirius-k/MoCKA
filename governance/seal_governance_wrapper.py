@@ -38,6 +38,17 @@ CALC_SUMMARY_HASH_SCRIPT = _GOVERNANCE_DIR / "calc_summary_hash.py"
 
 
 @dataclass
+class AuthorizationState:
+    """Current authorization state at execution time"""
+    is_authorized: bool
+    authority: str
+    scope: list[str]
+    evidence: dict
+    state_at: str
+    provenance: str
+
+
+@dataclass
 class SealRequestResult:
     approved: bool
     execution_id: str
@@ -46,6 +57,11 @@ class SealRequestResult:
     commit_hash: str | None = None
     summary_hash: str | None = None
     ledger_entry: dict | None = None
+    authorized: bool = False
+    authorization_reason: str = ""
+    approval_event_id: str = ""
+    authorization_event_id: str = ""
+    execution_event_id: str = ""
 
 
 class SealGovernanceWrapper:
@@ -61,6 +77,7 @@ class SealGovernanceWrapper:
         self.sandbox_root = Path(sandbox_root)
         self.action_scope = action_scope or []
         self.governance = ExecutionGovernanceEngine(repo_root=self.sandbox_root)
+        self._last_approval_state = None
 
     def _sandbox_anchor_paths(self) -> list[Path]:
         return [
@@ -71,12 +88,62 @@ class SealGovernanceWrapper:
     def _sandbox_ledger_path(self) -> Path:
         return self.sandbox_root / "data" / "decisions" / "decision_ledger.jsonl"
 
+    def _current_authorization_check(self, approval_state: dict,
+                                      action: dict) -> tuple[bool, str, AuthorizationState | None]:
+        """
+        M3: Current Authorization Re-check at execution time.
+        Validates that authorization context hasn't changed since approval.
+
+        Returns: (is_authorized, reason, auth_state)
+        """
+        try:
+            now = datetime.now(timezone.utc).isoformat()
+
+            if approval_state is None or not approval_state:
+                return False, "No prior approval state available for authorization check", None
+
+            if not approval_state.get("approved"):
+                return False, "Approval state not valid at execution time", None
+
+            stored_scope = approval_state.get("scope", [])
+            current_scope = action.get("scope", [])
+            if stored_scope != current_scope:
+                return False, f"Scope changed: {stored_scope} → {current_scope}", None
+
+            stored_max = approval_state.get("expected_max_changes")
+            current_max = action.get("expected_max_changes")
+            if stored_max != current_max:
+                return False, f"Max changes limit changed: {stored_max} → {current_max}", None
+
+            authority = "system:seal_governance_wrapper(sandbox)"
+
+            auth_state = AuthorizationState(
+                is_authorized=True,
+                authority=authority,
+                scope=current_scope,
+                evidence={
+                    "approval_time": approval_state.get("approval_time"),
+                    "checked_at": now,
+                    "action": action,
+                },
+                state_at=now,
+                provenance="SealGovernanceWrapper.current_authorization_check()",
+            )
+
+            return True, "Current authorization valid", auth_state
+
+        except Exception as e:
+            return False, f"Authorization check error: {str(e)}", None
+
     def request_seal(self, message: str, expected_max_changes: int | None = None) -> SealRequestResult:
         execution_id = f"EXEC_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
         change_start = datetime.now(timezone.utc).isoformat()
 
         action = {"scope": self.action_scope, "expected_max_changes": expected_max_changes}
+
+        # STAGE 1: APPROVAL
         approval = self.governance.pre_execution_check(action)
+        approval_event_id = f"APPROVAL_{execution_id}"
 
         if not approval.approved:
             result = SealRequestResult(
@@ -84,18 +151,70 @@ class SealGovernanceWrapper:
                 execution_id=execution_id,
                 reason=approval.reason,
                 aborts=approval.dry_run.aborts if approval.dry_run else [],
+                approval_event_id=approval_event_id,
             )
-            self._record_decision_unit(execution_id, change_start, result)
+            self._record_decision_unit(execution_id, change_start, result, event_type="APPROVAL_DENIED")
             return result
 
+        self._record_decision_unit(execution_id, change_start, SealRequestResult(
+            approved=True,
+            execution_id=execution_id,
+            reason="approval check passed",
+            approval_event_id=approval_event_id,
+        ), event_type="APPROVAL_PASSED")
+
+        # STAGE 2: AUTHORIZATION (M3/M4)
+        authorization_event_id = f"AUTHORIZATION_{execution_id}"
+
+        current_approval_state = {
+            "approved": True,
+            "approval_time": change_start,
+            "scope": action.get("scope"),
+            "expected_max_changes": action.get("expected_max_changes"),
+        }
+
+        is_authorized, auth_reason, auth_state = self._current_authorization_check(
+            self._last_approval_state or current_approval_state, action
+        )
+
+        if not is_authorized:
+            self._last_approval_state = current_approval_state
+            result = SealRequestResult(
+                approved=True,
+                authorized=False,
+                execution_id=execution_id,
+                reason="Approval passed",
+                authorization_reason=auth_reason,
+                approval_event_id=approval_event_id,
+                authorization_event_id=authorization_event_id,
+            )
+            self._record_decision_unit(execution_id, change_start, result, event_type="AUTHORIZATION_DENIED")
+            return result
+
+        self._last_approval_state = current_approval_state
+
+        self._record_decision_unit(execution_id, change_start, SealRequestResult(
+            approved=True,
+            authorized=True,
+            execution_id=execution_id,
+            reason="current authorization valid",
+            authorization_event_id=authorization_event_id,
+        ), event_type="AUTHORIZATION_PASSED")
+
+        # STAGE 3: EXECUTION (M5)
+        execution_event_id = f"EXECUTION_{execution_id}"
         commit_result = mocka_git_safe_commit(message=message, push=False, root=self.sandbox_root)
         if commit_result.get("error"):
             result = SealRequestResult(
-                approved=False,
+                approved=True,
+                authorized=True,
                 execution_id=execution_id,
                 reason=f"commit_error: {commit_result['error']}",
+                approval_event_id=approval_event_id,
+                authorization_event_id=authorization_event_id,
+                execution_event_id=execution_event_id,
             )
-            self._record_decision_unit(execution_id, change_start, result)
+            self._record_decision_unit(execution_id, change_start, result, event_type="EXECUTION_FAILED")
             return result
 
         commit_hash = commit_result.get("commit_hash")
@@ -103,12 +222,16 @@ class SealGovernanceWrapper:
 
         result = SealRequestResult(
             approved=True,
+            authorized=True,
             execution_id=execution_id,
             reason="dry run clean, seal completed",
             commit_hash=commit_hash,
             summary_hash=summary_hash,
+            approval_event_id=approval_event_id,
+            authorization_event_id=authorization_event_id,
+            execution_event_id=execution_event_id,
         )
-        self._record_decision_unit(execution_id, change_start, result)
+        self._record_decision_unit(execution_id, change_start, result, event_type="EXECUTION_COMPLETED")
         return result
 
     def _update_sandbox_anchor(self, commit_hash: str | None) -> str | None:
@@ -145,25 +268,44 @@ class SealGovernanceWrapper:
         mocka_git_safe_commit(message=f"anchor: re-seal after {short}", push=False, root=self.sandbox_root)
         return summary_hash
 
-    def _record_decision_unit(self, execution_id: str, change_start: str, result: SealRequestResult) -> None:
+    def _record_decision_unit(self, execution_id: str, change_start: str, result: SealRequestResult,
+                             event_type: str = "EXECUTION_COMPLETED") -> None:
         """
-        Decision Unit形式(execution_id/change_start/change_done/artifact_hash/seal_hash)を
-        既存decision_ledger.jsonlスキーマへの追加フィールドとして拡張し、sandbox ledgerへ
-        追記する。既存フィールド(decision_id等)は変更せず、新フィールドのみ追加する
-        後方互換方式(Decision 2の設計方針)。
+        M5: Separate audit events for APPROVAL/AUTHORIZATION/EXECUTION.
+        Each event type creates a distinct record in decision_ledger.jsonl.
         """
         ledger_path = self._sandbox_ledger_path()
         ledger_path.parent.mkdir(parents=True, exist_ok=True)
 
+        if event_type in ("APPROVAL_DENIED", "AUTHORIZATION_DENIED"):
+            decision_status = "denied"
+            context_suffix = f" | {event_type}"
+        elif event_type == "APPROVAL_PASSED":
+            decision_status = "approved"
+            context_suffix = " | APPROVAL_PASSED"
+        elif event_type == "AUTHORIZATION_PASSED":
+            decision_status = "authorized"
+            context_suffix = " | AUTHORIZATION_PASSED"
+        elif event_type in ("EXECUTION_COMPLETED", "EXECUTION_FAILED"):
+            decision_status = "executed" if event_type == "EXECUTION_COMPLETED" else "failed"
+            context_suffix = f" | {event_type}"
+        else:
+            decision_status = "unknown"
+            context_suffix = f" | {event_type}"
+
         entry = {
-            "decision_id": f"DC_{execution_id}",
-            "title": "Governance Wrapper seal request(sandbox検証)",
-            "context": "Phase C-1 Governance Wrapper実装可能性検証",
+            "decision_id": f"DC_{execution_id}_{event_type}",
+            "title": f"Governance Wrapper seal request - {event_type}",
+            "context": f"Phase C Authorization Boundary Implementation(sandbox){context_suffix}",
             "alternatives": [],
-            "decision": "approved" if result.approved else "aborted",
-            "rationale": result.reason,
-            "impact": "sandbox限定、本番artifactへの影響なし",
-            "related_events": [],
+            "decision": decision_status,
+            "rationale": result.authorization_reason if event_type == "AUTHORIZATION_DENIED" else result.reason,
+            "impact": "sandbox限定、本番artifactへの影響なし | Authorization Boundary検証",
+            "related_events": [
+                result.approval_event_id,
+                result.authorization_event_id,
+                result.execution_event_id,
+            ],
             "related_documents": [],
             "approved_by": "system:seal_governance_wrapper(sandbox)",
             "approved_at": datetime.now(timezone.utc).isoformat(),
@@ -172,11 +314,13 @@ class SealGovernanceWrapper:
             "status": "Active",
             # --- Decision Unit拡張フィールド(既存スキーマへの追加のみ) ---
             "execution_id": execution_id,
+            "event_type": event_type,
             "change_start": change_start,
             "change_done": datetime.now(timezone.utc).isoformat(),
             "artifact_hash": result.commit_hash,
             "seal_hash": result.summary_hash,
             "aborts": result.aborts,
+            "authorized": result.authorized,
         }
         with ledger_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
