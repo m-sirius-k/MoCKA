@@ -20,6 +20,7 @@ Output:
 
 import json
 import sys
+import sqlite3
 from pathlib import Path
 from collections import defaultdict
 
@@ -93,6 +94,119 @@ def load_decision_ledger(path):
 
     return links
 
+def load_events_from_db(repo_path):
+    """Load all valid events from mocka_events.db (same source as Evidence generator)"""
+    db_path = repo_path / 'data' / 'mocka_events.db'
+    events = {}
+
+    if not db_path.exists():
+        return events
+
+    uri = f"file:{db_path.as_posix()}?mode=ro"
+    con = sqlite3.connect(uri, uri=True)
+    con.row_factory = sqlite3.Row
+    try:
+        cur = con.execute(
+            "SELECT event_id FROM events "
+            "WHERE data_integrity IN ('normal', 'alt_schema_intentional') OR data_integrity IS NULL "
+            "ORDER BY rowid"
+        )
+        for row in cur.fetchall():
+            event_id = row['event_id']
+            events[event_id] = {'event_id': event_id}
+    finally:
+        con.close()
+
+    return events
+
+def load_evidence_packets(repo_path, tracked_events):
+    """Load materialized evidence packets and extract Event -> Evidence links (Priority 3)
+    Only link evidence for events that are in the main tracked event set."""
+    links = defaultdict(list)
+    packets_dir = repo_path / 'governance' / 'write_path' / 'restore' / 'materialized'
+
+    if not packets_dir.exists():
+        return links, []
+
+    # Load all events from database (same source as Evidence generator)
+    all_events = load_events_from_db(repo_path)
+    if not all_events:
+        return links, [{'error': 'Could not load events from mocka_events.db'}]
+
+    evidence_errors = []
+    event_ids_list = list(all_events.keys())
+
+    for packet_file in sorted(packets_dir.glob('RP_*.json')):
+        try:
+            packet = json.loads(packet_file.read_text(encoding='utf-8'))
+            event_range = packet.get('event_range', {})
+
+            from_event_id = event_range.get('from_event_id', '')
+            to_event_id = event_range.get('to_event_id', '')
+            event_count = event_range.get('event_count', 0)
+            packet_id = packet.get('packet_id', 'UNKNOWN')
+
+            # Validate Evidence packet against all events
+            errors = []
+
+            # Check if from_event_id exists
+            if from_event_id and from_event_id not in all_events:
+                errors.append(f"from_event_id {from_event_id} not found in database")
+
+            # Check if to_event_id exists
+            if to_event_id and to_event_id not in all_events:
+                errors.append(f"to_event_id {to_event_id} not found in database")
+
+            # Count events in range
+            if from_event_id and to_event_id and from_event_id in all_events and to_event_id in all_events:
+                try:
+                    from_idx = event_ids_list.index(from_event_id)
+                    to_idx = event_ids_list.index(to_event_id)
+                    range_size = to_idx - from_idx + 1
+
+                    if range_size != event_count:
+                        errors.append(f"event_count mismatch: expected {range_size}, got {event_count}")
+                except (ValueError, IndexError) as e:
+                    errors.append(f"cannot validate range: {str(e)}")
+
+            if errors:
+                evidence_errors.append({
+                    'packet_id': packet_id,
+                    'from_event_id': from_event_id,
+                    'to_event_id': to_event_id,
+                    'errors': errors
+                })
+                continue
+
+            # Create links only for events that are in the tracked event set
+            if from_event_id and to_event_id and from_event_id in all_events and to_event_id in all_events:
+                from_idx = event_ids_list.index(from_event_id)
+                to_idx = event_ids_list.index(to_event_id)
+
+                for event_id in event_ids_list[from_idx:to_idx+1]:
+                    # Only link if event is in tracked event set
+                    if event_id in tracked_events:
+                        links['event_to_evidence'].append({
+                            'event_id': event_id,
+                            'evidence_packet_id': packet_id,
+                            'source': str(packet_file),
+                            'reference_type': 'range_inclusion'
+                        })
+                        links['evidence_to_event'].append({
+                            'evidence_packet_id': packet_id,
+                            'event_id': event_id,
+                            'source': str(packet_file),
+                            'reference_type': 'range_inclusion'
+                        })
+
+        except Exception as e:
+            evidence_errors.append({
+                'packet_file': str(packet_file),
+                'error': str(e)
+            })
+
+    return links, evidence_errors
+
 def build_traceability_index(repo_root):
     """Build minimal traceability index from existing data"""
 
@@ -102,21 +216,32 @@ def build_traceability_index(repo_root):
     decision_file = repo_path / 'data' / 'decisions' / 'decision_ledger.jsonl'
     output_file = repo_path / 'data' / 'traceability_index.jsonl'
 
-    print("[1/4] Loading events...")
+    print("[1/5] Loading events...")
     events = load_events_latest(events_file)
     print(f"  Loaded {len(events)} events")
 
-    print("[2/4] Loading registry (Event <-> Index)...")
+    print("[2/5] Loading registry (Event <-> Index)...")
     registry_links = load_registry(registry_file)
     print(f"  Found {len(registry_links['event_to_index'])} Event->Index links")
     print(f"  Found {len(registry_links['index_to_event'])} Index->Event links")
 
-    print("[3/4] Loading decision ledger (Event <-> Decision)...")
+    print("[3/5] Loading decision ledger (Event <-> Decision)...")
     decision_links = load_decision_ledger(decision_file)
     print(f"  Found {len(decision_links['event_to_decision'])} Event->Decision links")
     print(f"  Found {len(decision_links['decision_to_event'])} Decision->Event links")
 
-    print("[4/4] Writing traceability index...")
+    print("[4/5] Loading evidence packets (Event <-> Evidence)...")
+    evidence_links, evidence_errors = load_evidence_packets(repo_path, events)
+    print(f"  Found {len(evidence_links['event_to_evidence'])} Event->Evidence links")
+    if evidence_errors:
+        print(f"  WARNING: {len(evidence_errors)} evidence packets failed validation:")
+        for err in evidence_errors:
+            if 'packet_id' in err:
+                print(f"    - {err['packet_id']}: {err['errors']}")
+            else:
+                print(f"    - {err.get('packet_file', 'unknown')}: {err.get('error', 'unknown error')}")
+
+    print("[5/5] Writing traceability index...")
 
     # Collect all links by event_id
     event_traceability = defaultdict(lambda: {
@@ -146,7 +271,17 @@ def build_traceability_index(repo_root):
             'decision_id': link['decision_id']
         })
 
-    # Mark Evidence/Audit/Authority as NOT_ESTABLISHED
+    # Add Event->Evidence links (Priority 3)
+    for link in evidence_links['event_to_evidence']:
+        event_id = link['event_id']
+        event_traceability[event_id]['event_id'] = event_id
+        event_traceability[event_id]['evidence'].append({
+            'evidence_packet_id': link['evidence_packet_id'],
+            'source': link['source'],
+            'reference_type': link['reference_type']
+        })
+
+    # Mark Audit/Authority as NOT_ESTABLISHED (Evidence may have P3 links now)
     for event_id in event_traceability:
         if not event_traceability[event_id]['evidence']:
             event_traceability[event_id]['evidence'].append({
