@@ -5,7 +5,14 @@
     "classification": "PRIVATE - ローカルのみ管理",
     "storage": {
       "primary": "C:/Users/sirok/MOCKA_OVERVIEW.json",
-      "backup": "A:/MOCKA_OVERVIEW.json"
+      "backup": "A:/MOCKA_OVERVIEW.json",
+      "traceability_index": {
+        "primary": "C:/Users/sirok/MoCKA/data/tic/traceability_index.jsonl",
+        "backup": null,
+        "artifact_type": "DERIVED",
+        "generator": "build_traceability_index.py",
+        "description": "Event ↔ Index ↔ Decision bidirectional traceability index"
+      }
     },
     "updated": "2026-07-07",
     "version": "4.1",
