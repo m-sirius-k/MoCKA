@@ -106,7 +106,7 @@ G-A-5 investigation builds upon this to trace the origin chain FORWARD from May 
 - TODO extraction pipeline (Stage 1-3): identifies and scores candidate tasks
 - Save judgment (Stage 4): determines which TODOs to persist
 - Persisted TODOs carry LB_* identifiers (confirmed May 31 PHIOS P-S-12-c)
-- Therefore: TODO extraction infrastructure is functionally prerequisite to LB_* identifier assignment
+- Therefore: TODO extraction infrastructure is functionally associated with the persistence path that later carries LB_* identifiers
 
 #### CRITICAL DISTINCTION: Association ≠ Origin
 **This evidence establishes:**
@@ -139,9 +139,11 @@ G-A-5 investigation builds upon this to trace the origin chain FORWARD from May 
 
 #### Significance of Precedence
 The TODO extraction pipeline (May 19) was designed and documented BEFORE the Logbook concept formalization (May 24). This reveals:
-- TODO extraction infrastructure exists as independent mechanism (May 19)
-- Logbook concept later **incorporates** this existing infrastructure (May 24)
-- G-A-4 identified Logbook as conceptual ancestor; G-A-5 identifies TODO extraction pipeline as EARLIER infrastructure predecessor
+- TODO extraction infrastructure exists as independent mechanism (May 19) — CONFIRMED
+- Logbook concept formalized after pipeline (May 24) — CONFIRMED
+- Temporal precedence established (May 19 < May 24) — CONFIRMED
+- Whether Logbook formalization was designed to incorporate the existing pipeline is STRONGLY_SUPPORTED but NOT EXPLICITLY CONFIRMED in TODO_174 record itself
+- G-A-4 identified Logbook as conceptual ancestor; G-A-5 identifies TODO extraction pipeline as EARLIER documented infrastructure layer
 
 #### What This Does NOT Establish
 - Whether LB_* naming decision was made on May 19 or later
@@ -290,11 +292,11 @@ May 19+:  Design decision implemented in code
 
 **Important:** The following are LOGICAL INFERENCES only. They exceed the evidence boundary established in Section 5.2 and should be treated as speculation, not evidence.
 
-#### Speculation 1: LB = Logbook?
-- Temporal observation: TODO extraction pipeline (May 19) precedes Logbook concept (May 24)
-- Speculative implication: If "LB" = "Logbook", naming decision would likely occur AFTER May 24
-- Conclusion: Naming on May 19 would contradict "Logbook" interpretation
-- **Classification:** SPECULATION (temporal incompatibility suggested, but not proven)
+#### Speculation 1: What Do We Know About LB_* Timing vs. Logbook Timing?
+- Temporal observation: TODO extraction pipeline (May 19) precedes Logbook concept formalization (May 24)
+- Critical clarification: Naming decision timing is UNKNOWN; temporal precedence of concepts alone cannot determine when LB_* naming was decided
+- Counter-example: LB_* prefix could have been chosen on May 16 or earlier, with Logbook conceptualization following separately on May 24
+- **Classification:** UNKNOWN (naming decision date cannot be inferred from Logbook formalization date alone)
 
 #### Speculation 2: LB = Relay Logbook?
 - Timeline observation: "Relay" project exists from May 16; "Logbook" formalized May 24
@@ -337,7 +339,7 @@ May 19+:  Design decision implemented in code
 - Incorporation relationship: Logbook architecture INCORPORATES May 19 TODO extraction infrastructure
 - Operational validation: May 31 PHIOS test confirms infrastructure + functionality working together
 
-**Significance:** Architectural layering established—TODO extraction (May 19) serves as infrastructure prerequisite for Logbook concept (May 24).
+**Significance:** Architectural layering identified—TODO extraction infrastructure (May 19) temporally precedes and is functionally associated with Logbook concept (May 24). Whether it was architecturally designed as prerequisite vs. independently developed and later incorporated remains STRONGLY_SUPPORTED but NOT CONFIRMED.
 
 ### 6.2 What We DON'T KNOW (Unexplained & UNKNOWN)
 
@@ -486,9 +488,9 @@ May 19+:  Design decision implemented in code
 - Architectural precedence established (May 19 < May 24)
 
 **TIER 2 (STRONGLY_SUPPORTED - Functional Association):**
-- LB_* identifiers operationally linked to TODO extraction pipeline
-- TODO extraction infrastructure necessary for identifier assignment
-- Functional/temporal association confirmed (NOT naming origin)
+- LB_* identifiers operationally linked to TODO extraction pipeline in observed behavior
+- TODO extraction pipeline and LB_* persistence are functionally associated in operational evidence
+- Functional/temporal association confirmed (NOT whether this was designed prerequisite vs. coincidental operational pairing)
 
 **TIER 3 (UNKNOWN - Beyond Examined Evidence):**
 - LB_* naming origin (why "LB_" was chosen)
@@ -499,11 +501,12 @@ May 19+:  Design decision implemented in code
 ### 10.3 Investigation Status: COMPLETE / BOUNDED
 
 **G-A-5 Investigation Status:** **COMPLETE / BOUNDED**
-- Investigation thoroughly examined all accessible evidence
+- Investigation thoroughly examined all accessible evidence within defined scope
 - Chronological chain traced from May 16 through May 31
 - Architectural layering discovered (earlier infrastructure identified)
 - UNKNOWN boundaries explicitly marked and preserved
-- No further examination of accessible archive would yield additional evidence
+- No additional evidence identified within the examined accessible scope
+- Unexamined sources remain: v4.1.0 source code (deleted), external archives, pre-May-16 documentation, separate repository branches
 
 **Boundary Definition:** Architectural discovery boundary ≠ naming origin boundary
 - Architectural: "TODO extraction pipeline serves as infrastructure for LB_* system" → ESTABLISHED
