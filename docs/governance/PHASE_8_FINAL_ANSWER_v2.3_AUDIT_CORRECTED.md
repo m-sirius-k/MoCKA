@@ -1109,7 +1109,7 @@ This specification ensures (IF ADOPTED AND CONDITIONS RESOLVED):
 2. **Auditable** — Every authorization decision recorded with full binding context (separate from execution outcome)
 3. **Safe** — Exception-based blocking prevents silent bypasses
 4. **Binding** — Six-part correlation between authorization and execution at boundary level
-5. **Recoverable** — Rollback procedure maintains enforcement-preserving fail-closed (code-based)
+5. **Recoverable** — Rollback procedure maintains enforcement-preserving fail-closed
 6. **Measurable** — Audit trail enables post-hoc verification and forensic analysis (authorization + execution layers)
 7. **Testable** — 32+ behavioral tests verify blocking at each validation point
 8. **Transparent** — All authorization checks visible in audit trail
