@@ -129,18 +129,30 @@ E20260601_070
 
 **Question:** Did the "handoff" or "引き継ぎ" concept exist in Relay's design on May 16?
 
-**Evidence Classification:**
+**Evidence Classification (Layer 1: Record Existence):**
 
 | Evidence | Classification | Basis | Certainty |
 |----------|----------------|-------|-----------|
-| "会話自動引き継ぎ" in title (May 16 record) | CONFIRMED | Present in created_at record | CONFIRMED |
-| "会話サマリー自動生成" in description | CONFIRMED | May 16 description field | CONFIRMED |
-| "新規chatへ文脈注入" in description | CONFIRMED | May 16 description field | CONFIRMED |
-| PHIOS test P-S-06 (May 31) | CONFIRMED_AT_MAY31 | May 31 test result confirms handoff generation | CONFIRMED (but later than May 16) |
+| TODO_147 record exists at created_at | CONFIRMED | System-recorded creation time | CONFIRMED |
 
-**Verdict:** **CONFIRMED** — Handoff concept was central to Relay design on May 16
+**Evidence Classification (Layer 2: Current Record Content):**
 
-**Important Note:** May 31 PHIOS test confirms the handoff system was operational by May 31, but does not retroactively establish May 16 implementation state.
+| Evidence | Classification | Basis | Certainty |
+|----------|----------------|-------|-----------|
+| "会話自動引き継ぎ" in current record title | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current created_at record | CONFIRMED |
+| "会話サマリー自動生成" in current record description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record | CONFIRMED |
+| "新規chatへ文脈注入" in current record description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record | CONFIRMED |
+
+**Evidence Classification (Layer 3: May 16-Specific Field-Level Existence):**
+
+| Evidence | Classification | Basis | Certainty |
+|----------|----------------|-------|-----------|
+| Handoff content specifically on May 16 | UNKNOWN | Field-level modification history NOT AVAILABLE | UNKNOWN |
+| PHIOS test P-S-06 (May 31) | CONFIRMED_AT_MAY31 | May 31 test confirms handoff generation operational | CONFIRMED (but May 31, not May 16) |
+
+**Verdict:** **UNKNOWN** (May 16-specific field timing)
+
+The current TODO_147 record contains handoff-related content (CONFIRMED_AS_CURRENT_RECORD_CONTENT). However, whether this content existed specifically on May 16 cannot be independently verified because field-level modification history is not available. May 31 operational confirmation does not establish May 16 existence.
 
 ---
 
@@ -196,11 +208,19 @@ E20260601_070
 
 | Evidence | Classification | Basis | Certainty |
 |----------|----------------|-------|-----------|
-| Relay created May 16 from scratch | CONFIRMED | TODO_147 title: "Chrome拡張 開発" (development) | CONFIRMED |
+| TODO_147 title contains "開発" (development) | PRESENT_IN_RECORD | Title states development project | CONFIRMED_AS_WORDING |
+| "開発" implies from-scratch creation | INFERENCE | Word choice suggests new development | NOT_ESTABLISHED |
 | Pre-Relay TODO search | NOT_FOUND_IN_EXAMINED_EVIDENCE | No Orchestra/Memory/Prism logbook predecessors found | UNKNOWN (absence ≠ non-existence) |
-| content.js as design reference | CONFIRMED | Description: content.jsを見本に独立コードベース | CONFIRMS_INDEPENDENCE (of implementation) |
+| content.js as design reference | PRESENT_IN_RECORD | Description: content.jsを見本に独立コードベース | CONFIRMS_PATTERN_REFERENCE |
 
-**Verdict:** **NOT FOUND IN EXAMINED EVIDENCE** — No predecessor identifier mechanism was found in the examined archive. However, this does NOT establish that no predecessor existed. It establishes only that no predecessor was located within the examined evidence scope. Prior-product inheritance and conceptual precedent remain UNKNOWN.
+**Important Distinction:**
+- "開発" (development) appears in the title: CONFIRMED_AS_CURRENT_RECORD_CONTENT
+- "開発" proves "created from scratch": NOT_ESTABLISHED (could mean implementation vs. conceptual origin)
+- content.js reference confirms independent implementation approach, not absence of conceptual source
+
+**Verdict:** **UNKNOWN** (regarding from-scratch creation specifically on May 16)
+
+The current record describes development work and independent implementation. However, whether Relay was "created from scratch" (vs. having prior conceptual source) cannot be confirmed from this evidence. No predecessor mechanism was found in examined evidence, but absence in examined archive ≠ non-existence.
 
 ---
 
@@ -214,14 +234,22 @@ E20260601_070
 
 **Question:** Was Relay designed with an independent codebase and implementation approach?
 
-**Evidence Classification:**
+**Evidence Classification (Layer 2: Current Record Content):**
 
 | Evidence | Classification | Basis | Certainty |
 |----------|----------------|-------|-----------|
-| "content.jsを見本に独立コードベースで再実装" | CONFIRMED | May 16 description statement | CONFIRMED |
-| "MoCKA不要で完結" | CONFIRMED | May 16 description statement | CONFIRMS_INDEPENDENCE |
+| "content.jsを見本に独立コードベースで再実装" | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record description | CONFIRMED |
+| "MoCKA不要で完結" | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record description | CONFIRMED |
 
-**Verdict:** **CONFIRMED** — Relay was designed as independent implementation using content.js as a reference but with separate codebase, not requiring MoCKA core.
+**Evidence Classification (Layer 3: May 16-Specific Field-Level Existence):**
+
+| Evidence | Classification | Basis | Certainty |
+|----------|----------------|-------|-----------|
+| Independent implementation statement specifically on May 16 | UNKNOWN | Field-level modification history NOT AVAILABLE | UNKNOWN |
+
+**Verdict:** **UNKNOWN** (May 16-specific field timing)
+
+The current TODO_147 record contains statements about independent implementation and separate codebase (CONFIRMED_AS_CURRENT_RECORD_CONTENT). However, whether this specific description content existed on May 16 cannot be independently verified because field-level modification history is not available. The description field is present in the created_at record, but field-level timing remains UNKNOWN.
 
 #### 3.6B: Prior Conceptual Inheritance
 
@@ -258,25 +286,42 @@ E20260601_070
 
 ## Chapter 4: May 16 Artifact Classification Summary (REVISED)
 
-### 4.1 Contemporaneous Evidence (May 16 Original)
+### 4.1 Record Existence and Current Record Content (Separated)
+
+**Layer 1: Record Existence on May 16**
 
 | Item | Classification | Evidence |
 |------|---------------|----|
-| Relay project existence | CONFIRMED | TODO_147 created_at timestamp |
-| Project title "会話自動引き継ぎ" | CONFIRMED | May 16 title field |
-| Handoff concept | CONFIRMED | Description: "会話サマリー自動生成" + "新規chatへ文脈注入" |
-| 4 core functions design | CONFIRMED | Description: ①20ターン警告 ②サマリー生成 ③文脈注入 ④SDK連携 |
-| Independent implementation | CONFIRMED | Description: "content.jsを見本に独立コードベースで再実装" |
-| Price/market positioning | CONFIRMED | Description: "$3-5/月" |
+| Relay project record exists | CONFIRMED | TODO_147 created_at timestamp: 2026-05-16T10:20:27.298613 |
 
-### 4.2 Product-Series Positioning (May 16 Context)
+**Layer 2: Current Record Content (Field-Level Presence in Current Record)**
+
+| Item | Classification | Evidence |
+|------|---------------|----|
+| Project title "会話自動引き継ぎ" in current record | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record title field |
+| Handoff concept in current description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Description contains handoff-related terms |
+| 4 core functions in current description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Description lists: ①②③④ structure |
+| Independent implementation in current description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Description states independent codebase |
+| Price/market positioning in current description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Description lists "$3-5/月" |
+
+**Layer 3: May 16-Specific Field-Level Timing (Field Existence on May 16)**
+
+| Item | Classification | Evidence |
+|------|---------------|----|
+| Handoff concept specifically on May 16 | UNKNOWN | Field-level modification history not available |
+| 4 core functions specifically on May 16 | UNKNOWN | Field-level modification history not available |
+| Independent implementation specifically on May 16 | UNKNOWN | Field-level modification history not available |
+| Price/positioning specifically on May 16 | UNKNOWN | Field-level modification history not available |
+
+### 4.2 Product-Series Positioning (Record-Level Context)
 
 | Item | Classification | Evidence | Limitation |
 |------|---------------|----|---|
-| "mini MoCKA Series 製品2" in description | STRONGLY_SUPPORTED_AS_MAY16_CONTEXT | Present in created_at record | Field-level modification history not available |
-| Relay = Product 2 positioning | CONFIRMED_CONTEMPORANEOUS | Category + description consistency | Timing based on record-level snapshot only |
+| "mini MoCKA Series 製品2" in current description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record | Record-level content only |
+| May 16-specific product positioning | STRONGLY_SUPPORTED_AS_MAY16_CONTEXT | Record created May 16; category consistency | Field-level timing unknown |
+| Relay = Product 2 positioning inference | CONTEXTUAL_EVIDENCE | Category + description alignment | Temporal origin of this content unknown |
 
-**Important:** The `created_at` timestamp applies to the record, not individual fields. The presence of "mini MoCKA Series 製品2" in the description at record creation snapshot suggests May 16 context, but field-level historical verification is not available.
+**Important:** The `created_at` timestamp applies to the record, not individual fields. The presence of "mini MoCKA Series 製品2" in the description at record creation suggests May 16 contextual content. However, field-level historical verification is not available, so the specific timing of this content cannot be confirmed independent of the record-level snapshot.
 
 ### 4.3 Unknown/Unconfirmed Items (Preserved)
 
@@ -330,15 +375,19 @@ E20260601_070
 
 ## Chapter 6: Relay Product Taxonomy Context
 
-### 6.1 Mini MoCKA Series Positioning
+### 6.1 Mini MoCKA Series Positioning (Record-Level Evidence)
 
-**From May 16 TODO_147 description:**
-- **Series:** "mini MoCKA Series"
-- **Product:** "製品2" (Product 2)
-- **Name:** "Relay"
-- **Category:** "製品/miniMoCKA/Relay"
+**From current TODO_147 record content:**
+- **Series:** "mini MoCKA Series" (present in current record)
+- **Product:** "製品2" (Product 2) (present in current record)
+- **Name:** "Relay" (present in current record)
+- **Category:** "製品/miniMoCKA/Relay" (present in current record)
 
-**Temporal Status:** CONFIRMED CONTEMPORANEOUS (May 16 record)
+**Record-Level Temporal Status:** Record exists at May 16, contains this content
+
+**Field-Level Temporal Status:** STRONGLY_SUPPORTED_AS_MAY16_CONTEXT (field-level modification history not available)
+
+The current record at created_at timestamp contains product series positioning. This provides strong contextual support for May 16 product conception, but field-level timing remains UNKNOWN due to absence of field-level modification history.
 
 ### 6.2 Product Siblings (Inferred from Archive)
 
@@ -348,7 +397,7 @@ E20260601_070
 | Orchestra | TODO references (2026-05-22+) | Potentially earlier |
 | Relay | TODO_147 (2026-05-16) | Primary artifact |
 
-**Note:** "製品2" designation suggests numbering, but whether Orchestra is Product 1 or whether numbering is chronological requires separate verification.
+**Note:** "製品2" designation appears in current record. Whether Orchestra is Product 1, whether numbering is chronological, or whether "製品2" designation existed specifically on May 16 requires separate verification (field-level timing UNKNOWN).
 
 ---
 
@@ -401,15 +450,21 @@ E20260601_070
 
 ## Chapter 8: Handoff Packet System Evidence
 
-### 8.1 May 16 Conception (Design)
+### 8.1 May 16 Record and Current Content
 
-**From TODO_147 description:**
+**From current TODO_147 record description:**
 ```
 会話サマリー自動生成
 新規chatへ文脈注入
 ```
 
-**Classification:** DIRECT CONTEMPORANEOUS (May 16 record)
+**Classification (Layer 1: Record Existence):** CONFIRMED (May 16 record exists)
+
+**Classification (Layer 2: Current Record Content):** CONFIRMED_AS_CURRENT_RECORD_CONTENT (handoff terms present in current record)
+
+**Classification (Layer 3: May 16-Specific Timing):** UNKNOWN (field-level modification history not available)
+
+The current record contains handoff-related concepts. May 16-specific field timing remains UNKNOWN.
 
 ### 8.2 May 31 Implementation Confirmation (Later Than May 16)
 
@@ -437,11 +492,18 @@ E20260601_070
 
 ### 9.2 Three Hypotheses (Unresolved)
 
-| Hypothesis | Evidence Status | Classification |
-|-----------|------|---|
-| Hypothesis A: LB_* pre-designed at May 16 inception | No May 16 evidence | UNKNOWN |
-| Hypothesis B: LB_* emerged May 16-31 implementation | May 31 PHIOS test confirms operation | STRONGLY_SUPPORTED (at May 31, not before) |
-| Hypothesis C: LB_* inherited from prior product | No predecessor found | NOT_FOUND_IN_EXAMINED_EVIDENCE |
+| Hypothesis | Evidence Status | Classification | Temporal Reasoning |
+|-----------|------|---|---|
+| Hypothesis A: LB_* pre-designed at May 16 inception | No May 16 evidence | UNKNOWN | Not established |
+| Hypothesis B: LB_* emerged during May 16-31 implementation | May 31: LB_001 operational | UNKNOWN / POSSIBLE | "Emerged during May 16-31" encompasses May 16 / May 17 / May 20 / May 25 / May 30. Indistinguishable. Only confirms "by May 31, existed." When during the 15-day window? Unresolved. |
+| Hypothesis C: LB_* inherited from prior product | No predecessor found | NOT_FOUND_IN_EXAMINED_EVIDENCE | Absence in examined evidence ≠ non-existence |
+
+**Critical Clarification on Hypothesis B:**
+May 31 operational confirmation establishes: "LB_001 existed operationally by May 31"
+
+May 31 operational confirmation does NOT establish: "LB_001 emerged specifically on [date within May 16-31]"
+
+May 31 PHIOS test is consistent with emergence on May 16, May 20, May 25, May 30, or any date in between. The hypothesis that "LB_* emerged during the implementation window" is POSSIBLE but NOT STRONGLY SUPPORTED because no intermediate observations exist. Therefore, classification = UNKNOWN / NOT_ESTABLISHED.
 
 ### 9.3 Verdict
 
@@ -456,14 +518,26 @@ E20260601_070
 
 ## Chapter 10: Temporal Boundaries — Preserved Uncertainty
 
-### 10.1 What We Know (CONFIRMED)
+### 10.1 What We Know (Separated by Evidence Layer)
 
-- Relay existed May 16
-- Handoff concept designed May 16
-- Relay positioned as "mini MoCKA Series 製品2" (May 16 context)
-- Independent implementation approach specified May 16
-- LB_* system operational by May 31
-- Implementation continued June 1 with bug fixes (LB_003, LB_005)
+**Layer 1: Record Existence (CONFIRMED)**
+- Relay record exists and was created May 16 (TODO_147 created_at)
+
+**Layer 2: Current Record Content (CONFIRMED_AS_CURRENT_RECORD_CONTENT)**
+- Current record contains handoff-related terms
+- Current record contains product series designation
+- Current record contains independent implementation statement
+- Current record contains price/positioning information
+
+**Layer 3: May 16-Specific Field-Level Timing (UNKNOWN / NOT_ESTABLISHED)**
+- Handoff concept field timing on May 16 = UNKNOWN (field-level history unavailable)
+- Product positioning field timing on May 16 = UNKNOWN (field-level history unavailable)
+- Independent implementation statement timing on May 16 = UNKNOWN (field-level history unavailable)
+- Whether these fields existed vs. were added/modified later = UNKNOWN
+
+**Separately Confirmed (Operational Only):**
+- LB_* system operational by May 31 (CONFIRMED_AT_MAY31)
+- Implementation continued June 1 with bug fixes (CONFIRMED_RETROSPECTIVE)
 
 ### 10.2 What We Do NOT Know (UNKNOWN)
 
@@ -562,37 +636,55 @@ did the LB_* identifier scheme first appear?
 
 ---
 
-## Chapter 13: Six-Item May 16 Classification Matrix (FINAL - CORRECTED)
+## Chapter 13: Six-Item May 16 Classification Matrix (FINAL - CORRECTED FOR TEMPORAL CONSISTENCY)
 
-| Item | Question | Required Classification | Confidence | Temporal Note |
+| Item | Question | Classification (May 16-Specific) | Confidence | Temporal Note |
 |------|----------|---|---|---|
-| 1 | Relay existence May 16 | CONFIRMED | HIGH | Timestamp evidence |
-| 2 | Handoff concept May 16 | CONFIRMED | HIGH | Description evidence |
+| 1 | Relay existence May 16 | CONFIRMED | HIGH | Record creation timestamp |
+| 2 | Handoff concept May 16 | UNKNOWN | N/A | Current record contains; field-level timing UNKNOWN |
 | 3 | Logbook concept May 16 | UNKNOWN | MEDIUM | Not explicitly documented; inferred from May 31 |
 | 4 | LB_001 on May 16 | NOT FOUND | HIGH | No May 16 evidence; operational by May 31 |
-| 5 | Predecessor mechanism | NOT_FOUND_IN_EXAMINED_EVIDENCE | HIGH | Scope-limited absence |
-| 6A | Independent implementation | CONFIRMED | HIGH | Stated in May 16 record |
+| 5 | Predecessor mechanism | NOT_FOUND_IN_EXAMINED_EVIDENCE | HIGH | Scope-limited absence; inheritance UNKNOWN |
+| 6A | Independent implementation May 16 | UNKNOWN | N/A | Current record contains statement; field-level timing UNKNOWN |
 | 6B | Prior-product inheritance | UNKNOWN | N/A | Absence ≠ non-existence |
 | 6C | LB_* inheritance | UNKNOWN | N/A | LB_001 not in May 16 evidence |
+
+### Separate Layer: Current Record Content (Not May 16-Specific Timing)
+
+| Item | What Current Record Contains | Classification |
+|------|---|---|
+| 1 | Record exists | CONFIRMED |
+| 2 | Handoff-related text | CONFIRMED_AS_CURRENT_RECORD_CONTENT |
+| 3 | (not explicitly) | NOT_FOUND_IN_CURRENT_RECORD |
+| 4 | (no LB_001 reference) | NOT_FOUND_IN_CURRENT_RECORD |
+| 5 | Development and independence statements | CONFIRMED_AS_CURRENT_RECORD_CONTENT |
+| 6A | Independent implementation statement | CONFIRMED_AS_CURRENT_RECORD_CONTENT |
+
+### Separate Layer: Operational Confirmation (May 31 and Later)
+
+```
+May 31 Operational Status:
+- LB_001 identifier = CONFIRMED OPERATIONAL
+- Handoff packet system = CONFIRMED OPERATIONAL
+- LB_* naming scheme = FIRST OBSERVED IN AVAILABLE ARCHIVE (May 31)
+```
 
 ### Key Temporal Distinctions Preserved
 
 ```
 Item 4 Detailed Breakdown:
-- LB_001 identifier on May 16 = NOT FOUND
-- LB_001 operational by May 31 = CONFIRMED
+- LB_001 identifier specifically on May 16 = NOT FOUND
+- LB_001 operational by May 31 = CONFIRMED_AT_MAY31
 - LB_001 creation date = UNKNOWN
 - LB_* naming origin = UNKNOWN
-- First observed in archive = May 31
+- First observed in archive = May 31 (not first created)
 ```
 
 ```
-Item 6 Detailed Breakdown:
-- Independent implementation = CONFIRMED
-- MoCKA dependency = NOT REQUIRED (CONFIRMED)
-- Prior conceptual source = UNKNOWN
-- Prior-product inheritance = UNKNOWN
-- LB_* inheritance = UNKNOWN
+Item 6A Detailed Breakdown:
+- Current record contains "independent implementation" statement = CONFIRMED_AS_CURRENT_RECORD_CONTENT
+- Field-level timing of this content specifically on May 16 = UNKNOWN
+- Conceptual inheritance = UNKNOWN
 - Ultimate source = UNKNOWN
 ```
 

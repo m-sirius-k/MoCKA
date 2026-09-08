@@ -81,35 +81,35 @@
     },
     {
       "item_number": 2,
-      "question": "Did the handoff or '引き継ぎ' concept exist in Relay's design on May 16?",
-      "item_name": "Handoff Concept on May 16",
-      "classification": "CONFIRMED",
-      "confidence_level": "HIGH",
-      "evidence_count": 4,
+      "question": "Did the handoff or '引き継ぎ' concept exist in Relay's design specifically on May 16?",
+      "item_name": "Handoff Concept on May 16 (THREE-LAYER ANALYSIS)",
+      "classification": "UNKNOWN",
+      "confidence_level": "N/A",
+      "evidence_count": 6,
       "evidence": [
         {
-          "evidence_id": "E2-001",
-          "description": "会話自動引き継ぎ in title (May 16 record)",
+          "evidence_id": "E2-LAYER1-001",
+          "description": "Record existence: TODO_147 created at May 16",
           "classification": "CONFIRMED",
-          "basis": "Present in created_at record",
+          "basis": "System-recorded creation time",
           "certainty": "CONFIRMED",
-          "supporting_data": "title field: 会話自動引き継ぎChrome拡張"
+          "supporting_data": "created_at: 2026-05-16T10:20:27.298613"
         },
         {
-          "evidence_id": "E2-002",
-          "description": "会話サマリー自動生成 in description",
-          "classification": "CONFIRMED",
-          "basis": "May 16 description field",
+          "evidence_id": "E2-LAYER2-001",
+          "description": "Current record contains handoff-related text",
+          "classification": "CONFIRMED_AS_CURRENT_RECORD_CONTENT",
+          "basis": "Present in current record",
           "certainty": "CONFIRMED",
-          "supporting_data": "description: ②会話サマリー自動生成"
+          "supporting_data": "title: 会話自動引き継ぎ; description: サマリー / 文脈注入"
         },
         {
-          "evidence_id": "E2-003",
-          "description": "新規chatへ文脈注入 in description",
-          "classification": "CONFIRMED",
-          "basis": "May 16 description field",
-          "certainty": "CONFIRMED",
-          "supporting_data": "description: ③新規chatへ文脈注入"
+          "evidence_id": "E2-LAYER3-001",
+          "description": "Handoff content specifically on May 16 (field-level timing)",
+          "classification": "UNKNOWN",
+          "basis": "Field-level modification history NOT AVAILABLE",
+          "certainty": "UNKNOWN",
+          "supporting_data": "record-level timestamp only; field-level history unavailable"
         },
         {
           "evidence_id": "E2-004",
@@ -118,11 +118,11 @@
           "basis": "May 31 test result confirms handoff generation",
           "certainty": "CONFIRMED_BUT_LATER_THAN_MAY16",
           "supporting_data": "PHIOS_REPRODUCE_RESULT.md: P-S-06-a/b Freeパケット生成 PASS",
-          "temporal_note": "May 31 operational confirmation does not retroactively establish May 16 implementation state"
+          "temporal_note": "May 31 operational confirmation does not retroactively establish May 16 field-level existence"
         }
       ],
-      "verdict": "CONFIRMED — Handoff concept was central to Relay design on May 16",
-      "temporal_note": "Design specified May 16; implementation confirmed May 31"
+      "verdict": "UNKNOWN (May 16-specific field timing) — Current record contains handoff text (CONFIRMED_AS_CURRENT_RECORD_CONTENT); field-level timing on May 16 cannot be independently verified due to absence of field-level modification history.",
+      "temporal_note": "Layer 1: Record exists ✓ | Layer 2: Record contains text ✓ | Layer 3: May 16 field timing ?"
     },
     {
       "item_number": 3,
@@ -263,29 +263,45 @@
       "item_name": "Source / Inheritance (SPLIT CLASSIFICATION)",
       "item_6_split_required": true,
       "subitem_6a": {
-        "subitem_name": "Independent Implementation (Implementation Design)",
-        "classification": "CONFIRMED",
-        "confidence_level": "HIGH",
-        "evidence_count": 2,
+        "subitem_name": "Independent Implementation (THREE-LAYER ANALYSIS)",
+        "classification": "UNKNOWN",
+        "confidence_level": "N/A",
+        "evidence_count": 4,
         "evidence": [
           {
-            "evidence_id": "E6A-001",
-            "description": "content.jsを見本に独立コードベースで再実装",
-            "classification": "CONFIRMED",
-            "basis": "May 16 description statement",
+            "evidence_id": "E6A-LAYER2-001",
+            "description": "Current record contains independent implementation statement",
+            "classification": "CONFIRMED_AS_CURRENT_RECORD_CONTENT",
+            "basis": "Present in current record",
             "certainty": "CONFIRMED",
-            "supporting_data": "description field states independent reimplementation"
+            "supporting_data": "description: content.jsを見本に独立コードベースで再実装"
           },
           {
-            "evidence_id": "E6A-002",
-            "description": "MoCKA不要で完結",
-            "classification": "CONFIRMED",
-            "basis": "May 16 description statement",
-            "certainty": "CONFIRMS_INDEPENDENCE",
-            "supporting_data": "description field confirms no MoCKA dependency"
+            "evidence_id": "E6A-LAYER2-002",
+            "description": "Current record contains MoCKA independence statement",
+            "classification": "CONFIRMED_AS_CURRENT_RECORD_CONTENT",
+            "basis": "Present in current record",
+            "certainty": "CONFIRMED",
+            "supporting_data": "description: MoCKA不要で完結"
+          },
+          {
+            "evidence_id": "E6A-LAYER3-001",
+            "description": "Independent implementation statement specifically on May 16 (field-level timing)",
+            "classification": "UNKNOWN",
+            "basis": "Field-level modification history NOT AVAILABLE",
+            "certainty": "UNKNOWN",
+            "supporting_data": "record-level timestamp only; field-level history unavailable"
+          },
+          {
+            "evidence_id": "E6A-LAYER3-002",
+            "description": "Implementation statement timing vs. conceptual source timing",
+            "classification": "UNKNOWN",
+            "basis": "Independent implementation ≠ No prior conceptual source",
+            "certainty": "UNKNOWN",
+            "supporting_data": "Separate codebase confirmed; conceptual ancestry unknown"
           }
         ],
-        "verdict": "CONFIRMED — Relay was designed as independent implementation using content.js as a pattern reference but with separate codebase, not requiring MoCKA core."
+        "verdict": "UNKNOWN (May 16-specific field timing) — Current record contains independent implementation statement (CONFIRMED_AS_CURRENT_RECORD_CONTENT). However, field-level timing of this content specifically on May 16 cannot be independently verified. Conceptual source/inheritance remains UNKNOWN."
       },
       "subitem_6b": {
         "subitem_name": "Prior Conceptual Inheritance",
@@ -403,7 +419,7 @@
       "status": "FORMALIZATION",
       "classification": "RETROSPECTIVE_FORMALIZATION"
     },
-    "verdict": "LB_* identifier system was operational by May 31; first observed in available archive at that point. Origin point remains UNKNOWN. May 16 or earlier is presumed but NOT CONFIRMED.",
+    "verdict": "LB_* identifier system was operational by May 31; first observed in available archive at that point. Origin point remains UNKNOWN. May 16 or earlier = UNKNOWN / NOT ESTABLISHED.",
     "critical_distinction": "First OBSERVED on May 31 ≠ Created on May 31 ≠ Existed on May 16"
   },
   "temporal_boundaries_strict": {
@@ -412,12 +428,12 @@
     ],
     "no_backward_projection_rule": "No later evidence may be projected backward into May 16 state without explicit classification as inference",
     "what_confirmed": [
-      "Relay existed May 16",
-      "Handoff concept designed May 16",
-      "Relay positioned as mini-MoCKA Series Product 2 (context)",
-      "Independent implementation approach specified May 16",
-      "LB_* system operational by May 31",
-      "Implementation continued June 1 with bug fixes"
+      "Relay record exists at May 16 (CONFIRMED)",
+      "Current record contains handoff-related text (CONFIRMED_AS_CURRENT_RECORD_CONTENT)",
+      "Current record contains product series designation (CONFIRMED_AS_CURRENT_RECORD_CONTENT)",
+      "Current record contains independent implementation statement (CONFIRMED_AS_CURRENT_RECORD_CONTENT)",
+      "LB_* system operational by May 31 (CONFIRMED_AT_MAY31)",
+      "Implementation continued June 1 with bug fixes (CONFIRMED_RETROSPECTIVE)"
     ],
     "what_unknown": [
       "Whether mini-MoCKA Series Product 2 was original or later added (field-level history unavailable)",
