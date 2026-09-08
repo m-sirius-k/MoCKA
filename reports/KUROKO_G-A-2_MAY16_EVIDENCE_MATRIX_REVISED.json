@@ -371,14 +371,14 @@
     "location": "description field",
     "timestamp": "2026-05-16T10:20:27.298613 (record-level)",
     "field_classification": "NOT in June 1 update",
-    "temporal_classification": "STRONGLY_SUPPORTED_AS_MAY16_CONTEXT",
+    "temporal_classification": "CONTEXTUAL_SUPPORT_ONLY",
     "reasoning": [
-      "Text appears in created_at timestamp record snapshot",
+      "Record created at 2026-05-16",
       "Text is in description field, NOT in note field (June 1 updates only)",
-      "Record-level timestamp: May 16 creation",
+      "Current record contains the text (CONFIRMED_AS_CURRENT_RECORD_CONTENT)",
       "Field-level modification history: NOT AVAILABLE"
     ],
-    "important_limitation": "created_at timestamp applies to record, not individual fields. No field-level historical verification available. Presence at record creation suggests May 16 context but does not constitute independent field-level proof.",
+    "important_limitation": "created_at timestamp applies to record, not individual fields. No field-level historical verification available. Consistency with May 16 context is strong, but field-level timing cannot be independently established.",
     "evidence_weight_assessment": {
       "record_level_timestamp_alignment_may16": true,
       "record_level_confidence": "HIGH",
@@ -391,7 +391,7 @@
       "corroborating_context_category_field": true,
       "corroborating_context_confidence": "HIGH"
     },
-    "revised_verdict": "STRONGLY_SUPPORTED_AS_MAY16_CONTEXT — The phrase 'mini MoCKA Series 製品2「Relay」' appears in the description field of the TODO_147 record at created_at timestamp May 16. This strongly suggests May 16 product conception. However, field-level historical modification data is not available, so direct proof of field-creation timing cannot be established. Record-level context only."
+    "revised_verdict": "CONTEXTUAL_SUPPORT_ONLY — The phrase 'mini MoCKA Series 製品2「Relay」' appears in the current description field of the TODO_147 record (created May 16). This is consistent with May 16 product-context information. However, field-level modification data is not available, so direct proof that this wording existed specifically on May 16 cannot be established. Record-level evidence only; field-level timing UNKNOWN."
   },
   "lb_identifier_timeline": {
     "may_16_evidence": {

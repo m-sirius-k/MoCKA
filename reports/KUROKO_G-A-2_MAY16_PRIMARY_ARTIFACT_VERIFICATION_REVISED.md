@@ -79,9 +79,13 @@ mini MoCKA Series 製品2「Relay」の開発。コア機能: ①20ターン到�
 content.jsを見本に独立コードベースで再実装。価格: $3-5/月。キャッチコピー:「また説明し直し…」を消す。
 ```
 
-**Temporal Status:** CREATED TIMESTAMP: 2026-05-16T10:20:27.298613  
+**Record-Level Status:** TODO_147 record created at 2026-05-16T10:20:27.298613
+
+**Current Field Content:** Description field currently contains this text  
+**Classification:** CONFIRMED_AS_CURRENT_RECORD_CONTENT
+
 **Field-Level Historical Evidence:** NOT AVAILABLE (record-level timestamp only)  
-**Evidence Weight:** HIGH — present in created_at record snapshot  
+**Field-Level May 16 Timing:** UNKNOWN  
 
 **Important Limitation:** The `created_at` timestamp applies to the TODO record itself, not individual fields. Field-level modification history is NOT available. Therefore, the presence of this description at created_at timestamp indicates May 16 contextual content, but does not constitute independent field-level historical verification.
 
@@ -98,12 +102,22 @@ E20260601_070
 **Key Distinction:** LB_* identifiers (LB_003, LB_005) are June 1 artifacts, not May 16 evidence
 
 #### 2.2.3 Category Field: "製品/miniMoCKA/Relay"
-**Temporal Status:** CREATED TIMESTAMP: 2026-05-16  
-**Evidence Weight:** HIGH — Category hierarchy indicates May 16 product taxonomy
+
+**Record-Level Status:** TODO_147 record exists at 2026-05-16
+
+**Current Field Content:** Category field currently contains "製品/miniMoCKA/Relay"  
+**Classification:** CONFIRMED_AS_CURRENT_RECORD_CONTENT
+
+**Field-Level May 16 Timing:** UNKNOWN (field-level modification history not available)
 
 #### 2.2.4 Title Field
-**Temporal Status:** CREATED TIMESTAMP: 2026-05-16  
-**Evidence Weight:** HIGH — Present in May 16 creation record
+
+**Record-Level Status:** TODO_147 record exists at 2026-05-16
+
+**Current Field Content:** Title field currently contains "Relay — 会話自動引き継ぎChrome拡張 開発"  
+**Classification:** CONFIRMED_AS_CURRENT_RECORD_CONTENT
+
+**Field-Level May 16 Timing:** UNKNOWN (field-level modification history not available)
 
 ---
 
@@ -318,10 +332,10 @@ The current TODO_147 record contains statements about independent implementation
 | Item | Classification | Evidence | Limitation |
 |------|---------------|----|---|
 | "mini MoCKA Series 製品2" in current description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Present in current record | Record-level content only |
-| May 16-specific product positioning | STRONGLY_SUPPORTED_AS_MAY16_CONTEXT | Record created May 16; category consistency | Field-level timing unknown |
+| May 16-specific product positioning | CONTEXTUAL_SUPPORT_ONLY | Record created May 16; consistent with context | Field-level timing UNKNOWN |
 | Relay = Product 2 positioning inference | CONTEXTUAL_EVIDENCE | Category + description alignment | Temporal origin of this content unknown |
 
-**Important:** The `created_at` timestamp applies to the record, not individual fields. The presence of "mini MoCKA Series 製品2" in the description at record creation suggests May 16 contextual content. However, field-level historical verification is not available, so the specific timing of this content cannot be confirmed independent of the record-level snapshot.
+**Important:** The `created_at` timestamp applies to the record, not individual fields. The presence of "mini MoCKA Series 製品2" in the current description is consistent with May 16 product-context information. However, field-level historical verification is not available, so the specific timing of this content cannot be confirmed independent of the record-level snapshot.
 
 ### 4.3 Unknown/Unconfirmed Items (Preserved)
 
@@ -348,17 +362,27 @@ The current TODO_147 record contains statements about independent implementation
 
 ### 5.2 Temporal Classification
 
-**Classification:** STRONGLY_SUPPORTED_AS_MAY16_CONTEXT
+**Layer 1: Record Existence**
+- Record exists at May 16: CONFIRMED
 
-**Reasoning:**
-- Text appears in created_at timestamp record snapshot
-- Text is in description field, NOT in note field (which contains June 1 updates)
-- Record-level timestamp: May 16 creation
-- Field-level historical modification: NOT AVAILABLE
+**Layer 2: Current Record Content**
+- Current record contains "mini MoCKA Series 製品2「Relay」": CONFIRMED_AS_CURRENT_RECORD_CONTENT
+
+**Layer 3: May 16-Specific Field Timing**
+- Whether this text existed in the field specifically on May 16: UNKNOWN
+
+**Classification:** CONTEXTUAL_SUPPORT_ONLY (not temporal proof)
 
 ### 5.3 Limitation Clarification
 
-**Important Caveat:** The `created_at` timestamp is a record-level timestamp. It does NOT constitute independent field-level historical verification. The presence of this text at record creation snapshot indicates May 16 contextual content, but does not prove that this specific field was created at that exact time, nor does it exclude the possibility of prior field modification and re-export in the record.
+**Critical Principle:** The `created_at` timestamp is a record-level timestamp only. It does NOT constitute independent field-level historical verification. 
+
+The presence of "mini MoCKA Series 製品2" in the current record snapshot is consistent with May 16 product-context information. However, this does not establish that this specific wording existed in the field on May 16, nor does it exclude the possibility of field modification and re-export in the record snapshot.
+
+**What This Means:**
+- Record was created May 16: CONFIRMED
+- Current description contains this text: CONFIRMED
+- Text was in the field specifically on May 16: UNKNOWN
 
 ### 5.4 Evidence Weight Assessment
 
@@ -369,7 +393,7 @@ The current TODO_147 record contains statements about independent implementation
 | No conflicting evidence | YES | MEDIUM | Absence ≠ proof |
 | Corroborating context (category field) | YES | HIGH | Contextual only |
 
-**Revised Verdict:** **STRONGLY_SUPPORTED_AS_MAY16_CONTEXT** — The phrase "mini MoCKA Series 製品2「Relay」" appears in the description field of the TODO_147 record at created_at timestamp May 16. This strongly suggests May 16 product conception. However, field-level historical modification data is not available, so direct proof of field-creation timing cannot be established.
+**Revised Verdict:** **CONTEXTUAL_SUPPORT_ONLY** — The phrase "mini MoCKA Series 製品2「Relay」" appears in the current TODO_147 record. The record was created May 16, and the text is present in the current description field (not in the June 1 note update). This is consistent with May 16 product-context information. However, field-level modification data is not available, so direct proof that this wording existed specifically on May 16 cannot be established. Record-level evidence only; field-level timing UNKNOWN.
 
 ---
 
@@ -385,9 +409,11 @@ The current TODO_147 record contains statements about independent implementation
 
 **Record-Level Temporal Status:** Record exists at May 16, contains this content
 
-**Field-Level Temporal Status:** STRONGLY_SUPPORTED_AS_MAY16_CONTEXT (field-level modification history not available)
+**Field-Level Temporal Status:** UNKNOWN (field-level modification history not available)
 
-The current record at created_at timestamp contains product series positioning. This provides strong contextual support for May 16 product conception, but field-level timing remains UNKNOWN due to absence of field-level modification history.
+**Classification:** CONTEXTUAL_SUPPORT_ONLY
+
+The current record contains product series positioning. This is consistent with May 16 product-context information, but field-level timing remains UNKNOWN due to absence of field-level modification history. The record-level timestamp confirms the record's existence, not the field-level creation timing.
 
 ### 6.2 Product Siblings (Inferred from Archive)
 
@@ -551,9 +577,10 @@ May 31 PHIOS test is consistent with emergence on May 16, May 20, May 25, May 30
 
 | Question | Classification | Reason |
 |----------|---------------|----|
-| Relay existence May 16 | CONFIRMED | Timestamp evidence |
-| Handoff design May 16 | CONFIRMED | Description evidence |
-| LB_001 existence May 16 | NOT FOUND | No May 16 evidence |
+| Relay existence May 16 | CONFIRMED | Record creation timestamp |
+| Current record contains handoff text | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Text present in current record |
+| Handoff design May 16 | UNKNOWN | Field-level timing unavailable |
+| LB_001 existence May 16 | NOT_FOUND_IN_EXAMINED_EVIDENCE | No May 16 evidence in examined archive |
 | LB_001 origin | UNKNOWN | Archive search incomplete |
 | Logbook concept May 16 | UNKNOWN | Not explicitly documented |
 | Ultimate source | UNKNOWN | Evidence terminates |
