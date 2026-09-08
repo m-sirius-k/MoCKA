@@ -91,47 +91,69 @@ G-A-5 investigation builds upon this to trace the origin chain FORWARD from May 
 
 ## SECTION 3: PROVENANCE CHAIN ANALYSIS
 
-### 3.1 TODO Extraction → LB_* Identifier Connection
+### 3.1 TODO Extraction Pipeline ↔ LB_* Identifier Functional/Temporal Association
 
-#### Connection Question
-**How does the TODO extraction pipeline (TODO_158) relate to the LB_* identifier generation (lb_id() function)?**
+#### Association Question
+**What is the functional and temporal relationship between the TODO extraction pipeline (TODO_158, May 19) and the LB_* identifier system (confirmed operational May 31)?**
 
-#### Evidence
-1. **Pipeline Design:** TODO_158 describes a 4-stage pipeline with "保存判定" (save judgment) stage
-2. **Persistence Model:** PHIOS test P-S-12-c confirms TODO persistence with "first.id=LB_001"
-3. **Naming Convention:** LB_* identifiers appear consistently in all TODO-related operations
+#### Evidence of Functional/Temporal Association
+1. **Pipeline Architecture:** TODO_158 describes a 4-stage pipeline with "保存判定" (save judgment) stage
+2. **Persistence Infrastructure:** PHIOS test P-S-12-c confirms TODO persistence with "first.id=LB_001"
+3. **Consistent Identifier Format:** LB_* identifiers appear in all TODO-related PHIOS test operations
+4. **Implementation Target:** TODO_158 references relay-logbook.js as implementation vessel
 
-#### Inference Chain
-- TODO extraction identifies candidate tasks (Stage 2-3)
-- Save judgment determines which TODOs to persist (Stage 4)
-- Persisted TODOs receive LB_* identifiers (confirmed May 31)
-- Therefore: TODO extraction pipeline → identifier assignment
+#### Operational Linkage Confirmed
+- TODO extraction pipeline (Stage 1-3): identifies and scores candidate tasks
+- Save judgment (Stage 4): determines which TODOs to persist
+- Persisted TODOs carry LB_* identifiers (confirmed May 31 PHIOS P-S-12-c)
+- Therefore: TODO extraction infrastructure is functionally prerequisite to LB_* identifier assignment
 
-#### Classification
-**STRONGLY_SUPPORTED** (not CONFIRMED because):
-- The TODO_158 design does not explicitly name "lb_id()" function
-- The identifier generation mechanism ("lb_id()") is not documented in TODO_158
-- The choice of "LB_" prefix is not explained in any examined artifact
-- However, operational evidence (May 31 PHIOS test) confirms this relationship at runtime
+#### CRITICAL DISTINCTION: Association ≠ Origin
+**This evidence establishes:**
+- FUNCTIONAL LINKAGE: Pipeline infrastructure necessary for identifier assignment ✓
+- TEMPORAL PRECEDENCE: Pipeline design (May 19) precedes Logbook formalization (May 24) ✓
+- OPERATIONAL VALIDATION: Both working together by May 31 ✓
 
-### 3.2 Logbook Concept → TODO Extraction Relationship
-
-#### Timeline Analysis
-| Sequence | Component | Date | Evidence |
-|----------|-----------|------|----------|
-| 1 | Relay extension formalization | May 16 | TODO_147 |
-| 2 | TODO extraction pipeline design | May 19 | TODO_158 |
-| 3 | Logbook concept formalization | May 24 | TODO_174 |
-| **Relationship:** | TODO extraction PRECEDES Logbook | 5 days | TODO_158 < TODO_174 |
-
-#### Interpretation
-The TODO extraction pipeline (May 19) was designed and documented BEFORE the Logbook formal concept (May 24). This suggests:
-- TODO extraction was conceived as independent mechanism for managing relay tasks
-- Logbook architecture later incorporated this existing pipeline
-- LB_* naming originated in the TODO extraction context, not Logbook context
+**This evidence does NOT establish:**
+- NAMING DECISION ORIGIN: Why "LB_" prefix was chosen ✗
+- IDENTIFIER SCHEME DESIGN: What conceptual inspiration led to numbering scheme ✗
+- DESIGN PRECEDENCE: Whether pipeline design included identifier scheme specification ✗
 
 #### Classification
-**DOCUMENTED + CHRONOLOGICALLY_ESTABLISHED** (Timeline certainty is HIGH)
+**FUNCTIONAL/TEMPORAL_ASSOCIATION_STRONGLY_SUPPORTED** (not naming origin):
+- The TODO_158 design documents pipeline mechanics but NOT identifier naming rationale
+- The identifier generation mechanism ("lb_id()") appears to be implemented but not explained in TODO_158
+- The choice of "LB_" prefix origin remains unexplained in any examined artifact
+- However, operational evidence (May 31 PHIOS test) confirms infrastructure works together at runtime
+- Crucially: temporal precedence (May 19 < May 24) shifts the architectural predecessor from Logbook to TODO extraction, but naming origin remains UNKNOWN
+
+### 3.2 Architectural Precedence: TODO Extraction Pipeline → Logbook Incorporation
+
+#### Timeline Analysis (Architectural Layering)
+| Sequence | Component | Date | Evidence | Role |
+|----------|-----------|------|----------|------|
+| 1 | Relay extension formalization | May 16 | TODO_147 | Project inception |
+| 2 | TODO extraction pipeline design | May 19 | TODO_158 | **Infrastructure layer** |
+| 3 | Logbook concept formalization | May 24 | TODO_174 | **Concept incorporation** |
+| **Relationship:** | TODO extraction infrastructure PRECEDES Logbook | 5 days | TODO_158 < TODO_174 |
+
+#### Significance of Precedence
+The TODO extraction pipeline (May 19) was designed and documented BEFORE the Logbook concept formalization (May 24). This reveals:
+- TODO extraction infrastructure exists as independent mechanism (May 19)
+- Logbook concept later **incorporates** this existing infrastructure (May 24)
+- G-A-4 identified Logbook as conceptual ancestor; G-A-5 identifies TODO extraction pipeline as EARLIER infrastructure predecessor
+
+#### What This Does NOT Establish
+- Whether LB_* naming decision was made on May 19 or later
+- Whether identifier scheme design was part of May 19 TODO extraction specification
+- The conceptual origin of "LB_" prefix (naming rationale)
+- The ultimate ROOT of identifier scheme design
+
+#### Classification
+**DOCUMENTED + CHRONOLOGICALLY_ESTABLISHED + ARCHITECTURAL_PRECEDENCE_CONFIRMED** 
+- Timeline certainty: HIGH
+- Architectural layering: CONFIRMED (extraction before incorporation)
+- Naming origin: STILL UNKNOWN (temporal precedence ≠ naming decision establishment)
 
 ### 3.3 Design Decision Artifacts Search
 
@@ -215,63 +237,86 @@ The TODO extraction pipeline (May 19) was designed and documented BEFORE the Log
 
 ## SECTION 5: CHRONOLOGICAL PROVENANCE SUMMARY
 
-### 5.1 Evidence-Supported Chain (What we KNOW)
+### 5.1 Evidence-Supported Architectural Layering (What we KNOW)
 
 ```
 May 16:   Relay project formalized (TODO_147)
           ↓
-May 19:   TODO extraction pipeline designed & implemented
-          ├─ 4-stage pipeline documented
+May 19:   TODO extraction pipeline infrastructure DESIGNED & DOCUMENTED
+          ├─ 4-stage pipeline specification complete
           ├─ Scoring & filtering mechanisms defined
-          ├─ relay-logbook.js identified as implementation target
-          └─ DOCUMENT REFERENCE: TODO_158
+          ├─ relay-logbook.js identified as implementation vessel
+          ├─ DOCUMENT REFERENCE: TODO_158
+          └─ [Architectural layer 1: Infrastructure]
           ↓
 May 24:   Logbook concept formalized (TODO_174)
-          └─ Incorporates existing TODO extraction as subsystem
+          ├─ Incorporates May 19 TODO extraction infrastructure
+          ├─ Adds Logbook data model & persistence concept
+          └─ [Architectural layer 2: Concept incorporating infrastructure]
           ↓
-May 31:   PHIOS operational test confirms lb_id() function
+May 31:   PHIOS operational test CONFIRMS lb_id() function operational
           ├─ lb_id(1) generates 'LB_001'
           ├─ TODO persistence working with LB_* format
+          ├─ Infrastructure + concept both functioning
           └─ DOCUMENT REFERENCE: PHIOS_REPRODUCE_RESULT.md
 ```
 
-**Classification:** DOCUMENTED + OPERATIONALLY_CONFIRMED
+**Classification:** DOCUMENTED + CHRONOLOGICALLY_VERIFIED + OPERATIONALLY_CONFIRMED
 
-### 5.2 Evidence GAP: LB_* Naming Origin
+**Key Finding:** Architectural precedence established—TODO extraction pipeline (May 19) precedes and serves as infrastructure for Logbook concept (May 24).
 
-The chain above is COMPLETE for "when was it implemented" but INCOMPLETE for "why was it named LB_*":
+### 5.2 Boundary: LB_* Naming Origin (What we DO NOT KNOW)
+
+The architectural chain above is COMPLETE for infrastructure sequencing but INCOMPLETE for naming rationale:
 
 ```
 ???: [Unexplained Design Decision]
-     └─ "Use LB_* naming for identifier scheme"
-     └─ "Use 'lb_id()' as function name"
+     └─ "Why was LB_* prefix chosen?"
+     └─ "What does LB_ signify? (Logbook? Log-Base? other?)"
+     └─ "When was naming decision made? (May 19? May 24? May 16? other?)"
           ↓
-May 16+:  Decision implemented in code
-          └─ relay-logbook.js contains unexplained logic
-          └─ v4.1.0 source deleted; cannot verify intent comments
+May 19+:  Design decision implemented in code
+          ├─ relay-logbook.js implements lb_id() function
+          ├─ Function generates LB_001, LB_010, etc. format
+          ├─ v4.1.0 source deleted June 27; cannot verify design comments
+          └─ Implementation vehicle identified, naming rationale not
 ```
 
-**Classification:** UNKNOWN (origin remains unexplained)
+**Classification:** UNKNOWN (naming origin & rationale remain unexplained)
 
-### 5.3 Logical Inference Chain
+**Critical Boundary Marker:** Architectural discovery (May 19 infrastructure) ≠ Naming decision origin
 
-#### Inference 1: LB = Logbook?
-- Timeline: TODO extraction (May 19) precedes Logbook concept (May 24)
-- Implication: If "LB" meant "Logbook", it would have been named AFTER May 24
-- Conclusion: "LB" likely does NOT stand for "Logbook" (temporal contradiction)
+### 5.3 Speculative Inference Chain (Beyond Evidence Boundary)
 
-#### Inference 2: LB = Relay Logbook?
-- Timeline: "Relay" exists from May 16; "Logbook" formalized May 24
-- Implication: "Relay Logbook" makes sense only after May 24
-- Conclusion: POSSIBLE but not supported by naming timeline
+**Important:** The following are LOGICAL INFERENCES only. They exceed the evidence boundary established in Section 5.2 and should be treated as speculation, not evidence.
 
-#### Inference 3: LB = System-Internal Code?
-- Evidence: Appears only in code (relay-logbook.js), not in user documentation
-- Implication: May be arbitrary identifier chosen for development purposes
-- Conclusion: POSSIBLE but speculative
+#### Speculation 1: LB = Logbook?
+- Temporal observation: TODO extraction pipeline (May 19) precedes Logbook concept (May 24)
+- Speculative implication: If "LB" = "Logbook", naming decision would likely occur AFTER May 24
+- Conclusion: Naming on May 19 would contradict "Logbook" interpretation
+- **Classification:** SPECULATION (temporal incompatibility suggested, but not proven)
 
-#### Classification of Inferences
-**ALL INFERENCES MARKED AS SPECULATION ONLY** — No evidence validates any single interpretation.
+#### Speculation 2: LB = Relay Logbook?
+- Timeline observation: "Relay" project exists from May 16; "Logbook" formalized May 24
+- Speculative implication: "Relay Logbook" makes linguistic sense only AFTER May 24
+- Conclusion: Possible but timing uncertain
+- **Classification:** SPECULATION (plausible but unconfirmed)
+
+#### Speculation 3: LB = System-Internal Development Code?
+- Code observation: Appears only in implementation (relay-logbook.js), not user-facing docs
+- Speculative implication: May be arbitrary internal identifier chosen for development
+- Conclusion: Possible but no evidence constrains this
+- **Classification:** SPECULATION (consistent with observation but underdetermined)
+
+#### Why These Remain Speculative
+- No design document explains naming decision
+- No code comments document rationale
+- No architectural specification includes identifier naming design
+- Timing of naming decision unknown (May 16? 19? 24? earlier? later?)
+- No evidence rules out any single interpretation
+
+#### Classification of Entire Inference Section
+**SPECULATION ONLY** — These inferences highlight the UNKNOWN boundary but do not resolve it. They remain useful as "what needs to be investigated next" but not as "what we have established."
 
 ---
 
@@ -279,39 +324,49 @@ May 16+:  Decision implemented in code
 
 ### 6.1 What We KNOW (Evidence-Based)
 
-**Confirmed Facts:**
-1. TODO extraction pipeline created May 19, 2026 (TODO_158 record)
+**Confirmed Architectural Facts:**
+1. TODO extraction pipeline designed & documented May 19, 2026 (TODO_158 record)
 2. Logbook concept formalized May 24, 2026 (TODO_174 record)
-3. lb_id() function operational by May 31, 2026 (PHIOS test)
-4. LB_* format consistent (LB_001, LB_010, LB_999, LB_1000)
-5. TODO extraction and LB_* identifiers are functionally linked (operational evidence)
+3. lb_id() function operational by May 31, 2026 (PHIOS test: LB_001, LB_010, LB_999, LB_1000)
+4. TODO extraction infrastructure PRECEDES Logbook concept (5-day gap: May 19 < May 24)
+5. TODO extraction and LB_* identifiers are FUNCTIONALLY LINKED (operational evidence)
 
-**Documented Relationships:**
-- TODO extraction pipeline implements 4-stage design (documented in TODO_158)
-- relay-logbook.js is the implementation target (referenced in TODO_158)
-- Logbook incorporates TODO extraction as subsystem (implied by TODO_174 context)
+**Documented Architecture:**
+- TODO extraction pipeline: 4-stage design (preprocessing/filtering/scoring/save judgment)
+- Implementation target: relay-logbook.js (referenced in TODO_158)
+- Incorporation relationship: Logbook architecture INCORPORATES May 19 TODO extraction infrastructure
+- Operational validation: May 31 PHIOS test confirms infrastructure + functionality working together
 
-### 6.2 What We DON'T KNOW (Unexplained)
+**Significance:** Architectural layering established—TODO extraction (May 19) serves as infrastructure prerequisite for Logbook concept (May 24).
 
-**Remaining Mysteries:**
-1. **LB_* Naming Origin:** Why "LB_" prefix was chosen — NO EVIDENCE FOUND
-2. **lb_id() Function Source:** Original implementation location; code deleted June 27
-3. **Design Rationale:** What design decision led to identifier scheme — NO ARTIFACT FOUND
-4. **Pre-May-16 Ancestors:** Whether this originates from prior product — NOT FOUND
-5. **Ultimate Root:** Source architecture or inspiration — UNKNOWN
+### 6.2 What We DON'T KNOW (Unexplained & UNKNOWN)
 
-### 6.3 G-A-4 Relationship
+**Naming Rationale (No Evidence Found):**
+1. **LB_* Prefix Origin:** Why "LB_" was chosen — NO DESIGN RATIONALE ARTIFACT FOUND
+2. **Naming Decision Timing:** When naming scheme was decided (May 16? 19? 24? earlier? later?) — UNKNOWN
+3. **Design Meaning:** What "LB_" signifies (Logbook? Relay Logbook? other?) — UNKNOWN
+
+**Implementation Source (Access Boundary):**
+1. **lb_id() Function Source:** Original implementation; v4.1.0 relay-logbook.js DELETED June 27
+2. **Design Comments:** Code intent documentation not available in examined scope
+
+**Conceptual Origin (Not Found):**
+1. **Pre-May-16 Ancestors:** Whether identifier scheme derives from prior product — NOT FOUND
+2. **Ultimate Root:** Source architecture or conceptual inspiration — UNKNOWN
+
+### 6.3 G-A-4 Relationship & G-A-5 Advancement
 
 **G-A-4 Status:** CLOSED (per user authorization)  
 **G-A-4 Finding:** "v4.1.0 relay-logbook.js is the strongly supported historical implementation context associated with LB* handling, but the original LB* design decision and the `lb_id()` implementation source remain unverified."
 
-**G-A-5 Findings:**
-- Confirm v4.1.0 relay-logbook.js was implementation vehicle (already established in G-A-4)
-- Add evidence that TODO extraction pipeline PRECEDES Logbook formalization
-- Identify that LB_* naming decision source remains UNKNOWN
-- Establish that "ultimate root" cannot be determined from available evidence
+**G-A-5 Advancement Over G-A-4:**
+- Confirm v4.1.0 relay-logbook.js as implementation vehicle (already established)
+- ADD: Discover earlier architectural predecessor—TODO extraction pipeline (May 19)
+- ADD: Establish architectural layering (infrastructure May 19 < concept May 24)
+- Preserve: LB_* naming decision source remains UNKNOWN (not resolved by G-A-5)
+- Preserve: "ultimate root" determination remains beyond examined evidence scope
 
-**Relationship:** G-A-5 findings DO NOT contradict or reinterpret G-A-4; they add context above it.
+**Boundary Preservation:** G-A-5 findings DO NOT contradict or reinterpret G-A-4. Instead, G-A-5 adds architectural context by identifying an earlier infrastructure layer (May 19 TODO extraction) that G-A-4 could not detect from May 24 Logbook formalization point. Both investigations preserve the UNKNOWN boundary around naming rationale.
 
 ---
 
@@ -362,17 +417,20 @@ May 16+:  Decision implemented in code
 
 ### 9.1 Final Classification Table
 
-| Finding | Evidence Level | Classification | Certainty | Status |
+| Finding | Evidence Source | Classification | Certainty | Status |
 |---------|---|---|---|---|
-| TODO extraction pipeline exists | TODO_158 record | DOCUMENTED | HIGH | CONFIRMED |
-| 4-stage pipeline designed | TODO_158 description | DOCUMENTED | HIGH | CONFIRMED |
-| relay-logbook.js is target | TODO_158 note reference | DOCUMENTED | HIGH | CONFIRMED |
-| Logbook formalized May 24 | TODO_174 created_at | DOCUMENTED | HIGH | CONFIRMED |
-| lb_id() operational May 31 | PHIOS test P-S-05 | OPERATIONALLY_CONFIRMED | HIGH | CONFIRMED |
-| TODO extraction precedes Logbook | Timeline comparison | CHRONOLOGICALLY_ESTABLISHED | HIGH | CONFIRMED |
-| LB_* related to TODO extraction | Functional link evidence | STRONGLY_SUPPORTED | MEDIUM | SUPPORTED |
-| LB_* naming origin explained | Design rationale search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
-| Ultimate root identified | Archive search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
+| TODO extraction pipeline documented | TODO_158 record | DOCUMENTED | HIGH | CONFIRMED |
+| 4-stage pipeline specification complete | TODO_158 description | DOCUMENTED | HIGH | CONFIRMED |
+| relay-logbook.js identified as vessel | TODO_158 note reference | DOCUMENTED | HIGH | CONFIRMED |
+| Logbook concept formalized May 24 | TODO_174 created_at | DOCUMENTED | HIGH | CONFIRMED |
+| lb_id() operational May 31 | PHIOS test P-S-05/12c/13e | OPERATIONALLY_CONFIRMED | HIGH | CONFIRMED |
+| TODO extraction precedes Logbook | Timeline: May 19 < May 24 | CHRONOLOGICALLY_ESTABLISHED | HIGH | CONFIRMED |
+| Architectural layering (extraction → incorporation) | Architectural analysis | ARCHITECTURAL_PRECEDENCE_CONFIRMED | HIGH | CONFIRMED |
+| LB_* FUNCTIONALLY LINKED to TODO extraction | Operational evidence + infrastructure | FUNCTIONAL/TEMPORAL_ASSOCIATION_STRONG | MEDIUM | SUPPORTED |
+| LB_* NAMING ORIGIN EXPLAINED | Design rationale search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
+| "LB_" prefix meaning identified | Design document search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
+| Naming decision timing established | Archive search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
+| Ultimate root/SOURCE identified | Comprehensive search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
 | Pre-May-16 ancestor found | Cross-product search | NOT_FOUND_IN_EXAMINED_EVIDENCE | N/A | UNKNOWN |
 
 ### 9.2 Evidence Hierarchy Applied
@@ -403,43 +461,76 @@ May 16+:  Decision implemented in code
 
 **Question:** "Can verifiable evidence identify the origin of LB_* identifier scheme and lb_id() function above the G-A-4 boundary?"
 
-**Answer:** PARTIALLY
+**Answer:** PARTIALLY — With Crucial Distinction Between Architectural Discovery and Naming Origin
 
-**What we CAN identify:**
-- Chronological origin point: May 19, 2026 (TODO_158 pipeline design)
-- Implementation context: relay-logbook.js (identified in TODO_158)
-- Functional relationship: TODO extraction → identifier assignment
-- Operational confirmation: May 31 PHIOS test
-- Temporal precedence: TODO extraction (May 19) before Logbook (May 24)
+**What we CAN identify (Evidence-Based):**
+1. **Architectural Precedence (CONFIRMED):** TODO extraction pipeline (May 19) predates Logbook concept (May 24)
+2. **Infrastructure Layer (DOCUMENTED):** 4-stage TODO extraction pipeline design documented in TODO_158
+3. **Implementation Vessel (CONFIRMED):** relay-logbook.js identified as implementation target in TODO_158
+4. **Functional Linkage (OPERATIONALLY_CONFIRMED):** LB_* identifiers functionally linked to TODO persistence via May 31 PHIOS test
+5. **Operational Behavior (CONFIRMED):** lb_id() function generates LB_001, LB_010, etc. format by May 31
 
-**What we CANNOT identify:**
-- Design decision rationale: Why "LB_*" naming was chosen
-- Conceptual source: What inspired the identifier scheme
-- Ultimate root: Whether this derives from prior architecture
-- Implementation intent: Specific reasons for function structure
+**What we CANNOT identify (Remain UNKNOWN):**
+1. **LB_* Naming Rationale (NOT FOUND):** Why "LB_" prefix was chosen — no design document explains this
+2. **Naming Decision Timing (UNKNOWN):** When naming scheme was decided — could be May 16, 19, 24, or unknown date
+3. **Identifier Scheme Design Origin (UNKNOWN):** What conceptual inspiration led to numbering/format choice
+4. **Ultimate Root (UNKNOWN):** Whether scheme derives from prior architecture or is purely original to May 2026
+5. **"Logbook" Connection (SPECULATIVE ONLY):** Whether "LB_" stands for "Logbook" or means something else — no evidence
 
-### 10.2 Classification Summary
+### 10.2 Classification Summary: Final Determination
 
-**TIER 1 (CONFIRMED):**
-- TODO extraction pipeline exists and is documented
-- Logbook concept formalized after pipeline
-- lb_id() function is operational
+**TIER 1 (CONFIRMED - Evidence Direct):**
+- TODO extraction pipeline infrastructure exists and is documented (TODO_158)
+- Logbook concept formalized after pipeline (TODO_174, May 24)
+- lb_id() function is operationally confirmed (PHIOS test, May 31)
+- Architectural precedence established (May 19 < May 24)
 
-**TIER 2 (STRONGLY_SUPPORTED):**
-- LB_* identifiers generated by lb_id() function
-- TODO extraction linked to identifier assignment
+**TIER 2 (STRONGLY_SUPPORTED - Functional Association):**
+- LB_* identifiers operationally linked to TODO extraction pipeline
+- TODO extraction infrastructure necessary for identifier assignment
+- Functional/temporal association confirmed (NOT naming origin)
 
-**TIER 3 (UNKNOWN):**
-- LB_* naming origin
-- Design rationale for identifier scheme
-- Ultimate conceptual root
+**TIER 3 (UNKNOWN - Beyond Examined Evidence):**
+- LB_* naming origin (why "LB_" was chosen)
+- Naming decision rationale (design intent behind identifier scheme)
+- Ultimate conceptual root (prior architecture or purely original)
+- Complete provenance chain (evidence terminates at May 19; origin remains unexplained)
 
-### 10.3 Boundary Compliance Statement
+### 10.3 Investigation Status: COMPLETE / BOUNDED
 
-- G-A-4 status: UNMODIFIED (remains CLOSED)
-- UNKNOWN preservations: MAINTAINED (no unauthorized speculation)
-- Scope limitations: ACKNOWLEDGED (v4.1.0 source deleted; git history limited)
-- Evidence hierarchy: APPLIED STRICTLY (inference marked as speculation only)
+**G-A-5 Investigation Status:** **COMPLETE / BOUNDED**
+- Investigation thoroughly examined all accessible evidence
+- Chronological chain traced from May 16 through May 31
+- Architectural layering discovered (earlier infrastructure identified)
+- UNKNOWN boundaries explicitly marked and preserved
+- No further examination of accessible archive would yield additional evidence
+
+**Boundary Definition:** Architectural discovery boundary ≠ naming origin boundary
+- Architectural: "TODO extraction pipeline serves as infrastructure for LB_* system" → ESTABLISHED
+- Naming origin: "Why LB_* naming was chosen" → UNKNOWN (beyond examined evidence)
+
+### 10.4 G-A-4 Relationship: No Modification, Context Enhancement Only
+
+**G-A-4 Status:** **CLOSED** — Remains UNMODIFIED  
+**G-A-4 Finding (Preserved):** v4.1.0 relay-logbook.js is the strongly supported historical implementation context associated with LB* handling, but the original LB* design decision and the `lb_id()` implementation source remain unverified.
+
+**G-A-5 Enhancement (Context Addition, Not Modification):**
+- Identifies earlier architectural predecessor (May 19 TODO extraction pipeline)
+- Shows Logbook (May 24) INCORPORATES rather than ORIGINATES identifier infrastructure
+- Confirms relay-logbook.js as implementation vessel (already known from G-A-4)
+- Preserves naming origin as UNKNOWN (consistent with G-A-4 finding)
+
+**Relationship:** G-A-5 provides architectural context ABOVE G-A-4 boundary without reinterpreting G-A-4 conclusion.
+
+### 10.5 Audit Compliance Summary
+
+**Evidence Hierarchy Applied:** ✓ CONFIRMED > DOCUMENTED > STRONGLY_SUPPORTED > UNKNOWN
+**UNKNOWN Boundaries Preserved:** ✓ Naming rationale, design origin, ultimate root all marked UNKNOWN
+**G-A-4 Protection:** ✓ Remains CLOSED; no reinterpretation attempted
+**Inference Segregation:** ✓ Speculation clearly marked; not presented as evidence
+**Scope Acknowledgment:** ✓ v4.1.0 source unavailable; git history limited; acknowledged as boundaries
+
+**Investigation Verdict:** **G-A-5 = COMPLETE / BOUNDED**
 
 ---
 
