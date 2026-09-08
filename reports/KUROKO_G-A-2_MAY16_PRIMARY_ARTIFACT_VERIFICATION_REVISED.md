@@ -127,15 +127,30 @@ E20260601_070
 
 **Question:** Did Relay exist as a defined project on May 16, 2026?
 
-**Evidence Classification:**
+**Evidence Classification (Layer 1: Record Existence)**
 
 | Evidence | Classification | Basis | Certainty |
 |----------|----------------|-------|-----------|
 | TODO_147 created_at timestamp | CONFIRMED | System-recorded creation time | CONFIRMED |
-| TODO_147 title/category/description presence | CONFIRMED | Content in May 16 record | CONFIRMED |
 | No earlier Relay record found | NOT_FOUND_IN_EXAMINED_EVIDENCE | Archive search via grep | UNKNOWN (absence ≠ non-existence) |
 
-**Verdict:** **CONFIRMED** — Relay project existed as formally recorded TODO by May 16, 10:20 AM
+**Evidence Classification (Layer 2: Current Record Content)**
+
+| Evidence | Classification | Basis | Certainty |
+|----------|----------------|-------|-----------|
+| Current TODO_147 title/category/description | CONFIRMED_AS_CURRENT_RECORD_CONTENT | Content present in current record | CONFIRMED |
+
+**Evidence Classification (Layer 3: May 16-Specific Field State)**
+
+| Evidence | Classification | Basis | Certainty |
+|----------|----------------|-------|-----------|
+| Whether fields had these values on May 16 | UNKNOWN | Field-level modification history not available | UNKNOWN |
+
+**Verdict:** **CONFIRMED** (Record Existence) — Relay record existed as formally recorded TODO by May 16, 10:20 AM
+
+Current record identifies as: Relay — 会話自動引き継ぎChrome拡張 開発 (CONFIRMED_AS_CURRENT_RECORD_CONTENT)
+
+May 16-specific field state: UNKNOWN
 
 ---
 
@@ -193,24 +208,24 @@ The current TODO_147 record contains handoff-related content (CONFIRMED_AS_CURRE
 
 **Evidence Classification:**
 
-| Evidence | Classification | Basis | Certainty |
-|----------|----------------|-------|-----------|
-| LB_001 in PHIOS test (2026-05-31) | CONFIRMED_AT_MAY31 | P-S-05/P-S-12-c confirm LB_001 operational | CONFIRMED (May 31, not May 16) |
-| LB_001 in TODO_147 May 16 record | NOT_FOUND | Search of created_at record content | NOT_FOUND |
-| LB_* numbering scheme in requirements | RETROSPECTIVE | MoCKA_Relay_requirements_v1.md (June 26) | RETROSPECTIVE |
-| No May 16 explicit LB_001 reference found | NOT_FOUND_IN_EXAMINED_EVIDENCE | Archive search yields June 1+ evidence only | UNKNOWN_ORIGIN |
+| Evidence | Classification | Basis | Evidence Coverage |
+|----------|----------------|-------|---|
+| LB_001 in PHIOS test (2026-05-31) | CONFIRMED_AT_MAY31 | P-S-05/P-S-12-c confirm LB_001 operational | HIGH (May 31 archive) |
+| LB_001 in TODO_147 May 16 record | NOT_FOUND_IN_EXAMINED_EVIDENCE | Search of created_at record content | HIGH (May 16 evidence searched) |
+| LB_* numbering scheme in requirements | RETROSPECTIVE | MoCKA_Relay_requirements_v1.md (June 26) | N/A (formalization only) |
+| No May 16 explicit LB_001 reference found | NOT_FOUND_IN_EXAMINED_EVIDENCE | Archive search yields June 1+ evidence only | UNKNOWN (archive completeness) |
 
 **Critical Temporal Distinction:**
 
-| Timeline | Status | Confidence |
-|----------|--------|-----------|
-| **LB_001 on May 16** | NOT FOUND | HIGH |
-| **LB_001 on May 31** | CONFIRMED OPERATIONAL | HIGH |
-| **LB_001 creation date** | UNKNOWN | N/A |
-| **LB_001 first created** | UNKNOWN | N/A |
-| **LB_* naming origin** | UNKNOWN | N/A |
+| Timeline | Status | Evidence Coverage | Existence Confidence |
+|----------|--------|---|---|
+| **LB_001 on May 16** | NOT_FOUND_IN_EXAMINED_EVIDENCE | HIGH (May 16 searched) | UNKNOWN |
+| **LB_001 on May 31** | CONFIRMED OPERATIONAL | HIGH (May 31 test) | CONFIRMED |
+| **LB_001 creation date** | UNKNOWN | N/A | N/A |
+| **LB_001 first created** | UNKNOWN | N/A | N/A |
+| **LB_* naming origin** | UNKNOWN | N/A | N/A |
 
-**Verdict:** **NOT FOUND** — No direct May 16 evidence of the LB_001 identifier was found in examined evidence. LB_001 was confirmed operational by May 31 test. However, operational confirmation on May 31 does NOT establish that LB_001 existed on May 16. The creation date, implementation date, and origin of the LB_* naming scheme remain UNKNOWN. **Do NOT use May 31 operation as evidence for May 16 existence.**
+**Verdict:** **NOT_FOUND_IN_EXAMINED_EVIDENCE** — No direct May 16 evidence of the LB_001 identifier was found in examined evidence. LB_001 was confirmed operational by May 31 test. However, operational confirmation on May 31 does NOT establish that LB_001 existed on May 16. The creation date, implementation date, and origin of the LB_* naming scheme remain UNKNOWN. **Do NOT use May 31 operation as evidence for May 16 existence.**
 
 ---
 
@@ -509,12 +524,12 @@ The current record contains handoff-related concepts. May 16-specific field timi
 
 **Current Evidence Chain:**
 1. May 16: Relay project created (TODO_147) — NO LB_001 MENTION
-2. May 16-31: Logbook system implementation (inferred)
-3. May 31: lb_id(1)='LB_001' confirmed in PHIOS test
+2. By May 31: LB_* system operational (confirmed in PHIOS test)
+3. Implementation emergence window: UNKNOWN (could be May 16, or any point during May 16-31)
 4. June 1: LB_003, LB_005 referenced in TODO_147 note
 5. June 26: LB_001~080 formalized in requirements
 
-**Gap:** May 16 to May 31: No intermediate records showing LB_* origin
+**Gap:** May 16 to May 31: No intermediate records showing LB_* origin or implementation start date
 
 ### 9.2 Three Hypotheses (Unresolved)
 
@@ -669,7 +684,7 @@ did the LB_* identifier scheme first appear?
 |------|----------|---|---|---|
 | 1 | Relay existence May 16 | CONFIRMED | HIGH | Record creation timestamp |
 | 2 | Handoff concept May 16 | UNKNOWN | N/A | Current record contains; field-level timing UNKNOWN |
-| 3 | Logbook concept May 16 | UNKNOWN | MEDIUM | Not explicitly documented; inferred from May 31 |
+| 3 | Logbook concept May 16 | UNKNOWN | N/A | Not explicitly documented; no May 16 evidence |
 | 4 | LB_001 on May 16 | NOT FOUND | HIGH | No May 16 evidence; operational by May 31 |
 | 5 | Predecessor mechanism | NOT_FOUND_IN_EXAMINED_EVIDENCE | HIGH | Scope-limited absence; inheritance UNKNOWN |
 | 6A | Independent implementation May 16 | UNKNOWN | N/A | Current record contains statement; field-level timing UNKNOWN |
