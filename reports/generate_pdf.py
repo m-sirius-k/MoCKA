@@ -13,7 +13,7 @@ import os
 def create_pdf():
     """Generate KUROKO G-A-2 May 16 Primary Artifact Verification Report as PDF"""
 
-    output_path = "/home/user/MoCKA/reports/KUROKO_G-A-2_MAY16_PRIMARY_ARTIFACT_VERIFICATION.pdf"
+    output_path = "/home/user/MoCKA/reports/KUROKO_G-A-2_MAY16_PRIMARY_ARTIFACT_VERIFICATION_REVISED.pdf"
     doc = SimpleDocTemplate(output_path, pagesize=letter, topMargin=0.5*inch, bottomMargin=0.5*inch)
 
     styles = getSampleStyleSheet()
@@ -107,16 +107,17 @@ def create_pdf():
     story.append(Paragraph("Chapter 3: May 16 Six-Item Independent Verification Matrix Summary", heading2_style))
 
     matrix_data = [
-        ['Item', 'Classification', 'Confidence', 'Key Evidence'],
-        ['1. Relay Existence', 'CONFIRMED', 'HIGH', 'TODO_147 created_at timestamp'],
-        ['2. Handoff Concept', 'CONFIRMED', 'HIGH', 'Description: 会話自動引き継ぎ'],
+        ['Item', 'Classification (May 16-Specific)', 'Confidence', 'Key Evidence'],
+        ['1. Relay Existence', 'CONFIRMED', 'HIGH', 'TODO_147 record exists at May 16'],
+        ['2. Handoff Concept', 'UNKNOWN', 'N/A', 'Current record contains text; field-level timing unknown'],
         ['3. Logbook Concept', 'UNKNOWN', 'MEDIUM', 'Not in May 16 record'],
-        ['4. LB_001 Identifier', 'STRONGLY SUPPORTED', 'HIGH', 'May 31 PHIOS test confirmation'],
-        ['5. Predecessor System', 'NOT FOUND', 'HIGH', 'No prior mechanism found'],
-        ['6. Source/Inheritance', 'CONFIRMED', 'HIGH', 'Independent architecture stated'],
+        ['4. LB_001 Identifier', 'NOT FOUND', 'HIGH', 'No May 16 evidence; operational by May 31'],
+        ['5. Predecessor System', 'NOT_FOUND_IN_EXAMINED_EVIDENCE', 'HIGH', 'Absence does not prove non-existence'],
+        ['6A. Independent Implementation', 'UNKNOWN', 'N/A', 'Current record contains statement; field-level timing unknown'],
+        ['6B-6D. Inheritance / Source', 'UNKNOWN', 'N/A', 'No evidence chain established'],
     ]
 
-    matrix_table = Table(matrix_data, colWidths=[1.5*inch, 1.5*inch, 1*inch, 2*inch])
+    matrix_table = Table(matrix_data, colWidths=[1.8*inch, 1.8*inch, 0.8*inch, 1.6*inch])
     matrix_table.setStyle(TableStyle([
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 9),
@@ -135,11 +136,11 @@ def create_pdf():
     # Key Finding
     story.append(Paragraph("Chapter 5: Key Finding - mini MoCKA Series 製品2 Origin", heading2_style))
     story.append(Paragraph(
-        "<b>Verdict: CONFIRMED CONTEMPORARY</b>",
+        "<b>Verdict: STRONGLY_SUPPORTED_AS_MAY16_CONTEXT</b>",
         body_style
     ))
     story.append(Paragraph(
-        "The phrase 'mini MoCKA Series 製品2「Relay」' was part of the May 16 creation record (description field), not a June 1 retrofit. This confirms that Relay was conceptualized as Product 2 of the mini series from inception.",
+        "The phrase 'mini MoCKA Series 製品2「Relay」' appears in the current record at created_at timestamp May 16 (not a June 1 addition). This strongly suggests May 16 product conception. However, field-level modification history is not available, so field-level timing cannot be independently verified. Contextual evidence is strong; absolute proof awaits field-level history.",
         body_style
     ))
     story.append(Spacer(1, 0.2*inch))
@@ -152,10 +153,12 @@ def create_pdf():
     ))
 
     unknowns_list = """
-    <br/>1. <b>LB_* naming origin:</b> Was the scheme designed at May 16 inception or emergent during May 16-31 implementation?
-    <br/>2. <b>Logbook concept detail:</b> Was explicit logbook architecture planned May 16 or designed during implementation?
-    <br/>3. <b>Ultimate source:</b> What prior design or product inspired the LB_* identifier scheme?
-    <br/>4. <b>Relay series positioning:</b> Was Relay truly first/second in mini series, or was numbering retroactive?
+    <br/>1. <b>Handoff concept field-level timing:</b> Was description text present on May 16, or added later? (field-level history unavailable)
+    <br/>2. <b>Independent implementation statement timing:</b> Was this statement in description on May 16? (field-level history unavailable)
+    <br/>3. <b>LB_* naming origin:</b> When did LB_001 first emerge? May 16? May 20? May 31?
+    <br/>4. <b>Logbook concept detail:</b> Was explicit logbook architecture designed May 16 or May 16-31?
+    <br/>5. <b>Ultimate source:</b> What prior design or product inspired LB_* or handoff architecture?
+    <br/>6. <b>Prerequisite mechanism:</b> Did Relay derive from prior product concepts?
     """
     story.append(Paragraph(unknowns_list, body_style))
     story.append(Spacer(1, 0.2*inch))
