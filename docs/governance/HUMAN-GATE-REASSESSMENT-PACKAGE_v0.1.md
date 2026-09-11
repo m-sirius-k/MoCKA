@@ -176,10 +176,9 @@ Code Change Authorization: NOT_GRANTED (unchanged)
 - Clear error response: fail_closed status to caller
 - Complete audit trail maintained
 
-**Criticality**: HIGH
-- Affects data integrity (orphaned decisions)
-- Affects binding chain completeness
-- Blocks C2-b Phase 3 (ROUTE 2)
+**Severity**: HIGH
+**Governance Impact**: CRITICAL
+**C2-b Impact**: ROUTE 2 BLOCK
 
 **Status**: DESIGN_COMPLETE, IMPLEMENTATION_NOT_AUTHORIZED
 
@@ -203,10 +202,9 @@ Code Change Authorization: NOT_GRANTED (unchanged)
 - Three recovery options: automatic event, human gate decision, quarantine
 - Complete binding audit trail
 
-**Criticality**: HIGH
-- Affects foundational data integrity
-- Affects audit trail completeness
-- Blocks C2-b Phase 3 (ROUTE 3)
+**Severity**: CRITICAL
+**Governance Impact**: FOUNDATIONAL
+**C2-b Impact**: ROUTE 3 BLOCK
 
 **Status**: DESIGN_COMPLETE, IMPLEMENTATION_NOT_AUTHORIZED
 
@@ -576,9 +574,9 @@ Scope enforcement: 100% compliant
 - Example: Developer has technical capability but NOT authority to authorize changes
 
 **Current Status**: Still not formalized (Item 3 - Role Definitions NOT_ESTABLISHED)
-- Capability-Authority confusion exists in current state
-- Design: Separation explicitly specified in designs (Role registry, Authority matrix)
-- Implementation: NOT_AUTHORIZED
+- Formal capability-authority separation: NOT ESTABLISHED
+- Design separation: SPECIFIED
+- Runtime enforcement: NOT VERIFIED
 
 ### Fail-Closed Default (MAINTAINED)
 
@@ -640,6 +638,18 @@ Scope enforcement: 100% compliant
 - Duration: 13 business days (critical path)
 
 **Current Status**: Resource authorization NOT_GRANTED
+
+### Critical Boundary: Design Approval ≠ Implementation Authorization
+
+**IMPORTANT**: Approval of the above four preconditions does NOT constitute Implementation Authorization.
+
+**Explicit Rule**: Implementation Authorization shall remain NOT GRANTED until all applicable binding prerequisites and Human Gate conditions have been independently verified and explicitly approved by Human Gate.
+
+**Clarification of Stages**:
+1. Design Approval (Preconditions 1-4 above) = Authority to proceed with evidence collection and prerequisites
+2. Implementation Authorization = Separate, subsequent decision requiring independent verification and explicit HG approval
+
+Approval of design specifications alone does not grant implementation authority.
 
 ---
 
@@ -706,10 +716,21 @@ Status: COMPLETE (this document)
 
 **Framing**: Only after design approval and evidence collection
 
-**Prerequisites**:
+**Critical Principle**: Each authorization prerequisite must be individually VERIFIED/PASS according to its binding acceptance criteria. Partial progress or partial evidence does not constitute authorization readiness.
+
+**Prerequisite Rule**:
+```
+Partial Evidence
+      ≠
+PASS
+      ≠
+Authorization Readiness
+```
+
+**Prerequisites** (all must achieve PASS status individually):
 - Design approval obtained (Point 1)
-- Evidence gaps partially addressed (Clock sync measurements, at minimum)
-- Role authority formalized
+- All evidence gaps verified against binding criteria
+- Role authority formally established and approved
 
 ### Decision Point 3: C2-b Authorization
 

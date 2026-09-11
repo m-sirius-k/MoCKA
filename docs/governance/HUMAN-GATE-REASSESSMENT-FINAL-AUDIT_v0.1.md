@@ -384,7 +384,9 @@
 
 **Decision Point 2**: "Shall we proceed with implementation?"
 - Prerequisite: "Only after design approval" ✓
-- Prerequisite: "Evidence gaps partially addressed" ✓
+- Prerequisite: "Each prerequisite must be individually VERIFIED/PASS" ✓
+- Prerequisite: "Partial evidence does NOT constitute authorization readiness" ✓
+- Critical Principle: Design Approval ≠ Implementation Authorization ✓
 - Not automatic ✓
 
 **Decision Point 3**: "Shall we verify C2-b Phase 3 readiness?"
