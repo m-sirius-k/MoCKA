@@ -22,7 +22,7 @@ import sqlite3
 import datetime
 from pathlib import Path
 
-REPO_ROOT      = Path(r"C:\Users\sirok\MoCKA")
+REPO_ROOT = Path(__file__).parent.parent
 MOCKA_DB       = REPO_ROOT / "data" / "mocka_events.db"
 REPO_INDEX     = REPO_ROOT / "structural" / "repository_index.json"
 OUTPUT_PATH    = REPO_ROOT / "structural" / "event_file_map.json"

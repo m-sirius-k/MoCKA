@@ -28,7 +28,7 @@ from pathlib import Path
 
 from structural.grounding_engine import RepositoryGroundingEngine
 
-REPO_ROOT      = Path(r"C:\Users\sirok\MoCKA")
+REPO_ROOT = Path(__file__).parent.parent
 MEMORY_PATH    = REPO_ROOT / "data" / "working_memory.json"
 
 WORKING_MEMORY_FIELDS = [

@@ -406,6 +406,26 @@ def _read_decisions():
                 broken += 1
     return records, broken
 
+def _read_events():
+    """mocka_events.dbからすべてのイベントを読む（binding auditで使用）。"""
+    events = []
+    broken = 0
+    try:
+        conn = sqlite3.connect(str(DB_PATH))
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM events ORDER BY created_at DESC")
+        columns = [description[0] for description in cursor.description] if cursor.description else []
+        for row in cursor.fetchall():
+            try:
+                event_dict = dict(zip(columns, row))
+                events.append(event_dict)
+            except Exception:
+                broken += 1
+        conn.close()
+    except Exception:
+        pass  # DB not available or not initialized
+    return events, broken
+
 def _next_decision_id():
     """DC_YYYYMMDD_NNN形式で当日分の次番号を採番する（欠番可・重複禁止）。"""
     today = datetime.date.today().strftime("%Y%m%d")
@@ -1060,6 +1080,7 @@ def execute_tool(name, args):
                     r = requests.post(GATE_URL, json=gate_payload, timeout=5)
                     if r.status_code == 201:
                         event_id = r.json().get("event_id")
+                        event_creation_failed = False  # Retry succeeded
                         break  # Success
                     else:
                         event_creation_failed = True
@@ -1073,7 +1094,7 @@ def execute_tool(name, args):
                         time.sleep(retry_delays[attempt])
 
             # Step 3: On Event creation failure, mark Decision as INVALIDATED (audit trail preservation)
-            if event_creation_failed or event_id is None:
+            if event_id is None:
                 # Append INVALIDATED record to preserve audit trail
                 invalidated_record = record.copy()
                 invalidated_record["status"] = "INVALIDATED"

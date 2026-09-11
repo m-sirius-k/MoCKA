@@ -22,7 +22,7 @@ from pathlib import Path
 
 from structural.repository_policy import get_policy
 
-REPO_ROOT      = Path(r"C:\Users\sirok\MoCKA")
+REPO_ROOT = Path(__file__).parent.parent
 REPO_INDEX     = REPO_ROOT / "structural" / "repository_index.json"
 WORKING_MEMORY = REPO_ROOT / "data" / "working_memory.json"
 
