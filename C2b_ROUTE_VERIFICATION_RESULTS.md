@@ -10,19 +10,21 @@
 
 ## Executive Summary
 
-Authorization-Free Verification Complete:
-- **ROUTE 1** (Clock Sync): **PASS** - Timestamp monotonicity + drift verified
-- **ROUTE 2** (HG API Stable): **PASS** - Verified via CRITICAL-001
-- **ROUTE 3** (Binding Complete): **PASS** - Verified via CRITICAL-002
-- **ROUTE 5** (Authorization Boundary): **PASS** - 82.6% design compliance verified
+Verified and Established:
+- **ROUTE 2** (HG API Stable): **PASS** - Full Server Runtime Verified via CRITICAL-001
+- **ROUTE 3** (Binding Complete): **PASS** - Full Server Runtime Verified via CRITICAL-002
 
-Authorization Required (Deferred):
-- **ROUTE 4** (Role Authority): Design phase only - Authorization needed for registry implementation
-- **ROUTE 6** (Audit Trail): Partial coverage - Authorization needed for monitoring enhancement
-- **ROUTE 7** (Recovery): Partial coverage - Authorization needed for extended recovery procedures
-- **ROUTE 8** (Monitoring): Design phase only - Authorization needed for TIC Layer 2-4 implementation
+Preliminary Testing Complete (NOT FULL VERIFICATION):
+- **ROUTE 1** (Clock Sync): **NOT_PROVEN** - 100 samples preliminary test PASS, but 1000+ samples + 24h measurement NOT YET COMPLETED
+- **ROUTE 5** (Authorization Boundary): **NOT_PROVEN** - Design audit complete, but 5 enforcement points full binding verification NOT COMPLETE (82.6% partial compliance ≠ PASS)
 
-**C2-b Status After Verification**: NOT READY (4/8 routes ready; 4 await authorization decisions)
+Blocked by Authorization Gap or Not Ready:
+- **ROUTE 4** (Role Authority): BLOCKED - Requires authorization for registry implementation
+- **ROUTE 6** (Audit Trail): BLOCKED - Requires authorization for monitoring implementation
+- **ROUTE 7** (Recovery): BLOCKED - Requires authorization for extended recovery procedures
+- **ROUTE 8** (Monitoring): BLOCKED - Requires authorization for TIC Layer 2-4 infrastructure
+
+**C2-b Status After Verification**: BLOCK / NOT READY (制度訂正: ROUTE 1, 5 = NOT_PROVEN; ROUTE 4, 6, 7, 8 = BLOCKED)
 
 ---
 
@@ -203,22 +205,23 @@ Per きむら博士's explicit rule: "1 route FAIL => C2-b BLOCK"
 
 | ROUTE | Status | Evidence | HG Ready? |
 |-------|--------|----------|-----------|
-| 1 | PASS | Clock Sync verification 100/100 | YES - READY |
-| 2 | PASS | CRITICAL-001 runtime test 5/5 | YES - READY |
-| 3 | PASS | CRITICAL-002 runtime test 1/1 | YES - READY |
-| 4 | PENDING | Design complete, impl authorization needed | AWAITING AUTH |
-| 5 | PASS | Authorization Boundary audit 82.6% | YES - READY |
-| 6 | PARTIAL | CRITICAL-002 covers base, extension awaits auth | AWAITING AUTH |
-| 7 | PARTIAL | CRITICAL-001 covers base, extension awaits auth | AWAITING AUTH |
-| 8 | DESIGN | TIC Layer 0-1 working, 2-4 await authorization | AWAITING AUTH |
+| 1 | NOT_PROVEN | 100 samples preliminary PASS; 1000+ samples + 24h measurement NOT VERIFIED | NOT READY |
+| 2 | PASS | CRITICAL-001 full server runtime test 5/5 | YES - READY |
+| 3 | PASS | CRITICAL-002 full server runtime test 1/1 | YES - READY |
+| 4 | BLOCKED | Design complete, impl authorization needed | NOT READY |
+| 5 | NOT_PROVEN | Design audit complete; 5 enforcement points full binding verification NOT COMPLETE (82.6% partial ≠ PASS) | NOT READY |
+| 6 | BLOCKED | CRITICAL-002 covers base, extension authorization needed | NOT READY |
+| 7 | BLOCKED | CRITICAL-001 covers base, extension authorization needed | NOT READY |
+| 8 | BLOCKED | TIC Layer 0-1 working, 2-4 authorization needed | NOT READY |
 
 ### C2-b Readiness Declaration
 
-**Current Status**: NOT READY (per HG-C14 Candidate B rule)
+**Current Status**: BLOCK / NOT READY (per HG-C14 Candidate B strict rule)
 
-**Routes Ready (5)**: 1, 2, 3, 5, and partial 6, 7  
-**Routes Blocked (3)**: 4 (authorization needed), 8 (authorization needed)  
-**Blocker Type**: Authorization Gap
+**Routes PASS (2)**: 2, 3  
+**Routes NOT_PROVEN (2)**: 1, 5  
+**Routes BLOCKED (4)**: 4, 6, 7, 8  
+**Blocker Type**: Evidence Gap + Authorization Gap
 
 **Why NOT READY**:
 - ROUTE 4 (Role Authority): Implementation blocked pending authorization
@@ -285,15 +288,21 @@ Upon authorization, implementation can proceed with parallel ROUTE verification 
 
 ## Conclusion
 
-**C2-b Phase 3 Completion Status: IN PROGRESS**
+**C2-b Phase 3 Completion Status: PREAUTH AUDIT PHASE**
 
-- Authorization-free verification complete (ROUTES 1, 5 PASS; ROUTES 2, 3 already PASS)
-- 4 of 8 routes ready for Human Gate reassessment
-- 4 routes await implementation authorization
+**制度訂正適用後の正式状態**:
+- ROUTE 2, 3 = PASS (Full Server Runtime Verified)
+- ROUTE 1 = NOT_PROVEN (100 samples preliminary PASS; 1000+ samples + 24h measurement required)
+- ROUTE 5 = NOT_PROVEN (Design audit complete; 5 enforcement points full binding verification required)
+- ROUTE 4, 6, 7, 8 = BLOCKED (Authorization Gap)
 - System remains in HOLD / FAIL-CLOSED state
 - All changes reversible; no production risk
 
-**Ready for きむら博士 authorization review**
+**Next Phase: Authorization-Free Pre-Implementation Audit**
+- ROUTE 1: 24h measurement harness design & preparation
+- ROUTE 4, 5, 6, 7, 8: Design verification, code audit, failure scenario design, test harness creation
+- Goal: Maximize discovery WITHOUT crossing Authorization Boundary
+- Target: Provide Human Gate with specific, evidence-bound change recommendations
 
 ---
 
