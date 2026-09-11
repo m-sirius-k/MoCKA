@@ -1173,11 +1173,22 @@ def execute_tool(name, args):
                 if eid:
                     all_events[eid] = evt
 
-                tags = evt.get("tags", "").split(",") if evt.get("tags") else []
+                # Parse tags: can be array or comma-separated string
+                tags_raw = evt.get("tags", [])
+                if isinstance(tags_raw, str):
+                    tags = tags_raw.split(",")
+                elif isinstance(tags_raw, list):
+                    tags = tags_raw
+                else:
+                    tags = []
+
                 for tag in tags:
-                    if tag.startswith("decision_ledger,"):
-                        decision_id = tag.split(",")[1]
-                        events_by_decision[decision_id].append(eid)
+                    # Each tag is like "decision_ledger,DC_001" or array element
+                    if isinstance(tag, str) and "decision_ledger," in tag:
+                        parts = tag.split(",")
+                        if len(parts) >= 2 and parts[0] == "decision_ledger":
+                            decision_id = parts[1]
+                            events_by_decision[decision_id].append(eid)
 
             latest_decisions = {}
             for d in decisions:
@@ -1197,17 +1208,28 @@ def execute_tool(name, args):
                     })
 
             for event_id, event in all_events.items():
-                tags = event.get("tags", "").split(",") if event.get("tags") else []
+                # Parse tags: can be array or comma-separated string
+                tags_raw = event.get("tags", [])
+                if isinstance(tags_raw, str):
+                    tags = tags_raw.split(",")
+                elif isinstance(tags_raw, list):
+                    tags = tags_raw
+                else:
+                    tags = []
+
                 for tag in tags:
-                    if tag.startswith("decision_ledger,"):
-                        decision_id = tag.split(",")[1]
-                        if decision_id not in latest_decisions:
-                            audit_report["type2_orphans"].append({
-                                "event_id": event_id,
-                                "decision_id": decision_id,
-                                "event_timestamp": event.get("created_at"),
-                                "title": event.get("title")
-                            })
+                    # Each tag is like "decision_ledger,DC_001"
+                    if isinstance(tag, str) and "decision_ledger," in tag:
+                        parts = tag.split(",")
+                        if len(parts) >= 2 and parts[0] == "decision_ledger":
+                            decision_id = parts[1]
+                            if decision_id not in latest_decisions:
+                                audit_report["type2_orphans"].append({
+                                    "event_id": event_id,
+                                    "decision_id": decision_id,
+                                    "event_timestamp": event.get("created_at"),
+                                    "title": event.get("title")
+                                })
 
             if audit_report["total_decisions"] > 0:
                 audit_report["binding_completeness"] = (
