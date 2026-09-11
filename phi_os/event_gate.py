@@ -13,7 +13,17 @@ if str(_REPO_ROOT_FOR_POLICY / "interface") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT_FOR_POLICY / "interface"))
 from gate_policy import compute_gate_audit
 
+# C2-b: Import formal role definitions (Unit 1.2)
+sys.path.insert(0, str(_REPO_ROOT / 'governance'))
+from role_registry import RoleRegistry
+
 gate_bp = Blueprint('event_gate', __name__)
+
+# Validate GATE_SYSTEM role exists and has required capabilities
+assert RoleRegistry.validate_authority('GATE_SYSTEM', 'VALIDATE_PAYLOAD'), \
+    "GATE_SYSTEM role must have VALIDATE_PAYLOAD capability"
+assert RoleRegistry.validate_authority('GATE_SYSTEM', 'ENFORCE_GATE_POLICY'), \
+    "GATE_SYSTEM role must have ENFORCE_GATE_POLICY capability"
 
 # Single Truth DB — data/mocka_events.db (絶対パス解決)
 _REPO_ROOT = Path(__file__).resolve().parent.parent

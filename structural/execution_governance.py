@@ -33,6 +33,16 @@ _repo_root_str = str(REPO_ROOT)
 if _repo_root_str not in _sys.path:
     _sys.path.insert(0, _repo_root_str)
 
+# C2-b: Import formal role definitions (Unit 1.2)
+_sys.path.insert(0, str(REPO_ROOT / "governance"))
+from role_registry import RoleRegistry
+
+# Validate GL7_KERNEL role exists and has required capabilities
+assert RoleRegistry.validate_authority('GL7_KERNEL', 'ENFORCE_ABORT_CONDITIONS'), \
+    "GL7_KERNEL role must have ENFORCE_ABORT_CONDITIONS capability"
+assert RoleRegistry.validate_authority('GL7_KERNEL', 'BLOCK_UNAUTHORIZED_EXECUTION'), \
+    "GL7_KERNEL role must have BLOCK_UNAUTHORIZED_EXECUTION capability"
+
 
 def _emit_gl7_event(result: str, reason_code: str, context: dict) -> None:
     try:

@@ -28,6 +28,16 @@ MOCKA_DB        = REPO_ROOT / "data" / "mocka_events.db"
 EVENT_FILE_MAP  = REPO_ROOT / "data" / "mocka" / "event_file_map.json"
 OUTPUT_PATH     = REPO_ROOT / "data" / "mocka" / "state_reconstructor_output.json"
 
+# C2-b: Import formal role definitions (Unit 1.2)
+sys.path.insert(0, str(REPO_ROOT / "governance"))
+from role_registry import RoleRegistry
+
+# Validate AUDIT_SYSTEM role exists and has required capabilities
+assert RoleRegistry.validate_authority('AUDIT_SYSTEM', 'TRACE_EVENT_LINEAGE'), \
+    "AUDIT_SYSTEM role must have TRACE_EVENT_LINEAGE capability"
+assert RoleRegistry.validate_authority('AUDIT_SYSTEM', 'RECONSTRUCT_EXECUTION_PATH'), \
+    "AUDIT_SYSTEM role must have RECONSTRUCT_EXECUTION_PATH capability"
+
 # ============================================================
 # 状態抽出パターン定義
 # ============================================================

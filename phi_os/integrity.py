@@ -25,8 +25,20 @@ from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(_REPO_ROOT / "interface"))
+sys.path.insert(0, str(_REPO_ROOT / "governance"))
+
+# C2-b: Import formal role definitions (Unit 1.2)
+from role_registry import RoleRegistry
 
 SIGNATURE_VERSION = "1.0"
+
+# Validate INTEGRITY_SYSTEM role exists and has required capabilities
+assert RoleRegistry.validate_authority('INTEGRITY_SYSTEM', 'SIGN_EVENT'), \
+    "INTEGRITY_SYSTEM role must have SIGN_EVENT capability"
+assert RoleRegistry.validate_authority('INTEGRITY_SYSTEM', 'VERIFY_HASH_CHAIN'), \
+    "INTEGRITY_SYSTEM role must have VERIFY_HASH_CHAIN capability"
+assert RoleRegistry.validate_authority('INTEGRITY_SYSTEM', 'DETECT_TAMPERING'), \
+    "INTEGRITY_SYSTEM role must have DETECT_TAMPERING capability"
 
 # アルゴリズム登録レジストリ。将来のアルゴリズム追加はここに1行足すだけでよい。
 ALGORITHMS = {
