@@ -359,7 +359,7 @@ def save_todo(data, actor=None):
     _log_write_audit(TODO_PATH, content, actor=actor)
 
 # ===== TODO_361: Decision Ledger（DECISION_LEDGER_SCHEMA_v1.md準拠） =====
-DECISION_STATUS_ENUM = {"Active", "Superseded", "Withdrawn"}
+DECISION_STATUS_ENUM = {"Active", "Superseded", "Withdrawn", "INVALIDATED"}
 
 def _read_decisions():
     """decision_ledger.jsonlの全行を読む（append-only。同一decision_idの複数行は
@@ -1001,30 +1001,62 @@ def execute_tool(name, args):
                 "superseded_by":     None,
                 "status":            status,
             }
+
+            # CRITICAL-001 Fix: Option A (Fail-Closed Atomic Binding)
+            # Step 1: Write Decision to Ledger (Active status)
             _append_decision(record)
-            # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
-            # what_type=DECISION_MADEのenum拡張はapp.py側GATEのスコープ外のため今回は追加しない）
+
+            # Step 2: Create companion event with retry logic (exponential backoff: 2s, 4s, 8s)
             event_id = None
-            try:
-                gate_payload = {
-                    "who_actor":       args.get("approved_by", _DEFAULT_ACTOR),
-                    "who_role":        "executor",
-                    "who_session":     SESSION_ID,
-                    "what_type":       "claude_mcp",
-                    "what_title":      f"[DECISION_MADE] {decision_id}: {title}",
-                    "where_path":      "mocka_mcp_server.py",
-                    "where_component": "mcp_caliber",
-                    "why_purpose":     rationale[:80] or title,
-                    "how_trigger":     "mcp_tool_call",
-                    "after_state":     decision[:200] or title,
-                    "description":     f"decision_id={decision_id}\ncontext={context}\ndecision={decision}\nrationale={rationale}\nimpact={impact}",
-                    "tags":            f"decision_ledger,{decision_id},{status}",
-                }
-                r = requests.post(GATE_URL, json=gate_payload, timeout=5)
-                if r.status_code == 201:
-                    event_id = r.json().get("event_id")
-            except Exception as _companion_err:
-                print(f"[MCP] mocka_decision_write companion event failed: {_companion_err}", flush=True)
+            event_creation_failed = False
+            max_retries = 3
+            retry_delays = [2, 4, 8]  # seconds
+
+            gate_payload = {
+                "who_actor":       args.get("approved_by", _DEFAULT_ACTOR),
+                "who_role":        "executor",
+                "who_session":     SESSION_ID,
+                "what_type":       "claude_mcp",
+                "what_title":      f"[DECISION_MADE] {decision_id}: {title}",
+                "where_path":      "mocka_mcp_server.py",
+                "where_component": "mcp_caliber",
+                "why_purpose":     rationale[:80] or title,
+                "how_trigger":     "mcp_tool_call",
+                "after_state":     decision[:200] or title,
+                "description":     f"decision_id={decision_id}\ncontext={context}\ndecision={decision}\nrationale={rationale}\nimpact={impact}",
+                "tags":            f"decision_ledger,{decision_id},{status}",
+            }
+
+            for attempt in range(max_retries):
+                try:
+                    r = requests.post(GATE_URL, json=gate_payload, timeout=5)
+                    if r.status_code == 201:
+                        event_id = r.json().get("event_id")
+                        break  # Success
+                    else:
+                        event_creation_failed = True
+                        print(f"[MCP] mocka_decision_write: GATE returned {r.status_code} (attempt {attempt+1}/{max_retries})", flush=True)
+                        if attempt < max_retries - 1:
+                            time.sleep(retry_delays[attempt])
+                except Exception as e:
+                    event_creation_failed = True
+                    print(f"[MCP] mocka_decision_write: Event creation failed (attempt {attempt+1}/{max_retries}): {e}", flush=True)
+                    if attempt < max_retries - 1:
+                        time.sleep(retry_delays[attempt])
+
+            # Step 3: On Event creation failure, mark Decision as INVALIDATED (audit trail preservation)
+            if event_creation_failed or event_id is None:
+                # Append INVALIDATED record to preserve audit trail
+                invalidated_record = record.copy()
+                invalidated_record["status"] = "INVALIDATED"
+                invalidated_record["invalidated_at"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+                invalidated_record["invalidation_reason"] = "Event creation failed after 3 retry attempts"
+                _append_decision(invalidated_record)
+
+                # Step 4: Return fail_closed response
+                auto_log(name, args, f"decision {decision_id} rolled back (event creation failed)")
+                return json.dumps({"status": "fail_closed", "error": "event_creation_timeout", "decision_id": None}, ensure_ascii=False)
+
             auto_log(name, args, f"decision written {decision_id}")
             return json.dumps({"status": "ok", "decision_id": decision_id, "event_id": event_id}, ensure_ascii=False)
 
