@@ -210,6 +210,34 @@ class MoCKARouter:
     """app.py互換ラッパークラス"""
     def collaborate(self, prompt):
         import subprocess, sys, os
+
+        # M18 Authorization Check — BEFORE subprocess.Popen
+        try:
+            from phi_os.context.access_gate import before_context_update, AccessDeniedError
+            from phi_os.runtime.authorization_resolver import AuthorizationResolver
+
+            resolver = AuthorizationResolver()
+            before_context_update(
+                actor_id="router",
+                target_actor_id="router",
+                resolver=resolver
+            )
+        except AccessDeniedError as auth_err:
+            write_safe_csv({
+                "who_actor": "mocka_router",
+                "what_type": "collaboration_blocked",
+                "where_component": "router",
+                "where_path": "interface/router.py",
+                "why_purpose": "Authorization denied",
+                "how_trigger": "router.collaborate() - authorization check failed",
+                "title": f"[BLOCKED] collaboration - {str(auth_err)[:100]}",
+                "short_summary": str(auth_err),
+                "lifecycle_phase": "in_operation",
+                "risk_level": "high",
+                "channel_type": "internal"
+            })
+            raise auth_err
+
         write_safe_csv({
             "who_actor": "mocka_router",
             "what_type": "collaboration",
@@ -229,6 +257,34 @@ class MoCKARouter:
 
     def share(self, prompt):
         import subprocess, sys, os
+
+        # M18 Authorization Check — BEFORE subprocess.Popen
+        try:
+            from phi_os.context.access_gate import before_context_update, AccessDeniedError
+            from phi_os.runtime.authorization_resolver import AuthorizationResolver
+
+            resolver = AuthorizationResolver()
+            before_context_update(
+                actor_id="router",
+                target_actor_id="router",
+                resolver=resolver
+            )
+        except AccessDeniedError as auth_err:
+            write_safe_csv({
+                "who_actor": "mocka_router",
+                "what_type": "share_blocked",
+                "where_component": "router",
+                "where_path": "interface/router.py",
+                "why_purpose": "Authorization denied",
+                "how_trigger": "router.share() - authorization check failed",
+                "title": f"[BLOCKED] share - {str(auth_err)[:100]}",
+                "short_summary": str(auth_err),
+                "lifecycle_phase": "in_operation",
+                "risk_level": "high",
+                "channel_type": "internal"
+            })
+            raise auth_err
+
         write_safe_csv({
             "who_actor": "mocka_router",
             "what_type": "share",

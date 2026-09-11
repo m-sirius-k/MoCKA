@@ -113,6 +113,21 @@ def main():
 
         print("GOAL-DOMINANT:", choice)
 
+    # M18 Authorization Check — BEFORE state mutation
+    try:
+        from phi_os.context.access_gate import before_context_update, AccessDeniedError
+        from phi_os.runtime.authorization_resolver import AuthorizationResolver
+
+        resolver = AuthorizationResolver()
+        before_context_update(
+            actor_id="action_selector",
+            target_actor_id="action_selector",
+            resolver=resolver
+        )
+    except AccessDeniedError as auth_err:
+        print(f"[BLOCKED] Action selector state mutation denied: {auth_err}")
+        raise auth_err
+
     state["last_actions"] = [choice]
 
     with open(STATE_PATH,"w",encoding="utf-8") as f:

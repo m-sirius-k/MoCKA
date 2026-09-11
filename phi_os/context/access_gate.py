@@ -1,9 +1,10 @@
 """
 H2-1/H2-2 強制インターセプト層(7.1c) — observe/write境界をコードで強制する。
 control境界は別モジュール control_gate.py に分離する(7.1b)。
-このモジュールはExecutionContextを参照しない(5チェックとH2-1は別レイヤー)。
+M18 追加: Feature-level authorization resolver integration (multi-layer defense).
 """
 from __future__ import annotations
+from typing import Optional
 
 from . import permissions
 
@@ -28,12 +29,69 @@ def before_event_write(actor_id: str, event_payload: dict) -> dict:
     return event_payload
 
 
-def before_context_update(actor_id: str, target_actor_id: str) -> None:
-    """WorkingContext更新直前の強制チェック。write権限(自分のactor_idのみ)を検証する。"""
+def before_context_update(
+    actor_id: str,
+    target_actor_id: str,
+    authorization_id: Optional[str] = None,
+    sealed_auth: Optional[object] = None,
+    resolver: Optional[object] = None,
+) -> None:
+    """
+    WorkingContext更新直前の強制チェック。
+
+    Multi-layer defense:
+    1. Actor-level permission check (existing: permissions.check_write)
+    2. Feature-level authorization check (new: resolver via M18)
+
+    Both must ALLOW for execution to proceed.
+
+    Args:
+        actor_id: Requesting actor
+        target_actor_id: Target actor being modified
+        authorization_id: Optional sealed authorization ID
+        sealed_auth: Optional SealedAuthorizationObject instance
+        resolver: Optional AuthorizationResolver instance
+    """
+    # Layer 1: Actor-level RBAC (existing)
     if not permissions.check_write(actor_id, target_actor_id):
         raise AccessDeniedError(
             f"actor '{actor_id}' は actor '{target_actor_id}' のWorkingContextを更新できない"
         )
+
+    # Layer 2: Feature-level Authorization (M18)
+    if authorization_id and sealed_auth and resolver:
+        try:
+            from phi_os.runtime.authorization_resolver import (
+                AuthorizationResolutionContext, ResolutionStatus
+            )
+
+            # Build resolution context
+            context = AuthorizationResolutionContext(
+                requesting_identity=actor_id,
+                requesting_role="unknown",  # Role not yet determined at this layer
+                operation="write",
+                resource_type="working_context",
+                resource_id=f"actor:{target_actor_id}",
+            )
+
+            # Resolve authorization
+            result = resolver.resolve(sealed_auth, context)
+
+            # Must ALLOW (not BLOCK, not UNKNOWN, not EXPIRED, not REVOKED)
+            if not result.allow or result.status != ResolutionStatus.ALLOW:
+                raise AccessDeniedError(
+                    f"Authorization denied: {result.status.value}. "
+                    f"Reason: {result.reasoning}"
+                )
+        except ImportError as ie:
+            # Resolver unavailable is a FATAL error - FAIL-CLOSED
+            raise AccessDeniedError(
+                f"Authorization system unavailable (ImportError: {str(ie)}). "
+                f"Cannot execute without resolver."
+            )
+        except Exception as e:
+            # Any resolver error should block execution
+            raise AccessDeniedError(f"Authorization check failed: {str(e)}")
 
 
 def enforce_observe(requesting_actor_id: str, target_actor_id: str | None, scope: str) -> None:
