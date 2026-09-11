@@ -474,7 +474,8 @@ TOOLS = [
     {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
     {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
     {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
-    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
+    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}},
+    {"name":"mocka_binding_audit","description":"Decision-Event Binding Audit(CRITICAL-002)。Decision LedgerとEvent Storeを交叉検証し、orphaned decisions/events、binding completenessを報告する。","inputSchema":{"type":"object","properties":{"full_audit":{"type":"boolean","default":True,"description":"true=全決定を監査, false=直近100件のみ"},"include_recovery":{"type":"boolean","default":False,"description":"true=Type1 orphanの自動復旧も試行(仮)"}},}}
 ]
 
 def execute_tool(name, args):
@@ -1149,6 +1150,72 @@ def execute_tool(name, args):
             result.sort(key=lambda r: r.get("classification_id", ""), reverse=True)
             auto_log(name, args, f"{len(result)} classifications (broken_lines={broken})")
             return json.dumps({"count": len(result), "broken_lines": broken, "classifications": result}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_binding_audit":
+            from collections import defaultdict
+            audit_report = {
+                "timestamp": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "total_decisions": 0,
+                "complete_bindings": 0,
+                "type1_orphans": [],
+                "type2_orphans": [],
+                "binding_completeness": 0.0
+            }
+
+            decisions, _ = _read_decisions()
+            audit_report["total_decisions"] = len(decisions)
+
+            events, _ = _read_events()
+            events_by_decision = defaultdict(list)
+            all_events = {}
+            for evt in events:
+                eid = evt.get("event_id")
+                if eid:
+                    all_events[eid] = evt
+
+                tags = evt.get("tags", "").split(",") if evt.get("tags") else []
+                for tag in tags:
+                    if tag.startswith("decision_ledger,"):
+                        decision_id = tag.split(",")[1]
+                        events_by_decision[decision_id].append(eid)
+
+            latest_decisions = {}
+            for d in decisions:
+                did = d.get("decision_id")
+                if did:
+                    latest_decisions[did] = d
+
+            for decision_id, decision in latest_decisions.items():
+                if decision_id in events_by_decision and len(events_by_decision[decision_id]) > 0:
+                    audit_report["complete_bindings"] += 1
+                else:
+                    audit_report["type1_orphans"].append({
+                        "decision_id": decision_id,
+                        "timestamp": decision.get("approved_at"),
+                        "title": decision.get("title"),
+                        "status": decision.get("status")
+                    })
+
+            for event_id, event in all_events.items():
+                tags = event.get("tags", "").split(",") if event.get("tags") else []
+                for tag in tags:
+                    if tag.startswith("decision_ledger,"):
+                        decision_id = tag.split(",")[1]
+                        if decision_id not in latest_decisions:
+                            audit_report["type2_orphans"].append({
+                                "event_id": event_id,
+                                "decision_id": decision_id,
+                                "event_timestamp": event.get("created_at"),
+                                "title": event.get("title")
+                            })
+
+            if audit_report["total_decisions"] > 0:
+                audit_report["binding_completeness"] = (
+                    audit_report["complete_bindings"] / audit_report["total_decisions"] * 100
+                )
+
+            auto_log(name, args, f"binding audit: {len(latest_decisions)} decisions, {len(audit_report['type1_orphans'])} Type1, {len(audit_report['type2_orphans'])} Type2")
+            return json.dumps(audit_report, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})
 
