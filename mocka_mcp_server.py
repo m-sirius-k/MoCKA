@@ -8,8 +8,6 @@ import json, csv, hashlib, datetime, re, sqlite3, unicodedata, os, sys, time, se
 from pathlib import Path
 from dotenv import load_dotenv
 import requests
-from flask import Flask, request, Response, redirect
-from flask_cors import CORS
 
 load_dotenv()
 if sys.stdout.encoding != 'utf-8':
@@ -17,13 +15,25 @@ if sys.stdout.encoding != 'utf-8':
 if sys.stderr.encoding != 'utf-8':
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
+# Flask dependency: soft import (HTTP server is optional, execute_tool works without it)
+flask_available = False
+try:
+    from flask import Flask, request, Response, redirect
+    from flask_cors import CORS
+    flask_available = True
+except ModuleNotFoundError:
+    print("[WARN] Flask not available - HTTP server disabled, execute_tool() still available", flush=True)
+
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
+# Support both Windows and Unix paths
+_structural_path = Path(__file__).parent / "structural"
+sys.path.insert(0, str(_structural_path))
 from event_recency import valid_when_ts_clause  # noqa: E402
 
 # TODO_428/DC_20260709_001: 一次データ駆動のCurrent View Generator(additive、mocka_get_overviewの
 # 既存戻り値は変更せずcurrent_viewキーとして追加するのみ)。
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\scripts\state")))
+_scripts_state_path = Path(__file__).parent / "scripts" / "state"
+sys.path.insert(0, str(_scripts_state_path))
 try:
     import overview_current_generator as _overview_current_gen
 except Exception as _ocg_err:
@@ -42,7 +52,7 @@ except Exception as _gov_err:
     }
 
 # KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
-REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
+REGISTRY_MODULE_PATH = Path(__file__).parent / "PlanningCaliber" / "workshop" / "registry_kn004"
 sys.path.insert(0, str(REGISTRY_MODULE_PATH))
 try:
     import registry_store
@@ -140,19 +150,36 @@ def _db_read_events(n=None):
         print(f"[MCP] db_read_events error: {e}")
         return []
 
-app = Flask(__name__)
-CORS(app, origins="*")
+# Flask app: only initialize if Flask is available
+# Create dummy app for decorator compatibility when Flask unavailable
+class DummyApp:
+    def route(self, *args, **kwargs):
+        def decorator(f):
+            return f
+        return decorator
+    def before_request(self, f):
+        return f
+    def after_request(self, f):
+        return f
+    def run(self, *args, **kwargs):
+        pass
 
-@app.before_request
-def log_request():
-    print(f">>> {request.method} {request.path}", flush=True)
-    if request.method == "POST":
-        print(f">>> BODY: {request.get_data(as_text=True)}", flush=True)
+if flask_available:
+    app = Flask(__name__)
+    CORS(app, origins="*")
 
-@app.after_request
-def add_ngrok_header(response):
-    response.headers["ngrok-skip-browser-warning"] = "true"
-    return response
+    @app.before_request
+    def log_request():
+        print(f">>> {request.method} {request.path}", flush=True)
+        if request.method == "POST":
+            print(f">>> BODY: {request.get_data(as_text=True)}", flush=True)
+
+    @app.after_request
+    def add_ngrok_header(response):
+        response.headers["ngrok-skip-browser-warning"] = "true"
+        return response
+else:
+    app = DummyApp()
 
 def find_events_csv():
     if EVENTS_CSV.exists(): return EVENTS_CSV
@@ -1590,4 +1617,8 @@ def agent_call(tool_name):
 if __name__ == "__main__":
     print("MoCKA MCP Server v1.5.0 -- http://localhost:5002/mcp")
     print(f"Tools: {len(TOOLS)}")
-    app.run(host="0.0.0.0", port=5002, debug=False)
+    if flask_available:
+        app.run(host="0.0.0.0", port=5002, debug=False)
+    else:
+        print("[ERROR] Flask not available - cannot start HTTP server")
+        print("[INFO] Use execute_tool() directly for testing")
