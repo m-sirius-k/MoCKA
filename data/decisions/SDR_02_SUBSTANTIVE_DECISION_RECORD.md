@@ -273,17 +273,35 @@ The assertion is unverified and potentially incorrect.
 
 **Decision**: **DECIDED / REJECTED**
 
+**Decision Meaning**:
+The unverified "30 routes" assertion is rejected as a sufficient evidentiary basis for quantification.
+
+This decision does NOT establish:
+- "30 routes = false"
+- "30 routes never existed"
+- "30 routes is invalid data"
+
+**Current Factual Status Remains**:
+```
+30 routes = PRIOR ASSERTION / UNVERIFIED
+         ≠ FALSE
+         ≠ IRRELEVANT (may inform historical investigation)
+         ≠ DEFINITIVELY PROVEN
+```
+
 **Rationale**:
 The "30 routes" assertion cannot be verified against current codebase. Code analysis shows 109 routes. Prior assertion is either:
 1. Outdated (refers to previous code state)
 2. Incomplete (30 of 109 routes, but which 30?)
 3. Incorrect (never matched actual code)
 
-Without verification, adopting unverified prior assertions is not justified. Cannot use "30 routes" as quantification basis.
+Without verification, adopting unverified prior assertions as decision basis is not justified. Cannot use unverified "30 routes" premise as quantification foundation.
+
+This decision rejects the usability of the assertion for governance purposes—not the factual possibility that 30 routes existed at some time.
 
 **Implementation Impact**: NONE
 
-**Authorization Impact**: NONE (this is a decision to reject unverified premise, not an implementation decision)
+**Authorization Impact**: NONE (this is a decision to reject unverified evidentiary premise, not an implementation decision)
 
 **Conditions**: Could be revisited if:
 1. Prior assertion is clarified (historical reference? specification? bug?)
