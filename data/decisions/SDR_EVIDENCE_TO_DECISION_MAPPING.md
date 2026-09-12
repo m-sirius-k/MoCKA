@@ -75,7 +75,8 @@ Existence ≠ Definition ≠ Implementation ≠ Runtime Binding ≠ Proven
 - Closure verification at M18 scope
 
 **Mapping Status**: **B — PARTIALLY SUPPORTED**
-- O0 concept exists (DRAFT)
+- O0 Draft definition exists
+- NOT "Decision Sufficient" — Draft ≠ Substantive Decision basis
 - M18 application = NOT_PROVEN
 
 ---
@@ -151,8 +152,9 @@ Existence ≠ Definition ≠ Implementation ≠ Runtime Binding ≠ Proven
 - E7 (Verification): ✗ No verification mechanism
 
 **Mapping Status**: **B — PARTIALLY SUPPORTED**
-- O0 observation layer criteria = DRAFT
+- O0 observation layer criteria = DRAFT (not Decision Sufficient)
 - M18 closure criteria = NOT_PROVEN
+- Draft criteria exists ≠ Substantive Decision basis
 
 ---
 
@@ -168,9 +170,10 @@ Existence ≠ Definition ≠ Implementation ≠ Runtime Binding ≠ Proven
 - E7 (Verification): ✗ No verification of incomplete closure
 
 **Mapping Status**: **B — PARTIALLY SUPPORTED**
-- O0 terminal behavior documented (DRAFT)
+- O0 terminal behavior documented (DRAFT, not Decision Sufficient)
 - Closure failure semantics = NOT_PROVEN
 - UNKNOWN/UNDEFINED preservation mechanism = NOT_PROVEN
+- Draft content exists ≠ Substantive Decision basis
 
 ---
 
@@ -377,17 +380,18 @@ Existence ≠ Definition ≠ Implementation ≠ Runtime Binding ≠ Proven
     ≠
 109 routes IN M18-SCOPE
 
-Route EXISTS
+Route EXISTS (E1)
     ≠
-Route IS CONSEQUENTIAL
+Route IS CONSEQUENTIAL (NOT_PROVEN)
     ≠
-Route IS IN M18-SCOPE
+Route IS IN M18-SCOPE (NOT_PROVEN)
 ```
 
-**Mapping Status**: **B — PARTIALLY SUPPORTED**
-- Routes observable (109)
+**Mapping Status**: **C — NOT_PROVEN**
+- Routes observable (E1) — existence evidence only
 - Route → operation/mutation mapping = NOT_ESTABLISHED
 - Scope membership = NOT_PROVEN
+- "Routes exist" ≠ "Routes can be evaluated for M18-Scope membership"
 
 ---
 
@@ -442,15 +446,15 @@ Route IS IN M18-SCOPE
 | SB | Evidence | Type | Sufficiency | Gap |
 |----|----------|------|-------------|----|
 | SB-01 | None | NONE | D | M18-Scope undefined |
-| SB-02 | 109 routes | E1 (partial) | B | Route→operation mapping missing |
+| SB-02 | 109 routes | E1 (partial) | C | Route→operation mapping missing; scope membership NOT_PROVEN |
 | SB-03 | None | NONE | D | DB mutation criteria missing |
 | SB-04 | None | NONE | D | External side effect criteria missing |
 | SB-05 | None | NONE | D | Completeness verification missing |
 | SB-06 | None | NONE | C | Unknown handling not defined |
 
-**SDR-03 Mapping Status**: FOUNDATIONAL GAP / D,B,D,D,D,C  
-**Addressable Questions**: SB-02 (partially: routes observable)  
-**NOT_PROVEN**: SB-01, SB-03, SB-04, SB-05, SB-06
+**SDR-03 Mapping Status**: FOUNDATIONAL GAP / D,C,D,D,D,C  
+**Addressable Questions**: None (all require missing definitions or frameworks)  
+**NOT_PROVEN**: SB-01, SB-02, SB-03, SB-04, SB-05, SB-06
 
 ---
 
@@ -499,9 +503,20 @@ Route IS IN M18-SCOPE
 - E2 (Definition): ✗ Per-route Authorization Scope definition missing
 - E3 (Implementation): ✗ No framework implementation
 
-**Mapping Status**: **B — PARTIALLY SUPPORTED**
-- Authority assignment (Q8) established
-- Actual Authorization Scope per-route = NOT_PROVEN
+**Critical Distinction**:
+```
+Authority ASSIGNED (Q8 owns per-route layer)
+    ≠
+Authorization Semantics DEFINED (what per-route semantics are)
+```
+
+Authority is an ownership/governance fact (E6).
+Semantics is a definition/specification requirement (E2).
+R01 established WHO decides; R01 did NOT establish WHAT the per-route framework contains.
+
+**Mapping Status**: **C — NOT_PROVEN**
+- Authority assignment (Q8) established (E6 fact)
+- Per-route Authorization Scope semantics = NOT_PROVEN (E2 missing)
 
 ---
 
@@ -559,15 +574,15 @@ Route IS IN M18-SCOPE
 |----|----------|------|-------------|----|
 | RS-01 | None | NONE | D | ActualConsequence undefined |
 | RS-02 | None | NONE | D | AuthorizedConsequence undefined |
-| RS-03 | Q8 Authority assigned | E1 (partial) | B | Per-route semantics missing |
+| RS-03 | Q8 Authority assigned | E6 (partial) | C | Per-route semantics framework missing; Authority assigned ≠ Authorization Semantics defined |
 | RS-04 | None | NONE | D | Verification relation undefined |
 | RS-05 | None | NONE | C | Evidence requirement missing |
 | RS-06 | 109 routes; no audit | E1 (partial) | C | Audit framework missing |
 | RS-07 | None | NONE | C | Failure handling missing |
 
-**SDR-04 Mapping Status**: FOUNDATIONAL + FRAMEWORK GAP / D,D,B,D,C,C,C  
-**Addressable Questions**: RS-03 (partially: Q8 authority established)  
-**NOT_PROVEN**: RS-01, RS-02, RS-04, RS-05, RS-06, RS-07
+**SDR-04 Mapping Status**: FOUNDATIONAL + FRAMEWORK GAP / D,D,C,D,C,C,C  
+**Addressable Questions**: None (all require missing definitions or frameworks)  
+**NOT_PROVEN**: RS-01, RS-02, RS-03, RS-04, RS-05, RS-06, RS-07
 
 ---
 
@@ -633,7 +648,7 @@ SDR-02 (Quantification Necessity)
 
 SDR-03 (M18-Scope Boundary)
     SB-01: D (M18-Scope undefined)
-    SB-02: B (109 routes observable; mapping rules missing)
+    SB-02: C (109 routes observable; route→scope membership NOT_PROVEN)
     SB-03: D (DB mutation criteria missing)
     SB-04: D (External side effect criteria missing)
     SB-05: D (Completeness verification missing)
@@ -644,7 +659,7 @@ SDR-03 (M18-Scope Boundary)
 SDR-04 (Per-route Authorization Semantics)
     RS-01: D (ActualConsequence undefined)
     RS-02: D (AuthorizedConsequence undefined)
-    RS-03: B (Q8 authority; per-route framework missing)
+    RS-03: C (Q8 authority assigned; per-route semantics framework missing)
     RS-04: D (Verification relation undefined)
     RS-05: C (Evidence requirement missing)
     RS-06: C (30-route premise unverified; framework missing)
@@ -674,10 +689,10 @@ SDR-04 (Per-route Authorization Semantics)
 **Evidence-to-Decision Mapping Complete**
 
 ### Addressable Questions by Current Evidence:
-- **SDR-01**: SC-01, SC-05, SC-06 (O0 observation layer only)
-- **SDR-02**: QN-04 (109 routes observable)
-- **SDR-03**: SB-02 (routes observable; mapping rules missing)
-- **SDR-04**: RS-03 (Q8 authority established; framework missing)
+- **SDR-01**: None (O0 draft exists but M18 mapping NOT_PROVEN; cannot address M18-level decisions)
+- **SDR-02**: None (109 routes observable but 30/15 relationship NOT_PROVEN; selection principle undefined)
+- **SDR-03**: None (routes observable ≠ routes in M18-Scope; mapping rules missing)
+- **SDR-04**: None (Q8 authority established ≠ authorization semantics defined; framework missing)
 
 ### Foundational Gaps Preventing Full Mapping:
 - **Undefined concepts**: CO, ActualConsequence, AuthorizedConsequence
