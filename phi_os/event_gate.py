@@ -8,7 +8,9 @@ import sqlite3, time, secrets, sys
 from datetime import datetime, date, timezone
 from pathlib import Path
 
-_REPO_ROOT_FOR_POLICY = Path(__file__).resolve().parent.parent
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+
+_REPO_ROOT_FOR_POLICY = _REPO_ROOT
 if str(_REPO_ROOT_FOR_POLICY / "interface") not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT_FOR_POLICY / "interface"))
 from gate_policy import compute_gate_audit
@@ -26,7 +28,6 @@ assert RoleRegistry.validate_authority('GATE_SYSTEM', 'ENFORCE_GATE_POLICY'), \
     "GATE_SYSTEM role must have ENFORCE_GATE_POLICY capability"
 
 # Single Truth DB — data/mocka_events.db (絶対パス解決)
-_REPO_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
 
 sys.path.insert(0, str(_REPO_ROOT / 'interface'))
