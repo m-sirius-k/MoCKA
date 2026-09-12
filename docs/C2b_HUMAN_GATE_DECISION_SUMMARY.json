@@ -51,7 +51,8 @@
   },
   "route_status": {
     "total_routes": 8,
-    "routes_pass": 5,
+    "routes_pass": 4,
+    "routes_pass_with_limitation": 1,
     "routes_not_ready": 3,
     "routes_fail": 0,
     "routes_blocked": 0,
@@ -93,10 +94,11 @@
       },
       "route_6": {
         "name": "Audit Trail Verification",
-        "status": "PASS",
+        "status": "PASS_WITH_EXPLICIT_DB_SCOPE_LIMITATION",
         "blocker": null,
         "evidence_available": true,
-        "evidence_type": "11/13 anomalies detectable + monitoring verified"
+        "evidence_type": "Core monitoring/alerting verified; 11/13 anomalies detectable; 2/13 anomalies DB-dependent",
+        "scope_limitation": "Anomaly detection limited to 11/13 cases; full 13/13 requires database"
       },
       "route_7": {
         "name": "Recovery Manager",

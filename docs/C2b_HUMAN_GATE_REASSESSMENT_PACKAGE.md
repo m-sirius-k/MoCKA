@@ -105,15 +105,18 @@ C2-b Operational Status: NOT_READY (database environment gap, not code gap)
 | 3 | Decision Write and Binding | NOT_READY | Code review + Runtime check | 0/1 (DB blocked) | Requires: decision_ledger table |
 | 4 | Role Authority Verification | PASS | Unit test (40/40) + Runtime | 10/10 | None - full execution verified |
 | 5 | Enforcement Verification | PASS | Module import + Assertions | 4/4 modules | None - all 4 modules verified |
-| 6 | Audit Trail Verification | PASS | Failure injection (11/13) + Runtime | 11/13 anomalies | 2 anomalies require DB |
+| 6 | Audit Trail Verification | PASS* | Failure injection (11/13) + Runtime | 11/13 anomalies verified | 2/13 anomalies DB-dependent; core monitoring/alerting verified |
 | 7 | Recovery Manager Completion | PASS | Failure injection (21/21) | 9/9 handlers | None - all scenarios verified |
 | 8 | Monitoring Ready | PASS | Component instantiation + Methods | 7/7 methods | None - all methods verified |
 
 **ROUTE Status Summary:**
-- PASS: 5 ROUTEs (4, 5, 6, 7, 8)
+- PASS: 4 ROUTEs (4, 5, 7, 8)
+- PASS WITH EXPLICIT DB-SCOPE LIMITATION: 1 ROUTE (6)
 - NOT_READY: 3 ROUTEs (1, 2, 3)
 - FAIL: 0 ROUTEs
 - BLOCKED: 0 ROUTEs
+
+*ROUTE 6 Clarification: Core audit trail functionality (monitoring, alerting) verified. Anomaly detection partially verified (11/13 anomalies). Full anomaly detection requires database initialization (2/13 DB-dependent). This limitation does not prevent core ROUTE 6 operation but limits diagnostic completeness.
 
 ---
 
@@ -273,11 +276,11 @@ THEN C2-b = ELIGIBLE FOR PASS
 ROUTE 1 (Event Clock Sync):     NOT_READY (database environment gap)
 ROUTE 2 (Event Write):          NOT_READY (database environment gap)
 ROUTE 3 (Decision Bind):        NOT_READY (database environment gap)
-ROUTE 4 (Role Authority):       PASS      (verified by 40 unit tests)
-ROUTE 5 (Enforcement):          PASS      (verified by 4 module imports + assertions)
-ROUTE 6 (Audit Trail):          PASS      (verified by 21 failure injection tests)
-ROUTE 7 (Recovery Manager):     PASS      (verified by 21 failure injection tests)
-ROUTE 8 (Monitoring):           PASS      (verified by component instantiation)
+ROUTE 4 (Role Authority):       PASS (verified by 40 unit tests)
+ROUTE 5 (Enforcement):          PASS (verified by 4 module imports + assertions)
+ROUTE 6 (Audit Trail):          PASS* (core monitoring/alerting verified; 11/13 anomalies verified; 2/13 anomalies DB-dependent)
+ROUTE 7 (Recovery Manager):     PASS (verified by 21 failure injection tests)
+ROUTE 8 (Monitoring):           PASS (verified by component instantiation)
 ```
 
 **Rule Application (Deterministic):**
@@ -342,10 +345,12 @@ The Human Gate must evaluate and select ONE of the following paths:
 
 ### OPTION B: Conditional Approval with Deferred Database Validation
 
+**CRITICAL CLARIFICATION:** This is NOT a C2-b PASS authorization. C2-b status remains NOT_READY/BLOCKED per Candidate B rule. This option allows LIMITED-SCOPE authorization only for verified ROUTEs (4-8), with explicit requirement for database validation before full C2-b PASS consideration.
+
 **Condition:** Accept ROUTE 1-3 NOT_READY with explicit commitment to database validation before production deployment
 
 **Process:**
-1. Approve implementation authorization for ROUTE 4-8 only (partial approval)
+1. Approve LIMITED-SCOPE implementation authorization for ROUTE 4-8 only (NOT full C2-b authorization)
 2. Document ROUTE 1-3 as blocked pending database integration testing
 3. Create production deployment checklist:
    - Initialize events table with required schema
