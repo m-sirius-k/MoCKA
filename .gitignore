@@ -12,6 +12,10 @@ data/*
 !data/tic/
 data/tic/*
 !data/tic/canary_overrides_last_run.json
+# data/decisions/: Governance decision records (TODO_361/R01 Authority Boundary)
+!data/decisions/
+data/decisions/*
+!data/decisions/*.md
 *.csv
 .env
 *.key
