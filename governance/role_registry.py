@@ -243,21 +243,20 @@ class RoleRegistry:
         return True, errors
 
     @staticmethod
-    def get_authority_level(role_id: str) -> AuthorityLevel:
-        """Return authority level enum for role.
+    def get_authority_level(role_id: str) -> str:
+        """Return authority level string for role.
 
         Args:
             role_id: Role identifier
 
         Returns:
-            AuthorityLevel enum value
+            Authority level string ('SUPREME', 'MAJOR', or 'MINOR')
 
         Raises:
             RoleNotFound: If role_id not in registry
         """
         role = RoleRegistry.get_role(role_id)
-        level_str = role['authority_level']
-        return AuthorityLevel[level_str]
+        return role['authority_level']
 
     @staticmethod
     def is_role_supreme(role_id: str) -> bool:

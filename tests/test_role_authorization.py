@@ -168,10 +168,10 @@ class TestAuthorityLevels:
         assert supreme_roles == ['HUMAN_AUTHORITY']
 
     def test_authority_level_enum(self):
-        """get_authority_level returns AuthorityLevel enum."""
+        """get_authority_level returns authority level string."""
         level = RoleRegistry.get_authority_level('HUMAN_AUTHORITY')
-        assert level == AuthorityLevel.SUPREME
-        assert level.value == 0
+        assert level == 'SUPREME'
+        assert isinstance(level, str)
 
     def test_is_role_supreme(self):
         """is_role_supreme returns True only for HUMAN_AUTHORITY."""
