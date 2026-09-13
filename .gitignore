@@ -12,6 +12,8 @@ data/*
 !data/tic/
 data/tic/*
 !data/tic/canary_overrides_last_run.json
+# data/decisions/ 内の決定記録・ガバナンスドキュメント類を追跡
+!data/decisions/
 *.csv
 .env
 *.key
