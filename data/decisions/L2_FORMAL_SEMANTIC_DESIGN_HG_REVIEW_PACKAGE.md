@@ -17,7 +17,7 @@ This package structures the Layer 2 Formal Semantic Design (prepared under Q-L2-
 
 **Design Authority:** Q-L2-01 AUTHORIZE (Design-only)
 **Decision Authority:** Human Gate (nsjp_kimura)
-**Decision Scope:** Design approval, assumption acceptance, M18-Scope boundary, evidence authorization
+**Decision Scope:** ① Semantic Definition (L2-01～05) | ② M18-Scope is Q7 separate domain | ③ Design Assumptions (DA-01～08) | ④ Evidence Authorization
 
 ---
 
@@ -94,8 +94,9 @@ L2-05: Semantic Closure Relationship = PROPOSED conditions
        (closure requirements, failure modes, propagation cascade)
 ```
 
-### Unresolved Elements (Deferred to HG Decision)
+### Unresolved Elements (For HG Decision)
 
+**Within Semantic Definition Scope (HG-L2-01～07):**
 ```
 CO formal type finalization          (3 candidates; HG selects)
 Scope dimension weighting            (WHO vs WHEN vs WHAT priority)
@@ -106,7 +107,11 @@ Cascade consequence attribution      (multi-level authorization chain)
 Legacy authorization migration       (existing records retrofit)
 Performance targets                  (scope validation latency SLA)
 Exception handling policy            (scope validation failure)
-M18-Scope definition                 (CRITICAL BLOCKER - separate decision)
+```
+
+**Outside Semantic Definition Scope (Q7 / Separate Decision Domain):**
+```
+M18-Scope definition                 (separate Q7 decision; NOT prerequisite for semantic definition)
 ```
 
 ---
@@ -281,10 +286,10 @@ Postconditions: Authorization scope updated, Target Invariant evaluated, Evidenc
 **Options:**
 - **ACCEPT** — Definition approved; proceed to L3 implementation
 - **ACCEPT_WITH_CONDITIONS** — Specify required changes (type field changes, precondition modifications)
-- **HOLD** — Definition acceptable; defer pending M18-Scope (affects scope boundary definition)
+- **HOLD** — Definition acceptable; defer pending L2 preconditions (scope boundary formalized in L2-04)
 - **REJECT** — Fundamental issues; specify concerns
 
-**If HOLD:** Impact on M18-Scope decision link (ActualConsequence.scope depends on Authorization Scope formalization)
+**Important:** ActualConsequence.scope depends on Authorization Scope formalization (HG-L2-05), NOT on M18-Scope definition. Semantic definition can be approved independently of M18-Scope decision.
 
 **Timeline:** Post-HG-L2-01 decision
 
@@ -367,12 +372,20 @@ Relationship to M18:
 **Options:**
 - **ACCEPT** — Candidate structure approved; select interpretation
 - **ACCEPT_WITH_CONDITIONS** — Specify: interpretation choice, mandatory fields, lifecycle policy
-- **HOLD** — Depends on M18-Scope decision (m18_relevance field requires M18-Scope)
 - **REJECT** — Alternative proposal
 
-**If HOLD:** Critical dependency: M18-Scope → CO.m18_relevance → M18 verification
+**Important Semantic/Scope Separation:**
 
-**Timeline:** Post-HG-L2-08 (M18-Scope decision)
+CO semantic definition (type structure, compliance_status binding, field definitions) is INDEPENDENT of M18-Scope.
+
+The m18_relevance field is designed as a semantic structure WITHOUT requiring M18-Scope decision.
+M18-Scope decision (HG-L2-08, Q7) determines WHERE this semantic framework is applied, not WHETHER the semantics are valid.
+
+**Consequence of M18-Scope Decision (handled separately):**
+- If HG-L2-08 = DEFINE NOW: m18_relevance populated per scope definition at runtime
+- If HG-L2-08 = DEFER: m18_relevance remains UNKNOWN in runtime; CO structure still valid
+
+**Timeline:** Post-HG-L2-01 decision (INDEPENDENT of HG-L2-08 M18-Scope decision)
 
 ---
 
@@ -414,12 +427,17 @@ Validation Rules:
 **Options:**
 - **ACCEPT** — 3D + Extensions approved; proceed to scope validation algorithm formalization
 - **ACCEPT_WITH_CONDITIONS** — Specify: mandatory vs optional extensions, intersection algorithm, route exceptions
-- **HOLD** — Depends on M18-Scope decision (some routes may have undefined scope)
 - **REJECT** — Alternative approach
+
+**Important Note on M18-Scope Relationship:**
+Authorization Scope semantic definition (WHO/WHEN/WHAT 3D formalization) is independent of M18-Scope boundary decision.
+Scope can be formalized for all authorization types regardless of which routes are within M18 closure scope.
+
+M18-Scope decision (HG-L2-08, Q7) determines which routes require scope enforcement for M18 verification, not whether the semantic definition is valid.
 
 **If ACCEPT_WITH_CONDITIONS:** HG must specify intersection algorithm details (HG-L2-05 precondition for L3)
 
-**Timeline:** Post-HG-L2-01 decision
+**Timeline:** Post-HG-L2-01 decision (INDEPENDENT of HG-L2-08 M18-Scope decision)
 
 ---
 
@@ -506,6 +524,67 @@ Important Distinction:
 
 ---
 
+## HG DECISION DEPENDENCY TREE
+
+**CRITICAL CORRECTION: Semantic Definition ≠ M18-Scope Application**
+
+```
+① SEMANTIC DEFINITION APPROVAL
+   (HG-L2-01～07: What do the semantics mean?)
+
+   HG-L2-01: L2 Design Acceptance
+        │
+        ├── HG-L2-02: ActualConsequence (semantic definition)
+        ├── HG-L2-03: AuthorizedConsequence (semantic definition)
+        ├── HG-L2-04: CO (semantic definition) ← INDEPENDENT of M18-Scope
+        ├── HG-L2-05: Authorization Scope (semantic definition) ← INDEPENDENT of M18-Scope
+        ├── HG-L2-06: Semantic Closure Relationship (semantic definition)
+        │
+        └── HG-L2-07: Design Assumptions (DA-01～08 risk acceptance)
+               │
+               └── All prerequisites for ① COMPLETE
+
+
+② SCOPE APPLICATION DOMAIN (SEPARATE Q7 DECISION)
+   (HG-L2-08: Where does this semantic framework apply?)
+
+   HG-L2-08: M18-Scope Definition ← Q7 DECISION DOMAIN (NOT prerequisite for ①)
+        │
+        ├── Determines where semantics are applied
+        ├── Does NOT validate whether semantics are correct
+        ├── Can be DEFER-ed without invalidating ① semantic definitions
+        └── Affects implementation detail (m18_relevance population)
+
+
+③ EVIDENCE AUTHORIZATION (DOWNSTREAM)
+   (HG-L2-09: Should we collect next evidence?)
+
+   HG-L2-09: Next Evidence Program ← Depends on ① completion (NOT ②)
+        │
+        ├── EG-M18-02: M18-Scope Formalization (IF HG-L2-08 = DEFINE NOW)
+        ├── EG-M18-04: Historical Evidence (independent)
+        └── EG-M18-01: Live Runtime Collection (requires both ① and optional ②)
+
+
+④ IMPLEMENTATION AUTHORIZATION (FUTURE)
+   (NOT part of this review; remains NOT_GRANTED)
+
+   Implementation Authorization ← Requires: ① ACCEPT + (HG choices on ②)
+        │
+        └── NOT_GRANTED until explicit separate decision
+```
+
+**Key Principle:**
+
+```
+① ≠ ②
+
+Semantic Definition Approval (①) CAN PROCEED without M18-Scope Definition (②)
+Semantic Approval ≠ Scope Definition ≠ Implementation Authorization
+```
+
+---
+
 ### HG-L2-08: M18-Scope Definition
 
 **Question:** Does HG define M18-Scope boundary now, or defer to implementation phase?
@@ -519,10 +598,16 @@ M18 Evidence Reconciliation (prior session):
   Blocker 2: Consequential Path Coverage UNKNOWN (routes with explicit consequences not identified)
   Blocker 3: Authorization Lineage NOT_PROVEN (auth chain to GL7 not demonstrated)
 
-L2 Design Dependency:
-  CO.m18_relevance field requires explicit M18-Scope categorization
-  L3 Implementation cannot proceed without M18-Scope
-  L4 Verification depends on M18-Scope boundary
+Relationship to L2 Semantic Design:
+  CO semantic definition (HG-L2-04) = INDEPENDENT of M18-Scope
+  M18-Scope determines WHERE semantics apply, not WHETHER they are valid
+  L3 Implementation CAN proceed with M18_RELEVANCE = UNKNOWN until M18-Scope defined
+  L4 Verification depends on M18-Scope boundary (separate decision domain from semantic approval)
+
+Q7 Authority Boundary:
+  Q5 = Global Formal Semantic Definition (L2 design approval — HG-L2-01～07)
+  Q7 = M18-Scope Boundary (separate decision domain — HG-L2-08)
+  These are INDEPENDENT authority domains
 ```
 
 **Options:**
@@ -540,9 +625,16 @@ L2 Design Dependency:
 - L4 verification cannot begin until M18-Scope defined
 - Delivery of M18 closure proof delayed
 
-**Timeline:** Immediate (critical blocker for L3)
+**Timeline:** Separate from HG-L2-01～07 (can be concurrent or deferred)
 
-**Impact:** Blocks HG-L2-04 (CO), HG-L2-09 (Evidence Program), any L3 implementation authorization
+**Important:** M18-Scope decision does NOT block HG-L2-04 (CO semantic definition).
+Semantic approval and scope definition are independent governance domains (Q5 vs Q7).
+
+**Impact if DEFER:**
+- ① Semantic definitions approved (HG-L2-01～07) regardless
+- ② M18 verification capability delayed (requires M18-Scope)
+- ③ L3 implementation can proceed with runtime constraints (M18_RELEVANCE field populated later)
+- ④ Full M18 closure proof deferred (until M18-Scope defined)
 
 ---
 
@@ -553,20 +645,19 @@ L2 Design Dependency:
 **Context:**
 ```
 Previous M18 Reconciliation Identified Evidence Gaps:
-  EG-M18-01: Live Runtime Evidence Collection (next phase)
-  EG-M18-02: M18-Scope Formalization (dependent on HG-L2-08)
-  EG-M18-03: Consequence Definition Path (may be resolved by L2 design approval)
-  EG-M18-04: Historical Evidence N-10系 (locate or declare obsolete)
+  EG-M18-01: Live Runtime Evidence Collection (HG-L2-01～07 approval → proceed)
+  EG-M18-02: M18-Scope Formalization (depends on HG-L2-08, Q7 decision)
+  EG-M18-03: Consequence Definition Path (resolved by L2 design approval)
+  EG-M18-04: Historical Evidence N-10系 (locate or declare obsolete — independent)
 
-Sequencing Constraint:
-  ⚠ Do NOT start evidence collection until HG Design Review completes
-  ⚠ EG-M18-02 depends on HG-L2-08 (M18-Scope decision)
-  ⚠ EG-M18-01 depends on full L2 design approval + M18-Scope
+Sequencing:
+  ① HG-L2-01～07 APPROVED → EG-M18-01, EG-M18-04 can proceed (design approved)
+  ② HG-L2-08 DEFINE NOW → EG-M18-02 can proceed (M18-Scope defined)
+  ③ HG-L2-08 DEFER → EG-M18-01 proceeds with M18-Scope TBD; EG-M18-02 deferred
 
-Scope of Next Program:
-  If AUTHORIZE: Proceed to evidence gaps EG-M18-02 / EG-M18-04 / EG-M18-01
-  If DEFER: Pause evidence collection pending design/M18-Scope decisions
-  If HOLD: Evidence program suspended indefinitely
+Key Distinction:
+  ⚠ Evidence Authorization (HG-L2-09) ≠ Implementation Authorization (remains NOT_GRANTED)
+  ✓ Evidence collection is investigation-only; no code/schema/runtime modification
 ```
 
 **Critical Clarification:**
@@ -673,7 +764,103 @@ Recorded In: data/decisions/HG_DECISION_RECORD_20260913.md
 
 ---
 
-## PART 7: NEXT GOVERNANCE SEQUENCE
+## PART 7: FOUR-LAYER GOVERNANCE SEPARATION
+
+**For Human Gate Review: Clear Distinction Between Authority Domains**
+
+This design package addresses ONLY layer ① below. Layers ②, ③, ④ are separate decisions.
+
+```
+① SEMANTIC DEFINITION
+   "What do the concepts mean?"
+   
+   Scope: Formal types, structures, relationships, preconditions, postconditions
+   Authority: Q5 (HG-L2-01～07 decision)
+   Status: DESIGN / DRAFT / PROPOSED (ready for HG review)
+   Decision Options: ACCEPT | ACCEPT_WITH_CONDITIONS | REJECT
+   ✓ HG CAN decide layer ① based on this package alone
+
+
+② SCOPE APPLICATION DOMAIN
+   "Where do these semantics apply?"
+   
+   Scope: Which routes/authorizations subject to M18 closure verification
+   Authority: Q7 (HG-L2-08 decision) — SEPARATE from Q5
+   Status: UNRESOLVED / LOCKED (requires separate HG decision)
+   Decision Options: DEFINE NOW | DEFER | HOLD
+   ✗ Layer ① approval does NOT require layer ② decision
+   ✓ Layer ① and ② are INDEPENDENT authority domains
+
+
+③ RUNTIME EVIDENCE
+   "Do the semantics actually hold at runtime?"
+   
+   Scope: Evidence collection, verification, proof generation
+   Authority: Future investigation authorization (HG-L2-09 conditional)
+   Status: NOT_AUTHORIZED (investigation phase only)
+   Decision Options: AUTHORIZE | DEFER | HOLD
+   ✗ Layer ③ requires both ① AND optional ②
+
+
+④ IMPLEMENTATION AUTHORIZATION
+   "Are we authorized to modify code/schema/runtime?"
+   
+   Scope: Production deployment, code changes, runtime modification
+   Authority: Future implementation authorization decision
+   Status: NOT_GRANTED / LOCKED
+   Decision Options: AUTHORIZE | DEFER | HOLD
+   ✗ Layer ④ requires ①, optional ②, and confirmation
+
+
+**Critical Separation:**
+
+```
+① Semantic Approval (HG-L2-01～07) 
+                    ≠ 
+② Scope Definition (HG-L2-08, Q7)
+                    ≠ 
+③ Evidence Authorization (HG-L2-09)
+                    ≠ 
+④ Implementation Authorization (Future)
+```
+
+**HG Authority Boundary:**
+
+This review package requests approval only for ①.
+
+- ① YES: Semantics approved; proceed to implementation planning
+- ① NO: Redesign required before implementation
+- ② DECISION: Separate governance domain (Q7); proceed independently
+- ③ DECISION: Conditional on ① approval; investigation-only scope
+- ④ DECISION: Future; requires ① + ② confirmation
+
+**Translation to HG Decisions:**
+
+```
+HG REVIEW: ① Semantic Definition
+           ├── HG-L2-01 Comprehensive Approval
+           ├── HG-L2-02～06 Individual Definitions
+           ├── HG-L2-07 Assumptions/Risks
+           └── Result: DESIGN APPROVED | CONDITIONS | REJECTED
+
+SEPARATE: ② M18-Scope Definition
+           └── HG-L2-08 (Q7)
+               Result: DEFINE NOW | DEFER | HOLD
+               (Independent of ① outcome)
+
+DOWNSTREAM: ③ Evidence Program
+             └── HG-L2-09
+                 Result: AUTHORIZE | DEFER | HOLD
+                 (Depends on ① approval, optional ②)
+
+FUTURE: ④ Implementation Authorization
+        └── (Requires ① + ② confirmation)
+            Result: AUTHORIZED | DENIED
+```
+
+---
+
+## PART 8: NEXT GOVERNANCE SEQUENCE
 
 **After All HG Decisions Recorded:**
 
@@ -701,7 +888,7 @@ Recorded In: data/decisions/HG_DECISION_RECORD_20260913.md
 
 ---
 
-## SUMMARY FOR HG
+## PART 9: SUMMARY FOR HG
 
 **What This Package Asks:**
 
