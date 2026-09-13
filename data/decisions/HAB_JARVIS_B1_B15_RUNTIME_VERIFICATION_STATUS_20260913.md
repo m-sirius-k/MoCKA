@@ -533,23 +533,28 @@ This document separates each bypass path (B1-B15) into TWO distinct verification
 
 ## PART 3: Bypass Path Summary Matrix
 
-| Path | Attack | Design Prohibition | Defense Layers | Runtime Proof | Evidence Item | Status |
-|------|--------|-------------------|-----------------|---------------|---------------|--------|
-| B1 | Route Inference | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-02 | PENDING |
-| B2 | Historical Claims | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-03 | PENDING |
-| B3 | Binding Paths | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-04 | PENDING |
-| B4 | Evidence Gaps | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-05 | PENDING |
-| B5 | Aggregate Signals | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-06 | PENDING |
-| B6 | Direct Bypass | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-07 | PENDING |
-| B7 | Token Forgery | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-08 | PENDING |
-| B8 | Model A Bypass | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-09 | PENDING |
-| B9 | Scope Accumulation | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-10 | PENDING |
-| B10 | Delegation Escalation | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-11 | PENDING |
-| B11 | Context Injection | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-12 | PENDING |
-| B12 | Evidence Substitution | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-13 | PENDING |
-| B13 | Semantic Collapse | SEALED | 4/4 | NOT_ESTABLISHED | E-HJ-14 | PENDING |
-| B14 | Model A Reopening | SEALED | 3/4 (atomic deferred) | N/A | E-HJ-15 | DESIGN_ONLY |
-| B15 | Model D Reopening | SEALED | 3/4 (atomic deferred) | N/A | E-HJ-16 | DESIGN_ONLY |
+| Path | Attack | Design Prohibition | Design Layers Defined | Runtime Prevention Proof | Evidence Item | Status |
+|------|--------|-------------------|----------------------|-------------------------|---------------|--------|
+| B1 | Route Inference | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-02) | E-HJ-02 | PENDING |
+| B2 | Historical Claims | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-03) | E-HJ-03 | PENDING |
+| B3 | Binding Paths | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-04) | E-HJ-04 | PENDING |
+| B4 | Evidence Gaps | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-05) | E-HJ-05 | PENDING |
+| B5 | Aggregate Signals | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-06) | E-HJ-06 | PENDING |
+| B6 | Direct Bypass | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-07) | E-HJ-07 | PENDING |
+| B7 | Token Forgery | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-08) | E-HJ-08 | PENDING |
+| B8 | Model A Bypass | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-09) | E-HJ-09 | PENDING |
+| B9 | Scope Accumulation | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-10) | E-HJ-10 | PENDING |
+| B10 | Delegation Escalation | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-11) | E-HJ-11 | PENDING |
+| B11 | Context Injection | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-12) | E-HJ-12 | PENDING |
+| B12 | Evidence Substitution | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-13) | E-HJ-13 | PENDING |
+| B13 | Semantic Collapse | SEALED | 3/4 (Structural, Contractual, Governance) | NOT_ESTABLISHED (E-HJ-14) | E-HJ-14 | PENDING |
+| B14 | Model A Reopening | SEALED | 3/4 (Structural, Contractual, Governance; Atomic=phase-deferred) | N/A (Design Phase Only) | E-HJ-15 | DESIGN_ONLY |
+| B15 | Model D Reopening | SEALED | 3/4 (Structural, Contractual, Governance; Atomic=phase-deferred) | N/A (Design Phase Only) | E-HJ-16 | DESIGN_ONLY |
+
+**Note on Defense Layers**:
+- Structural/Contractual/Governance Layers: DESIGN_DEFINED (all 15 paths)
+- Atomic Runtime Enforcement Layer: NOT_IMPLEMENTED / NOT_PROVEN (runtime phase)
+- Table shows design-time layer status, not runtime proof status
 
 ---
 

@@ -761,7 +761,11 @@ D22-D25: Design-only verification (no E-HJ; verified at git sealing)
 
 ---
 
-### E-HJ-21: Semantic Discipline Throughout System (D21)
+### E-HJ-21: Semantic Discipline Throughout System (D21) — FUTURE CANDIDATE
+
+**Authorization Status**: NOT YET AUTHORIZED (Future Evidence Candidate)
+
+**Note**: E-HJ-21 is included as system-wide semantic verification candidate. Authorization to collect E-HJ-21 evidence requires separate Human Gate decision. Currently scheduled items: E-HJ-01 through E-HJ-20 (20 items).
 
 **Design Claim**: NOT_FOUND ≠ ABSENT distinction preserved throughout system
 
@@ -792,9 +796,9 @@ D22-D25: Design-only verification (no E-HJ; verified at git sealing)
 **Human Gate Dependency**: 
 - Blocking: YES (semantic discipline is foundation)
 - Critical: YES (governance integrity)
-- Prerequisite: HG-HJ-08 approval (evidence lineage specification)
+- Prerequisite: HG-HJ-08 approval (evidence lineage specification) + Separate future authorization for E-HJ-21 collection
 
-**Status**: SCHEDULED (execution deferred until implementation phase)
+**Status**: FUTURE CANDIDATE (execution deferred; requires separate authorization)
 
 ---
 
