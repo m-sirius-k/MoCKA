@@ -602,67 +602,203 @@ Cannot decide on D1-D5 without additional evidence on specific questions. Reques
 
 ### IMPORTANT DISCLAIMER
 
-**This recommendation is advisory only and does not constitute a Human Gate decision.**
+**This recommendation is advisory only and does not constitute a Human Gate decision. Human Gate retains full decision authority and is not bound by this assessment.**
 
 ---
 
-### Recommendation: APPROVE
+## Evaluation of 5 HG-D2 Decision Candidates Against 12 Criteria
 
-**Recommended Decision Candidate:** APPROVE (with optional conditions on authority model)
+### Evaluation Criteria Framework
 
-**Rationale:**
-
-1. **Design Completeness:** D1-D5 specifications form a complete and internally consistent design chain. Architecture requirements A1-A6 are met. All 5 persistence domains addressed. 4 candidate strategies analyzed.
-
-2. **Evidence Quality:** Design-level evidence is properly classified. VERIFIED states supported by specification. UNKNOWN and OPEN states preserved (not assumed). 11 open issues documented without inference.
-
-3. **State Lock Preservation:** All 13 state locks verified maintained. Implementation Authorization remains NOT_GRANTED. Runtime Binding remains NOT_AUTHORIZED. Production remains FROZEN. Authority boundary preserved.
-
-4. **Authority Boundary:** Persistence ≠ Authorization explicitly stated throughout. No scope expansion. No authorization manufacture. Authority preservation principles P1-P2 clearly defined.
-
-5. **Fail-Closed Architecture:** Unresolved issues escalate to Human Gate. UNKNOWN preserved. Evidence gaps handled correctly. Recovery procedures specify escalation on failure.
-
-6. **Track Separation:** HG-D2 is clearly separated from HG-R08-R15. Uses R08-R15 as foundation reference, not approval reuse.
-
-7. **Sufficient Foundation:** D1-D5 provide adequate foundation for implementation planning phase. 11 open issues are appropriately scoped for implementation guidance.
-
-**Optional Conditions for HG Consideration:**
-
-If HG wishes to impose conditions, recommend conditioning on authority model clarification:
-- OI-D2-03: Evidence witness authority
-- OI-D3-02: Recovery authority
-- OI-D5-03: Verification authority
-
-Rationale: Authority questions are critical to implementation success and can be resolved in parallel with implementation planning.
-
-**Implementation Planning Implications:**
-
-If APPROVE is selected:
-- Strategy selection (OI-D1): Event Store / Consequence Ledger / Hybrid
-- Authority clarification (OI-D2-03, OI-D3-02, OI-D5-03): Needed before implementation execution
-- Open issues: 11 documented, guide implementation design
+1. Design Completeness
+2. Evidence Sufficiency
+3. Traceability
+4. Open Issues Severity
+5. Authority Boundary
+6. Failure & Recovery Adequacy
+7. Verification Adequacy
+8. Implementation Dependency
+9. Runtime Dependency
+10. Production Consequence
+11. Remaining UNKNOWN/NOT_PROVEN
+12. Human Gate Decisionability
 
 ---
 
-### Recommendation NOT Selected (Reasoning)
+### Candidate A: APPROVE
 
-**Why NOT DEFER:**
-Deferral is warranted only if specific evidence gaps or uncertainties block the decision. Current evidence is sufficient to decide on design phase completion. Open issues do not block adoption; they guide implementation.
+**1. Design Completeness (HIGH)**
+D1-D5 specifications cover all 5 persistence domains. D1 establishes architecture foundation with requirements A1-A6 (Auditability, Integrity, Fail-Closed, Authority Boundary, Scope Containment, Observability). D2-D5 complete binding, recovery, enforcement, and verification. All domains have either IMPLEMENTED status or gap analysis with clear "work required" statements. Completion assessment: VERIFIED.
 
-**Why NOT REJECT:**
-Rejection would require fundamental design flaws. Pre-submission audit found no such flaws. All audit checks passed. Design is sound within specification scope.
+**2. Evidence Sufficiency (MEDIUM-HIGH)**
+Evidence State Matrix documents 12 categories with VERIFIED/NOT_VERIFIED/CONFLICTING status. 6 major evidence categories confirmed VERIFIED (persistence requirements, binding alignment, failure taxonomy, recovery design, enforcement intent, verification framework). NOT_VERIFIED elements (runtime binding feasibility, implementation approach, production deployment path) are explicitly scoped to implementation/runtime phases. No CONFLICTING evidence found. Sufficiency: ADEQUATE.
 
-**Why NOT REQUIRE FURTHER EVIDENCE:**
-Evidence sufficient for design decision. Additional evidence (e.g., performance analysis, cost-benefit) is implementation-phase work, not design-phase prerequisite.
+**3. Traceability (HIGH)**
+D1-D5 form complete design chain (Architecture → Evidence → Recovery → Enforcement → Verification) with explicit reference trails. Each domain gap in D1 is explicitly mapped to corresponding D2-D5 work items. Authority boundary traced through all specs. Track separation verified: HG-D2 ≠ HG-R08-R15. Traceability: COMPLETE.
+
+**4. Open Issues Severity (MEDIUM)**
+11 open issues consolidated: 3 HIGH (OI-D3-01 Backup Strategy, OI-D4-02 Runtime Binding Trigger, OI-D4-03 Enforcement Audit Detail), 5 MEDIUM, 3 LOW. No CRITICAL issues. All marked OPEN without assumption closure. Severity profile: MANAGEABLE for design-phase decision.
+
+**5. Authority Boundary (HIGH)**
+All 5 specs include explicit "Authority Boundary" sections. Core principle: "Persistence preserves authority state but never manufactures authority" (D1/D2/D4). No scope expansion beyond HG-R08-R15 foundation. Production authorization NOT_GRANTED maintained. Implementation authorization NOT_GRANTED preserved (D4 Part 1 ABSOLUTE CONSTRAINT, Part 8 state lock compliance). Authority boundary: PRESERVED.
+
+**6. Failure & Recovery Adequacy (MEDIUM-HIGH)**
+D3 specifies 4 failure modes (F1-F4) with corresponding recovery procedures (R1-R3). 3 persistence layer failure modes (PF1-PF3) with recovery paths. Fail-closed enforcement documented (FC1-FC3): unverified consequences blocked, evidence gaps escalate, UNKNOWN preserved. Recovery Boundaries: "Recovery cannot exceed evidence scope" and "Unresolvable gaps escalate to Human Gate." Assessment: ADEQUATE for design phase.
+
+**7. Verification Adequacy (HIGH)**
+D5 specifies 4 verification objectives (VO1-VO4) with 4 detailed procedures (VP1-VP4) for each. Verification triggers: mandatory after recovery, on-demand by HG, after anomaly, periodic. Verification gap handling with escalation specified. Recovery validation requires mandatory re-verification after procedures. Result interpretation: PASS/FAIL/ESCALATE outcomes. Assessment: COMPREHENSIVE.
+
+**8. Implementation Dependency (MEDIUM)**
+D4 Part 1: "Design ≠ Implementation ≠ Authorization ≠ Capability." Implementation explicitly NOT_AUTHORIZED. D4 Part 8 state lock audit confirms "Implementation Authorization = NOT_GRANTED (unchanged before/after)." Candidate A approval creates zero implementation commitment (design-only specification). Implementation dependency: DECOUPLED.
+
+**9. Runtime Dependency (MEDIUM)**
+Runtime binding design (D4 RB1-RB3) marked NOT IMPLEMENTED. Enforcement constraints (E1-E3) marked DESIGN ONLY. All runtime execution paths require separate authorization. Candidate A approval does not activate runtime layer. No runtime changes flow from design approval. Runtime dependency: DEFERRED.
+
+**10. Production Consequence (LOW)**
+Production modification authorization NOT_GRANTED. Production deployment path marked NOT INCLUDED in D1-D5 scope. Candidate A approval creates zero production change authorization. System posture HOLD/FAIL-CLOSED maintained. Production impact: ZERO.
+
+**11. Remaining UNKNOWN/NOT_PROVEN (MEDIUM)**
+NOT_PROVEN elements documented: (a) Runtime binding feasibility (marked NOT IMPLEMENTED across RB1-RB3), (b) Enforcement constraint effectiveness (marked DESIGN ONLY), (c) Backup strategy selection (OI-D3-01 OPEN), (d) Verification tooling availability (OI-D5-02 OPEN), (e) Recovery authority framework (OI-D3-02 OPEN). Categorized as "future work" or "open for HG decision," not design gaps. No UNKNOWN in Domain 1-2 core bindings. UNKNOWN/NOT_PROVEN profile: BOUNDED AND ACCEPTABLE.
+
+**12. Human Gate Decisionability (HIGH)**
+All 5 specifications provide clear decision boundaries for HG judgment. HG-D2 Decision Framework specifies 7 candidate decision questions (DQ1-DQ7) with decision criteria matrix. 5 decision candidates presented with detailed rationale, conditions, implications, alternatives for each. Evidence State Matrix provides decision-phase perspective. Readiness Assessment states "READY FOR HG REVIEW." Decision sections intentionally BLANK for HG authority. HG decisionability: READY.
 
 ---
 
-### Summary: Non-Binding Assessment
+### Candidate B: APPROVE WITH CONDITIONS
 
-**Design Quality:** HIGH (comprehensive, internally consistent, evidence-based)  
-**Risk Profile:** LOW-to-MEDIUM (implementation requires HG guidance on 11 issues)  
-**Authority Boundary:** PRESERVED (Persistence ≠ Authorization verified)  
-**Recommendation:** APPROVE (or APPROVE WITH CONDITIONS on authority model)  
+**Decision Statement:** Accept D1-D5 specifications subject to specified conditions. Conditions must be resolved before implementation proceeds. Conditions do NOT automatically grant implementation authorization.
+
+**Key Trade-off:** Conditions add gating criteria beyond design specification. Design itself is complete; conditions defer related work. Applicability depends on whether HG prefers to approve design independently (Candidate A) vs. link approval to downstream work gates (Candidate B).
+
+**Advantages:** Retains design foundation while addressing specific concerns. Allows implementation planning to begin on independent issues. Provides governance oversight on critical decisions.
+
+---
+
+### Candidate C: DEFER
+
+**Decision Statement:** Hold HG-D2 decision pending additional evidence or specified items.
+
+**Rationale for deferral:** Remaining UNKNOWN (Runtime Binding Feasibility, Enforcement Constraint Proof) is non-zero. However, design phase itself has no technical gates blocking specification completeness.
+
+**Trade-off:** Design work (D1-D5) is already complete. Deferral delays downstream implementation authorization decisions but design itself remains valid. Timeline impact: significant (weeks/months pending external evidence).
+
+---
+
+### Candidate D: REJECT
+
+**Decision Statement:** D1-D5 specifications do not meet governance requirements. Redesign required.
+
+**Assessment:** No evidence supports rejection. Design Completeness=HIGH, Evidence Sufficiency=MEDIUM-HIGH, Authority Boundary=PRESERVED, Traceability=HIGH. All 13 state locks maintained. Track separation verified. No specification contains authority violations or evidence contradictions. Rejection would be evidence-inconsistent.
+
+---
+
+### Candidate E: REQUIRE FURTHER EVIDENCE
+
+**Decision Statement:** Cannot decide on D1-D5 without additional evidence on specific questions.
+
+**Applicability:** All 11 open issues have documented resolution requirements; none are blocked by missing evidence. Evidence State Matrix shows 6 categories VERIFIED. Further evidence collection would be re-analysis of known unknowns rather than discovery of new evidence gaps.
+
+---
+
+### Decision Candidate Summary Matrix
+
+| Criterion | Candidate A (APPROVE) | Candidate B (WITH CONDITIONS) | Candidate C (DEFER) | Candidate D (REJECT) | Candidate E (FURTHER EVIDENCE) |
+|-----------|---|---|---|---|---|
+| Design Completeness | HIGH ✓ | HIGH ✓ | HIGH (same) | HIGH (same) | HIGH (same) |
+| Evidence Sufficiency | MEDIUM-HIGH ✓ | MEDIUM-HIGH ✓ | MEDIUM-HIGH (same) | MEDIUM-HIGH (same) | MEDIUM-HIGH (same) |
+| Authority Boundary | PRESERVED ✓ | PRESERVED ✓ | PRESERVED (same) | PRESERVED (same) | PRESERVED (same) |
+| Traceability | COMPLETE ✓ | COMPLETE ✓ | COMPLETE (same) | COMPLETE (same) | COMPLETE (same) |
+| Decisionability | READY ✓ | READY ✓ | NOT_READY (deferred) | NOT_READY (rejected) | NOT_READY (delayed) |
+| Timeline Impact | IMMEDIATE | CONDITIONAL GATES | EXTENDED | EXTENDED | EXTENDED |
+| State Lock Preservation | 13/13 ✓ | 13/13 ✓ | 13/13 ✓ | 13/13 ✓ | 13/13 ✓ |
+| Track Separation | VERIFIED ✓ | VERIFIED ✓ | VERIFIED (same) | VERIFIED (same) | VERIFIED (same) |
+
+**Critical Observation:** Candidates C, D, E all result in design rejection or deferral despite evidence supporting MEDIUM-HIGH or higher sufficiency across all 12 criteria. Design completeness is VERIFIED. No blocking evidence gaps. No authority boundary violations. Rejection or deferral would require explicit HG rationale beyond evidence state.
+
+---
+
+## Counter-Evidence Analysis (Why Recommendation May Be Wrong)
+
+**1. Runtime Binding Feasibility Unknown**
+Enforcement constraints (E1-E3) marked DESIGN ONLY, NOT IMPLEMENTED. D4 explicitly states "Runtime binding design is NOT implementation" and "Design ≠ Implementation." This separation is intentional and correct. However, if HG believes runtime feasibility must be proven before design approval, then Candidate E (REQUIRE FURTHER EVIDENCE) becomes stronger candidate, conditioned on feasibility study.
+
+**2. Backup Strategy (OI-D3-01) Unresolved**
+Open issue marked HIGH severity. D3 specifies recovery procedures but leaves backup strategy option selection to "D3 implementation phase." If HG views backup strategy as blocking design approval, Candidate B (WITH CONDITIONS: "Backup strategy must be decided before D3 proceeds") or Candidate C (DEFER) becomes applicable.
+
+**3. Production Deployment Path Deferred**
+D3 explicitly excludes production deployment path from D1-D5 scope ("Production Deployment Path NOT INCLUDED"). If HG requires production deployment path specification before design approval, this creates design-to-production gap. Candidate E (REQUIRE FURTHER EVIDENCE: supplementary production impact analysis) addresses this concern.
+
+**4. Verification Authority Ambiguous**
+OI-D5-03 (Verification Authority) marked OPEN. D5 specifies verification procedures but leaves authority assignment to HG decision. If HG requires verification authority pre-defined before design approval, this becomes conditional gate. Candidate B addresses this.
+
+**5. Evidence Retention Policy (OI-D2-01) Open**
+D2 specifies evidence binding but leaves retention policy (how long evidence persists) to "D2 implementation / D5 verification phase." If HG requires retention policy before design, Candidate B (WITH CONDITIONS) or E (REQUIRE FURTHER EVIDENCE) applies.
+
+---
+
+## Proposed Conditions (If Candidate B Preferred)
+
+If HG selects Candidate B (APPROVE WITH CONDITIONS) instead of Candidate A:
+
+- **Condition 1:** Backup Strategy (OI-D3-01) resolved before D3 implementation authorization
+- **Condition 2:** Verification Authority assigned (OI-D5-03) before D5 runtime binding begins
+- **Condition 3:** Production impact supplementary analysis completed before any production authorization request
+- **Condition 4:** Runtime Binding Feasibility study conducted before D4 enforcement constraint implementation
+
+---
+
+## Supporting Evidence from D1-D5
+
+- D1 Section 6: "Consistency Audit — All 13 State Locks Maintained" (verified)
+- D2 Section 6: "Authority Boundary — Persistence ≠ Authorization principle" (verified)
+- D3 Section 2: "Recovery Procedures R1-R3 with Fail-Closed Enforcement FC1-FC3" (specified)
+- D4 Section 1: "ABSOLUTE CONSTRAINT — Design ≠ Implementation, Implementation NOT_GRANTED" (verified unchanged)
+- D5 Section 2: "Verification Procedures VP1-VP4 with Mandatory Re-Verification After Recovery" (specified)
+- OPEN_ISSUES_REGISTER: All 11 issues documented with resolution paths (no blocking issues)
+- FINAL_SUBMISSION_MANIFEST: "Design Completeness=COMPLETE, Readiness=READY FOR HG REVIEW" (verified)
+
+---
+
+## Next Steps Based on HG Decision
+
+**If HG selects Candidate A (APPROVE):**
+- Design approval recorded in decision_ledger.jsonl
+- HG-D2 transitions from DECISION_PENDING to DECISION_RECORDED
+- Implementation authorization request becomes next phase decision
+- D1-D5 specifications become baseline for implementation RFP
+
+**If HG selects Candidate B (APPROVE WITH CONDITIONS):**
+- Design approval with conditional gates recorded
+- OI resolution timeline established for each condition
+- Condition satisfaction becomes gating criterion for D3-D5 implementation authorization
+- 11 open issues tracked against condition closure
+
+**If HG selects Candidate C/D/E (DEFER/REJECT/FURTHER EVIDENCE):**
+- Design specifications remain valid as specification work product
+- Timeline extended pending deferral/rejection rationale or evidence collection
+- HG-D2 track reassessed in next decision cycle
+
+---
+
+### Explicit Non-Authorization Statement (Per HG-D2 Framework)
+
+- Implementation authorization: NOT_INCLUDED in this judgment
+- Runtime binding authorization: NOT_INCLUDED in this judgment
+- Production deployment authorization: NOT_INCLUDED (deferred to separate HG decision)
+- Code modification authorization: NOT_INCLUDED
+- Schema modification authorization: NOT_INCLUDED
+- System state change authorization: NOT_INCLUDED
+
+**This recommendation addresses DESIGN SPECIFICATION JUDGMENT only. All implementation/runtime/production authorization decisions are reserved for subsequent Human Gate judgments.**
+
+---
+
+### AI Confidence & Authority Preservation
+
+**AI Confidence Level:** MEDIUM-HIGH (evidence-adequate for design judgment; remaining unknowns are scoped appropriately as downstream decisions)
+
+**HG Final Authority:** PRESERVED (HG decision sections remain intentionally blank for Human Gate signature and rationale. Human Gate is not bound by this recommendation and retains full authority to select any of the 5 candidates based on their own judgment.)
 
 ---
 
