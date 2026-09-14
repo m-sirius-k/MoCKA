@@ -399,6 +399,171 @@ HG must choose among candidate responses to each. AI does not recommend; HG deci
 
 ---
 
+## SECTION 5.5: HG CANONICAL DECISION OBJECTS
+
+**NORMATIVE STATUS: NON-BINDING CANDIDATE DECISIONS FOR HUMAN GATE**
+
+These three objects represent structured candidate decisions awaiting HG finalization.
+AI has NOT selected among options. AI presents them as structured choices only.
+HG must commit. No Implementation Authorization until HG Commit.
+
+### Object HG-D6-01: /user_voice Route Authority Definition
+
+**Status:** PENDING HUMAN GATE DECISION
+
+**Issue:** Canonical authority holder for /user_voice route undefined.
+
+**Analysis:**
+- Route: POST /user_voice (app.py:432)
+- Mutation: Writes user_voice record to events.db
+- Current Authority Status: MISSING_AUTHORITY (no canonical definition found)
+- No role/policy/scope binding found in governance layer
+
+**Candidate Normative Authority:**
+
+USER_DIRECT_AUTHORIZATION_ONLY
+
+**Candidate Characteristics:**
+- Authority Holder: Authenticated User Principal (not AI, not system-generated)
+- Required Context: Explicit user action + authenticated session + valid runtime context
+- Scope: User's own voice operations (not administrator proxy, not inferred consent)
+- Enforcement: Must verify authenticated user matches request context
+
+**Critical Boundary:**
+- RECORDED_ACTOR (who_actor='kimura') ≠ AUTHORIZATION
+- AUTHENTICATED SESSION ≠ AUTOMATICALLY_AUTHORIZED
+- VALIDATION (schema/integrity check) ≠ AUTHORIZATION
+- PUBLICATION CAPABILITY ≠ PUBLICATION_AUTHORITY
+
+**Denied/Unknown/Unproven Handling:**
+If authority cannot be established: BLOCK (no implicit ALLOW)
+
+**HG Decision Options:**
+- APPROVE: Accept USER_DIRECT_AUTHORIZATION_ONLY candidate
+- APPROVE WITH CONDITIONS: Accept with specified modifications
+- REJECT/HOLD: Defer or reject authorization
+- DEFER: Request additional evidence/specification
+
+---
+
+### Object HG-D6-02: /public/write_event Route Authority Definition
+
+**Status:** PENDING HUMAN GATE DECISION
+
+**Issue:** Canonical authority holder for /public/write_event route undefined. Default actor='external_ai' appears inferred, not explicitly authorized.
+
+**Analysis:**
+- Route: POST /public/write_event (app.py:1948)
+- Mutation: Writes event record to events.db
+- Current Authority Status: MISSING_AUTHORITY (no canonical definition found)
+- Default Parameters: author='external_ai' (inferred, not proven)
+- Similar Pattern: Process event from public-facing AI endpoint
+
+**Candidate Normative Authority:**
+
+AUTHORIZED_VALIDATED_GATEWAY_ENTRY_ONLY
+
+**Candidate Characteristics:**
+- Authority Chain: Authenticated source - Gateway validation - Authorization check - Mutation
+- Required Sequence (non-substitutable):
+
+```
+Authority Definition
+  |
+  V
+Source Identity / Authentication
+  |
+  V
+Authorization Query (not validation)
+  |
+  V
+Scope Validation
+  |
+  V
+Schema / Integrity Validation
+  |
+  V
+Rate Limiting / Abuse Controls (if applicable)
+  |
+  V
+Mutation (only if all prior steps authorize)
+```
+
+**Critical Distinctions (MUST NOT CONFLATE):**
+- event_source='live' ≠ AUTHORIZATION (telemetry classification only)
+- channel_type='http_api' ≠ AUTHORIZATION (routing classification only)
+- author='external_ai' ≠ AUTHORIZATION unless HG explicitly defines this as authority credential
+- Schema Validation ≠ AUTHORIZATION
+- Rate Limiting ≠ AUTHORIZATION
+- Signature ≠ AUTHORIZATION (unless HG defines signature validation as authority mechanism)
+- Public Endpoint ≠ Automatically Authorized
+
+**Denied/Unknown/Unproven Handling:**
+If authority cannot be established: BLOCK (no implicit ALLOW)
+
+**Technical Scope (HG to decide post-Decision):**
+- Signature Method: HG defines (post-decision implementation design)
+- Gateway Configuration: HG defines (post-decision implementation design)
+- Credential Format: HG defines (post-decision implementation design)
+- Authority Verification: HG defines (post-decision implementation design)
+
+**HG Decision Options:**
+- APPROVE: Accept AUTHORIZED_VALIDATED_GATEWAY_ENTRY_ONLY candidate
+- APPROVE WITH CONDITIONS: Accept with specified modifications
+- REJECT/HOLD: Defer or reject authorization
+- DEFER: Request additional evidence/specification
+
+---
+
+### Object HG-D6-03: Consequential Mutation Boundary Definition
+
+**Status:** PENDING HUMAN GATE DECISION
+
+**Issue:** Scope of "consequential mutation" and authorization boundary not formally defined. Current Flask-only focus may be insufficient for full fail-closed enforcement.
+
+**Analysis:**
+- 8 Mutation Classes Identified:
+  1. Flask Route Mutation (30 routes)
+  2. Internal Function Mutation
+  3. Subprocess Mutation
+  4. MCP Handler Mutation
+  5. Background Task Mutation
+  6. Direct SQLite Mutation
+  7. Event Buffer / Batch Mutation
+  8. CLI Entry Mutation
+
+- Current State: Flask routes examined; other classes require boundary clarification
+- Evidence Gap: Which classes constitute "consequential mutation"? Which require pre-mutation authority check?
+
+**Candidate Normative Boundary:**
+
+FULL_FAIL_CLOSED_AUTHORITY_BOUNDARY
+
+**Candidate Scope (examples, HG to confirm):**
+- Irreversible Mutation: YES (pre-mutation auth required)
+- External System Effect: YES (pre-mutation auth required)
+- Privilege / Authority Change: YES (pre-mutation auth required)
+- Data Destruction: YES (pre-mutation auth required)
+- Financial Consequence: YES (pre-mutation auth required)
+- Contractual / Rights Consequence: YES (pre-mutation auth required)
+- Consequential Publication / Disclosure: YES (pre-mutation auth required)
+- Consequential State Transition: YES (pre-mutation auth required)
+- Immaterial Audit Recording: NO (post-mutation is acceptable)
+- Internal Telemetry: NO (post-mutation is acceptable)
+
+**Boundary Principle:**
+Authorization enforcement occurs at the point of ACTUAL CONSEQUENCE generation, not just point of data write.
+
+Some writes (audit, telemetry) may be post-consequence. Consequential writes must be pre-authorized.
+
+**HG Decision Options (Scope):**
+- OPTION A: Flask routes only (R1-R3 immediate remediation, R4-R10 deferred)
+- OPTION B: All 8 mutation classes (R1-R10 full scope, comprehensive boundary)
+- OPTION C: Flask + Background Task + MCP (extended scope, R1-R6)
+- OPTION D: Custom Scope (HG specifies which classes in scope)
+
+---
+
 ## SECTION 6 (LEGACY): Remediation Approval Decision Options
 
 **NOTE: The following section presents candidate structures from prior analysis. HG-D6-01/02/03 above supersede this with more precise framing.**
@@ -701,6 +866,150 @@ THIS SUBMISSION: D6 remediation authorization (PENDING)
 **Recording Required:** HG decision to be recorded in Decision Ledger (separate from this submission)
 
 **Approval Status:** AWAITING HUMAN GATE DECISION
+
+---
+
+## SECTION 13: D6 RE-EVALUATION PIPELINE (Post-HG Decision)
+
+**CRITICAL CLARIFICATION:**
+
+HG-D6-01/02/03 Approval ≠ D6 PASS
+
+**Sequence (if HG approves any candidate):**
+
+1. **HG Commit Decision:**
+   HG-D6-01/02/03 decisions recorded in Decision Ledger
+
+2. **Authority/Boundary Definition:**
+   Authority Binding established in governance layer
+
+3. **Implementation Design Phase:**
+   Runtime enforcement architecture designed (separate document)
+
+4. **Runtime Binding Implementation:**
+   Flask routes + mutation classes bound to authority checks (separate implementation phase)
+
+5. **Runtime Enforcement Verification:**
+   All 30 routes individually tested for pre-mutation authorization
+
+6. **D6 Re-Evaluation Eligibility:**
+   After R1-R10 complete, D6 re-evaluation eligible (separate HG decision)
+
+**Current State (regardless of HG-D6-01/02/03 approval):**
+
+- D6 = NOT_PASS / BLOCKED (will remain until R1-R10 complete AND D6 re-evaluation PASSES)
+- Implementation Authorization = NOT_GRANTED (separate authorization required before R1-R10 work)
+- Runtime Binding = NOT_AUTHORIZED
+- Runtime Enforcement = NOT_AUTHORIZED
+- Production Modification = 0
+
+---
+
+## SECTION 14: FAIL-CLOSED DECISION SEMANTICS
+
+**Authorization Guard State Machine:**
+
+```
+Authorization Check Result:
+  ALLOW    -> Mutation Permitted (within authorized scope)
+  DENY     -> BLOCK (mutation aborted)
+  UNKNOWN  -> BLOCK (no authorization evidence)
+  NOT_PROVEN -> BLOCK (evidence incomplete)
+  EVIDENCE_GAP -> BLOCK (cannot establish authority)
+  INVALID_CONTEXT -> BLOCK (context does not match)
+  OUT_OF_SCOPE -> BLOCK (mutation outside authorized scope)
+  EXPIRED -> BLOCK (authorization credential expired)
+
+Result: ONLY ALLOW permits mutation. All others = BLOCK.
+No implicit ALLOW.
+No inferred ALLOW.
+No retry-based bypass.
+No background-task bypass.
+No subprocess bypass.
+No MCP bypass.
+No direct-function-call bypass.
+No direct-database bypass.
+No CLI bypass.
+```
+
+**Guard Authority Boundary:**
+- Guard EVALUATES existing authority
+- Guard does NOT GENERATE new authority
+- Guard does NOT EXPAND scope
+- Guard does NOT INFER consent
+- Guard does NOT CONVERT unknown to allowed
+
+---
+
+## SECTION 15: CURRENT STATE CONFIRMATION (FINAL)
+
+### D6 Status
+
+```
+D6 Evaluation Result: NOT_PASS / BLOCKED (sealed 2026-09-14)
+D6 Re-Evaluation Status: PENDING R1-R10 completion
+D6 PASS Status: NOT ACHIEVABLE without R1-R10 remediation + successful re-evaluation
+```
+
+### Authorization Status
+
+```
+HG-D6-01 (/user_voice):
+  Canonical Authority: PENDING HG DECISION
+  Normative Status: CANDIDATE (NON-BINDING until HG commit)
+  Current: MISSING_AUTHORITY
+
+HG-D6-02 (/public/write_event):
+  Canonical Authority: PENDING HG DECISION
+  Normative Status: CANDIDATE (NON-BINDING until HG commit)
+  Current: MISSING_AUTHORITY
+
+HG-D6-03 (Mutation Boundary):
+  Scope Definition: PENDING HG DECISION
+  Normative Status: CANDIDATE (NON-BINDING until HG commit)
+  Current: NOT_DEFINED
+```
+
+### Implementation Status
+
+```
+Implementation Authorization: NOT_GRANTED
+Runtime Binding: NOT_AUTHORIZED
+Runtime Enforcement: NOT_AUTHORIZED
+Production Modification: 0
+Code Change Authorization: NOT_GRANTED
+Schema Modification: NOT_AUTHORIZED
+Database Modification: NOT_AUTHORIZED
+Infrastructure Change: NOT_AUTHORIZED
+```
+
+### System State
+
+```
+System Mode: HOLD / FAIL-CLOSED
+D7-D10 Cascade: LOCKED
+13 Immutable State Locks: PRESERVED
+Existing HG Decision (Remediation Approval): APPROVE WITH CONDITIONS (maintained)
+R1-R10 Requirements: MAINTAINED
+```
+
+### Verified Evidence
+
+```
+VERIFIED_MUTATION_PATH: 31 total identified
+RUNTIME_EXECUTION_VERIFIED: 0
+BYPASS_EXECUTION_VERIFIED: 0
+RUNTIME_GUARD_VERIFIED: 0
+VERIFIED_BYPASS_PATH: 0
+
+Direct Import: POTENTIAL_BYPASS_NOT_VERIFIED
+Direct SQLite: POTENTIAL_BYPASS_NOT_VERIFIED
+Background Thread: MUTATION_PATH + AUTHORIZATION_COVERAGE_NOT_VERIFIED
+Subprocess: POTENTIAL_BYPASS_NOT_VERIFIED
+MCP: POTENTIAL_BYPASS_NOT_VERIFIED
+CLI: POTENTIAL_BYPASS_NOT_VERIFIED
+Event Buffer: POTENTIAL_BYPASS_NOT_VERIFIED
+```
 
 ---
 
