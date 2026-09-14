@@ -1,8 +1,8 @@
 # D6 REMEDIATION AUTHORIZATION SUBMISSION PACKAGE
 **Formal Submission to Human Gate**
 **Date: 2026-09-14**
-**Status: HG FORMAL DECISIONS RECORDED (HG-D6-01/02/03 APPROVED, NON-BINDING UNTIL HG COMMIT)**
-**Authority Boundary: HG Formal Decisions Inscribed (SECTION 5.6); Pending HG Commit Confirmation**
+**Status: HG FORMAL DECISIONS COMMITTED (HG-D6-01/02/03 FORMALLY COMMITTED, 2026-09-14T09:37:25Z)**
+**Authority Boundary: HG Canonical Authority Definitions Normalized (SECTION 5.6); Ready for R1-R10 Remediation Readiness**
 
 ---
 
@@ -564,12 +564,19 @@ Some writes (audit, telemetry) may be post-consequence. Consequential writes mus
 
 ---
 
-## SECTION 5.6: HG FORMAL DECISIONS (APPROVED)
+## SECTION 5.6: HG FORMAL DECISIONS (FORMALLY COMMITTED)
 
-**NORMATIVE STATUS: FORMAL APPROVED DECISIONS**
+**NORMATIVE STATUS: FORMALLY COMMITTED DECISIONS**
 
-These three objects record Human Gate's formal approval decisions on authority definitions.
-Effective from HG Commit (2026-09-14T09:32:00Z per instruction execution).
+These three objects record Human Gate's formally committed approval decisions on canonical authority definitions.
+Committed on 2026-09-14T09:37:25Z per HG Final Commitment Instruction (STEP 1-4).
+
+**Critical Semantics:**
+- FORMALLY COMMITTED ≠ D6 PASS (D6 remains NOT_PASS / BLOCKED)
+- FORMALLY COMMITTED ≠ Implementation Authorization (NOT_GRANTED)
+- FORMALLY COMMITTED = Canonical authority definitions for governance layer
+- FORMALLY COMMITTED = Foundation for R1-R10 remediation readiness
+- Authority Definition ≠ Runtime Binding (maintained)
 
 ### HG-D6-01 FORMAL DECISION: /user_voice Route Authorization
 
@@ -619,9 +626,11 @@ The canonical authority holder for /user_voice operations is limited to the auth
 - HG-D6-01 Approval = Normative authority definition for governance layer only
 - HG-D6-01 Approval = Foundation for R1-R3 remediation if overall remediation approved
 
-**Non-Binding Until HG Commit:** This formal decision becomes normative authority upon HG Commit confirmation.
+**Status: FORMALLY COMMITTED** (2026-09-14T09:37:25Z)
 
-**D6 PASS Separation:** HG-D6-01 approval does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
+This decision is now normative authority for /user_voice operations in governance and implementation layers.
+
+**D6 PASS Separation:** HG-D6-01 commitment does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
 
 **Implementation Authorization Status:** NOT_GRANTED (separate authorization required).
 
@@ -680,9 +689,12 @@ The canonical authority holder for /public/write_event operations is limited to 
 - HG-D6-02 Approval = Foundation for R1-R3 remediation if overall remediation approved
 - Conditions imposed: Gateway must be designed and implemented before R1-R3 remediation complete
 
-**Non-Binding Until HG Commit:** This formal decision becomes normative authority upon HG Commit confirmation.
+**Status: FORMALLY COMMITTED WITH CONDITIONS** (2026-09-14T09:37:25Z)
 
-**D6 PASS Separation:** HG-D6-02 approval does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
+This decision is now normative authority for /public/write_event operations in governance and implementation layers.
+Conditions: Gateway design and implementation required before full R1-R3 remediation completion.
+
+**D6 PASS Separation:** HG-D6-02 commitment does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
 
 **Implementation Authorization Status:** NOT_GRANTED (separate authorization required).
 
@@ -761,9 +773,12 @@ Result: ONLY ALLOW permits mutation. All others = BLOCK.
 - HG-D6-03 Approval = Foundation for R1-R10 full-scope remediation if overall remediation approved
 - Conditions imposed: All 8 mutation classes must be covered; Flask-only insufficient for fail-closed claim
 
-**Non-Binding Until HG Commit:** This formal decision becomes normative boundary upon HG Commit confirmation.
+**Status: FORMALLY COMMITTED WITH CONDITIONS** (2026-09-14T09:37:25Z)
 
-**D6 PASS Separation:** HG-D6-03 approval does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
+This decision is now normative boundary for all consequential mutations in governance and implementation layers.
+Conditions: All 8 mutation classes must be covered in authorization enforcement; Flask-only authorization insufficient to claim fail-closed.
+
+**D6 PASS Separation:** HG-D6-03 commitment does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
 
 **Implementation Authorization Status:** NOT_GRANTED (separate authorization required).
 
@@ -1163,21 +1178,26 @@ D6 PASS Status: NOT ACHIEVABLE without R1-R10 remediation + successful re-evalua
 ```
 HG-D6-01 (/user_voice):
   Canonical Authority: USER_DIRECT_AUTHORIZATION_ONLY
-  HG Decision: APPROVE (Formal Decision recorded, 2026-09-14T09:32:00Z)
-  Normative Status: FORMAL APPROVED (non-binding until HG Commit confirmation)
+  HG Decision: APPROVE (Formally Committed, 2026-09-14T09:37:25Z)
+  Normative Status: FORMALLY COMMITTED (normative authority effective immediately)
   Definition: Authenticated user's explicit intent only; no system inference, no proxy authority
-
+  Authority Scope: /user_voice operations only
+  
 HG-D6-02 (/public/write_event):
   Canonical Authority: AUTHORIZED_VALIDATED_GATEWAY_ENTRY_ONLY
-  HG Decision: APPROVE WITH CONDITIONS (Formal Decision recorded, 2026-09-14T09:32:00Z)
-  Normative Status: FORMAL APPROVED with conditions (non-binding until HG Commit confirmation)
+  HG Decision: APPROVE WITH CONDITIONS (Formally Committed, 2026-09-14T09:37:25Z)
+  Normative Status: FORMALLY COMMITTED with conditions (normative authority effective immediately)
   Definition: Validated gateway entry required; authentication + authorization query + scope validation
-
+  Authority Scope: /public/write_event operations only
+  Condition: Gateway design and implementation required before R1-R3 remediation
+  
 HG-D6-03 (Mutation Boundary):
-  Scope Definition: FULL_FAIL_CLOSED_AUTHORITY_BOUNDARY (all 8 mutation classes)
-  HG Decision: APPROVE WITH CONDITIONS (Formal Decision recorded, 2026-09-14T09:32:00Z)
-  Normative Status: FORMAL APPROVED with conditions (non-binding until HG Commit confirmation)
-  Definition: Consequential mutations across all 8 classes; fail-closed (BLOCK default); Flask + Background + MCP + Functions + Subprocess + SQLite + Buffer + CLI
+  Canonical Boundary: FULL_FAIL_CLOSED_AUTHORITY_BOUNDARY (all 8 mutation classes)
+  HG Decision: APPROVE WITH CONDITIONS (Formally Committed, 2026-09-14T09:37:25Z)
+  Normative Status: FORMALLY COMMITTED with conditions (normative authority effective immediately)
+  Definition: Consequential mutations across all 8 classes; fail-closed (BLOCK default)
+  Mutation Classes: Flask (30 routes) + Background Tasks + MCP Handlers + Internal Functions + Subprocess + Direct SQLite + Event Buffer + CLI Entry
+  Condition: All 8 classes must be covered for fail-closed claim (Flask-only insufficient)
 ```
 
 ### Implementation Status
@@ -1223,7 +1243,177 @@ Event Buffer: POTENTIAL_BYPASS_NOT_VERIFIED
 
 ---
 
-**SUBMISSION COMPLETE**
+## SECTION 16: R1-R10 REMEDIATION READINESS SPECIFICATION
+
+**PURPOSE:** Prepare R1-R10 remediation work for future implementation execution. Specification documents readiness conditions but contains NO implementation code or runtime binding.
+
+### R1: Pre-Mutation Authorization Enforcement at Flask Routes
+
+**Requirement:** All 30 Flask state-mutating routes must evaluate authorization BEFORE executing state mutation
+
+**Specification (no implementation):**
+- Dependency: HG-D6-01, HG-D6-02 canonical authority definitions
+- Required Evidence: Code inspection confirming authorization query exists before all mutations
+- Verification Method: Runtime test without valid authorization - expect 401/403 (mutation not applied)
+- Expected Fail-Closed Behavior: If authorization missing/denied, route returns error (no state change)
+- Completion Criteria: All 30 routes documented with pre-mutation authorization check location
+- Remaining Evidence Gap: Which routes currently have authorization? Which must be added?
+
+### R2: Authority-to-Runtime Binding Architecture
+
+**Requirement:** Complete chain from HG canonical authority definition to runtime authorization query
+
+**Specification (no implementation):**
+- Dependency: HG-D6-01, HG-D6-02, HG-D6-03 canonical definitions
+- Required Evidence: Architecture design showing Authority Definition → Runtime Query chain
+- Verification Method: Chain documentation with sample trace through full path
+- Expected Fail-Closed Behavior: Authorization query result determines mutation proceed/abort
+- Completion Criteria: Authority binding specification (separate design document)
+- Remaining Evidence Gap: How will runtime query canonical authority? What format? API? Database?
+
+### R3: Fail-Closed Enforcement Proof
+
+**Requirement:** Demonstrate that system denies consequential mutation when authorization missing/denied
+
+**Specification (no implementation):**
+- Dependency: R1, R2 (routes + binding complete)
+- Required Evidence: Runtime test logs showing 30 routes × N unauthorized users = all deny
+- Verification Method: Security test suite; no authorization = mutation prevented
+- Expected Fail-Closed Behavior: No silent failures; no 200 response with no-op mutation
+- Completion Criteria: Test report with 100% deny rate on unauthorized access
+- Remaining Evidence Gap: Test harness requirements? Integration test infrastructure?
+
+### R4: Clock Synchronization Infrastructure Specification
+
+**Requirement:** P-1.4.5 clock synchronization mechanism documented and verified
+
+**Specification (no implementation):**
+- Dependency: System infrastructure review
+- Required Evidence: P-1.4.5_CLOCK_SYNC_SPEC.md with clock source, sync method, verification protocol
+- Verification Method: 24-hour clock offset measurement between components
+- Expected Fail-Closed Behavior: Timestamp integrity verified before evidence acceptance
+- Completion Criteria: Clock sync specification + 24-hour measurement report
+- Remaining Evidence Gap: Which components need sync? What tolerance? NTP vs alternatives?
+
+### R5: Task3 Design Document Receipt and Review
+
+**Requirement:** Task3 design document formally received and HG reviewed
+
+**Specification (no implementation):**
+- Dependency: Task3 design document delivery
+- Required Evidence: Document in docs/governance/ + HG review recorded in Decision Ledger
+- Verification Method: Document presence + Decision Ledger entry with approval
+- Expected Fail-Closed Behavior: Missing document = RC5 NOT_MET
+- Completion Criteria: Document + Decision Ledger approval record
+- Remaining Evidence Gap: Where is Task3 design document? Is it still active?
+
+### R6: Runtime Role-to-Authority Binding
+
+**Requirement:** Governance role definitions enforced at runtime authorization checks
+
+**Specification (no implementation):**
+- Dependency: HG-D6-01, HG-D6-02 canonical authority definitions
+- Required Evidence: RUNTIME_ROLE_BINDING_SPEC.md mapping roles to route permissions
+- Verification Method: Code inspection + test matrix (30 routes × N roles = correct responses)
+- Expected Fail-Closed Behavior: Missing role enforcement = mutation blocked
+- Completion Criteria: Role binding specification + test matrix results
+- Remaining Evidence Gap: How many roles? Which roles map to which routes?
+
+### R7: Decision-Evidence Lineage Reconstruction
+
+**Requirement:** Complete observability of Evidence-Assessment-Decision-Authority-Runtime chain
+
+**Specification (no implementation):**
+- Dependency: R1-R6 (all layers implemented)
+- Required Evidence: 6-link chain visualization + sample trace through full path
+- Verification Method: End-to-end trace (incident creation → event capture → decision → guard enforcement)
+- Expected Fail-Closed Behavior: Any broken link = chain fails
+- Completion Criteria: Lineage diagram + verified trace log
+- Remaining Evidence Gap: Which events represent each link? How to trace end-to-end?
+
+### R8: Full Route Coverage Verification Matrix
+
+**Requirement:** All 30 Flask routes individually verified with documented results
+
+**Specification (no implementation):**
+- Dependency: R1-R6 (all routes + authority + roles + binding complete)
+- Required Evidence: B5_VERIFICATION_MATRIX.csv (30 rows: route, authorization status, test result)
+- Verification Method: Systematic verification of all 30 routes
+- Expected Fail-Closed Behavior: Any unresolved route = RC8 NOT_MET
+- Completion Criteria: Matrix file with 30/30 routes verified PASS
+- Remaining Evidence Gap: Which routes are currently verified? How many remain?
+
+### R9: Evidence Discipline Adherence
+
+**Requirement:** All remediation evidence uses precise MoCKA vocabulary and boundaries
+
+**Specification (no implementation):**
+- Dependency: Evidence discipline taxonomy (SECTION 7A)
+- Required Evidence: All claims use VERIFIED / NOT_VERIFIED / UNKNOWN vocabulary
+- Verification Method: Language audit; design layer ≠ runtime layer maintained
+- Expected Fail-Closed Behavior: Evidence ambiguity = evidence rejected
+- Completion Criteria: Remediation evidence passes discipline audit
+- Remaining Evidence Gap: Which evidence categories need restatement?
+
+### R10: Human Gate Authority Boundary Enforcement
+
+**Requirement:** HG authority boundary mechanically enforced (no bypass, no inference)
+
+**Specification (no implementation):**
+- Dependency: HG-D6-01, HG-D6-02, HG-D6-03 canonical definitions
+- Required Evidence: Authority boundary specification documenting enforcement mechanism
+- Verification Method: Proof that HG authority cannot be bypassed, inferred, or substituted
+- Expected Fail-Closed Behavior: Authority undefined/denied = BLOCK
+- Completion Criteria: Boundary specification + bypass-proof documentation
+- Remaining Evidence Gap: How is authority boundary mechanically enforced?
+
+---
+
+## SECTION 17: IMPLEMENTATION GATE REQUIREMENTS
+
+**CRITICAL:** This section documents what is REQUIRED before Implementation Authorization can be granted.
+
+### Required Sequence (Non-Substitutable)
+
+1. **HG Decision** ← Already complete (HG-D6-01/02/03 formally committed)
+2. **Authority Specification** ← Already complete (canonical definitions in SECTION 5.6)
+3. **Implementation Design** ← R1-R10 readiness specification (SECTION 16)
+4. **Required Evidence** ← R1-R10 completion criteria documented (SECTION 16)
+5. **Runtime Binding Authorization** ← REQUIRES separate HG decision
+6. **Implementation Authorization** ← REQUIRES separate HG decision
+
+### Current Status
+
+```
+Step 1 (HG Decision):              COMPLETE
+Step 2 (Authority Specification):  COMPLETE
+Step 3 (Implementation Design):    PENDING (depends on R1-R10 execution)
+Step 4 (Required Evidence):        PENDING (depends on R1-R10 execution)
+Step 5 (Runtime Binding Auth):     NOT_GRANTED
+Step 6 (Implementation Auth):      NOT_GRANTED
+```
+
+### Authority Expansion Prevention
+
+Authority cannot be escalated from current baseline without separate HG decision:
+- D6 = NOT_PASS remains until R1-R10 + separate D6 re-evaluation
+- Implementation Authorization remains NOT_GRANTED
+- Runtime Binding remains NOT_AUTHORIZED
+- Authority definitions cannot be expanded, inferred, or substituted
+- All fail-closed safeguards remain in place
+
+### Post-Commitment Authority Boundaries
+
+HG-D6-01/02/03 commitment defines WHO holds authority. HG-D6-01/02/03 commitment does NOT authorize:
+- Implementation execution
+- Runtime binding
+- Authority expansion
+- D6 status elevation
+- Autonomous consequential action
+
+---
+
+**SECTION 16-17 COMPLETE**
 
 This package is ready for Human Gate review and decision.
 
