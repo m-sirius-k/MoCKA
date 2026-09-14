@@ -1,8 +1,8 @@
 # D6 REMEDIATION AUTHORIZATION SUBMISSION PACKAGE
 **Formal Submission to Human Gate**
 **Date: 2026-09-14**
-**Status: PENDING HUMAN GATE DECISION**
-**Authority Boundary: HG Decision Required (Preparation Complete)**
+**Status: HG FORMAL DECISIONS RECORDED (HG-D6-01/02/03 APPROVED, NON-BINDING UNTIL HG COMMIT)**
+**Authority Boundary: HG Formal Decisions Inscribed (SECTION 5.6); Pending HG Commit Confirmation**
 
 ---
 
@@ -564,6 +564,213 @@ Some writes (audit, telemetry) may be post-consequence. Consequential writes mus
 
 ---
 
+## SECTION 5.6: HG FORMAL DECISIONS (APPROVED)
+
+**NORMATIVE STATUS: FORMAL APPROVED DECISIONS**
+
+These three objects record Human Gate's formal approval decisions on authority definitions.
+Effective from HG Commit (2026-09-14T09:32:00Z per instruction execution).
+
+### HG-D6-01 FORMAL DECISION: /user_voice Route Authorization
+
+**Decision ID:** HG-D6-01
+
+**Subject:** Canonical Authority Definition for POST /user_voice (app.py:432)
+
+**HG Decision:** APPROVE
+
+**Canonical Authority:** USER_DIRECT_AUTHORIZATION_ONLY
+
+**Formal Meaning:**
+The canonical authority holder for /user_voice operations is limited to the authenticated user's own explicit intent in verified runtime context. No system inference, no AI estimation, no proxy authority. Authority requires:
+
+1. **Authenticated User Principal:** Request bearer must authenticate as specific user
+2. **Explicit User Intent:** User directly initiates /user_voice action (not inferred from context)
+3. **Valid Runtime Session:** Session context verified as current/active
+4. **Verified User-to-Action Correspondence:** User identity in auth context matches request actor
+5. **No External Substitution:** AI, system, governance layer cannot substitute user intent
+
+**Required Conditions (Enforcement):**
+- Pre-mutation authorization check REQUIRED at Flask route entry
+- Authorization query: (authenticated_user == request_actor) AND (intent_explicit == true)
+- Fail-closed: If authorization cannot be established, BLOCK (no implicit ALLOW)
+- No schema validation, no role inference, no default permissions
+- Denial events may be recorded (non-consequential audit mutation)
+
+**Scope (Explicitly Defined):**
+- Authorized: User speaking their own voice to system
+- Authorized: Voice operations tagged with user identity
+- Authorized: Recording user's stated position/intent
+- NOT Authorized: System speaking for user
+- NOT Authorized: AI inferring user position
+- NOT Authorized: Proxy/delegation without explicit user action
+- NOT Authorized: Background task on behalf of user
+- NOT Authorized: Governance-layer decision recorded as "user voice"
+
+**Authority Boundary:**
+- HG defines WHAT authority exists (user-direct-only)
+- Runtime implementation defines HOW to verify (technical design)
+- AI cannot expand scope or add secondary authorities
+- Authority does not grant D6 PASS or Implementation Authorization
+
+**Post-Decision Semantics:**
+- HG-D6-01 Approval ≠ D6 PASS (separate evaluation required)
+- HG-D6-01 Approval ≠ Implementation Authorization (separate HG decision required)
+- HG-D6-01 Approval = Normative authority definition for governance layer only
+- HG-D6-01 Approval = Foundation for R1-R3 remediation if overall remediation approved
+
+**Non-Binding Until HG Commit:** This formal decision becomes normative authority upon HG Commit confirmation.
+
+**D6 PASS Separation:** HG-D6-01 approval does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
+
+**Implementation Authorization Status:** NOT_GRANTED (separate authorization required).
+
+**Immutable State Locks:** All 13 preserved. No code, runtime, or schema changes authorized by this decision.
+
+---
+
+### HG-D6-02 FORMAL DECISION: /public/write_event Route Authorization
+
+**Decision ID:** HG-D6-02
+
+**Subject:** Canonical Authority Definition for POST /public/write_event (app.py:1948)
+
+**HG Decision:** APPROVE WITH CONDITIONS
+
+**Canonical Authority:** AUTHORIZED_VALIDATED_GATEWAY_ENTRY_ONLY
+
+**Formal Meaning:**
+The canonical authority holder for /public/write_event operations is limited to authenticated sources that pass explicit validation at the gateway. No default authorities. No implicit ALLOW. Gateway must perform sequential authorization chain without substitution:
+
+1. **Authentication:** Request source identity verified
+2. **Authorization Query:** Authority definition explicitly queried (not inferred)
+3. **Scope Validation:** Payload scope matches authorized actor scope
+4. **Gateway Enforcement:** Pre-mutation authorization check at Flask route entry
+5. **Mutation Only After All Prior:** Database write only if all validation passes
+
+**Required Conditions (Enforcement):**
+- Pre-mutation authorization check REQUIRED at Flask route entry
+- Gateway signature or credential validation REQUIRED (details per implementation design)
+- Authorization query REQUIRED: (source_identity_verified == true) AND (authorization_scope_matches_payload == true)
+- Fail-closed: If authorization cannot be established, BLOCK (no implicit ALLOW)
+- No implicit ALLOW based on event_source, channel_type, or author defaults
+- Rate limiting and abuse controls permitted (not substitutes for authorization)
+- Denial events may be recorded (non-consequential audit mutation)
+
+**Scope (Explicitly Defined):**
+- Authorized: Validated external source with proven authority credential
+- Authorized: Event authored by source with explicit write permission
+- Authorized: Payload scoped to authorized actor's domain
+- NOT Authorized: Default actor='external_ai' without HG-defined authority
+- NOT Authorized: Inferred authority from public endpoint
+- NOT Authorized: Schema validation as substitute for authorization
+- NOT Authorized: Rate limiting as substitute for authorization
+- NOT Authorized: Signature-only (signature validates integrity, not authority)
+
+**Authority Boundary:**
+- HG defines WHAT authority exists (validated-gateway-only)
+- HG to define (in implementation design): signature method, credential format, validation rules
+- AI cannot substitute HG definition with system inference
+- Authority does not grant D6 PASS or Implementation Authorization
+
+**Post-Decision Semantics:**
+- HG-D6-02 Approval ≠ D6 PASS (separate evaluation required)
+- HG-D6-02 Approval ≠ Implementation Authorization (separate HG decision required)
+- HG-D6-02 Approval = Normative authority definition for governance layer only
+- HG-D6-02 Approval = Foundation for R1-R3 remediation if overall remediation approved
+- Conditions imposed: Gateway must be designed and implemented before R1-R3 remediation complete
+
+**Non-Binding Until HG Commit:** This formal decision becomes normative authority upon HG Commit confirmation.
+
+**D6 PASS Separation:** HG-D6-02 approval does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
+
+**Implementation Authorization Status:** NOT_GRANTED (separate authorization required).
+
+**Immutable State Locks:** All 13 preserved. No code, runtime, or schema changes authorized by this decision.
+
+---
+
+### HG-D6-03 FORMAL DECISION: Consequential Mutation Boundary Definition
+
+**Decision ID:** HG-D6-03
+
+**Subject:** Scope of Authorization Enforcement for Consequential Mutations
+
+**HG Decision:** APPROVE WITH CONDITIONS
+
+**Canonical Authority Boundary:** FULL_FAIL_CLOSED_AUTHORITY_BOUNDARY
+
+**Formal Meaning:**
+Authorization enforcement must cover ALL consequential mutations across all 8 mutation classes, with fail-closed default (BLOCK unless ALLOW proven). Consequential = mutations with real-world effects: irreversibility, external impact, privilege change, data loss, financial consequence, rights consequence, publication effect, or state transition with business meaning.
+
+**Scope Definition (HG Authority):**
+
+Consequential Mutations (pre-authorization required):
+- Irreversible mutation (cannot undo)
+- External system effect (writes to external API, database, file system)
+- Privilege or authority change (grants/revokes permissions)
+- Data destruction (permanent deletion, overwrite)
+- Financial consequence (payment, billing, refund)
+- Contractual or rights consequence (agreement binding, rights modification)
+- Consequential publication (public disclosure, announcement)
+- Consequential state transition (business process milestone, activation, deactivation)
+
+Non-Consequential Mutations (post-authorization is acceptable):
+- Immaterial audit recording (logging denied request, no state change)
+- Internal telemetry (metrics, performance data, no behavioral change)
+
+**Required Conditions:**
+
+1. **Flask Routes (R1-R3):** All 30 routes require pre-mutation authorization check
+2. **Background Tasks (R4):** Authorization check required before asyncio/threading task executes mutation
+3. **MCP Handlers (R5):** Authorization check required before MCP endpoint processes consequential mutation
+4. **Internal Functions (R6):** Direct Python import must chain through authorization query
+5. **Subprocess Mutations (R7):** CLI entry point must verify authorization before subprocess mutation
+6. **Direct SQLite (R8):** Direct sqlite3.connect() calls must query authorization before write
+7. **Event Buffer (R9):** Batch flush operations must verify authorization before consequential writes
+8. **CLI Entry (R10):** Command-line scripts must query authorization before consequential state change
+
+**Authorization Boundary:**
+
+Authorization enforcement occurs at the point of ACTUAL CONSEQUENCE GENERATION, not merely at data-write point.
+
+- Write operations that generate consequence: pre-authorization required
+- Write operations that do not generate consequence (audit, telemetry): post-authorization acceptable
+- Mixed operations: If ANY consequential component exists, entire operation requires pre-authorization
+
+**Fail-Closed Enforcement:**
+
+```
+Authorization Check Result:
+  ALLOW      -> Mutation Permitted (within authorized scope)
+  DENY       -> BLOCK (mutation aborted)
+  UNKNOWN    -> BLOCK (no authorization evidence)
+  NOT_PROVEN -> BLOCK (evidence incomplete)
+  EVIDENCE_GAP -> BLOCK (cannot establish authority)
+  INVALID_CONTEXT -> BLOCK (context does not match)
+  OUT_OF_SCOPE -> BLOCK (mutation outside authorized scope)
+  EXPIRED -> BLOCK (authorization credential expired)
+
+Result: ONLY ALLOW permits mutation. All others = BLOCK.
+```
+
+**Post-Decision Semantics:**
+- HG-D6-03 Approval ≠ D6 PASS (separate evaluation required)
+- HG-D6-03 Approval ≠ Implementation Authorization (separate HG decision required)
+- HG-D6-03 Approval = Normative boundary definition for governance layer only
+- HG-D6-03 Approval = Foundation for R1-R10 full-scope remediation if overall remediation approved
+- Conditions imposed: All 8 mutation classes must be covered; Flask-only insufficient for fail-closed claim
+
+**Non-Binding Until HG Commit:** This formal decision becomes normative boundary upon HG Commit confirmation.
+
+**D6 PASS Separation:** HG-D6-03 approval does NOT grant D6 PASS. D6 remains NOT_PASS until R1-R10 complete AND D6 re-evaluation passes separate evaluation.
+
+**Implementation Authorization Status:** NOT_GRANTED (separate authorization required).
+
+**Immutable State Locks:** All 13 preserved. No code, runtime, or schema changes authorized by this decision.
+
+---
+
 ## SECTION 6 (LEGACY): Remediation Approval Decision Options
 
 **NOTE: The following section presents candidate structures from prior analysis. HG-D6-01/02/03 above supersede this with more precise framing.**
@@ -955,19 +1162,22 @@ D6 PASS Status: NOT ACHIEVABLE without R1-R10 remediation + successful re-evalua
 
 ```
 HG-D6-01 (/user_voice):
-  Canonical Authority: PENDING HG DECISION
-  Normative Status: CANDIDATE (NON-BINDING until HG commit)
-  Current: MISSING_AUTHORITY
+  Canonical Authority: USER_DIRECT_AUTHORIZATION_ONLY
+  HG Decision: APPROVE (Formal Decision recorded, 2026-09-14T09:32:00Z)
+  Normative Status: FORMAL APPROVED (non-binding until HG Commit confirmation)
+  Definition: Authenticated user's explicit intent only; no system inference, no proxy authority
 
 HG-D6-02 (/public/write_event):
-  Canonical Authority: PENDING HG DECISION
-  Normative Status: CANDIDATE (NON-BINDING until HG commit)
-  Current: MISSING_AUTHORITY
+  Canonical Authority: AUTHORIZED_VALIDATED_GATEWAY_ENTRY_ONLY
+  HG Decision: APPROVE WITH CONDITIONS (Formal Decision recorded, 2026-09-14T09:32:00Z)
+  Normative Status: FORMAL APPROVED with conditions (non-binding until HG Commit confirmation)
+  Definition: Validated gateway entry required; authentication + authorization query + scope validation
 
 HG-D6-03 (Mutation Boundary):
-  Scope Definition: PENDING HG DECISION
-  Normative Status: CANDIDATE (NON-BINDING until HG commit)
-  Current: NOT_DEFINED
+  Scope Definition: FULL_FAIL_CLOSED_AUTHORITY_BOUNDARY (all 8 mutation classes)
+  HG Decision: APPROVE WITH CONDITIONS (Formal Decision recorded, 2026-09-14T09:32:00Z)
+  Normative Status: FORMAL APPROVED with conditions (non-binding until HG Commit confirmation)
+  Definition: Consequential mutations across all 8 classes; fail-closed (BLOCK default); Flask + Background + MCP + Functions + Subprocess + SQLite + Buffer + CLI
 ```
 
 ### Implementation Status
