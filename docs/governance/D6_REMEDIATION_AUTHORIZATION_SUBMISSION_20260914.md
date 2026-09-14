@@ -87,9 +87,12 @@ State Mutation Layer (UNGUARDED):
   - 27/30 unverified routes status unknown
   - Fail-closed enforcement NOT PROVEN
 
-Event Recording Layer (WORKING):
-  - PHI-OS Event Gate records mutations (after they occur) ✓
-  - Post-mutation recording cannot prevent mutations ✗
+Denial Audit Recording Layer:
+  - Denial events can be recorded to events.db (non-consequential audit mutation)
+  - Recording itself is technically a write operation (NOT "read-only telemetry")
+  - However: audit recording does NOT trigger consequential state transitions
+  - Authorization boundary NOT bypassed by audit recording mechanism
+  - CLASSIFICATION: NON-CONSEQUENTIAL AUDIT MUTATION / AUTHORIZATION-PROTECTED
 ```
 
 **Chain Integrity:** Links 1-3 ✓ intact; Links 4-6 ✗ broken
@@ -134,9 +137,9 @@ Event Recording Layer (WORKING):
 
 **B4 — Decision-Evidence Chain:**
 - Status: PARTIALLY BROKEN
-- Gap: Authority → Runtime invocation layer missing
+- Gap: Authority-Runtime invocation layer missing
 - Impact: Governance decisions do not translate to runtime guards
-- Remediation: Establish Authority → Runtime binding + invocation
+- Remediation: Establish Authority-Runtime binding + invocation
 
 **B5 — Runtime Guard Coverage:**
 - Status: INCOMPLETE (6.67% verified)
@@ -156,20 +159,20 @@ D6 can re-enter evaluation cycle (D6 re-evaluation attempt #2) ONLY WHEN ALL of 
 
 **Verification Method:**
 - Code inspection: Each route contains explicit authorization check before any database mutation
-- Runtime test: POST to each route without valid authorization → 401/403 received (mutation not applied)
+- Runtime test: POST to each route without valid authorization - expect 401/403 response (mutation not applied)
 - Coverage report: 30/30 routes documented with verification status
 
 **Failure Criterion:** Even 1 route without verified pre-mutation check = RC1 NOT_MET
 
 ---
 
-### RC2: Authority→Runtime Binding Proof
+### RC2: Authority-Runtime Binding Proof
 
 **Requirement:** Complete chain from HG decision to runtime pre-mutation guard
 
 **Verification Method:**
-- Chain documentation: Evidence → Assessment → Decision → Authority → Runtime → State
-- Runtime test: Deny authorization in HG database → all 30 routes return 403 for denied user
+- Chain documentation: Evidence-Assessment-Decision-Authority-Runtime-State chain mapping
+- Runtime test: Deny authorization in HG database - all 30 routes return 403 for denied user
 - Binding proof: Authorization decision linked to each route's permission set in runtime code
 
 **Failure Criterion:** Authorization query not executed before state mutation = RC2 NOT_MET
@@ -181,7 +184,7 @@ D6 can re-enter evaluation cycle (D6 re-evaluation attempt #2) ONLY WHEN ALL of 
 **Requirement:** System demonstrably prevents state mutation when authorization missing/denied
 
 **Verification Method:**
-- Security test: 30 routes × N unauthorized users → all return 401/403
+- Security test: 30 routes × N unauthorized users - all return 401/403
 - Audit trail: Failures logged with reason (user not authorized, token invalid, etc.)
 - No silent failures: No 200 response with no-op mutation
 
@@ -223,7 +226,7 @@ D6 can re-enter evaluation cycle (D6 re-evaluation attempt #2) ONLY WHEN ALL of 
 **Verification Method:**
 - Spec document: RUNTIME_ROLE_BINDING_SPEC.md mapping roles to route permissions
 - Code inspection: Each route contains role check before state mutation
-- Test matrix: 30 routes × N roles → correct authorization responses
+- Test matrix: 30 routes × N roles - correct authorization responses
 
 **Failure Criterion:** Role enforcement missing at any route = RC6 NOT_MET
 
@@ -231,12 +234,12 @@ D6 can re-enter evaluation cycle (D6 re-evaluation attempt #2) ONLY WHEN ALL of 
 
 ### RC7: Decision-Evidence Lineage Reconstruction
 
-**Requirement:** Complete observability of Evidence → Decision → Evidence path
+**Requirement:** Complete observability of Evidence-Decision-Evidence chain
 
 **Verification Method:**
 - Lineage diagram: 6-link chain visualization
 - Trace log: Sample trace through full chain for sample route + sample user
-- End-to-end test: Incident creation → event capture → decision → runtime guard
+- End-to-end test: Incident creation - event capture - decision - runtime guard chain
 
 **Failure Criterion:** Any link in chain untested = RC7 NOT_MET
 
@@ -354,9 +357,51 @@ D6 can re-enter evaluation cycle (D6 re-evaluation attempt #2) ONLY WHEN ALL of 
 
 ---
 
-## SECTION 6: HUMAN GATE DECISION OPTIONS
+## SECTION 6: HUMAN GATE DECISION QUESTIONS
 
-HG must choose ONE of the following options. AI does not decide.
+**NON-BINDING CANDIDATE OPTIONS FOR HUMAN GATE CONSIDERATION**
+
+HG makes final decision. AI presents candidate structures only.
+
+Three Critical Questions Remain Unresolved (marked below as HG-D6-01, HG-D6-02, HG-D6-03):
+
+HG must choose among candidate responses to each. AI does not recommend; HG decides.
+
+### HG-D6-01: Authority Definition for /user_voice Route
+
+**Question:** Who holds authority to accept /user_voice operations? Under what scope?
+
+**Candidate Response Option A:** "HG defines canonical authority for /user_voice (human_authority | role_X)"
+
+**Candidate Response Option B:** "Route /user_voice is deprecated and should be blocked"
+
+---
+
+### HG-D6-02: Authority Definition for /public/write_event Route
+
+**Question:** Who holds authority to accept /public/write_event operations? Is default 'external_ai' authority valid?
+
+**Candidate Response Option A:** "HG defines canonical authority for /public/write_event (specify actor_type + scope)"
+
+**Candidate Response Option B:** "Route /public/write_event authority remains pending; use safe defaults until defined"
+
+---
+
+### HG-D6-03: Consequential Mutation Boundary Scope
+
+**Question:** Should authorization enforcement cover Flask routes only, or all 8 mutation classes?
+
+**Candidate Response Option A:** "Scope = Flask 30 routes only (R1-R3 subset; R4-R10 deferred)"
+
+**Candidate Response Option B:** "Scope = All 8 consequential mutation classes (R1-R10 full scope)"
+
+**Candidate Response Option C:** "Scope = Flask + Background Task + MCP (R1-R6 extended scope)"
+
+---
+
+## SECTION 6 (LEGACY): Remediation Approval Decision Options
+
+**NOTE: The following section presents candidate structures from prior analysis. HG-D6-01/02/03 above supersede this with more precise framing.**
 
 ### OPTION A: REJECT / HOLD
 
@@ -454,6 +499,82 @@ HG must choose ONE of the following options. AI does not decide.
 
 ---
 
+## SECTION 7A: EVIDENCE CLASSIFICATION TAXONOMY
+
+### Definitions (Mutually Exclusive)
+
+**A. MUTATION_PATH_EXISTS_STATIC**
+- Code inspection confirms mutation call exists
+- Does NOT mean: mutation actually executes at runtime
+- Does NOT mean: authorization bypass confirmed
+
+**B. RUNTIME_EXECUTION_VERIFIED**
+- Runtime evidence (logs, timing, state changes) confirms path actually executes
+- Does NOT mean: authorization guard was bypassed
+- Does NOT mean: consequential state changed
+
+**C. BYPASS_EXECUTION_VERIFIED**
+- Evidence that authorization guard was SKIPPED and consequential mutation PROCEEDED
+- Requires: runtime evidence chain showing (guard NOT invoked) + (state mutation occurred)
+- Static code inspection alone ≠ bypass execution evidence
+
+**D. RUNTIME_GUARD_VERIFIED**
+- Evidence that authorization guard evaluated BEFORE mutation
+- Evidence that guard result determined mutation proceed/abort
+- Runtime logs required; code inspection insufficient
+
+### Critical Principle
+
+Static code trace (A) does NOT automatically become Runtime execution (B).
+Runtime execution (B) does NOT automatically become Bypass execution (C).
+Bypass possibility does NOT become Bypass execution without runtime evidence (C).
+
+---
+
+## SECTION 7B: MUTATION CLASS INVENTORY & EVIDENCE STATUS
+
+### 8 Mutation Classes with Evidence Assessment
+
+| Class | Entry Points | Mutation Path | Runtime Exec | Bypass Exec | Guard Status | Authority Status |
+|-------|--------------|---------------|--------------|-------------|--------------|------------------|
+| 1. Flask Route | 30 routes | VERIFIED_STATIC | NOT_VERIFIED (3/30 sampled: FAIL) | POTENTIAL_NOT_VERIFIED | NOT_VERIFIED | MISSING (2 routes) / NOT_VERIFIED (25) / FOUND (1) |
+| 2. Internal Function | Direct Python import | POTENTIAL_STATIC | NOT_VERIFIED | POTENTIAL_BYPASS_NOT_VERIFIED | NOT_VERIFIED | NOT_VERIFIED |
+| 3. Subprocess | CLI entry via mocka_pipeline.py | POTENTIAL_STATIC | NOT_VERIFIED | POTENTIAL_BYPASS_NOT_VERIFIED | NOT_VERIFIED | NOT_VERIFIED |
+| 4. MCP Handler | MCP endpoint :5002 | POTENTIAL_STATIC | NOT_VERIFIED | POTENTIAL_BYPASS_NOT_VERIFIED | NOT_VERIFIED | NOT_VERIFIED |
+| 5. Background Task | asyncio/threading | VERIFIED_STATIC (code present) | NOT_VERIFIED | NOT_VERIFIED | AUTHORIZATION_COVERAGE_NOT_VERIFIED | NOT_VERIFIED |
+| 6. Direct SQLite | sqlite3.connect() direct call | POTENTIAL_STATIC | NOT_VERIFIED | POTENTIAL_BYPASS_NOT_VERIFIED | NOT_VERIFIED | NOT_VERIFIED |
+| 7. Event Buffer | Local batch buffer flush | POTENTIAL_STATIC | NOT_VERIFIED | POTENTIAL_BYPASS_NOT_VERIFIED | NOT_VERIFIED | NOT_VERIFIED |
+| 8. CLI Entry | Command-line script invocation | POTENTIAL_STATIC | NOT_VERIFIED | POTENTIAL_BYPASS_NOT_VERIFIED | NOT_VERIFIED | NOT_VERIFIED |
+
+### Critical Distinction
+
+**Background Thread:**
+- MUTATION_PATH_EXISTS_STATIC = VERIFIED (code confirms async path exists)
+- BYPASS_EXECUTION_VERIFIED = NOT_VERIFIED (thread creation ≠ guard bypass confirmed)
+- AUTHORIZATION_COVERAGE = NOT_VERIFIED (async context not examined for auth checks)
+
+Classification: VERIFIED_MUTATION_PATH + AUTHORIZATION_COVERAGE_NOT_VERIFIED (NOT "VERIFIED_BYPASS_PATH")
+
+### Evidence Status Summary
+
+```
+VERIFIED_MUTATION_PATH (static code confirms path exists) = 31 total identified
+  - Flask 30 routes: 30 static paths
+  - Background async: 1 static path (threading/asyncio)
+
+RUNTIME_EXECUTION_VERIFIED = 0
+BYPASS_EXECUTION_VERIFIED = 0
+RUNTIME_GUARD_VERIFIED = 0
+
+Direct Import = POTENTIAL_BYPASS_NOT_VERIFIED (code inspection shows possible direct call; execution NOT confirmed)
+Direct SQLite = POTENTIAL_BYPASS_NOT_VERIFIED (code inspection shows possible direct call; execution NOT confirmed)
+Subprocess = POTENTIAL_BYPASS_NOT_VERIFIED (CLI entry point exists; bypass execution NOT confirmed)
+MCP Handler = POTENTIAL_BYPASS_NOT_VERIFIED (separate service; guard bypass NOT confirmed)
+Background Thread = VERIFIED_MUTATION_PATH + AUTHORIZATION_COVERAGE_NOT_VERIFIED (path exists; bypass NOT confirmed)
+```
+
+---
+
 ## SECTION 8: GOVERNANCE STATE CONFIRMATION
 
 ### All 13 Immutable Locks (Verified Preserved)
@@ -491,19 +612,19 @@ D8-D10 (unspecified):        LOCKED
 
 ```
 HG-IMP-20260913-001: D1-D10 stage-based authorization (APPROVED)
-  → D1-D5: ELIGIBLE for evaluation (completed PASS)
-  → D6: ELIGIBLE for evaluation (completed NOT_PASS)
-  → D7-D10: LOCKED pending D6 PASS
+  - D1-D5: ELIGIBLE for evaluation (completed PASS)
+  - D6: ELIGIBLE for evaluation (completed NOT_PASS)
+  - D7-D10: LOCKED pending D6 PASS
 
 DC_20260914_001: D6 evaluation result (NOT_PASS)
-  → Cascade blocked
-  → D7-D10 remain LOCKED
-  → Implementation remains NOT_GRANTED
+  - Cascade blocked
+  - D7-D10 remain LOCKED
+  - Implementation remains NOT_GRANTED
 
 THIS SUBMISSION: D6 remediation authorization (PENDING)
-  → If approved: R1-R10 work can proceed
-  → If approved: D6 re-evaluation eligible after R1-R10 complete
-  → If approved: D7-D10 remain LOCKED pending D6 re-evaluation PASS
+  - If approved: R1-R10 work can proceed
+  - If approved: D6 re-evaluation eligible after R1-R10 complete
+  - If approved: D7-D10 remain LOCKED pending D6 re-evaluation PASS
 ```
 
 ---
@@ -515,7 +636,7 @@ THIS SUBMISSION: D6 remediation authorization (PENDING)
 **What AI Can Do:** Present facts, evidence, and analysis for HG decision:
 
 1. **Failure Evidence:** IC_20260911_001 shows 3/30 routes FAIL authorization check
-2. **Root Cause:** Authority→Runtime invocation layer missing (design exists, runtime enforcement absent)
+2. **Root Cause:** Authority-Runtime invocation layer missing (design exists, runtime enforcement absent)
 3. **Remediation Path:** Clear requirements (R1-R10) defined with measurable success criteria (RC1-RC10)
 4. **Governance Impact:** All 13 state locks preserved; cascade protection intact
 5. **Decision Options:** Four explicit HG choices presented with effects
@@ -569,7 +690,7 @@ THIS SUBMISSION: D6 remediation authorization (PENDING)
 
 ## SECTION 12: DOCUMENT VALIDATION
 
-**Document Type:** Governance → Formal HG Submission Package
+**Document Type:** Governance - Formal HG Submission Package
 
 **Classification:** CONFIDENTIAL / GOVERNANCE
 
