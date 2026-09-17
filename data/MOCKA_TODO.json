@@ -1,7 +1,7 @@
 {
   "meta": {
     "purpose": "全AIが読めばMoCKAの現在地と次の行動を即理解できるTODOインデックス",
-    "updated": "2026-07-29",
+    "updated": "2026-09-18",
     "updated_by": "Claude",
     "storage": {
       "primary": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json",
@@ -1168,6 +1168,18 @@
       "reference_event": "E20260729_171787392c28d",
       "created_at": "2026-07-29T07:36:36.743409",
       "updated_at": "2026-07-29T07:37:08.489135"
+    },
+    {
+      "id": "KUROKO_WEB_GIT_001",
+      "title": "KUROKO WEB: GitHub Connectivity & MCP Divergence Investigation (Phase 4.1)",
+      "status": "進行中",
+      "priority": "最高",
+      "category": "investigation",
+      "description": "MoCKA内部のMCP write-read divergence(TODO_437)と GitHub連携の整合性調査\n\nSub-tasks:\n1. リポジトリSHA・マージ状況の確認\n2. ngrok停止中の webhook状態確認\n3. write(ok) → read(not found) 時刻帯のgit log分析\n4. OVERVIEW.json vs GitHub記録の同期ズレ原因特定\n\n関連event: E20260918_514415812e423(CHANGE_START指示)\n関連TODO: TODO_437(write_event timeout恒久対策)",
+      "assigned_to": "KUROKO_WEB",
+      "note": "実行対象: KUROKO WEB (Evidence-Based調査エージェント) / 権限: Read-Only(承認不要) / 実行期限: 本日内に Task 1-2完結希望 / Reference: IC_20260705_018(MCP Registry Drift)",
+      "reference_event": "E20260918_514415812e423",
+      "created_at": "2026-09-18T08:08:43.050283"
     }
   ],
   "orchestra_handoff": {
@@ -1989,5 +2001,5 @@
       "completed_at": "2026-07-16"
     }
   ],
-  "_snapshot_at": "2026-09-17T23:08:35.098997+00:00"
+  "_snapshot_at": "2026-09-17T23:18:49.390864+00:00"
 }
