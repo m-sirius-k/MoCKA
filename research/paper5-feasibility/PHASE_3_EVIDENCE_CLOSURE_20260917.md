@@ -336,16 +336,18 @@ Phase 2 verified:
 
 ### CAF 2026 Coverage
 
-**Status:** ITEM-BY-ITEM EVIDENCE REQUIRED
+**Status:** AUDITED IN PHASE 1; NOT INDEPENDENTLY VERIFIED IN PHASE 3
 
-Phase 2 found:
-- CAF 2026 paper access BLOCKED (403, DNS, arXiv)
-- CAF_2026_ANALYSIS.md is pre-primary-source (title-based inference)
+Phase 1 audit (separate from Phase 3):
+- CAF 2026 paper access attempt: BLOCKED (403, DNS, arXiv)
+- CAF_2026_ANALYSIS.md classification: PRE-PRIMARY-SOURCE (title-based inference only)
+- Conclusion: CAF primary-source verification NOT POSSIBLE
 
-**Still Unknown:**
-- Does CAF actually provide F-J implementations?
-- What is CAF's formal approach to living safety cases?
-- How does CAF's policy enforcement match Paper 5 requirements?
+Phase 3 scope:
+- Phase 3 targeted F-J code audit did NOT independently re-audit CAF
+- CAF verification status: carried forward from Phase 1 conclusion
+
+**Current Status:** CAF 2026 alignment cannot be verified without paper access (Phase 1 finding; Phase 3 does not change this)
 
 ---
 
@@ -391,11 +393,54 @@ Sequence if implementation is authorized:
 
 ---
 
-**Phase 3 Complete: 2026-09-17**  
-**Document Status:** Working Evidence (Preliminary)  
-**Authority Boundary:** Evidence scoping only; no decisions requested  
-**Next Action:** Await guidance on continuation pathway
+---
+
+## IX. PHASE STATUS DECLARATIONS
+
+### Phase 3 Specific Status
+
+**Phase 3 Evidence Closure Status:** COMPLETE
+
+**Phase 3 Scope:**
+- Targeted code audit of F-J components ✓ DONE
+- Numerical claims verification ✓ DONE
+- Separation of evidence pathways ✓ DONE
+- Boundary documentation ✓ DONE
+
+**Phase 3 Authority State:**
+- Implementation Authorization: NOT GRANTED
+- Runtime Binding: NOT AUTHORIZED
+- Theory Freeze: MAINTAINED
+- Code/Schema/DB/Runtime: NO CHANGES
+
+### Paper 5 Overall Status
+
+**Paper 5 Evidence Closure Status:** NOT YET COMPLETE
+
+**Why Not Complete:**
+- A-E component coverage: SEPARATE VERIFICATION REQUIRED
+- Classical theory grounding: ITEM-BY-ITEM EVIDENCE REQUIRED
+- CAF 2026 alignment: BLOCKED (paper inaccessible; Phase 1 finding)
+- Gap/Dependency resolution: NOT NORMALIZED
+
+**What Remains Before Final Evidence Closure:**
+1. A-J matrix completion (formal mapping)
+2. Classical primary-source item-by-item grounding
+3. CAF primary-source recovery (if possible)
+4. Gap normalization across all evidence pathways
+5. Dependency resolution
+6. Canonical audit trail generation
+
+**Overall Implementation Authorization:** NOT GRANTED
 
 ---
 
-**Key Principle Applied:** "Evidence that can be confirmed in this scope is recorded. Evidence that cannot be confirmed is marked UNVERIFIED — not proven false, only not yet established."
+**Phase 3 Work Complete: 2026-09-17 15:30 UTC**  
+**Document Status:** Working Evidence (Scoped and Bounded)  
+**Authority Boundary:** Evidence collection and scoping only; no implementation authorization in this phase  
+**Continuation Gated:** Await guidance on Phase 4 (classical grounding) / alternative pathway
+
+---
+
+**Key Principle Applied:** 
+"Evidence that can be confirmed in this scope is recorded. Evidence that cannot be confirmed is marked UNVERIFIED — not proven false, only not yet established in this audit phase."
