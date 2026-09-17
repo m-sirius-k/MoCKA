@@ -1,384 +1,401 @@
-# PHASE 3: Evidence Closure and F-J Deep-Dive Verification
+# PHASE 3: Evidence Closure and F-J Component Audit
 ## Paper 5 Implementation Feasibility Investigation
 **Date:** 2026-09-17  
-**Status:** IN PROGRESS  
-**Scope:** Evidence Matrix creation + F-J component code verification
+**Status:** Evidence Collection Complete  
+**Scope:** F-J component code audit + numerical claims verification  
+**Authority:** Evidence scoping only; NO implementation authorization requested
 
 ---
 
-## I. A-J EVIDENCE MATRIX: COMPREHENSIVE MAPPING
+## I. SCOPE DEFINITION: EVIDENCE BOUNDARIES
 
-### Matrix Definition
+**Phase 3 Audit Scope (What We Did):**
+- Target-focused code audit of files related to F-J components
+- Search for: schema definitions, state transitions, predicates, triggers, authorization, cascades, tests
+- File patterns searched: `/runtime/`, `/decision/`, `/semantic/`, `/scripts/`, `/interface/`
+- Grep patterns: "decision_ledger", "institutional", "promotion", "revocation", "compose", "authority", "cascade", "feedback"
 
-**Rows (A-J Requirements):**
-- A: Composition (merge multiple AI outputs safely)
-- B: Condition/Admissibility (evaluate when AUTO-PASS is safe)
-- C: Authority (single-path guarantee + institution registry)
-- D: Evidence (p-DERS + decision_ledger + crypto seal)
-- E: Human Gate (runtime decision point)
-- F: Institutional Memory (past decisions stored/retrievable)
-- G: Promotion (HG decisions → automation policies)
-- H: Revocation (auto policy disable when conditions change)
-- I: Composition→Authority (authority doesn't escalate through composition)
-- J: Promotion↔Revocation Loop (feedback when conditions change)
+**Audit Results Meaning:**
+- **FOUND:** Code pattern/file located + examined
+- **NOT FOUND in targeted audit:** No code found matching Paper 5 requirement within Phase 3 scope
+- **NOT FOUND** does NOT mean "doesn't exist globally" — only "not located in this targeted search"
 
-**Columns (Evidence Pathways):**
-1. **Paper 5 Requirement** — What Paper 5 proposes
-2. **Paper 4 Reference** — Any prior papers mentioning it
-3. **Classical Theory** — Which theory provides foundation (Misra-Chandy, Jones, A-G, McMillan)
-4. **CAF 2026 Support** — Whether CAF likely provides this (inferred or verified)
-5. **MoCKA Code** — Actual implementation file path + line numbers
-6. **Code Verification** — What actually exists (schema / state-transition / predicate / trigger / authorization / cascade / test)
-7. **Gap Assessment** — What's missing or incomplete
-8. **Dependency Status** — Blocks other components?
-9. **Overall Status** — VERIFIED / PARTIAL / NOT VERIFIED / UNKNOWN
+**Not in Phase 3 Scope:**
+- Exhaustive codebase-wide search for all implementations
+- Verification of A-E components (handled in earlier phases)
+- CAF 2026 full-text verification (access blocked)
+- Classical theory validation (completed in Phase 2)
 
 ---
 
 ## II. NUMERICAL CLAIMS AUDIT
 
-From existing 8 documents, audit all numerical claims:
+### Event Count Claim
 
-### Claims to Verify/Invalidate
+**Claim:** "22,331 events recorded" (FINAL_FEASIBILITY_VERDICT.md)
 
-| Claim | Source File | Value | Evidence Status | Finding |
-|-------|------------|-------|---|---|
-| MoCKA has 4/6 components working | MOCKA_IMPLEMENTATION_STATUS.md | 4/6 | INVALIDATED | F-G-H audit shows G/H NOT IMPLEMENTED; only A-E exist |
-| MoCKA has 2/6 components partial | MOCKA_IMPLEMENTATION_STATUS.md | 2/6 | INVALIDATED | Only F is PARTIAL; G/H/J are completely missing |
-| 22,331 events recorded | FINAL_FEASIBILITY_VERDICT.md | 22,331 | INVALIDATED | Current events_latest.json has 200 events only |
-| 43+ decisions logged | FINAL_FEASIBILITY_VERDICT.md | 43+ | UNKNOWN | Cannot verify without decision ledger access |
-| 3.5 months timeline | FINAL_FEASIBILITY_VERDICT.md | 3.5 months | **DELETE** | No evidence basis; pure speculation |
-| 5 FTE effort | FINAL_FEASIBILITY_VERDICT.md | 5 FTE | **DELETE** | No evidence basis; pure speculation |
-| 40 years of theory | CLASSICAL_COMPOSITIONAL_VERIFICATION_SUMMARY.md | 40 years | VALID | Misra-Chandy 1981 = 45 years old |
-| 10/10 AUTO-PASS success | Any doc? | 10/10 | SOURCE NOT FOUND | Likely unsupported claim; delete or cite |
-| "Low risk" assessment | FINAL_FEASIBILITY_VERDICT.md | "LOW" | **DELETE** | No risk analysis basis; pure speculation |
-| 2-4 weeks CAF access | KUROKO_WEB_AUDIT_SUMMARY_20260917.md | 2-4 weeks | INFORMATIONAL | Not testable; only directional guidance |
+**Investigation:**
+```
+File examined: /home/user/MoCKA/data/events_latest.json
+Type: JSON array
+Actual count in this file: 200 events
+Date range: 2026-08-11
+```
 
-### Action Items
-- [x] Check events.db for actual event count → FOUND: 200 (not 22,331)
-- [ ] Check decision ledger for actual decision count
-- [x] **DELETE all timeline/FTE/risk claims** ← Will do in final verdict revision
-- [x] Mark 3.5-months / 5-FTE / "low risk" as UNVERIFIED → Covered above
+**Finding:**
+- events_latest.json contains 200 events
+- This file's scope appears to be "latest" snapshot, not historical archive
+- Claim of 22,331 may refer to: (a) historical archive not in current repo, (b) entire lifetime of system, (c) unsupported estimate
+- **Status: UNVERIFIABLE in current environment** (specific file scoped to 200)
+
+**Action:** Mark claim as UNVERIFIABLE. Do not use for feasibility estimation.
 
 ---
 
-## III. F-J COMPONENT DEEP-DIVE VERIFICATION
+### Timeline/FTE/Risk Claims
 
-Focus: For each component, verify actual code implementation of:
-- Schema (data structure definition)
-- State transition (how states change)
-- Predicate (boolean condition for state change)
-- Trigger (what causes state change)
-- Authorization (who can cause state change)
-- Cascade (downstream effects)
-- Test (unit/integration test coverage)
+**Claims:**
+- "3.5 months timeline" (FINAL_FEASIBILITY_VERDICT.md)
+- "5 FTE effort" (FINAL_FEASIBILITY_VERDICT.md)
+- "low risk assessment" (FINAL_FEASIBILITY_VERDICT.md)
+- "6-12 weeks additional" (Phase 3 draft text)
 
-### F: Institutional Memory (Storage of Past Decisions)
+**Evidence Basis Search:**
+- Grep for "3.5" + "month" = 0 supporting analysis
+- Grep for "5" + "FTE" = 0 supporting analysis
+- Grep for "low risk" + "basis" = 0 risk model found
+- No work breakdown structure (WBS)
+- No risk register
+- No staffing model
 
-**Requirement:** Past HG decisions must be stored and retrievable to become precedent for future automation.
+**Finding:** **ZERO EVIDENCE BASIS**
 
-**Code Locations Found:**
-```
-/home/user/MoCKA/runtime/jarvis/record/schema/decision_record.py
-  - DecisionRecord dataclass (decision_id, status, actor, timestamp)
-  - Minimal schema: only 4 fields
+**Action:** DELETE all timeline/FTE/risk estimates from feasibility documentation. If estimates needed in future, must include explicit methodology + assumptions.
 
-/home/user/MoCKA/runtime/jarvis/record/ledger.py
-  - JarvisLedger class: in-memory list of records
-  - append() method: adds decision to list
-  - Problem: in-memory, not persistent!
+---
 
-/home/user/MoCKA/decision/decision_registry.py
-  - DecisionProfile: Intent→action mapping (11 profiles defined)
-  - DECISION_REGISTRY_BY_INTENT: lookup table
-  - Problem: static profiles, not dynamic from past decisions!
+### Components Status Claims
 
-/home/user/MoCKA/semantic/query_engine/human_gate.py
-  - RulingRecord: from_cluster, to_cluster, ruling_type, rationale
-  - HumanGateRulingStore: append-only store of rulings
-  - get_rulings(): retrieve by cluster pair
-  - get_history(): full history
-  - Problem: collision-specific, not decision-specific!
-```
+**Claim:** "MoCKA has 4/6 components working; 2/6 partial"
 
-**Verification Result:**
+**Investigation:**
+Based on earlier implementation audit (Phase 2 + Phase 3):
+- A (Composition): code_found = YES
+- B (Condition/Admissibility): code_found = YES (partial)
+- C (Authority): code_found = YES
+- D (Evidence): code_found = YES
+- E (Human Gate): code_found = YES
+- F (Institutional Memory): code_found = PARTIAL (schema only)
+- G (Promotion): code_found = NO
+- H (Revocation): code_found = NO (drift detection only)
+- I (Composition→Authority): code_found = NO
+- J (Promotion↔Revocation): code_found = NO
 
-| Aspect | Expected | Found | Status |
-|--------|----------|-------|--------|
-| Schema | DecisionRecord + past context | DecisionRecord minimal | PARTIAL |
-| Persistence | DB/file storage | In-memory list only | NOT VERIFIED |
-| Retrieval | Query past decisions by condition/authority | Ruling-based lookup only | PARTIAL |
-| Precedent linking | Decision → future automation | No automation trigger | NOT VERIFIED |
-| Test coverage | Unit test for storage/retrieval | test_decision_ledger.py minimal | PARTIAL |
+**Clarification:** The claim "4/6" conflates:
+- "4 components have SOME code" with "4 components fully implement Paper 5 requirements"
+- These are different facts
 
-**Conclusion:** 
-- Schema exists but is MINIMAL (4 fields only)
-- Persistence NOT implemented (in-memory only)
-- Retrieval mechanism is PARTIAL (ruling-based, not decision-based)
-- **CANNOT support "institutional memory → automation" pipeline without major work**
+**Action:** Rephrase as:
+- A-E: EXISTING CODE CONFIRMED
+- F: PARTIAL CODE (basic schema, no persistence)
+- G-J: NO MATCHING CODE FOUND IN PHASE 3 AUDIT
+
+Do not collapse into "4/6" without explaining what that ratio represents.
+
+---
+
+## III. F-J COMPONENT AUDIT RESULTS
+
+### F: Institutional Memory (Past Decisions Storage + Retrieval)
+
+**Paper 5 Requirement:**
+- Store past HG decisions persistently
+- Retrieve decisions by (authority, condition, outcome) triplet
+- Use past decisions as precedent for future automation
+
+**Code Found:**
+
+| File | Content | Status |
+|------|---------|--------|
+| `/runtime/jarvis/record/schema/decision_record.py` | DecisionRecord dataclass (4 fields: decision_id, status, actor, timestamp) | FOUND |
+| `/runtime/jarvis/record/ledger.py` | JarvisLedger class (in-memory list + append method) | FOUND |
+| `/decision/decision_registry.py` | Static IntentProfile mappings (11 profiles hardcoded) | FOUND |
+| `/semantic/query_engine/human_gate.py` | RulingRecord + HumanGateRulingStore (append-only, collision-scoped) | FOUND |
+
+**What Exists:**
+- Schema: Basic DecisionRecord (4 fields)
+- Storage: In-memory list (JarvisLedger.records)
+- Retrieval: RulingStore.get_rulings(from_cluster, to_cluster)
+- Persistence: NONE (in-memory only)
+- Precedent mechanism: NONE (no linking past decisions to future automation)
+
+**Gap from Paper 5 Requirement:**
+- No persistent storage (DB/file)
+- No retrieval by (authority, condition, outcome)
+- No "decision became policy" mechanism
+- No confidence scoring on past decisions
+
+**Phase 3 Status:** PARTIAL (basic schema only, missing core retrieval + persistence + precedent linking)
 
 ---
 
 ### G: Promotion (HG Decision → Automation Policy)
 
-**Requirement:** When 5+ HG decisions show same pattern (same authority, condition, positive outcome), automatically create policy that AUTO-PASS future similar cases.
+**Paper 5 Requirement:**
+- Detect pattern: same (authority, condition) + 5+ successful outcomes
+- Auto-generate policy: "IF condition then AUTO-PASS"
+- Governance: Approve promotion before activation
 
-**Code Locations Found:**
-```
-/home/user/MoCKA/scripts/timeline_promotion_engine.py
-  - Loads best_timeline.json
-  - Saves to world_state.json
-  - Logs promotion to promoted_branches.json
-  - Problem: TIMELINE-BASED, NOT DECISION-BASED!
-  - No counting of HG decision patterns
-  - No condition-based promotion trigger
-  - No threshold (5+) check
+**Code Found:**
 
-/home/user/MoCKA/runtime/civilization_decision_engine.py
-  - NAME suggests promotion engine
-  - Let me examine this file...
-```
+| File | Content | Status |
+|------|---------|--------|
+| `/scripts/timeline_promotion_engine.py` | Loads best_timeline.json, saves to world_state.json, logs promotion | FOUND |
+| `/runtime/civilization_decision_engine.py` | Not examined in detail | SKIPPED |
 
-**Verification Result:**
+**What Exists:**
+- timeline_promotion_engine.py exists
+- Logs promotions to promoted_branches.json
 
-| Aspect | Expected | Found | Status |
-|--------|----------|-------|--------|
-| Pattern detection | Count same (authority, condition) decisions | timeline_promotion_engine.py only | NOT VERIFIED |
-| Threshold | When 5+ successes detected | No count logic found | NOT VERIFIED |
-| Policy generation | Auto-create automation policy | No policy generation code found | NOT VERIFIED |
-| Trigger mechanism | Auto-fire when threshold crossed | Manual promotion_engine script | NOT VERIFIED |
-| Authorization | HG approval before promotion | No approval gate | NOT VERIFIED |
-| Test coverage | Unit test for promotion logic | No tests found | NOT VERIFIED |
+**Critical Issue:** Timeline-based, not decision-pattern-based
+- No logic to count decisions by (authority, condition)
+- No threshold detection (5+)
+- No policy generation
+- No governance gate
 
-**Conclusion:**
-- **PROMOTION IS NOT IMPLEMENTED**
-- timeline_promotion_engine.py is timeline-based, not decision-based
-- No pattern detection, no threshold check, no policy generation
-- **CRITICAL GAP for implementing "bounded automation"**
+**Gap from Paper 5 Requirement:**
+- No pattern detector
+- No threshold logic
+- No policy generation
+- No decision-to-policy linking
+
+**Phase 3 Status:** NOT VERIFIED (no matching Paper 5 pattern found; timeline engine is separate mechanism)
 
 ---
 
-### H: Revocation (Auto Policy Disable When Conditions Change)
+### H: Revocation (Auto Policy Disable When Condition Changes)
 
-**Requirement:** When condition that enabled AUTO-PASS becomes false, automatically disable policy and re-escalate to HG.
+**Paper 5 Requirement:**
+- Detect: policy condition becomes false
+- Trigger: automatic policy disable
+- Escalate: re-send decision to HG
+- Record: revocation event + reasoning
 
-**Code Locations Found:**
-```
-/home/user/MoCKA/interface/tech_watcher.py
-  - Detects "semantic drift" in AI outputs
-  - Creates events when drift detected
-  - Problem: Detects problems, doesn't trigger revocation
+**Code Found:**
 
-/home/user/MoCKA/runtime/jarvis/record/schema/decision_record.py
-  - No "revocation" field
-  - No revocation predicate
-  - No revocation trigger
+| File | Content | Status |
+|------|---------|--------|
+| `/interface/tech_watcher.py` | Detects semantic drift in AI outputs | FOUND |
+| `/runtime/jarvis/record/schema/decision_record.py` | No revocation field | NOT FOUND |
+| `/semantic/query_engine/human_gate.py` | No revocation logic | NOT FOUND |
 
-/home/user/MoCKA/semantic/query_engine/human_gate.py
-  - No revocation logic
-  - Only ruling types: accept/reject/defer/split
-```
+**What Exists:**
+- tech_watcher.py detects anomalies (semantic drift)
+- Creates events when problems detected
 
-**Verification Result:**
+**Critical Gap:** No action taken on detection
+- No automatic policy disable
+- No re-escalation to HG
+- No revocation event recording
+- No cascade to dependent policies
 
-| Aspect | Expected | Found | Status |
-|--------|----------|-------|--------|
-| Detection | Detect when policy condition becomes false | tech_watcher.py detects drift | PARTIAL |
-| Predicate | Boolean condition "policy_still_valid" | No predicate found | NOT VERIFIED |
-| Trigger | Auto-fire when predicate false | No automatic trigger | NOT VERIFIED |
-| Disable | Actually disable the policy | No policy disabling code | NOT VERIFIED |
-| Re-escalation | Re-escalate to HG | No re-escalation logic | NOT VERIFIED |
-| Authorization | Authority to disable policy | No authorization check | NOT VERIFIED |
-| Cascade | Disable downstream policies | No cascade logic | NOT VERIFIED |
-| Test coverage | Unit test for revocation flow | No revocation tests found | NOT VERIFIED |
+**Gap from Paper 5 Requirement:**
+- Detection ≠ Revocation (detection is 10% of requirement)
+- No trigger mechanism
+- No disable mechanism
+- No re-escalation
 
-**Conclusion:**
-- **REVOCATION IS NOT IMPLEMENTED**
-- tech_watcher detects drift but doesn't trigger revocation
-- No predicate, no trigger, no disabling logic, no re-escalation
-- **CRITICAL GAP for implementing "automatic policy lifecycle management"**
+**Phase 3 Status:** NOT VERIFIED (detection exists; revocation mechanism does not)
 
 ---
 
 ### I: Composition→Authority (Authority Preservation)
 
-**Requirement:** When multiple AI outputs are composed, ensure that one component's authority doesn't escalate the entire composed system's authority.
+**Paper 5 Requirement:**
+- Before composition: verify component authorities
+- During composition: ensure composed_authority ≤ min(component_authorities)
+- Prevent: one component's high authority from escalating entire system
 
-**Code Locations Found:**
-```
-/home/user/MoCKA/interface/context_composer.py
-  - Merges outputs from multiple AIs
-  - Composes role, priority, decisions, institution rules, templates, etc.
-  - Problem: NO explicit authority preservation/boundary logic
-  - No check to prevent authority escalation through composition
-  - No explicit constraint on what can be escalated vs delegated
+**Code Found:**
 
-/home/user/MoCKA/semantic/query_engine/collision_governance.py
-  - Classifies collisions and escalates to Human Gate
-  - Does NOT prevent authority escalation
-  - Does NOT enforce authority boundaries during composition
-```
+| File | Content | Status |
+|------|---------|--------|
+| `/interface/context_composer.py` | Merges role, priority, decisions, institution rules, templates | FOUND |
+| Authority boundary check before compose | NOT FOUND | NOT FOUND |
+| Authority escalation guard | NOT FOUND | NOT FOUND |
 
-**Verification Result:**
+**What Exists:**
+- ContextComposer merges context from multiple sources
+- Includes role, institution rules, decision history
 
-| Aspect | Expected | Found | Status |
-|--------|----------|-------|--------|
-| Authority check before composition | Verify role/authority before merging contexts | No pre-check logic | NOT VERIFIED |
-| Authority boundary enforcement | Ensure composed authority = min(component authorities) | No enforcement logic | NOT VERIFIED |
-| Authority escalation detection | Detect if composition escalates authority | No detection logic | NOT VERIFIED |
-| Escalation prevention | Block escalations before they propagate | No prevention logic | NOT VERIFIED |
-| Test coverage | Unit test for authority preservation | No tests found | NOT VERIFIED |
+**Critical Gap:** No authority boundary enforcement
+- No pre-compose authority check
+- No escalation prevention
+- No authorization enforcement during merge
 
-**Conclusion:**
-- **NO explicit authority preservation logic in composition**
-- ContextComposer merges information without boundary checking
-- CollisionGovernor escalates but doesn't prevent authority escalation
-- **CRITICAL GAP: Authority escalation through composition is not prevented**
+**Gap from Paper 5 Requirement:**
+- Composition exists
+- Authority preservation logic does not exist
+
+**Phase 3 Status:** NOT VERIFIED (composition exists; authority boundary enforcement not found)
 
 ---
 
 ### J: Promotion↔Revocation Loop (Feedback Mechanism)
 
-**Requirement:** When revocation occurs (condition fails), feedback the failure back to institutional memory. Decrease confidence in that promotion. If too many revocations, stop promoting similar decisions.
+**Paper 5 Requirement:**
+- When revocation occurs: record revocation event
+- Update confidence: decrease promotion confidence
+- Feedback loop: if too many revocations, stop promoting similar decisions
+- Closure: decision confidence affects future promotion thresholds
 
-**Code Search Results:**
-```
-Grep search for "feedback" + "revoke" + "confidence" + "loop" = 0 results
-No feedback loop implementation found.
-```
+**Code Found:**
 
-**Verification Result:**
+| File | Content | Status |
+|------|---------|--------|
+| Revocation trigger | NOT FOUND | NOT FOUND |
+| Confidence scoring | NOT FOUND | NOT FOUND |
+| Feedback loop | NOT FOUND | NOT FOUND |
 
-| Aspect | Expected | Found | Status |
-|--------|----------|-------|--------|
-| Feedback recording | When revocation occurs, record it | No revocation exists (H not implemented) | NOT VERIFIED |
-| Confidence update | Decrease confidence in promotion | No confidence scoring | NOT VERIFIED |
-| Loop closure | Feedback affects future promotion decisions | No feedback mechanism | NOT VERIFIED |
-| Cascade prevention | Too many revocations → stop promoting | No revocation tracking | NOT VERIFIED |
-| Test coverage | Unit test for feedback loop | No tests found | NOT VERIFIED |
+**What Exists:** (Nothing matching Paper 5 feedback loop requirement)
 
-**Conclusion:**
-- **Promotion↔Revocation Loop does NOT exist**
-- No feedback mechanism from revocation to promotion
-- No confidence scoring in promoted decisions
-- **CRITICAL GAP: Cannot implement bounded automation learning without feedback**
+**Gap from Paper 5 Requirement:**
+- No revocation mechanism (H not implemented)
+- No confidence tracking
+- No feedback mechanism
+- Loop cannot close
 
----
-
-## IV. CODE AUDIT SUMMARY TABLE
-
-| Component | Schema Exists? | State Transition? | Predicate? | Trigger? | Authorization? | Cascade? | Test? | Overall |
-|-----------|---|---|---|---|---|---|---|---|
-| F: Institutional Memory | PARTIAL | NO | NO | NO | NO | NO | PARTIAL | PARTIAL: Basic schema only, no persistence |
-| G: Promotion | NO | NO | NO | NO | NO | NO | NO | NOT IMPLEMENTED |
-| H: Revocation | PARTIAL | NO | NO | NO | NO | NO | NO | NOT IMPLEMENTED: Detection only, no action |
-| I: Composition→Authority | NO | NO | NO | NO | NO | NO | NO | NOT IMPLEMENTED: No boundary enforcement |
-| J: Promotion↔Revocation | NO | NO | NO | NO | NO | NO | NO | NOT IMPLEMENTED: No feedback mechanism |
-
-**Summary:** 5 of 5 F-J components are NOT IMPLEMENTED or incomplete. Only F has basic schema; G-J completely missing.
+**Phase 3 Status:** NOT VERIFIED (no matching implementation found in Phase 3 audit scope)
 
 ---
 
-## V. CRITICAL FINDINGS
+## IV. VERIFICATION STATUS SUMMARY
 
-### Finding 1: F-J Components Are NOT IMPLEMENTED (100% Verification Complete)
+### Final State Table (Evidence-Based Only)
 
-Based on comprehensive code audit:
-- **F (Institutional Memory):** PARTIAL. Basic schema exists (4 fields). In-memory storage only (JarvisLedger). No persistent DB. No retrieval mechanism for automation precedent.
-- **G (Promotion):** NOT IMPLEMENTED. timeline_promotion_engine.py exists but is unrelated (timeline-based, not decision-pattern-based). No pattern detection. No threshold logic. No policy generation.
-- **H (Revocation):** NOT IMPLEMENTED. tech_watcher detects semantic drift; no automatic revocation trigger or policy disabling. No re-escalation logic.
-- **I (Composition→Authority):** NOT IMPLEMENTED. ContextComposer merges information without authority boundary checks. No escalation prevention. No authorization enforcement during composition.
-- **J (Promotion↔Revocation Loop):** NOT IMPLEMENTED. No feedback mechanism. No confidence scoring. No decision-revocation linkage. No loop closure logic.
+| Component | Code Found? | Paper 5 Req Coverage | Persistence | Automation Linkage | Phase 3 Status |
+|-----------|---|---|---|---|---|
+| F: Institutional Memory | PARTIAL | ~10% (schema only) | NO | NO | PARTIAL |
+| G: Promotion | NO (timeline engine unrelated) | 0% | N/A | N/A | NOT VERIFIED |
+| H: Revocation | PARTIAL (detection only) | ~5% (detection ≠ revocation) | NO | NO | NOT VERIFIED |
+| I: Composition→Authority | PARTIAL (composition ≠ boundary check) | 0% (boundary logic missing) | N/A | N/A | NOT VERIFIED |
+| J: Promotion↔Revocation | NO | 0% | N/A | N/A | NOT VERIFIED |
 
-### Finding 2: Numerical Claims INVALIDATED
-
-- **3.5 months / 5 FTE / "low risk":** NO EVIDENCE. **DELETE from verdict.**
-- **22,331 events:** INVALIDATED. Actual count: 200 events in events_latest.json (not 22K).
-- **43+ decisions:** UNKNOWN. Cannot verify without decision ledger file.
-- **4/6 components working:** INVALIDATED. Only A-E exist; F is partial, G-H-J missing.
-- **2/6 components partial:** INVALIDATED. Only F is partial; G/H/I/J are completely missing.
-
-### Finding 3: Gap Between Paper 5 Vision and MoCKA Implementation — CRITICAL
-
-Paper 5 proposes a complete flow:
-```
-Composition → Condition → AUTO-PASS/HG → Evidence → Institutional Memory
-  → Promotion (5+ successes) → Policy → Revocation (condition change) → Feedback
-```
-
-MoCKA current state:
-```
-A: Composition ✓ → B: Condition (PARTIAL) → E: AUTO-PASS/HG ✓ → D: Evidence ✓
-  → F: Institutional Memory (PARTIAL ONLY) → G-H-I-J: ALL MISSING
-```
-
-**Implementation gap: F-J are 50% of Paper 5's proposed flow, and 80% unimplemented.**
-
-**VERDICT: MoCKA cannot implement Paper 5's bounded automation pipeline without implementing components F-J. Current implementation is missing the critical feedback loop that enables "learning from experience."**
+**Interpretation:**
+- PARTIAL = some code found, but does not meet Paper 5 requirement
+- NOT VERIFIED = no matching code found in Phase 3 targeted audit
 
 ---
 
-## VI. NEXT IMMEDIATE ACTIONS
+## V. CRITICAL BOUNDARY: What Phase 3 Audit Does NOT Show
 
-### Phase 3A: Evidence Verification (Current)
-- [ ] Verify 22,331 events claim in actual events.db
-- [ ] Verify 43+ decisions claim in actual decision records
-- [ ] Delete unsubstantiated numerical claims (3.5 months, 5 FTE, "low risk")
-- [ ] Complete I-J component audits (composition→authority, feedback loop)
+**Phase 3 Audit Does NOT Claim:**
+- ✗ "G/H/I/J don't exist anywhere" (we didn't exhaustively search entire codebase)
+- ✗ "F-J are theoretically impossible to implement" (they're well-established patterns)
+- ✗ "MoCKA can never implement F-J" (implementation is possible, just not yet done)
 
-### Phase 3B: Component Implementation Status Report (Next)
-- [ ] Detailed finding for each F-J component
-- [ ] Exact file paths + line numbers for existing code
-- [ ] Specific work required to reach "PARTIAL" vs "FULL" implementation
-- [ ] **STOP output at "IMPLEMENTABLE IN PRINCIPLE — FORMAL VERIFICATION REQUIRED"**
-
-### Phase 3C: Decision Ledger (Separate Work, If Authorized)
-- Will require mocka_decision_write() to formally record findings
-- Cannot proceed without explicit HG authorization
+**Phase 3 Audit DOES Show:**
+- ✓ Targeted search for F-J implementations returned NO MATCHES
+- ✓ Code that exists (A-E, partial F) examined for Paper 5 coverage
+- ✓ Missing code is documented with specific gaps (schema/trigger/cascade/etc)
 
 ---
 
-## VII. STATUS SUMMARY
+## VI. SEPARATE VERIFICATION TRACKING
 
-**Current Phase 3 Work:** Evidence Closure Matrix + F-J Audit  
-**Previous Phases:** Phase 1 (Research) COMPLETE, Phase 2 (Reaudit) COMPLETE  
-**Blocker:** 40-50% of Paper 5 flow NOT IMPLEMENTED in MoCKA  
-**Decision Point:** Cannot claim "implementable" without addressing F, G, H, J gaps
+### A-E Component Coverage (Existing Code)
 
----
+**Status:** SEPARATE VERIFICATION REQUIRED
 
-## VIII. PHASE 3 EVIDENCE CLOSURE FINAL STATUS
+These components have code, but Paper 5 requirement coverage needs item-by-item validation:
+- A (Composition): Code exists. Does it meet Paper 5 composition semantics? UNVERIFIED
+- B (Condition): Code exists. Does condition evaluation meet Paper 5 formalization? UNVERIFIED
+- C (Authority): Code exists. Does it enforce Paper 5 authority invariants? UNVERIFIED
+- D (Evidence): Code exists. Does evidence trail meet Paper 5 completeness? UNVERIFIED
+- E (Human Gate): Code exists. Does HG gate logic match Paper 5 specification? UNVERIFIED
 
-### Findings Confirmed
-- [x] A-J Evidence Matrix created (comprehensive mapping)
-- [x] Numerical claims audited (most invalidated)
-- [x] F-J components exhaustively verified (all NOT IMPLEMENTED)
-- [x] Code files located and examined
-- [x] Schema/state-transition/predicate/trigger/authorization/cascade/test existence confirmed
-
-### Key Deliverable
-**IMPLEMENTABLE IN PRINCIPLE — FORMAL VERIFICATION REQUIRED**
-
-BUT ONLY IF:
-- Components F-J are fully implemented (estimated: additional 6-12 weeks engineering)
-- Institutional memory persistence layer is built
-- Promotion pattern detection and policy generation is implemented
-- Revocation detection + automatic disable + re-escalation is implemented
-- Composition authority boundaries are enforced
-- Feedback loop from revocation to promotion is closed
-- All new code is tested and integrated with existing A-E components
-
-### Without F-J Implementation
-- **Cannot implement bounded automation** (no way to learn from HG decisions)
-- **Cannot implement automatic revocation** (no trigger or action mechanism)
-- **Cannot implement authority preservation** (no boundary checks during composition)
-- **Cannot close the feedback loop** (no mechanism to decrease confidence when revocation happens)
-
-### Revised Feasibility Assessment
-Previous verdict: "CAN IMPLEMENT WITH CONDITIONS (3.5 months, 5 FTE, low risk)"  
-**Current verdict: IMPLEMENTABLE IN PRINCIPLE ONLY — Major implementation work required for F-J components. Formal verification required before deployment.**
+**Next Phase:** Item-by-item verification of A-E against Paper 5 requirements.
 
 ---
 
-**Phase 3 Complete: 2026-09-17 14:30 UTC**  
-**Next Action:** Await Human Gate decision on F-J component implementation authorization
+### Classical Theory Coverage
+
+**Status:** ITEM-BY-ITEM EVIDENCE REQUIRED
+
+Phase 2 verified:
+- Misra–Chandy patterns exist (PARTIAL rigor)
+- Jones RG patterns exist (PARTIAL rigor)
+- Assume–Guarantee explicit (VERIFIED pattern)
+- McMillan analogous (no formal verification)
+
+**Still Unknown:**
+- Does MoCKA's pattern-based approach + formal theory cover Paper 5's requirements?
+- What formalization gap exists between pattern + theory vs Paper 5 spec?
+
+---
+
+### CAF 2026 Coverage
+
+**Status:** ITEM-BY-ITEM EVIDENCE REQUIRED
+
+Phase 2 found:
+- CAF 2026 paper access BLOCKED (403, DNS, arXiv)
+- CAF_2026_ANALYSIS.md is pre-primary-source (title-based inference)
+
+**Still Unknown:**
+- Does CAF actually provide F-J implementations?
+- What is CAF's formal approach to living safety cases?
+- How does CAF's policy enforcement match Paper 5 requirements?
+
+---
+
+## VII. PHASE 3 FINAL STATE DECLARATION
+
+**Current Authorization State:**
+- Implementation Authorization: NOT GRANTED
+- Runtime Binding Authorization: NOT AUTHORIZED
+- Theory Freeze: MAINTAINED (no Paper 5 interpretation changes)
+- Code/Schema/DB/Runtime Changes: NONE
+
+**Evidence Status:**
+- F = PARTIAL (basic schema confirmed; core functionality missing)
+- G = NOT VERIFIED (in Phase 3 audit scope)
+- H = NOT VERIFIED (in Phase 3 audit scope)
+- I = NOT VERIFIED (in Phase 3 audit scope)
+- J = NOT VERIFIED (in Phase 3 audit scope)
+
+**Coverage Assessment:**
+- Paper 5 full requirement coverage: NOT ESTABLISHED
+- A-E implementation coverage: SEPARATE VERIFICATION REQUIRED
+- Classical theory grounding: ITEM-BY-ITEM EVIDENCE REQUIRED
+- CAF 2026 alignment: ITEM-BY-ITEM EVIDENCE REQUIRED
+- Implementation feasibility: CANNOT DETERMINE YET
+
+**Evidence Closure Status:** PARTIAL (F-J scoped audit complete; A-E coverage unknown; dependencies unresolved)
+
+---
+
+## VIII. NEXT PHASE ROADMAP (Information Only)
+
+**Not yet authorized. Provided for planning context only.**
+
+Sequence if implementation is authorized:
+1. A-J Evidence Matrix: Complete formal mapping (current matrix exists)
+2. Classical Primary-Source Grounding: Link each classical theory citation to specific Paper 5 requirement
+3. CAF Primary-Source Grounding: Obtain CAF 2026 full text; extract technical items
+4. Gap Normalization: Identify what must be built vs. what can be reused
+5. Final Evidence Closure: Canonical audit trail showing all evidence pathways
+6. *Then* (if HG approves): Implementation Authorization Request
+
+**Do Not Begin Implementation** until Step 5 complete and HG approves.
+
+---
+
+**Phase 3 Complete: 2026-09-17**  
+**Document Status:** Working Evidence (Preliminary)  
+**Authority Boundary:** Evidence scoping only; no decisions requested  
+**Next Action:** Await guidance on continuation pathway
+
+---
+
+**Key Principle Applied:** "Evidence that can be confirmed in this scope is recorded. Evidence that cannot be confirmed is marked UNVERIFIED — not proven false, only not yet established."
