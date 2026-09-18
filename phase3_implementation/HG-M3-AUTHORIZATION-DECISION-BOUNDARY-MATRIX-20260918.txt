@@ -1,0 +1,314 @@
+================================================================================
+HG-M3-AUTHORIZATION-DECISION-BOUNDARY-MATRIX-20260918
+Decision Boundary and Scope Definition Matrix
+================================================================================
+
+DECISION MATRIX PURPOSE:
+Define clear boundaries for each Human Gate authorization decision point.
+Prevent ambiguity in scope and decision authority.
+
+================================================================================
+MATRIX 1: CURRENT AUTHORIZATION SCOPE (ACTIVE)
+================================================================================
+
+Decision: Continue Current Sandbox Runtime (No Authorization Change)
+
+Current State: AUTHORIZED
+Decision Authority: Human Gate Review Process
+Timeline: Ready for immediate decision
+
+BOUNDARY DEFINITION:
+
+| Dimension | Current | Authorized | Not Authorized | Evidence |
+|-----------|---------|------------|----------------|----------|
+| Environment | SANDBOX_ONLY | SANDBOX_ONLY | Production | RTH_20260918_001 |
+| Components | A1-A5 | A1-A5 only | Beyond A1-A5 | BND_20260918_001 |
+| Database | sb_phase3.db | sb_phase3.db | Production DB | BND_20260918_001 |
+| Credentials | Sandbox only | Sandbox only | Production creds | BND_20260918_001 |
+| Network | Sandbox isolation | Sandbox only | Production network | BND_20260918_001 |
+| Data | Test data | Test data | Production data | BND_20260918_001 |
+| Pipeline | Validation only | Defined pipeline | Unknown pipelines | BND_20260918_001 |
+| Monitoring | Enabled | 5 dimensions | Disabled | FLC_20260918_001 |
+| Fail-Closed | Active | 5 patterns | Disabled | FLC_20260918_001 |
+| Ledger | Active | Append-only | Modified entries | LED_20260918_001 |
+| Authority | HG Decision | HG-M3-PHASE3 | Unauthorized source | AUTH_20260918_001 |
+| Revocation | Ready | 50ms latency | Disabled | AUTH_20260918_001 |
+| Binding ID | RTB_20260918_001 | RTB_20260918_001 | Others | RTH_20260918_001 |
+| Binding State | ACTIVE | ACTIVE | REVOKED/EXPIRED | RTH_20260918_001 |
+
+DECISION OPTIONS:
+
+Option A: ACCEPT
+  Action: Authorize continuation under current scope
+  Prerequisites: All evidence verified (CONFIRMED)
+  Result: RTB_20260918_001 remains ACTIVE, constraints unchanged
+  Timeline: Immediate
+
+Option B: REVIEW
+  Action: Request additional evidence or clarification
+  Prerequisites: Specify missing information
+  Result: Consolidation held pending clarification
+  Timeline: Upon clarification receipt
+
+Option C: HOLD
+  Action: Defer decision pending extended monitoring
+  Prerequisites: Specify monitoring extension window
+  Result: RTB_20260918_001 remains ACTIVE, decision deferred
+  Timeline: Upon monitoring completion
+
+SCOPE LOCK STATUS: FIXED (no change)
+AUTHORITY: HUMAN_GATE_REVIEW_REQUIRED
+
+================================================================================
+MATRIX 2: RP1 SCOPE EXPANSION AUTHORIZATION (GATED)
+================================================================================
+
+Decision: Expand Component Scope Beyond A1-A5
+
+Current State: NOT_AUTHORIZED
+Decision Authority: Human Gate Review Process (NEW DECISION)
+Timeline: Future authorization gate (separate request required)
+
+BOUNDARY DEFINITION (PROPOSED):
+
+Question: Which components beyond A1-A5 are requested?
+
+| Dimension | Current A1-A5 | Proposed Expansion | Decision Required |
+|-----------|---------------|-------------------|-------------------|
+| Components | A1-A5 defined | A6, A7, A8, ... ? | Component list |
+| Scope Definition | Existing | New boundary | Scope specification |
+| Interaction Map | A1-A5 only | New interactions | Interaction analysis |
+| Authority | HG-M3 Decision | Expanded authority | New authorization |
+| Fail-Closed | 5 patterns | Extended patterns | Pattern expansion |
+| Ledger | Current entries | New entry types | Ledger extension |
+| Evidence | EVIDENCE_*_001 | New evidence | Additional verification |
+| Monitoring | 5 dimensions | Monitoring expansion | Dimension expansion |
+
+DECISION OPTIONS:
+
+Option 1: DENY
+  Action: Scope expansion not approved
+  Prerequisites: None (maintain current state)
+  Result: A1-A5 remains authorized only
+  Timeline: Immediate
+
+Option 2: REQUEST_INFORMATION
+  Action: Request specific scope expansion definition
+  Prerequisites: None (waiting for clarification)
+  Result: Scope expansion deferred pending definition
+  Timeline: Upon definition receipt
+
+Option 3: APPROVE (when sufficient evidence provided)
+  Action: Authorize scope expansion
+  Prerequisites: Scope definition + interaction verification + authority mapping
+  Result: New scope boundary established (requires new RTB binding)
+  Timeline: Upon all prerequisites met
+
+SCOPE LOCK STATUS: GATED (cannot proceed without explicit RP1 decision)
+AUTHORITY: HUMAN_GATE_REVIEW_REQUIRED (separate decision)
+IMPLEMENTATION PROHIBITION: RP1 execution prohibited until explicit authorization
+
+================================================================================
+MATRIX 3: RP2 RUNTIME BINDING EXPANSION AUTHORIZATION (GATED)
+================================================================================
+
+Decision: Create Additional Runtime Bindings Beyond RTB_20260918_001
+
+Current State: NOT_AUTHORIZED
+Decision Authority: Human Gate Review Process (NEW DECISION)
+Timeline: Future authorization gate (separate request required)
+
+BOUNDARY DEFINITION (PROPOSED):
+
+Question: Which additional runtime bindings are requested?
+
+| Dimension | Current RTB_20260918_001 | Proposed Binding | Decision Required |
+|-----------|--------------------------|------------------|-------------------|
+| Binding ID | RTB_20260918_001 | RTB_20260918_002, ... ? | Binding list |
+| Scope | SANDBOX_ONLY | Same/different ? | Scope mapping |
+| Authority | HG-M3 DECISION | New authority ? | Authority mapping |
+| Isolation | Enforced | Isolation proof | Isolation boundary |
+| Conflict Resolution | N/A (single) | Multi-binding handling | Conflict strategy |
+| Revocation | 50ms per binding | Multiple revocation paths | Revocation design |
+| Evidence | RTB references | Binding references | Evidence mapping |
+| Monitoring | Single binding | Multiple bindings | Monitoring expansion |
+
+DECISION OPTIONS:
+
+Option 1: DENY
+  Action: Additional binding creation not approved
+  Prerequisites: None (maintain current state)
+  Result: RTB_20260918_001 remains the only binding
+  Timeline: Immediate
+
+Option 2: REQUEST_INFORMATION
+  Action: Request specific binding expansion definition
+  Prerequisites: None (waiting for clarification)
+  Result: Binding expansion deferred pending definition
+  Timeline: Upon definition receipt
+
+Option 3: APPROVE (when sufficient evidence provided)
+  Action: Authorize additional runtime binding creation
+  Prerequisites: Binding definition + isolation proof + authority mapping + revocation path
+  Result: New binding created (each requires individual RTB assignment)
+  Timeline: Upon all prerequisites met
+
+SCOPE LOCK STATUS: GATED (cannot proceed without explicit RP2 decision)
+AUTHORITY: HUMAN_GATE_REVIEW_REQUIRED (separate decision)
+IMPLEMENTATION PROHIBITION: RP2 execution prohibited until explicit authorization
+
+================================================================================
+MATRIX 4: RP3 PRODUCTION MIGRATION AUTHORIZATION (GATED)
+================================================================================
+
+Decision: Authorize Production Environment Deployment
+
+Current State: NOT_AUTHORIZED
+Decision Authority: Human Gate Review Process (COMPREHENSIVE REVIEW REQUIRED)
+Timeline: Future authorization gate (separate request required)
+
+BOUNDARY DEFINITION (PROPOSED):
+
+Question: What production configuration is requested?
+
+| Dimension | Current Sandbox | Production Proposed | Decision Required |
+|-----------|-----------------|-------------------|-------------------|
+| Environment | SANDBOX_ONLY | Production environment | Prod env spec |
+| Database | sb_phase3.db | Production DB | DB specification |
+| Credentials | Sandbox creds | Production creds | Cred management |
+| Network | Sandbox only | Production network | Network access |
+| Data | Test data | Production data | Data migration plan |
+| Access Control | Test controls | Production controls | Access model |
+| Monitoring | Test monitoring | Production monitoring | Monitoring design |
+| Fail-Closed | Test patterns | Production patterns | Behavior mapping |
+| Revocation | Test revocation | Production revocation | Revocation SLA |
+| Rollback | Test rollback | Production rollback | Rollback procedures |
+| Safety Verification | DEFERRED | REQUIRED | Safety evidence |
+| Operational Monitoring | DEFERRED | REQUIRED | Ops monitoring plan |
+
+REQUIRED EVIDENCE FOR RP3:
+
+- Production Environment Safety Verification
+  * Network isolation proof
+  * Access control design review
+  * Data isolation mechanisms
+  * Credential management procedures
+
+- Production Operational Monitoring
+  * Health monitoring SLA
+  * Alert thresholds
+  * Incident response procedures
+  * Escalation pathways
+
+- Production Rollback Capability
+  * Rollback procedure documentation
+  * Rollback testing results
+  * Data consistency verification
+  * Recovery time objectives
+
+DECISION OPTIONS:
+
+Option 1: DENY
+  Action: Production migration not approved
+  Prerequisites: None (maintain sandbox-only)
+  Result: Sandbox-only constraint remains
+  Timeline: Immediate
+
+Option 2: REQUEST_INFORMATION
+  Action: Request production deployment specification
+  Prerequisites: None (waiting for clarification)
+  Result: Production migration deferred pending specification
+  Timeline: Upon specification receipt
+
+Option 3: APPROVE (when comprehensive evidence provided)
+  Action: Authorize production deployment
+  Prerequisites: Production safety verification + ops monitoring + rollback capability
+  Result: Production execution authorized (new RTB binding with production constraints)
+  Timeline: Upon all prerequisites met + comprehensive review completed
+
+SCOPE LOCK STATUS: GATED (cannot proceed without explicit RP3 decision)
+AUTHORITY: HUMAN_GATE_REVIEW_REQUIRED (COMPREHENSIVE NEW REVIEW)
+IMPLEMENTATION PROHIBITION: RP3 execution prohibited until explicit authorization
+ADDITIONAL REQUIREMENT: Production-specific safety verification (not sandbox verification)
+
+================================================================================
+MATRIX 5: DECISION SEQUENCING
+================================================================================
+
+Execution Order (REQUIRED):
+
+1. CURRENT STATE DECISION
+   Action: Accept/Review/Hold current authorization
+   Prerequisites: Evidence consolidation complete
+   Timeline: IMMEDIATE
+   Dependency: None (independent)
+
+2. RP1 SCOPE EXPANSION (if requested)
+   Action: Authorize component scope expansion
+   Prerequisites: RP1 scope definition + RP1 evidence
+   Timeline: FUTURE (separate request)
+   Dependency: None (independent of RP2/RP3)
+
+3. RP2 RUNTIME BINDING EXPANSION (if requested)
+   Action: Authorize additional runtime bindings
+   Prerequisites: RP2 binding definition + RP2 evidence
+   Timeline: FUTURE (separate request)
+   Dependency: None (independent of RP1/RP3)
+
+4. RP3 PRODUCTION MIGRATION (if requested)
+   Action: Authorize production deployment
+   Prerequisites: RP3 safety verification + RP3 monitoring + RP3 rollback
+   Timeline: FUTURE (separate request)
+   Dependency: None (independent of RP1/RP2, but requires comprehensive review)
+
+CRITICAL CONSTRAINT:
+- No RP1/RP2/RP3 execution permitted prior to explicit Human Gate authorization
+- Each decision is INDEPENDENT and requires separate Human Gate review
+- Cannot be combined or traded (e.g., RP1 not approved if RP3 approved)
+
+================================================================================
+MATRIX 6: UNKNOWN HANDLING IN EACH DECISION
+================================================================================
+
+Current State Decision:
+
+UNKNOWN_001 (Future predictions): Impact: NONE (monitoring continues)
+UNKNOWN_002 (Production compat): Impact: NONE (RP3 decision required)
+UNKNOWN_003 (Scope expansion): Impact: NONE (RP1 decision required)
+UNKNOWN_004 (Binding expansion): Impact: NONE (RP2 decision required)
+
+Verdict: All unknowns preserved. No conversion to PASS. Decision ready.
+
+RP1 Decision (if executed):
+
+UNKNOWN_003 (Scope expansion): Resolved (scope defined)
+Others: Remain UNKNOWN (not impacted by RP1)
+
+RP2 Decision (if executed):
+
+UNKNOWN_004 (Binding expansion): Resolved (binding defined)
+Others: Remain UNKNOWN (not impacted by RP2)
+
+RP3 Decision (if executed):
+
+UNKNOWN_002 (Production compat): Resolved (production spec defined)
+Others: Remain UNKNOWN (not impacted by RP3)
+
+================================================================================
+MATRIX VALIDATION
+================================================================================
+
+Validation Checks:
+
+[PASS] Clear boundaries defined for each decision
+[PASS] No ambiguity in scope limitations
+[PASS] Authority levels specified for each decision
+[PASS] Prerequisites explicit for each option
+[PASS] Unknown categories addressed
+[PASS] No automatic elevation (READY ≠ APPROVED)
+[PASS] State locks maintained
+[PASS] RP1/RP2/RP3 remain gated and separate
+
+Matrix Status: VALIDATED
+
+================================================================================

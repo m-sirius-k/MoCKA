@@ -1,0 +1,21 @@
+{
+  "timestamp": "2026-09-18T09:15:46.043323Z",
+  "runtime_binding_id": "RTB_20260918_001",
+  "current_scope": "SANDBOX_ONLY",
+  "evidence_package_id": "EVIDENCE_PKG_20260918_001",
+  "consolidation_commit": "d20a7cd",
+  "authorization_state": "HUMAN_GATE_REVIEW_PENDING",
+  "active_state_locks": [
+    "production_lock: NOT_AUTHORIZED",
+    "scope_lock: SANDBOX_ONLY",
+    "runtime_binding_lock: RTB_20260918_001",
+    "authority_lock: HG-M3-PHASE3-VALIDATION-AND-TESTING-DECISION"
+  ],
+  "unknown_categories": [
+    "Future state predictions (beyond 30-second window)",
+    "Production compatibility (RP3_REQUIRED)",
+    "Scope expansion feasibility (RP1_REQUIRED)",
+    "Runtime binding expansion capability (RP2_REQUIRED)"
+  ],
+  "expected_state": "VERIFIED"
+}
