@@ -26,8 +26,14 @@ import sys
 import tempfile
 from pathlib import Path
 
-MOCKA_ROOT = Path(r"C:\Users\sirok\MoCKA")
+# Support both Windows and Linux paths
+if sys.platform == "win32":
+    MOCKA_ROOT = Path(r"C:\Users\sirok\MoCKA")
+else:
+    MOCKA_ROOT = Path("/home/user/MoCKA")
+
 sys.path.insert(0, str(MOCKA_ROOT / "governance"))
+sys.path.insert(0, str(MOCKA_ROOT / "structural"))
 
 from seal_governance_gate import SealGovernanceGate  # noqa: E402
 
@@ -74,23 +80,36 @@ def test_a_normal_path_approved_records_decision_unit():
             calls.append(message)
             return _mock_seal_runner_success(message)
 
-        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
-        result = gate.execute(message="MANUAL_SEAL_test", _seal_runner=spy_runner)
+        # M2 Phase 3: Mock HumanGate.approve() to return True for approval test
+        from seal_governance_gate import _human_gate
+        original_approve = _human_gate.approve
+        _human_gate.approve = lambda decision_id: True
 
-        assert result.approved, f"expected approval, got aborts={result.aborts} reason={result.reason}"
-        assert len(calls) == 1, "seal runner should be called exactly once on approval"
-        assert result.seal_returncode == 0
+        try:
+            gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
+            result = gate.execute(
+                message="MANUAL_SEAL_test",
+                requester="human:test_approver",
+                seal_request_id="SR_TEST_A_001",
+                _seal_runner=spy_runner
+            )
 
-        entries = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines() if line]
-        assert len(entries) == 1
-        entry = entries[0]
-        assert entry["decision"] == "approved"
-        assert entry["artifact_hash"] == "deadbeef1234567890deadbeef1234567890dead"
-        assert entry["seal_hash"] == "a" * 64
-        for field in ("execution_id", "change_start", "change_done"):
-            assert field in entry
-        for field in ("decision_id", "title", "approved_by", "approved_at", "status"):
-            assert field in entry
+            assert result.approved, f"expected approval, got aborts={result.aborts} reason={result.reason}"
+            assert len(calls) == 1, "seal runner should be called exactly once on approval"
+            assert result.seal_returncode == 0
+
+            entries = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").splitlines() if line]
+            assert len(entries) == 1
+            entry = entries[0]
+            assert entry["decision"] == "approved"
+            assert entry["artifact_hash"] == "deadbeef1234567890deadbeef1234567890dead"
+            assert entry["seal_hash"] == "a" * 64
+            for field in ("execution_id", "change_start", "change_done"):
+                assert field in entry
+            for field in ("decision_id", "title", "approved_by", "approved_at", "status"):
+                assert field in entry
+        finally:
+            _human_gate.approve = original_approve
 
 
 def test_b_abort_path_seal_runner_never_called():
@@ -109,7 +128,13 @@ def test_b_abort_path_seal_runner_never_called():
             return _mock_seal_runner_success(message)
 
         gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
-        result = gate.execute(message="MANUAL_SEAL_test", expected_max_changes=1, _seal_runner=spy_runner)
+        result = gate.execute(
+            message="MANUAL_SEAL_test",
+            expected_max_changes=1,
+            requester="human:test_approver",
+            seal_request_id="SR_TEST_B_001",
+            _seal_runner=spy_runner
+        )
 
         assert not result.approved
         assert "unexpected_file_count" in result.aborts
@@ -130,10 +155,30 @@ def test_c_real_repo_untouched():
         _init_sandbox_repo(sandbox)
         ledger_path = sandbox / "decision_ledger.jsonl"
         gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger_path)
-        gate.execute(message="non-invasiveness check", _seal_runner=_mock_seal_runner_success)
 
-        (sandbox / "f.txt").write_text("x\n", encoding="utf-8")
-        gate.execute(message="abort check", expected_max_changes=0, _seal_runner=_mock_seal_runner_success)
+        # M2 Phase 3: Mock HumanGate for test C as well
+        from seal_governance_gate import _human_gate
+        original_approve = _human_gate.approve
+        _human_gate.approve = lambda decision_id: True
+
+        try:
+            gate.execute(
+                message="non-invasiveness check",
+                requester="human:test_approver",
+                seal_request_id="SR_TEST_C_001",
+                _seal_runner=_mock_seal_runner_success
+            )
+
+            (sandbox / "f.txt").write_text("x\n", encoding="utf-8")
+            gate.execute(
+                message="abort check",
+                expected_max_changes=0,
+                requester="human:test_approver",
+                seal_request_id="SR_TEST_C_002",
+                _seal_runner=_mock_seal_runner_success
+            )
+        finally:
+            _human_gate.approve = original_approve
 
     after = {p: _sha256_of_file(p) for p in FILES_TO_PROTECT}
     for p in FILES_TO_PROTECT:
