@@ -1,0 +1,357 @@
+================================================================================
+HG-M3-DECISION-EVIDENCE-MAPPING-20260918
+Decision and Evidence Mapping Matrix
+================================================================================
+
+PURPOSE:
+Map each Human Gate decision point to required evidence, current status,
+remaining conditions, and decision authority.
+
+================================================================================
+MAPPING 1: DECISION A - CURRENT SANDBOX RUNTIME CONTINUATION
+================================================================================
+
+Decision ID: DECISION_A
+Decision Name: Current Sandbox Runtime Continuation
+Decision Owner: Human Gate Review Process
+Status: PENDING_HUMAN_GATE_DECISION
+Target: RTB_20260918_001
+
+EVIDENCE MAPPING:
+
+┌─ DECISION A (Runtime Continuation) ────────────────────────────────────┐
+│                                                                          │
+│  Required Evidence Category 1: RUNTIME HEALTH                           │
+│  ├─ Evidence ID: EVIDENCE_RTH_20260918_001                              │
+│  ├─ Requirement: Verify runtime stability and resource management      │
+│  ├─ Current Status: VERIFIED PASS                                       │
+│  ├─ Findings:                                                            │
+│  │  • Error Rate: 0% (16 component calls, 0 errors)                    │
+│  │  • CPU Usage: 3.2% (within normal bounds)                           │
+│  │  • Memory: 42MB (well within allocated resources)                   │
+│  │  • Uptime: 30 seconds (stable at monitoring snapshot)               │
+│  ├─ Remaining Condition: None (all metrics normal)                      │
+│  ├─ Verification Method: Real-time runtime monitoring                  │
+│  └─ Authority: Confirmed by monitoring data                            │
+│                                                                          │
+│  Required Evidence Category 2: BOUNDARY ENFORCEMENT                     │
+│  ├─ Evidence ID: EVIDENCE_BND_20260918_001                              │
+│  ├─ Requirement: Verify scope boundaries and access control            │
+│  ├─ Current Status: VERIFIED PASS                                       │
+│  ├─ Findings:                                                            │
+│  │  • Allowed Operations: ENABLED (sandbox_database, approved_components, │
+│  │    test_data, defined_pipeline)                                     │
+│  │  • Prohibited Operations: BLOCKED (production_runtime, production_data, │
+│  │    unauthorized_component, scope_outside_definition)                │
+│  │  • Scope Chain: Complete (runtime → binding → decision)              │
+│  │  • Drift Detection: None detected                                    │
+│  ├─ Remaining Condition: None (all boundaries maintained)               │
+│  ├─ Verification Method: Scope boundary verification                    │
+│  └─ Authority: Confirmed by boundary checks                            │
+│                                                                          │
+│  Required Evidence Category 3: FAIL-CLOSED BEHAVIOR                     │
+│  ├─ Evidence ID: EVIDENCE_FLC_20260918_001                              │
+│  ├─ Requirement: Verify fail-closed patterns operational during runtime │
+│  ├─ Current Status: VERIFIED PASS (5/5 tests)                           │
+│  ├─ Findings:                                                            │
+│  │  • MC01 (Evidence Missing): BLOCKED ✓                                │
+│  │  • MC02 (Authority Mismatch): BLOCKED ✓                              │
+│  │  • MC03 (Scope Violation): BLOCKED ✓                                 │
+│  │  • MC04 (Revocation Trigger): STOPPED ✓                              │
+│  │  • MC05 (Ledger Integrity): BLOCKED ✓                                │
+│  │  • Detection Latency: < 10ms per test                                │
+│  ├─ Remaining Condition: None (all patterns operational)                │
+│  ├─ Verification Method: Operational scenario testing                   │
+│  └─ Authority: Confirmed by operational tests                          │
+│                                                                          │
+│  Required Evidence Category 4: AUTHORITY PRESERVATION                   │
+│  ├─ Evidence ID: EVIDENCE_AUTH_20260918_001                             │
+│  ├─ Requirement: Verify Human Gate authority maintained                │
+│  ├─ Current Status: VERIFIED PRESERVED                                  │
+│  ├─ Findings:                                                            │
+│  │  • Human Gate Decision: HG-M3-PHASE3-VALIDATION-AND-TESTING-DECISION │
+│  │  • Decision Status: ACTIVE and VALID                                 │
+│  │  • Runtime Authority: RTB_20260918_001 (ACTIVE)                      │
+│  │  • Expiration: 2026-09-19T08:54:26Z (23.99 hours remaining)          │
+│  │  • Revocation Authority: READY (50ms latency)                        │
+│  │  • Triggers: 5 monitored patterns (MC01-MC05)                        │
+│  ├─ Remaining Condition: None (all authorities active)                  │
+│  ├─ Verification Method: Authority registry cross-reference             │
+│  └─ Authority: Confirmed by authority verification                     │
+│                                                                          │
+│  Required Evidence Category 5: EVIDENCE LEDGER INTEGRITY                │
+│  ├─ Evidence ID: EVIDENCE_LED_20260918_001                              │
+│  ├─ Requirement: Verify ledger chain integrity and completeness        │
+│  ├─ Current Status: VERIFIED INTACT                                     │
+│  ├─ Findings:                                                            │
+│  │  • Entries: 3 (initialization, execution, activation)               │
+│  │  • Hash Chain: INTACT (SHA256 verified)                              │
+│  │  • Retroactive Insertion: None detected                              │
+│  │  • Timestamp Ordering: Consistent (chronological)                    │
+│  │  • Completeness: All stages recorded                                 │
+│  ├─ Remaining Condition: None (chain complete and intact)               │
+│  ├─ Verification Method: Hash chain integrity verification              │
+│  └─ Authority: Confirmed by ledger audit                               │
+│                                                                          │
+│  DECISION VERDICT:
+│  ┌─────────────────────────────────────────────────────────────────────┐
+│  │ All Required Evidence: VERIFIED                                      │
+│  │ All Conditions: SATISFIED                                            │
+│  │ Remaining Gaps: NONE                                                 │
+│  │ Decision Authority: READY FOR HUMAN GATE DETERMINATION               │
+│  └─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────┘
+
+DECISION OPTIONS:
+  Option A: ACCEPT (Recommended)
+  Option B: REVIEW
+  Option C: HOLD
+
+AUTHORITY: Human Gate Review Process
+TIMELINE: Immediate decision ready
+
+================================================================================
+MAPPING 2: DECISION B - RP1 SCOPE EXPANSION
+================================================================================
+
+Decision ID: DECISION_B
+Decision Name: RP1 Scope Expansion Authorization
+Decision Owner: Human Gate Review Process
+Status: NOT_REQUESTED
+Current Authorization: NOT_AUTHORIZED
+
+EVIDENCE MAPPING (Deferred until request):
+
+┌─ DECISION B (Scope Expansion) ─────────────────────────────────────────┐
+│                                                                          │
+│  When RP1 is Requested:                                                 │
+│                                                                          │
+│  Required Evidence Category 1: SCOPE DEFINITION                         │
+│  ├─ Requirement: Define proposed component scope expansion              │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: Which components beyond A1-A5?                      │
+│  ├─ Remaining Condition: Scope specification required                   │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  Required Evidence Category 2: COMPONENT INTERACTION ANALYSIS           │
+│  ├─ Requirement: Verify new component interactions don't break chains   │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: Interaction map for expanded components             │
+│  ├─ Remaining Condition: Interaction verification required              │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  Required Evidence Category 3: AUTHORITY MAPPING                        │
+│  ├─ Requirement: Define authority boundaries for expanded scope         │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: Authority structure for new components              │
+│  ├─ Remaining Condition: Authority mapping required                     │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  DECISION VERDICT (when requested):
+│  ┌─────────────────────────────────────────────────────────────────────┐
+│  │ Decision Status: PENDING_SCOPE_DEFINITION                            │
+│  │ Evidence Status: AWAITING_RP1_REQUEST                                │
+│  │ Remaining Conditions: SCOPE_SPECIFICATION_REQUIRED                   │
+│  │ Decision Authority: HUMAN_GATE_REVIEW_REQUIRED                       │
+│  └─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────┘
+
+IMPLEMENTATION PROHIBITION: ACTIVE
+(Scope expansion execution prohibited until explicit RP1 authorization)
+
+CURRENT STATUS: NOT_REQUESTED
+
+DECISION OPTIONS (when requested):
+  Option 1: DENY
+  Option 2: REQUEST_INFORMATION
+  Option 3: APPROVE (when prerequisites satisfied)
+
+AUTHORITY: Human Gate Review Process
+TIMELINE: Future (requires separate request)
+
+================================================================================
+MAPPING 3: DECISION C - RP2 RUNTIME BINDING EXPANSION
+================================================================================
+
+Decision ID: DECISION_C
+Decision Name: RP2 Runtime Binding Expansion Authorization
+Decision Owner: Human Gate Review Process
+Status: NOT_REQUESTED
+Current Authorization: NOT_AUTHORIZED
+
+EVIDENCE MAPPING (Deferred until request):
+
+┌─ DECISION C (Runtime Binding Expansion) ───────────────────────────────┐
+│                                                                          │
+│  When RP2 is Requested:                                                 │
+│                                                                          │
+│  Required Evidence Category 1: BINDING DEFINITION                       │
+│  ├─ Requirement: Define proposed additional runtime bindings            │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: What bindings? (RTB_20260918_002, ... ?)            │
+│  ├─ Remaining Condition: Binding specification required                 │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  Required Evidence Category 2: BINDING ISOLATION PROOF                  │
+│  ├─ Requirement: Verify isolation between multiple bindings             │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: Isolation boundaries between bindings               │
+│  ├─ Remaining Condition: Isolation proof required                       │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  Required Evidence Category 3: AUTHORITY MAPPING                        │
+│  ├─ Requirement: Define authority for each binding                      │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: Authority structure for multiple bindings           │
+│  ├─ Remaining Condition: Authority mapping required                     │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  Required Evidence Category 4: REVOCATION PATH                          │
+│  ├─ Requirement: Define revocation for multiple bindings                │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input: Revocation strategy per binding                     │
+│  ├─ Remaining Condition: Revocation path design required                │
+│  └─ Authority: Human Gate decision upon receipt                        │
+│                                                                          │
+│  DECISION VERDICT (when requested):
+│  ┌─────────────────────────────────────────────────────────────────────┐
+│  │ Decision Status: PENDING_BINDING_DEFINITION                          │
+│  │ Evidence Status: AWAITING_RP2_REQUEST                                │
+│  │ Remaining Conditions: BINDING_SPECIFICATION_REQUIRED                 │
+│  │ Decision Authority: HUMAN_GATE_REVIEW_REQUIRED                       │
+│  └─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────┘
+
+IMPLEMENTATION PROHIBITION: ACTIVE
+(Runtime binding expansion execution prohibited until explicit RP2 authorization)
+
+CURRENT STATUS: NOT_REQUESTED
+
+DECISION OPTIONS (when requested):
+  Option 1: DENY
+  Option 2: REQUEST_INFORMATION
+  Option 3: APPROVE (when prerequisites satisfied)
+
+AUTHORITY: Human Gate Review Process
+TIMELINE: Future (requires separate request)
+
+================================================================================
+MAPPING 4: DECISION D - RP3 PRODUCTION MIGRATION
+================================================================================
+
+Decision ID: DECISION_D
+Decision Name: RP3 Production Migration Authorization
+Decision Owner: Human Gate Review Process
+Status: NOT_REQUESTED
+Current Authorization: NOT_AUTHORIZED
+
+EVIDENCE MAPPING (Deferred until request):
+
+┌─ DECISION D (Production Migration) ────────────────────────────────────┐
+│                                                                          │
+│  When RP3 is Requested:                                                 │
+│                                                                          │
+│  Required Evidence Category 1: PRODUCTION SAFETY VERIFICATION           │
+│  ├─ Requirement: Comprehensive production environment safety verification
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input:                                                      │
+│  │  • Production network isolation proof                                │
+│  │  • Production access control design                                  │
+│  │  • Production data isolation mechanisms                              │
+│  │  • Production credential management                                  │
+│  ├─ Remaining Condition: Production safety verification required        │
+│  └─ Authority: Requires comprehensive Human Gate review                │
+│                                                                          │
+│  Required Evidence Category 2: PRODUCTION MONITORING DESIGN             │
+│  ├─ Requirement: Production operational monitoring capability           │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input:                                                      │
+│  │  • Health monitoring SLA                                             │
+│  │  • Alert threshold design                                            │
+│  │  • Incident response procedures                                      │
+│  │  • Escalation pathways                                               │
+│  ├─ Remaining Condition: Production monitoring plan required            │
+│  └─ Authority: Requires comprehensive Human Gate review                │
+│                                                                          │
+│  Required Evidence Category 3: PRODUCTION ROLLBACK PROCEDURES           │
+│  ├─ Requirement: Production rollback capability and procedures          │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input:                                                      │
+│  │  • Rollback procedure documentation                                  │
+│  │  • Rollback testing results                                          │
+│  │  • Data consistency verification                                     │
+│  │  • Recovery time objectives                                          │
+│  ├─ Remaining Condition: Rollback capability verification required      │
+│  └─ Authority: Requires comprehensive Human Gate review                │
+│                                                                          │
+│  Required Evidence Category 4: PRODUCTION OPERATIONAL CONTROLS          │
+│  ├─ Requirement: Production execution controls and constraints          │
+│  ├─ Current Status: NOT_PROVIDED (awaiting request)                     │
+│  ├─ Required Input:                                                      │
+│  │  • Production runtime binding design                                 │
+│  │  • Production authorization mappings                                 │
+│  │  • Production audit trail design                                     │
+│  │  • Production fail-closed behavior specification                     │
+│  ├─ Remaining Condition: Production controls design required            │
+│  └─ Authority: Requires comprehensive Human Gate review                │
+│                                                                          │
+│  ADDITIONAL REQUIREMENT: COMPREHENSIVE PRODUCTION-SPECIFIC REVIEW       │
+│  ├─ Requirement: Beyond sandbox verification scope                      │
+│  ├─ Scope: Full production environment safety assessment                │
+│  ├─ Complexity: Production-level risk analysis required                 │
+│  ├─ Remaining Condition: Full production review required                │
+│  └─ Authority: Requires comprehensive Human Gate review                │
+│                                                                          │
+│  DECISION VERDICT (when requested):
+│  ┌─────────────────────────────────────────────────────────────────────┐
+│  │ Decision Status: PENDING_PRODUCTION_SPECIFICATION                    │
+│  │ Evidence Status: AWAITING_RP3_REQUEST + COMPREHENSIVE_REVIEW         │
+│  │ Remaining Conditions: PRODUCTION_SAFETY_VERIFICATION_REQUIRED        │
+│  │ Decision Authority: HUMAN_GATE_COMPREHENSIVE_REVIEW_REQUIRED         │
+│  └─────────────────────────────────────────────────────────────────────┘
+└──────────────────────────────────────────────────────────────────────────┘
+
+IMPLEMENTATION PROHIBITION: ACTIVE
+(Production deployment execution prohibited until explicit RP3 authorization)
+
+CURRENT STATUS: NOT_REQUESTED
+
+DECISION OPTIONS (when requested):
+  Option 1: DENY
+  Option 2: REQUEST_INFORMATION
+  Option 3: APPROVE (when prerequisites satisfied + comprehensive review complete)
+
+AUTHORITY: Human Gate Review Process (Comprehensive Review)
+TIMELINE: Future (requires comprehensive review + separate request)
+
+================================================================================
+EVIDENCE MAPPING SUMMARY
+================================================================================
+
+Current Evidence Status (DECISION A):
+  VERIFIED: 5 categories (RTH, BND, FLC, AUTH, LED)
+  Status: ALL PASS or VERIFIED
+  Gaps: NONE identified
+  Authority: Ready for Human Gate determination
+
+Deferred Evidence Status (DECISIONS B, C, D):
+  Status: NOT_REQUESTED (awaiting separate authorization requests)
+  Evidence: Currently not provided
+  Timeline: Future (upon RP1/RP2/RP3 requests)
+  Authority: Each requires separate Human Gate review
+
+================================================================================
+VALIDATION CHECKPOINT
+================================================================================
+
+[PASS] Evidence IDs match between packages
+[PASS] Commit references correct (d20a7cd, f44c000)
+[PASS] No cross-contamination between decisions
+[PASS] Unknowns not converted to evidence
+[PASS] RP1/RP2/RP3 truly independent
+[PASS] Current runtime scope unchanged
+[PASS] Production remains locked
+
+Evidence Mapping Status: VALIDATED
+
+================================================================================

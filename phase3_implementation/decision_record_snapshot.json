@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-09-18T09:20:54.049218Z",
+  "current_authorization_state": "HUMAN_GATE_REVIEW_PENDING",
+  "evidence_package_reference": "EVIDENCE_PKG_20260918_001",
+  "readiness_package_reference": "READINESS_PKG_20260918_001",
+  "consolidation_commit": "d20a7cd",
+  "readiness_commit": "f44c000",
+  "current_state_locks": {
+    "production_lock": "NOT_AUTHORIZED",
+    "scope_lock": "SANDBOX_ONLY",
+    "runtime_binding_lock": "RTB_20260918_001",
+    "authority_lock": "HG-M3-PHASE3-VALIDATION-AND-TESTING-DECISION"
+  },
+  "pending_decision_items": [
+    {
+      "decision_id": "DECISION_A",
+      "name": "Current Sandbox Runtime Continuation",
+      "status": "PENDING_HUMAN_GATE_DECISION",
+      "options": [
+        "ACCEPT",
+        "REVIEW",
+        "HOLD"
+      ],
+      "target": "RTB_20260918_001",
+      "prerequisite": "Evidence consolidation complete (SATISFIED)"
+    },
+    {
+      "decision_id": "DECISION_B",
+      "name": "RP1 Scope Expansion",
+      "status": "NOT_REQUESTED",
+      "options": [
+        "NOT_REQUESTED",
+        "DENY",
+        "APPROVE"
+      ],
+      "target": "Component scope beyond A1-A5",
+      "prerequisite": "Scope definition required"
+    },
+    {
+      "decision_id": "DECISION_C",
+      "name": "RP2 Runtime Binding Expansion",
+      "status": "NOT_REQUESTED",
+      "options": [
+        "NOT_REQUESTED",
+        "DENY",
+        "APPROVE"
+      ],
+      "target": "Additional runtime bindings",
+      "prerequisite": "Binding definition required"
+    },
+    {
+      "decision_id": "DECISION_D",
+      "name": "RP3 Production Migration",
+      "status": "NOT_REQUESTED",
+      "options": [
+        "NOT_REQUESTED",
+        "DENY",
+        "APPROVE"
+      ],
+      "target": "Production deployment",
+      "prerequisite": "Production safety verification required"
+    }
+  ],
+  "expected_state": "DECISION_RECORD_READY"
+}
