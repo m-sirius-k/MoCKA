@@ -104,6 +104,18 @@ def _sanitize_row(row: dict) -> dict:
     """イベント行の全フィールドをUTF-8安全化"""
     return {k: _sanitize_utf8(v) for k, v in row.items()}
 
+def _is_human_authority(who_actor: str) -> bool:
+    """M2: Validate that decision authority originates from human.
+    Returns True if who_actor represents human authority, False otherwise."""
+    who = str(who_actor).strip().lower()
+    if who.startswith('system:') or who.startswith('ai:') or who.startswith('auto_'):
+        return False
+    if who in ('', 'unknown', 'system', 'ai', 'auto'):
+        return False
+    if '@' in who or who.startswith('human_'):
+        return True
+    return True
+
 # append_event をラップして文字化け防御
 _orig_append_event = None  # 後でパッチ
 
@@ -577,8 +589,11 @@ def set_intent():
     payload = request.get_json(force=True, silent=True) or {}
     ai_name = payload.get("ai_name", "")
     text    = payload.get("text", "")
+    who     = payload.get("who", "human_unknown")
     if not ai_name or not text:
         return jsonify({"status": "error", "message": "ai_name and text required"}), 400
+    if not _is_human_authority(who):
+        return jsonify({"status": "error", "message": "human_only_violation: non-human authority"}), 403
     with _intent_lock:
         if ai_name not in _intent_queue:
             _intent_queue[ai_name] = []
@@ -604,8 +619,11 @@ def collaborate():
     payload = request.get_json(force=True, silent=True) or {}
     text    = payload.get("text", payload.get("prompt", ""))
     targets = payload.get("targets", ["ChatGPT", "Gemini", "Claude", "Perplexity", "Copilot", "Genspark"])
+    who     = payload.get("who", "human_unknown")
     if not text:
         return jsonify({"status": "error", "message": "text required"}), 400
+    if not _is_human_authority(who):
+        return jsonify({"status": "error", "message": "human_only_violation: non-human authority"}), 403
     with _intent_lock:
         for ai_name in targets:
             if ai_name not in _intent_queue:
@@ -674,8 +692,11 @@ def ask():
     c = payload.get("c")
     o = payload.get("o")
     memo = payload.get("memo", "").strip()
+    who = payload.get("who", "human_unknown")
     if c not in ("A", "B") or not o:
         return jsonify({"status": "error", "message": "invalid payload"}), 400
+    if not _is_human_authority(who):
+        return jsonify({"status": "error", "message": "human_only_violation: non-human authority"}), 403
     if c == "A":
         what_type = "storage"
         title = f"保存取得 {o}"
@@ -921,6 +942,8 @@ def claim():
     ts_f          = ts.strftime("%Y%m%d_%H%M%S")
     if not selected_text:
         return jsonify({"status": "empty"}), 400
+    if not _is_human_authority(who):
+        return jsonify({"status": "error", "message": "human_only_violation: non-human authority"}), 403
 
     # Essence_Direct_Parserで5W1H抽出
     try:

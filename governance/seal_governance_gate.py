@@ -76,6 +76,19 @@ class SealGovernanceGate:
         action = {"scope": scope or [], "expected_max_changes": expected_max_changes}
         approval = self.governance.pre_execution_check(action)
 
+        # M2: Enforce human_only principle - validate approval originates from human authority
+        if hasattr(approval, 'approved_by'):
+            approved_by = str(getattr(approval, 'approved_by', '')).strip()
+            if approved_by.startswith('system:') or approved_by == '' or approved_by == 'system':
+                result = GateResult(
+                    approved=False,
+                    execution_id=execution_id,
+                    reason='human_only_violation: approval must originate from human authority',
+                    aborts=['human_only_violation'],
+                )
+                self._record_decision_unit(execution_id, change_start, result)
+                return result
+
         if not approval.approved:
             result = GateResult(
                 approved=False,
@@ -132,7 +145,7 @@ class SealGovernanceGate:
             "impact": "anchor_update.py実行有無の制御のみ、seal/hashロジック自体は無変更",
             "related_events": [],
             "related_documents": ["docs/governance/PHASE_C_GOVERNANCE_GATE_IMPLEMENTATION_REPORT_v1.0.md"],
-            "approved_by": "system:seal_governance_gate",
+            "approved_by": "human_gate" if result.approved else "system:seal_governance_gate:rejected",
             "approved_at": datetime.now(timezone.utc).isoformat(),
             "supersedes": None,
             "superseded_by": None,

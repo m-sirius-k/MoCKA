@@ -21,7 +21,17 @@ REQUIRED_FIELDS = (
 
 
 def write_auth_record(ledger_path, record):
-    """Auth拡張レコードを append-only JSONL で追記する(sandbox限定)。"""
+    """Auth拡張レコードを append-only JSONL で追記する(sandbox限定)。
+
+    M2: Enforce human_only principle - reject non-human approvals.
+    """
+    # M2: Validate human_only constraint before writing
+    approved_by = str(record.get("approved_by", "")).strip()
+    if approved_by == "" or approved_by.startswith("system") or approved_by == "system":
+        raise ValueError(
+            f"human_only_violation: approved_by must be human authority, got '{approved_by}'"
+        )
+
     p = Path(ledger_path)
     p.parent.mkdir(parents=True, exist_ok=True)
     with p.open("a", encoding="utf-8") as f:
