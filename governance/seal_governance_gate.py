@@ -36,6 +36,25 @@ if str(_STRUCTURAL_DIR) not in sys.path:
 from execution_governance import ExecutionGovernanceEngine  # noqa: E402
 from seal_auth_record import verify_auth_record  # noqa: E402
 
+# M2 Phase 3: HumanGate integration for human-controlled authorization
+class _HumanGate:
+    """
+    Placeholder HumanGate interface for Phase 3 human authority implementation.
+    In production, this would connect to actual HumanGate service.
+    """
+    def __init__(self):
+        self.pending_decisions = {}
+
+    def request(self, decision_id: str) -> None:
+        """Request human authorization for a decision."""
+        self.pending_decisions[decision_id] = {"status": "pending"}
+
+    def approve(self, decision_id: str) -> bool:
+        """Check if human has approved a decision. Always returns False (no human approved yet)."""
+        return self.pending_decisions.get(decision_id, {}).get("status") == "approved"
+
+_human_gate = _HumanGate()
+
 SEAL_SCRIPT = _MOCKA_ROOT / "scripts" / "ledger" / "anchor_update.py"
 DECISION_LEDGER_PATH = _MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl"
 
@@ -75,10 +94,12 @@ class SealGovernanceGate:
         execution_id = f"EXEC_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
         change_start = datetime.now(timezone.utc).isoformat()
 
+        # STEP 1: GL7 Pre-filter (evidence validation only, NOT approval)
         action = {"scope": scope or [], "expected_max_changes": expected_max_changes}
         approval = self.governance.pre_execution_check(action)
 
         if not approval.approved:
+            # GL7 FAILED - BLOCK execution
             result = GateResult(
                 approved=False,
                 execution_id=execution_id,
@@ -88,13 +109,61 @@ class SealGovernanceGate:
             self._record_decision_unit(execution_id, change_start, result, requester, seal_request_id)
             return result
 
+        # STEP 2: GL7 PRE-FILTER PASSED - Request human authorization via HumanGate
+        decision_id = f"DC_{execution_id}"
+        _human_gate.request(decision_id)
+
+        # STEP 3: Check if human has approved via HumanGate
+        # M2 Phase 3: Human Authority Control - seal execution requires explicit human approval
+        human_approved = _human_gate.approve(decision_id)
+
+        if not human_approved:
+            # HUMAN AUTHORITY NOT OBTAINED - BLOCK execution
+            result = GateResult(
+                approved=False,
+                execution_id=execution_id,
+                reason="human gate approval required but not obtained",
+                aborts=[],
+            )
+            self._record_decision_unit(execution_id, change_start, result, requester, seal_request_id)
+            return result
+
+        # STEP 4: VALIDATION ENFORCEMENT (BEFORE execution, BLOCKING)
+        # M2 Phase 3: Validation must pass before seal execution
+        # Create validation entry to check
+        validation_entry = {
+            "decision_id": decision_id,
+            "requester": requester,
+            "seal_request_id": seal_request_id,
+            "approved_by": requester,  # Will be updated when human approves
+            "approval_timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+        valid, validation_reasons = verify_auth_record(validation_entry)
+        if not valid:
+            # VALIDATION FAILED - BLOCK execution
+            result = GateResult(
+                approved=False,
+                execution_id=execution_id,
+                reason=f"authorization validation failed: {validation_reasons}",
+                aborts=[],
+            )
+            self._record_decision_unit(execution_id, change_start, result, requester, seal_request_id)
+            return result
+
+        # STEP 5: ALL CONDITIONS MET - Execute seal
+        # At this point:
+        # - GL7.approved = true (pre-filter passed)
+        # - HumanGate.approve() = true (human authorized)
+        # - verify_auth_record() = valid (validation passed)
+        # Result: Seal execution ALLOWED
         runner = _seal_runner or self._run_seal_script
         stdout, returncode = runner(message)
 
         result = GateResult(
             approved=True,
             execution_id=execution_id,
-            reason="dry run clean, seal executed",
+            reason="gl7 pre-filter passed, human authorized, validation passed, seal executed",
             seal_stdout=stdout,
             seal_returncode=returncode,
         )
