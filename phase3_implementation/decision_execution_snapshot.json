@@ -1,0 +1,44 @@
+{
+  "timestamp": "2026-09-18T09:32:55.153845Z",
+  "current_runtime_binding_id": "RTB_20260918_001",
+  "current_authorization_state_before": "HUMAN_GATE_REVIEW_PENDING",
+  "current_authorization_state_after": "CURRENT_RUNTIME_CONTINUATION_AUTHORIZED",
+  "human_gate_decision_id": "DECISION-A-RTB-CONTINUATION-20260918",
+  "human_gate_decision_result": "ACCEPT",
+  "human_gate_decision_owner": "Human Gate Review Process",
+  "human_gate_decision_timestamp": "2026-09-18T09:32:55.153922Z",
+  "evidence_package_reference": "EVIDENCE_PKG_20260918_001",
+  "evidence_references": [
+    "EVIDENCE_RTH_20260918_001",
+    "EVIDENCE_BND_20260918_001",
+    "EVIDENCE_FLC_20260918_001",
+    "EVIDENCE_AUTH_20260918_001",
+    "EVIDENCE_LED_20260918_001"
+  ],
+  "previous_commit_references": {
+    "validation": "f3f4cbb",
+    "activation": "b593a1d",
+    "monitoring": "9ed4493",
+    "consolidation": "d20a7cd",
+    "readiness": "f44c000",
+    "decision_record": "8911372"
+  },
+  "active_state_locks": [
+    "production_lock: NOT_AUTHORIZED",
+    "scope_lock: SANDBOX_ONLY",
+    "runtime_binding_lock: RTB_20260918_001",
+    "authority_lock: HG-M3-PHASE3-VALIDATION-AND-TESTING-DECISION"
+  ],
+  "scope_boundary": {
+    "allowed": [
+      "RTB_20260918_001",
+      "SANDBOX_ONLY"
+    ],
+    "blocked": [
+      "RP1",
+      "RP2",
+      "RP3"
+    ]
+  },
+  "expected_state": "DECISION_EXECUTED"
+}
