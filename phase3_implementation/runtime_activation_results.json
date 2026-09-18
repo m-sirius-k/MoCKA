@@ -1,0 +1,32 @@
+{
+  "activation_id": "RTB_ACTIVATION_20260918_001",
+  "timestamp": "2026-09-18T08:59:24.428993Z",
+  "steps": {
+    "STEP_1_boundary_verification": "PASS",
+    "STEP_2_binding_activation": "PASS",
+    "STEP_3_ledger_binding": "PASS",
+    "STEP_4_fail_closed_verification": "PASS",
+    "STEP_5_continuous_verification": "PASS",
+    "STEP_6_activation_decision": "CONDITIONAL_ACTIVATION_COMPLETE"
+  },
+  "fixed_constraints": {
+    "production_runtime": "NOT_AUTHORIZED",
+    "production_migration": "RP3_REQUIRED",
+    "scope_expansion": "RP1_REQUIRED",
+    "sandbox_runtime_binding": "ACTIVATION_COMPLETE"
+  },
+  "binding_object": {
+    "binding_id": "RTB_20260918_001",
+    "authority_id": "HG-M3-PHASE3-VALIDATION-AND-TESTING-DECISION",
+    "scope": "SANDBOX_ONLY",
+    "state": "ACTIVE",
+    "created_at": "2026-09-18T08:59:24.429097Z",
+    "activated_at": "2026-09-18T08:59:24.429124Z",
+    "expiration_time": "2026-09-19T08:59:24.429099Z",
+    "revocation_enabled": true,
+    "fail_closed_active": true,
+    "evidence_references": [
+      "LOG_RTB_RTB_20260918_001_20260918085924"
+    ]
+  }
+}
