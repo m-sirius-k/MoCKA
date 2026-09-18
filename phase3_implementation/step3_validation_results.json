@@ -1,0 +1,186 @@
+{
+  "step": "STEP_3_FAILURE_PATTERNS",
+  "status": "PASS",
+  "fail_closed_verified": true,
+  "patterns": [
+    {
+      "test": "FP01",
+      "name": "Evidence Missing (Fail-Closed)",
+      "result": "PASS",
+      "detail": {
+        "pattern": "EVIDENCE_MISSING",
+        "severity": "HIGH",
+        "checks": [
+          {
+            "check": "Failure detected",
+            "result": "PASS"
+          },
+          {
+            "check": "Escalation to Human Gate",
+            "result": "PASS"
+          },
+          {
+            "check": "Decision blocked until HG response",
+            "result": "PASS"
+          },
+          {
+            "check": "Severity level assigned",
+            "result": "PASS"
+          },
+          {
+            "check": "Recovery pathway available",
+            "result": "PASS"
+          }
+        ],
+        "missing_ids": [
+          "EVD_004",
+          "EVD_003"
+        ]
+      }
+    },
+    {
+      "test": "FP02",
+      "name": "Conflict (Fail-Closed)",
+      "result": "PASS",
+      "detail": {
+        "pattern": "CONFLICT",
+        "severity": "CRITICAL",
+        "checks": [
+          {
+            "check": "Failure detected",
+            "result": "PASS"
+          },
+          {
+            "check": "Escalation to Human Gate",
+            "result": "PASS"
+          },
+          {
+            "check": "Decision blocked until HG response",
+            "result": "PASS"
+          },
+          {
+            "check": "Severity level assigned",
+            "result": "PASS"
+          },
+          {
+            "check": "Recovery pathway available",
+            "result": "PASS"
+          }
+        ]
+      }
+    },
+    {
+      "test": "FP03",
+      "name": "Authority Missing (Fail-Closed)",
+      "result": "PASS",
+      "detail": {
+        "pattern": "AUTHORITY_MISSING",
+        "severity": "HIGH",
+        "checks": [
+          {
+            "check": "Failure detected",
+            "result": "PASS"
+          },
+          {
+            "check": "Escalation to Human Gate",
+            "result": "PASS"
+          },
+          {
+            "check": "Decision blocked until HG response",
+            "result": "PASS"
+          },
+          {
+            "check": "Severity level assigned",
+            "result": "PASS"
+          },
+          {
+            "check": "Recovery pathway available",
+            "result": "PASS"
+          }
+        ]
+      }
+    },
+    {
+      "test": "FP04",
+      "name": "Validation Failure (Fail-Closed)",
+      "result": "PASS",
+      "detail": {
+        "pattern": "VALIDATION_FAILURE",
+        "severity": "HIGH",
+        "checks": [
+          {
+            "check": "Failure detected",
+            "result": "PASS"
+          },
+          {
+            "check": "Escalation to Human Gate",
+            "result": "PASS"
+          },
+          {
+            "check": "Decision blocked until HG response",
+            "result": "PASS"
+          },
+          {
+            "check": "Severity level assigned",
+            "result": "PASS"
+          },
+          {
+            "check": "Recovery pathway available",
+            "result": "PASS"
+          }
+        ],
+        "failed_checks": [
+          2,
+          3,
+          5
+        ]
+      }
+    },
+    {
+      "test": "FP05",
+      "name": "Timestamp Conflict (Fail-Closed)",
+      "result": "PASS",
+      "detail": {
+        "pattern": "TIMESTAMP_CONFLICT",
+        "severity": "MEDIUM",
+        "checks": [
+          {
+            "check": "Failure detected",
+            "result": "PASS"
+          },
+          {
+            "check": "Escalation to Human Gate",
+            "result": "PASS"
+          },
+          {
+            "check": "Decision blocked until HG response",
+            "result": "PASS"
+          },
+          {
+            "check": "Severity level assigned",
+            "result": "PASS"
+          },
+          {
+            "check": "Recovery pathway available",
+            "result": "PASS"
+          }
+        ],
+        "original_order": [
+          "EVD_001",
+          "EVD_002",
+          "EVD_003",
+          "EVD_004"
+        ],
+        "correct_order": [
+          "EVD_004",
+          "EVD_002",
+          "EVD_001",
+          "EVD_003"
+        ]
+      }
+    }
+  ],
+  "total_pass": 5,
+  "total_fail": 0,
+  "timestamp": "2026-09-18T08:52:19.864707Z"
+}

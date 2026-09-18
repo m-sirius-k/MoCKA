@@ -1,0 +1,61 @@
+{
+  "step": "STEP_2_SCENARIOS",
+  "status": "PASS",
+  "scenarios": [
+    {
+      "scenario": "V01",
+      "name": "Valid Decision - All Checks Pass",
+      "result": "PASS",
+      "checks_passed": 6,
+      "overall": "VALID"
+    },
+    {
+      "scenario": "V02",
+      "name": "Missing Evidence Detection",
+      "result": "PASS",
+      "failure_pattern": "EVIDENCE_MISSING"
+    },
+    {
+      "scenario": "V03",
+      "name": "Conflict Detection",
+      "result": "PASS",
+      "severity": "CRITICAL"
+    },
+    {
+      "scenario": "V04",
+      "name": "Authority Revocation Detection",
+      "result": "PASS",
+      "state": "INVALID",
+      "revoked": true
+    },
+    {
+      "scenario": "V05",
+      "name": "Timestamp Ordering Violation",
+      "result": "PASS",
+      "pattern": "TIMESTAMP_CONFLICT"
+    },
+    {
+      "scenario": "V06",
+      "name": "Hash Integrity Violation",
+      "result": "PASS",
+      "check_result": "FAIL"
+    },
+    {
+      "scenario": "V07",
+      "name": "All Checks Failing",
+      "result": "PASS",
+      "overall": "INVALID",
+      "failed_checks": 4
+    },
+    {
+      "scenario": "V08",
+      "name": "Cascading Failure Recovery",
+      "result": "PASS",
+      "escalation_status": "APPROVED_BY_HUMAN_GATE",
+      "recovery_result": "VALID"
+    }
+  ],
+  "total_pass": 8,
+  "total_fail": 0,
+  "timestamp": "2026-09-18T08:51:45.655161Z"
+}
