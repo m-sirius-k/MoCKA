@@ -11,7 +11,7 @@ import json
 import subprocess
 import sys
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from flask import Flask, send_from_directory, jsonify, request
 from dotenv import load_dotenv
 
@@ -2207,11 +2207,19 @@ def audit_seal_manual():
     # 呼び出すか呼ばないかの判断のみをGateへ委譲する。
     from pathlib import Path as _P
     import sys as _sys
+    import uuid
     _sys.path.insert(0, str(_P(str(ROOT_DIR)) / "governance"))
     from seal_governance_gate import SealGovernanceGate
     seal_log = _P(r"C:\Users\sirok\MoCKA\data\seal_log.json")
     message = "MANUAL_SEAL_" + datetime.now().strftime("%Y%m%d_%H%M%S")
-    gate_result = SealGovernanceGate().execute(message=message)
+
+    # M2 Phase 1: Requester capture & seal_request_id generation
+    requester = request.headers.get("X-User-ID", request.remote_addr or "local_requester")
+    seal_request_id = f"SREQ_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
+
+    gate_result = SealGovernanceGate().execute(
+        message=message, requester=requester, seal_request_id=seal_request_id
+    )
     log = {
         "sealed_at": datetime.now().isoformat(),
         "approved": gate_result.approved,

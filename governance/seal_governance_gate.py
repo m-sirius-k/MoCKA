@@ -34,6 +34,7 @@ if str(_STRUCTURAL_DIR) not in sys.path:
     sys.path.insert(0, str(_STRUCTURAL_DIR))
 
 from execution_governance import ExecutionGovernanceEngine  # noqa: E402
+from seal_auth_record import verify_auth_record  # noqa: E402
 
 SEAL_SCRIPT = _MOCKA_ROOT / "scripts" / "ledger" / "anchor_update.py"
 DECISION_LEDGER_PATH = _MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl"
@@ -69,6 +70,7 @@ class SealGovernanceGate:
 
     def execute(self, message: str, scope: list[str] | None = None,
                 expected_max_changes: int | None = None,
+                requester: str = "system:default", seal_request_id: str = "",
                 _seal_runner=None) -> GateResult:
         execution_id = f"EXEC_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
         change_start = datetime.now(timezone.utc).isoformat()
@@ -83,7 +85,7 @@ class SealGovernanceGate:
                 reason=approval.reason,
                 aborts=approval.dry_run.aborts if approval.dry_run else [],
             )
-            self._record_decision_unit(execution_id, change_start, result)
+            self._record_decision_unit(execution_id, change_start, result, requester, seal_request_id)
             return result
 
         runner = _seal_runner or self._run_seal_script
@@ -96,7 +98,7 @@ class SealGovernanceGate:
             seal_stdout=stdout,
             seal_returncode=returncode,
         )
-        self._record_decision_unit(execution_id, change_start, result)
+        self._record_decision_unit(execution_id, change_start, result, requester, seal_request_id)
         return result
 
     def _run_seal_script(self, message: str):
@@ -117,13 +119,17 @@ class SealGovernanceGate:
                 summary_hash = line.split(":", 1)[1].strip()
         return commit_hash, summary_hash
 
-    def _record_decision_unit(self, execution_id: str, change_start: str, result: GateResult) -> None:
+    def _record_decision_unit(self, execution_id: str, change_start: str, result: GateResult,
+                              requester: str = "system:default", seal_request_id: str = "") -> None:
         commit_hash, summary_hash = (None, None)
         if result.approved:
             commit_hash, summary_hash = self._extract_hashes(result.seal_stdout)
 
+        decision_id = f"DC_{execution_id}"
+        approval_timestamp = datetime.now(timezone.utc).isoformat()
+
         entry = {
-            "decision_id": f"DC_{execution_id}",
+            "decision_id": decision_id,
             "title": "SealGovernanceGate seal request",
             "context": "Phase C-2 Governance Gate正式配置(TODO_411/412/413 Boundary対応)",
             "alternatives": [],
@@ -132,8 +138,8 @@ class SealGovernanceGate:
             "impact": "anchor_update.py実行有無の制御のみ、seal/hashロジック自体は無変更",
             "related_events": [],
             "related_documents": ["docs/governance/PHASE_C_GOVERNANCE_GATE_IMPLEMENTATION_REPORT_v1.0.md"],
-            "approved_by": "system:seal_governance_gate",
-            "approved_at": datetime.now(timezone.utc).isoformat(),
+            "approved_by": requester,
+            "approved_at": approval_timestamp,
             "supersedes": None,
             "superseded_by": None,
             "status": "Active",
@@ -143,7 +149,15 @@ class SealGovernanceGate:
             "artifact_hash": commit_hash,
             "seal_hash": summary_hash,
             "aborts": result.aborts,
+            "requester": requester,
+            "seal_request_id": seal_request_id,
+            "approval_timestamp": approval_timestamp,
         }
         self.decision_ledger_path.parent.mkdir(parents=True, exist_ok=True)
         with self.decision_ledger_path.open("a", encoding="utf-8") as f:
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+
+        valid, reasons = verify_auth_record(entry)
+        if not valid:
+            import sys
+            print(f"[verify_auth_record] VALIDATION FAILED for {decision_id}: {reasons}", file=sys.stderr)
