@@ -72,6 +72,10 @@ def _write(payload: dict, conn=None) -> None:
         'channel_type':    'gate',
         'lifecycle_phase': 'in_operation',
         'risk_level':      'normal',
+        'authorized_decision_id': payload.get('authorized_decision_id', ''),
+        'authorized_by':         payload.get('authorized_by', ''),
+        'authority_time':        payload.get('authority_time', ''),
+        'authority_level':       payload.get('authority_level', ''),
     }
     # 空文字列はNoneに変換して保存
     row = {k: (v if v != '' else None) for k, v in row.items()}
@@ -124,6 +128,30 @@ def process_event(payload: dict, event_source: str = 'live', conn=None) -> dict:
     errors = validate(payload)
     if errors:
         return {'status': 'rejected', 'errors': errors}
+
+    # Authorization validation (fail-closed)
+    if payload.get('authorized_decision_id'):
+        from pathlib import Path
+        decision_ledger_path = Path(__file__).resolve().parent.parent / 'data' / 'decisions' / 'decision_ledger.jsonl'
+
+        decision_found = False
+        if decision_ledger_path.exists():
+            try:
+                import json
+                with open(decision_ledger_path, encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        record = json.loads(line)
+                        if record.get('decision_id') == payload.get('authorized_decision_id'):
+                            decision_found = True
+                            break
+            except Exception as e:
+                return {'status': 'rejected', 'reason': f'Authorization validation error: {str(e)}', 'code': 'AUTH_ERROR'}
+
+        if not decision_found:
+            return {'status': 'rejected', 'reason': f"Decision {payload.get('authorized_decision_id')} not found in ledger", 'code': 'AUTH_INVALID'}
 
     payload = dict(payload)
     payload['event_id'] = payload.get('event_id') or _next_event_id()
