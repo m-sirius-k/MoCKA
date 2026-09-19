@@ -85,49 +85,41 @@ class AuthorityContext:
     temporal validity, revocation state, historical snapshot, provenance.
     HYBRID model: immutable historical snapshot + current state reference.
     """
-    # Identity & Reference
+    # Identity & Reference (required)
     authority_context_id: str  # Unique instance ID (e.g., CTX-{UUID})
     authority_id: str  # Reference to Authority Object in registry
 
-    # Authority State (Lifecycle — from Phase1)
+    # Authority State (required)
     authority_lifecycle_state: AuthorityLifecycleState
-    authority_lifecycle_state_at_decision: Optional[AuthorityLifecycleState] = None
-
-    # Authorization State (Runtime Verification — orthogonal to lifecycle)
     runtime_verification_state: RuntimeVerificationState
-    verification_timestamp: Optional[datetime] = None
-    verification_evidence: Optional[str] = None
 
-    # Scope (Decision Type and Resource Class)
+    # Scope (required)
     decision_type: str
     resource_class: str
 
-    # Temporal Validity
+    # Temporal Validity (required for non-indefinite)
     valid_from: datetime
-    valid_until: Optional[datetime] = None
-    is_indefinite: bool = False  # valid_until == null
+    granted_by: str
+    granted_at: datetime
+    granting_decision_id: str
 
-    # Revocation State (Prospective-only)
+    # Optional fields (with defaults)
+    authority_lifecycle_state_at_decision: Optional[AuthorityLifecycleState] = None
+    verification_timestamp: Optional[datetime] = None
+    verification_evidence: Optional[str] = None
+    valid_until: Optional[datetime] = None
+    is_indefinite: bool = False
     is_revoked: bool = False
     revoked_at: Optional[datetime] = None
     revoked_by: Optional[str] = None
     revocation_decision_id: Optional[str] = None
-
-    # Historical Snapshot (Immutable, captured at T_decision)
-    authority_state_at_decision: Optional[dict] = None  # Full snapshot of authority at decision time
+    authority_state_at_decision: Optional[dict] = None
     verification_state_at_decision: Optional[RuntimeVerificationState] = None
     scope_at_decision: Optional[Dict[str, str]] = None
     temporal_at_decision: Optional[Dict[str, Any]] = None
-
-    # Provenance
-    granted_by: str
-    granted_at: datetime
-    granting_decision_id: str
     provenance_evidence: Optional[str] = None
-
-    # Decision/Execution Binding
-    decision_id: Optional[str] = None  # Which decision uses this authority
-    execution_id: Optional[str] = None  # Which execution used this authority
+    decision_id: Optional[str] = None
+    execution_id: Optional[str] = None
 
     def __post_init__(self):
         """Validate Authority Context invariants"""
