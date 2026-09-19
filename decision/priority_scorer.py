@@ -17,7 +17,7 @@ priority_scorer.py
   0.0 - 1.0 のスコア。判断(実行可否)は行わない。
 """
 
-from decision_registry import DecisionProfile
+from .decision_registry import DecisionProfile
 
 # 各評価軸の重み(合計 1.0)
 _WEIGHTS = {

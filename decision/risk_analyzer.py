@@ -16,7 +16,7 @@ risk_analyzer.py
   実行可否の判断(Governance Layerの責務)は行わない。
 """
 
-from decision_registry import DecisionProfile
+from .decision_registry import DecisionProfile
 
 # 各評価軸の重み(合計 1.0)
 _WEIGHTS = {

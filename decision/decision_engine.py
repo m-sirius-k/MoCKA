@@ -16,14 +16,19 @@ decision_engine.py
   最終判断はGovernance Layer(GL1-7)に委ねる。
 """
 
-from decision_model import Alternative, DecisionResult
-from decision_registry import get_decision_profile
-from priority_scorer import PriorityScorer
-from risk_analyzer import RiskAnalyzer
+from typing import Optional, Dict, Any
+from .decision_model import Alternative, DecisionResult
+from .decision_registry import get_decision_profile
+from .priority_scorer import PriorityScorer
+from .risk_analyzer import RiskAnalyzer
 
 
 class DecisionEngine:
-    """SemanticResult -> DecisionResult のコアエンジン。"""
+    """SemanticResult -> DecisionResult のコアエンジン。
+
+    M3 Integration: decide() creates DecisionResult without authority.
+    decide_with_authority() creates DecisionResult with authority binding.
+    """
 
     def __init__(self, priority_scorer: PriorityScorer = None, risk_analyzer: RiskAnalyzer = None):
         self._priority_scorer = priority_scorer or PriorityScorer()
@@ -70,6 +75,71 @@ class DecisionEngine:
             rationale=rationale,
             required_governance_check=True,
             risk_factors=risk_factors,
+            authority_context=None,
+            authority_binding=None,
+        )
+
+    def decide_with_authority(self, semantic_result, authority_context: Optional[Dict[str, Any]] = None) -> DecisionResult:
+        """Create DecisionResult with Authority Context binding.
+
+        If authority_context provided, captures immutable snapshot at T_decision.
+        If authority is UNKNOWN/NOT_VERIFIED, binding is still recorded but marked.
+        Enforcement of VERIFIED-only execution happens at Executor boundary (STEP 4).
+        """
+        profile = get_decision_profile(semantic_result.intent.key)
+
+        priority_score = self._priority_scorer.score(semantic_result, profile)
+        risk_score, risk_factors = self._risk_analyzer.analyze(semantic_result, profile)
+
+        selected_action = profile.default_action
+
+        alternatives = []
+        for alt_text in profile.alternative_actions:
+            alternatives.append(Alternative(
+                action=alt_text,
+                priority_score=round(priority_score * 0.8, 4),
+                risk_score=risk_score,
+            ))
+
+        for candidate in semantic_result.candidates[1:]:
+            alt_profile = get_decision_profile(candidate.key)
+            alt_priority = self._priority_scorer.score(semantic_result, alt_profile)
+            alt_risk, _ = self._risk_analyzer.analyze(semantic_result, alt_profile)
+            alternatives.append(Alternative(
+                action=alt_profile.default_action,
+                priority_score=alt_priority,
+                risk_score=alt_risk,
+            ))
+
+        rationale = self._build_rationale(
+            semantic_result, profile, priority_score, risk_score,
+        )
+
+        # Capture authority binding snapshot at T_decision (immutable)
+        authority_binding_snapshot = None
+        if authority_context is not None:
+            # Create immutable snapshot of authority at decision time
+            authority_binding_snapshot = {
+                "authority_id": authority_context.get("authority_id"),
+                "authority_context_id": authority_context.get("authority_context_id"),
+                "verification_state_at_decision": authority_context.get("verification_state"),
+                "lifecycle_state_at_decision": authority_context.get("authority_lifecycle_state"),
+                "decision_type": authority_context.get("decision_type"),
+                "resource_class": authority_context.get("resource_class"),
+                "captured_at_decision_time": True,
+            }
+
+        return DecisionResult(
+            selected_action=selected_action,
+            alternatives=tuple(alternatives),
+            priority_score=priority_score,
+            risk_score=risk_score,
+            confidence=semantic_result.confidence,
+            rationale=rationale,
+            required_governance_check=True,
+            risk_factors=risk_factors,
+            authority_context=authority_context,
+            authority_binding=authority_binding_snapshot,
         )
 
     @staticmethod
