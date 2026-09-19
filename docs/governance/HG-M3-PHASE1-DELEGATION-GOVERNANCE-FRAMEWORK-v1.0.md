@@ -68,10 +68,9 @@ Delegation is the formal transfer of authority from an existing GRANTED_HUMAN Au
 ### 3.3 Who Approves Delegation?
 
 **Delegation Approval Authority:**
-- For delegation initiated by holder: Delegation Governance Committee or Human Gate (Phase 1: deferred to Phase 2 for specific governance body definition)
-- For delegation initiated by Human Gate: Human Gate directly
+- Human Gate only approves all delegation requests (regardless of request initiator)
 
-**Requirement #8:** Delegation MUST be approved by authority at same level or higher than delegating authority.
+**Requirement #8:** All delegation requests MUST be approved by Human Gate.
 
 ---
 
@@ -95,9 +94,9 @@ Delegation_Request:
   max_recursive_delegations: integer (must be 0 for Phase 1)
 ```
 
-### 4.2 Delegation Evaluation
+### 4.2 Delegation Approval (Human Gate Decision)
 
-Delegation Request is evaluated against:
+Human Gate reviews Delegation Request against the following criteria:
 
 1. **Permission Check:**
    - Does source Authority Object have max_delegations > 0?
@@ -120,14 +119,12 @@ Delegation Request is evaluated against:
    - Is delegation_depth of resulting DELEGATED object exactly 1?
    - Does request forbid transitive delegation (max_recursive_delegations = 0)?
 
-### 4.3 Delegation Approval
-
-Delegation Request is either:
+Human Gate either:
 
 **APPROVED:** New DELEGATED Authority Object is created with:
 - delegation_source = source Authority Object ID
 - delegation_depth = 1
-- granted_by = delegation approval authority (Human Gate or Governance Committee)
+- granted_by = Human Gate
 - state = CREATED (or ACTIVE if valid_from <= now)
 
 **REJECTED:** Delegation Request is denied with reason recorded in Decision Ledger:
@@ -147,7 +144,7 @@ Delegation Lifecycle:
   APPROVED        # Delegation approved, DELEGATED Authority Object created
   ACTIVE          # Delegated authority is executable (temporal scope entered)
   REVOKED_BY_DELEGATOR    # Delegating authority revoked the delegation
-  REVOKED_BY_GOVERNANCE   # Human Gate or Governance Committee revoked
+  REVOKED_BY_GOVERNANCE   # Human Gate revoked delegation (via governance authority)
   EXPIRED         # Temporal scope of delegation expired
 ```
 
@@ -279,7 +276,7 @@ First M3 Delegated Authority Object is created under M3 delegation framework:
 
 The following delegation governance aspects are NOT defined in Phase 1 and are deferred:
 
-1. **Delegation Governance Committee:** Which specific individuals/bodies approve delegations (deferred to Phase 2)
+1. ~~**Delegation Governance Committee:** Which specific individuals/bodies approve delegations~~ **DECIDED:** Human Gate only approves all delegations (Q1-B, 2026-09-19)
 2. **Delegation Request Protocol:** Specific process/interface for submitting delegation requests (deferred to Phase 2)
 3. **Delegation Performance Metrics:** SLA for delegation approval time, audit latency (deferred to Phase 2)
 4. **Recipient Eligibility Criteria:** How recipients are pre-qualified to receive delegations (UNDEFINED)

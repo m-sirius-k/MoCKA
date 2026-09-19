@@ -75,7 +75,7 @@ Authority_Object:
   
   # Temporal Validity
   valid_from:             timestamp # ISO 8601 when authority becomes effective (default: granted_at)
-  valid_until:            timestamp # ISO 8601 when authority expires (null = indefinite)
+  valid_until:            timestamp | null # ISO 8601 when authority expires (null = indefinite, OPTIONAL)
   
   # Delegation Chain (if delegated)
   delegation_source:      string    # (if delegated) ID of Authority Object this was delegated from
@@ -101,7 +101,7 @@ Authority_Object:
 
 ```
 Authority_Object_Derived:
-  is_active:              bool      # (valid_from <= now < valid_until) AND state == ACTIVE
+  is_active:              bool      # (valid_from <= now AND (valid_until is null OR now < valid_until)) AND state == ACTIVE
   can_delegate:           bool      # (delegation_depth < 1) AND (max_delegations > 0)
   can_grant_decision:     bool      # is_active AND state != REVOKED
 ```
