@@ -159,17 +159,23 @@ class ExecutorBoundary:
                     failed_dimension="temporal_valid",
                 )
 
-        # Dimension 6: Requested scope/resource is authorized
+        # Dimension 6: Requested scope/resource is authorized (HARD STOP on mismatch)
         decision_type = decision_result.selected_action
         auth_decision_type = current_authority.get("decision_type")
         if auth_decision_type and auth_decision_type != decision_type:
-            # In sandbox, we allow mismatch but flag it. Production would STOP.
-            pass  # For STEP 4 testing, log but continue
+            return AuthorityValidationResult(
+                is_valid=False,
+                reason=f"SCOPE_MISMATCH: decision_type mismatch (requested={decision_type}, authorized={auth_decision_type})",
+                failed_dimension="scope_authorized",
+            )
 
         resource_class = current_authority.get("resource_class")
         if resource_class and resource_class not in ("RESOURCE_CLASS_TEST", "RESOURCE_CLASS_PROV", "RESOURCE_CLASS_HIST", "RESOURCE_CLASS_X", "TEST"):
-            # Sandbox mode: allow for testing
-            pass
+            return AuthorityValidationResult(
+                is_valid=False,
+                reason=f"SCOPE_MISMATCH: resource_class not authorized (resource_class={resource_class})",
+                failed_dimension="scope_authorized",
+            )
 
         # Dimension 7: Decision remains bound to relevant Authority Context
         binding = decision_result.authority_binding
