@@ -12,6 +12,10 @@ data/*
 !data/tic/
 data/tic/*
 !data/tic/canary_overrides_last_run.json
+# Decision Ledger: canonical Human Gate decision record
+!data/decisions/
+data/decisions/*
+!data/decisions/decision_ledger.jsonl
 *.csv
 .env
 *.key
