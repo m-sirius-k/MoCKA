@@ -32,6 +32,18 @@ class AuthorityLifecycleState(str, Enum):
     EXPIRED = "EXPIRED"
 
 
+class RuntimeVerificationState(str, Enum):
+    """Runtime Authorization Verification State (Orthogonal to Lifecycle State)
+    Tracks whether authority has been verified at runtime.
+    Separate from lifecycle_state: an authority can be GRANTED_HUMAN (lifecycle)
+    but NOT_VERIFIED (runtime) if we haven't checked it yet.
+    """
+    VERIFIED = "VERIFIED"
+    NOT_VERIFIED = "NOT_VERIFIED"
+    INVALID = "INVALID"
+    UNKNOWN = "UNKNOWN"
+
+
 @dataclass
 class TemporalScope:
     """Temporal validity scope for authority (Q5: valid_until is OPTIONAL)"""
@@ -62,6 +74,134 @@ class TemporalScope:
             check_time = datetime.utcnow()
 
         return check_time >= self.valid_until
+
+
+@dataclass
+class AuthorityContext:
+    """
+    Authority Context Instance (HG-M3 Integration Phase)
+    Represents complete authority evidence flowing through the pipeline.
+    Carries ~24 fields: identity, state (lifecycle + verification), scope,
+    temporal validity, revocation state, historical snapshot, provenance.
+    HYBRID model: immutable historical snapshot + current state reference.
+    """
+    # Identity & Reference
+    authority_context_id: str  # Unique instance ID (e.g., CTX-{UUID})
+    authority_id: str  # Reference to Authority Object in registry
+
+    # Authority State (Lifecycle — from Phase1)
+    authority_lifecycle_state: AuthorityLifecycleState
+    authority_lifecycle_state_at_decision: Optional[AuthorityLifecycleState] = None
+
+    # Authorization State (Runtime Verification — orthogonal to lifecycle)
+    runtime_verification_state: RuntimeVerificationState
+    verification_timestamp: Optional[datetime] = None
+    verification_evidence: Optional[str] = None
+
+    # Scope (Decision Type and Resource Class)
+    decision_type: str
+    resource_class: str
+
+    # Temporal Validity
+    valid_from: datetime
+    valid_until: Optional[datetime] = None
+    is_indefinite: bool = False  # valid_until == null
+
+    # Revocation State (Prospective-only)
+    is_revoked: bool = False
+    revoked_at: Optional[datetime] = None
+    revoked_by: Optional[str] = None
+    revocation_decision_id: Optional[str] = None
+
+    # Historical Snapshot (Immutable, captured at T_decision)
+    authority_state_at_decision: Optional[dict] = None  # Full snapshot of authority at decision time
+    verification_state_at_decision: Optional[RuntimeVerificationState] = None
+    scope_at_decision: Optional[Dict[str, str]] = None
+    temporal_at_decision: Optional[Dict[str, Any]] = None
+
+    # Provenance
+    granted_by: str
+    granted_at: datetime
+    granting_decision_id: str
+    provenance_evidence: Optional[str] = None
+
+    # Decision/Execution Binding
+    decision_id: Optional[str] = None  # Which decision uses this authority
+    execution_id: Optional[str] = None  # Which execution used this authority
+
+    def __post_init__(self):
+        """Validate Authority Context invariants"""
+        if not self.authority_context_id:
+            raise ValueError("authority_context_id required")
+        if not self.authority_id:
+            raise ValueError("authority_id required")
+
+        # UNKNOWN / NOT_VERIFIED are fail-closed states
+        if self.runtime_verification_state in (RuntimeVerificationState.UNKNOWN,
+                                                RuntimeVerificationState.NOT_VERIFIED):
+            if self.decision_id is not None:
+                raise ValueError(
+                    f"Cannot bind decision with {self.runtime_verification_state} authority"
+                )
+
+    def is_eligible_for_execution(self, check_time: Optional[datetime] = None) -> bool:
+        """
+        Check if this context permits consequential execution.
+        All conditions must be satisfied:
+        - Verification succeeded (VERIFIED)
+        - Lifecycle state is ACTIVE (not REVOKED, EXPIRED, NONE)
+        - Temporal scope is valid
+        - Not revoked
+        - Scope matches (caller must check separately)
+        """
+        if check_time is None:
+            check_time = datetime.utcnow()
+
+        # Verification check
+        if self.runtime_verification_state != RuntimeVerificationState.VERIFIED:
+            return False
+
+        # Lifecycle check
+        if self.authority_lifecycle_state not in (
+            AuthorityLifecycleState.ACTIVE,
+            AuthorityLifecycleState.CREATED
+        ):
+            return False
+
+        # Revocation check
+        if self.is_revoked:
+            return False
+
+        # Temporal check
+        if check_time < self.valid_from:
+            return False
+        if self.valid_until is not None and check_time >= self.valid_until:
+            return False
+
+        return True
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Serialize Authority Context for storage/transport"""
+        return {
+            "authority_context_id": self.authority_context_id,
+            "authority_id": self.authority_id,
+            "authority_lifecycle_state": self.authority_lifecycle_state.value,
+            "runtime_verification_state": self.runtime_verification_state.value,
+            "decision_type": self.decision_type,
+            "resource_class": self.resource_class,
+            "valid_from": self.valid_from.isoformat(),
+            "valid_until": self.valid_until.isoformat() if self.valid_until else None,
+            "is_indefinite": self.is_indefinite,
+            "is_revoked": self.is_revoked,
+            "revoked_at": self.revoked_at.isoformat() if self.revoked_at else None,
+            "revoked_by": self.revoked_by,
+            "revocation_decision_id": self.revocation_decision_id,
+            "granted_by": self.granted_by,
+            "granted_at": self.granted_at.isoformat(),
+            "granting_decision_id": self.granting_decision_id,
+            "decision_id": self.decision_id,
+            "execution_id": self.execution_id,
+        }
 
 
 @dataclass
