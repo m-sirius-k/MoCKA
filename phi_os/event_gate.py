@@ -72,6 +72,7 @@ def _write(payload: dict, conn=None) -> None:
         'channel_type':    'gate',
         'lifecycle_phase': 'in_operation',
         'risk_level':      'normal',
+        'request_id':      payload.get('request_id'),
     }
     # 空文字列はNoneに変換して保存
     row = {k: (v if v != '' else None) for k, v in row.items()}

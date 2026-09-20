@@ -477,8 +477,83 @@ TOOLS = [
     {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
 ]
 
-def execute_tool(name, args):
+def _check_request_duplicate(req_id):
+    """
+    req_id が既に処理済みかどうか確認する。
+    既存 gate_idempotency テーブルを使用してrequest-level deduplication を実装。
+    戻り値: (is_duplicate: bool, event_id: str or None)
+    """
+    if not req_id:
+        return False, None
+    con = _get_db()
     try:
+        # request_executions テーブルで req_id を確認
+        # (exec_id=req_id, executed_at=timestamp を記録)
+        row = con.execute(
+            "SELECT req_id, executed_at FROM request_executions WHERE req_id = ? LIMIT 1",
+            (str(req_id),)
+        ).fetchone()
+        if row:
+            return True, row['req_id']
+        return False, None
+    except Exception as e:
+        # table が無い場合などは作成を試みる
+        try:
+            con.execute('''
+                CREATE TABLE IF NOT EXISTS request_executions (
+                    req_id TEXT PRIMARY KEY,
+                    executed_at TEXT,
+                    tool_name TEXT,
+                    status TEXT
+                )
+            ''')
+            con.commit()
+            return False, None
+        except Exception as e2:
+            # TABLE creation failed => cannot determine duplicate status safely
+            # FAIL-CLOSED: treat as UNKNOWN (act as duplicate) to BLOCK execution
+            print(f"[ERROR] request_executions table creation failed (fail-closed): {e2}", flush=True)
+            return True, None
+    finally:
+        con.close()
+
+
+def _record_request_execution(req_id, tool_name, status="started"):
+    """
+    req_id と tool_name を request_executions に記録。
+    Fail-soft: 記録失敗時も tool 実行を止めない（記録が目的ではなく、duplicate チェックが目的）。
+    """
+    if not req_id:
+        return
+    con = _get_db()
+    try:
+        con.execute(
+            "INSERT OR REPLACE INTO request_executions (req_id, executed_at, tool_name, status) VALUES (?, ?, ?, ?)",
+            (str(req_id), datetime.datetime.now().isoformat(), tool_name, status)
+        )
+        con.commit()
+    except Exception as e:
+        print(f"[WARN] request_executions record failed (non-blocking): {e}", flush=True)
+    finally:
+        con.close()
+
+
+def execute_tool(name, args, req_id=None):
+    try:
+        # STEP 9: Request Boundary Idempotency Check
+        # 同一 req_id が既に処理済みの場合は実行しない (fail-closed)
+        is_duplicate, dup_req_id = _check_request_duplicate(req_id)
+        if is_duplicate:
+            print(f"[IDEMPOTENCY] Duplicate request detected: req_id={req_id}, tool={name}", flush=True)
+            return json.dumps({
+                "error": "DUPLICATE_REQUEST",
+                "reason": f"Request {req_id} already executed",
+                "req_id": str(req_id),
+            }, ensure_ascii=False)
+
+        # 新規 request として記録開始
+        _record_request_execution(req_id, name, "started")
+
         if _governance is None:
             # Fail Closed: Governance Pipeline自体が初期化できていない場合、
             # READ_ONLY_TOOLS以外は安全側で実行を停止する。
@@ -695,6 +770,7 @@ def execute_tool(name, args):
                 "after_state":     _desc[:200] or _title,
                 "description":     _desc,
                 "tags":            args.get("tags", ""),
+                "request_id":      req_id,
             }
             try:
                 r = requests.post(GATE_URL, json=gate_payload, timeout=5)
@@ -1141,7 +1217,7 @@ def mcp_endpoint():
     elif method == "tools/list":
         result = {"tools": TOOLS}
     elif method == "tools/call":
-        result = {"content": [{"type": "text", "text": execute_tool(params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+        result = {"content": [{"type": "text", "text": execute_tool(params.get("name", ""), params.get("arguments", {}), req_id=req_id)}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
     response = {"jsonrpc": "2.0", "id": req_id, "result": result}
@@ -1155,7 +1231,16 @@ TEST_TOOLS = [
     {"name": "echo", "description": "Logical Isolation test tool: echoes back the given text. Does not call any MoCKA core functionality.", "inputSchema": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"]}}
 ]
 
-def execute_test_tool(name, arguments):
+def execute_test_tool(name, arguments, req_id=None):
+    # Test tools also go through req_id check for consistency
+    is_duplicate, _ = _check_request_duplicate(req_id)
+    if is_duplicate:
+        return json.dumps({
+            "error": "DUPLICATE_REQUEST",
+            "reason": f"Request {req_id} already executed",
+        }, ensure_ascii=False)
+    _record_request_execution(req_id, name, "test_started")
+
     if name == "ping":
         return json.dumps({"result": "pong"})
     elif name == "echo":
@@ -1178,7 +1263,7 @@ def mcp_test_endpoint():
     elif method == "tools/list":
         result = {"tools": TEST_TOOLS}
     elif method == "tools/call":
-        result = {"content": [{"type": "text", "text": execute_test_tool(params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+        result = {"content": [{"type": "text", "text": execute_test_tool(params.get("name", ""), params.get("arguments", {}), req_id=req_id)}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
     response = {"jsonrpc": "2.0", "id": req_id, "result": result}
@@ -1228,12 +1313,13 @@ TOOLS_ADMIN_TEST = [
     {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
 ]
 
-def execute_scope_test_tool(server_name, name, arguments):
-    """Step5診断用stub。実データ・GL7に一切触れない。"""
+def execute_scope_test_tool(server_name, name, arguments, req_id=None):
+    """Step5診断用stub。実データ・GL7に一切触れない。req_id は logging のみ（duplicate check しない）。"""
     return json.dumps({
         "stub": True,
         "server": server_name,
         "tool": name,
+        "req_id": str(req_id) if req_id else None,
         "note": "Logical Scope Separation test route. Schema is byte-identical to production /mcp. This call did not touch any real MoCKA data or GL7 Governance Pipeline.",
         "received_arguments_keys": list(arguments.keys())
     }, ensure_ascii=False)
@@ -1254,7 +1340,7 @@ def mcp_core_test_endpoint():
     elif method == "tools/list":
         result = {"tools": TOOLS_CORE_TEST}
     elif method == "tools/call":
-        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-core-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-core-test", params.get("name", ""), params.get("arguments", {}), req_id=req_id)}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
     response = {"jsonrpc": "2.0", "id": req_id, "result": result}
@@ -1276,7 +1362,7 @@ def mcp_memory_test_endpoint():
     elif method == "tools/list":
         result = {"tools": TOOLS_MEMORY_TEST}
     elif method == "tools/call":
-        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-memory-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-memory-test", params.get("name", ""), params.get("arguments", {}), req_id=req_id)}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
     response = {"jsonrpc": "2.0", "id": req_id, "result": result}
@@ -1298,7 +1384,7 @@ def mcp_governance_test_endpoint():
     elif method == "tools/list":
         result = {"tools": TOOLS_GOVERNANCE_TEST}
     elif method == "tools/call":
-        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-governance-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-governance-test", params.get("name", ""), params.get("arguments", {}), req_id=req_id)}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
     response = {"jsonrpc": "2.0", "id": req_id, "result": result}
@@ -1320,7 +1406,7 @@ def mcp_admin_test_endpoint():
     elif method == "tools/list":
         result = {"tools": TOOLS_ADMIN_TEST}
     elif method == "tools/call":
-        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-admin-test", params.get("name", ""), params.get("arguments", {}))}], "isError": False}
+        result = {"content": [{"type": "text", "text": execute_scope_test_tool("mocka-admin-test", params.get("name", ""), params.get("arguments", {}), req_id=req_id)}], "isError": False}
     else:
         return json.dumps({"jsonrpc": "2.0", "id": req_id, "error": {"code": -32601, "message": f"unknown: {method}"}}), 200, {"Content-Type": "application/json"}
     response = {"jsonrpc": "2.0", "id": req_id, "result": result}
