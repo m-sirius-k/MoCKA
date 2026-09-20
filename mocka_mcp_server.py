@@ -280,6 +280,60 @@ def _write_reopen_event(todo_id: str, new_status: str, reason: str) -> str:
             return result["event_id"]
         raise RuntimeError(f"GATE offline fallback rejected: {result.get('errors')}")
 
+def _record_governance_block(req_id: str, tool_name: str, decision_reason: str, decision_id: str = None) -> str or None:
+    """
+    STEP 9: Governance BLOCK Event Persistence
+    Record BA-04 execution rejection to institutional memory.
+    Canonical: GATE event_gate (same path as mocka_write_event)
+    Fail-closed: Recording failure does NOT allow execution.
+
+    Returns: event_id (or None if recording failed, but execution remains BLOCKED)
+    """
+    title = f"[GOVERNANCE_BLOCK] {tool_name}"
+    desc  = f"Tool: {tool_name}\nReason: {decision_reason}\nreq_id: {req_id}\ndecision_id: {decision_id or 'N/A'}"
+
+    gate_payload = {
+        "who_actor":       _DEFAULT_ACTOR,
+        "who_role":        "governance",
+        "who_session":     SESSION_ID,
+        "what_type":       "governance_block",
+        "what_title":      title,
+        "where_path":      "governance_pipeline.py",
+        "where_component": "ba04_execution_gate",
+        "why_purpose":     "Authority Decision Enforcement",
+        "how_trigger":     "before_tool() BLOCK",
+        "after_state":     "Execution BLOCKED",
+        "description":     desc,
+        "tags":            f"governance_block,ba04,{tool_name},{decision_reason}",
+        "request_id":      req_id,
+    }
+
+    try:
+        r = requests.post(GATE_URL, json=gate_payload, timeout=5)
+        if r.status_code == 201:
+            event_id = r.json().get("event_id", "?")
+            print(f"[GOVERNANCE_BLOCK] recorded {event_id}: req_id={req_id} tool={tool_name} reason={decision_reason}", flush=True)
+            return event_id
+    except requests.exceptions.ConnectionError:
+        import sys as _sys
+        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        if _repo_root not in _sys.path:
+            _sys.path.insert(0, _repo_root)
+        from phi_os.event_gate import process_event as _gate_process_event
+        try:
+            result = _gate_process_event(gate_payload, event_source="live")
+            if result["status"] == "ok":
+                event_id = result["event_id"]
+                print(f"[GOVERNANCE_BLOCK offline] recorded {event_id}: req_id={req_id} tool={tool_name}", flush=True)
+                return event_id
+        except Exception as _fallback_err:
+            print(f"[ERROR] GOVERNANCE_BLOCK offline fallback failed: {_fallback_err}", flush=True)
+    except Exception as e:
+        print(f"[ERROR] GOVERNANCE_BLOCK recording failed: {e}", flush=True)
+
+    print(f"[ERROR] GOVERNANCE_BLOCK persistence failed (fail-closed): req_id={req_id} tool={tool_name}", flush=True)
+    return None
+
 def auto_log(tool_name, args, result_summary):
     # CSV廃止済み → SQLite(claude_sessionsテーブル)に記録
     try:
@@ -564,8 +618,17 @@ def execute_tool(name, args, req_id=None):
                 }, ensure_ascii=False)
         else:
             try:
-                decision = _governance.before_tool(name, args)
+                decision = _governance.before_tool(name, args, req_id=req_id, session_id=SESSION_ID)
                 if not decision.allowed:
+                    # STEP 9: BLOCK PERSISTENCE
+                    # Record governance rejection to institutional memory before returning error.
+                    # Fail-closed: Recording failure does NOT allow execution.
+                    _record_governance_block(
+                        req_id=str(req_id) if req_id else "N/A",
+                        tool_name=name,
+                        decision_reason=decision.reason,
+                        decision_id=args.get("decision_id")
+                    )
                     return json.dumps({
                         "error": "GL7_EXECUTION_BLOCKED",
                         "reason": decision.reason,
