@@ -1,5 +1,81 @@
 [
   {
+    "event_id": "E20260920_229223576e84d",
+    "when_ts": "2026-09-20T06:03:49.223604+00:00",
+    "who_actor": "script:mocka_git_safe_commit",
+    "what_type": "claude_mcp",
+    "where_component": "mcp_caliber",
+    "where_path": "mocka_mcp_server.py",
+    "why_purpose": "TODO_413: Git操作の制度的記録(呼び出し元非依存)",
+    "how_trigger": "mocka_git_safe_commit/sync_watch.py:71",
+    "channel_type": "gate",
+    "lifecycle_phase": "in_operation",
+    "risk_level": "normal",
+    "category_ab": null,
+    "target_class": null,
+    "title": "CHANGE_DONE: git commit成功 9de4532",
+    "short_summary": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=9de453203621be1f19474a03cf41d1738ea23ee2 | actor=script:mocka_git_safe_commit | caller=sync_watch.py:71 | timestamp=2026-09-20T15:03:43.884106 | result=success | commit_message='auto sync 2026-09-20T06:03:36Z' | files=['data/MOCKA_OVERVIEW.json', 'data/MOCKA_TODO.json', 'data/events_latest.json', 'data/lever_essence.json'] | post_commit_violation=[]",
+    "before_state": null,
+    "after_state": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=9de453203621be1f19474a03cf41d1738ea23ee2 | actor=script:mocka_git_safe_commit | caller=sync_watc",
+    "change_type": null,
+    "impact_scope": null,
+    "impact_result": null,
+    "related_event_id": "bdfa8be73079647bc07a8182acff901bd2c4e2192ae5f1b8113bdea6acf1255d",
+    "trace_id": "611f9eb6d396ba4dcf64d730cbd33ee273fe28da0b79bc3acc31296ba51333f1",
+    "free_note": "todo_413,git_commit,institutional_recording_point,success|who_role=executor|event_source=live",
+    "_imported_at": null,
+    "_source": "live",
+    "ai_actor": null,
+    "session_id": "SESSION_20260920_111743",
+    "severity": null,
+    "pattern_score": null,
+    "recurrence_flag": 0,
+    "verified_by": null,
+    "data_integrity": "normal",
+    "integrity_note": null,
+    "recovered_short_summary": null,
+    "parent_event_ref": null,
+    "request_id": null
+  },
+  {
+    "event_id": "E20260920_2220313812342",
+    "when_ts": "2026-09-20T06:03:42.031412+00:00",
+    "who_actor": "script:mocka_git_safe_commit",
+    "what_type": "claude_mcp",
+    "where_component": "mcp_caliber",
+    "where_path": "mocka_mcp_server.py",
+    "why_purpose": "TODO_413: Git操作の制度的記録(呼び出し元非依存)",
+    "how_trigger": "mocka_git_safe_commit/sync_watch.py:71",
+    "channel_type": "gate",
+    "lifecycle_phase": "in_operation",
+    "risk_level": "normal",
+    "category_ab": null,
+    "target_class": null,
+    "title": "CHANGE_START: git commit 開始",
+    "short_summary": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=N/A | actor=script:mocka_git_safe_commit | caller=sync_watch.py:71 | timestamp=2026-09-20T15:03:36.371313 | result=started | commit_message='auto sync 2026-09-20T06:03:36Z'",
+    "before_state": null,
+    "after_state": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=N/A | actor=script:mocka_git_safe_commit | caller=sync_watch.py:71 | timestamp=2026-09-20T15:03:",
+    "change_type": null,
+    "impact_scope": null,
+    "impact_result": null,
+    "related_event_id": "799d3d003ead8f1d8970fbd2b0fee39de2cf7610d446611f8a0e8fba74ebf718",
+    "trace_id": "bdfa8be73079647bc07a8182acff901bd2c4e2192ae5f1b8113bdea6acf1255d",
+    "free_note": "todo_413,git_commit,institutional_recording_point,started|who_role=executor|event_source=live",
+    "_imported_at": null,
+    "_source": "live",
+    "ai_actor": null,
+    "session_id": "SESSION_20260920_111743",
+    "severity": null,
+    "pattern_score": null,
+    "recurrence_flag": 0,
+    "verified_by": null,
+    "data_integrity": "normal",
+    "integrity_note": null,
+    "recovered_short_summary": null,
+    "parent_event_ref": null,
+    "request_id": null
+  },
+  {
     "event_id": "E20260920_61332127696c2",
     "when_ts": "2026-09-20T05:53:33.321286+00:00",
     "who_actor": "script:mocka_git_safe_commit",
@@ -34,7 +110,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_6072884609f15",
@@ -71,7 +148,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_998443091ad1a",
@@ -108,7 +186,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_991333981feeb",
@@ -145,7 +224,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_3817148681260",
@@ -182,7 +262,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_37489441467d7",
@@ -219,7 +300,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "AUTO_SEAL_PENDING_20260920142330",
@@ -256,7 +338,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_7653466209bf9",
@@ -293,7 +376,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_7578050629da5",
@@ -330,7 +414,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_148360930ddf5",
@@ -367,7 +452,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_141627757a6e6",
@@ -404,7 +490,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_532195333cda4",
@@ -441,7 +528,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_525103255ecee",
@@ -478,7 +566,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_916432362b261",
@@ -515,7 +604,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_9095165477e9a",
@@ -552,7 +642,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_30027298592a1",
@@ -589,7 +680,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2927867087912",
@@ -626,7 +718,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_6839154094d95",
@@ -663,7 +756,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_67716733904b4",
@@ -700,7 +794,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_06806632217b0",
@@ -737,7 +832,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_060605129e674",
@@ -774,7 +870,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_451718754be15",
@@ -811,7 +908,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_44575434937ea",
@@ -848,7 +946,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_837019732d4ef",
@@ -885,7 +984,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_8298993130862",
@@ -922,7 +1022,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2212943511397",
@@ -959,7 +1060,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2148339360efc",
@@ -996,7 +1098,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_605514095d7c6",
@@ -1033,7 +1136,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_597818060e739",
@@ -1070,7 +1174,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_98860893809a2",
@@ -1107,7 +1212,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_98249819554cd",
@@ -1144,7 +1250,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_37342591681e6",
@@ -1181,7 +1288,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_365426983cb66",
@@ -1218,7 +1326,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_755881489d3ae",
@@ -1255,7 +1364,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_749194583a201",
@@ -1292,7 +1402,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_13970043483b3",
@@ -1329,7 +1440,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_131921986f7d1",
@@ -1366,7 +1478,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_522751170cd48",
@@ -1403,7 +1516,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_5163286074ed4",
@@ -1440,7 +1554,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2981949531047",
@@ -1477,7 +1592,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2103815128bd7",
@@ -1514,7 +1630,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_1392740267661",
@@ -1551,7 +1668,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_0221405281be7",
@@ -1588,7 +1706,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_907227071eaa8",
@@ -1625,7 +1744,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_9009502669288",
@@ -1662,7 +1782,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_77985385026b5",
@@ -1699,7 +1820,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_67397446461cf",
@@ -1736,7 +1858,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_5479444305efe",
@@ -1773,7 +1896,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50ZTgt",
@@ -1810,7 +1934,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_291829965e239",
@@ -1847,7 +1972,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2852463316f07",
@@ -1884,7 +2010,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_829470516b40b",
@@ -1921,7 +2048,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_72384052621be",
@@ -1958,7 +2086,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_692295176b0a5",
@@ -1995,7 +2124,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "ESR_20260920_021751_d2ff475c",
@@ -2032,7 +2162,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_673628914560b",
@@ -2069,7 +2200,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "AUTO_SEAL_PENDING_20260920111746",
@@ -2106,7 +2238,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "AUTO_SEAL_PENDING_20260920105532",
@@ -2143,7 +2276,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_304510132def1",
@@ -2180,7 +2314,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_298606388112d",
@@ -2217,7 +2352,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_689492134c357",
@@ -2254,7 +2390,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_681574610932d",
@@ -2291,7 +2428,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50SE9M",
@@ -2328,7 +2466,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50ZXJp",
@@ -2365,7 +2504,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_0720726309477",
@@ -2402,7 +2542,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_065199156bec7",
@@ -2439,7 +2580,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_860513641ed00",
@@ -2476,7 +2618,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_4557325615367",
@@ -2513,7 +2656,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_448115054f1ca",
@@ -2550,7 +2694,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_83881488358d0",
@@ -2587,7 +2732,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_83230117473b8",
@@ -2624,7 +2770,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_223132695aea3",
@@ -2661,7 +2808,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_2156777709c60",
@@ -2698,7 +2846,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_606761220d5ee",
@@ -2735,7 +2884,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_6002636366514",
@@ -2772,7 +2922,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_5303320980831",
@@ -2809,7 +2960,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_9899027663f24",
@@ -2846,7 +2998,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_982197480f665",
@@ -2883,7 +3036,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_372705021b663",
@@ -2920,7 +3074,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_366263087589f",
@@ -2957,7 +3112,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_7572548448d9a",
@@ -2994,7 +3150,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_750029033c46f",
@@ -3031,7 +3188,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_140992781dfff",
@@ -3068,7 +3226,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_133976083d3bf",
@@ -3105,7 +3264,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_524388918daec",
@@ -3142,7 +3302,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_51677571722d9",
@@ -3179,7 +3340,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_469328324b239",
@@ -3216,7 +3378,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_907572100d9e7",
@@ -3253,7 +3416,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_901405485dbe1",
@@ -3290,7 +3454,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_292295584f07c",
@@ -3327,7 +3492,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_28406916203f0",
@@ -3364,7 +3530,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_6744171155f75",
@@ -3401,7 +3568,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_6682978911e51",
@@ -3438,7 +3606,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_05929111746ec",
@@ -3475,7 +3644,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_0510112584adb",
@@ -3512,7 +3682,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_44105208816c7",
@@ -3549,7 +3720,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_4352807796639",
@@ -3586,7 +3758,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_825922243a825",
@@ -3623,7 +3796,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_8186393206495",
@@ -3660,7 +3834,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_209648698b3ef",
@@ -3697,7 +3872,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_203062254bb38",
@@ -3734,7 +3910,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_5937173899327",
@@ -3771,7 +3948,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_5867977689dc1",
@@ -3808,7 +3986,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_09169487755d0",
@@ -3845,7 +4024,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_067155691f86f",
@@ -3882,7 +4062,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_043137211e911",
@@ -3919,7 +4100,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260920_02575951332b2",
@@ -3956,7 +4138,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "ESR_20260919_222951_d2ff475c",
@@ -3993,7 +4176,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "AUTO_SEAL_PENDING_20260920072938",
@@ -4030,7 +4214,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_2810507313beb",
@@ -4067,7 +4252,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_274700073b060",
@@ -4104,7 +4290,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_66527575268d1",
@@ -4141,7 +4328,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_6573126036058",
@@ -4178,7 +4366,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_0476707571396",
@@ -4215,7 +4404,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_04160268245b0",
@@ -4252,7 +4442,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_432887472dd1d",
@@ -4289,7 +4480,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_425860689de1a",
@@ -4326,7 +4518,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_817243281d5cd",
@@ -4363,7 +4556,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_8104645552c01",
@@ -4400,7 +4594,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_199886652dc5f",
@@ -4437,7 +4632,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_1919263589eb0",
@@ -4474,7 +4670,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_5819265729215",
@@ -4511,7 +4708,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_57601114659b3",
@@ -4548,7 +4746,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_967210029c1c1",
@@ -4585,7 +4784,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_959926226df28",
@@ -4622,7 +4822,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_351044325dcb7",
@@ -4659,7 +4860,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_344601124597e",
@@ -4696,7 +4898,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_736000492ac2d",
@@ -4733,7 +4936,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_7287936648de0",
@@ -4770,7 +4974,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50eHQl",
@@ -4807,7 +5012,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50bmRh",
@@ -4844,7 +5050,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "AUTO_SEAL_PENDING_20260919175533",
@@ -4881,7 +5088,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_120135047146e",
@@ -4918,7 +5126,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_11301720348f9",
@@ -4955,7 +5164,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_503704990e18c",
@@ -4992,7 +5202,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_49627298883ac",
@@ -5029,7 +5240,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_8872769559632",
@@ -5066,7 +5278,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_880451938b733",
@@ -5103,7 +5316,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_271055564598d",
@@ -5140,7 +5354,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_2637052327bf1",
@@ -5177,7 +5392,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_6545947098be3",
@@ -5214,7 +5430,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_6478904075400",
@@ -5251,7 +5468,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_038270440a166",
@@ -5288,7 +5506,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_03069950060e9",
@@ -5325,7 +5544,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_4217108975a3c",
@@ -5362,7 +5582,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_4156843867124",
@@ -5399,7 +5620,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_8068578204831",
@@ -5436,7 +5658,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_798883483a33a",
@@ -5473,7 +5696,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_189461470d87e",
@@ -5510,7 +5734,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_1836516765b5f",
@@ -5547,7 +5772,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50dC5Q",
@@ -5584,7 +5810,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_90265446088f7",
@@ -5621,7 +5848,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_743904495237f",
@@ -5658,7 +5886,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_57492921865c3",
@@ -5695,7 +5924,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_56701153421b7",
@@ -5732,7 +5962,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_9578257071cae",
@@ -5769,7 +6000,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_9517655640ed9",
@@ -5806,7 +6038,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_3430835490754",
@@ -5843,7 +6076,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_335066212c190",
@@ -5880,7 +6114,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_725145447f431",
@@ -5917,7 +6152,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_7186446223be2",
@@ -5954,7 +6190,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_109472117d7ee",
@@ -5991,7 +6228,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_1023335424fb1",
@@ -6028,7 +6266,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_4936031904779",
@@ -6065,7 +6304,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_487618815e28d",
@@ -6102,7 +6342,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_878693170360c",
@@ -6139,7 +6380,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_871123024eb37",
@@ -6176,7 +6418,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_262272200953a",
@@ -6213,7 +6456,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_2565043712068",
@@ -6250,7 +6494,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_6476492984bbb",
@@ -6287,7 +6532,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_6399693070f9c",
@@ -6324,7 +6570,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_027100763ec7d",
@@ -6361,7 +6608,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_6319420897ed8",
@@ -6398,7 +6646,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_4184569273d87",
@@ -6435,7 +6684,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_411372243fc4a",
@@ -6472,7 +6722,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_226122848ff7e",
@@ -6509,7 +6760,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_802535491e138",
@@ -6546,7 +6798,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_793322950108f",
@@ -6583,7 +6836,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "msg_YXNzaXN0YW50bnVz",
@@ -6620,7 +6874,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "ESR_20260919_051939_d2ff475c",
@@ -6657,7 +6912,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "AUTO_SEAL_PENDING_20260919141937",
@@ -6694,7 +6950,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_179324712d3ea",
@@ -6731,7 +6988,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_53581537353cd",
@@ -6768,7 +7026,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_534293322fbf6",
@@ -6805,7 +7064,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_52693531194eb",
@@ -6842,7 +7102,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_070690799f1a7",
@@ -6879,7 +7140,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_93855348650a9",
@@ -6916,7 +7178,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_927281202fc61",
@@ -6953,7 +7216,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_918032041d7c4",
@@ -6990,7 +7254,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_911843606ad1c",
@@ -7027,7 +7292,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_8697122642d7d",
@@ -7064,7 +7330,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_393214190d7b4",
@@ -7101,7 +7368,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_3030838507e47",
@@ -7138,7 +7406,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_2956689037819",
@@ -7175,7 +7444,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_973288903b118",
@@ -7212,7 +7482,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_963613754fee2",
@@ -7249,7 +7520,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_955180815217a",
@@ -7286,7 +7558,8 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   },
   {
     "event_id": "E20260919_7988443173333",
@@ -7323,80 +7596,7 @@
     "data_integrity": "normal",
     "integrity_note": null,
     "recovered_short_summary": null,
-    "parent_event_ref": null
-  },
-  {
-    "event_id": "E20260919_686550945cf8b",
-    "when_ts": "2026-09-19T03:31:26.550969+00:00",
-    "who_actor": "script:mocka_git_safe_commit",
-    "what_type": "claude_mcp",
-    "where_component": "mcp_caliber",
-    "where_path": "mocka_mcp_server.py",
-    "why_purpose": "TODO_413: Git操作の制度的記録(呼び出し元非依存)",
-    "how_trigger": "mocka_git_safe_commit/sync_watch.py:71",
-    "channel_type": "gate",
-    "lifecycle_phase": "in_operation",
-    "risk_level": "normal",
-    "category_ab": null,
-    "target_class": null,
-    "title": "CHANGE_DONE: git commit成功 8418f96",
-    "short_summary": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=8418f96b5373848fdf4e4e416b1995f4533d1141 | actor=script:mocka_git_safe_commit | caller=sync_watch.py:71 | timestamp=2026-09-19T12:31:21.241242 | result=success | commit_message='auto sync 2026-09-19T03:31:14Z' | files=['data/MOCKA_OVERVIEW.json', 'data/MOCKA_TODO.json', 'data/events_latest.json', 'data/lever_essence.json'] | post_commit_violation=[]",
-    "before_state": null,
-    "after_state": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=8418f96b5373848fdf4e4e416b1995f4533d1141 | actor=script:mocka_git_safe_commit | caller=sync_watc",
-    "change_type": null,
-    "impact_scope": null,
-    "impact_result": null,
-    "related_event_id": "5e417a67926d17ceb3db885160af0f6595d440b3fd3cc939a712e7e1896ff430",
-    "trace_id": "3944276c3a6b7628131252add05fc50153c7e3b27a3df3d6db0dee0ecac0c5cf",
-    "free_note": "todo_413,git_commit,institutional_recording_point,success|who_role=executor|event_source=live",
-    "_imported_at": null,
-    "_source": "live",
-    "ai_actor": null,
-    "session_id": "SESSION_20260919_091607",
-    "severity": null,
-    "pattern_score": null,
-    "recurrence_flag": 0,
-    "verified_by": null,
-    "data_integrity": "normal",
-    "integrity_note": null,
-    "recovered_short_summary": null,
-    "parent_event_ref": null
-  },
-  {
-    "event_id": "E20260919_6801745541eff",
-    "when_ts": "2026-09-19T03:31:20.174585+00:00",
-    "who_actor": "script:mocka_git_safe_commit",
-    "what_type": "claude_mcp",
-    "where_component": "mcp_caliber",
-    "where_path": "mocka_mcp_server.py",
-    "why_purpose": "TODO_413: Git操作の制度的記録(呼び出し元非依存)",
-    "how_trigger": "mocka_git_safe_commit/sync_watch.py:71",
-    "channel_type": "gate",
-    "lifecycle_phase": "in_operation",
-    "risk_level": "normal",
-    "category_ab": null,
-    "target_class": null,
-    "title": "CHANGE_START: git commit 開始",
-    "short_summary": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=N/A | actor=script:mocka_git_safe_commit | caller=sync_watch.py:71 | timestamp=2026-09-19T12:31:14.251628 | result=started | commit_message='auto sync 2026-09-19T03:31:14Z'",
-    "before_state": null,
-    "after_state": "operation=git_commit | repository=C:\\Users\\sirok\\MoCKA | branch=phase/hgd-up-test-003-v3.2 | commit_sha=N/A | actor=script:mocka_git_safe_commit | caller=sync_watch.py:71 | timestamp=2026-09-19T12:31:",
-    "change_type": null,
-    "impact_scope": null,
-    "impact_result": null,
-    "related_event_id": "aec539f01690b9f6b8765f80ae1af38b0a70a29b2f34320e4f88edaf397abf41",
-    "trace_id": "5e417a67926d17ceb3db885160af0f6595d440b3fd3cc939a712e7e1896ff430",
-    "free_note": "todo_413,git_commit,institutional_recording_point,started|who_role=executor|event_source=live",
-    "_imported_at": null,
-    "_source": "live",
-    "ai_actor": null,
-    "session_id": "SESSION_20260919_091607",
-    "severity": null,
-    "pattern_score": null,
-    "recurrence_flag": 0,
-    "verified_by": null,
-    "data_integrity": "normal",
-    "integrity_note": null,
-    "recovered_short_summary": null,
-    "parent_event_ref": null
+    "parent_event_ref": null,
+    "request_id": null
   }
 ]
