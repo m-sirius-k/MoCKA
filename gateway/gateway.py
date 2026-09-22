@@ -30,6 +30,7 @@ import adapter_claude       # STEP 6: HAB Common Core integration
 import adapter_copilot
 import adapter_perplexity   # TODO_269
 import adapter_genspark     # TODO_270
+from multi_dispatcher import dispatch_multi_request  # STEP 7: Multi-AI Socket E2E
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
 from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
@@ -172,8 +173,18 @@ def socket_request():
             socket = GPTSocket()
             model = model or "gpt-4"
             result = socket.request(request_text, model, title)
+        elif ai == "gemini":
+            from adapters_gemini_socket import GeminiSocket
+            socket = GeminiSocket()
+            model = model or "gemini-2.0-flash"
+            result = socket.request(request_text, model, title)
+        elif ai == "perplexity":
+            from adapters_perplexity_socket import PerplexitySocket
+            socket = PerplexitySocket()
+            model = model or "sonar-pro"
+            result = socket.request(request_text, model, title)
         else:
-            return jsonify({"error": f"unsupported ai: {ai}"}), 400
+            return jsonify({"error": f"unsupported ai: {ai} (claude|gpt|gemini|perplexity)"}), 400
 
         return jsonify(result), (200 if result.get("status") == "ok" else 400)
 
@@ -182,6 +193,101 @@ def socket_request():
             "status": "error",
             "error": f"Socket request error: {str(e)}",
             "ai": ai,
+        }), 500
+
+
+@app.route("/api/v1/socket/multi_request", methods=["POST"])
+def socket_multi_request():
+    """
+    Multi-AI Socket: HAB → Multiple AI Providers via Sockets.
+    Dispatch single request to multiple AI providers and collect responses.
+    Each provider response is recorded separately in HAB.
+
+    Request body:
+    {
+        "request": "text to send to all AIs",
+        "providers": ["gpt", "claude", "gemini", "perplexity"] (optional),
+        "models": {"gpt": "gpt-4", ...} (optional),
+        "title": "Multi-AI Request" (optional)
+    }
+
+    Response:
+    {
+        "status": "all_ok" | "partial_ok" | "all_error",
+        "request_id": "common ID for all providers",
+        "results": [
+            {
+                "provider": "gpt|claude|gemini|perplexity",
+                "status": "ok|error|NOT_VERIFIED",
+                "response": "...",
+                "model": "...",
+                "usage": {...},
+                "error": "..." (if error),
+                "timestamp": "...",
+                "request_id": "..."
+            }
+        ],
+        "summary": {
+            "total": int,
+            "ok": int,
+            "error": int,
+            "not_verified": int
+        },
+        "timestamp": "..."
+    }
+    """
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "JSON body required"}), 400
+
+    request_text = data.get("request", "")
+    providers = data.get("providers", None)
+    models = data.get("models", None)
+    title = data.get("title", "Multi-AI Socket Request")
+
+    if not request_text:
+        return jsonify({"error": "request parameter required"}), 400
+
+    try:
+        result = dispatch_multi_request(
+            request_text=request_text,
+            providers=providers,
+            models=models,
+            title=title,
+        )
+
+        # Record multi-request event to HAB
+        try:
+            now = datetime.now(timezone.utc)
+            summary = result.get("summary", {})
+            summary_text = (
+                f"ok={summary.get('ok', 0)}, "
+                f"error={summary.get('error', 0)}, "
+                f"not_verified={summary.get('not_verified', 0)}"
+            )
+
+            get_buffer().push({
+                "title": f"Multi-AI Request: {title}",
+                "short_summary": summary_text,
+                "when": now.isoformat(),
+                "who_actor": "MultiAI/Dispatcher",
+                "ai_actor": "Socket",
+                "what_type": "multi_ai_request",
+                "free_note": f"request_id={result.get('request_id')}",
+                "where_component": "gateway_multi_dispatcher",
+                "lifecycle_phase": "in_operation",
+                "why_purpose": "multi_ai_e2e_test",
+            })
+        except Exception as hab_err:
+            # Log but don't fail if HAB recording fails
+            pass
+
+        return jsonify(result), (200 if result.get("status") != "all_error" else 400)
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": f"Multi-request dispatch error: {str(e)}",
         }), 500
 
 
