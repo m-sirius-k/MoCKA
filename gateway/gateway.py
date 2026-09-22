@@ -266,7 +266,7 @@ def socket_multi_request():
                 f"not_verified={summary.get('not_verified', 0)}"
             )
 
-            get_buffer().push({
+            event = {
                 "title": f"Multi-AI Request: {title}",
                 "short_summary": summary_text,
                 "when": now.isoformat(),
@@ -277,10 +277,14 @@ def socket_multi_request():
                 "where_component": "gateway_multi_dispatcher",
                 "lifecycle_phase": "in_operation",
                 "why_purpose": "multi_ai_e2e_test",
-            })
+            }
+            get_buffer().push(event)
+            print(f"[gateway:multi_request] HAB event pushed: request_id={result.get('request_id')}, summary={summary_text}")
         except Exception as hab_err:
             # Log but don't fail if HAB recording fails
-            pass
+            import traceback
+            print(f"[gateway:multi_request] WARNING: HAB record failed: {hab_err}")
+            traceback.print_exc()
 
         return jsonify(result), (200 if result.get("status") != "all_error" else 400)
 
