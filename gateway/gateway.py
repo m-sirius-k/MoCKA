@@ -26,6 +26,7 @@ import auth as auth_module
 from connector_caliber import ConnectorCaliber
 import adapter_gpt
 import adapter_gemini
+import adapter_claude       # STEP 6: HAB Common Core integration
 import adapter_copilot
 import adapter_perplexity   # TODO_269
 import adapter_genspark     # TODO_270
@@ -48,6 +49,7 @@ connector = ConnectorCaliber(
     adapters={
         'gpt':        adapter_gpt,
         'gemini':     adapter_gemini,
+        'claude':     adapter_claude,       # STEP 6: HAB Common Core integration
         'copilot':    adapter_copilot,
         'perplexity': adapter_perplexity,   # TODO_269
         'genspark':   adapter_genspark,     # TODO_270
@@ -135,6 +137,52 @@ def health():
         "port":    5010,
         "time":    datetime.now(timezone.utc).isoformat(),
     })
+
+
+# ---------- Socket Outbound (AI API Call) ----------
+
+@app.route("/api/v1/socket/request", methods=["POST"])
+def socket_request():
+    """
+    Socket outbound: HAB → AI via Socket.
+    Call external AI API (Claude/GPT) and return response.
+    """
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "JSON body required"}), 400
+
+    ai = data.get("ai", "").lower()
+    request_text = data.get("request", "")
+    model = data.get("model", "")
+    title = data.get("title", "Socket Request")
+
+    if not ai:
+        return jsonify({"error": "ai parameter required (claude|gpt)"}), 400
+    if not request_text:
+        return jsonify({"error": "request parameter required"}), 400
+
+    try:
+        if ai == "claude":
+            from adapters_claude_socket import ClaudeSocket
+            socket = ClaudeSocket()
+            model = model or "claude-opus-5"
+            result = socket.request(request_text, model, title)
+        elif ai == "gpt":
+            from adapters_gpt_socket import GPTSocket
+            socket = GPTSocket()
+            model = model or "gpt-4"
+            result = socket.request(request_text, model, title)
+        else:
+            return jsonify({"error": f"unsupported ai: {ai}"}), 400
+
+        return jsonify(result), (200 if result.get("status") == "ok" else 400)
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": f"Socket request error: {str(e)}",
+            "ai": ai,
+        }), 500
 
 
 # ---------- POST endpoint ----------

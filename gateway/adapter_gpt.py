@@ -15,6 +15,15 @@ from datetime import datetime, timezone
 
 import requests
 
+# STEP 2: HAB COMMON CORE / AI SOCKET Bridge
+try:
+    from adapters_gpt_socket import GPTSocket
+    HAB_BRIDGE_AVAILABLE = True
+    _gpt_socket = GPTSocket()
+except ImportError:
+    HAB_BRIDGE_AVAILABLE = False
+    _gpt_socket = None
+
 GATEWAY_BASE    = os.environ.get("MOCKA_GATEWAY_URL", "http://localhost:5010")
 MOCKA_API_KEY   = os.environ.get("MOCKA_API_KEYS", "").split(",")[0].strip()
 HMAC_SECRET     = os.environ.get("MOCKA_HMAC_SECRET", "").encode()
@@ -89,6 +98,20 @@ def handle_function_call(title: str, description: str, tags: list = None,
         payload["hmac_sig"] = _sign(payload)
 
     try:
+        result = {"status": "ok"}
+
+        # STEP 2: Try HAB Bridge via GPT Socket if available
+        if HAB_BRIDGE_AVAILABLE and _gpt_socket:
+            try:
+                bridge_result = _gpt_socket.submit(model, runtime, title, description, tags)
+                if bridge_result.get("status") == "ok":
+                    result["hab_request_id"] = bridge_result.get("request_id")
+                    result["hab_state"] = bridge_result.get("state")
+                    result["hab_decision_id"] = bridge_result.get("decision_id")
+            except Exception as hab_err:
+                result["hab_error"] = str(hab_err)
+
+        # Original: POST /api/v1/event (kept for compatibility)
         r = requests.post(
             f"{GATEWAY_BASE}/api/v1/event",
             json=payload,
@@ -96,7 +119,8 @@ def handle_function_call(title: str, description: str, tags: list = None,
             timeout=5,
         )
         r.raise_for_status()
-        return {"status": "ok", "event_id": r.json().get("event_id")}
+        result["event_id"] = r.json().get("event_id")
+        return result
     except Exception as e:
         return {"status": "error", "detail": str(e)}
 
@@ -242,6 +266,60 @@ def _derive_current_case(active_todo: list, recent_events: list):
 
 
 # ---- GPTへ渡すSystem Promptスニペット -----------------------------------
+
+def call_api(request_text: str, model: str = "gpt-4") -> dict:
+    """
+    Call OpenAI GPT API directly.
+    Outbound: HAB → Socket → Adapter → OpenAI API.
+
+    Args:
+        request_text: Text to send to GPT
+        model: OpenAI model identifier
+
+    Returns:
+        {
+            "status": "ok" | "error",
+            "response": str (if ok),
+            "model": str,
+            "usage": dict (if ok),
+            "error": str (if error),
+        }
+    """
+    try:
+        from openai import OpenAI
+        api_key = os.environ.get("OPENAI_API_KEY")
+        if not api_key:
+            return {
+                "status": "error",
+                "error": "OPENAI_API_KEY not set",
+                "model": model,
+            }
+
+        client = OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            model=model,
+            max_tokens=1024,
+            messages=[{"role": "user", "content": request_text}]
+        )
+
+        response_text = response.choices[0].message.content
+        return {
+            "status": "ok",
+            "response": response_text,
+            "model": model,
+            "usage": {
+                "prompt_tokens": response.usage.prompt_tokens,
+                "completion_tokens": response.usage.completion_tokens,
+                "total_tokens": response.usage.total_tokens,
+            },
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": f"OpenAI API error: {str(e)}",
+            "model": model,
+        }
+
 
 def get_system_prompt_snippet() -> str:
     return (
