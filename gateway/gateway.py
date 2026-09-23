@@ -35,10 +35,14 @@ from multi_dispatcher import dispatch_multi_request  # STEP 7: Multi-AI Socket E
 sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
 from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "memory"))
+from memory_writer import MemoryWriter  # HAB -> Memory 最小接続(A案)
+
 app = Flask(__name__)
 CORS(app)
 
 builder = ContextBuilder()
+_memory_writer = MemoryWriter()
 
 DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
 DATA_DIR = Path(__file__).parent.parent / "data"
@@ -285,6 +289,14 @@ def socket_multi_request():
             import traceback
             print(f"[gateway:multi_request] WARNING: HAB record failed: {hab_err}")
             traceback.print_exc()
+
+        # Record to Memory (HAB -> Memory 最小接続, A案)。
+        # 既存のPHI-OS記録(上記get_buffer().push)とは独立。失敗してもHAB応答は失敗扱いにしない。
+        try:
+            _memory_writer.write_event(event=result, tags=("hab", "multi_ai"))
+            print(f"[gateway:multi_request] Memory event written: request_id={result.get('request_id')}")
+        except Exception as mem_err:
+            print(f"[gateway:multi_request] WARNING: Memory record failed: {mem_err}")
 
         return jsonify(result), (200 if result.get("status") != "all_error" else 400)
 
