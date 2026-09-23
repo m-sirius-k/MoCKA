@@ -9,6 +9,7 @@ ALLOWED_WHAT_TYPES = [
     'file_write', 'file_delete', 'design', 'config_change',
     'git_commit', 'git_push', 'test_run', 'deployment',
     'user_voice', 'handshake', 'audit', 'incident', 'todo_update',
+    'governance_block',  # Authority Decision Enforcement (BA-04)
     'claude_mcp',  # MCP tool経由イベント
 ]
 

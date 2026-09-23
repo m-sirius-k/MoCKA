@@ -7,7 +7,11 @@ import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
 from flask import request, abort
+
+# Load .env before reading env vars
+load_dotenv()
 
 # ---- 設定 ----------------------------------------------------------------
 VALID_KEYS   = set(filter(None, os.environ.get("MOCKA_API_KEYS",   "").split(",")))
@@ -41,10 +45,13 @@ def require_api_key():
     if request.path in PUBLIC_PATHS:
         return
 
+    # Re-read VALID_KEYS from environment (in case loaded after module import)
+    valid_keys = set(filter(None, os.environ.get("MOCKA_API_KEYS", "").split(",")))
+
     key = request.headers.get("X-MoCKA-Key", "").strip()
     if not key:
         abort(401, "X-MoCKA-Key header missing")
-    if key not in VALID_KEYS:
+    if key not in valid_keys:
         abort(403, "Invalid API key")
 
     if request.method == "POST" and request.path in HMAC_PATHS:

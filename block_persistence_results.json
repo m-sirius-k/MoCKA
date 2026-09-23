@@ -1,0 +1,139 @@
+{
+  "timestamp": "2026-09-20T19:59:39.542118",
+  "server_available": true,
+  "cases": [
+    {
+      "name": "Case 1: decision_id missing",
+      "req_id": "req-001-missing-id",
+      "request_id": "req-001-missing-id",
+      "response_status": null,
+      "response_body": {
+        "error": "HTTPConnectionPool(host='localhost', port=5002): Read timed out. (read timeout=10)"
+      },
+      "block_event_found": false
+    },
+    {
+      "name": "Case 2: unknown decision_id",
+      "req_id": "req-002-unknown-id",
+      "request_id": "req-002-unknown-id",
+      "response_status": 200,
+      "response_body": {
+        "jsonrpc": "2.0",
+        "id": "req-002-unknown-id",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"status\": \"ok\", \"event_id\": \"E20260920_005153052d8f7\", \"when\": \"2026-09-20T20:00:05.938580\", \"storage\": \"gate/sqlite(in-process)\"}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "execution_not_blocked": true,
+      "block_event_found": false
+    },
+    {
+      "name": "Case 3: inactive decision (setup first)",
+      "req_id": null,
+      "setup_response": {
+        "status": 200,
+        "body": {
+          "jsonrpc": "2.0",
+          "id": "setup-case3-create-decision",
+          "result": {
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"status\": \"ok\", \"decision_id\": \"DC_20260920_002\", \"event_id\": null}"
+              }
+            ],
+            "isError": false
+          }
+        }
+      },
+      "generated_decision_id": "DC_20260920_002",
+      "request_id": "req-003-inactive-DC_20260920_002",
+      "response_status": 200,
+      "response_body": {
+        "jsonrpc": "2.0",
+        "id": "req-003-inactive-DC_20260920_002",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"status\": \"ok\", \"event_id\": \"E20260920_026168900252e\", \"when\": \"2026-09-20T20:00:26.373003\", \"storage\": \"gate/sqlite(in-process)\"}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "execution_not_blocked": true,
+      "block_event_found": false
+    },
+    {
+      "name": "Case 4: Present Standing DEFERRED",
+      "req_id": "req-004-deferred-ps",
+      "request_id": "req-004-deferred-ps",
+      "response_status": 200,
+      "response_body": {
+        "jsonrpc": "2.0",
+        "id": "req-004-deferred-ps",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"error\": \"invalid status: 'completed'. allowed: ['保留', '完了', '廃止', '未着手', '進行中']\"}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "error": "invalid status: 'completed'. allowed: ['保留', '完了', '廃止', '未着手', '進行中']",
+      "reason": "",
+      "block_event_found": false
+    },
+    {
+      "name": "Case 5: Authority Scope DEFERRED",
+      "req_id": "req-005-deferred-scope",
+      "request_id": "req-005-deferred-scope",
+      "response_status": 200,
+      "response_body": {
+        "jsonrpc": "2.0",
+        "id": "req-005-deferred-scope",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\"error\": \"TODO-TEST-005 already exists\"}"
+            }
+          ],
+          "isError": false
+        }
+      },
+      "error": "TODO-TEST-005 already exists",
+      "reason": "",
+      "block_event_found": false
+    }
+  ],
+  "duplicate_test": {
+    "original_req_id": "req-001-missing-id",
+    "response_status": 200,
+    "response_body": {
+      "jsonrpc": "2.0",
+      "id": "req-001-missing-id",
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"status\": \"ok\", \"event_id\": \"E20260920_049853615c7f8\", \"when\": \"2026-09-20T20:00:50.025675\", \"storage\": \"gate/sqlite(in-process)\"}"
+          }
+        ],
+        "isError": false
+      }
+    },
+    "duplicate_detected": false
+  },
+  "fallback_test": null,
+  "summary": {}
+}

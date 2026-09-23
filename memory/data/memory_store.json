@@ -1,1 +1,1743 @@
-[]
+[
+  {
+    "memory_id": "M_episodic_000001",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:20:10.871375Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "68e07a33-2c65-4232-87e5-f5cf129e0f81",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "The MoCKA system architecture is a microservice-based configuration for knowledge-assisted multimodal data analytics. It comprises various distributed components, including multimodal data analytics services, a knowledge graph, and a runtime environment.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 24,
+            "completion_tokens": 43,
+            "total_tokens": 67
+          },
+          "timestamp": "2026-09-23T00:20:04.735006+00:00",
+          "request_id": "68e07a33-2c65-4232-87e5-f5cf129e0f81"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:20:04.735006+00:00",
+          "request_id": "68e07a33-2c65-4232-87e5-f5cf129e0f81"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:20:04.735006+00:00",
+          "request_id": "68e07a33-2c65-4232-87e5-f5cf129e0f81"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:20:04.735006+00:00",
+          "request_id": "68e07a33-2c65-4232-87e5-f5cf129e0f81"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:20:04.735006+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000002",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:20:55.820094Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "65430333-fc38-419f-9837-c09461c02e32",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence (AI) where computers are programmed to learn and make decisions or predictions based on data. Rather than being specifically programmed to carry out a particular task, these machines are trained using large amounts of data and algorithms to learn how to perform the task on their own. By recognizing patterns in the data, the machine can make predictions or decisions without being specifically programmed to perform the task.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 83,
+            "total_tokens": 100
+          },
+          "timestamp": "2026-09-23T00:20:53.326017+00:00",
+          "request_id": "65430333-fc38-419f-9837-c09461c02e32"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:20:53.326017+00:00",
+          "request_id": "65430333-fc38-419f-9837-c09461c02e32"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:20:53.326017+00:00",
+          "request_id": "65430333-fc38-419f-9837-c09461c02e32"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:20:53.326017+00:00",
+          "request_id": "65430333-fc38-419f-9837-c09461c02e32"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:20:53.326017+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000003",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:41:50.878695Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "2377db68-ff9b-4782-b53c-17ff72b4a128",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 15,
+            "completion_tokens": 1,
+            "total_tokens": 16
+          },
+          "timestamp": "2026-09-23T00:41:48.545406+00:00",
+          "request_id": "2377db68-ff9b-4782-b53c-17ff72b4a128"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:41:48.545406+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000004",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:41:51.724991Z",
+    "source": "External",
+    "content": {
+      "status": "all_error",
+      "request_id": "ef83378e-c636-42ed-8d70-1346baa6e592",
+      "results": [
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:41:51.209808+00:00",
+          "request_id": "ef83378e-c636-42ed-8d70-1346baa6e592"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 0,
+        "error": 0,
+        "not_verified": 1
+      },
+      "timestamp": "2026-09-23T00:41:51.209808+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000005",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:41:52.022546Z",
+    "source": "External",
+    "content": {
+      "status": "all_error",
+      "request_id": "6f01daa9-8210-410f-9139-158641604577",
+      "results": [
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:41:52.011208+00:00",
+          "request_id": "6f01daa9-8210-410f-9139-158641604577"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 0,
+        "error": 1,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:41:52.011208+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000006",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:41:52.336138Z",
+    "source": "External",
+    "content": {
+      "status": "all_error",
+      "request_id": "8a999fa4-790e-42df-8158-1c2bd9ab1452",
+      "results": [
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:41:52.323780+00:00",
+          "request_id": "8a999fa4-790e-42df-8158-1c2bd9ab1452"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 0,
+        "error": 0,
+        "not_verified": 1
+      },
+      "timestamp": "2026-09-23T00:41:52.323780+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000007",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:42:06.448474Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "f4684ab1-fcfd-4863-85fa-a4becd079fb7",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "The MoCKA system architecture refers to a computational framework for multidimensional, multifactorial communication analysis. It was developed for comprehensively recording, analyzing, and documenting human-computer interaction and behavior in usability tests and online experiments.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 24,
+            "completion_tokens": 46,
+            "total_tokens": 70
+          },
+          "timestamp": "2026-09-23T00:42:03.536248+00:00",
+          "request_id": "f4684ab1-fcfd-4863-85fa-a4becd079fb7"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:42:03.536248+00:00",
+          "request_id": "f4684ab1-fcfd-4863-85fa-a4becd079fb7"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:42:03.536248+00:00",
+          "request_id": "f4684ab1-fcfd-4863-85fa-a4becd079fb7"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:42:03.536248+00:00",
+          "request_id": "f4684ab1-fcfd-4863-85fa-a4becd079fb7"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:42:03.536248+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000008",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:42:24.114700Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "41c24e97-cbac-4987-a8ac-88ec5b7fb13b",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence (AI) where computers are programmed to learn and make decisions without being explicitly programmed. They do this by analyzing data, identifying patterns, and making decisions or predictions based on this information. For example, your email might use machine learning to filter out spam by analyzing what spam emails typically look like and then using this information to identify and block new spam messages. It's like teaching a computer to learn and think like a human, only it can process and analyze massive amounts of data incredibly fast.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 106,
+            "total_tokens": 123
+          },
+          "timestamp": "2026-09-23T00:42:20.232427+00:00",
+          "request_id": "41c24e97-cbac-4987-a8ac-88ec5b7fb13b"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:42:20.232427+00:00",
+          "request_id": "41c24e97-cbac-4987-a8ac-88ec5b7fb13b"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:42:20.232427+00:00",
+          "request_id": "41c24e97-cbac-4987-a8ac-88ec5b7fb13b"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:42:20.232427+00:00",
+          "request_id": "41c24e97-cbac-4987-a8ac-88ec5b7fb13b"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:42:20.232427+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000009",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:49:44.465458Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "c29433e0-2fbd-4763-bdac-7fb7d68ca079",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a way computers can improve their performance over time by learning from data. It's like teaching a child how to recognize different objects. You show them many pictures of a cat, so in time, when they see a cat, they can recognize it. Similarly, in machine learning, a computer algorithm is shown many examples and it figures out the patterns or characteristics of the object being studied.\n\nLet's take an email spam filter as an example. The filter is programmed to identify words or phrases that are common in spam messages. Each time the filter detects a spam email, it \"learns\" and improves its ability to identify other such emails. \n\nThis ability for a machine to learn and improve its skills without being explicitly programmed is the essence of Machine Learning.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 154,
+            "total_tokens": 171
+          },
+          "timestamp": "2026-09-23T00:49:39.471099+00:00",
+          "request_id": "c29433e0-2fbd-4763-bdac-7fb7d68ca079"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:49:39.471099+00:00",
+          "request_id": "c29433e0-2fbd-4763-bdac-7fb7d68ca079"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:49:39.471099+00:00",
+          "request_id": "c29433e0-2fbd-4763-bdac-7fb7d68ca079"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:49:39.471099+00:00",
+          "request_id": "c29433e0-2fbd-4763-bdac-7fb7d68ca079"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:49:39.471099+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000010",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:52:24.344344Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "41cca8a2-8b5a-4829-a26d-05426a68213c",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "FIDELITY-CHECK-9f3a7c-1790124741",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 34,
+            "completion_tokens": 18,
+            "total_tokens": 52
+          },
+          "timestamp": "2026-09-23T00:52:22.892361+00:00",
+          "request_id": "41cca8a2-8b5a-4829-a26d-05426a68213c"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:52:22.892361+00:00",
+          "request_id": "41cca8a2-8b5a-4829-a26d-05426a68213c"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:52:22.892361+00:00",
+          "request_id": "41cca8a2-8b5a-4829-a26d-05426a68213c"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:52:22.892361+00:00",
+          "request_id": "41cca8a2-8b5a-4829-a26d-05426a68213c"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:52:22.892361+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000011",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:54:25.388164Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "16fbfd43-bdce-4a77-9d23-940511878afc",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:54:24.098188+00:00",
+          "request_id": "16fbfd43-bdce-4a77-9d23-940511878afc"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:54:24.098188+00:00",
+          "request_id": "16fbfd43-bdce-4a77-9d23-940511878afc"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:54:24.098188+00:00",
+          "request_id": "16fbfd43-bdce-4a77-9d23-940511878afc"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:54:24.098188+00:00",
+          "request_id": "16fbfd43-bdce-4a77-9d23-940511878afc"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:54:24.098188+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000012",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:54:37.099686Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "98b08bc9-464d-4c9f-bbc6-37e1fea9f52d",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:54:36.261474+00:00",
+          "request_id": "98b08bc9-464d-4c9f-bbc6-37e1fea9f52d"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:54:36.261474+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000013",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:54:38.916517Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "bf54a0cb-9bae-4ce6-af37-530f040367fc",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:54:37.387711+00:00",
+          "request_id": "bf54a0cb-9bae-4ce6-af37-530f040367fc"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:54:37.387711+00:00",
+          "request_id": "bf54a0cb-9bae-4ce6-af37-530f040367fc"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:54:37.387711+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000014",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:54:41.370777Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "3cfa67dc-9deb-45eb-b5c3-12d69f755ef3",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:54:39.207966+00:00",
+          "request_id": "3cfa67dc-9deb-45eb-b5c3-12d69f755ef3"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:54:39.207966+00:00",
+          "request_id": "3cfa67dc-9deb-45eb-b5c3-12d69f755ef3"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:54:39.207966+00:00",
+          "request_id": "3cfa67dc-9deb-45eb-b5c3-12d69f755ef3"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:54:39.207966+00:00",
+          "request_id": "3cfa67dc-9deb-45eb-b5c3-12d69f755ef3"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:54:39.207966+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000015",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:59:22.393597Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "12f1534e-479c-442a-a2d7-795abf8c34cb",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:59:21.415277+00:00",
+          "request_id": "12f1534e-479c-442a-a2d7-795abf8c34cb"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:59:21.415277+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000016",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:59:26.580473Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "98428724-c105-4a1b-8129-ad16572e80f4",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:59:23.559369+00:00",
+          "request_id": "98428724-c105-4a1b-8129-ad16572e80f4"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:59:23.559369+00:00",
+          "request_id": "98428724-c105-4a1b-8129-ad16572e80f4"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:59:23.559369+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000017",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:59:29.082659Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "6dcbb3da-b307-47a6-ac36-1c88575c7447",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T00:59:27.792937+00:00",
+          "request_id": "6dcbb3da-b307-47a6-ac36-1c88575c7447"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:59:27.792937+00:00",
+          "request_id": "6dcbb3da-b307-47a6-ac36-1c88575c7447"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:59:27.792937+00:00",
+          "request_id": "6dcbb3da-b307-47a6-ac36-1c88575c7447"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:59:27.792937+00:00",
+          "request_id": "6dcbb3da-b307-47a6-ac36-1c88575c7447"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:59:27.792937+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000018",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:59:46.244320Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "098a1f4a-244b-42ec-a85f-9a24e5b6ab85",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence (AI) that allows computers to learn and make decisions without being explicitly programmed. This means machines are able to learn from data or experiences and improve their performance over time. For example, Netflix uses machine learning to recommend shows or movies based on someone's viewing history, and email systems use it to filter out spam. It's like how humans learn from experience, machines learn from data.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 85,
+            "total_tokens": 102
+          },
+          "timestamp": "2026-09-23T00:59:41.698898+00:00",
+          "request_id": "098a1f4a-244b-42ec-a85f-9a24e5b6ab85"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T00:59:41.698898+00:00",
+          "request_id": "098a1f4a-244b-42ec-a85f-9a24e5b6ab85"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:59:41.698898+00:00",
+          "request_id": "098a1f4a-244b-42ec-a85f-9a24e5b6ab85"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T00:59:41.698898+00:00",
+          "request_id": "098a1f4a-244b-42ec-a85f-9a24e5b6ab85"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T00:59:41.698898+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000019",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T00:59:51.924385Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "332e381c-a5c3-46e9-aa04-54403fd3835b",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "FIDELITY-RECHECK-1790125188",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 28,
+            "completion_tokens": 12,
+            "total_tokens": 40
+          },
+          "timestamp": "2026-09-23T00:59:49.481557+00:00",
+          "request_id": "332e381c-a5c3-46e9-aa04-54403fd3835b"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T00:59:49.481557+00:00",
+          "request_id": "332e381c-a5c3-46e9-aa04-54403fd3835b"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T00:59:49.481557+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000020",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:02:36.746572Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "e4ec06af-36ea-4413-9ec5-084432f0671f",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "4",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 21,
+            "completion_tokens": 1,
+            "total_tokens": 22
+          },
+          "timestamp": "2026-09-23T01:02:33.703104+00:00",
+          "request_id": "e4ec06af-36ea-4413-9ec5-084432f0671f"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:02:33.703104+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000021",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:02:39.320602Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "f60bec96-75cf-4017-aa3a-b9f859a2d2e8",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Paris",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 21,
+            "completion_tokens": 1,
+            "total_tokens": 22
+          },
+          "timestamp": "2026-09-23T01:02:38.066993+00:00",
+          "request_id": "f60bec96-75cf-4017-aa3a-b9f859a2d2e8"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:02:38.066993+00:00",
+          "request_id": "f60bec96-75cf-4017-aa3a-b9f859a2d2e8"
+        }
+      ],
+      "summary": {
+        "total": 2,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:02:38.066993+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000022",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:02:43.069329Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "4604fb58-aa31-4d2b-88bf-1c00b2d6eb8d",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Blue",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 23,
+            "completion_tokens": 1,
+            "total_tokens": 24
+          },
+          "timestamp": "2026-09-23T01:02:40.592564+00:00",
+          "request_id": "4604fb58-aa31-4d2b-88bf-1c00b2d6eb8d"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:02:40.592564+00:00",
+          "request_id": "4604fb58-aa31-4d2b-88bf-1c00b2d6eb8d"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:02:40.592564+00:00",
+          "request_id": "4604fb58-aa31-4d2b-88bf-1c00b2d6eb8d"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:02:40.592564+00:00",
+          "request_id": "4604fb58-aa31-4d2b-88bf-1c00b2d6eb8d"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:02:40.592564+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000023",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:03:07.980086Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "35cb4da3-8b5a-4bb4-8bf0-abed5efefb73",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence where a computer system is given the ability to learn from data without being specifically programmed. Essentially, you feed the computer a lot of data and it uses that data to make predictions or decisions, improving over time with more data. It’s like training a dog - you give it a command and when it follows the command correctly, you reward it. Over time, the dog learns what to do. Similarly, you give the machine learning system data and information to process and 'learn' from, which it uses to improve its future predictions or decisions.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 117,
+            "total_tokens": 134
+          },
+          "timestamp": "2026-09-23T01:03:04.982028+00:00",
+          "request_id": "35cb4da3-8b5a-4bb4-8bf0-abed5efefb73"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:03:04.982028+00:00",
+          "request_id": "35cb4da3-8b5a-4bb4-8bf0-abed5efefb73"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:03:04.982028+00:00",
+          "request_id": "35cb4da3-8b5a-4bb4-8bf0-abed5efefb73"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:03:04.982028+00:00",
+          "request_id": "35cb4da3-8b5a-4bb4-8bf0-abed5efefb73"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:03:04.982028+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000024",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:09:44.206817Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "436ed27c-09d2-442e-a242-ac3ad23deae3",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "The sky appears blue during the day because of a process called Rayleigh scattering, where shorter-wavelength light (blue and violet) is scattered more than longer-wavelength light by the Earth's atmosphere [SKYQ-7731].",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 36,
+            "completion_tokens": 47,
+            "total_tokens": 83
+          },
+          "timestamp": "2026-09-23T01:09:40.503041+00:00",
+          "request_id": "436ed27c-09d2-442e-a242-ac3ad23deae3"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:09:40.503041+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000025",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:24:15.795801Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "92f162ee-9734-4233-b2a6-4ddb01ee5ded",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "As an AI developed by OpenAI, I am not capable of performing authentication checks. Only human administrators or software are able to perform these tasks.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 9,
+            "completion_tokens": 29,
+            "total_tokens": 38
+          },
+          "timestamp": "2026-09-23T01:24:03.770286+00:00",
+          "request_id": "92f162ee-9734-4233-b2a6-4ddb01ee5ded"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:24:03.770286+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000026",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:24:34.026408Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "82aee532-c660-4009-a61e-7e28dbb016ee",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence (AI) that allows computers to learn from experience and understand information without being explicitly programmed. It's like teaching a child how to identify different animals. We show them pictures of dogs, cats, birds, etc., and tell them what each animal is. After repeating this process, the child learns and then can identify the animals they've seen before and even can guess unknown animals based on similarity. Similarly, in machine learning, we feed the computer lots of data (like pictures or voice commands), and it uses algorithms to analyze this data, learn patterns and make decisions or predictions based on what it has learnt.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 130,
+            "total_tokens": 147
+          },
+          "timestamp": "2026-09-23T01:24:28.353405+00:00",
+          "request_id": "82aee532-c660-4009-a61e-7e28dbb016ee"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:24:28.353405+00:00",
+          "request_id": "82aee532-c660-4009-a61e-7e28dbb016ee"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:24:28.353405+00:00",
+          "request_id": "82aee532-c660-4009-a61e-7e28dbb016ee"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:24:28.353405+00:00",
+          "request_id": "82aee532-c660-4009-a61e-7e28dbb016ee"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:24:28.353405+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000027",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:24:54.083459Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "9d06c433-4cc5-4e2a-bdfc-7ebac507a390",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "The MoCKA (Model-based Co-design of Kinematics and Control for Assistive systems) system architecture is a model-based design framework aimed at efficient co-design of kinematics and control in assistive robotics technology, specifically exoskeletons. It provides a systematic approach to design, simulate, and test both active and passive exoskeletons.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 24,
+            "completion_tokens": 70,
+            "total_tokens": 94
+          },
+          "timestamp": "2026-09-23T01:24:50.335818+00:00",
+          "request_id": "9d06c433-4cc5-4e2a-bdfc-7ebac507a390"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:24:50.335818+00:00",
+          "request_id": "9d06c433-4cc5-4e2a-bdfc-7ebac507a390"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:24:50.335818+00:00",
+          "request_id": "9d06c433-4cc5-4e2a-bdfc-7ebac507a390"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:24:50.335818+00:00",
+          "request_id": "9d06c433-4cc5-4e2a-bdfc-7ebac507a390"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:24:50.335818+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000028",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:35:01.055622Z",
+    "source": "External",
+    "content": {
+      "status": "all_error",
+      "request_id": "7a30c037-bfe3-4f4c-bed5-20a34737cf6d",
+      "results": [
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:35:01.044754+00:00",
+          "request_id": "7a30c037-bfe3-4f4c-bed5-20a34737cf6d"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 0,
+        "error": 1,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:35:01.044754+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000029",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:35:01.381907Z",
+    "source": "External",
+    "content": {
+      "status": "all_error",
+      "request_id": "69aacc66-49b1-4b57-8122-87d900582094",
+      "results": [
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:35:01.356759+00:00",
+          "request_id": "69aacc66-49b1-4b57-8122-87d900582094"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 0,
+        "error": 0,
+        "not_verified": 1
+      },
+      "timestamp": "2026-09-23T01:35:01.356759+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000030",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:35:03.399060Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "a259f68a-d5eb-415d-a1c7-674157f4866e",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "OK",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 14,
+            "completion_tokens": 1,
+            "total_tokens": 15
+          },
+          "timestamp": "2026-09-23T01:35:01.745454+00:00",
+          "request_id": "a259f68a-d5eb-415d-a1c7-674157f4866e"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:35:01.745454+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000031",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:39:06.129441Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "5d69f712-0ddd-4d3a-9d77-298a8277e40a",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence that allows computers to learn and make decisions without being explicitly programmed. It's like teaching a child to recognize different shapes. You show the child various types of shapes again and again until they are able to identify them on their own. Similarly, machine learning algorithms use data to learn and improve over time, getting better at predicting outcomes or making decisions.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 77,
+            "total_tokens": 94
+          },
+          "timestamp": "2026-09-23T01:39:02.309977+00:00",
+          "request_id": "5d69f712-0ddd-4d3a-9d77-298a8277e40a"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:39:02.309977+00:00",
+          "request_id": "5d69f712-0ddd-4d3a-9d77-298a8277e40a"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:39:02.309977+00:00",
+          "request_id": "5d69f712-0ddd-4d3a-9d77-298a8277e40a"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:39:02.309977+00:00",
+          "request_id": "5d69f712-0ddd-4d3a-9d77-298a8277e40a"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:39:02.309977+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000032",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:39:16.824899Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "ad4563d1-355e-4021-a7ab-410b41344e09",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "FREEZE-CANDIDATE-CHECK-1790127553",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 29,
+            "completion_tokens": 13,
+            "total_tokens": 42
+          },
+          "timestamp": "2026-09-23T01:39:15.672879+00:00",
+          "request_id": "ad4563d1-355e-4021-a7ab-410b41344e09"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-23T01:39:15.672879+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000033",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:42:49.499175Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "ea0aa203-4783-4a91-9ae0-89f7e2a3fd06",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence (AI) that allows computers to learn and make decisions without being specifically programmed to do so. It's like teaching a child to recognize different animals. Once the child knows the characteristics of a dog, for example, they can recognize different breeds of dogs, even if they have never seen them before. \n\nIn a similar way, a computer with machine learning can learn to identify patterns or make predictions based on data that it has already processed. The \"learning\" occurs as the machine improves its performance on tasks over time.\n\nFor example, when you shop online, machine learning algorithms can analyze your previous purchases and suggest products you might like. Or in email spam filters, machine learning is used to identify characteristics of emails that are likely to be spam.\n\nMachine learning is a key technology behind many services we use today like Netflix, Amazon, and Facebook.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 177,
+            "total_tokens": 194
+          },
+          "timestamp": "2026-09-23T01:42:44.481330+00:00",
+          "request_id": "ea0aa203-4783-4a91-9ae0-89f7e2a3fd06"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:42:44.481330+00:00",
+          "request_id": "ea0aa203-4783-4a91-9ae0-89f7e2a3fd06"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:42:44.481330+00:00",
+          "request_id": "ea0aa203-4783-4a91-9ae0-89f7e2a3fd06"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:42:44.481330+00:00",
+          "request_id": "ea0aa203-4783-4a91-9ae0-89f7e2a3fd06"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:42:44.481330+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000034",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-23T01:46:20.201251Z",
+    "source": "External",
+    "content": {
+      "status": "partial_ok",
+      "request_id": "7ced0017-f18a-4c35-ba0a-67fcfec28b92",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "Machine learning is a type of artificial intelligence (AI) where computers are programmed to learn and make decisions by themselves without being explicitly programmed. It's like teaching a child - you give them basic knowledge and they learn and grow their understanding over time.\n\nImagine it this way: instead of feeding the computer every bit of information and command it needs, the computer is taught to learn and understand patterns and make predictions based on the data it processes.\n\nA practical example could be spam emails. Machine learning algorithms are used to classify emails as spam or non-spam based on patterns they have learned from previous classifications.\n\nIn simple terms, machine learning is like teaching a computer to be more intelligent and make decisions on its own based on the information it's given.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 17,
+            "completion_tokens": 148,
+            "total_tokens": 165
+          },
+          "timestamp": "2026-09-23T01:46:04.075050+00:00",
+          "request_id": "7ced0017-f18a-4c35-ba0a-67fcfec28b92"
+        },
+        {
+          "provider": "claude",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: ANTHROPIC_API_KEY not set",
+          "model": "claude-opus-5",
+          "timestamp": "2026-09-23T01:46:04.075050+00:00",
+          "request_id": "7ced0017-f18a-4c35-ba0a-67fcfec28b92"
+        },
+        {
+          "provider": "gemini",
+          "status": "error",
+          "error": "Gemini API error: No module named 'google.generativeai'",
+          "model": "gemini-2.0-flash",
+          "timestamp": "2026-09-23T01:46:04.075050+00:00",
+          "request_id": "7ced0017-f18a-4c35-ba0a-67fcfec28b92"
+        },
+        {
+          "provider": "perplexity",
+          "status": "NOT_VERIFIED",
+          "error": "API_KEY_MISSING: PERPLEXITY_API_KEY not set",
+          "model": "sonar-pro",
+          "timestamp": "2026-09-23T01:46:04.075050+00:00",
+          "request_id": "7ced0017-f18a-4c35-ba0a-67fcfec28b92"
+        }
+      ],
+      "summary": {
+        "total": 4,
+        "ok": 1,
+        "error": 1,
+        "not_verified": 2
+      },
+      "timestamp": "2026-09-23T01:46:04.075050+00:00"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
+  }
+]

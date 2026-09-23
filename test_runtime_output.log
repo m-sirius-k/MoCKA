@@ -1,0 +1,22 @@
+================================================================================
+JARVIS Å® Multi-AI Å® HAB E2E Connection Test
+Test ID: E2E_20260922_171259
+================================================================================
+
+[STEP A] Generate JARVIS decision_id
+--------------------------------------------------------------------------------
+Decision ID: DC_E2E_34b56da0_20260922_171259
+
+[STEP B] POST /api/v1/socket/multi_request with decision_id
+--------------------------------------------------------------------------------
+URL: POST http://localhost:5010/api/v1/socket/multi_request
+Payload decision_id: DC_E2E_34b56da0_20260922_171259
+Payload providers: ['gpt', 'claude']
+Response status: 403
+ERROR: <!doctype html>
+<html lang=en>
+<title>403 Forbidden</title>
+<h1>Forbidden</h1>
+<p>Invalid API key</p>
+
+ERROR: multi_request failed

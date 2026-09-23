@@ -14,6 +14,15 @@ import requests
 from datetime import datetime
 from flask import Flask, send_from_directory, jsonify, request
 from dotenv import load_dotenv
+import uuid
+
+# Import execute_tool from mocka_mcp_server for T2 Execution Connection
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent))
+try:
+    from mocka_mcp_server import execute_tool
+except Exception as _exec_import_err:
+    execute_tool = None
+    print(f"[WARN] execute_tool import failed (T2 Execution Connection unavailable): {_exec_import_err}", flush=True)
 
 load_dotenv()
 
@@ -2412,6 +2421,143 @@ def decision_reject():
         "free_note": pid,
     })
     return jsonify({"status": "ok", "rejected": pid})
+
+
+# T2 HAB/JARVIS Runtime Authorization Endpoint
+# Purpose: Verify authorization_state and grant execution permit
+@app.route('/runtime/approve', methods=['POST'])
+def runtime_approve():
+    """
+    Minimal Runtime Authorization endpoint.
+    Step 3 of HAB/JARVIS → Human Gate → Authorization → Runtime flow.
+
+    Request payload:
+    {
+        "authorization_id": UUID,
+        "decision_record_id": str,
+        "human_identity": str,
+        "confirmed": bool,
+        "spec_id": str
+    }
+
+    Response:
+    {
+        "status": "ok" or "denied",
+        "permit": true or false,
+        "authorization_id": UUID,
+        "reason": str (if denied)
+    }
+    """
+    try:
+        payload = request.get_json(force=True, silent=True) or {}
+        auth_id = payload.get("authorization_id", "")
+        decision_id = payload.get("decision_record_id", "")
+        human_id = payload.get("human_identity", "")
+        confirmed = payload.get("confirmed", False)
+        spec_id = payload.get("spec_id", "")
+
+        if not all([auth_id, decision_id, human_id, confirmed]):
+            return jsonify({
+                "status": "denied",
+                "permit": False,
+                "reason": "Missing required fields: authorization_id, decision_record_id, human_identity, confirmed"
+            }), 400
+
+        # Query authorization_state
+        conn = sqlite3.connect(str(__import__('pathlib').Path(__file__).parent / 'data' / 'mocka_events.db'))
+        conn.row_factory = sqlite3.Row
+
+        auth_row = conn.execute(
+            'SELECT * FROM authorization_state WHERE authorization_id = ?',
+            (auth_id,)
+        ).fetchone()
+        conn.close()
+
+        if not auth_row:
+            return jsonify({
+                "status": "denied",
+                "permit": False,
+                "reason": "Authorization state not found",
+                "authorization_id": auth_id
+            }), 404
+
+        if auth_row['status'] != 'APPROVED':
+            return jsonify({
+                "status": "denied",
+                "permit": False,
+                "reason": f"Authorization status is {auth_row['status']}, not APPROVED",
+                "authorization_id": auth_id
+            }), 403
+
+        # T2 Execution Connection: Call existing Runtime Execution (execute_tool)
+        execution_id = str(uuid.uuid4())
+        execution_result = None
+        execution_error = None
+
+        if execute_tool:
+            try:
+                # SANDBOX TEST ONLY: Use read-only tool for safe execution
+                # Pass authorization_id as req_id for idempotency tracing
+                exec_response = execute_tool("mocka_get_overview", {}, req_id=str(auth_id))
+                execution_result = json.loads(exec_response) if isinstance(exec_response, str) else exec_response
+
+                # Log execution to authorization_state scope (authorization_id -> execution_id trail)
+                conn = sqlite3.connect(str(__import__('pathlib').Path(__file__).parent / 'data' / 'mocka_events.db'))
+                try:
+                    conn.execute('''
+                        CREATE TABLE IF NOT EXISTS execution_log (
+                            execution_id TEXT PRIMARY KEY,
+                            authorization_id TEXT,
+                            decision_id TEXT,
+                            human_identity TEXT,
+                            tool_name TEXT,
+                            status TEXT,
+                            result TEXT,
+                            created_at TEXT
+                        )
+                    ''')
+                    conn.execute(
+                        '''INSERT INTO execution_log
+                        (execution_id, authorization_id, decision_id, human_identity, tool_name, status, result, created_at)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+                        (execution_id, str(auth_id), decision_id, human_id, "mocka_get_overview", "ok", json.dumps(execution_result, ensure_ascii=False), datetime.now().isoformat())
+                    )
+                    conn.commit()
+                except Exception as _exec_log_err:
+                    print(f"[WARN] execution_log record failed (non-blocking): {_exec_log_err}", flush=True)
+                finally:
+                    conn.close()
+            except Exception as _exec_err:
+                execution_error = str(_exec_err)
+                print(f"[WARN] execute_tool call failed: {_exec_err}", flush=True)
+        else:
+            execution_error = "execute_tool not available"
+
+        # All checks passed - grant permit + return execution result
+        response_data = {
+            "status": "ok",
+            "permit": True,
+            "authorization_id": auth_id,
+            "decision_record_id": decision_id,
+            "subject": auth_row['subject'],
+            "granted_at": auth_row['granted_at'],
+            "spec_id": spec_id,
+            "execution": {
+                "execution_id": execution_id,
+                "status": "ok" if execution_result and not execution_error else "error",
+                "tool": "mocka_get_overview",
+                "result": execution_result,
+                "error": execution_error
+            }
+        }
+        return jsonify(response_data), 200
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "permit": False,
+            "reason": str(e)
+        }), 500
 
 
 @app.route('/health')

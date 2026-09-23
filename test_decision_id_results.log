@@ -1,0 +1,87 @@
+============================================================
+TARGET-1 TEST SUITE: Decision ID Thread Safety
+============================================================
+
+[TEST 1] Basic ID Generation Format
+--------------------------------------------------
+Generated ID: DC_20260921_9282
+
+✗ Exception in Basic ID Generation:
+  AssertionError: Expected suffix to be 13 chars (9 digits + 4 hex), got 4
+
+[TEST 2] Sequential ID Generation (Time-Ordered)
+--------------------------------------------------
+Generated 5 IDs
+  [0] DC_20260921_9283 (micros: 9283)
+  [1] DC_20260921_9284 (micros: 9284)
+  [2] DC_20260921_9285 (micros: 9285)
+  [3] DC_20260921_9286 (micros: 9286)
+  [4] DC_20260921_9287 (micros: 9287)
+✓ IDs are time-ordered within day
+
+[TEST 3] Existing Decision Reads
+--------------------------------------------------
+Read 321 decision records (broken: 0)
+  [0] DC_20260705_001 - TEST: Decision Ledger Reconnection動作確認
+  [1] DC_20260705_002 - Decision Ledgerを正式採用しTODO_361を再開点とする
+  [2] DC_20260705_003 - Integrity Frameworkを独立新制度とせず、Integrity C
+✓ Found 272 old-format decision IDs (DC_YYYYMMDD_NNN)
+
+[TEST 4] Parallel ID Generation (Thread Safety)
+--------------------------------------------------
+Generated 50 IDs from 10 parallel threads
+Unique IDs: 50
+Duplicates: 0
+✓ Zero collisions in 50 parallel generations
+Sample IDs:
+  DC_20260921_9288
+  DC_20260921_9289
+  DC_20260921_9290
+  DC_20260921_9291
+  DC_20260921_9292
+
+[TEST 5] Decision Write & Read Back
+--------------------------------------------------
+Generated decision_id: DC_20260921_9338
+✓ Decision written to ledger
+✓ Decision read back successfully
+  ID: DC_20260921_9338
+  Title: TARGET-1 Thread Safety Test
+
+[TEST 6] Backward Compatibility
+--------------------------------------------------
+Old format (DC_YYYYMMDD_NNN): 271
+  Examples: ['DC_20260705_001', 'DC_20260705_002', 'DC_20260705_003']
+New format (DC_YYYYMMDD_TTTTTTTTTTXX): 51
+  Examples: ['DC_20260719_MOCKA_REINFORCEMENT_001', 'DC_20260719_MOCKA_REINFORCEMENT_001', 'DC-WP-001']
+✓ Old format IDs are still readable
+✓ Mixed old/new formats can coexist
+
+[TEST 7] Format Validation
+--------------------------------------------------
+Validating 10 generated IDs...
+✗ Invalid suffix length: DC_20260921_9339 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9340 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9341 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9342 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9343 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9344 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9345 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9346 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9347 (expected 13, got 4)
+✗ Invalid suffix length: DC_20260921_9348 (expected 13, got 4)
+
+============================================================
+TEST SUMMARY
+============================================================
+✗ Basic ID Generation: FAIL
+✓ Sequential ID Generation: PASS
+✓ Existing Decision Reads: PASS
+✓ Parallel ID Generation: PASS
+✓ Decision Write & Read: PASS
+✓ Backward Compatibility: PASS
+✗ Format Validation: FAIL
+------------------------------------------------------------
+TOTAL: 5/7 tests passed
+
+TARGET-1 = FAIL ✗ (2 test(s) failed)

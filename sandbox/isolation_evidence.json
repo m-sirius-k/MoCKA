@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-09-21",
+  "sandbox_db_path": "C:\\Users\\sirok\\MoCKA\\sandbox\\mocka_events_sandbox.db",
+  "production_db_path": "C:\\Users\\sirok\\MoCKA\\data\\mocka_events.db",
+  "paths_identical": false,
+  "sandbox_db_exists": true,
+  "sandbox_db_size_bytes": 24576,
+  "production_db_exists": true,
+  "isolation_status": "VERIFIED"
+}

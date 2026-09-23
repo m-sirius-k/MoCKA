@@ -20,7 +20,10 @@ governance_pipeline.py
 """
 
 import time
+import json
 from dataclasses import dataclass, field
+from pathlib import Path
+from datetime import datetime, timezone
 
 from structural.grounding_engine import RepositoryGroundingEngine
 from structural.working_memory import WorkingMemoryEngine
@@ -60,6 +63,45 @@ WRITE_TOOLS = {
 GROUNDING_REFRESH_SECONDS = 60
 
 
+class JarvisObservability:
+    """
+    Read-only observability engine. Evaluates governance decision execution outcomes.
+    Does NOT hold execution authority or make governance decisions.
+    """
+
+    def __init__(self, mocka_root: Path = None):
+        self.mocka_root = mocka_root or Path(__file__).resolve().parent.parent
+        self.decision_ledger = self.mocka_root / "data" / "decisions" / "decision_ledger.jsonl"
+
+    def record_tool_outcome(self, tool_name: str, allowed: bool, reason: str, result_summary: str) -> None:
+        """
+        Record tool execution outcome for governance observability.
+        Read-only: only appends to decision_ledger, never modifies existing entries.
+        """
+        if not self.decision_ledger.exists():
+            return
+
+        entry = {
+            "decision_id": f"JARVIS_OBS_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}",
+            "title": f"JARVIS observability: {tool_name}",
+            "context": "Governance execution outcome monitoring",
+            "decision": "allowed" if allowed else "blocked",
+            "rationale": reason,
+            "tool_name": tool_name,
+            "result_summary": result_summary[:200] if result_summary else "",
+            "recorded_by": "system:jarvis_observability",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "status": "Recorded",
+        }
+
+        try:
+            with self.decision_ledger.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        except Exception:
+            # Fail-soft: observability failure does not block execution
+            pass
+
+
 @dataclass
 class GovernanceDecision:
     allowed: bool
@@ -78,6 +120,7 @@ class GovernancePipeline:
         self.tm = ThinkingModeEngine()
         self.reasoning = ReasoningGovernanceEngine()
         self.execution = ExecutionGovernanceEngine()
+        self.jarvis = JarvisObservability()
         self._last_grounding_at = 0.0
         self._grounding_cache = None
 
@@ -88,10 +131,34 @@ class GovernancePipeline:
             self._last_grounding_at = now
         return self._grounding_cache
 
-    def before_tool(self, tool_name: str, args: dict) -> GovernanceDecision:
+    def _read_decision(self, decision_id: str) -> dict or None:
+        """
+        Read decision record from decision_ledger.jsonl
+        HG-NEW-001(A): Use Human Gate Decision Record as Canonical Authority Evidence
+        """
+        import json
+        from pathlib import Path
+
+        try:
+            ledger_path = Path(__file__).resolve().parent.parent / "data" / "decisions" / "decision_ledger.jsonl"
+            if not ledger_path.exists():
+                return None
+
+            for line in ledger_path.read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    record = json.loads(line)
+                    if record.get("decision_id") == decision_id:
+                        return record
+        except Exception:
+            pass
+
+        return None
+
+    def before_tool(self, tool_name: str, args: dict, req_id: str = None, session_id: str = None) -> GovernanceDecision:
         """
         GL1~GL7をtool呼び出し直前に適用する。
         書き込み系toolはGL7 Dry Runでabort条件を検査し、abortがあればallowed=False。
+        BA-04: Authority Decision validation (HG-PS-01=C, HG-SCOPE-01=C: DEFERRED → BLOCKED)
         """
         grounding = self._refresh_grounding()
 
@@ -106,7 +173,40 @@ class GovernancePipeline:
         checklist = self.reasoning.enforce_pre_answer_checklist()
 
         aborts = []
+
+        # BA-04 FAIL-CLOSED GATE: Authority validation (HG Decision: PS-01=C, SCOPE-01=C DEFERRED)
+        # Per HG Decisions: Present Standing and Authority Scope are DEFERRED
+        # Fail-closed: DEFERRED means UNKNOWN, UNKNOWN means BLOCK
         if tool_name not in READ_ONLY_TOOLS:
+            decision_id = args.get("decision_id")
+
+            # Requirement 0: decision_id must be present
+            if not decision_id:
+                aborts.append("BA04_DECISION_ID_MISSING")
+            else:
+                decision_record = self._read_decision(decision_id)
+
+                # Requirement 1: Decision exists
+                if not decision_record:
+                    aborts.append("BA04_DECISION_NOT_FOUND")
+
+                # Requirement 2: Decision status == Active
+                elif decision_record.get("status") != "Active":
+                    aborts.append(f"BA04_DECISION_NOT_ACTIVE:{decision_record.get('status')}")
+
+                else:
+                    # Requirement 3: Present Standing (HG-PS-01=C DEFERRED)
+                    # Per HG Decision: Present Standing Tn validation is DEFERRED
+                    # Fail-closed: DEFERRED means UNKNOWN, UNKNOWN means BLOCK
+                    aborts.append("BA04_PRESENT_STANDING_DEFERRED")
+
+                    # Requirement 4: Authority Scope (HG-SCOPE-01=C DEFERRED)
+                    # Per HG Decision: Authority Scope validation is DEFERRED
+                    # Fail-closed: DEFERRED means UNKNOWN, UNKNOWN means BLOCK
+                    aborts.append("BA04_AUTHORITY_SCOPE_DEFERRED")
+
+        # GL7 Dry Run (only if no BA-04 aborts)
+        if tool_name not in READ_ONLY_TOOLS and not aborts:
             # Default Deny: READ_ONLY_TOOLS以外(未知のtoolを含む)は全てGL7 Dry Run対象。
             # scope = 現在のリポジトリ直下全ディレクトリ。
             # 既存の未関連dirty state(バックグラウンド自動同期)をabort対象にせず、
@@ -117,7 +217,7 @@ class GovernancePipeline:
                 "expected_new_dirs": scope,
                 "expected_max_changes": 400,
             })
-            aborts = approval.dry_run.aborts
+            aborts.extend(approval.dry_run.aborts)
 
         allowed = (not aborts) and checklist.ok
         if aborts:
@@ -127,6 +227,14 @@ class GovernancePipeline:
         else:
             reason = "ok"
 
+        # JARVIS observability: record governance decision
+        self.jarvis.record_tool_outcome(
+            tool_name=tool_name,
+            allowed=allowed,
+            reason=reason,
+            result_summary=f"GL7={len(aborts)} aborts; checklist_ok={checklist.ok}"
+        )
+
         return GovernanceDecision(
             allowed=allowed,
             reason=reason,
@@ -135,10 +243,11 @@ class GovernancePipeline:
             dry_run_aborts=aborts,
         )
 
-    def after_tool(self, tool_name: str, args: dict, result_summary: str) -> None:
-        """tool実行後、GL2/GL7へ実行結果を記録する。"""
+    def after_tool(self, tool_name: str, args: dict, result_summary: str, allowed: bool = True, reason: str = "") -> None:
+        """tool実行後、GL2/GL7へ実行結果を記録する。JARVIS observability も追加。"""
         self.wm.update(f"tool_done:{tool_name}", {"current_event": f"{tool_name} -> {result_summary[:120]}"})
         self.execution.record_execution({"tool": tool_name, "args": args}, {"summary": result_summary})
+        self.jarvis.record_tool_outcome(tool_name, allowed, reason, result_summary)
 
 
 def main():

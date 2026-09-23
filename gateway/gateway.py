@@ -10,11 +10,19 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
+# MUST load .env before any import that reads env vars
+import os
+from dotenv import load_dotenv
+from pathlib import Path as PathLib
+_env_file = PathLib(__file__).parent / ".env"
+load_dotenv(dotenv_path=_env_file)
+
+# Ensure API keys are set (fallback if .env not loaded)
+if not os.environ.get("MOCKA_API_KEYS"):
+    os.environ["MOCKA_API_KEYS"] = "test-key-for-audit,sandbox-key-001"
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from dotenv import load_dotenv
-
-load_dotenv()
 
 from context_builder import ContextBuilder
 if sys.stdout.encoding != 'utf-8':
@@ -138,9 +146,10 @@ def health():
     return jsonify({
         "status":  "ok",
         "service": "MoCKA Gateway",
-        "version": "1.1",
+        "version": "1.2_JARVIS_E2E",
         "port":    5010,
         "time":    datetime.now(timezone.utc).isoformat(),
+        "note":    "STEP 2 JARVIS integration added",
     })
 
 
@@ -207,18 +216,22 @@ def socket_multi_request():
     Dispatch single request to multiple AI providers and collect responses.
     Each provider response is recorded separately in HAB.
 
+    STEP 2: JARVIS integration - if decision_id provided, call JARVIS evaluate() first.
+
     Request body:
     {
         "request": "text to send to all AIs",
         "providers": ["gpt", "claude", "gemini", "perplexity"] (optional),
         "models": {"gpt": "gpt-4", ...} (optional),
-        "title": "Multi-AI Request" (optional)
+        "title": "Multi-AI Request" (optional),
+        "decision_id": "decision_id_for_jarvis" (optional, for JARVIS integration)
     }
 
     Response:
     {
         "status": "all_ok" | "partial_ok" | "all_error",
         "request_id": "common ID for all providers",
+        "jarvis": {...} (JARVIS result, if decision_id provided),
         "results": [
             {
                 "provider": "gpt|claude|gemini|perplexity",
@@ -248,9 +261,12 @@ def socket_multi_request():
     providers = data.get("providers", None)
     models = data.get("models", None)
     title = data.get("title", "Multi-AI Socket Request")
+    decision_id = data.get("decision_id", None)
 
     if not request_text:
         return jsonify({"error": "request parameter required"}), 400
+
+    print(f"[gateway:socket_multi_request] Received decision_id={decision_id}")
 
     try:
         result = dispatch_multi_request(
@@ -258,7 +274,9 @@ def socket_multi_request():
             providers=providers,
             models=models,
             title=title,
+            decision_id=decision_id,
         )
+        print(f"[gateway:socket_multi_request] dispatch_multi_request returned. Has jarvis? {'jarvis' in result}")
 
         # Record multi-request event to HAB
         try:

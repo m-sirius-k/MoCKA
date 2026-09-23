@@ -2,15 +2,27 @@ import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-﻿import json
+import json
 import os
 import sys
 from datetime import datetime, UTC
+from execution_context import ExecutionContext
 
 RESULT_PATH = "action_result.json"
 ROOT = r"C:\Users\sirok\MoCKA"
 
-def execute_action(action):
+def execute_action(step, execution_context=None, action_id=None):
+    """
+    Execute action step.
+
+    Args:
+        step: action string (e.g., "ANALYZE", "EXECUTE")
+        execution_context: ExecutionContext object (for T2-T3 integration; optional for backward compatibility)
+        action_id: action_id string for tracing (optional for backward compatibility)
+
+    Returns:
+        result dict with status, output, etc.
+    """
     output = None
     status = "blocked"
     reason = None
@@ -37,7 +49,7 @@ def execute_action(action):
 
         router = MoCKARouter()
         if router.providers["Gemini"].is_available():
-            result = router.collaborate(str(action))
+            result = router.collaborate(str(step))
             output = result["final_answer"]
             status = "success"
     except AccessDeniedError as auth_err:
@@ -50,7 +62,8 @@ def execute_action(action):
         output = f"[ERROR] {e}"
 
     result = {
-        "action": action,
+        "action": step,
+        "action_id": action_id,  # T2-T3 tracing
         "status": status,
         "reason": reason,
         "output": output,
@@ -60,7 +73,10 @@ def execute_action(action):
     with open(RESULT_PATH, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    print(f"ACTION {status.upper()}:", action)
+    print(f"ACTION {status.upper()}:", step)
+    if action_id:
+        print(f"  action_id: {action_id}")
     if output:
         print("OUTPUT:", output[:100])
+
     return result

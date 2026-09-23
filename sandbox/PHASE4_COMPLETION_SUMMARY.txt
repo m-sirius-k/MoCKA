@@ -1,0 +1,50 @@
+PHASE 4: ROOT-CAUSE INVESTIGATION - COMPLETION REPORT
+Date: 2026-09-21
+Status: COMPLETE (Evidence finalized at Stage D)
+
+AUTHORIZATION
+- HG-T1-E2: root-cause-first investigation AUTHORIZED
+- No new Human Gate required
+- Production DB frozen (verified untouched)
+
+SCOPE COMPLETED
+✓ Stage A: Single-process baseline (10 IDs) - 2.2 seconds
+✓ Stage B: 2-process contention emergence (20 IDs) - 3.8 seconds
+✓ Stage C: 5-process parallelism (50 IDs) - 2.1 seconds
+✓ Stage D: 10-process lock contention (100 IDs) - 12.3 seconds
+⏸ Stage E: 20-process severe load (not awaited)
+⏸ Stage F: Extended ID count (not executed)
+
+ROOT CAUSE: VERIFIED
+SQLite lock contention at ≥10 processes
+- Lock wait average: 0.2ms (1 proc) → 480ms (10 procs)
+- Max lock wait observed: 10.8 seconds
+- Superlinear degradation: 2× processes → 5.8× time
+- Process execution order determines severity
+
+EVIDENCE CLASSIFICATION
+✓ VERIFIED: Lock contention, superlinear degradation, process order effect
+✗ NOT VERIFIED: 20-process timeout, exponential escalation
+⚠ HYPOTHESIS: Disk I/O contribution to COMMIT times
+⚙ ENVIRONMENT-LIMITED: OS scheduling, lock serialization mechanism
+
+DELIVERABLES
+- PHASE4_EVIDENCE_PACKAGE_20260921.md (Evidence finalized)
+- phase4_stage_a_results.json through phase4_stage_d_results.json (Data)
+- Instrumented test code (phase4_stage_*_instrumented.py)
+- Analysis templates and scripts
+
+PRODUCTION STATE
+✓ mocka_events.db: FROZEN (last modified 14:39:44, before investigation)
+✓ Decision ledger: FROZEN
+✓ Working tree: CLEAN
+✓ Sandbox: ISOLATED (verified separate path)
+
+NEXT STEPS (OUT OF SCOPE)
+- HG decision on remediation (timeout vs algorithm change)
+- Stage E/F execution if additional data required
+- Production implementation pending HG approval
+- Thread-based reproduction if threading comparison needed
+
+INVESTIGATION COMPLETE - EVIDENCE FINALIZED
+Ready for HG Phase 5 decision and authorization.

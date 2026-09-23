@@ -127,16 +127,19 @@ class JarvisEngine:
         """
         JARVIS Experience Recall: Retrieve past decisions from MoCKA.
 
-        Returns most recent Active decision from Decision Ledger.
+        Phase 2: Returns most recent Active decision
+        Phase 3: If intent provided, searches for contextually relevant decisions
+
         Read-only operation; does not modify state.
 
         Args:
-            current_intent: Current question/context (for logging)
+            current_intent: Current question/context (used for keyword matching)
             context: Optional additional context (keywords, decision_type, etc.)
 
         Returns:
             {
                 "status": "found" | "empty",
+                "intent": str,
                 "matches": [
                     {
                         "source": "decision_ledger",
@@ -150,7 +153,8 @@ class JarvisEngine:
                         "status": str
                     }
                 ],
-                "gap": str or None
+                "gap": str or None,
+                "search_mode": "contextual" | "latest"
             }
         """
         result = {
@@ -158,6 +162,7 @@ class JarvisEngine:
             "intent": current_intent,
             "matches": [],
             "gap": None,
+            "search_mode": "latest",
         }
 
         try:
@@ -187,7 +192,36 @@ class JarvisEngine:
 
             active_decisions.sort(key=lambda x: x.get("decision_id", ""), reverse=True)
 
-            # Return most recent decision
+            # Phase 3: Contextual matching if intent provided
+            if current_intent and current_intent.strip():
+                result["search_mode"] = "contextual"
+                contextual_matches = self._search_contextual_decisions(active_decisions, current_intent)
+
+                if contextual_matches:
+                    # Found matching decisions
+                    matched_decision = contextual_matches[0]  # Return most recent match
+                    result["status"] = "found"
+                    result["matches"] = [
+                        {
+                            "source": "decision_ledger",
+                            "decision_id": matched_decision.get("decision_id"),
+                            "title": matched_decision.get("title"),
+                            "decision": matched_decision.get("decision"),
+                            "rationale": matched_decision.get("rationale"),
+                            "approved_by": matched_decision.get("approved_by"),
+                            "approved_at": matched_decision.get("approved_at"),
+                            "related_events": matched_decision.get("related_events", []),
+                            "status": matched_decision.get("status"),
+                        }
+                    ]
+                    return result
+                else:
+                    # No contextual match found
+                    result["gap"] = "NO_CONTEXTUAL_MATCH"
+                    result["status"] = "empty"
+                    return result
+
+            # Phase 2 fallback: Return most recent decision if no intent
             latest = active_decisions[0]
             result["status"] = "found"
             result["matches"] = [
@@ -209,3 +243,38 @@ class JarvisEngine:
         except Exception as e:
             result["gap"] = f"RECALL_ERROR: {str(e)[:100]}"
             return result
+
+    def _search_contextual_decisions(self, decisions: list, intent: str) -> list:
+        """
+        Phase 3: Search for decisions contextually related to intent.
+
+        Returns list of decisions matching keywords from intent, sorted by recency.
+        """
+        if not intent or not intent.strip():
+            return []
+
+        # Extract keywords from intent
+        keywords = intent.lower().split()
+        keywords = [kw.strip() for kw in keywords if kw.strip() and len(kw) > 2]
+
+        if not keywords:
+            return []
+
+        matches = []
+        for decision in decisions:
+            # Concatenate searchable fields
+            searchable = (
+                (decision.get("title", "") or "").lower() +
+                " " +
+                (decision.get("context", "") or "").lower() +
+                " " +
+                (decision.get("decision", "") or "").lower() +
+                " " +
+                (decision.get("rationale", "") or "").lower()
+            )
+
+            # Require ALL keywords to match (stronger contextual matching)
+            if all(kw in searchable for kw in keywords):
+                matches.append(decision)
+
+        return matches

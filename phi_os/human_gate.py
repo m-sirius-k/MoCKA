@@ -14,6 +14,19 @@ import secrets
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+import sys
+
+# HG-AS-01 Bridge integration (Sandbox only)
+_REPO_ROOT_PARENT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT_PARENT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT_PARENT))
+
+try:
+    from phi_os.human_gate_hg_as_01_impl import validate_payload_for_approve
+    from governance.authorization_state_bridge import issue_authorization_state, get_decision_id_from_hg_event
+    HG_AS_01_AVAILABLE = True
+except ImportError:
+    HG_AS_01_AVAILABLE = False
 
 human_gate_bp = Blueprint('human_gate', __name__)
 
@@ -161,7 +174,57 @@ def _transition(action: str, request_id: str, payload: dict | None, conn=None) -
 
 
 def approve(request_id: str, payload: dict | None = None, conn=None) -> dict:
-    return _transition("approve", request_id, payload, conn=conn)
+    """
+    Human Gate approval with HG-AS-01 Authorization State issuance.
+
+    Flow:
+    1. Record approval event in human_gate_events (unchanged)
+    2. If HG-AS-01 available and payload valid: issue authorization_state record
+    3. If payload invalid: skip authorization_state (backward compatible)
+    4. Fetch decision_id from authorization_state for JARVIS integration
+
+    Authorization State is APPEND-ONLY: no state modification from this call.
+    """
+    owns_conn = conn is None
+    if owns_conn:
+        conn = _get_conn()
+
+    try:
+        # Step 1: Record state transition (existing behavior)
+        event = _transition("approve", request_id, payload, conn=conn)
+
+        # Step 2: HG-AS-01 Authorization State Issuance (new, optional)
+        if HG_AS_01_AVAILABLE and event.get("next_state") == "APPROVED":
+            payload_for_validation = payload or {}
+            is_valid, validation_error = validate_payload_for_approve(payload_for_validation)
+
+            if is_valid:
+                # Validation passed: issue authorization_state
+                success, auth_error, authorization_id = issue_authorization_state(request_id, conn=conn)
+                if success:
+                    event["authorization_id"] = authorization_id
+                    event["authorization_state_issued"] = True
+
+                    # Step 3: Fetch decision_id for JARVIS integration
+                    decision_id = get_decision_id_from_hg_event(event["event_id"], conn=conn)
+                    if decision_id:
+                        event["decision_id"] = decision_id
+                    else:
+                        event["decision_id"] = None
+                        event["decision_id_not_found"] = True
+                else:
+                    # Log authorization state issuance failure but don't fail the approval
+                    event["authorization_state_issued"] = False
+                    event["authorization_state_error"] = auth_error
+            else:
+                # Validation failed: don't issue authorization_state (backward compatible)
+                event["authorization_state_issued"] = False
+                event["authorization_validation_error"] = validation_error
+
+        return event
+    finally:
+        if owns_conn:
+            conn.close()
 
 
 def reject(request_id: str, payload: dict | None = None, conn=None) -> dict:

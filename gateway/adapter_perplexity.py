@@ -11,6 +11,15 @@ from datetime import datetime, timezone
 
 import requests
 
+# STEP 5: HAB COMMON CORE / AI SOCKET Bridge
+try:
+    from adapters_perplexity_socket import PerplexitySocket
+    HAB_BRIDGE_AVAILABLE = True
+    _perplexity_socket = PerplexitySocket()
+except ImportError:
+    HAB_BRIDGE_AVAILABLE = False
+    _perplexity_socket = None
+
 GATEWAY_BASE  = os.environ.get("MOCKA_GATEWAY_URL", "http://localhost:5010")
 MOCKA_API_KEY = os.environ.get("MOCKA_API_KEYS", "").split(",")[0].strip()
 HMAC_SECRET   = os.environ.get("MOCKA_HMAC_SECRET", "").encode()
@@ -88,6 +97,20 @@ def handle_function_call(title: str, description: str, tags: list = None,
         payload["hmac_sig"] = _sign(payload)
 
     try:
+        result = {"status": "ok"}
+
+        # STEP 5: Try HAB Bridge via Perplexity Socket if available
+        if HAB_BRIDGE_AVAILABLE and _perplexity_socket:
+            try:
+                bridge_result = _perplexity_socket.submit(model, payload['actor']['runtime'], title, description, tags)
+                if bridge_result.get("status") == "ok":
+                    result["hab_request_id"] = bridge_result.get("request_id")
+                    result["hab_state"] = bridge_result.get("state")
+                    result["hab_decision_id"] = bridge_result.get("decision_id")
+            except Exception as hab_err:
+                result["hab_error"] = str(hab_err)
+
+        # Original: POST /api/v1/event (kept for compatibility)
         r = requests.post(
             f"{GATEWAY_BASE}/api/v1/event",
             json=payload,
@@ -95,7 +118,8 @@ def handle_function_call(title: str, description: str, tags: list = None,
             timeout=5,
         )
         r.raise_for_status()
-        return {"status": "ok", "event_id": r.json().get("event_id")}
+        result["event_id"] = r.json().get("event_id")
+        return result
     except Exception as e:
         return {"status": "error", "detail": str(e)}
 

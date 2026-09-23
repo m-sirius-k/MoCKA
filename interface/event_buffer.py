@@ -23,7 +23,11 @@ from pathlib import Path
 
 import requests
 
-GATE_BATCH_URL = "http://localhost:5000/api/gate/event/batch"
+import os
+
+_GATE_HOST = os.environ.get("MOCKA_GATE_HOST", "127.0.0.1")
+_GATE_PORT = os.environ.get("MOCKA_GATE_PORT", "5000")
+GATE_BATCH_URL = f"http://{_GATE_HOST}:{_GATE_PORT}/api/gate/event/batch"
 FALLBACK_PATH = Path(r"C:\Users\sirok\MoCKA\data\event_buffer_fallback.jsonl")
 
 BATCH_SIZE = 50

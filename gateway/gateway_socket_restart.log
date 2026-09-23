@@ -1,0 +1,33 @@
+ * Serving Flask app 'gateway'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5010
+ * Running on http://192.168.1.3:5010
+Press CTRL+C to quit
+127.0.0.1 - - [23/Sep/2026 09:41:41] "GET /api/v1/health HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:41:50] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:41:51] "POST /api/v1/socket/multi_request HTTP/1.1" 400 -
+127.0.0.1 - - [23/Sep/2026 09:41:52] "POST /api/v1/socket/multi_request HTTP/1.1" 400 -
+127.0.0.1 - - [23/Sep/2026 09:41:52] "POST /api/v1/socket/multi_request HTTP/1.1" 400 -
+127.0.0.1 - - [23/Sep/2026 09:42:06] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:42:10] "POST /api/v1/socket/request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:42:12] "POST /api/v1/event HTTP/1.1" 201 -
+127.0.0.1 - - [23/Sep/2026 09:42:24] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:49:44] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:52:11] "GET /api/v1/health HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:52:24] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:54:25] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:54:37] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:54:38] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:54:41] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:59:22] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:59:26] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:59:29] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:59:46] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 09:59:51] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 10:02:36] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 10:02:39] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 10:02:43] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 10:03:07] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -
+127.0.0.1 - - [23/Sep/2026 10:09:44] "POST /api/v1/socket/multi_request HTTP/1.1" 200 -

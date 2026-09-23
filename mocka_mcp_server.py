@@ -92,7 +92,7 @@ _DEFAULT_ACTOR  = "Claude-code-sonnet-4-6"  # who_actor未指定時のデフォ�
 # SQLite接続ヘルパー（文字化け防御ゲート付き）
 # ============================================================
 def _get_db():
-    con = sqlite3.connect(str(DB_PATH))
+    con = sqlite3.connect(str(DB_PATH), timeout=30.0)
     con.row_factory = sqlite3.Row
     # claude_sessionsテーブルを自動作成（初回のみ）
     con.execute("""CREATE TABLE IF NOT EXISTS claude_sessions (
@@ -101,6 +101,10 @@ def _get_db():
         tool TEXT,
         args TEXT,
         result_summary TEXT
+    )""")
+    con.execute("""CREATE TABLE IF NOT EXISTS decision_id_counters (
+        date TEXT PRIMARY KEY,
+        counter INTEGER DEFAULT 0
     )""")
     con.commit()
     return con
@@ -434,18 +438,39 @@ def _read_decisions():
     return records, broken
 
 def _next_decision_id():
-    """DC_YYYYMMDD_NNN形式で当日分の次番号を採番する（欠番可・重複禁止）。"""
+    """
+    DC_YYYYMMDD_NNN形式でスレッドセーフなDecision ID を採番する。
+    SQLiteのatomic counterを使用し、以下を保証：
+    * Schema互換: DC_YYYYMMDD_NNN（既存仕様維持）
+    * 絶対一意性: ACID transactionで重複防止
+    * Fail-closed: 例外時はrollback + 呼出元に伝播
+    * Multi-process安全: SQLiteの排他ロック（Windows含む）
+    * Restart安全: counterはDB永続化
+    """
     today = datetime.date.today().strftime("%Y%m%d")
-    records, _ = _read_decisions()
-    prefix = f"DC_{today}_"
-    used = [
-        int(r["decision_id"][len(prefix):])
-        for r in records
-        if isinstance(r.get("decision_id"), str) and r["decision_id"].startswith(prefix)
-        and r["decision_id"][len(prefix):].isdigit()
-    ]
-    n = (max(used) + 1) if used else 1
-    return f"{prefix}{n:03d}"
+    con = _get_db()
+    try:
+        con.execute("BEGIN IMMEDIATE")
+        con.execute(
+            "INSERT OR IGNORE INTO decision_id_counters (date, counter) VALUES (?, 0)",
+            (today,)
+        )
+        con.execute(
+            "UPDATE decision_id_counters SET counter = counter + 1 WHERE date = ?",
+            (today,)
+        )
+        row = con.execute(
+            "SELECT counter FROM decision_id_counters WHERE date = ?",
+            (today,)
+        ).fetchone()
+        con.commit()
+        next_num = row[0]
+        return f"DC_{today}_{next_num:03d}"
+    except Exception as e:
+        con.rollback()
+        raise
+    finally:
+        con.close()
 
 def _append_decision(record):
     """decision_ledger.jsonlへ1行追記する（append-only、既存行は変更しない）。"""

@@ -1,0 +1,216 @@
+[pattern_engine] OK - 392 keywords
+[app] cross_audit engine loaded
+--- MoCKA STARTING ---
+[STORAGE] SQLite単一化済み: CSV書き込み完全廃止
+Directory: C:\Users\sirok\MoCKA
+[schema_audit] OK: _source CHECK制約はGate Policy v1.0と完全一致
+[ContextRuntime] boot()成功 — booted_at=2026-09-22T03:37:33.337075+00:00
+[OK] audit_violations table + triggers installed
+[initialize_runtime] audit_trigger installed (trg_detect_direct_insert/update)
+[AUTO-AUDIT] 日次自動sealループ開始
+ * Serving Flask app 'app'
+ * Debug mode: off
+[AUTO-AUDIT] 50件到達 → AUTO_SEAL_PENDING記録のみ(自動seal実行なし、人間指示待ち)
+=======================================================
+MoCKA Heinrich Engine v4 - 実態最適分類版
+=======================================================
+Layer1 (重大事故):     336件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+Layer2 (軽微な事故):  2180件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+Layer3 (ヒヤリハット):20513件  [日常操作全般]
+合計:                23029件
+
+実測比率: 1 : 6.5 : 61.1
+理論比率: 1 : 29  : 300
+Layer2捕捉率: 22.4%  (理論の22.4%)
+Layer3捕捉率: 20.4%  (理論の20.4%)
+Heinrich理論ギャップ:   80287件
+
+【洞察】
+  Layer2が少ない = 軽微事故の記録経路が不足
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。] 
+  [INCIDENT            ] 
+=======================================================
+=======================================================
+MoCKA Heinrich Engine v4 - 実態最適分類版
+=======================================================
+Layer1 (重大事故):     336件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+Layer2 (軽微な事故):  2180件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+Layer3 (ヒヤリハット):20514件  [日常操作全般]
+合計:                23030件
+
+実測比率: 1 : 6.5 : 61.1
+理論比率: 1 : 29  : 300
+Layer2捕捉率: 22.4%  (理論の22.4%)
+Layer3捕捉率: 20.4%  (理論の20.4%)
+Heinrich理論ギャップ:   80286件
+
+【洞察】
+  Layer2が少ない = 軽微事故の記録経路が不足
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。] 
+  [INCIDENT            ] 
+=======================================================
+=======================================================
+MoCKA Heinrich Engine v4 - 実態最適分類版
+=======================================================
+Layer1 (重大事故):     336件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+Layer2 (軽微な事故):  2180件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+Layer3 (ヒヤリハット):20514件  [日常操作全般]
+合計:                23030件
+
+実測比率: 1 : 6.5 : 61.1
+理論比率: 1 : 29  : 300
+Layer2捕捉率: 22.4%  (理論の22.4%)
+Layer3捕捉率: 20.4%  (理論の20.4%)
+Heinrich理論ギャップ:   80286件
+
+【洞察】
+  Layer2が少ない = 軽微事故の記録経路が不足
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。] 
+  [INCIDENT            ] 
+=======================================================
+[guidelines] 定期実行開始
+[guidelines_engine] error: name 'Path' is not defined
+[guidelines] 定期実行完了
+=======================================================
+MoCKA Heinrich Engine v4 - 実態最適分類版
+=======================================================
+Layer1 (重大事故):     336件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+Layer2 (軽微な事故):  2180件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+Layer3 (ヒヤリハット):20514件  [日常操作全般]
+合計:                23030件
+
+実測比率: 1 : 6.5 : 61.1
+理論比率: 1 : 29  : 300
+Layer2捕捉率: 22.4%  (理論の22.4%)
+Layer3捕捉率: 20.4%  (理論の20.4%)
+Heinrich理論ギャップ:   80286件
+
+【洞察】
+  Layer2が少ない = 軽微事故の記録経路が不足
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。] 
+  [INCIDENT            ] 
+=======================================================
+=======================================================
+MoCKA Heinrich Engine v4 - 実態最適分類版
+=======================================================
+Layer1 (重大事故):     336件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+Layer2 (軽微な事故):  2180件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+Layer3 (ヒヤリハット):20514件  [日常操作全般]
+合計:                23030件
+
+実測比率: 1 : 6.5 : 61.1
+理論比率: 1 : 29  : 300
+Layer2捕捉率: 22.4%  (理論の22.4%)
+Layer3捕捉率: 20.4%  (理論の20.4%)
+Heinrich理論ギャップ:   80286件
+
+【洞察】
+  Layer2が少ない = 軽微事故の記録経路が不足
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。] 
+  [INCIDENT            ] 
+=======================================================
+=======================================================
+MoCKA Heinrich Engine v4 - 実態最適分類版
+=======================================================
+Layer1 (重大事故):     336件  [CLAIM,CRITICAL,DEPENDENCY_BREAK,FAST_WRONG...]
+Layer2 (軽微な事故):  2180件  [DANGER,ERROR,FORMAT_COLLAPSE,INCIDENT...]
+Layer3 (ヒヤリハット):20514件  [日常操作全般]
+合計:                23030件
+
+実測比率: 1 : 6.5 : 61.1
+理論比率: 1 : 29  : 300
+Layer2捕捉率: 22.4%  (理論の22.4%)
+Layer3捕捉率: 20.4%  (理論の20.4%)
+Heinrich理論ギャップ:   80286件
+
+【洞察】
+  Layer2が少ない = 軽微事故の記録経路が不足
+  またか！ボタン活用 → Layer2増加 → 比率が理論値に近づく
+  これがMoCKA制度成熟の定量的証明になる
+
+Layer1サンプル:
+  [security            ] OAuth繝ｪ繝輔Ξ繝・す繝･繝医・繧ｯ繝ｳ隱､繧ｳ繝溘ャ繝・OAut
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#1
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#2
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#3
+  [ai_violation        ] GPT辟｡譁ｭ繝輔ぃ繧､繝ｫ荳頑嶌縺・#4
+
+Layer2サンプル:
+  [config_error        ] Firefox Chrome襍ｷ蜍輔が繝励す繝ｧ繝ｳ隱､隗｣驥・fie
+  [environment_error   ] Git繝ｪ繝昴ず繝医Μ譛ｪ蛻晄悄蛹悶↓繧医ｋGitHub蜷梧悄荳榊庄
+  [data_quality        ] recurrence_registry隱､讀懃衍77莉ｶ
+  [ngrok 5001→5002修正後に全ファイルの5001参照チェックを省略。整合性確認なしで完了宣言した。執行官として不合格。再発防止：変更時は必ず全grep→リストアップ→整合性確認→完了の順序を厳守。] 
+  [INCIDENT            ] 
+=======================================================
+[IDEMPOTENCY] Duplicate request detected: req_id=df928af8-70d0-4fa9-adf9-59ac558805a9, tool=mocka_get_overview
+[IDEMPOTENCY] Duplicate request detected: req_id=d496313a-4dc7-4e5f-9f68-ff158536d5b1, tool=mocka_get_overview
