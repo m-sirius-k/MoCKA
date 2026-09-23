@@ -100,6 +100,59 @@ def handle_function_call(title: str, description: str, tags: list = None,
         return {"status": "error", "detail": str(e)}
 
 
+def call_api(request_text: str, model: str = "sonar-pro") -> dict:
+    """
+    Call Perplexity API directly.
+    Outbound: HAB → Socket → Adapter → Perplexity API.
+
+    Args:
+        request_text: Text to send to Perplexity
+        model: Perplexity model identifier
+
+    Returns:
+        {
+            "status": "ok" | "error",
+            "response": str (if ok),
+            "model": str,
+            "usage": dict (if ok),
+            "error": str (if error),
+        }
+    """
+    try:
+        import anthropic as pplx
+        api_key = os.environ.get("PERPLEXITY_API_KEY")
+        if not api_key:
+            return {
+                "status": "error",
+                "error": "PERPLEXITY_API_KEY not set",
+                "model": model,
+            }
+
+        client = pplx.Anthropic(api_key=api_key, base_url="https://api.perplexity.ai")
+        response = client.messages.create(
+            model=model,
+            max_tokens=1024,
+            messages=[{"role": "user", "content": request_text}]
+        )
+
+        response_text = response.content[0].text
+        return {
+            "status": "ok",
+            "response": response_text,
+            "model": model,
+            "usage": {
+                "prompt_tokens": response.usage.input_tokens,
+                "output_tokens": response.usage.output_tokens,
+            },
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": f"Perplexity API error: {str(e)}",
+            "model": model,
+        }
+
+
 def _sign(data: dict) -> str:
     keys = ["title", "description", "timestamp", "nonce", "request_id"]
     payload = "&".join(f"{k}={data.get(k,'')}" for k in sorted(keys))

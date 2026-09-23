@@ -102,6 +102,56 @@ def handle_function_call(title: str, description: str, tags: list = None,
     }
 
 
+def call_api(request_text: str, model: str = "gemini-2.0-flash") -> dict:
+    """
+    Call Google Gemini API directly.
+    Outbound: HAB → Socket → Adapter → Google Gemini API.
+
+    Args:
+        request_text: Text to send to Gemini
+        model: Google model identifier
+
+    Returns:
+        {
+            "status": "ok" | "error",
+            "response": str (if ok),
+            "model": str,
+            "usage": dict (if ok),
+            "error": str (if error),
+        }
+    """
+    try:
+        import google.generativeai as genai
+        api_key = os.environ.get("GOOGLE_API_KEY")
+        if not api_key:
+            return {
+                "status": "error",
+                "error": "GOOGLE_API_KEY not set",
+                "model": model,
+            }
+
+        genai.configure(api_key=api_key)
+        client = genai.GenerativeModel(model)
+        response = client.generate_content(request_text)
+
+        response_text = response.text
+        return {
+            "status": "ok",
+            "response": response_text,
+            "model": model,
+            "usage": {
+                "prompt_tokens": response.usage_metadata.prompt_character_count if hasattr(response.usage_metadata, 'prompt_character_count') else 0,
+                "output_tokens": response.usage_metadata.candidates_character_count if hasattr(response.usage_metadata, 'candidates_character_count') else 0,
+            },
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": f"Gemini API error: {str(e)}",
+            "model": model,
+        }
+
+
 def _sign(data: dict) -> str:
     keys = ["title", "description", "timestamp", "nonce", "request_id"]
     payload = "&".join(f"{k}={data.get(k,'')}" for k in sorted(keys))
