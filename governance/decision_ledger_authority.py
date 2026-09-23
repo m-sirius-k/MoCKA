@@ -8,12 +8,13 @@ from pathlib import Path
 DECISION_LEDGER_PATH = Path(__file__).parent.parent / "data" / "decisions" / "decision_ledger.jsonl"
 
 
-def check_runtime_authorization(runtime_scope: str) -> dict:
+def check_runtime_authorization(runtime_scope: str, ledger_path: Path | None = None) -> dict:
     """
     Query decision_ledger.jsonl for RUNTIME_AUTHORIZATION decisions.
 
     Args:
         runtime_scope: "SEAL" | "MCP_WRITE" | "AUTO_APPROVAL"
+        ledger_path: Optional override path for testing; uses DECISION_LEDGER_PATH if None
 
     Returns:
         {
@@ -23,7 +24,8 @@ def check_runtime_authorization(runtime_scope: str) -> dict:
             "approved_by": str | None
         }
     """
-    if not DECISION_LEDGER_PATH.exists():
+    path = ledger_path or DECISION_LEDGER_PATH
+    if not path.exists():
         return {
             "authorized": False,
             "decision_id": None,
@@ -32,7 +34,7 @@ def check_runtime_authorization(runtime_scope: str) -> dict:
         }
 
     try:
-        with open(DECISION_LEDGER_PATH, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             entries = [json.loads(line) for line in f if line.strip()]
     except Exception as e:
         return {

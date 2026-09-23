@@ -74,7 +74,7 @@ class SealGovernanceGate:
         execution_id = f"EXEC_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
         change_start = datetime.now(timezone.utc).isoformat()
 
-        auth_check = check_runtime_authorization("SEAL")
+        auth_check = check_runtime_authorization("SEAL", self.decision_ledger_path)
         if not auth_check["authorized"]:
             result = GateResult(
                 approved=False,
