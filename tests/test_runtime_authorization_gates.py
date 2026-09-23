@@ -80,7 +80,7 @@ def create_test_ledger_with_auth(ledger_path: Path, runtime_scope: str, decision
 
 
 def test_scenario_1_no_seal_authority_blocked():
-    """Scenario 1: No SEAL authority → blocked"""
+    """Scenario 1: No SEAL authority → blocked (empty ledger)"""
     print("\n[TEST 1] No SEAL authority → SealGovernanceGate blocks execution")
     with tempfile.TemporaryDirectory() as tmp:
         sandbox = Path(tmp)
@@ -95,10 +95,60 @@ def test_scenario_1_no_seal_authority_blocked():
         assert "no active RUNTIME_AUTHORIZATION" in result.reason, f"Got reason: {result.reason}"
         print(f"  PASS: Correctly blocked. Reason: {result.reason}")
 
+        # Verify Execution Record was created (result-only, NOT authorization)
+        try:
+            entries = [json.loads(line) for line in empty_ledger.read_text(encoding="utf-8").splitlines() if line]
+            assert len(entries) == 1
+            exec_record = entries[0]
+            assert exec_record.get("decision") == "aborted"
+            assert "decision_purpose" not in exec_record, "Execution Record should NOT have decision_purpose"
+            assert "runtime_scope" not in exec_record, "Execution Record should NOT have runtime_scope"
+            print(f"  VERIFIED: Execution Record recorded without authorization fields")
+        except AssertionError as e:
+            print(f"  FAIL: {e}")
+            raise
 
-def test_scenario_2_valid_seal_auth_execution():
-    """Scenario 2: Valid SEAL authority + GL7 PASS → execution"""
-    print("\n[TEST 2] Valid SEAL authority → attempt execution (GL7 may block separately)")
+
+def test_scenario_2_execution_record_alone_not_authorization():
+    """Scenario 2a: Execution Record alone does NOT grant future authorization (bootstrap prohibition)"""
+    print("\n[TEST 2a] Execution Record alone ≠ Authorization (bootstrap prohibition)")
+    with tempfile.TemporaryDirectory() as tmp:
+        sandbox = Path(tmp)
+        ledger = sandbox / "decision_ledger.jsonl"
+        ledger.parent.mkdir(parents=True, exist_ok=True)
+        ledger.touch()
+
+        subprocess.run(["git", "init", "-q"], cwd=sandbox, check=True)
+        subprocess.run(["git", "config", "user.email", "test@local"], cwd=sandbox, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=sandbox, check=True)
+        (sandbox / "README.md").write_text("test\n")
+        subprocess.run(["git", "add", "-A"], cwd=sandbox, check=True)
+        subprocess.run(["git", "commit", "-q", "-m", "init"], cwd=sandbox, check=True)
+
+        gate = SealGovernanceGate(repo_root=sandbox, decision_ledger_path=ledger)
+
+        # First call: BLOCKED (no authorization)
+        result1 = gate.execute(message="FIRST_CALL_NO_AUTH")
+        assert not result1.approved, "First call should be blocked"
+        print(f"  First call blocked (expected)")
+
+        # Verify ledger now has Execution Record
+        entries = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines() if line]
+        assert len(entries) == 1
+        exec_record = entries[0]
+        assert "decision_purpose" not in exec_record, "Execution Record should NOT have decision_purpose"
+        print(f"  Execution Record recorded (not authorization)")
+
+        # Second call: Also BLOCKED (Execution Record alone does NOT authorize)
+        result2 = gate.execute(message="SECOND_CALL_STILL_NO_AUTH")
+        assert not result2.approved, "Second call should also be blocked (execution record ≠ authorization)"
+        assert "no active RUNTIME_AUTHORIZATION" in result2.reason
+        print(f"  PASS: Second call blocked. Execution Record does NOT grant authorization")
+
+
+def test_scenario_2b_valid_seal_auth_execution():
+    """Scenario 2b: Explicit RUNTIME_AUTHORIZATION + GL7 PASS → execution"""
+    print("\n[TEST 2b] Explicit RUNTIME_AUTHORIZATION + GL7 PASS → execution proceeds")
     with tempfile.TemporaryDirectory() as tmp:
         sandbox = Path(tmp)
         ledger = sandbox / "decision_ledger.jsonl"
@@ -119,6 +169,21 @@ def test_scenario_2_valid_seal_auth_execution():
         assert result.approved, f"Expected execution attempt, got approved={result.approved}"
         assert "dry run clean" in result.reason or "execution" in result.reason.lower()
         print(f"  PASS: Authorization passed, executor reached. Reason: {result.reason}")
+
+        # Verify ledger now has Authorization Record + Execution Record
+        entries = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines() if line]
+        assert len(entries) == 2, f"Expected 2 records (auth + execution), got {len(entries)}"
+        auth_record = entries[0]
+        exec_record = entries[1]
+
+        # Authorization Record has decision_purpose
+        assert auth_record.get("decision_purpose") == "RUNTIME_AUTHORIZATION"
+        assert auth_record.get("runtime_scope") == "SEAL"
+        print(f"  Authorization Record verified (line 1)")
+
+        # Execution Record does NOT have decision_purpose
+        assert "decision_purpose" not in exec_record, "Execution Record should not have decision_purpose"
+        print(f"  Execution Record verified (line 2, no authority fields)")
 
 
 def test_scenario_3_no_mcp_write_authority_blocked():
@@ -199,11 +264,13 @@ def test_scenario_7_no_bootstrap_authorization():
 if __name__ == "__main__":
     print("=" * 70)
     print("RUNTIME AUTHORIZATION VERIFICATION TEST SUITE")
+    print("Authorization vs. Execution Record Separation")
     print("=" * 70)
 
     try:
         test_scenario_1_no_seal_authority_blocked()
-        test_scenario_2_valid_seal_auth_execution()
+        test_scenario_2_execution_record_alone_not_authorization()
+        test_scenario_2b_valid_seal_auth_execution()
         test_scenario_3_no_mcp_write_authority_blocked()
         test_scenario_4_valid_mcp_write_authority_passes_auth()
         test_scenario_5_no_auto_approval_authority()
@@ -211,7 +278,9 @@ if __name__ == "__main__":
         test_scenario_7_no_bootstrap_authorization()
 
         print("\n" + "=" * 70)
-        print("ALL 7 VERIFICATION SCENARIOS: PASS")
+        print("ALL VERIFICATION SCENARIOS: PASS")
+        print("Authorization Records and Execution Records properly separated")
+        print("Bootstrap prohibition verified")
         print("=" * 70)
         sys.exit(0)
     except AssertionError as e:

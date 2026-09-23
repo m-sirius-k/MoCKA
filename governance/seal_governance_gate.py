@@ -136,9 +136,7 @@ class SealGovernanceGate:
 
         entry = {
             "decision_id": f"DC_{execution_id}",
-            "decision_purpose": "RUNTIME_AUTHORIZATION",
-            "runtime_scope": "SEAL",
-            "title": "SealGovernanceGate seal request",
+            "title": "SealGovernanceGate seal execution result",
             "context": "Phase C-2 Governance Gate正式配置(TODO_411/412/413 Boundary対応)",
             "alternatives": [],
             "decision": "approved" if result.approved else "aborted",
