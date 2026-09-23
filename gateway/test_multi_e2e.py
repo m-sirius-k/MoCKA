@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 
 # Gateway URL
 GATEWAY_URL = "http://localhost:5010"
-API_KEY = "local-test-key"
+API_KEY = "test-key-for-audit"
 
 HEADERS = {
     "Content-Type": "application/json",
