@@ -123,6 +123,18 @@ def dispatch_multi_request(request_text: str,
     }
 
 
+
+# AI Socket registry: 各providerは既存の adapters_<provider>_socket.py の
+# Socket class(GPTSocket/ClaudeSocket/GeminiSocket/PerplexitySocket)を
+# そのまま再利用する。新規Socket実装は行わない。
+_PROVIDER_SOCKETS = {
+    "gpt":        ("adapters_gpt_socket", "GPTSocket", "gpt-4"),
+    "claude":     ("adapters_claude_socket", "ClaudeSocket", "claude-opus-5"),
+    "gemini":     ("adapters_gemini_socket", "GeminiSocket", "gemini-2.0-flash"),
+    "perplexity": ("adapters_perplexity_socket", "PerplexitySocket", "sonar-pro"),
+}
+
+
 def _call_provider(provider: str,
                    request_text: str,
                    model: str,
@@ -130,7 +142,10 @@ def _call_provider(provider: str,
                    common_request_id: str,
                    timestamp: str) -> Dict[str, Any]:
     """
-    Call individual AI provider and return structured result.
+    Call individual AI provider Socket and return structured result.
+
+    HAB -> Socket(既存 adapters_<provider>_socket.py) -> AI API -> HAB という
+    経路に統一する(各providerで個別にadapterをimportして直接呼ぶ実装を廃止)。
 
     Returns:
         {
@@ -144,70 +159,40 @@ def _call_provider(provider: str,
             "request_id": str (common),
         }
     """
+    if provider not in _PROVIDER_SOCKETS:
+        return {
+            "provider": provider,
+            "status": "error",
+            "error": f"Unsupported provider: {provider}",
+            "timestamp": timestamp,
+            "request_id": common_request_id,
+            "model": model,
+        }
+
+    module_name, class_name, default_model = _PROVIDER_SOCKETS[provider]
+    resolved_model = model or default_model
+
     try:
-        if provider == "gpt":
-            from adapter_gpt import call_api as gpt_call_api
-            api_result = gpt_call_api(request_text, model or "gpt-4")
-            return _format_result(
-                provider="gpt",
-                api_result=api_result,
-                model=model or "gpt-4",
-                timestamp=timestamp,
-                request_id=common_request_id,
-            )
-
-        elif provider == "claude":
-            from adapter_claude import call_api as claude_call_api
-            api_result = claude_call_api(request_text, model or "claude-opus-5")
-            return _format_result(
-                provider="claude",
-                api_result=api_result,
-                model=model or "claude-opus-5",
-                timestamp=timestamp,
-                request_id=common_request_id,
-            )
-
-        elif provider == "gemini":
-            from adapter_gemini import call_api as gemini_call_api
-            api_result = gemini_call_api(request_text, model or "gemini-2.0-flash")
-            return _format_result(
-                provider="gemini",
-                api_result=api_result,
-                model=model or "gemini-2.0-flash",
-                timestamp=timestamp,
-                request_id=common_request_id,
-            )
-
-        elif provider == "perplexity":
-            from adapter_perplexity import call_api as perplexity_call_api
-            api_result = perplexity_call_api(request_text, model or "sonar-pro")
-            return _format_result(
-                provider="perplexity",
-                api_result=api_result,
-                model=model or "sonar-pro",
-                timestamp=timestamp,
-                request_id=common_request_id,
-            )
-
-        else:
-            return {
-                "provider": provider,
-                "status": "error",
-                "error": f"Unsupported provider: {provider}",
-                "timestamp": timestamp,
-                "request_id": common_request_id,
-                "model": model,
-            }
+        socket_module = __import__(module_name)
+        socket = getattr(socket_module, class_name)()
+        api_result = socket.request(request_text, resolved_model, title)
+        return _format_result(
+            provider=provider,
+            api_result=api_result,
+            model=resolved_model,
+            timestamp=timestamp,
+            request_id=common_request_id,
+        )
 
     except ImportError as e:
-        # Adapter module not found
+        # Socket/Adapter module not found
         return {
             "provider": provider,
             "status": "error",
             "error": f"Adapter not available: {str(e)}",
             "timestamp": timestamp,
             "request_id": common_request_id,
-            "model": model,
+            "model": resolved_model,
         }
 
     except Exception as e:
@@ -218,8 +203,9 @@ def _call_provider(provider: str,
             "error": f"Dispatch error: {str(e)}",
             "timestamp": timestamp,
             "request_id": common_request_id,
-            "model": model,
+            "model": resolved_model,
         }
+
 
 
 def _format_result(provider: str,
