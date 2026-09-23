@@ -21,12 +21,19 @@ governance_pipeline.py
 
 import time
 from dataclasses import dataclass, field
+from pathlib import Path
+import sys
+
+_GOVERNANCE_DIR = Path(__file__).resolve().parent.parent / "governance"
+if str(_GOVERNANCE_DIR) not in sys.path:
+    sys.path.insert(0, str(_GOVERNANCE_DIR))
 
 from structural.grounding_engine import RepositoryGroundingEngine
 from structural.working_memory import WorkingMemoryEngine
 from structural.thinking_mode import ThinkingModeEngine, ThinkingMode
 from structural.reasoning_governance import ReasoningGovernanceEngine
 from structural.execution_governance import ExecutionGovernanceEngine
+from decision_ledger_authority import check_runtime_authorization  # noqa: E402
 
 # Default Deny: 読み取り専用と確認済みのtoolのみGL7 Dry Run検査を免除する。
 # このリストに含まれないtool(未知のtoolを含む)は既定でGL7 Dry Run対象=governed。
@@ -105,9 +112,15 @@ class GovernancePipeline:
 
         checklist = self.reasoning.enforce_pre_answer_checklist()
 
-        aborts = []
+        auth_aborts = []
+        gl7_aborts = []
         if tool_name not in READ_ONLY_TOOLS:
-            # Default Deny: READ_ONLY_TOOLS以外(未知のtoolを含む)は全てGL7 Dry Run対象。
+            # Authorization check: Decision Ledger must permit MCP_WRITE
+            auth_check = check_runtime_authorization("MCP_WRITE")
+            if not auth_check["authorized"]:
+                auth_aborts = [f"MCP_WRITE authorization denied: {auth_check['reason']}"]
+
+            # GL7 Dry Run validation (continues even if auth denied, for complete audit trail)
             # scope = 現在のリポジトリ直下全ディレクトリ。
             # 既存の未関連dirty state(バックグラウンド自動同期)をabort対象にせず、
             # GL7のnew_directory_detected/grounding_not_completed/件数異常のみを有効にする。
@@ -117,8 +130,9 @@ class GovernancePipeline:
                 "expected_new_dirs": scope,
                 "expected_max_changes": 400,
             })
-            aborts = approval.dry_run.aborts
+            gl7_aborts = approval.dry_run.aborts
 
+        aborts = auth_aborts + gl7_aborts
         allowed = (not aborts) and checklist.ok
         if aborts:
             reason = f"GL7 abort: {aborts}"

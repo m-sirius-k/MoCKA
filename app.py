@@ -2,7 +2,9 @@ import sqlite3
 import csv
 import sys as _sys
 _sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'interface'))
+_sys.path.insert(0, str(__import__('pathlib').Path(__file__).parent / 'governance'))
 import db_helper
+from decision_ledger_authority import check_runtime_authorization
 from event_buffer import get_buffer
 import essence_resolver
 import shutil
@@ -2103,7 +2105,11 @@ def _auto_approve_prevention():
 
 def auto_audit_loop():
     import subprocess, time
-    _auto_approve_prevention()
+    auth_check = check_runtime_authorization("AUTO_APPROVAL")
+    if not auth_check["authorized"]:
+        print(f"[AUTO-AUDIT] AUTO_APPROVAL authorization denied: {auth_check['reason']}")
+    else:
+        _auto_approve_prevention()
     print("[AUTO-AUDIT] 日次自動sealループ開始")
     while True:
         try:

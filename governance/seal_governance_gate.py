@@ -34,6 +34,7 @@ if str(_STRUCTURAL_DIR) not in sys.path:
     sys.path.insert(0, str(_STRUCTURAL_DIR))
 
 from execution_governance import ExecutionGovernanceEngine  # noqa: E402
+from decision_ledger_authority import check_runtime_authorization  # noqa: E402
 
 SEAL_SCRIPT = _MOCKA_ROOT / "scripts" / "ledger" / "anchor_update.py"
 DECISION_LEDGER_PATH = _MOCKA_ROOT / "data" / "decisions" / "decision_ledger.jsonl"
@@ -72,6 +73,17 @@ class SealGovernanceGate:
                 _seal_runner=None) -> GateResult:
         execution_id = f"EXEC_{datetime.now(timezone.utc).strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:8]}"
         change_start = datetime.now(timezone.utc).isoformat()
+
+        auth_check = check_runtime_authorization("SEAL")
+        if not auth_check["authorized"]:
+            result = GateResult(
+                approved=False,
+                execution_id=execution_id,
+                reason=auth_check["reason"],
+                aborts=[],
+            )
+            self._record_decision_unit(execution_id, change_start, result)
+            return result
 
         action = {"scope": scope or [], "expected_max_changes": expected_max_changes}
         approval = self.governance.pre_execution_check(action)
@@ -124,6 +136,8 @@ class SealGovernanceGate:
 
         entry = {
             "decision_id": f"DC_{execution_id}",
+            "decision_purpose": "RUNTIME_AUTHORIZATION",
+            "runtime_scope": "SEAL",
             "title": "SealGovernanceGate seal request",
             "context": "Phase C-2 Governance Gate正式配置(TODO_411/412/413 Boundary対応)",
             "alternatives": [],
