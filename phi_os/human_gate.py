@@ -62,7 +62,11 @@ def _ensure_table(conn) -> None:
             request_id TEXT,
             payload TEXT,
             previous_state TEXT,
-            next_state TEXT
+            next_state TEXT,
+            scope TEXT,
+            decision_context TEXT,
+            approver_identity TEXT,
+            approver_type TEXT
         )
     ''')
 
@@ -101,6 +105,7 @@ def get_state(request_id: str, conn=None) -> str | None:
 
 def _record_transition(conn, action: str, request_id: str, payload: dict, previous_state: str | None) -> dict:
     next_state = ACTION_NEXT_STATE[action]
+    payload = payload or {}
     event = {
         "event_id": _next_event_id(),
         "timestamp": _now_iso(),
@@ -110,13 +115,18 @@ def _record_transition(conn, action: str, request_id: str, payload: dict, previo
         "payload": json.dumps(payload, ensure_ascii=False, sort_keys=True),
         "previous_state": previous_state,
         "next_state": next_state,
+        "scope": payload.get("scope"),
+        "decision_context": payload.get("decision_context"),
+        "approver_identity": payload.get("approver_identity"),
+        "approver_type": payload.get("approver_type"),
     }
     conn.execute(
         '''INSERT INTO human_gate_events
-           (event_id, timestamp, type, action, request_id, payload, previous_state, next_state)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)''',
+           (event_id, timestamp, type, action, request_id, payload, previous_state, next_state, scope, decision_context, approver_identity, approver_type)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
         (event["event_id"], event["timestamp"], event["type"], event["action"],
-         event["request_id"], event["payload"], event["previous_state"], event["next_state"]),
+         event["request_id"], event["payload"], event["previous_state"], event["next_state"],
+         event["scope"], event["decision_context"], event["approver_identity"], event["approver_type"]),
     )
     conn.commit()
     return event
@@ -160,7 +170,18 @@ def _transition(action: str, request_id: str, payload: dict | None, conn=None) -
             conn.close()
 
 
-def approve(request_id: str, payload: dict | None = None, conn=None) -> dict:
+def approve(request_id: str, payload: dict | None = None, conn=None,
+            scope: str | None = None, decision_context: str | None = None,
+            approver_identity: str | None = None, approver_type: str | None = None) -> dict:
+    payload = payload or {}
+    if scope is not None:
+        payload["scope"] = scope
+    if decision_context is not None:
+        payload["decision_context"] = decision_context
+    if approver_identity is not None:
+        payload["approver_identity"] = approver_identity
+    if approver_type is not None:
+        payload["approver_type"] = approver_type
     return _transition("approve", request_id, payload, conn=conn)
 
 

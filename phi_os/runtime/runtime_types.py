@@ -87,6 +87,8 @@ class Authority:
     holder: str               # "PHI-OS" / "Event Gate" 等
     delegated_to: Optional[str] = None
     delegation_event_id: Optional[str] = None
+    revocation_flag: bool = False           # D2: request-specific authorization state
+    revocation_status: str = "ACTIVE"       # D5: mutable runtime validation status
 
 
 @dataclass

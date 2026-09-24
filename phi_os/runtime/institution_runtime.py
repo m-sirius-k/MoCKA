@@ -21,6 +21,7 @@ from .institution_registry import InstitutionRegistry
 from .gate_registry import GateRegistry
 from .binding_engine import BindingEngine
 from .compliance_engine import ComplianceEngine
+from phi_os import human_gate
 
 
 class InstitutionRuntime:
@@ -128,11 +129,12 @@ class InstitutionRuntime:
     # ════════════════════════════════════════════════════════════════════════
 
     def validate_gate(
-        self, gate_id: GateId, artifact: Artifact
+        self, gate_id: GateId, artifact: Artifact, request_id: Optional[str] = None
     ) -> tuple[bool, list[str]]:
         """
         ArtifactがGateを通過できるかを検証する。
         各GateはこのAPIを通じて制度判定を委譲する (実装原則 2)。
+        request_id が指定された場合、Human Gate authorization state を確認する (D1)。
         """
         issues: list[str] = []
 
@@ -153,6 +155,25 @@ class InstitutionRuntime:
         # Institution検証
         if not self.institutions.exists(artifact.institution_id):
             issues.append(f"Institution '{artifact.institution_id}' 未登録 — Gate通過不可")
+
+        # D1: Human Gate authorization state check (request_id threading)
+        if request_id:
+            try:
+                hg_state = human_gate.get_state(request_id)
+                if hg_state is None:
+                    issues.append(f"Human Gate: request_id '{request_id}' not found")
+                elif hg_state == "PENDING":
+                    issues.append(f"Human Gate: request_id '{request_id}' is PENDING - awaiting approval")
+                elif hg_state == "REJECTED":
+                    issues.append(f"Human Gate: request_id '{request_id}' is REJECTED - execution denied")
+                elif hg_state == "EXPIRED":
+                    issues.append(f"Human Gate: request_id '{request_id}' is EXPIRED - execution denied")
+                elif hg_state == "CANCELED":
+                    issues.append(f"Human Gate: request_id '{request_id}' is CANCELED - execution denied")
+                elif hg_state != "APPROVED":
+                    issues.append(f"Human Gate: request_id '{request_id}' has unknown state '{hg_state}'")
+            except Exception as e:
+                issues.append(f"Human Gate state check failed: {str(e)}")
 
         return len(issues) == 0, issues
 
