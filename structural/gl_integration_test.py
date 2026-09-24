@@ -10,6 +10,7 @@ GL1 -> GL2 -> GL3 -> GL6 -> GL7 -> GL4/GL5 という連鎖で
 一貫して動作することを確認する。
 """
 
+from pathlib import Path
 from structural.grounding_engine import RepositoryGroundingEngine
 from structural.working_memory import WorkingMemoryEngine
 from structural.thinking_mode import ThinkingModeEngine, ThinkingMode
@@ -77,7 +78,7 @@ def main():
     ))
 
     approval_full_scope = execution.pre_execution_check({"scope": [
-        p.name for p in __import__("pathlib").Path(r"C:\Users\sirok\MoCKA").iterdir()
+        p.name for p in Path(__file__).parent.parent.iterdir()
     ]})
     results.append(check(
         "GL7 approves when scope covers all changed top-level dirs",

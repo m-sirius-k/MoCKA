@@ -1,0 +1,116 @@
+{
+  "decision_id": "DC_20260924_005_PRODUCTION_RECORD_INVALIDATION",
+  "decision_type": "PRODUCTION_RECORD_RECONCILIATION",
+  "authority": "Human Gate - きむら博士 (L4)",
+  "timestamp_utc": "2026-09-24T22:15:00Z",
+  "decision_designation": "D21",
+  "decision_option_selected": "B - SUPERSEDED / INVALIDATED ACTIVATION RECORD",
+  "target_record": "DC_20260924_PRODUCTION_ACTIVATION.jsonl",
+  "reference_investigations": [
+    "D14 - Production Activation Claim",
+    "D18 - Evidence Forensic Reconstruction",
+    "D19 - RT4 Authorization Enforcement Correction (Commit: 3b10c38f1)",
+    "D20 - Production Record Reconciliation Audit"
+  ],
+  "decision_rationale": "DC_20260924_PRODUCTION_ACTIVATION.jsonl is retained as historical record of past activation execution. However, D19 forensic analysis determined authorization_status=INVALID due to RT4 enforcement bypass (governance_pipeline.py line 164 defect). Unsigned APPROVED records in human_gate_events table would fail token issuance signature verification. Therefore, the JSONL record cannot serve as basis for current or future Production Authorization.",
+  "decision_items": [
+    {
+      "item": 1,
+      "question": "Historical Record Preservation",
+      "decision": "PRESERVED",
+      "rationale": "DC_20260924_PRODUCTION_ACTIVATION.jsonl remains in system as evidence trail and historical fact record. No deletion or modification of the record itself."
+    },
+    {
+      "item": 2,
+      "question": "Authorization Status of JSONL Record",
+      "decision": "INVALIDATED_BY_D19_FORENSICS",
+      "rationale": "D19 analysis established rt4_status=FAIL (with corrected governance_pipeline.py). Authorization claim in JSONL was based on rt4_status=PASS derived from governance_pipeline.py line 164 RT4 enforcement bypass. With defect fixed, authorization basis is retroactively invalid."
+    },
+    {
+      "item": 3,
+      "question": "D14 Authorization Status",
+      "decision": "INVALID",
+      "rationale": "D14 claimed rt4_status=PASS. D19 demonstrated this was result of RT4 abort overwrite bug (assignment vs extend at line 164). Database contains only unsigned APPROVED records that fail SIGNATURE_MISSING check at mocka_mcp_server.py:1120. Authorization was never valid; it appeared valid only due to governance_pipeline.py defect."
+    },
+    {
+      "item": 4,
+      "question": "D14 Execution Fact",
+      "decision": "PRESERVED_AS_HISTORICAL",
+      "rationale": "D14 did execute code (execution fact confirmed). However, execution occurred under defective governance controls. Execution fact is preserved; authorization validity is rejected."
+    },
+    {
+      "item": 5,
+      "question": "Production Activation Authorization",
+      "decision": "NOT_AUTHORIZED",
+      "rationale": "DC_20260924_001/002/003/004 all explicitly prohibit production activation. DC_20260924_PRODUCTION_ACTIVATION.jsonl does not supersede these prohibitions. No formal decision has lifted production prohibition per DC_20260924_002 D5 conditions: 'Production prohibition lifted only by future decision record if and when: clean re-verification completed successfully, all constraint violations resolved, C4 status determined, environmental issues corrected.' These conditions are not met."
+    },
+    {
+      "item": 6,
+      "question": "Production Status Current",
+      "decision": "INVALID",
+      "rationale": "Based on D19 (Authorization = INVALID) and D20 (Evidence Chain = INVALID), production activation record is invalidated. Production status is NOT ACTIVE for institutional/authorization purposes."
+    },
+    {
+      "item": 7,
+      "question": "Use of JSONL as Authorization Basis",
+      "decision": "PROHIBITED",
+      "rationale": "DC_20260924_PRODUCTION_ACTIVATION.jsonl may not be used as basis for future authorization decisions, re-activation, scope expansion, or constraint lifting. Record is historical only; institutionally invalid."
+    }
+  ],
+  "evidence_chain_analysis": {
+    "d14_claim": "activation_status=EXECUTED, rt4_status=PASS, authorization_status=VALID",
+    "d14_forensic_finding": "Authorization claim based on RT4 enforcement bypass; unsigned database records fail token issuance",
+    "d19_correction": "RT4 abort merge fix applied (3b10c38f1); regression tests pass; rt4_status=FAIL with corrected code",
+    "d20_reconciliation": "5 contradictions identified between JSONL record and DC_20260924_001/002/003/004 decisions"
+  },
+  "rt4_defect_details": {
+    "file": "structural/governance_pipeline.py",
+    "line_old": 164,
+    "line_new": 169,
+    "change": "aborts = approval.dry_run.aborts → aborts.extend(approval.dry_run.aborts)",
+    "fix_commit": "3b10c38f1b905c14870c071f1212606feb4240d4",
+    "fix_result": "RT4 token violations now preserved; authorization failures correctly enforced"
+  },
+  "database_integrity": {
+    "status": "UNSIGNED_APPROVED_RECORDS",
+    "issue": "human_gate_events table contains APPROVED records with NULL/missing signature field",
+    "consequence": "Would fail mocka_runtime_authorization_issue signature verification (SIGNATURE_MISSING)",
+    "current_state": "NOT REPAIRED (repair prohibited by D20 constraints)"
+  },
+  "institutional_constraints": [
+    "Production activation remains prohibited per DC_20260924_001/002/003/004",
+    "JSONL record invalidated as authorization basis",
+    "D14 execution fact preserved but authorization invalid",
+    "No new Production Authorization issued by this decision",
+    "Private key operations remain NOT AUTHORIZED (C4 UNKNOWN)",
+    "Authorization Token generation prohibited",
+    "DB repair prohibited",
+    "governance_pipeline.py fixes complete (D19); no further code changes authorized"
+  ],
+  "binding_constraints_confirmed": [
+    "DC_20260924_PRODUCTION_ACTIVATION.jsonl is historical record only",
+    "Cannot be used for current/future authorization decisions",
+    "Production activation remains NOT AUTHORIZED",
+    "Production status = INVALID",
+    "D19 RT4 fix is permanent; confirms authorization failure",
+    "D20 contradictions are institutional fact"
+  ],
+  "next_steps": [
+    "1. DC_20260924_005 committed to git",
+    "2. Commit SHA verified (local/remote match)",
+    "3. きむら博士 review (optional)",
+    "4. D21 decision recorded; investigation complete",
+    "5. Production record reconciliation FINALIZED",
+    "6. Authorization system status: CORRECTED",
+    "7. Institutional record chain: CONSISTENT"
+  ],
+  "meta": {
+    "created_by": "Claude (Haiku 4.5) - Decision Recording",
+    "decision_authority": "きむら博士 L4 Human Gate",
+    "decision_authority_decision": "D21 = B - SUPERSEDED / INVALIDATED ACTIVATION RECORD",
+    "ai_role": "Record human decision; no modification or interpretation",
+    "human_decision_type": "Formal institutional judgment on production record status",
+    "decision_status": "FORMALIZED",
+    "record_type": "Human Authority Reconciliation Decision"
+  }
+}

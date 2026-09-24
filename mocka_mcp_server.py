@@ -31,6 +31,7 @@ except Exception as _ocg_err:
     _overview_current_gen = None
 try:
     from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
+    from governance.verify_governance_event_required import verify_approval_signature
     _governance = GovernancePipeline()
 except Exception as _gov_err:
     print(f"[ERROR] Governance Pipeline unavailable (Fail Closed for governed tools): {_gov_err}", flush=True)
@@ -40,6 +41,7 @@ except Exception as _gov_err:
         "mocka_read_event", "mocka_search", "mocka_get_incidents", "mocka_get_guidelines",
         "mocka_get_command_center", "mocka_check_utf8",
     }
+    verify_approval_signature = None
 
 # KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
 REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
@@ -474,7 +476,9 @@ TOOLS = [
     {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
     {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
     {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
-    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
+    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}},
+    {"name":"mocka_runtime_authorization_issue","description":"Decision RecordのHuman Gateに基づいてRUNTIME_AUTHORIZATIONトークンを発行する。decision_idで指定されたDecisionが存在し、approved_byがHuman Gateであることを確認した上で、scopeにバインドされたトークンを生成する。Human以外のissuerからの発行要求は拒否される。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"Decision Record ID (e.g. DC_20260924_001_SIGNER_BOUNDARY_GOVERNANCE)"},"scope":{"type":"string","description":"Authorization scope (e.g. 'C3:RUNTIME_AUTHORIZATION_ISSUER')"},"requesting_actor":{"type":"string","description":"発行要求元のactor識別子(省略時は要求から自動判定)","default":""}},"required":["decision_id","scope"]}},
+    {"name":"mocka_runtime_authorization_validate","description":"RUNTIME_AUTHORIZATIONトークンを検証する。token_idの完全性を確認し、期待するdecision_idおよびscopeと一致することを検証する。改変・再利用・スコープ不正を検出して拒否される。","inputSchema":{"type":"object","properties":{"token_id":{"type":"string","description":"トークンID(token_payloadのtoken_idフィールド)"},"token_payload":{"type":"object","description":"トークンペイロード(token_payloadそのもの)"},"expected_decision_id":{"type":"string","description":"期待するdecision_id"},"expected_scope":{"type":"string","description":"期待するscope"}},"required":["token_id","token_payload","expected_decision_id","expected_scope"]}},
 ]
 
 def execute_tool(name, args):
@@ -1049,6 +1053,218 @@ def execute_tool(name, args):
             result.sort(key=lambda r: r.get("decision_id", ""), reverse=True)
             auto_log(name, args, f"{len(result)} decisions (broken_lines={broken})")
             return json.dumps({"count": len(result), "broken_lines": broken, "decisions": result}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_runtime_authorization_issue":
+            decision_id = args.get("decision_id", "").strip()
+            scope = args.get("scope", "").strip()
+
+            if not decision_id or not scope:
+                auto_log(name, args, "DENY: decision_id or scope missing")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "decision_id and scope are required",
+                    "code": "PARAMETERS_MISSING"
+                }, ensure_ascii=False)
+
+            # C3 REPAIR: Look up Human Gate APPROVED record for this decision_id
+            db_path = str(Path(__file__).resolve().parent / "data" / "mocka_events.db")
+            try:
+                conn = sqlite3.connect(db_path)
+                conn.row_factory = sqlite3.Row
+
+                # Find latest APPROVED event for this decision_id
+                rows = conn.execute('''
+                    SELECT * FROM human_gate_events
+                    WHERE next_state = 'APPROVED'
+                    ORDER BY timestamp DESC, event_id DESC
+                    LIMIT 100
+                ''').fetchall()
+
+                human_gate_approval = None
+                for row in rows:
+                    payload = json.loads(row['payload'] or '{}')
+                    if payload.get('decision_id') == decision_id:
+                        human_gate_approval = {
+                            'event_id': row['event_id'],
+                            'timestamp': row['timestamp'],
+                            'payload': payload,
+                            'state': row['next_state']
+                        }
+                        break
+
+                conn.close()
+            except Exception as db_err:
+                auto_log(name, args, f"DENY: Human Gate lookup failed: {db_err}")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Human Gate verification failed",
+                    "code": "HUMAN_GATE_LOOKUP_FAILED"
+                }, ensure_ascii=False)
+
+            # C3.2 ISSUER AUTHENTICATION: Verify Human Gate approval exists and is valid
+            if not human_gate_approval:
+                auto_log(name, args, f"DENY: No Human Gate approval for decision_id={decision_id}")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "No Human Gate approval found for this decision",
+                    "decision_id": decision_id,
+                    "code": "DECISION_NOT_APPROVED"
+                }, ensure_ascii=False)
+
+            approval_payload = human_gate_approval.get('payload', {})
+            approved_by = approval_payload.get('approved_by', '').strip()
+            approved_scopes = approval_payload.get('approved_scopes', [])
+            signature = approval_payload.get('signature', '').strip()
+
+            # RT1 SIGNATURE VERIFICATION: Verify approval is signed by Human Gate
+            if not signature:
+                auto_log(name, args, f"DENY: Approval has no signature (unsigned approval rejected)")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Approval must be signed by Human Gate",
+                    "code": "SIGNATURE_MISSING"
+                }, ensure_ascii=False)
+
+            if verify_approval_signature is None:
+                auto_log(name, args, f"DENY: Signature verification unavailable")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Signature verification unavailable",
+                    "code": "VERIFICATION_UNAVAILABLE"
+                }, ensure_ascii=False)
+
+            if not verify_approval_signature(approval_payload, signature):
+                auto_log(name, args, f"DENY: Approval signature verification failed")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Approval signature verification failed",
+                    "code": "SIGNATURE_INVALID"
+                }, ensure_ascii=False)
+
+            # C3.1 HUMAN ONLY ENFORCEMENT: Verify approved_by is Human Gate
+            if not approved_by or "きむら博士" not in approved_by and "Human Gate" not in approved_by:
+                auto_log(name, args, f"DENY: Approval not from Human Gate (approved_by={approved_by})")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Approval must be from Human Gate (きむら博士)",
+                    "code": "ISSUER_INVALID"
+                }, ensure_ascii=False)
+
+            # C3.4 SCOPE BINDING: Verify requested scope is in approved scopes
+            if not approved_scopes or scope not in approved_scopes:
+                auto_log(name, args, f"DENY: Scope '{scope}' not in approved scopes {approved_scopes}")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Requested scope not authorized by Human Gate",
+                    "scope": scope,
+                    "approved_scopes": approved_scopes,
+                    "code": "SCOPE_MISMATCH"
+                }, ensure_ascii=False)
+
+            # C3.3 DECISION BINDING: Token bound to decision_id
+            # Generate token as SHA256 of (decision_id, scope, approved_by, timestamp)
+            token_payload = {
+                "token_type": "RUNTIME_AUTHORIZATION",
+                "decision_id": decision_id,
+                "scope": scope,
+                "issuer": approved_by,
+                "issued_at": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "approval_event_id": human_gate_approval.get('event_id', '')
+            }
+            token_hash = hashlib.sha256(
+                json.dumps(token_payload, sort_keys=True, ensure_ascii=False).encode('utf-8')
+            ).hexdigest()
+            token_payload["token_id"] = token_hash[:16]
+
+            auto_log(name, args, f"APPROVED: decision_id={decision_id} scope={scope} by {approved_by}")
+            return json.dumps({
+                "status": "ok",
+                "authorization": token_payload,
+                "decision_id": decision_id,
+                "scope": scope
+            }, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_runtime_authorization_validate":
+            token_id = args.get("token_id", "").strip()
+            token_payload = args.get("token_payload", {})
+            expected_decision_id = args.get("expected_decision_id", "").strip()
+            expected_scope = args.get("expected_scope", "").strip()
+
+            if not token_id or not token_payload or not expected_decision_id or not expected_scope:
+                auto_log(name, args, "DENY: Required parameters missing")
+                return json.dumps({
+                    "error": "TOKEN_VALIDATION_FAILED",
+                    "reason": "Required parameters missing",
+                    "code": "PARAMETERS_MISSING"
+                }, ensure_ascii=False)
+
+            # Verify token payload structure
+            token_type = token_payload.get("token_type", "").strip()
+            token_decision_id = token_payload.get("decision_id", "").strip()
+            token_scope = token_payload.get("scope", "").strip()
+
+            if token_type != "RUNTIME_AUTHORIZATION":
+                auto_log(name, args, "DENY: Invalid token type")
+                return json.dumps({
+                    "error": "TOKEN_VALIDATION_FAILED",
+                    "reason": "Invalid token type",
+                    "code": "INVALID_TOKEN_TYPE"
+                }, ensure_ascii=False)
+
+            # C3.3 DECISION BINDING: Verify token decision_id matches expected
+            if token_decision_id != expected_decision_id:
+                auto_log(name, args, f"DENY: Token decision mismatch (token={token_decision_id}, expected={expected_decision_id})")
+                return json.dumps({
+                    "error": "TOKEN_VALIDATION_FAILED",
+                    "reason": "Token decision ID does not match expected",
+                    "token_decision_id": token_decision_id,
+                    "expected_decision_id": expected_decision_id,
+                    "code": "DECISION_MISMATCH"
+                }, ensure_ascii=False)
+
+            # C3.4 SCOPE BINDING: Verify token scope matches expected
+            if token_scope != expected_scope:
+                auto_log(name, args, f"DENY: Token scope mismatch (token={token_scope}, expected={expected_scope})")
+                return json.dumps({
+                    "error": "TOKEN_VALIDATION_FAILED",
+                    "reason": "Token scope does not match expected",
+                    "token_scope": token_scope,
+                    "expected_scope": expected_scope,
+                    "code": "SCOPE_MISMATCH"
+                }, ensure_ascii=False)
+
+            # Verify token integrity: recalculate hash
+            verification_payload = {
+                "token_type": token_payload.get("token_type", ""),
+                "decision_id": token_payload.get("decision_id", ""),
+                "scope": token_payload.get("scope", ""),
+                "issuer": token_payload.get("issuer", ""),
+                "issued_at": token_payload.get("issued_at", ""),
+                "approval_event_id": token_payload.get("approval_event_id", "")
+            }
+            recalc_hash = hashlib.sha256(
+                json.dumps(verification_payload, sort_keys=True, ensure_ascii=False).encode('utf-8')
+            ).hexdigest()
+            recalc_token_id = recalc_hash[:16]
+
+            if token_id != recalc_token_id:
+                auto_log(name, args, f"DENY: Token integrity check failed (token={token_id}, recalc={recalc_token_id})")
+                return json.dumps({
+                    "error": "TOKEN_VALIDATION_FAILED",
+                    "reason": "Token has been modified or corrupted",
+                    "token_id": token_id,
+                    "recalculated_id": recalc_token_id,
+                    "code": "TOKEN_MODIFIED"
+                }, ensure_ascii=False)
+
+            # All validations passed
+            auto_log(name, args, f"VALID: Token verified for decision={expected_decision_id} scope={expected_scope}")
+            return json.dumps({
+                "status": "ok",
+                "validation": "passed",
+                "decision_id": expected_decision_id,
+                "scope": expected_scope
+            }, ensure_ascii=False, indent=2)
 
         elif name == "mocka_integrity_write":
             title       = args.get("title", "").strip()

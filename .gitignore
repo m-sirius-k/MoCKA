@@ -12,6 +12,11 @@ data/*
 !data/tic/
 data/tic/*
 !data/tic/canary_overrides_last_run.json
+# Decision Ledger: Governance decision records (DC_*.json, DC_*ACTIVATION*.jsonl)
+!data/decisions/
+data/decisions/*
+!data/decisions/*.json
+!data/decisions/*.jsonl
 *.csv
 .env
 *.key
@@ -26,7 +31,8 @@ multi_router.py
 best_score.json
 rr_result.txt
 
-keys/
+governance/keys/*.pem
+governance/keys/*.key
 
 .wsl_ots_venv/
 archive/ledger_old/

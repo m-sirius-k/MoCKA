@@ -1,0 +1,89 @@
+{
+  "decision_id": "DC_20260924_001_SIGNER_BOUNDARY_GOVERNANCE",
+  "authority": "Human Gate - きむら博士 (L4)",
+  "timestamp_utc": "2026-09-24T00:00:00Z",
+  "decision_context": "Signer Boundary Design Audit / Policy Implementation Gap Resolution",
+  "freeze_sha_reference": "201a02aa5fda48b6682d6ad2fdfdc253cbec7c09",
+  "decision_items": [
+    {
+      "item_number": 1,
+      "question": "Runtime Execution Authorityの起点",
+      "decision": "Decision Ledger",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 2,
+      "question": "Human Gate Scope Binding",
+      "decision": "REQUIRED",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 3,
+      "question": "RUNTIME_AUTHORIZATION発行主体",
+      "decision": "Human Only（きむら博士）",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 4,
+      "question": "GL7の制度的位置づけ",
+      "decision": "Mechanical Validation Gate",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 5,
+      "question": "HAB / JARVIS ランタイム接続",
+      "decision": "Not connected",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 6,
+      "question": "prevention_queue",
+      "decision": "Record-only",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 7,
+      "question": "repair_executor.py",
+      "decision": "Unreachable / 無効化状態の維持",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 8,
+      "question": "実装・コード変更条件",
+      "decision": "Human Decision記録および制約翻訳完了まで全面凍結",
+      "rationale": "きむら博士による正式決定"
+    },
+    {
+      "item_number": 9,
+      "question": "本番デプロイ・スコープ拡張",
+      "decision": "Prohibited",
+      "rationale": "きむら博士による正式決定"
+    }
+  ],
+  "decision_status": "CONFIRMED",
+  "unknown_items": [],
+  "implementation_blocked_until": "Decision Record SHA confirmed by Human Gate",
+  "binding_constraints": [
+    "Code change prohibited until constraint translation complete",
+    "Implementation prohibited until constraint translation complete",
+    "Constraint translation prohibited until SHA confirmation",
+    "Private key generation/access/placement PROHIBITED (absolute)",
+    "Signature execution PROHIBITED (absolute)",
+    "Production activation PROHIBITED (absolute)",
+    "Scope expansion PROHIBITED (absolute)",
+    "AI self-authorization PROHIBITED (absolute)"
+  ],
+  "next_step": [
+    "1. This Decision Record is committed",
+    "2. Git SHA is captured",
+    "3. SHA + Decision content presented to Human Gate",
+    "4. SHA confirmation required before proceeding to constraint translation",
+    "5. Constraint translation begins only after SHA confirmed"
+  ],
+  "meta": {
+    "created_by": "Claude (Haiku 4.5)",
+    "decision_authority_verification": "きむら博士 L4 Human Gate",
+    "ai_decision_influence": "None - record only, no recommendations",
+    "status": "AWAITING_SHA_CONFIRMATION"
+  }
+}

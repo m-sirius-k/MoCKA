@@ -14,6 +14,32 @@ def b64u_decode(s: str) -> bytes:
     pad = "=" * ((4 - (len(s) % 4)) % 4)
     return base64.urlsafe_b64decode(s + pad)
 
+def verify_approval_signature(payload: dict, signature_b64u: str) -> bool:
+    """
+    Verify Ed25519 signature on approval payload.
+    Returns True if signature is valid, False otherwise.
+    """
+    try:
+        ROOT = Path(__file__).resolve().parents[1]
+        pubkey_path = ROOT / "governance" / "keys" / "root_key_v2.ed25519.public.b64u"
+
+        if not pubkey_path.exists():
+            return False
+
+        pubkey_b64u = pubkey_path.read_text(encoding="utf-8").strip()
+        pubkey_bytes = b64u_decode(pubkey_b64u)
+        public_key = ed25519.Ed25519PublicKey.from_public_bytes(pubkey_bytes)
+
+        payload_copy = dict(payload)
+        payload_copy["signature"] = ""
+        msg = json.dumps(payload_copy, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+        sig_bytes = b64u_decode(signature_b64u)
+
+        public_key.verify(sig_bytes, msg)
+        return True
+    except Exception:
+        return False
+
 def sha256_file(p: Path) -> str:
     h = hashlib.sha256()
     with p.open("rb") as f:

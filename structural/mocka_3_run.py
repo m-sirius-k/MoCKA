@@ -48,7 +48,7 @@ def run_p1_analysis():
     from state_reconstructor import analyze_p1_orchestra_search_degradation
     import json
     result = analyze_p1_orchestra_search_degradation()
-    out = Path(r"C:\Users\sirok\MoCKA\data\mocka\p1_analysis.json")
+    out = Path(__file__).parent.parent / "data" / "mocka" / "p1_analysis.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8-sig") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
