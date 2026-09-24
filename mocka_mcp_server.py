@@ -995,6 +995,66 @@ def execute_tool(name, args):
                 return json.dumps({"error": "decision_purpose=RUNTIME_AUTHORIZATION の場合、runtime_scope は必須(SEAL|MCP_WRITE|AUTO_APPROVAL)"}, ensure_ascii=False)
             if decision_purpose != "RUNTIME_AUTHORIZATION" and runtime_scope:
                 return json.dumps({"error": "runtime_scope は decision_purpose=RUNTIME_AUTHORIZATION の場合のみ使用可能"}, ensure_ascii=False)
+
+            # METHOD B SCOPE BINDING VALIDATION (RUNTIME_AUTHORIZATION only)
+            human_gate_request_id = None
+            human_gate_scope_verified = False
+            if decision_purpose == "RUNTIME_AUTHORIZATION":
+                human_gate_request_id = args.get("human_gate_request_id", "").strip()
+                if not human_gate_request_id:
+                    return json.dumps({"error": "decision_purpose=RUNTIME_AUTHORIZATION の場合、human_gate_request_id は必須"}, ensure_ascii=False)
+
+                try:
+                    # Import here to avoid circular dependency
+                    from phi_os.human_gate import _get_conn as hg_get_conn
+
+                    hg_conn = hg_get_conn()
+                    try:
+                        # Step 1: Verify request exists and is APPROVED
+                        latest_event = hg_conn.execute(
+                            'SELECT * FROM human_gate_events WHERE request_id = ? ORDER BY timestamp DESC, event_id DESC LIMIT 1',
+                            (human_gate_request_id,)
+                        ).fetchone()
+
+                        if latest_event is None:
+                            return json.dumps({"error": f"human_gate_request_id not found: {human_gate_request_id}"}, ensure_ascii=False)
+
+                        if latest_event['next_state'] != 'APPROVED':
+                            return json.dumps({"error": f"human_gate_request_id is not APPROVED (current state: {latest_event['next_state']})"}, ensure_ascii=False)
+
+                        # Step 2: Get submit event to verify scope
+                        submit_event = hg_conn.execute(
+                            'SELECT * FROM human_gate_events WHERE request_id = ? AND action = ? ORDER BY timestamp ASC LIMIT 1',
+                            (human_gate_request_id, 'submit')
+                        ).fetchone()
+
+                        if submit_event is None:
+                            return json.dumps({"error": f"No submit event found for request_id: {human_gate_request_id}"}, ensure_ascii=False)
+
+                        # Step 3: Extract scope from submit payload
+                        try:
+                            submit_payload = json.loads(submit_event['payload'])
+                        except (json.JSONDecodeError, TypeError):
+                            return json.dumps({"error": f"Invalid JSON payload in submit event"}, ensure_ascii=False)
+
+                        submit_scope = submit_payload.get("runtime_scope")
+                        if not submit_scope:
+                            return json.dumps({"error": f"runtime_scope not found in Human Gate submit event payload"}, ensure_ascii=False)
+
+                        # Step 4: Verify scope match
+                        if submit_scope != runtime_scope:
+                            return json.dumps({"error": f"runtime_scope mismatch: Human Gate approved {submit_scope!r} but {runtime_scope!r} was requested"}, ensure_ascii=False)
+
+                        human_gate_scope_verified = True
+
+                    finally:
+                        hg_conn.close()
+
+                except ImportError:
+                    return json.dumps({"error": "phi_os.human_gate module not available for scope verification"}, ensure_ascii=False)
+                except Exception as e:
+                    return json.dumps({"error": f"Error verifying Human Gate approval: {str(e)}"}, ensure_ascii=False)
+
             decision_id = args.get("decision_id", "").strip() or _next_decision_id()
             approved_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             record = {
@@ -1017,6 +1077,10 @@ def execute_tool(name, args):
                 record["decision_purpose"] = decision_purpose
             if runtime_scope:
                 record["runtime_scope"] = runtime_scope
+            if human_gate_request_id:
+                record["human_gate_request_id"] = human_gate_request_id
+            if human_gate_scope_verified:
+                record["human_gate_scope_verified"] = human_gate_scope_verified
             _append_decision(record)
             # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
             # what_type=DECISION_MADEのenum拡張はapp.py側GATEのスコープ外のため今回は追加しない）
