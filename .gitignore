@@ -30,7 +30,8 @@ multi_router.py
 best_score.json
 rr_result.txt
 
-keys/
+governance/keys/*.pem
+governance/keys/*.key
 
 .wsl_ots_venv/
 archive/ledger_old/
