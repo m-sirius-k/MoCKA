@@ -23,7 +23,7 @@ import datetime
 import re
 from pathlib import Path
 
-REPO_ROOT       = Path(r"C:\Users\sirok\MoCKA")
+REPO_ROOT       = Path(__file__).parent.parent
 MOCKA_DB        = REPO_ROOT / "data" / "mocka_events.db"
 EVENT_FILE_MAP  = REPO_ROOT / "data" / "mocka" / "event_file_map.json"
 OUTPUT_PATH     = REPO_ROOT / "data" / "mocka" / "state_reconstructor_output.json"

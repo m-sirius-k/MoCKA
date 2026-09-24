@@ -121,7 +121,7 @@ def safe_write(path: str | Path, content: str, validate_content: bool = True) ->
 # インシデント自動記録
 # ============================================================
 
-INCIDENT_LOG = Path(r"C:\Users\sirok\MoCKA\data\mocka\encoding_violations.jsonl")
+INCIDENT_LOG = Path(__file__).parent.parent / "data" / "mocka" / "encoding_violations.jsonl"
 
 def _write_incident(result: dict) -> None:
     """Encoding Policy違反をインシデントログに記録する。"""

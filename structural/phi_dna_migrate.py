@@ -13,7 +13,7 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-DB_PATH = Path(r"C:\Users\sirok\MoCKA\data\mocka_events.db")
+DB_PATH = Path(__file__).parent.parent / "data" / "mocka_events.db"
 
 NEW_COLUMNS = [
     ("observation",    "TEXT", None, "何を観測したか（TICイベント・DOM変化等）"),

@@ -23,7 +23,7 @@ from datetime import datetime, timezone
 
 from structural.grounding_engine import RepositoryGroundingEngine
 
-REPO_ROOT = Path(r"C:\Users\sirok\MoCKA")
+REPO_ROOT = Path(__file__).parent.parent
 
 # Phase2(PHI-OS-HUMAN-GATE-STATE-MODEL-V1): GL7 -> PHI-OS は pure event
 # forwarding のみ。GL7はphi_os側の関数を呼び出さない・state参照しない・

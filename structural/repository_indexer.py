@@ -23,7 +23,7 @@ from pathlib import Path
 # 設定: リポジトリルートとModule定義
 # ============================================================
 
-REPO_ROOT = Path(r"C:\Users\sirok\MoCKA")
+REPO_ROOT = Path(__file__).parent.parent
 
 MODULE_MAP = {
     "Orchestra":      ["Orchestra_Project", "PlanningCaliber/workshop/orchestra-product"],
