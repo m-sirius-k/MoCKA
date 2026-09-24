@@ -1,0 +1,108 @@
+{
+  "decision_id": "DC_20260924_003_D4_AUTHORITY_BOUNDARY_CLARIFICATION",
+  "authority": "Human Gate - きむら博士 (L4)",
+  "timestamp_utc": "2026-09-24T17:15:00Z",
+  "decision_context": "D4 Authority Boundary Explicit Clarification - Re-Verification Only (No Code Modification Authority)",
+  "reference_previous_decision": "DC_20260924_002_CONSTRAINT_VIOLATION_HUMAN_GATE",
+  "semantic_inconsistency_reference": "DC_20260924_002 recorded conditional code modification authority; HG-D4 Final Judgment clarifies no code modification authority granted",
+  "decision_purpose": "Resolve semantic inconsistency in DC_20260924_002 by formally recording that D4 grants re-verification authority only, without code modification authorization",
+  "decision_items": [
+    {
+      "item_number": 1,
+      "question": "D4 Authority Boundary - Code Modification Scope",
+      "decision": "RE-VERIFICATION ONLY",
+      "explicit_clarification": "D4 grants authorization to execute clean re-verification. D4 does NOT grant code modification authority.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "authorization_status": "RE-VERIFICATION = YES; CODE MODIFICATION = NO"
+    },
+    {
+      "item_number": 2,
+      "question": "Code Modification Authorization Path",
+      "decision": "SEPARATE HUMAN GATE REQUIRED",
+      "explicit_clarification": "If code modifications become necessary during or after re-verification, separate Human Gate authorization must be obtained. Code changes cannot be inferred from or derived from D4 re-verification authorization.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "authorization_status": "CODE CHANGE = NOT AUTHORIZED via D4; requires new decision"
+    },
+    {
+      "item_number": 3,
+      "question": "Non-Code Modification Authorities - Boundary Confirmation",
+      "decision": "ALL PROHIBITED",
+      "explicit_clarification": "D4 does not authorize: (1) authorization logic modification, (2) key modification, (3) configuration modification, (4) scope expansion, (5) production activation, (6) AI self-authorization",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "authorization_status": "All listed categories = NOT AUTHORIZED"
+    },
+    {
+      "item_number": 4,
+      "question": "Semantic Principle - Re-Verification vs Code Change",
+      "decision": "RE-VERIFICATION ≠ CODE CHANGE",
+      "explicit_clarification": "Re-verification authorization and code modification authorization are distinct authorities. Granting one does not imply the other. D4 grants re-verification only.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "authorization_status": "Two separate authority classes; D4 covers only re-verification"
+    },
+    {
+      "item_number": 5,
+      "question": "DC_20260924_002 Semantic Status - Historical Record Preservation",
+      "decision": "INCONSISTENT - PRESERVED AS HISTORICAL RECORD",
+      "explicit_clarification": "DC_20260924_002 contains statements implying conditional code modification authority (lines 38, 40, 54, 59). This record (DC_20260924_003) clarifies that such implication does not reflect actual authority granted. DC_20260924_002 remains in git history as investigation-phase record showing semantic inconsistency that required clarification.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "authorization_status": "DC_20260924_002 = Historical artifact; this record provides authoritative clarification"
+    }
+  ],
+  "decision_status": "CONFIRMED",
+  "authority_boundary_explicit": {
+    "d4_grants": "RE-VERIFICATION AUTHORIZATION ONLY",
+    "d4_does_not_grant": [
+      "Code modification authority",
+      "Authorization logic modification authority",
+      "Key modification authority",
+      "Configuration modification authority",
+      "Scope expansion authority",
+      "Production activation authority",
+      "AI self-authorization authority"
+    ],
+    "inference_prohibition": "DO NOT INFER from D4 re-verification authority any code modification authority, authorization logic modification, key access, configuration changes, or scope expansion",
+    "code_change_path": "If code modifications needed: Request separate Human Gate decision with explicit authorization",
+    "semantic_principle": "RE-VERIFICATION ≠ CODE CHANGE"
+  },
+  "dc_20260924_002_semantic_difference": {
+    "recorded_in_dc_002_line_38": "Code modifications for grounding_engine.py are authorized only if re-verification proceeds",
+    "recorded_in_dc_002_line_40": "Does NOT authorize: (3) code changes outside re-verification scope",
+    "recorded_in_dc_002_line_54": "Does NOT authorize automatic code modifications",
+    "recorded_in_dc_002_line_59": "Code change prohibited (unless re-verification is authorized AND chosen AND grounding_engine.py fix is within re-verification scope)",
+    "conflict_analysis": "DC_20260924_002 lines 38, 40, 54, 59 imply conditional code modification authority. HG-D4 Final Judgment explicitly states CODE MODIFICATION AUTHORIZED = NO",
+    "resolution": "This record (DC_20260924_003) provides authoritative clarification: D4 grants re-verification only; no code modification authority"
+  },
+  "production_activation_status": {
+    "production_activation": "PROHIBITED (confirmed from DC_20260924_002 D5)",
+    "re_verification_authorization": "AUTHORIZED via D4 (but not auto-executed)",
+    "code_modification_authorization": "NOT AUTHORIZED via D4 (separate HG required if needed)"
+  },
+  "binding_constraints_confirmed": [
+    "Re-verification may proceed if chosen (D4 authorization)",
+    "Code modification prohibited (separate HG required)",
+    "Authorization logic modification prohibited (absolute)",
+    "Key modification prohibited (absolute)",
+    "Configuration modification prohibited (absolute)",
+    "Production activation prohibited (confirmed)",
+    "Scope expansion prohibited (absolute)",
+    "AI self-authorization prohibited (absolute)"
+  ],
+  "next_step": [
+    "1. This Decision Record DC_20260924_003 is committed to git",
+    "2. Commit SHA is verified (local/remote match)",
+    "3. DC_20260924_002 remains in history as INCONSISTENT but clarified by DC_20260924_003",
+    "4. D4 Authority: RE-VERIFICATION ONLY is now formally established",
+    "5. If re-verification chosen: Begins with fresh constraint period under D4 scope",
+    "6. If code changes needed: Separate Human Gate request required",
+    "7. Production prohibition continues until new authorization decision"
+  ],
+  "meta": {
+    "created_by": "Claude (Haiku 4.5) - Decision Recording",
+    "decision_authority_verification": "きむら博士 L4 Human Gate - Authority Boundary Clarification",
+    "ai_role": "Record only - recording HG explicit clarification without modification",
+    "record_type": "Human Authority Clarification - Resolves semantic inconsistency in DC_20260924_002",
+    "supersedes": "DC_20260924_002 D4 interpretation (this record provides authoritative clarification)",
+    "does_not_supersede": "DC_20260924_002 overall status; merely clarifies D4 scope",
+    "status": "RECORDED_AWAITING_GIT_COMMIT"
+  }
+}
