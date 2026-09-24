@@ -1,0 +1,170 @@
+{
+  "decision_id": "DC_20260924_004_CODE_CHANGE_AUTHORIZATION",
+  "authority": "Human Gate - きむら博士 (L4)",
+  "timestamp_utc": "2026-09-24T18:00:00Z",
+  "decision_context": "Code Change Authorization - Hardcoded Windows Path Blocker Removal",
+  "reference_previous_decisions": [
+    "DC_20260924_001_SIGNER_BOUNDARY_GOVERNANCE",
+    "DC_20260924_002_CONSTRAINT_VIOLATION_HUMAN_GATE",
+    "DC_20260924_003_D4_AUTHORITY_BOUNDARY_CLARIFICATION"
+  ],
+  "reference_audit_documents": [
+    "CHANGE_NECESSITY_SCOPE_AUDIT_20260924.md",
+    "CODE_CHANGE_HUMAN_GATE_PACKAGE_20260924.md"
+  ],
+  "decision_items": [
+    {
+      "item_number": 1,
+      "designation": "D1",
+      "question": "Code Change Authorization - Hardcoded Windows Paths",
+      "decision": "AUTHORIZED",
+      "rationale": "Hardcoded Windows path blocker (C:\\Users\\sirok\\MoCKA) prevents RT4 authorization gate execution on Linux. Removal authorized to enable clean re-verification of RT3/RT4/RT5/RT6 mechanisms.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "scope_status": "10 files, approximately 11 lines, path replacement only"
+    },
+    {
+      "item_number": 2,
+      "designation": "D2",
+      "question": "Scope Confirmation - Files and Lines Affected",
+      "decision": "CONFIRMED",
+      "rationale": "Identified scope is correct and complete: 10 files (structural/grounding_engine.py + 9 others), approximately 11 lines total, path replacement only. No scope expansion.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "scope_status": "CONFIRMED AS SPECIFIED"
+    },
+    {
+      "item_number": 3,
+      "designation": "D3",
+      "question": "Replacement Strategy - Path Resolution Method",
+      "decision": "B - FILE-BASED REPOSITORY ROOT RESOLUTION",
+      "rationale": "File-based approach (__file__-relative path) selected as preferred implementation strategy. Uses relative path from each module to determine repository root.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "explicit_clarification": "D3 = B SELECTED; D3-C (Git root detection) explicitly NOT SELECTED. AI must implement D3-B approach only.",
+      "not_selected": ["D3-A (Path.cwd())", "D3-C (Git root detection)"]
+    },
+    {
+      "item_number": 4,
+      "designation": "D4",
+      "question": "Runtime Execution Authorization - Post-Implementation Testing",
+      "decision": "B - TESTING AUTHORIZED",
+      "rationale": "Authorization granted to execute runtime testing of modified code. Limited to verification of hardcoded path removal and RT3/RT4/RT5/RT6 mechanism functionality. Testing scope limited to investigation phase; no production execution.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "testing_scope": [
+        "Repository root resolution verification",
+        "Linux environment path resolution",
+        "Hardcoded Windows path dependency removal verification",
+        "RT3 token binding execution test",
+        "RT4 authorization gate execution test",
+        "RT5 scope immutability execution test",
+        "RT6 AI prevention mechanism execution test"
+      ],
+      "testing_prohibitions": [
+        "Production execution",
+        "Production data modification",
+        "Authorization scope expansion",
+        "C4 private-key operations",
+        "AI self-authorization"
+      ]
+    },
+    {
+      "item_number": 5,
+      "designation": "D5",
+      "question": "C4 Private Key Status - Relationship to Code Change",
+      "decision": "A - C4 UNKNOWN MAINTAINED",
+      "rationale": "Code change authorization does not affect C4 status or grant private-key operation authority. C4 remains UNKNOWN per DC_20260924_002 D2. Private-key generation, access, replacement, movement, and use remain NOT AUTHORIZED.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "c4_status": "UNKNOWN (unchanged by this decision)",
+      "private_key_authorization": "NOT AUTHORIZED"
+    },
+    {
+      "item_number": 6,
+      "designation": "D6",
+      "question": "Production Activation Path - Conditions for Production Consideration",
+      "decision": "A - PRODUCTION REMAINS PROHIBITED",
+      "rationale": "Production activation remains prohibited per DC_20260924_002 D5. Successful runtime testing of code changes does NOT generate production authorization. Separate human decision required if production activation is considered.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "production_status": "PROHIBITED - Unchanged",
+      "production_path": "If production consideration desired: new decision record required after completion of (1) code changes, (2) testing, (3) verification results assessment"
+    }
+  ],
+  "authorized_actions": [
+    "Modify structural/grounding_engine.py and 9 other files",
+    "Replace hardcoded Windows paths with D3-B file-based resolution",
+    "Execute approximately 11 lines of code changes",
+    "Perform D4-B runtime testing of modified code",
+    "Document RT3/RT4/RT5/RT6 execution results",
+    "Record evidence before/after/runtime"
+  ],
+  "not_authorized_actions": [
+    "Scope expansion beyond identified 10 files and ~11 lines",
+    "Unrelated refactoring or feature additions",
+    "Authorization logic modification",
+    "Key generation, access, replacement, movement, or use",
+    "C4 private-key status change",
+    "Production activation",
+    "AI self-authorization",
+    "Commit/Push without separate authorization",
+    "Cascading authorization derivation from testing results"
+  ],
+  "implementation_constraints": {
+    "scope_limit": "D2 scope only; stop if changes exceed scope",
+    "pre_test_verification": "Verify changed files and lines match D2 scope before testing",
+    "implementation_strategy": "D3-B file-based approach only; verify correct repository root detection for each file",
+    "runtime_testing": "D4-B testing scope; no production execution",
+    "evidence_recording": "Separate before/change/runtime/RT results documentation",
+    "commit_push": "NOT EXECUTED (not authorized by this decision; separate decision required)"
+  },
+  "decision_status": "CONFIRMED",
+  "authority_boundary_clarification": {
+    "code_change_authorization": "Granted; implementation authorized within D2 scope",
+    "runtime_execution_authorization": "D4-B testing authorized; production execution remains prohibited",
+    "production_authorization": "NOT GRANTED; remains prohibited; requires separate decision",
+    "authorization_expansion": "NOT AUTHORIZED; testing results do not generate new authorities",
+    "c4_relationship": "C4 status unchanged; private-key operations remain NOT AUTHORIZED",
+    "commit_push_authorization": "NOT GRANTED; requires separate decision"
+  },
+  "c4_private_key_status": {
+    "current_status": "UNKNOWN",
+    "authorization": "Generation: NOT AUTHORIZED; Access: NOT AUTHORIZED; Replacement: NOT AUTHORIZED; Movement: NOT AUTHORIZED; Use: NOT AUTHORIZED",
+    "unchanged_by_decision": "This decision does not affect C4 status or grant private-key operation authority"
+  },
+  "production_activation_status": {
+    "current_status": "PROHIBITED",
+    "decision_reference": "DC_20260924_002 D5",
+    "authorization_path": "Remains prohibited; requires new decision if reconsidered",
+    "testing_success_implication": "Successful testing does NOT authorize production activation"
+  },
+  "phase_authorization": {
+    "phase_1": "Formalize DC_20260924_004 - AUTHORIZED",
+    "phase_2": "Implement code changes (D3-B) - AUTHORIZED",
+    "phase_3": "Pre-test integrity verification - AUTHORIZED",
+    "phase_4": "D4-B runtime testing - AUTHORIZED",
+    "phase_5": "Evidence documentation - AUTHORIZED",
+    "phase_6": "Final integrity check - AUTHORIZED; Commit/Push - NOT AUTHORIZED"
+  },
+  "binding_constraints": [
+    "Implement D3-B file-based approach only; do not select alternative",
+    "Stay within D2 scope; stop if scope exceeded",
+    "Perform pre-test integrity verification before testing",
+    "Execute D4-B testing only; no production execution",
+    "Do not commit/push without separate authorization",
+    "Do not derive new authorities from testing results",
+    "Maintain C4 status as UNKNOWN",
+    "Maintain production prohibition"
+  ],
+  "next_step": [
+    "1. DC_20260924_004 formalized and confirmed",
+    "2. Implement code changes per D3-B strategy",
+    "3. Verify changes within D2 scope",
+    "4. Execute D4-B runtime testing",
+    "5. Document evidence (before/change/runtime/RT results)",
+    "6. Report findings without commit/push",
+    "7. Await further authorization if additional actions desired"
+  ],
+  "meta": {
+    "created_by": "Claude (Haiku 4.5) - Decision Recording",
+    "decision_authority_verification": "きむら博士 L4 Human Gate - Explicit human decisions D1-D6",
+    "ai_role": "Record decisions; implement authorized scope; execute authorized testing; report findings",
+    "final_human_decision": "きむら博士 approved D1=A, D2=A, D3=B, D4=B, D5=A, D6=A",
+    "status": "FORMALIZED_AWAITING_IMPLEMENTATION"
+  }
+}
