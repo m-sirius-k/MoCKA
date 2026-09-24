@@ -150,6 +150,11 @@ class GovernancePipeline:
                     elif token_payload.get("scope", "") != expected_scope:
                         aborts.append(f"RT4_SCOPE_MISMATCH: token scope != expected scope")
 
+                    # RT3: AI Self-Authorization Prevention - Issuer exact-match validation
+                    issuer = token_payload.get("issuer", "").strip()
+                    if issuer != "Human Gate - きむら博士 (L4)":
+                        aborts.append("RT3_ISSUER_INVALID: issuer must be Human Gate authority")
+
         if tool_name not in READ_ONLY_TOOLS:
             # Default Deny: READ_ONLY_TOOLS以外(未知のtoolを含む)は全てGL7 Dry Run対象。
             # scope = 現在のリポジトリ直下全ディレクトリ。
