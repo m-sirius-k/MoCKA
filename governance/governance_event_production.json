@@ -1,0 +1,13 @@
+{
+  "schema": "mocka.governance.event.v1",
+  "event_type": "registry_update",
+  "change_class": "major",
+  "previous_registry_hash": "",
+  "new_registry_hash": "119e97530d40d4e8cf0d319a46e8de78f85df74de31ceeeae8faccd06e63d84b",
+  "approvers": [
+    "kimura"
+  ],
+  "timestamp_utc": "2026-09-24T01:17:42.014098+00:00",
+  "signature": "",
+  "note": "Production governance event: registry commitment (signature pending)"
+}

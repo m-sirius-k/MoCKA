@@ -13,10 +13,10 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\governance")))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent / "governance"))
 from mocka_git_safe_commit import is_core_system_file, mocka_git_safe_commit  # noqa: E402
 
-ROOT = Path(r"C:\Users\sirok\MoCKA")
+ROOT = Path(__file__).resolve().parent.parent.parent
 ANCHOR_PATHS = [
     ROOT / "governance" / "anchor_record.json",
     ROOT / "mocka-governance-kernel" / "anchors" / "anchor_record.json",
