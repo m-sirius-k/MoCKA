@@ -124,8 +124,15 @@ def get_state_with_payload(request_id: str, conn=None) -> tuple[str | None, dict
         if submit_event:
             try:
                 submit_payload = json.loads(submit_event['payload'] or '{}')
+                # Extract immutable authorization binding fields
                 if 'expires_at' in submit_payload:
                     payload['expires_at'] = submit_payload['expires_at']
+                if 'runtime_scope' in submit_payload:
+                    payload['runtime_scope'] = submit_payload['runtime_scope']
+                if 'target' in submit_payload:
+                    payload['target'] = submit_payload['target']
+                if 'action' in submit_payload:
+                    payload['action'] = submit_payload['action']
             except (TypeError, json.JSONDecodeError):
                 pass
 
@@ -152,6 +159,26 @@ def validate_expiry(expires_at_str: str | None) -> bool:
         return now < expires_at
     except (ValueError, TypeError, AttributeError):
         return False
+
+
+def validate_scope(authorized_scope: str | None, execution_scope: str | None) -> bool:
+    """
+    runtime_scopeの一致を検証。完全一致のみ許可。
+    authorized_scope == execution_scope → True (VALID)
+    mismatch/missing/malformed → False (DENY)
+
+    No prefix matching, no partial matching.
+    Examples:
+      /api/distribution/publish == /api/distribution/publish → True
+      /api/distribution/publish != /api/distribution/publish/ → False
+      /api/distribution/publish != /api/distribution → False
+      /api/distribution/publish != /api/distribution/publish/sub → False
+    """
+    if authorized_scope is None or execution_scope is None:
+        return False
+    if not isinstance(authorized_scope, str) or not isinstance(execution_scope, str):
+        return False
+    return authorized_scope == execution_scope
 
 
 def _record_transition(conn, action: str, request_id: str, payload: dict, previous_state: str | None) -> dict:

@@ -1961,7 +1961,7 @@ def public_write_event():
 
     # C3 Fail-Closed: Check Human Gate approval status
     try:
-        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry, validate_scope as hg_validate_scope
         current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
         if current_state != "APPROVED":
             return jsonify({
@@ -1994,6 +1994,27 @@ def public_write_event():
             "status": "error",
             "message": f"expiry validation failed: {str(exp_err)}",
             "code": "C3_EXPIRY_CHECK_FAILED"
+        }), 403
+
+    # C3-007: Check authorization scope binding (BEFORE effect execution)
+    try:
+        execution_scope = "/public/write_event"
+        authorized_scope = authz_payload.get("runtime_scope")
+        if not hg_validate_scope(authorized_scope, execution_scope):
+            return jsonify({
+                "status": "error",
+                "message": "authorization scope mismatch",
+                "code": "C3_AUTHZ_SCOPE_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_scope": authorized_scope,
+                "execution_scope": execution_scope
+            }), 403
+    except Exception as scope_err:
+        # Fail-Closed: scope check failed
+        return jsonify({
+            "status": "error",
+            "message": f"scope validation failed: {str(scope_err)}",
+            "code": "C3_SCOPE_CHECK_FAILED"
         }), 403
 
     title = payload.get("title", "")
@@ -2435,7 +2456,7 @@ def decision_approve():
 
     # C3 Fail-Closed: Check Human Gate approval status
     try:
-        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry, validate_scope as hg_validate_scope
         current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
         if current_state != "APPROVED":
             return jsonify({
@@ -2468,6 +2489,27 @@ def decision_approve():
             "status": "error",
             "message": f"expiry validation failed: {str(exp_err)}",
             "code": "C3_EXPIRY_CHECK_FAILED"
+        }), 403
+
+    # C3-007: Check authorization scope binding (BEFORE effect execution)
+    try:
+        execution_scope = "/decision/approve"
+        authorized_scope = authz_payload.get("runtime_scope")
+        if not hg_validate_scope(authorized_scope, execution_scope):
+            return jsonify({
+                "status": "error",
+                "message": "authorization scope mismatch",
+                "code": "C3_AUTHZ_SCOPE_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_scope": authorized_scope,
+                "execution_scope": execution_scope
+            }), 403
+    except Exception as scope_err:
+        # Fail-Closed: scope check failed
+        return jsonify({
+            "status": "error",
+            "message": f"scope validation failed: {str(scope_err)}",
+            "code": "C3_SCOPE_CHECK_FAILED"
         }), 403
 
     # Authorization passed, proceed with decision approval
@@ -2526,7 +2568,7 @@ def decision_reject():
 
     # C3 Fail-Closed: Check Human Gate approval status
     try:
-        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry, validate_scope as hg_validate_scope
         current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
         if current_state != "APPROVED":
             return jsonify({
@@ -2559,6 +2601,27 @@ def decision_reject():
             "status": "error",
             "message": f"expiry validation failed: {str(exp_err)}",
             "code": "C3_EXPIRY_CHECK_FAILED"
+        }), 403
+
+    # C3-007: Check authorization scope binding (BEFORE effect execution)
+    try:
+        execution_scope = "/decision/reject"
+        authorized_scope = authz_payload.get("runtime_scope")
+        if not hg_validate_scope(authorized_scope, execution_scope):
+            return jsonify({
+                "status": "error",
+                "message": "authorization scope mismatch",
+                "code": "C3_AUTHZ_SCOPE_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_scope": authorized_scope,
+                "execution_scope": execution_scope
+            }), 403
+    except Exception as scope_err:
+        # Fail-Closed: scope check failed
+        return jsonify({
+            "status": "error",
+            "message": f"scope validation failed: {str(scope_err)}",
+            "code": "C3_SCOPE_CHECK_FAILED"
         }), 403
 
     # Authorization passed, proceed with decision rejection
@@ -4121,7 +4184,7 @@ def publish_all():
 
         # C3 Fail-Closed: Check Human Gate approval status
         try:
-            from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+            from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry, validate_scope as hg_validate_scope
             current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
             if current_state != "APPROVED":
                 return jsonify({
@@ -4154,6 +4217,27 @@ def publish_all():
                 "status": "error",
                 "message": f"expiry validation failed: {str(exp_err)}",
                 "code": "C3_EXPIRY_CHECK_FAILED"
+            }), 403
+
+        # C3-007: Check authorization scope binding (BEFORE effect execution)
+        try:
+            execution_scope = "/api/action/publish_all"
+            authorized_scope = authz_payload.get("runtime_scope")
+            if not hg_validate_scope(authorized_scope, execution_scope):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization scope mismatch",
+                    "code": "C3_AUTHZ_SCOPE_MISMATCH",
+                    "request_id": auth_request_id,
+                    "authorized_scope": authorized_scope,
+                    "execution_scope": execution_scope
+                }), 403
+        except Exception as scope_err:
+            # Fail-Closed: scope check failed
+            return jsonify({
+                "status": "error",
+                "message": f"scope validation failed: {str(scope_err)}",
+                "code": "C3_SCOPE_CHECK_FAILED"
             }), 403
 
         # Authorization passed, proceed with publishing
@@ -4213,7 +4297,7 @@ def distribution_publish():
 
         # C3 Fail-Closed: Check Human Gate approval status
         try:
-            from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+            from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry, validate_scope as hg_validate_scope
             current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
             if current_state != "APPROVED":
                 return jsonify({
@@ -4246,6 +4330,27 @@ def distribution_publish():
                 "status": "error",
                 "message": f"expiry validation failed: {str(exp_err)}",
                 "code": "C3_EXPIRY_CHECK_FAILED"
+            }), 403
+
+        # C3-007: Check authorization scope binding (BEFORE effect execution)
+        try:
+            execution_scope = "/api/distribution/publish"
+            authorized_scope = authz_payload.get("runtime_scope")
+            if not hg_validate_scope(authorized_scope, execution_scope):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization scope mismatch",
+                    "code": "C3_AUTHZ_SCOPE_MISMATCH",
+                    "request_id": auth_request_id,
+                    "authorized_scope": authorized_scope,
+                    "execution_scope": execution_scope
+                }), 403
+        except Exception as scope_err:
+            # Fail-Closed: scope check failed
+            return jsonify({
+                "status": "error",
+                "message": f"scope validation failed: {str(scope_err)}",
+                "code": "C3_SCOPE_CHECK_FAILED"
             }), 403
 
         # Authorization passed, proceed with distribution
