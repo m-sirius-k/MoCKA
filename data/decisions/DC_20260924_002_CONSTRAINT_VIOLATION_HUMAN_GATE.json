@@ -1,0 +1,83 @@
+{
+  "decision_id": "DC_20260924_002_CONSTRAINT_VIOLATION_HUMAN_GATE",
+  "authority": "Human Gate - きむら博士 (L4)",
+  "timestamp_utc": "2026-09-24T16:30:00Z",
+  "decision_context": "C3 RUNTIME_AUTHORIZATION Constraint Violation Assessment - Forensic Investigation Complete",
+  "reference_previous_decision": "DC_20260924_001_SIGNER_BOUNDARY_GOVERNANCE",
+  "forensic_freeze_sha": "93dee705c8881cdcf4b8b2ac1420e0834ce3f10e",
+  "forensic_reference_document": "FORENSIC_ANALYSIS_COMPLETE.md (SHA256: 7314edc5661a68a4f8099bb6fa5d580414c5139a8a82ee8809d1dc450b3d7d7b)",
+  "decision_items": [
+    {
+      "item_number": 1,
+      "question": "DECISION 1: C1/C2 Constraint Violation Handling - Commit 93dee705c (public key file modification 04:07:08 UTC)",
+      "decision": "VIOLATED ACCEPTED AS RECORDED",
+      "rationale": "Violations are preserved in system history as investigation phase record. No remediation action. Violations remain as documented facts in constraint compliance audit trail.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "implementation_status": "NO ACTION - Historical record preservation"
+    },
+    {
+      "item_number": 2,
+      "question": "DECISION 2: Constraint 4 Unknown Status - Private key access during 00:00-04:07 UTC window",
+      "decision": "UNKNOWN MAINTAINED",
+      "rationale": "Private key access status remains UNKNOWN per forensic analysis. No evidence of post-constraint access found, but absence cannot be definitively confirmed. Status kept as-is; not resolved to ABSENT or OCCURRED.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "implementation_status": "NO ACTION - Status maintained as UNKNOWN in audit trail"
+    },
+    {
+      "item_number": 3,
+      "question": "DECISION 3: Existing Verification Results as Formal Evidence - RT1-RT6 investigation phase results",
+      "decision": "RETAIN AS HISTORICAL/FORENSIC EVIDENCE",
+      "rationale": "RT1-RT6 verification results (RT1/RT2 PASS, RT4 logic verified 6/6, RT6 layers 1-2 verified) are accepted as investigation phase evidence. Results are preserved in system record, separate from production-readiness determination. Technical correctness assessment complete; separated from constraint compliance assessment.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "implementation_status": "NO ACTION - Results retained in forensic record"
+    },
+    {
+      "item_number": 4,
+      "question": "DECISION 4: Clean Re-Verification Requirement - Fresh verification under corrected environment",
+      "decision": "RE-VERIFICATION AUTHORIZED",
+      "rationale": "Human authority grants permission for clean re-verification with corrected environment and new constraint period. Authorization permits (but does not mandate) re-execution of RT1-RT6 verification. Code modifications for grounding_engine.py hardcoded Windows path are authorized only if re-verification proceeds. Code changes remain prohibited otherwise.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "scope_limits": "Authorization for re-verification ONLY. Does NOT authorize: (1) retroactive constraint lifting, (2) production activation without new verification results, (3) code changes outside re-verification scope, (4) private key modifications, (5) authorization logic expansion.",
+      "implementation_status": "CONDITIONAL - Re-verification not auto-executed; only authorized if chosen"
+    },
+    {
+      "item_number": 5,
+      "question": "DECISION 5: Production Activation Authorization - RT1-RT6 mechanisms deployment to production",
+      "decision": "REMAIN PROHIBITED",
+      "rationale": "Production activation remains prohibited due to: (A) Active C1/C2 constraint violations not remediated, (B) C4 private key access status UNKNOWN, (C) grounding_engine.py environmental blocker preventing full authorization flow verification, (D) verification results classified as investigation phase evidence, not production-ready evidence. Production prohibition lifted only by future decision record (DC_20260924_003 or later) if and when: clean re-verification completed successfully, all constraint violations resolved, C4 status determined, environmental issues corrected.",
+      "binding_authority": "きむら博士 L4 Human Gate",
+      "implementation_status": "PROHIBITION CONTINUES - No production deployment authorized"
+    }
+  ],
+  "decision_status": "CONFIRMED",
+  "authority_boundary_clarification": {
+    "D4_re_verification_scope": "Authorization grants permission to execute clean re-verification. Does NOT authorize automatic code modifications, automatic schema changes, or automatic production activation. Each step requires explicit authorization if taken.",
+    "violations_preservation": "Constraint violations are preserved in forensic record as historical facts. Preservation is not rehabilitation or retroactive constraint removal.",
+    "production_path_requirements": "To lift production prohibition: (1) Clean re-verification must complete successfully, (2) All constraints must be verified as compliant, (3) C4 status must be determined, (4) Environmental issues must be resolved, (5) Human authority must issue new authorization decision (DC_20260924_003 or equivalent)"
+  },
+  "binding_constraints_after_this_decision": [
+    "Code change prohibited (unless re-verification is authorized AND chosen AND grounding_engine.py fix is within re-verification scope)",
+    "Authorization logic change prohibited (unless re-verification is authorized AND chosen AND within scope)",
+    "Production activation prohibited (confirmed until new authorization decision)",
+    "Private key operations prohibited (absolute)",
+    "AI self-authorization prohibited (absolute)",
+    "Scope expansion prohibited (absolute)"
+  ],
+  "next_step": [
+    "1. This Decision Record DC_20260924_002 is committed to git",
+    "2. Commit SHA is verified (local/remote match)",
+    "3. きむら博士 review of human gate decisions (optional verification check)",
+    "4. Phase 4 investigation complete; Phase 5 planning begins",
+    "5. If re-verification chosen (D4): New constraint period established, fresh verification authorizes code modifications within scope only",
+    "6. If re-verification not chosen: System remains in current state pending future decision"
+  ],
+  "meta": {
+    "created_by": "Claude (Haiku 4.5) - Decision Recording",
+    "decision_authority_verification": "きむら博士 L4 Human Gate - Decisions provided as human input",
+    "ai_role": "Record only - no recommendations, no option selection, no decision influence",
+    "forensic_integrity": "VERIFIED - Freeze SHA confirmed, local/remote synchronized, working tree clean",
+    "decision_record_type": "Human Authority Judgment - Five critical decisions on constraint violations and production readiness",
+    "authority_signature_required": "Digital record - きむら博士 authority established via decision_id and authority field",
+    "status": "RECORDED_AWAITING_GIT_COMMIT"
+  }
+}
