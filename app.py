@@ -1961,8 +1961,8 @@ def public_write_event():
 
     # C3 Fail-Closed: Check Human Gate approval status
     try:
-        from phi_os.human_gate import get_state as hg_get_state
-        current_state = hg_get_state(auth_request_id)
+        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+        current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
         if current_state != "APPROVED":
             return jsonify({
                 "status": "error",
@@ -1976,6 +1976,24 @@ def public_write_event():
             "status": "error",
             "message": f"authorization check failed: {str(hg_err)}",
             "code": "C3_AUTHZ_CHECK_FAILED"
+        }), 403
+
+    # C3-006: Check authorization expiry (BEFORE effect execution)
+    try:
+        expires_at = authz_payload.get("expires_at")
+        if not hg_validate_expiry(expires_at):
+            return jsonify({
+                "status": "error",
+                "message": "authorization expired",
+                "code": "C3_AUTHZ_EXPIRED",
+                "request_id": auth_request_id
+            }), 403
+    except Exception as exp_err:
+        # Fail-Closed: expiry check failed
+        return jsonify({
+            "status": "error",
+            "message": f"expiry validation failed: {str(exp_err)}",
+            "code": "C3_EXPIRY_CHECK_FAILED"
         }), 403
 
     title = payload.get("title", "")
@@ -2417,8 +2435,8 @@ def decision_approve():
 
     # C3 Fail-Closed: Check Human Gate approval status
     try:
-        from phi_os.human_gate import get_state as hg_get_state
-        current_state = hg_get_state(auth_request_id)
+        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+        current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
         if current_state != "APPROVED":
             return jsonify({
                 "status": "error",
@@ -2432,6 +2450,24 @@ def decision_approve():
             "status": "error",
             "message": f"authorization check failed: {str(hg_err)}",
             "code": "C3_AUTHZ_CHECK_FAILED"
+        }), 403
+
+    # C3-006: Check authorization expiry (BEFORE effect execution)
+    try:
+        expires_at = authz_payload.get("expires_at")
+        if not hg_validate_expiry(expires_at):
+            return jsonify({
+                "status": "error",
+                "message": "authorization expired",
+                "code": "C3_AUTHZ_EXPIRED",
+                "request_id": auth_request_id
+            }), 403
+    except Exception as exp_err:
+        # Fail-Closed: expiry check failed
+        return jsonify({
+            "status": "error",
+            "message": f"expiry validation failed: {str(exp_err)}",
+            "code": "C3_EXPIRY_CHECK_FAILED"
         }), 403
 
     # Authorization passed, proceed with decision approval
@@ -2490,8 +2526,8 @@ def decision_reject():
 
     # C3 Fail-Closed: Check Human Gate approval status
     try:
-        from phi_os.human_gate import get_state as hg_get_state
-        current_state = hg_get_state(auth_request_id)
+        from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+        current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
         if current_state != "APPROVED":
             return jsonify({
                 "status": "error",
@@ -2505,6 +2541,24 @@ def decision_reject():
             "status": "error",
             "message": f"authorization check failed: {str(hg_err)}",
             "code": "C3_AUTHZ_CHECK_FAILED"
+        }), 403
+
+    # C3-006: Check authorization expiry (BEFORE effect execution)
+    try:
+        expires_at = authz_payload.get("expires_at")
+        if not hg_validate_expiry(expires_at):
+            return jsonify({
+                "status": "error",
+                "message": "authorization expired",
+                "code": "C3_AUTHZ_EXPIRED",
+                "request_id": auth_request_id
+            }), 403
+    except Exception as exp_err:
+        # Fail-Closed: expiry check failed
+        return jsonify({
+            "status": "error",
+            "message": f"expiry validation failed: {str(exp_err)}",
+            "code": "C3_EXPIRY_CHECK_FAILED"
         }), 403
 
     # Authorization passed, proceed with decision rejection
@@ -4067,8 +4121,8 @@ def publish_all():
 
         # C3 Fail-Closed: Check Human Gate approval status
         try:
-            from phi_os.human_gate import get_state as hg_get_state
-            current_state = hg_get_state(auth_request_id)
+            from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+            current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
             if current_state != "APPROVED":
                 return jsonify({
                     "status": "error",
@@ -4082,6 +4136,24 @@ def publish_all():
                 "status": "error",
                 "message": f"authorization check failed: {str(hg_err)}",
                 "code": "C3_AUTHZ_CHECK_FAILED"
+            }), 403
+
+        # C3-006: Check authorization expiry (BEFORE effect execution)
+        try:
+            expires_at = authz_payload.get("expires_at")
+            if not hg_validate_expiry(expires_at):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization expired",
+                    "code": "C3_AUTHZ_EXPIRED",
+                    "request_id": auth_request_id
+                }), 403
+        except Exception as exp_err:
+            # Fail-Closed: expiry check failed
+            return jsonify({
+                "status": "error",
+                "message": f"expiry validation failed: {str(exp_err)}",
+                "code": "C3_EXPIRY_CHECK_FAILED"
             }), 403
 
         # Authorization passed, proceed with publishing
@@ -4141,8 +4213,8 @@ def distribution_publish():
 
         # C3 Fail-Closed: Check Human Gate approval status
         try:
-            from phi_os.human_gate import get_state as hg_get_state
-            current_state = hg_get_state(auth_request_id)
+            from phi_os.human_gate import get_state_with_payload as hg_get_state_with_payload, validate_expiry as hg_validate_expiry
+            current_state, authz_payload = hg_get_state_with_payload(auth_request_id)
             if current_state != "APPROVED":
                 return jsonify({
                     "status": "error",
@@ -4156,6 +4228,24 @@ def distribution_publish():
                 "status": "error",
                 "message": f"authorization check failed: {str(hg_err)}",
                 "code": "C3_AUTHZ_CHECK_FAILED"
+            }), 403
+
+        # C3-006: Check authorization expiry (BEFORE effect execution)
+        try:
+            expires_at = authz_payload.get("expires_at")
+            if not hg_validate_expiry(expires_at):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization expired",
+                    "code": "C3_AUTHZ_EXPIRED",
+                    "request_id": auth_request_id
+                }), 403
+        except Exception as exp_err:
+            # Fail-Closed: expiry check failed
+            return jsonify({
+                "status": "error",
+                "message": f"expiry validation failed: {str(exp_err)}",
+                "code": "C3_EXPIRY_CHECK_FAILED"
             }), 403
 
         # Authorization passed, proceed with distribution

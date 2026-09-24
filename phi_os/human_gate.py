@@ -101,6 +101,59 @@ def get_state(request_id: str, conn=None) -> str | None:
             conn.close()
 
 
+def get_state_with_payload(request_id: str, conn=None) -> tuple[str | None, dict]:
+    """request_idの現在状態とpayloadを取得。expires_atは submit event から取得（immutable）。"""
+    owns_conn = conn is None
+    if owns_conn:
+        conn = _get_conn()
+    try:
+        _ensure_table(conn)
+        latest = _latest_event(conn, request_id)
+        if not latest:
+            return None, {}
+
+        current_state = latest['next_state']
+
+        # Get expires_at from submit event (first event, contains authorization metadata)
+        submit_event = conn.execute(
+            'SELECT * FROM human_gate_events WHERE request_id = ? AND action = ? ORDER BY timestamp ASC LIMIT 1',
+            (request_id, 'submit')
+        ).fetchone()
+
+        payload = {}
+        if submit_event:
+            try:
+                submit_payload = json.loads(submit_event['payload'] or '{}')
+                if 'expires_at' in submit_payload:
+                    payload['expires_at'] = submit_payload['expires_at']
+            except (TypeError, json.JSONDecodeError):
+                pass
+
+        return current_state, payload
+    finally:
+        if owns_conn:
+            conn.close()
+
+
+def validate_expiry(expires_at_str: str | None) -> bool:
+    """
+    expires_atの有効性を検証。
+    now < expires_at → True (VALID)
+    now >= expires_at → False (EXPIRED)
+    missing/malformed → False (DENY)
+    """
+    if expires_at_str is None:
+        return False
+    try:
+        expires_at = datetime.fromisoformat(expires_at_str)
+        if expires_at.tzinfo is None:
+            return False
+        now = datetime.now(timezone.utc)
+        return now < expires_at
+    except (ValueError, TypeError, AttributeError):
+        return False
+
+
 def _record_transition(conn, action: str, request_id: str, payload: dict, previous_state: str | None) -> dict:
     next_state = ACTION_NEXT_STATE[action]
     event = {
