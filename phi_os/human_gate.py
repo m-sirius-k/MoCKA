@@ -20,7 +20,7 @@ human_gate_bp = Blueprint('human_gate', __name__)
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
 
-STATES = {"PENDING", "APPROVED", "REJECTED", "EXPIRED", "CANCELED"}
+STATES = {"PENDING", "APPROVED", "REJECTED", "EXPIRED", "CANCELED", "CONSUMED"}
 
 # action -> 許可されるprevious_stateの集合。Noneは「新規生成(previous_stateなし)」を表す。
 TRANSITIONS = {
@@ -29,6 +29,7 @@ TRANSITIONS = {
     "reject":  {"PENDING"},
     "expire":  {"PENDING"},
     "cancel":  {"PENDING", "APPROVED", "REJECTED"},
+    "consume": {"APPROVED"},
 }
 
 ACTION_NEXT_STATE = {
@@ -37,6 +38,7 @@ ACTION_NEXT_STATE = {
     "reject": "REJECTED",
     "expire": "EXPIRED",
     "cancel": "CANCELED",
+    "consume": "CONSUMED",
 }
 
 
@@ -174,6 +176,11 @@ def expire(request_id: str, payload: dict | None = None, conn=None) -> dict:
 
 def cancel(request_id: str, payload: dict | None = None, conn=None) -> dict:
     return _transition("cancel", request_id, payload, conn=conn)
+
+
+def consume(request_id: str, payload: dict | None = None, conn=None) -> dict:
+    """Mark authorization as CONSUMED (used). Only callable from APPROVED state."""
+    return _transition("consume", request_id, payload, conn=conn)
 
 
 def list_pending(conn=None) -> list:

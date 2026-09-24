@@ -1996,6 +1996,15 @@ def public_write_event():
         "free_note": f"{description}|authz_request_id={auth_request_id}",
     }
     append_event(meta)
+
+    # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
+    try:
+        from phi_os.human_gate import consume as hg_consume
+        hg_consume(auth_request_id)
+    except Exception as consume_err:
+        # Log but don't fail the request - execution already succeeded
+        print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
+
     return jsonify({
         "status": "ok",
         "event_id": next_event_id(),
@@ -2445,6 +2454,14 @@ def decision_approve():
         "who_actor": "kimura_hakase",
         "free_note": f"{pid}|auth_id={auth_request_id}",
     })
+
+    # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
+    try:
+        from phi_os.human_gate import consume as hg_consume
+        hg_consume(auth_request_id)
+    except Exception as consume_err:
+        print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
+
     def _upd():
         try:
             from pathlib import Path as _P
@@ -2506,6 +2523,14 @@ def decision_reject():
         "who_actor": "kimura_hakase",
         "free_note": f"{pid}|auth_id={auth_request_id}",
     })
+
+    # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
+    try:
+        from phi_os.human_gate import consume as hg_consume
+        hg_consume(auth_request_id)
+    except Exception as consume_err:
+        print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
+
     return jsonify({"status": "ok", "rejected": pid, "authorization_used": auth_request_id})
 
 
@@ -4074,6 +4099,14 @@ def publish_all():
             "lifecycle_phase": "in_operation",
             "free_note": f"distribution_os_v1|publish_all|auth_id={auth_request_id}",
         })
+
+        # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
+        try:
+            from phi_os.human_gate import consume as hg_consume
+            hg_consume(auth_request_id)
+        except Exception as consume_err:
+            print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
+
         return jsonify({**result, "authorization_used": auth_request_id})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
@@ -4169,6 +4202,14 @@ def distribution_publish():
             "lifecycle_phase": "in_operation",
             "free_note": f"distribution_os_v2|{transformer}|{language}|auth_id={auth_request_id}",
         })
+
+        # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
+        try:
+            from phi_os.human_gate import consume as hg_consume
+            hg_consume(auth_request_id)
+        except Exception as consume_err:
+            print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
+
         return jsonify({"status": "distributed", "results": results, "destinations": destinations, "authorization_used": auth_request_id})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
