@@ -2396,6 +2396,36 @@ def prevention_queue():
 def decision_approve():
     payload = request.get_json(force=True, silent=True) or {}
     pid = payload.get("id", "")
+
+    # MANDATORY: Authorization via Human Gate
+    auth_request_id = payload.get("authorization_request_id", "")
+    if not auth_request_id:
+        return jsonify({
+            "status": "error",
+            "message": "authorization_request_id required (must be APPROVED via Human Gate)",
+            "code": "C3_AUTHZ_MISSING"
+        }), 403
+
+    # C3 Fail-Closed: Check Human Gate approval status
+    try:
+        from phi_os.human_gate import get_state as hg_get_state
+        current_state = hg_get_state(auth_request_id)
+        if current_state != "APPROVED":
+            return jsonify({
+                "status": "error",
+                "message": f"authorization not approved (current state: {current_state})",
+                "code": "C3_AUTHZ_INVALID",
+                "request_id": auth_request_id
+            }), 403
+    except Exception as hg_err:
+        # Fail-Closed: authorization check failed
+        return jsonify({
+            "status": "error",
+            "message": f"authorization check failed: {str(hg_err)}",
+            "code": "C3_AUTHZ_CHECK_FAILED"
+        }), 403
+
+    # Authorization passed, proceed with decision approval
     data = _load_pqueue()
     approved = None
     for item in data["queue"]:
@@ -2413,7 +2443,7 @@ def decision_approve():
         "short_summary": approved.get("description", "")[:100],
         "risk_level": approved.get("risk_level", "normal"),
         "who_actor": "kimura_hakase",
-        "free_note": pid,
+        "free_note": f"{pid}|auth_id={auth_request_id}",
     })
     def _upd():
         try:
@@ -2425,12 +2455,42 @@ def decision_approve():
         except Exception as e:
             print("[ACTION] " + str(e))
     _chain_t.Thread(target=_upd, daemon=True).start()
-    return jsonify({"status": "ok", "approved": pid})
+    return jsonify({"status": "ok", "approved": pid, "authorization_used": auth_request_id})
 
 @app.route("/decision/reject", methods=["POST"])
 def decision_reject():
     payload = request.get_json(force=True, silent=True) or {}
     pid = payload.get("id", "")
+
+    # MANDATORY: Authorization via Human Gate
+    auth_request_id = payload.get("authorization_request_id", "")
+    if not auth_request_id:
+        return jsonify({
+            "status": "error",
+            "message": "authorization_request_id required (must be APPROVED via Human Gate)",
+            "code": "C3_AUTHZ_MISSING"
+        }), 403
+
+    # C3 Fail-Closed: Check Human Gate approval status
+    try:
+        from phi_os.human_gate import get_state as hg_get_state
+        current_state = hg_get_state(auth_request_id)
+        if current_state != "APPROVED":
+            return jsonify({
+                "status": "error",
+                "message": f"authorization not approved (current state: {current_state})",
+                "code": "C3_AUTHZ_INVALID",
+                "request_id": auth_request_id
+            }), 403
+    except Exception as hg_err:
+        # Fail-Closed: authorization check failed
+        return jsonify({
+            "status": "error",
+            "message": f"authorization check failed: {str(hg_err)}",
+            "code": "C3_AUTHZ_CHECK_FAILED"
+        }), 403
+
+    # Authorization passed, proceed with decision rejection
     data = _load_pqueue()
     for item in data["queue"]:
         if item.get("id") == pid and _is_pending_status(item.get("status")):
@@ -2444,9 +2504,9 @@ def decision_reject():
         "short_summary": "Human Gateで却下",
         "risk_level": "normal",
         "who_actor": "kimura_hakase",
-        "free_note": pid,
+        "free_note": f"{pid}|auth_id={auth_request_id}",
     })
-    return jsonify({"status": "ok", "rejected": pid})
+    return jsonify({"status": "ok", "rejected": pid, "authorization_used": auth_request_id})
 
 
 @app.route('/health')
