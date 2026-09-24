@@ -349,9 +349,18 @@ def verify_write_provenance():
         "last_logged_at": last.get("timestamp"),
     }
 
-def save_todo(data, actor=None):
+def save_todo(data, actor=None, auth_context=None):
     data["meta"]["updated"] = datetime.date.today().isoformat()
     data["meta"]["updated_by"] = "Claude"
+    if auth_context and auth_context.get("token_id"):
+        data["meta"]["_auth_binding"] = {
+            "token_id": auth_context.get("token_id"),
+            "issuer": auth_context.get("issuer"),
+            "decision_id": auth_context.get("decision_id"),
+            "scope": auth_context.get("scope"),
+            "approval_event_id": auth_context.get("approval_event_id"),
+            "issued_at": auth_context.get("issued_at"),
+        }
     tmp_path = TODO_PATH.with_suffix(".json.tmp")
     content = json.dumps(data, ensure_ascii=False, indent=2)
     tmp_path.write_text(content, encoding="utf-8")
@@ -393,9 +402,19 @@ def _next_decision_id():
     n = (max(used) + 1) if used else 1
     return f"{prefix}{n:03d}"
 
-def _append_decision(record):
-    """decision_ledger.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+def _append_decision(record, auth_context=None):
+    """decision_ledger.jsonlへ1行追記する（append-only、既存行は変更しない）。
+    auth_context が指定された場合、レコードに authorization metadata を追加。"""
     DECISIONS_DIR.mkdir(parents=True, exist_ok=True)
+    if auth_context and any(auth_context.values()):
+        record["_auth_binding"] = {
+            "token_id": auth_context.get("token_id", ""),
+            "issuer": auth_context.get("issuer", ""),
+            "decision_id": auth_context.get("decision_id", ""),
+            "scope": auth_context.get("scope", ""),
+            "approval_event_id": auth_context.get("approval_event_id", ""),
+            "issued_at": auth_context.get("issued_at", ""),
+        }
     with open(DECISION_LEDGER_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
@@ -445,9 +464,19 @@ def _next_classification_id():
     n = (max(used) + 1) if used else 1
     return f"{prefix}{n:03d}"
 
-def _append_classification(record):
-    """integrity_classification.jsonlへ1行追記する（append-only、既存行は変更しない）。"""
+def _append_classification(record, auth_context=None):
+    """integrity_classification.jsonlへ1行追記する（append-only、既存行は変更しない）。
+    auth_context が指定された場合、レコードに authorization metadata を追加。"""
     INTEGRITY_DIR.mkdir(parents=True, exist_ok=True)
+    if auth_context and any(auth_context.values()):
+        record["_auth_binding"] = {
+            "token_id": auth_context.get("token_id", ""),
+            "issuer": auth_context.get("issuer", ""),
+            "decision_id": auth_context.get("decision_id", ""),
+            "scope": auth_context.get("scope", ""),
+            "approval_event_id": auth_context.get("approval_event_id", ""),
+            "issued_at": auth_context.get("issued_at", ""),
+        }
     with open(INTEGRITY_CLASSIFICATION_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
@@ -479,6 +508,12 @@ TOOLS = [
 
 def execute_tool(name, args):
     try:
+        PROTECTED_TOOLS = {
+            "mocka_seal", "mocka_write_event", "mocka_decision_write",
+            "mocka_integrity_write", "mocka_update_todo", "mocka_add_todo"
+        }
+        auth_context = {}
+
         if _governance is None:
             # Fail Closed: Governance Pipeline自体が初期化できていない場合、
             # READ_ONLY_TOOLS以外は安全側で実行を停止する。
@@ -496,6 +531,15 @@ def execute_tool(name, args):
                         "reason": decision.reason,
                         "thinking_mode": decision.thinking_mode,
                     }, ensure_ascii=False)
+                if name in PROTECTED_TOOLS and decision.allowed:
+                    auth_context = {
+                        "token_id": decision.token_id,
+                        "issuer": decision.issuer,
+                        "decision_id": decision.decision_id,
+                        "scope": decision.scope,
+                        "approval_event_id": decision.approval_event_id,
+                        "issued_at": decision.issued_at,
+                    }
             except Exception as _gov_call_err:
                 # Fail Closed: before_tool()自体が例外を投げた場合も
                 # READ_ONLY_TOOLS以外は安全側で実行を停止する。
@@ -565,7 +609,7 @@ def execute_tool(name, args):
             if add_contract_status:                # 未指定時はキー自体を付与しない(TODO_385設計案1.3案A)
                 new_todo["contract_status"] = add_contract_status
             data["todos"].append(new_todo)
-            save_todo(data)
+            save_todo(data, auth_context=auth_context)
             auto_log(name, args, f"added {todo_id}")
             print(f"[MCP] mocka_add_todo: {todo_id} added")
             return json.dumps({"status": "ok", "id": todo_id, "action": "added"}, ensure_ascii=False)
@@ -638,7 +682,7 @@ def execute_tool(name, args):
                         break
 
             if not updated: return json.dumps({"error": f"{todo_id} not found"})
-            save_todo(data)
+            save_todo(data, auth_context=auth_context)
             auto_log(name, args, f"updated {todo_id} -> {effective_status}")
             result = {"status": "ok", "id": todo_id, "new_status": effective_status}
             if reopen_event_id:
@@ -696,6 +740,15 @@ def execute_tool(name, args):
                 "description":     _desc,
                 "tags":            args.get("tags", ""),
             }
+            if auth_context and auth_context.get("token_id"):
+                gate_payload["_auth_binding"] = {
+                    "token_id": auth_context.get("token_id"),
+                    "issuer": auth_context.get("issuer"),
+                    "decision_id": auth_context.get("decision_id"),
+                    "scope": auth_context.get("scope"),
+                    "approval_event_id": auth_context.get("approval_event_id"),
+                    "issued_at": auth_context.get("issued_at"),
+                }
             try:
                 r = requests.post(GATE_URL, json=gate_payload, timeout=5)
                 if r.status_code == 201:
@@ -1001,7 +1054,7 @@ def execute_tool(name, args):
                 "superseded_by":     None,
                 "status":            status,
             }
-            _append_decision(record)
+            _append_decision(record, auth_context=auth_context)
             # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
             # what_type=DECISION_MADEのenum拡張はapp.py側GATEのスコープ外のため今回は追加しない）
             event_id = None
@@ -1086,7 +1139,7 @@ def execute_tool(name, args):
                 "supersedes":         args.get("supersedes") or None,
                 "superseded_by":      None,
             }
-            _append_classification(record)
+            _append_classification(record, auth_context=auth_context)
             auto_log(name, args, f"classification written {classification_id}")
             return json.dumps({"status": "ok", "classification_id": classification_id}, ensure_ascii=False)
 
