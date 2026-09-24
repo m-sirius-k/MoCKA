@@ -4030,6 +4030,36 @@ def _load_distribution_router():
 def publish_all():
     try:
         data = request.json or {}
+
+        # MANDATORY: Authorization via Human Gate
+        auth_request_id = data.get("authorization_request_id", "")
+        if not auth_request_id:
+            return jsonify({
+                "status": "error",
+                "message": "authorization_request_id required (must be APPROVED via Human Gate)",
+                "code": "C3_AUTHZ_MISSING"
+            }), 403
+
+        # C3 Fail-Closed: Check Human Gate approval status
+        try:
+            from phi_os.human_gate import get_state as hg_get_state
+            current_state = hg_get_state(auth_request_id)
+            if current_state != "APPROVED":
+                return jsonify({
+                    "status": "error",
+                    "message": f"authorization not approved (current state: {current_state})",
+                    "code": "C3_AUTHZ_INVALID",
+                    "request_id": auth_request_id
+                }), 403
+        except Exception as hg_err:
+            # Fail-Closed: authorization check failed
+            return jsonify({
+                "status": "error",
+                "message": f"authorization check failed: {str(hg_err)}",
+                "code": "C3_AUTHZ_CHECK_FAILED"
+            }), 403
+
+        # Authorization passed, proceed with publishing
         content = data.get("content", "PR-OS EVENT SAMPLE")
         router_mod = _load_distribution_router()
         result = router_mod.route(content)
@@ -4042,9 +4072,9 @@ def publish_all():
             "risk_level": "normal",
             "channel_type": "api",
             "lifecycle_phase": "in_operation",
-            "free_note": "distribution_os_v1|publish_all",
+            "free_note": f"distribution_os_v1|publish_all|auth_id={auth_request_id}",
         })
-        return jsonify(result)
+        return jsonify({**result, "authorization_used": auth_request_id})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
 # ── Distribution OS v1 ここまで ──────────────────────────────────────────────
@@ -4066,6 +4096,36 @@ def _get_dist_engine():
 def distribution_publish():
     try:
         data = request.json or {}
+
+        # MANDATORY: Authorization via Human Gate
+        auth_request_id = data.get("authorization_request_id", "")
+        if not auth_request_id:
+            return jsonify({
+                "status": "error",
+                "message": "authorization_request_id required (must be APPROVED via Human Gate)",
+                "code": "C3_AUTHZ_MISSING"
+            }), 403
+
+        # C3 Fail-Closed: Check Human Gate approval status
+        try:
+            from phi_os.human_gate import get_state as hg_get_state
+            current_state = hg_get_state(auth_request_id)
+            if current_state != "APPROVED":
+                return jsonify({
+                    "status": "error",
+                    "message": f"authorization not approved (current state: {current_state})",
+                    "code": "C3_AUTHZ_INVALID",
+                    "request_id": auth_request_id
+                }), 403
+        except Exception as hg_err:
+            # Fail-Closed: authorization check failed
+            return jsonify({
+                "status": "error",
+                "message": f"authorization check failed: {str(hg_err)}",
+                "code": "C3_AUTHZ_CHECK_FAILED"
+            }), 403
+
+        # Authorization passed, proceed with distribution
         title = data.get("title", "MoCKA Distribution")
         content = data.get("content", "")
         destinations = data.get("destinations", [])
@@ -4107,9 +4167,9 @@ def distribution_publish():
             "risk_level": "normal",
             "channel_type": "api",
             "lifecycle_phase": "in_operation",
-            "free_note": f"distribution_os_v2|{transformer}|{language}",
+            "free_note": f"distribution_os_v2|{transformer}|{language}|auth_id={auth_request_id}",
         })
-        return jsonify({"status": "distributed", "results": results, "destinations": destinations})
+        return jsonify({"status": "distributed", "results": results, "destinations": destinations, "authorization_used": auth_request_id})
     except Exception as e:
         return jsonify({"status": "error", "error": str(e)}), 500
 
