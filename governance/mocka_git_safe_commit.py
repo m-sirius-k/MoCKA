@@ -25,7 +25,7 @@ import datetime
 import urllib.request
 from pathlib import Path
 
-ROOT = Path(r"C:\Users\sirok\MoCKA")
+ROOT = Path(__file__).resolve().parent.parent
 
 # TODO_413: mocka_git_safe_commit()をGit操作の制度的責任点(Institutional
 # Recording Point)とする。呼び出し元(anchor_update.py/sync_watch.py/
