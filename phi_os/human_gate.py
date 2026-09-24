@@ -13,6 +13,7 @@ import time
 import secrets
 import json
 from datetime import datetime, timezone
+from governance.sign_governance_event import sign_approval_payload
 from pathlib import Path
 
 human_gate_bp = Blueprint('human_gate', __name__)
@@ -101,6 +102,13 @@ def get_state(request_id: str, conn=None) -> str | None:
 
 def _record_transition(conn, action: str, request_id: str, payload: dict, previous_state: str | None) -> dict:
     next_state = ACTION_NEXT_STATE[action]
+
+    if action in ("approve", "reject") and "signature" not in payload:
+        try:
+            payload["signature"] = sign_approval_payload(payload)
+        except Exception as e:
+            raise RuntimeError(f"RT1: Failed to sign approval payload: {e}")
+
     event = {
         "event_id": _next_event_id(),
         "timestamp": _now_iso(),

@@ -31,6 +31,7 @@ except Exception as _ocg_err:
     _overview_current_gen = None
 try:
     from governance_pipeline import GovernancePipeline, READ_ONLY_TOOLS
+    from governance.verify_governance_event_required import verify_approval_signature
     _governance = GovernancePipeline()
 except Exception as _gov_err:
     print(f"[ERROR] Governance Pipeline unavailable (Fail Closed for governed tools): {_gov_err}", flush=True)
@@ -40,6 +41,7 @@ except Exception as _gov_err:
         "mocka_read_event", "mocka_search", "mocka_get_incidents", "mocka_get_guidelines",
         "mocka_get_command_center", "mocka_check_utf8",
     }
+    verify_approval_signature = None
 
 # KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
 REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
@@ -1112,6 +1114,32 @@ def execute_tool(name, args):
             approval_payload = human_gate_approval.get('payload', {})
             approved_by = approval_payload.get('approved_by', '').strip()
             approved_scopes = approval_payload.get('approved_scopes', [])
+            signature = approval_payload.get('signature', '').strip()
+
+            # RT1 SIGNATURE VERIFICATION: Verify approval is signed by Human Gate
+            if not signature:
+                auto_log(name, args, f"DENY: Approval has no signature (unsigned approval rejected)")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Approval must be signed by Human Gate",
+                    "code": "SIGNATURE_MISSING"
+                }, ensure_ascii=False)
+
+            if verify_approval_signature is None:
+                auto_log(name, args, f"DENY: Signature verification unavailable")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Signature verification unavailable",
+                    "code": "VERIFICATION_UNAVAILABLE"
+                }, ensure_ascii=False)
+
+            if not verify_approval_signature(approval_payload, signature):
+                auto_log(name, args, f"DENY: Approval signature verification failed")
+                return json.dumps({
+                    "error": "AUTHORIZATION_DENIED",
+                    "reason": "Approval signature verification failed",
+                    "code": "SIGNATURE_INVALID"
+                }, ensure_ascii=False)
 
             # C3.1 HUMAN ONLY ENFORCEMENT: Verify approved_by is Human Gate
             if not approved_by or "きむら博士" not in approved_by and "Human Gate" not in approved_by:

@@ -1,6 +1,7 @@
 ﻿from __future__ import annotations
 import json
 import base64
+import os
 from pathlib import Path
 from cryptography.hazmat.primitives import serialization
 
@@ -10,6 +11,33 @@ EVENT_PATH = ROOT / "governance" / "governance_event.json"
 
 def b64u(b: bytes) -> str:
     return base64.urlsafe_b64encode(b).decode("ascii").rstrip("=")
+
+def sign_approval_payload(payload: dict) -> str:
+    """
+    Sign an approval payload with Ed25519 private key.
+    Loads key from MOCKA_PRIVATE_KEY env var (base64-encoded PEM).
+    Returns base64url-encoded signature.
+    """
+    env_key = os.getenv("MOCKA_PRIVATE_KEY", "").strip()
+    if env_key:
+        try:
+            key_bytes = base64.b64decode(env_key)
+            private_key = serialization.load_pem_private_key(key_bytes, password=None)
+        except Exception as e:
+            raise RuntimeError(f"Failed to load private key from MOCKA_PRIVATE_KEY env var: {e}")
+    else:
+        priv_path = KEYDIR / "root_key_v2.ed25519.private.pem"
+        if not priv_path.exists():
+            raise RuntimeError(f"Private key not found: {priv_path} and MOCKA_PRIVATE_KEY not set")
+        private_key = serialization.load_pem_private_key(priv_path.read_bytes(), password=None)
+
+    payload_copy = dict(payload)
+    payload_copy["signature"] = ""
+
+    msg = json.dumps(payload_copy, ensure_ascii=False, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    sig = private_key.sign(msg)
+
+    return b64u(sig)
 
 def main() -> int:
     priv_path = KEYDIR / "root_key_v2.ed25519.private.pem"

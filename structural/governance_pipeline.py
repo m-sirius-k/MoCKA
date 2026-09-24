@@ -92,7 +92,10 @@ class GovernancePipeline:
         """
         GL1~GL7をtool呼び出し直前に適用する。
         書き込み系toolはGL7 Dry Runでabort条件を検査し、abortがあればallowed=False。
+        RT4: RUNTIME_AUTHORIZATION token検証をサポート。
         """
+        import hashlib
+
         grounding = self._refresh_grounding()
 
         mode = self.tm.detect_mode(tool_name, args)
@@ -106,6 +109,47 @@ class GovernancePipeline:
         checklist = self.reasoning.enforce_pre_answer_checklist()
 
         aborts = []
+
+        # RT4: AUTHORIZATION_REQUIRED_TOOLS定義
+        AUTHORIZATION_REQUIRED_TOOLS = {
+            "mocka_seal", "mocka_write_event", "mocka_decision_write",
+            "mocka_integrity_write", "mocka_update_todo", "mocka_add_todo"
+        }
+
+        # RT4: Check C3 authorization tokens for protected tools
+        if tool_name in AUTHORIZATION_REQUIRED_TOOLS:
+            auth_token = args.get("authorization_token", {})
+            if not auth_token:
+                aborts.append("RT4_AUTHORIZATION_REQUIRED: authorization_token missing")
+            else:
+                token_id = auth_token.get("token_id", "").strip()
+                token_payload = auth_token.get("token_payload", {})
+                expected_scope = auth_token.get("expected_scope", "").strip()
+
+                if not token_id or not token_payload or not expected_scope:
+                    aborts.append(f"RT4_TOKEN_INVALID: missing required fields")
+                elif token_payload.get("token_type") != "RUNTIME_AUTHORIZATION":
+                    aborts.append(f"RT4_TOKEN_INVALID: invalid token_type")
+                else:
+                    verification_payload = {
+                        "token_type": token_payload.get("token_type", ""),
+                        "decision_id": token_payload.get("decision_id", ""),
+                        "scope": token_payload.get("scope", ""),
+                        "issuer": token_payload.get("issuer", ""),
+                        "issued_at": token_payload.get("issued_at", ""),
+                        "approval_event_id": token_payload.get("approval_event_id", "")
+                    }
+                    import json
+                    recalc_hash = hashlib.sha256(
+                        json.dumps(verification_payload, sort_keys=True, ensure_ascii=False).encode('utf-8')
+                    ).hexdigest()
+                    recalc_token_id = recalc_hash[:16]
+
+                    if token_id != recalc_token_id:
+                        aborts.append(f"RT4_TOKEN_MODIFIED: hash mismatch")
+                    elif token_payload.get("scope", "") != expected_scope:
+                        aborts.append(f"RT4_SCOPE_MISMATCH: token scope != expected scope")
+
         if tool_name not in READ_ONLY_TOOLS:
             # Default Deny: READ_ONLY_TOOLS以外(未知のtoolを含む)は全てGL7 Dry Run対象。
             # scope = 現在のリポジトリ直下全ディレクトリ。
