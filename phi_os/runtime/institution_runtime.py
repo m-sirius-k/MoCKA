@@ -129,12 +129,13 @@ class InstitutionRuntime:
     # ════════════════════════════════════════════════════════════════════════
 
     def validate_gate(
-        self, gate_id: GateId, artifact: Artifact, request_id: Optional[str] = None
+        self, gate_id: GateId, artifact: Artifact, request_id: Optional[str] = None, scope: Optional[str] = None
     ) -> tuple[bool, list[str]]:
         """
         ArtifactがGateを通過できるかを検証する。
         各GateはこのAPIを通じて制度判定を委譲する (実装原則 2)。
         request_id が指定された場合、Human Gate authorization state を確認する (D1)。
+        scope が指定された場合、authorized scope と比較する (D3)。
         """
         issues: list[str] = []
 
@@ -172,6 +173,29 @@ class InstitutionRuntime:
                     issues.append(f"Human Gate: request_id '{request_id}' is CANCELED - execution denied")
                 elif hg_state != "APPROVED":
                     issues.append(f"Human Gate: request_id '{request_id}' has unknown state '{hg_state}'")
+
+                # D3: Scope binding enforcement (only check if APPROVED)
+                if hg_state == "APPROVED" and scope is not None:
+                    import sqlite3
+                    try:
+                        conn = sqlite3.connect(human_gate.DB_PATH)
+                        conn.row_factory = sqlite3.Row
+                        row = conn.execute(
+                            'SELECT scope FROM human_gate_events WHERE request_id = ? AND next_state = "APPROVED" ORDER BY timestamp DESC LIMIT 1',
+                            (request_id,)
+                        ).fetchone()
+                        conn.close()
+
+                        if row is None:
+                            issues.append(f"Human Gate: authorized scope not found for request_id '{request_id}'")
+                        else:
+                            authorized_scope = row["scope"]
+                            if authorized_scope is None:
+                                issues.append(f"Human Gate: authorized scope is missing for request_id '{request_id}'")
+                            elif authorized_scope != scope:
+                                issues.append(f"Human Gate: scope mismatch - authorized '{authorized_scope}' but requested '{scope}'")
+                    except Exception as e:
+                        issues.append(f"Human Gate scope check failed: {str(e)}")
             except Exception as e:
                 issues.append(f"Human Gate state check failed: {str(e)}")
 
