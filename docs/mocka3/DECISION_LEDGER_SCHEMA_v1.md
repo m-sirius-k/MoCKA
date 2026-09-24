@@ -45,6 +45,8 @@ Decision Ledgerは各仕様に従属するのではなく、全仕様を横断�
 | decision | string | ✅ | 採用した判断の明文 |
 | rationale | string | ✅ | 採用理由（alternatives との比較を含む） |
 | impact | string | ✅ | 影響範囲（対象ドキュメント・実装・運用） |
+| decision_purpose | string | - | 決定の用途分類。"RUNTIME_AUTHORIZATION" で実行時権限判定に使用。通常のDecision記録では省略可 |
+| runtime_scope | string | - | 実行時権限スコープ（"RUNTIME_AUTHORIZATION"の場合のみ有効）。"SEAL" \| "MCP_WRITE" \| "AUTO_APPROVAL" |
 | related_events | array | - | 関連MoCKAイベントID（例: E20260615_048） |
 | related_documents | array | - | 関連仕様書（例: EVENT_FOUNDATION_v1.md） |
 | approved_by | string | ✅ | 承認者（きむら博士 / Claude / くろこ 等） |
@@ -128,6 +130,8 @@ Decision作成 → decision_ledger.jsonl に APPEND
 
 ## 10. 使用例
 
+### 10.1 通常のDecision（decision_purposeなし）
+
 ```json
 {
   "decision_id": "DC_20260615_001",
@@ -155,6 +159,40 @@ Decision作成 → decision_ledger.jsonl に APPEND
   "status": "Active"
 }
 ```
+
+### 10.2 Runtime AuthorizationRecord（decision_purpose="RUNTIME_AUTHORIZATION"）
+
+```json
+{
+  "decision_id": "DC_20260923_042",
+  "decision_purpose": "RUNTIME_AUTHORIZATION",
+  "runtime_scope": "SEAL",
+  "title": "SEAL operation authorization for October governance review",
+  "context": "Phase C governance gate implementation requires explicit human authorization for seal operations. This decision grants authority for controlled seal execution.",
+  "alternatives": [
+    {
+      "option": "Implicit authorization via system state",
+      "rejected_reason": "Bootstrap violation risk; execution results must not become future authorization"
+    },
+    {
+      "option": "Hardcoded bootstrap authorization",
+      "rejected_reason": "No audit trail; violates governance principle of human oversight"
+    }
+  ],
+  "decision": "Authorize SEAL operations via explicit Decision Ledger entry with decision_purpose=RUNTIME_AUTHORIZATION",
+  "rationale": "Explicit human authorization ensures: (1) Audit trail of who authorized what, (2) Bootstrap prohibition (execution ≠ authorization), (3) Revocability via status=Withdrawn/Superseded",
+  "impact": "Scripts anchor_update.py authorized to execute when decision_purpose=RUNTIME_AUTHORIZATION + runtime_scope=SEAL + status=Active",
+  "related_events": [],
+  "related_documents": ["governance/PHASE_C_GOVERNANCE_GATE_IMPLEMENTATION_REPORT_v1.0.md"],
+  "approved_by": "きむら博士",
+  "approved_at": "2026-09-23T15:30:00Z",
+  "supersedes": null,
+  "superseded_by": null,
+  "status": "Active"
+}
+```
+
+**Note:** Runtime AuthorizationRecord は `decision_purpose="RUNTIME_AUTHORIZATION"` を明示的に指定した場合だけ登録される。通常のDecision記録では this field は省略。Authority Check (`governance/decision_ledger_authority.py`) は `decision_purpose + runtime_scope + status` を組み合わせて権限判定を行う。
 
 ---
 

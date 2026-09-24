@@ -360,6 +360,8 @@ def save_todo(data, actor=None):
 
 # ===== TODO_361: Decision Ledger（DECISION_LEDGER_SCHEMA_v1.md準拠） =====
 DECISION_STATUS_ENUM = {"Active", "Superseded", "Withdrawn"}
+DECISION_PURPOSE_ENUM = {"RUNTIME_AUTHORIZATION"}  # Other purposes may be added in future
+RUNTIME_SCOPE_ENUM = {"SEAL", "MCP_WRITE", "AUTO_APPROVAL"}
 
 def _read_decisions():
     """decision_ledger.jsonlの全行を読む（append-only。同一decision_idの複数行は
@@ -469,7 +471,7 @@ TOOLS = [
     {"name":"mocka_registry_get","description":"MoCKA Registry(KN-004六層構造: Identity/Atlas/Reference/Classification/Lifecycle/Metadata)の現在の全データを返す。既存TODO管理とは完全に独立したドメイン。envを明示しない場合は必ずtest環境を参照する(deny-by-default)。","inputSchema":{"type":"object","properties":{"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。本番を見る場合は明示的にprodを指定すること。"}},"required":[]}},
     {"name":"mocka_registry_add","description":"MoCKA Registryに1件レコードを追加する。書き込み前にスキーマ検証(additionalProperties制約含む)を通過しない場合は拒否される。source_record(PHL参照)は各層で必須。envを明示しない場合は必ずtest環境に書き込む(deny-by-default、本番誤爆防止)。","inputSchema":{"type":"object","properties":{"layer":{"type":"string","enum":["identity","atlas","reference","classification","lifecycle","metadata"]},"record":{"type":"object","description":"追加するレコード本体。各層のスキーマに準拠すること"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データへ書き込み, test=検証用データへ書き込み(既定)。本番へ書く場合は明示的にprodを指定すること。"}},"required":["layer","record"]}},
     {"name":"mocka_registry_current_state","description":"指定target_idの現在状態をLifecycleの最新レコードから動的に導出して返す(currentフラグは持たない設計のため毎回計算)。envを明示しない場合は必ずtest環境を参照する。","inputSchema":{"type":"object","properties":{"target_id":{"type":"string"},"env":{"type":"string","enum":["prod","test"],"default":"test","description":"prod=本番データ, test=検証用データ(既定)。"}},"required":["target_id"]}},
-    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
+    {"name":"mocka_decision_write","description":"Decision Ledger(DECISION_LEDGER_SCHEMA_v1.md準拠)に1件記録する。decision_idは省略時DC_YYYYMMDD_NNN形式で自動採番。alternatives必須(却下案が無い場合はoption:N/Aの1件を入れる)。同一決定の状態更新(supersede等)は新規行として追記する(append-only)。decision_purpose=RUNTIME_AUTHORIZATION を指定すると、実行時権限判定に使用可能な権限レコードとして登録される(runtime_scope=SEAL|MCP_WRITE|AUTO_APPROVAL と組み合わせて使用)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"context":{"type":"string"},"alternatives":{"type":"array","items":{"type":"object","properties":{"option":{"type":"string"},"rejected_reason":{"type":"string"}},"required":["option","rejected_reason"]}},"decision":{"type":"string"},"rationale":{"type":"string"},"impact":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"approved_by":{"type":"string"},"status":{"type":"string","enum":["Active","Superseded","Withdrawn"],"default":"Active"},"supersedes":{"type":"string"},"decision_purpose":{"type":"string","enum":["RUNTIME_AUTHORIZATION"],"description":"RUNTIME_AUTHORIZATION のみ指定時、runtime_scope と組み合わせて実行時権限レコードとして登録。省略時は通常の Decision として扱う。"},"runtime_scope":{"type":"string","enum":["SEAL","MCP_WRITE","AUTO_APPROVAL"],"description":"decision_purpose=RUNTIME_AUTHORIZATION の場合のみ有効。実行時権限判定の対象範囲を指定。"}},"required":["title","context","alternatives","decision","rationale","impact","approved_by"]}},
     {"name":"mocka_decision_get","description":"decision_idを指定してDecision Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"decision_id":{"type":"string"}},"required":["decision_id"]}},
     {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
     {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
@@ -983,6 +985,16 @@ def execute_tool(name, args):
             status = args.get("status", "Active")
             if status not in DECISION_STATUS_ENUM:
                 return json.dumps({"error": f"invalid status: {status!r}. allowed: {sorted(DECISION_STATUS_ENUM)}"}, ensure_ascii=False)
+            decision_purpose = args.get("decision_purpose", "").strip() or None
+            if decision_purpose and decision_purpose not in DECISION_PURPOSE_ENUM:
+                return json.dumps({"error": f"invalid decision_purpose: {decision_purpose!r}. allowed: {sorted(DECISION_PURPOSE_ENUM)}"}, ensure_ascii=False)
+            runtime_scope = args.get("runtime_scope", "").strip() or None
+            if runtime_scope and runtime_scope not in RUNTIME_SCOPE_ENUM:
+                return json.dumps({"error": f"invalid runtime_scope: {runtime_scope!r}. allowed: {sorted(RUNTIME_SCOPE_ENUM)}"}, ensure_ascii=False)
+            if decision_purpose == "RUNTIME_AUTHORIZATION" and not runtime_scope:
+                return json.dumps({"error": "decision_purpose=RUNTIME_AUTHORIZATION の場合、runtime_scope は必須(SEAL|MCP_WRITE|AUTO_APPROVAL)"}, ensure_ascii=False)
+            if decision_purpose != "RUNTIME_AUTHORIZATION" and runtime_scope:
+                return json.dumps({"error": "runtime_scope は decision_purpose=RUNTIME_AUTHORIZATION の場合のみ使用可能"}, ensure_ascii=False)
             decision_id = args.get("decision_id", "").strip() or _next_decision_id()
             approved_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             record = {
@@ -1001,6 +1013,10 @@ def execute_tool(name, args):
                 "superseded_by":     None,
                 "status":            status,
             }
+            if decision_purpose:
+                record["decision_purpose"] = decision_purpose
+            if runtime_scope:
+                record["runtime_scope"] = runtime_scope
             _append_decision(record)
             # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
             # what_type=DECISION_MADEのenum拡張はapp.py側GATEのスコープ外のため今回は追加しない）
