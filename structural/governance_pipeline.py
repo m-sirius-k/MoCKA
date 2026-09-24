@@ -161,7 +161,7 @@ class GovernancePipeline:
                 "expected_new_dirs": scope,
                 "expected_max_changes": 400,
             })
-            aborts = approval.dry_run.aborts
+            aborts.extend(approval.dry_run.aborts)
 
         allowed = (not aborts) and checklist.ok
         if aborts:
