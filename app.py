@@ -1947,7 +1947,37 @@ def public_events():
         return jsonify({"status": "ERROR", "message": str(e)})
 @app.route("/public/write_event", methods=["POST"])
 def public_write_event():
+    # C3-REMEDIATION-001: Human Gate Authorization Required
     payload = request.get_json(force=True, silent=True) or {}
+
+    # MANDATORY: Authorization via Human Gate
+    auth_request_id = payload.get("authorization_request_id", "")
+    if not auth_request_id:
+        return jsonify({
+            "status": "error",
+            "message": "authorization_request_id required (must be APPROVED via Human Gate)",
+            "code": "C3_AUTHZ_MISSING"
+        }), 403
+
+    # C3 Fail-Closed: Check Human Gate approval status
+    try:
+        from phi_os.human_gate import get_state as hg_get_state
+        current_state = hg_get_state(auth_request_id)
+        if current_state != "APPROVED":
+            return jsonify({
+                "status": "error",
+                "message": f"authorization not approved (current state: {current_state})",
+                "code": "C3_AUTHZ_INVALID",
+                "request_id": auth_request_id
+            }), 403
+    except Exception as hg_err:
+        # Fail-Closed: authorization check failed
+        return jsonify({
+            "status": "error",
+            "message": f"authorization check failed: {str(hg_err)}",
+            "code": "C3_AUTHZ_CHECK_FAILED"
+        }), 403
+
     title = payload.get("title", "")
     description = payload.get("description", "")
     author = payload.get("author", "external_ai")
@@ -1962,10 +1992,15 @@ def public_write_event():
         "channel_type": "http_api", "lifecycle_phase": "in_operation",
         "risk_level": "normal", "before_state": "N/A", "after_state": "N/A",
         "change_type": "N/A", "impact_scope": "local", "impact_result": "N/A",
-        "related_event_id": "N/A", "trace_id": "N/A", "free_note": description,
+        "related_event_id": "N/A", "trace_id": "N/A",
+        "free_note": f"{description}|authz_request_id={auth_request_id}",
     }
     append_event(meta)
-    return jsonify({"status": "ok", "event_id": next_event_id()})
+    return jsonify({
+        "status": "ok",
+        "event_id": next_event_id(),
+        "authorization_request_id": auth_request_id
+    })
 
 @app.route("/public/pipeline", methods=["POST"])
 def public_pipeline():
