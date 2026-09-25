@@ -557,7 +557,10 @@ TOOLS = [
     {"name":"mocka_decision_list","description":"Decision Ledgerの全件を返す(decision_id毎に最新行のみ、新しい順)。statusでフィルタ可。","inputSchema":{"type":"object","properties":{"status":{"type":"string","enum":["Active","Superseded","Withdrawn"]}},"required":[]}},
     {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
     {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
-    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
+    {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}},
+    {"name":"mocka_deliberation_write","description":"Deliberation Ledger(検討過程記録)に1件記録する。deliberation_idは省略時DLB_YYYYMMDD_NNN形式で自動採番。5W1Hを構造的に記録し、Decision Ledgerへの入力材料とする。","inputSchema":{"type":"object","properties":{"deliberation_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"stage":{"type":"string","enum":["EVIDENCE","FINDING","ALTERNATIVE","CONSIDERATION","HUMAN_DECISION"],"description":"検討の段階。EVIDENCE->FINDING->ALTERNATIVE->CONSIDERATION->HUMAN_DECISION の順序で進行"},"context":{"type":"string","description":"5W1Hの背景(WHERE/WHEN/CONTEXT)"},"evidence":{"type":"array","items":{"type":"string"},"description":"収集した事実・記録・ログ"},"findings":{"type":"array","items":{"type":"string"},"description":"evidence から導出された知見"},"alternatives":{"type":"array","items":{"type":"string"},"description":"検討対象の選択肢"},"considerations":{"type":"object","properties":{"who":{"type":"string"},"what":{"type":"string"},"when":{"type":"string"},"where":{"type":"string"},"why":{"type":"string"},"how":{"type":"string"}}},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_decisions":{"type":"array","items":{"type":"string"},"default":[]},"deliberated_by":{"type":"string","description":"検討実施者"},"status":{"type":"string","enum":["OPEN","CLOSED","SUPERSEDED","WITHDRAWN"],"default":"OPEN"}},"required":["title","stage","context","deliberated_by"]}},
+    {"name":"mocka_deliberation_get","description":"deliberation_idを指定してDeliberation Ledgerから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"deliberation_id":{"type":"string"}},"required":["deliberation_id"]}},
+    {"name":"mocka_deliberation_list","description":"Deliberation Ledgerの全件を返す(deliberation_id毎に最新行のみ、新しい順)。stageやstatusでフィルタ可。","inputSchema":{"type":"object","properties":{"stage":{"type":"string","enum":["EVIDENCE","FINDING","ALTERNATIVE","CONSIDERATION","HUMAN_DECISION"]},"status":{"type":"string","enum":["OPEN","CLOSED","SUPERSEDED","WITHDRAWN"]}},"required":[]}}
 ]
 
 def execute_tool(name, args):
@@ -1200,6 +1203,67 @@ def execute_tool(name, args):
             result.sort(key=lambda r: r.get("classification_id", ""), reverse=True)
             auto_log(name, args, f"{len(result)} classifications (broken_lines={broken})")
             return json.dumps({"count": len(result), "broken_lines": broken, "classifications": result}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_deliberation_write":
+            title       = args.get("title", "").strip()
+            stage       = args.get("stage", "")
+            context     = args.get("context", "").strip()
+            deliberated_by = args.get("deliberated_by", "").strip()
+            if not all([title, stage, context, deliberated_by]):
+                return json.dumps({"error": "title/stage/context/deliberated_by は全て必須"}, ensure_ascii=False)
+            if stage not in DELIBERATION_STATUS_ENUM and stage not in {"EVIDENCE", "FINDING", "ALTERNATIVE", "CONSIDERATION", "HUMAN_DECISION"}:
+                valid_stages = {"EVIDENCE", "FINDING", "ALTERNATIVE", "CONSIDERATION", "HUMAN_DECISION"}
+                return json.dumps({"error": f"invalid stage: {stage!r}. allowed: {sorted(valid_stages)}"}, ensure_ascii=False)
+            status = args.get("status", "OPEN")
+            if status not in {"OPEN", "CLOSED", "SUPERSEDED", "WITHDRAWN"}:
+                return json.dumps({"error": f"invalid status: {status!r}"}, ensure_ascii=False)
+            deliberation_id = args.get("deliberation_id", "").strip() or _next_deliberation_id()
+            deliberated_at = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+            record = {
+                "deliberation_id": deliberation_id,
+                "title":           title,
+                "stage":           stage,
+                "context":         context,
+                "evidence":        args.get("evidence", []),
+                "findings":        args.get("findings", []),
+                "alternatives":    args.get("alternatives", []),
+                "considerations":  args.get("considerations", {}),
+                "related_events":  args.get("related_events", []),
+                "related_decisions": args.get("related_decisions", []),
+                "deliberated_at":  deliberated_at,
+                "deliberated_by":  deliberated_by,
+                "status":          status,
+                "supersedes":      args.get("supersedes") or None,
+                "superseded_by":   None,
+            }
+            _append_deliberation(record)
+            auto_log(name, args, f"deliberation written {deliberation_id}")
+            return json.dumps({"status": "ok", "deliberation_id": deliberation_id}, ensure_ascii=False)
+
+        elif name == "mocka_deliberation_get":
+            deliberation_id = args.get("deliberation_id", "")
+            records, _ = _read_deliberations()
+            matches = [r for r in records if r.get("deliberation_id") == deliberation_id]
+            auto_log(name, args, "found" if matches else "not found")
+            return json.dumps(matches[-1] if matches else {"error": "not found"}, ensure_ascii=False, indent=2)
+
+        elif name == "mocka_deliberation_list":
+            stage_filter = args.get("stage", "")
+            status_filter = args.get("status", "")
+            records, broken = _read_deliberations()
+            latest = {}
+            for r in records:
+                dlb_id = r.get("deliberation_id")
+                if dlb_id:
+                    latest[dlb_id] = r
+            result = list(latest.values())
+            if stage_filter:
+                result = [r for r in result if r.get("stage") == stage_filter]
+            if status_filter:
+                result = [r for r in result if r.get("status") == status_filter]
+            result.sort(key=lambda r: r.get("deliberation_id", ""), reverse=True)
+            auto_log(name, args, f"{len(result)} deliberations (broken_lines={broken})")
+            return json.dumps({"count": len(result), "broken_lines": broken, "deliberations": result}, ensure_ascii=False, indent=2)
 
         return json.dumps({"error": f"unknown tool: {name}"})
 
