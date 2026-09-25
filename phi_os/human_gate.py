@@ -181,6 +181,36 @@ def validate_scope(authorized_scope: str | None, execution_scope: str | None) ->
     return authorized_scope == execution_scope
 
 
+def validate_target(authorized_target: str | None, runtime_target: str | None) -> bool:
+    """
+    Authorization target と runtime target の一致を検証。完全一致のみ許可。
+    authorized_target == runtime_target → True (VALID)
+    mismatch/missing/malformed → False (DENY)
+
+    No prefix matching, no partial matching, no normalization.
+    """
+    if authorized_target is None or runtime_target is None:
+        return False
+    if not isinstance(authorized_target, str) or not isinstance(runtime_target, str):
+        return False
+    return authorized_target == runtime_target
+
+
+def validate_action(authorized_action: str | None, runtime_action: str | None) -> bool:
+    """
+    Authorization action と runtime action の一致を検証。完全一致のみ許可。
+    authorized_action == runtime_action → True (VALID)
+    mismatch/missing/malformed → False (DENY)
+
+    No normalization, no partial matching.
+    """
+    if authorized_action is None or runtime_action is None:
+        return False
+    if not isinstance(authorized_action, str) or not isinstance(runtime_action, str):
+        return False
+    return authorized_action == runtime_action
+
+
 def _record_transition(conn, action: str, request_id: str, payload: dict, previous_state: str | None) -> dict:
     next_state = ACTION_NEXT_STATE[action]
     event = {

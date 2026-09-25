@@ -2512,6 +2512,50 @@ def decision_approve():
             "code": "C3_SCOPE_CHECK_FAILED"
         }), 403
 
+    # C3-008: Check authorization target binding (BEFORE effect execution)
+    try:
+        from phi_os.human_gate import validate_target as hg_validate_target
+        runtime_target = pid  # The proposal ID being approved
+        authorized_target = authz_payload.get("target")
+        if not hg_validate_target(authorized_target, runtime_target):
+            return jsonify({
+                "status": "error",
+                "message": "authorization target mismatch",
+                "code": "C3_AUTHZ_TARGET_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_target": authorized_target,
+                "runtime_target": runtime_target
+            }), 403
+    except Exception as target_err:
+        # Fail-Closed: target check failed
+        return jsonify({
+            "status": "error",
+            "message": f"target validation failed: {str(target_err)}",
+            "code": "C3_TARGET_CHECK_FAILED"
+        }), 403
+
+    # C3-008: Check authorization action binding (BEFORE effect execution)
+    try:
+        from phi_os.human_gate import validate_action as hg_validate_action
+        runtime_action = "approve"  # The action being executed
+        authorized_action = authz_payload.get("action")
+        if not hg_validate_action(authorized_action, runtime_action):
+            return jsonify({
+                "status": "error",
+                "message": "authorization action mismatch",
+                "code": "C3_AUTHZ_ACTION_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_action": authorized_action,
+                "runtime_action": runtime_action
+            }), 403
+    except Exception as action_err:
+        # Fail-Closed: action check failed
+        return jsonify({
+            "status": "error",
+            "message": f"action validation failed: {str(action_err)}",
+            "code": "C3_ACTION_CHECK_FAILED"
+        }), 403
+
     # Authorization passed, proceed with decision approval
     data = _load_pqueue()
     approved = None
@@ -2622,6 +2666,50 @@ def decision_reject():
             "status": "error",
             "message": f"scope validation failed: {str(scope_err)}",
             "code": "C3_SCOPE_CHECK_FAILED"
+        }), 403
+
+    # C3-008: Check authorization target binding (BEFORE effect execution)
+    try:
+        from phi_os.human_gate import validate_target as hg_validate_target
+        runtime_target = pid  # The proposal ID being rejected
+        authorized_target = authz_payload.get("target")
+        if not hg_validate_target(authorized_target, runtime_target):
+            return jsonify({
+                "status": "error",
+                "message": "authorization target mismatch",
+                "code": "C3_AUTHZ_TARGET_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_target": authorized_target,
+                "runtime_target": runtime_target
+            }), 403
+    except Exception as target_err:
+        # Fail-Closed: target check failed
+        return jsonify({
+            "status": "error",
+            "message": f"target validation failed: {str(target_err)}",
+            "code": "C3_TARGET_CHECK_FAILED"
+        }), 403
+
+    # C3-008: Check authorization action binding (BEFORE effect execution)
+    try:
+        from phi_os.human_gate import validate_action as hg_validate_action
+        runtime_action = "reject"  # The action being executed
+        authorized_action = authz_payload.get("action")
+        if not hg_validate_action(authorized_action, runtime_action):
+            return jsonify({
+                "status": "error",
+                "message": "authorization action mismatch",
+                "code": "C3_AUTHZ_ACTION_MISMATCH",
+                "request_id": auth_request_id,
+                "authorized_action": authorized_action,
+                "runtime_action": runtime_action
+            }), 403
+    except Exception as action_err:
+        # Fail-Closed: action check failed
+        return jsonify({
+            "status": "error",
+            "message": f"action validation failed: {str(action_err)}",
+            "code": "C3_ACTION_CHECK_FAILED"
         }), 403
 
     # Authorization passed, proceed with decision rejection
@@ -4240,6 +4328,51 @@ def publish_all():
                 "code": "C3_SCOPE_CHECK_FAILED"
             }), 403
 
+        # C3-008: Check authorization target binding (BEFORE effect execution)
+        try:
+            from phi_os.human_gate import validate_target as hg_validate_target
+            content_payload = data.get("content", {})
+            runtime_target = content_payload.get("id") if isinstance(content_payload, dict) else None
+            authorized_target = authz_payload.get("target")
+            if not hg_validate_target(authorized_target, runtime_target):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization target mismatch",
+                    "code": "C3_AUTHZ_TARGET_MISMATCH",
+                    "request_id": auth_request_id,
+                    "authorized_target": authorized_target,
+                    "runtime_target": runtime_target
+                }), 403
+        except Exception as target_err:
+            # Fail-Closed: target check failed
+            return jsonify({
+                "status": "error",
+                "message": f"target validation failed: {str(target_err)}",
+                "code": "C3_TARGET_CHECK_FAILED"
+            }), 403
+
+        # C3-008: Check authorization action binding (BEFORE effect execution)
+        try:
+            from phi_os.human_gate import validate_action as hg_validate_action
+            runtime_action = "publish"  # The action being executed
+            authorized_action = authz_payload.get("action")
+            if not hg_validate_action(authorized_action, runtime_action):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization action mismatch",
+                    "code": "C3_AUTHZ_ACTION_MISMATCH",
+                    "request_id": auth_request_id,
+                    "authorized_action": authorized_action,
+                    "runtime_action": runtime_action
+                }), 403
+        except Exception as action_err:
+            # Fail-Closed: action check failed
+            return jsonify({
+                "status": "error",
+                "message": f"action validation failed: {str(action_err)}",
+                "code": "C3_ACTION_CHECK_FAILED"
+            }), 403
+
         # Authorization passed, proceed with publishing
         content = data.get("content", "PR-OS EVENT SAMPLE")
         router_mod = _load_distribution_router()
@@ -4351,6 +4484,51 @@ def distribution_publish():
                 "status": "error",
                 "message": f"scope validation failed: {str(scope_err)}",
                 "code": "C3_SCOPE_CHECK_FAILED"
+            }), 403
+
+        # C3-008: Check authorization target binding (BEFORE effect execution)
+        try:
+            from phi_os.human_gate import validate_target as hg_validate_target
+            content_payload = data.get("content", {})
+            runtime_target = content_payload.get("id") if isinstance(content_payload, dict) else None
+            authorized_target = authz_payload.get("target")
+            if not hg_validate_target(authorized_target, runtime_target):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization target mismatch",
+                    "code": "C3_AUTHZ_TARGET_MISMATCH",
+                    "request_id": auth_request_id,
+                    "authorized_target": authorized_target,
+                    "runtime_target": runtime_target
+                }), 403
+        except Exception as target_err:
+            # Fail-Closed: target check failed
+            return jsonify({
+                "status": "error",
+                "message": f"target validation failed: {str(target_err)}",
+                "code": "C3_TARGET_CHECK_FAILED"
+            }), 403
+
+        # C3-008: Check authorization action binding (BEFORE effect execution)
+        try:
+            from phi_os.human_gate import validate_action as hg_validate_action
+            runtime_action = "publish"  # The action being executed
+            authorized_action = authz_payload.get("action")
+            if not hg_validate_action(authorized_action, runtime_action):
+                return jsonify({
+                    "status": "error",
+                    "message": "authorization action mismatch",
+                    "code": "C3_AUTHZ_ACTION_MISMATCH",
+                    "request_id": auth_request_id,
+                    "authorized_action": authorized_action,
+                    "runtime_action": runtime_action
+                }), 403
+        except Exception as action_err:
+            # Fail-Closed: action check failed
+            return jsonify({
+                "status": "error",
+                "message": f"action validation failed: {str(action_err)}",
+                "code": "C3_ACTION_CHECK_FAILED"
             }), 403
 
         # Authorization passed, proceed with distribution
