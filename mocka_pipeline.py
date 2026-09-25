@@ -4,16 +4,40 @@ MoCKA Knowledge Pipeline v2.0
 CSV -> 抽出 -> 濃縮 -> essence
 API通信: なし (0円)
 """
-import argparse, json, sys, subprocess
+import argparse, json, sys, subprocess, os
 from pathlib import Path
 from datetime import datetime
 
-MOCKA_ROOT   = Path(r"C:\Users\sirok\MoCKA")
+def _get_repository_root():
+    """Auto-detect repository root by looking for .git directory."""
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    return Path(__file__).resolve().parent
+
+_MOCKA_ROOT_ENV = os.environ.get("MOCKA_ROOT")
+MOCKA_ROOT = Path(_MOCKA_ROOT_ENV) if _MOCKA_ROOT_ENV else _get_repository_root()
+
 INTERFACE    = MOCKA_ROOT / "interface"
 RAW_DIR      = MOCKA_ROOT / "data" / "storage" / "infield" / "RAW"
 RAW_DONE_DIR = MOCKA_ROOT / "data" / "storage" / "infield" / "RAW_DONE"
 EVENTS_CSV   = MOCKA_ROOT / "data" / "events.csv"
-ESSENCE_PATH = Path(r"C:\Users\sirok\planningcaliber\workshop\needle_eye_project\experiments\lever_essence.json")
+
+# ESSENCE_PATH: Try PlanningCaliber external location first, fallback to repo-relative
+_ESSENCE_ENV = os.environ.get("ESSENCE_PATH")
+if _ESSENCE_ENV:
+    ESSENCE_PATH = Path(_ESSENCE_ENV)
+else:
+    # Try external planningcaliber location
+    _external_essence = Path(os.path.expanduser("~")) / "planningcaliber" / "workshop" / "needle_eye_project" / "experiments" / "lever_essence.json"
+    if _external_essence.exists():
+        ESSENCE_PATH = _external_essence
+    else:
+        # Fallback: repository-relative
+        ESSENCE_PATH = MOCKA_ROOT / "interface" / "lever_essence.json"
+
 PING_GEN     = MOCKA_ROOT / "interface" / "ping_generator.py"
 
 sys.path.insert(0, str(INTERFACE))

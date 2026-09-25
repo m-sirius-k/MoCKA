@@ -1,7 +1,20 @@
 import sqlite3
 from pathlib import Path
+import os
 
-db = Path(r'C:\Users\sirok\MoCKA\data\events.db')
+def _get_repository_root():
+    """Auto-detect repository root by looking for .git directory."""
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    return Path(__file__).resolve().parent
+
+_MOCKA_ROOT_ENV = os.environ.get("MOCKA_ROOT")
+BASE = Path(_MOCKA_ROOT_ENV) if _MOCKA_ROOT_ENV else _get_repository_root()
+
+db = BASE / 'data' / 'events.db'
 conn = sqlite3.connect(db)
 # 文字化け行のサンプル取得
 rows = conn.execute("""

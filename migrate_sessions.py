@@ -4,9 +4,22 @@ claude_sessions.csv → mocka_events.db(claude_sessionsテーブル) 移行ス�
 """
 import sqlite3, csv
 from pathlib import Path
+import os
 
-DB_PATH  = Path(r"C:\Users\sirok\MoCKA\data\mocka_events.db")
-CSV_PATH = Path(r"C:\Users\sirok\MoCKA\data\claude_sessions.csv")
+def _get_repository_root():
+    """Auto-detect repository root by looking for .git directory."""
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    return Path(__file__).resolve().parent
+
+_MOCKA_ROOT_ENV = os.environ.get("MOCKA_ROOT")
+BASE = Path(_MOCKA_ROOT_ENV) if _MOCKA_ROOT_ENV else _get_repository_root()
+
+DB_PATH  = BASE / "data" / "mocka_events.db"
+CSV_PATH = BASE / "data" / "claude_sessions.csv"
 
 con = sqlite3.connect(str(DB_PATH))
 con.execute("""CREATE TABLE IF NOT EXISTS claude_sessions (
