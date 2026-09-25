@@ -2556,6 +2556,19 @@ def decision_approve():
             "code": "C3_ACTION_CHECK_FAILED"
         }), 403
 
+    # C3-009: PRE-CONSUME - Mark authorization as consumed BEFORE effect execution
+    try:
+        from phi_os.human_gate import consume as hg_consume
+        hg_consume(auth_request_id)
+    except Exception as consume_err:
+        # Fail-Closed: consume must succeed before proceeding with effect
+        return jsonify({
+            "status": "error",
+            "message": "authorization consume failed",
+            "code": "C3_CONSUME_FAILED",
+            "request_id": auth_request_id
+        }), 403
+
     # Authorization passed, proceed with decision approval
     data = _load_pqueue()
     approved = None
@@ -2576,13 +2589,6 @@ def decision_approve():
         "who_actor": "kimura_hakase",
         "free_note": f"{pid}|auth_id={auth_request_id}",
     })
-
-    # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
-    try:
-        from phi_os.human_gate import consume as hg_consume
-        hg_consume(auth_request_id)
-    except Exception as consume_err:
-        print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
 
     def _upd():
         try:
@@ -2712,6 +2718,19 @@ def decision_reject():
             "code": "C3_ACTION_CHECK_FAILED"
         }), 403
 
+    # C3-009: PRE-CONSUME - Mark authorization as consumed BEFORE effect execution
+    try:
+        from phi_os.human_gate import consume as hg_consume
+        hg_consume(auth_request_id)
+    except Exception as consume_err:
+        # Fail-Closed: consume must succeed before proceeding with effect
+        return jsonify({
+            "status": "error",
+            "message": "authorization consume failed",
+            "code": "C3_CONSUME_FAILED",
+            "request_id": auth_request_id
+        }), 403
+
     # Authorization passed, proceed with decision rejection
     data = _load_pqueue()
     for item in data["queue"]:
@@ -2728,13 +2747,6 @@ def decision_reject():
         "who_actor": "kimura_hakase",
         "free_note": f"{pid}|auth_id={auth_request_id}",
     })
-
-    # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
-    try:
-        from phi_os.human_gate import consume as hg_consume
-        hg_consume(auth_request_id)
-    except Exception as consume_err:
-        print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
 
     return jsonify({"status": "ok", "rejected": pid, "authorization_used": auth_request_id})
 
@@ -4373,6 +4385,19 @@ def publish_all():
                 "code": "C3_ACTION_CHECK_FAILED"
             }), 403
 
+        # C3-009: PRE-CONSUME - Mark authorization as consumed BEFORE effect execution
+        try:
+            from phi_os.human_gate import consume as hg_consume
+            hg_consume(auth_request_id)
+        except Exception as consume_err:
+            # Fail-Closed: consume must succeed before proceeding with effect
+            return jsonify({
+                "status": "error",
+                "message": "authorization consume failed",
+                "code": "C3_CONSUME_FAILED",
+                "request_id": auth_request_id
+            }), 403
+
         # Authorization passed, proceed with publishing
         content = data.get("content", "PR-OS EVENT SAMPLE")
         router_mod = _load_distribution_router()
@@ -4388,13 +4413,6 @@ def publish_all():
             "lifecycle_phase": "in_operation",
             "free_note": f"distribution_os_v1|publish_all|auth_id={auth_request_id}",
         })
-
-        # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
-        try:
-            from phi_os.human_gate import consume as hg_consume
-            hg_consume(auth_request_id)
-        except Exception as consume_err:
-            print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
 
         return jsonify({**result, "authorization_used": auth_request_id})
     except Exception as e:
@@ -4531,6 +4549,19 @@ def distribution_publish():
                 "code": "C3_ACTION_CHECK_FAILED"
             }), 403
 
+        # C3-009: PRE-CONSUME - Mark authorization as consumed BEFORE effect execution
+        try:
+            from phi_os.human_gate import consume as hg_consume
+            hg_consume(auth_request_id)
+        except Exception as consume_err:
+            # Fail-Closed: consume must succeed before proceeding with effect
+            return jsonify({
+                "status": "error",
+                "message": "authorization consume failed",
+                "code": "C3_CONSUME_FAILED",
+                "request_id": auth_request_id
+            }), 403
+
         # Authorization passed, proceed with distribution
         title = data.get("title", "MoCKA Distribution")
         content = data.get("content", "")
@@ -4575,13 +4606,6 @@ def distribution_publish():
             "lifecycle_phase": "in_operation",
             "free_note": f"distribution_os_v2|{transformer}|{language}|auth_id={auth_request_id}",
         })
-
-        # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
-        try:
-            from phi_os.human_gate import consume as hg_consume
-            hg_consume(auth_request_id)
-        except Exception as consume_err:
-            print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
 
         return jsonify({"status": "distributed", "results": results, "destinations": destinations, "authorization_used": auth_request_id})
     except Exception as e:
