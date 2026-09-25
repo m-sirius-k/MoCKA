@@ -18,12 +18,23 @@ if sys.stderr.encoding != 'utf-8':
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\structural")))
-from event_recency import valid_when_ts_clause  # noqa: E402
+_STRUCTURAL_PATH = BASE / "structural"
+if _STRUCTURAL_PATH.exists():
+    sys.path.insert(0, str(_STRUCTURAL_PATH))
+    try:
+        from event_recency import valid_when_ts_clause  # noqa: E402
+    except Exception as _evt_err:
+        print(f"[WARN] event_recency unavailable: {_evt_err}", flush=True)
+        def valid_when_ts_clause(x): return True  # fallback
 
 # TODO_428/DC_20260709_001: 一次データ駆動のCurrent View Generator(additive、mocka_get_overviewの
 # 既存戻り値は変更せずcurrent_viewキーとして追加するのみ)。
-sys.path.insert(0, str(Path(r"C:\Users\sirok\MoCKA\scripts\state")))
+_SCRIPTS_STATE_PATH = BASE / "scripts" / "state"
+if _SCRIPTS_STATE_PATH.exists():
+    sys.path.insert(0, str(_SCRIPTS_STATE_PATH))
+else:
+    _SCRIPTS_STATE_PATH = None
+
 try:
     import overview_current_generator as _overview_current_gen
 except Exception as _ocg_err:
@@ -42,8 +53,9 @@ except Exception as _gov_err:
     }
 
 # KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
-REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
-sys.path.insert(0, str(REGISTRY_MODULE_PATH))
+REGISTRY_MODULE_PATH = BASE / "PlanningCaliber" / "workshop" / "registry_kn004"
+if REGISTRY_MODULE_PATH.exists():
+    sys.path.insert(0, str(REGISTRY_MODULE_PATH))
 try:
     import registry_store
 except Exception as _registry_err:
@@ -64,9 +76,31 @@ MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not MOCKA_ENDPOINT:
     print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
 
-BASE           = Path(r"C:\Users\sirok\MoCKA")
-OVERVIEW_PATH  = Path(r"C:\Users\sirok\MOCKA_OVERVIEW.json")
-TODO_PATH      = Path(r"C:\Users\sirok\MoCKA\data\MOCKA_TODO_ACTIVE.json")
+# === Repository-relative path resolution (repository root aware, Windows/Linux compatible) ===
+def _get_repository_root():
+    """Auto-detect repository root by looking for .git directory."""
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    # Fallback: current directory or __file__ parent
+    return Path(__file__).resolve().parent
+
+# Use environment variable if set, otherwise auto-detect
+_MOCKA_ROOT_ENV = os.environ.get("MOCKA_ROOT")
+BASE = Path(_MOCKA_ROOT_ENV) if _MOCKA_ROOT_ENV else _get_repository_root()
+
+# Fallback for MOCKA_OVERVIEW.json (may reside outside repo root on user machine)
+_OVERVIEW_CANDIDATES = [
+    Path(os.path.expanduser("~/MOCKA_OVERVIEW.json")),  # Home directory
+    BASE / "MOCKA_OVERVIEW.json",  # Repo root
+    BASE / "data" / "MOCKA_OVERVIEW.json",  # data directory
+]
+OVERVIEW_PATH = next((p for p in _OVERVIEW_CANDIDATES if p.exists()), _OVERVIEW_CANDIDATES[0])
+
+# Core paths
+TODO_PATH      = BASE / "data" / "MOCKA_TODO_ACTIVE.json"
 KNOWLEDGE_GATE = BASE / "data"
 EVENTS_CSV     = BASE / "data" / "events.csv"  # 廃止済み（互換保持のみ）
 FALLBACK_EVENTS = [BASE / "data" / "events.csv", BASE / "events.csv"]
@@ -76,6 +110,10 @@ DB_PATH        = BASE / "data" / "mocka_events.db"
 # TODO_361: Decision Ledger Reconnection — DECISION_LEDGER_SCHEMA_v1.md(docs/mocka3/)準拠
 DECISIONS_DIR       = BASE / "data" / "decisions"
 DECISION_LEDGER_PATH = DECISIONS_DIR / "decision_ledger.jsonl"
+
+# TODO: Deliberation Recording — deliberation process capture
+DELIBERATION_DIR       = BASE / "data" / "deliberation"
+DELIBERATION_LEDGER_PATH = DELIBERATION_DIR / "deliberation_ledger.jsonl"
 
 # Sprint3: Integrity Classification — 3層ログ構造(Decision=判断/Integrity=異常/
 # Reconnection=修復)のうち「何が壊れていたか」を記録する層。Decision Ledgerと
@@ -398,6 +436,51 @@ def _append_decision(record):
     DECISIONS_DIR.mkdir(parents=True, exist_ok=True)
     with open(DECISION_LEDGER_PATH, "a", encoding="utf-8") as f:
         f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        f.flush()
+        os.fsync(f.fileno())  # Ensure durability
+
+# ===== Deliberation Recording (検討過程の永続化) =====
+# DELIBERATION_LEDGER_SCHEMA_v1: Evidence → Finding → Alternative → Consideration → UNKNOWN → Human Decision → Decision Record
+DELIBERATION_STATUS_ENUM = {"OPEN", "CLOSED", "SUPERSEDED", "WITHDRAWN"}
+
+def _read_deliberations():
+    """deliberation_ledger.jsonlの全行を読む（append-only）。"""
+    if not DELIBERATION_LEDGER_PATH.exists():
+        return [], 0
+    records = []
+    broken = 0
+    with open(DELIBERATION_LEDGER_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                records.append(json.loads(line))
+            except Exception:
+                broken += 1
+    return records, broken
+
+def _next_deliberation_id():
+    """DLB_YYYYMMDD_NNN形式で当日分の次番号を採番する。"""
+    today = datetime.date.today().strftime("%Y%m%d")
+    records, _ = _read_deliberations()
+    prefix = f"DLB_{today}_"
+    used = [
+        int(r["deliberation_id"][len(prefix):])
+        for r in records
+        if isinstance(r.get("deliberation_id"), str) and r["deliberation_id"].startswith(prefix)
+        and r["deliberation_id"][len(prefix):].isdigit()
+    ]
+    n = (max(used) + 1) if used else 1
+    return f"{prefix}{n:03d}"
+
+def _append_deliberation(record):
+    """deliberation_ledger.jsonlへ1行追記する（append-only）。"""
+    DELIBERATION_DIR.mkdir(parents=True, exist_ok=True)
+    with open(DELIBERATION_LEDGER_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        f.flush()
+        os.fsync(f.fileno())  # Ensure durability
 
 # ===== Sprint3: Integrity Classification（State x Type分類体系） =====
 STATE_ENUM = {"Failure", "Risk", "Unknown"}
@@ -719,7 +802,7 @@ def execute_tool(name, args):
                 # ことで、HTTP経路と完全に同じValidation/Signature/HashChainを
                 # 経由させる（事後のmigrate_event_integrity.py補完を不要にする）。
                 import sys as _sys
-                _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+                _repo_root = str(BASE)
                 if _repo_root not in _sys.path:
                     _sys.path.insert(0, _repo_root)
                 from phi_os.event_gate import process_event as _gate_process_event
