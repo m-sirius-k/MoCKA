@@ -2017,6 +2017,19 @@ def public_write_event():
             "code": "C3_SCOPE_CHECK_FAILED"
         }), 403
 
+    # C3-010: PRE-CONSUME - Mark authorization as consumed BEFORE effect execution
+    try:
+        from phi_os.human_gate import consume as hg_consume
+        hg_consume(auth_request_id)
+    except Exception as consume_err:
+        # Fail-Closed: consume failure blocks effect execution
+        return jsonify({
+            "status": "error",
+            "message": "authorization consume failed",
+            "code": "C3_CONSUME_FAILED",
+            "request_id": auth_request_id
+        }), 403
+
     title = payload.get("title", "")
     description = payload.get("description", "")
     author = payload.get("author", "external_ai")
@@ -2035,14 +2048,6 @@ def public_write_event():
         "free_note": f"{description}|authz_request_id={auth_request_id}",
     }
     append_event(meta)
-
-    # C3-REMEDIATION-005: Mark authorization as consumed (replay prevention)
-    try:
-        from phi_os.human_gate import consume as hg_consume
-        hg_consume(auth_request_id)
-    except Exception as consume_err:
-        # Log but don't fail the request - execution already succeeded
-        print(f"[C3-REMEDIATION-005] Warning: consume failed for {auth_request_id}: {consume_err}")
 
     return jsonify({
         "status": "ok",
