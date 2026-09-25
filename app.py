@@ -2638,6 +2638,43 @@ def decision_approve():
         except Exception as e:
             print("[ACTION] " + str(e))
     _chain_t.Thread(target=_upd, daemon=True).start()
+
+    # R02 Institutional Memory: Emit canonical record for third-party reconstruction
+    try:
+        from phi_os.c3_record import create_c3_record, record_c3_execution
+
+        # Extract optional evidence linkage fields from request
+        trace_id = payload.get("trace_id", f"TRACE_DECISION_APPROVE_{auth_request_id[:8]}")
+        decision_id = payload.get("decision_id", None)
+
+        # Get authorization target/action from Human Gate payload (actual binding values)
+        auth_target = authz_payload.get("target")
+        auth_action = authz_payload.get("action")
+
+        # Get who_actor from payload or use existing default
+        who_actor = payload.get("who_actor", "kimura_hakase")
+
+        c3_record = create_c3_record(
+            endpoint_route="/decision/approve",
+            auth_request_id=auth_request_id,
+            trace_id=trace_id,
+            state_before="APPROVED",
+            authorization_scope=authz_payload.get("runtime_scope", "UNKNOWN"),
+            target=auth_target,
+            action=auth_action,
+            consume_result="SUCCESS",
+            consume_exception_code=None,
+            effect_result="SUCCESS",
+            outcome=200,
+            who_actor=who_actor,
+            decision_id=decision_id,
+            parent_record_id=None
+        )
+        record_c3_execution(c3_record, append_event)
+    except Exception as r02_err:
+        # Fail-open: R02 record emission failure does not block response
+        print(f"[R02-RECORD] Warning: institutional record emission failed: {r02_err}")
+
     return jsonify({"status": "ok", "approved": pid, "authorization_used": auth_request_id})
 
 @app.route("/decision/reject", methods=["POST"])
