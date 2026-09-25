@@ -129,6 +129,7 @@ class C3CanonicalRecord:
             "canonicality": self.canonicality,
             "endpoint_route": self.endpoint_route,
             "auth_request_id": self.auth_request_id,
+            "trace_id": self.trace_id,
             "decision_id": self.decision_id,
             "state_before": self.state_before,
             "authorization_scope": self.authorization_scope,
