@@ -73,6 +73,33 @@ def execute_action(step, execution_context=None, action_id=None):
     with open(RESULT_PATH, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
+    # NEURAL LOOP RECONNECTION: ACTION → EVENT
+    # Record ACTION result as EVENT in mocka_events.db via phi_os.event_gate
+    try:
+        from phi_os.event_gate import process_event as gate_process_event
+        event_payload = {
+            "who_actor": "runtime_executor",
+            "who_role": "executor",
+            "what_type": "audit",
+            "what_title": f"ACTION: {step}",
+            "where_path": "runtime/action_executor.py",
+            "where_component": "runtime",
+            "why_purpose": f"Execute action: {step}",
+            "how_trigger": "execute_action()",
+            "after_state": f"status={status}; action_id={action_id}; reason={reason}",
+            "title": f"ACTION: {step}",
+            "short_summary": f"Action execution result: {status}",
+            "free_note": f"action,{status},action_id={action_id}",
+            "request_id": action_id,
+            "channel_type": "gate",
+        }
+        event_result = gate_process_event(event_payload, event_source="direct_allowed:recovery")
+        if event_result["status"] == "ok":
+            result["event_id"] = event_result["event_id"]
+            result["event_recorded"] = True
+    except Exception as e:
+        result["event_record_error"] = str(e)
+
     print(f"ACTION {status.upper()}:", step)
     if action_id:
         print(f"  action_id: {action_id}")
