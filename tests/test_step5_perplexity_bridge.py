@@ -70,9 +70,9 @@ def test_perplexity_bridge_contract():
     print("\n[STEP 4] Verify HAB.approve() works for Perplexity decision")
     approval_result = approve(request_id, {
         "decision_id": decision_id,
-        "actor": "sonar-pro_Perplexity",
+        "actor": "test_human",
         "scope": ["perplexity", "web_search"],
-        "authority_role": "AI_AUTHORITY",
+        "authority_role": "HUMAN_AUTHORITY",
     })
 
     auth_id = approval_result.get('authorization_id')

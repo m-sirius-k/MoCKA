@@ -196,7 +196,7 @@ def approve(request_id: str, payload: dict | None = None, conn=None) -> dict:
         # Step 2: HG-AS-01 Authorization State Issuance (new, optional)
         if HG_AS_01_AVAILABLE and event.get("next_state") == "APPROVED":
             payload_for_validation = payload or {}
-            is_valid, validation_error = validate_payload_for_approve(payload_for_validation)
+            is_valid, validation_error = validate_payload_for_approve(payload_for_validation, request_id=request_id, conn=conn)
 
             if is_valid:
                 # Validation passed: issue authorization_state

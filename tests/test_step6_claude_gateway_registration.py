@@ -104,9 +104,9 @@ try:
     # Approve
     approval = approve(request_id, {
         "decision_id": decision_id,
-        "actor": "claude-opus-5_Claude",
+        "actor": "test_human",
         "scope": ["claude", "gateway_registration"],
-        "authority_role": "AI_AUTHORITY",
+        "authority_role": "HUMAN_AUTHORITY",
     })
 
     auth_id = approval.get("authorization_id")

@@ -59,7 +59,7 @@ HG_AS_01_APPROVE_PAYLOAD_SCHEMA = {
 }
 
 
-def validate_payload_for_approve(payload: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+def validate_payload_for_approve(payload: Dict[str, Any], request_id: str = None, conn=None) -> Tuple[bool, Optional[str]]:
     """
     Validate payload for approve() action per HG-AS-01 schema.
 
@@ -70,6 +70,9 @@ def validate_payload_for_approve(payload: Dict[str, Any]) -> Tuple[bool, Optiona
 
     Notes:
         - actor, scope, authority_role are MANDATORY
+        - authority_role must be exactly HUMAN_AUTHORITY
+        - scope must match the scope in the original submit() call (if available)
+        - target must match the target in the original submit() call (if available)
         - Other fields are optional
         - Empty strings are treated as missing
         - Payload validation failure DOES NOT block state transition
@@ -104,6 +107,12 @@ def validate_payload_for_approve(payload: Dict[str, Any]) -> Tuple[bool, Optiona
     if not isinstance(payload.get("authority_role"), str):
         return False, "field 'authority_role' must be string"
 
+    # CRITICAL: authority_role must be HUMAN_AUTHORITY (internal Python boundary)
+    # Blocks: AI_AUTHORITY, MCP_EXECUTOR, AI_AUTHORITY_OVERRIDE, etc.
+    authority_role = payload.get("authority_role")
+    if authority_role != "HUMAN_AUTHORITY":
+        return False, f"authorization_state requires HUMAN_AUTHORITY; got {authority_role}"
+
     # Validate optional fields
     if "decision_id" in payload and payload["decision_id"] is not None:
         if not isinstance(payload["decision_id"], str):
@@ -127,6 +136,47 @@ def validate_payload_for_approve(payload: Dict[str, Any]) -> Tuple[bool, Optiona
     if "note" in payload and payload["note"] is not None:
         if not isinstance(payload["note"], str):
             return False, "field 'note' must be string or null"
+
+    # If request_id and conn provided, validate scope/target consistency
+    if request_id and conn:
+        try:
+            # Get submit event for this request_id
+            submit_row = conn.execute(
+                '''SELECT payload FROM human_gate_events
+                   WHERE request_id = ? AND action = 'submit'
+                   LIMIT 1''',
+                (request_id,)
+            ).fetchone()
+
+            if submit_row:
+                try:
+                    submit_payload = json.loads(submit_row[0]) if submit_row[0] else {}
+                except (json.JSONDecodeError, TypeError):
+                    submit_payload = {}
+
+                # Scope consistency check
+                if "scope" in submit_payload and "scope" in payload:
+                    submit_scope = submit_payload.get("scope", [])
+                    approve_scope = payload.get("scope", [])
+                    # Normalize to sorted lists for comparison
+                    submit_scope_sorted = sorted(submit_scope) if isinstance(submit_scope, list) else []
+                    approve_scope_sorted = sorted(approve_scope) if isinstance(approve_scope, list) else []
+
+                    if submit_scope_sorted != approve_scope_sorted:
+                        return False, f"scope mismatch: submit={submit_scope}, approve={approve_scope}"
+
+                # Target consistency check (if present)
+                if "target" in submit_payload or "target" in payload:
+                    submit_target = submit_payload.get("target")
+                    approve_target = payload.get("target")
+
+                    if submit_target != approve_target:
+                        return False, f"target mismatch: submit={submit_target}, approve={approve_target}"
+
+        except Exception as e:
+            # If scope/target check fails, it's a validation error (don't block entirely)
+            # But this should be rare; return error
+            return False, f"scope/target validation error: {str(e)[:100]}"
 
     return True, None
 
