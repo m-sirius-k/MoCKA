@@ -72,6 +72,25 @@ class HumanGate:
         # Authorization valid - return authorization_id for T2 runtime
         return True, "authorized", auth_record.get('authorization_id')
 
+    def get_authorized_scope(self, decision_id: str) -> Optional[list]:
+        """
+        Get authorized scope from authorization_state for decision_id.
+        Used by runtime to validate scope mismatch.
+        Returns JSON-decoded scope list or None if not found.
+        """
+        auth_record = self._get_authorization_by_decision_id(decision_id)
+        if not auth_record or auth_record.get('status') != 'APPROVED':
+            return None
+
+        try:
+            scope_json = auth_record.get('scope')
+            if scope_json:
+                return json.loads(scope_json) if isinstance(scope_json, str) else scope_json
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+        return None
+
     def approve(self, decision_id):
         self.status = "APPROVED"
         return self.ledger.record(

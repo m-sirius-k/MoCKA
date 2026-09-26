@@ -66,15 +66,22 @@ class JarvisEngine:
         """
         Call /runtime/approve endpoint to trigger T2 execution.
 
+        Includes authorized_scope from authorization_state for runtime validation.
+        Runtime will check: actual execution scope must match authorized scope exactly.
+
         Returns JARVIS decision record with execution result.
         """
         try:
+            # Get authorized scope for validation
+            authorized_scope = self.gate.get_authorized_scope(decision_id)
+
             payload = {
                 "authorization_id": authorization_id,
                 "decision_record_id": decision_id,
                 "human_identity": "JARVIS_AUTOMATED",
                 "confirmed": True,
-                "spec_id": f"JARVIS_{decision_id}"
+                "spec_id": f"JARVIS_{decision_id}",
+                "authorized_scope": authorized_scope,  # For runtime scope validation
             }
 
             resp = requests.post(

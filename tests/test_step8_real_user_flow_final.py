@@ -171,7 +171,7 @@ print(f"""
 A. Entry Point: GPT adapter → HABBridge → HAB.submit()
 B. Flow Results:
    • HAB PENDING: {state == 'PENDING'}
-   • Authorization APPROVED: {auth_id is not None}
+   • Authorization APPROVED: {authorization_id is not None}
    • JARVIS Authorized: {jarvis_result.get('status') == 'AUTHORIZED'}
    • T2 Executed: {exec_log['status'] == 'ok'}
 
