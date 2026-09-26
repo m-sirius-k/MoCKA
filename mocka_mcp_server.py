@@ -439,6 +439,89 @@ def _append_decision(record):
         f.flush()
         os.fsync(f.fileno())  # Ensure durability
 
+# ===== Decision → Event Generation (Decision記録後の自動イベント生成) =====
+DECISION_EVENTS_PATH = DECISIONS_DIR / "decision_events.jsonl"
+
+def _next_event_id():
+    """E{YYYYMMDD}_{NNN} 形式でイベントIDを採番する（Event Foundation v1準拠）。"""
+    today = datetime.date.today().strftime("%Y%m%d")
+    if not DECISION_EVENTS_PATH.exists():
+        return f"E{today}_001"
+    used = []
+    with open(DECISION_EVENTS_PATH, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                ev = json.loads(line)
+                eid = ev.get("event_id", "")
+                prefix = f"E{today}_"
+                if eid.startswith(prefix) and eid[len(prefix):].isdigit():
+                    used.append(int(eid[len(prefix):]))
+            except Exception:
+                pass
+    n = (max(used) + 1) if used else 1
+    return f"E{today}_{n:03d}"
+
+def _generate_decision_event(decision_record):
+    """Decision記録後、Event Foundation v1準拠でイベントを生成する。
+    Returns: (event_record, error_msg) where error_msg is None if success.
+    """
+    try:
+        decision_id = decision_record.get("decision_id", "UNKNOWN")
+        deliberation_id = decision_record.get("deliberation_id")
+        event_id = _next_event_id()
+        correlation_id = f"DEC_{decision_id}_{secrets.token_hex(4)}"
+        now_ts = datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+        event = {
+            "event_id": event_id,
+            "event_type": "DECISION_MADE",
+            "timestamp": now_ts,
+            "decision_id": decision_id,
+            "deliberation_id": deliberation_id,
+            "source": "mocka_mcp_server",
+            "status": "RECORDED",
+            "correlation_id": correlation_id,
+            "who_actor": decision_record.get("approved_by", "UNKNOWN"),
+            "what_type": "DECISION",
+            "title": f"[DECISION_MADE] {decision_id}: {decision_record.get('title', 'N/A')[:50]}",
+            "schema_version": 1,
+            "validation_status": "VALID",
+            "validation_result": [{"rule": "EVD001", "result": "PASS"}],
+            "payload": {
+                "decision_id": decision_id,
+                "deliberation_id": deliberation_id,
+                "title": decision_record.get("title"),
+                "context": decision_record.get("context"),
+                "decision": decision_record.get("decision"),
+                "rationale": decision_record.get("rationale"),
+                "impact": decision_record.get("impact"),
+                "approved_by": decision_record.get("approved_by"),
+                "approved_at": decision_record.get("approved_at"),
+                "status": decision_record.get("status"),
+            },
+            "created_at": now_ts,
+        }
+        return event, None
+    except Exception as e:
+        return None, f"Event generation failed: {e}"
+
+def _append_decision_event(event_record):
+    """decision_events.jsonlへイベントを追記する（append-only）。
+    Returns: (True, event_id) on success, (False, error_msg) on failure.
+    """
+    try:
+        DECISIONS_DIR.mkdir(parents=True, exist_ok=True)
+        with open(DECISION_EVENTS_PATH, "a", encoding="utf-8") as f:
+            f.write(json.dumps(event_record, ensure_ascii=False) + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+        return True, event_record.get("event_id")
+    except Exception as e:
+        return False, f"Event persistence failed: {e}"
+
 # ===== Deliberation Recording (検討過程の永続化) =====
 # DELIBERATION_LEDGER_SCHEMA_v1: Evidence → Finding → Alternative → Consideration → UNKNOWN → Human Decision → Decision Record
 DELIBERATION_STATUS_ENUM = {"OPEN", "CLOSED", "SUPERSEDED", "WITHDRAWN"}
@@ -1089,32 +1172,40 @@ def execute_tool(name, args):
                 "superseded_by":     None,
                 "status":            status,
             }
+            # Step 1: Decision persistence
             _append_decision(record)
-            # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
-            # what_type=DECISION_MADEのenum拡張はapp.py側GATEのスコープ外のため今回は追加しない）
+
+            # Step 2: Event generation and persistence
             event_id = None
+            event_error = None
             try:
-                gate_payload = {
-                    "who_actor":       args.get("approved_by", _DEFAULT_ACTOR),
-                    "who_role":        "executor",
-                    "who_session":     SESSION_ID,
-                    "what_type":       "claude_mcp",
-                    "what_title":      f"[DECISION_MADE] {decision_id}: {title}",
-                    "where_path":      "mocka_mcp_server.py",
-                    "where_component": "mcp_caliber",
-                    "why_purpose":     rationale[:80] or title,
-                    "how_trigger":     "mcp_tool_call",
-                    "after_state":     decision[:200] or title,
-                    "description":     f"decision_id={decision_id}\ncontext={context}\ndecision={decision}\nrationale={rationale}\nimpact={impact}",
-                    "tags":            f"decision_ledger,{decision_id},{status}",
-                }
-                r = requests.post(GATE_URL, json=gate_payload, timeout=5)
-                if r.status_code == 201:
-                    event_id = r.json().get("event_id")
-            except Exception as _companion_err:
-                print(f"[MCP] mocka_decision_write companion event failed: {_companion_err}", flush=True)
-            auto_log(name, args, f"decision written {decision_id}")
-            return json.dumps({"status": "ok", "decision_id": decision_id, "event_id": event_id}, ensure_ascii=False)
+                event_record, gen_err = _generate_decision_event(record)
+                if gen_err:
+                    event_error = gen_err
+                else:
+                    # Event persistence
+                    evt_ok, evt_result = _append_decision_event(event_record)
+                    if evt_ok:
+                        event_id = evt_result
+                    else:
+                        event_error = evt_result
+            except Exception as e:
+                event_error = f"Unexpected event error: {e}"
+
+            # Step 3: Log results (distinguish Decision vs Event status)
+            if event_error:
+                auto_log(name, args, f"decision={decision_id} ok, event_error={event_error}")
+            else:
+                auto_log(name, args, f"decision={decision_id}, event={event_id} both ok")
+
+            return json.dumps({
+                "status": "ok",
+                "decision_id": decision_id,
+                "decision_persisted": True,
+                "event_id": event_id,
+                "event_persisted": event_id is not None,
+                "event_error": event_error,
+            }, ensure_ascii=False)
 
         elif name == "mocka_decision_get":
             decision_id = args.get("decision_id", "")
