@@ -203,7 +203,8 @@ def search_knowledge_gate(query):
                         snippet = "\n".join(text.splitlines()[max(0,i-1):i+3])
                         results.append({"file": str(md.relative_to(BASE)), "snippet": snippet.strip()})
                         break
-        except: pass
+        except Exception as e:
+            print(f"[mocka_mcp] warning: failed to search {md}: {e}")
     return results
 
 def sha256_file(path):

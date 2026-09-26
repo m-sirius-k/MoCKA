@@ -11,8 +11,9 @@ def save_consensus_result(prompt, decision):
         try:
             with open(LEDGER_PATH, "r", encoding="utf-8") as f:
                 history = json.load(f)
-        except: pass
-    
+        except Exception as e:
+            print(f"[memory_engine] warning: failed to load consensus history: {e}")
+
     # グラフ描画に必要なキー "winner_provider" を確実に含める
     entry = {
         "timestamp": time.time(),
@@ -32,7 +33,8 @@ def find_similar(prompt):
             history = json.load(f)
             for entry in reversed(history):
                 if entry["prompt"] == prompt: return entry
-    except: pass
+    except Exception as e:
+        print(f"[memory_engine] warning: failed to find similar: {e}")
     return None
 
 # 他の関数はそのまま維持（省略可だが安全のため統合）

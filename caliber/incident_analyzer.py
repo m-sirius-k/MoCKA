@@ -109,7 +109,8 @@ def analyze_incident(row):
     try:
         m = re.search(r"\{.*\}", result, re.DOTALL)
         if m: return json.loads(m.group())
-    except: pass
+    except Exception as e:
+        print(f"[incident_analyzer] warning: JSON parse failed for {event_id}: {e}")
     print(f"[WARN] JSON parse failed for {event_id}")
     return None
 

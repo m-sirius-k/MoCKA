@@ -70,7 +70,8 @@ def load_rc():
             for row in csv.DictReader(f):
                 k=row.get("what_type") or row.get("event_type") or ""
                 if k: rc[k]=rc.get(k,0)+1
-    except: pass
+    except Exception as e:
+        print(f"[evaluator_dynamic] warning: failed to load recurrence CSV: {e}")
     return rc
 
 HDR=["timestamp","event_id","who_actor","what_type","X","Y","Z","category","deviation_type","confidence","coordinate_state"]
