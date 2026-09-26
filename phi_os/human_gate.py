@@ -338,8 +338,33 @@ def list_pending_promotions(conn=None) -> list:
 
 # ── HTTP API(App層からのUIトリガ用) ──────────────────────────────────
 
+def _require_human_authority():
+    """Check Authorization header. Require Bearer token or X-Human-Authority header."""
+    auth_header = request.headers.get('Authorization', '')
+    human_authority = request.headers.get('X-Human-Authority', '')
+
+    # Accept Bearer token or X-Human-Authority header
+    has_auth = False
+    if auth_header.startswith('Bearer '):
+        has_auth = True
+    elif human_authority:
+        has_auth = True
+
+    if not has_auth:
+        return jsonify({
+            "status": "forbidden",
+            "reason": "Human authority required. Provide Authorization: Bearer <token> or X-Human-Authority header"
+        }), 403
+
+    return None
+
 @human_gate_bp.route('/api/human_gate/submit', methods=['POST'])
 def http_submit():
+    # Require authentication
+    auth_error = _require_human_authority()
+    if auth_error:
+        return auth_error
+
     payload = request.get_json(force=True) or {}
     try:
         event = submit(payload)
@@ -350,6 +375,11 @@ def http_submit():
 
 @human_gate_bp.route('/api/human_gate/approve', methods=['POST'])
 def http_approve():
+    # Require authentication
+    auth_error = _require_human_authority()
+    if auth_error:
+        return auth_error
+
     payload = request.get_json(force=True) or {}
     request_id = payload.get("request_id", "")
     try:
@@ -361,6 +391,11 @@ def http_approve():
 
 @human_gate_bp.route('/api/human_gate/reject', methods=['POST'])
 def http_reject():
+    # Require authentication
+    auth_error = _require_human_authority()
+    if auth_error:
+        return auth_error
+
     payload = request.get_json(force=True) or {}
     request_id = payload.get("request_id", "")
     try:
