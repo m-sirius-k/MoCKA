@@ -243,6 +243,7 @@ class Phase8LedgerQuery:
         dispatch = self._load_dispatch_records()
         for record in dispatch:
             if record.get('task_id') == task_id:
+                # Check for old-style seals in task_data
                 task_data = record.get('task_data', {})
                 seal_8_4 = task_data.get('seal_hash_8_4')
                 seal_8_5 = task_data.get('memory_seal')  # From 8-5
@@ -250,15 +251,26 @@ class Phase8LedgerQuery:
                     seals['phase_8_4'] = seal_8_4
                 if seal_8_5:
                     seals['phase_8_5'] = seal_8_5
+                # Check for new-style seal records (type="seal", phase="8-6")
+                if record.get('type') == 'seal' and record.get('phase') == '8-6':
+                    seal_8_6 = record.get('memory_seal')
+                    if seal_8_6:
+                        seals['phase_8_6'] = seal_8_6
 
         # Check execution records
         execution = self._load_execution_records()
         for record in execution:
             if record.get('task_id') == task_id:
+                # Check for old-style seal in task_data
                 task_data = record.get('task_data', {})
                 seal = task_data.get('memory_seal')
                 if seal:
                     seals['phase_8_7'] = seal
+                # Check for new-style seal record (type="seal", phase="8-7")
+                if record.get('type') == 'seal' and record.get('phase') == '8-7':
+                    seal_8_7 = record.get('memory_seal')
+                    if seal_8_7:
+                        seals['phase_8_7'] = seal_8_7
 
         return seals
 

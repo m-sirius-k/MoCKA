@@ -110,6 +110,20 @@ def hab_dispatch():
             # Memory seal
             seal = _call_mcp("mocka_seal", {})
             seal_hash = seal.get("sha256")
+            # Persist seal (Phase 8-6)
+            if seal_hash:
+                seal_record = {
+                    "type": "seal",
+                    "phase": "8-6",
+                    "hab_request_id": hab_request_id,
+                    "task_id": task_id,
+                    "correlation_id": correlation_id,
+                    "memory_seal": seal_hash,
+                    "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
+                }
+                log_path = Path(_REPO_ROOT) / 'data' / 'hab_dispatch.jsonl'
+                with open(log_path, 'a', encoding='utf-8') as f:
+                    f.write(json.dumps(seal_record, ensure_ascii=False) + '\n')
 
         result.update({"decision_id": decision_id, "event_id": event_id, "memory_seal": seal_hash})
         return jsonify(result), 200
@@ -196,6 +210,21 @@ def hab_execute():
             # Memory seal
             seal = _call_mcp("mocka_seal", {})
             seal_hash = seal.get("sha256")
+            # Persist seal (Phase 8-7)
+            if seal_hash:
+                seal_record = {
+                    "type": "seal",
+                    "phase": "8-7",
+                    "execution_id": exec_id,
+                    "task_id": task_id,
+                    "correlation_id": correlation_id,
+                    "hab_request_id": hab_request_id,
+                    "memory_seal": seal_hash,
+                    "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat()
+                }
+                log_path = Path(_REPO_ROOT) / 'data' / 'hab_execution.jsonl'
+                with open(log_path, 'a', encoding='utf-8') as f:
+                    f.write(json.dumps(seal_record, ensure_ascii=False) + '\n')
 
         result.update({"decision_id": decision_id, "event_id": event_id, "memory_seal": seal_hash})
         return jsonify(result), 200
