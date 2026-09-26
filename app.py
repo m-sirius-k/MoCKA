@@ -71,6 +71,8 @@ from phi_os.integrity_routes import integrity_bp
 from phi_os.api.time_api import time_api_bp
 # [Phase 8-5/6 2026-09-26] JARVIS → HAB → Execution endpoints
 from phi_os.hab.routes import hab_bp
+# [Phase 8 Command Center Integration 2026-09-26] Decision Ledger and Event Log query interface
+from interface.phase8_command_center import phase8_bp
 app.register_blueprint(ai_session_bp)
 app.register_blueprint(handshake_bp)
 app.register_blueprint(dashboard_bp)
@@ -83,6 +85,7 @@ app.register_blueprint(gate_bp)
 app.register_blueprint(integrity_bp)
 app.register_blueprint(time_api_bp)
 app.register_blueprint(hab_bp)
+app.register_blueprint(phase8_bp)
 
 # ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)
