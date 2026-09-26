@@ -31,6 +31,7 @@ def jarvis_task_intake():
         decision_id = event_id = seal_hash = None
         if result.get("status") == "ok" and result.get("task_id"):
             task_id = result["task_id"]
+            correlation_id = result.get("correlation_id")
             # Decision
             dec = _call_mcp("mocka_decision_write", {
                 "title": f"Task intake {task_id}",
@@ -39,6 +40,7 @@ def jarvis_task_intake():
                 "rationale": f"Task {task_id} accepted by JARVIS intake",
                 "impact": f"Task {task_id} proceeding to HAB dispatch",
                 "approved_by": "Phase-8-JARVIS",
+                "correlation_id": correlation_id,
                 "alternatives": [{"option": "N/A", "rejected_reason": "Task acceptance mandatory"}],
                 "related_events": []
             })
@@ -99,6 +101,7 @@ def hab_dispatch():
                 "rationale": f"Task {task_id} ready for execution at {hab_request_id}",
                 "impact": f"Task {task_id} proceeding to HAB execution phase",
                 "approved_by": "Phase-8-HAB-Dispatcher",
+                "correlation_id": correlation_id,
                 "alternatives": [{"option": "N/A", "rejected_reason": "Dispatch required for execution"}],
                 "related_events": []
             })
@@ -176,6 +179,7 @@ def hab_execute():
                 "rationale": f"Provider returned {result.get('provider_status')}",
                 "impact": f"Task {task_id} decision boundary reached",
                 "approved_by": "Phase-8-Executor",
+                "correlation_id": correlation_id,
                 "alternatives": [{"option": "N/A", "rejected_reason": "Execution successful"}],
                 "related_events": []
             })

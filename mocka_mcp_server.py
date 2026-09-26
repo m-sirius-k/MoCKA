@@ -1142,6 +1142,7 @@ def execute_tool(name, args):
             impact   = args.get("impact", "").strip()
             approved_by = args.get("approved_by", "").strip()
             deliberation_id = args.get("deliberation_id", "").strip() or None
+            correlation_id = args.get("correlation_id", "").strip() or None
             alternatives = args.get("alternatives", [])
             if not all([title, context, decision, rationale, impact, approved_by]):
                 return json.dumps({"error": "title/context/decision/rationale/impact/approved_by は全て必須(DECISION_LEDGER_SCHEMA_v1.md準拠)"}, ensure_ascii=False)
@@ -1158,6 +1159,7 @@ def execute_tool(name, args):
             record = {
                 "decision_id":       decision_id,
                 "deliberation_id":   deliberation_id,
+                "correlation_id":    correlation_id,
                 "title":             title,
                 "context":           context,
                 "alternatives":      alternatives,

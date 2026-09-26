@@ -69,6 +69,7 @@ class JarvisEngine:
                 "rationale": f"Task {task_id} passed validation in JARVIS engine",
                 "impact": f"Task {task_id} proceeding to intake routing",
                 "approved_by": "Phase-8-JARVIS-Engine",
+                "correlation_id": correlation_id,
                 "alternatives": [{"option": "N/A", "rejected_reason": "Intake validation required"}],
                 "related_events": []
             })
