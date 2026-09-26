@@ -7,7 +7,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Dict
 
 from core.bridge.phi_personal_bridge import ConflictInput
-from runtime.logging import RuntimeLogger
+from runtime.runtime_logger import RuntimeLogger
 
 if TYPE_CHECKING:
     pass

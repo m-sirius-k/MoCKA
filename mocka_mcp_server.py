@@ -17,6 +17,21 @@ if sys.stdout.encoding != 'utf-8':
 if sys.stderr.encoding != 'utf-8':
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
+# === Repository-relative path resolution (repository root aware, Windows/Linux compatible) ===
+def _get_repository_root():
+    """Auto-detect repository root by looking for .git directory."""
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    # Fallback: current directory or __file__ parent
+    return Path(__file__).resolve().parent
+
+# Use environment variable if set, otherwise auto-detect
+_MOCKA_ROOT_ENV = os.environ.get("MOCKA_ROOT")
+BASE = Path(_MOCKA_ROOT_ENV) if _MOCKA_ROOT_ENV else _get_repository_root()
+
 # GL1~GL7 Governance Pipeline (MoCKA 3.0)
 _STRUCTURAL_PATH = BASE / "structural"
 if _STRUCTURAL_PATH.exists():
@@ -75,21 +90,6 @@ CONTRACT_STATUS_ENUM = {
 MOCKA_ENDPOINT = os.environ.get("MOCKA_ENDPOINT", "")
 if not MOCKA_ENDPOINT:
     print("[ERROR] 環境変数 MOCKA_ENDPOINT が未設定です。.env.example を参照して設定してください。", flush=True)
-
-# === Repository-relative path resolution (repository root aware, Windows/Linux compatible) ===
-def _get_repository_root():
-    """Auto-detect repository root by looking for .git directory."""
-    current = Path(__file__).resolve().parent
-    while current != current.parent:
-        if (current / ".git").exists():
-            return current
-        current = current.parent
-    # Fallback: current directory or __file__ parent
-    return Path(__file__).resolve().parent
-
-# Use environment variable if set, otherwise auto-detect
-_MOCKA_ROOT_ENV = os.environ.get("MOCKA_ROOT")
-BASE = Path(_MOCKA_ROOT_ENV) if _MOCKA_ROOT_ENV else _get_repository_root()
 
 # Fallback for MOCKA_OVERVIEW.json (may reside outside repo root on user machine)
 _OVERVIEW_CANDIDATES = [

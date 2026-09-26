@@ -23,7 +23,15 @@ from pathlib import Path
 
 # ─── 設定 ────────────────────────────────────────────────────────────────────
 
-ROOT     = Path("C:/Users/sirok/MoCKA")
+def _get_repo_root():
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    return Path(__file__).resolve().parent
+
+ROOT     = Path(__import__("os").environ.get("MOCKA_ROOT")) if __import__("os").environ.get("MOCKA_ROOT") else _get_repo_root()
 DB       = ROOT / "data" / "mocka_events.db"
 AUDIT_DB = ROOT / "data" / "cross_audit.db"
 
