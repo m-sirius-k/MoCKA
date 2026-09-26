@@ -12,7 +12,7 @@ from execution_context import ExecutionContext
 RESULT_PATH = "action_result.json"
 ROOT = r"C:\Users\sirok\MoCKA"
 
-def execute_action(step, execution_context=None, action_id=None, target=None, runtime_scope=None):
+def execute_action(step, execution_context=None, action_id=None, target=None, runtime_scope=None, trace_id=None, decision_id=None):
     """
     Execute action step with Human Gate approval + scope/target binding.
 
@@ -21,6 +21,8 @@ def execute_action(step, execution_context=None, action_id=None, target=None, ru
         action_id: for tracing
         target: action target (matched against approval.target)
         runtime_scope: runtime scope (matched against approval.scope)
+        trace_id: trace ID for this runtime task (semantic tracing)
+        decision_id: decision ID that triggered this action
     """
     output = None
     status = "blocked"
@@ -134,6 +136,13 @@ def execute_action(step, execution_context=None, action_id=None, target=None, ru
         now = datetime.now(dtz.utc).isoformat()
         session_id = f"SESSION_{datetime.now(dtz.utc).strftime('%Y%m%d_%H%M%S')}"
 
+        # Build free_note with trace_id and decision_id
+        free_note_parts = [f"action,{status},reason={reason}"]
+        if trace_id:
+            free_note_parts.append(f"trace_id={trace_id}")
+        if decision_id:
+            free_note_parts.append(f"decision_id={decision_id}")
+
         event_payload = {
             "who_actor": "runtime_executor",
             "who_session": session_id,
@@ -147,7 +156,7 @@ def execute_action(step, execution_context=None, action_id=None, target=None, ru
             "when_ts": now,
             "title": f"ACTION: {step}",
             "short_summary": f"Action: {status}",
-            "free_note": f"action,{status},reason={reason}",
+            "free_note": "|".join(free_note_parts),
             "request_id": action_id,
         }
 
