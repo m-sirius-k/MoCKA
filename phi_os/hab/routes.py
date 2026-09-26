@@ -26,6 +26,29 @@ def jarvis_task_intake():
         task_data = data.get('task_data', {})
 
         result = jarvis.intake_task(task_data)
+
+        # Phase 8-5: Connect to Decision → Event → Memory
+        decision_id = event_id = seal_hash = None
+        if result.get("status") == "ok" and result.get("task_id"):
+            task_id = result["task_id"]
+            # Decision
+            dec = _call_mcp("mocka_decision_write", {
+                "title": f"Task intake {task_id}",
+                "context": f"Task received: {task_data.get('description', 'no description')}",
+                "decision": "Accept task for processing",
+                "rationale": f"Task {task_id} accepted by JARVIS intake",
+                "impact": f"Task {task_id} proceeding to HAB dispatch",
+                "approved_by": "Phase-8-JARVIS",
+                "alternatives": [{"option": "N/A", "rejected_reason": "Task acceptance mandatory"}],
+                "related_events": []
+            })
+            decision_id = dec.get("decision_id")
+            event_id = dec.get("event_id")
+            # Memory seal
+            seal = _call_mcp("mocka_seal", {})
+            seal_hash = seal.get("sha256")
+
+        result.update({"decision_id": decision_id, "event_id": event_id, "memory_seal": seal_hash})
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"status": "error", "reason": str(e)}), 500
@@ -54,7 +77,7 @@ def jarvis_task_status(task_id):
 def hab_dispatch():
     """
     Receive dispatch request from JARVIS, generate hab_request_id, log, respond.
-    Phase 8-5 HAB dispatch endpoint (socket boundary confirmation).
+    Phase 8-6 HAB dispatch endpoint (socket boundary confirmation).
     """
     try:
         data = request.get_json(force=True)
@@ -63,6 +86,29 @@ def hab_dispatch():
         task_data = data.get('task_data', {})
 
         result = dispatcher.dispatch(task_id, correlation_id, task_data)
+
+        # Phase 8-6: Connect to Decision → Event → Memory
+        decision_id = event_id = seal_hash = None
+        if result.get("status") == "ok" and result.get("hab_request_id"):
+            hab_request_id = result["hab_request_id"]
+            # Decision
+            dec = _call_mcp("mocka_decision_write", {
+                "title": f"Task dispatch {hab_request_id}",
+                "context": f"Task {task_id} dispatched to HAB",
+                "decision": "Route task to HAB executor",
+                "rationale": f"Task {task_id} ready for execution at {hab_request_id}",
+                "impact": f"Task {task_id} proceeding to HAB execution phase",
+                "approved_by": "Phase-8-HAB-Dispatcher",
+                "alternatives": [{"option": "N/A", "rejected_reason": "Dispatch required for execution"}],
+                "related_events": []
+            })
+            decision_id = dec.get("decision_id")
+            event_id = dec.get("event_id")
+            # Memory seal
+            seal = _call_mcp("mocka_seal", {})
+            seal_hash = seal.get("sha256")
+
+        result.update({"decision_id": decision_id, "event_id": event_id, "memory_seal": seal_hash})
         return jsonify(result), 200
     except Exception as e:
         return jsonify({"status": "error", "reason": str(e)}), 500
