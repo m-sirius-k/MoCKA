@@ -4172,6 +4172,97 @@ def start_background_loops():
     _threading.Thread(target=_guidelines_loop, daemon=True).start()
 
 
+# ════════════════════════════════════════════════════════════════════════════════
+# Phase 8-5: JARVIS ↔ HAB Runtime Integration (Minimal)
+# ════════════════════════════════════════════════════════════════════════════════
+
+@app.route('/api/jarvis/task/intake', methods=['POST'])
+def jarvis_task_intake():
+    """
+    JARVIS Task Intake Endpoint.
+    Receives task from Human, generates correlation_id/task_id, dispatches to HAB.
+    """
+    try:
+        from runtime.jarvis.core.engine import JarvisEngine
+        task_payload = request.get_json(force=True) or {}
+
+        jarvis = JarvisEngine(hab_endpoint="http://localhost:5000/api/hab/dispatch")
+        result = jarvis.intake_task(task_payload)
+
+        status_code = 200 if result.get("status") == "ok" else 400
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"status": "error", "reason": str(e)}), 500
+
+
+@app.route('/api/hab/dispatch', methods=['POST'])
+def hab_dispatch():
+    """
+    HAB Dispatch Endpoint.
+    Receives task from JARVIS, generates HAB request_id, responds with confirmation.
+    No execution - boundary socket only.
+    """
+    try:
+        from phi_os.hab.dispatch_handler import HABDispatcher
+        payload = request.get_json(force=True) or {}
+
+        task_id = payload.get("task_id", "")
+        correlation_id = payload.get("correlation_id", "")
+        task_data = payload.get("task_data", {})
+
+        hab = HABDispatcher(log_path="data/hab_dispatch.jsonl")
+        result = hab.dispatch(task_id, correlation_id, task_data)
+
+        status_code = 200 if result.get("status") == "ok" else 400
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"status": "error", "reason": str(e)}), 500
+
+
+@app.route('/api/jarvis/task/status/<task_id>', methods=['GET'])
+def jarvis_task_status(task_id):
+    """Check status of JARVIS intake task."""
+    try:
+        from pathlib import Path
+        task_log = Path("data/jarvis_task_intake.jsonl")
+
+        if not task_log.exists():
+            return jsonify({"status": "not_found", "task_id": task_id}), 404
+
+        with open(task_log, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    record = json.loads(line)
+                    if record.get("task_id") == task_id:
+                        return jsonify({"status": "ok", "record": record}), 200
+
+        return jsonify({"status": "not_found", "task_id": task_id}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "reason": str(e)}), 500
+
+
+@app.route('/api/hab/dispatch/status/<hab_request_id>', methods=['GET'])
+def hab_dispatch_status(hab_request_id):
+    """Check status of HAB dispatch."""
+    try:
+        from pathlib import Path
+        dispatch_log = Path("data/hab_dispatch.jsonl")
+
+        if not dispatch_log.exists():
+            return jsonify({"status": "not_found", "hab_request_id": hab_request_id}), 404
+
+        with open(dispatch_log, "r", encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    record = json.loads(line)
+                    if record.get("hab_request_id") == hab_request_id:
+                        return jsonify({"status": "ok", "record": record}), 200
+
+        return jsonify({"status": "not_found", "hab_request_id": hab_request_id}), 404
+    except Exception as e:
+        return jsonify({"status": "error", "reason": str(e)}), 500
+
+
 if __name__ == "__main__":
     print("--- MoCKA STARTING ---")
     print(f"[STORAGE] SQLite単一化済み: CSV書き込み完全廃止")
