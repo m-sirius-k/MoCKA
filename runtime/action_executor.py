@@ -41,7 +41,7 @@ def execute_action(step, execution_context=None, action_id=None):
 
     result = {
         "action": step,
-        "action_id": action_id,  # T2-T3 tracing
+        "action_id": action_id,
         "status": status,
         "reason": reason,
         "output": output,
@@ -51,43 +51,35 @@ def execute_action(step, execution_context=None, action_id=None):
     with open(RESULT_PATH, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
 
-    # NEURAL LOOP RECONNECTION: ACTION -> EVENT
-    # Record ACTION result as EVENT in mocka_events.db (direct DB write)
+    # NEURAL LOOP RECONNECTION: ACTION -> EVENT (REGULAR PATH)
+    # Record ACTION result as EVENT in mocka_events.db via phi_os.event_gate
     try:
-        import sqlite3
+        from phi_os.event_gate import process_event as gate_process_event
         from datetime import timezone as dtz
-        from pathlib import Path
 
-        db_path = Path(ROOT) / 'data' / 'mocka_events.db'
+        now = datetime.now(dtz.utc).isoformat()
+        session_id = f"SESSION_{datetime.now(dtz.utc).strftime('%Y%m%d_%H%M%S')}"
 
-        if db_path.exists():
-            now = datetime.now(dtz.utc).isoformat()
-            session_id = f"SESSION_{datetime.now(dtz.utc).strftime('%Y%m%d_%H%M%S')}"
-            ts_ns = int(datetime.now(dtz.utc).timestamp() * 1000000)
-            event_id = f"E{datetime.now(dtz.utc).strftime('%Y%m%d')}_{ts_ns % 1000000000:09d}"
+        event_payload = {
+            "who_actor": "runtime_executor",
+            "who_session": session_id,
+            "what_type": "audit",
+            "where_path": "runtime/action_executor.py",
+            "where_component": "runtime",
+            "why_purpose": f"Execute action {step}: record result",
+            "how_trigger": "execute_action_gate",
+            "before_state": "pending",
+            "after_state": f"status={status};id={action_id}",
+            "when_ts": now,
+            "title": f"ACTION: {step}",
+            "short_summary": f"Action: {status}",
+            "free_note": f"action,{status},id={action_id}",
+            "request_id": action_id,
+        }
 
-            conn = sqlite3.connect(str(db_path))
-            cursor = conn.cursor()
-
-            cursor.execute("""
-                INSERT INTO events (
-                    event_id, when_ts, who_actor, session_id, what_type,
-                    where_component, where_path, why_purpose, how_trigger,
-                    before_state, after_state, title, short_summary, free_note,
-                    channel_type, request_id, _source
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                event_id, now, "runtime_executor", session_id, "audit",
-                "runtime", "runtime/action_executor.py", f"Execute {step}",
-                "execute_action", "pending", f"status={status};id={action_id}",
-                f"ACTION: {step}", f"Action: {status}", f"action,{status},id={action_id}",
-                "direct", action_id, "direct_allowed:recovery"
-            ))
-
-            conn.commit()
-            conn.close()
-
-            result["event_id"] = event_id
+        event_result = gate_process_event(event_payload, event_source="direct_allowed:recovery")
+        if event_result.get("status") == "ok":
+            result["event_id"] = event_result.get("event_id")
             result["event_recorded"] = True
     except Exception as e:
         result["event_record_error"] = str(e)
