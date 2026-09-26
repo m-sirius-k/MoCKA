@@ -24,7 +24,7 @@ from pathlib import Path
 import requests
 
 GATE_BATCH_URL = "http://localhost:5000/api/gate/event/batch"
-FALLBACK_PATH = Path(r"C:\Users\sirok\MoCKA\data\event_buffer_fallback.jsonl")
+FALLBACK_PATH = Path(__file__).parent.parent / "data" / "event_buffer_fallback.jsonl"
 
 BATCH_SIZE = 50
 FLUSH_INTERVAL_SEC = 0.5      # 仕様: 100ms〜1000ms間隔
