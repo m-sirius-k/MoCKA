@@ -365,6 +365,45 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   <div class="dbg-err-msg" id="err-scp"></div>
 </div>
 
+<!-- ── ROW G: HAB / JARVIS QUESTION INTERFACE ── -->
+<div class="section-hd">HAB / JARVIS Question Interface</div>
+<div class="panel" id="panel-hab" style="margin-bottom:10px">
+  <div class="dbg-strip" id="dbg-hab"></div>
+  <div class="panel-hd">
+    <span class="panel-title">Direct HAB Access with JARVIS Recall</span>
+    <span class="panel-badge" id="hab-status-badge" style="color:var(--teal)">Ready</span>
+  </div>
+
+  <!-- HAB Question Input -->
+  <div class="scp-input-row">
+    <input class="scp-input" id="hab-input" type="text" placeholder="質問をここに入力（例：C-001 gate の状態は？）" />
+    <button class="scp-btn" id="hab-run-btn" onclick="habAsk()">送信 ▶</button>
+  </div>
+
+  <!-- HAB Response Display -->
+  <div id="hab-result" style="display:none">
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--dim);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Question</div>
+      <div id="hab-question" style="font-size:11px;color:var(--txt);font-family:monospace;white-space:pre-wrap"></div>
+    </div>
+
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--dim);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">JARVIS Decision Recall</div>
+      <div id="hab-jarvis" style="font-size:11px;color:var(--teal);font-family:monospace;white-space:pre-wrap">No decision recalled</div>
+    </div>
+
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--dim);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">GPT Response</div>
+      <div id="hab-response" style="font-size:11px;color:var(--green);font-family:monospace;white-space:pre-wrap"></div>
+    </div>
+
+    <div style="font-size:10px;color:var(--muted);text-align:right" id="hab-timestamp"></div>
+  </div>
+
+  <div id="hab-empty" style="font-size:11px;color:var(--muted);text-align:center;padding:16px">質問を入力して「送信」を押してください</div>
+  <div class="dbg-err-msg" id="err-hab"></div>
+</div>
+
 <!-- ── DEBUG LOG PANEL ── -->
 <div class="dbg-panel">
   <div class="dbg-panel-hd">
@@ -1045,6 +1084,75 @@ function initAll(){
 
   DBG.ok('sys','初期化完了 — 全パネル静的描画済み / ライブ取得バックグラウンド実行中');
 }
+
+/* ═══════════════════════════════════════════════
+   HAB QUESTION INTERFACE
+   ═══════════════════════════════════════════════ */
+async function habAsk(){
+  try{
+    const inp=document.getElementById('hab-input');
+    const text=inp.value.trim();
+
+    if(!text){
+      DBG.warn('hab','質問が空');
+      showPanelErr('err-hab','質問を入力してください');
+      return;
+    }
+
+    setDbgTags('hab',[{cls:'info',label:'SENDING'}]);
+    hidePanelErr('err-hab');
+
+    const payload={question:text,decision_id:'JARVIS_OBS_20260923031206'};
+    const r=await fetch('http://127.0.0.1:5000/api/v1/hab/ask',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+
+    document.getElementById('hab-empty').style.display='none';
+    document.getElementById('hab-result').style.display='block';
+
+    document.getElementById('hab-question').textContent=text;
+
+    const jarvis=data.jarvis;
+    if(jarvis&&jarvis.decision_id){
+      document.getElementById('hab-jarvis').textContent=
+        `ID: ${jarvis.decision_id}\nTitle: ${jarvis.decision_title}\nApproved: ${jarvis.approved_at}`;
+    }else{
+      document.getElementById('hab-jarvis').textContent='No decision recalled';
+    }
+
+    const responses=data.responses||[];
+    const gpt=responses.find(r=>r.provider==='gpt');
+    if(gpt&&gpt.status==='ok'){
+      document.getElementById('hab-response').textContent=gpt.response;
+    }else if(gpt){
+      document.getElementById('hab-response').textContent=`Error: ${gpt.error}`;
+    }else{
+      document.getElementById('hab-response').textContent='No GPT response';
+    }
+
+    document.getElementById('hab-timestamp').textContent=`Timestamp: ${data.timestamp}`;
+
+    setDbgTags('hab',[{cls:'ok',label:'OK'},{cls:'ok',label:'RECEIVED'}]);
+    DBG.ok('hab','HAB response received');
+    inp.value='';
+
+  }catch(e){
+    DBG.err('hab','habAsk: '+e.message);
+    showPanelErr('err-hab',e.message);
+    setDbgTags('hab',[{cls:'err',label:'ERR'}]);
+  }
+}
+
+/* Enter キー対応 */
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('hab-input');
+  if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')habAsk();});
+});
 
 document.addEventListener('DOMContentLoaded', initAll);
 </script>

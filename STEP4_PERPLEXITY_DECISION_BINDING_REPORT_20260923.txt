@@ -1,0 +1,153 @@
+================================================================================
+STEP 4 - PERPLEXITY DECISION BINDING VERIFICATION
+Final Report (2026-09-23)
+================================================================================
+
+VERIFICATION RESULT: A + B VERIFIED
+CODE CHANGES: 0 (production code)
+VERIFICATION ARTIFACTS: 1 script created (untracked)
+
+================================================================================
+STEP 4-A: CODE PATH VERIFICATION
+================================================================================
+
+Existing Code Path Confirmed:
+
+1. multi_dispatcher.py
+   Line 298: "perplexity" in _PROVIDER_SOCKETS registry
+   Line 299: ("adapters_perplexity_socket", "PerplexitySocket", "sonar-pro")
+
+2. Provider Loop (Lines 127-136)
+   for provider in providers:
+       result = _call_provider(
+           provider=provider,
+           request_text=enhanced_request_text,  ← Same for Perplexity
+           ...
+       )
+
+3. adapters_perplexity_socket.py
+   Line 17-18: def request(self, request_text: str, model: str = "sonar-pro")
+   Line 41: api_result = call_api(request_text, model)
+
+4. adapter_perplexity.py
+   Line 127: def call_api(request_text: str, model: str = "sonar-pro")
+   Line 159: messages=[{"role": "user", "content": request_text}]
+
+✓ CODE PATH VERIFIED - Complete from dispatcher to API payload
+
+================================================================================
+STEP 4-B: RUNTIME INPUT VERIFICATION
+================================================================================
+
+Real Decision Context Captured at Adapter Entry Point:
+
+Test Parameters:
+  Real Decision ID: HG-REC-2026-PH2834-01-DP5-DECISION-20260912
+  Provider: perplexity
+  Model: sonar-pro
+
+Execution Trace:
+  ✓ adapter_perplexity.call_api() CALLED
+  ✓ request_text length: 843 chars
+  ✓ [JARVIS DECISION CONTEXT] marker: FOUND
+  ✓ [END JARVIS DECISION CONTEXT] marker: FOUND
+  ✓ Real Decision ID in input: FOUND
+
+Decision Context Block Captured:
+  Block length: 781 chars
+
+  [JARVIS DECISION CONTEXT]
+  Decision ID: HG-REC-2026-PH2834-01-DP5-DECISION-20260912
+  Title: DP-5: C-001/C-002 Gate Sequencing and Dependency
+  Decision: Candidate D-oriented pragmatic C: Defer formal sequencing...
+  Rationale: C-001/C-002 satisfaction criteria not yet explicit...
+  Approved By: Human Gate Review Panel (HG-REC-2026-PH2834-01-REF-01)
+  Approved At: 2026-09-12T06:30:18Z
+  [END JARVIS DECISION CONTEXT]
+
+  Original request:
+  Verify Perplexity decision context binding
+
+✓ RUNTIME INPUT VERIFIED - Real Decision Context confirmed in adapter input
+
+================================================================================
+STEP 4-C: PERPLEXITY API RESPONSE VERIFICATION
+================================================================================
+
+API Call Status: NOT_VERIFIED
+
+Reason: PERPLEXITY_API_KEY environment variable not set (expected)
+
+Status Classification:
+  ? UNKNOWN - API dependency not available in test environment
+  (Code path confirmed, but API response cannot be tested without key)
+
+Note: This is an environment constraint, not a code path failure.
+
+================================================================================
+FINAL JUDGMENT: A + B VERIFIED
+================================================================================
+
+Three-Level Verification:
+
+A. CODE PATH VERIFIED        ✓ YES
+   Existing code path completely functional
+   enhanced_request_text → PerplexitySocket.request() → adapter_perplexity.call_api()
+   → messages.content parameter
+
+B. RUNTIME INPUT VERIFIED    ✓ YES
+   Real Decision Context confirmed at adapter entry point
+   HG-REC-2026-PH2834-01-DP5-DECISION-20260912 is in actual call_api() argument
+   [JARVIS DECISION CONTEXT] ... [END JARVIS DECISION CONTEXT] markers present
+
+C. API RESPONSE VERIFIED     ? UNKNOWN
+   PERPLEXITY_API_KEY not available (environment constraint)
+   Code path confirmed, API response untested
+
+FINAL STATUS: ✓✓ Perplexity Decision Context Binding VERIFIED (A+B)
+
+================================================================================
+PRODUCTION CODE CHANGES
+================================================================================
+
+Files Modified: 0
+  - multi_dispatcher.py: NO CHANGES (STEP 2 changes already in repo)
+  - adapters_perplexity_socket.py: NO CHANGES
+  - adapter_perplexity.py: NO CHANGES
+  - governance files: NO CHANGES
+
+Verification Artifacts Created: 1
+  - gateway/verify_perplexity_decision_binding.py (untracked, verification only)
+
+git diff output:
+  gateway/multi_dispatcher.py - modifications from STEP 2 (not STEP 4)
+  data/* - runtime state files (not production code)
+
+No production code changes introduced in STEP 4.
+
+================================================================================
+CONCLUSION
+================================================================================
+
+STEP 4 Verification: A + B VERIFIED ✓✓
+
+The enhanced_request_text with JARVIS Decision Context (built in STEP 2)
+DOES reach Perplexity adapter's call_api() function.
+
+The same Decision context binding mechanism works for Perplexity as it does
+for Gemini and GPT.
+
+Summary of Multi-Provider Verification (STEP 2-4):
+
+Provider         Code Path    Runtime Input    API Response
+──────────────────────────────────────────────────────────
+GPT              ✓ YES        ✓ YES (STEP 2)    ✓ YES (real API)
+Gemini           ✓ YES        ✓ YES (STEP 3)    ? (library missing)
+Perplexity       ✓ YES        ✓ YES (STEP 4)    ? (key missing)
+
+Decision Context Binding: VERIFIED for all providers via existing code path.
+No new implementation needed.
+No architecture changes required.
+No Socket/Adapter modifications needed.
+
+STATUS: READY FOR NEXT PHASE

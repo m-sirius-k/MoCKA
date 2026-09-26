@@ -1,0 +1,10 @@
+{
+  "action": "CASE_D_TARGET_MISMATCH",
+  "action_id": "case_d_001",
+  "target": "target-B",
+  "runtime_scope": "scope-A",
+  "status": "blocked",
+  "reason": "HG_VERIFICATION_ERROR: module 'logging' has no attribute 'StreamHandler'",
+  "output": "HG_VERIFICATION_ERROR: module 'logging' has no attribute 'StreamHandler'",
+  "timestamp": "2026-09-26T08:45:20.800840+00:00"
+}

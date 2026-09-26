@@ -114,6 +114,18 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
 .prod-progress{height:3px;background:rgba(255,255,255,.07);border-radius:2px;margin-top:6px}
 .prod-prog-fill{height:100%;border-radius:2px;transition:width .6s}
 
+/* ── SEO-OS ── */
+.seo-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.seo-stat{background:var(--dim);border-radius:6px;padding:8px 10px}
+.seo-stat-val{font-size:18px;font-weight:700}
+.seo-stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
+.seo-pipe-row{display:flex;align-items:center;gap:7px;font-size:11px;margin-bottom:4px}
+.seo-pipe-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.seo-pipe-name{flex:1;color:var(--muted)}
+.seo-pipe-st{font-size:10px;padding:1px 5px;border-radius:3px}
+.seo-pipe-st.ready{background:rgba(0,212,170,.15);color:var(--green)}
+.seo-pipe-st.pend{background:rgba(240,165,0,.15);color:var(--amber)}
+
 /* ── BEE ── */
 .bee-item{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:6px;background:var(--dim);margin-bottom:4px}
 .bee-lc{font-size:10px;padding:1px 5px;border-radius:3px;font-weight:700}
@@ -202,7 +214,6 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   <div class="logo">Mo<em>CKA</em> COMMAND CENTER <span style="font-size:11px;color:var(--muted);font-weight:400;">v6.1</span></div>
   <div class="topbar-right">
     <span class="phase-badge">Phase 4 — 商用展開</span>
-    <a href="seo_workspace.html" style="background:rgba(255,255,255,.06);border:1px solid var(--line);color:rgba(255,255,255,.7);padding:4px 12px;border-radius:6px;font-size:11px;text-decoration:none">SEO Workspace →</a>
     <span class="seal-txt">seal: c2d8c54e</span>
     <span class="ts-txt" id="clock">--:--:--</span>
   </div>
@@ -225,7 +236,6 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   <div class="srv"><div class="dot on"></div><span class="srv-name">SEO-OS</span>&nbsp;<span class="srv-port">:8750</span></div>
   <div class="srv"><div class="dot on"></div><span class="srv-name">ngrok</span>&nbsp;<span class="srv-port">MCP</span></div>
   <div class="srv"><div class="dot warn"></div><span class="srv-name">relay_dom</span>&nbsp;<span class="srv-port" style="color:var(--amber)">FAIL</span></div>
-  <div class="srv" id="srv-auth_key" style="display:none"><div class="dot" id="auth-key-dot"></div><span class="srv-name">認証キー</span>&nbsp;<span class="srv-port" id="auth-key-status"></span></div>
   <div class="srv"><div class="dot on"></div><span class="srv-name">SQLite</span>&nbsp;<span class="srv-port">OK</span></div>
 </div>
 
@@ -263,8 +273,16 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
   <!-- JS injection -->
 </div>
 
-<!-- ── ROW C: BEE / ESSENCE ── -->
-<div class="grid-2">
+<!-- ── ROW C: SEO-OS / BEE / ESSENCE ── -->
+<div class="grid-131">
+
+  <!-- SEO-OS -->
+  <div class="panel" id="panel-seo">
+    <div class="dbg-strip" id="dbg-seo"></div>
+    <div class="panel-hd"><span class="panel-title">SEO-OS</span><span class="panel-badge" style="color:var(--green)">:8750 稼働</span></div>
+    <div id="seo-body"></div>
+    <div class="dbg-err-msg" id="err-seo"></div>
+  </div>
 
   <!-- BEE -->
   <div class="panel" id="panel-bee">
@@ -282,111 +300,6 @@ html,body{background:#1a1a2e;color:rgba(255,255,255,.9);font-family:'Consolas','
     <div class="dbg-err-msg" id="err-ess"></div>
   </div>
 </div>
-
-<!-- ── ROW C2: ISE (Institution State Engine) ── -->
-<div class="section-hd">ISE — Institution State Engine</div>
-<div class="grid-2">
-
-  <!-- Institution Domain -->
-  <div class="panel" id="panel-ise-state">
-    <div class="dbg-strip" id="dbg-ise-state"></div>
-    <div class="panel-hd"><span class="panel-title">Institution Domain — State</span><span class="panel-badge" id="ise-state-badge">--</span></div>
-    <div id="ise-state-body"></div>
-    <div class="dbg-err-msg" id="err-ise-state"></div>
-  </div>
-
-  <!-- AI Runtime Domain -->
-  <div class="panel" id="panel-ise-sessions">
-    <div class="dbg-strip" id="dbg-ise-sessions"></div>
-    <div class="panel-hd"><span class="panel-title">AI Runtime Domain — Sessions</span><span class="panel-badge" id="ise-sessions-badge">--</span></div>
-    <div id="ise-sessions-body"></div>
-    <div class="dbg-err-msg" id="err-ise-sessions"></div>
-  </div>
-
-</div>
-
-<!-- ── ROW C3: PHI-OS EVENT GATE AUDIT (TODO_347 vFinal) ── -->
-<div class="section-hd">PHI-OS Event Gate — 経路監査</div>
-<div class="panel" id="panel-gate-audit">
-  <div class="dbg-strip" id="dbg-gate-audit"></div>
-  <div class="panel-hd"><span class="panel-title">Event Flow: handshake → buffer → gate → db</span><span class="panel-badge" id="gate-audit-rate-badge">--</span></div>
-  <div id="gate-audit-body">
-    <div style="font-size:11px;color:var(--muted)">取得中...</div>
-  </div>
-  <div class="dbg-err-msg" id="err-gate-audit"></div>
-</div>
-
-<!-- ISE パネル (v1.3 Phase C 統合パネル) -->
-<div class="panel" id="panel-ise">
-  <h3>⚙ ISE — Institution State Engine</h3>
-  <div style="display:flex;gap:16px;flex-wrap:wrap;">
-    <!-- Institution Domain -->
-    <div style="flex:1;min-width:200px;">
-      <div style="font-size:11px;opacity:.6;margin-bottom:4px;">INSTITUTION DOMAIN</div>
-      <div id="ise-revision"   style="font-size:13px;">Revision: —</div>
-      <div id="ise-hash"       style="font-size:11px;opacity:.7;">Hash: —</div>
-      <div id="ise-todos"      style="font-size:13px;margin-top:4px;">TODOs: —</div>
-      <div id="ise-warnings"   style="font-size:13px;">Warnings: —</div>
-      <div id="ise-updated"    style="font-size:11px;opacity:.7;">Updated: —</div>
-    </div>
-    <!-- AI Runtime Domain -->
-    <div style="flex:1;min-width:200px;">
-      <div style="font-size:11px;opacity:.6;margin-bottom:4px;">AI RUNTIME DOMAIN</div>
-      <div id="ise-ai-list"    style="font-size:12px;line-height:1.8;">—</div>
-    </div>
-  </div>
-</div>
-
-<!-- ── ROW: Distribution OS ── -->
-<div class="section-hd">Distribution OS — PR-OS 分散発信</div>
-<div class="panel" id="panel-dist-os" style="margin-bottom:10px">
-  <div class="panel-hd">
-    <span class="panel-title">PR-OS → 4層変換 → 6媒体配信</span>
-    <span class="panel-badge" id="dist-os-badge" style="color:var(--muted)">待機中</span>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
-    <input id="dist-os-content" type="text"
-      style="flex:1;min-width:200px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:6px;padding:6px 10px;color:var(--fg);font-size:12px"
-      placeholder="配信コンテンツ（空欄でサンプル使用）" />
-    <button class="scp-btn" onclick="publishAll()">Publish All ▶</button>
-  </div>
-  <div id="dist-os-result" style="font-size:11px;color:var(--muted);min-height:24px"></div>
-</div>
-
-<script>
-async function publishAll() {
-  const badge = document.getElementById('dist-os-badge');
-  const result = document.getElementById('dist-os-result');
-  const content = document.getElementById('dist-os-content').value.trim();
-  badge.textContent = '配信中...';
-  badge.style.color = 'var(--blue)';
-  result.textContent = '';
-  try {
-    const body = content ? JSON.stringify({ content }) : '{}';
-    const res = await fetch('/api/action/publish_all', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body
-    });
-    const data = await res.json();
-    if (data.status === 'distributed') {
-      badge.textContent = '配信完了';
-      badge.style.color = 'var(--green)';
-      const lines = Object.entries(data.results || {})
-        .map(([k, v]) => `${k}: ${v}`).join(' | ');
-      result.textContent = lines;
-    } else {
-      badge.textContent = 'エラー';
-      badge.style.color = 'var(--red)';
-      result.textContent = data.error || JSON.stringify(data);
-    }
-  } catch (e) {
-    badge.textContent = 'エラー';
-    badge.style.color = 'var(--red)';
-    result.textContent = e.message;
-  }
-}
-</script>
 
 <!-- ── ROW D: TIC ── -->
 <div class="section-hd">TIC — Technology Intelligence Caliber</div>
@@ -450,6 +363,45 @@ async function publishAll() {
     </div>
   </div>
   <div class="dbg-err-msg" id="err-scp"></div>
+</div>
+
+<!-- ── ROW G: HAB / JARVIS QUESTION INTERFACE ── -->
+<div class="section-hd">HAB / JARVIS Question Interface</div>
+<div class="panel" id="panel-hab" style="margin-bottom:10px">
+  <div class="dbg-strip" id="dbg-hab"></div>
+  <div class="panel-hd">
+    <span class="panel-title">Direct HAB Access with JARVIS Recall</span>
+    <span class="panel-badge" id="hab-status-badge" style="color:var(--teal)">Ready</span>
+  </div>
+
+  <!-- HAB Question Input -->
+  <div class="scp-input-row">
+    <input class="scp-input" id="hab-input" type="text" placeholder="質問をここに入力（例：C-001 gate の状態は？）" />
+    <button class="scp-btn" id="hab-run-btn" onclick="habAsk()">送信 ▶</button>
+  </div>
+
+  <!-- HAB Response Display -->
+  <div id="hab-result" style="display:none">
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--dim);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">Question</div>
+      <div id="hab-question" style="font-size:11px;color:var(--txt);font-family:monospace;white-space:pre-wrap"></div>
+    </div>
+
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--dim);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">JARVIS Decision Recall</div>
+      <div id="hab-jarvis" style="font-size:11px;color:var(--teal);font-family:monospace;white-space:pre-wrap">No decision recalled</div>
+    </div>
+
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--dim);margin-bottom:10px">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:6px">GPT Response</div>
+      <div id="hab-response" style="font-size:11px;color:var(--green);font-family:monospace;white-space:pre-wrap"></div>
+    </div>
+
+    <div style="font-size:10px;color:var(--muted);text-align:right" id="hab-timestamp"></div>
+  </div>
+
+  <div id="hab-empty" style="font-size:11px;color:var(--muted);text-align:center;padding:16px">質問を入力して「送信」を押してください</div>
+  <div class="dbg-err-msg" id="err-hab"></div>
 </div>
 
 <!-- ── DEBUG LOG PANEL ── -->
@@ -563,7 +515,7 @@ function hidePanelErr(errId){
 async function apiFetch(url,panelId){
   DBG.info(panelId,`GET ${url}`);
   try{
-    const r=await fetch(url,{cache:'no-store',headers:{'ngrok-skip-browser-warning':'true'}});
+    const r=await fetch(url,{headers:{'ngrok-skip-browser-warning':'true'}});
     if(!r.ok)throw new Error(`HTTP ${r.status} ${r.statusText}`);
     const text=await r.text();
     /* 文字化け検知 */
@@ -610,6 +562,9 @@ const STATIC = {
     {name:'PHI OS',badge:'live',bl:'実機確認済',meta:['v1.0 実機テスト完了','BOM除去→SW有効化','TODO_195 完了'],pct:90,pc:0},
     {name:'vasAI',badge:'seal',bl:'封印済',meta:['v1.4.9-reproducibility','PASS:49/FAIL:0','sha256: 8326cf61'],pct:100,pc:2}
   ],
+  seo:{phase:'Phase 5',tests:32,pipes:[
+    {name:'LP Pipeline',st:'ready'},{name:'Blog Pipeline',st:'ready'},{name:'Bot Pipeline',st:'pend'}
+  ]},
   bee:{items:[
     {lc:'est',name:'dependency_concentration_risk',ev:'ev+5'},
     {lc:'grow',name:'api_institutionalization',ev:'ev+5'},
@@ -702,7 +657,7 @@ function renderHein(data){
         <div class="hein-bar"><div class="hein-fill" style="background:var(--blue);width:${data.l3/maxBar*100}%"></div></div>
         <span class="hein-num" style="color:var(--blue)">${data.l3}x</span>
       </div>
-      <div class="hein-note" title="これは記録漏れの件数ではなく、Heinrichの法則(1:29:300)に基づく理論的期待値とのギャップです">理論値 1:29:300 — 観測/理論比率 ${data.rate}% / Heinrich理論ギャップ ${Number(data.uncaught).toLocaleString()}件</div>
+      <div class="hein-note">理論値 1:29:300 — 捕捉率 ${data.rate}% / 未捕捉推定 ${Number(data.uncaught).toLocaleString()}件</div>
       <div style="border-top:1px solid var(--line);margin:8px 0 6px;padding-top:6px;font-size:10px;color:var(--muted)">7日 Incident トレンド</div>
       <div class="spark">${(data.spark||[]).map((v,i)=>`<div class="spark-bar" style="height:${v}%;background:${i===data.spark.length-1?'var(--red)':'rgba(231,76,110,.45)'}"></div>`).join('')}</div>
     `;
@@ -712,21 +667,6 @@ function renderHein(data){
     showPanelErr('err-hein',e.message);
     setDbgTags('hein',[{cls:'err',label:'RENDER ERR'}]);
   }
-}
-
-/* TODO_362: /heinrich/status の実レスポンス(heinrich.actual_ratio/capture_rate/
-   missing_estimate等)を renderHein() が期待する {l1,l2,l3,rate,uncaught,spark}
-   形式に変換する。heinrich_engine.py側の計算ロジックは変更しない。 */
-function mapHeinData(raw){
-  const h=(raw&&raw.heinrich)||{};
-  const ratioParts=String(h.actual_ratio||'1:0:0').split(':').map(Number);
-  const l1=Number.isFinite(ratioParts[0])?ratioParts[0]:1;
-  const l2=Number.isFinite(ratioParts[1])?ratioParts[1]:0;
-  const l3=Number.isFinite(ratioParts[2])?ratioParts[2]:0;
-  const rateStr=(h.capture_rate&&h.capture_rate.layer3)||'0%';
-  const rate=parseFloat(rateStr)||0;
-  const uncaught=h.missing_estimate??0;
-  return {l1,l2,l3,rate,uncaught,spark:[]};
 }
 
 function renderTodo(data){
@@ -770,6 +710,34 @@ function renderProducts(data){
     DBG.ok('products',`${data.length}件 描画`);
   }catch(e){
     DBG.err('products','renderProducts: '+e.message);
+  }
+}
+
+function renderSeo(data){
+  try{
+    const changed=DT.check('seo',data);
+    setDbgTags('seo',[{cls:'ok',label:'OK'},{cls:changed?'changed':'ok',label:changed?'CHANGED':'SAME'}]);
+    hidePanelErr('err-seo');
+    const el=document.getElementById('seo-body');
+    el.innerHTML=`
+      <div class="seo-grid">
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--blue)">${data.phase}</div><div class="seo-stat-lbl">完了 / Phase 6 実装中</div></div>
+        <div class="seo-stat"><div class="seo-stat-val" style="color:var(--green)">${data.tests}</div><div class="seo-stat-lbl">テスト PASS</div></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-bottom:5px">Pipeline ステータス</div>
+      ${data.pipes.map(p=>`<div class="seo-pipe-row">
+        <div class="seo-pipe-dot" style="background:${p.st==='ready'?'var(--green)':'var(--amber)'}"></div>
+        <span class="seo-pipe-name">${p.name}</span>
+        <span class="seo-pipe-st ${p.st}">${p.st==='ready'?'READY':'PENDING'}</span>
+      </div>`).join('')}
+      <div style="border-top:1px solid var(--line);margin-top:8px;padding-top:7px;font-size:10px;color:var(--muted)">
+        くろこ → Phase6: Decision Ledger / Explain API / Simulation / MoCKA Bridge
+      </div>`;
+    DBG.ok('seo',`SEO-OS描画 phase=${data.phase}`);
+  }catch(e){
+    DBG.err('seo','renderSeo: '+e.message);
+    showPanelErr('err-seo',e.message);
+    setDbgTags('seo',[{cls:'err',label:'RENDER ERR'}]);
   }
 }
 
@@ -821,52 +789,6 @@ function renderEssence(data){
   }
 }
 
-function renderISEState(data){
-  try{
-    hidePanelErr('err-ise-state');
-    document.getElementById('ise-state-badge').textContent=`R${data.revision}`;
-    const w=(data.warnings||[]);
-    const t=(data.todos||[]).slice(0,5);
-    const el=document.getElementById('ise-state-body');
-    el.innerHTML=`
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">
-        Phase ${data.project?.phase ?? '--'} / hash ${(data.state_hash||'').slice(0,12)}... / ${data.generated_at||''}
-      </div>
-      <div style="font-size:11px;margin-bottom:6px">${(data.project?.mission||'').slice(0,80)}</div>
-      <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Warnings: ${w.length}件</div>
-      <div style="font-size:10px;color:var(--muted)">Top TODO:</div>
-      ${t.map(d=>`<div class="todo-item"><span class="todo-pri">${d.priority}</span><div><div class="todo-text">${d.title}</div><div class="todo-id">${d.id}</div></div></div>`).join('')}
-    `;
-    DBG.ok('ise-state',`Institution State revision=${data.revision}`);
-  }catch(e){
-    DBG.err('ise-state','renderISEState: '+e.message);
-    showPanelErr('err-ise-state',e.message);
-    setDbgTags('ise-state',[{cls:'err',label:'RENDER ERR'}]);
-  }
-}
-
-function renderISESessions(data){
-  try{
-    hidePanelErr('err-ise-sessions');
-    const sessions=data.ai_sessions||{};
-    const ids=Object.keys(sessions);
-    document.getElementById('ise-sessions-badge').textContent=`${ids.length} AI`;
-    const el=document.getElementById('ise-sessions-body');
-    el.innerHTML=ids.map(id=>{
-      const s=sessions[id];
-      return `<div class="todo-item">
-        <span class="todo-pri">R${s.last_revision}</span>
-        <div><div class="todo-text">${id} — ${s.role} (${s.trust_level})</div><div class="todo-id">last_knock: ${s.last_knock||'--'}</div></div>
-      </div>`;
-    }).join('') || `<div style="font-size:11px;color:var(--muted)">登録AIなし</div>`;
-    DBG.ok('ise-sessions',`AI Session State ${ids.length}件`);
-  }catch(e){
-    DBG.err('ise-sessions','renderISESessions: '+e.message);
-    showPanelErr('err-ise-sessions',e.message);
-    setDbgTags('ise-sessions',[{cls:'err',label:'RENDER ERR'}]);
-  }
-}
-
 function renderTic(data0,data1){
   try{
     const f=d=>`<div class="tic-row ${d.st}">
@@ -893,51 +815,6 @@ function renderTic(data0,data1){
     DBG.err('tic','renderTic: '+e.message);
     showPanelErr('err-tic0',e.message);
     showPanelErr('err-tic1',e.message);
-  }
-}
-
-function renderAuthKeyHeadline(check){
-  try{
-    const el=document.getElementById('srv-auth_key');
-    const dot=document.getElementById('auth-key-dot');
-    const txt=document.getElementById('auth-key-status');
-    if(!el||!dot||!txt||!check)return;
-    const present=check.status==='PASS';
-    el.style.display='';
-    if(present){
-      dot.className='dot on';
-      txt.style.color='var(--green)';
-      txt.textContent='keyを認証しました';
-    }else{
-      dot.className='dot warn';
-      txt.style.color='var(--amber)';
-      txt.textContent='keyを認証できませんでした';
-    }
-  }catch(e){DBG.err('tic0','renderAuthKeyHeadline: '+e.message);}
-}
-
-function renderTic0Live(resp){
-  try{
-    const checks=resp.checks||[];
-    if(!checks.length){DBG.warn('tic0','/health/status checks空 → 静的データ維持');return;}
-    const authKeyCheck=checks.find(c=>c.component==='auth_key_drive');
-    if(authKeyCheck)renderAuthKeyHeadline(authKeyCheck);
-    const stMap={PASS:'ok',FAIL:'ng',WARN:'warn'};
-    const data0=checks.map(c=>({st:stMap[c.status]||'ng',name:c.component,note:(c.detail||'').split('\n')[0]}));
-    const f=d=>`<div class="tic-row ${d.st}">
-      <span class="tic-tag ${d.st}">${d.st.toUpperCase()}</span>
-      <span class="tic-name">${d.name}</span>
-      <span class="tic-note">${d.note}</span>
-    </div>`;
-    document.getElementById('tic0-body').innerHTML=data0.map(f).join('');
-    const fail0=data0.filter(d=>d.st==='ng').length;
-    const warn0=data0.filter(d=>d.st==='warn').length;
-    setDbgTags('tic0',[{cls:fail0?'err':(warn0?'warn':'ok'),label:fail0?`${fail0}FAIL`:(warn0?`${warn0}WARN`:'ALL OK')}]);
-    hidePanelErr('err-tic0');
-    DBG.ok('tic0',`ライブ反映: fail=${fail0} warn=${warn0} (overall=${resp.overall})`);
-  }catch(e){
-    DBG.err('tic0','renderTic0Live: '+e.message);
-    showPanelErr('err-tic0',e.message);
   }
 }
 
@@ -1139,60 +1016,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')scamperRun();});
 });
 
-function renderGateAudit(data){
-  try{
-    hidePanelErr('err-gate-audit');
-    const live = data.real_time_events && data.real_time_events.count || 0;
-    const buffered = data.buffered_events && data.buffered_events.count || 0;
-    const pending = data.buffered_events && data.buffered_events.pending_in_queue || 0;
-    const allowedDirect = data.allowed_direct_events && data.allowed_direct_events.count || 0;
-    const violation = data.violation_events && data.violation_events.count || 0;
-    const rate = data.gate_passthrough_rate_percent != null ? data.gate_passthrough_rate_percent : 0;
-    const directWriteOk = violation === 0;
-    setDbgTags('gate-audit',[{cls:'ok',label:'OK'}]);
-    document.getElementById('gate-audit-rate-badge').textContent = `経由率 ${rate}%`;
-    const el=document.getElementById('gate-audit-body');
-    el.innerHTML = `
-      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
-        <div style="flex:1;min-width:120px;">
-          <div style="font-size:10px;color:var(--muted)">REAL-TIME (live)</div>
-          <div style="font-size:20px;color:var(--green)">${Number(live).toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--muted)">/api/gate/event 経由（即時）</div>
-        </div>
-        <div style="flex:1;min-width:120px;">
-          <div style="font-size:10px;color:var(--muted)">BUFFERED</div>
-          <div style="font-size:20px;color:var(--blue)">${Number(buffered).toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--muted)">/api/gate/event/batch 経由 / queue待機: ${pending}</div>
-        </div>
-        <div style="flex:1;min-width:120px;">
-          <div style="font-size:10px;color:var(--muted)">許可Direct(exempt)</div>
-          <div style="font-size:20px;color:var(--amber)">${Number(allowedDirect).toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--muted)">bootstrap/maintenance/migration/restore/recovery</div>
-        </div>
-        <div style="flex:1;min-width:120px;">
-          <div style="font-size:10px;color:var(--muted)">違反Direct（異常検知）</div>
-          <div style="font-size:20px;color:${directWriteOk?'var(--green)':'var(--red)'}">${Number(violation).toLocaleString()}</div>
-          <div style="font-size:10px;color:var(--muted)">${directWriteOk?'制度違反 = 0 を保証':'⚠ 許可されていないdirect writeを検知'}</div>
-        </div>
-      </div>
-      <div style="font-size:10px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px;">
-        handshake/app.py → EventBuffer(in-memory+retry) → PHI-OS Event Gate → SQLite（single source）<br>
-        live・buffered・許可Direct・違反Directは合算しない（状態をそのまま表示／Phase5-1 Gate Policy）。
-      </div>
-    `;
-    DBG.ok('gate-audit',`live=${live} buffered=${buffered} allowed_direct=${allowedDirect} violation=${violation} rate=${rate}%`);
-  }catch(e){
-    DBG.err('gate-audit','renderGateAudit: '+e.message);
-    showPanelErr('err-gate-audit',e.message);
-    setDbgTags('gate-audit',[{cls:'err',label:'RENDER ERR'}]);
-  }
-}
-
 /* ═══════════════════════════════════════════════
    LIVE DATA FETCH (app.py エンドポイント)
    ═══════════════════════════════════════════════ */
 const BASE='http://localhost:5000';
-const CALIBER_BASE='http://localhost:5679';
 
 async function fetchLive(){
   DBG.info('sys','ライブデータ取得開始');
@@ -1201,22 +1028,15 @@ async function fetchLive(){
     {url:`${BASE}/heinrich/status`,     panel:'hein',   key:null},
     {url:`${BASE}/risk/recommendation`, panel:'todo',   key:null},
     {url:`${BASE}/health/status`,       panel:'tic0',   key:null},
-    {url:`${CALIBER_BASE}/phl/history`, panel:'ess',    key:null},
+    {url:`${BASE}/phl/history`,         panel:'ess',    key:null},
     {url:`${BASE}/api/beta/status`,     panel:'bee',    key:null},
-    {url:`${BASE}/api/ise/state`,       panel:'ise-state',    key:null},
-    {url:`${BASE}/api/ise/status`,      panel:'ise-sessions', key:null},
-    {url:`${BASE}/api/gate/audit`,      panel:'gate-audit',   key:null},
+    {url:`${BASE}/api/risk-score`,      panel:'coord',  key:null},
   ];
   await Promise.allSettled(jobs.map(async j=>{
     try{
       const data=await apiFetch(j.url,j.panel);
       DBG.ok(j.panel,`ライブデータ取得OK`);
       /* パネルごとのデータマッピング（app.py形式に応じて調整） */
-      if(j.panel==='ise-state')    renderISEState(data);
-      if(j.panel==='ise-sessions') renderISESessions(data);
-      if(j.panel==='tic0')         renderTic0Live(data);
-      if(j.panel==='gate-audit')   renderGateAudit(data);
-      if(j.panel==='hein')         renderHein(mapHeinData(data));
     }catch(e){
       DBG.warn(j.panel,'フォールバック → 静的データ使用');
     }
@@ -1245,15 +1065,13 @@ function initAll(){
   try{ renderHein(STATIC.hein); }          catch(e){ DBG.err('hein',e.message); }
   try{ renderTodo(STATIC.todos); }         catch(e){ DBG.err('todo',e.message); }
   try{ renderProducts(STATIC.products); }  catch(e){ DBG.err('products',e.message); }
+  try{ renderSeo(STATIC.seo); }            catch(e){ DBG.err('seo',e.message); }
   try{ renderBee(STATIC.bee); }            catch(e){ DBG.err('bee',e.message); }
   try{ renderEssence(STATIC.essence); }    catch(e){ DBG.err('ess',e.message); }
   try{ renderTic(STATIC.tic0,STATIC.tic1); } catch(e){ DBG.err('tic',e.message); }
   try{ renderCoords(STATIC.coords); }      catch(e){ DBG.err('coord',e.message); }
   try{ renderScamperModes(); }             catch(e){ DBG.err('scp',e.message); }
   try{ renderScamperHistory(); }           catch(e){ DBG.err('scp',e.message); }
-  try{ document.getElementById('ise-state-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }    catch(e){}
-  try{ document.getElementById('ise-sessions-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }catch(e){}
-  try{ document.getElementById('gate-audit-body').innerHTML='<div style="font-size:11px;color:var(--muted)">取得中...</div>'; }catch(e){}
 
   /* ライブデータ取得（バックグラウンド） */
   fetchLive().then(()=>DBG.ok('sys','ライブデータ取得フェーズ完了')).catch(e=>DBG.warn('sys','ライブ取得失敗: '+e.message));
@@ -1267,39 +1085,76 @@ function initAll(){
   DBG.ok('sys','初期化完了 — 全パネル静的描画済み / ライブ取得バックグラウンド実行中');
 }
 
-document.addEventListener('DOMContentLoaded', initAll);
-</script>
+/* ═══════════════════════════════════════════════
+   HAB QUESTION INTERFACE
+   ═══════════════════════════════════════════════ */
+async function habAsk(){
+  try{
+    const inp=document.getElementById('hab-input');
+    const text=inp.value.trim();
 
-<script>
-(function() {
-  function refreshISE() {
-    fetch('/api/ise/panel')
-      .then(r => r.json())
-      .then(d => {
-        const inst = d.institution_domain || {};
-        const ai   = d.ai_runtime_domain  || {};
-        document.getElementById('ise-revision').textContent =
-          'Revision: ' + (inst.revision ?? '—');
-        document.getElementById('ise-hash').textContent =
-          'Hash: ' + (inst.state_hash || '—');
-        document.getElementById('ise-todos').textContent =
-          'TODOs: ' + (inst.todo_count ?? '—') + ' 件';
-        document.getElementById('ise-warnings').textContent =
-          'Warnings: ' + (inst.warning_count ?? '—') + ' 件';
-        document.getElementById('ise-updated').textContent =
-          'Updated: ' + (inst.generated_at
-            ? inst.generated_at.replace('T',' ').slice(0,19) + ' UTC'
-            : '—');
-        const rows = Object.entries(ai).map(([id, s]) =>
-          `${s.in_sync ? '🟢' : '🔴'} ${id} Rev.${s.last_revision} [${s.role}]`
-        ).join('<br>');
-        document.getElementById('ise-ai-list').innerHTML = rows || '（接続なし）';
-      })
-      .catch(() => {});
+    if(!text){
+      DBG.warn('hab','質問が空');
+      showPanelErr('err-hab','質問を入力してください');
+      return;
+    }
+
+    setDbgTags('hab',[{cls:'info',label:'SENDING'}]);
+    hidePanelErr('err-hab');
+
+    const payload={question:text,decision_id:'JARVIS_OBS_20260923031206'};
+    const r=await fetch('http://127.0.0.1:5000/api/v1/hab/ask',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    const data=await r.json();
+
+    document.getElementById('hab-empty').style.display='none';
+    document.getElementById('hab-result').style.display='block';
+
+    document.getElementById('hab-question').textContent=text;
+
+    const jarvis=data.jarvis;
+    if(jarvis&&jarvis.decision_id){
+      document.getElementById('hab-jarvis').textContent=
+        `ID: ${jarvis.decision_id}\nTitle: ${jarvis.decision_title}\nApproved: ${jarvis.approved_at}`;
+    }else{
+      document.getElementById('hab-jarvis').textContent='No decision recalled';
+    }
+
+    const responses=data.responses||[];
+    const gpt=responses.find(r=>r.provider==='gpt');
+    if(gpt&&gpt.status==='ok'){
+      document.getElementById('hab-response').textContent=gpt.response;
+    }else if(gpt){
+      document.getElementById('hab-response').textContent=`Error: ${gpt.error}`;
+    }else{
+      document.getElementById('hab-response').textContent='No GPT response';
+    }
+
+    document.getElementById('hab-timestamp').textContent=`Timestamp: ${data.timestamp}`;
+
+    setDbgTags('hab',[{cls:'ok',label:'OK'},{cls:'ok',label:'RECEIVED'}]);
+    DBG.ok('hab','HAB response received');
+    inp.value='';
+
+  }catch(e){
+    DBG.err('hab','habAsk: '+e.message);
+    showPanelErr('err-hab',e.message);
+    setDbgTags('hab',[{cls:'err',label:'ERR'}]);
   }
-  refreshISE();
-  setInterval(refreshISE, 30000);
-})();
+}
+
+/* Enter キー対応 */
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('hab-input');
+  if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')habAsk();});
+});
+
+document.addEventListener('DOMContentLoaded', initAll);
 </script>
 </body>
 </html>

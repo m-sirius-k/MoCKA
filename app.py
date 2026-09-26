@@ -78,6 +78,8 @@ from phi_os.event_gate import gate_bp
 from phi_os.integrity_routes import integrity_bp
 # [Phase5 Step1 2026-06-22] Time API v0 — 時間OS読み取り専用境界(localhost限定)
 from phi_os.api.time_api import time_api_bp
+# [2026-09-23] HAB/JARVIS minimal interface - direct human access
+from gateway.minimal_hab_jarvis_interface import hab_bp
 app.register_blueprint(ai_session_bp)
 app.register_blueprint(handshake_bp)
 app.register_blueprint(dashboard_bp)
@@ -89,6 +91,7 @@ app.register_blueprint(context_bp)
 app.register_blueprint(gate_bp)
 app.register_blueprint(integrity_bp)
 app.register_blueprint(time_api_bp)
+app.register_blueprint(hab_bp)
 
 # ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)

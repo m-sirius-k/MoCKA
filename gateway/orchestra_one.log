@@ -1,0 +1,137 @@
+2026-09-23 17:45:57,943 INFO Test mode: running with sample prompt
+2026-09-23 17:45:59,254 INFO Starting ChatGPT
+2026-09-23 17:46:23,432 ERROR ChatGPT error: Input element not found: #prompt-textarea, div[contenteditable="true"][data-id]
+2026-09-23 17:46:23,458 INFO Starting Gemini
+2026-09-23 17:46:26,342 ERROR Gemini error: Locator.evaluate: TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.
+    at eval (eval at evaluate (:290:30), <anonymous>:1:30)
+    at UtilityScript.evaluate (<anonymous>:297:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+2026-09-23 17:46:26,363 INFO Starting Perplexity
+2026-09-23 17:46:37,271 ERROR Perplexity error: Input element not found: textarea[placeholder]
+2026-09-23 17:46:37,287 INFO Starting Copilot
+2026-09-23 17:47:08,617 ERROR Copilot error: Locator.click: Timeout 30000ms exceeded.
+Call log:
+  - waiting for locator("textarea").first
+    - locator resolved to <textarea tabindex="-1" aria-hidden="true"></textarea>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    57 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+
+2026-09-23 17:48:19,261 INFO Test mode: running with sample prompt
+2026-09-23 17:48:20,714 INFO Starting ChatGPT
+2026-09-23 17:48:38,485 ERROR ChatGPT error: Input element not found: #prompt-textarea, div[contenteditable="true"][data-id]
+2026-09-23 17:48:38,487 INFO Starting Gemini
+2026-09-23 17:48:41,606 ERROR Gemini error: Locator.evaluate: TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.
+    at eval (eval at evaluate (:290:30), <anonymous>:1:30)
+    at UtilityScript.evaluate (<anonymous>:297:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+2026-09-23 17:48:41,628 INFO Starting Perplexity
+2026-09-23 17:48:52,526 ERROR Perplexity error: Input element not found: textarea[placeholder]
+2026-09-23 17:48:52,537 INFO Starting Copilot
+2026-09-23 17:49:10,672 ERROR Copilot error: Locator.click: Target page, context or browser has been closed
+Call log:
+  - waiting for locator("textarea").first
+    - locator resolved to <textarea tabindex="-1" aria-hidden="true"></textarea>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    23 × waiting for element to be visible, enabled and stable
+       - element is not visible
+     - retrying click action
+       - waiting 500ms
+    - waiting for" https://auth.copilot.microsoft.com/authorize?client_id=IalDS3vRtEI5X0zvsmGG7zJP9UrHTcei&scope=openid+profile+email+offline_access+ChatAI.ReadWrite&audience=https%3A%2F%2Fcopilot.microsoft.com&redirec…" navigation to finish...
+    - navigated to "https://accounts.google.com/v3/signin/identifier?opparams=%253Flibrary_name%253DAuth0&dsh=S-66438846%3A1790153346266000&client_id=293702255113-5edfm31r2gdeamh7uhlkf6ol4s8vrj1b.apps.googleusercontent.…"
+    - waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
+
+2026-09-23 17:49:37,311 INFO Test mode: running with sample prompt
+2026-09-23 17:49:38,460 INFO Starting ChatGPT
+2026-09-23 17:50:01,866 ERROR ChatGPT error: Input element not found: #prompt-textarea, div[contenteditable="true"][data-id]
+2026-09-23 17:50:01,898 INFO Starting Gemini
+2026-09-23 17:50:04,976 ERROR Gemini error: Locator.evaluate: TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.
+    at eval (eval at evaluate (:290:30), <anonymous>:1:30)
+    at UtilityScript.evaluate (<anonymous>:297:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+2026-09-23 17:50:05,001 INFO Starting Perplexity
+2026-09-23 17:50:15,845 ERROR Perplexity error: Input element not found: textarea[placeholder]
+2026-09-23 17:50:15,855 INFO Starting Copilot
+2026-09-23 17:50:36,620 ERROR Copilot error: Locator.click: Target page, context or browser has been closed
+Call log:
+  - waiting for locator("textarea").first
+    - locator resolved to <textarea tabindex="-1" aria-hidden="true"></textarea>
+  - attempting click action
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 100ms
+    7 × waiting for element to be visible, enabled and stable
+      - element is not visible
+    - retrying click action
+      - waiting 500ms
+    - waiting for" https://auth.copilot.microsoft.com/authorize?client_id=IalDS3vRtEI5X0zvsmGG7zJP9UrHTcei&scope=openid+profile+email+offline_access+ChatAI.ReadWrite&audience=https%3A%2F%2Fcopilot.microsoft.com&redirec…" navigation to finish...
+    - navigated to "https://accounts.google.com/v3/signin/identifier?opparams=%253Flibrary_name%253DAuth0&dsh=S-1356097317%3A1790153421430576&client_id=293702255113-5edfm31r2gdeamh7uhlkf6ol4s8vrj1b.apps.googleuserconten…"
+    - waiting for element to be visible, enabled and stable
+  - element was detached from the DOM, retrying
+
+2026-09-23 17:51:03,080 INFO Test mode: running with sample prompt
+2026-09-23 17:51:04,228 INFO Starting ChatGPT
+2026-09-23 17:51:10,097 ERROR ChatGPT error: Input element not found: #prompt-textarea, div[contenteditable="true"][data-id]
+2026-09-23 17:51:10,101 INFO Starting Gemini
+2026-09-23 17:51:11,439 ERROR Gemini error: Input element not found: .ql-editor
+2026-09-23 17:51:11,442 INFO Starting Perplexity
+2026-09-23 17:51:12,397 ERROR Perplexity error: Input element not found: textarea[placeholder]
+2026-09-23 17:51:12,399 INFO Starting Copilot
+2026-09-23 17:51:13,188 ERROR Copilot error: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://copilot.microsoft.com/", waiting until "domcontentloaded"
+
+2026-09-23 17:55:14,423 INFO Test mode: running with sample prompt
+2026-09-23 17:55:15,501 INFO Starting ChatGPT
+2026-09-23 17:55:39,711 ERROR ChatGPT error: Input element not found: #prompt-textarea, div[contenteditable="true"][data-id]
+2026-09-23 17:55:39,738 INFO Starting Gemini
+2026-09-23 17:55:42,859 ERROR Gemini error: Locator.evaluate: TypeError: Failed to set the 'innerHTML' property on 'Element': This document requires 'TrustedHTML' assignment.
+    at eval (eval at evaluate (:290:30), <anonymous>:1:30)
+    at UtilityScript.evaluate (<anonymous>:297:18)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+2026-09-23 17:55:42,883 INFO Starting Perplexity
+2026-09-23 17:55:53,773 ERROR Perplexity error: Input element not found: textarea[placeholder]
+2026-09-23 17:55:53,784 INFO Starting Copilot
+2026-09-23 17:56:00,300 ERROR Copilot error: Locator.fill: Target page, context or browser has been closed
+Call log:
+  - waiting for locator("textarea").first
+    - locator resolved to <textarea tabindex="-1" aria-hidden="true"></textarea>
+    - fill("")
+  - attempting fill action
+    2 × waiting for element to be visible, enabled and editable
+      - element is not visible
+    - retrying fill action
+    - waiting 20ms
+    2 × waiting for element to be visible, enabled and editable
+      - element is not visible
+    - retrying fill action
+      - waiting 100ms
+    10 × waiting for element to be visible, enabled and editable
+       - element is not visible
+     - retrying fill action
+       - waiting 500ms
+

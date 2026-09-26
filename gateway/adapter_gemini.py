@@ -145,11 +145,11 @@ def call_api(request_text: str, model: str = "gemini-2.0-flash") -> dict:
     """
     try:
         import google.generativeai as genai
-        api_key = os.environ.get("GOOGLE_API_KEY")
+        api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             return {
                 "status": "error",
-                "error": "GOOGLE_API_KEY not set",
+                "error": "GEMINI_API_KEY or GOOGLE_API_KEY not set",
                 "model": model,
             }
 

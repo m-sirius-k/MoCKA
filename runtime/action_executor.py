@@ -12,80 +12,105 @@ from execution_context import ExecutionContext
 RESULT_PATH = "action_result.json"
 ROOT = r"C:\Users\sirok\MoCKA"
 
-def execute_action(step, execution_context=None, action_id=None):
+def execute_action(step, execution_context=None, action_id=None, target=None, runtime_scope=None):
     """
-    Execute action step.
+    Execute action step with Human Gate approval + scope/target binding.
 
     Args:
-        step: action string (e.g., "ANALYZE", "EXECUTE")
-        execution_context: ExecutionContext object (for T2-T3 integration; optional for backward compatibility)
-        action_id: action_id string for tracing (optional for backward compatibility)
-
-    Returns:
-        result dict with status, output, etc.
+        step: action string
+        action_id: for tracing
+        target: action target (matched against approval.target)
+        runtime_scope: runtime scope (matched against approval.scope)
     """
     output = None
     status = "blocked"
     reason = None
     auth_id = None
-    auth_reason = None
 
     try:
         sys.path.insert(0, ROOT)
 
         # AUTHORIZATION CHECKPOINT: DECISION -> AUTHORIZATION -> ACTION
-        # Verify Human Gate approval before action execution (direct DB query)
+        # Verify Human Gate approval using canonical API
         try:
-            import sqlite3
+            # Use canonical API (workaround logging collision)
+            saved_modules = {}
+            if 'logging' in sys.modules:
+                saved_modules['logging'] = sys.modules['logging']
+                del sys.modules['logging']
 
-            hg_db_path = os.path.join(ROOT, 'data', 'mocka_events.db')
-            hg_conn = sqlite3.connect(hg_db_path)
-            hg_cursor = hg_conn.cursor()
+            from phi_os.human_gate import get_state as hg_get_state
 
-            # Ensure table exists
-            hg_cursor.execute('''
-                CREATE TABLE IF NOT EXISTS human_gate_events (
-                    event_id TEXT PRIMARY KEY,
-                    timestamp TEXT,
-                    type TEXT,
-                    action TEXT,
-                    request_id TEXT,
-                    payload TEXT,
-                    previous_state TEXT,
-                    next_state TEXT
-                )
-            ''')
+            if 'logging' in saved_modules:
+                sys.modules['logging'] = saved_modules['logging']
 
-            # Get latest state for this request_id
-            hg_cursor.execute('''
-                SELECT next_state FROM human_gate_events
-                WHERE request_id = ?
-                ORDER BY rowid DESC
-                LIMIT 1
-            ''', (action_id,))
+            # Get HG approval state using canonical API
+            hg_state = hg_get_state(action_id)
 
-            row = hg_cursor.fetchone()
-            hg_conn.close()
-
-            if row is None:
+            if hg_state is None:
                 status = "blocked"
-                reason = "No Human Gate approval found for this request"
+                reason = "HG_NO_APPROVAL"
+                output = reason
+            elif hg_state != "APPROVED":
+                status = "blocked"
+                reason = f"HG_STATE_NOT_APPROVED: {hg_state}"
                 output = reason
             else:
-                hg_state = row[0]
-                if hg_state != "APPROVED":
+                # Approval exists and is APPROVED
+                # Now verify scope/target binding
+
+                # Get approval details from human_gate_events
+                import sqlite3
+                db_path = os.path.join(ROOT, 'data', 'mocka_events.db')
+                conn = sqlite3.connect(db_path)
+                cursor = conn.cursor()
+
+                cursor.execute('''
+                    SELECT payload FROM human_gate_events
+                    WHERE request_id = ? AND next_state = 'APPROVED'
+                    ORDER BY rowid DESC LIMIT 1
+                ''', (action_id,))
+
+                row = cursor.fetchone()
+                conn.close()
+
+                if not row:
                     status = "blocked"
-                    reason = f"Human Gate approval required (current state: {hg_state})"
+                    reason = "HG_APPROVAL_RECORD_NOT_FOUND"
                     output = reason
                 else:
-                    # Action is approved - proceed with execution
-                    auth_id = action_id
-                    output = f"Test action: {step}"
-                    status = "success"
+                    try:
+                        approval_payload = json.loads(row[0])
+                    except:
+                        approval_payload = {}
+
+                    # SCOPE BINDING CHECK
+                    approved_scope = approval_payload.get('scope')
+                    if runtime_scope and approved_scope != runtime_scope:
+                        status = "blocked"
+                        reason = f"SCOPE_MISMATCH: approved={approved_scope} requested={runtime_scope}"
+                        output = reason
+                    # TARGET BINDING CHECK
+                    elif target:
+                        approved_target = approval_payload.get('target')
+                        if approved_target != target:
+                            status = "blocked"
+                            reason = f"TARGET_MISMATCH: approved={approved_target} requested={target}"
+                            output = reason
+                        else:
+                            # All checks passed
+                            auth_id = action_id
+                            output = f"Test action: {step}"
+                            status = "success"
+                    else:
+                        # No target/scope specified - just check APPROVED
+                        auth_id = action_id
+                        output = f"Test action: {step}"
+                        status = "success"
 
         except Exception as auth_err:
             status = "blocked"
-            reason = f"Human Gate verification failed: {str(auth_err)}"
+            reason = f"HG_VERIFICATION_ERROR: {str(auth_err)[:100]}"
             output = reason
     except Exception as e:
         status = "error"
@@ -95,6 +120,8 @@ def execute_action(step, execution_context=None, action_id=None):
     result = {
         "action": step,
         "action_id": action_id,
+        "target": target,
+        "runtime_scope": runtime_scope,
         "status": status,
         "reason": reason,
         "output": output,
@@ -103,8 +130,6 @@ def execute_action(step, execution_context=None, action_id=None):
 
     if auth_id:
         result["authorization_id"] = auth_id
-    if auth_reason:
-        result["authorization_reason"] = auth_reason
 
     with open(RESULT_PATH, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
@@ -124,14 +149,14 @@ def execute_action(step, execution_context=None, action_id=None):
             "what_type": "audit",
             "where_path": "runtime/action_executor.py",
             "where_component": "runtime",
-            "why_purpose": f"Execute action {step}: record result",
+            "why_purpose": f"Execute {step}: record result",
             "how_trigger": "execute_action_gate",
             "before_state": "pending",
-            "after_state": f"status={status};id={action_id}",
+            "after_state": f"status={status};reason={reason}",
             "when_ts": now,
             "title": f"ACTION: {step}",
             "short_summary": f"Action: {status}",
-            "free_note": f"action,{status},id={action_id}",
+            "free_note": f"action,{status},reason={reason}",
             "request_id": action_id,
         }
 
@@ -145,6 +170,8 @@ def execute_action(step, execution_context=None, action_id=None):
     print(f"ACTION {status.upper()}:", step)
     if action_id:
         print(f"  action_id: {action_id}")
+    if reason:
+        print(f"  reason: {reason}")
     if output:
         print("OUTPUT:", output[:100])
 

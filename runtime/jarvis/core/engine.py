@@ -125,36 +125,21 @@ class JarvisEngine:
 
     def recall_experience(self, current_intent: str = "", context: Dict[str, Any] = None) -> Dict[str, Any]:
         """
-        JARVIS Experience Recall: Retrieve past decisions from MoCKA.
+        JARVIS Experience Recall: Retrieve relevant past decisions from MoCKA.
 
-        Phase 2: Returns most recent Active decision
-        Phase 3: If intent provided, searches for contextually relevant decisions
-
+        Searches Decision Ledger by intent/question, returning ranked matches.
         Read-only operation; does not modify state.
 
         Args:
-            current_intent: Current question/context (used for keyword matching)
-            context: Optional additional context (keywords, decision_type, etc.)
+            current_intent: Question or topic to search for
+            context: Optional additional context (reserved for future use)
 
         Returns:
             {
                 "status": "found" | "empty",
                 "intent": str,
-                "matches": [
-                    {
-                        "source": "decision_ledger",
-                        "decision_id": str,
-                        "title": str,
-                        "decision": str,
-                        "rationale": str,
-                        "approved_by": str,
-                        "approved_at": str,
-                        "related_events": list,
-                        "status": str
-                    }
-                ],
-                "gap": str or None,
-                "search_mode": "contextual" | "latest"
+                "matches": [...],
+                "gap": str or None
             }
         """
         result = {
@@ -162,11 +147,9 @@ class JarvisEngine:
             "intent": current_intent,
             "matches": [],
             "gap": None,
-            "search_mode": "latest",
         }
 
         try:
-            # Read Decision Ledger (JSONL format: 1 decision per line)
             if not self._decision_ledger_path.exists():
                 result["gap"] = "DECISION_LEDGER_NOT_FOUND"
                 return result
@@ -184,59 +167,24 @@ class JarvisEngine:
                 result["gap"] = "DECISION_LEDGER_EMPTY"
                 return result
 
-            # Filter for Active decisions, sorted by decision_id (reverse = most recent first)
             active_decisions = [d for d in decisions if d.get("status") == "Active"]
             if not active_decisions:
                 result["gap"] = "NO_ACTIVE_DECISIONS"
                 return result
 
-            active_decisions.sort(key=lambda x: x.get("decision_id", ""), reverse=True)
+            if not current_intent or not current_intent.strip():
+                result["gap"] = "NO_INTENT_PROVIDED"
+                return result
 
-            # Phase 3: Contextual matching if intent provided
-            if current_intent and current_intent.strip():
-                result["search_mode"] = "contextual"
-                contextual_matches = self._search_contextual_decisions(active_decisions, current_intent)
+            candidates = self._search_decisions(active_decisions, current_intent)
 
-                if contextual_matches:
-                    # Found matching decisions
-                    matched_decision = contextual_matches[0]  # Return most recent match
-                    result["status"] = "found"
-                    result["matches"] = [
-                        {
-                            "source": "decision_ledger",
-                            "decision_id": matched_decision.get("decision_id"),
-                            "title": matched_decision.get("title"),
-                            "decision": matched_decision.get("decision"),
-                            "rationale": matched_decision.get("rationale"),
-                            "approved_by": matched_decision.get("approved_by"),
-                            "approved_at": matched_decision.get("approved_at"),
-                            "related_events": matched_decision.get("related_events", []),
-                            "status": matched_decision.get("status"),
-                        }
-                    ]
-                    return result
-                else:
-                    # No contextual match found
-                    result["gap"] = "NO_CONTEXTUAL_MATCH"
-                    result["status"] = "empty"
-                    return result
+            if not candidates:
+                result["gap"] = "NO_RELEVANT_EXPERIENCE"
+                result["status"] = "empty"
+                return result
 
-            # Phase 2 fallback: Return most recent decision if no intent
-            latest = active_decisions[0]
             result["status"] = "found"
-            result["matches"] = [
-                {
-                    "source": "decision_ledger",
-                    "decision_id": latest.get("decision_id"),
-                    "title": latest.get("title"),
-                    "decision": latest.get("decision"),
-                    "rationale": latest.get("rationale"),
-                    "approved_by": latest.get("approved_by"),
-                    "approved_at": latest.get("approved_at"),
-                    "related_events": latest.get("related_events", []),
-                    "status": latest.get("status"),
-                }
-            ]
+            result["matches"] = candidates[:5]
 
             return result
 
@@ -244,37 +192,87 @@ class JarvisEngine:
             result["gap"] = f"RECALL_ERROR: {str(e)[:100]}"
             return result
 
-    def _search_contextual_decisions(self, decisions: list, intent: str) -> list:
+    def _search_decisions(self, decisions: list, query: str) -> list:
         """
-        Phase 3: Search for decisions contextually related to intent.
-
-        Returns list of decisions matching keywords from intent, sorted by recency.
+        Search decisions by query. Prioritizes specific entities over generic terms.
+        Returns candidates sorted by relevance score (high to low), then by decision_id.
         """
-        if not intent or not intent.strip():
-            return []
+        candidates = []
 
-        # Extract keywords from intent
-        keywords = intent.lower().split()
-        keywords = [kw.strip() for kw in keywords if kw.strip() and len(kw) > 2]
-
-        if not keywords:
-            return []
-
-        matches = []
         for decision in decisions:
-            # Concatenate searchable fields
-            searchable = (
-                (decision.get("title", "") or "").lower() +
-                " " +
-                (decision.get("context", "") or "").lower() +
-                " " +
-                (decision.get("decision", "") or "").lower() +
-                " " +
-                (decision.get("rationale", "") or "").lower()
-            )
+            score = self._calculate_relevance(decision, query)
 
-            # Require ALL keywords to match (stronger contextual matching)
-            if all(kw in searchable for kw in keywords):
-                matches.append(decision)
+            if score > 0:
+                candidates.append({
+                    "source": "decision_ledger",
+                    "decision_id": decision.get("decision_id"),
+                    "title": decision.get("title"),
+                    "decision": decision.get("decision"),
+                    "rationale": decision.get("rationale"),
+                    "approved_by": decision.get("approved_by"),
+                    "approved_at": decision.get("approved_at"),
+                    "related_events": decision.get("related_events", []),
+                    "status": decision.get("status"),
+                    "_score": score
+                })
 
-        return matches
+        candidates.sort(key=lambda x: (-x["_score"], x["decision_id"]), reverse=False)
+        candidates.sort(key=lambda x: -x["_score"])
+
+        for c in candidates:
+            del c["_score"]
+
+        return candidates
+
+    def _calculate_relevance(self, decision: dict, query: str) -> int:
+        """
+        Calculate relevance score for a decision based on query.
+        Prioritizes specific entities (C-001, M3, Model B, JARVIS, HAB, etc.).
+        """
+        score = 0
+        query_lower = query.lower()
+
+        specific_entities = [
+            "C-001", "C-002", "C-003", "M1", "M2", "M3", "M4",
+            "Model B", "Model A",
+            "JARVIS", "HAB", "HAB/JARVIS",
+            "Authority Model", "Authority Model Evolution",
+            "Gate Sequencing", "gate sequencing",
+            "Human Gate", "HG decision",
+            "multi-AI", "socket", "integration"
+        ]
+
+        generic_terms = ["implementation", "status", "runtime", "decision", "integration"]
+
+        title_lower = decision.get("title", "").lower()
+        decision_text = decision.get("decision", "").lower()
+        rationale_lower = decision.get("rationale", "").lower()
+        context_lower = decision.get("context", "").lower()
+        alternatives_str = str(decision.get("alternatives", "")).lower()
+        impact_lower = decision.get("impact", "").lower()
+
+        for entity in specific_entities:
+            entity_lower = entity.lower()
+            if entity_lower in query_lower:
+                if entity_lower in title_lower:
+                    score += 9
+                elif entity_lower in decision_text:
+                    score += 6
+                elif entity_lower in rationale_lower:
+                    score += 4
+                elif entity_lower in context_lower:
+                    score += 2
+                elif entity_lower in alternatives_str or entity_lower in impact_lower:
+                    score += 1
+
+        for term in generic_terms:
+            term_lower = term.lower()
+            if term_lower in query_lower:
+                if term_lower in title_lower:
+                    score += 3
+                elif term_lower in decision_text:
+                    score += 2
+                elif term_lower in rationale_lower:
+                    score += 1
+
+        return score

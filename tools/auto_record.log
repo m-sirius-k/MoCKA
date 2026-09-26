@@ -6,3 +6,60 @@
 [2026-06-19T12:26:37.333049] WARN url=http://localhost:5002/agent/mocka_write_event tool=Write error=timed out
 [2026-06-19T12:26:37.334061] OFFLINE tool=Write cmd_or_file='test_hook.txt' (記録未送信・作業は継続)
 [2026-06-19 14:01:26] OFFLINE CHANGE_DONE: MoCKA-START.bat - PYTHONUTF8廃止対応(Python 3.13.14) -> PYTHONIOENCODING=utf-8 に変更。12箇所のset PYTHONUTF8=1を削除。
+[2026-09-26T11:22:36.412524] SKIP tool=PowerShell reason=no_write_pattern cmd='Write-Host "=== KUROKO PC IDENTITY ===" -ForegroundColor Cyan\nhostname\npwd\ngit r'
+[2026-09-26T11:23:47.625461] SKIP tool=PowerShell reason=no_write_pattern cmd='Write-Host "=== KUROKO PC RUNTIME STATE ===" -ForegroundColor Cyan\n\nWrite-Host "'
+[2026-09-26T11:25:01.157898] SKIP tool=PowerShell reason=no_write_pattern cmd='Write-Host "=== [1] ALL LISTEN TCP ===" -ForegroundColor Cyan\nGet-NetTCPConnecti'
+[2026-09-26T11:25:34.925576] SKIP tool=PowerShell reason=no_write_pattern cmd='Write-Host "=== [5] Test-NetConnection ===" -ForegroundColor Cyan\nforeach ($p in'
+[2026-09-26T11:26:01.776858] OK event_id=? tool=PowerShell cmd_or_file='[PowerShell] Write-Host "=== [7] HTTP Health Checks (GET only) ===" -Fore' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T11:30:51.104089] OK event_id=? tool=Bash cmd_or_file='[Bash] python tests/test_final_hab_jarvis_t2_full_pipeline.py 2>&1' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T11:31:07.810010] OK event_id=? tool=Bash cmd_or_file='[Bash] grep -c "HG20260926_832840523a420\\|DC_gpt-4_ChatGPT_864207ca' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T11:31:29.536139] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\ncur = '
+[2026-09-26T11:31:37.667048] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\nconn.r'
+[2026-09-26T11:31:57.977611] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3, sys\nconn = sqlite3.connect(\'data/mocka_events.db\')\nc'
+[2026-09-26T11:32:06.586950] SKIP tool=Bash reason=no_write_pattern cmd='tail -c 2000 "C:\\Users\\sirok\\.claude\\projects\\C--Users-sirok-MoCKA\\a60dd8e7-6376'
+[2026-09-26T11:33:26.122292] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\ncur = '
+[2026-09-26T11:33:46.343701] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\ncur = '
+[2026-09-26T11:36:37.293430] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\ncur = '
+[2026-09-26T11:50:34.583708] SKIP tool=PowerShell reason=no_write_pattern cmd='Write-Host "Stopping PID 20004 (mocka_mcp_server.py)..."\nStop-Process -Id 20004 '
+[2026-09-26T11:50:52.385793] SKIP tool=Bash reason=no_write_pattern cmd='curl -s http://localhost:5002/health\necho\necho "---utf8 check via python---"\npyt'
+[2026-09-26T11:51:06.413739] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport hashlib, json\nfrom pathlib import Path\ncontent = Path(\'C:/Use'
+[2026-09-26T11:53:55.753168] OK event_id=? tool=Bash cmd_or_file='[Bash] tail -30 gateway/orchestra_one.log 2>&1' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T11:54:12.307999] OK event_id=? tool=Bash cmd_or_file='[Bash] echo "--- relay_ping.json content ---"\ncat data/tic/relay_pi' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T11:54:49.703322] SKIP tool=Bash reason=no_write_pattern cmd='git rev-parse HEAD\necho "---"\ngit status --short -- mocka_mcp_server.py data/tic'
+[2026-09-26T11:55:00.429096] SKIP tool=Bash reason=no_write_pattern cmd='git check-ignore -v data/tic/mcp_schema_hash.json\necho "exit:$?"\ngit log -1 --fo'
+[2026-09-26T11:58:58.477230] SKIP tool=Bash reason=no_write_pattern cmd='pwd\ngit rev-parse --show-toplevel\ngit rev-parse HEAD\ngit branch --show-current'
+[2026-09-26T11:59:17.869946] SKIP tool=Bash reason=no_write_pattern cmd='curl -s http://localhost:5002/health\necho\necho "--- current PID on 5002 ---"\nnet'
+[2026-09-26T11:59:42.302854] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\ncur = '
+[2026-09-26T12:00:34.251810] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\nconn.r'
+[2026-09-26T12:04:27.487404] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport ast\nsrc = open(\'app.py\', encoding=\'utf-8\').read()\nast.parse(s'
+[2026-09-26T12:04:58.840683] SKIP tool=PowerShell reason=no_write_pattern cmd='$before = Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue | Whe'
+[2026-09-26T12:05:37.745829] OK event_id=? tool=Bash cmd_or_file='[Bash] curl -s http://localhost:5000/health\necho\necho "--- re-run E' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:05:46.161046] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\nconn.r'
+[2026-09-26T12:06:03.152611] SKIP tool=Bash reason=no_write_pattern cmd='python -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/mocka_events.db\')\ncur = '
+[2026-09-26T12:06:07.988588] SKIP tool=Bash reason=no_write_pattern cmd='git status --short -- app.py mocka_mcp_server.py\necho "---HEAD---"\ngit rev-parse'
+[2026-09-26T12:08:04.055931] SKIP tool=Bash reason=no_write_pattern cmd='git diff -- app.py'
+[2026-09-26T12:08:55.142702] OK event_id=? tool=Bash cmd_or_file='[Bash] wc -l tools/mocka_orchestra_v10.py 2>&1\necho "---"\npython -c' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:09:25.385211] SKIP tool=PowerShell reason=no_write_pattern cmd='Write-Host "=== CDP port 9222 check ==="\nGet-NetTCPConnection -State Listen -Err'
+[2026-09-26T12:09:50.271960] OK event_id=? tool=Bash cmd_or_file='[Bash] cd tools && python mocka_orchestra_v10.py "MoCKA runtime aud' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:10:09.235464] OK event_id=? tool=Bash cmd_or_file='[Bash] cd tools && PYTHONIOENCODING=utf-8 python mocka_orchestra_v1' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:10:20.655097] OK event_id=? tool=Bash cmd_or_file='[Bash] pwd\nPYTHONIOENCODING=utf-8 python tools/mocka_orchestra_v10.' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:10:40.681935] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\npwd\nPYTHONIOENCODING=utf-8 python to' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:15:41.155637] SKIP tool=Bash reason=no_write_pattern cmd='cd /c/Users/sirok/MoCKA\necho "=== git diff -- app.py mocka_mcp_server.py ==="\ngi'
+[2026-09-26T12:15:57.438004] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\ngit diff -- app.py > /tmp/app_full.p' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:16:03.540059] SKIP tool=Bash reason=no_write_pattern cmd='sed -n \'1,4p\' /tmp/app_full.patch\necho "---hunk3 lines22-52---"\nsed -n \'22,52p\' '
+[2026-09-26T12:16:23.357403] OK event_id=? tool=Bash cmd_or_file="[Bash] cd /c/Users/sirok/MoCKA\n{ sed -n '1,4p' /tmp/app_full.patch;" url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:16:34.027155] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\ngit apply --cached /tmp/app_events_o' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:16:40.439202] SKIP tool=Bash reason=no_write_pattern cmd='cd /c/Users/sirok/MoCKA\necho "=== git diff --cached --check ==="\ngit diff --cach'
+[2026-09-26T12:16:55.845268] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\ngit commit -m "$(cat <<\'EOF\'\nfix: co' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:17:00.623211] SKIP tool=Bash reason=no_write_pattern cmd='cd /c/Users/sirok/MoCKA\necho "=== git status --short ==="\ngit status --short\nech'
+[2026-09-26T12:18:44.236828] SKIP tool=Bash reason=no_write_pattern cmd='cd /c/Users/sirok/MoCKA\necho "=== git rev-parse HEAD ==="\ngit rev-parse HEAD\nech'
+[2026-09-26T12:24:57.496650] SKIP tool=Bash reason=no_write_pattern cmd='if [ -n "$MOCKA_API_KEYS" ]; then echo "MOCKA_API_KEYS is SET (length=${#MOCKA_A'
+[2026-09-26T12:29:19.292888] SKIP tool=Bash reason=no_write_pattern cmd='curl -s http://localhost:5000/health\necho\nnetstat -ano | findstr ":5000" | finds'
+[2026-09-26T12:29:41.329322] OK event_id=? tool=Bash cmd_or_file='[Bash] find /c/Users/sirok/MoCKA/relay -maxdepth 2 -type f 2>&1 | h' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:30:46.431855] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\nMARKER="RELAY_PHI_OS_AUDIT_$(date +%' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:31:09.545983] SKIP tool=Bash reason=no_write_pattern cmd='cd /c/Users/sirok/MoCKA\npython -c "\nimport sqlite3\nconn = sqlite3.connect(\'data/'
+[2026-09-26T12:32:29.588872] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\nif [ -f .env ]; then\n  if grep -q "^' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:32:36.136671] SKIP tool=Bash reason=no_write_pattern cmd='netstat -ano | findstr ":5010" | findstr LISTENING'
+[2026-09-26T12:33:12.776912] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\nMARKER="HAB_MEMORY_AUDIT_$(date +%s)' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:33:32.326520] OK event_id=? tool=Bash cmd_or_file='[Bash] cd /c/Users/sirok/MoCKA\nNONCE=$(python -c "import uuid; prin' url=http://localhost:5002/agent/mocka_write_event
+[2026-09-26T12:33:47.864695] OK event_id=? tool=Bash cmd_or_file='[Bash] sleep 2\ncd /c/Users/sirok/MoCKA\nMARKER=$(cat marker_hab.txt.' url=http://localhost:5002/agent/mocka_write_event

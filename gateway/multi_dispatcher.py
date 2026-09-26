@@ -40,20 +40,21 @@ def dispatch_multi_request(request_text: str,
     Dispatch single request to multiple AI providers and collect responses.
 
     STEP 2: JARVIS integration - E2E minimal connection.
-    If decision_id provided, call JARVIS evaluate() before dispatching to providers.
+    If decision_id provided, call JARVIS recall_experience() before dispatching to providers.
+    JARVIS Decision context is embedded in request_text for GPT and other providers.
 
     Args:
         request_text: Text to send to all AI providers
         providers: List of provider names (default: all available)
         models: Dict of provider -> model mapping (default: use provider defaults)
         title: Title for HAB event logging
-        decision_id: Optional decision ID for JARVIS evaluate
+        decision_id: Optional decision ID for JARVIS recall
 
     Returns:
         {
             "status": "all_ok" | "partial_ok" | "all_error",
             "request_id": str (common request ID for all providers),
-            "jarvis": {} (JARVIS evaluate result, if decision_id provided),
+            "jarvis": {} (JARVIS recall result, if decision_id provided),
             "results": [
                 {
                     "provider": "gpt"|"claude"|"gemini"|"perplexity",
@@ -99,8 +100,9 @@ def dispatch_multi_request(request_text: str,
     }
 
     jarvis_result = None
+    enhanced_request_text = request_text
 
-    # STEP 2: Call JARVIS evaluate if decision_id provided
+    # STEP 2: Call JARVIS recall_experience if decision_id provided
     if decision_id:
         jarvis_result = _call_jarvis(
             decision_id=decision_id,
@@ -109,13 +111,23 @@ def dispatch_multi_request(request_text: str,
             title=title,
             timestamp=timestamp
         )
-        print(f"[dispatch_multi_request] JARVIS evaluate called for decision_id={decision_id}")
-        print(f"  JARVIS result: {jarvis_result}")
+        print(f"[dispatch_multi_request] JARVIS recall called for decision_id={decision_id}")
+        print(f"  JARVIS result status: {jarvis_result.get('status')}")
+
+        # STEP 2: Build enhanced request_text with Decision context if found
+        if jarvis_result.get('status') == 'found' and jarvis_result.get('jarvis_decision'):
+            enhanced_request_text = _build_request_with_decision_context(
+                original_request_text=request_text,
+                jarvis_decision=jarvis_result.get('jarvis_decision'),
+                decision_id=jarvis_result.get('decision_id')
+            )
+            print(f"[dispatch_multi_request] Enhanced request_text with Decision context")
+            print(f"  Decision ID: {jarvis_result.get('decision_id')}")
 
     for provider in providers:
         result = _call_provider(
             provider=provider,
-            request_text=request_text,
+            request_text=enhanced_request_text,
             model=models.get(provider, ""),
             title=title,
             common_request_id=common_request_id,
@@ -153,30 +165,81 @@ def dispatch_multi_request(request_text: str,
     return response
 
 
+def _build_request_with_decision_context(original_request_text: str,
+                                         jarvis_decision: Dict[str, Any],
+                                         decision_id: str) -> str:
+    """
+    Build enhanced request_text with JARVIS Decision context.
+
+    STEP 2: Minimal binding - embed Decision info in request_text so it flows
+    naturally through the provider pipeline without changing Socket/Adapter signatures.
+
+    Only includes fields that actually exist in jarvis_decision (no speculation).
+
+    Args:
+        original_request_text: Original user request
+        jarvis_decision: Decision dict from jarvis_result['jarvis_decision']
+        decision_id: Decision ID (for clarity in context block)
+
+    Returns:
+        Enhanced request_text with Decision context prepended
+    """
+    context_lines = ["[JARVIS DECISION CONTEXT]"]
+
+    if decision_id:
+        context_lines.append(f"Decision ID: {decision_id}")
+
+    # Add only fields that actually exist in jarvis_decision
+    if jarvis_decision.get('title'):
+        context_lines.append(f"Title: {jarvis_decision.get('title')}")
+
+    if jarvis_decision.get('decision'):
+        context_lines.append(f"Decision: {jarvis_decision.get('decision')}")
+
+    if jarvis_decision.get('rationale'):
+        context_lines.append(f"Rationale: {jarvis_decision.get('rationale')}")
+
+    if jarvis_decision.get('approved_by'):
+        context_lines.append(f"Approved By: {jarvis_decision.get('approved_by')}")
+
+    if jarvis_decision.get('approved_at'):
+        context_lines.append(f"Approved At: {jarvis_decision.get('approved_at')}")
+
+    context_lines.append("[END JARVIS DECISION CONTEXT]")
+    context_lines.append("")
+    context_lines.append("Original request:")
+    context_lines.append(original_request_text)
+
+    enhanced_text = "\n".join(context_lines)
+    print(f"[_build_request_with_decision_context] Enhanced request length: {len(enhanced_text)} chars")
+
+    return enhanced_text
+
+
 def _call_jarvis(decision_id: str,
                 request_id: str,
                 request_text: str,
                 title: str,
                 timestamp: str) -> Dict[str, Any]:
     """
-    STEP 2: Call JARVIS evaluate() before dispatching to Multi-AI providers.
+    CASE B: Call JARVIS recall_experience() to retrieve past decisions.
 
-    Minimal connection: JARVIS receives decision_id and returns evaluation result.
+    Minimal connection: JARVIS reads decision_ledger and returns most recent Active decision.
     Failures in JARVIS do not block multi-AI dispatch (fail-open design).
 
     Args:
-        decision_id: Decision ID for JARVIS to evaluate
+        decision_id: Decision ID (unused in MVP - for compatibility)
         request_id: Common request ID (for tracing)
-        request_text: Original request text
+        request_text: Original request text (used as intent hint)
         title: Request title
         timestamp: Request timestamp
 
     Returns:
         {
-            "decision_id": str,
+            "decision_id": str (if found),
             "request_id": str,
-            "status": "evaluated" | "error",
-            "jarvis_decision": dict (if evaluated),
+            "status": "found" | "empty" | "error",
+            "jarvis_decision": dict (if found),
             "jarvis_error": str (if error),
             "timestamp": str,
         }
@@ -185,24 +248,28 @@ def _call_jarvis(decision_id: str,
         from runtime.jarvis.core.engine import JarvisEngine
 
         jarvis = JarvisEngine()
-        jarvis_decision = jarvis.evaluate(decision_id)
+        recall_result = jarvis.recall_experience(current_intent=request_text)
 
-        print(f"[_call_jarvis] JarvisEngine.evaluate() succeeded for decision_id={decision_id}")
-        print(f"  Result: {jarvis_decision}")
+        print(f"[_call_jarvis] JarvisEngine.recall_experience() succeeded")
+        print(f"  Status: {recall_result['status']}")
+        if recall_result['status'] == 'found' and recall_result['matches']:
+            decision = recall_result['matches'][0]
+            print(f"  Decision ID: {decision.get('decision_id')}")
+            print(f"  Title: {decision.get('title')}")
 
         return {
-            "decision_id": decision_id,
+            "decision_id": recall_result.get('matches', [{}])[0].get('decision_id') if recall_result['status'] == 'found' else None,
             "request_id": request_id,
-            "status": "evaluated",
-            "jarvis_decision": jarvis_decision,
+            "status": recall_result.get('status', 'error'),
+            "jarvis_decision": recall_result.get('matches', [{}])[0] if recall_result['status'] == 'found' else None,
+            "jarvis_gap": recall_result.get('gap'),
             "timestamp": timestamp,
         }
 
     except ImportError as e:
-        # JARVIS module not available
         print(f"[_call_jarvis] Import error (JARVIS module not found): {e}")
         return {
-            "decision_id": decision_id,
+            "decision_id": None,
             "request_id": request_id,
             "status": "error",
             "jarvis_error": f"JARVIS module import failed: {str(e)}",
@@ -210,15 +277,14 @@ def _call_jarvis(decision_id: str,
         }
 
     except Exception as e:
-        # Other error in JARVIS evaluate
-        print(f"[_call_jarvis] JARVIS evaluate error: {e}")
+        print(f"[_call_jarvis] JARVIS recall_experience error: {e}")
         import traceback
         traceback.print_exc()
         return {
-            "decision_id": decision_id,
+            "decision_id": None,
             "request_id": request_id,
             "status": "error",
-            "jarvis_error": f"JARVIS evaluate failed: {str(e)}",
+            "jarvis_error": f"JARVIS recall_experience failed: {str(e)}",
             "timestamp": timestamp,
         }
 
@@ -231,6 +297,7 @@ _PROVIDER_SOCKETS = {
     "claude":     ("adapters_claude_socket", "ClaudeSocket", "claude-opus-5"),
     "gemini":     ("adapters_gemini_socket", "GeminiSocket", "gemini-2.0-flash"),
     "perplexity": ("adapters_perplexity_socket", "PerplexitySocket", "sonar-pro"),
+    "orchestra_web": ("adapters_orchestra_socket", "OrchestraSocket", "default"),
 }
 
 
