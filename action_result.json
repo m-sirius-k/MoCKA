@@ -4,7 +4,7 @@
   "target": "target-B",
   "runtime_scope": "scope-A",
   "status": "blocked",
-  "reason": "HG_VERIFICATION_ERROR: module 'logging' has no attribute 'StreamHandler'",
-  "output": "HG_VERIFICATION_ERROR: module 'logging' has no attribute 'StreamHandler'",
-  "timestamp": "2026-09-26T08:45:20.800840+00:00"
+  "reason": "TARGET_MISMATCH: approved=target-A requested=target-B",
+  "output": "TARGET_MISMATCH: approved=target-A requested=target-B",
+  "timestamp": "2026-09-26T08:54:09.253148+00:00"
 }

@@ -33,16 +33,7 @@ def execute_action(step, execution_context=None, action_id=None, target=None, ru
         # AUTHORIZATION CHECKPOINT: DECISION -> AUTHORIZATION -> ACTION
         # Verify Human Gate approval using canonical API
         try:
-            # Use canonical API (workaround logging collision)
-            saved_modules = {}
-            if 'logging' in sys.modules:
-                saved_modules['logging'] = sys.modules['logging']
-                del sys.modules['logging']
-
             from phi_os.human_gate import get_state as hg_get_state
-
-            if 'logging' in saved_modules:
-                sys.modules['logging'] = saved_modules['logging']
 
             # Get HG approval state using canonical API
             hg_state = hg_get_state(action_id)

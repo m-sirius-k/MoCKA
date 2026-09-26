@@ -1,4 +1,4 @@
-# runtime/logging.py
+# runtime/runtime_logger.py
 # MoCKA v1.2.1+ — RuntimeLogger（ログ制度化）
 # 全イベントの出力を統一形式で記録する。
 
