@@ -25,11 +25,13 @@ import requests
 
 GATE_BATCH_URL = "http://localhost:5000/api/gate/event/batch"
 FALLBACK_PATH = Path(__file__).parent.parent / "data" / "event_buffer_fallback.jsonl"
+FALLBACK_ARCHIVE_DIR = Path(__file__).parent.parent / "data" / "event_buffer_archives"
 
 BATCH_SIZE = 50
 FLUSH_INTERVAL_SEC = 0.5      # 仕様: 100ms〜1000ms間隔
 MIN_RETRY_INTERVAL_SEC = 5.0
 MAX_RETRY_INTERVAL_SEC = 30.0
+MAX_FALLBACK_SIZE = 10 * 1024 * 1024  # 10MB
 
 
 class EventBuffer:
@@ -123,6 +125,21 @@ class EventBuffer:
         except Exception:
             pass
 
+    def _rotate_fallback_if_needed(self) -> None:
+        """fallback ファイルが MAX_FALLBACK_SIZE を超えた場合、アーカイブに移動"""
+        if not FALLBACK_PATH.exists():
+            return
+        try:
+            file_size = FALLBACK_PATH.stat().st_size
+            if file_size > MAX_FALLBACK_SIZE:
+                FALLBACK_ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
+                timestamp = int(time.time() * 1000)
+                archive_path = FALLBACK_ARCHIVE_DIR / f"event_buffer_fallback_{timestamp}.jsonl"
+                FALLBACK_PATH.rename(archive_path)
+                print(f"[EventBuffer] fallback rotated ({file_size / 1024 / 1024:.1f}MB → archive)")
+        except Exception as e:
+            print(f"[EventBuffer] fallback rotation失敗: {e}")
+
     def _persist_fallback(self, events) -> None:
         if not events:
             return
@@ -131,6 +148,7 @@ class EventBuffer:
             with open(FALLBACK_PATH, "a", encoding="utf-8") as f:
                 for ev in events:
                     f.write(json.dumps(ev, ensure_ascii=False) + "\n")
+            self._rotate_fallback_if_needed()
         except Exception as e:
             print(f"[EventBuffer] fallback永続化失敗: {e}")
 
