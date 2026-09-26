@@ -33,6 +33,8 @@ import adapter_genspark     # TODO_270
 sys.path.insert(0, str(Path(__file__).parent.parent / "interface"))
 from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
 
+from hab_bridge import create_hab_core  # HAB Common Core dispatcher
+
 app = Flask(__name__)
 CORS(app)
 
@@ -41,19 +43,23 @@ builder = ContextBuilder()
 DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
 DATA_DIR = Path(__file__).parent.parent / "data"
 
+adapters_registry = {
+    'gpt':        adapter_gpt,
+    'gemini':     adapter_gemini,
+    'copilot':    adapter_copilot,
+    'perplexity': adapter_perplexity,   # TODO_269
+    'genspark':   adapter_genspark,     # TODO_270
+}
+
 connector = ConnectorCaliber(
     db_path=DB_PATH,
     context_builder=builder,
     auth=auth_module,
-    adapters={
-        'gpt':        adapter_gpt,
-        'gemini':     adapter_gemini,
-        'copilot':    adapter_copilot,
-        'perplexity': adapter_perplexity,   # TODO_269
-        'genspark':   adapter_genspark,     # TODO_270
-    },
+    adapters=adapters_registry,
 )
 connector.register(app)
+
+hab_core = create_hab_core(adapters_registry)
 
 
 @app.before_request
@@ -135,6 +141,25 @@ def health():
         "port":    5010,
         "time":    datetime.now(timezone.utc).isoformat(),
     })
+
+
+@app.route("/api/v1/hab/dispatch", methods=["POST"])
+def hab_dispatch():
+    """HAB Common Core dispatcher - route JARVIS requests to AI Sockets"""
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "JSON body required"}), 400
+
+    target_socket = data.get("target_socket")
+    if not target_socket:
+        return jsonify({"error": "target_socket is required"}), 400
+
+    try:
+        result = hab_core.dispatch_to_ai(data, target_socket)
+        status_code = 200 if result.get("status") == "routed" else 400
+        return jsonify(result), status_code
+    except Exception as e:
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 
 # ---------- POST endpoint ----------
