@@ -2689,48 +2689,61 @@ def ny_extract():
     })
 
 # ── cross_audit エンドポイント ───────────────────────────────────────────────
+_CROSS_AUDIT_AVAILABLE = False
+_cross_audit_functions = {}
+
 try:
     from interface.cross_audit import (
         init_audit_db, create_task, submit_result,
         run_discrepancy_check, get_task_report, list_tasks as list_audit_tasks
     )
+    _CROSS_AUDIT_AVAILABLE = True
     print("[app] cross_audit engine loaded")
-
-    @app.route("/cross_audit/task", methods=["POST"])
-    def cross_audit_task():
-        data = request.json or {}
-        task_text = data.get("task", "")
-        agents = data.get("agents", None)
-        if not task_text:
-            return jsonify({"error": "task required"}), 400
-        return jsonify(create_task(task_text, agents))
-
-    @app.route("/cross_audit/submit", methods=["POST"])
-    def cross_audit_submit():
-        data = request.json or {}
-        task_id  = data.get("task_id", "")
-        agent    = data.get("agent", "")
-        response = data.get("response", "")
-        score    = float(data.get("score", 0.0))
-        if not task_id or not agent:
-            return jsonify({"error": "task_id and agent required"}), 400
-        return jsonify(submit_result(task_id, agent, response, score))
-
-    @app.route("/cross_audit/check/<task_id>")
-    def cross_audit_check(task_id):
-        discs = run_discrepancy_check(task_id)
-        return jsonify({"task_id": task_id, "discrepancies": discs, "count": len(discs)})
-
-    @app.route("/cross_audit/report/<task_id>")
-    def cross_audit_report(task_id):
-        return jsonify(get_task_report(task_id))
-
-    @app.route("/cross_audit/list")
-    def cross_audit_list():
-        return jsonify(list_audit_tasks())
-
 except Exception as _ce:
     print(f"[app] cross_audit load error: {_ce}")
+
+@app.route("/cross_audit/task", methods=["POST"])
+def cross_audit_task():
+    if not _CROSS_AUDIT_AVAILABLE:
+        return jsonify({"status": "error", "reason": "Cross-audit unavailable"}), 503
+    data = request.json or {}
+    task_text = data.get("task", "")
+    agents = data.get("agents", None)
+    if not task_text:
+        return jsonify({"error": "task required"}), 400
+    return jsonify(create_task(task_text, agents))
+
+@app.route("/cross_audit/submit", methods=["POST"])
+def cross_audit_submit():
+    if not _CROSS_AUDIT_AVAILABLE:
+        return jsonify({"status": "error", "reason": "Cross-audit unavailable"}), 503
+    data = request.json or {}
+    task_id  = data.get("task_id", "")
+    agent    = data.get("agent", "")
+    response = data.get("response", "")
+    score    = float(data.get("score", 0.0))
+    if not task_id or not agent:
+        return jsonify({"error": "task_id and agent required"}), 400
+    return jsonify(submit_result(task_id, agent, response, score))
+
+@app.route("/cross_audit/check/<task_id>")
+def cross_audit_check(task_id):
+    if not _CROSS_AUDIT_AVAILABLE:
+        return jsonify({"status": "error", "reason": "Cross-audit unavailable"}), 503
+    discs = run_discrepancy_check(task_id)
+    return jsonify({"task_id": task_id, "discrepancies": discs, "count": len(discs)})
+
+@app.route("/cross_audit/report/<task_id>")
+def cross_audit_report(task_id):
+    if not _CROSS_AUDIT_AVAILABLE:
+        return jsonify({"status": "error", "reason": "Cross-audit unavailable"}), 503
+    return jsonify(get_task_report(task_id))
+
+@app.route("/cross_audit/list")
+def cross_audit_list():
+    if not _CROSS_AUDIT_AVAILABLE:
+        return jsonify({"status": "error", "reason": "Cross-audit unavailable"}), 503
+    return jsonify(list_audit_tasks())
 # ─────────────────────────────────────────────────────────────────────────────
 
 
