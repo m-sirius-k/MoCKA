@@ -34,22 +34,58 @@ def execute_action(step, execution_context=None, action_id=None):
         sys.path.insert(0, ROOT)
 
         # AUTHORIZATION CHECKPOINT: DECISION -> AUTHORIZATION -> ACTION
-        # Issue authorization state before action execution
+        # Verify Human Gate approval before action execution (direct DB query)
         try:
-            from governance.authorization_state_bridge import issue_authorization_state
+            import sqlite3
 
-            auth_ok, auth_id, auth_reason = issue_authorization_state(request_id=action_id)
-            if not auth_ok:
+            hg_db_path = os.path.join(ROOT, 'data', 'mocka_events.db')
+            hg_conn = sqlite3.connect(hg_db_path)
+            hg_cursor = hg_conn.cursor()
+
+            # Ensure table exists
+            hg_cursor.execute('''
+                CREATE TABLE IF NOT EXISTS human_gate_events (
+                    event_id TEXT PRIMARY KEY,
+                    timestamp TEXT,
+                    type TEXT,
+                    action TEXT,
+                    request_id TEXT,
+                    payload TEXT,
+                    previous_state TEXT,
+                    next_state TEXT
+                )
+            ''')
+
+            # Get latest state for this request_id
+            hg_cursor.execute('''
+                SELECT next_state FROM human_gate_events
+                WHERE request_id = ?
+                ORDER BY rowid DESC
+                LIMIT 1
+            ''', (action_id,))
+
+            row = hg_cursor.fetchone()
+            hg_conn.close()
+
+            if row is None:
                 status = "blocked"
-                reason = f"Authorization checkpoint failed: {auth_reason}"
+                reason = "No Human Gate approval found for this request"
                 output = reason
             else:
-                # Authorization passed - proceed with action
-                output = f"Test action: {step}"
-                status = "success"
+                hg_state = row[0]
+                if hg_state != "APPROVED":
+                    status = "blocked"
+                    reason = f"Human Gate approval required (current state: {hg_state})"
+                    output = reason
+                else:
+                    # Action is approved - proceed with execution
+                    auth_id = action_id
+                    output = f"Test action: {step}"
+                    status = "success"
+
         except Exception as auth_err:
-            status = "error"
-            reason = f"Authorization mechanism unavailable: {str(auth_err)}"
+            status = "blocked"
+            reason = f"Human Gate verification failed: {str(auth_err)}"
             output = reason
     except Exception as e:
         status = "error"
