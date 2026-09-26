@@ -556,21 +556,28 @@ TOOLS = [
     {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}}
 ]
 
-def _check_request_duplicate(req_id):
+def _check_request_duplicate(req_id, tool_name=None):
     """
     req_id が既に処理済みかどうか確認する。
     既存 gate_idempotency テーブルを使用してrequest-level deduplication を実装。
+
+    NOTE: req_id は MCP JSON-RPC のトランスポート層id(クライアント接続ごとに
+    1,2,3...と振られるセッションローカルな値)であり、それ単体はグローバルに
+    一意ではない。別クライアントセッションが過去に使った小さい整数と衝突し
+    誤検知するのを防ぐため、tool_name と組み合わせた複合キーで判定する
+    (2026-09-26 runtime E2E audit で実際の誤検知を確認し修正)。
     戻り値: (is_duplicate: bool, event_id: str or None)
     """
     if not req_id:
         return False, None
+    key = f"{req_id}:{tool_name}" if tool_name else str(req_id)
     con = _get_db()
     try:
-        # request_executions テーブルで req_id を確認
-        # (exec_id=req_id, executed_at=timestamp を記録)
+        # request_executions テーブルで複合キー(req_id:tool_name)を確認
+        # (exec_id=key, executed_at=timestamp を記録)
         row = con.execute(
             "SELECT req_id, executed_at FROM request_executions WHERE req_id = ? LIMIT 1",
-            (str(req_id),)
+            (key,)
         ).fetchone()
         if row:
             return True, row['req_id']
@@ -600,15 +607,17 @@ def _check_request_duplicate(req_id):
 def _record_request_execution(req_id, tool_name, status="started"):
     """
     req_id と tool_name を request_executions に記録。
+    複合キー(req_id:tool_name)で保存する（_check_request_duplicate と同じ規則）。
     Fail-soft: 記録失敗時も tool 実行を止めない（記録が目的ではなく、duplicate チェックが目的）。
     """
     if not req_id:
         return
+    key = f"{req_id}:{tool_name}" if tool_name else str(req_id)
     con = _get_db()
     try:
         con.execute(
             "INSERT OR REPLACE INTO request_executions (req_id, executed_at, tool_name, status) VALUES (?, ?, ?, ?)",
-            (str(req_id), datetime.datetime.now().isoformat(), tool_name, status)
+            (key, datetime.datetime.now().isoformat(), tool_name, status)
         )
         con.commit()
     except Exception as e:
@@ -621,7 +630,7 @@ def execute_tool(name, args, req_id=None):
     try:
         # STEP 9: Request Boundary Idempotency Check
         # 同一 req_id が既に処理済みの場合は実行しない (fail-closed)
-        is_duplicate, dup_req_id = _check_request_duplicate(req_id)
+        is_duplicate, dup_req_id = _check_request_duplicate(req_id, name)
         if is_duplicate:
             print(f"[IDEMPOTENCY] Duplicate request detected: req_id={req_id}, tool={name}", flush=True)
             return json.dumps({
@@ -1321,7 +1330,7 @@ TEST_TOOLS = [
 
 def execute_test_tool(name, arguments, req_id=None):
     # Test tools also go through req_id check for consistency
-    is_duplicate, _ = _check_request_duplicate(req_id)
+    is_duplicate, _ = _check_request_duplicate(req_id, name)
     if is_duplicate:
         return json.dumps({
             "error": "DUPLICATE_REQUEST",

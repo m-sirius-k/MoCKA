@@ -2527,6 +2527,30 @@ def runtime_approve():
                     print(f"[WARN] execution_log record failed (non-blocking): {_exec_log_err}", flush=True)
                 finally:
                     conn.close()
+
+                # 2026-09-26 runtime E2E audit: HAB/JARVIS -> Runtime execution が
+                # 正本 events (phi_os/event_gate.process_event) に一度も到達しない
+                # 欠落を検知(human_gate_events/authorization_state/execution_log
+                # には記録されるが events テーブルへの書込呼出し自体が存在しなかった)。
+                # GL7/BA04 governance_pipeline は経由しない独立した正規書込関数
+                # (process_event)を呼び、この経路にも events 記録を追加する。
+                try:
+                    from phi_os.event_gate import process_event
+                    process_event({
+                        "who_actor": human_id,
+                        "who_role": "executor",
+                        "who_session": "SESSION_" + datetime.now().strftime("%Y%m%d_%H%M%S"),
+                        "what_type": "audit",
+                        "where_path": "app.py:/runtime/approve",
+                        "where_component": "runtime_t2",
+                        "why_purpose": f"T2 runtime execution for decision {decision_id}",
+                        "how_trigger": "hab_jarvis_runtime_approve",
+                        "after_state": (json.dumps(execution_result, ensure_ascii=False)[:200]
+                                        if execution_result else "no_result"),
+                        "request_id": decision_id,
+                    }, event_source="live")
+                except Exception as _events_err:
+                    print(f"[WARN] events record failed (non-blocking): {_events_err}", flush=True)
             except Exception as _exec_err:
                 execution_error = str(_exec_err)
                 print(f"[WARN] execute_tool call failed: {_exec_err}", flush=True)
