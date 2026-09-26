@@ -71,6 +71,8 @@ from phi_os.integrity_routes import integrity_bp
 from phi_os.api.time_api import time_api_bp
 # [PHI-OS Human Gate v1] Decision state transitions - APPROVAL/REJECTION workflow
 from phi_os.human_gate import human_gate_bp
+# [JARVIS Authority Boundary v0.1] Decision evaluation through human authority
+from runtime.jarvis.api import jarvis_bp
 app.register_blueprint(ai_session_bp)
 app.register_blueprint(handshake_bp)
 app.register_blueprint(dashboard_bp)
@@ -83,6 +85,7 @@ app.register_blueprint(gate_bp)
 app.register_blueprint(integrity_bp)
 app.register_blueprint(time_api_bp)
 app.register_blueprint(human_gate_bp)
+app.register_blueprint(jarvis_bp)
 
 # ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)
