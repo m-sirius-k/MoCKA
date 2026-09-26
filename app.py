@@ -65,6 +65,7 @@ from interface.commission_manager import commission_bp
 from interface.context_composer import context_bp
 # [PHI-OS GATE v1 2026-06-16] Phase 3 — EVENT GATE統合
 from phi_os.event_gate import gate_bp
+from phi_os import event_gate as event_gate_module
 # [Phase5-2 2026-06-20] Event Integrity Framework — Verification API統合
 from phi_os.integrity_routes import integrity_bp
 # [Phase5 Step1 2026-06-22] Time API v0 — 時間OS読み取り専用境界(localhost限定)
@@ -1010,6 +1011,8 @@ def _get_relay_kernel():
     if _RELAY_KERNEL_SINGLETON is None:
         from relay.relay_kernel import RelayKernel
         _RELAY_KERNEL_SINGLETON = RelayKernel()
+        # Stage 3: Register relay kernel with event_gate for main event flow integration
+        event_gate_module.set_relay_kernel(_RELAY_KERNEL_SINGLETON)
     return _RELAY_KERNEL_SINGLETON
 
 @app.route("/collect", methods=["POST"])

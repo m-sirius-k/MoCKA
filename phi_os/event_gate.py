@@ -22,6 +22,23 @@ DB_PATH = str(_REPO_ROOT / 'data' / 'mocka_events.db')
 sys.path.insert(0, str(_REPO_ROOT / 'interface'))
 from gate_policy import POLICY_VERSION as GATE_POLICY_VERSION  # Phase5-1 Gate Policy
 
+# Stage 3: Relay integration - optional relay_kernel instance (set by app.py)
+_relay_kernel_instance = None
+
+def set_relay_kernel(kernel):
+    """Register RelayKernel instance for event ingestion (called from app.py)"""
+    global _relay_kernel_instance
+    _relay_kernel_instance = kernel
+
+def _ingest_to_relay(event: dict) -> None:
+    """Ingest event to Relay kernel if available (non-blocking)"""
+    if _relay_kernel_instance is not None:
+        try:
+            _relay_kernel_instance.ingest(event)
+        except Exception as e:
+            # Relay ingestion failure is non-critical
+            pass
+
 
 # ── helpers ──────────────────────────────────────────────────────────────────
 
@@ -177,6 +194,9 @@ def process_buffered_event(ev: dict, conn) -> dict:
     ev['event_source'] = ev.get('event_source', 'buffered')
 
     _write(ev, conn=conn)
+
+    # Stage 3: Ingest to Relay kernel for state projection (non-blocking)
+    _ingest_to_relay(ev)
 
     if idem_key:
         conn.execute(
