@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 try:
-    from phi_os.event.event_gate import process_event
+    from phi_os.event_gate import process_event
 except ImportError:
     process_event = None
 
