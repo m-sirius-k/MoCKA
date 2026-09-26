@@ -22,7 +22,17 @@ from pathlib import Path
 
 from structural.repository_policy import get_policy
 
-REPO_ROOT      = Path(r"C:\Users\sirok\MoCKA")
+def _get_repo_root():
+    """Auto-detect repository root"""
+    current = Path(__file__).resolve().parent
+    while current != current.parent:
+        if (current / ".git").exists():
+            return current
+        current = current.parent
+    return Path(__file__).resolve().parent.parent
+
+import os as _os_mod
+REPO_ROOT      = Path(_os_mod.environ.get("MOCKA_ROOT")) if _os_mod.environ.get("MOCKA_ROOT") else _get_repo_root()
 REPO_INDEX     = REPO_ROOT / "structural" / "repository_index.json"
 WORKING_MEMORY = REPO_ROOT / "data" / "working_memory.json"
 

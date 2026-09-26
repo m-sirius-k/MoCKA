@@ -255,7 +255,7 @@ def _update_working_context_live(title: str, why_purpose: str, ai: str = "",
     # （event_runtime_log.jsonへの追記のみ）。失敗してもイベント書込自体は妨げない。
     try:
         import sys as _sys
-        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        _repo_root = str(BASE)
         if _repo_root not in _sys.path:
             _sys.path.insert(0, _repo_root)
         from phi_os.context.working_context import WorkingContext
@@ -309,7 +309,7 @@ def _write_reopen_event(todo_id: str, new_status: str, reason: str) -> str:
         raise RuntimeError(f"GATE rejected {r.status_code}: {r.text[:120]}")
     except requests.exceptions.ConnectionError:
         import sys as _sys
-        _repo_root = str(Path(r"C:\Users\sirok\MoCKA"))
+        _repo_root = str(BASE)
         if _repo_root not in _sys.path:
             _sys.path.insert(0, _repo_root)
         from phi_os.event_gate import process_event as _gate_process_event
