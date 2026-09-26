@@ -27,13 +27,30 @@ def execute_action(step, execution_context=None, action_id=None):
     output = None
     status = "blocked"
     reason = None
+    auth_id = None
+    auth_reason = None
 
     try:
         sys.path.insert(0, ROOT)
 
-        # Minimal ACTION: just log and record
-        output = f"Test action: {step}"
-        status = "success"
+        # AUTHORIZATION CHECKPOINT: DECISION -> AUTHORIZATION -> ACTION
+        # Issue authorization state before action execution
+        try:
+            from governance.authorization_state_bridge import issue_authorization_state
+
+            auth_ok, auth_id, auth_reason = issue_authorization_state(request_id=action_id)
+            if not auth_ok:
+                status = "blocked"
+                reason = f"Authorization checkpoint failed: {auth_reason}"
+                output = reason
+            else:
+                # Authorization passed - proceed with action
+                output = f"Test action: {step}"
+                status = "success"
+        except Exception as auth_err:
+            status = "error"
+            reason = f"Authorization mechanism unavailable: {str(auth_err)}"
+            output = reason
     except Exception as e:
         status = "error"
         reason = str(e)
@@ -47,6 +64,11 @@ def execute_action(step, execution_context=None, action_id=None):
         "output": output,
         "timestamp": datetime.now(UTC).isoformat()
     }
+
+    if auth_id:
+        result["authorization_id"] = auth_id
+    if auth_reason:
+        result["authorization_reason"] = auth_reason
 
     with open(RESULT_PATH, "w", encoding="utf-8") as f:
         json.dump(result, f, ensure_ascii=False, indent=2)
