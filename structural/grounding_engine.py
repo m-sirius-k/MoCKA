@@ -80,7 +80,10 @@ class RepositoryGroundingEngine:
         return [line for line in status.splitlines() if line]
 
     def get_project_structure(self) -> list:
-        return sorted(p.name for p in self.repo_root.iterdir())
+        return sorted(
+            p.name for p in self.repo_root.iterdir()
+            if p.is_dir() and not ("\\" in p.name or (len(p.name) > 1 and p.name[1] == ":"))
+        )
 
     def get_repository_index(self) -> dict | None:
         if REPO_INDEX.exists():
