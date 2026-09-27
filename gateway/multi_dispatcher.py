@@ -42,6 +42,8 @@ def dispatch_with_orchestra_session(request_text: str,
     This function checks if Orchestra has set a valid Browser/Context/Page session
     via browser_session_handler, and uses that session context for the dispatch.
 
+    Result is recorded to Event Store via existing event_buffer pathway.
+
     Args:
         request_text: Request to dispatch
         providers: AI providers (default: gpt)
@@ -84,6 +86,42 @@ def dispatch_with_orchestra_session(request_text: str,
         "page_id": id(page) if page else None,
         "source": "orchestra_runtime",
     }
+
+    # Record to Event Store via existing event_buffer pathway (Phase 3 Event Bridge)
+    try:
+        import sys
+        _interface_path = _mocka_root / "interface"
+        if str(_interface_path) not in sys.path:
+            sys.path.insert(0, str(_interface_path))
+        from event_buffer import get_buffer
+
+        now = datetime.now(timezone.utc)
+        summary = dispatch_result.get("summary", {})
+        summary_text = (
+            f"ok={summary.get('ok', 0)}, "
+            f"error={summary.get('error', 0)}, "
+            f"not_verified={summary.get('not_verified', 0)}"
+        )
+
+        # Use same event format as gateway.py for consistency
+        event = {
+            "title": f"Multi-AI Request: {title}",
+            "short_summary": summary_text,
+            "when": now.isoformat(),
+            "who_actor": "MultiAI/Dispatcher",
+            "ai_actor": "Orchestra",
+            "what_type": "multi_ai_request",
+            "free_note": f"request_id={dispatch_result.get('request_id')},orchestra_session=connected",
+            "where_component": "gateway_multi_dispatcher",
+            "lifecycle_phase": "in_operation",
+            "why_purpose": "orchestra_hab_integration",
+        }
+        get_buffer().push(event)
+        print(f"[dispatch_with_orchestra_session] Event pushed to buffer: request_id={dispatch_result.get('request_id')}")
+    except Exception as e:
+        print(f"[dispatch_with_orchestra_session] WARNING: Event buffer write failed: {e}")
+        import traceback
+        traceback.print_exc()
 
     return dispatch_result
 
