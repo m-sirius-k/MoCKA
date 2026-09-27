@@ -90,7 +90,7 @@ def handle_function_call(title: str, description: str, tags: list = None,
 
     try:
         r = requests.post(
-            f"{GATEWAY_BASE}/api/v1/event",
+            "http://localhost:5000/api/gate/event",
             json=payload,
             headers={"X-MoCKA-Key": MOCKA_API_KEY, "Content-Type": "application/json"},
             timeout=5,
