@@ -31,6 +31,63 @@ if str(_mocka_root) not in sys.path:
     sys.path.insert(0, str(_mocka_root))
 
 
+def dispatch_with_orchestra_session(request_text: str,
+                                    providers: List[str] = None,
+                                    models: Dict[str, str] = None,
+                                    title: str = "Orchestra HAB Integration",
+                                    decision_id: str = None) -> Dict[str, Any]:
+    """
+    Phase 3: Dispatch request using real Orchestra Runtime Browser/Context/Page.
+
+    This function checks if Orchestra has set a valid Browser/Context/Page session
+    via browser_session_handler, and uses that session context for the dispatch.
+
+    Args:
+        request_text: Request to dispatch
+        providers: AI providers (default: gpt)
+        models: Model mapping
+        title: Request title
+        decision_id: Optional JARVIS decision ID
+
+    Returns:
+        Standard dispatch_multi_request response with orchestra_session_status
+    """
+    from browser_session_handler import get_orchestra_session
+
+    browser, context, page = get_orchestra_session()
+
+    result = {
+        "orchestra_session_status": "not_set",
+        "browser_available": browser is not None,
+        "context_available": context is not None,
+        "page_available": page is not None,
+    }
+
+    if browser is None and context is None and page is None:
+        result["error"] = "ORCHESTRA_ENTRY_NOT_CONNECTED: No Orchestra session found"
+        return result
+
+    # Session found - dispatch normally with standard flow
+    dispatch_result = dispatch_multi_request(
+        request_text=request_text,
+        providers=providers or ["gpt"],
+        models=models,
+        title=title,
+        decision_id=decision_id
+    )
+
+    # Enrich result with Orchestra session metadata
+    dispatch_result["orchestra_session_status"] = "connected"
+    dispatch_result["orchestra_session_metadata"] = {
+        "browser_id": id(browser) if browser else None,
+        "context_id": id(context) if context else None,
+        "page_id": id(page) if page else None,
+        "source": "orchestra_runtime",
+    }
+
+    return dispatch_result
+
+
 def dispatch_multi_request(request_text: str,
                           providers: List[str] = None,
                           models: Dict[str, str] = None,
