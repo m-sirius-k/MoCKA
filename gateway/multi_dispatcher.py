@@ -115,6 +115,7 @@ def dispatch_with_orchestra_session(request_text: str,
             "where_component": "gateway_multi_dispatcher",
             "lifecycle_phase": "in_operation",
             "why_purpose": "orchestra_hab_integration",
+            "request_id": dispatch_result.get('request_id'),  # PHASE 5: Event Gate compatibility
         }
         get_buffer().push(event)
         print(f"[dispatch_with_orchestra_session] Event pushed to buffer: request_id={dispatch_result.get('request_id')}")
