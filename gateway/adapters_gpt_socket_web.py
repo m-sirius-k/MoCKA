@@ -25,10 +25,11 @@ class GPTSocketWeb:
         self.ai_name = 'ChatGPT'
         self.ai_config = {
             'url': 'https://chatgpt.com',
-            'input_selector': '#prompt-textarea, div[contenteditable="true"][data-id]',
-            'response_selector': '[data-message-author-role="assistant"] .markdown',
+            # Updated selectors for current ChatGPT UI - try modern selectors first
+            'input_selector': 'textarea[placeholder*="Message"], [role="combobox"] textarea, div[contenteditable="true"][data-id], #prompt-textarea',
+            'response_selector': '[data-message-author-role="assistant"] .markdown, div[data-message-author-role="assistant"]',
             'stop_selector': 'button[aria-label="Stop streaming"]',
-            'is_contenteditable': True,
+            'is_contenteditable': False,  # Updated to use type() method instead
         }
 
     def request(self, request_text: str, model: str = "gpt-4",

@@ -94,6 +94,32 @@ app.register_blueprint(time_api_bp)
 app.register_blueprint(hab_bp)
 
 # ============================================================
+# Orchestra CORS Handler - Extension → Handshake
+# ============================================================
+@app.after_request
+def add_orchestra_cors(response):
+    origin = request.headers.get("Origin", "")
+
+    allowed_origins = {
+        "https://chatgpt.com",
+        "https://chat.openai.com",
+        "https://claude.ai",
+        "https://gemini.google.com",
+        "https://www.perplexity.ai",
+        "https://perplexity.ai",
+        "https://copilot.microsoft.com",
+        "chrome-extension://lbjcmlkcjgjibcmlaokldopjokajjlgc",
+    }
+
+    if origin in allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Vary"] = "Origin"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+
+    return response
+
+# ============================================================
 # 文字化け撲滅 防御ミドルウェア (2026-04-29)
 # ============================================================
 import unicodedata
@@ -4337,12 +4363,98 @@ def initialize_runtime():
         print(f"[initialize_runtime] audit_trigger install failed: {e}")
 
 
+# ===== Orchestra Response Cache (Minimal Response Return Bridge) =====
+import threading as _orch_threading
+_orchestra_response_cache = {}
+_orchestra_response_ttl = {}
+_orchestra_cache_lock = _orch_threading.Lock()
+
+def _cleanup_orchestra_cache():
+    """TTL切れたresponseを定期的に削除"""
+    while True:
+        try:
+            now = time.time()
+            with _orchestra_cache_lock:
+                expired = [k for k, v in _orchestra_response_ttl.items() if v < now]
+                for k in expired:
+                    _orchestra_response_cache.pop(k, None)
+                    _orchestra_response_ttl.pop(k, None)
+            time.sleep(30)
+        except Exception as e:
+            print(f"[Orchestra Cache] cleanup error: {e}")
+            time.sleep(30)
+
+@app.route('/api/orchestra/response', methods=['POST'])
+def post_orchestra_response():
+    """Extension: AI responseをバックエンドにキャッシュ (TODO_ORCH_001)
+    POST /api/orchestra/response
+    Body: {
+      session_id: "SESSION_...",
+      ai_name: "ChatGPT"|"Gemini"|...,
+      response: "<AI response text>",
+      timestamp: ISO8601 (optional)
+    }
+    """
+    data = request.get_json(force=True) or {}
+    session_id = data.get('session_id')
+    ai_name = data.get('ai_name')
+    response = data.get('response')
+    timestamp = data.get('timestamp') or datetime.now(timezone.utc).isoformat()
+
+    # [RUNTIME_VERIFY] E2E verification logging
+    if response:
+        response_preview = response[:50] if len(response) > 50 else response
+        print(f"[ORCHESTRA_RECEIVE] Extension POST: session_id={session_id}, ai={ai_name}, response_preview={response_preview}")
+
+    if not session_id or not ai_name or response is None:
+        return jsonify({'status': 'error', 'message': 'session_id, ai_name, response required'}), 400
+
+    key = f"{session_id}:{ai_name}"
+    with _orchestra_cache_lock:
+        _orchestra_response_cache[key] = {
+            'session_id': session_id,
+            'ai_name': ai_name,
+            'response': response,
+            'timestamp': timestamp
+        }
+        _orchestra_response_ttl[key] = time.time() + 300  # 5分TTL
+
+    print(f"[Orchestra] response cached: session_id={session_id}, ai={ai_name}, len={len(response)}")
+    return jsonify({'status': 'ok', 'session_id': session_id, 'ai_name': ai_name}), 201
+
+@app.route('/api/orchestra/response/<session_id>/<ai_name>', methods=['GET'])
+def get_orchestra_response(session_id, ai_name):
+    """JARVIS: session_idとai_nameからresponseを取得 (TODO_ORCH_001)
+    GET /api/orchestra/response/{session_id}/{ai_name}
+    Response: { status: "ok", data: { session_id, ai_name, response, timestamp } }
+    """
+    key = f"{session_id}:{ai_name}"
+
+    with _orchestra_cache_lock:
+        # TTLチェック
+        if key in _orchestra_response_ttl:
+            if time.time() > _orchestra_response_ttl[key]:
+                _orchestra_response_cache.pop(key, None)
+                _orchestra_response_ttl.pop(key, None)
+                print(f"[Orchestra] response expired: session_id={session_id}, ai={ai_name}")
+                return jsonify({'status': 'expired'}), 404
+
+        if key not in _orchestra_response_cache:
+            print(f"[Orchestra] response not found: session_id={session_id}, ai={ai_name}")
+            return jsonify({'status': 'not_found'}), 404
+
+        data = _orchestra_response_cache[key]
+
+    print(f"[Orchestra] response retrieved: session_id={session_id}, ai={ai_name}")
+    return jsonify({'status': 'ok', 'data': data}), 200
+
 def start_background_loops():
     """継続稼働するbackground Thread/Timerの起動窓口。initialize_runtime()完了後に呼ぶ。"""
     threading.Thread(target=auto_process_loop, daemon=True).start()
     _lt.Thread(target=auto_audit_loop, daemon=True).start()
     _threading.Timer(10, _start_overdue_loop).start()
     _threading.Thread(target=_guidelines_loop, daemon=True).start()
+    _orch_threading.Thread(target=_cleanup_orchestra_cache, daemon=True).start()
 
 
 if __name__ == "__main__":

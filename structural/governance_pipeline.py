@@ -180,10 +180,23 @@ class GovernancePipeline:
         if tool_name not in READ_ONLY_TOOLS:
             decision_id = args.get("decision_id")
 
-            # Requirement 0: decision_id must be present
-            if not decision_id:
+            # GENESIS ENTRY POINT: Allow mocka_decision_write with no prior DECISION_ID
+            # when explicitly Human-authorized Bootstrap decision with scope binding match
+            is_genesis = (
+                tool_name == "mocka_decision_write"
+                and args.get("decision_type") == "GENESIS"
+                and args.get("approved_by") == "nsjpkimura@gmail.com"
+                and args.get("authorization_scope") == args.get("runtime_scope")
+            )
+
+            # Requirement 0: decision_id must be present (except for authorized Genesis)
+            if not decision_id and not is_genesis:
                 aborts.append("BA04_DECISION_ID_MISSING")
-            else:
+            elif not decision_id and is_genesis:
+                # Genesis Decision: skip BA04_DECISION_ID_MISSING, proceed to GL7 Dry Run
+                # mocka_mcp_server will auto-generate DECISION_ID via _next_decision_id()
+                pass
+            elif decision_id:
                 decision_record = self._read_decision(decision_id)
 
                 # Requirement 1: Decision exists

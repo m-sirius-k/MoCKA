@@ -19,8 +19,9 @@ class PerplexitySocketWeb:
         self.ai_name = 'Perplexity'
         self.ai_config = {
             'url': 'https://www.perplexity.ai',
-            'input_selector': 'textarea[placeholder*="Ask"], textarea[aria-label*="Message"]',
-            'response_selector': '.prose, div[data-message-author-role="assistant"]',
+            # Updated selectors for Perplexity - wider fallback patterns
+            'input_selector': 'textarea, input[type="text"], [contenteditable="true"], [role="textbox"], [role="combobox"]',
+            'response_selector': '.prose, div[data-message-author-role="assistant"], .answer, [role="region"], .response',
             'stop_selector': 'button[aria-label="Stop"]',
             'is_contenteditable': False,
         }

@@ -1739,5 +1739,170 @@
       "hab",
       "multi_ai"
     ]
+  },
+  {
+    "memory_id": "M_episodic_000035",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-26T23:52:47.522106Z",
+    "source": "EXTERNAL",
+    "content": {
+      "type": "MEMORY_PIPELINE_VERIFICATION_EVENT",
+      "source": "phase4_runtime_test",
+      "trace_id": "e4151bc7-6b7e-4fe7-8c3e-543a4e506cc0",
+      "event_id": "9142da67-2cc2-4548-8e9a-9957fc894d70",
+      "decision_id": "0fffce10-5b73-4e2c-9fc0-847a34326a41",
+      "component": "memory_pipeline",
+      "timestamp": 1790466767,
+      "data": "memory_to_phi_os_verification"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "phase4_verification",
+      "trace_test"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000036",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-26T23:53:05.886427Z",
+    "source": "EXTERNAL",
+    "content": {
+      "type": "MEMORY_PIPELINE_VERIFICATION_EVENT",
+      "source": "phase4_runtime_test",
+      "trace_id": "1fe4e077-6490-472c-89d0-26979ff384bd",
+      "event_id": "02553fed-ddb2-4a48-bb81-e40252373884",
+      "decision_id": "e8bb580f-04eb-4080-adfe-b28edad1fdda",
+      "component": "memory_pipeline",
+      "timestamp": 1790466785,
+      "data": "memory_to_phi_os_verification"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "phase4_verification",
+      "trace_test"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000037",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-26T23:53:24.087416Z",
+    "source": "EXTERNAL",
+    "content": {
+      "type": "MEMORY_PIPELINE_VERIFICATION_EVENT",
+      "source": "phase4_runtime_test",
+      "trace_id": "19336e74-f6d6-4424-bed7-e353acfd2300",
+      "event_id": "7fbee15b-9c8a-448b-825b-630ea2c2ae12",
+      "decision_id": "74729ff2-17ba-4c26-b649-7cfe200284da",
+      "component": "memory_pipeline",
+      "timestamp": 1790466804,
+      "data": "memory_to_phi_os_verification"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "phase4_verification",
+      "trace_test"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000038",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-26T23:58:19.817811Z",
+    "source": "EXTERNAL",
+    "content": {
+      "type": "PATHWAY4_MEMORY_EVENT",
+      "trace_id": "0591a99a-1760-4abd-8fa8-03640dbc3cfb",
+      "event_id": "b93bb447-764a-428c-beb1-8c7fcdc1bc2b",
+      "decision_id": "240596d1-720b-4d7f-8b2b-9de27ac1d74a"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000039",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-26T23:59:19.365975Z",
+    "source": "EXTERNAL",
+    "content": {
+      "type": "PATHWAY4_MEMORY_EVENT",
+      "trace_id": "dfd6a502-ff06-4394-bff7-bf581f4fc5e4",
+      "event_id": "6a5ba133-6f42-49c4-9ebf-2f58fd8bcd16",
+      "decision_id": "9215e006-61c7-45f1-9d55-3fe3084c5b91"
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history"
+    ]
+  },
+  {
+    "memory_id": "M_episodic_000040",
+    "memory_type": "episodic",
+    "timestamp": "2026-09-27T08:03:40.114369Z",
+    "source": "External",
+    "content": {
+      "status": "all_ok",
+      "request_id": "902e9244-2d83-46c5-a92a-ff03b3cc9e71",
+      "results": [
+        {
+          "provider": "gpt",
+          "status": "ok",
+          "response": "JARVIS accepts your request. Based on the Bootstrap Decision DC_20260927_001, I will conduct the runtime verification. Please wait for a while as this process is conducted. I will inform you once the runtime verification is complete and assure about its success. You may need to respond accordingly if there are any issues surfaced during verification.",
+          "model": "gpt-4",
+          "usage": {
+            "prompt_tokens": 1296,
+            "completion_tokens": 69,
+            "total_tokens": 1365
+          },
+          "timestamp": "2026-09-27T08:03:30.308600+00:00",
+          "request_id": "902e9244-2d83-46c5-a92a-ff03b3cc9e71"
+        }
+      ],
+      "summary": {
+        "total": 1,
+        "ok": 1,
+        "error": 0,
+        "not_verified": 0
+      },
+      "timestamp": "2026-09-27T08:03:30.308600+00:00",
+      "jarvis": {
+        "decision_id": "DC_20260807_001",
+        "request_id": "902e9244-2d83-46c5-a92a-ff03b3cc9e71",
+        "status": "found",
+        "jarvis_decision": {
+          "source": "decision_ledger",
+          "decision_id": "DC_20260807_001",
+          "title": "DP-1 State Boundary Decision: JARVIS Institutional Runtime における State Layer / Event Store / Human Authority Boundary の境界定義 (Runtime State Reconstruction Model の確立)",
+          "decision": "DP-1-A: State は Event history の fold 型として定義する。Runtime に\nおける State は Event history を畳み込んだ結果として導出され、独立に\n保持される第一級の実体ではない。\n\nDP-1-B: Event Store (data/mocka_events.db) は State Layer の Primary\nSource である。\n\nDP-1-C: Human Gate は Authority Layer に属し、State Management は\nExecution Layer に属する。両者は別層とし、同一層として扱わない。\n\nDC_20260712_008 との関係: DC_20260712_008 は既存 Memory Governance\nModel として維持する (status は Active のまま)。本 Decision は\nDC_20260712_008 を supersede しない。本 Decision は Runtime State\nReconstruction Model として別軸を定めるものであり、同一対象 (Event)\nについて、Memory Governance Model 軸における Observation Layer 分類と、\nRuntime State Reconstruction Model 軸における Primary Source 指定は\n併存する。DC_20260712_008 が定める Durable Layer 対象4件、Observation\nから Durable への昇格4条件、昇格には別途 Human Gate Decision を要する\n規定、status:ok の定義、制度記憶採用条件の3点セットは、いずれも本\nDecision によって変更されない。\n\nDC_20260705_008 / DC_20260705_009 との関係: 両者を維持する。本 Decision\nの DP-1-C は、DC_20260705_008 が定める3つの責務分離を Authority と\nExecution の層境界として明示するものであり、phi_os/human_gate.py の\nモジュール分割を意味しない。\n\n未解決事項として保持: Decision Statement における Execution Layer と\nArchitecture Boundary における Action Layer の対応関係 (A-1)。本\nDecision の採択は A-1 の解決を前提としない。",
+          "rationale": "1. 憲法原則5 (Event history is the single source of truth) および\n憲法原則1 (Event ledger is append only) と、Runtime State を fold 型と\nする定義は整合する。State を導出結果として扱うため、状態変更が\nappend-only の記録を経由しない経路が発生しない。\n\n2. Event Store は既に単一書込経路 (phi_os/event_gate.process_event()、\nTODO_322) を持つ。State Layer の Primary Source として、代替候補の中で\n唯一、書込経路が制度的に確定している。\n\n3. DC_20260712_008 との2軸分離は、MoCKA において先例のある形式である。\nTODO_385 は status (タスク進行度) と contract_status (契約ライフサイクル\n状態) を異なる軸として別 enum に分離しており、同一対象について複数の\n軸上の位置を併存させる構成は既に制度内に存在する。\n\n4. DP-1-C の二層分離は、DC_20260705_008 が既に確定している3つの責務分離\n((1) 自動検知系は PENDING 投入のみで可否判断に関与しない (2) Human Gate\nは受付窓口としてのみ機能し判断・自動応答を行わない (3) approve()/reject()\nは人間操作のみ) を、層構造上に表現するものである。同一層化した場合、この\n分離が層構造に表現されない。同型の先例として DC_20260731_005 が INC に\nついて進行軸 (機械) と承認軸 (人間のみ) の2軸モデルを採用している。",
+          "approved_by": "きむら博士 (Human Authority)",
+          "approved_at": "2026-08-07T02:52:36Z",
+          "related_events": [
+            "E20260807_8023474020011",
+            "E20260807_9775174934c0b",
+            "E20260807_593034273be7c",
+            "E20260807_91442502442eb"
+          ],
+          "status": "Active"
+        },
+        "jarvis_gap": null,
+        "timestamp": "2026-09-27T08:03:30.308600+00:00"
+      }
+    },
+    "metadata": {},
+    "tags": [
+      "episodic",
+      "history",
+      "hab",
+      "multi_ai"
+    ]
   }
 ]

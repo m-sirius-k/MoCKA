@@ -19,10 +19,11 @@ class GeminiSocketWeb:
         self.ai_name = 'Gemini'
         self.ai_config = {
             'url': 'https://gemini.google.com/app',
-            'input_selector': '.ql-editor, textarea[aria-label*="Message"]',
-            'response_selector': 'model-response .response-container, div[data-message-author-role="assistant"]',
+            # Updated selectors for Gemini - use type() to avoid TrustedHTML CSP issues
+            'input_selector': '[contenteditable="true"][role="textbox"], .ql-editor, textarea[aria-label*="Message"], [role="textbox"]',
+            'response_selector': 'model-response .response-container, div[data-message-author-role="assistant"], .response-text',
             'stop_selector': 'button[aria-label="Stop response"]',
-            'is_contenteditable': True,
+            'is_contenteditable': False,  # Use type() method instead of evaluate
         }
 
     def request(self, request_text: str, model: str = "gemini-2.0-flash",
