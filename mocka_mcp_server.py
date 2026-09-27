@@ -1173,6 +1173,9 @@ def execute_tool(name, args, req_id=None):
                 "supersedes":        args.get("supersedes") or None,
                 "superseded_by":     None,
                 "status":            status,
+                "decision_type":     args.get("decision_type"),
+                "authorization_scope": args.get("authorization_scope"),
+                "runtime_scope":     args.get("runtime_scope"),
             }
             _append_decision(record)
             # companion event（mocka_write_eventと同一GATE経路をtags付きで再利用。
