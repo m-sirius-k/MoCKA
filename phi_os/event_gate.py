@@ -73,6 +73,10 @@ def _write(payload: dict, conn=None) -> None:
         'lifecycle_phase': 'in_operation',
         'risk_level':      'normal',
         'request_id':      payload.get('request_id'),
+        'vendor':          payload.get('vendor', ''),
+        'model':           payload.get('model', ''),
+        'runtime':         payload.get('runtime', ''),
+        'source':          payload.get('source', ''),
     }
     # 空文字列はNoneに変換して保存
     row = {k: (v if v != '' else None) for k, v in row.items()}
