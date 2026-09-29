@@ -41,9 +41,9 @@ except Exception as _gov_err:
         "mocka_get_command_center", "mocka_check_utf8",
     }
 
-# PHASE 5.0: mocka_dispatch_multi_ai_request is a read-only observation tool
-# (REAL AI response dispatch does not modify any MoCKA state except Event Store recording)
-READ_ONLY_TOOLS.add("mocka_dispatch_multi_ai_request")
+# PHASE 5.0: mocka_dispatch_multi_ai_request is a Standard Runtime Tool (HG Judgment B)
+# Requires valid decision_id + HG-approved authorization_scope / runtime_scope
+# (BA04 bypass prohibited; READ_ONLY exemption prohibited)
 
 # KN-004 Registry (六層構造) — 既存TODO管理(status/contract_status)とは完全に独立したドメイン
 REGISTRY_MODULE_PATH = Path(r"C:\Users\sirok\MoCKA\PlanningCaliber\workshop\registry_kn004")
@@ -558,7 +558,7 @@ TOOLS = [
     {"name":"mocka_integrity_write","description":"Integrity Classification(State x Type分類体系)に1件記録する。判断・評価・改善提案は含めない、構造的事実の分類のみ。classification_idは省略時IC_YYYYMMDD_NNN形式で自動採番。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string","description":"省略時は自動採番"},"title":{"type":"string"},"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string","description":"stateに応じたTypeを1つ指定(Failure: Transfer/Synchronization/Adoption/Exposure Failure・Runtime/Topology Failure。Risk: Mirror Risk/Legacy Residue/Intent Conflict。Unknown: Not Verified/Evidence Missing)"},"boundary":{"type":"string","description":"任意。元となった6境界分類(設計->実装 等)への参照タグ"},"description":{"type":"string"},"detection_method":{"type":"string","description":"再現可能な検出手順(例: SQLite直接照合、diff比較、HTTP実測)"},"impact_scope":{"type":"string"},"related_events":{"type":"array","items":{"type":"string"},"default":[]},"related_documents":{"type":"array","items":{"type":"string"},"default":[]},"discovered_by":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"],"default":"Open"},"supersedes":{"type":"string"}},"required":["title","state","type","description","detection_method","impact_scope","discovered_by"]}},
     {"name":"mocka_integrity_get","description":"classification_idを指定してIntegrity Classificationから1件取得する(同一IDの複数行がある場合は最新行を返す)。","inputSchema":{"type":"object","properties":{"classification_id":{"type":"string"}},"required":["classification_id"]}},
     {"name":"mocka_integrity_list","description":"Integrity Classificationの全件を返す(classification_id毎に最新行のみ)。state/type/statusでフィルタ可。","inputSchema":{"type":"object","properties":{"state":{"type":"string","enum":["Failure","Risk","Unknown"]},"type":{"type":"string"},"status":{"type":"string","enum":["Open","Resolved","Superseded"]}},"required":[]}},
-    {"name":"mocka_dispatch_multi_ai_request","description":"複数のAI provider に request を dispatch して実応答を取得する（PHASE 5.0 JARVIS-HAB nerve connection)。decision_id が指定されれば Decision Ledger のcontext を参照する。REAL AI responses を Event Store へ記録する。","inputSchema":{"type":"object","properties":{"request_text":{"type":"string","description":"AIに送信するリクエストテキスト（必須）"},"providers":{"type":"array","items":{"type":"string","enum":["gpt","claude","gemini","perplexity"]},"description":"AI provider list (デフォルト: [gpt])"},"decision_id":{"type":"string","description":"Decision Ledger reference（オプション。Human Gate scope context）"},"title":{"type":"string","description":"Request title for HAB event logging"}},"required":["request_text"]}}
+    {"name":"mocka_dispatch_multi_ai_request","description":"複数のAI provider に request を dispatch して実応答を取得する（PHASE 5.0 JARVIS-HAB nerve connection、HG Judgment B: Standard Runtime Tool）。decision_id、authorization_scope、runtime_scope は HG審査により必須。REAL AI responses を Event Store へ記録する。","inputSchema":{"type":"object","properties":{"request_text":{"type":"string","description":"AIに送信するリクエストテキスト（必須）"},"providers":{"type":"array","items":{"type":"string","enum":["gpt","claude","gemini","perplexity"]},"description":"AI provider list (デフォルト: [gpt])"},"decision_id":{"type":"string","description":"Decision Ledger reference（必須。HG Judgment B）"},"authorization_scope":{"type":"string","description":"Authorization Scope（HG指定値と完全一致必須）"},"runtime_scope":{"type":"string","description":"Runtime Scope（HG指定値と完全一致必須）"},"title":{"type":"string","description":"Request title for HAB event logging"}},"required":["request_text","decision_id","authorization_scope","runtime_scope"]}}
 ]
 
 def _check_request_duplicate(req_id, tool_name=None):
@@ -1302,10 +1302,37 @@ def execute_tool(name, args, req_id=None):
         elif name == "mocka_dispatch_multi_ai_request":
             request_text = args.get("request_text", "").strip()
             providers = args.get("providers", ["gpt"])
-            decision_id = args.get("decision_id", "")
+            decision_id = args.get("decision_id", "").strip()
+            authorization_scope = args.get("authorization_scope", "").strip()
+            runtime_scope = args.get("runtime_scope", "").strip()
             title = args.get("title", "JARVIS Multi-AI Request")
+
             if not request_text:
                 return json.dumps({"error": "request_text is required"}, ensure_ascii=False)
+
+            # HG Judgment B: Standard Runtime Tool — decision_id REQUIRED
+            if not decision_id:
+                return json.dumps({
+                    "error": "decision_id is required (HG Judgment: Standard Runtime Tool)",
+                    "status": "governance_rejected"
+                }, ensure_ascii=False)
+
+            # HG Judgment: Authorization Scope validation
+            hg_auth_scope = "PHASE_5_0/mocka_dispatch_multi_ai_request/HAB-JARVIS Runtime Verification"
+            if authorization_scope != hg_auth_scope:
+                return json.dumps({
+                    "error": f"authorization_scope mismatch. Expected: {hg_auth_scope}",
+                    "status": "governance_rejected"
+                }, ensure_ascii=False)
+
+            # HG Judgment: Runtime Scope validation
+            hg_runtime_scope = "KUROKO local runtime"
+            if runtime_scope != hg_runtime_scope:
+                return json.dumps({
+                    "error": f"runtime_scope mismatch. Expected: {hg_runtime_scope}",
+                    "status": "governance_rejected"
+                }, ensure_ascii=False)
+
             try:
                 sys.path.insert(0, str(BASE / "gateway"))
                 from multi_dispatcher import dispatch_multi_request
@@ -1313,9 +1340,9 @@ def execute_tool(name, args, req_id=None):
                     request_text=request_text,
                     providers=providers,
                     title=title,
-                    decision_id=decision_id or None
+                    decision_id=decision_id
                 )
-                auto_log(name, args, f"request_id={dispatch_result.get('request_id')} status={dispatch_result.get('status')}")
+                auto_log(name, args, f"decision_id={decision_id} request_id={dispatch_result.get('request_id')} status={dispatch_result.get('status')}")
                 return json.dumps(dispatch_result, ensure_ascii=False, default=str)
             except Exception as e:
                 error_msg = f"dispatch_multi_request failed: {str(e)}"
