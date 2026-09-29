@@ -201,7 +201,11 @@ class GovernancePipeline:
 
                 # Requirement 1: Decision exists
                 if not decision_record:
-                    aborts.append("BA04_DECISION_NOT_FOUND")
+                    # HG Contract DC_20260928_001: Allow mocka_decision_write to generate new Decisions
+                    # Skip BA04_DECISION_NOT_FOUND for new generation (decision_id provided but not in Ledger)
+                    # All other tools maintain normal BA04 governance
+                    if tool_name != "mocka_decision_write":
+                        aborts.append("BA04_DECISION_NOT_FOUND")
 
                 # Requirement 2: Decision status == Active
                 elif decision_record.get("status") != "Active":

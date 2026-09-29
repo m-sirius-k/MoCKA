@@ -246,6 +246,15 @@ def dispatch_multi_request(request_text: str,
     else:
         overall_status = "all_error"
 
+    # IP-007: Record lineage events to Event Store for each provider result
+    # Reuse existing event_gate interface (vendor/model/runtime/source fields)
+    _record_lineage_events(
+        results=results,
+        request_id=common_request_id,
+        timestamp=timestamp,
+        session_metadata={"source": "orchestra_runtime"}
+    )
+
     response = {
         "status": overall_status,
         "request_id": common_request_id,
@@ -514,3 +523,195 @@ def _format_result(provider: str,
         "timestamp": timestamp,
         "request_id": request_id,
     }
+
+
+def _record_lineage_events(results: List[Dict[str, Any]],
+                          request_id: str,
+                          timestamp: str,
+                          session_metadata: Dict[str, Any] = None) -> None:
+    """
+    IP-007: Record AI lineage events to Event Store.
+    SB-007 CONTRACT CORRECTION (Option 4): Producer-side adaptation to existing Event Gate contract.
+
+    Reuse existing event_gate interface (vendor/model/runtime/source fields).
+    Adapt lineage payload to satisfy existing validate() requirements:
+    - what_type: changed from 'ai_lineage' to 'audit' (ALLOWED_WHAT_TYPE)
+    - who_session: generated in SESSION_YYYYMMDD_HHMMSS format
+    - how_trigger: set from dispatch context
+    - where_path: set to dispatcher module file path
+    - who_role: set to 'automation'
+    - after_hash: generated from response JSON
+    - No new component. No schema/validation changes.
+
+    Args:
+        results: List of provider results from dispatch_multi_request()
+        request_id: Common request ID for all providers
+        timestamp: Event timestamp (ISO8601)
+        session_metadata: Optional session context metadata
+    """
+    import hashlib
+    from datetime import datetime, timezone
+
+    try:
+        # Load existing event_gate interface
+        from phi_os.event_gate import process_event
+
+        if not results:
+            return
+
+        # Generate who_session from timestamp: SESSION_YYYYMMDD_HHMMSS
+        try:
+            dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+            who_session = dt.strftime('SESSION_%Y%m%d_%H%M%S')
+        except Exception:
+            # Fallback: use current time
+            who_session = datetime.now(timezone.utc).strftime('SESSION_%Y%m%d_%H%M%S')
+
+        # Dispatcher file path for where_path
+        dispatcher_path = str(Path(__file__).resolve())
+
+        for result in results:
+            # Skip non-OK results (error/NOT_VERIFIED don't get lineage record)
+            if result.get("status") != "ok":
+                continue
+
+            # Generate after_hash from response JSON
+            response_text = result.get("response", "")
+            after_hash = hashlib.sha256(response_text.encode()).hexdigest()[:16]
+
+            # Adapt payload to existing Event Gate contract (validate() requirements)
+            # Option 4: Producer supplies required Canonical fields
+            lineage_payload = {
+                # Canonical Event fields (required by validate())
+                "what_type": "audit",  # CHANGED: from 'ai_lineage' to valid ALLOWED_WHAT_TYPE
+                "who_actor": "orchestra_multi_dispatcher",
+                "who_role": "automation",  # ADDED: required by EventPayload dataclass
+                "who_session": who_session,  # ADDED: generated in SESSION_YYYYMMDD_HHMMSS format
+                "what_title": f"AI Lineage: {result.get('provider')} ({result.get('model')})",  # ADDED: Canonical field
+                "where_component": "orchestra",
+                "where_path": dispatcher_path,  # ADDED: required field
+                "why_purpose": "Record AI provider execution lineage (orchestrator audit)",  # MODIFIED: 10+ chars
+                "how_trigger": "dispatch_multi_request()",  # ADDED: required field
+                "after_hash": after_hash,  # ADDED: Replay guarantee (Canonical field)
+
+                # Persistence fields (preserved in event_gate._write())
+                "vendor": result.get("provider", "unknown"),
+                "model": result.get("model", ""),
+                "runtime": "orchestra_dispatch",
+                "source": session_metadata.get("source", "live") if session_metadata else "live",
+                "request_id": request_id,
+
+                # Event Gate convenience fields (mapped by event_gate._write())
+                "when_ts": result.get("timestamp", timestamp),
+                "description": f"Provider: {result.get('provider')}, Model: {result.get('model')}, Status: ok",
+            }
+
+            # Call existing event_gate interface (no new component)
+            # Pass event_source='orchestra_lineage' to track origin
+            lineage_status = "UNKNOWN"
+            try:
+                response = process_event(lineage_payload, event_source='orchestra_lineage')
+                if response.get('status') == 'ok':
+                    lineage_status = "RECORDED"
+                    print(f"[IP-007] Lineage recorded: event_id={response.get('event_id')}, "
+                          f"provider={result.get('provider')}, model={result.get('model')}, "
+                          f"who_session={who_session}, after_hash={after_hash}")
+                else:
+                    # IP-007 Option A: Lineage rejected - record failure event
+                    lineage_status = "FAILED_RECORDED"
+                    _record_lineage_failure(
+                        process_event=process_event,
+                        request_id=request_id,
+                        provider=result.get("provider"),
+                        reason=f"Validation rejected: {response.get('errors')}",
+                        timestamp=timestamp,
+                        who_session=who_session
+                    )
+            except Exception as e:
+                # IP-007 Option A: Lineage exception - record failure event
+                lineage_status = "FAILED_RECORDED"
+                _record_lineage_failure(
+                    process_event=process_event,
+                    request_id=request_id,
+                    provider=result.get("provider"),
+                    reason=f"Exception: {str(e)}",
+                    timestamp=timestamp,
+                    who_session=who_session
+                )
+
+    except ImportError as e:
+        print(f"[IP-007] ERROR: event_gate import failed: {str(e)} - lineage recording blocked")
+    except Exception as e:
+        print(f"[IP-007] ERROR: Unexpected error in _record_lineage_events: {str(e)}")
+
+
+def _record_lineage_failure(process_event, request_id: str, provider: str,
+                           reason: str, timestamp: str, who_session: str = None) -> None:
+    """
+    IP-007 + SB-007 CORRECTION: Record lineage recording failure to Event Store.
+
+    Failure event also adapts to existing Event Gate contract (validate() requirements).
+    - what_type: changed from 'ai_lineage_failed' to 'incident' (ALLOWED_WHAT_TYPE)
+    - Supplies required Canonical fields: who_session, how_trigger, where_path, before/after
+
+    Ensures failure is recorded (FAILED_RECORDED state).
+    If failure-event itself fails, print only (no recursive recording).
+
+    Args:
+        process_event: The event_gate.process_event function
+        request_id: Original Orchestra request ID
+        provider: AI provider name
+        reason: Failure reason
+        timestamp: Event timestamp
+        who_session: Optional session ID for correlation
+    """
+    from datetime import datetime, timezone
+    from pathlib import Path
+
+    try:
+        # Generate who_session if not provided
+        if not who_session:
+            try:
+                dt = datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                who_session = dt.strftime('SESSION_%Y%m%d_%H%M%S')
+            except Exception:
+                who_session = datetime.now(timezone.utc).strftime('SESSION_%Y%m%d_%H%M%S')
+
+        dispatcher_path = str(Path(__file__).resolve())
+
+        # Adapt failure payload to existing Event Gate contract
+        failure_payload = {
+            # Canonical Event fields (required by validate())
+            "what_type": "incident",  # CHANGED: from 'ai_lineage_failed' to valid ALLOWED_WHAT_TYPE
+            "who_actor": "orchestra_multi_dispatcher",
+            "who_role": "automation",  # ADDED: required by EventPayload dataclass
+            "who_session": who_session,  # ADDED: session correlation
+            "what_title": f"AI Lineage Failure: {provider}",  # ADDED: Canonical field
+            "where_component": "orchestra",
+            "where_path": dispatcher_path,  # ADDED: required field
+            "why_purpose": f"Record lineage recording failure for {provider}",  # 10+ chars
+            "how_trigger": "lineage_exception_handler()",  # ADDED: required field
+            "before_state": f"lineage_pending:provider={provider}",  # ADDED: Replay guarantee
+
+            # Event identification and tracking
+            "request_id": request_id,
+            "when_ts": timestamp,
+            "description": f"Provider: {provider}, Failure: {reason}",
+        }
+
+        # Call process_event for failure event
+        # If this also fails, we print only (no recursive recording)
+        response = process_event(failure_payload, event_source='orchestra_lineage')
+        if response.get('status') == 'ok':
+            print(f"[IP-007] Lineage failure recorded: event_id={response.get('event_id')}, "
+                  f"provider={provider}, who_session={who_session}")
+        else:
+            # Failure-event itself failed - print only (RECORDING_FAILURE_UNRECORDED)
+            print(f"[IP-007] ERROR: Lineage failure-event also failed: {response.get('errors')}, "
+                  f"LINEAGE_STATUS=RECORDING_FAILURE_UNRECORDED, "
+                  f"request_id={request_id}, provider={provider}, reason={reason}")
+    except Exception as e:
+        # Failure-event exception - print only (RECORDING_FAILURE_UNRECORDED)
+        print(f"[IP-007] ERROR: Lineage failure-event exception: {str(e)}, "
+              f"LINEAGE_STATUS=RECORDING_FAILURE_UNRECORDED, "
+              f"request_id={request_id}, provider={provider}, reason={reason}")
