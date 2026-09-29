@@ -1,0 +1,153 @@
+IP-007 IMPLEMENTATION (Option A: MoCKA-Compliant) — READBACK VERIFICATION
+Date: 2026-09-29
+Status: MODIFIED (Failure tracking added)
+
+============================================================================
+MODIFICATION SUMMARY
+============================================================================
+
+File Changed: gateway/multi_dispatcher.py only
+Lines Added: 136 (from initial 78, now includes failure tracking)
+Scope: IP-007 only (Option A failure event implementation)
+
+New Functions:
+  1. Modified _record_lineage_events() - with failure tracking
+  2. New _record_lineage_failure() - failure event recording
+
+============================================================================
+VERIFICATION CHECKLIST (6 Items)
+============================================================================
+
+[1] 正常Lineage → Event Store記録
+    if response.get('status') == 'ok':
+        lineage_status = "RECORDED"
+        print("[IP-007] Lineage recorded: event_id=...")
+    Status: PASS ✓
+
+[2] process_event rejection → ai_lineage_failed として記録
+    else:
+        lineage_status = "FAILED_RECORDED"
+        _record_lineage_failure(...)
+    Status: PASS ✓
+    - Validator rejection caught
+    - failure event created with what_type="ai_lineage_failed"
+
+[3] process_event exception → ai_lineage_failed として記録
+    except Exception as e:
+        lineage_status = "FAILED_RECORDED"
+        _record_lineage_failure(...)
+    Status: PASS ✓
+    - Exception caught (not silent)
+    - failure event created
+
+[4] failure-event自体の失敗 → 再帰なし、状態明示
+    def _record_lineage_failure(...):
+        try:
+            response = process_event(failure_payload, ...)
+            if response.ok:
+                print("Lineage failure recorded")
+            else:
+                print("...RECORDING_FAILURE_UNRECORDED...")
+        except Exception:
+            print("...RECORDING_FAILURE_UNRECORDED...")
+    Status: PASS ✓
+    - No recursive recording
+    - RECORDING_FAILURE_UNRECORDED state explicit
+
+[5] request_id → Orchestra request と failure event が追跡可能
+    lineage_payload["request_id"] = request_id
+    failure_payload["request_id"] = request_id
+    Status: PASS ✓
+    - Same request_id in both payloads
+    - Enables tracing via request_id
+
+[6] git diff → IP-007以外の変更なし
+    File: gateway/multi_dispatcher.py (+136 lines)
+    Status: PASS ✓
+    - Only gateway/multi_dispatcher.py modified
+
+============================================================================
+STATE MATRIX (LINEAGE_STATUS)
+============================================================================
+
+SCENARIO A: Lineage succeeds
+    lineage_payload → process_event() ✓
+    → LINEAGE_STATUS = RECORDED
+    → Event Store: ai_lineage record
+
+SCENARIO B: Lineage rejected (validator)
+    lineage_payload → process_event() ✗ (rejected)
+    → _record_lineage_failure()
+    → failure_payload → process_event() ✓
+    → LINEAGE_STATUS = FAILED_RECORDED
+    → Event Store: ai_lineage_failed record
+
+SCENARIO C: Lineage exception
+    lineage_payload → process_event() ✗ (exception)
+    → _record_lineage_failure()
+    → failure_payload → process_event() ✓
+    → LINEAGE_STATUS = FAILED_RECORDED
+    → Event Store: ai_lineage_failed record
+
+SCENARIO D: Lineage fails, failure-event also fails
+    lineage_payload → process_event() ✗
+    → _record_lineage_failure()
+    → failure_payload → process_event() ✗
+    → LINEAGE_STATUS = RECORDING_FAILURE_UNRECORDED
+    → Event Store: NOTHING
+    → Print: explicit RECORDING_FAILURE_UNRECORDED state
+
+SCENARIO E: Lineage fails, failure-event exception
+    lineage_payload → process_event() ✗
+    → _record_lineage_failure()
+    → failure_payload → process_event() ✗ (exception)
+    → LINEAGE_STATUS = RECORDING_FAILURE_UNRECORDED
+    → Event Store: NOTHING
+    → Print: explicit RECORDING_FAILURE_UNRECORDED state
+
+============================================================================
+MoCKA PRINCIPLE COMPLIANCE
+============================================================================
+
+Original Issue:
+  Lineage failure was only printed (not recorded)
+  Violates: "記録なき作業は MoCKA として存在しない"
+
+Solution (Option A):
+  - RECORDED: Normal lineage in Event Store
+  - FAILED_RECORDED: Failure event also in Event Store
+  - RECORDING_FAILURE_UNRECORDED: Explicit print showing state
+
+Compliance: ✓ PASS
+  - No silent failures
+  - Failures recorded when possible
+  - Un-recordable failures explicitly flagged
+  - request_id preserved for tracing
+
+============================================================================
+SCOPE LOCK MAINTAINED
+============================================================================
+
+Authorized:
+  ✓ Lineage failure handling
+  ✓ failure event generation
+  ✓ request_id preservation
+  ✓ readback
+
+Prohibited (Not Done):
+  ✓ IP-005/009 - NOT STARTED
+  ✓ New Authorization engine - NOT CREATED
+  ✓ Schema migration - NOT CREATED
+  ✓ Production activation - NOT DONE
+
+============================================================================
+STATIC VERIFICATION COMPLETE
+============================================================================
+
+IMPLEMENTATION: OPTION A COMPLETE
+AUDIT:           READY FOR FINAL REVIEW
+
+All 6 verification items: PASS
+
+Status: IP-007 ready for final audit
+Next: If approved, IP-005 can begin

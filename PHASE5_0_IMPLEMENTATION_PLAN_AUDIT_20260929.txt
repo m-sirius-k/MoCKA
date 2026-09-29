@@ -1,0 +1,114 @@
+PHASE 5.0 IMPLEMENTATION PLAN REVISION - SELF-AUDIT REPORT
+Generated: 2026-09-29
+Auditor: Claude Haiku 4.5
+
+=========================================================
+AUDIT CHECKLIST (all must PASS for final readback)
+=========================================================
+
+[UNIVERSAL CHECKS]
+[ PASS ] HG approval scope match (3 plans within approved scope)
+[ PASS ] Scope Binding preserved (SB-005, SB-007, SB-009)
+[ PASS ] Frozen Baseline protection (no changes to Phase 4-7 frozen code)
+[ PASS ] Code changes: ZERO (plan revision only)
+[ PASS ] Production activation: NO
+[ PASS ] Runtime test: NO
+[ PASS ] Server restart: NO
+[ PASS ] DB schema change: NO (IP-007: already exists; others: no change)
+[ PASS ] Commit: NO
+[ PASS ] HG scope expansion: NO
+
+[IP-007 LINEAGE-SPECIFIC]
+[ PASS ] New component necessity: VERIFIED (lineage_recorder.py NOT needed)
+  - Existing vendor/model/runtime/source fields in event_gate._write()
+  - Database schema already supports columns
+  - Result: event_gate.process_event() sufficient
+[ PASS ] Existing interface priority: YES (event_gate reused)
+[ PASS ] Event Store schema minimal: YES (no extension needed)
+[ PASS ] event_id idempotency: INSERT OR IGNORE enforced
+[ PASS ] fail-closed: validation rejects invalid vendor/model/runtime
+
+[IP-005 AUTHORIZATION-SPECIFIC]
+[ PASS ] New component necessity: VERIFIED (reduced from 2 to 1 component)
+  - hab_bridge.py + auth_interface.py → single authorization.py
+  - Result: adapter minimalism enforced
+[ PASS ] Authorization authority: HG (not re-delegated)
+[ PASS ] Scope source: runtime_scope (SINGLE TRUTH)
+[ PASS ] Authorization duplication: NONE (single check point)
+[ PASS ] fail-closed: missing scope → REJECTED
+[ PASS ] Bypass prevention: no cache, no shortcuts
+
+[IP-009 SYNC-SPECIFIC]
+[ PASS ] New component necessity: VERIFIED (reduced from 2 to 1)
+  - memory_sync.py (single function) + mapping file
+  - memory/manager.py NOT needed (file-based mapping sufficient)
+  - Result: minimal component footprint
+[ PASS ] Existing interface reuse: YES (memory_writer.write_event())
+[ PASS ] Idempotency enforced: event_id lookup prevents duplication
+[ PASS ] Separation principle: Event Store → Memory only (unidirectional)
+[ PASS ] Failure states explicit: pending/synced/failed + retry_count
+[ PASS ] Rollback condition clear: mapping file inspection + re-sync
+
+[CROSS-PLAN VERIFICATION]
+[ PASS ] Dependency chain evaluated: IP-007/005 independent, IP-009 consumes
+[ PASS ] Unnecessary dependencies removed: YES
+[ PASS ] Parallel paths identified: IP-007 || IP-005 → IP-009
+
+[EVIDENCE / READBACK PREPARATION]
+[ PASS ] Runtime pass conditions defined: 5+ conditions per plan
+[ PASS ] Readback queries defined: SQL-like for each plan
+[ PASS ] Failure scenarios: explicit error conditions
+[ PASS ] Rollback procedures: manual review + incident escalation
+
+=========================================================
+REVISION SUMMARY
+=========================================================
+
+IP-007: 
+  BEFORE: lineage_recorder.py + schema extension
+  AFTER: Direct event_gate integration (existing vendor/model/runtime/source)
+  REDUCTION: -1 component, -1 schema migration, +0 code changes
+  STATUS: REVISED / REDUCED SCOPE
+
+IP-005:
+  BEFORE: hab_bridge.py + auth_interface.py (2 components)
+  AFTER: authorization.py (single module)
+  REDUCTION: -1 component (-50% complexity)
+  STATUS: REVISED / SIMPLIFIED
+
+IP-009:
+  BEFORE: memory_sync.py + memory/manager.py (2 components + database)
+  AFTER: memory_sync.py (function) + event_memory_map.jsonl (file)
+  REDUCTION: -1 database component, -1 manager class
+  STATUS: REVISED / FILE-BASED MAPPING
+
+=========================================================
+FINAL CHECKLIST
+=========================================================
+
+[X] All 3 plans within HG-approved scope
+[X] Code changes: ZERO
+[X] Production activation: NO
+[X] New component necessary? verified for all 3
+[X] Existing interfaces prioritized? YES all 3
+[X] Minimal changes? YES (confirmed via reductions above)
+[X] fail-closed? YES all 3
+[X] Event Store immutability? YES (INSERT OR IGNORE + sign)
+[X] Authorization authority: HG (not self-delegated)
+[X] Separation principles: maintained (Event→Memory only)
+[X] Readback queries defined: YES all 3
+[X] Rollback conditions: YES all 3
+[X] Retry logic explicit: YES (IP-009 max 3 retries)
+[X] Runtime evidence: defined (pass conditions, queries, assertions)
+
+=========================================================
+READY FOR READBACK
+=========================================================
+
+All 3 Implementation Plans:
+  - REVISED for minimum scope
+  - VERIFIED for necessity of all components
+  - DOCUMENTED with explicit pass/fail conditions
+  - READY FOR FINAL REVIEW BY HG
+
+Proceed to STEP 6 (readback).
