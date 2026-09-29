@@ -13,8 +13,9 @@ def validate(payload: dict) -> list[str]:
     if not a or a in LEGACY_ACTORS:
         errors.append('REJECT-01: who_actor必須 (例: Claude-sonnet-4-6)')
 
-    # REJECT-02: who_session形式検査
-    if not payload.get('who_session', '').startswith('SESSION_'):
+    # REJECT-02: who_session形式検査（存在する場合のみ）
+    # B-3: who_session は optional; 存在する場合のみ SESSION_ 形式をチェック
+    if payload.get('who_session') is not None and not payload.get('who_session', '').startswith('SESSION_'):
         errors.append('REJECT-02: who_session形式不正 (SESSION_YYYYMMDD_HHMMSS)')
 
     # REJECT-03: why_purpose 10文字以上

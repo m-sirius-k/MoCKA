@@ -21,13 +21,15 @@ class EventPayload:
     # 5W1H 必須フィールド
     who_actor: str       # 例: Claude-sonnet-4-6, gpt-4o
     who_role: str        # executor|auditor|human|automation
-    who_session: str     # SESSION_YYYYMMDD_HHMMSS
     what_type: str       # ALLOWED_WHAT_TYPES から選択
     what_title: str      # 変更の一行要約
     where_path: str      # 絶対パスまたはURL
     where_component: str # モジュール名
     why_purpose: str     # 目的（10文字以上）
     how_trigger: str     # 誰の指示か
+
+    # Optional fields (B-3: who_session is optional)
+    who_session: Optional[str] = None  # Optional: SESSION_YYYYMMDD_HHMMSS if available
 
     # Replay用（どちらかがあればOK）
     before_state: Optional[str] = None
