@@ -1,0 +1,2187 @@
+
+  MoCKA\caliber\incident_analyzer.py:117:    ts = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+  MoCKA\caliber\incident_analyzer.py:118:    return f"GL_{ts}"
+  MoCKA\caliber\incident_analyzer.py:119:
+> MoCKA\caliber\incident_analyzer.py:120:def process_event(row, guidelines_data):
+  MoCKA\caliber\incident_analyzer.py:121:    event_id = row.get("event_id", "")
+  MoCKA\caliber\incident_analyzer.py:122:    existing_ids = [g.get("source_event_ids", []) for g in guidelines_data["guidelines"]]
+  MoCKA\caliber\incident_analyzer.py:123:    existing_flat = [eid for sublist in existing_ids for eid in sublist]
+  MoCKA\caliber\incident_analyzer.py:124:    if event_id in existing_flat:
+  MoCKA\caliber\incident_analyzer.py:125:        print(f"[SKIP] {event_id} already analyzed")
+  MoCKA\caliber\incident_analyzer.py:180:        if not target:
+  MoCKA\caliber\incident_analyzer.py:181:            print(f"[ERROR] event not found: {args.event}")
+  MoCKA\caliber\incident_analyzer.py:182:            return
+> MoCKA\caliber\incident_analyzer.py:183:        process_event(target[0], guidelines_data)
+  MoCKA\caliber\incident_analyzer.py:184:    elif args.all:
+  MoCKA\caliber\incident_analyzer.py:185:        count = 0
+  MoCKA\caliber\incident_analyzer.py:186:        for row in incidents:
+> MoCKA\caliber\incident_analyzer.py:187:            if process_event(row, guidelines_data):
+  MoCKA\caliber\incident_analyzer.py:188:                count += 1
+  MoCKA\caliber\incident_analyzer.py:189:        print(f"[DONE] {count} guidelines generated")
+  MoCKA\caliber\incident_analyzer.py:190:    else:
+  MoCKA\caliber\incident_analyzer.py:191:        if not incidents:
+  MoCKA\caliber\incident_analyzer.py:192:            print("[INFO] no incidents found")
+  MoCKA\caliber\incident_analyzer.py:193:            return
+> MoCKA\caliber\incident_analyzer.py:194:        process_event(incidents[-1], guidelines_data)
+  MoCKA\caliber\incident_analyzer.py:195:
+  MoCKA\caliber\incident_analyzer.py:196:    save_guidelines(guidelines_data)
+  MoCKA\caliber\incident_analyzer.py:197:
+  MoCKA\caliber\incident_analyzer.py:198:if __name__ == "__main__":
+  MoCKA\caliber\incident_analyzer.py:199:    main()
+  MoCKA\commercial_hardening\environment_isolator.py:26:    environment: Environment
+  MoCKA\commercial_hardening\environment_isolator.py:27:    allow_side_effects: bool
+  MoCKA\commercial_hardening\environment_isolator.py:28:    allow_network: bool
+> MoCKA\commercial_hardening\environment_isolator.py:29:    allow_file_write: bool
+  MoCKA\commercial_hardening\environment_isolator.py:30:    locked: bool = field(default=True)
+  MoCKA\commercial_hardening\environment_isolator.py:31:
+  MoCKA\commercial_hardening\environment_isolator.py:32:
+  MoCKA\commercial_hardening\environment_isolator.py:33:_DEFAULTS = {
+> MoCKA\commercial_hardening\environment_isolator.py:34:    Environment.DEV: dict(allow_side_effects=True, allow_network=True, allow_file_write=True),
+> MoCKA\commercial_hardening\environment_isolator.py:35:    Environment.TEST: dict(allow_side_effects=False, allow_network=False, allow_file_write=False),
+> MoCKA\commercial_hardening\environment_isolator.py:36:    Environment.PROD: dict(allow_side_effects=False, allow_network=False, allow_file_write=False),
+  MoCKA\commercial_hardening\environment_isolator.py:37:}
+  MoCKA\commercial_hardening\environment_isolator.py:38:
+  MoCKA\commercial_hardening\environment_isolator.py:39:_current_config = None
+  MoCKA\commercial_hardening\environment_isolator.py:40:
+  MoCKA\commercial_hardening\environment_isolator.py:41:
+  MoCKA\commercial_hardening\environment_isolator.py:63:        environment=env,
+  MoCKA\commercial_hardening\environment_isolator.py:64:        allow_side_effects=defaults["allow_side_effects"],
+  MoCKA\commercial_hardening\environment_isolator.py:65:        allow_network=defaults["allow_network"],
+> MoCKA\commercial_hardening\environment_isolator.py:66:        allow_file_write=defaults["allow_file_write"],
+  MoCKA\commercial_hardening\environment_isolator.py:67:        locked=True,
+  MoCKA\commercial_hardening\environment_isolator.py:68:    )
+  MoCKA\commercial_hardening\environment_isolator.py:69:    return _current_config
+  MoCKA\commercial_hardening\environment_isolator.py:70:
+  MoCKA\commercial_hardening\environment_isolator.py:71:
+  MoCKA\commercial_hardening\hardening_integration_test.py:39:    assert cfg1.allow_side_effects is False, "PRODでside-effectが許可されている"
+  MoCKA\commercial_hardening\hardening_integration_test.py:40:
+  MoCKA\commercial_hardening\hardening_integration_test.py:41:    try:
+> MoCKA\commercial_hardening\hardening_integration_test.py:42:        environment_isolator.guard_side_effect("test_write")
+  MoCKA\commercial_hardening\hardening_integration_test.py:43:        raised = False
+  MoCKA\commercial_hardening\hardening_integration_test.py:44:    except environment_isolator.SideEffectBlocked:
+  MoCKA\commercial_hardening\hardening_integration_test.py:45:        raised = True
+  MoCKA\commercial_hardening\hardening_integration_test.py:46:    assert raised, "PRODでside-effectがブロックされない"
+  MoCKA\commercial_hardening\hardening_integration_test.py:47:    environment_isolator.reset()
+  MoCKA\data\csv_to_sqlite_v2.py:66:    trace_id            TEXT,
+  MoCKA\data\csv_to_sqlite_v2.py:67:    free_note           TEXT,
+  MoCKA\data\csv_to_sqlite_v2.py:68:    _imported_at        TEXT,
+> MoCKA\data\csv_to_sqlite_v2.py:69:    _source             TEXT DEFAULT 'new'
+  MoCKA\data\csv_to_sqlite_v2.py:70:);
+  MoCKA\data\csv_to_sqlite_v2.py:71:CREATE INDEX IF NOT EXISTS idx_events_when_ts    ON events(when_ts);
+  MoCKA\data\csv_to_sqlite_v2.py:72:CREATE INDEX IF NOT EXISTS idx_events_what_type  ON events(what_type);
+  MoCKA\data\csv_to_sqlite_v2.py:73:CREATE INDEX IF NOT EXISTS idx_events_risk_level ON events(risk_level);
+  MoCKA\data\csv_to_sqlite_v2.py:74:CREATE INDEX IF NOT EXISTS idx_events_who_actor  ON events(who_actor);
+> MoCKA\data\csv_to_sqlite_v2.py:75:CREATE INDEX IF NOT EXISTS idx_events_source     ON events(_source);
+  MoCKA\data\csv_to_sqlite_v2.py:76:"""
+  MoCKA\data\csv_to_sqlite_v2.py:77:
+  MoCKA\data\csv_to_sqlite_v2.py:78:CSV_TO_DB = {
+  MoCKA\data\csv_to_sqlite_v2.py:79:    "event_id": "event_id", "when": "when_ts", "who_actor": "who_actor",
+  MoCKA\data\csv_to_sqlite_v2.py:80:    "what_type": "what_type", "where_component": "where_component",
+  MoCKA\data\csv_to_sqlite_v2.py:212:            db_row[db_col] = val if val and val != "N/A" else None
+  MoCKA\data\csv_to_sqlite_v2.py:213:
+  MoCKA\data\csv_to_sqlite_v2.py:214:        db_row["_imported_at"] = IMPORTED_AT
+> MoCKA\data\csv_to_sqlite_v2.py:215:        db_row["_source"] = "csv_legacy"
+  MoCKA\data\csv_to_sqlite_v2.py:216:
+  MoCKA\data\csv_to_sqlite_v2.py:217:        try:
+  MoCKA\data\csv_to_sqlite_v2.py:218:            cursor.execute(
+  MoCKA\data\csv_to_sqlite_v2.py:219:                f"INSERT INTO events ({', '.join(db_row.keys())}) "
+  MoCKA\data\csv_to_sqlite_v2.py:220:                f"VALUES ({', '.join(['?'] * len(db_row))})",
+  MoCKA\data\csv_to_sqlite.py:66:    trace_id            TEXT,
+  MoCKA\data\csv_to_sqlite.py:67:    free_note           TEXT,
+  MoCKA\data\csv_to_sqlite.py:68:    _imported_at        TEXT,
+> MoCKA\data\csv_to_sqlite.py:69:    _source             TEXT DEFAULT 'new'
+  MoCKA\data\csv_to_sqlite.py:70:);
+  MoCKA\data\csv_to_sqlite.py:71:CREATE INDEX IF NOT EXISTS idx_events_when_ts   ON events(when_ts);
+  MoCKA\data\csv_to_sqlite.py:72:CREATE INDEX IF NOT EXISTS idx_events_what_type ON events(what_type);
+  MoCKA\data\csv_to_sqlite.py:73:CREATE INDEX IF NOT EXISTS idx_events_risk_level ON events(risk_level);
+  MoCKA\data\csv_to_sqlite.py:74:CREATE INDEX IF NOT EXISTS idx_events_who_actor  ON events(who_actor);
+> MoCKA\data\csv_to_sqlite.py:75:CREATE INDEX IF NOT EXISTS idx_events_source     ON events(_source);
+  MoCKA\data\csv_to_sqlite.py:76:"""
+  MoCKA\data\csv_to_sqlite.py:77:
+  MoCKA\data\csv_to_sqlite.py:78:# CSVカラム → DBカラム マッピング
+  MoCKA\data\csv_to_sqlite.py:79:# "when" はSQLite予約語のため when_ts にリネーム
+  MoCKA\data\csv_to_sqlite.py:80:CSV_TO_DB = {
+  MoCKA\data\csv_to_sqlite.py:196:            db_row[db_col] = val if val and val != "N/A" else None
+  MoCKA\data\csv_to_sqlite.py:197:
+  MoCKA\data\csv_to_sqlite.py:198:        db_row["_imported_at"] = IMPORTED_AT
+> MoCKA\data\csv_to_sqlite.py:199:        db_row["_source"] = "csv_legacy"
+  MoCKA\data\csv_to_sqlite.py:200:
+  MoCKA\data\csv_to_sqlite.py:201:        # PRIMARY KEY重複チェック
+  MoCKA\data\csv_to_sqlite.py:202:        try:
+  MoCKA\data\csv_to_sqlite.py:203:            cursor.execute(
+  MoCKA\data\csv_to_sqlite.py:204:                f"INSERT INTO events ({', '.join(db_row.keys())}) "
+  MoCKA\data\csv_to_sqlite.py:254:    conn = sqlite3.connect(str(DB_PATH))
+  MoCKA\data\csv_to_sqlite.py:255:    db_count = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+  MoCKA\data\csv_to_sqlite.py:256:    legacy_count = conn.execute(
+> MoCKA\data\csv_to_sqlite.py:257:        "SELECT COUNT(*) FROM events WHERE _source='csv_legacy'"
+  MoCKA\data\csv_to_sqlite.py:258:    ).fetchone()[0]
+  MoCKA\data\csv_to_sqlite.py:259:
+  MoCKA\data\csv_to_sqlite.py:260:    # event_id一致チェック
+  MoCKA\data\csv_to_sqlite.py:261:    csv_ids = set(r["event_id"].strip() for r in rows if r.get("event_id", "").strip())
+  MoCKA\data\csv_to_sqlite.py:262:    db_ids  = set(r[0] for r in conn.execute(
+> MoCKA\data\csv_to_sqlite.py:263:        "SELECT event_id FROM events WHERE _source='csv_legacy'"
+  MoCKA\data\csv_to_sqlite.py:264:    ).fetchall())
+  MoCKA\data\csv_to_sqlite.py:265:
+  MoCKA\data\csv_to_sqlite.py:266:    missing_in_db  = csv_ids - db_ids
+  MoCKA\data\csv_to_sqlite.py:267:    extra_in_db    = db_ids - csv_ids
+  MoCKA\data\csv_to_sqlite.py:268:
+  MoCKA\data\inspect_285.py:41:# ---- STEP 1: 5-digit E form details ----
+  MoCKA\data\inspect_285.py:42:print('\n=== STEP 1: 5-digit E form ===')
+  MoCKA\data\inspect_285.py:43:rows_5d = conn.execute("""
+> MoCKA\data\inspect_285.py:44:    SELECT event_id, who_actor, what_type, _source, _imported_at
+  MoCKA\data\inspect_285.py:45:    FROM events
+  MoCKA\data\inspect_285.py:46:    WHERE data_integrity='corrupted_migration'
+  MoCKA\data\inspect_285.py:47:    AND integrity_note LIKE 'G: E{YYYYMMDD}_{5-digit}%'
+  MoCKA\data\inspect_285.py:48:    ORDER BY event_id
+  MoCKA\data\inspect_285.py:49:""").fetchall()
+  MoCKA\data\inspect_285.py:67:    print(f'\nSequence number range: min={min(nums)}, max={max(nums)}')
+  MoCKA\data\inspect_285.py:68:    print(f'Consecutive from min? First 10 nums: {sorted(nums)[:10]}')
+  MoCKA\data\inspect_285.py:69:
+> MoCKA\data\inspect_285.py:70:# who_actor, what_type, _source counts
+  MoCKA\data\inspect_285.py:71:actors = Counter(r[1] for r in rows_5d)
+  MoCKA\data\inspect_285.py:72:types = Counter(r[2] for r in rows_5d)
+  MoCKA\data\inspect_285.py:73:sources = Counter(r[3] for r in rows_5d)
+  MoCKA\data\inspect_285.py:74:print(f'\nwho_actor: {dict(actors.most_common(5))}')
+  MoCKA\data\inspect_285.py:75:print(f'what_type: {dict(types.most_common(5))}')
+> MoCKA\data\inspect_285.py:76:print(f'_source: {dict(sources.most_common(5))}')
+  MoCKA\data\inspect_285.py:77:imported = Counter(str(r[4])[:10] if r[4] else 'NULL' for r in rows_5d)
+  MoCKA\data\inspect_285.py:78:print(f'_imported_at (date): {dict(imported.most_common(5))}')
+  MoCKA\data\inspect_285.py:79:
+  MoCKA\data\inspect_285.py:80:# ---- STEP 3: ENRAW_ details ----
+  MoCKA\data\inspect_285.py:81:print('\n=== STEP 3: ENRAW_ (all 6) ===')
+  MoCKA\data\inspect_285.py:82:rows_enraw = conn.execute("""
+> MoCKA\data\inspect_285.py:83:    SELECT event_id, when_ts, who_actor, what_type, where_component, title, short_summary, _source, _imported_at
+  MoCKA\data\inspect_285.py:84:    FROM events
+  MoCKA\data\inspect_285.py:85:    WHERE data_integrity='corrupted_migration'
+  MoCKA\data\inspect_285.py:86:    AND event_id LIKE 'ENRAW_%'
+  MoCKA\data\inspect_285.py:87:    ORDER BY event_id
+  MoCKA\data\inspect_285.py:88:""").fetchall()
+  MoCKA\data\inspect_285.py:90:for r in rows_enraw:
+  MoCKA\data\inspect_285.py:91:    print(f'  eid={r[0]}, when={r[1]}, actor={r[2]}, type={r[3]}, comp={r[4]}')
+  MoCKA\data\inspect_285.py:92:    print(f'  title={repr(r[5][:80]) if r[5] else None}')
+> MoCKA\data\inspect_285.py:93:    print(f'  _source={r[7]}, _imported_at={r[8]}')
+  MoCKA\data\inspect_285.py:94:
+  MoCKA\data\inspect_285.py:95:conn.close()
+  MoCKA\decision\decision_integration_test.py:82:
+  MoCKA\decision\decision_integration_test.py:83:    # --- action_profileに応じた相対関係: write_heavyはread_heavyよりrisk_scoreが高い ---
+  MoCKA\decision\decision_integration_test.py:84:    read_heavy_risk = decision_results["information_retrieval_read_heavy"].risk_score
+> MoCKA\decision\decision_integration_test.py:85:    write_heavy_risk = decision_results["implementation_write_heavy"].risk_score
+  MoCKA\decision\decision_integration_test.py:86:    results.append(check(
+  MoCKA\decision\decision_integration_test.py:87:        "write_heavy risk_score > read_heavy risk_score",
+  MoCKA\decision\decision_integration_test.py:88:        write_heavy_risk > read_heavy_risk,
+  MoCKA\decision\decision_integration_test.py:89:    ))
+  MoCKA\decision\decision_integration_test.py:90:
+  MoCKA\decision\decision_sample_cases.py:14:        "expected_action_profile": "read_heavy",
+  MoCKA\decision\decision_sample_cases.py:15:    },
+  MoCKA\decision\decision_sample_cases.py:16:    {
+> MoCKA\decision\decision_sample_cases.py:17:        "name": "implementation_write_heavy",
+  MoCKA\decision\decision_sample_cases.py:18:        "text": "Decision Engineを実装して新しいモジュールを追加して",
+  MoCKA\decision\decision_sample_cases.py:19:        "context": {"phase": "phase2-2", "active_task": "TODO_implement_decision"},
+  MoCKA\decision\decision_sample_cases.py:20:        "expected_action_profile": "write_heavy",
+  MoCKA\decision\decision_sample_cases.py:21:    },
+  MoCKA\decision\decision_sample_cases.py:22:    {
+> MoCKA\decision\decision_sample_cases.py:23:        "name": "fix_write_heavy_high_risk",
+  MoCKA\decision\decision_sample_cases.py:24:        "text": "このエラーを修正してください、バグがあります",
+  MoCKA\decision\decision_sample_cases.py:25:        "context": {"recent_events": ("E1", "E2")},
+  MoCKA\decision\decision_sample_cases.py:26:        "expected_action_profile": "write_heavy",
+  MoCKA\decision\decision_sample_cases.py:27:    },
+  MoCKA\decision\decision_sample_cases.py:28:    {
+  MoCKA\deploy\mocka_mcp_server_vps.py:67:        print(f"[MCP] db_read_events error: {e}")
+  MoCKA\deploy\mocka_mcp_server_vps.py:68:        return []
+  MoCKA\deploy\mocka_mcp_server_vps.py:69:
+> MoCKA\deploy\mocka_mcp_server_vps.py:70:def _db_write_event(row: dict):
+  MoCKA\deploy\mocka_mcp_server_vps.py:71:    try:
+  MoCKA\deploy\mocka_mcp_server_vps.py:72:        safe = {k: _sanitize(str(v)) for k, v in row.items()}
+  MoCKA\deploy\mocka_mcp_server_vps.py:73:        con = _get_db()
+  MoCKA\deploy\mocka_mcp_server_vps.py:74:        cur = con.cursor()
+  MoCKA\deploy\mocka_mcp_server_vps.py:75:        cur.execute("""
+  MoCKA\deploy\mocka_mcp_server_vps.py:94:        con.close()
+  MoCKA\deploy\mocka_mcp_server_vps.py:95:        return True
+  MoCKA\deploy\mocka_mcp_server_vps.py:96:    except Exception as e:
+> MoCKA\deploy\mocka_mcp_server_vps.py:97:        print(f"[MCP] db_write_event error: {e}")
+  MoCKA\deploy\mocka_mcp_server_vps.py:98:        return False
+  MoCKA\deploy\mocka_mcp_server_vps.py:99:
+  MoCKA\deploy\mocka_mcp_server_vps.py:100:# ── ユーティリティ ──
+  MoCKA\deploy\mocka_mcp_server_vps.py:101:def read_events(n=20):
+  MoCKA\deploy\mocka_mcp_server_vps.py:102:    rows = _db_read_events()
+  MoCKA\deploy\mocka_mcp_server_vps.py:171:    {"name":"mocka_list_events","description":"最新Nイベントを返す","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
+  MoCKA\deploy\mocka_mcp_server_vps.py:172:    {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
+  MoCKA\deploy\mocka_mcp_server_vps.py:173:    {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
+> MoCKA\deploy\mocka_mcp_server_vps.py:174:    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","default":"Claude"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description"]}},
+  MoCKA\deploy\mocka_mcp_server_vps.py:175:    {"name":"mocka_seal","description":"SHA-256ハッシュ検証","inputSchema":{"type":"object","properties":{},"required":[]}},
+  MoCKA\deploy\mocka_mcp_server_vps.py:176:]
+  MoCKA\deploy\mocka_mcp_server_vps.py:177:
+  MoCKA\deploy\mocka_mcp_server_vps.py:178:def execute_tool(name, args):
+  MoCKA\deploy\mocka_mcp_server_vps.py:179:    try:
+  MoCKA\deploy\mocka_mcp_server_vps.py:275:            auto_log(name, args, f"events:{len(ev)} kg:{len(kg)}")
+  MoCKA\deploy\mocka_mcp_server_vps.py:276:            return json.dumps({"query": q, "events_hits": ev, "knowledge_gate_hits": kg}, ensure_ascii=False, indent=2)
+  MoCKA\deploy\mocka_mcp_server_vps.py:277:
+> MoCKA\deploy\mocka_mcp_server_vps.py:278:        elif name == "mocka_write_event":
+  MoCKA\deploy\mocka_mcp_server_vps.py:279:            eid = next_event_id()
+  MoCKA\deploy\mocka_mcp_server_vps.py:280:            ts  = datetime.datetime.now().isoformat()
+  MoCKA\deploy\mocka_mcp_server_vps.py:281:            row = {f: "" for f in EVENTS_FIELDS}
+  MoCKA\deploy\mocka_mcp_server_vps.py:282:            row.update({
+  MoCKA\deploy\mocka_mcp_server_vps.py:283:                "event_id": eid, "when": ts,
+  MoCKA\deploy\mocka_mcp_server_vps.py:294:                "risk_level": "normal",
+  MoCKA\deploy\mocka_mcp_server_vps.py:295:                "channel_type": "mcp",
+  MoCKA\deploy\mocka_mcp_server_vps.py:296:            })
+> MoCKA\deploy\mocka_mcp_server_vps.py:297:            ok = _db_write_event(row)
+  MoCKA\deploy\mocka_mcp_server_vps.py:298:            auto_log(name, args, f"written {eid}")
+  MoCKA\deploy\mocka_mcp_server_vps.py:299:            return json.dumps({"status": "ok" if ok else "error", "event_id": eid, "when": ts, "storage": "sqlite"}, ensure_ascii=False)
+  MoCKA\deploy\mocka_mcp_server_vps.py:300:
+  MoCKA\deploy\mocka_mcp_server_vps.py:301:        elif name == "mocka_seal":
+  MoCKA\deploy\mocka_mcp_server_vps.py:302:            rows    = _db_read_events()
+  MoCKA\feedback\memory_reinforcer.py:33:        """成功パターン(risk_score < 0.4のepisodic記憶)の強化提案。"""
+  MoCKA\feedback\memory_reinforcer.py:34:        return {
+  MoCKA\feedback\memory_reinforcer.py:35:            "reinforcement_type": "reinforce_success_patterns",
+> MoCKA\feedback\memory_reinforcer.py:36:            "module": "memory/memory_writer.py",
+  MoCKA\feedback\memory_reinforcer.py:37:            "action": "increase_priority",
+  MoCKA\feedback\memory_reinforcer.py:38:            "description": (
+  MoCKA\feedback\memory_reinforcer.py:39:                f"{issue.description} を踏まえ、risk_score < 0.4で完了した"
+  MoCKA\feedback\memory_reinforcer.py:40:                f"episodic記憶を memory_type=skill として再記録し、"
+  MoCKA\feedback\memory_reinforcer.py:41:                f"default_priorityを高める運用を提案する"
+  MoCKA\gateway\adapter_gpt.py:179:
+  MoCKA\gateway\adapter_gpt.py:180:    active_todo   = ctx.get("active_todo", []) or []
+  MoCKA\gateway\adapter_gpt.py:181:    recent_events = ctx.get("recent_events", []) or []
+> MoCKA\gateway\adapter_gpt.py:182:    current_case, current_case_source = _derive_current_case(active_todo, recent_events)
+  MoCKA\gateway\adapter_gpt.py:183:
+  MoCKA\gateway\adapter_gpt.py:184:    return {
+  MoCKA\gateway\adapter_gpt.py:185:        "status":              "ok",
+  MoCKA\gateway\adapter_gpt.py:186:        "phase":               ctx.get("phase", ""),
+  MoCKA\gateway\adapter_gpt.py:187:        "goal":                ctx.get("goal", ""),
+  MoCKA\gateway\adapter_gpt.py:188:        "current_case":        current_case,
+> MoCKA\gateway\adapter_gpt.py:189:        "current_case_source": current_case_source,
+  MoCKA\gateway\adapter_gpt.py:190:        "active_todo":         active_todo,
+  MoCKA\gateway\adapter_gpt.py:191:        "essence_summary":     ctx.get("essence_summary", ""),
+  MoCKA\gateway\adapter_gpt.py:192:        "recent_events":       recent_events,
+  MoCKA\gateway\adapter_gpt.py:193:        "last_decision":       ctx.get("last_decision", ""),
+  MoCKA\gateway\adapter_gpt.py:194:        "meta":                ctx.get("meta", {}),
+  MoCKA\gateway\adapter_gpt.py:247:        優先度先頭を使う。
+  MoCKA\gateway\adapter_gpt.py:248:
+  MoCKA\gateway\adapter_gpt.py:249:    戻り値: (current_case: str|None,
+> MoCKA\gateway\adapter_gpt.py:250:             current_case_source: "session_relevant_events"|"recent_activity_match"|"priority_fallback"|None)
+  MoCKA\gateway\adapter_gpt.py:251:    """
+  MoCKA\gateway\adapter_gpt.py:252:    if not active_todo:
+  MoCKA\gateway\adapter_gpt.py:253:        return None, None
+  MoCKA\gateway\adapter_gpt.py:254:
+  MoCKA\gateway\adapter_gpt.py:255:    session_events = _session_relevant_events(recent_events)
+  MoCKA\gateway\browser_session_handler.py:63:            'method': 'orchestra_session' | 'error',
+  MoCKA\gateway\browser_session_handler.py:64:            'error': str (if error),
+  MoCKA\gateway\browser_session_handler.py:65:            'ai_name': ai_name,
+> MoCKA\gateway\browser_session_handler.py:66:            'session_source': str (where page came from)
+  MoCKA\gateway\browser_session_handler.py:67:        }
+  MoCKA\gateway\browser_session_handler.py:68:    """
+  MoCKA\gateway\browser_session_handler.py:69:
+  MoCKA\gateway\browser_session_handler.py:70:    try:
+  MoCKA\gateway\browser_session_handler.py:71:        # STEP 1: Get page from parameter or thread-local storage (from Orchestra)
+  MoCKA\gateway\browser_session_handler.py:80:                'ai_name': ai_name,
+  MoCKA\gateway\browser_session_handler.py:81:            }
+  MoCKA\gateway\browser_session_handler.py:82:
+> MoCKA\gateway\browser_session_handler.py:83:        session_source = 'orchestra_existing_session'
+  MoCKA\gateway\browser_session_handler.py:84:        method = 'orchestra_session'
+  MoCKA\gateway\browser_session_handler.py:85:        logging.info(f'[AI_SOCKET] {ai_name}: Received from Orchestra')
+  MoCKA\gateway\browser_session_handler.py:86:        logging.info(f'[AI_SOCKET] {ai_name}: page_id={id(page)}, browser_id={id(browser)}, context_id={id(context)}')
+  MoCKA\gateway\browser_session_handler.py:87:        logging.info(f'[AI_SOCKET] {ai_name}: new_browser=false, new_context=false, new_page=false')
+  MoCKA\gateway\browser_session_handler.py:88:
+  MoCKA\gateway\browser_session_handler.py:252:                'response': response_text[:max_response_chars] if response_text else '',
+  MoCKA\gateway\browser_session_handler.py:253:                'method': method,
+  MoCKA\gateway\browser_session_handler.py:254:                'ai_name': ai_name,
+> MoCKA\gateway\browser_session_handler.py:255:                'session_source': session_source,
+  MoCKA\gateway\browser_session_handler.py:256:            }
+  MoCKA\gateway\browser_session_handler.py:257:
+  MoCKA\gateway\browser_session_handler.py:258:        except Exception as e:
+  MoCKA\gateway\browser_session_handler.py:259:            return {
+  MoCKA\gateway\browser_session_handler.py:260:                'status': 'error',
+  MoCKA\gateway\browser_session_handler.py:261:                'error': f'{ai_name} browser error: {str(e)}',
+  MoCKA\gateway\browser_session_handler.py:262:                'method': method,
+  MoCKA\gateway\browser_session_handler.py:263:                'ai_name': ai_name,
+> MoCKA\gateway\browser_session_handler.py:264:                'session_source': session_source,
+  MoCKA\gateway\browser_session_handler.py:265:            }
+  MoCKA\gateway\browser_session_handler.py:266:
+  MoCKA\gateway\browser_session_handler.py:267:    except Exception as e:
+  MoCKA\gateway\browser_session_handler.py:268:        return {
+  MoCKA\gateway\browser_session_handler.py:269:            'status': 'error',
+  MoCKA\gateway\connector_caliber.py:4:# ref: E20260610_017 / TODO_273
+  MoCKA\gateway\connector_caliber.py:5:from flask import jsonify, request
+  MoCKA\gateway\connector_caliber.py:6:
+> MoCKA\gateway\connector_caliber.py:7:from mocka_index_writer import MoCKAIndex, IndexWriter
+  MoCKA\gateway\connector_caliber.py:8:from connector_router import ConnectorRouter
+  MoCKA\gateway\connector_caliber.py:9:from connector_log import connector_log as _conn_log   # TODO_274
+  MoCKA\gateway\connector_caliber.py:10:
+  MoCKA\gateway\connector_caliber.py:11:CALIBER_ID = 'connector_caliber_v1.2'
+  MoCKA\gateway\connector_caliber.py:12:
+  MoCKA\gateway\gateway.py:44:from event_buffer import get_buffer  # Phase5-1: Gate Enforcement(db直書き禁止)
+  MoCKA\gateway\gateway.py:45:
+  MoCKA\gateway\gateway.py:46:sys.path.insert(0, str(Path(__file__).parent.parent / "memory"))
+> MoCKA\gateway\gateway.py:47:from memory_writer import MemoryWriter  # HAB -> Memory 最小接続(A案)
+  MoCKA\gateway\gateway.py:48:
+  MoCKA\gateway\gateway.py:49:app = Flask(__name__)
+  MoCKA\gateway\gateway.py:50:CORS(app)
+  MoCKA\gateway\gateway.py:51:
+  MoCKA\gateway\gateway.py:52:builder = ContextBuilder()
+> MoCKA\gateway\gateway.py:53:_memory_writer = MemoryWriter()
+  MoCKA\gateway\gateway.py:54:
+  MoCKA\gateway\gateway.py:55:DB_PATH  = Path(__file__).parent.parent / "data" / "mocka_events.db"
+  MoCKA\gateway\gateway.py:56:DATA_DIR = Path(__file__).parent.parent / "data"
+  MoCKA\gateway\gateway.py:57:
+  MoCKA\gateway\gateway.py:58:connector = ConnectorCaliber(
+  MoCKA\gateway\gateway.py:311:        # Record to Memory (HAB -> Memory 最小接続, A案)。
+  MoCKA\gateway\gateway.py:312:        # 既存のPHI-OS記録(上記get_buffer().push)とは独立。失敗してもHAB応答は失敗扱いにしない。
+  MoCKA\gateway\gateway.py:313:        try:
+> MoCKA\gateway\gateway.py:314:            _memory_writer.write_event(event=result, tags=("hab", "multi_ai"))
+  MoCKA\gateway\gateway.py:315:            print(f"[gateway:multi_request] Memory event written: request_id={result.get('request_id')}")
+  MoCKA\gateway\gateway.py:316:        except Exception as mem_err:
+  MoCKA\gateway\gateway.py:317:            print(f"[gateway:multi_request] WARNING: Memory record failed: {mem_err}")
+  MoCKA\gateway\gateway.py:318:
+  MoCKA\gateway\gateway.py:319:        return jsonify(result), (200 if result.get("status") != "all_error" else 400)
+  MoCKA\gateway\lifecycle_manager.py:19:
+  MoCKA\gateway\lifecycle_manager.py:20:連携:
+  MoCKA\gateway\lifecycle_manager.py:21:  connector_log.py (TODO_274) → 入力
+> MoCKA\gateway\lifecycle_manager.py:22:  mocka_write_event             → 監査イベント記録
+  MoCKA\gateway\lifecycle_manager.py:23:  interface/proposal_schema.py  → TODO候補をPRPとして提案
+  MoCKA\gateway\lifecycle_manager.py:24:"""
+  MoCKA\gateway\lifecycle_manager.py:25:from __future__ import annotations
+  MoCKA\gateway\lifecycle_manager.py:26:
+  MoCKA\gateway\lifecycle_manager.py:27:import json
+  MoCKA\gateway\mocka_index_writer.py:52:            "short_summary":   short_summary,
+  MoCKA\gateway\mocka_index_writer.py:53:            "when":            index.when,
+  MoCKA\gateway\mocka_index_writer.py:54:            "who_actor":       index.who,
+> MoCKA\gateway\mocka_index_writer.py:55:            "ai_actor":        'index_writer',
+  MoCKA\gateway\mocka_index_writer.py:56:            "what_type":       'index',
+  MoCKA\gateway\mocka_index_writer.py:57:            "free_note":       free_note,
+  MoCKA\gateway\mocka_index_writer.py:58:            "where_component": index.where,
+  MoCKA\gateway\mocka_index_writer.py:59:            "why_purpose":     index.why,
+  MoCKA\gateway\mocka_index_writer.py:60:            "how_trigger":     index.how,
+  MoCKA\gateway\multi_dispatcher.py:554:
+  MoCKA\gateway\multi_dispatcher.py:555:    try:
+  MoCKA\gateway\multi_dispatcher.py:556:        # Load existing event_gate interface
+> MoCKA\gateway\multi_dispatcher.py:557:        from phi_os.event_gate import process_event
+  MoCKA\gateway\multi_dispatcher.py:558:
+  MoCKA\gateway\multi_dispatcher.py:559:        if not results:
+  MoCKA\gateway\multi_dispatcher.py:560:            return
+  MoCKA\gateway\multi_dispatcher.py:561:
+  MoCKA\gateway\multi_dispatcher.py:562:        # Generate who_session from timestamp: SESSION_YYYYMMDD_HHMMSS
+  MoCKA\gateway\multi_dispatcher.py:594:                "how_trigger": "dispatch_multi_request()",  # ADDED: required field
+  MoCKA\gateway\multi_dispatcher.py:595:                "after_hash": after_hash,  # ADDED: Replay guarantee (Canonical field)
+  MoCKA\gateway\multi_dispatcher.py:596:
+> MoCKA\gateway\multi_dispatcher.py:597:                # Persistence fields (preserved in event_gate._write())
+  MoCKA\gateway\multi_dispatcher.py:598:                "vendor": result.get("provider", "unknown"),
+  MoCKA\gateway\multi_dispatcher.py:599:                "model": result.get("model", ""),
+  MoCKA\gateway\multi_dispatcher.py:600:                "runtime": "orchestra_dispatch",
+  MoCKA\gateway\multi_dispatcher.py:601:                "source": session_metadata.get("source", "live") if session_metadata else "live",
+  MoCKA\gateway\multi_dispatcher.py:602:                "request_id": request_id,
+  MoCKA\gateway\multi_dispatcher.py:603:
+> MoCKA\gateway\multi_dispatcher.py:604:                # Event Gate convenience fields (mapped by event_gate._write())
+  MoCKA\gateway\multi_dispatcher.py:605:                "when_ts": result.get("timestamp", timestamp),
+  MoCKA\gateway\multi_dispatcher.py:606:                "description": f"Provider: {result.get('provider')}, Model: {result.get('model')}, Status: ok",
+  MoCKA\gateway\multi_dispatcher.py:607:            }
+  MoCKA\gateway\multi_dispatcher.py:608:
+  MoCKA\gateway\multi_dispatcher.py:609:            # Call existing event_gate interface (no new component)
+> MoCKA\gateway\multi_dispatcher.py:610:            # Pass event_source='orchestra_lineage' to track origin
+  MoCKA\gateway\multi_dispatcher.py:611:            lineage_status = "UNKNOWN"
+  MoCKA\gateway\multi_dispatcher.py:612:            try:
+> MoCKA\gateway\multi_dispatcher.py:613:                response = process_event(lineage_payload, event_source='orchestra_lineage')
+  MoCKA\gateway\multi_dispatcher.py:614:                if response.get('status') == 'ok':
+  MoCKA\gateway\multi_dispatcher.py:615:                    lineage_status = "RECORDED"
+  MoCKA\gateway\multi_dispatcher.py:616:                    print(f"[IP-007] Lineage recorded: event_id={response.get('event_id')}, "
+  MoCKA\gateway\multi_dispatcher.py:617:                          f"provider={result.get('provider')}, model={result.get('model')}, "
+  MoCKA\gateway\multi_dispatcher.py:618:                          f"who_session={who_session}, after_hash={after_hash}")
+  MoCKA\gateway\multi_dispatcher.py:620:                    # IP-007 Option A: Lineage rejected - record failure event
+  MoCKA\gateway\multi_dispatcher.py:621:                    lineage_status = "FAILED_RECORDED"
+  MoCKA\gateway\multi_dispatcher.py:622:                    _record_lineage_failure(
+> MoCKA\gateway\multi_dispatcher.py:623:                        process_event=process_event,
+  MoCKA\gateway\multi_dispatcher.py:624:                        request_id=request_id,
+  MoCKA\gateway\multi_dispatcher.py:625:                        provider=result.get("provider"),
+  MoCKA\gateway\multi_dispatcher.py:626:                        reason=f"Validation rejected: {response.get('errors')}",
+  MoCKA\gateway\multi_dispatcher.py:627:                        timestamp=timestamp,
+  MoCKA\gateway\multi_dispatcher.py:628:                        who_session=who_session
+  MoCKA\gateway\multi_dispatcher.py:631:                # IP-007 Option A: Lineage exception - record failure event
+  MoCKA\gateway\multi_dispatcher.py:632:                lineage_status = "FAILED_RECORDED"
+  MoCKA\gateway\multi_dispatcher.py:633:                _record_lineage_failure(
+> MoCKA\gateway\multi_dispatcher.py:634:                    process_event=process_event,
+  MoCKA\gateway\multi_dispatcher.py:635:                    request_id=request_id,
+  MoCKA\gateway\multi_dispatcher.py:636:                    provider=result.get("provider"),
+  MoCKA\gateway\multi_dispatcher.py:637:                    reason=f"Exception: {str(e)}",
+  MoCKA\gateway\multi_dispatcher.py:638:                    timestamp=timestamp,
+  MoCKA\gateway\multi_dispatcher.py:639:                    who_session=who_session
+  MoCKA\gateway\multi_dispatcher.py:645:        print(f"[IP-007] ERROR: Unexpected error in _record_lineage_events: {str(e)}")
+  MoCKA\gateway\multi_dispatcher.py:646:
+  MoCKA\gateway\multi_dispatcher.py:647:
+> MoCKA\gateway\multi_dispatcher.py:648:def _record_lineage_failure(process_event, request_id: str, provider: str,
+  MoCKA\gateway\multi_dispatcher.py:649:                           reason: str, timestamp: str, who_session: str = None) -> None:
+  MoCKA\gateway\multi_dispatcher.py:650:    """
+  MoCKA\gateway\multi_dispatcher.py:651:    IP-007 + SB-007 CORRECTION: Record lineage recording failure to Event Store.
+  MoCKA\gateway\multi_dispatcher.py:652:
+  MoCKA\gateway\multi_dispatcher.py:653:    Failure event also adapts to existing Event Gate contract (validate() requirements).
+  MoCKA\gateway\multi_dispatcher.py:658:    If failure-event itself fails, print only (no recursive recording).
+  MoCKA\gateway\multi_dispatcher.py:659:
+  MoCKA\gateway\multi_dispatcher.py:660:    Args:
+> MoCKA\gateway\multi_dispatcher.py:661:        process_event: The event_gate.process_event function
+  MoCKA\gateway\multi_dispatcher.py:662:        request_id: Original Orchestra request ID
+  MoCKA\gateway\multi_dispatcher.py:663:        provider: AI provider name
+  MoCKA\gateway\multi_dispatcher.py:664:        reason: Failure reason
+  MoCKA\gateway\multi_dispatcher.py:665:        timestamp: Event timestamp
+  MoCKA\gateway\multi_dispatcher.py:666:        who_session: Optional session ID for correlation
+  MoCKA\gateway\multi_dispatcher.py:699:            "description": f"Provider: {provider}, Failure: {reason}",
+  MoCKA\gateway\multi_dispatcher.py:700:        }
+  MoCKA\gateway\multi_dispatcher.py:701:
+> MoCKA\gateway\multi_dispatcher.py:702:        # Call process_event for failure event
+  MoCKA\gateway\multi_dispatcher.py:703:        # If this also fails, we print only (no recursive recording)
+> MoCKA\gateway\multi_dispatcher.py:704:        response = process_event(failure_payload, event_source='orchestra_lineage')
+  MoCKA\gateway\multi_dispatcher.py:705:        if response.get('status') == 'ok':
+  MoCKA\gateway\multi_dispatcher.py:706:            print(f"[IP-007] Lineage failure recorded: event_id={response.get('event_id')}, "
+  MoCKA\gateway\multi_dispatcher.py:707:                  f"provider={provider}, who_session={who_session}")
+  MoCKA\gateway\multi_dispatcher.py:708:        else:
+  MoCKA\gateway\multi_dispatcher.py:709:            # Failure-event itself failed - print only (RECORDING_FAILURE_UNRECORDED)
+  MoCKA\governance\authorization_state_bridge.py:55:    - granted_at (timestamp from human_gate_events)
+  MoCKA\governance\authorization_state_bridge.py:56:    - expires_at (nullable, from payload)
+  MoCKA\governance\authorization_state_bridge.py:57:    - evidence (JSON with source refs)
+> MoCKA\governance\authorization_state_bridge.py:58:    - hg_event_source (traceability: event_id)
+  MoCKA\governance\authorization_state_bridge.py:59:    - hg_event_timestamp (traceability: timestamp)
+  MoCKA\governance\authorization_state_bridge.py:60:    - created_at (when authorization_state was created)
+  MoCKA\governance\authorization_state_bridge.py:61:    - immutable (always 1 on creation)
+  MoCKA\governance\authorization_state_bridge.py:62:    """
+  MoCKA\governance\authorization_state_bridge.py:63:    conn.execute('''
+  MoCKA\governance\authorization_state_bridge.py:72:            granted_at TEXT,
+  MoCKA\governance\authorization_state_bridge.py:73:            expires_at TEXT,
+  MoCKA\governance\authorization_state_bridge.py:74:            evidence TEXT,
+> MoCKA\governance\authorization_state_bridge.py:75:            hg_event_source TEXT,
+  MoCKA\governance\authorization_state_bridge.py:76:            hg_event_timestamp TEXT,
+  MoCKA\governance\authorization_state_bridge.py:77:            created_at TEXT,
+  MoCKA\governance\authorization_state_bridge.py:78:            immutable INTEGER DEFAULT 1
+  MoCKA\governance\authorization_state_bridge.py:79:        )
+  MoCKA\governance\authorization_state_bridge.py:80:    ''')
+  MoCKA\governance\authorization_state_bridge.py:191:            "granted_at": timestamp,
+  MoCKA\governance\authorization_state_bridge.py:192:            "expires_at": payload.get("expires_at"),  # nullable
+  MoCKA\governance\authorization_state_bridge.py:193:            "evidence": json.dumps({"source": payload.get("evidence_ref", [])}) if payload.get("evidence_ref") else None,
+> MoCKA\governance\authorization_state_bridge.py:194:            "hg_event_source": event_id,
+  MoCKA\governance\authorization_state_bridge.py:195:            "hg_event_timestamp": timestamp,
+  MoCKA\governance\authorization_state_bridge.py:196:            "created_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\governance\authorization_state_bridge.py:197:            "immutable": 1,
+  MoCKA\governance\authorization_state_bridge.py:198:        }
+  MoCKA\governance\authorization_state_bridge.py:199:        return True, None, record
+  MoCKA\governance\authorization_state_bridge.py:225:        - No duplicate authorization_id (UUID uniqueness)
+  MoCKA\governance\authorization_state_bridge.py:226:        - No modification of existing auth state (append-only)
+  MoCKA\governance\authorization_state_bridge.py:227:        - standing always set to "UNKNOWN"
+> MoCKA\governance\authorization_state_bridge.py:228:        - hg_event_source and hg_event_timestamp for traceability
+  MoCKA\governance\authorization_state_bridge.py:229:    """
+  MoCKA\governance\authorization_state_bridge.py:230:    owns_conn = conn is None
+  MoCKA\governance\authorization_state_bridge.py:231:    if owns_conn:
+  MoCKA\governance\authorization_state_bridge.py:232:        conn = _get_conn()
+  MoCKA\governance\authorization_state_bridge.py:233:
+  MoCKA\governance\authorization_state_bridge.py:280:            '''INSERT INTO authorization_state
+  MoCKA\governance\authorization_state_bridge.py:281:               (authorization_id, decision_id, subject, scope, standing, status,
+  MoCKA\governance\authorization_state_bridge.py:282:                granted_by, granted_at, expires_at, evidence,
+> MoCKA\governance\authorization_state_bridge.py:283:                hg_event_source, hg_event_timestamp, created_at, immutable)
+  MoCKA\governance\authorization_state_bridge.py:284:               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+  MoCKA\governance\authorization_state_bridge.py:285:            (record['authorization_id'], record['decision_id'], record['subject'],
+  MoCKA\governance\authorization_state_bridge.py:286:             record['scope'], record['standing'], record['status'],
+  MoCKA\governance\authorization_state_bridge.py:287:             record['granted_by'], record['granted_at'], record['expires_at'],
+> MoCKA\governance\authorization_state_bridge.py:288:             record['evidence'], record['hg_event_source'], record['hg_event_timestamp'],
+  MoCKA\governance\authorization_state_bridge.py:289:             record['created_at'], record['immutable'])
+  MoCKA\governance\authorization_state_bridge.py:290:        )
+  MoCKA\governance\authorization_state_bridge.py:291:        conn.commit()
+  MoCKA\governance\authorization_state_bridge.py:292:
+  MoCKA\governance\authorization_state_bridge.py:293:        return True, None, record['authorization_id']
+  MoCKA\governance\authorization_state_bridge.py:374:            conn.close()
+  MoCKA\governance\authorization_state_bridge.py:375:
+  MoCKA\governance\authorization_state_bridge.py:376:
+> MoCKA\governance\authorization_state_bridge.py:377:def get_decision_id_from_hg_event(hg_event_source: str, conn=None) -> Optional[str]:
+  MoCKA\governance\authorization_state_bridge.py:378:    """
+> MoCKA\governance\authorization_state_bridge.py:379:    JARVIS-facing adapter: Fetch decision_id from authorization_state by hg_event_source.
+  MoCKA\governance\authorization_state_bridge.py:380:
+> MoCKA\governance\authorization_state_bridge.py:381:    Input: hg_event_source (HAB event_id)
+  MoCKA\governance\authorization_state_bridge.py:382:    Output: decision_id (JARVIS-facing key), or None if not found
+  MoCKA\governance\authorization_state_bridge.py:383:
+  MoCKA\governance\authorization_state_bridge.py:384:    Usage:
+> MoCKA\governance\authorization_state_bridge.py:385:        decision_id = get_decision_id_from_hg_event(hg_event_source="HG20260922_...")
+  MoCKA\governance\authorization_state_bridge.py:386:        JARVIS.evaluate(decision_id)
+  MoCKA\governance\authorization_state_bridge.py:387:    """
+  MoCKA\governance\authorization_state_bridge.py:388:    owns_conn = conn is None
+  MoCKA\governance\authorization_state_bridge.py:389:    if owns_conn:
+  MoCKA\governance\authorization_state_bridge.py:390:        conn = _get_conn()
+  MoCKA\governance\authorization_state_bridge.py:392:    try:
+  MoCKA\governance\authorization_state_bridge.py:393:        _ensure_authorization_state_table(conn)
+  MoCKA\governance\authorization_state_bridge.py:394:        row = conn.execute(
+> MoCKA\governance\authorization_state_bridge.py:395:            'SELECT decision_id FROM authorization_state WHERE hg_event_source = ? LIMIT 1',
+> MoCKA\governance\authorization_state_bridge.py:396:            (hg_event_source,)
+  MoCKA\governance\authorization_state_bridge.py:397:        ).fetchone()
+  MoCKA\governance\authorization_state_bridge.py:398:
+  MoCKA\governance\authorization_state_bridge.py:399:        if row:
+  MoCKA\governance\authorization_state_bridge.py:400:            return row['decision_id']
+  MoCKA\governance\authorization_state_bridge.py:401:        return None
+  MoCKA\governance\mocka_git_safe_commit.py:31:# Recording Point)とする。呼び出し元(anchor_update.py/sync_watch.py/
+  MoCKA\governance\mocka_git_safe_commit.py:32:# incident_engine.py/incident_git_sync.py等)には一切手を入れず、本ファイル
+  MoCKA\governance\mocka_git_safe_commit.py:33:# 内部の記録のみでCHANGE_START/CHANGE_DONE相当のLedger記録を完結させる。
+> MoCKA\governance\mocka_git_safe_commit.py:34:_GIT_EVENT_ENDPOINT = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\governance\mocka_git_safe_commit.py:35:_GIT_EVENT_FALLBACK_LOG = Path(__file__).resolve().parent / "mocka_git_safe_commit_ledger_fallback.log"
+  MoCKA\governance\mocka_git_safe_commit.py:36:
+  MoCKA\governance\mocka_git_safe_commit.py:37:# Core System File Change Approval(Human Gate)対象。
+  MoCKA\governance\mocka_git_safe_commit.py:38:# 自動シール(AUTO_SEAL_50EVT等)が無承認でこれらの変更を確定させてしまう
+  MoCKA\governance\mocka_git_safe_commit.py:39:# 事故が2026-06-25に発生したため、対象は無条件git add -Aから除外し、
+  MoCKA\governance\mocka_git_safe_commit.py:75:
+  MoCKA\governance\mocka_git_safe_commit.py:76:def _detect_caller():
+  MoCKA\governance\mocka_git_safe_commit.py:77:    """mocka_git_safe_commit()の呼び出し元を、呼び出し元に一切変更を求めず
+> MoCKA\governance\mocka_git_safe_commit.py:78:    スタックから自動検出する(TODO_413: 呼び出し元にmocka_write_eventを
+  MoCKA\governance\mocka_git_safe_commit.py:79:    呼ばせる設計は禁止のため)。"""
+  MoCKA\governance\mocka_git_safe_commit.py:80:    try:
+  MoCKA\governance\mocka_git_safe_commit.py:81:        stack = inspect.stack()
+  MoCKA\governance\mocka_git_safe_commit.py:82:        # stack[0]=_detect_caller, stack[1]=mocka_git_safe_commit, stack[2]=実際の呼び出し元
+  MoCKA\governance\mocka_git_safe_commit.py:83:        if len(stack) > 2:
+  MoCKA\governance\mocka_git_safe_commit.py:128:            _GIT_EVENT_ENDPOINT, data=payload,
+  MoCKA\governance\mocka_git_safe_commit.py:129:            headers={"Content-Type": "application/json"}, method="POST"
+  MoCKA\governance\mocka_git_safe_commit.py:130:        )
+> MoCKA\governance\mocka_git_safe_commit.py:131:        # 2026-07-10実測: /agent/mocka_write_eventの応答は約5秒かかる場合がある
+  MoCKA\governance\mocka_git_safe_commit.py:132:        # (tools/mocka_auto_record.py等の既存timeout=3と同条件で計測、常時fallback
+  MoCKA\governance\mocka_git_safe_commit.py:133:        # に落ちることを確認)。commit経路をブロックしない範囲で確実に記録できる
+  MoCKA\governance\mocka_git_safe_commit.py:134:        # よう、余裕を持たせてtimeout=12とする。
+  MoCKA\governance\mocka_git_safe_commit.py:135:        with urllib.request.urlopen(req, timeout=12) as r:
+  MoCKA\governance\mocka_git_safe_commit.py:136:            body = json.loads(r.read())
+  MoCKA\governance\mocka_git_safe_commit.py:171:          使用すること(本ファイル冒頭の運用ルール参照)。
+  MoCKA\governance\mocka_git_safe_commit.py:172:    human_gate_override_event_id: Core System File Human Gateの明示的な人間承認
+  MoCKA\governance\mocka_git_safe_commit.py:173:          オーバーライド(2026-07-02 きむら博士裁定, Phase1=チャット承認方式)。
+> MoCKA\governance\mocka_git_safe_commit.py:174:          承認の根拠となったPHL event_id(mocka_write_eventで記録済みのもの)を渡した
+  MoCKA\governance\mocka_git_safe_commit.py:175:          場合のみ、Core System Fileを除外せずcommitに含める(commitメッセージに
+  MoCKA\governance\mocka_git_safe_commit.py:176:          event_idを埋め込み監査trailを保持する)。未指定時は従来通りfail closed(除外)。
+  MoCKA\governance\mocka_git_safe_commit.py:177:          Phase2(UI承認, TODO_207)稼働後は本パラメータの運用方法を見直すこと。
+  MoCKA\governance\mocka_git_safe_commit.py:178:
+  MoCKA\governance\mocka_git_safe_commit.py:179:    戻り値: dict(
+  MoCKA\interface\db_helper.py:11:from typing import Any, Dict, List, Optional, Union
+  MoCKA\interface\db_helper.py:12:
+  MoCKA\interface\db_helper.py:13:try:
+> MoCKA\interface\db_helper.py:14:    from phi_os.event.event_gate import process_event
+  MoCKA\interface\db_helper.py:15:except ImportError:
+> MoCKA\interface\db_helper.py:16:    process_event = None
+  MoCKA\interface\db_helper.py:17:
+  MoCKA\interface\db_helper.py:18:BASE_DIR = Path(__file__).resolve().parent.parent
+  MoCKA\interface\db_helper.py:19:MOCKA_ROOT = BASE_DIR
+  MoCKA\interface\db_helper.py:20:DATA_DIR = BASE_DIR / "data"
+  MoCKA\interface\db_helper.py:21:
+  MoCKA\interface\db_helper.py:22:DB_PATH = DATA_DIR / "mocka_events.db"
+  MoCKA\interface\db_helper.py:23:CSV_PATH = DATA_DIR / "events.csv"
+  MoCKA\interface\db_helper.py:24:
+> MoCKA\interface\db_helper.py:25:CSV_WRITE_ENABLED = False
+  MoCKA\interface\db_helper.py:26:
+  MoCKA\interface\db_helper.py:27:def _get_connection(
+  MoCKA\interface\db_helper.py:28:    db_path: Union[str, Path] = DB_PATH
+  MoCKA\interface\db_helper.py:29:) -> sqlite3.Connection:
+  MoCKA\interface\db_helper.py:30:    conn = sqlite3.connect(str(db_path))
+  MoCKA\interface\db_helper.py:139:    Event Gate邨檎罰縺ｮ蜚ｯ荳縺ｮ譖ｸ縺崎ｾｼ縺ｿ蜈･蜿｣縲・
+  MoCKA\interface\db_helper.py:140:    """
+  MoCKA\interface\db_helper.py:141:
+> MoCKA\interface\db_helper.py:142:    if process_event is None:
+  MoCKA\interface\db_helper.py:143:        raise RuntimeError(
+> MoCKA\interface\db_helper.py:144:            "event_gate.process_event unavailable"
+  MoCKA\interface\db_helper.py:145:        )
+  MoCKA\interface\db_helper.py:146:
+> MoCKA\interface\db_helper.py:147:    result = process_event(
+  MoCKA\interface\db_helper.py:148:        row,
+> MoCKA\interface\db_helper.py:149:        event_source=channel or "db_helper"
+  MoCKA\interface\db_helper.py:150:    )
+  MoCKA\interface\db_helper.py:151:
+  MoCKA\interface\db_helper.py:152:    return (
+  MoCKA\interface\db_helper.py:153:        isinstance(result, dict)
+  MoCKA\interface\db_helper.py:154:        and result.get("status") == "ok"
+  MoCKA\interface\db_helper.py:309:    print(f"CSV: {CSV_PATH}")
+  MoCKA\interface\db_helper.py:310:    print(
+  MoCKA\interface\db_helper.py:311:        f"Event Gate available: "
+> MoCKA\interface\db_helper.py:312:        f"{process_event is not None}"
+  MoCKA\interface\db_helper.py:313:    )
+  MoCKA\interface\db_helper.py:314:
+  MoCKA\interface\db_helper.py:315:    print(
+  MoCKA\interface\db_helper.py:316:        f"Event Count: "
+  MoCKA\interface\db_helper.py:317:        f"{count_events()}"
+  MoCKA\interface\essence_condenser.py:174:            # Step4: essenceを更新
+  MoCKA\interface\essence_condenser.py:175:            self.existing[axis] = best
+  MoCKA\interface\essence_condenser.py:176:            self.existing[f"{axis}_updated"] = timestamp
+> MoCKA\interface\essence_condenser.py:177:            self.existing[f"{axis}_source_count"] = len(unique)
+  MoCKA\interface\essence_condenser.py:178:            updated[axis] = best
+  MoCKA\interface\essence_condenser.py:179:            print(f"[CONDENSER] {axis} 更新: {best[:60]}...")
+  MoCKA\interface\essence_condenser.py:180:
+  MoCKA\interface\essence_condenser.py:181:        if updated:
+  MoCKA\interface\essence_condenser.py:182:            self.essence_path.parent.mkdir(parents=True, exist_ok=True)
+  MoCKA\interface\Essence_Direct_Parser.py:281:    essence["PHILOSOPHY_updated"] = ts
+  MoCKA\interface\Essence_Direct_Parser.py:282:    essence["OPERATION_updated"] = ts
+  MoCKA\interface\Essence_Direct_Parser.py:283:    essence["_parser_version"] = "Essence_Direct_Parser_v1.0"
+> MoCKA\interface\Essence_Direct_Parser.py:284:    essence["_source_events"] = len(events)
+  MoCKA\interface\Essence_Direct_Parser.py:285:    essence["_keywords_found"] = keywords
+  MoCKA\interface\Essence_Direct_Parser.py:286:    essence["_negations_count"] = len(negations)
+  MoCKA\interface\Essence_Direct_Parser.py:287:
+  MoCKA\interface\Essence_Direct_Parser.py:288:    ESSENCE_PATH.write_text(
+  MoCKA\interface\Essence_Direct_Parser.py:289:        json.dumps(essence, ensure_ascii=False, indent=2),
+  MoCKA\interface\essence_resolver.py:38:    "canonical_fail": 0,
+  MoCKA\interface\essence_resolver.py:39:    "legacy_success": 0,
+  MoCKA\interface\essence_resolver.py:40:    "legacy_fail": 0,
+> MoCKA\interface\essence_resolver.py:41:    "last_primary_source": None,
+  MoCKA\interface\essence_resolver.py:42:}
+  MoCKA\interface\essence_resolver.py:43:
+  MoCKA\interface\essence_resolver.py:44:
+  MoCKA\interface\essence_resolver.py:45:def _log_event(title, description, tags):
+  MoCKA\interface\essence_resolver.py:46:    """
+  MoCKA\interface\essence_resolver.py:151:        {
+  MoCKA\interface\essence_resolver.py:152:            "canonical": dict,            # Canonical Essence(取得失敗時は{})
+  MoCKA\interface\essence_resolver.py:153:            "legacy": dict,                # Legacy Essence Store(取得失敗時は{})
+> MoCKA\interface\essence_resolver.py:154:            "primary_source": str,         # "canonical" | "legacy" | "none"
+  MoCKA\interface\essence_resolver.py:155:            "fallback_reason": str|None,   # fallback発生時の理由、通常時はNone
+  MoCKA\interface\essence_resolver.py:156:        }
+  MoCKA\interface\essence_resolver.py:157:    """
+  MoCKA\interface\essence_resolver.py:158:    canonical = get_canonical_essence()
+  MoCKA\interface\essence_resolver.py:159:    legacy = get_legacy_essence()
+  MoCKA\interface\essence_resolver.py:160:
+  MoCKA\interface\essence_resolver.py:161:    if canonical:
+> MoCKA\interface\essence_resolver.py:162:        primary_source = "canonical"
+  MoCKA\interface\essence_resolver.py:163:        fallback_reason = None
+  MoCKA\interface\essence_resolver.py:164:    elif legacy:
+> MoCKA\interface\essence_resolver.py:165:        primary_source = "legacy"
+  MoCKA\interface\essence_resolver.py:166:        fallback_reason = "canonical_unavailable"
+  MoCKA\interface\essence_resolver.py:167:    else:
+> MoCKA\interface\essence_resolver.py:168:        primary_source = "none"
+  MoCKA\interface\essence_resolver.py:169:        fallback_reason = "both_unavailable"
+  MoCKA\interface\essence_resolver.py:170:
+> MoCKA\interface\essence_resolver.py:171:    if primary_source != "canonical" and _state["last_primary_source"] == "canonical":
+  MoCKA\interface\essence_resolver.py:172:        _log_event(
+> MoCKA\interface\essence_resolver.py:173:            f"ESSENCE_RESOLVER: primary_sourceがcanonical->{primary_source}へfallback発動",
+  MoCKA\interface\essence_resolver.py:174:            f"fallback_reason={fallback_reason}",
+  MoCKA\interface\essence_resolver.py:175:            "essence_resolver,fallback",
+  MoCKA\interface\essence_resolver.py:176:        )
+> MoCKA\interface\essence_resolver.py:177:    _state["last_primary_source"] = primary_source
+  MoCKA\interface\essence_resolver.py:178:
+  MoCKA\interface\essence_resolver.py:179:    _maybe_log_summary()
+  MoCKA\interface\essence_resolver.py:180:
+  MoCKA\interface\essence_resolver.py:181:    return {
+  MoCKA\interface\essence_resolver.py:182:        "canonical": canonical,
+  MoCKA\interface\essence_resolver.py:183:        "legacy": legacy,
+> MoCKA\interface\essence_resolver.py:184:        "primary_source": primary_source,
+  MoCKA\interface\essence_resolver.py:185:        "fallback_reason": fallback_reason,
+  MoCKA\interface\essence_resolver.py:186:    }
+  MoCKA\interface\essence_resolver.py:187:
+  MoCKA\interface\essence_resolver.py:188:
+  MoCKA\interface\essence_resolver.py:189:if __name__ == "__main__":
+  MoCKA\interface\evaluator_dynamic.py:6:TRAJECTORY_CSV = BASE / "data/trajectory.csv"
+  MoCKA\interface\evaluator_dynamic.py:7:RECURRENCE_CSV = BASE / "data/recurrence_registry.csv"
+  MoCKA\interface\evaluator_dynamic.py:8:
+> MoCKA\interface\evaluator_dynamic.py:9:PROTOCOL_KW = ["mocka_get_overview","mocka_get_todo","mocka_write_event","mocka_update_todo","session_start","protocol"]
+  MoCKA\interface\evaluator_dynamic.py:10:
+  MoCKA\interface\evaluator_dynamic.py:11:def calc_x(row):
+  MoCKA\interface\evaluator_dynamic.py:12:    s = 0.5
+  MoCKA\interface\evaluator_dynamic.py:13:    ch = row.get("channel_type",""); ac = row.get("who_actor","")
+  MoCKA\interface\evaluator_dynamic.py:14:    fn = row.get("free_note","").lower(); ti = row.get("title","").lower()
+  MoCKA\interface\event_buffer.py:53:        """イベントをキューへ追加するのみ。ネットワークI/Oなし＝呼び出し元をブロックしない"""
+  MoCKA\interface\event_buffer.py:54:        ev = dict(event)
+  MoCKA\interface\event_buffer.py:55:        ev.setdefault("idempotency_key", uuid.uuid4().hex)
+> MoCKA\interface\event_buffer.py:56:        ev.setdefault("event_source", "buffered")
+  MoCKA\interface\event_buffer.py:57:        with self._lock:
+  MoCKA\interface\event_buffer.py:58:            self._queue.append(ev)
+  MoCKA\interface\event_buffer.py:59:
+  MoCKA\interface\event_buffer.py:60:    def pending_count(self) -> int:
+  MoCKA\interface\event_buffer.py:61:        with self._lock:
+  MoCKA\interface\gate_policy.py:33:    return channel in ALLOWED_DIRECT_CHANNELS
+  MoCKA\interface\gate_policy.py:34:
+  MoCKA\interface\gate_policy.py:35:
+> MoCKA\interface\gate_policy.py:36:def classify_direct_write(channel: str) -> str:
+  MoCKA\interface\gate_policy.py:37:    """Direct Writeのaudit_flagを返す（exempt or violation）"""
+  MoCKA\interface\gate_policy.py:38:    return AUDIT_FLAG_EXEMPT if is_allowed_direct_channel(channel) else AUDIT_FLAG_VIOLATION
+  MoCKA\interface\gate_policy.py:39:
+  MoCKA\interface\gate_policy.py:40:
+> MoCKA\interface\gate_policy.py:41:def direct_write_reason(channel: str) -> str:
+  MoCKA\interface\gate_policy.py:42:    """許可チャネルの理由文字列を返す（未許可の場合は空文字）"""
+  MoCKA\interface\gate_policy.py:43:    return ALLOWED_DIRECT_CHANNELS.get(channel, "")
+  MoCKA\interface\gate_policy.py:44:
+  MoCKA\interface\gate_policy.py:45:
+> MoCKA\interface\gate_policy.py:46:def tag_source(channel: str) -> str:
+  MoCKA\interface\gate_policy.py:47:    """
+> MoCKA\interface\gate_policy.py:48:    db_helper.write_event()等が_source列に書き込むべき値を返す。
+  MoCKA\interface\gate_policy.py:49:    許可チャネル -> 'direct_allowed:{channel}'
+  MoCKA\interface\gate_policy.py:50:    未許可       -> 'direct_violation'
+  MoCKA\interface\gate_policy.py:51:    """
+  MoCKA\interface\gate_policy.py:52:    if is_allowed_direct_channel(channel):
+  MoCKA\interface\gate_policy.py:53:        return f"direct_allowed:{channel}"
+  MoCKA\interface\gate_policy.py:56:
+  MoCKA\interface\gate_policy.py:57:# ============================================================
+  MoCKA\interface\gate_policy.py:58:# Phase5-1.5 Schema Integrity Hardening
+> MoCKA\interface\gate_policy.py:59:# events._source列のCHECK制約・Schema Auditが参照する単一の真実。
+> MoCKA\interface\gate_policy.py:60:# SQLite・Python(tag_source)・このリストの3者は常に完全一致させること。
+  MoCKA\interface\gate_policy.py:61:# ============================================================
+  MoCKA\interface\gate_policy.py:62:
+  MoCKA\interface\gate_policy.py:63:# Gate確立後（2026-06-16以降）に新規書き込みされ得る値
+> MoCKA\interface\gate_policy.py:64:GATE_SOURCE_VALUES = frozenset(
+  MoCKA\interface\gate_policy.py:65:    {"live", "buffered", "direct_violation"}
+  MoCKA\interface\gate_policy.py:66:    | {f"direct_allowed:{ch}" for ch in ALLOWED_DIRECT_CHANNELS}
+  MoCKA\interface\gate_policy.py:67:)
+  MoCKA\interface\gate_policy.py:68:
+  MoCKA\interface\gate_policy.py:69:# Gate確立以前の歴史的バックログ専用ラベル（凍結済み・新規書き込み禁止）。
+  MoCKA\interface\gate_policy.py:70:# data/mocka_events.db移行時(2026-06-16)に実在が確認された値のみを列挙する。
+> MoCKA\interface\gate_policy.py:71:LEGACY_SOURCE_VALUES = frozenset({
+  MoCKA\interface\gate_policy.py:72:    "legacy",
+  MoCKA\interface\gate_policy.py:73:    "csv_legacy",
+  MoCKA\interface\gate_policy.py:74:    "csv_migration",
+  MoCKA\interface\gate_policy.py:75:    "new",
+  MoCKA\interface\gate_policy.py:76:    "gpt_handoff_20260509",
+  MoCKA\interface\gate_policy.py:77:    "caliber_server",
+  MoCKA\interface\gate_policy.py:78:})
+  MoCKA\interface\gate_policy.py:79:
+> MoCKA\interface\gate_policy.py:80:# CHECK制約・Schema Auditが許可する_source全許可値
+> MoCKA\interface\gate_policy.py:81:ALLOWED_SOURCE_VALUES = frozenset(GATE_SOURCE_VALUES | LEGACY_SOURCE_VALUES)
+  MoCKA\interface\gate_policy.py:82:
+  MoCKA\interface\gate_policy.py:83:
+> MoCKA\interface\gate_policy.py:84:def is_allowed_source_value(value: str) -> bool:
+> MoCKA\interface\gate_policy.py:85:    """events._source列の値がGate Policyと一致する許可値かどうかを判定する"""
+> MoCKA\interface\gate_policy.py:86:    return value in ALLOWED_SOURCE_VALUES
+  MoCKA\interface\gate_policy.py:87:
+  MoCKA\interface\gate_policy.py:88:
+  MoCKA\interface\gate_policy.py:89:# ============================================================
+  MoCKA\interface\gate_policy.py:90:# TODO_347-c: Gate Audit共通ロジック（単一の正規参照元）
+  MoCKA\interface\gate_policy.py:91:# dashboard.py / phi_os/event_gate.py(/api/gate/audit本体) / health_check.py の
+  MoCKA\interface\gate_policy.py:110:    """
+  MoCKA\interface\gate_policy.py:111:    Gate監査の正規集計ロジック（TODO_347-c）。
+  MoCKA\interface\gate_policy.py:112:    判定順序:
+> MoCKA\interface\gate_policy.py:113:      1) _source in LEGACY_SOURCE_VALUES の行は集計対象外（凍結済み歴史的バックログ）
+  MoCKA\interface\gate_policy.py:114:      2) 残りの行のうち is_iso8601_when_ts(when_ts) が False の行は
+  MoCKA\interface\gate_policy.py:115:         timestamp_unparseable_events に加算し、live/buffered/violationの
+  MoCKA\interface\gate_policy.py:116:         いずれにも含めない（文字列比較が信頼できないため、日付窓判定の対象外とする）
+  MoCKA\interface\gate_policy.py:117:      3) 残った行をwhen_ts >= gate_launch_dateで絞り込み、
+  MoCKA\interface\gate_policy.py:118:         real_time(live)/buffered/allowed_direct/violationに分類する
+> MoCKA\interface\gate_policy.py:119:    legacy_events は既存仕様(when_ts < gate_launch_date、_source無関係)を維持する。
+  MoCKA\interface\gate_policy.py:120:    """
+  MoCKA\interface\gate_policy.py:121:    conn.create_function(
+  MoCKA\interface\gate_policy.py:122:        "IS_ISO8601_WHEN_TS", 1, lambda v: 1 if is_iso8601_when_ts(v) else 0
+  MoCKA\interface\gate_policy.py:123:    )
+> MoCKA\interface\gate_policy.py:124:    legacy_ph = ",".join("?" for _ in LEGACY_SOURCE_VALUES)
+> MoCKA\interface\gate_policy.py:125:    legacy_vals = tuple(LEGACY_SOURCE_VALUES)
+  MoCKA\interface\gate_policy.py:126:
+  MoCKA\interface\gate_policy.py:127:    def _count(where_sql, params):
+  MoCKA\interface\gate_policy.py:128:        return conn.execute(f"SELECT COUNT(*) FROM events WHERE {where_sql}", params).fetchone()[0]
+  MoCKA\interface\gate_policy.py:129:
+  MoCKA\interface\gate_policy.py:130:    total = _count(
+> MoCKA\interface\gate_policy.py:131:        f"_source NOT IN ({legacy_ph}) AND IS_ISO8601_WHEN_TS(when_ts)=1 AND when_ts >= ?",
+  MoCKA\interface\gate_policy.py:132:        (*legacy_vals, gate_launch_date),
+  MoCKA\interface\gate_policy.py:133:    )
+  MoCKA\interface\gate_policy.py:134:    live = _count(
+> MoCKA\interface\gate_policy.py:135:        "_source='live' AND IS_ISO8601_WHEN_TS(when_ts)=1 AND when_ts >= ?",
+  MoCKA\interface\gate_policy.py:136:        (gate_launch_date,),
+  MoCKA\interface\gate_policy.py:137:    )
+  MoCKA\interface\gate_policy.py:138:    buffered = _count(
+> MoCKA\interface\gate_policy.py:139:        "_source='buffered' AND IS_ISO8601_WHEN_TS(when_ts)=1 AND when_ts >= ?",
+  MoCKA\interface\gate_policy.py:140:        (gate_launch_date,),
+  MoCKA\interface\gate_policy.py:141:    )
+  MoCKA\interface\gate_policy.py:142:    allowed_direct = _count(
+> MoCKA\interface\gate_policy.py:143:        "_source LIKE 'direct_allowed:%' AND IS_ISO8601_WHEN_TS(when_ts)=1 AND when_ts >= ?",
+  MoCKA\interface\gate_policy.py:144:        (gate_launch_date,),
+  MoCKA\interface\gate_policy.py:145:    )
+  MoCKA\interface\gate_policy.py:146:    timestamp_unparseable = _count(
+> MoCKA\interface\gate_policy.py:147:        f"_source NOT IN ({legacy_ph}) AND IS_ISO8601_WHEN_TS(when_ts)=0",
+  MoCKA\interface\gate_policy.py:148:        legacy_vals,
+  MoCKA\interface\gate_policy.py:149:    )
+  MoCKA\interface\gate_policy.py:150:    legacy_events = _count("when_ts < ?", (gate_launch_date,))
+  MoCKA\interface\gate_policy.py:151:
+  MoCKA\interface\gate_policy.py:152:    gate_routed = live + buffered
+  MoCKA\interface\health_check.py:253:    audit_violationsはstatus='RESOLVED_LEGACY_BULK_FIX'で別管理し、
+  MoCKA\interface\health_check.py:254:    本チェックではstatus='NEW'のみを違反として数える）。
+  MoCKA\interface\health_check.py:255:    TODO_347: Local Buffer + async flush構造への移行により、Gate経由(channel_type='gate')
+> MoCKA\interface\health_check.py:256:    は即時同期書き込み(_source='live')と非同期バッファ経由(_source='buffered')の
+  MoCKA\interface\health_check.py:257:    2種類に分かれる。統合値で95%判定する一方、内訳は分離して表示する
+  MoCKA\interface\health_check.py:258:    （「即時性」と「完全性」を1つの数字に混ぜない）。
+  MoCKA\interface\health_check.py:259:    TODO_389: status='NEW'の件数は、既知・対応保留中のものを毎回「新規」と
+  MoCKA\interface\health_check.py:260:    誤報し続けるため、_load_phi_os_audit_seen_ids()で前回までの既知id集合を
+  MoCKA\interface\health_check.py:261:    読み込み、今回のNEW id集合との差分のみを新規violationとして数える。
+  MoCKA\interface\impact_analyzer.py:22:
+  MoCKA\interface\impact_analyzer.py:23:MAP_PATH = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
+  MoCKA\interface\impact_analyzer.py:24:QUEUE_PATH = Path("C:/Users/sirok/MoCKA/data/tic/evaluation_queue.jsonl")
+> MoCKA\interface\impact_analyzer.py:25:MCP_URL = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\interface\impact_analyzer.py:26:
+  MoCKA\interface\impact_analyzer.py:27:
+  MoCKA\interface\impact_analyzer.py:28:def _tokens(s: str) -> set:
+  MoCKA\interface\impact_analyzer.py:29:    return set(s.lower().split("_"))
+  MoCKA\interface\impact_analyzer.py:30:
+  MoCKA\interface\impact_analyzer.py:78:    raw_lines = [l for l in QUEUE_PATH.read_text(encoding="utf-8").splitlines() if l.strip()]
+  MoCKA\interface\impact_analyzer.py:79:    entries = [json.loads(l) for l in raw_lines]
+  MoCKA\interface\impact_analyzer.py:80:
+> MoCKA\interface\impact_analyzer.py:81:    unmatched_source_ids = set()
+  MoCKA\interface\impact_analyzer.py:82:    matched_count = 0
+  MoCKA\interface\impact_analyzer.py:83:    for entry in entries:
+  MoCKA\interface\impact_analyzer.py:84:        matched_deps = match_components(entry.get("source_id", ""), dependencies)
+  MoCKA\interface\impact_analyzer.py:85:        if matched_deps:
+  MoCKA\interface\impact_analyzer.py:86:            blast_radius = []
+  MoCKA\interface\impact_analyzer.py:98:            entry["analyzer_matched_components"] = []
+  MoCKA\interface\impact_analyzer.py:99:            entry["analyzer_blast_radius"] = []
+  MoCKA\interface\impact_analyzer.py:100:            entry["analyzer_max_risk_score"] = None
+> MoCKA\interface\impact_analyzer.py:101:            unmatched_source_ids.add(entry.get("source_id", ""))
+  MoCKA\interface\impact_analyzer.py:102:
+  MoCKA\interface\impact_analyzer.py:103:    with open(QUEUE_PATH, "w", encoding="utf-8") as f:
+  MoCKA\interface\impact_analyzer.py:104:        for entry in entries:
+  MoCKA\interface\impact_analyzer.py:105:            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+  MoCKA\interface\impact_analyzer.py:106:
+  MoCKA\interface\impact_analyzer.py:107:    print(f"[impact_analyzer] {len(entries)}件処理完了 (照合成功: {matched_count}件)")
+> MoCKA\interface\impact_analyzer.py:108:    if unmatched_source_ids:
+> MoCKA\interface\impact_analyzer.py:109:        print(f"[impact_analyzer] 未照合のsource_id(要人手確認): {sorted(unmatched_source_ids)}")
+  MoCKA\interface\impact_analyzer.py:110:
+  MoCKA\interface\impact_analyzer.py:111:    write_event(
+  MoCKA\interface\impact_analyzer.py:112:        "IMPACT_ANALYSIS_UPDATED: TIC影響分析完了",
+  MoCKA\interface\impact_analyzer.py:113:        f"全{len(entries)}件処理、照合成功{matched_count}件、"
+> MoCKA\interface\impact_analyzer.py:114:        f"未照合{len(unmatched_source_ids)}件({sorted(unmatched_source_ids)})",
+  MoCKA\interface\impact_analyzer.py:115:        "tic,impact_analyzer",
+  MoCKA\interface\impact_analyzer.py:116:    )
+  MoCKA\interface\impact_analyzer.py:117:
+  MoCKA\interface\impact_analyzer.py:118:    return entries
+  MoCKA\interface\impact_analyzer.py:119:
+  MoCKA\interface\mentor_engine.py:134:
+  MoCKA\interface\mentor_engine.py:135:
+  MoCKA\interface\mentor_engine.py:136:_STRATEGY_BY_ROLE = {
+> MoCKA\interface\mentor_engine.py:137:    "R01": "top_todoの最優先項目から着手し、ファイル変更前後でmocka_write_event(CHANGE_START/CHANGE_DONE)を必ず記録すること。",
+  MoCKA\interface\mentor_engine.py:138:    "R02": "設計提案・TODO依存関係をレビューし、known_risksに該当する変更には特に注意してリスク分析コメントを残すこと。",
+  MoCKA\interface\mentor_engine.py:139:}
+  MoCKA\interface\mentor_engine.py:140:
+  MoCKA\interface\mentor_engine.py:141:
+  MoCKA\interface\mentor_engine.py:142:def _institution_focus() -> str:
+  MoCKA\interface\proposal_schema.py:15:  recommended_action — 推奨アクション（承認/却下/保留の場合の具体的行動）
+  MoCKA\interface\proposal_schema.py:16:
+  MoCKA\interface\proposal_schema.py:17:記録先:
+> MoCKA\interface\proposal_schema.py:18:  1. MoCKA イベント台帳 (events.db) — mocka_write_eventで記録
+  MoCKA\interface\proposal_schema.py:19:  2. data/proposals.jsonl — append-only、検索・監査用
+  MoCKA\interface\proposal_schema.py:20:
+  MoCKA\interface\proposal_schema.py:21:Decision Ledgerとの連携:
+  MoCKA\interface\proposal_schema.py:22:  record()が返すproposal_idをDecision Ledger記録時に参照することで
+  MoCKA\interface\proposal_schema.py:23:  「なぜその決定に至ったか」の制度的追跡が可能になる。
+  MoCKA\interface\proposal_schema.py:152:            f.write(json.dumps(prp.to_dict(), ensure_ascii=False) + "\n")
+  MoCKA\interface\proposal_schema.py:153:
+  MoCKA\interface\proposal_schema.py:154:        # 2. MoCKAイベント台帳に記録（MoCKAサーバーが落ちていても例外を伝播しない）
+> MoCKA\interface\proposal_schema.py:155:        self._write_to_event_ledger(prp)
+  MoCKA\interface\proposal_schema.py:156:
+  MoCKA\interface\proposal_schema.py:157:        return prp
+  MoCKA\interface\proposal_schema.py:158:
+> MoCKA\interface\proposal_schema.py:159:    def _write_to_event_ledger(self, prp: ProposalRecord):
+  MoCKA\interface\proposal_schema.py:160:        """mocka_mcp_server経由でイベント台帳に記録する"""
+  MoCKA\interface\proposal_schema.py:161:        try:
+  MoCKA\interface\proposal_schema.py:162:            import sys
+  MoCKA\interface\proposal_schema.py:163:            mocka_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  MoCKA\interface\proposal_schema.py:164:            if mocka_root not in sys.path:
+  MoCKA\interface\risk_scorer.py:20:    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+  MoCKA\interface\risk_scorer.py:21:
+  MoCKA\interface\risk_scorer.py:22:MAP_PATH = Path("C:/Users/sirok/MoCKA/data/tic/dependency_map.json")
+> MoCKA\interface\risk_scorer.py:23:MCP_URL  = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\interface\risk_scorer.py:24:
+  MoCKA\interface\risk_scorer.py:25:FREQ_SCORE  = {"critical": 40, "high": 30, "medium": 20, "low": 10}
+  MoCKA\interface\risk_scorer.py:26:SUBST_SCORE = {"none": 30, "hard": 20, "easy": 5}
+  MoCKA\interface\risk_scorer.py:27:
+  MoCKA\interface\risk_scorer.py:28:# Human Gate 承認済みスコア上書き（E20260601_031）
+  MoCKA\interface\schema_audit.py:3:"""
+  MoCKA\interface\schema_audit.py:4:interface/schema_audit.py -- Phase5-1.5 起動時Schema Audit
+  MoCKA\interface\schema_audit.py:5:
+> MoCKA\interface\schema_audit.py:6:events._source列の実DBスキーマ（CREATE TABLE文）が、Gate Policy
+> MoCKA\interface\schema_audit.py:7:(interface/gate_policy.ALLOWED_SOURCE_VALUES)と完全一致しているかを
+  MoCKA\interface\schema_audit.py:8:起動時に検証する。
+  MoCKA\interface\schema_audit.py:9:
+  MoCKA\interface\schema_audit.py:10:設計案（2案を提示。現状はWARN方式を既定値として実装）:
+  MoCKA\interface\schema_audit.py:11:  - WARN方式（既定）: 不一致を検出してもプロセスは継続するが、
+  MoCKA\interface\schema_audit.py:12:    health_check.py / COMMAND CENTER上に警告を出す。
+  MoCKA\interface\schema_audit.py:28:
+  MoCKA\interface\schema_audit.py:29:_REPO_ROOT = Path(__file__).resolve().parent.parent
+  MoCKA\interface\schema_audit.py:30:sys.path.insert(0, str(_REPO_ROOT / "interface"))
+> MoCKA\interface\schema_audit.py:31:from gate_policy import ALLOWED_SOURCE_VALUES, POLICY_VERSION  # noqa: E402
+  MoCKA\interface\schema_audit.py:32:
+  MoCKA\interface\schema_audit.py:33:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+  MoCKA\interface\schema_audit.py:34:
+> MoCKA\interface\schema_audit.py:35:_CHECK_VALUES_RE = re.compile(r"_source\s+TEXT\s+NOT\s+NULL\s+CHECK\s*\(\s*_source\s+IN\s*\(([^)]*)\)\s*\)")
+  MoCKA\interface\schema_audit.py:36:
+  MoCKA\interface\schema_audit.py:37:
+  MoCKA\interface\schema_audit.py:38:def _parse_check_values(create_sql: str) -> set:
+  MoCKA\interface\schema_audit.py:39:    m = _CHECK_VALUES_RE.search(create_sql)
+  MoCKA\interface\schema_audit.py:40:    if not m:
+  MoCKA\interface\schema_audit.py:45:
+  MoCKA\interface\schema_audit.py:46:def audit_schema(db_path: Path = DB_PATH) -> tuple:
+  MoCKA\interface\schema_audit.py:47:    """
+> MoCKA\interface\schema_audit.py:48:    events._source列のスキーマがGate Policyと一致するかを検証する。
+  MoCKA\interface\schema_audit.py:49:    戻り値: (ok: bool, message: str)
+  MoCKA\interface\schema_audit.py:50:    """
+  MoCKA\interface\schema_audit.py:51:    if not db_path.exists():
+  MoCKA\interface\schema_audit.py:52:        return False, f"DB not found: {db_path}"
+  MoCKA\interface\schema_audit.py:53:
+  MoCKA\interface\schema_audit.py:66:
+  MoCKA\interface\schema_audit.py:67:    create_sql = row[0]
+  MoCKA\interface\schema_audit.py:68:
+> MoCKA\interface\schema_audit.py:69:    if "_source TEXT NOT NULL CHECK" not in create_sql.replace("\n", " "):
+  MoCKA\interface\schema_audit.py:70:        return False, (
+> MoCKA\interface\schema_audit.py:71:            "_source列がNOT NULL CHECK制約化されていない（Phase5-1.5未適用）。"
+> MoCKA\interface\schema_audit.py:72:            "scripts/migrate_source_check.pyを実行すること。"
+  MoCKA\interface\schema_audit.py:73:        )
+  MoCKA\interface\schema_audit.py:74:
+  MoCKA\interface\schema_audit.py:75:    db_values = _parse_check_values(create_sql)
+  MoCKA\interface\schema_audit.py:76:    if not db_values:
+> MoCKA\interface\schema_audit.py:77:        return False, "_source列のCHECK制約値を解析できなかった"
+  MoCKA\interface\schema_audit.py:78:
+> MoCKA\interface\schema_audit.py:79:    if db_values != set(ALLOWED_SOURCE_VALUES):
+> MoCKA\interface\schema_audit.py:80:        missing_in_db = set(ALLOWED_SOURCE_VALUES) - db_values
+> MoCKA\interface\schema_audit.py:81:        extra_in_db = db_values - set(ALLOWED_SOURCE_VALUES)
+  MoCKA\interface\schema_audit.py:82:        detail = []
+  MoCKA\interface\schema_audit.py:83:        if missing_in_db:
+  MoCKA\interface\schema_audit.py:84:            detail.append(f"DB側に無い値(Gate Policyのみ): {sorted(missing_in_db)}")
+  MoCKA\interface\schema_audit.py:85:        if extra_in_db:
+  MoCKA\interface\schema_audit.py:86:            detail.append(f"DB側のみに存在する値: {sorted(extra_in_db)}")
+  MoCKA\interface\schema_audit.py:87:        return False, (
+> MoCKA\interface\schema_audit.py:88:            f"_source CHECK制約とGate Policy(v{POLICY_VERSION})が不一致。 "
+  MoCKA\interface\schema_audit.py:89:            + " / ".join(detail)
+  MoCKA\interface\schema_audit.py:90:        )
+  MoCKA\interface\schema_audit.py:91:
+> MoCKA\interface\schema_audit.py:92:    return True, f"_source CHECK制約はGate Policy v{POLICY_VERSION}と完全一致"
+  MoCKA\interface\schema_audit.py:93:
+  MoCKA\interface\schema_audit.py:94:
+  MoCKA\interface\schema_audit.py:95:def enforce(strict: bool = None) -> None:
+  MoCKA\interface\schema_audit.py:96:    """
+  MoCKA\interface\schema_audit.py:97:    app.py等の起動シーケンスから呼び出す。
+  MoCKA\interface\tech_watcher.py:46:    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+  MoCKA\interface\tech_watcher.py:47:
+  MoCKA\interface\tech_watcher.py:48:TIC_DIR      = Path("C:/Users/sirok/MoCKA/data/tic")
+> MoCKA\interface\tech_watcher.py:49:SOURCES_PATH = TIC_DIR / "watch_sources.json"
+  MoCKA\interface\tech_watcher.py:50:HASHES_PATH  = TIC_DIR / "watch_hashes.json"
+  MoCKA\interface\tech_watcher.py:51:QUEUE_PATH   = TIC_DIR / "evaluation_queue.jsonl"
+  MoCKA\interface\tech_watcher.py:52:PREV_QUEUE   = Path("C:/Users/sirok/MoCKA/data/prevention_queue.json")
+> MoCKA\interface\tech_watcher.py:53:MCP_URL      = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\interface\tech_watcher.py:54:TIMEOUT      = 15
+  MoCKA\interface\tech_watcher.py:55:
+  MoCKA\interface\tech_watcher.py:56:# ── アラートレベル定義 ────────────────────────────────────────────────────────
+  MoCKA\interface\tech_watcher.py:57:
+  MoCKA\interface\tech_watcher.py:58:ALERT_LEVELS = {
+  MoCKA\interface\tech_watcher.py:289:
+  MoCKA\interface\tech_watcher.py:290:def check_url_alive(sources: list, hashes: dict) -> list:
+  MoCKA\interface\tech_watcher.py:291:    """
+> MoCKA\interface\tech_watcher.py:292:    watch_sources.jsonのURL死活チェック。
+  MoCKA\interface\tech_watcher.py:293:    接続失敗が連続3回でTECH_WATCH_URL_DEADイベント記録+prevention_queue投入。
+  MoCKA\interface\tech_watcher.py:294:    戻り値: DEAD判定されたsource idのリスト
+  MoCKA\interface\tech_watcher.py:295:    """
+> MoCKA\interface\tech_watcher.py:296:    dead_sources = []
+  MoCKA\interface\tech_watcher.py:297:    for src in sources:
+  MoCKA\interface\tech_watcher.py:298:        sid = src["id"]
+  MoCKA\interface\tech_watcher.py:299:        url = src["url"]
+  MoCKA\interface\tech_watcher.py:300:        try:
+  MoCKA\interface\tech_watcher.py:301:            import urllib.request
+  MoCKA\interface\tech_watcher.py:315:            hashes.setdefault(sid, {})["url_fail_count"] = fail_count
+  MoCKA\interface\tech_watcher.py:316:            print(f"  [URL   ] {src['name']} fail({fail_count}/{URL_DEAD_THRESHOLD}): {str(e)[:60]}")
+  MoCKA\interface\tech_watcher.py:317:            if fail_count >= URL_DEAD_THRESHOLD:
+> MoCKA\interface\tech_watcher.py:318:                dead_sources.append(sid)
+  MoCKA\interface\tech_watcher.py:319:                write_event(
+  MoCKA\interface\tech_watcher.py:320:                    f"TECH_WATCH_URL_DEAD: {src['name']}",
+  MoCKA\interface\tech_watcher.py:321:                    f"URL死活監視: 連続{fail_count}回接続失敗 url={url} err={str(e)[:80]}",
+  MoCKA\interface\tech_watcher.py:322:                    "tic,tech_watcher,url_dead",
+  MoCKA\interface\tech_watcher.py:323:                )
+  MoCKA\interface\tech_watcher.py:326:            continue
+  MoCKA\interface\tech_watcher.py:327:        # 接続成功: fail_countリセット
+  MoCKA\interface\tech_watcher.py:328:        hashes.setdefault(sid, {})["url_fail_count"] = 0
+> MoCKA\interface\tech_watcher.py:329:    return dead_sources
+  MoCKA\interface\tech_watcher.py:330:
+  MoCKA\interface\tech_watcher.py:331:
+  MoCKA\interface\tech_watcher.py:332:# ── HTTP 取得 ─────────────────────────────────────────────────────────────────
+  MoCKA\interface\tech_watcher.py:333:
+  MoCKA\interface\tech_watcher.py:334:def fetch_content(url: str) -> tuple:
+  MoCKA\interface\text_to_5w1h.py:53:# ===== WHAT辞書 — 操作の種類 =====
+  MoCKA\interface\text_to_5w1h.py:54:WHAT_MAP = {
+  MoCKA\interface\text_to_5w1h.py:55:    # ファイル操作
+> MoCKA\interface\text_to_5w1h.py:56:    '保存': 'file_save', '書き込': 'file_write', '編集': 'file_edit',
+  MoCKA\interface\text_to_5w1h.py:57:    '削除': 'file_delete', 'コピー': 'file_copy', '移動': 'file_move',
+  MoCKA\interface\text_to_5w1h.py:58:    '作成': 'file_create', '生成': 'generate',
+  MoCKA\interface\text_to_5w1h.py:59:    # 実行
+  MoCKA\interface\text_to_5w1h.py:60:    '実行': 'execute', '起動': 'start', '停止': 'stop',
+  MoCKA\interface\text_to_5w1h.py:61:    '再起動': 'restart', 'インストール': 'install',
+  MoCKA\interface\user_voice_importer.py:25:DB_PATH = ROOT / "data" / "mocka_events.db"
+  MoCKA\interface\user_voice_importer.py:26:IMPORT_DIR = Path("X:/down/mocka_import")
+  MoCKA\interface\user_voice_importer.py:27:DONE_DIR   = IMPORT_DIR / "done"
+> MoCKA\interface\user_voice_importer.py:28:MCP_URL    = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\interface\user_voice_importer.py:29:
+  MoCKA\interface\user_voice_importer.py:30:# MoCKA関連キーワード (フィルタ)
+  MoCKA\interface\user_voice_importer.py:31:MOCKA_KEYWORDS = [
+  MoCKA\interface\user_voice_importer.py:32:    "mocka", "todo", "phase", "seal", "event", "incident",
+  MoCKA\interface\user_voice_importer.py:33:    "guideline", "essence", "phi-os", "vasai", "orchestra", "relay",
+  MoCKA\living_room\hub.py:77:    return hashlib.sha256(canon.encode("utf-8")).hexdigest()[:16]
+  MoCKA\living_room\hub.py:78:
+  MoCKA\living_room\hub.py:79:
+> MoCKA\living_room\hub.py:80:def _write_event(payload: dict) -> None:
+  MoCKA\living_room\hub.py:81:    """
+  MoCKA\living_room\hub.py:82:    Phase5-1: 独自の生SQL INSERTを廃止し、正規Gate(Local Buffer経由)へ統一する。
+  MoCKA\living_room\hub.py:83:    Living Room Hubは独立した第二のGate実装を持つべきではない
+  MoCKA\living_room\hub.py:84:    （Event System = 単一制度。複数のGate実装は記録経路の分裂を招く）。
+  MoCKA\living_room\hub.py:85:    """
+  MoCKA\living_room\hub.py:249:    # 本番書き込み (DRY_RUN=False 時のみ到達)
+  MoCKA\living_room\hub.py:250:    payload["event_id"]     = _next_event_id()
+  MoCKA\living_room\hub.py:251:    payload["when_ts"]      = datetime.now(timezone.utc).isoformat()
+> MoCKA\living_room\hub.py:252:    payload["event_source"] = "living_room"
+  MoCKA\living_room\hub.py:253:    payload["event_hash"]   = _event_hash(payload)
+  MoCKA\living_room\hub.py:254:    payload["prev_hash"]    = _last_hash()
+  MoCKA\living_room\hub.py:255:
+> MoCKA\living_room\hub.py:256:    _write_event(payload)
+  MoCKA\living_room\hub.py:257:
+  MoCKA\living_room\hub.py:258:    return jsonify({
+  MoCKA\living_room\hub.py:259:        "status":   "ok",
+  MoCKA\living_room\hub.py:260:        "event_id": payload["event_id"],
+  MoCKA\living_room\hub.py:261:        "dry_run":  False,
+  MoCKA\memory\memory_ingestor.py:19:
+  MoCKA\memory\memory_ingestor.py:20:from memory_registry import MemoryType, Source
+  MoCKA\memory\memory_ingestor.py:21:from memory_store import MemoryStore
+> MoCKA\memory\memory_ingestor.py:22:from memory_writer import MemoryWriter
+  MoCKA\memory\memory_ingestor.py:23:
+  MoCKA\memory\memory_ingestor.py:24:ORCHESTRA_EVENTS_PATH = (
+  MoCKA\memory\memory_ingestor.py:25:    Path(__file__).resolve().parent.parent
+  MoCKA\memory\memory_ingestor.py:26:    / "caliber" / "orchestra" / "orchestra_events.jsonl"
+  MoCKA\memory\memory_ingestor.py:27:)
+  MoCKA\memory\memory_ingestor.py:128:    return tuple(tags)
+  MoCKA\memory\memory_ingestor.py:129:
+  MoCKA\memory\memory_ingestor.py:130:
+> MoCKA\memory\memory_ingestor.py:131:def _build_sources(ai_responses: list) -> list:
+  MoCKA\memory\memory_ingestor.py:132:    """Rule 4: AI別差分を保持するため、raw_responseをsourcesに残す。"""
+  MoCKA\memory\memory_ingestor.py:133:    sources = []
+  MoCKA\memory\memory_ingestor.py:134:    for event in ai_responses:
+  MoCKA\memory\memory_ingestor.py:135:        payload = event.get("payload", {})
+  MoCKA\memory\memory_ingestor.py:136:        sources.append({
+  MoCKA\memory\memory_ingestor.py:171:            "session_id": session_id,
+  MoCKA\memory\memory_ingestor.py:172:            "prompt": prompt,
+  MoCKA\memory\memory_ingestor.py:173:            "content": content,
+> MoCKA\memory\memory_ingestor.py:174:            "sources": _build_sources(ai_responses),
+  MoCKA\memory\memory_ingestor.py:175:        }
+  MoCKA\memory\memory_ingestor.py:176:
+  MoCKA\memory\memory_ingestor.py:177:        entry = writer.write_event(
+  MoCKA\memory\memory_ingestor.py:178:            event=memory_content,
+  MoCKA\memory\memory_ingestor.py:179:            memory_type=MemoryType.EPISODIC,
+  MoCKA\memory\memory_integration_test.py:108:        ))
+  MoCKA\memory\memory_integration_test.py:109:
+  MoCKA\memory\memory_integration_test.py:110:        # --- 複数Memory統合: 異なるmemory_typeの書き込みも可能 ---
+> MoCKA\memory\memory_integration_test.py:111:        from memory_writer import MemoryWriter
+  MoCKA\memory\memory_integration_test.py:112:        from memory_registry import Source
+  MoCKA\memory\memory_integration_test.py:113:
+  MoCKA\memory\memory_integration_test.py:114:        writer = MemoryWriter(store)
+  MoCKA\memory\memory_integration_test.py:115:        writer.write_semantic_concept(
+  MoCKA\memory\memory_integration_test.py:116:            key="action_profile",
+  MoCKA\memory\memory_pipeline.py:40:from memory_model import EnrichedContext  # noqa: E402
+  MoCKA\memory\memory_pipeline.py:41:from memory_retriever import MemoryRetriever  # noqa: E402
+  MoCKA\memory\memory_pipeline.py:42:from memory_store import MemoryStore  # noqa: E402
+> MoCKA\memory\memory_pipeline.py:43:from memory_writer import MemoryWriter  # noqa: E402
+  MoCKA\memory\memory_pipeline.py:44:
+  MoCKA\memory\memory_pipeline.py:45:
+  MoCKA\memory\memory_pipeline.py:46:class MemoryPipeline:
+  MoCKA\memory\memory_pipeline.py:47:    """Memory Layerの統一エントリポイント。"""
+  MoCKA\memory\memory_pipeline.py:48:
+  MoCKA\memory\memory_pipeline.py:49:    def __init__(self, store: MemoryStore = None):
+  MoCKA\memory\memory_pipeline.py:50:        self._store = store or MemoryStore()
+> MoCKA\memory\memory_pipeline.py:51:        self._writer = MemoryWriter(self._store)
+  MoCKA\memory\memory_pipeline.py:52:        self._retriever = MemoryRetriever(self._store)
+  MoCKA\memory\memory_pipeline.py:53:        self._context_builder = MemoryContextBuilder(self._store, self._retriever)
+  MoCKA\memory\memory_pipeline.py:54:        self._semantic_pipeline = SemanticPipeline()
+  MoCKA\memory\memory_pipeline.py:55:        self._decision_pipeline = DecisionPipeline()
+  MoCKA\memory\memory_pipeline.py:56:
+  MoCKA\memory\memory_pipeline.py:57:    def record_decision(self, semantic_result, decision_result, extra_tags: tuple = ()):
+  MoCKA\memory\memory_pipeline.py:58:        """DecisionResultをepisodic memoryとしてMemory Storeへ記録する。"""
+> MoCKA\memory\memory_pipeline.py:59:        return self._writer.write_decision(decision_result, semantic_result, extra_tags=extra_tags)
+  MoCKA\memory\memory_pipeline.py:60:
+  MoCKA\memory\memory_pipeline.py:61:    def get_enriched_context(self, intent_key: str, query: str = "") -> EnrichedContext:
+  MoCKA\memory\memory_pipeline.py:62:        """指定Intentに関する過去の記憶からEnrichedContextを構築する。"""
+  MoCKA\memory\memory_pipeline.py:63:        return self._context_builder.build(intent_key, query=query)
+  MoCKA\memory\memory_pipeline.py:64:
+  MoCKA\memory\memory_store.py:29:        self._store_path = Path(store_path)
+  MoCKA\memory\memory_store.py:30:        self._store_path.parent.mkdir(parents=True, exist_ok=True)
+  MoCKA\memory\memory_store.py:31:        if not self._store_path.exists():
+> MoCKA\memory\memory_store.py:32:            self._write_all([])
+  MoCKA\memory\memory_store.py:33:
+  MoCKA\memory\memory_store.py:34:    def all(self) -> tuple:
+  MoCKA\memory\memory_store.py:35:        """保存済みの全MemoryEntryを返す(古い順)。"""
+  MoCKA\memory\memory_store.py:36:        raw = self._read_all()
+  MoCKA\memory\memory_store.py:37:        return tuple(MemoryEntry.from_dict(item) for item in raw)
+  MoCKA\memory\memory_store.py:41:        raw = self._read_all()
+  MoCKA\memory\memory_store.py:42:        raw.append(entry.to_dict())
+  MoCKA\memory\memory_store.py:43:        raw = self._apply_retention(raw)
+> MoCKA\memory\memory_store.py:44:        self._write_all(raw)
+  MoCKA\memory\memory_store.py:45:        return entry
+  MoCKA\memory\memory_store.py:46:
+  MoCKA\memory\memory_store.py:47:    def next_memory_id(self, memory_type: str) -> str:
+  MoCKA\memory\memory_store.py:48:        """memory_typeごとに連番のmemory_idを発行する(M_<type>_<seq>)。"""
+  MoCKA\memory\memory_store.py:49:        raw = self._read_all()
+  MoCKA\memory\memory_store.py:61:            data = json.load(f)
+  MoCKA\memory\memory_store.py:62:        return data if isinstance(data, list) else []
+  MoCKA\memory\memory_store.py:63:
+> MoCKA\memory\memory_store.py:64:    def _write_all(self, raw: list) -> None:
+  MoCKA\memory\memory_store.py:65:        with open(self._store_path, "w", encoding="utf-8") as f:
+  MoCKA\memory\memory_store.py:66:            json.dump(raw, f, ensure_ascii=False, indent=2)
+  MoCKA\memory\memory_store.py:67:
+  MoCKA\memory\memory_store.py:68:    @staticmethod
+  MoCKA\memory\memory_store.py:69:    def _apply_retention(raw: list) -> list:
+  MoCKA\memory\memory_writer.py:1:"""
+  MoCKA\memory\memory_writer.py:2:MoCKA 3.0 — Memory Layer
+> MoCKA\memory\memory_writer.py:3:memory_writer.py
+  MoCKA\memory\memory_writer.py:4:
+  MoCKA\memory\memory_writer.py:5:責務:
+  MoCKA\memory\memory_writer.py:6:  Decision Layerの出力(DecisionResult)や実行結果・イベントログから
+  MoCKA\memory\memory_writer.py:7:  MemoryEntryを生成し、Memory Storeへ書き込む。
+  MoCKA\memory\memory_writer.py:8:
+  MoCKA\mocka_v3_eval\append_incidents.py:115:        "short_summary" : "GPT-4がINSTRUCTION_IGNOREし無断でファイルを上書き(1回目)",
+  MoCKA\mocka_v3_eval\append_incidents.py:116:        "before_state"  : "original_file",
+  MoCKA\mocka_v3_eval\append_incidents.py:117:        "after_state"   : "overwritten",
+> MoCKA\mocka_v3_eval\append_incidents.py:118:        "change_type"   : "unauthorized_write",
+  MoCKA\mocka_v3_eval\append_incidents.py:119:        "impact_scope"  : "local",
+  MoCKA\mocka_v3_eval\append_incidents.py:120:        "impact_result" : "file_corrupted",
+  MoCKA\mocka_v3_eval\append_incidents.py:121:        "related_event_id": "E20260328_INC005",
+  MoCKA\mocka_v3_eval\append_incidents.py:122:        "trace_id"      : "N/A",
+  MoCKA\mocka_v3_eval\append_incidents.py:123:        "free_note"     : "INSTRUCTION_IGNORE violation #1 of 4",
+  MoCKA\mocka_v3_eval\append_incidents.py:140:        "short_summary" : "GPT-4がINSTRUCTION_IGNOREし無断でファイルを上書き(2回目)",
+  MoCKA\mocka_v3_eval\append_incidents.py:141:        "before_state"  : "original_file",
+  MoCKA\mocka_v3_eval\append_incidents.py:142:        "after_state"   : "overwritten",
+> MoCKA\mocka_v3_eval\append_incidents.py:143:        "change_type"   : "unauthorized_write",
+  MoCKA\mocka_v3_eval\append_incidents.py:144:        "impact_scope"  : "local",
+  MoCKA\mocka_v3_eval\append_incidents.py:145:        "impact_result" : "file_corrupted",
+  MoCKA\mocka_v3_eval\append_incidents.py:146:        "related_event_id": "E20260328_INC004",
+  MoCKA\mocka_v3_eval\append_incidents.py:147:        "trace_id"      : "N/A",
+  MoCKA\mocka_v3_eval\append_incidents.py:148:        "free_note"     : "INSTRUCTION_IGNORE violation #2 of 4",
+  MoCKA\mocka_v3_eval\append_incidents.py:165:        "short_summary" : "GPT-4がINSTRUCTION_IGNOREし無断でファイルを上書き(3回目)",
+  MoCKA\mocka_v3_eval\append_incidents.py:166:        "before_state"  : "original_file",
+  MoCKA\mocka_v3_eval\append_incidents.py:167:        "after_state"   : "overwritten",
+> MoCKA\mocka_v3_eval\append_incidents.py:168:        "change_type"   : "unauthorized_write",
+  MoCKA\mocka_v3_eval\append_incidents.py:169:        "impact_scope"  : "local",
+  MoCKA\mocka_v3_eval\append_incidents.py:170:        "impact_result" : "file_corrupted",
+  MoCKA\mocka_v3_eval\append_incidents.py:171:        "related_event_id": "E20260328_INC004",
+  MoCKA\mocka_v3_eval\append_incidents.py:172:        "trace_id"      : "N/A",
+  MoCKA\mocka_v3_eval\append_incidents.py:173:        "free_note"     : "INSTRUCTION_IGNORE violation #3 of 4",
+  MoCKA\mocka_v3_eval\append_incidents.py:190:        "short_summary" : "GPT-4がINSTRUCTION_IGNOREし無断でファイルを上書き(4回目)",
+  MoCKA\mocka_v3_eval\append_incidents.py:191:        "before_state"  : "original_file",
+  MoCKA\mocka_v3_eval\append_incidents.py:192:        "after_state"   : "overwritten",
+> MoCKA\mocka_v3_eval\append_incidents.py:193:        "change_type"   : "unauthorized_write",
+  MoCKA\mocka_v3_eval\append_incidents.py:194:        "impact_scope"  : "local",
+  MoCKA\mocka_v3_eval\append_incidents.py:195:        "impact_result" : "file_corrupted",
+  MoCKA\mocka_v3_eval\append_incidents.py:196:        "related_event_id": "E20260328_INC004",
+  MoCKA\mocka_v3_eval\append_incidents.py:197:        "trace_id"      : "N/A",
+  MoCKA\mocka_v3_eval\append_incidents.py:198:        "free_note"     : "INSTRUCTION_IGNORE violation #4 of 4",
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:151:        "related_event_id": "N/A",
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:152:        "trace_id"        : commit["hash"],
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:153:        "free_note"       : f"source=git|phase={phase}|adds={adds}|dels={dels}",
+> MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:154:        "_source"         : "git",
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:155:        "_phase"          : phase,
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:156:    }
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:157:    incidents.append(incident)
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:158:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:159:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:180:    for r in rows:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:181:        rl = r.get("risk_level", "").strip()
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:182:        if rl in ("WARNING", "CRITICAL", "ERROR"):
+> MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:183:            r["_source"] = "events_risk"
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:184:            r["_phase"] = "after" if _is_after(r) else "before"
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:185:            incidents.append(r)
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:186:            continue
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:187:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:188:        # キーワード判定
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:193:        ]).lower()
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:194:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:195:        if any(k in text for k in KEYWORDS):
+> MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:196:            r["_source"] = "events_keyword"
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:197:            r["_phase"] = "after" if _is_after(r) else "before"
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:198:            incidents.append(r)
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:199:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:200:    print(f"  events由来インシデント候補: {len(incidents)}件")
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:201:    print(f"  （うち risk_level>=WARNING: {sum(1 for i in incidents if i.get('risk_level') in ('WARNING','CRITICAL','ERROR'))}件）")
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:288:    after  = [i for i in unique if i.get("_phase") == "after"]
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:289:    critical = [i for i in unique if i.get("risk_level") == "CRITICAL"]
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:290:    warning  = [i for i in unique if i.get("risk_level") == "WARNING"]
+> MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:291:    git_src  = [i for i in unique if i.get("_source") == "git"]
+> MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:292:    ev_src   = [i for i in unique if "_source" in i and "events" in i["_source"]]
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:293:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:294:    print(f"\n  【n値サマリー】")
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:295:    print(f"  元のn（strict）     : 10件（risk_level>=WARNING・events.csvのみ）")
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:296:    print(f"  Git由来インシデント : {len(git_src)}件")
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:297:    print(f"  events拡張抽出     : {len(ev_src)}件")
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:305:    if unique:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:306:        fieldnames = list(unique[0].keys())
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:307:        # 内部フィールドを末尾に
+> MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:308:        for f in ["_source","_phase"]:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:309:            if f in fieldnames:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:310:                fieldnames.remove(f)
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:311:                fieldnames.append(f)
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:312:        with open(AUTO_INC_CSV, "w", encoding="utf-8", newline="") as f:
+  MoCKA\mocka_v3_eval\mocka_n_expansion_pipeline.py:313:            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+  MoCKA\mocka_v3_eval\recurrence_injector.py:13:    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+  MoCKA\mocka_v3_eval\recurrence_injector.py:14:    out_path = os.path.join(INFIELD_DIR, f"injected_{ts}.json")
+  MoCKA\mocka_v3_eval\recurrence_injector.py:15:    packet["_injected_at"] = ts
+> MoCKA\mocka_v3_eval\recurrence_injector.py:16:    packet["_source"] = source
+  MoCKA\mocka_v3_eval\recurrence_injector.py:17:    with open(out_path, "w", encoding="utf-8") as f:
+  MoCKA\mocka_v3_eval\recurrence_injector.py:18:        json.dump(packet, f, ensure_ascii=False, indent=2)
+  MoCKA\mocka_v3_eval\recurrence_injector.py:19:    print(f"[recurrence_injector] 注入完了: {out_path}")
+  MoCKA\mocka_v3_eval\recurrence_injector.py:20:    _append_log(packet, out_path, source)
+  MoCKA\mocka_v3_eval\recurrence_injector.py:21:    return {"status": "ok", "path": out_path}
+  MoCKA\orchestrator\context_injector.py:9:def inject_context(task: str) -> dict:
+  MoCKA\orchestrator\context_injector.py:10:    return {
+  MoCKA\orchestrator\context_injector.py:11:        "task": task,
+> MoCKA\orchestrator\context_injector.py:12:        "context_sources": [
+  MoCKA\orchestrator\context_injector.py:13:            "MOCKA_OVERVIEW",
+  MoCKA\orchestrator\context_injector.py:14:            "events_latest",
+  MoCKA\orchestrator\context_injector.py:15:            "decision_ledger",
+  MoCKA\orchestrator\context_injector.py:16:        ],
+  MoCKA\orchestrator\context_injector.py:17:    }
+  MoCKA\phi_os\audit_trigger.py:26:ROOT = Path(__file__).resolve().parent.parent
+  MoCKA\phi_os\audit_trigger.py:27:DB_PATH = ROOT / "data" / "mocka_events.db"
+  MoCKA\phi_os\audit_trigger.py:28:PREV_QUEUE = ROOT / "data" / "prevention_queue.json"
+> MoCKA\phi_os\audit_trigger.py:29:MCP_URL = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\phi_os\audit_trigger.py:30:
+  MoCKA\phi_os\audit_trigger.py:31:# Gate経由のINSERTを識別するマーカー列名
+  MoCKA\phi_os\audit_trigger.py:32:GATE_MARKER_COLUMN = "channel_type"
+  MoCKA\phi_os\audit_trigger.py:33:GATE_MARKER_VALUE  = "gate"
+  MoCKA\phi_os\audit_trigger.py:34:
+  MoCKA\phi_os\event_gate.py:43:    return f'E{d}_{micros_of_day:09d}{secrets.token_hex(2)}'
+  MoCKA\phi_os\event_gate.py:44:
+  MoCKA\phi_os\event_gate.py:45:
+> MoCKA\phi_os\event_gate.py:46:def _write(payload: dict, conn=None) -> None:
+  MoCKA\phi_os\event_gate.py:47:    # GATEペイロードを実DBスキーマ列にマッピング
+  MoCKA\phi_os\event_gate.py:48:    # title/descriptionはgovernance write(what_title/description)と
+  MoCKA\phi_os\event_gate.py:49:    # operational telemetry(title/free_note/short_summary)の両方の
+  MoCKA\phi_os\event_gate.py:50:    # キー名を受け付ける（Local Buffer経由イベントとの互換のため）
+  MoCKA\phi_os\event_gate.py:51:    row = {
+  MoCKA\phi_os\event_gate.py:62:        'title':           payload.get('what_title') or payload.get('title', ''),
+  MoCKA\phi_os\event_gate.py:63:        'short_summary':   payload.get('description') or payload.get('short_summary', ''),
+  MoCKA\phi_os\event_gate.py:64:        'session_id':      payload.get('who_session') or payload.get('session_id', ''),
+> MoCKA\phi_os\event_gate.py:65:        '_source':         payload.get('event_source', 'live'),
+  MoCKA\phi_os\event_gate.py:66:        'free_note': '|'.join(filter(None, [
+  MoCKA\phi_os\event_gate.py:67:            payload.get('tags', '') or payload.get('free_note', ''),
+  MoCKA\phi_os\event_gate.py:68:            f"who_role={payload.get('who_role','')}",
+> MoCKA\phi_os\event_gate.py:69:            f"event_source={payload.get('event_source','live')}",
+  MoCKA\phi_os\event_gate.py:70:            f"orig_channel={payload['channel_type']}" if payload.get('channel_type') and payload.get('channel_type') != 'gate' else '',
+  MoCKA\phi_os\event_gate.py:71:        ])),
+  MoCKA\phi_os\event_gate.py:72:        'channel_type':    'gate',
+  MoCKA\phi_os\event_gate.py:73:        'lifecycle_phase': 'in_operation',
+  MoCKA\phi_os\event_gate.py:74:        'risk_level':      'normal',
+  MoCKA\phi_os\event_gate.py:117:
+  MoCKA\phi_os\event_gate.py:118:# ── endpoint ──────────────────────────────────────────────────────────────────
+  MoCKA\phi_os\event_gate.py:119:
+> MoCKA\phi_os\event_gate.py:120:def process_event(payload: dict, event_source: str = 'live', conn=None) -> dict:
+  MoCKA\phi_os\event_gate.py:121:    """
+  MoCKA\phi_os\event_gate.py:122:    Unified Event Entry（Phase5-2.1）。
+> MoCKA\phi_os\event_gate.py:123:    Validation -> Gate Policy(event_source付与) -> Signature -> Hash Chain ->
+  MoCKA\phi_os\event_gate.py:124:    Integrity Registration -> DB Commit を一体で実行する唯一の保存経路。
+> MoCKA\phi_os\event_gate.py:125:    Flask route(/api/gate/event)とMCP server(mocka_write_event)のいずれの
+  MoCKA\phi_os\event_gate.py:126:    呼び出し元からも、トランスポート(HTTP/インプロセス)を問わずこの関数を
+  MoCKA\phi_os\event_gate.py:127:    経由しなければならない。これ以外にevents保存を行う経路は制度上存在しない。
+  MoCKA\phi_os\event_gate.py:128:    """
+  MoCKA\phi_os\event_gate.py:129:    errors = validate(payload)
+  MoCKA\phi_os\event_gate.py:130:    if errors:
+  MoCKA\phi_os\event_gate.py:133:    payload = dict(payload)
+  MoCKA\phi_os\event_gate.py:134:    payload['event_id'] = payload.get('event_id') or _next_event_id()
+  MoCKA\phi_os\event_gate.py:135:    payload['when_ts'] = payload.get('when_ts') or datetime.now(timezone.utc).isoformat()
+> MoCKA\phi_os\event_gate.py:136:    payload['event_source'] = event_source
+  MoCKA\phi_os\event_gate.py:137:
+> MoCKA\phi_os\event_gate.py:138:    _write(payload, conn=conn)
+  MoCKA\phi_os\event_gate.py:139:
+  MoCKA\phi_os\event_gate.py:140:    return {'status': 'ok', 'event_id': payload['event_id']}
+  MoCKA\phi_os\event_gate.py:141:
+  MoCKA\phi_os\event_gate.py:142:
+  MoCKA\phi_os\event_gate.py:143:@gate_bp.route('/api/gate/event', methods=['POST'])
+  MoCKA\phi_os\event_gate.py:144:def receive_event():
+  MoCKA\phi_os\event_gate.py:145:    payload = request.get_json(force=True) or {}
+> MoCKA\phi_os\event_gate.py:146:    result = process_event(payload, event_source='live')
+  MoCKA\phi_os\event_gate.py:147:    if result['status'] == 'rejected':
+  MoCKA\phi_os\event_gate.py:148:        return jsonify(result), 422
+  MoCKA\phi_os\event_gate.py:149:    return jsonify(result), 201
+  MoCKA\phi_os\event_gate.py:150:
+  MoCKA\phi_os\event_gate.py:151:
+  MoCKA\phi_os\event_gate.py:152:def process_buffered_event(ev: dict, conn) -> dict:
+  MoCKA\phi_os\event_gate.py:153:    """
+> MoCKA\phi_os\event_gate.py:154:    Operational telemetry専用の単発処理（validate_operational + idempotency + _write）。
+  MoCKA\phi_os\event_gate.py:155:    receive_event_batch（HTTP/Local Event Buffer）と、MCP Bridge等のインプロセス
+  MoCKA\phi_os\event_gate.py:156:    呼び出し元の双方から共有される。Flask依存を持たないため、トランスポートを
+  MoCKA\phi_os\event_gate.py:157:    問わず呼び出せる。conn のcommit/closeは呼び出し元の責務とする。
+  MoCKA\phi_os\event_gate.py:158:    戻り値: {'status':'ok','event_id':...} | {'status':'duplicate'} |
+  MoCKA\phi_os\event_gate.py:159:            {'status':'rejected','errors':[...]}
+  MoCKA\phi_os\event_gate.py:179:
+  MoCKA\phi_os\event_gate.py:180:    ev['event_id'] = eid
+  MoCKA\phi_os\event_gate.py:181:    ev['when_ts'] = ev.get('when_ts') or ev.get('when') or datetime.now(timezone.utc).isoformat()
+> MoCKA\phi_os\event_gate.py:182:    ev['event_source'] = ev.get('event_source', 'buffered')
+  MoCKA\phi_os\event_gate.py:183:
+> MoCKA\phi_os\event_gate.py:184:    _write(ev, conn=conn)
+  MoCKA\phi_os\event_gate.py:185:
+  MoCKA\phi_os\event_gate.py:186:    if idem_key:
+  MoCKA\phi_os\event_gate.py:187:        conn.execute(
+  MoCKA\phi_os\event_gate.py:188:            'INSERT OR IGNORE INTO gate_idempotency (idempotency_key, event_id, created_at) '
+  MoCKA\phi_os\event_gate.py:189:            'VALUES (?, ?, ?)',
+  MoCKA\phi_os\event_gate.py:197:    """
+  MoCKA\phi_os\event_gate.py:198:    Chrome拡張機能（Orchestra等）からの書き込み専用エンドポイント（TODO_368）。
+  MoCKA\phi_os\event_gate.py:199:    process_buffered_event()と同一パターン（validate_operational + idempotency_key
+> MoCKA\phi_os\event_gate.py:200:    + _write()収束）を踏襲し、独自の書き込みロジックは新設しない。
+  MoCKA\phi_os\event_gate.py:201:    AI主体のgovernance writeの厳格検証(validate)は通さない（拡張機能はAIではない
+  MoCKA\phi_os\event_gate.py:202:    ため、/api/gate/eventの対象外）。
+  MoCKA\phi_os\event_gate.py:203:    """
+  MoCKA\phi_os\event_gate.py:204:    payload = request.get_json(force=True) or {}
+  MoCKA\phi_os\event_gate.py:205:    conn = _get_conn()
+  MoCKA\phi_os\event_gate.py:270:    の4分類表示。合算した単一指標は提供しない。
+  MoCKA\phi_os\event_gate.py:271:    集計対象はGATE_LAUNCH_DATE以降のイベントのみ（健全性監視はhealth_check.py
+  MoCKA\phi_os\event_gate.py:272:    check_phi_os_auditと同一基準に揃える）。
+> MoCKA\phi_os\event_gate.py:273:    Phase5-1 Gate Policy: 許可されたDirect Write(_source='direct_allowed:{channel}')は
+  MoCKA\phi_os\event_gate.py:274:    監査上violationとしない。それ以外でGate未経由（live/buffered以外）のものは
+  MoCKA\phi_os\event_gate.py:275:    すべて制度違反(violation)として検出する。
+  MoCKA\phi_os\event_gate.py:276:    """
+  MoCKA\phi_os\event_gate.py:277:    conn = _get_conn()
+  MoCKA\phi_os\event_gate.py:278:    try:
+  MoCKA\phi_os\event_gate.py:286:        'real_time_events': {'count': audit['real_time_events'], 'source': '/api/gate/event'},
+  MoCKA\phi_os\event_gate.py:287:        'buffered_events': {'count': audit['buffered_events'], 'source': '/api/gate/event/batch'},
+  MoCKA\phi_os\event_gate.py:288:        'allowed_direct_events': {'count': audit['allowed_direct_events'], 'note': '許可チャネル(bootstrap/maintenance/migration/restore/recovery)経由のDirect Write'},
+> MoCKA\phi_os\event_gate.py:289:        'violation_events': {'count': audit['violation_events'], 'note': f'{GATE_LAUNCH_DATE}以降でGate未経由・許可チャネルでもない制度違反件数（LEGACY_SOURCE_VALUES・timestamp_unparseable除外後）'},
+  MoCKA\phi_os\event_gate.py:290:        'legacy_events': {'count': audit['legacy_events'], 'note': f'{GATE_LAUNCH_DATE}以前のGate確立前バックログ（監査対象外）'},
+  MoCKA\phi_os\event_gate.py:291:        'timestamp_unparseable_events': {'count': audit['timestamp_unparseable_events'], 'note': 'when_tsがISO8601として解釈不能なため日付窓判定の対象外とした件数（TODO_347-c）'},
+  MoCKA\phi_os\event_gate.py:292:        'gate_passthrough_rate_percent': audit['gate_passthrough_rate_percent'],
+  MoCKA\phi_os\event_gate.py:293:    }), 200
+  MoCKA\phi_os\event_gate.py:294:
+  MoCKA\phi_os\event_replay.py:2:# Event Audit / Replay Layer — READ ONLY extension of Event Integrity Framework v1.0
+  MoCKA\phi_os\event_replay.py:3:#
+  MoCKA\phi_os\event_replay.py:4:# このモジュールは新たな真実層・新たな書き込み経路を作らない。
+> MoCKA\phi_os\event_replay.py:5:# 唯一の真実層は phi_os.event_gate.process_event() / data/mocka_events.db のままであり、
+  MoCKA\phi_os\event_replay.py:6:# 本モジュールはそれを「読むだけ」で状態再構築（replay）と既存integrity検証の
+> MoCKA\phi_os\event_replay.py:7:# 一体公開を行う。DB書き込み・process_event呼び出し・event_gate迂回は一切行わない。
+  MoCKA\phi_os\event_replay.py:8:
+  MoCKA\phi_os\event_replay.py:9:import sqlite3
+  MoCKA\phi_os\event_replay.py:10:from pathlib import Path
+  MoCKA\phi_os\event_replay.py:11:
+  MoCKA\phi_os\event_replay.py:12:from . import integrity
+  MoCKA\phi_os\gate_schema.py:6:from datetime import datetime, timezone
+  MoCKA\phi_os\gate_schema.py:7:
+  MoCKA\phi_os\gate_schema.py:8:ALLOWED_WHAT_TYPES = [
+> MoCKA\phi_os\gate_schema.py:9:    'file_write', 'file_delete', 'design', 'config_change',
+  MoCKA\phi_os\gate_schema.py:10:    'git_commit', 'git_push', 'test_run', 'deployment',
+  MoCKA\phi_os\gate_schema.py:11:    'user_voice', 'handshake', 'audit', 'incident', 'todo_update',
+  MoCKA\phi_os\gate_schema.py:12:    'governance_block',  # Authority Decision Enforcement (BA-04)
+  MoCKA\phi_os\gate_schema.py:13:    'claude_mcp',  # MCP tool経由イベント
+  MoCKA\phi_os\gate_schema.py:14:]
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:228:    Notes:
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:229:        - standing is always set to "UNKNOWN" (HG-AS-01 requirement)
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:230:        - status is mapped from next_state
+> MoCKA\phi_os\human_gate_hg_as_01_impl.py:231:        - hg_event_source references the human_gate event
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:232:    """
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:233:    if next_state != "APPROVED":
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:234:        raise ValueError(f"Only APPROVED events can issue authorization state; got {next_state}")
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:235:
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:236:    import uuid
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:246:        "granted_at": timestamp,
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:247:        "expires_at": payload.get("expires_at"),  # nullable
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:248:        "evidence": json.dumps({"source": payload.get("evidence_ref", [])}) if payload.get("evidence_ref") else None,
+> MoCKA\phi_os\human_gate_hg_as_01_impl.py:249:        "hg_event_source": event_id,
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:250:        "hg_event_timestamp": timestamp,
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:251:        "created_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:252:        "immutable": 1,  # always immutable on creation
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:253:    }
+  MoCKA\phi_os\human_gate_hg_as_01_impl.py:254:
+  MoCKA\phi_os\integrity.py:5:
+  MoCKA\phi_os\integrity.py:6:Event Signature + Hash Chain + Integrity Verification + Recovery Support
+  MoCKA\phi_os\integrity.py:7:を一体で実装する。Phase5-1/5-1.5でGate Enforcement・Schema Integrity
+> MoCKA\phi_os\integrity.py:8:Hardeningが完了し、events._sourceがGate Policyと一致することは
+  MoCKA\phi_os\integrity.py:9:保証された。本モジュールはその先の"記録後の改ざん検知"を担う。
+  MoCKA\phi_os\integrity.py:10:
+  MoCKA\phi_os\integrity.py:11:設計方針:
+  MoCKA\phi_os\integrity.py:12:  - algorithm/signature_versionは固定実装にしない。ALGORITHMS辞書に
+  MoCKA\phi_os\integrity.py:13:    登録し、SIGNATURE_VERSIONを上げるだけで将来のアルゴリズム追加に
+  MoCKA\phi_os\integrity.py:39:
+  MoCKA\phi_os\integrity.py:40:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+  MoCKA\phi_os\integrity.py:41:
+> MoCKA\phi_os\integrity.py:42:# 改ざん検知の対象とするevents列（5W1Hコア+内容+変化記録+_source）
+  MoCKA\phi_os\integrity.py:43:SIGNED_FIELDS = (
+  MoCKA\phi_os\integrity.py:44:    "event_id", "when_ts", "who_actor", "what_type",
+  MoCKA\phi_os\integrity.py:45:    "title", "short_summary", "before_state", "after_state",
+> MoCKA\phi_os\integrity.py:46:    "_source", "free_note",
+  MoCKA\phi_os\integrity.py:47:)
+  MoCKA\phi_os\integrity.py:48:
+  MoCKA\phi_os\integrity.py:49:
+  MoCKA\phi_os\integrity.py:50:def canonical_payload(event_row: dict) -> str:
+  MoCKA\phi_os\integrity.py:51:    """event_rowからSIGNED_FIELDSのみを取り出し、安定した正規JSON文字列を返す"""
+  MoCKA\phi_os\integrity.py:279:            "then re-verify",
+  MoCKA\phi_os\integrity.py:280:        ),
+  MoCKA\phi_os\integrity.py:281:        "schema_inconsistency": (
+> MoCKA\phi_os\integrity.py:282:            "events._source CHECK constraint no longer matches gate_policy.ALLOWED_SOURCE_VALUES",
+> MoCKA\phi_os\integrity.py:283:            "run scripts/migrate_source_check.py and update gate_policy.py to match",
+  MoCKA\phi_os\integrity.py:284:        ),
+  MoCKA\phi_os\integrity.py:285:        "schema_audit_error": (
+  MoCKA\phi_os\integrity.py:286:            "schema_audit could not run (DB or module access error)",
+  MoCKA\phi_os\integrity.py:287:            "investigate the underlying error message directly",
+  MoCKA\phi_os\integrity.py:288:        ),
+  MoCKA\phi_os\process_manager.py:28:
+  MoCKA\phi_os\process_manager.py:29:ROOT = Path("C:/Users/sirok/MoCKA")
+  MoCKA\phi_os\process_manager.py:30:PID_FILE = ROOT / "data" / "phi_os_pids.json"
+> MoCKA\phi_os\process_manager.py:31:MCP_URL  = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\phi_os\process_manager.py:32:
+  MoCKA\phi_os\process_manager.py:33:# MoCKA管理対象プロセス一覧
+  MoCKA\phi_os\process_manager.py:34:# (TODO_271 note: sync_watch.pyも含める)
+  MoCKA\phi_os\process_manager.py:35:MANAGED_PROCESSES = {
+  MoCKA\phi_os\process_manager.py:36:    "ping_generator": {
+  MoCKA\read_layer\provenance_convention.py:5:import sqlite3
+  MoCKA\read_layer\provenance_convention.py:6:
+  MoCKA\read_layer\provenance_convention.py:7:# Five separated roles (D-1). operation_actor stays the event actor; origin_* are additive.
+> MoCKA\read_layer\provenance_convention.py:8:ROLE_KEYS = ["operation_actor", "relay_operator", "origin_author", "origin_source", "origin_url"]
+  MoCKA\read_layer\provenance_convention.py:9:
+  MoCKA\read_layer\provenance_convention.py:10:# Keys already used by the existing free_note convention (must not collide).
+  MoCKA\read_layer\provenance_convention.py:11:EXISTING_CONVENTION_KEYS = {
+> MoCKA\read_layer\provenance_convention.py:12:    "who_role", "event_source", "orig_channel", "source", "type",
+  MoCKA\read_layer\provenance_convention.py:13:    "require_human_gate", "session_id",
+  MoCKA\read_layer\provenance_convention.py:14:}
+  MoCKA\read_layer\provenance_convention.py:15:
+  MoCKA\read_layer\provenance_convention.py:16:
+  MoCKA\read_layer\provenance_convention.py:17:def parse_freenote(fn):
+  MoCKA\read_layer\provenance_convention.py:70:
+  MoCKA\read_layer\provenance_convention.py:71:    # round-trip
+  MoCKA\read_layer\provenance_convention.py:72:    sample = {"operation_actor": "Claude-opus-4-8", "relay_operator": "human_nsjsiro",
+> MoCKA\read_layer\provenance_convention.py:73:              "origin_author": "chatgpt", "origin_source": "chatgpt",
+  MoCKA\read_layer\provenance_convention.py:74:              "origin_url": "https://chatgpt.com/c/deadbeef"}
+  MoCKA\read_layer\provenance_convention.py:75:    enc = encode_roles(sample)
+  MoCKA\read_layer\provenance_convention.py:76:    dec = decode_roles(enc)
+  MoCKA\read_layer\provenance_convention.py:77:    roundtrip_ok = dec == sample
+  MoCKA\read_layer\provenance_convention.py:78:
+  MoCKA\reality_sync\discrepancy_detector.py:31:        return "NO_CLAIM", "NO_CLAIM", []
+  MoCKA\reality_sync\discrepancy_detector.py:32:
+  MoCKA\reality_sync\discrepancy_detector.py:33:    statuses = {c.claimed_status for c in file_claims if c.claimed_status != "UNKNOWN"}
+> MoCKA\reality_sync\discrepancy_detector.py:34:    sources = [c.report_source for c in file_claims]
+  MoCKA\reality_sync\discrepancy_detector.py:35:
+  MoCKA\reality_sync\discrepancy_detector.py:36:    if len(statuses) > 1:
+  MoCKA\reality_sync\discrepancy_detector.py:37:        # 複数レポート間で主張が矛盾 (例: 一方はFIXED、他方はBROKEN)
+  MoCKA\reality_sync\discrepancy_detector.py:38:        reported_status = "/".join(sorted(statuses))
+  MoCKA\reality_sync\discrepancy_detector.py:39:        return "REVERSED", reported_status, sources
+  MoCKA\reality_sync\report_state_validator.py:77:
+  MoCKA\reality_sync\report_state_validator.py:78:                claims.append(ReportClaim(
+  MoCKA\reality_sync\report_state_validator.py:79:                    file_path=rel_path,
+> MoCKA\reality_sync\report_state_validator.py:80:                    report_source=report_rel,
+  MoCKA\reality_sync\report_state_validator.py:81:                    claimed_status=status,
+  MoCKA\reality_sync\report_state_validator.py:82:                    quote=line.strip()[:300],
+  MoCKA\reality_sync\report_state_validator.py:83:                ))
+  MoCKA\reality_sync\report_state_validator.py:84:
+  MoCKA\reality_sync\report_state_validator.py:85:    return claims
+  MoCKA\reality_sync\sync_result_model.py:22:class ReportClaim:
+  MoCKA\reality_sync\sync_result_model.py:23:    """既存レポートが主張している状態"""
+  MoCKA\reality_sync\sync_result_model.py:24:    file_path: str
+> MoCKA\reality_sync\sync_result_model.py:25:    report_source: str       # レポートファイル名
+  MoCKA\reality_sync\sync_result_model.py:26:    claimed_status: str      # "FIXED" / "BROKEN" / "UNKNOWN"
+  MoCKA\reality_sync\sync_result_model.py:27:    quote: str                # 根拠となったレポート本文の抜粋
+  MoCKA\reality_sync\sync_result_model.py:28:
+  MoCKA\reality_sync\sync_result_model.py:29:
+  MoCKA\reality_sync\sync_result_model.py:30:@dataclass
+  MoCKA\relay\action_router.py:2:# Relay Phase3 — Policy decisionを実行可能なactionへ変換する層。
+  MoCKA\relay\action_router.py:3:#
+  MoCKA\relay\action_router.py:4:# 注意: 本番のGovernance layer(execution_order_engine等)・governance write
+> MoCKA\relay\action_router.py:5:# (process_event/validate())とは無関係。本クラスはgovernanceに一切接続せず、
+  MoCKA\relay\action_router.py:6:# decision文字列をaction文字列に機械的に写像するだけの単一責務層である。
+  MoCKA\relay\action_router.py:7:#
+  MoCKA\relay\action_router.py:8:# 絶対条件:
+  MoCKA\relay\action_router.py:9:#   - stateを変更しない（読み取りも不要、policyのdecisionのみを見る）
+  MoCKA\relay\action_router.py:10:#   - governance/validateを呼ばない
+  MoCKA\relay\mcp_bridge.py:2:# MCP Layer と Event Integrity Framework v1.0 を繋ぐ唯一の橋。
+  MoCKA\relay\mcp_bridge.py:3:# MCP経由の外部イベント(GitHub/filesystem/http)は意思決定ではなく観測データ
+  MoCKA\relay\mcp_bridge.py:4:# (operational telemetry)であるため、AI主体governance writeの厳格検証(validate())
+> MoCKA\relay\mcp_bridge.py:5:# を要求するprocess_event()ではなく、phi_os.event_gate.process_buffered_event()
+  MoCKA\relay\mcp_bridge.py:6:# (validate_operational()による軽量検証)を経由する。
+  MoCKA\relay\mcp_bridge.py:7:
+  MoCKA\relay\mcp_bridge.py:8:from mcp.mcp_gateway import MCPGateway
+  MoCKA\relay\mcp_bridge.py:9:from phi_os.event_gate import process_buffered_event, _get_conn, _ensure_idempotency_table
+  MoCKA\relay\mcp_bridge.py:10:from relay.relay_kernel import RelayKernel
+  MoCKA\relay\policy_engine.py:16:
+  MoCKA\relay\policy_engine.py:17:    def _decide(self, state: dict) -> dict:
+  MoCKA\relay\policy_engine.py:18:        last_type = state.get("last_type")
+> MoCKA\relay\policy_engine.py:19:        last_source = state.get("last_source")
+  MoCKA\relay\policy_engine.py:20:        event_count = state.get("event_count", 0)
+  MoCKA\relay\policy_engine.py:21:
+  MoCKA\relay\policy_engine.py:22:        if event_count > 100:
+  MoCKA\relay\policy_engine.py:23:            return {
+  MoCKA\relay\policy_engine.py:24:                "decision": "defer",
+  MoCKA\relay\policy_engine.py:26:                "reason": "high_volume",
+  MoCKA\relay\policy_engine.py:27:            }
+  MoCKA\relay\policy_engine.py:28:
+> MoCKA\relay\policy_engine.py:29:        if last_source == "github" or last_type == "github_event":
+  MoCKA\relay\policy_engine.py:30:            return {
+  MoCKA\relay\policy_engine.py:31:                "decision": "accept_telemetry",
+  MoCKA\relay\policy_engine.py:32:                "confidence": 0.9,
+  MoCKA\relay\policy_engine.py:33:                "reason": "source_github",
+  MoCKA\relay\policy_engine.py:34:            }
+  MoCKA\relay\policy_engine.py:35:
+> MoCKA\relay\policy_engine.py:36:        if last_source == "filesystem" or last_type == "filesystem_event":
+  MoCKA\relay\policy_engine.py:37:            return {
+  MoCKA\relay\policy_engine.py:38:                "decision": "accept_telemetry",
+  MoCKA\relay\policy_engine.py:39:                "confidence": 0.8,
+  MoCKA\relay\policy_engine.py:40:                "reason": "source_filesystem",
+  MoCKA\relay\policy_engine.py:41:            }
+  MoCKA\relay\relay_kernel.py:99:    def reduce(self, event: dict, state: dict) -> dict:
+  MoCKA\relay\relay_kernel.py:100:        return {
+  MoCKA\relay\relay_kernel.py:101:            "last_type": event.get("type"),
+> MoCKA\relay\relay_kernel.py:102:            "last_source": event.get("source"),
+  MoCKA\relay\relay_kernel.py:103:            "event_count": state.get("event_count", 0) + 1,
+  MoCKA\relay\relay_kernel.py:104:        }
+  MoCKA\report_truth_governance\report_alignment_engine.py:15:@dataclass
+  MoCKA\report_truth_governance\report_alignment_engine.py:16:class AlignmentDiff:
+  MoCKA\report_truth_governance\report_alignment_engine.py:17:    file_path: str
+> MoCKA\report_truth_governance\report_alignment_engine.py:18:    report_source: str
+  MoCKA\report_truth_governance\report_alignment_engine.py:19:    line_no: int
+  MoCKA\report_truth_governance\report_alignment_engine.py:20:    claimed_status: str
+  MoCKA\report_truth_governance\report_alignment_engine.py:21:    truth_state: str
+  MoCKA\report_truth_governance\report_alignment_engine.py:22:    diff_description: str
+  MoCKA\report_truth_governance\report_alignment_engine.py:23:    proposed_correction: str
+  MoCKA\report_truth_governance\report_alignment_engine.py:36:            continue
+  MoCKA\report_truth_governance\report_alignment_engine.py:37:
+  MoCKA\report_truth_governance\report_alignment_engine.py:38:        diff_description = (
+> MoCKA\report_truth_governance\report_alignment_engine.py:39:            f"{c.report_source}:L{c.line_no} は '{c.claimed_status}' と記載しているが、"
+  MoCKA\report_truth_governance\report_alignment_engine.py:40:            f"確定状態(Code Evidence)は '{truth_state}' である。"
+  MoCKA\report_truth_governance\report_alignment_engine.py:41:        )
+  MoCKA\report_truth_governance\report_alignment_engine.py:42:        proposed_correction = (
+> MoCKA\report_truth_governance\report_alignment_engine.py:43:            f"[提案] {c.report_source}:L{c.line_no} の記述を "
+  MoCKA\report_truth_governance\report_alignment_engine.py:44:            f"'{c.claimed_status}' -> '{truth_state}' に更新する "
+  MoCKA\report_truth_governance\report_alignment_engine.py:45:            f"(根拠: Code Evidence / Reality Sync Result)。"
+  MoCKA\report_truth_governance\report_alignment_engine.py:46:            f"原文: \"{c.quote}\""
+  MoCKA\report_truth_governance\report_alignment_engine.py:47:        )
+  MoCKA\report_truth_governance\report_alignment_engine.py:48:
+  MoCKA\report_truth_governance\report_alignment_engine.py:49:        diffs.append(AlignmentDiff(
+  MoCKA\report_truth_governance\report_alignment_engine.py:50:            file_path=file_path,
+> MoCKA\report_truth_governance\report_alignment_engine.py:51:            report_source=c.report_source,
+  MoCKA\report_truth_governance\report_alignment_engine.py:52:            line_no=c.line_no,
+  MoCKA\report_truth_governance\report_alignment_engine.py:53:            claimed_status=c.claimed_status,
+  MoCKA\report_truth_governance\report_alignment_engine.py:54:            truth_state=truth_state,
+  MoCKA\report_truth_governance\report_alignment_engine.py:55:            diff_description=diff_description,
+  MoCKA\report_truth_governance\report_alignment_engine.py:56:            proposed_correction=proposed_correction,
+  MoCKA\report_truth_governance\report_arbitrator.py:48:
+  MoCKA\report_truth_governance\report_arbitrator.py:49:    if conflict.conflict_type == "INTRA_REPORT":
+  MoCKA\report_truth_governance\report_arbitrator.py:50:        resolution = (
+> MoCKA\report_truth_governance\report_arbitrator.py:51:            f"内部矛盾を含む report_source={conflict.involved_sources} の claim は"
+  MoCKA\report_truth_governance\report_arbitrator.py:52:            f"無効とし、優先順位最上位の証拠 [{evidence_desc}] を採用。"
+  MoCKA\report_truth_governance\report_arbitrator.py:53:            f"確定状態 = {truth_state}"
+  MoCKA\report_truth_governance\report_arbitrator.py:54:        )
+  MoCKA\report_truth_governance\report_arbitrator.py:55:    elif conflict.conflict_type == "INTER_REPORT":
+  MoCKA\report_truth_governance\report_arbitrator.py:56:        resolution = (
+> MoCKA\report_truth_governance\report_arbitrator.py:57:            f"レポート間の不一致 {conflict.involved_sources} は Report Claim (最下位優先)"
+  MoCKA\report_truth_governance\report_arbitrator.py:58:            f"のため採用せず、優先順位最上位の証拠 [{evidence_desc}] を採用。"
+  MoCKA\report_truth_governance\report_arbitrator.py:59:            f"確定状態 = {truth_state}"
+  MoCKA\report_truth_governance\report_arbitrator.py:60:        )
+  MoCKA\report_truth_governance\report_arbitrator.py:61:    elif conflict.conflict_type == "CLAIM_VS_TRUTH":
+  MoCKA\report_truth_governance\report_arbitrator.py:62:        resolution = (
+  MoCKA\report_truth_governance\report_arbitrator.py:66:        )
+  MoCKA\report_truth_governance\report_arbitrator.py:67:    elif conflict.conflict_type == "OUTDATED_CLAIM":
+  MoCKA\report_truth_governance\report_arbitrator.py:68:        resolution = (
+> MoCKA\report_truth_governance\report_arbitrator.py:69:            f"{conflict.involved_sources} のFIXED主張は陳腐化(outdated)と判定。"
+  MoCKA\report_truth_governance\report_arbitrator.py:70:            f"優先順位最上位の証拠 [{evidence_desc}] により確定状態 = {truth_state}"
+  MoCKA\report_truth_governance\report_arbitrator.py:71:        )
+  MoCKA\report_truth_governance\report_arbitrator.py:72:    else:
+  MoCKA\report_truth_governance\report_arbitrator.py:73:        resolution = f"未知のconflict_type。優先順位最上位の証拠 [{evidence_desc}] を採用。確定状態 = {truth_state}"
+  MoCKA\report_truth_governance\report_arbitrator.py:74:
+  MoCKA\report_truth_governance\report_arbitrator.py:76:        file_path=conflict.file_path,
+  MoCKA\report_truth_governance\report_arbitrator.py:77:        conflict_type=conflict.conflict_type,
+  MoCKA\report_truth_governance\report_arbitrator.py:78:        description=conflict.description,
+> MoCKA\report_truth_governance\report_arbitrator.py:79:        involved_sources=conflict.involved_sources,
+  MoCKA\report_truth_governance\report_arbitrator.py:80:        resolved=True,
+  MoCKA\report_truth_governance\report_arbitrator.py:81:        resolution=resolution,
+  MoCKA\report_truth_governance\report_arbitrator.py:82:    )
+  MoCKA\report_truth_governance\report_arbitrator.py:83:
+  MoCKA\report_truth_governance\report_arbitrator.py:84:
+  MoCKA\report_truth_governance\report_claim_model.py:12:class ReportClaim:
+  MoCKA\report_truth_governance\report_claim_model.py:13:    """1レポートの1行から抽出された主張"""
+  MoCKA\report_truth_governance\report_claim_model.py:14:    file_path: str
+> MoCKA\report_truth_governance\report_claim_model.py:15:    report_source: str        # レポートファイル名 (相対パス)
+  MoCKA\report_truth_governance\report_claim_model.py:16:    line_no: int
+  MoCKA\report_truth_governance\report_claim_model.py:17:    claimed_status: str        # "FIXED" / "BROKEN" / "UNKNOWN"
+  MoCKA\report_truth_governance\report_claim_model.py:18:    quote: str
+  MoCKA\report_truth_governance\report_claim_model.py:19:
+  MoCKA\report_truth_governance\report_claim_model.py:20:
+  MoCKA\report_truth_governance\report_claim_model.py:45:    file_path: str
+  MoCKA\report_truth_governance\report_claim_model.py:46:    conflict_type: str           # "INTRA_REPORT" / "INTER_REPORT" / "CLAIM_VS_TRUTH" / "OUTDATED_CLAIM"
+  MoCKA\report_truth_governance\report_claim_model.py:47:    description: str
+> MoCKA\report_truth_governance\report_claim_model.py:48:    involved_sources: list = field(default_factory=list)
+  MoCKA\report_truth_governance\report_claim_model.py:49:    resolved: bool = False
+  MoCKA\report_truth_governance\report_claim_model.py:50:    resolution: str = ""
+  MoCKA\report_truth_governance\report_claim_model.py:51:
+  MoCKA\report_truth_governance\report_claim_model.py:52:
+  MoCKA\report_truth_governance\report_claim_model.py:53:@dataclass
+  MoCKA\report_truth_governance\report_conflict_detector.py:29:    # --- INTRA_REPORT: レポートごとに statuses を集計 ---
+  MoCKA\report_truth_governance\report_conflict_detector.py:30:    by_report: dict = {}
+  MoCKA\report_truth_governance\report_conflict_detector.py:31:    for c in file_claims:
+> MoCKA\report_truth_governance\report_conflict_detector.py:32:        by_report.setdefault(c.report_source, set()).add(c.claimed_status)
+  MoCKA\report_truth_governance\report_conflict_detector.py:33:
+> MoCKA\report_truth_governance\report_conflict_detector.py:34:    for report_source, statuses in by_report.items():
+  MoCKA\report_truth_governance\report_conflict_detector.py:35:        meaningful = statuses - {"UNKNOWN"}
+  MoCKA\report_truth_governance\report_conflict_detector.py:36:        if len(meaningful) > 1:
+  MoCKA\report_truth_governance\report_conflict_detector.py:37:            conflicts.append(Conflict(
+  MoCKA\report_truth_governance\report_conflict_detector.py:38:                file_path=file_path,
+  MoCKA\report_truth_governance\report_conflict_detector.py:39:                conflict_type="INTRA_REPORT",
+> MoCKA\report_truth_governance\report_conflict_detector.py:40:                description=f"{report_source} 内で {file_path} に対する claim が "
+  MoCKA\report_truth_governance\report_conflict_detector.py:41:                            f"{sorted(meaningful)} の両方を含む(内部矛盾)",
+> MoCKA\report_truth_governance\report_conflict_detector.py:42:                involved_sources=[report_source],
+  MoCKA\report_truth_governance\report_conflict_detector.py:43:            ))
+  MoCKA\report_truth_governance\report_conflict_detector.py:44:
+  MoCKA\report_truth_governance\report_conflict_detector.py:45:    # --- INTER_REPORT: レポート間で代表statusが異なる ---
+  MoCKA\report_truth_governance\report_conflict_detector.py:46:    report_repr_status: dict = {}
+> MoCKA\report_truth_governance\report_conflict_detector.py:47:    for report_source, statuses in by_report.items():
+  MoCKA\report_truth_governance\report_conflict_detector.py:48:        meaningful = statuses - {"UNKNOWN"}
+  MoCKA\report_truth_governance\report_conflict_detector.py:49:        if meaningful:
+  MoCKA\report_truth_governance\report_conflict_detector.py:50:            # INTRA_REPORT矛盾がある場合は代表値を確定できないため "AMBIGUOUS"
+> MoCKA\report_truth_governance\report_conflict_detector.py:51:            report_repr_status[report_source] = (
+  MoCKA\report_truth_governance\report_conflict_detector.py:52:                "AMBIGUOUS" if len(meaningful) > 1 else next(iter(meaningful))
+  MoCKA\report_truth_governance\report_conflict_detector.py:53:            )
+  MoCKA\report_truth_governance\report_conflict_detector.py:54:
+  MoCKA\report_truth_governance\report_conflict_detector.py:55:    distinct = {v for v in report_repr_status.values()}
+  MoCKA\report_truth_governance\report_conflict_detector.py:56:    if len(distinct) > 1:
+  MoCKA\report_truth_governance\report_conflict_detector.py:58:            file_path=file_path,
+  MoCKA\report_truth_governance\report_conflict_detector.py:59:            conflict_type="INTER_REPORT",
+  MoCKA\report_truth_governance\report_conflict_detector.py:60:            description=f"レポート間で {file_path} の claim が不一致: {report_repr_status}",
+> MoCKA\report_truth_governance\report_conflict_detector.py:61:            involved_sources=list(report_repr_status.keys()),
+  MoCKA\report_truth_governance\report_conflict_detector.py:62:        ))
+  MoCKA\report_truth_governance\report_conflict_detector.py:63:
+  MoCKA\report_truth_governance\report_conflict_detector.py:64:    # --- CLAIM_VS_TRUTH: 集約claimとtruth_stateの不一致 ---
+  MoCKA\report_truth_governance\report_conflict_detector.py:65:    meaningful_all = {c.claimed_status for c in file_claims if c.claimed_status != "UNKNOWN"}
+  MoCKA\report_truth_governance\report_conflict_detector.py:66:    if len(meaningful_all) == 1:
+  MoCKA\report_truth_governance\report_conflict_detector.py:70:                file_path=file_path,
+  MoCKA\report_truth_governance\report_conflict_detector.py:71:                conflict_type="CLAIM_VS_TRUTH",
+  MoCKA\report_truth_governance\report_conflict_detector.py:72:                description=f"レポートの主張({claim_state}) とコードの真実({truth_state}) が不一致",
+> MoCKA\report_truth_governance\report_conflict_detector.py:73:                involved_sources=[c.report_source for c in file_claims],
+  MoCKA\report_truth_governance\report_conflict_detector.py:74:            ))
+  MoCKA\report_truth_governance\report_conflict_detector.py:75:
+  MoCKA\report_truth_governance\report_conflict_detector.py:76:    # --- OUTDATED_CLAIM: 単独レポートがFIXEDと主張、truthはBROKEN ---
+  MoCKA\report_truth_governance\report_conflict_detector.py:77:    # REPORT_FILES は架構レポート→follow-upレポートの順(新しい主張ほど後ろ)。
+  MoCKA\report_truth_governance\report_conflict_detector.py:78:    # 「古いレポートのみがFIXEDと主張し、新しいレポート/コードはBROKEN」場合を
+  MoCKA\report_truth_governance\report_conflict_detector.py:79:    # OUTDATED_CLAIM として明示する。
+  MoCKA\report_truth_governance\report_conflict_detector.py:80:    if truth_state == "BROKEN":
+> MoCKA\report_truth_governance\report_conflict_detector.py:81:        for report_source, status in report_repr_status.items():
+  MoCKA\report_truth_governance\report_conflict_detector.py:82:            if status == "FIXED":
+  MoCKA\report_truth_governance\report_conflict_detector.py:83:                conflicts.append(Conflict(
+  MoCKA\report_truth_governance\report_conflict_detector.py:84:                    file_path=file_path,
+  MoCKA\report_truth_governance\report_conflict_detector.py:85:                    conflict_type="OUTDATED_CLAIM",
+> MoCKA\report_truth_governance\report_conflict_detector.py:86:                    description=f"{report_source} は {file_path} を FIXED と主張しているが、"
+  MoCKA\report_truth_governance\report_conflict_detector.py:87:                                 f"現在のコード状態は BROKEN (レポートは陳腐化している)",
+> MoCKA\report_truth_governance\report_conflict_detector.py:88:                    involved_sources=[report_source],
+  MoCKA\report_truth_governance\report_conflict_detector.py:89:                ))
+  MoCKA\report_truth_governance\report_conflict_detector.py:90:
+  MoCKA\report_truth_governance\report_conflict_detector.py:91:    return conflicts
+  MoCKA\report_truth_governance\report_conflict_detector.py:92:
+  MoCKA\report_truth_governance\report_conflict_detector.py:93:
+  MoCKA\report_truth_governance\report_parser.py:62:
+  MoCKA\report_truth_governance\report_parser.py:63:                claim_set.claims.append(ReportClaim(
+  MoCKA\report_truth_governance\report_parser.py:64:                    file_path=rel_path,
+> MoCKA\report_truth_governance\report_parser.py:65:                    report_source=report_rel,
+  MoCKA\report_truth_governance\report_parser.py:66:                    line_no=line_no,
+  MoCKA\report_truth_governance\report_parser.py:67:                    claimed_status=status,
+  MoCKA\report_truth_governance\report_parser.py:68:                    quote=merged_line.strip()[:300],
+  MoCKA\report_truth_governance\report_parser.py:69:                ))
+  MoCKA\report_truth_governance\report_parser.py:70:
+  MoCKA\runtime\action_executor.py:130:    # NEURAL LOOP RECONNECTION: ACTION -> EVENT (REGULAR PATH)
+  MoCKA\runtime\action_executor.py:131:    # Record ACTION result as EVENT in mocka_events.db via phi_os.event_gate
+  MoCKA\runtime\action_executor.py:132:    try:
+> MoCKA\runtime\action_executor.py:133:        from phi_os.event_gate import process_event as gate_process_event
+  MoCKA\runtime\action_executor.py:134:        from datetime import timezone as dtz
+  MoCKA\runtime\action_executor.py:135:
+  MoCKA\runtime\action_executor.py:136:        now = datetime.now(dtz.utc).isoformat()
+  MoCKA\runtime\action_executor.py:137:        session_id = f"SESSION_{datetime.now(dtz.utc).strftime('%Y%m%d_%H%M%S')}"
+  MoCKA\runtime\action_executor.py:138:
+  MoCKA\runtime\action_executor.py:160:            "request_id": action_id,
+  MoCKA\runtime\action_executor.py:161:        }
+  MoCKA\runtime\action_executor.py:162:
+> MoCKA\runtime\action_executor.py:163:        event_result = gate_process_event(event_payload, event_source="direct_allowed:recovery")
+  MoCKA\runtime\action_executor.py:164:        if event_result.get("status") == "ok":
+  MoCKA\runtime\action_executor.py:165:            result["event_id"] = event_result.get("event_id")
+  MoCKA\runtime\action_executor.py:166:            result["event_recorded"] = True
+  MoCKA\runtime\action_executor.py:167:    except Exception as e:
+  MoCKA\runtime\action_executor.py:168:        result["event_record_error"] = str(e)
+  MoCKA\runtime\action_recovery.py:151:        Event ID of recovery record, or None if recording failed
+  MoCKA\runtime\action_recovery.py:152:    """
+  MoCKA\runtime\action_recovery.py:153:    try:
+> MoCKA\runtime\action_recovery.py:154:        from phi_os.event_gate import process_event
+  MoCKA\runtime\action_recovery.py:155:
+  MoCKA\runtime\action_recovery.py:156:        original_event_id = original_result.get("event_id")
+  MoCKA\runtime\action_recovery.py:157:        if not original_event_id:
+  MoCKA\runtime\action_recovery.py:158:            return None
+  MoCKA\runtime\action_recovery.py:159:
+  MoCKA\runtime\action_recovery.py:165:            decision_id
+  MoCKA\runtime\action_recovery.py:166:        )
+  MoCKA\runtime\action_recovery.py:167:
+> MoCKA\runtime\action_recovery.py:168:        result = process_event(recovery_payload, event_source="recovery")
+  MoCKA\runtime\action_recovery.py:169:        if result.get("status") == "ok":
+  MoCKA\runtime\action_recovery.py:170:            return result.get("event_id")
+  MoCKA\runtime\action_recovery.py:171:        return None
+  MoCKA\runtime\action_recovery.py:172:    except Exception as e:
+  MoCKA\runtime\action_recovery.py:173:        print(f"[ERROR] Failed to record recovery event: {e}")
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:58:            "granted_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:59:            "expires_at": None,
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:60:            "evidence": None,
+> MoCKA\runtime\test_hg_as_06_authorization_state.py:61:            "hg_event_source": "HG20260922_123456",
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:62:            "immutable": 1
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:63:        }
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:64:
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:65:        with patch('governance.authorization_state_bridge.query_authorization_state') as mock_query:
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:66:            mock_query.return_value = [mock_auth_record]
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:129:            "subject": "kimura_phd",
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:130:            "status": "APPROVED",
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:131:            "expires_at": past_time,
+> MoCKA\runtime\test_hg_as_06_authorization_state.py:132:            "hg_event_source": "HG20260922_expired"
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:133:        }
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:134:
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:135:        with patch('governance.authorization_state_bridge.query_authorization_state') as mock_query:
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:136:            mock_query.return_value = [mock_auth_record]
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:137:
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:237:            "granted_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:238:            "expires_at": None,
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:239:            "evidence": None,
+> MoCKA\runtime\test_hg_as_06_authorization_state.py:240:            "hg_event_source": "HG20260922_e2e_source",
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:241:            "immutable": 1
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:242:        }
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:243:
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:244:        # Mock the query to return this authorization state
+  MoCKA\runtime\test_hg_as_06_authorization_state.py:245:        with patch('governance.authorization_state_bridge.query_authorization_state') as mock_query:
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:69:        "granted_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:70:        "expires_at": (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat(),
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:71:        "evidence": None,
+> MoCKA\runtime\test_hg_as_06_sandbox_only.py:72:        "hg_event_source": "HG20260922_sandbox_001",
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:73:        "hg_event_timestamp": datetime.now(timezone.utc).isoformat(),
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:74:        "created_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:75:        "immutable": 1
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:76:    }
+  MoCKA\runtime\test_hg_as_06_sandbox_only.py:77:
+  MoCKA\scripts\audit_contract_selftest.py:27:            ts_local=datetime(2026, 2, 20, 12, 34, 56, tzinfo=timezone.utc),
+  MoCKA\scripts\audit_contract_selftest.py:28:            event_kind="ingest",
+  MoCKA\scripts\audit_contract_selftest.py:29:            target_path=r"outbox\example.json",
+> MoCKA\scripts\audit_contract_selftest.py:30:            sha256_source=_h64("a"),
+  MoCKA\scripts\audit_contract_selftest.py:31:            sha256_after=_h64("b"),
+  MoCKA\scripts\audit_contract_selftest.py:32:            contract_version="mocka.audit.v1",
+  MoCKA\scripts\audit_contract_selftest.py:33:        )
+  MoCKA\scripts\audit_contract_selftest.py:34:
+  MoCKA\scripts\audit_contract_selftest.py:35:        content = normalize_event_content(inp)
+  MoCKA\scripts\audit_contract_selftest.py:52:            ts_local=inp.ts_local,
+  MoCKA\scripts\audit_contract_selftest.py:53:            event_kind="ingest",
+  MoCKA\scripts\audit_contract_selftest.py:54:            target_path=r"outbox\example2.json",
+> MoCKA\scripts\audit_contract_selftest.py:55:            sha256_source=inp.sha256_source,
+  MoCKA\scripts\audit_contract_selftest.py:56:            sha256_after=inp.sha256_after,
+  MoCKA\scripts\audit_contract_selftest.py:57:            contract_version=inp.contract_version,
+  MoCKA\scripts\audit_contract_selftest.py:58:        )
+  MoCKA\scripts\audit_contract_selftest.py:59:        d3 = derive_event(inp3, previous_event_id="GENESIS")
+  MoCKA\scripts\audit_contract_selftest.py:60:        assert d3.event_id != d.event_id
+  MoCKA\scripts\migrate_event_integrity.py:4:scripts/migrate_event_integrity.py -- Phase5-2 Event Integrity Framework Migration
+  MoCKA\scripts\migrate_event_integrity.py:5:
+  MoCKA\scripts\migrate_event_integrity.py:6:既存data/mocka_events.dbの全イベントへevent_signatures(署名+ハッシュチェーン)を
+> MoCKA\scripts\migrate_event_integrity.py:7:遡及的に付与する。migrate_source_check.pyと同じ手順パターンに従う:
+  MoCKA\scripts\migrate_event_integrity.py:8:
+  MoCKA\scripts\migrate_event_integrity.py:9:  1. event_signaturesが既に存在し全件署名済みならスキップ(idempotent)。
+  MoCKA\scripts\migrate_event_integrity.py:10:  2. DBファイルをバックアップする。
+  MoCKA\scripts\migrate_event_integrity.py:11:  3. event_signaturesテーブルを作成する(未存在時)。
+  MoCKA\scripts\migrate_event_integrity.py:12:  4. 既存eventsをwhen_ts, event_id順(現実的な時系列順)に走査し、
+  MoCKA\scripts\migrate_source_check.py:1:#!/usr/bin/env python3
+  MoCKA\scripts\migrate_source_check.py:2:# -*- coding: utf-8 -*-
+  MoCKA\scripts\migrate_source_check.py:3:"""
+> MoCKA\scripts\migrate_source_check.py:4:scripts/migrate_source_check.py -- Phase5-1.5 Schema Integrity Hardening
+  MoCKA\scripts\migrate_source_check.py:5:
+> MoCKA\scripts\migrate_source_check.py:6:events._source列を制度（interface/gate_policy.ALLOWED_SOURCE_VALUES）と
+  MoCKA\scripts\migrate_source_check.py:7:完全一致させるためのMigration。
+  MoCKA\scripts\migrate_source_check.py:8:
+  MoCKA\scripts\migrate_source_check.py:9:実施内容:
+> MoCKA\scripts\migrate_source_check.py:10:  1. 既存data/mocka_events.dbの_source値を全件検査し、
+> MoCKA\scripts\migrate_source_check.py:11:     ALLOWED_SOURCE_VALUES外の不正値があれば一覧を報告する（実行は中断）。
+  MoCKA\scripts\migrate_source_check.py:12:  2. 不正値が無い場合のみ、eventsテーブルを再構築する:
+> MoCKA\scripts\migrate_source_check.py:13:     - _source TEXT DEFAULT 'new'        (旧)
+> MoCKA\scripts\migrate_source_check.py:14:     -> _source TEXT NOT NULL CHECK (...)  (新)
+  MoCKA\scripts\migrate_source_check.py:15:  3. 実行前にDBファイルをバックアップする。
+  MoCKA\scripts\migrate_source_check.py:16:  4. 実行結果をJSONレポートとして保存する。
+  MoCKA\scripts\migrate_source_check.py:17:
+  MoCKA\scripts\migrate_source_check.py:18:SQLiteはALTER TABLEでCHECK制約を追加できないため、
+  MoCKA\scripts\migrate_source_check.py:19:「新テーブル作成 -> データコピー -> 旧テーブル削除 -> リネーム」方式で再構築する。
+  MoCKA\scripts\migrate_source_check.py:28:
+  MoCKA\scripts\migrate_source_check.py:29:_REPO_ROOT = Path(__file__).resolve().parent.parent
+  MoCKA\scripts\migrate_source_check.py:30:sys.path.insert(0, str(_REPO_ROOT / "interface"))
+> MoCKA\scripts\migrate_source_check.py:31:from gate_policy import ALLOWED_SOURCE_VALUES, POLICY_VERSION  # noqa: E402
+  MoCKA\scripts\migrate_source_check.py:32:
+  MoCKA\scripts\migrate_source_check.py:33:DB_PATH = _REPO_ROOT / "data" / "mocka_events.db"
+> MoCKA\scripts\migrate_source_check.py:34:REPORT_PATH = _REPO_ROOT / "data" / "migrate_source_check_report.json"
+  MoCKA\scripts\migrate_source_check.py:35:
+> MoCKA\scripts\migrate_source_check.py:36:# events.dbの現行カラム定義（_source以外は変更しない）
+  MoCKA\scripts\migrate_source_check.py:37:_BASE_COLUMNS_SQL = """
+  MoCKA\scripts\migrate_source_check.py:38:    event_id            TEXT PRIMARY KEY,
+  MoCKA\scripts\migrate_source_check.py:39:    when_ts             TEXT NOT NULL,
+  MoCKA\scripts\migrate_source_check.py:40:    who_actor           TEXT,
+  MoCKA\scripts\migrate_source_check.py:41:    what_type           TEXT,
+  MoCKA\scripts\migrate_source_check.py:77:    "lifecycle_phase", "risk_level", "category_ab", "target_class",
+  MoCKA\scripts\migrate_source_check.py:78:    "title", "short_summary", "before_state", "after_state", "change_type",
+  MoCKA\scripts\migrate_source_check.py:79:    "impact_scope", "impact_result", "related_event_id", "trace_id",
+> MoCKA\scripts\migrate_source_check.py:80:    "free_note", "_imported_at", "_source", "ai_actor", "session_id",
+  MoCKA\scripts\migrate_source_check.py:81:    "severity", "pattern_score", "recurrence_flag", "verified_by",
+  MoCKA\scripts\migrate_source_check.py:82:    "data_integrity", "integrity_note", "recovered_short_summary",
+  MoCKA\scripts\migrate_source_check.py:83:]
+  MoCKA\scripts\migrate_source_check.py:84:
+  MoCKA\scripts\migrate_source_check.py:85:
+  MoCKA\scripts\migrate_source_check.py:86:def _check_clause() -> str:
+> MoCKA\scripts\migrate_source_check.py:87:    values = ", ".join(f"'{v}'" for v in sorted(ALLOWED_SOURCE_VALUES))
+> MoCKA\scripts\migrate_source_check.py:88:    return f"_source TEXT NOT NULL CHECK (_source IN ({values}))"
+  MoCKA\scripts\migrate_source_check.py:89:
+  MoCKA\scripts\migrate_source_check.py:90:
+  MoCKA\scripts\migrate_source_check.py:91:def audit_existing_values(conn: sqlite3.Connection) -> dict:
+  MoCKA\scripts\migrate_source_check.py:92:    rows = conn.execute(
+> MoCKA\scripts\migrate_source_check.py:93:        "SELECT _source, COUNT(*) AS n FROM events GROUP BY _source"
+  MoCKA\scripts\migrate_source_check.py:94:    ).fetchall()
+  MoCKA\scripts\migrate_source_check.py:95:    violations = {}
+  MoCKA\scripts\migrate_source_check.py:96:    null_count = 0
+  MoCKA\scripts\migrate_source_check.py:97:    for source, n in rows:
+  MoCKA\scripts\migrate_source_check.py:98:        if source is None:
+  MoCKA\scripts\migrate_source_check.py:99:            null_count = n
+  MoCKA\scripts\migrate_source_check.py:100:            continue
+> MoCKA\scripts\migrate_source_check.py:101:        if source not in ALLOWED_SOURCE_VALUES:
+  MoCKA\scripts\migrate_source_check.py:102:            violations[source] = n
+  MoCKA\scripts\migrate_source_check.py:103:    return {"violations": violations, "null_count": null_count, "rows": dict(rows)}
+  MoCKA\scripts\migrate_source_check.py:104:
+  MoCKA\scripts\migrate_source_check.py:105:
+  MoCKA\scripts\migrate_source_check.py:106:def already_hardened(conn: sqlite3.Connection) -> bool:
+  MoCKA\scripts\migrate_source_check.py:107:    sql = conn.execute(
+  MoCKA\scripts\migrate_source_check.py:108:        "SELECT sql FROM sqlite_master WHERE name='events'"
+  MoCKA\scripts\migrate_source_check.py:109:    ).fetchone()[0]
+> MoCKA\scripts\migrate_source_check.py:110:    return "_source TEXT NOT NULL CHECK" in sql
+  MoCKA\scripts\migrate_source_check.py:111:
+  MoCKA\scripts\migrate_source_check.py:112:
+  MoCKA\scripts\migrate_source_check.py:113:def run_migration(dry_run: bool = False) -> dict:
+  MoCKA\scripts\migrate_source_check.py:114:    if not DB_PATH.exists():
+  MoCKA\scripts\migrate_source_check.py:115:        return {"status": "error", "detail": f"DB not found: {DB_PATH}"}
+  MoCKA\scripts\migrate_source_check.py:117:    conn = sqlite3.connect(str(DB_PATH))
+  MoCKA\scripts\migrate_source_check.py:118:    try:
+  MoCKA\scripts\migrate_source_check.py:119:        if already_hardened(conn):
+> MoCKA\scripts\migrate_source_check.py:120:            return {"status": "skipped", "detail": "_source already NOT NULL CHECK"}
+  MoCKA\scripts\migrate_source_check.py:121:
+  MoCKA\scripts\migrate_source_check.py:122:        audit = audit_existing_values(conn)
+  MoCKA\scripts\migrate_source_check.py:123:        report = {
+  MoCKA\scripts\migrate_source_check.py:124:            "status": "pending",
+  MoCKA\scripts\migrate_source_check.py:125:            "policy_version": POLICY_VERSION,
+> MoCKA\scripts\migrate_source_check.py:126:            "allowed_source_values": sorted(ALLOWED_SOURCE_VALUES),
+  MoCKA\scripts\migrate_source_check.py:127:            "audit": audit,
+  MoCKA\scripts\migrate_source_check.py:128:            "executed_at": datetime.now(timezone.utc).isoformat(),
+  MoCKA\scripts\migrate_source_check.py:129:        }
+  MoCKA\scripts\migrate_source_check.py:130:
+  MoCKA\scripts\migrate_source_check.py:131:        if audit["violations"] or audit["null_count"]:
+  MoCKA\scripts\migrate_source_check.py:132:            report["status"] = "blocked"
+  MoCKA\scripts\migrate_source_check.py:133:            report["detail"] = (
+> MoCKA\scripts\migrate_source_check.py:134:                "ALLOWED_SOURCE_VALUES外の値またはNULLが存在するため移行を中断した。"
+  MoCKA\scripts\migrate_source_check.py:135:                "下記violationsを確認し、自動修正方針を決めてから再実行すること。"
+  MoCKA\scripts\migrate_source_check.py:136:            )
+  MoCKA\scripts\migrate_source_check.py:137:            REPORT_PATH.write_text(
+  MoCKA\scripts\migrate_source_check.py:138:                json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8"
+  MoCKA\scripts\migrate_source_check.py:139:            )
+  MoCKA\scripts\migrate_source_check.py:149:
+  MoCKA\scripts\migrate_source_check.py:150:        # バックアップ
+  MoCKA\scripts\migrate_source_check.py:151:        backup_path = DB_PATH.with_name(
+> MoCKA\scripts\migrate_source_check.py:152:            DB_PATH.stem + f"_pre_source_check_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+  MoCKA\scripts\migrate_source_check.py:153:        )
+  MoCKA\scripts\migrate_source_check.py:154:        conn.commit()
+  MoCKA\scripts\migrate_source_check.py:155:        shutil.copy2(DB_PATH, backup_path)
+  MoCKA\scripts\migrate_source_check.py:156:
+  MoCKA\scripts\migrate_source_check.py:157:        cols_sql = _BASE_COLUMNS_SQL.format(source_column=_check_clause())
+  MoCKA\scripts\migrate_source_check.py:180:            "CREATE INDEX IF NOT EXISTS idx_events_lifecycle ON events(lifecycle_phase)"
+  MoCKA\scripts\migrate_source_check.py:181:        )
+  MoCKA\scripts\migrate_source_check.py:182:        conn.execute(
+> MoCKA\scripts\migrate_source_check.py:183:            "CREATE INDEX IF NOT EXISTS idx_events_source ON events(_source)"
+  MoCKA\scripts\migrate_source_check.py:184:        )
+  MoCKA\scripts\migrate_source_check.py:185:        conn.commit()
+  MoCKA\scripts\migrate_source_check.py:186:
+  MoCKA\scripts\migrate_source_check.py:187:        final_count = conn.execute("SELECT COUNT(*) FROM events").fetchone()[0]
+  MoCKA\scripts\migrate_source_check.py:188:        report["status"] = "done"
+  MoCKA\structural\bee.py:32:BETA_REG_PATH  = STRUCTURAL_DIR / "beta_registry.json"
+  MoCKA\structural\bee.py:33:PATTERN_DB_PATH = STRUCTURAL_DIR / "pattern_db.json"
+  MoCKA\structural\bee.py:34:DB_PATH        = ROOT / "data" / "mocka_events.db"
+> MoCKA\structural\bee.py:35:MCP_URL        = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\structural\bee.py:36:
+  MoCKA\structural\bee.py:37:# ─── ライフサイクル閾値 ──────────────────────────────────────────────────────
+  MoCKA\structural\bee.py:38:
+  MoCKA\structural\bee.py:39:STAGE_THRESHOLDS = {
+  MoCKA\structural\bee.py:40:    "観察β":   {"evidence_min": 0,  "evidence_max": 4,  "contra_rate_max": None},
+  MoCKA\structural\bee.py:439:        3. detect_co_occurrence
+  MoCKA\structural\bee.py:440:        4. extract_meta_beta
+  MoCKA\structural\bee.py:441:        5. expire_extinct（90日消滅）
+> MoCKA\structural\bee.py:442:        6. mocka_write_event(BEE_DAILY_SCAN) で記録
+  MoCKA\structural\bee.py:443:        """
+  MoCKA\structural\bee.py:444:        beta_ids = [k for k in self.breg if not k.startswith("_")]
+  MoCKA\structural\bee.py:445:        scan_log = {"ts": datetime.now().isoformat(), "betas": {}}
+  MoCKA\structural\bee.py:446:
+  MoCKA\structural\bee.py:447:        print(f"[BEE] 毎朝スキャン開始 ({len(beta_ids)}β)")
+  MoCKA\structural\bee.py:483:            f"β:{len(beta_ids)} スキャン / ライフサイクル変化:{len(lifecycle_changes)} / "
+  MoCKA\structural\bee.py:484:            f"Meta β:{len(meta_betas)} / 消滅:{len(extinct)}"
+  MoCKA\structural\bee.py:485:        )
+> MoCKA\structural\bee.py:486:        self._write_event("BEE_DAILY_SCAN", summary, lifecycle_changes, meta_betas)
+  MoCKA\structural\bee.py:487:
+  MoCKA\structural\bee.py:488:        print(f"[BEE] 完了: {summary}")
+  MoCKA\structural\bee.py:489:        return {
+  MoCKA\structural\bee.py:490:            "scan_log":          scan_log,
+  MoCKA\structural\bee.py:491:            "lifecycle_changes": lifecycle_changes,
+  MoCKA\structural\bee.py:493:            "extinct":           extinct,
+  MoCKA\structural\bee.py:494:        }
+  MoCKA\structural\bee.py:495:
+> MoCKA\structural\bee.py:496:    def _write_event(self, event_type: str, description: str,
+  MoCKA\structural\bee.py:497:                      lifecycle_changes: list, meta_betas: list):
+  MoCKA\structural\bee.py:498:        """MoCKA MCP 経由でイベントを記録する（失敗しても続行）"""
+  MoCKA\structural\bee.py:499:        try:
+  MoCKA\structural\bee.py:500:            import urllib.request
+  MoCKA\structural\bee.py:501:            payload = json.dumps({
+  MoCKA\structural\dogfood_run.py:40:for i in range(11):  # 11 rounds x (9 read + 1 write) = 110 calls
+  MoCKA\structural\dogfood_run.py:41:    for t in READ_TOOLS:
+  MoCKA\structural\dogfood_run.py:42:        CALL_SEQUENCE.append((t, {"round": i}))
+> MoCKA\structural\dogfood_run.py:43:    CALL_SEQUENCE.append(("mocka_write_event", {"round": i, "title": f"dogfood round {i}"}))
+  MoCKA\structural\dogfood_run.py:44:
+  MoCKA\structural\dogfood_run.py:45:
+  MoCKA\structural\dogfood_run.py:46:def run():
+  MoCKA\structural\dogfood_run.py:47:    pipeline = GovernancePipeline()
+  MoCKA\structural\dogfood_run.py:48:
+  MoCKA\structural\encoding_policy_validator.py:10:Rule 3: Encoding違反は制度違反インシデントとして記録し、再発防止策を伴ってクローズ。
+  MoCKA\structural\encoding_policy_validator.py:11:
+  MoCKA\structural\encoding_policy_validator.py:12:使い方:
+> MoCKA\structural\encoding_policy_validator.py:13:  from encoding_policy_validator import validate, safe_write
+  MoCKA\structural\encoding_policy_validator.py:14:
+  MoCKA\structural\encoding_policy_validator.py:15:  # スクリプト文字列を検査
+  MoCKA\structural\encoding_policy_validator.py:16:  result = validate(script_text)
+  MoCKA\structural\encoding_policy_validator.py:17:  if not result["pass"]:
+  MoCKA\structural\encoding_policy_validator.py:18:      raise EncodingPolicyViolation(result)
+  MoCKA\structural\encoding_policy_validator.py:19:
+  MoCKA\structural\encoding_policy_validator.py:20:  # 安全な書き出し（UTF-8強制）
+> MoCKA\structural\encoding_policy_validator.py:21:  safe_write(path, content)
+  MoCKA\structural\encoding_policy_validator.py:22:"""
+  MoCKA\structural\encoding_policy_validator.py:23:
+  MoCKA\structural\encoding_policy_validator.py:24:import re
+  MoCKA\structural\encoding_policy_validator.py:25:import sys
+  MoCKA\structural\encoding_policy_validator.py:26:import json
+  MoCKA\structural\encoding_policy_validator.py:91:    """違反があればEncodingPolicyViolationを送出する。"""
+  MoCKA\structural\encoding_policy_validator.py:92:    result = validate(script, source_hint)
+  MoCKA\structural\encoding_policy_validator.py:93:    if not result["pass"]:
+> MoCKA\structural\encoding_policy_validator.py:94:        _write_incident(result)
+  MoCKA\structural\encoding_policy_validator.py:95:        raise EncodingPolicyViolation(result)
+  MoCKA\structural\encoding_policy_validator.py:96:    return result
+  MoCKA\structural\encoding_policy_validator.py:97:
+  MoCKA\structural\encoding_policy_validator.py:98:
+  MoCKA\structural\encoding_policy_validator.py:99:# ============================================================
+  MoCKA\structural\encoding_policy_validator.py:100:# 安全な書き出し（UTF-8強制）
+  MoCKA\structural\encoding_policy_validator.py:101:# ============================================================
+  MoCKA\structural\encoding_policy_validator.py:102:
+> MoCKA\structural\encoding_policy_validator.py:103:def safe_write(path: str | Path, content: str, validate_content: bool = True) -> None:
+  MoCKA\structural\encoding_policy_validator.py:104:    """
+  MoCKA\structural\encoding_policy_validator.py:105:    UTF-8でファイルを書き出す。
+  MoCKA\structural\encoding_policy_validator.py:106:    validate_content=True の場合、内容をポリシー検査してから書き出す。
+  MoCKA\structural\encoding_policy_validator.py:107:    """
+  MoCKA\structural\encoding_policy_validator.py:108:    if validate_content:
+  MoCKA\structural\encoding_policy_validator.py:109:        result = validate(content, source_hint=str(path))
+  MoCKA\structural\encoding_policy_validator.py:110:        if not result["pass"]:
+> MoCKA\structural\encoding_policy_validator.py:111:            _write_incident(result)
+  MoCKA\structural\encoding_policy_validator.py:112:            raise EncodingPolicyViolation(result)
+  MoCKA\structural\encoding_policy_validator.py:113:
+  MoCKA\structural\encoding_policy_validator.py:114:    path = Path(path)
+  MoCKA\structural\encoding_policy_validator.py:115:    path.parent.mkdir(parents=True, exist_ok=True)
+  MoCKA\structural\encoding_policy_validator.py:116:    with open(path, "w", encoding="utf-8") as f:
+  MoCKA\structural\encoding_policy_validator.py:123:
+  MoCKA\structural\encoding_policy_validator.py:124:INCIDENT_LOG = Path(r"C:\Users\sirok\MoCKA\data\mocka\encoding_violations.jsonl")
+  MoCKA\structural\encoding_policy_validator.py:125:
+> MoCKA\structural\encoding_policy_validator.py:126:def _write_incident(result: dict) -> None:
+  MoCKA\structural\encoding_policy_validator.py:127:    """Encoding Policy違反をインシデントログに記録する。"""
+  MoCKA\structural\encoding_policy_validator.py:128:    try:
+  MoCKA\structural\encoding_policy_validator.py:129:        INCIDENT_LOG.parent.mkdir(parents=True, exist_ok=True)
+  MoCKA\structural\encoding_policy_validator.py:130:        incident = {
+  MoCKA\structural\encoding_policy_validator.py:131:            "event_type":  "ENCODING_POLICY_VIOLATION",
+  MoCKA\structural\encoding_policy_validator.py:147:# PowerShell生成ヘルパー（UTF-8強制テンプレート）
+  MoCKA\structural\encoding_policy_validator.py:148:# ============================================================
+  MoCKA\structural\encoding_policy_validator.py:149:
+> MoCKA\structural\encoding_policy_validator.py:150:def powershell_write_utf8(filepath: str, content: str) -> str:
+  MoCKA\structural\encoding_policy_validator.py:151:    """
+  MoCKA\structural\encoding_policy_validator.py:152:    UTF-8でファイルを書き出すPowerShellコマンドを生成する。
+  MoCKA\structural\encoding_policy_validator.py:153:    このヘルパーを経由することでCP932生成を制度的に防止する。
+  MoCKA\structural\encoding_policy_validator.py:154:    """
+  MoCKA\structural\encoding_policy_validator.py:155:    # 内容にシングルクォートがあれば二重化（PowerShell here-string対策）
+  MoCKA\structural\encoding_policy_validator.py:162:  [System.Text.Encoding]::UTF8
+  MoCKA\structural\encoding_policy_validator.py:163:)"""
+  MoCKA\structural\encoding_policy_validator.py:164:    # 生成したコマンド自体を検査
+> MoCKA\structural\encoding_policy_validator.py:165:    result = validate(cmd, source_hint=f"powershell_write_utf8({filepath})")
+  MoCKA\structural\encoding_policy_validator.py:166:    if not result["pass"]:
+  MoCKA\structural\encoding_policy_validator.py:167:        raise EncodingPolicyViolation(result)
+  MoCKA\structural\encoding_policy_validator.py:168:    return cmd
+  MoCKA\structural\encoding_policy_validator.py:169:
+  MoCKA\structural\encoding_policy_validator.py:170:
+  MoCKA\structural\execution_governance.py:240:        return ApprovalResult(approved=True, reason="dry run clean", dry_run=result)
+  MoCKA\structural\execution_governance.py:241:
+  MoCKA\structural\execution_governance.py:242:    def record_execution(self, action: dict, result: dict) -> None:
+> MoCKA\structural\execution_governance.py:243:        """実行結果の記録(呼び出し側がmocka_write_eventと連携する想定のフック)。"""
+  MoCKA\structural\execution_governance.py:244:        self._last_execution = {"action": action, "result": result}
+  MoCKA\structural\execution_governance.py:245:
+  MoCKA\structural\execution_governance.py:246:    def record_file_change(self, before: str, after: str, reason: str) -> None:
+  MoCKA\structural\execution_governance.py:247:        """
+  MoCKA\structural\execution_governance.py:248:        TODO_144: ファイル変更前後の強制記録制度。
+  MoCKA\structural\governance_pipeline.py:54:
+  MoCKA\structural\governance_pipeline.py:55:# 後方互換のため維持(governance_pipeline外部から書き込み系tool集合として参照される場合がある)
+  MoCKA\structural\governance_pipeline.py:56:WRITE_TOOLS = {
+> MoCKA\structural\governance_pipeline.py:57:    "mocka_write_event",
+  MoCKA\structural\governance_pipeline.py:58:    "mocka_add_todo",
+  MoCKA\structural\governance_pipeline.py:59:    "mocka_update_todo",
+  MoCKA\structural\governance_pipeline.py:60:    "mocka_seal",
+  MoCKA\structural\governance_pipeline.py:61:}
+  MoCKA\structural\governance_pipeline.py:62:
+  MoCKA\structural\governance_pipeline.py:180:        if tool_name not in READ_ONLY_TOOLS:
+  MoCKA\structural\governance_pipeline.py:181:            decision_id = args.get("decision_id")
+  MoCKA\structural\governance_pipeline.py:182:
+> MoCKA\structural\governance_pipeline.py:183:            # GENESIS ENTRY POINT: Allow mocka_decision_write with no prior DECISION_ID
+  MoCKA\structural\governance_pipeline.py:184:            # when explicitly Human-authorized Bootstrap decision with scope binding match
+  MoCKA\structural\governance_pipeline.py:185:            is_genesis = (
+> MoCKA\structural\governance_pipeline.py:186:                tool_name == "mocka_decision_write"
+  MoCKA\structural\governance_pipeline.py:187:                and args.get("decision_type") == "GENESIS"
+  MoCKA\structural\governance_pipeline.py:188:                and args.get("approved_by") == "nsjpkimura@gmail.com"
+  MoCKA\structural\governance_pipeline.py:189:                and args.get("authorization_scope") == args.get("runtime_scope")
+  MoCKA\structural\governance_pipeline.py:190:            )
+  MoCKA\structural\governance_pipeline.py:191:
+  MoCKA\structural\governance_pipeline.py:201:
+  MoCKA\structural\governance_pipeline.py:202:                # Requirement 1: Decision exists
+  MoCKA\structural\governance_pipeline.py:203:                if not decision_record:
+> MoCKA\structural\governance_pipeline.py:204:                    # HG Contract DC_20260928_001: Allow mocka_decision_write to generate new Decisions
+  MoCKA\structural\governance_pipeline.py:205:                    # Skip BA04_DECISION_NOT_FOUND for new generation (decision_id provided but not in Ledger)
+  MoCKA\structural\governance_pipeline.py:206:                    # All other tools maintain normal BA04 governance
+> MoCKA\structural\governance_pipeline.py:207:                    if tool_name != "mocka_decision_write":
+  MoCKA\structural\governance_pipeline.py:208:                        aborts.append("BA04_DECISION_NOT_FOUND")
+  MoCKA\structural\governance_pipeline.py:209:
+  MoCKA\structural\governance_pipeline.py:210:                # Requirement 2: Decision status == Active
+  MoCKA\structural\governance_pipeline.py:211:                elif decision_record.get("status") != "Active":
+  MoCKA\structural\governance_pipeline.py:212:                    aborts.append(f"BA04_DECISION_NOT_ACTIVE:{decision_record.get('status')}")
+  MoCKA\structural\governance_pipeline.py:269:
+  MoCKA\structural\governance_pipeline.py:270:def main():
+  MoCKA\structural\governance_pipeline.py:271:    pipeline = GovernancePipeline()
+> MoCKA\structural\governance_pipeline.py:272:    decision = pipeline.before_tool("mocka_write_event", {"title": "test"})
+  MoCKA\structural\governance_pipeline.py:273:    print("allowed:", decision.allowed)
+  MoCKA\structural\governance_pipeline.py:274:    print("reason:", decision.reason)
+  MoCKA\structural\governance_pipeline.py:275:    print("thinking_mode:", decision.thinking_mode)
+  MoCKA\structural\governance_pipeline.py:276:    print("checklist_ok:", decision.checklist_ok)
+> MoCKA\structural\governance_pipeline.py:277:    pipeline.after_tool("mocka_write_event", {"title": "test"}, "ok")
+  MoCKA\structural\governance_pipeline.py:278:
+  MoCKA\structural\governance_pipeline.py:279:
+  MoCKA\structural\governance_pipeline.py:280:if __name__ == "__main__":
+  MoCKA\structural\governance_pipeline.py:281:    main()
+  MoCKA\structural\repository_policy.py:10:REPOSITORY_POLICY = {
+  MoCKA\structural\repository_policy.py:11:    "encoding":        "UTF-8 mandatory",   # CP932禁止
+  MoCKA\structural\repository_policy.py:12:    "version_control": "Git required",      # コミットなき変更禁止
+> MoCKA\structural\repository_policy.py:13:    "file_write":      "No overwrite",      # 上書き前にdiff確認必須
+  MoCKA\structural\repository_policy.py:14:    "new_folder":      "No new folder",     # 存在確認なしのフォルダ生成禁止
+  MoCKA\structural\repository_policy.py:15:    "path_decision":   "Grounding first",   # パス決定はGrounding後
+  MoCKA\structural\repository_policy.py:16:    "human_query":     "Repository first",  # Repositoryにある情報は人に聞かない
+  MoCKA\structural\repository_policy.py:17:}
+  MoCKA\structural\repository_policy.py:18:
+  MoCKA\tools\hab_concurrency_audit.py:238:        "note_current_ai_param": "current_ai" in live_update_sig.parameters,
+  MoCKA\tools\hab_concurrency_audit.py:239:        "finding": (
+  MoCKA\tools\hab_concurrency_audit.py:240:            "current_ai は最終更新者の自己申告フィールドであり、書き込み主体を強制識別する"
+> MoCKA\tools\hab_concurrency_audit.py:241:            "actorパラメータではない。mocka_write_eventのauthorパラメータと同様の仕組みは"
+  MoCKA\tools\hab_concurrency_audit.py:242:            "WorkingContext.live_update()には伝播していない。"
+  MoCKA\tools\hab_concurrency_audit.py:243:        ),
+  MoCKA\tools\hab_concurrency_audit.py:244:        "verdict": "CONFIRMED_GAP" if not has_actor_param else "OK",
+  MoCKA\tools\hab_concurrency_audit.py:245:    }
+  MoCKA\tools\hab_concurrency_audit.py:246:
+  MoCKA\tools\mocka_auto_record.py:2:mocka_auto_record.py — TODO_153 + Bash/PowerShell裏口対応
+  MoCKA\tools\mocka_auto_record.py:3:===========================================================
+  MoCKA\tools\mocka_auto_record.py:4:Claude Code PostToolUse フックから呼ばれ、ファイル変更操作後に
+> MoCKA\tools\mocka_auto_record.py:5:自動で mocka_write_event を発火する。
+  MoCKA\tools\mocka_auto_record.py:6:
+  MoCKA\tools\mocka_auto_record.py:7:対象ツール: Write, Edit, NotebookEdit, MultiEdit, Bash, PowerShell
+  MoCKA\tools\mocka_auto_record.py:8:
+  MoCKA\tools\mocka_auto_record.py:9:Bash/PowerShell の場合: コマンド文字列にファイル書き込みパターンが
+  MoCKA\tools\mocka_auto_record.py:10:含まれる場合のみ記録する（ls, git status等の非破壊操作はスキップ）。
+  MoCKA\tools\mocka_auto_record.py:29:
+  MoCKA\tools\mocka_auto_record.py:30:load_dotenv()
+  MoCKA\tools\mocka_auto_record.py:31:
+> MoCKA\tools\mocka_auto_record.py:32:LOCAL_MCP   = "http://localhost:5002/agent/mocka_write_event"
+  MoCKA\tools\mocka_auto_record.py:33:LOCAL_APP   = "http://localhost:5000/file/register"
+  MoCKA\tools\mocka_auto_record.py:34:_ENDPOINT   = os.environ.get("MOCKA_ENDPOINT", "")
+> MoCKA\tools\mocka_auto_record.py:35:REMOTE_MCP  = f"{_ENDPOINT}/agent/mocka_write_event" if _ENDPOINT else ""
+  MoCKA\tools\mocka_auto_record.py:36:
+  MoCKA\tools\mocka_auto_record.py:37:LOG_PATH    = Path(__file__).resolve().parent / "auto_record.log"
+  MoCKA\tools\mocka_auto_record.py:38:
+  MoCKA\tools\mocka_auto_record.py:39:# Windows cp932コンソールでのUnicodeEncodeError防止（PostToolUseフックを落とさない）
+  MoCKA\tools\mocka_auto_record.py:40:for _stream in (sys.stdout, sys.stderr):
+  MoCKA\tools\mocka_auto_record.py:48:
+  MoCKA\tools\mocka_auto_record.py:49:# ファイル書き込みを示すコマンドパターン
+  MoCKA\tools\mocka_auto_record.py:50:# 誤検知より検知漏れを優先（疑わしい場合は記録する方針）
+> MoCKA\tools\mocka_auto_record.py:51:_WRITE_PATTERNS = re.compile(
+  MoCKA\tools\mocka_auto_record.py:52:    r"""
+  MoCKA\tools\mocka_auto_record.py:53:    (?:
+  MoCKA\tools\mocka_auto_record.py:54:        >|>>                                        # リダイレクト
+  MoCKA\tools\mocka_auto_record.py:55:        | \bcp\s                                    # cp (コピー)
+  MoCKA\tools\mocka_auto_record.py:56:        | \bmv\s                                    # mv (移動)
+  MoCKA\tools\mocka_auto_record.py:138:      カスタム関数/スクリプト呼び出し（python myscript.py など引数なし）
+  MoCKA\tools\mocka_auto_record.py:139:    - 方針: 漏れより誤検知を許容（疑わしければ記録する）
+  MoCKA\tools\mocka_auto_record.py:140:    """
+> MoCKA\tools\mocka_auto_record.py:141:    m = _WRITE_PATTERNS.search(command)
+  MoCKA\tools\mocka_auto_record.py:142:    if m:
+  MoCKA\tools\mocka_auto_record.py:143:        return True, f"pattern={m.group(0)[:40].strip()!r}"
+> MoCKA\tools\mocka_auto_record.py:144:    return False, "no_write_pattern"
+  MoCKA\tools\mocka_auto_record.py:145:
+  MoCKA\tools\mocka_auto_record.py:146:
+  MoCKA\tools\mocka_auto_record.py:147:def main():
+  MoCKA\tools\mocka_auto_record.py:148:    try:
+  MoCKA\tools\mocka_auto_record.py:149:        raw = sys.stdin.read()
+  MoCKA\ui\conflict_renderer.py:51:        import sys
+  MoCKA\ui\conflict_renderer.py:52:        self._out = out or sys.stdout
+  MoCKA\ui\conflict_renderer.py:53:
+> MoCKA\ui\conflict_renderer.py:54:    def _write(self, line: str = "") -> None:
+  MoCKA\ui\conflict_renderer.py:55:        self._out.write(line + "\n")
+  MoCKA\ui\conflict_renderer.py:56:
+  MoCKA\ui\conflict_renderer.py:57:    # ─────────────────────────────────────────────────────────
+  MoCKA\ui\conflict_renderer.py:58:    # Public API
+  MoCKA\ui\conflict_renderer.py:59:    # ─────────────────────────────────────────────────────────
+  MoCKA\ui\conflict_renderer.py:61:    def render_graph(self, graph: ConflictGraph) -> None:
+  MoCKA\ui\conflict_renderer.py:62:        """グラフ全体を描画する。"""
+  MoCKA\ui\conflict_renderer.py:63:        summary = graph.summary()
+> MoCKA\ui\conflict_renderer.py:64:        self._write("=" * 70)
+> MoCKA\ui\conflict_renderer.py:65:        self._write("  CONFLICT GRAPH  —  PHI-OS ↔ Personal Lexicon Bridge")
+> MoCKA\ui\conflict_renderer.py:66:        self._write("=" * 70)
+> MoCKA\ui\conflict_renderer.py:67:        self._write(f"  nodes: {summary['total_nodes']}  |  edges: {summary['total_edges']}")
+  MoCKA\ui\conflict_renderer.py:68:        by_state = summary.get("by_state", {})
+  MoCKA\ui\conflict_renderer.py:69:        state_line = "  " + "  ".join(
+  MoCKA\ui\conflict_renderer.py:70:            f"{k}:{v}" for k, v in by_state.items()
+  MoCKA\ui\conflict_renderer.py:71:        )
+> MoCKA\ui\conflict_renderer.py:72:        self._write(state_line)
+> MoCKA\ui\conflict_renderer.py:73:        self._write(f"  built_at: {summary['built_at']}")
+> MoCKA\ui\conflict_renderer.py:74:        self._write("-" * 70)
+  MoCKA\ui\conflict_renderer.py:75:
+  MoCKA\ui\conflict_renderer.py:76:        # state 順でソート: CONFLICT > LOCKED > DRIFT > NORMAL
+  MoCKA\ui\conflict_renderer.py:77:        _order = {"CONFLICT": 0, "LOCKED": 1, "DRIFT": 2, "NORMAL": 3}
+  MoCKA\ui\conflict_renderer.py:78:        nodes = sorted(graph.nodes(), key=lambda n: (_order.get(n.state, 9), n.term))
+  MoCKA\ui\conflict_renderer.py:79:
+  MoCKA\ui\conflict_renderer.py:84:            if edges:
+  MoCKA\ui\conflict_renderer.py:85:                for edge in edges:
+  MoCKA\ui\conflict_renderer.py:86:                    self._render_edge_inline(edge, current_term=node.term)
+> MoCKA\ui\conflict_renderer.py:87:            self._write()
+  MoCKA\ui\conflict_renderer.py:88:
+  MoCKA\ui\conflict_renderer.py:89:        if not nodes:
+> MoCKA\ui\conflict_renderer.py:90:            self._write("  (no nodes registered)")
+  MoCKA\ui\conflict_renderer.py:91:
+> MoCKA\ui\conflict_renderer.py:92:        self._write("=" * 70)
+  MoCKA\ui\conflict_renderer.py:93:
+  MoCKA\ui\conflict_renderer.py:94:    def render_node(self, node: ConflictVisualNode) -> None:
+  MoCKA\ui\conflict_renderer.py:95:        """
+  MoCKA\ui\conflict_renderer.py:96:        1 node を以下フォーマットで描画:
+  MoCKA\ui\conflict_renderer.py:97:          TERM
+  MoCKA\ui\conflict_renderer.py:101:          SEVERITY
+  MoCKA\ui\conflict_renderer.py:102:        """
+  MoCKA\ui\conflict_renderer.py:103:        sym = _STATE_SYMBOL.get(node.state, "[?]")
+> MoCKA\ui\conflict_renderer.py:104:        self._write(f"{sym} TERM      : {node.term}")
+> MoCKA\ui\conflict_renderer.py:105:        self._write(f"    PHI      : {_truncate(node.phi_value)}")
+> MoCKA\ui\conflict_renderer.py:106:        self._write(f"    PERSONAL : {_truncate(node.personal_value)}")
+> MoCKA\ui\conflict_renderer.py:107:        self._write(f"    STATE    : {node.state}")
+> MoCKA\ui\conflict_renderer.py:108:        self._write(f"    SEVERITY : {_severity_bar(node.severity)}  {node.severity:.3f}")
+  MoCKA\ui\conflict_renderer.py:109:
+  MoCKA\ui\conflict_renderer.py:110:    def render_node_by_term(self, graph: ConflictGraph, term: str) -> None:
+  MoCKA\ui\conflict_renderer.py:111:        """term を指定して単一ノードを描画する。"""
+  MoCKA\ui\conflict_renderer.py:112:        node = graph.get_node(term)
+  MoCKA\ui\conflict_renderer.py:113:        if node is None:
+> MoCKA\ui\conflict_renderer.py:114:            self._write(f"[not found] {term}")
+  MoCKA\ui\conflict_renderer.py:115:            return
+  MoCKA\ui\conflict_renderer.py:116:        self.render_node(node)
+  MoCKA\ui\conflict_renderer.py:117:
+  MoCKA\ui\conflict_renderer.py:118:    def render_conflicts_only(self, graph: ConflictGraph) -> None:
+  MoCKA\ui\conflict_renderer.py:119:        """CONFLICT 状態のノードのみ描画する。"""
+  MoCKA\ui\conflict_renderer.py:120:        nodes = graph.nodes_by_state("CONFLICT")
+> MoCKA\ui\conflict_renderer.py:121:        self._write(f"--- CONFLICT nodes ({len(nodes)}) ---")
+  MoCKA\ui\conflict_renderer.py:122:        for node in nodes:
+  MoCKA\ui\conflict_renderer.py:123:            self.render_node(node)
+> MoCKA\ui\conflict_renderer.py:124:            self._write()
+  MoCKA\ui\conflict_renderer.py:125:
+  MoCKA\ui\conflict_renderer.py:126:    def render_summary(self, graph: ConflictGraph) -> None:
+  MoCKA\ui\conflict_renderer.py:127:        """サマリのみ描画する。"""
+  MoCKA\ui\conflict_renderer.py:128:        s = graph.summary()
+> MoCKA\ui\conflict_renderer.py:129:        self._write(f"nodes={s['total_nodes']}  edges={s['total_edges']}  "
+  MoCKA\ui\conflict_renderer.py:130:                    + "  ".join(f"{k}:{v}" for k, v in s.get("by_state", {}).items()))
+  MoCKA\ui\conflict_renderer.py:131:
+  MoCKA\ui\conflict_renderer.py:132:    def _render_edge_inline(self, edge: ConflictEdge, current_term: str) -> None:
+  MoCKA\ui\conflict_renderer.py:133:        other = edge.target_term if edge.source_term == current_term else edge.source_term
+  MoCKA\ui\conflict_renderer.py:134:        direction = "->" if edge.source_term == current_term else "<-"
+> MoCKA\ui\conflict_renderer.py:135:        self._write(
+  MoCKA\ui\conflict_renderer.py:136:            f"    EDGE  {direction} [{other}]  rel={edge.relation}  w={edge.weight:.2f}"
+  MoCKA\ui\conflict_renderer.py:137:        )
+  MoCKA\verify\manifest_resolver.py:24:    return json.loads(path.read_text(encoding="utf-8-sig"))
+  MoCKA\verify\manifest_resolver.py:25:
+  MoCKA\verify\manifest_resolver.py:26:
+> MoCKA\verify\manifest_resolver.py:27:def atomic_write_text(path: Path, text: str) -> None:
+  MoCKA\verify\manifest_resolver.py:28:    path.parent.mkdir(parents=True, exist_ok=True)
+  MoCKA\verify\manifest_resolver.py:29:    tmp = path.with_suffix(path.suffix + ".tmp")
+  MoCKA\verify\manifest_resolver.py:30:    tmp.write_text(text, encoding="utf-8")
+  MoCKA\verify\manifest_resolver.py:31:    os.replace(tmp, path)
+  MoCKA\verify\manifest_resolver.py:32:
+  MoCKA\verify\manifest_resolver.py:33:
+  MoCKA\verify\manifest_resolver.py:34:def write_json(path: Path, obj: Any) -> None:
+> MoCKA\verify\manifest_resolver.py:35:    atomic_write_text(path, json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=True) + "\n")
+  MoCKA\verify\manifest_resolver.py:36:
+  MoCKA\verify\manifest_resolver.py:37:
+  MoCKA\verify\manifest_resolver.py:38:# -------------------------
+  MoCKA\verify\manifest_resolver.py:39:# Canonical + hash
+  MoCKA\verify\manifest_resolver.py:40:# -------------------------
+
