@@ -1,0 +1,5 @@
+# Decision Ledger directory - data only
+# Append-only JSONL file for governance decisions
+*
+!.gitignore
+!decision_ledger.jsonl

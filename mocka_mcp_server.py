@@ -140,6 +140,82 @@ def _db_read_events(n=None):
         print(f"[MCP] db_read_events error: {e}")
         return []
 
+def _verify_event_written(event_id, expected_title=None, expected_description=None):
+    """
+    BE-001: Event Read-Back Verification
+    写込直後にDBから読み戻して永続化を確認する。
+
+    Args:
+        event_id: 検証対象のevent_id
+        expected_title: 期待値（タイトル）
+        expected_description: 期待値（説明）
+
+    Returns:
+        dict: {
+            "verified": bool,
+            "state": "VERIFIED" | "NOT_FOUND" | "MISMATCH" | "ERROR",
+            "reason": str,
+            "event_id": event_id
+        }
+    """
+    try:
+        con = _get_db()
+        cur = con.cursor()
+        cur.execute(
+            "SELECT event_id, title, short_summary, trace_id, related_event_id FROM events WHERE event_id = ?",
+            (event_id,)
+        )
+        row = cur.fetchone()
+        con.close()
+
+        if row is None:
+            return {
+                "verified": False,
+                "state": "NOT_FOUND",
+                "reason": f"Event {event_id} not found in database after write",
+                "event_id": event_id
+            }
+
+        event_id_found, title, short_summary, trace_id, related_event_id = row
+
+        if expected_title and title != expected_title:
+            return {
+                "verified": False,
+                "state": "MISMATCH",
+                "reason": f"Title mismatch: expected '{expected_title}', got '{title}'",
+                "event_id": event_id
+            }
+
+        if expected_description and short_summary != expected_description[:200]:
+            return {
+                "verified": False,
+                "state": "MISMATCH",
+                "reason": f"Description mismatch",
+                "event_id": event_id
+            }
+
+        if not trace_id or not related_event_id:
+            return {
+                "verified": False,
+                "state": "MISMATCH",
+                "reason": "Signature fields (trace_id/related_event_id) not populated",
+                "event_id": event_id
+            }
+
+        return {
+            "verified": True,
+            "state": "VERIFIED",
+            "reason": "Event persistence verified via read-back",
+            "event_id": event_id
+        }
+    except Exception as e:
+        return {
+            "verified": False,
+            "state": "ERROR",
+            "reason": f"Verification error: {str(e)}",
+            "event_id": event_id
+        }
+
 app = Flask(__name__)
 CORS(app, origins="*")
 
@@ -701,12 +777,23 @@ def execute_tool(name, args):
                 if r.status_code == 201:
                     body = r.json()
                     eid  = body.get("event_id", "?")
-                    auto_log(name, args, f"GATE written {eid} event_source=live")
-                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
-                                                  event_id=eid, tags=gate_payload["tags"])
-                    return json.dumps({"status": "ok", "event_id": eid,
-                                       "when": datetime.datetime.now().isoformat(),
-                                       "storage": "gate/sqlite"}, ensure_ascii=False)
+
+                    # BE-001: Event Read-Back Verification
+                    verify_result = _verify_event_written(eid, _title, _desc)
+                    if verify_result["verified"]:
+                        auto_log(name, args, f"GATE written {eid} event_source=live [VERIFIED]")
+                        _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
+                                                      event_id=eid, tags=gate_payload["tags"])
+                        return json.dumps({"status": "ok", "event_id": eid,
+                                           "when": datetime.datetime.now().isoformat(),
+                                           "storage": "gate/sqlite",
+                                           "verification": "VERIFIED"}, ensure_ascii=False)
+                    else:
+                        auto_log(name, args, f"GATE written {eid} but verification FAILED: {verify_result['state']}")
+                        return json.dumps({"status": "gate_verification_failed",
+                                           "event_id": eid,
+                                           "reason": verify_result["reason"],
+                                           "verification_state": verify_result["state"]}, ensure_ascii=False)
                 else:
                     # GATEがエラーを返した場合 — rejectedとして呼び出し元に返す
                     auto_log(name, args, f"GATE rejected {r.status_code}: {r.text[:80]}")
@@ -726,12 +813,23 @@ def execute_tool(name, args):
                 result = _gate_process_event(gate_payload, event_source="direct_allowed:recovery")
                 if result["status"] == "ok":
                     eid = result["event_id"]
-                    auto_log(name, args, f"GATE offline in-process fallback {eid}")
-                    _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
-                                                  event_id=eid, tags=gate_payload["tags"])
-                    return json.dumps({"status": "ok", "event_id": eid,
-                                       "when": datetime.datetime.now().isoformat(),
-                                       "storage": "gate/sqlite(in-process)"}, ensure_ascii=False)
+
+                    # BE-001: Event Read-Back Verification (in-process fallback path)
+                    verify_result = _verify_event_written(eid, _title, _desc)
+                    if verify_result["verified"]:
+                        auto_log(name, args, f"GATE offline in-process fallback {eid} [VERIFIED]")
+                        _update_working_context_live(_title, gate_payload["why_purpose"], _actor,
+                                                      event_id=eid, tags=gate_payload["tags"])
+                        return json.dumps({"status": "ok", "event_id": eid,
+                                           "when": datetime.datetime.now().isoformat(),
+                                           "storage": "gate/sqlite(in-process)",
+                                           "verification": "VERIFIED"}, ensure_ascii=False)
+                    else:
+                        auto_log(name, args, f"GATE in-process {eid} but verification FAILED: {verify_result['state']}")
+                        return json.dumps({"status": "gate_verification_failed",
+                                           "event_id": eid,
+                                           "reason": verify_result["reason"],
+                                           "verification_state": verify_result["state"]}, ensure_ascii=False)
                 else:
                     auto_log(name, args, f"GATE offline fallback rejected: {result.get('errors')}")
                     return json.dumps({"status": "gate_rejected", "errors": result.get("errors", [])},
@@ -1029,26 +1127,37 @@ def execute_tool(name, args):
             return json.dumps({"status": "ok", "decision_id": decision_id, "event_id": event_id}, ensure_ascii=False)
 
         elif name == "mocka_decision_get":
+            # BE-002: Decision Ledger Query
             decision_id = args.get("decision_id", "")
-            records, _ = _read_decisions()
-            matches = [r for r in records if r.get("decision_id") == decision_id]
-            auto_log(name, args, "found" if matches else "not found")
-            return json.dumps(matches[-1] if matches else {"error": "not found"}, ensure_ascii=False, indent=2)
+            try:
+                from phi_os.decision_reader import get_decision
+                decision = get_decision(decision_id)
+                if decision:
+                    auto_log(name, args, f"found: {decision_id}")
+                    return json.dumps({"status": "ok", "decision": decision}, ensure_ascii=False, indent=2)
+                else:
+                    auto_log(name, args, f"not found: {decision_id}")
+                    return json.dumps({"status": "not_found", "decision_id": decision_id, "error": "Decision not found in ledger"}, ensure_ascii=False, indent=2)
+            except Exception as e:
+                auto_log(name, args, f"error: {str(e)}")
+                return json.dumps({"status": "error", "error": str(e)}, ensure_ascii=False)
 
         elif name == "mocka_decision_list":
+            # BE-002: Decision Ledger Query
             status_filter = args.get("status", "")
-            records, broken = _read_decisions()
-            latest = {}
-            for r in records:
-                did = r.get("decision_id")
-                if did:
-                    latest[did] = r  # 後勝ち(append-only前提で末尾が最新)
-            result = list(latest.values())
-            if status_filter:
-                result = [r for r in result if r.get("status") == status_filter]
-            result.sort(key=lambda r: r.get("decision_id", ""), reverse=True)
-            auto_log(name, args, f"{len(result)} decisions (broken_lines={broken})")
-            return json.dumps({"count": len(result), "broken_lines": broken, "decisions": result}, ensure_ascii=False, indent=2)
+            try:
+                from phi_os.decision_reader import list_all_decisions, list_decisions_by_status
+                if status_filter:
+                    decisions = list_decisions_by_status(status_filter)
+                    auto_log(name, args, f"{len(decisions)} decisions with status={status_filter}")
+                else:
+                    decisions = list_all_decisions()
+                    auto_log(name, args, f"{len(decisions)} total decisions")
+                decisions.sort(key=lambda r: r.get("decision_id", ""), reverse=True)
+                return json.dumps({"status": "ok", "count": len(decisions), "decisions": decisions}, ensure_ascii=False, indent=2)
+            except Exception as e:
+                auto_log(name, args, f"error: {str(e)}")
+                return json.dumps({"status": "error", "error": str(e)}, ensure_ascii=False)
 
         elif name == "mocka_integrity_write":
             title       = args.get("title", "").strip()
