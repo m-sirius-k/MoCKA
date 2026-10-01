@@ -4,7 +4,7 @@
 
 import json
 from pathlib import Path
-from typing import dict, list, Optional
+from typing import Optional
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
 DECISION_LEDGER_PATH = _REPO_ROOT / 'data' / 'decisions' / 'decision_ledger.jsonl'
