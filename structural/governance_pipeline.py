@@ -27,6 +27,7 @@ from structural.working_memory import WorkingMemoryEngine
 from structural.thinking_mode import ThinkingModeEngine, ThinkingMode
 from structural.reasoning_governance import ReasoningGovernanceEngine
 from structural.execution_governance import ExecutionGovernanceEngine
+from structural.authorization_pipeline import AuthorizationPipeline, get_authorization_pipeline
 
 # Default Deny: 読み取り専用と確認済みのtoolのみGL7 Dry Run検査を免除する。
 # このリストに含まれないtool(未知のtoolを含む)は既定でGL7 Dry Run対象=governed。
@@ -78,6 +79,7 @@ class GovernancePipeline:
         self.tm = ThinkingModeEngine()
         self.reasoning = ReasoningGovernanceEngine()
         self.execution = ExecutionGovernanceEngine()
+        self.authorization_pipeline = get_authorization_pipeline()
         self._last_grounding_at = 0.0
         self._grounding_cache = None
 
@@ -91,8 +93,20 @@ class GovernancePipeline:
     def before_tool(self, tool_name: str, args: dict) -> GovernanceDecision:
         """
         GL1~GL7をtool呼び出し直前に適用する。
+        GL8~GL12 Authorization Pipelineを先行実行し、認可失敗時は即座にDENY。
         書き込み系toolはGL7 Dry Runでabort条件を検査し、abortがあればallowed=False。
         """
+        # GL8-GL12: Authorization Pipeline Pre-Check (fast-fail authorization)
+        authz_decision = self.authorization_pipeline.execute(tool_name, args)
+        if not authz_decision.allowed:
+            return GovernanceDecision(
+                allowed=False,
+                reason=f"GL8_AUTHORIZATION_DENIED: {authz_decision.failure_code} - {authz_decision.first_failure.failure_reason if authz_decision.first_failure else 'Unknown'}",
+                thinking_mode="BLOCKED",
+                checklist_ok=False,
+                dry_run_aborts=[],
+            )
+
         grounding = self._refresh_grounding()
 
         mode = self.tm.detect_mode(tool_name, args)
