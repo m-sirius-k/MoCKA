@@ -1,0 +1,166 @@
+{
+  "audit_run_id": "AUD_20261002_000457",
+  "timestamp": "2026-10-02T00:04:57.076478Z",
+  "findings": {
+    "STEP3": {
+      "step": 3,
+      "name": "POSITIVE_TEST_AUTHORIZED_EXECUTION",
+      "hypothesis": "Authorized operations with valid decision_id should be allowed",
+      "evidence_sources": [
+        {
+          "file": "mocka_mcp_server.py",
+          "pattern": "decision.allowed == True",
+          "found": true,
+          "interpretation": "Runtime checks decision.allowed and permits execution"
+        },
+        {
+          "file": "mocka_mcp_server.py",
+          "pattern": "execute_tool with before_tool() call",
+          "found": true,
+          "interpretation": "GL7 gate is called before executing governed tools"
+        }
+      ],
+      "conclusion": "AUTHORIZED FLOW PRESENT"
+    },
+    "STEP4": {
+      "step": 4,
+      "name": "NEGATIVE_TEST_NO_AUTHORIZATION",
+      "hypothesis": "Operations without decision_id should be blocked by GL7",
+      "evidence_sources": [
+        {
+          "file": "mocka_mcp_server.py",
+          "pattern": "GL7_EXECUTION_BLOCKED error return",
+          "found": true,
+          "interpretation": "GL7 blocks execution and returns error when decision.allowed=False"
+        },
+        {
+          "file": "mocka_mcp_server.py",
+          "pattern": "Fail Closed safety mechanism",
+          "found": true,
+          "interpretation": "System fails to safe state (block) when governance unavailable"
+        }
+      ],
+      "conclusion": "BLOCK MECHANISM PRESENT"
+    },
+    "STEP5": {
+      "step": 5,
+      "name": "NEGATIVE_TEST_SCOPE_VIOLATION",
+      "hypothesis": "Scope mismatches should be detected as dry_run aborts",
+      "evidence_sources": [
+        {
+          "file": "governance_pipeline.py",
+          "pattern": "scope validation in pre_execution_check",
+          "found": true,
+          "interpretation": "Scope is validated before execution"
+        },
+        {
+          "file": "governance_pipeline.py",
+          "pattern": "dry_run.aborts collection",
+          "found": true,
+          "interpretation": "Violations are collected as aborts"
+        }
+      ],
+      "conclusion": "SCOPE_CHECK_INFRASTRUCTURE_PRESENT"
+    },
+    "STEP6": {
+      "step": 6,
+      "name": "NEGATIVE_TEST_DECISION_INTEGRITY_VIOLATION",
+      "hypothesis": "Modified decisions should be detected as integrity violations",
+      "evidence_sources": [
+        {
+          "file": "data/decisions/decision_ledger.jsonl",
+          "pattern": "Append-only decision ledger exists",
+          "found": true,
+          "interpretation": "Immutable ledger prevents decision tampering"
+        },
+        {
+          "file": "mocka_mcp_server.py",
+          "pattern": "Decision retrieval and validation",
+          "found": true,
+          "interpretation": "Decisions are retrieved and validated before use"
+        }
+      ],
+      "conclusion": "INTEGRITY_MECHANISM_PRESENT"
+    },
+    "STEP7": {
+      "step": 7,
+      "name": "NEGATIVE_TEST_BYPASS_ATTEMPTS",
+      "hypothesis": "Unknown tools should be Default Deny blocked",
+      "bypass_vectors": [
+        {
+          "vector": "Direct Python Import",
+          "attack": "from runtime.module import mocka_write_event; mocka_write_event(...)",
+          "defense": "Function must check for authorization context at runtime",
+          "status": "NEEDS_VERIFICATION"
+        },
+        {
+          "vector": "REST Gateway Direct Write",
+          "attack": "POST /api/v1/event without authorization header",
+          "defense": "Gateway must call execute_tool() which includes GL7",
+          "status": "NEEDS_VERIFICATION"
+        },
+        {
+          "vector": "SQLite Direct Write",
+          "attack": "INSERT INTO events ... via OS file access",
+          "defense": "File system ACL + running process validation",
+          "status": "OS_LEVEL_CONTROL"
+        },
+        {
+          "vector": "CLI/PowerShell Script",
+          "attack": "Direct subprocess call without HTTP gate",
+          "defense": "Scripts must use MCP endpoint or face Default Deny",
+          "status": "NEEDS_VERIFICATION"
+        }
+      ],
+      "default_deny_present": true,
+      "conclusion": "DEFAULT_DENY_FRAMEWORK_PRESENT"
+    },
+    "STEP8": {
+      "step": 8,
+      "name": "READ_BACK_VERIFICATION",
+      "hypothesis": "Complete audit trail from attempt to event storage",
+      "infrastructure": {
+        "events_db": {
+          "path": "/home/user/MoCKA/data/mocka_events.db",
+          "exists": false,
+          "purpose": "Persistent event storage with read-back capability"
+        },
+        "verify_event_written": {
+          "function": "_verify_event_written(event_id, expected_title, expected_description)",
+          "present": true,
+          "purpose": "Post-write verification that events are persisted"
+        },
+        "db_read_events": {
+          "function": "_db_read_events(n=None)",
+          "present": true,
+          "purpose": "Read events back from SQLite for audit"
+        },
+        "decision_ledger": {
+          "path": "/home/user/MoCKA/data/decisions/decision_ledger.jsonl",
+          "exists": true,
+          "purpose": "Audit trail linking decision -> execution"
+        },
+        "integrity_classification": {
+          "path": "/home/user/MoCKA/data/integrity/integrity_classification.jsonl",
+          "exists": false,
+          "purpose": "Record of integrity violations"
+        }
+      },
+      "conclusion": "PARTIAL"
+    }
+  },
+  "evidence_artifacts": [],
+  "overall_assessment": {
+    "title": "Human Gate Runtime Enforcement Evidence Assessment",
+    "date": "2026-10-02T00:04:57.078780Z",
+    "question": "Are unauthorized operations blocked at runtime?",
+    "evidence_completeness": "FRAMEWORK_PRESENT_GAPS_IDENTIFIED",
+    "recommendations": [
+      "Execute enforcement_verification.py on Windows to confirm GL7 behavior at runtime",
+      "Verify REST gateway (/api/v1/event) routes through execute_tool() GL7 gate",
+      "Verify CLI/script entry points are restricted to MCP endpoint",
+      "Implement authorization context checks in direct import paths",
+      "Run full test suite (STEP 3-8) to generate live evidence"
+    ]
+  }
+}
