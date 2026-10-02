@@ -126,14 +126,30 @@ class TestComprehensiveAdmissibility:
 
 
 class TestMemoryStoreUnification:
-    """Tests for experience_memory using MemoryStore.append() exclusively."""
+    """Tests for experience_memory using MemoryStore.append() exclusively.
 
-    def test_M01_write_goes_through_memory_store(self):
+    M-01 and M-02 use an isolated tmp store (via monkeypatch) so they do NOT
+    write to the real memory/data/memory_store.json.  Runtime-generated test
+    state must never be committed as code artifacts.
+    """
+
+    def test_M01_write_goes_through_memory_store(self, tmp_path, monkeypatch):
         """M-01: write_experience_to_store() uses MemoryStore.append().
         Verifies no direct JSON write: entry is readable back via MemoryStore.all().
+        Uses an isolated tmp store to avoid polluting the real MemoryStore.
         """
+        import memory.experience_memory as exp_mem
         from memory.experience_memory import create_experience_entry, write_experience_to_store
         from memory.memory_store import MemoryStore
+
+        tmp_store_path = tmp_path / "memory_store.json"
+
+        # Patch MemoryStore inside experience_memory to use the tmp store
+        class _IsolatedMemoryStore(MemoryStore):
+            def __init__(self):
+                super().__init__(store_path=tmp_store_path)
+
+        monkeypatch.setattr(exp_mem, "MemoryStore", _IsolatedMemoryStore)
 
         entry = create_experience_entry(
             action_id="test-action-M01",
@@ -150,7 +166,7 @@ class TestMemoryStoreUnification:
         result = write_experience_to_store(entry)
         assert result == True, "write_experience_to_store must return True on success"
 
-        store = MemoryStore()
+        store = MemoryStore(store_path=tmp_store_path)
         experience_entries = [e for e in store.all() if e.memory_type == "experience"]
         matching = [e for e in experience_entries if e.memory_id == entry.memory_id]
         assert len(matching) >= 1, (
@@ -158,12 +174,22 @@ class TestMemoryStoreUnification:
             f"Found experience entries: {[e.memory_id for e in experience_entries]}"
         )
 
-    def test_M02_retention_and_memory_id_applied(self):
+    def test_M02_retention_and_memory_id_applied(self, tmp_path, monkeypatch):
         """M-02: MemoryStore applies retention policy; memory_id is present and non-empty.
         Verifies MemoryStore contract is honored for experience entries.
+        Uses an isolated tmp store to avoid polluting the real MemoryStore.
         """
+        import memory.experience_memory as exp_mem
         from memory.experience_memory import create_experience_entry, write_experience_to_store
         from memory.memory_store import MemoryStore
+
+        tmp_store_path = tmp_path / "memory_store.json"
+
+        class _IsolatedMemoryStore(MemoryStore):
+            def __init__(self):
+                super().__init__(store_path=tmp_store_path)
+
+        monkeypatch.setattr(exp_mem, "MemoryStore", _IsolatedMemoryStore)
 
         entry = create_experience_entry(
             action_id="test-action-M02",
@@ -180,7 +206,7 @@ class TestMemoryStoreUnification:
 
         write_experience_to_store(entry)
 
-        store = MemoryStore()
+        store = MemoryStore(store_path=tmp_store_path)
         all_entries = store.all()
 
         experience_entries = [e for e in all_entries if e.memory_type == "experience"]
