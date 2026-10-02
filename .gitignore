@@ -17,6 +17,10 @@ data/tic/*
 data/decisions/*
 !data/decisions/.gitignore
 !data/decisions/decision_ledger.jsonl
+# data/governance/tool_registry.json: HGD-B1 GL11 Tool Registry (DC_20261002_HGD_B1_IMPLEMENTATION_SCOPE)
+!data/governance/
+data/governance/*
+!data/governance/tool_registry.json
 *.csv
 .env
 *.key

@@ -1,0 +1,9 @@
+{
+  "mocka_add_todo": {"class": "WRITE", "description": "Creates new TODO item"},
+  "mocka_update_todo": {"class": "WRITE", "description": "Updates existing TODO item"},
+  "mocka_write_event": {"class": "WRITE", "description": "Writes event to events.db"},
+  "mocka_seal": {"class": "WRITE", "description": "Seals and logs governance record"},
+  "mocka_registry_add": {"class": "WRITE", "description": "Adds entry to tool registry"},
+  "mocka_decision_write": {"class": "WRITE", "description": "Writes to decision ledger"},
+  "mocka_integrity_write": {"class": "WRITE", "description": "Writes integrity record"}
+}

@@ -1,9 +1,9 @@
-﻿import sys
+import sys
 import io
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf_8"):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 """
-MoCKA 3.0 — Governance Pipeline
+MoCKA 3.0 -- Governance Pipeline
 governance_pipeline.py
 
 責務:
