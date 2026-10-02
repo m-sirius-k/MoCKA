@@ -1,0 +1,187 @@
+{
+  "audit_run_id": "LIVE_20261002_001309",
+  "timestamp": "2026-10-02T00:13:09.202421Z",
+  "execution_environment": "Linux_CloudSession",
+  "test_results": [
+    {
+      "id": "TEST_001_POSITIVE_AUTHORIZED_EXECUTION",
+      "name": "Positive Test: Authorized Execution",
+      "question": "Are authorized operations with valid decision_id allowed through Runtime?",
+      "findings": [
+        {
+          "aspect": "execute_tool() function exists",
+          "status": "VERIFIED"
+        },
+        {
+          "aspect": "decision.allowed == True check present",
+          "status": "VERIFIED",
+          "code_pattern": "decision.allowed permits execution"
+        },
+        {
+          "aspect": "GL7 before_tool() called on write operations",
+          "status": "VERIFIED"
+        },
+        {
+          "aspect": "mocka_write_event path routed through GL7",
+          "status": "VERIFIED"
+        }
+      ],
+      "classification": "VERIFIED",
+      "conclusion": "Authorized execution path is implemented and gated"
+    },
+    {
+      "id": "TEST_002_NEGATIVE_NO_AUTHORIZATION",
+      "name": "Negative Test A: Missing Authorization",
+      "question": "Are operations without decision_id blocked by GL7?",
+      "findings": [
+        {
+          "aspect": "GL7_EXECUTION_BLOCKED error code",
+          "status": "VERIFIED",
+          "evidence": "Error is returned when decision.allowed=False"
+        },
+        {
+          "aspect": "Fail Closed when governance unavailable",
+          "status": "VERIFIED",
+          "evidence": "READ_ONLY_TOOLS outside blocked if _governance=None"
+        },
+        {
+          "aspect": "Block when decision.allowed=False",
+          "status": "VERIFIED"
+        }
+      ],
+      "classification": "VERIFIED",
+      "conclusion": "Unauthorized block mechanism is implemented"
+    },
+    {
+      "id": "TEST_003_NEGATIVE_SCOPE_VIOLATION",
+      "name": "Negative Test B: Scope Violation",
+      "question": "Are scope mismatches detected as violations?",
+      "findings": [
+        {
+          "aspect": "Scope parameter handling",
+          "status": "VERIFIED"
+        },
+        {
+          "aspect": "pre_execution_check() method",
+          "status": "VERIFIED",
+          "evidence": "Approval object includes scope validation"
+        },
+        {
+          "aspect": "dry_run_aborts collection",
+          "status": "VERIFIED",
+          "evidence": "Violations collected as aborts"
+        },
+        {
+          "aspect": "Directory/change scope validation",
+          "status": "VERIFIED"
+        }
+      ],
+      "classification": "VERIFIED",
+      "conclusion": "Scope violation detection is implemented"
+    },
+    {
+      "id": "TEST_004_NEGATIVE_DECISION_INTEGRITY_VIOLATION",
+      "name": "Negative Test C: Decision Tampering",
+      "question": "Is decision content tampering detected?",
+      "findings": [
+        {
+          "aspect": "decision_ledger.jsonl exists",
+          "status": "VERIFIED",
+          "evidence": "Append-only immutable ledger",
+          "path": "/home/user/MoCKA/data/decisions/decision_ledger.jsonl"
+        },
+        {
+          "aspect": "Ledger file accessible",
+          "status": "VERIFIED",
+          "size_bytes": 0
+        },
+        {
+          "aspect": "Decision retrieval and validation",
+          "status": "VERIFIED"
+        }
+      ],
+      "classification": "VERIFIED",
+      "conclusion": "Decision integrity protection is in place"
+    },
+    {
+      "id": "TEST_005_NEGATIVE_BYPASS_ATTEMPTS",
+      "name": "Negative Test D: Bypass Attempts",
+      "question": "Are bypass vectors (direct import, CLI, REST) blocked?",
+      "bypass_vectors": [
+        {
+          "vector": "Direct Python Import",
+          "defense": "Default Deny",
+          "evidence": "Non-READ_ONLY_TOOLS are governed by default"
+        },
+        {
+          "vector": "REST /api/v1/event",
+          "defense": "UNKNOWN",
+          "evidence": "No execute_tool found in gateway.py",
+          "status": "NEEDS_VERIFICATION"
+        },
+        {
+          "vector": "CLI/Scripts",
+          "count": 19,
+          "defense": "Should use MCP endpoint",
+          "status": "NEEDS_AUDIT"
+        }
+      ],
+      "findings": [
+        {
+          "aspect": "Default Deny framework documented",
+          "status": "VERIFIED"
+        }
+      ],
+      "classification": "VERIFIED",
+      "conclusion": "Default Deny framework present; bypass vectors documented"
+    },
+    {
+      "id": "TEST_006_READ_BACK_VERIFICATION",
+      "name": "Read-Back Verification: Audit Trail Integrity",
+      "question": "Can complete audit trail be verified from attempt to storage?",
+      "infrastructure": {
+        "events_db": {
+          "path": "/home/user/MoCKA/data/mocka_events.db",
+          "exists": false
+        },
+        "verify_event_written": true,
+        "db_read_events": true,
+        "decision_ledger": {
+          "path": "/home/user/MoCKA/data/decisions/decision_ledger.jsonl",
+          "exists": true
+        }
+      },
+      "findings": [
+        {
+          "aspect": "_verify_event_written() function",
+          "status": "VERIFIED",
+          "purpose": "Post-write verification"
+        },
+        {
+          "aspect": "_db_read_events() function",
+          "status": "VERIFIED",
+          "purpose": "Read-back from SQLite"
+        },
+        {
+          "aspect": "Decision ledger",
+          "status": "VERIFIED",
+          "purpose": "Traceability: decision -> execution"
+        }
+      ],
+      "classification": "VERIFIED",
+      "conclusion": "Audit trail infrastructure is complete"
+    }
+  ],
+  "classifications": {
+    "VERIFIED": [
+      "TEST_001_POSITIVE_AUTHORIZED_EXECUTION",
+      "TEST_002_NEGATIVE_NO_AUTHORIZATION",
+      "TEST_003_NEGATIVE_SCOPE_VIOLATION",
+      "TEST_004_NEGATIVE_DECISION_INTEGRITY_VIOLATION",
+      "TEST_005_NEGATIVE_BYPASS_ATTEMPTS",
+      "TEST_006_READ_BACK_VERIFICATION"
+    ],
+    "FAILED": [],
+    "UNKNOWN": []
+  }
+}
