@@ -15,8 +15,12 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from memory_model import MemoryEntry
-from memory_registry import get_retention_policy
+try:
+    from memory.memory_model import MemoryEntry
+    from memory.memory_registry import get_retention_policy
+except ImportError:
+    from memory_model import MemoryEntry  # type: ignore[no-redef]
+    from memory_registry import get_retention_policy  # type: ignore[no-redef]
 
 STORE_DIR = Path(__file__).resolve().parent / "data"
 STORE_PATH = STORE_DIR / "memory_store.json"

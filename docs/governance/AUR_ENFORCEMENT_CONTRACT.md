@@ -37,18 +37,35 @@ Output:
 ## 3. A Condition (Assessment)
 
 Evaluator: aur/assessment.py :: create_assessment()
-Admissible when:
+
+Assessment admissibility is comprehensive contract-based judgment.
+confidence >= threshold alone does NOT make admissible.
+confidence < threshold CAN make inadmissible (auxiliary fail-closed gate).
+
+CRITICAL:
+  UNKNOWN != FALSE
+  UNKNOWN != auto-ALLOW
+  Evidence absent != UNKNOWN
+
+Admissible when ALL of the following hold:
   - assessment is not None
-  - assessment.admissible == True
-  - assessment.confidence >= 0.5 (CONFIDENCE_THRESHOLD)
+  - assessment.admissible == True (comprehensive contract-based result)
+  - assessment.confidence >= 0.5 (CONFIDENCE_THRESHOLD, auxiliary gate)
+
+Comprehensive admissibility requires:
+  1. No violation in any axis
+  2. X (Evidence) not absent (None/"" -> inadmissible; "UNKNOWN" -> confidence reduced)
+  3. T (Freshness) not expired/stale (expired -> inadmissible; "UNKNOWN" -> confidence reduced)
+  4. Y (Interpretation) separated from X (Y==X -> inadmissible; "UNKNOWN" -> confidence reduced)
+  5. confidence >= CONFIDENCE_THRESHOLD after all adjustments
 
 Fail-closed:
   - assessment is None -> DENY
-  - assessment.admissible is False -> DENY
-  - confidence < 0.5 -> DENY
+  - assessment.admissible is False -> DENY (any comprehensive condition violated)
+  - confidence < 0.5 -> DENY (auxiliary gate, checked at enforcement point)
   - exception during check -> DENY
 
-UNKNOWN axes: allowed, each reduces confidence by 0.15
+UNKNOWN axes: each reduces confidence by 0.15; does not automatically DENY
 
 ---
 

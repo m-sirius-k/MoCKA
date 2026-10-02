@@ -2,6 +2,19 @@
 aur/assessment.py: Assessment (A) — first condition of A-U-R theorem.
 
 Contract: docs/contracts/assessment_contract_v1.md
+
+Admissibility is comprehensive contract-based judgment:
+  Evidence + Observation Context + Interpretation Separation
+  + Freshness/Validity + Uncertainty + Impact
+  + UNKNOWN conditions + contract-specific conditions
+      -> admissible (True/False)
+      -> confidence = auxiliary value expressing result uncertainty
+
+UNKNOWN != FALSE: UNKNOWN on an axis reduces confidence but does NOT
+automatically make the assessment inadmissible.
+UNKNOWN != auto-ALLOW: UNKNOWN does not grant admissibility either.
+confidence >= threshold alone does NOT make admissible.
+confidence < threshold CAN make inadmissible (auxiliary fail-closed gate).
 """
 import uuid
 from dataclasses import dataclass, field
@@ -12,6 +25,9 @@ CONFIDENCE_THRESHOLD = 0.5
 ASSESSMENT_TTL_SECONDS = 300
 
 REQUIRED_AXES = ("X", "Y", "Z", "T", "S", "K")
+
+_FRESHNESS_EXPIRED_MARKERS = ("expired", "stale", "invalid", "outdated", "revoked")
+_VIOLATION_MARKERS = ("VIOLATION", "FORBIDDEN", "BLOCKED")
 
 
 @dataclass
@@ -34,7 +50,70 @@ def _generate_id() -> str:
 
 
 def _count_unknown_axes(axes: dict) -> int:
-    return sum(1 for k in REQUIRED_AXES if axes.get(k) in (None, "UNKNOWN", ""))
+    return sum(1 for k in REQUIRED_AXES if axes.get(k) == "UNKNOWN")
+
+
+def _evaluate_admissibility(original_axes: dict, normalized_axes: dict, confidence: float) -> tuple:
+    """
+    Comprehensive admissibility evaluation.
+
+    Returns (admissible: bool, reason: str).
+
+    Rules applied in order (any failure -> inadmissible):
+    1. Violation in any axis value -> inadmissible
+    2. X (Evidence) originally absent (None/"") -> inadmissible
+       UNKNOWN is not absent: UNKNOWN reduces confidence only
+    3. T (Freshness) explicitly expired/stale -> inadmissible
+       UNKNOWN freshness reduces confidence only
+    4. Y (Interpretation) identical to X (both non-UNKNOWN, non-empty) -> inadmissible
+       (interpretation must be separated from evidence)
+    5. confidence < CONFIDENCE_THRESHOLD -> inadmissible (auxiliary gate)
+    6. All conditions satisfied -> admissible
+    """
+    # Rule 1: violation in any axis
+    violations = [
+        k for k in REQUIRED_AXES
+        if isinstance(normalized_axes.get(k), str)
+        and normalized_axes[k].upper() in _VIOLATION_MARKERS
+    ]
+    if violations:
+        return False, f"axis violations detected: {violations}"
+
+    # Rule 2: X (Evidence) absent — None or "" before normalization means no evidence gathered
+    x_original = original_axes.get("X")
+    if x_original in (None, ""):
+        return False, "Evidence (X axis) absent: evidence must be gathered before assessment"
+
+    # Rule 3: T (Freshness) explicitly expired
+    t_value = normalized_axes.get("T", "UNKNOWN")
+    if t_value != "UNKNOWN" and isinstance(t_value, str):
+        t_lower = t_value.lower()
+        if any(marker in t_lower for marker in _FRESHNESS_EXPIRED_MARKERS):
+            return False, f"Freshness (T axis) expired or invalid: {t_value}"
+
+    # Rule 4: Y (Interpretation) not separated from X
+    x_val = normalized_axes.get("X", "UNKNOWN")
+    y_val = normalized_axes.get("Y", "UNKNOWN")
+    if (
+        x_val != "UNKNOWN"
+        and y_val != "UNKNOWN"
+        and x_val == y_val
+    ):
+        return False, (
+            f"Interpretation (Y axis) not separated from Evidence (X axis): "
+            f"both are '{x_val}'"
+        )
+
+    # Rule 5: confidence auxiliary gate
+    if confidence < CONFIDENCE_THRESHOLD:
+        return False, f"confidence {confidence:.2f} below threshold {CONFIDENCE_THRESHOLD}"
+
+    # Rule 6: all conditions passed
+    unknown_count = _count_unknown_axes(normalized_axes)
+    reason = "all admissibility conditions satisfied"
+    if unknown_count > 0:
+        reason += f" ({unknown_count} axes UNKNOWN, confidence adjusted)"
+    return True, reason
 
 
 def create_assessment(
@@ -50,8 +129,14 @@ def create_assessment(
 
     axes must contain keys X, Y, Z, T, S, K.
     Missing or UNKNOWN axes are allowed but reduce confidence.
+    UNKNOWN on an axis != False. UNKNOWN != auto-admissible.
+    Evidence (X) must be present (None/"" -> inadmissible regardless of confidence).
+    Freshness (T) must not be expired.
+    Interpretation (Y) must be separated from Evidence (X).
     reassessment_context (ReassessmentContext) adjusts confidence if provided.
     """
+    original_axes = dict(axes)
+
     normalized_axes = {}
     for k in REQUIRED_AXES:
         v = axes.get(k)
@@ -66,23 +151,7 @@ def create_assessment(
 
     confidence = max(0.0, min(1.0, base_confidence + confidence_adjustment))
 
-    violations = []
-    for k in REQUIRED_AXES:
-        v = normalized_axes.get(k, "UNKNOWN")
-        if isinstance(v, str) and v.upper() in ("VIOLATION", "FORBIDDEN", "BLOCKED"):
-            violations.append(k)
-
-    if violations:
-        admissible = False
-        reason = f"axis violations detected: {violations}"
-    elif confidence < CONFIDENCE_THRESHOLD:
-        admissible = False
-        reason = f"confidence {confidence:.2f} below threshold {CONFIDENCE_THRESHOLD}"
-    else:
-        admissible = True
-        reason = "all axes evaluated, confidence acceptable"
-        if unknown_count > 0:
-            reason += f" ({unknown_count} axes UNKNOWN)"
+    admissible, reason = _evaluate_admissibility(original_axes, normalized_axes, confidence)
 
     warnings = []
     if reassessment_context is not None and reassessment_context.warnings:

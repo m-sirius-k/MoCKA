@@ -65,17 +65,51 @@ it reduces confidence and MUST be reflected in the confidence score.
 
 ## 5. Admissibility Criteria
 
-Assessment is admissible (admissible=True) if and only if:
-1. All required axes are populated (UNKNOWN is acceptable for unknown values)
-2. No axis indicates a known violation
-3. Confidence >= CONFIDENCE_THRESHOLD (default: 0.5)
-4. The action_id refers to a known, scoped action
+Admissibility is a comprehensive contract-based judgment. It is NOT determined
+by confidence score alone.
 
-Assessment is inadmissible (admissible=False) if:
-1. Any axis contains evidence of a constraint violation
-2. Confidence < CONFIDENCE_THRESHOLD
-3. Grounding has not been completed (grounding_not_completed abort condition)
-4. The action scope would cause deletion_outside_scope
+  Evidence + Observation Context + Interpretation Separation
+  + Freshness/Validity + Uncertainty + Impact
+  + UNKNOWN conditions + contract-specific conditions
+      -> admissible (True/False)
+      -> confidence = auxiliary value expressing result uncertainty
+
+CRITICAL INVARIANTS:
+  UNKNOWN != FALSE
+    An axis value of "UNKNOWN" means "could not determine", not "false".
+    UNKNOWN does NOT automatically make the assessment inadmissible.
+    UNKNOWN reduces confidence and must be reflected in the confidence score.
+
+  UNKNOWN != auto-ALLOW
+    UNKNOWN does not grant admissibility. All other admissibility
+    conditions must still be satisfied.
+
+  confidence >= threshold alone does NOT make admissible.
+    Sufficient confidence is necessary but not sufficient for admissibility.
+
+  confidence < threshold CAN make inadmissible (auxiliary fail-closed gate).
+    Low confidence is evidence that admissibility cannot be affirmed.
+
+Assessment is admissible (admissible=True) only when ALL of the following hold:
+
+1. No axis contains a known violation (VIOLATION/FORBIDDEN/BLOCKED)
+2. X (Evidence) is present and not absent
+   - None or "" (not gathered) -> inadmissible, regardless of confidence
+   - "UNKNOWN" (tried but could not determine) -> confidence reduced only
+3. T (Freshness) is not expired or invalid
+   - "expired", "stale", "invalid" in T -> inadmissible
+   - "UNKNOWN" freshness -> confidence reduced only
+4. Y (Interpretation) is separated from X (Evidence)
+   - Y == X (identical non-UNKNOWN string) -> inadmissible (not separated)
+   - "UNKNOWN" interpretation -> confidence reduced only
+5. confidence >= CONFIDENCE_THRESHOLD (default: 0.5) — auxiliary gate
+
+Assessment is inadmissible (admissible=False) if any of:
+1. Any axis contains a known violation
+2. X (Evidence) is None or "" (absent)
+3. T (Freshness) contains "expired", "stale", "invalid", "outdated", "revoked"
+4. Y (Interpretation) is identical to X (both non-UNKNOWN, not separated)
+5. confidence < CONFIDENCE_THRESHOLD after all adjustments
 
 ---
 

@@ -7,16 +7,17 @@ Contract: docs/contracts/experience_memory_contract_v1.md
 
 IMPORTANT: Does NOT modify the frozen MemoryEntry dataclass.
 ExperienceMemoryContent is stored inside MemoryEntry.content dict.
+
+Write path: write_experience_to_store() -> MemoryStore.append()
+  - retention policy applied by MemoryStore
+  - no direct JSON write
 """
-import json
+import uuid
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
-from pathlib import Path
-from typing import Optional
 
 from memory.memory_model import MemoryEntry
-
-MEMORY_STORE_PATH = Path(__file__).parent / "data" / "memory_store.json"
+from memory.memory_store import MemoryStore
 
 VALID_LESSON_TYPES = ("SUCCESS_PATTERN", "FAILURE_PATTERN", "DEVIATION_PATTERN")
 
@@ -44,7 +45,7 @@ def _extract_lesson(
     deviation: list,
     axes_snapshot: dict,
     error_detail: str = "",
-) -> tuple[str, str]:
+) -> tuple:
     """Derive (lesson, lesson_type) from consequence data."""
     if outcome == "SUCCESS":
         key_axes = {k: v for k, v in axes_snapshot.items() if v not in (None, "UNKNOWN")}
@@ -75,7 +76,7 @@ def create_experience_entry(
 ) -> MemoryEntry:
     """
     Create a MemoryEntry with memory_type='experience' for experience memory storage.
-    Does NOT write to disk; caller is responsible for persistence.
+    Does NOT write to disk; caller must call write_experience_to_store().
     """
     lesson, lesson_type = _extract_lesson(outcome, deviation, axes_snapshot, error_detail)
 
@@ -92,7 +93,6 @@ def create_experience_entry(
         lesson_type=lesson_type,
     )
 
-    import uuid
     memory_id = f"MEM-EXP-{datetime.now(timezone.utc).strftime('%Y%m%d')}-{uuid.uuid4().hex[:8]}"
     timestamp = datetime.now(timezone.utc).isoformat()
 
@@ -109,46 +109,29 @@ def create_experience_entry(
 
 def write_experience_to_store(entry: MemoryEntry) -> bool:
     """
-    Append an experience MemoryEntry to the memory store JSON file.
-    Returns True on success, False on failure (fail-soft; caller must log failure).
+    Append an experience MemoryEntry to the memory store via MemoryStore.
+    Uses MemoryStore.append() so retention policy and schema are applied.
+    Returns True on success, False on failure (fail-soft).
     """
     try:
-        store_path = MEMORY_STORE_PATH
-        if store_path.exists():
-            raw = store_path.read_text(encoding="utf-8").strip()
-            records = json.loads(raw) if raw and raw != "[]" else []
-        else:
-            records = []
-
-        record = {
-            "memory_id": entry.memory_id,
-            "memory_type": entry.memory_type,
-            "timestamp": entry.timestamp,
-            "source": entry.source,
-            "content": entry.content,
-            "metadata": entry.metadata,
-            "tags": list(entry.tags),
-        }
-        records.append(record)
-        store_path.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
+        store = MemoryStore()
+        store.append(entry)
         return True
     except Exception:
         return False
 
 
-def load_experience_entries() -> list[dict]:
+def load_experience_entries() -> list:
     """
     Load all experience memory entries from the store.
     Returns list of raw dicts (content fields accessible directly).
     """
     try:
-        store_path = MEMORY_STORE_PATH
-        if not store_path.exists():
-            return []
-        raw = store_path.read_text(encoding="utf-8").strip()
-        if not raw or raw == "[]":
-            return []
-        records = json.loads(raw)
-        return [r for r in records if r.get("memory_type") == "experience"]
+        store = MemoryStore()
+        return [
+            e.to_dict()
+            for e in store.all()
+            if e.memory_type == "experience"
+        ]
     except Exception:
         return []
