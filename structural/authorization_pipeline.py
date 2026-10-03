@@ -15,7 +15,7 @@ Class B: all other tools -> require _authz envelope (GL8 decision_id, GL9 scope,
 References: DC_20261002_HGD_A1_IMPLEMENTATION_SCOPE, DC_20261002_GL8_GL12_ARCHITECTURE
 """
 
-from structural.governance_pipeline import READ_ONLY_TOOLS
+from structural.governance_constants import READ_ONLY_TOOLS
 from structural.human_gate_authorization_integrity import (
     HumanGateAuthorizationIntegrityEngine,
     GL8_OK,

@@ -27,37 +27,8 @@ from structural.working_memory import WorkingMemoryEngine
 from structural.thinking_mode import ThinkingModeEngine, ThinkingMode
 from structural.reasoning_governance import ReasoningGovernanceEngine
 from structural.execution_governance import ExecutionGovernanceEngine
-
-# Default Deny: 読み取り専用と確認済みのtoolのみGL7 Dry Run検査を免除する。
-# このリストに含まれないtool(未知のtoolを含む)は既定でGL7 Dry Run対象=governed。
-READ_ONLY_TOOLS = {
-    "mocka_get_overview",
-    "mocka_get_essence",
-    "mocka_get_todo",
-    "mocka_list_events",
-    "mocka_read_event",
-    "mocka_search",
-    "mocka_get_incidents",
-    "mocka_get_guidelines",
-    "mocka_get_command_center",
-    "mocka_check_utf8",
-    "mocka_registry_get",
-    "mocka_registry_current_state",
-    "mocka_decision_get",
-    "mocka_decision_list",
-    "mocka_integrity_get",
-    "mocka_integrity_list",
-}
-
-# 後方互換のため維持(governance_pipeline外部から書き込み系tool集合として参照される場合がある)
-WRITE_TOOLS = {
-    "mocka_write_event",
-    "mocka_add_todo",
-    "mocka_update_todo",
-    "mocka_seal",
-}
-
-GROUNDING_REFRESH_SECONDS = 60
+from structural.authorization_pipeline import AuthorizationPipeline, AUTHZ_OK, AUTHZ_BYPASS_READ_ONLY
+from structural.governance_constants import READ_ONLY_TOOLS, WRITE_TOOLS, GROUNDING_REFRESH_SECONDS
 
 
 @dataclass
@@ -67,10 +38,12 @@ class GovernanceDecision:
     thinking_mode: str
     checklist_ok: bool
     dry_run_aborts: list = field(default_factory=list)
+    authz_result: str = ""  # GL8-GL12 result (AUTHZ_OK, AUTHZ_BYPASS_READ_ONLY, or failure code)
 
 
 class GovernancePipeline:
-    """全Tool呼び出しの単一窓口。execute_tool()の先頭でbefore_tool()を呼ぶ。"""
+    """全Tool呼び出しの単一窓口。execute_tool()の先頭でbefore_tool()を呼ぶ。
+    GL8-GL12をGL1-GL7より前に実行する(fail-fast authorization check)。"""
 
     def __init__(self):
         self.grounding_engine = RepositoryGroundingEngine()
@@ -78,6 +51,7 @@ class GovernancePipeline:
         self.tm = ThinkingModeEngine()
         self.reasoning = ReasoningGovernanceEngine()
         self.execution = ExecutionGovernanceEngine()
+        self.authz_pipeline = AuthorizationPipeline()
         self._last_grounding_at = 0.0
         self._grounding_cache = None
 
@@ -90,9 +64,24 @@ class GovernancePipeline:
 
     def before_tool(self, tool_name: str, args: dict) -> GovernanceDecision:
         """
-        GL1~GL7をtool呼び出し直前に適用する。
-        書き込み系toolはGL7 Dry Runでabort条件を検査し、abortがあればallowed=False。
+        GL8~GL12をGL1~GL7より前に実行する (fail-fast authorization check).
+        GL8-GL12のいずれかが失敗したら、GL1-GL7は実行しない。
         """
+        # ========== GL8-GL12: Authorization Pipeline (fail-fast) ==========
+        authz_result = self.authz_pipeline.execute(tool_name, args)
+
+        # GL8-GL12 fail-fast: authorization failure immediately blocks
+        if authz_result not in (AUTHZ_OK, AUTHZ_BYPASS_READ_ONLY):
+            return GovernanceDecision(
+                allowed=False,
+                reason=f"GL8-GL12 authorization failed: {authz_result}",
+                thinking_mode="BLOCKED_BY_AUTHORIZATION",
+                checklist_ok=False,
+                dry_run_aborts=[],
+                authz_result=authz_result,
+            )
+
+        # ========== GL1-GL7: Governance Checks (only if GL8-GL12 pass) ==========
         grounding = self._refresh_grounding()
 
         mode = self.tm.detect_mode(tool_name, args)
@@ -133,6 +122,7 @@ class GovernancePipeline:
             thinking_mode=mode.value,
             checklist_ok=checklist.ok,
             dry_run_aborts=aborts,
+            authz_result=authz_result,
         )
 
     def after_tool(self, tool_name: str, args: dict, result_summary: str) -> None:
