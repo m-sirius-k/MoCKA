@@ -35,6 +35,7 @@ try:
 except Exception as _gov_err:
     print(f"[ERROR] Governance Pipeline unavailable (Fail Closed for governed tools): {_gov_err}", flush=True)
     _governance = None
+    GovernanceDecision = None
     READ_ONLY_TOOLS = {
         "mocka_get_overview", "mocka_get_essence", "mocka_get_todo", "mocka_list_events",
         "mocka_read_event", "mocka_search", "mocka_get_incidents", "mocka_get_guidelines",
@@ -1105,6 +1106,9 @@ def execute_tool(name, args):
             event_id = None
             try:
                 gate_payload = {
+                    "_authz": {
+                        "decision_id": decision_id,
+                    },
                     "who_actor":       args.get("approved_by", _DEFAULT_ACTOR),
                     "who_role":        "executor",
                     "who_session":     SESSION_ID,
@@ -1121,6 +1125,10 @@ def execute_tool(name, args):
                 r = requests.post(GATE_URL, json=gate_payload, timeout=5)
                 if r.status_code == 201:
                     event_id = r.json().get("event_id")
+                    time.sleep(0.1)
+                    verification = _verify_event_written(event_id, expected_title=f"[DECISION_MADE] {decision_id}", expected_description=f"decision_id={decision_id}")
+                    if not verification.get("verified"):
+                        print(f"[WARN] mocka_decision_write event verification failed: {verification.get('reason')}", flush=True)
             except Exception as _companion_err:
                 print(f"[MCP] mocka_decision_write companion event failed: {_companion_err}", flush=True)
             auto_log(name, args, f"decision written {decision_id}")
