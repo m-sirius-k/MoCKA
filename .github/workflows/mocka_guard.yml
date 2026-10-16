@@ -16,22 +16,24 @@ jobs:
         run: |
           echo "Checking MoCKA structural integrity..."
 
-          if grep -r "mocka_v0.1" --include="*.py" --include="*.md" -l .; then
-            echo "RULE VIOLATION: temp folder detected"
+          # RULE 2 (NO TEMP STRUCTURES): check real folder/file names, not document text.
+          if find . -path ./.git -prune -o -name "*mocka_v0.1*" -print | grep -q .; then
+            echo "RULE VIOLATION: temp structure named mocka_v0.1 detected"
+            find . -path ./.git -prune -o -name "*mocka_v0.1*" -print
             exit 1
           fi
 
-          if find . -type d -path "*/mcp/mcp"; then
+          if find . -type d -path "*/mcp/mcp" | grep -q .; then
             echo "RULE VIOLATION: double nesting detected (mcp/mcp)"
             exit 1
           fi
 
-          if find . -type d -path "*/relay/relay"; then
+          if find . -type d -path "*/relay/relay" | grep -q .; then
             echo "RULE VIOLATION: double nesting detected (relay/relay)"
             exit 1
           fi
 
-          if find . -type d -path "*/event/event"; then
+          if find . -type d -path "*/event/event" | grep -q .; then
             echo "RULE VIOLATION: double nesting detected (event/event)"
             exit 1
           fi
