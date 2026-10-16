@@ -1,0 +1,3917 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MoCKA 3D Orbit Map</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0b0f; font-family: system-ui, sans-serif; color: #eaeaea; }
+  #header { position: absolute; top: 10px; left: 10px; z-index: 10; pointer-events: none; max-width: calc(100% - 20px); }
+  h1 { font-size: 16px; margin: 0 0 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+  .meta { font-size: 12px; color: #9a9a9a; }
+  #banner { display: none; margin-top: 4px; font-size: 12px; color: #fff; background: #8e44ad; padding: 3px 8px; border-radius: 4px; width: fit-content; }
+  #error { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 20; background: #3a1010; border: 1px solid #e74c3c; padding: 16px; border-radius: 8px; font-size: 13px; max-width: 80%; }
+  #ui { position: absolute; bottom: 16px; left: 16px; z-index: 10; background: rgba(20,20,25,0.9); padding: 12px; border-radius: 8px; border: 1px solid #333; width: min(340px, calc(100% - 32px)); box-sizing: border-box; backdrop-filter: blur(4px); }
+  select, input { width: 100%; box-sizing: border-box; margin: 4px 0 8px; padding: 6px; font-size: 12px; background: #1c1c22; color: #fff; border: 1px solid #444; border-radius: 4px; }
+  .legend span { display: inline-block; margin-right: 6px; font-size: 11px; }
+  #detail { font-size: 11px; color: #ccc; max-height: 160px; overflow-y: auto; margin-top: 8px; border-top: 1px solid #333; padding-top: 6px; }
+  #warnings { font-size: 11px; color: #f5b041; margin-top: 6px; white-space: pre-wrap; }
+  #view-ctrl { position: absolute; top: 12px; right: 12px; z-index: 10; background: rgba(20,20,25,0.85); padding: 6px; border-radius: 8px; border: 1px solid #333; user-select: none; }
+  #view-ctrl .row { display: flex; gap: 4px; justify-content: center; margin-bottom: 4px; }
+  #view-ctrl .row span { width: 34px; }
+  #view-ctrl button { width: 34px; height: 30px; background: #1c1c22; color: #eaeaea; border: 1px solid #444; border-radius: 6px; font-size: 14px; cursor: pointer; padding: 0; }
+  #view-ctrl button:hover { background: #2a2a33; }
+  #view-ctrl .hint { font-size: 10px; color: #9a9a9a; width: 170px; line-height: 1.4; margin-top: 4px; }
+  #labels { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+  .lbl { position: absolute; left: 0; top: 0; transform: translate(-50%, -170%); white-space: nowrap; font-size: 11px; color: #d9d9d9; background: rgba(11,11,15,0.78); border: 1px solid #3a3a44; border-radius: 4px; padding: 1px 5px; }
+  .lbl.focus { color: #fff; border-color: #f1c40f; font-weight: 600; }
+  #view-ctrl .sect { margin-top: 6px; font-size: 11px; color: #ddd; }
+  #view-ctrl .sect label { display: block; margin-bottom: 4px; }
+  #view-ctrl input[type=range] { width: 160px; vertical-align: middle; }
+  #view-ctrl input[type=color] { width: 44px; height: 24px; padding: 0; border: 1px solid #444; background: none; vertical-align: middle; }
+  #view-ctrl .sect button { font-size: 11px; height: 24px; width: auto; padding: 0 8px; margin-left: 6px; }
+  body.light #header h1 { color: #111; text-shadow: none; }
+  body.light #header .meta { color: #333; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="synapse_sim/logic_engine.js"></script>
+<script src="synapse_sim/bridge_to_3d.js"></script>
+<script src="synapse_sim/bridge_to_3d_extended.js"></script>
+</head>
+<body>
+<div id="header">
+  <h1>MoCKA 3D Orbit Map</h1>
+  <div class="meta" id="meta-info">Initializing...</div>
+  <div id="banner"></div>
+</div>
+<div id="error"></div>
+<div id="labels"></div>
+
+<div id="view-ctrl">
+  <div class="row"><span></span><button data-act="up" title="上へ (↑)">▲</button><span></span></div>
+  <div class="row"><button data-act="left" title="左へ (←)">◀</button><button data-act="reset" title="全体表示 (0)">⟳</button><button data-act="right" title="右へ (→)">▶</button></div>
+  <div class="row"><span></span><button data-act="down" title="下へ (↓)">▼</button><span></span></div>
+  <div class="row"><button data-act="zoomin" title="拡大 (+ / ホイール上)">＋</button><button data-act="zoomout" title="縮小 (- / ホイール下)">－</button></div>
+  <div class="sect">
+    <label>背景色 <input type="color" id="bg-color" value="#0b0b0f"><button id="bg-reset" title="既定の背景に戻す">既定</button></label>
+    <label>接続線の太さ <span id="edge-w-val">2</span>px<br><input type="range" id="edge-width" min="1" max="12" step="1" value="2"></label>
+  </div>
+  <div class="hint">Shift+ドラッグ・矢印キーで移動<br>ホイール・＋－で拡大縮小<br>⟳ または 0 で全体表示</div>
+</div>
+
+<div id="ui">
+  <label for="search-q">Search (id / name / path / note)</label>
+  <input id="search-q" placeholder="e.g. N054, authorization, app.py">
+  <label for="filter-status">Filter status</label>
+  <select id="filter-status">
+    <option value="">all status</option>
+    <option value="CODE_CONFIRMED">CODE_CONFIRMED</option>
+    <option value="RUNTIME_VERIFIED">RUNTIME_VERIFIED</option>
+    <option value="PENDING">PENDING</option>
+    <option value="PARTIAL">PARTIAL</option>
+    <option value="CONFIRMED_ABSENT">CONFIRMED_ABSENT</option>
+    <option value="UNKNOWN">UNKNOWN</option>
+    <option value="STATE_OBSERVED">STATE_OBSERVED</option>
+    <option value="DOCUMENTED">DOCUMENTED</option>
+  </select>
+  <div class="legend">
+    <span style="color:#2ecc71">■ 完了・検証済み</span>
+    <span style="color:#f1c40f">■ 制作中・保留</span>
+    <span style="color:#e74c3c">■ 断線・未接続</span>
+    <span style="color:#3498db">■ 観測</span>
+    <span style="color:#7f8c8d">■ 文書のみ</span>
+  </div>
+  <div id="detail">Select a node in 3D space to inspect. Click empty space to clear focus.</div>
+  <div id="warnings"></div>
+</div>
+
+<!-- DATA: mapping/unified 由来の実データ（104ノード・128エッジ）。observed_at は JSON 内の値を参照。 -->
+<script id="mocka-data" type="application/json">
+{
+ "schema_version": "unified-view-0.1",
+ "generated_from": [
+  "mapping/unified/nodes.json",
+  "mapping/unified/edges.json"
+ ],
+ "observed_at": "2026-10-11",
+ "observed_on": "mam (static read-only, DB read-only where noted); baseline ce2244019",
+ "layers": [
+  "Context",
+  "Evidence",
+  "Decision",
+  "Authority",
+  "Authorization",
+  "Runtime",
+  "Consequence",
+  "Memory",
+  "Tool",
+  "External",
+  "Pending"
+ ],
+ "status_vocabulary": [
+  "DOCUMENTED",
+  "CODE_CONFIRMED",
+  "DATA_FLOW_CONFIRMED",
+  "RUNTIME_VERIFIED",
+  "PARTIAL",
+  "UNKNOWN",
+  "PLANNED",
+  "CONFIRMED_ABSENT",
+  "PENDING",
+  "FS_CONFIRMED",
+  "STATE_OBSERVED"
+ ],
+ "summary": {
+  "nodes": 104,
+  "edges": 128,
+  "edge_status": {
+   "CODE_CONFIRMED": 59,
+   "CONFIRMED_ABSENT": 10,
+   "DATA_FLOW_CONFIRMED": 6,
+   "DOCUMENTED": 6,
+   "FS_CONFIRMED": 22,
+   "PARTIAL": 3,
+   "PENDING": 14,
+   "STATE_OBSERVED": 6,
+   "UNKNOWN": 2
+  },
+  "node_layer": {
+   "Authority": 10,
+   "Authorization": 4,
+   "Consequence": 1,
+   "Context": 16,
+   "Decision": 3,
+   "Evidence": 4,
+   "External": 16,
+   "Memory": 26,
+   "Pending": 8,
+   "Runtime": 15,
+   "Tool": 1
+  }
+ },
+ "nodes": [
+  {
+   "id": "N001",
+   "type": "repo",
+   "name": "MoCKA repository (parent)",
+   "layer": "Context",
+   "path": ".",
+   "scope": "MoCKA",
+   "note": "branch phase5c-runtime-verification / HEAD ce2244019 at observation"
+  },
+  {
+   "id": "N002",
+   "type": "doc-index",
+   "name": "mapping/ (existing Mapping)",
+   "layer": "Context",
+   "path": "mapping",
+   "scope": "MoCKA",
+   "note": "existing index family; not replaced"
+  },
+  {
+   "id": "N003",
+   "type": "index",
+   "name": "ASSET_INDEX.json",
+   "layer": "Context",
+   "path": "mapping/ASSET_INDEX.json",
+   "scope": "MoCKA",
+   "note": "60 assets; all paths exist (observed)"
+  },
+  {
+   "id": "N004",
+   "type": "index",
+   "name": "FILE_LOCATION_INDEX.csv",
+   "layer": "Context",
+   "path": "mapping/FILE_LOCATION_INDEX.csv",
+   "scope": "MoCKA",
+   "note": "workshop 834 rows; sampled 40/40 exist"
+  },
+  {
+   "id": "N005",
+   "type": "index",
+   "name": "DIRECTORY_INDEX.csv",
+   "layer": "Context",
+   "path": "mapping/DIRECTORY_INDEX.csv",
+   "scope": "MoCKA",
+   "note": "1072 rows; sampled 30/30 exist"
+  },
+  {
+   "id": "N006",
+   "type": "doc",
+   "name": "MASTER_MAP.md",
+   "layer": "Context",
+   "path": "mapping/MASTER_MAP.md",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N007",
+   "type": "doc",
+   "name": "DEPENDENCY_MAP.md",
+   "layer": "Context",
+   "path": "mapping/DEPENDENCY_MAP.md",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N008",
+   "type": "doc",
+   "name": "OPEN_CONNECTION_GAPS.md",
+   "layer": "Context",
+   "path": "mapping/OPEN_CONNECTION_GAPS.md",
+   "scope": "MoCKA",
+   "note": "IDs A1-A6, B1-B6, C1-C5, H1-H10"
+  },
+  {
+   "id": "N009",
+   "type": "doc",
+   "name": "OPEN_QUESTIONS.md",
+   "layer": "Context",
+   "path": "mapping/OPEN_QUESTIONS.md",
+   "scope": "MoCKA",
+   "note": "Q-01 to Q-70 observed"
+  },
+  {
+   "id": "N010",
+   "type": "doc",
+   "name": "MEMORY_INDEX.md",
+   "layer": "Context",
+   "path": "mapping/MEMORY_INDEX.md",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N011",
+   "type": "doc",
+   "name": "SYNAPSE_CHAIN_VERIFICATION.md",
+   "layer": "Memory",
+   "path": "mapping/SYNAPSE_CHAIN_VERIFICATION.md",
+   "scope": "MoCKA",
+   "note": "records earlier RUNTIME_VERIFIED steps; not re-executed here"
+  },
+  {
+   "id": "N012",
+   "type": "tool",
+   "name": "verify_mapping.py (existing)",
+   "layer": "Tool",
+   "path": "mapping/verify_mapping.py",
+   "scope": "MoCKA",
+   "note": "read-only; PASSED at observation (60 assets, 18 md)"
+  },
+  {
+   "id": "N013",
+   "type": "dir",
+   "name": "PlanningCaliber (in parent repo)",
+   "layer": "Context",
+   "path": "PlanningCaliber",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N014",
+   "type": "doc",
+   "name": "CONSTITUTION_v1.md",
+   "layer": "Context",
+   "path": "PlanningCaliber/CONSTITUTION_v1.md",
+   "scope": "MoCKA",
+   "note": "section 4: 0.85 and HG approval (document)"
+  },
+  {
+   "id": "N015",
+   "type": "doc",
+   "name": "PLANNING_CALIBER_LAW_v1.md",
+   "layer": "Context",
+   "path": "PlanningCaliber/PLANNING_CALIBER_LAW_v1.md",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N016",
+   "type": "doc",
+   "name": "WORKSHOP_TEMPLATE_SPEC.md",
+   "layer": "Context",
+   "path": "PlanningCaliber/WORKSHOP_TEMPLATE_SPEC.md",
+   "scope": "MoCKA",
+   "note": "referenced only by inventories (observed)"
+  },
+  {
+   "id": "N017",
+   "type": "repo",
+   "name": "workshop (nested git)",
+   "layer": "Context",
+   "path": "PlanningCaliber/workshop",
+   "scope": "workshop",
+   "note": "parent .gitignore line 74 excludes it; own .git on main"
+  },
+  {
+   "id": "N018",
+   "type": "repo",
+   "name": "sirius-lab-products (own git)",
+   "layer": "Context",
+   "path": "PlanningCaliber/sirius-lab-products",
+   "scope": "product",
+   "note": "own git main 815e981; origin git@github.com:m-sirius-k/sirius-lab-products.git"
+  },
+  {
+   "id": "N019",
+   "type": "external-file",
+   "name": "planningcaliber (separate repo, outside MoCKA)",
+   "layer": "External",
+   "path": "C:/Users/sirok/planningcaliber",
+   "scope": "separate",
+   "note": "not part of MoCKA parent; compared only"
+  },
+  {
+   "id": "N020",
+   "type": "code",
+   "name": "tools/mocka_orchestra_v10.py (browser automation)",
+   "layer": "Runtime",
+   "path": "tools/mocka_orchestra_v10.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N021",
+   "type": "code",
+   "name": "core_kernel/orchestra (OrchestraEngine, ExecutionGraph, RuntimeGate)",
+   "layer": "Runtime",
+   "path": "core_kernel/orchestra",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N022",
+   "type": "code",
+   "name": "workshop/Orchestra_Project (license worker)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/Orchestra_Project",
+   "scope": "workshop",
+   "note": "Stripe and Resend license worker; not the browser tool, not ExecutionGraph"
+  },
+  {
+   "id": "N023",
+   "type": "product-doc",
+   "name": "sirius orchestra (product docs)",
+   "layer": "External",
+   "path": "PlanningCaliber/sirius-lab-products/orchestra",
+   "scope": "product",
+   "note": "README, CHANGELOG, index.html; docs only"
+  },
+  {
+   "id": "N024",
+   "type": "code",
+   "name": "relay/ root package (RelayKernel)",
+   "layer": "Runtime",
+   "path": "relay",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N025",
+   "type": "code",
+   "name": "Relay extension (workshop)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/Relay_Project/extension",
+   "scope": "workshop",
+   "note": "heartbeat to /relay/ping"
+  },
+  {
+   "id": "N026",
+   "type": "code-archive",
+   "name": "Relay backend/archive (4 files)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/Relay_Project/backend/archive",
+   "scope": "workshop",
+   "note": "legacy versions; intent from history; current use UNKNOWN"
+  },
+  {
+   "id": "N027",
+   "type": "product-doc",
+   "name": "sirius relay (product docs)",
+   "layer": "External",
+   "path": "PlanningCaliber/sirius-lab-products/relay",
+   "scope": "product",
+   "note": "docs only"
+  },
+  {
+   "id": "N028",
+   "type": "code",
+   "name": "phi_os/ root (event_gate, human_gate, audit_trigger)",
+   "layer": "Authority",
+   "path": "phi_os",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N029",
+   "type": "code",
+   "name": "workshop/phi-os (ise state provider)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/phi-os",
+   "scope": "workshop",
+   "note": "reads MoCKA DB via _MOCKA_DIR parents[3]"
+  },
+  {
+   "id": "N030",
+   "type": "product-doc",
+   "name": "sirius phi-os (product docs)",
+   "layer": "External",
+   "path": "PlanningCaliber/sirius-lab-products/phi-os",
+   "scope": "product",
+   "note": "docs only"
+  },
+  {
+   "id": "N031",
+   "type": "doc",
+   "name": "phi_os/hab (HAB design documents, 13 files)",
+   "layer": "Authority",
+   "path": "phi_os/hab",
+   "scope": "MoCKA",
+   "note": "design documents"
+  },
+  {
+   "id": "N032",
+   "type": "code",
+   "name": "workshop/JARVIS_0_1",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/JARVIS_0_1",
+   "scope": "workshop",
+   "note": "adapters README; JARVIS Core implementation location UNKNOWN"
+  },
+  {
+   "id": "N033",
+   "type": "doc",
+   "name": "workshop/JARVIS_Local_Bridge (design doc)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/JARVIS_Local_Bridge",
+   "scope": "workshop",
+   "note": "design document dated 2026-08-09"
+  },
+  {
+   "id": "N034",
+   "type": "code",
+   "name": "workshop/memory extension (browser)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/memory/extension",
+   "scope": "workshop",
+   "note": "chrome.storage.local key memory_registry"
+  },
+  {
+   "id": "N035",
+   "type": "product-doc",
+   "name": "sirius memory (product docs)",
+   "layer": "External",
+   "path": "PlanningCaliber/sirius-lab-products/memory",
+   "scope": "product",
+   "note": "docs only"
+  },
+  {
+   "id": "N036",
+   "type": "code",
+   "name": "workshop/pr-os backend (/api/caliber)",
+   "layer": "External",
+   "path": "PlanningCaliber/workshop/pr-os/backend/app.py",
+   "scope": "workshop",
+   "note": "/api/caliber returns success ratio of recent events, not caliber_score"
+  },
+  {
+   "id": "N037",
+   "type": "service",
+   "name": "app.py (Flask, 127.0.0.1:5000)",
+   "layer": "Runtime",
+   "path": "app.py",
+   "scope": "MoCKA",
+   "note": "app.run host 127.0.0.1 port 5000 (line 4194); start state UNKNOWN"
+  },
+  {
+   "id": "N038",
+   "type": "service",
+   "name": "mocka_mcp_server.py",
+   "layer": "Runtime",
+   "path": "mocka_mcp_server.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N040",
+   "type": "code",
+   "name": "caliber_score.py (artifact evaluation)",
+   "layer": "Evidence",
+   "path": "PlanningCaliber/caliber/caliber_score.py",
+   "scope": "MoCKA",
+   "note": "thresholds 0.85 / 0.65; prints judgement; no MoCKA .py caller found outside caliber/"
+  },
+  {
+   "id": "N041",
+   "type": "data",
+   "name": "caliber/evaluation_history.jsonl",
+   "layer": "Evidence",
+   "path": "PlanningCaliber/caliber/evaluation_history.jsonl",
+   "scope": "MoCKA",
+   "note": "1 line observed"
+  },
+  {
+   "id": "N042",
+   "type": "data",
+   "name": "CALIBER_LOG.md (separate repo)",
+   "layer": "Evidence",
+   "path": "C:/Users/sirok/planningcaliber/CALIBER_LOG.md",
+   "scope": "separate",
+   "note": "1 entry; no writer found in code"
+  },
+  {
+   "id": "N043",
+   "type": "code",
+   "name": "closed_loop_runner.py (verification loop)",
+   "layer": "Decision",
+   "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+   "scope": "MoCKA",
+   "note": "callers: verification scripts and test modules (found by a repo search; not exhaustive)"
+  },
+  {
+   "id": "N044",
+   "type": "code",
+   "name": "decision_outcome.py",
+   "layer": "Decision",
+   "path": "core_kernel/governance/runtime/rcl/decision_outcome.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N045",
+   "type": "code",
+   "name": "reassessment.py",
+   "layer": "Decision",
+   "path": "core_kernel/governance/runtime/rcl/reassessment.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N046",
+   "type": "code",
+   "name": "experience_memory.py",
+   "layer": "Memory",
+   "path": "core_kernel/governance/runtime/rcl/experience_memory.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N047",
+   "type": "data",
+   "name": "memory/data/memory_store.json (180 entries)",
+   "layer": "Memory",
+   "path": "memory/data/memory_store.json",
+   "scope": "MoCKA",
+   "note": "observed 180 entries"
+  },
+  {
+   "id": "N048",
+   "type": "code",
+   "name": "memory/memory_retriever.py (MemoryRetriever)",
+   "layer": "Memory",
+   "path": "memory/memory_retriever.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N049",
+   "type": "code",
+   "name": "governance/human_gate_cli.py",
+   "layer": "Authority",
+   "path": "governance/human_gate_cli.py",
+   "scope": "MoCKA",
+   "note": "TTY and typed yes required"
+  },
+  {
+   "id": "N050",
+   "type": "code",
+   "name": "phi_os/human_gate.py (state machine, HTTP routes)",
+   "layer": "Authority",
+   "path": "phi_os/human_gate.py",
+   "scope": "MoCKA",
+   "note": "approve() adds decision_id; no actor validation; HTTP blueprint not mounted in repo"
+  },
+  {
+   "id": "N051",
+   "type": "table",
+   "name": "human_gate_events (events DB)",
+   "layer": "Authority",
+   "path": "data/mocka_events.db#human_gate_events",
+   "scope": "MoCKA",
+   "note": "2199 rows (submit 2031, approve 166, reject 2) observed 2026-10-11"
+  },
+  {
+   "id": "N052",
+   "type": "code",
+   "name": "phi_os/migrate_prevention_queue.py",
+   "layer": "Authority",
+   "path": "phi_os/migrate_prevention_queue.py",
+   "scope": "MoCKA",
+   "note": "submits all queue items; approve() for approved items"
+  },
+  {
+   "id": "N053",
+   "type": "data",
+   "name": "data/prevention_queue.json",
+   "layer": "Authority",
+   "path": "data/prevention_queue.json",
+   "scope": "MoCKA",
+   "note": "status counts observed: approved 5, NEW 565, rejected 1799"
+  },
+  {
+   "id": "N054",
+   "type": "route",
+   "name": "POST /decision/approve (app.py)",
+   "layer": "Authority",
+   "path": "app.py",
+   "line": 2360,
+   "scope": "MoCKA",
+   "note": "no authentication found; changes queue status; does not call HG approve()"
+  },
+  {
+   "id": "N055",
+   "type": "table-rows",
+   "name": "events: DECISION_APPROVED (5 rows)",
+   "layer": "Authority",
+   "path": "data/mocka_events.db#events",
+   "scope": "MoCKA",
+   "note": "who_actor is a constant in app.py"
+  },
+  {
+   "id": "N056",
+   "type": "code",
+   "name": "phi_os/hg_decision_resolver.py",
+   "layer": "Authority",
+   "path": "phi_os/hg_decision_resolver.py",
+   "scope": "MoCKA",
+   "note": "reads human_gate_events; no importer found in repo"
+  },
+  {
+   "id": "N060",
+   "type": "table",
+   "name": "authorization_state (events DB, 69 rows)",
+   "layer": "Authorization",
+   "path": "data/mocka_events.db#authorization_state",
+   "scope": "MoCKA",
+   "note": "14 columns; append-only triggers; 69 rows APPROVED observed"
+  },
+  {
+   "id": "N061",
+   "type": "table",
+   "name": "authorization_records (orchestra DB, 0 rows)",
+   "layer": "Authorization",
+   "path": "core_kernel/orchestra/data/mocka_orchestra.db#authorization_records",
+   "scope": "MoCKA",
+   "note": "14 columns NN; PK (authorization_id, version); 0 rows observed"
+  },
+  {
+   "id": "N062",
+   "type": "table",
+   "name": "authorization_provenance (events DB, 1 row)",
+   "layer": "Authorization",
+   "path": "data/mocka_events.db#authorization_provenance",
+   "scope": "MoCKA",
+   "note": "Observed 1 row is Phase 3E test data (event E20261006_test_001, decision DC_20261006_001). It is not evidence of production provenance."
+  },
+  {
+   "id": "N063",
+   "type": "code-branch",
+   "name": "governance/authorization_state_bridge.py (branch only)",
+   "layer": "Authorization",
+   "path": "governance/authorization_state_bridge.py",
+   "scope": "branch:phase/hgd-up-test-003-v3.2,phase4-work-001",
+   "note": "commit 6442588ff; not in HEAD or working tree"
+  },
+  {
+   "id": "N064",
+   "type": "code",
+   "name": "core_kernel/orchestra/runtime_gate.py (RuntimeGate)",
+   "layer": "Runtime",
+   "path": "core_kernel/orchestra/runtime_gate.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N065",
+   "type": "code",
+   "name": "core_kernel/orchestra/execution_graph.py (ExecutionGraph)",
+   "layer": "Runtime",
+   "path": "core_kernel/orchestra/execution_graph.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N066",
+   "type": "code",
+   "name": "orchestra_engine.py + orchestrator_api.py (entry)",
+   "layer": "Runtime",
+   "path": "core_kernel/orchestra",
+   "scope": "MoCKA",
+   "note": "orchestrator_api.engine created at import; no non-test emit_event caller found"
+  },
+  {
+   "id": "N067",
+   "type": "code",
+   "name": "core_kernel/governance/runtime/rcl/runtime_exec.py",
+   "layer": "Runtime",
+   "path": "core_kernel/governance/runtime/rcl/runtime_exec.py",
+   "scope": "MoCKA",
+   "note": "registers governed rcl_execution_node (line 78); verification path"
+  },
+  {
+   "id": "N068",
+   "type": "code",
+   "name": "core_kernel/governance/runtime/rcl/causal_chain_verification.py",
+   "layer": "Runtime",
+   "path": "core_kernel/governance/runtime/rcl/causal_chain_verification.py",
+   "scope": "MoCKA",
+   "note": "verification caller of closed loop"
+  },
+  {
+   "id": "N070",
+   "type": "code",
+   "name": "rcl/consequence.py (actual consequence stage)",
+   "layer": "Consequence",
+   "path": "core_kernel/governance/runtime/rcl/consequence.py",
+   "scope": "MoCKA",
+   "note": "file present (mtime 2026-10-11 14:23); observe_consequence called from closed_loop_runner; observed_effect defaults to None (UNKNOWN); observer is optional and not supplied by non-test callers"
+  },
+  {
+   "id": "N071",
+   "type": "table",
+   "name": "events (events DB, 24753 rows)",
+   "layer": "Memory",
+   "path": "data/mocka_events.db#events",
+   "scope": "MoCKA",
+   "note": "observed 2026-10-11"
+  },
+  {
+   "id": "N072",
+   "type": "code",
+   "name": "phi_os/event_gate.py (events write path)",
+   "layer": "Memory",
+   "path": "phi_os/event_gate.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N073",
+   "type": "code",
+   "name": "phi_os/audit_trigger.py",
+   "layer": "Memory",
+   "path": "phi_os/audit_trigger.py",
+   "scope": "MoCKA",
+   "note": "detects direct inserts into events and records audit_violations; does not block"
+  },
+  {
+   "id": "N074",
+   "type": "db",
+   "name": "data/mocka_events.db",
+   "layer": "Memory",
+   "path": "data/mocka_events.db",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N075",
+   "type": "db",
+   "name": "core_kernel/orchestra/data/mocka_orchestra.db",
+   "layer": "Runtime",
+   "path": "core_kernel/orchestra/data/mocka_orchestra.db",
+   "scope": "MoCKA",
+   "note": "all tables 0 rows observed"
+  },
+  {
+   "id": "N076",
+   "type": "table",
+   "name": "audit_violations (events DB, 22576 rows)",
+   "layer": "Memory",
+   "path": "data/mocka_events.db#audit_violations",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N077",
+   "type": "table",
+   "name": "essence (events DB, 3 rows)",
+   "layer": "Memory",
+   "path": "data/mocka_events.db#essence",
+   "scope": "MoCKA",
+   "note": "writer not found"
+  },
+  {
+   "id": "N080",
+   "type": "code",
+   "name": "interface/context_composer.py",
+   "layer": "Memory",
+   "path": "interface/context_composer.py",
+   "scope": "MoCKA",
+   "note": "blueprint registered app.py:79"
+  },
+  {
+   "id": "N081",
+   "type": "code",
+   "name": "interface/mentor_engine.py",
+   "layer": "Memory",
+   "path": "interface/mentor_engine.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N082",
+   "type": "code",
+   "name": "interface/handshake.py",
+   "layer": "Memory",
+   "path": "interface/handshake.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N083",
+   "type": "code",
+   "name": "interface/prediction_engine.py",
+   "layer": "Memory",
+   "path": "interface/prediction_engine.py",
+   "scope": "MoCKA",
+   "note": "reads recurrence CSV, not events"
+  },
+  {
+   "id": "N084",
+   "type": "code",
+   "name": "interface/guidelines_engine.py",
+   "layer": "Memory",
+   "path": "interface/guidelines_engine.py",
+   "scope": "MoCKA"
+  },
+  {
+   "id": "N085",
+   "type": "code",
+   "name": "interface/heinrich_engine.py",
+   "layer": "Memory",
+   "path": "interface/heinrich_engine.py",
+   "scope": "MoCKA",
+   "note": "analysis report; readers not found"
+  },
+  {
+   "id": "N086",
+   "type": "code",
+   "name": "interface/gate_policy.py",
+   "layer": "Memory",
+   "path": "interface/gate_policy.py",
+   "scope": "MoCKA",
+   "note": "monitoring (dashboard, health_check)"
+  },
+  {
+   "id": "N087",
+   "type": "code",
+   "name": "gateway/context_builder.py",
+   "layer": "Memory",
+   "path": "gateway/context_builder.py",
+   "scope": "MoCKA",
+   "note": "gateway.py importers not found"
+  },
+  {
+   "id": "N088",
+   "type": "data",
+   "name": "C:/Users/sirok/MOCKA_OVERVIEW.json (home copy)",
+   "layer": "Memory",
+   "path": "C:/Users/sirok/MOCKA_OVERVIEW.json",
+   "scope": "external",
+   "note": "meta.storage.primary; updated 2026-07-07; 27254 bytes"
+  },
+  {
+   "id": "N089",
+   "type": "data",
+   "name": "data/MOCKA_OVERVIEW.json (export copy)",
+   "layer": "Memory",
+   "path": "data/MOCKA_OVERVIEW.json",
+   "scope": "MoCKA",
+   "note": "same content except _snapshot_at; 27894 bytes"
+  },
+  {
+   "id": "N090",
+   "type": "code",
+   "name": "mocka_v3_eval/make_overview_v23.py",
+   "layer": "Memory",
+   "path": "mocka_v3_eval/make_overview_v23.py",
+   "scope": "MoCKA",
+   "note": "writes primary and A: backup; no caller found"
+  },
+  {
+   "id": "N091",
+   "type": "code",
+   "name": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+   "layer": "Memory",
+   "path": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+   "scope": "workshop",
+   "note": "copies from C:\\Users\\sirok and injects _snapshot_at"
+  },
+  {
+   "id": "N092",
+   "type": "code",
+   "name": "PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py",
+   "layer": "Memory",
+   "path": "PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py",
+   "scope": "workshop",
+   "note": "600-second loop; git commit targets; start mechanism UNKNOWN"
+  },
+  {
+   "id": "N093",
+   "type": "code",
+   "name": "interface/ping_generator.py",
+   "layer": "Memory",
+   "path": "interface/ping_generator.py",
+   "scope": "MoCKA",
+   "note": "reads home-copy overview path"
+  },
+  {
+   "id": "N094",
+   "type": "code",
+   "name": "living_room/hub.py",
+   "layer": "Memory",
+   "path": "living_room/hub.py",
+   "scope": "MoCKA",
+   "note": "reads home-copy overview path"
+  },
+  {
+   "id": "N100",
+   "type": "relay-ping",
+   "name": "data/tic/relay_ping.json",
+   "layer": "Runtime",
+   "path": "data/tic/relay_ping.json",
+   "scope": "MoCKA",
+   "note": "written by /relay/ping"
+  },
+  {
+   "id": "N101",
+   "type": "code",
+   "name": "interface/health_check.py",
+   "layer": "Runtime",
+   "path": "interface/health_check.py",
+   "scope": "MoCKA",
+   "note": "reads /relay/status"
+  },
+  {
+   "id": "N102",
+   "type": "code",
+   "name": "interface/router.py (collaborate, share)",
+   "layer": "Runtime",
+   "path": "interface/router.py",
+   "scope": "MoCKA",
+   "note": "launches tools/mocka_orchestra_v10.py at lines 226 and 245"
+  },
+  {
+   "id": "N103",
+   "type": "code",
+   "name": "phi_os/api/time_api.py",
+   "layer": "Runtime",
+   "path": "phi_os/api/time_api.py",
+   "scope": "MoCKA",
+   "note": "RelayKernel singleton (line 23, 29)"
+  },
+  {
+   "id": "N110",
+   "type": "git-branch",
+   "name": "branch phase/hgd-up-test-003-v3.2 (local and origin)",
+   "layer": "External",
+   "path": "git",
+   "scope": "branch",
+   "note": "contains 6442588ff"
+  },
+  {
+   "id": "N111",
+   "type": "git-branch",
+   "name": "branch phase4-work-001 (local and origin)",
+   "layer": "External",
+   "path": "git",
+   "scope": "branch",
+   "note": "contains 6442588ff"
+  },
+  {
+   "id": "N112",
+   "type": "external",
+   "name": "AI session consumers (outside repo)",
+   "layer": "External",
+   "path": "UNKNOWN",
+   "scope": "external",
+   "note": "use of context by AI is not observable from the repo"
+  },
+  {
+   "id": "N120",
+   "type": "decision-pending",
+   "name": "H1 overview canonical",
+   "layer": "Pending",
+   "path": "mapping/unified",
+   "scope": "HG",
+   "note": "Pending; no decision recorded"
+  },
+  {
+   "id": "N121",
+   "type": "decision-pending",
+   "name": "H2 decision store canonical (Q-39)",
+   "layer": "Pending",
+   "path": "mapping/OPEN_QUESTIONS.md",
+   "scope": "HG",
+   "note": "Pending; BLOCKED in Q-39"
+  },
+  {
+   "id": "N122",
+   "type": "decision-pending",
+   "name": "H3 pseudo approvals and TECH_ALERT state (Q-71)",
+   "layer": "Pending",
+   "path": "mapping/OPEN_QUESTIONS.md",
+   "scope": "HG",
+   "note": "Pending; operator not identified"
+  },
+  {
+   "id": "N123",
+   "type": "decision-pending",
+   "name": "H4 keep or close POST /decision/approve (Q-73)",
+   "layer": "Pending",
+   "path": "app.py",
+   "scope": "HG",
+   "note": "Pending"
+  },
+  {
+   "id": "N124",
+   "type": "decision-pending",
+   "name": "H5 handling of C6 (non-governed path)",
+   "layer": "Pending",
+   "path": "mapping/OPEN_CONNECTION_GAPS.md",
+   "scope": "design",
+   "note": "Pending"
+  },
+  {
+   "id": "N125",
+   "type": "decision-pending",
+   "name": "H6 integrate branch-only bridge (Q-72)",
+   "layer": "Pending",
+   "path": "mapping/OPEN_QUESTIONS.md",
+   "scope": "HG",
+   "note": "Pending"
+  },
+  {
+   "id": "N126",
+   "type": "decision-pending",
+   "name": "H7 Relay archive handling",
+   "layer": "Pending",
+   "path": "mapping/MASTER_MAP.md",
+   "scope": "document",
+   "note": "Pending"
+  },
+  {
+   "id": "N127",
+   "type": "decision-pending",
+   "name": "H8 Orchestra naming",
+   "layer": "Pending",
+   "path": "mapping/DEPENDENCY_MAP.md",
+   "scope": "document",
+   "note": "Pending"
+  },
+  {
+   "id": "N128",
+   "type": "data",
+   "name": "pr-os data/evaluation_history.jsonl (referenced path; ABSENT at observation, not a real file node)",
+   "layer": "Evidence",
+   "path": "PlanningCaliber/workshop/pr-os/data/evaluation_history.jsonl",
+   "scope": "workshop",
+   "note": "Path referenced by PlanningCaliber/workshop/pr-os/backend/runtime/caliber.py:4 (FILE); read at caliber.py:11. Existence check on 2026-10-11 (read-only): absent. No writer found in pr-os or mapping; get_caliber_snapshot has no caller in pr-os; runtime read NOT established. Existence may change; re-check the path before relying on this node."
+  },
+  {
+   "id": "N129",
+   "type": "data",
+   "name": "A-drive backup of MOCKA_OVERVIEW.json (referenced by make_overview_v23.py:70)",
+   "layer": "Memory",
+   "path": "A:/MOCKA_OVERVIEW.json",
+   "scope": "external",
+   "note": "Existed at 2026-10-11 observation (version 3.0, updated 2026-06-01). The current writer in make_overview_v23.py produces version 2.3 / 2026-04-09, so it is not the producer of this content; no caller found. File existence does not establish that this script currently writes it."
+  }
+ ],
+ "edges": [
+  {
+   "id": "E001",
+   "from": "N037",
+   "to": "N054",
+   "relation": "defines_route",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2360,
+     "symbol": "decision_approve",
+     "method": "read"
+    }
+   ],
+   "note": "POST /decision/approve; no authentication check found in body"
+  },
+  {
+   "id": "E002",
+   "from": "N054",
+   "to": "N053",
+   "relation": "changes_status_to_approved",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2366,
+     "line_end": 2370,
+     "symbol": "decision_approve",
+     "method": "read"
+    }
+   ],
+   "note": "loop, status change and approved_at (2366-2370); _save_pqueue follows"
+  },
+  {
+   "id": "E003",
+   "from": "N054",
+   "to": "N055",
+   "relation": "records_event",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2376,
+     "symbol": "decision_approve",
+     "method": "read"
+    }
+   ],
+   "note": "who_actor constant kimura_hakase"
+  },
+  {
+   "id": "E004",
+   "from": "N054",
+   "to": "N050",
+   "relation": "calls_hg_approve",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "app.py decision_approve body (lines 2361-2395)",
+     "method": "read"
+    }
+   ],
+   "note": "no call to phi_os/human_gate approve() in the route"
+  },
+  {
+   "id": "E005",
+   "from": "N123",
+   "to": "N054",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "read",
+     "note": "Q-73 candidate"
+    }
+   ]
+  },
+  {
+   "id": "E006",
+   "from": "N052",
+   "to": "N050",
+   "relation": "calls_approve_for_approved_items",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/migrate_prevention_queue.py",
+     "line": 73,
+     "symbol": "migrate",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E007",
+   "from": "N052",
+   "to": "N053",
+   "relation": "reads_queue",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/migrate_prevention_queue.py",
+     "line": 23,
+     "symbol": "QUEUE_PATH",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E008",
+   "from": "N050",
+   "to": "N051",
+   "relation": "writes_transition_rows",
+   "status": "DATA_FLOW_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/human_gate.py",
+     "line": 115,
+     "symbol": "_record_transition",
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "human_gate_events",
+     "count": 2199,
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ]
+  },
+  {
+   "id": "E009",
+   "from": "N049",
+   "to": "N050",
+   "relation": "calls_approve_with_note_payload",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "governance/human_gate_cli.py",
+     "line": 78,
+     "symbol": "cmd_approve",
+     "method": "read"
+    }
+   ],
+   "note": "payload is {note} or None; approve() adds decision_id (human_gate.py:191-196)"
+  },
+  {
+   "id": "E010",
+   "from": "N052",
+   "to": "N051",
+   "relation": "pseudo_approve_rows",
+   "status": "DATA_FLOW_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/migrate_prevention_queue.py",
+     "line": 73,
+     "symbol": "migrate",
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "human_gate_events",
+     "count": 4,
+     "filter": "payload contains pseudo-transition",
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "4 approve rows for PQ_7A0EB099, PQ_A8B940A3, PQ_2FAC1DD2, PQ_DAAAB02E; operator not established"
+  },
+  {
+   "id": "E011",
+   "from": "N052",
+   "to": "N051",
+   "relation": "migration_submits",
+   "status": "DATA_FLOW_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/migrate_prevention_queue.py",
+     "line": 71,
+     "symbol": "migrate",
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "human_gate_events",
+     "count": 1772,
+     "filter": "payload source prevention_queue_migration",
+     "time_range": "2026-06-23T01:57:15 to 02:03:11 UTC",
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "NEW 1768 and approved 4"
+  },
+  {
+   "id": "E012",
+   "from": "N053",
+   "to": "N055",
+   "relation": "same_ids_as_decision_approved",
+   "status": "DATA_FLOW_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2376,
+     "symbol": "decision_approve",
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "events",
+     "count": 5,
+     "filter": "what_type = DECISION_APPROVED",
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    },
+    {
+     "kind": "fs",
+     "path": "data/prevention_queue.json",
+     "method": "read",
+     "note": "approved_at values match event times for 4 items"
+    }
+   ]
+  },
+  {
+   "id": "E013",
+   "from": "N053",
+   "to": "N051",
+   "relation": "state_divergence_TECH_ALERT",
+   "status": "STATE_OBSERVED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "data/prevention_queue.json",
+     "method": "read",
+     "note": "TECH_ALERT_20260601_074600_stripe_worker status approved approved_at 2026-06-28"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "human_gate_events",
+     "request_id": "TECH_ALERT_20260601_074600_stripe_worker",
+     "count": 1,
+     "state": "submit to PENDING only",
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "queue approved, events DECISION_APPROVED, HG PENDING; not reconciled"
+  },
+  {
+   "id": "E014",
+   "from": "N056",
+   "to": "N051",
+   "relation": "reads_hg_events",
+   "status": "PARTIAL",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/hg_decision_resolver.py",
+     "line": 84,
+     "symbol": "human_gate_events",
+     "method": "read"
+    }
+   ],
+   "note": "no importer found in repo; runtime use not established"
+  },
+  {
+   "id": "E015",
+   "from": "N122",
+   "to": "N052",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "read",
+     "note": "Q-71 candidate"
+    }
+   ]
+  },
+  {
+   "id": "E016",
+   "from": "N061",
+   "to": "N075",
+   "relation": "defines_table",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/persistence/schema.py",
+     "line": 48,
+     "symbol": "authorization_records",
+     "method": "read"
+    }
+   ],
+   "note": "schema definition only; row count observation is in E131"
+  },
+  {
+   "id": "E017",
+   "from": "N067",
+   "to": "N065",
+   "relation": "registers_governed_node",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/runtime_exec.py",
+     "line": 78,
+     "symbol": "register_node",
+     "method": "read"
+    }
+   ],
+   "note": "only non-test governed registration found"
+  },
+  {
+   "id": "E018",
+   "from": "N066",
+   "to": "N065",
+   "relation": "calls_graph_execute",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/orchestra_engine.py",
+     "line": 88,
+     "symbol": "execute",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E019",
+   "from": "N065",
+   "to": "N064",
+   "relation": "consults_gate_for_governed_or_keyed_nodes",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/execution_graph.py",
+     "line": 48,
+     "symbol": "execute",
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/execution_graph.py",
+     "line": 61,
+     "symbol": "_execute_governed",
+     "method": "read"
+    }
+   ],
+   "note": "non-governed nodes: gate only when decision_id or authorization_id key is present in context"
+  },
+  {
+   "id": "E020",
+   "from": "N065",
+   "to": "N124",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/execution_graph.py",
+     "line": 48,
+     "symbol": "execute",
+     "method": "read"
+    }
+   ],
+   "note": "C6 candidate"
+  },
+  {
+   "id": "E021",
+   "from": "N064",
+   "to": "N061",
+   "relation": "reads_authorization_record",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/runtime_gate.py",
+     "line": 207,
+     "symbol": "_check_authorization_record",
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/persistence/sqlite_store.py",
+     "line": 244,
+     "symbol": "get_authorization_record",
+     "method": "read"
+    }
+   ],
+   "note": "static; execution-time effect not verified"
+  },
+  {
+   "id": "E022",
+   "from": "N064",
+   "to": "N060",
+   "relation": "reads_authorization_state",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "runtime_gate.py and sqlite_store.py (current HEAD)",
+     "method": "read and grep for table name"
+    }
+   ]
+  },
+  {
+   "id": "E023",
+   "from": "N063",
+   "to": "N060",
+   "relation": "inserts_into_authorization_state_branch_only",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "git",
+     "commit": "6442588ff",
+     "path": "governance/authorization_state_bridge.py",
+     "line": 280,
+     "method": "git show"
+    }
+   ],
+   "note": "branch only; not in HEAD"
+  },
+  {
+   "id": "E024",
+   "from": "N063",
+   "to": "N061",
+   "relation": "writes_authorization_records",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "governance/authorization_state_bridge.py at commit 6442588ff",
+     "method": "git show and grep"
+    }
+   ]
+  },
+  {
+   "id": "E025",
+   "from": "N063",
+   "to": "N110",
+   "relation": "present_on_branch",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "git",
+     "commit": "6442588ff",
+     "method": "git branch --contains"
+    }
+   ]
+  },
+  {
+   "id": "E026",
+   "from": "N063",
+   "to": "N111",
+   "relation": "present_on_branch",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "git",
+     "commit": "6442588ff",
+     "method": "git branch --contains"
+    }
+   ]
+  },
+  {
+   "id": "E027",
+   "from": "N063",
+   "to": "N125",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "read",
+     "note": "Q-72 candidate"
+    }
+   ]
+  },
+  {
+   "id": "E028",
+   "from": "N060",
+   "to": "N074",
+   "relation": "stored_in",
+   "status": "STATE_OBSERVED",
+   "evidence": [
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "authorization_state",
+     "count": 69,
+     "filter": "status APPROVED for all rows",
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "69 rows observed (all APPROVED); the writer in the current HEAD is not found (see E023 on branch)"
+  },
+  {
+   "id": "E029",
+   "from": "N060",
+   "to": "N121",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "read",
+     "note": "Q-39 BLOCKED"
+    }
+   ]
+  },
+  {
+   "id": "E030",
+   "from": "N061",
+   "to": "N121",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "read",
+     "note": "Q-39 BLOCKED"
+    }
+   ]
+  },
+  {
+   "id": "E031",
+   "from": "N060",
+   "to": "N061",
+   "relation": "column_set_differs",
+   "status": "STATE_OBSERVED",
+   "evidence": [
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "authorization_state",
+     "columns": 14,
+     "method": "pragma table_info"
+    },
+    {
+     "kind": "db",
+     "path": "core_kernel/orchestra/data/mocka_orchestra.db",
+     "table": "authorization_records",
+     "columns": 14,
+     "method": "pragma table_info"
+    }
+   ],
+   "note": "shared names only authorization_id and decision_id; created_at REAL vs TEXT"
+  },
+  {
+   "id": "E032",
+   "from": "N052",
+   "to": "N122",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "read",
+     "note": "Q-71 candidate"
+    }
+   ]
+  },
+  {
+   "id": "E033",
+   "from": "N037",
+   "to": "N020",
+   "relation": "launches",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 615,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 668,
+     "method": "read"
+    }
+   ],
+   "note": "production reachability UNKNOWN; launched from /collaborate (app.py:615) and /orchestra (app.py:668); route callers not established"
+  },
+  {
+   "id": "E034",
+   "from": "N102",
+   "to": "N020",
+   "relation": "launches",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/router.py",
+     "line": 228,
+     "method": "read",
+     "symbol": "Popen",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    },
+    {
+     "kind": "code",
+     "path": "interface/router.py",
+     "line": 247,
+     "method": "read",
+     "symbol": "Popen",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E035",
+   "from": "N020",
+   "to": "N021",
+   "relation": "shares_code_or_data",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "tools/mocka_orchestra_v10.py imports (stdlib and playwright only); references to mocka_orchestra_v10 in .py outside tools/",
+     "method": "read and grep"
+    }
+   ]
+  },
+  {
+   "id": "E036",
+   "from": "N022",
+   "to": "N021",
+   "relation": "shares_code_or_data",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "*.py under PlanningCaliber/workshop/Orchestra_Project referencing core_kernel or MoCKA DB",
+     "method": "grep"
+    }
+   ],
+   "note": "scope limited to .py files"
+  },
+  {
+   "id": "E037",
+   "from": "N022",
+   "to": "N023",
+   "relation": "documented_as",
+   "status": "DOCUMENTED",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "PlanningCaliber/sirius-lab-products/orchestra/README.md",
+     "method": "read"
+    }
+   ],
+   "note": "product documentation; not code-level link"
+  },
+  {
+   "id": "E038",
+   "from": "N022",
+   "to": "N127",
+   "relation": "naming_conflict_with_DEPENDENCY_MAP",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/DEPENDENCY_MAP.md",
+     "line": 99,
+     "method": "read",
+     "note": "states extension canonical; not found"
+    }
+   ]
+  },
+  {
+   "id": "E039",
+   "from": "N025",
+   "to": "N037",
+   "relation": "pings",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/Relay_Project/extension/background.js",
+     "line": 22,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/Relay_Project/extension/content.js",
+     "line": 449,
+     "method": "read"
+    }
+   ],
+   "note": "sends from background.js:22 (localhost:5000) and content.js:449 (127.0.0.1:5000). The manifest host_permissions declares only http://localhost:5000/*. Delivery and failure are not determined (errors are swallowed). Receiver: app.py:2457."
+  },
+  {
+   "id": "E040",
+   "from": "N037",
+   "to": "N100",
+   "relation": "writes",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2437,
+     "symbol": "_RELAY_PING_FILE",
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2457,
+     "symbol": "relay_ping",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E041",
+   "from": "N101",
+   "to": "N037",
+   "relation": "reads_relay_status",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/health_check.py",
+     "line": 454,
+     "method": "read",
+     "note": "urlopen(req) call; the URL comes from cfg (get_endpoint_url mocka_server/relay), which resolves to 127.0.0.1:5000/relay/status via the endpoint registry. The target app.py is reached through the registry, not a literal in this line."
+    },
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2469,
+     "symbol": "relay_status",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E042",
+   "from": "N037",
+   "to": "N024",
+   "relation": "imports_relay_kernel",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 1005,
+     "symbol": "_get_relay_kernel",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E043",
+   "from": "N103",
+   "to": "N024",
+   "relation": "imports_relay_kernel",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/api/time_api.py",
+     "line": 23,
+     "method": "read"
+    }
+   ],
+   "note": "import resolves to relay/relay_kernel.py (RelayKernel at line 47); module-level instantiation at phi_os/api/time_api.py:29. Runtime use not established."
+  },
+  {
+   "id": "E044",
+   "from": "N025",
+   "to": "N024",
+   "relation": "shares_code_or_data",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "Relay_Project imports of relay package (*.py, excluding archive)",
+     "method": "grep"
+    }
+   ]
+  },
+  {
+   "id": "E045",
+   "from": "N026",
+   "to": "N126",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/MASTER_MAP.md",
+     "method": "read",
+     "note": "archive handling not recorded"
+    }
+   ]
+  },
+  {
+   "id": "E046",
+   "from": "N026",
+   "to": "N017",
+   "relation": "history_archived_by_commit",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "git",
+     "repo": "PlanningCaliber/workshop",
+     "commit": "249771d",
+     "method": "git log in nested workshop repo",
+     "note": "commit message: Archive legacy Relay worker snapshots"
+    }
+   ],
+   "note": "current use UNKNOWN; not declared unused"
+  },
+  {
+   "id": "E047",
+   "from": "N028",
+   "to": "N074",
+   "relation": "writes_events",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/event_gate.py",
+     "line": 173,
+     "symbol": "events",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E048",
+   "from": "N028",
+   "to": "N062",
+   "relation": "writes_provenance",
+   "status": "DATA_FLOW_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/event_gate.py",
+     "line": 184,
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "authorization_provenance",
+     "count": 1,
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "the one observed authorization_provenance row is Phase 3E test data (event E20261006_test_001, decision DC_20261006_001). Production provenance is not observed."
+  },
+  {
+   "id": "E049",
+   "from": "N037",
+   "to": "N028",
+   "relation": "imports_event_gate",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 67,
+     "symbol": "gate_bp",
+     "method": "read",
+     "note": "import of gate_bp"
+    },
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 80,
+     "symbol": "gate_bp",
+     "method": "read",
+     "note": "app.register_blueprint(gate_bp)"
+    }
+   ],
+   "note": "event gate blueprint imported and registered; HTTP reachability not verified"
+  },
+  {
+   "id": "E050",
+   "from": "N038",
+   "to": "N028",
+   "relation": "imports_event_gate",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "mocka_mcp_server.py",
+     "line": 832,
+     "symbol": "process_event",
+     "method": "read",
+     "note": "in-process import of process_event; handler reachability not verified"
+    }
+   ]
+  },
+  {
+   "id": "E051",
+   "from": "N073",
+   "to": "N076",
+   "relation": "records_violations",
+   "status": "DATA_FLOW_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/audit_trigger.py",
+     "line": 53,
+     "line_end": 66,
+     "symbol": "trigger",
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "audit_violations",
+     "count": 22576,
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "detects and records; does not block"
+  },
+  {
+   "id": "E052",
+   "from": "N029",
+   "to": "N074",
+   "relation": "reads_events",
+   "status": "PARTIAL",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/phi-os/ise/state_provider.py",
+     "line": 84,
+     "method": "read"
+    },
+    {
+     "kind": "db",
+     "path": "data/mocka_events.db",
+     "table": "events",
+     "method": "pragma table_info",
+     "note": "SELECT references columns what and how which do not exist"
+    }
+   ],
+   "note": "exception swallowed; warnings list empty on failure. The warnings query (state_provider.py:52) cannot succeed against the current events schema (no what/how columns). reads_events is supported by the valid read at line 84. Runtime call not established."
+  },
+  {
+   "id": "E053",
+   "from": "N028",
+   "to": "N029",
+   "relation": "derivation_or_copy",
+   "status": "UNKNOWN",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "phi_os and PlanningCaliber/workshop/phi-os",
+     "method": "file comparison",
+     "note": "about 56 differing lines; relation not established"
+    }
+   ]
+  },
+  {
+   "id": "E054",
+   "from": "N030",
+   "to": "N029",
+   "relation": "documented_as",
+   "status": "DOCUMENTED",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "PlanningCaliber/sirius-lab-products/phi-os/README.md",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E055",
+   "from": "N040",
+   "to": "N041",
+   "relation": "writes_history",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/caliber/caliber_score.py",
+     "line": 22,
+     "symbol": "evaluation_history.jsonl",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E056",
+   "from": "N040",
+   "to": "N014",
+   "relation": "implements_thresholds_of",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/caliber/caliber_score.py",
+     "line": 26,
+     "symbol": "SPECS_THRESHOLD",
+     "method": "read"
+    },
+    {
+     "kind": "doc",
+     "path": "PlanningCaliber/CONSTITUTION_v1.md",
+     "method": "read",
+     "note": "section 4 0.85 with HG approval"
+    }
+   ]
+  },
+  {
+   "id": "E058",
+   "from": "N036",
+   "to": "N128",
+   "relation": "reads_history_path",
+   "status": "PARTIAL",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/pr-os/backend/runtime/caliber.py",
+     "line": 4,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/pr-os/backend/runtime/caliber.py",
+     "line": 11,
+     "method": "read",
+     "note": "open(FILE) inside get_caliber_snapshot is the read; line 4 is the definition. The target file was absent at observation (absence record), so this is a code fact, not a data fact."
+    },
+    {
+     "kind": "absence",
+     "scope": "PlanningCaliber/workshop/pr-os/data/evaluation_history.jsonl (existence check)",
+     "method": "exists check",
+     "result": "absent"
+    }
+   ],
+   "note": "path mismatch; /api/caliber does not read it"
+  },
+  {
+   "id": "E059",
+   "from": "N011",
+   "to": "N071",
+   "relation": "recorded_verification_of_events_search",
+   "status": "DOCUMENTED",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/SYNAPSE_CHAIN_VERIFICATION.md",
+     "method": "read",
+     "note": "recorded earlier; not re-executed in this pass"
+    }
+   ]
+  },
+  {
+   "id": "E060",
+   "from": "N071",
+   "to": "N080",
+   "relation": "provides_recent_decisions_for_context",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/context_composer.py",
+     "line": 62,
+     "symbol": "_recent_decisions",
+     "method": "read"
+    }
+   ],
+   "note": "context for AI sessions; effect on AI decisions UNKNOWN"
+  },
+  {
+   "id": "E061",
+   "from": "N071",
+   "to": "N081",
+   "relation": "provides_past_commissions",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/mentor_engine.py",
+     "line": 34,
+     "symbol": "_past_commissions",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E062",
+   "from": "N081",
+   "to": "N082",
+   "relation": "feeds_mentor_package",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/handshake.py",
+     "line": 131,
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E063",
+   "from": "N082",
+   "to": "N112",
+   "relation": "provides_briefing_to",
+   "status": "UNKNOWN",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/handshake.py",
+     "line": 156,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "interface/handshake.py",
+     "line": 177,
+     "method": "read",
+     "note": "jsonify(response) returns the briefing to the HTTP caller; external consumer use not observed"
+    }
+   ],
+   "note": "consumer AI outside repo"
+  },
+  {
+   "id": "E064",
+   "from": "N083",
+   "to": "N082",
+   "relation": "provides_warnings",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/handshake.py",
+     "line": 154,
+     "method": "read"
+    }
+   ],
+   "note": "input is recurrence CSV, not events"
+  },
+  {
+   "id": "E065",
+   "from": "N071",
+   "to": "N084",
+   "relation": "read_for_guidelines",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/guidelines_engine.py",
+     "line": 167,
+     "symbol": "fetch_events",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E066",
+   "from": "N084",
+   "to": "N077",
+   "relation": "writes_essence_file_not_table",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/guidelines_engine.py",
+     "line": 13,
+     "symbol": "ESSENCE",
+     "method": "read"
+    }
+   ],
+   "note": "writes data/essence_condensed.json; table essence writer not found"
+  },
+  {
+   "id": "E067",
+   "from": "N084",
+   "to": "N037",
+   "relation": "guidelines_json_read_by_routes",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2862,
+     "method": "read",
+     "note": "read_text of data/guidelines.json in guidelines_run; path construction is at line 2860"
+    },
+    {
+     "kind": "code",
+     "path": "interface/guidelines_engine.py",
+     "line": 392,
+     "method": "read",
+     "note": "producer: save_guidelines(GUIDELINES) writes data/guidelines.json"
+    }
+   ]
+  },
+  {
+   "id": "E068",
+   "from": "N071",
+   "to": "N085",
+   "relation": "read_for_analysis",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/heinrich_engine.py",
+     "line": 94,
+     "symbol": "run",
+     "method": "read"
+    }
+   ],
+   "note": "readers of report not found"
+  },
+  {
+   "id": "E069",
+   "from": "N071",
+   "to": "N086",
+   "relation": "count_for_monitoring",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/gate_policy.py",
+     "line": 128,
+     "symbol": "compute_gate_audit",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E070",
+   "from": "N086",
+   "to": "N101",
+   "relation": "used_by_monitoring",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/health_check.py",
+     "line": 286,
+     "method": "read",
+     "symbol": "compute_gate_audit",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E071",
+   "from": "N071",
+   "to": "N087",
+   "relation": "read_for_context_builder",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "gateway/context_builder.py",
+     "line": 55,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "gateway/gateway.py",
+     "line": 19,
+     "method": "read",
+     "note": "from context_builder import ContextBuilder"
+    },
+    {
+     "kind": "code",
+     "path": "gateway/gateway.py",
+     "line": 69,
+     "method": "read",
+     "note": "builder.build(mode) inside /api/v1/context handler"
+    }
+   ],
+   "note": "gateway/gateway.py:19 imports ContextBuilder and builds it at line 39; build() is called from /api/v1/context (line 69) and other handlers. Runtime reachability not verified."
+  },
+  {
+   "id": "E072",
+   "from": "N090",
+   "to": "N088",
+   "relation": "writes_primary_and_backup",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "mocka_v3_eval/make_overview_v23.py",
+     "line": 65,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "mocka_v3_eval/make_overview_v23.py",
+     "line": 70,
+     "method": "read"
+    }
+   ],
+   "note": "primary endpoint only (N088). Backup write to A: is recorded by E135 (N090 -> N129, writes_backup). no caller found; last content update 2026-07-07 has no identified writer (current primary is version 4.1, not this script's output)"
+  },
+  {
+   "id": "E073",
+   "from": "N037",
+   "to": "N088",
+   "relation": "reads",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 1921,
+     "method": "read",
+     "symbol": "OV_PATH",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E074",
+   "from": "N038",
+   "to": "N088",
+   "relation": "reads",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "mocka_mcp_server.py",
+     "line": 597,
+     "method": "read",
+     "symbol": "OVERVIEW_PATH",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E075",
+   "from": "N093",
+   "to": "N088",
+   "relation": "reads",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "interface/ping_generator.py",
+     "line": 81,
+     "method": "read",
+     "symbol": "OVERVIEW_PATH",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E076",
+   "from": "N094",
+   "to": "N088",
+   "relation": "reads",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "living_room/hub.py",
+     "line": 159,
+     "method": "read",
+     "symbol": "OVERVIEW_PATH",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E077",
+   "from": "N091",
+   "to": "N089",
+   "relation": "copies_and_injects_snapshot",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+     "line": 21,
+     "method": "read",
+     "symbol": "USER_ROOT",
+     "note": "declaration of the copy pair in COPIES; not the copy execution"
+    },
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+     "line": 45,
+     "method": "read",
+     "note": "definition of _inject_snapshot_ts only; the injection body is lines 47-51"
+    },
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+     "line": 59,
+     "method": "read",
+     "note": "shutil.copy2 inside _copy_with_retry (the copy)"
+    },
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+     "line": 74,
+     "method": "read",
+     "note": "_copy_with_retry call inside copy_files (the copy is conditional on src.exists())"
+    },
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/mocka-cloudflare/export_for_cloudflare.py",
+     "line": 77,
+     "method": "read",
+     "note": "_inject_snapshot_ts call on the destination copy"
+    }
+   ]
+  },
+  {
+   "id": "E078",
+   "from": "N092",
+   "to": "N091",
+   "relation": "runs_export",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "PlanningCaliber/workshop/mocka-cloudflare/sync_watch.py",
+     "line": 41,
+     "method": "read",
+     "symbol": "EXPORT_SCRIPT",
+     "note": "evidence line corrected to the processing site (stage: evidence line correction)"
+    }
+   ]
+  },
+  {
+   "id": "E080",
+   "from": "N037",
+   "to": "N093",
+   "relation": "launches",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "app.py",
+     "line": 2669,
+     "symbol": "ping_generator",
+     "method": "read",
+     "note": "subprocess run of interface/ping_generator.py inside route /ny_extract (nested run_essence)"
+    }
+   ],
+   "note": "previous edge (ping_generator -> app.py, uses_overview_for_ping) was not supported by its line; the overview read is represented by E075. Reachability through POST /ny_extract not verified."
+  },
+  {
+   "id": "E081",
+   "from": "N088",
+   "to": "N089",
+   "relation": "content_equal_except_snapshot",
+   "status": "STATE_OBSERVED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "C:/Users/sirok/MOCKA_OVERVIEW.json and data/MOCKA_OVERVIEW.json",
+     "method": "json load and key comparison",
+     "observed_at": "2026-10-11",
+     "result": "identical except _snapshot_at"
+    }
+   ]
+  },
+  {
+   "id": "E083",
+   "from": "N120",
+   "to": "N088",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/MASTER_MAP.md",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E084",
+   "from": "N047",
+   "to": "N046",
+   "relation": "written_by",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/experience_memory.py",
+     "line": 65,
+     "symbol": "append",
+     "method": "read",
+     "note": "ms.append(entry) mandatory write path"
+    },
+    {
+     "kind": "code",
+     "path": "memory/memory_store.py",
+     "line": 44,
+     "symbol": "_write_all",
+     "method": "read",
+     "note": "append calls _write_all"
+    }
+   ],
+   "note": "closed-loop write path; executed only when the closed loop runs (not observed)"
+  },
+  {
+   "id": "E085",
+   "from": "N046",
+   "to": "N047",
+   "relation": "stores_entries_with_etid_tag",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/experience_memory.py",
+     "line": 63,
+     "method": "read",
+     "note": "ETID tag assignment only; does not show persistence"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/experience_memory.py",
+     "line": 65,
+     "method": "read",
+     "note": "ms.append(entry) call. MemoryStore.append (memory/memory_store.py:39-45) reads the file, appends, applies the per-type retention cap (EPISODIC max 500; 180 observed, so no removal observed), and rewrites the whole file via _write_all (lines 64-66). Atomicity of the whole-file rewrite is not claimed."
+    }
+   ]
+  },
+  {
+   "id": "E086",
+   "from": "N043",
+   "to": "N046",
+   "relation": "writes_experience",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 267,
+     "symbol": "write_experience",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E087",
+   "from": "N043",
+   "to": "N045",
+   "relation": "calls_reassess",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 279,
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E088",
+   "from": "N043",
+   "to": "N044",
+   "relation": "calls_build_outcome_and_evidence",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 259,
+     "symbol": "build_decision_outcome",
+     "method": "read",
+     "note": "build call of the decision outcome"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 284,
+     "method": "read",
+     "symbol": "extract_evidence_from_outcome"
+    }
+   ],
+   "note": "build (line 259) and evidence extraction (line 284) both called in the closed loop; execution not observed"
+  },
+  {
+   "id": "E089",
+   "from": "N044",
+   "to": "N048",
+   "relation": "retrieves_by_etid_tag",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/decision_outcome.py",
+     "line": 56,
+     "symbol": "retrieve",
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/decision_outcome.py",
+     "line": 104,
+     "symbol": "extract_evidence_from_outcome",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E090",
+   "from": "N045",
+   "to": "N046",
+   "relation": "reads_by_etid",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/reassessment.py",
+     "line": 19,
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/experience_memory.py",
+     "line": 90,
+     "symbol": "read_experience_by_etid",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E091",
+   "from": "N048",
+   "to": "N047",
+   "relation": "reads",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "memory/memory_retriever.py",
+     "line": 44,
+     "symbol": "all",
+     "method": "read",
+     "note": "entries = self._store.all()"
+    },
+    {
+     "kind": "code",
+     "path": "memory/memory_store.py",
+     "line": 60,
+     "symbol": "_read_all",
+     "method": "read",
+     "note": "open(store_path, \"r\") in _read_all"
+    }
+   ],
+   "note": "retrieval reads memory_store.json through MemoryStore; the import alone is not evidence of reading"
+  },
+  {
+   "id": "E092",
+   "from": "N043",
+   "to": "N067",
+   "relation": "calls_run_runtime",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 195,
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E093",
+   "from": "N068",
+   "to": "N043",
+   "relation": "calls_run_in_process",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/causal_chain_verification.py",
+     "line": 219,
+     "method": "read"
+    }
+   ],
+   "note": "verification path"
+  },
+  {
+   "id": "E094",
+   "from": "N043",
+   "to": "N037",
+   "relation": "reachable_from_service",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "app.py and mocka_mcp_server.py: no reference to closed_loop_runner, decision_outcome, experience_memory",
+     "method": "grep"
+    }
+   ],
+   "note": "closed loop not reached from service entry"
+  },
+  {
+   "id": "E095",
+   "from": "N048",
+   "to": "N044",
+   "relation": "no_cross_etid_return_to",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "retrieve calls in decision_outcome.py and reassessment.py and experience_memory.py: keys are etid only",
+     "method": "read"
+    }
+   ],
+   "note": "no cross-ETID reuse path in the closed loop; other memory_retriever callers not fully enumerated"
+  },
+  {
+   "id": "E096",
+   "from": "N043",
+   "to": "N070",
+   "relation": "calls_consequence_stage",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 225,
+     "symbol": "observe_consequence",
+     "method": "read"
+    },
+    {
+     "kind": "code",
+     "path": "core_kernel/governance/runtime/rcl/closed_loop_runner.py",
+     "line": 22,
+     "symbol": "import",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E098",
+   "from": "N071",
+   "to": "N046",
+   "relation": "memory_source_for_closed_loop",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "closed-loop functions read memory_store.json, not events table",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E099",
+   "from": "N010",
+   "to": "N071",
+   "relation": "documents_memory_scope",
+   "status": "DOCUMENTED",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/MEMORY_INDEX.md",
+     "line": 115,
+     "method": "read",
+     "note": "mocka_search covers events and knowledge_gate; not memory_store"
+    }
+   ]
+  },
+  {
+   "id": "E100",
+   "from": "N120",
+   "to": "N006",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/MASTER_MAP.md",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E101",
+   "from": "N016",
+   "to": "N002",
+   "relation": "referenced_by_inventory_only",
+   "status": "DOCUMENTED",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/ASSET_INDEX.json",
+     "method": "grep",
+     "note": "inventory entries; no process reference found"
+    }
+   ]
+  },
+  {
+   "id": "E102",
+   "from": "N001",
+   "to": "N017",
+   "relation": "excluded_by_config",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": ".gitignore",
+     "line": 74,
+     "method": "read",
+     "note": "PlanningCaliber/workshop/ excluded from parent"
+    }
+   ]
+  },
+  {
+   "id": "E103",
+   "from": "N018",
+   "to": "N001",
+   "relation": "separate_git",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "git",
+     "path": "PlanningCaliber/sirius-lab-products/.git",
+     "method": "git rev-parse"
+    }
+   ]
+  },
+  {
+   "id": "E104",
+   "from": "N019",
+   "to": "N042",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "C:/Users/sirok/planningcaliber/CALIBER_LOG.md",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E105",
+   "from": "N031",
+   "to": "N002",
+   "relation": "indexed_in",
+   "status": "DOCUMENTED",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/DIRECTORY_INDEX.csv",
+     "method": "grep",
+     "note": "phi_os/hab present"
+    }
+   ]
+  },
+  {
+   "id": "E106",
+   "from": "N126",
+   "to": "N026",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/MASTER_MAP.md",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E107",
+   "from": "N127",
+   "to": "N022",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/DEPENDENCY_MAP.md",
+     "line": 99,
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E108",
+   "from": "N124",
+   "to": "N021",
+   "relation": "decision_pending_for",
+   "status": "PENDING",
+   "evidence": [
+    {
+     "kind": "doc",
+     "path": "mapping/OPEN_CONNECTION_GAPS.md",
+     "method": "read",
+     "note": "C6 candidate"
+    }
+   ]
+  },
+  {
+   "id": "E109",
+   "from": "N021",
+   "to": "N064",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "core_kernel/orchestra/runtime_gate.py",
+     "method": "file exists (directory membership)"
+    }
+   ],
+   "note": "containment of a file in core_kernel/orchestra"
+  },
+  {
+   "id": "E110",
+   "from": "N021",
+   "to": "N065",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "core_kernel/orchestra/execution_graph.py",
+     "method": "file exists (directory membership)"
+    }
+   ],
+   "note": "containment of a file in core_kernel/orchestra"
+  },
+  {
+   "id": "E111",
+   "from": "N021",
+   "to": "N075",
+   "relation": "default_store",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "core_kernel/orchestra/persistence/sqlite_store.py",
+     "line": 15,
+     "symbol": "DEFAULT_DB_PATH",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E112",
+   "from": "N050",
+   "to": "N051",
+   "relation": "defines_table",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/human_gate.py",
+     "line": 57,
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E113",
+   "from": "N049",
+   "to": "N050",
+   "relation": "requires_tty_and_typed_yes",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "governance/human_gate_cli.py",
+     "line": 67,
+     "symbol": "cmd_approve",
+     "method": "read"
+    }
+   ],
+   "note": "human confirmation step exists in CLI only"
+  },
+  {
+   "id": "E114",
+   "from": "N002",
+   "to": "N003",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/ASSET_INDEX.json",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E115",
+   "from": "N002",
+   "to": "N004",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/FILE_LOCATION_INDEX.csv",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E116",
+   "from": "N002",
+   "to": "N005",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/DIRECTORY_INDEX.csv",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E117",
+   "from": "N002",
+   "to": "N007",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/DEPENDENCY_MAP.md",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E118",
+   "from": "N002",
+   "to": "N008",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/OPEN_CONNECTION_GAPS.md",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E119",
+   "from": "N002",
+   "to": "N009",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/OPEN_QUESTIONS.md",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E120",
+   "from": "N002",
+   "to": "N012",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "mapping/verify_mapping.py",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E121",
+   "from": "N001",
+   "to": "N013",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber",
+     "method": "directory exists"
+    }
+   ]
+  },
+  {
+   "id": "E122",
+   "from": "N013",
+   "to": "N015",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber/PLANNING_CALIBER_LAW_v1.md",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E123",
+   "from": "N018",
+   "to": "N027",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber/sirius-lab-products/relay/README.md",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E124",
+   "from": "N018",
+   "to": "N035",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber/sirius-lab-products/memory/README.md",
+     "method": "file exists"
+    }
+   ]
+  },
+  {
+   "id": "E125",
+   "from": "N017",
+   "to": "N032",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber/workshop/JARVIS_0_1",
+     "method": "directory exists"
+    }
+   ]
+  },
+  {
+   "id": "E126",
+   "from": "N017",
+   "to": "N033",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber/workshop/JARVIS_Local_Bridge",
+     "method": "directory exists"
+    }
+   ]
+  },
+  {
+   "id": "E127",
+   "from": "N017",
+   "to": "N034",
+   "relation": "CONTAINS",
+   "status": "FS_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "PlanningCaliber/workshop/memory/extension",
+     "method": "directory exists"
+    }
+   ]
+  },
+  {
+   "id": "E128",
+   "from": "N072",
+   "to": "N074",
+   "relation": "writes_events",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "phi_os/event_gate.py",
+     "line": 173,
+     "symbol": "events",
+     "method": "read"
+    }
+   ]
+  },
+  {
+   "id": "E130",
+   "from": "N043",
+   "to": "N070",
+   "relation": "observer_supplied_by_callers",
+   "status": "CONFIRMED_ABSENT",
+   "evidence": [
+    {
+     "kind": "absence",
+     "scope": "non-test callers of run_in_process in repository .py files (causal_chain_verification.py:219 passes only etid and memory_store)",
+     "method": "read and grep"
+    }
+   ],
+   "note": "observer is optional; not supplied by any non-test caller found"
+  },
+  {
+   "id": "E131",
+   "from": "N061",
+   "to": "N075",
+   "relation": "stored_in",
+   "status": "STATE_OBSERVED",
+   "evidence": [
+    {
+     "kind": "db",
+     "path": "core_kernel/orchestra/data/mocka_orchestra.db",
+     "table": "authorization_records",
+     "count": 0,
+     "observed_at": "2026-10-11",
+     "method": "read-only sqlite URI mode=ro"
+    }
+   ],
+   "note": "0 rows observed; this is a state, not evidence that a write occurred"
+  },
+  {
+   "id": "E134",
+   "from": "N046",
+   "to": "N047",
+   "relation": "stored_in",
+   "status": "STATE_OBSERVED",
+   "evidence": [
+    {
+     "kind": "fs",
+     "path": "memory/data/memory_store.json",
+     "count": 180,
+     "observed_at": "2026-10-11",
+     "method": "json load"
+    }
+   ],
+   "note": "180 entries observed. All carry the 'experience' and 'closed_loop' tags and an ETID_ tag, and content execution_trace_id; consistent with write_experience. Whether they come from live closed-loop runs or from test runs is not established."
+  },
+  {
+   "id": "E135",
+   "from": "N090",
+   "to": "N129",
+   "relation": "writes_backup",
+   "status": "CODE_CONFIRMED",
+   "evidence": [
+    {
+     "kind": "code",
+     "path": "mocka_v3_eval/make_overview_v23.py",
+     "line": 70,
+     "method": "read"
+    }
+   ],
+   "note": "backup write to A:/MOCKA_OVERVIEW.json (try block). Target file exists as of observation; static write only; not run."
+  }
+ ],
+ "source": "observed"
+}
+</script>
+
+<script>
+(function () {
+  'use strict';
+
+  // ステータス → 色（仕様：緑=完了・検証済み / 黄=制作中・保留 / 赤=断線・未接続）
+  const GREEN = 0x2ecc71, YELLOW = 0xf1c40f, RED = 0xe74c3c, BLUE = 0x3498db, GREY = 0x7f8c8d;
+  const STATUS_STYLE = {
+    CODE_CONFIRMED:      { color: GREEN,  kind: 'ok' },
+    RUNTIME_VERIFIED:    { color: GREEN,  kind: 'ok' },
+    DATA_FLOW_CONFIRMED: { color: GREEN,  kind: 'ok' },
+    FS_CONFIRMED:        { color: GREEN,  kind: 'ok' },
+    PENDING:             { color: YELLOW, kind: 'wip' },
+    PARTIAL:             { color: YELLOW, kind: 'wip' },
+    PLANNED:             { color: YELLOW, kind: 'wip' },
+    CONFIRMED_ABSENT:    { color: RED,    kind: 'alert' },
+    UNKNOWN:             { color: RED,    kind: 'alert' },
+    STATE_OBSERVED:      { color: BLUE,   kind: 'observed' },
+    DOCUMENTED:          { color: GREY,   kind: 'doc' }
+  };
+  const VOCAB = Object.keys(STATUS_STYLE);
+  const styleOf = (s) => STATUS_STYLE[s] || STATUS_STYLE.UNKNOWN;
+
+  // 集約の優先順位（深刻度順）。ノード色の決定に使う
+  const SEVERITY = ['alert', 'wip', 'observed', 'doc', 'ok'];
+  const ROLL_COLOR = { alert: RED, wip: YELLOW, observed: BLUE, doc: GREY, ok: GREEN, none: 0x3a3a3a };
+  function rollupOf(list) {
+    if (!list.length) return 'none';
+    let best = SEVERITY.length;
+    list.forEach((e) => { const i = SEVERITY.indexOf(styleOf(e.status).kind); if (i >= 0 && i < best) best = i; });
+    return SEVERITY[best] || 'none';
+  }
+
+  const $ = (id) => document.getElementById(id);
+
+  // ---------- 1. データ読み込み・検証（失敗時は理由を画面に出す） ----------
+  function loadData() {
+    const el = $('mocka-data');
+    let raw;
+    try { raw = JSON.parse(el.textContent); }
+    catch (err) { throw new Error('埋め込みデータのJSONが不正です: ' + err.message); }
+    if (!Array.isArray(raw.nodes) || !Array.isArray(raw.edges)) {
+      throw new Error('nodes / edges の配列がありません');
+    }
+    const warnings = [];
+    const ids = new Set();
+    const nodes = [];
+    for (const n of raw.nodes) {
+      if (!n || typeof n.id !== 'string' || !n.id) { warnings.push('ID無しのノードを除外'); continue; }
+      if (ids.has(n.id)) { warnings.push('ID重複を除外: ' + n.id); continue; }
+      ids.add(n.id);
+      // 注意: 実データではステータスはエッジに付く。ノード自身の status は使わない（架空の状態を作らない）
+      nodes.push(Object.assign({}, n, { name: n.name || n.id }));
+    }
+    const edges = [];
+    let skipped = 0;
+    for (const e of raw.edges) {
+      if (!e || !ids.has(e.from) || !ids.has(e.to)) { skipped++; warnings.push('存在しないノードを指すエッジを除外: ' + (e && e.id)); continue; }
+      edges.push(Object.assign({}, e, { status: VOCAB.includes(e.status) ? e.status : 'UNKNOWN' }));
+    }
+    // ノードの色 = 接続エッジ状態の集約（最も深刻なもの）。接続なしは 'none'
+    const incident = new Map(nodes.map((n) => [n.id, []]));
+    edges.forEach((e) => { incident.get(e.from).push(e); incident.get(e.to).push(e); });
+    nodes.forEach((n) => { n.incident = incident.get(n.id); n.rollup = rollupOf(n.incident); });
+    return { raw, nodes, edges, skipped, warnings, layers: raw.layers || [] };
+  }
+
+  // ---------- 2. 3D 構築 ----------
+  let data;
+  try { data = loadData(); }
+  catch (err) {
+    $('error').style.display = 'block';
+    $('error').textContent = 'データを読み込めませんでした: ' + err.message;
+    $('meta-info').textContent = 'データ読み込み失敗';
+    return;
+  }
+  if (typeof THREE === 'undefined') {
+    $('error').style.display = 'block';
+    $('error').textContent = '3Dライブラリ(Three.js)を読み込めませんでした。ネットワークまたはCDNを確認してください。';
+    $('meta-info').textContent = '3Dエンジン未読込';
+    return;
+  }
+
+  if (data.raw.source === 'fixture') {
+    $('banner').style.display = 'block';
+    $('banner').textContent = 'FIXTURE DATA（テスト用の合成データ・実データではありません）';
+  }
+  $('meta-info').textContent =
+    'observed ' + (data.raw.observed_at || '-') +
+    ' | nodes ' + data.nodes.length + ' | edges ' + data.edges.length +
+    ' | skipped ' + data.skipped;
+  $('warnings').textContent = data.warnings.length ? '注意 ' + data.warnings.length + ' 件\n' + data.warnings.join('\n') : '';
+
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x0b0b0f, 0.008);
+  const camera = new THREE.PerspectiveCamera(60, innerWidth / innerHeight, 0.1, 1000);
+  camera.position.set(0, 30, 95);
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  document.body.appendChild(renderer.domElement);
+  renderer.setClearColor(0x0b0b0f, 1);
+
+  scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+  const light = new THREE.PointLight(0xffffff, 1.2);
+  light.position.set(60, 60, 60);
+  scene.add(light);
+
+  // 全体を回すグループ（ドラッグ・自転はこれに適用）
+  const orbit = new THREE.Group();
+  scene.add(orbit);
+
+  // レイヤーごとに傾いた軌道（同心の輪）上へ決定的に配置する
+  const groups = new Map();
+  data.nodes.forEach((n) => {
+    const li = data.layers.indexOf(n.layer);
+    const key = li < 0 ? data.layers.length : li;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(n);
+  });
+  const meshes = new Map();   // id -> mesh
+  const nodeList = [];
+  [...groups.keys()].sort((a, b) => a - b).forEach((key, gi) => {
+    const members = groups.get(key);
+    const R = 16 + gi * 4;
+    const tilt = gi * 0.35;
+    members.forEach((n, k) => {
+      const a = (2 * Math.PI * k) / members.length + gi * 0.4;
+      const p = new THREE.Vector3(R * Math.cos(a), 0, R * Math.sin(a)).applyAxisAngle(new THREE.Vector3(1, 0, 0), tilt);
+      const roll = n.rollup;
+      const color = ROLL_COLOR[roll];
+      const alert = roll === 'alert';
+      const mesh = new THREE.Mesh(
+        new THREE.SphereGeometry(alert ? 1.5 : 1.2, 16, 16),
+        new THREE.MeshStandardMaterial({
+          color: color, emissive: color,
+          emissiveIntensity: alert ? 0.9 : (roll === 'wip' ? 0.6 : 0.35),
+          roughness: 0.25, transparent: true, opacity: 1
+        })
+      );
+      mesh.position.copy(p);
+      mesh.userData = { node: n, kind: roll, base: 1 };
+      orbit.add(mesh);
+      meshes.set(n.id, mesh);
+      nodeList.push(mesh);
+    });
+  });
+
+  // エッジ（存在するノード同士のみ）
+  const edgeObjs = [];
+  // 接続線：WebGL の線は太さを変えられないため、細い円柱で描く（太さは画面上のピクセル数で指定）
+  const UNIT_CYL = new THREE.CylinderGeometry(1, 1, 1, 6, 1, true);
+  const UP_AXIS = new THREE.Vector3(0, 1, 0);
+  const _pa = new THREE.Vector3(), _pb = new THREE.Vector3(), _dir = new THREE.Vector3();
+  data.edges.forEach((e) => {
+    const a = meshes.get(e.from), b = meshes.get(e.to);
+    const st = styleOf(e.status);
+    const mat = new THREE.MeshBasicMaterial({ color: st.color, transparent: true, opacity: 0.45 });
+    const line = new THREE.Mesh(UNIT_CYL, mat);
+    _pa.copy(a.position); _pb.copy(b.position);
+    _dir.subVectors(_pb, _pa);
+    line.position.addVectors(_pa, _pb).multiplyScalar(0.5);
+    line.quaternion.setFromUnitVectors(UP_AXIS, _dir.clone().normalize());
+    line.userData = { edge: e, len: _dir.length() };
+    orbit.add(line);
+    edgeObjs.push({ line, e });
+  });
+  // 太さ（px）→ ワールド半径。毎フレーム計算し、ズームしても画面上の太さを保つ
+  const edgeStyle = { widthPx: 2 };
+  function updateEdgeWidths() {
+    const worldPerPx = (view.dist * 2 * TAN_HALF_V) / innerHeight;
+    const r = Math.max(0.001, (edgeStyle.widthPx / 2) * worldPerPx);
+    edgeObjs.forEach(({ line }) => { line.scale.set(r, line.userData.len, r); });
+  }
+
+  // ---------- 2b. 表示範囲（パン・ズーム・全体表示） ----------
+  // 注視点 target を中心に、距離 dist から正面を見る。
+  const TAN_HALF_V = Math.tan(THREE.MathUtils.degToRad(30)); // 縦視野60度の半分
+  const view = {
+    target: new THREE.Vector3(0, 0, 0),
+    dist: 100,
+    fitDist: 100,
+    // 全点が回転しても必ず画面に入る距離を求める（点が手前に来る場合も考慮）
+    fit() {
+      let maxR = 0;
+      meshes.forEach((m) => { maxR = Math.max(maxR, m.position.length()); });
+      const aspect = innerWidth / innerHeight;
+      const tanH = TAN_HALF_V * Math.min(1, aspect); // 横が狭い画面では横方向が制限
+      this.fitDist = maxR * (1 + 1 / tanH) + 4;
+      this.dist = this.fitDist;
+    },
+    // dx, dy は ±1 の方向指定（ボタン・矢印キー）
+    pan(dx, dy) {
+      const k = this.dist * 0.08;
+      this.target.x += dx * k;
+      this.target.y += dy * k;
+    },
+    // Shift+ドラッグ：画面のピクセル移動量ぶん動かす
+    panPixels(px, py) {
+      const k = (this.dist * 2 * TAN_HALF_V) / innerHeight;
+      this.target.x -= px * k;
+      this.target.y += py * k;
+    },
+    zoom(f) {
+      this.dist = Math.min(this.fitDist * 4, Math.max(8, this.dist * f));
+    },
+    reset() {
+      this.target.set(0, 0, 0);
+      this.fit();
+    },
+    apply() {
+      camera.position.set(this.target.x, this.target.y + this.dist * 0.25, this.target.z + this.dist);
+      camera.lookAt(this.target);
+    },
+  };
+  view.fit();
+  view.apply();
+
+  // 操作パネル・キーボード・ホイール
+  const actions = {
+    up: () => view.pan(0, 1), down: () => view.pan(0, -1),
+    left: () => view.pan(-1, 0), right: () => view.pan(1, 0),
+    zoomin: () => view.zoom(0.8), zoomout: () => view.zoom(1.25),
+    reset: () => view.reset(),
+  };
+  document.querySelectorAll('#view-ctrl button[data-act]').forEach((b) => {
+    b.addEventListener('click', () => actions[b.dataset.act]());
+  });
+  const KEYS = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', '+': 'zoomin', '=': 'zoomin', '-': 'zoomout', '0': 'reset' };
+  addEventListener('keydown', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
+    const a = KEYS[e.key];
+    if (a) { e.preventDefault(); actions[a](); }
+  });
+  renderer.domElement.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    view.zoom(e.deltaY > 0 ? 1.1 : 0.9);
+  }, { passive: false });
+
+  // ---------- 2d. Synapse オーバーレイ（シミュレーターの経路を重ね描き） ----------
+  // 経路の両端は実データのノード。経路線は実データの線とは別物で、データには含めない。
+  const SYNAPSE_PATH = [
+    { key: 'edge_hg_to_auth',  from: 'N050', to: 'N060' }, // Human Gate -> Authorization
+    { key: 'edge_auth_to_rt',  from: 'N060', to: 'N064' }, // Authorization -> RuntimeGate
+    { key: 'edge_rt_to_cons',  from: 'N064', to: 'N070' }, // RuntimeGate -> Consequence
+    { key: 'edge_cons_to_mem', from: 'N070', to: 'N074' }, // Consequence -> Memory
+  ];
+  // 色は 3D 側が状態から決める（受信側で色を信じない）
+  const SYN_COLOR = { VERIFIED: 0x2ecc71, BROKEN: 0xe74c3c, NOT_REACHED: 0x9a9a9a };
+  const SYN_STATUS = Object.keys(SYN_COLOR);
+  const synapseEdges = new Map(); // key -> 線（userData に状態を持つ）
+  SYNAPSE_PATH.forEach((p) => {
+    const a = meshes.get(p.from), b = meshes.get(p.to);
+    if (!a || !b) return; // 端点が無ければ描かない
+    _pa.copy(a.position); _pb.copy(b.position);
+    _dir.subVectors(_pb, _pa);
+    const mat = new THREE.MeshBasicMaterial({ color: SYN_COLOR.NOT_REACHED, transparent: true, opacity: 0.9 });
+    const line = new THREE.Mesh(UNIT_CYL, mat);
+    line.position.addVectors(_pa, _pb).multiplyScalar(0.5);
+    line.quaternion.setFromUnitVectors(UP_AXIS, _dir.clone().normalize());
+    line.userData = { synapseKey: p.key, len: _dir.length(), status: 'NOT_REACHED', widthPx: 1, highlight: false };
+    line.scale.set(0.01, line.userData.len, 0.01);
+    orbit.add(line);
+    synapseEdges.set(p.key, line);
+  });
+  // 状態を検証して反映する（不正な値・未知のキーは無視する）
+  function applySynapseStyles(payload) {
+    if (!payload || typeof payload !== 'object') return;
+    SYNAPSE_PATH.forEach((p) => {
+      const line = synapseEdges.get(p.key);
+      const s = payload[p.key];
+      if (!line || !s || SYN_STATUS.indexOf(s.status) === -1) return;
+      line.userData.status = s.status;
+      line.material.color.setHex(SYN_COLOR[s.status]);
+      line.userData.widthPx = Math.min(8, Math.max(1, Number(s.width) || 1));
+      line.userData.highlight = s.highlight === true;
+      if (!line.userData.highlight) line.material.opacity = 0.9;
+    });
+  }
+  // 太さ（px）と点滅（遮断箇所）を毎フレーム反映する
+  function updateSynapseOverlay(t) {
+    const worldPerPx = (view.dist * 2 * TAN_HALF_V) / innerHeight;
+    synapseEdges.forEach((line) => {
+      const ud = line.userData;
+      const r = Math.max(0.001, (ud.widthPx / 2) * worldPerPx);
+      line.scale.set(r, ud.len, r);
+      if (ud.highlight) line.material.opacity = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(t * 6));
+    });
+  }
+  // 親ページ（シミュレーター画面）からの指示だけを受け付ける
+  addEventListener('message', (e) => {
+    if (!window.parent || e.source !== window.parent) return;
+    const d = e.data;
+    if (!d || d.type !== 'synapse3d.styles') return;
+    applySynapseStyles(d.payload);
+  });
+  // 準備完了を親に知らせる（親は直後に現在の状態を送り直す）
+  if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'synapse3d.ready' }, '*');
+
+  // ---------- 2e. 創造演算の横のつながり（紫の閃光・仮説） ----------
+  // 演算はこのページ内の実データに対して行う（データを外へ出さない）。結果の要約だけを親へ返す。
+  const LAT_COLOR = 0xd08cff; // 明るい紫（発光が目立つように）
+  let lateralMeshes = [];
+  function clearLaterals() {
+    lateralMeshes.forEach((m) => { orbit.remove(m); m.material.dispose(); });
+    lateralMeshes = [];
+  }
+  function setLaterals(list) {
+    clearLaterals();
+    list.forEach((l) => {
+      const a = meshes.get(l.from), b = meshes.get(l.to);
+      if (!a || !b) return; // 端点が無ければ描かない
+      _pa.copy(a.position); _pb.copy(b.position);
+      _dir.subVectors(_pb, _pa);
+      const mat = new THREE.MeshBasicMaterial({ color: LAT_COLOR, transparent: true, opacity: 0.9 });
+      const m = new THREE.Mesh(UNIT_CYL, mat);
+      m.position.addVectors(_pa, _pb).multiplyScalar(0.5);
+      m.quaternion.setFromUnitVectors(UP_AXIS, _dir.clone().normalize());
+      m.userData = { lateralId: l.id, len: _dir.length(), widthPx: 5 };
+      m.scale.set(0.01, m.userData.len, 0.01);
+      orbit.add(m);
+      lateralMeshes.push(m);
+    });
+  }
+  // 紫の閃光：不透明度を時間で揺らし、太さは画面上の px で保つ
+  function updateLaterals(t) {
+    if (!lateralMeshes.length) return;
+    const worldPerPx = (view.dist * 2 * TAN_HALF_V) / innerHeight;
+    lateralMeshes.forEach((m) => {
+      const r = Math.max(0.001, (m.userData.widthPx / 2) * worldPerPx);
+      m.scale.set(r, m.userData.len, r);
+      m.material.opacity = 0.75 + 0.25 * Math.sin(t * 4);
+    });
+  }
+  // 創造演算を実行し、結果の要約を返す（ログ・未知数・横のつながり・刈り込みの内訳）
+  function runAwakening() {
+    if (typeof LogicEngine === 'undefined') return { error: 'ENGINE_NOT_LOADED' };
+    const res = LogicEngine.awaken({ nodes: data.nodes, edges: data.edges }, {});
+    const list = Synapse3DBridge.translateLateralTo3D(res);
+    setLaterals(list);
+    return {
+      status: res.status,
+      rounds: res.rounds,
+      unknown: res.unknown,
+      laterals: list,
+      constraints: res.constraints.length,
+      pruned: res.pruned.reduce((m, p) => { m[p.reason] = (m[p.reason] || 0) + 1; return m; }, {}),
+      log: res.log.map((l) => ({ step: l.step, msg: l.msg })),
+    };
+  }
+  // 親ページ（シミュレーター）からの「演算開始」だけを受け付ける
+  addEventListener('message', (e) => {
+    if (!window.parent || e.source !== window.parent) return;
+    if (!e.data || e.data.type !== 'synapse3d.awaken') return;
+    window.parent.postMessage({ type: 'synapse3d.awakened', result: runAwakening() }, '*');
+  });
+
+  // ---------- 2c. 表示設定（背景色・接続線の太さ） ----------
+  const DEFAULT_BG = '#0b0b0f';
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch (_) { /* 保存できない環境では無視 */ } },
+  };
+  function setBackground(hex) {
+    const c = new THREE.Color(hex);
+    renderer.setClearColor(c, 1);
+    scene.fog.color.copy(c);
+    document.body.style.background = hex;
+    const lum = 0.299 * c.r + 0.587 * c.g + 0.114 * c.b; // 0〜1
+    document.body.classList.toggle('light', lum > 0.6);
+    $('bg-color').value = hex;
+    store.set('mocka.bg', hex);
+  }
+  function setEdgeWidth(px) {
+    edgeStyle.widthPx = px;
+    $('edge-width').value = px;
+    $('edge-w-val').textContent = px;
+    store.set('mocka.edgeWidth', String(px));
+  }
+  $('bg-color').addEventListener('input', (e) => setBackground(e.target.value));
+  $('bg-reset').addEventListener('click', () => setBackground(DEFAULT_BG));
+  $('edge-width').addEventListener('input', (e) => setEdgeWidth(Number(e.target.value)));
+  const savedBg = store.get('mocka.bg');
+  setBackground(/^#[0-9a-fA-F]{6}$/.test(savedBg || '') ? savedBg : DEFAULT_BG);
+  const savedW = Number(store.get('mocka.edgeWidth'));
+  setEdgeWidth(savedW >= 1 && savedW <= 12 ? savedW : 2);
+
+  // ---------- 3. 検索・フィルタ（ノードとその接続線に反映） ----------
+  function applyFilter() {
+    const q = $('search-q').value.trim().toLowerCase();
+    const st = $('filter-status').value;
+    const visibleIds = new Set();
+    data.nodes.forEach((n) => {
+      const hay = [n.id, n.name, n.path, n.note, n.type].filter(Boolean).join(' ').toLowerCase();
+      const ok = (!q || hay.includes(q)) && (!st || n.incident.some((e) => e.status === st));
+      if (ok) visibleIds.add(n.id);
+      meshes.get(n.id).visible = ok;
+    });
+    edgeObjs.forEach(({ line, e }) => { line.visible = visibleIds.has(e.from) && visibleIds.has(e.to) && (!st || e.status === st); });
+    updateStatusLine(visibleIds.size);
+  }
+  function updateStatusLine(shown) {
+    $('meta-info').textContent =
+      'observed ' + (data.raw.observed_at || '-') +
+      ' | nodes ' + shown + '/' + data.nodes.length +
+      ' | edges ' + data.edges.length + ' | skipped ' + data.skipped;
+  }
+  $('search-q').addEventListener('input', applyFilter);
+  $('filter-status').addEventListener('change', applyFilter);
+  // 選択肢はデータに実際に出現するエッジ状態だけにする
+  $('filter-status').innerHTML = '<option value="">all status</option>';
+  [...new Set(data.edges.map((e) => e.status))].sort().forEach((s) => {
+    const o = document.createElement('option'); o.value = s; o.textContent = s; $('filter-status').appendChild(o);
+  });
+
+  // ---------- 4b. ラベル（選択ノードと接続先のファイル名を画面上に表示） ----------
+  const labelLayer = $('labels');
+  const labelOf = new Map(); // id -> 表示要素
+  function labelText(n) {
+    const p = n.path || '';
+    const base = p && p !== '.' ? p.split(/[\\/]/).pop() : '';
+    return n.id + ' · ' + (base || n.name || n.id);
+  }
+  function setLabels(ids) {
+    const keep = new Set(ids);
+    labelOf.forEach((el, id) => { if (!keep.has(id)) { el.remove(); labelOf.delete(id); } });
+    ids.forEach((id) => {
+      if (!labelOf.has(id)) {
+        const el = document.createElement('div');
+        el.className = 'lbl';
+        el.textContent = labelText(meshes.get(id).userData.node);
+        labelLayer.appendChild(el);
+        labelOf.set(id, el);
+      }
+      labelOf.get(id).classList.toggle('focus', id === focusId);
+    });
+  }
+  const _lblVec = new THREE.Vector3();
+  function updateLabels() {
+    labelOf.forEach((el, id) => {
+      const mesh = meshes.get(id);
+      if (!mesh.visible) { el.style.display = 'none'; return; }
+      mesh.getWorldPosition(_lblVec).project(camera);
+      if (_lblVec.z > 1 || Math.abs(_lblVec.x) > 1.1 || Math.abs(_lblVec.y) > 1.1) { el.style.display = 'none'; return; }
+      el.style.display = 'block';
+      el.style.left = ((_lblVec.x + 1) / 2 * innerWidth) + 'px';
+      el.style.top = ((-_lblVec.y + 1) / 2 * innerHeight) + 'px';
+    });
+  }
+
+  // ---------- 4. 操作（ドラッグ回転・クリックで詳細とフォーカス） ----------
+  let dragging = false, moved = 0, last = null, downAt = null, focusId = null;
+  renderer.domElement.addEventListener('pointerdown', (e) => {
+    dragging = true; moved = 0; last = { x: e.clientX, y: e.clientY }; downAt = { x: e.clientX, y: e.clientY };
+  });
+  addEventListener('pointerup', (e) => {
+    dragging = false;
+    const d = downAt;
+    downAt = null; // ボタン操作などで古い押下位置を使わないようにする
+    if (d && Math.hypot(e.clientX - d.x, e.clientY - d.y) < 5) pick(e.clientX, e.clientY);
+  });
+  addEventListener('pointermove', (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - last.x, dy = e.clientY - last.y;
+    moved += Math.abs(dx) + Math.abs(dy);
+    if (e.shiftKey) {
+      view.panPixels(dx, dy);
+    } else {
+      orbit.rotation.y += dx * 0.005;
+      orbit.rotation.x = Math.max(-1.2, Math.min(1.2, orbit.rotation.x + dy * 0.005));
+    }
+    last = { x: e.clientX, y: e.clientY };
+  });
+
+  const ray = new THREE.Raycaster();
+  function pick(cx, cy) {
+    const ndc = new THREE.Vector2((cx / innerWidth) * 2 - 1, -(cy / innerHeight) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(nodeList.filter((m) => m.visible), false)[0];
+    focusId = hit ? hit.object.userData.node.id : null;
+    applyFocus();
+  }
+
+  function applyFocus() {
+    if (!focusId) {
+      edgeObjs.forEach(({ line }) => { line.material.opacity = 0.45; });
+      $('detail').textContent = 'Select a node in 3D space to inspect. Click empty space to clear focus.';
+      setLabels([]);
+      return;
+    }
+    const n = meshes.get(focusId).userData.node;
+    const out = data.edges.filter((e) => e.from === focusId);
+    const inn = data.edges.filter((e) => e.to === focusId);
+    edgeObjs.forEach(({ line, e }) => {
+      line.material.opacity = (e.from === focusId || e.to === focusId) ? 1.0 : 0.08;
+    });
+    setLabels([...new Set([focusId, ...n.incident.map((e) => (e.from === focusId ? e.to : e.from))])]);
+    const d = $('detail');
+    d.innerHTML = '';
+    const title = document.createElement('b');
+    title.textContent = '[' + n.id + '] ' + n.name;
+    const lines = [
+      'Layer: ' + (n.layer || '-') + ' | Type: ' + (n.type || '-'),
+      'Path: ' + (n.path || 'N/A'),
+      'Rollup of edge statuses: ' + n.rollup + ' (ノード自身のステータスではない)',
+      'Outgoing: ' + out.length + ' | Incoming: ' + inn.length
+    ];
+    d.appendChild(title);
+    lines.forEach((t) => { d.appendChild(document.createElement('br')); d.appendChild(document.createTextNode(t)); });
+    n.incident.forEach((e) => {
+      const other = e.from === focusId ? e.to : e.from;
+      const row = document.createElement('div');
+      row.style.marginTop = '4px';
+      row.textContent = e.id + ' [' + e.status + '] ' + (e.from === focusId ? '→ ' : '← ') + other +
+        ' (' + e.relation + ')' + (e.note ? ' — ' + e.note : '');
+      d.appendChild(row);
+    });
+  }
+
+  // ---------- 5. 描画ループ（赤・黄ノードの警告脈動、自転） ----------
+  const clock = new THREE.Clock();
+  let rafId = 0;
+  function frame() {
+    rafId = requestAnimationFrame(frame);
+    const t = clock.getElapsedTime();
+    if (!dragging) orbit.rotation.y += 0.0008;
+    meshes.forEach((m) => {
+      const kind = m.userData.kind;
+      if (kind === 'alert') {
+        const s = 1 + Math.sin(t * 6) * 0.25;
+        m.scale.setScalar(s);
+        m.material.emissiveIntensity = 0.6 + 0.4 * (0.5 + 0.5 * Math.sin(t * 6));
+      } else if (kind === 'wip') {
+        m.scale.setScalar(1 + Math.sin(t * 3) * 0.12);
+      }
+    });
+    view.apply();
+    updateEdgeWidths();
+    updateSynapseOverlay(clock.getElapsedTime());
+    updateLaterals(clock.getElapsedTime());
+    renderer.render(scene, camera);
+    updateLabels();
+  }
+  frame();
+
+  addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+  addEventListener('pagehide', () => cancelAnimationFrame(rafId));
+
+  // テスト用に最小限の参照だけ公開（画面の動作には影響しない）
+  window.__mockaDebug = { meshes, edgeObjs, orbit, camera, view, synapseEdges, laterals: () => lateralMeshes.map((m) => ({ id: m.userData.lateralId, color: m.material.color.getHexString() })), get focusId() { return focusId; } };
+  updateStatusLine(data.nodes.length);
+})();
+</script>
+</body>
+</html>
