@@ -474,3 +474,9 @@ NSJP_KIMURA の許可（試行錯誤は診断・最適化して先へ進める�
 - 試験：Node 試験 31件 PASS（synapse_sim / logic_engine / synapse_bridge）。ブラウザ試験は未実行（前提が無い環境）。
 - 未公開：data/mocka_unified.json はリポジトリの data/* 除外規則により未コミット。src/mocka_3d.html の埋め込みデータには個人の絶対パスと内部注記を含むため、リモート公開前に扱いを決める必要がある。
 - MoCKA イベント記録：GL8 認可ゲートにより拒否（GL8_FAIL_1_NO_DECISION_ID）。本記録はその代替。
+
+## 13. 公開前の埋め込みデータの整理
+
+- src/mocka_3d.html の埋め込みデータ（mocka-data）から、個人の絶対パス（ホーム配下の場所）を `<HOME>` に置換し、`note` 欄を削除した。ノード 104 件・エッジ 128 件は変更していない。
+- 影響：ブラウザ試験 run_browser_check.js の検索期待値は、DATA で渡す元データ（note を含む）から計算されるため、note 欄を含む検索結果と差が出る可能性がある。実データで試験する場合は、note を除いた版を DATA に指定すること（未実施）。
+- 元の実データ（data/mocka_unified.json）は引き続き未コミット（ローカル保持）。
