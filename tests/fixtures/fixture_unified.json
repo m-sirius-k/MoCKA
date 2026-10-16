@@ -1,0 +1,208 @@
+{
+ "source": "fixture",
+ "schema_version": "unified-view-0.1",
+ "observed_at": "fixture",
+ "layers": [
+  "Context",
+  "Evidence",
+  "Decision",
+  "Authority",
+  "Authorization",
+  "Runtime",
+  "Consequence",
+  "Memory",
+  "Tool",
+  "External",
+  "Pending"
+ ],
+ "nodes": [
+  {
+   "id": "N001",
+   "type": "repo",
+   "name": "MoCKA repository",
+   "layer": "Context",
+   "path": ".",
+   "status": "CODE_CONFIRMED"
+  },
+  {
+   "id": "N010",
+   "type": "doc",
+   "name": "design overview",
+   "layer": "Evidence",
+   "path": "docs/overview.md",
+   "status": "DOCUMENTED"
+  },
+  {
+   "id": "N037",
+   "type": "service",
+   "name": "app.py (Flask 127.0.0.1:5000)",
+   "layer": "Runtime",
+   "path": "app.py",
+   "status": "RUNTIME_VERIFIED"
+  },
+  {
+   "id": "N050",
+   "type": "code",
+   "name": "phi_os/human_gate.py",
+   "layer": "Authority",
+   "path": "phi_os/human_gate.py",
+   "status": "CODE_CONFIRMED"
+  },
+  {
+   "id": "N053",
+   "type": "data",
+   "name": "data/prevention_queue.json",
+   "layer": "Authority",
+   "path": "data/prevention_queue.json",
+   "status": "PENDING"
+  },
+  {
+   "id": "N054",
+   "type": "route",
+   "name": "POST /decision/approve",
+   "layer": "Authority",
+   "path": "app.py",
+   "status": "PENDING"
+  },
+  {
+   "id": "N060",
+   "type": "table",
+   "name": "authorization_state",
+   "layer": "Authorization",
+   "path": "data/mocka_events.db#authorization_state",
+   "status": "STATE_OBSERVED"
+  },
+  {
+   "id": "N061",
+   "type": "table",
+   "name": "authorization_records",
+   "layer": "Authorization",
+   "path": "orchestra.db#authorization_records",
+   "status": "CONFIRMED_ABSENT"
+  },
+  {
+   "id": "N074",
+   "type": "db",
+   "name": "data/mocka_events.db",
+   "layer": "Memory",
+   "path": "data/mocka_events.db",
+   "status": "STATE_OBSERVED"
+  },
+  {
+   "id": "N088",
+   "type": "script",
+   "name": "migration script (not located)",
+   "layer": "Tool",
+   "path": "",
+   "status": "UNKNOWN"
+  },
+  {
+   "id": "N099",
+   "type": "api",
+   "name": "external approval API (status not supplied)",
+   "layer": "External",
+   "path": ""
+  },
+  {
+   "id": "N120",
+   "type": "decision",
+   "name": "H1 overview canonical",
+   "layer": "Pending",
+   "path": "mapping/unified",
+   "status": "PARTIAL"
+  }
+ ],
+ "edges": [
+  {
+   "id": "E001",
+   "from": "N037",
+   "to": "N054",
+   "relation": "defines_route",
+   "status": "CODE_CONFIRMED"
+  },
+  {
+   "id": "E002",
+   "from": "N054",
+   "to": "N050",
+   "relation": "calls_hg_approve",
+   "status": "CONFIRMED_ABSENT"
+  },
+  {
+   "id": "E003",
+   "from": "N053",
+   "to": "N074",
+   "relation": "state_divergence",
+   "status": "STATE_OBSERVED"
+  },
+  {
+   "id": "E004",
+   "from": "N060",
+   "to": "N061",
+   "relation": "mirrors",
+   "status": "CONFIRMED_ABSENT"
+  },
+  {
+   "id": "E005",
+   "from": "N120",
+   "to": "N037",
+   "relation": "decision_pending_for",
+   "status": "PENDING"
+  },
+  {
+   "id": "E006",
+   "from": "N001",
+   "to": "N037",
+   "relation": "contains",
+   "status": "CODE_CONFIRMED"
+  },
+  {
+   "id": "E007",
+   "from": "N088",
+   "to": "N099",
+   "relation": "calls",
+   "status": "UNKNOWN"
+  },
+  {
+   "id": "E008",
+   "from": "N050",
+   "to": "N060",
+   "relation": "reads",
+   "status": "PARTIAL"
+  },
+  {
+   "id": "E009",
+   "from": "N010",
+   "to": "N001",
+   "relation": "describes",
+   "status": "DOCUMENTED"
+  },
+  {
+   "id": "E010",
+   "from": "N054",
+   "to": "N074",
+   "relation": "writes",
+   "status": "STATE_OBSERVED"
+  },
+  {
+   "id": "E011",
+   "from": "N037",
+   "to": "N999",
+   "relation": "dangling_reference_fixture",
+   "status": "CONFIRMED_ABSENT"
+  },
+  {
+   "id": "E012",
+   "from": "N061",
+   "to": "N088",
+   "relation": "referenced_by",
+   "status": "CONFIRMED_ABSENT"
+  },
+  {
+   "id": "E013",
+   "from": "N120",
+   "to": "N054",
+   "relation": "decision_pending_for",
+   "status": "PENDING"
+  }
+ ]
+}

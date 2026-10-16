@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>1stパイプライン 仮想Synapseシミュレーター</title>
+<style>
+  :root { --bg:#0b0b0f; --fg:#eaeaea; --mut:#9a9a9a; --line:#333; --panel:#16161c; --ok:#2ecc71; --wip:#f1c40f; --bad:#e74c3c; }
+  body { margin:0; background:var(--bg); color:var(--fg); font-family:system-ui, "Yu Gothic", sans-serif; font-size:13px; padding:16px; box-sizing:border-box; }
+  h1 { font-size:16px; margin:0 0 4px; }
+  .meta { color:var(--mut); font-size:12px; margin-bottom:12px; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  button { background:#1c1c22; color:var(--fg); border:1px solid #444; border-radius:6px; padding:6px 12px; cursor:pointer; font-size:12px; }
+  button:hover { background:#2a2a33; }
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; margin-bottom:12px; }
+  .panel h2 { font-size:13px; margin:0 0 6px; }
+  table { border-collapse:collapse; width:100%; font-size:12px; }
+  td, th { border-bottom:1px solid var(--line); padding:4px; text-align:left; vertical-align:top; }
+  .VERIFIED, .pass { color:var(--ok); }
+  .BROKEN, .fail { color:var(--bad); }
+  .NOT_REACHED { color:var(--mut); }
+  .edge { display:inline-block; margin:2px 10px 2px 0; font-family:ui-monospace, monospace; }
+  pre { background:#0f0f14; border:1px solid var(--line); border-radius:6px; padding:8px; overflow:auto; max-height:260px; font-size:11px; white-space:pre-wrap; }
+  .log-BLOCKED { color:var(--bad); }
+  .lat-table td { font-family:ui-monospace, monospace; font-size:11px; }
+  .lat-id { color:#b084f5; }
+  .chain { display:flex; flex-wrap:wrap; align-items:center; gap:6px; font-size:12px; }
+  .chain .node { border:1px solid #444; border-radius:6px; padding:4px 8px; background:#1c1c22; }
+  .chain .link { min-width:56px; height:0; border-top:4px solid #9a9a9a; text-align:center; font-size:10px; color:var(--mut); }
+  .chain .link.VERIFIED { border-top-color:var(--ok); }
+  .chain .link.BROKEN { border-top:4px dashed var(--bad); }
+  .chain .link.NOT_REACHED { border-top-color:#9a9a9a; border-top-width:1px; }
+  .chain .link span { display:block; margin-top:-16px; }
+</style>
+</head>
+<body>
+<h1>1stパイプライン 仮想Synapseシミュレーター</h1>
+<div class="meta">Human Gate → Authorization → RuntimeGate → Consequence → Memory ／ すべてブラウザ内のメモリで完結（実DB・正本コードには触れません）</div>
+
+<div class="row">
+  <button id="btn-run">runVirtualPipelineTest()</button>
+  <button id="btn-a">Test A：無効な承認者</button>
+  <button id="btn-b">Test B：認可情報の欠損</button>
+  <button id="btn-c">Test C：ID不一致</button>
+  <button id="btn-all">異常系 A/B/C をまとめて実行</button>
+  <button id="btn-awaken" style="border-color:#b084f5">Synapse Awakening（創造演算の実行）</button>
+  <button id="btn-x">試験X：完全な断絶空間</button>
+  <button id="btn-y">試験Y：循環の注入</button>
+</div>
+
+<div class="panel">
+  <h2>結果</h2>
+  <div id="verdict">未実行</div>
+</div>
+
+<div class="panel">
+  <h2>接続（Synapse）の状態：3Dマップ連携フラグ</h2>
+  <div id="edges"></div>
+</div>
+
+<div class="panel">
+  <h2>チェックポイント</h2>
+  <table>
+    <thead><tr><th>ID</th><th>確認事項</th><th>期待</th><th>実際</th><th>判定</th></tr></thead>
+    <tbody id="cps"><tr><td colspan="5">未実行</td></tr></tbody>
+  </table>
+</div>
+
+<div class="panel">
+  <h2>3D空間エッジ反映プレビュー</h2>
+  <div id="chain" class="chain"></div>
+  <div class="meta" style="margin:6px 0 8px">緑の実線＝VERIFIED ／ 赤の点滅＝遮断箇所 ／ 灰の細線＝未到達（3Dマップ上の Synapse オーバーレイ）</div>
+  <iframe id="map3d" src="../mocka_3d.html" title="3D Mapping" style="width:100%;height:420px;border:1px solid #333;border-radius:6px;background:#000"></iframe>
+</div>
+
+<div class="panel">
+  <h2>創造演算（Synapse Awakening）</h2>
+  <div class="meta" style="margin-bottom:6px">UNKNOWN×3 → AND / OR / NOT → REM を回し、異層間の横のつながり（紫）を仮説として生成します。演算は 3D マップ側の実データに対して行われます。</div>
+  <div id="aw-summary">未実行</div>
+  <div id="aw-laterals" style="margin-top:8px"></div>
+</div>
+
+<div class="panel">
+  <h2>創造演算のログ</h2>
+  <pre id="aw-log">未実行</pre>
+</div>
+
+<div class="panel">
+  <h2>ログ</h2>
+  <pre id="log">未実行</pre>
+</div>
+
+<div class="panel">
+  <h2>フラグ（JSON）</h2>
+  <pre id="flags">未実行</pre>
+</div>
+
+<script src="pipeline.js"></script>
+<script src="bridge_to_3d.js"></script>
+<script src="logic_engine.js"></script>
+<script>
+(function () {
+  'use strict';
+  const S = window.SynapseSim;
+  const $ = (id) => document.getElementById(id);
+  const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  function renderVerdict(r, title) {
+    const verdict = r.ok
+      ? '<b class="pass">合格</b>：全接続が VERIFIED'
+      : '<b class="fail">遮断</b>：' + esc(r.broken.edge) + '（理由：' + esc(r.broken.reason) + '）';
+    $('verdict').innerHTML = esc(title || '') + ' ／ ' + verdict;
+  }
+
+  // 詳細（接続・CP・ログ・フラグ）。一括実行の結果表示を上書きしないよう、判定とは分けて描画する
+  // ---- 3D マップ（iframe）との連携 ----
+  const map3d = $('map3d');
+  const NODE_LABELS = ['Human Gate', 'Authorization', 'RuntimeGate', 'Consequence', 'Memory'];
+  let lastPayload = {};
+  function sendTo3D(payload) {
+    lastPayload = payload;
+    if (map3d && map3d.contentWindow) {
+      map3d.contentWindow.postMessage({ type: 'synapse3d.styles', payload: payload }, '*');
+    }
+  }
+  window.addEventListener('message', (e) => {
+    if (!map3d || e.source !== map3d.contentWindow) return;
+    if (e.data && e.data.type === 'synapse3d.ready') sendTo3D(lastPayload);
+  });
+  function renderChain(styles) {
+    const keys = Synapse3DBridge.OVERLAY_KEYS;
+    let html = '';
+    NODE_LABELS.forEach((label, i) => {
+      html += '<span class="node">' + esc(label) + '</span>';
+      if (i < keys.length) {
+        const s = styles[keys[i]];
+        const cls = s.status + (s.highlight ? ' blink' : '');
+        html += '<span class="link ' + cls + '"><span>' + esc(s.status) + '</span></span>';
+      }
+    });
+    $('chain').innerHTML = html;
+  }
+
+  function renderDetails(r) {
+    const styles = Synapse3DBridge.translateTo3DStyles(r);
+    renderChain(styles);
+    sendTo3D(Synapse3DBridge.toPayload(styles));
+    $('edges').innerHTML = Object.entries(r.edges).map(([k, v]) =>
+      '<span class="edge ' + v + '">' + esc(k) + ' = ' + v + '</span>').join('');
+    $('cps').innerHTML = r.checkpoints.map((c) =>
+      '<tr><td>' + c.id + '</td><td>' + esc(c.label) + '</td><td>' + esc(c.expected) + '</td><td>' + esc(c.actual) +
+      '</td><td class="' + (c.pass ? 'pass">PASS' : 'fail">FAIL') + '</td></tr>').join('');
+    $('log').innerHTML = r.log.map((l) =>
+      '<span class="' + (l.step === 'BLOCKED' ? 'log-BLOCKED' : '') + '">[' + esc(l.step) + '] ' + esc(l.msg) + '</span>').join('\n');
+    $('flags').textContent = JSON.stringify({ ok: r.ok, broken: r.broken, edges: r.edges }, null, 2);
+  }
+
+  function showRun(r, title) { renderVerdict(r, title); renderDetails(r); }
+
+  $('btn-run').addEventListener('click', () => showRun(S.runVirtualPipelineTest(), '正常系'));
+  $('btn-a').addEventListener('click', () => showRun(S.runVirtualPipelineTest({ humanEvent: { approved_by: 'unknown_user' } }), 'Test A'));
+  $('btn-b').addEventListener('click', () => showRun(S.runVirtualPipelineTest({ skipAuth: true }), 'Test B'));
+  $('btn-c').addEventListener('click', () => showRun(S.runVirtualPipelineTest({ consequenceAuthIdOverride: 'auth_999' }), 'Test C'));
+  $('btn-all').addEventListener('click', () => {
+    const s = S.runDebugSuite();
+    const lines = Object.entries(s).map(([k, r]) =>
+      k + '： ' + (r.ok ? '合格（想定外）' : '遮断 ' + r.broken.edge + ' / ' + r.broken.reason));
+    $('verdict').innerHTML = '異常系の一括結果<br>' + lines.map(esc).join('<br>');
+    renderDetails(s.testC_idMismatch);
+  });
+
+  // ---- 創造演算（Synapse Awakening） ----
+  const LE = window.LogicEngine;
+  function renderAwakening(res, title) {
+    if (!res || res.error) {
+      $('aw-summary').textContent = '演算を実行できませんでした: ' + (res && res.error ? res.error : '不明');
+      return;
+    }
+    // 刈り込みは「理由ごとの件数」に揃えて表示する（3D からは件数、ローカルからは配列で届くため両方に対応）
+    const prunedCounts = Array.isArray(res.pruned)
+      ? res.pruned.reduce((m, p) => { m[p.reason] = (m[p.reason] || 0) + 1; return m; }, {})
+      : (res.pruned || {});
+    const pr = Object.entries(prunedCounts).map(([k, v]) => k + ' ' + v).join(' / ') || 'なし';
+    const constraintCount = Array.isArray(res.constraints) ? res.constraints.length : (res.constraints || 0);
+    $('aw-summary').innerHTML = esc(title || '') + ' ／ <b>status=' + esc(res.status) + '</b> ／ ラウンド ' + res.rounds +
+      ' ／ 横のつながり <b class="lat-id">' + res.laterals.length + ' 件</b> ／ 制約 ' + constraintCount +
+      '<br>未知数：α=' + res.unknown.alpha + ' β=' + res.unknown.beta + ' ζ=' + res.unknown.zeta +
+      ' ／ ホワイトスペース=' + res.unknown.whitespace + '<br>刈り込み：' + esc(pr);
+    $('aw-laterals').innerHTML = res.laterals.length
+      ? '<table class="lat-table"><thead><tr><th>ID</th><th>対</th><th>経路（via）</th><th>ラウンド</th></tr></thead><tbody>' +
+        res.laterals.map((l) => '<tr><td class="lat-id">' + esc(l.id) + '</td><td>' + esc(l.from) + ' ↔ ' + esc(l.to) +
+          '</td><td>' + esc((l.branches || []).join(', ')) + '</td><td>' + esc(l.round) + '</td></tr>').join('') +
+        '</tbody></table>'
+      : '<span class="meta">横のつながりは生成されませんでした。</span>';
+    $('aw-log').innerHTML = (res.log || []).map((l) =>
+      '<span class="' + (l.step === 'REM' && /循環/.test(l.msg) ? 'log-BLOCKED' : '') + '">[' + esc(l.step) + '] ' + esc(l.msg) + '</span>').join('\n');
+  }
+  $('btn-awaken').addEventListener('click', () => {
+    if (!map3d || !map3d.contentWindow) { $('aw-summary').textContent = '3Dマップが未読み込みです'; return; }
+    $('aw-summary').textContent = '演算中…';
+    map3d.contentWindow.postMessage({ type: 'synapse3d.awaken' }, '*');
+  });
+  window.addEventListener('message', (e) => {
+    if (!map3d || e.source !== map3d.contentWindow) return;
+    if (e.data && e.data.type === 'synapse3d.awakened') renderAwakening(e.data.result, '3Dマップの実データ');
+  });
+  // 異常系の試験（合成グラフ）。Test X：証拠が無い空間 / Test Y：循環を注入
+  const X_GRAPH = { nodes: [{ id: 'n1', layer: 'L1' }, { id: 'n2', layer: 'L2' }, { id: 'n3', layer: 'L3' }, { id: 'n4', layer: 'Pending' }], edges: [] };
+  const Y_GRAPH = { nodes: [{ id: 'A', layer: 'L1' }, { id: 'B', layer: 'L2' }, { id: 'C', layer: 'L3' }, { id: 'D', layer: 'L4' }],
+    edges: [{ from: 'A', to: 'C', status: 'CODE_CONFIRMED' }, { from: 'C', to: 'B', status: 'CODE_CONFIRMED' }, { from: 'B', to: 'D', status: 'UNKNOWN' }] };
+  $('btn-x').addEventListener('click', () => renderAwakening(LE.awaken(X_GRAPH), '試験X（完全な断絶空間）'));
+  $('btn-y').addEventListener('click', () => renderAwakening(LE.awaken(Y_GRAPH, { injectFlipPair: 'A|B', maxRounds: 5 }), '試験Y（循環を注入）'));
+
+  // 起動時は正常系を一度走らせ、画面を埋める
+  showRun(S.runVirtualPipelineTest(), '正常系（起動時）');
+})();
+</script>
+</body>
+</html>
