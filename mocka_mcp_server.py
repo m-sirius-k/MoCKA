@@ -186,7 +186,7 @@ def _verify_event_written(event_id, expected_title=None, expected_description=No
                 "event_id": event_id
             }
 
-        if expected_description and short_summary != expected_description[:200]:
+        if expected_description and (short_summary or "")[:200] != expected_description[:200]:
             return {
                 "verified": False,
                 "state": "MISMATCH",
@@ -536,7 +536,7 @@ TOOLS = [
     {"name":"mocka_list_events","description":"events.csv 最新N件","inputSchema":{"type":"object","properties":{"n":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_read_event","description":"IDでイベント取得","inputSchema":{"type":"object","properties":{"id":{"type":"string"}},"required":["id"]}},
     {"name":"mocka_search","description":"全文検索","inputSchema":{"type":"object","properties":{"query":{"type":"string"}},"required":["query"]}},
-    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"}},"required":["title","description","author"]}},
+    {"name":"mocka_write_event","description":"イベント追記","inputSchema":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"tags":{"type":"string"},"author":{"type":"string","description":"必須: 正確なAI識別子 e.g. Claude-sonnet-4-6, gpt-4o, script:xxx"},"why_purpose":{"type":"string"},"how_trigger":{"type":"string"},"scope":{"type":"string","description":"任意。ゲートの判定範囲。許可リスト(mapping/)内のみ有効。それ以外は全体判定(fail closed)。"}},"required":["title","description","author"]}},
     {"name":"mocka_seal","description":"SHA-256ハッシュ","inputSchema":{"type":"object","properties":{},"required":[]}},
     {"name":"mocka_get_incidents","description":"インシデント履歴を取得する（カテゴリ別フィルタ可）","inputSchema":{"type":"object","properties":{"category":{"type":"string","default":""},"limit":{"type":"integer","default":20}},"required":[]}},
     {"name":"mocka_get_guidelines","description":"guidelines.json（行動指針）を返す","inputSchema":{"type":"object","properties":{},"required":[]}},

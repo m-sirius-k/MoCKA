@@ -59,6 +59,11 @@ WRITE_TOOLS = {
 
 GROUNDING_REFRESH_SECONDS = 60
 
+# 2026-10-18 HG承認(許可リスト方式)により追加: 書き込み系toolが args["scope"] で指定できる範囲。
+# 許可リスト外の scope は無視され、従来どおりリポジトリ全体で判定する(fail closed)。
+# 判定の閾値(expected_max_changes=400)は変更しない。
+SCOPED_WRITE_ALLOWLIST = ("mapping/",)
+
 
 @dataclass
 class GovernanceDecision:
@@ -112,6 +117,10 @@ class GovernancePipeline:
             # 既存の未関連dirty state(バックグラウンド自動同期)をabort対象にせず、
             # GL7のnew_directory_detected/grounding_not_completed/件数異常のみを有効にする。
             scope = grounding.project_structure
+            # 2026-10-18 HG承認: 許可リスト内の scope 指定だけを判定範囲に絞る。
+            requested = args.get("scope") if isinstance(args, dict) else None
+            if isinstance(requested, str) and requested.startswith(SCOPED_WRITE_ALLOWLIST):
+                scope = [requested]
             approval = self.execution.pre_execution_check({
                 "scope": scope,
                 "expected_new_dirs": scope,
