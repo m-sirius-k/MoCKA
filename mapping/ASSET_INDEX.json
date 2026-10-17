@@ -1,0 +1,2948 @@
+{
+  "schema_version": "0.1",
+  "generated_for": "MoCKA repository (mapping foundation v0.1)",
+  "repo_root": "C:/Users/sirok/MoCKA",
+  "verification_mode": "STATIC_AND_READONLY_DB",
+  "last_verified": "2026-10-10",
+  "notes_global": "Static inspection (file listing, file headers, grep for references) plus read-only SQLite row counts. No server started, no test executed, no write to any DB. status.usage and status.verification are NOT_VERIFIED unless stated otherwise.",
+  "status_vocabulary": {
+    "presence": [
+      "PRESENT",
+      "MISSING",
+      "UNKNOWN"
+    ],
+    "connection": [
+      "CONNECTED",
+      "NOT_VERIFIED",
+      "UNKNOWN"
+    ],
+    "usage": [
+      "USED",
+      "NOT_VERIFIED",
+      "UNKNOWN"
+    ],
+    "enforcement": [
+      "ENFORCED",
+      "NOT_VERIFIED",
+      "UNKNOWN"
+    ],
+    "verification": [
+      "VERIFIED",
+      "NOT_VERIFIED",
+      "UNKNOWN"
+    ]
+  },
+  "assets": [
+    {
+      "asset_id": "A001",
+      "path": "AGENTS.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/AGENTS.md",
+      "name": "KUROKO startup protocol (AGENTS)",
+      "asset_type": "doc",
+      "system": "governance",
+      "purpose": "AI(KUROKO)の起動手順と、MoCKAのファイル変更プロトコル(CHANGE_START/CHANGE_DONE記録、UTF-8検証)を定める。",
+      "authority_level": "operational_protocol",
+      "source_of_truth": true,
+      "related_assets": [
+        "A002",
+        "A003",
+        "A013"
+      ],
+      "entry_points": [
+        "mocka_get_overview()",
+        "mocka_get_todo()",
+        "mocka_get_essence()",
+        "mocka_get_guidelines()"
+      ],
+      "capabilities": [
+        "AI起動時の確認手順",
+        "変更記録の手順定義"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭60行を読み、起動手順と禁則を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "文書上の手順であり、AIがこの手順を実際に実行したかは未確認。"
+    },
+    {
+      "asset_id": "A002",
+      "path": ".claude/CLAUDE.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/.claude/CLAUDE.md",
+      "name": "Claude project rules (CLAUDE.md)",
+      "asset_type": "config",
+      "system": "governance",
+      "purpose": "Claude向けの禁則事項(CP932汚染防止、非ASCII装飾記号の禁止、ファイル変更記録、Decision Ledger記録義務、Drift対応方針)を定める。",
+      "authority_level": "operational_protocol",
+      "source_of_truth": true,
+      "related_assets": [
+        "A001",
+        "A003",
+        "A032",
+        "A036"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "全文を読み、禁則と参照文書を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "AI_BOOT_HUB.md の Boot Procedure 1 がこのファイルを参照"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "CLAUDE.mdの内容はセッションに自動読込される設計だが、その読込の実行証拠は未確認。本ファイルには mocka_get_* 等の内部ツール名が多く含まれる。"
+    },
+    {
+      "asset_id": "A003",
+      "path": "AI_BOOT_HUB.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/AI_BOOT_HUB.md",
+      "name": "AI Boot Hub (entry index)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "AI全般向けの入口。起動順序、正本の分類(Single Source Registry)、AIごとの読取・書込能力、Decision Chain/Case Registryの保存場所を示す。自身は情報を持たず参照先のみを示すと明記。",
+      "authority_level": "operational_protocol",
+      "source_of_truth": true,
+      "related_assets": [
+        "A001",
+        "A002",
+        "A004",
+        "A032",
+        "A033",
+        "A035",
+        "A034"
+      ],
+      "entry_points": [],
+      "capabilities": [
+        "AI別の読取・書込能力の一覧(文書上の記述)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "全文読解。Capability Matrix / Reader Matrix / Case Registry 欄を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "Capability/Reader Matrixは文書上の記述であり、現行の到達性・実行は未検証。Case Registry は文書上'存在しない'と記載。"
+    },
+    {
+      "asset_id": "A004",
+      "path": "CONSTITUTION.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/CONSTITUTION.md",
+      "name": "MoCKA Encoding Policy v1.01 (file named CONSTITUTION.md)",
+      "asset_type": "doc",
+      "system": "governance",
+      "purpose": "テキスト資産のエンコーディング規約(UTF-8正規形、CSVはUTF-8-SIG、encoding未指定の禁止、文字化け検知時のHALT)。",
+      "authority_level": "constitutional_policy",
+      "source_of_truth": true,
+      "related_assets": [
+        "A002",
+        "A001"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "全文(4条)を読解"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "ファイル名は CONSTITUTION だが内容はエンコーディング規約のみ。MoCKAの制度憲章(MOCKA_OVERVIEW.json の constitution 項目など)とは別物として扱う。名称と内容の不一致あり(OPEN_QUESTIONS参照)。"
+    },
+    {
+      "asset_id": "A005",
+      "path": "ARCHITECTURE.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/ARCHITECTURE.md",
+      "name": "Architecture overview (root)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "INFIELD(ローカル記憶)->SHA256チェーン->Ed25519ガバナンス->Multi-Observer層という高レベル構成図を示す。",
+      "authority_level": "design_record",
+      "source_of_truth": null,
+      "related_assets": [
+        "A006",
+        "A044"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭部(Mermaid構成図)を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "docs/architecture/ARCHITECTURE.md と重複の可能性がある。内容の同一性は未比較。"
+    },
+    {
+      "asset_id": "A006",
+      "path": "ARCHITECTURE_REGISTRY.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/ARCHITECTURE_REGISTRY.json",
+      "name": "Architecture registry (project scope rules)",
+      "asset_type": "registry",
+      "system": "governance",
+      "purpose": "プロジェクトごとの許可モジュール・禁止モジュールを定義する。MoCKAについては AI運用/制度/PHI-OS/Memory/Event/Governance/監査/オーケストレーション/Caliber を許可し、SEO・Distribution・Marketing等を禁止。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": null,
+      "related_assets": [
+        "A005",
+        "A044"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭部(version 1.0, last_updated 2026-06-17, MoCKA の allowed/forbidden modules)を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "この禁止リストを強制する実行時の検査は未確認。"
+    },
+    {
+      "asset_id": "A007",
+      "path": "docs/MOCKA_ORIGIN.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/MOCKA_ORIGIN.md",
+      "name": "MoCKA origin",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "MoCKAの起源と原則(RECORD/VERIFY/INHERIT、AIは信用せず制度で縛る)を述べる。",
+      "authority_level": "constitutional_policy",
+      "source_of_truth": null,
+      "related_assets": [
+        "A008",
+        "A010"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "KUROKO_PC_SYNapse_MASTER_MAP_20261003.md が MOCKA_ORIGIN.md を起源として引用"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "内容は要約のみ確認(詳細未読)。"
+    },
+    {
+      "asset_id": "A008",
+      "path": "docs/INDEX.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/INDEX.md",
+      "name": "MoCKA Insight System docs index",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "docs/ 配下の入口。アーキテクチャ概要画像とリリースノートへの参照を示す。",
+      "authority_level": "design_record",
+      "source_of_truth": false,
+      "related_assets": [
+        "A007",
+        "A009",
+        "A010"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "全文(短い索引)を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "索引として非常に狭い(3項目)。網羅的な索引は本 mapping/ が担う。"
+    },
+    {
+      "asset_id": "A009",
+      "path": "docs/NAMING_CONVENTION.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/NAMING_CONVENTION.md",
+      "name": "MoCKA naming convention",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "正規名称(mocka_receptor, mocka_Movement, shadow_Movement, acceptor:infield/outfield, caliber群等)を固定する。Status: FIXED。",
+      "authority_level": "constitutional_policy",
+      "source_of_truth": true,
+      "related_assets": [
+        "A008",
+        "A010"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭部(Status: FIXED, Authority: nsjp_kimura)を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "名称の現行コードへの適用状況は未確認。"
+    },
+    {
+      "asset_id": "A010",
+      "path": "docs/STRUCTURE.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/STRUCTURE.md",
+      "name": "docs structure definition",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "docs/ の公開層(architecture/caliber/api/incidents/governance/images)と非公開層(secrets/, data/)の境界を定義する。",
+      "authority_level": "design_record",
+      "source_of_truth": true,
+      "related_assets": [
+        "A008",
+        "A009"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "全文読解"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "STRUCTURE に列挙されたサブディレクトリの実在は未全件確認。"
+    },
+    {
+      "asset_id": "A011",
+      "path": "docs/governance",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/governance",
+      "name": "governance documents directory",
+      "asset_type": "directory",
+      "system": "governance",
+      "purpose": "制度・規約・方針の文書群。Markdown 390件を含む(件数は listing による)。",
+      "authority_level": "constitutional_policy",
+      "source_of_truth": null,
+      "related_assets": [
+        "A012",
+        "A013",
+        "A032"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "ls で .md 390件を確認(中身は個別に未読)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "個別文書の正本性・現行性は一括では判定できない。AI_BOOT_HUB が 'docs/governance/GPT_RESTRICTIONS.md は更新停止の可能性あり' と記す。"
+    },
+    {
+      "asset_id": "A012",
+      "path": "docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/governance/MOCKA_THOUGHT_EVOLUTION_v0.1.md",
+      "name": "MoCKA thought evolution (Gen0-Gen9)",
+      "asset_type": "doc",
+      "system": "governance",
+      "purpose": "MoCKA思想の世代史。Gen9 を Knowledge Activation(北極星)と位置づけ、Reason->Knowledge->Institution->Behavior の系譜を示す。",
+      "authority_level": "design_record",
+      "source_of_truth": true,
+      "related_assets": [
+        "A013",
+        "A011",
+        "A037"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭部の世代表を確認"
+        },
+        {
+          "kind": "file_read",
+          "detail": ".claude/CLAUDE.md の参照文書欄から参照されている"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "Gen9 の Knowledge Activation の実装は、ACTIVATION_POLICY 上'実装は延期'とされる(A013 参照)。"
+    },
+    {
+      "asset_id": "A013",
+      "path": "docs/governance/ACTIVATION_POLICY_v0.1.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/governance/ACTIVATION_POLICY_v0.1.md",
+      "name": "Knowledge Activation Policy v0.1",
+      "asset_type": "doc",
+      "system": "governance",
+      "purpose": "知識を'いつ参照するか'(Activation Policy)、Reason Unit から Knowledge Asset への昇格(Review Gate)を定める。",
+      "authority_level": "design_record",
+      "source_of_truth": true,
+      "related_assets": [
+        "A012",
+        "A030",
+        "A031"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭部を確認"
+        },
+        {
+          "kind": "file_read",
+          "detail": ".claude/CLAUDE.md の参照文書欄から参照されている"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "文書上 Review Gate は phi_os/human_gate.py へ統合予定とされる。実装は延期と記載。統合の実行状況は未確認。"
+    },
+    {
+      "asset_id": "A014",
+      "path": "docs/audits/PHI_MEMORY_ARCHITECTURE_v1.0.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/audits/PHI_MEMORY_ARCHITECTURE_v1.0.md",
+      "name": "PHI Memory Architecture v1.0",
+      "asset_type": "doc",
+      "system": "memory",
+      "purpose": "PHI-OS と Memory の関係に関する設計記録。",
+      "authority_level": "design_record",
+      "source_of_truth": null,
+      "related_assets": [
+        "A025",
+        "A021",
+        "A020"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "docs/audits 配下に存在を確認(本文は未読)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "本文未読。内容の要約は記載しない。"
+    },
+    {
+      "asset_id": "A015",
+      "path": "docs/audits/JARVIS_CAPABILITY_INVENTORY.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/audits/JARVIS_CAPABILITY_INVENTORY.md",
+      "name": "JARVIS capability inventory",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "JARVIS の機能一覧(監査資料)。JARVIS関連は docs/audits に JARVIS_ARCHITECTURE_CURRENT / JARVIS_BOUNDARY_ANALYSIS / JARVIS_GAP_ANALYSIS / JARVIS_RUNTIME_FLOW 等が並ぶ。",
+      "authority_level": "audit_record",
+      "source_of_truth": false,
+      "related_assets": [
+        "A025",
+        "A016"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "存在確認。本文は未読"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "監査時点の記録であり、現在の機能状態を証明しない。JARVIS の実装体(コード)は本台帳作成時点で特定できていない(OPEN_QUESTIONS参照)。"
+    },
+    {
+      "asset_id": "A016",
+      "path": "docs/architecture/ARCHITECTURE_MOCKA_2_0_v1.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/docs/architecture/ARCHITECTURE_MOCKA_2_0_v1.md",
+      "name": "MoCKA 2.0 architecture v1",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "MoCKA 2.0 のアーキテクチャ設計記録。",
+      "authority_level": "design_record",
+      "source_of_truth": null,
+      "related_assets": [
+        "A005",
+        "A013"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "存在確認。本文は未読"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "本文未読。gateway/README.md は 'Layer 0-3' の構成を記すが、本文との一致は未比較。"
+    },
+    {
+      "asset_id": "A017",
+      "path": "KUROKO_PC_SYNapse_MASTER_MAP_20261003.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/KUROKO_PC_SYNapse_MASTER_MAP_20261003.md",
+      "name": "KUROKO PC - Synapse master map (2026-10-03 audit)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "既存の監査報告。Synapse は新規発明ではなく MoCKA の Knowledge Activation(Gen9)として既に設計されていると結論づける。READ-ONLY 考古学的監査。",
+      "authority_level": "audit_record",
+      "source_of_truth": false,
+      "related_assets": [
+        "A018",
+        "A012",
+        "A013",
+        "A041"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "先頭(PART 0, PART 1)を読解。結論: Synapse = Knowledge Activation、未実装"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "報告の結論(Knowledge Activation は未接続)は 2026-10-03 時点の記載。現在の状態は再確認していない。本 mapping の Synapse 項目はこれを再利用する。"
+    },
+    {
+      "asset_id": "A018",
+      "path": "KUROKO_PC_MOCKA_KNOWLEDGE_GRAPH_20261003.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/KUROKO_PC_MOCKA_KNOWLEDGE_GRAPH_20261003.md",
+      "name": "KUROKO PC - MoCKA knowledge graph (2026-10-03 audit)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "既存の監査報告。MoCKA を知識グラフとして描き、Synapse テストケースと Butterfly-effect 経路を示す。",
+      "authority_level": "audit_record",
+      "source_of_truth": false,
+      "related_assets": [
+        "A017",
+        "A041"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "先頭部(PART 1 グラフ)を読解"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "監査報告。グラフのノードは 'Runtime NOT_ACTIVATED' 等と記すが、現行の確認は未実施。"
+    },
+    {
+      "asset_id": "A019",
+      "path": "mocka_mcp_server.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/mocka_mcp_server.py",
+      "name": "MoCKA MCP server",
+      "asset_type": "code",
+      "system": "mcp-server",
+      "purpose": "MoCKA の MCP 内部標準I/F。events.db の読み書き、TODO、Decision、Integrity、Registry、Seal、Search 等のツールを提供する。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A032",
+        "A033",
+        "A035",
+        "A016",
+        "A015",
+        "A003"
+      ],
+      "entry_points": [
+        "HTTP /mcp (mcp_endpoint)",
+        "port 5002 (app.run host 0.0.0.0)",
+        "execute_tool(name, args) 内の 25 ツール"
+      ],
+      "capabilities": [
+        "mocka_add_todo",
+        "mocka_decision_get",
+        "mocka_decision_list",
+        "mocka_decision_write",
+        "mocka_get_command_center",
+        "mocka_get_essence",
+        "mocka_get_guidelines",
+        "mocka_get_incidents",
+        "mocka_get_overview",
+        "mocka_get_phl",
+        "mocka_get_spp",
+        "mocka_get_todo",
+        "mocka_integrity_get",
+        "mocka_integrity_list",
+        "mocka_integrity_write",
+        "mocka_list_events",
+        "mocka_read_event",
+        "mocka_registry_add",
+        "mocka_registry_current_state",
+        "mocka_registry_get",
+        "mocka_search",
+        "mocka_search_incidents",
+        "mocka_seal",
+        "mocka_update_todo",
+        "mocka_write_event"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "USED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "execute_tool 内の name == 分岐から 25 ツール名を抽出"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "DB_PATH = BASE/data/mocka_events.db、app.run(port=5002) を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "gateway/gateway.py が 5002 MCP を接続先として記載"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "MCP tools/list (read) 応答 23 件; tools/call mocka_search 応答あり"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 POST /mcp tools/list -> 公開23件 (200)"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 POST /mcp tools/call mocka_search(\"Knowledge Activation\") -> events_hits 8, knowledge_gate_hits 1 (200)"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 POST /mcp tools/call mocka_read_event(E20260913_4757723792197) -> 取得成功, data_integrity=normal"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 POST /mcp tools/call mocka_decision_get(DC_20260913_001) -> status not_found"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "search_knowledge_gate() は mocka_mcp_server.py:266 に定義, data/ 配下を文字列検索"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 mocka_mcp_server.py: app.run host 0.0.0.0 port 5002 (1617 行)。before_request は要求ログのみ (223 行)。/mcp ハンドラに鍵の検査なし。外部転送の設定は cloudflared (mcp.nsjp.org) と ngrok (addr 5002) に存在。到達性は未確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 mocka_write_event (752 行) は POST :5000/api/gate/event に転送する (直接 SQL 無し)。Phase 4 の統合経路は CAPABILITY_MAP 19 節と MASTER_MAP 12 節"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 MCP の認証境界 (Phase 5): before_request は要求ログのみ (223 行)。/oauth/authorize は認証無しで認可コードを返す。/oauth/token のアクセストークンは保存も検証もされない。/register は誰でも登録可能。汎用プロキシ /api/<path> (1562 行付近) は localhost:5000 へ全ヘッダと本文を転送。EVENT_GATE_CONTROL_PACKAGE.md 5 節"
+        },
+        {
+          "kind": "file_read",
+          "detail": "2026-10-10 records/experiments/MCP/oauth_debug_request_log.txt (経路と応答コードと送信元の集計のみ): authorize 6、token 4、register 4、/mcp 26。送信元は 127.0.0.1 (27)、0.0.0.0 (1)。外部からの利用の証拠は無い (網羅性は不明)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "2026-10-10 訂正: tools/list の公開ツールは23件 (mocka_check_utf8 を含み、mocka_get_phl/mocka_get_spp/mocka_search_incidents は公開リストに無い)。execute_tool の分岐は25件。稼働確認は読取 (GET /health 200, tools/call 応答)。ヘルスの event_count 24731 は read 経路の integrity フィルタによる (VERIFICATION_LOG 参照)。 2026-10-10 (Phase 3): 認証の不在は静的な事実。外部公開の到達性は未確認。POST の本文を stdout に出力する。 2026-10-10 (Phase 5): 認証境界の静的な事実は確認済み。外部到達性は未確認。書込み系ツールは本作業では呼んでいない。 2026-10-10 (Phase 6): OAuth 経路の実験ログが存在する。実運用の証拠は無い。"
+    },
+    {
+      "asset_id": "A020",
+      "path": "app.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/app.py",
+      "name": "COMMAND CENTER (Flask app)",
+      "asset_type": "code",
+      "system": "command-center",
+      "purpose": "COMMAND CENTER の Flask アプリ。decision/log、trend、user_voice、collaborate、caliber、orchestra、ask、claim、collect、success、integrity/status、seal/history、loop/status 等の HTTP ルートを持つ。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A019",
+        "A029",
+        "A046",
+        "A032",
+        "A026"
+      ],
+      "entry_points": [
+        "port 5000 (CLAUDE/OVERVIEW 記載)",
+        "/ (index)",
+        "/orchestra (POST)",
+        "/ask (POST)",
+        "/collaborate (POST)",
+        "/integrity/status (GET)",
+        "/seal/history (GET)"
+      ],
+      "capabilities": [
+        "@app.route 定義 109 件 (static grep)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "USED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "@app.route 定義を列挙"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "app.py が tools/mocka_orchestra_v10.py を参照(grep)"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "2026-10-10 GET http://localhost:5000/health -> 200 {\"status\":\"ok\"}"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 GET 127.0.0.1:5000/decision/log=200 (count 6), /integrity/status=200 (total_events 24753), /caliber/status=200 (caliber_server online)。定義と登録は app.py の直接ルート (1360, 1418, 634 行)"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 app.py: app.run host 127.0.0.1 port 5000 (4194 行)。認証デコレータ、before_request 無し。外部転送の設定は確認されず"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 (Phase 6): /guidelines/status は現在 HTTP 500 (runtime)。既存ログ _final_app_stdout.log に name Path is not defined の記録 (mtime 2026-06-20)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "port 5000 は稼働確認済み (GET /health = 200, 2026-10-10 読取)。ルートの個別応答は未確認。 2026-10-10: 3 つの GET ルートを読取で確認 (CAPABILITY_MAP 17 節)。POST と他ルートは未確認。認証は無し (127.0.0.1 待ち受け)。"
+    },
+    {
+      "asset_id": "A021",
+      "path": "gateway/gateway.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/gateway/gateway.py",
+      "name": "AI Connector Gateway (Flask, port 5010)",
+      "asset_type": "code",
+      "system": "gateway",
+      "purpose": "GPT/Gemini/Copilot 等の AI から MoCKA へ接続する Connector 層のAPI。context、todo、phase、essence、last_event、summary、health、event(POST) を提供。内部用で公開非推奨と明記。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A022",
+        "A023",
+        "A024",
+        "A026",
+        "A032",
+        "A036"
+      ],
+      "entry_points": [
+        "port 5010",
+        "/api/v1/context",
+        "/api/v1/todo",
+        "/api/v1/phase",
+        "/api/v1/essence",
+        "/api/v1/last_event",
+        "/api/v1/summary",
+        "/api/v1/health",
+        "/api/v1/event (POST, HMAC)"
+      ],
+      "capabilities": [
+        "コンテキスト取得",
+        "TODO/Essence読取",
+        "イベント投稿(HMAC検証)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "@app.route 8件を確認"
+        },
+        {
+          "kind": "file_read",
+          "detail": "gateway/README.md 'Layer 2 MoCKA API (gateway.py port:5010)' と一致"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "GET /api/v1/health=200, /api/v1/phase=200, /api/v1/todo=401 (X-MoCKA-Key 必須)"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 GET /api/v1/health=200, /api/v1/phase=200, /api/v1/todo=401 (X-MoCKA-Key 必須), /api/v1/last_event=401"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 gateway.py: app.run host 0.0.0.0 port 5010 (188 行)。before_request で require_api_key (auth.py:40-52)。公開パスは phase、health、connector/health (auth.py:19)。cloudflared gateway.nsjp.org -> 5010"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 gateway POST /api/v1/event -> interface/event_buffer.py push -> :5000/api/gate/event/batch (Gate)。直接 SQL 無し (gateway.py:142-186)。fallback data/event_buffer_fallback.jsonl は現在存在しない"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "gateway/_restart_stderr.log 等のログがあり、過去に再起動が行われた痕跡あり。現在の稼働は未確認。 2026-10-10: GET /api/v1/health = 200 (status ok, version 1.1)。GET /api/v1/todo, /api/v1/last_event は X-MoCKA-Key ヘッダを要求 (401)。鍵は本作業で取得・使用していない (BLOCKED)。/api/v1/phase は 200。"
+    },
+    {
+      "asset_id": "A022",
+      "path": "gateway/context_builder.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/gateway/context_builder.py",
+      "name": "Context builder (3 modes)",
+      "asset_type": "code",
+      "system": "gateway",
+      "purpose": "AI 向けのコンテキストを組み立てる。data/mocka_events.db から直近イベントや最終決定を読み、TODO と Essence を合成する。mode: standard / extended / compact。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A021",
+        "A032",
+        "A033",
+        "A035",
+        "A020"
+      ],
+      "entry_points": [
+        "ContextBuilder.build(mode, ai_hint)",
+        "build_for_gpt()",
+        "build_for_gemini()",
+        "build_for_compact()"
+      ],
+      "capabilities": [
+        "events.db からの読取(sqlite3, read)",
+        "TODO/Essence 読込"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "DB_PATH = DATA_DIR/mocka_events.db、sqlite3.connect を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "gateway.py の /api/v1/context から利用される経路を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "sys.path で structural/event_recency を import する。その依存先の存在は未確認(structural/ 配下には36ファイルあり)。"
+    },
+    {
+      "asset_id": "A023",
+      "path": "gateway/auth.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/gateway/auth.py",
+      "name": "Gateway auth (HMAC + nonce)",
+      "asset_type": "code",
+      "system": "gateway",
+      "purpose": "POST /api/v1/event に対する HMAC 検証と nonce テーブルによるリプレイ防止。secret は環境変数 MOCKA_HMAC_SECRET から読む。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A021",
+        "A032"
+      ],
+      "entry_points": [
+        "HMAC_PATHS = {'/api/v1/event'}"
+      ],
+      "capabilities": [
+        "HMAC 検証",
+        "nonce 管理(gateway_nonces テーブル)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "HMAC_PATHS と HMAC_SECRET 定義を確認"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "events.db の gateway_nonces テーブル = 2 行"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "secret の値は本台帳に記載しない。HMAC の強制(ENFORCED)は、未設定時の挙動を含め未検証。"
+    },
+    {
+      "asset_id": "A024",
+      "path": "gateway/openapi.yaml",
+      "absolute_path": "C:/Users/sirok/MoCKA/gateway/openapi.yaml",
+      "name": "OpenAPI spec for Copilot custom connector",
+      "asset_type": "config",
+      "system": "gateway",
+      "purpose": "Copilot Custom Connector 登録用の静的仕様書。gateway/README.md で人間が登録時に参照するものと記載。AI は実行時に読まない。",
+      "authority_level": "design_record",
+      "source_of_truth": false,
+      "related_assets": [
+        "A021",
+        "A025"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "gateway/README.md の記載を確認。本文は未読"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "本文と gateway.py のルートの一致は未比較。"
+    },
+    {
+      "asset_id": "A025",
+      "path": "memory",
+      "absolute_path": "C:/Users/sirok/MoCKA/memory",
+      "name": "Memory layer 3.0 (code)",
+      "asset_type": "directory",
+      "system": "memory",
+      "purpose": "MoCKA 3.0 の記憶層。Memory Store/Writer/Retriever/Index/Registry/Pipeline を持つ。memory_registry.py が4分類(episodic/semantic/procedural/skill)と保存ポリシーを定める。Store/Writer/Retriever はそこを参照。",
+      "authority_level": "runtime_code",
+      "source_of_truth": null,
+      "related_assets": [
+        "A026",
+        "A027",
+        "A014",
+        "A036"
+      ],
+      "entry_points": [
+        "memory_store.py",
+        "memory_writer.py (DecisionResult -> episodic)",
+        "memory_retriever.py (intent 一致で検索)",
+        "memory_context_builder.py"
+      ],
+      "capabilities": [
+        "記憶分類(4種)",
+        "relevance_score 付き検索",
+        "保存上限(RetentionPolicy)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "memory_registry.py, memory_retriever.py, memory_writer.py の docstring を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "リポジトリ内(PlanningCaliber, archive, OLD_FILES, venv を除く)で memory 層を参照する .py は31件。内訳: core_kernel/governance/runtime/rcl(多数), feedback/(memory_reinforcer 等), self_audit/audit_pipeline.py, core_kernel/memory_core(別実装)。gateway/app.py/mocka_mcp_server.py からの参照は無い"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 MemoryStore()/MemoryRetriever.retrieve() をプロセス内で読取実行。entries 180 (episodic 180, source Governance). store の sha256 前後で不変 (656174d255cb941e)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "gateway/context_builder.py はこの memory/ を使わず events.db を直接読む。memory/ の実装は memory_store.py を読み込む(memory_retriever.py, memory_writer.py)。同名・類似の記憶実装が core_kernel/memory_core (A055) と PlanningCaliber/workshop/memory にある。USED は未確認。 検索の関連性は弱い: 無関係語でも同じ上位3件 (スコア約0.15) が返る。完全一致ID (ETID_..._b00a6781) では該当が首位に上がるため語句照合は働く。メモリの DEC_ 参照は Decision Ledger に0件 (未解決)。"
+    },
+    {
+      "asset_id": "A026",
+      "path": "memory/data/memory_store.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/memory/data/memory_store.json",
+      "name": "Memory store data",
+      "asset_type": "data",
+      "system": "memory",
+      "purpose": "memory/ 層の保存先データファイル(JSON, 約152KB)。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": null,
+      "related_assets": [
+        "A025"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "サイズ 151943 bytes, 更新日 2026-10-07 を確認。中身は未読"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "git 上で変更中(M)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "中身の件数・件の内容は未確認。git で変更中のため、現在の内容は作業ツリー依存。"
+    },
+    {
+      "asset_id": "A027",
+      "path": "relay",
+      "absolute_path": "C:/Users/sirok/MoCKA/relay",
+      "name": "Relay (root copy)",
+      "asset_type": "directory",
+      "system": "relay",
+      "purpose": "Relay の Python 実装(Kernel/Policy/Event Queue/Replay/Repositories/MCP bridge)。relay_kernel.py は stateful kernel(プロセス内 state のみ、DB 永続化なし)と記す。",
+      "authority_level": "runtime_code",
+      "source_of_truth": null,
+      "related_assets": [
+        "A028",
+        "A030",
+        "A026"
+      ],
+      "entry_points": [
+        "relay/main.py -> RelayBootstrap.start()",
+        "relay/mcp_bridge.py"
+      ],
+      "capabilities": [
+        "relay_kernel (state, history)",
+        "replay_engine / replay_engine_v2",
+        "repositories_sqlite"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "relay/relay_bootstrap.py が bootstrap.load_rules を import(root bootstrap/ 配下の存在は確認済み)"
+        },
+        {
+          "kind": "file_read",
+          "detail": "relay_kernel.py 冒頭の制約(判断しない、検証しない、意味付けしない)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "MOCKA_OVERVIEW.json の extension_canonical_paths は Relay の正本を PlanningCaliber/workshop/Relay_Project/extension/ と宣言する。root relay/ は拡張機能ではなく Python 実装であり、役割が別。重複の関係は OPEN_QUESTIONS 参照。"
+    },
+    {
+      "asset_id": "A028",
+      "path": "relay/relay_bootstrap.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/relay/relay_bootstrap.py",
+      "name": "Relay bootstrap (rules validation)",
+      "asset_type": "code",
+      "system": "relay",
+      "purpose": "load_moCKA_rules() で得た規則に、SINGLE ROOT / NO TEMP STRUCTURES / NO DOUBLE NESTING が含まれるかを検証する。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A027"
+      ],
+      "entry_points": [
+        "RelayBootstrap.start()"
+      ],
+      "capabilities": [
+        "規則の必須項目検証"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "ファイル先頭を読解"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "bootstrap/load_rules.py の中身は未確認。"
+    },
+    {
+      "asset_id": "A029",
+      "path": "phi_os/event_gate.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/phi_os/event_gate.py",
+      "name": "PHI-OS Event Gate (single entry for events)",
+      "asset_type": "code",
+      "system": "phi-os",
+      "purpose": "全イベントの単一入口(Event Gate v1/v2)。validate、ローカルバッファ、batch ingestion、認証付き受信、gate_audit/gate_health を持つ。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A030",
+        "A031",
+        "A032",
+        "A033",
+        "A021",
+        "A020"
+      ],
+      "entry_points": [
+        "process_event(payload, event_source)",
+        "receive_event()",
+        "receive_event_extension()",
+        "receive_event_batch()",
+        "gate_audit()",
+        "gate_health()"
+      ],
+      "capabilities": [
+        "schema validation (gate_validator)",
+        "event_id 採番",
+        "authorization_provenance 生成",
+        "idempotency(gate_idempotency)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "USED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "ファイル先頭の Event Gate v1/v2 の説明"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "関数定義 receive_event 等を列挙"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "events.db の gate_idempotency = 4772 行、event_signatures = 24737 行"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 GET 127.0.0.1:5000/api/gate/audit=200 (violation_events 9, real_time 8053, buffered 4571, legacy 11771)。GET /api/gate/health=200 (event_count 24753)"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 phi_os/event_gate.py: gate_audit (381 行) は interface/gate_policy.py の compute_gate_audit を使う。POST /api/gate/event は process_event (235 行)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "DB テーブルの存在と件数は確認。イベントが実際にこの gate を通って書かれた経路の証明は未実施。 2026-10-10 (Phase 4): 監査の GET は読取。Gate を経由しない直接書込み (seo-os) は分類に入るが、DIRECT_UPDATE は分類に含まれない (Q-58)。"
+    },
+    {
+      "asset_id": "A030",
+      "path": "phi_os/human_gate.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/phi_os/human_gate.py",
+      "name": "Human Gate (request/approve/reject state machine)",
+      "asset_type": "code",
+      "system": "phi-os",
+      "purpose": "Human Gate の要求 submit、approve、reject、expire、cancel、list_pending、昇格要求(submit_reason_promotion 等)、HTTP(http_submit 等)を持つ。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A013",
+        "A031",
+        "A032",
+        "A033",
+        "A044",
+        "A045",
+        "A016"
+      ],
+      "entry_points": [
+        "submit()",
+        "approve()",
+        "reject()",
+        "expire()",
+        "cancel()",
+        "list_pending()",
+        "submit_reason_promotion()",
+        "approve_promotion()",
+        "http_submit()",
+        "http_approve()",
+        "http_reject()",
+        "http_status()",
+        "http_pending()"
+      ],
+      "capabilities": [
+        "承認要求の状態遷移",
+        "decision_id 採番",
+        "reason promotion の承認/却下"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "関数定義一覧を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "governance/human_gate_cli.py, phi_os/tests/test_human_gate.py, trace_authority_chain.py 等から import/参照"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "events.db の human_gate_events = 2195 行"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "Human Gate の承認が実行を止めるかどうか(ENFORCED)は未検証。HG の承認権限・判断は本台帳が与えるものではない。"
+    },
+    {
+      "asset_id": "A031",
+      "path": "phi_os/integrity.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/phi_os/integrity.py",
+      "name": "Event integrity framework (Phase5-2)",
+      "asset_type": "code",
+      "system": "phi-os",
+      "purpose": "イベント署名・ハッシュチェーン・整合性検証・復旧支援。記録後の改ざん検知を担うと記す。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A029",
+        "A032",
+        "A044"
+      ],
+      "entry_points": [
+        "(integrity 関数群; event_gate から from . import integrity で利用)"
+      ],
+      "capabilities": [
+        "Event Signature",
+        "Hash Chain",
+        "Integrity Verification"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "docstring を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "event_gate.py が from . import integrity"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "events.db の event_signatures = 24737 行"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "検証関数の実行(VERIFIED)は未実施。"
+    },
+    {
+      "asset_id": "A032",
+      "path": "data/mocka_events.db",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/mocka_events.db",
+      "name": "MoCKA event ledger (SQLite)",
+      "asset_type": "db",
+      "system": "ledger",
+      "purpose": "MoCKA の唯一のイベント台帳(SQLite)。events テーブルほか、human_gate_events、authorization_state、execution_log 等を持つ。MOCKA_OVERVIEW の constitution では append-only の単一正本と宣言。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A019",
+        "A020",
+        "A021",
+        "A022",
+        "A029",
+        "A030",
+        "A031",
+        "A033",
+        "A036"
+      ],
+      "entry_points": [
+        "mocka_write_event / mocka_read_event / mocka_search (A019)",
+        "event_gate.process_event (A029)"
+      ],
+      "capabilities": [
+        "events 24,753 行(read-only count)",
+        "event_signatures 24,737",
+        "audit_violations 22,576",
+        "human_gate_events 2,195",
+        "authorization_state 69",
+        "gate_idempotency 4,772"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "USED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "db_readonly_count",
+          "detail": "file:...?mode=ro で sqlite_master の全テーブルと件数を取得。書込は行っていない"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "events.when_ts の min/max は日時として解釈できない値が含まれる(OPEN_QUESTIONS参照)"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "data_integrity 分布: normal 17258, alt_schema_intentional 7473, corrupted_migration 22 (合計 24753)"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "2026-10-10 audit_violations: DIRECT_UPDATE 22476、DIRECT_INSERT 100。SEO-OS 行 44 件 (who_actor SEO-OS、channel_type NULL) の DIRECT_UPDATE 132 件"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "2026-10-10 DIRECT_UPDATE 監査記録 22476 行 = distinct event 7685。時刻の束 (2026-06-19 00:52 から 03:09 の 6 束)。束の現在の data_integrity は alt_schema_intentional、corrupted_migration (22)、normal (187) と対応 (相関、実行者は未確認)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "status.usage は、テーブルに行が存在することを根拠に USED とした(実行証拠)。append-only の強制と改ざん検知の検証は未実施。git ignore の対象かどうかは未確認。 2026-10-10 訂正: MCP health の event_count は 24731 と報告、直接 count は 24753 (差 22 件、原因未確認)。 2026-10-10: MCP の read 経路 (_db_read_events, mocka_mcp_server.py:125) は data_integrity IN (normal, alt_schema_intentional) OR NULL で絞るため、corrupted_migration 22件が除外される。直接 count 24753 - 22 = 24731 で再現。 2026-10-10 (Phase 4): 直接書込み (seo-os) の存在と、更新の監査記録は確認済み (Q-56)。 2026-10-10 (Phase 5): DIRECT_UPDATE の 22476 は行数であり、イベント数は 7685。束は一括更新に由来する (EVENT_GATE_CONTROL_PACKAGE.md 2 節)。"
+    },
+    {
+      "asset_id": "A033",
+      "path": "data/MOCKA_OVERVIEW.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/MOCKA_OVERVIEW.json",
+      "name": "MOCKA_OVERVIEW (repo mirror)",
+      "asset_type": "data",
+      "system": "ledger",
+      "purpose": "MoCKA の概要・現在フェーズ・extension_canonical_paths・repositories 等を持つ JSON。",
+      "authority_level": "derived_mirror",
+      "source_of_truth": false,
+      "related_assets": [
+        "A034",
+        "A035",
+        "A002"
+      ],
+      "entry_points": [
+        "mocka_get_overview()"
+      ],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "JSON として読込成功。トップレベルキー 23 件"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "AI_BOOT_HUB が 'data/MOCKA_OVERVIEW.json はミラー' と記す"
+        },
+        {
+          "kind": "file_read",
+          "detail": "sha256 が外部版 (A034) と異なる"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "meta.staleness_note: 2026-07-07 時点で session_history/next_actions/current_issues が 2026-06-18 以降更新されていないと明記。外部版(A034)が primary と記載。"
+    },
+    {
+      "asset_id": "A034",
+      "path": null,
+      "absolute_path": "C:/Users/sirok/MOCKA_OVERVIEW.json",
+      "name": "MOCKA_OVERVIEW (external primary, outside repo)",
+      "asset_type": "external",
+      "system": "external",
+      "purpose": "AI_BOOT_HUB と MOCKA_OVERVIEW.json(data版) の meta が primary と記す MOCKA_OVERVIEW の正本。リポジトリ外にある。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A033"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "存在確認(リポジトリ外)。内容は未読"
+        },
+        {
+          "kind": "file_read",
+          "detail": "AI_BOOT_HUB が primary と記載(宣言)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "repo 相対パスなし。内容の現行性・mocka_get_overview() の参照先との一致は未確認。repo の git 管理対象外。"
+    },
+    {
+      "asset_id": "A035",
+      "path": "data/MOCKA_TODO_ACTIVE.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ACTIVE.json",
+      "name": "Active TODO list",
+      "asset_type": "data",
+      "system": "todo",
+      "purpose": "現行の TODO 一覧。トップレベルに meta, current_phase, server_config, todos, orchestra_handoff, completed を持つ。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A003",
+        "A019",
+        "A036",
+        "A002"
+      ],
+      "entry_points": [
+        "mocka_get_todo()",
+        "mocka_update_todo()",
+        "mocka_add_todo()"
+      ],
+      "capabilities": [
+        "todos 92 件 (read)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "JSON 読込成功。todos の status 集計: 未着手 52, 完了 15, 保留 13, 進行中 10, 保留(設計範囲確定済み) 1, 廃止 1"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "AI_BOOT_HUB が TODO_PATH = data/MOCKA_TODO_ACTIVE.json と記す"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "CLAUDE.md の TODO status 正規値(通常5値)と、件数集計の値が一致するかは未比較(保留(設計範囲確定済み) が 1 件、正規値外)。"
+    },
+    {
+      "asset_id": "A036",
+      "path": "data/MOCKA_TODO.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/MOCKA_TODO.json",
+      "name": "TODO (full, legacy relation unknown)",
+      "asset_type": "data",
+      "system": "todo",
+      "purpose": "TODO の別ファイル(約380KB)。ACTIVE 版との関係は未確定。",
+      "authority_level": "unknown",
+      "source_of_truth": null,
+      "related_assets": [
+        "A035",
+        "A037"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "存在とサイズ確認。中身は未比較"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "AI_BOOT_HUB は ACTIVE 版を正本として指定。TODO_390_CLEANUP_CHECK (保留) が旧 MOCKA_TODO.json の削除判定を扱う。このファイルが正本か、旧版として削除対象かは未確定(OPEN_QUESTIONS参照)。CLAUDE.md の TODO_384 は MOCKA_TODO.json を status 正規値の対象として記す。"
+    },
+    {
+      "asset_id": "A037",
+      "path": "data/MOCKA_TODO_ARCHIVE.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/MOCKA_TODO_ARCHIVE.json",
+      "name": "TODO archive",
+      "asset_type": "data",
+      "system": "todo",
+      "purpose": "TODO のアーカイブ。ファイル名からの推定のみで中身は未確認。",
+      "authority_level": "legacy",
+      "source_of_truth": false,
+      "related_assets": [
+        "A035",
+        "A036"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "存在確認のみ"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "内容未読のため authority_level は legacy と推定扱い。"
+    },
+    {
+      "asset_id": "A038",
+      "path": "interface/router.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/interface/router.py",
+      "name": "MoCKA router (interface)",
+      "asset_type": "code",
+      "system": "interface",
+      "purpose": "イベントの保存・再発件数・ドリフト計算等の分類を行う。events_csv(data/events.csv)を参照する記述あり。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A020",
+        "A032"
+      ],
+      "entry_points": [
+        "calc_error_rate()",
+        "calc_drift_v3()",
+        "classify_anomaly()",
+        "get_next_event_id()"
+      ],
+      "capabilities": [
+        "再発・ドリフト計算(関数定義の確認のみ)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "先頭行の EVENTS_CSV = C:\\...\\events.csv 定義"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "app.py / interface/policy_generator.py が参照"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "MOCKA_OVERVIEW.json は events.csv を '廃止・SQLite化済み' と記す。現行コードがまだ CSV を前提とするかは未確認(OPEN_QUESTIONS参照)。"
+    },
+    {
+      "asset_id": "A039",
+      "path": "interface/lever_essence.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/interface/lever_essence.json",
+      "name": "Essence (Claude version)",
+      "asset_type": "data",
+      "system": "essence",
+      "purpose": "Claude 向けの Essence(制度哲学・行動指針の要約)。AI_BOOT_HUB では interface 版が Claude 用と定める。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A040",
+        "A003"
+      ],
+      "entry_points": [
+        "mocka_get_essence()"
+      ],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "AI_BOOT_HUB が Claude 用正本と記載"
+        },
+        {
+          "kind": "listing",
+          "detail": "存在確認。中身は未読"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "data/lever_essence.json (A040) と内容は別ファイルと AI_BOOT_HUB が記す。"
+    },
+    {
+      "asset_id": "A040",
+      "path": "data/lever_essence.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/lever_essence.json",
+      "name": "Essence (Gateway version)",
+      "asset_type": "data",
+      "system": "essence",
+      "purpose": "Gateway 向けの Essence。AI_BOOT_HUB では Claude 用の interface 版と別ファイルと定める。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A039",
+        "A021"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "AI_BOOT_HUB が Gateway 用正本と記載。gateway/context_builder.py の _load_essence が essence を読むが、そのパスは未確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "二つの Essence の内容差は未比較。"
+    },
+    {
+      "asset_id": "A041",
+      "path": "tools/mocka_auto_record.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/tools/mocka_auto_record.py",
+      "name": "Auto change recorder (PostToolUse hook)",
+      "asset_type": "code",
+      "system": "tools",
+      "purpose": "Claude Code の PostToolUse フックから呼ばれ、Write/Edit 等のファイル変更後に CHANGE_DONE を自動記録する。サーバー(localhost:5002)が落ちている場合は tools/auto_record.log に OFFLINE として記録し作業はブロックしない。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A019",
+        "A002",
+        "A032"
+      ],
+      "entry_points": [
+        "PostToolUse hook (Claude Code 設定経由)",
+        "curl http://localhost:5002/health"
+      ],
+      "capabilities": [
+        "変更の自動記録(MCP 経由)",
+        "OFFLINE 時のログ"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "docstring を確認"
+        },
+        {
+          "kind": "listing",
+          "detail": "tools/auto_record.log が存在"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "フックの設定が実際に有効か、本セッションで発火したかは未確認。CLAUDE.md は 'フックが発火し自動記録される' と記すが、実行証拠は本作業では取得していない。"
+    },
+    {
+      "asset_id": "A042",
+      "path": "tools/mocka_orchestra_v10.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/tools/mocka_orchestra_v10.py",
+      "name": "Orchestra v10 (Playwright browser orchestration)",
+      "asset_type": "code",
+      "system": "orchestra",
+      "purpose": "Playwright で AI チャット画面を操作し、プロンプトを複数 AI に送るブラウザ自動化スクリプト。core_kernel/orchestra(イベント駆動の実行エンジン)とは別物。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A020",
+        "A038",
+        "A043",
+        "A045"
+      ],
+      "entry_points": [
+        "python tools/mocka_orchestra_v10.py <prompt> <mode>"
+      ],
+      "capabilities": [
+        "Playwright による AI 画面操作"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "import playwright, argv 解釈を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "app.py, interface/router.py, interface/policy_generator.py, tools/mocka_restrictions.py が参照"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "実行には Playwright と各 AI サービスへのログインが必要。AI の外部サービス操作を伴うため、実行は未検証のまま扱う。外部送信を伴う可能性がある。"
+    },
+    {
+      "asset_id": "A043",
+      "path": "core_kernel/orchestra",
+      "absolute_path": "C:/Users/sirok/MoCKA/core_kernel/orchestra",
+      "name": "Orchestra core kernel (event-driven engine)",
+      "asset_type": "directory",
+      "system": "orchestra",
+      "purpose": "Orchestra 実行層。OrchestraEngine(セッション保持、イベント処理、最小ルーティングによるノード実行)と SQLite 永続化(event/execution/output)を持つ。",
+      "authority_level": "runtime_code",
+      "source_of_truth": null,
+      "related_assets": [
+        "A032",
+        "A044",
+        "A042"
+      ],
+      "entry_points": [
+        "OrchestraEngine",
+        "ExecutionGraph",
+        "EventBus",
+        "persistence/sqlite_store.py"
+      ],
+      "capabilities": [
+        "ノード実行",
+        "実行の SQLite 記録"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "orchestra_engine.py の docstring"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "core_kernel/governance/runtime/rcl/runtime_exec.py と persistence/sqlite_store.py が参照"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "events.db の execution_log = 35 行, request_executions = 188 行"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "MOCKA_OVERVIEW の repositories.heart.key_paths.orchestra は tools/mocka_orchestra_v10.py を指す。二つの 'orchestra' の正本関係は未確定(OPEN_QUESTIONS参照)。"
+    },
+    {
+      "asset_id": "A044",
+      "path": "core_kernel/governance/runtime/rcl",
+      "absolute_path": "C:/Users/sirok/MoCKA/core_kernel/governance/runtime/rcl",
+      "name": "RCL governance runtime (decision / authorization path)",
+      "asset_type": "directory",
+      "system": "rcl-governance",
+      "purpose": "RCL(Governance Runtime)の判断・認可経路。decision_outcome、experience_memory、memory_evidence_integration、runtime_exec 等を含む。",
+      "authority_level": "runtime_code",
+      "source_of_truth": null,
+      "related_assets": [
+        "A025",
+        "A030",
+        "A032",
+        "A043"
+      ],
+      "entry_points": [
+        "runtime_exec.py (Orchestra 接続)",
+        "memory_evidence_integration.py (Memory 参照)"
+      ],
+      "capabilities": [
+        "判断結果の記録",
+        "Memory evidence 統合(テスト含む)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "memory 系 import と orchestra 参照を grep で確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "git 上で governance_runtime.py と runtime_exec.py が変更中(M)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "Memory と RCL の接続はテストファイル(*_test.py)経由で主に見える。本番経路での使用は未検証。git 変更中のため現状は作業ツリー依存。"
+    },
+    {
+      "asset_id": "A045",
+      "path": "governance/mocka_git_safe_commit.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/governance/mocka_git_safe_commit.py",
+      "name": "Shared git helper (mocka_git_safe_commit)",
+      "asset_type": "code",
+      "system": "governance",
+      "purpose": "git add/commit/push を一元化する共有ヘルパー。is_core_system_file() を含む。CLAUDE.md は git 操作をこの経由に統一すると定める。",
+      "authority_level": "runtime_code",
+      "source_of_truth": true,
+      "related_assets": [
+        "A002",
+        "A001"
+      ],
+      "entry_points": [
+        "mocka_git_safe_commit(paths, message, push)"
+      ],
+      "capabilities": [
+        "Core System File 除外",
+        "git 操作の一元化"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "docstring(TODO_364 の単一ヘルパー)を確認"
+        },
+        {
+          "kind": "file_read",
+          "detail": "CLAUDE.md の git 運用ルールと一致"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "CLAUDE.md の注記: 除外対象ファイルはエラーなくスキップされるため、コミット後に git show --stat で確認が必要。本台帳作業では git 操作は実行していない。"
+    },
+    {
+      "asset_id": "A046",
+      "path": "structural/human_gate_authorization_integrity.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/structural/human_gate_authorization_integrity.py",
+      "name": "GL8 Human Gate authorization integrity engine",
+      "asset_type": "code",
+      "system": "phi-os",
+      "purpose": "GL8: _authz エンベロープ上の Human Gate 権限の整合性を検証する。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A030",
+        "A031",
+        "A032"
+      ],
+      "entry_points": [],
+      "capabilities": [
+        "_authz 整合性検査(docstring 記載)"
+      ],
+      "status": {
+        "presence": "MISSING",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "docstring 'GL8: Human Gate authority integrity on the _authz envelope' を確認"
+        },
+        {
+          "kind": "listing",
+          "detail": "2026-10-17 verify_mapping.py (read-only): absolute_path と repo path が存在しない。HEAD と作業ツリーに無い。phase5c 先端 ce2244019 には存在する。"
+        }
+      ],
+      "last_verified": "2026-10-17",
+      "notes": "パス欠落を記録 (2026-10-17)。対象は 916bef75a と 28fce27a3 で追加され、ce2244019 にも存在する。stash@{0} に修正版 (blob 3ba0b547) が残る。HEAD の系譜には含まれない。原因、reflog による checkout 履歴、承認記録は未確認。"
+    },
+    {
+      "asset_id": "A047",
+      "path": "data/decisions",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/decisions",
+      "name": "Decision ledger directory",
+      "asset_type": "directory",
+      "system": "ledger",
+      "purpose": "Decision Ledger の保存先。CLAUDE.md は data/decisions/decision_ledger.jsonl へ裁定を記録する義務を定める。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A002",
+        "A019",
+        "A030"
+      ],
+      "entry_points": [
+        "mocka_decision_write()",
+        "mocka_decision_list()",
+        "mocka_decision_get()"
+      ],
+      "capabilities": [
+        "裁定の記録(MCP経由)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "5 ファイル(decision_ledger.jsonl の存在は未確認)"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "CLAUDE.md の Decision Ledger 記録義務"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "decision_ledger.jsonl 110行 (MCP decision_list count 110 と一致)。DC_20260913_001 は file/MCP ともに 0件"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "2026-10-10 台帳 110 行, distinct 109。DC_20261006_001 が 2 行 (approved_at 09:28:14 と 09:28:27)。status Active 63, Recorded 47"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "台帳には同一 decision_id の重複行 (DC_20261006_001) がある。書込み元は 5 経路 (HG_DECISION_PACKAGE.md 1.1)。台帳の正本性は Q-39 で未決。"
+    },
+    {
+      "asset_id": "A048",
+      "path": "PlanningCaliber/workshop/Relay_Project/extension",
+      "absolute_path": "C:/Users/sirok/MoCKA/PlanningCaliber/workshop/Relay_Project/extension",
+      "name": "Relay extension (declared canonical copy)",
+      "asset_type": "extension",
+      "system": "planning-caliber",
+      "purpose": "MOCKA_OVERVIEW.json の extension_canonical_paths が Relay 拡張機能の正本と宣言するパス。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A027",
+        "A033",
+        "A049"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "MOCKA_OVERVIEW.json extension_canonical_paths.relay.canonical_path の宣言を確認"
+        },
+        {
+          "kind": "listing",
+          "detail": "Relay_Project(約997KB)内に extension/ の存在を確認"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "Chrome Secure Preferences による確定と宣言されている。現在の Chrome 側の登録状態は未確認。"
+    },
+    {
+      "asset_id": "A049",
+      "path": "tools/mocka-bridge",
+      "absolute_path": "C:/Users/sirok/MoCKA/tools/mocka-bridge",
+      "name": "MoCKA bridge (browser extension)",
+      "asset_type": "extension",
+      "system": "tools",
+      "purpose": "MoCKA Bridge の Chrome 拡張機能。extension 配下に background.js, content.js, config.js 等を持つ。MOCKA_OVERVIEW の extension_canonical_paths は tools/mocka-bridge/extension/ を正本とする。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": true,
+      "related_assets": [
+        "A048",
+        "A033"
+      ],
+      "entry_points": [
+        "extension/background.js",
+        "extension/content.js"
+      ],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "extension/ 配下の .js ファイルを確認(.bak ファイルあり)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "bridge は MoCKA の 'mocka-bridge 等の連携機構' として指示書が挙げるもの。拡張内で実際に MoCKA サーバーへ送信するかは未確認。外部送信の可能性があるため、実行前に確認が必要。"
+    },
+    {
+      "asset_id": "A050",
+      "path": "caliber/chat_pipeline/mocka_caliber_server.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/caliber/chat_pipeline/mocka_caliber_server.py",
+      "name": "Caliber server (local, no external API)",
+      "asset_type": "code",
+      "system": "caliber",
+      "purpose": "Caliber パイプライン(v5)。重要文抽出とキーワード密度による local 処理。外部 API 呼び出しは削除済みと記す。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A020"
+      ],
+      "entry_points": [
+        "port 5679 (MOCKA_OVERVIEW 記載)"
+      ],
+      "capabilities": [
+        "extract_local()",
+        "calc_rate_local()"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "docstring 'APIゼロ化版' を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "MOCKA_OVERVIEW.json の server_config に 5679 記載"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "サーバー未起動のため応答は未確認。"
+    },
+    {
+      "asset_id": "A051",
+      "path": "runtime/main/ledger.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/runtime/main/ledger.json",
+      "name": "Main runtime ledger (JSON)",
+      "asset_type": "data",
+      "system": "ledger",
+      "purpose": "MOCKA_OVERVIEW の repositories.heart.key_paths.ledger として宣言された台帳ファイル。schema/schema.py・scripts/ledger/ledger_verify.py と組になる。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": null,
+      "related_assets": [
+        "A032",
+        "A033"
+      ],
+      "entry_points": [
+        "scripts/ledger/ledger_verify.py",
+        "scripts/ledger/anchor_update.py"
+      ],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "存在確認(16KB)。中身は未読"
+        },
+        {
+          "kind": "file_read",
+          "detail": "MOCKA_OVERVIEW の repositories.heart.key_paths に記載"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "events.db(A032) と runtime/main/ledger.json のどちらが台帳の正本か、MOCKA_OVERVIEW の 'Event history is the single source of truth' との関係は未確定(OPEN_QUESTIONS参照)。"
+    },
+    {
+      "asset_id": "A052",
+      "path": "data/tic/adr/ADR-001.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/tic/adr/ADR-001.md",
+      "name": "ADR-001 (only ADR found)",
+      "asset_type": "doc",
+      "system": "governance",
+      "purpose": "リポジトリ内で見つかった唯一の ADR(Architecture Decision Record)。",
+      "authority_level": "design_record",
+      "source_of_truth": null,
+      "related_assets": [
+        "A005"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "ファイル名検索で ADR-001.md のみ確認(*adr* 検索)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "ADR は他に見つからず。ADR 運用は未整備と推定される(本文未読)。"
+    },
+    {
+      "asset_id": "A053",
+      "path": "PlanningCaliber",
+      "absolute_path": "C:/Users/sirok/MoCKA/PlanningCaliber",
+      "name": "PlanningCaliber workshop",
+      "asset_type": "directory",
+      "system": "planning-caliber",
+      "purpose": "拡張機能・Relay/Orchestra/memory/phi-os の作業場(workshop)を含む。MOCKA_OVERVIEW の extension_canonical_paths の正本は多くがこの配下。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": null,
+      "related_assets": [
+        "A048",
+        "A027",
+        "A025",
+        "A043"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "Relay_Project 約997KB, Orchestra_Project 約1984KB, workshop/memory 約61KB"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "指示書の 'planning_caliberB' は本リポジトリ内に存在しない(C:/Users/sirok/planning_caliberB 未検出)。PlanningCaliber が該当する可能性があるが未確定。"
+    },
+    {
+      "asset_id": "A054",
+      "path": null,
+      "absolute_path": "C:/Users/sirok/mocka-joints",
+      "name": "mocka-joints (external joints)",
+      "asset_type": "external",
+      "system": "external",
+      "purpose": "MOCKA_OVERVIEW の joints に記載された外部の連携フォルダ群。mocka-pythonbridge(AI 呼出し)、mocka-infield(記憶 DB)、mocka-ecosystem(リポジトリ管理ツール)。",
+      "authority_level": "unknown",
+      "source_of_truth": null,
+      "related_assets": [
+        "A033"
+      ],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "3 サブフォルダの存在確認。中身は未読"
+        },
+        {
+          "kind": "file_read",
+          "detail": "MOCKA_OVERVIEW.json joints 項目の記載"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "リポジトリ外。中身は本作業では未調査。pythonbridge の外部 AI 呼出しを伴う可能性があるため、実行は行わない。"
+    },
+    {
+      "asset_id": "A055",
+      "path": "core_kernel/memory_core",
+      "absolute_path": "C:/Users/sirok/MoCKA/core_kernel/memory_core",
+      "name": "memory_core (Core Kernel persistence layer)",
+      "asset_type": "directory",
+      "system": "memory",
+      "purpose": "AnalysisResult / Context / Observation / CognitiveState を保存する最小永続化層。JSON ファイル保存、パス未指定時はインメモリ。memory/ (A025) とは別実装。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A025",
+        "A056"
+      ],
+      "entry_points": [
+        "memory_store.py (MemoryStore 系)",
+        "record.py",
+        "tests/test_memory_store.py"
+      ],
+      "capabilities": [
+        "JSON file store (path 指定時)",
+        "インメモリ fallback"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "memory_store.py の docstring(責務と優先順位)を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "core_kernel/phios_integration/tests と core_kernel/memory_core/tests から参照"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "memory/ (MoCKA 3.0) との関係(統合か並存か)は未確認。テストファイルの存在は確認したが実行はしていない。"
+    },
+    {
+      "asset_id": "A056",
+      "path": "feedback",
+      "absolute_path": "C:/Users/sirok/MoCKA/feedback",
+      "name": "Feedback loop (MoCKA 3.0)",
+      "asset_type": "directory",
+      "system": "memory",
+      "purpose": "Memory 層に対する強化・弱体化の提案(成功パターン強化、低価値記憶の減衰、再利用頻度の補正)を生成する。memory_reinforcer.py, weight_optimizer.py, feedback_engine.py を持つ。",
+      "authority_level": "runtime_code",
+      "source_of_truth": false,
+      "related_assets": [
+        "A025",
+        "A012"
+      ],
+      "entry_points": [
+        "memory_reinforcer.py",
+        "feedback_engine.py",
+        "weight_optimizer.py",
+        "feedback_weight_test.py"
+      ],
+      "capabilities": [
+        "記憶の強化/減衰提案(提案のみと docstring に記載)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "header_read",
+          "detail": "memory_reinforcer.py の docstring(強化・弱体化提案の生成)を確認"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "memory 層を import(grep)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "docstring は'提案を生成する'と記す。提案を承認・反映する経路(Human Gate 等)との接続は未確認。"
+    },
+    {
+      "asset_id": "A057",
+      "path": "data/FINAL_REVIEW_PACKAGE_MOCKA_VALUE_RECOGNITION_FRAMEWORK_20260820.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/FINAL_REVIEW_PACKAGE_MOCKA_VALUE_RECOGNITION_FRAMEWORK_20260820.md",
+      "name": "Knowledge gate source: value recognition framework review package (2026-08-20)",
+      "asset_type": "doc",
+      "system": "memory",
+      "purpose": "mocka_search の knowledge_gate_hits の根拠原本。Knowledge Activation Measurement の記述を含む。",
+      "authority_level": "design_record",
+      "source_of_truth": false,
+      "related_assets": [
+        "A019",
+        "A013",
+        "A012"
+      ],
+      "entry_points": [
+        "mocka_search (knowledge_gate_hits)"
+      ],
+      "capabilities": [
+        "原本の全文検索対象"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "USED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 mocka_search(\"Knowledge Activation\") の knowledge_gate_hits[0].file がこのパスを返す"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "ファイル内に \"Knowledge Activation Measurement\" が 3 箇所 (grep)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "検索結果の根拠として原本まで到達できることを確認。原本の現行性・判断利用は未確認。"
+    },
+    {
+      "asset_id": "A058",
+      "path": "governance/authority_registry/authority_registry.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/governance/authority_registry/authority_registry.json",
+      "name": "Active authority registry (HG-RCL entries)",
+      "asset_type": "registry",
+      "system": "rcl-governance",
+      "purpose": "Human Gate 決定記録から派生した権限登録簿。4件 (HG-RCL-20261004-001〜004)。台帳からは分離されていると宣言。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": null,
+      "related_assets": [
+        "A047",
+        "A059",
+        "A044"
+      ],
+      "entry_points": [
+        "AuthorityRegistry.check (governance/authority_registry/registry.py)",
+        "principal_adapter.make_principal_verifier"
+      ],
+      "capabilities": [
+        "登録された権限 ID の照会 (read path)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "file_read",
+          "detail": "JSON 読込: entries 4 件、status 全件 APPROVED"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "source_record の 2 文書は docs/governance/ に実在 (exists True)"
+        },
+        {
+          "kind": "db_readonly_count",
+          "detail": "2026-10-10 の 4 件 ID は台帳 0件、event DB の authorization_state 0件、human_gate_events の payload 0件"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "Human Gate 承認記録の派生物と宣言されるが、対応する台帳・HG イベントは確認できなかった。HG_RCL_20261004_003 は、独立記録の欠落 (Authority Provenance Recording Gap) を認める。"
+    },
+    {
+      "asset_id": "A059",
+      "path": "core_kernel/orchestra/data/mocka_orchestra.db",
+      "absolute_path": "C:/Users/sirok/MoCKA/core_kernel/orchestra/data/mocka_orchestra.db",
+      "name": "Orchestra persistence store (authorization_records, gate_decisions)",
+      "asset_type": "db",
+      "system": "orchestra",
+      "purpose": "Orchestra の実行時ゲート (RuntimeGate) が AuthorizationRecord と GateDecision を読み書きする SQLite ストア。",
+      "authority_level": "source_of_truth_data",
+      "source_of_truth": null,
+      "related_assets": [
+        "A043",
+        "A058",
+        "A044"
+      ],
+      "entry_points": [
+        "RuntimeGate.evaluate (core_kernel/orchestra/runtime_gate.py)",
+        "SQLiteStore.get_authorization_record / save_gate_decision"
+      ],
+      "capabilities": [
+        "AuthorizationRecord の保存と取得 (版管理と hash)",
+        "GateDecision の保存"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "db_readonly_count",
+          "detail": "2026-10-10 全テーブル 0 行 (events, executions, outputs, gate_decisions, denial_records, authorization_records)"
+        },
+        {
+          "kind": "static_grep",
+          "detail": "RuntimeGate 生成は execution_graph.py:19。非テストの evaluate 呼出しは execution_graph.py:50,69 のみ。OrchestraEngine() の非テスト呼出しは orchestrator_api.py のみ (モジュール読込時にエンジンを生成)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "空のストア。権限検査がこのストアを通って評価された証拠は無い。実行時の効力 (ENFORCED) は未検証。"
+    },
+    {
+      "asset_id": "A060",
+      "path": "interface/gate_policy.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/interface/gate_policy.py",
+      "name": "Gate policy vocabulary and gate audit computation",
+      "asset_type": "code",
+      "system": "phi-os",
+      "purpose": "Gate 経由の _source 語彙の許可リスト (live、buffered、direct_violation、direct_allowed の 5 channel、legacy の 6 値) と、Gate 監査の計数 (compute_gate_audit) を定義する。DB の CHECK 制約と完全一致させる規則を、コメントで定める。",
+      "authority_level": "runtime_code",
+      "source_of_truth": true,
+      "related_assets": [
+        "A029",
+        "A032",
+        "A020"
+      ],
+      "entry_points": [
+        "compute_gate_audit(conn, gate_launch_date)",
+        "GATE_SOURCE_VALUES",
+        "LEGACY_SOURCE_VALUES"
+      ],
+      "capabilities": [
+        "_source 値の許可判定",
+        "Gate 監査の 5 分類 (legacy、unparseable、real_time、buffered、allowed_direct、violation)"
+      ],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "CONNECTED",
+        "usage": "USED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "static_grep",
+          "detail": "2026-10-10 GET /api/gate/audit (phi_os/event_gate.py:381) から compute_gate_audit を呼ぶ"
+        },
+        {
+          "kind": "runtime_read",
+          "detail": "2026-10-10 GET 127.0.0.1:5000/api/gate/audit=200 (violation_events 9)。計算の再現: CHECK 制約と許可リストの差分は orchestra_lineage の 1 値 (9 行)"
+        }
+      ],
+      "last_verified": "2026-10-10",
+      "notes": "違反 9 件は直接書込みの証拠ではなく、CHECK 制約と許可リストの語彙の不一致 (orchestra_lineage)。許可リストの修正は HG 判断 (OPEN_QUESTIONS Q-62)。"
+    },
+    {
+      "asset_id": "A061",
+      "path": "mapping/R2_ROUTE_MAP_20261017.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R2_ROUTE_MAP_20261017.md",
+      "name": "R2 route map (7-stage vs live path)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R2 route map (7-stage vs live path)",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: verified_read_only (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A062",
+      "path": "mapping/R3_RESULT_20261017.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R3_RESULT_20261017.md",
+      "name": "R3 minimal closed-loop result (blocked: runtime_exec.py missing)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R3 minimal closed-loop result (blocked: runtime_exec.py missing)",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: verified_read_only (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A063",
+      "path": "mapping/R4_HG_AUTHORIZATION_BRIDGE_DESIGN.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R4_HG_AUTHORIZATION_BRIDGE_DESIGN.md",
+      "name": "R4 HG approval to AuthorizationRecord bridge (design only)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R4 HG approval to AuthorizationRecord bridge (design only)",
+      "authority_level": "design_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: design_only (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A064",
+      "path": "mapping/R5_CONSEQUENCE_INDEPENDENCE_DESIGN.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R5_CONSEQUENCE_INDEPENDENCE_DESIGN.md",
+      "name": "R5 actual consequence independence (design only)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R5 actual consequence independence (design only)",
+      "authority_level": "design_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: design_only (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A065",
+      "path": "mapping/R6_CLAIM_EVIDENCE_20261017.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R6_CLAIM_EVIDENCE_20261017.md",
+      "name": "R6 audit claim vs evidence (audit scopes separated)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R6 audit claim vs evidence (audit scopes separated)",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: closed_for_audit_mapping (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A066",
+      "path": "mapping/R6_STATUS_20261017.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R6_STATUS_20261017.md",
+      "name": "R6 status: consequence.py provenance UNKNOWN",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R6 status: consequence.py provenance UNKNOWN",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: unknown_recorded (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A067",
+      "path": "data/decisions/decision_ledger.jsonl",
+      "absolute_path": "C:/Users/sirok/MoCKA/data/decisions/decision_ledger.jsonl",
+      "name": "Decision Ledger entry DC_20261017_001 (runtime_exec gap, option B)",
+      "asset_type": "data",
+      "system": "ledger",
+      "purpose": "Decision Ledger entry DC_20261017_001 (runtime_exec gap, option B)",
+      "authority_level": "unknown",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: recorded_in_ledger (addendum, 2026-10-17); recorded date: 2026-10-17"
+    },
+    {
+      "asset_id": "A068",
+      "path": "mapping/R1_RECORD_20261017.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R1_RECORD_20261017.md",
+      "name": "R1 records: .gitignore generated-artifact rules (fcd53618), search_index+registry source (35e26b29), correction note",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R1 records: .gitignore generated-artifact rules (fcd53618), search_index+registry source (35e26b29), correction note",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    },
+    {
+      "asset_id": "A069",
+      "path": "mapping/R1_RECORD_20261017_B.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R1_RECORD_20261017_B.md",
+      "name": "R1 addendum B: auto-sync undo (d46658cda, mixed reset), auto-sync scope (2306 commits, origin not reached)",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R1 addendum B: auto-sync undo (d46658cda, mixed reset), auto-sync scope (2306 commits, origin not reached)",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    },
+    {
+      "asset_id": "A070",
+      "path": "mapping/R1_RECORD_20261017_C.md",
+      "absolute_path": "C:/Users/sirok/MoCKA/mapping/R1_RECORD_20261017_C.md",
+      "name": "R1 addendum C: SoT registry tracking restored by cherry-pick (dffecd476); unexplained reset at 18:24:46",
+      "asset_type": "doc",
+      "system": "documentation",
+      "purpose": "R1 addendum C: SoT registry tracking restored by cherry-pick (dffecd476); unexplained reset at 18:24:46",
+      "authority_level": "audit_record",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    },
+    {
+      "asset_id": "A071",
+      "path": "governance/authority_registry/authority_registry.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/governance/authority_registry/authority_registry.json",
+      "name": "Authority registry (SoT) tracked as static config (commit dffecd476)",
+      "asset_type": "registry",
+      "system": "governance",
+      "purpose": "Authority registry (SoT) tracked as static config (commit dffecd476)",
+      "authority_level": "unknown",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    },
+    {
+      "asset_id": "A072",
+      "path": "governance/authority_registry/governance_sot_manifest.json",
+      "absolute_path": "C:/Users/sirok/MoCKA/governance/authority_registry/governance_sot_manifest.json",
+      "name": "SoT manifest tracked as static config (commit dffecd476)",
+      "asset_type": "registry",
+      "system": "governance",
+      "purpose": "SoT manifest tracked as static config (commit dffecd476)",
+      "authority_level": "unknown",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    },
+    {
+      "asset_id": "A073",
+      "path": "app.py",
+      "absolute_path": "C:/Users/sirok/MoCKA/app.py",
+      "name": "/loop7/status: 7-stage live state; CONNECTED = live reference AND ledger updated within 7 days",
+      "asset_type": "code",
+      "system": "interface",
+      "purpose": "/loop7/status: 7-stage live state; CONNECTED = live reference AND ledger updated within 7 days",
+      "authority_level": "runtime_code",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    },
+    {
+      "asset_id": "A074",
+      "path": "index.html",
+      "absolute_path": "C:/Users/sirok/MoCKA/index.html",
+      "name": "7-stage panel (panel-loop7) and live risk/Civilization panels",
+      "asset_type": "code",
+      "system": "interface",
+      "purpose": "7-stage panel (panel-loop7) and live risk/Civilization panels",
+      "authority_level": "runtime_code",
+      "source_of_truth": null,
+      "related_assets": [],
+      "entry_points": [],
+      "capabilities": [],
+      "status": {
+        "presence": "PRESENT",
+        "connection": "NOT_VERIFIED",
+        "usage": "NOT_VERIFIED",
+        "enforcement": "NOT_VERIFIED",
+        "verification": "NOT_VERIFIED"
+      },
+      "evidence": [
+        {
+          "kind": "listing",
+          "detail": "path existence checked 2026-10-18: exists"
+        }
+      ],
+      "last_verified": "2026-10-18",
+      "notes": "normalized 2026-10-18 to SCHEMA.md fields (system/asset_type/authority_level are vocabulary mapping, not verified facts); prior recorded status: file_level_verified_2026-10-17"
+    }
+  ]
+}
