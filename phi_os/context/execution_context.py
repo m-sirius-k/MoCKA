@@ -11,6 +11,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
+from ._drop_log import log_drop
+
 _REGISTRY_PATH = Path(__file__).parents[2] / "ARCHITECTURE_REGISTRY.json"
 
 
@@ -65,8 +67,8 @@ class ExecutionGate:
                 self._registry = json.loads(
                     _REGISTRY_PATH.read_text(encoding="utf-8")
                 )
-            except Exception:
-                pass
+            except Exception as e:
+                log_drop("execution_context._load_registry", e)
 
     def run(self, project: str, module: str,
             open_incidents: list | None = None,
@@ -221,8 +223,8 @@ class ExecutionContext:
                 reg = json.loads(_REGISTRY_PATH.read_text(encoding="utf-8"))
                 self.architecture_registry = reg
                 self.project_registry = list(reg.get("projects", {}).keys())
-            except Exception:
-                pass
+            except Exception as e:
+                log_drop("execution_context.ExecutionContext._load_registry", e)
 
     def check(self, project: str, module: str,
               open_incidents: list | None = None,

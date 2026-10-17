@@ -12,6 +12,8 @@ import json
 import requests
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+
+from ._drop_log import log_drop
 from pathlib import Path
 from typing import Optional
 
@@ -163,8 +165,8 @@ class ContextRuntime:
         }
         try:
             requests.post(f"{_MCP_URL}/event", json=payload, timeout=1.0)
-        except Exception:
-            pass
+        except Exception as e:
+            log_drop("context_runtime._emit_event", e)
 
 
 # ──────────────────────────────────────────────────
@@ -196,5 +198,5 @@ def emit_event_to_context_runtime(event_type: str, event_id: str, payload: dict 
             json.dumps(log[:_EVENT_LOG_MAX], ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
-    except Exception:
-        pass
+    except Exception as e:
+        log_drop("context_runtime.emit_event_to_context_runtime", e)

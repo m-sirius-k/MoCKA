@@ -9,6 +9,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from ._drop_log import log_drop
+
 _SNAP_DIR = Path(__file__).parents[2] / "data" / "context_snapshots"
 _MAX_HISTORY = 20
 _SCOPED_DIR_NAME = "scoped"
@@ -56,7 +58,8 @@ class ContextSnapshot:
             return None
         try:
             return json.loads(latest.read_text(encoding="utf-8"))
-        except Exception:
+        except Exception as e:
+            log_drop("context_snapshot.load_latest", e)
             return None
 
     def list_snapshots(self) -> list[str]:
@@ -125,7 +128,8 @@ class ContextSnapshot:
             return None
         try:
             return json.loads(path.read_text(encoding="utf-8"))
-        except Exception:
+        except Exception as e:
+            log_drop("context_snapshot.load_scoped", e)
             return None
 
     def _prune(self) -> None:
@@ -133,5 +137,5 @@ class ContextSnapshot:
         for old in files[_MAX_HISTORY:]:
             try:
                 old.unlink()
-            except Exception:
-                pass
+            except Exception as e:
+                log_drop("context_snapshot._prune", e)

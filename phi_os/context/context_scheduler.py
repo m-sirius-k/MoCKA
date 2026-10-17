@@ -9,6 +9,8 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
+from ._drop_log import log_drop
+
 _STATE_PATH = Path(__file__).parents[2] / "data" / "context_snapshots" / "scheduler_state.json"
 _INTERVAL_SECONDS = 15 * 60
 _EVENT_THRESHOLD = 100
@@ -18,8 +20,8 @@ def _load_state() -> dict:
     if _STATE_PATH.exists():
         try:
             return json.loads(_STATE_PATH.read_text(encoding="utf-8"))
-        except Exception:
-            pass
+        except Exception as e:
+            log_drop("context_scheduler._load_state", e)
     return {"last_snapshot_at": "", "event_count_since": 0}
 
 
@@ -46,7 +48,8 @@ def maybe_snapshot() -> bool:
         try:
             last_dt = datetime.fromisoformat(last)
             due_by_time = (datetime.now(timezone.utc) - last_dt).total_seconds() >= _INTERVAL_SECONDS
-        except Exception:
+        except Exception as e:
+            log_drop("context_scheduler.maybe_snapshot.parse_last", e)
             due_by_time = True
 
     if not (due_by_count or due_by_time):

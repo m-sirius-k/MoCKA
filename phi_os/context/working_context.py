@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from ._drop_log import log_drop
+
 _SNAPSHOT_DIR = Path(__file__).parents[2] / "data" / "context_snapshots"
 
 
@@ -66,8 +68,8 @@ class WorkingContext:
             for k, v in data.items():
                 if hasattr(self, k) and k not in ("updated_at",):
                     setattr(self, k, v)
-        except Exception:
-            pass
+        except Exception as e:
+            log_drop("working_context._load_from_snapshot", e)
 
     def _detect_services(self) -> None:
         known = [
@@ -191,8 +193,8 @@ class WorkingContext:
                 for k, v in data.items():
                     if hasattr(ctx, k) and k not in ("updated_at",):
                         setattr(ctx, k, v)
-            except Exception:
-                pass
+            except Exception as e:
+                log_drop("working_context.load_scoped", e)
         return ctx
 
     @classmethod

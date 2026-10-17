@@ -11,6 +11,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from ._drop_log import log_drop
+
 _DB_PATH = Path(__file__).parents[2] / "data" / "mocka_events.db"
 _SNAPSHOT_DIR = Path(__file__).parents[2] / "data" / "context_snapshots"
 
@@ -152,8 +154,8 @@ class MemoryContext:
             ]
 
             conn.close()
-        except Exception:
-            pass
+        except Exception as e:
+            log_drop("memory_context.load_from_db", e)
 
     def _load_from_snapshot(self) -> None:
         snap = _SNAPSHOT_DIR / "memory_context_latest.json"
@@ -167,8 +169,8 @@ class MemoryContext:
             w = data.get("five_w1h", {})
             if w:
                 self.five_w1h = FiveW1H.from_dict(w)
-        except Exception:
-            pass
+        except Exception as e:
+            log_drop("memory_context._load_from_snapshot", e)
 
     def record_decision(self, decision: str, reason: str,
                         evidence: str = "", related_events: list | None = None,
