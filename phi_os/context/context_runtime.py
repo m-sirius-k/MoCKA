@@ -12,10 +12,10 @@ import json
 import requests
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-
-from ._drop_log import log_drop
 from pathlib import Path
 from typing import Optional
+
+from ._drop_log import log_drop
 
 from .institution_context import InstitutionContext
 from .working_context import WorkingContext
