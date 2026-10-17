@@ -1,0 +1,69 @@
+{
+  "registry_schema_version": "AUTHORITY_REGISTRY_V1",
+  "registry_role": "REGISTRY",
+  "authority_source": "Human Gate Decision Records only",
+  "generation_note": "This registry does NOT generate authority. Each entry is DERIVED from a Human Gate Decision Record (source_role=AUTHORITY). It is fully separated from data/decisions/decision_ledger.jsonl (Phase-1 frozen ledger). AI/JARVIS/HAB/Memory self-update is prohibited.",
+  "phase1_ledger_relationship": "COMPLETELY_SEPARATE_NO_FALLBACK",
+  "entries": [
+    {
+      "decision_id": "HG-RCL-20261004-001",
+      "decision_type": "RUNTIME_CLOSED_LOOP_IMPLEMENTATION",
+      "status": "APPROVED",
+      "approved_at": "2026-10-04T00:00:00Z",
+      "authority": "Human Gate",
+      "authorized_scope": ["rcl", "rcl_verification_action", "rcl_scope"],
+      "prohibited_scope": ["production", "delegation", "bypass", "commit", "push", "schema_change", "phase1_ledger_write"],
+      "source_record": "docs/governance/HG_RCL_20261004_003_AUTHORITY_PROVENANCE_RECORD_20261004.md",
+      "source_role": "AUTHORITY",
+      "contract_reference": "docs/contracts/RUNTIME_CLOSED_LOOP_CONTRACT_V1.md",
+      "effective_from": "2026-10-04T00:00:00Z",
+      "effective_until": "2099-01-01T00:00:00Z",
+      "registration_state": "REGISTERED"
+    },
+    {
+      "decision_id": "HG-RCL-20261004-002",
+      "decision_type": "CONTRACT_S2_AMENDMENT",
+      "status": "APPROVED",
+      "approved_at": "2026-10-04T00:00:00Z",
+      "authority": "Human Gate",
+      "authorized_scope": ["contract_s2_amendment", "etid_request_id_carrier"],
+      "prohibited_scope": ["event_store_schema_change", "trace_id_hashchain_change", "s10_change", "phase1_ledger_write", "commit", "push"],
+      "source_record": "docs/governance/HG_RCL_20261004_003_AUTHORITY_PROVENANCE_RECORD_20261004.md",
+      "source_role": "AUTHORITY",
+      "contract_reference": "docs/contracts/RUNTIME_CLOSED_LOOP_CONTRACT_V1.md",
+      "effective_from": "2026-10-04T00:00:00Z",
+      "effective_until": "2099-01-01T00:00:00Z",
+      "registration_state": "REGISTERED"
+    },
+    {
+      "decision_id": "HG-RCL-20261004-003",
+      "decision_type": "AUTHORITY_PROVENANCE_FORMALIZATION",
+      "status": "APPROVED",
+      "approved_at": "2026-10-04T00:00:00Z",
+      "authority": "Human Gate",
+      "authorized_scope": ["authority_provenance_record"],
+      "prohibited_scope": ["phase1_ledger_write", "event_store_change", "memory_change", "s10_change", "commit", "push"],
+      "source_record": "docs/governance/HG_RCL_20261004_003_AUTHORITY_PROVENANCE_RECORD_20261004.md",
+      "source_role": "AUTHORITY",
+      "contract_reference": "docs/governance/HG_RCL_20261004_003_AUTHORITY_PROVENANCE_RECORD_20261004.md",
+      "effective_from": "2026-10-04T00:00:00Z",
+      "effective_until": "2099-01-01T00:00:00Z",
+      "registration_state": "REGISTERED"
+    },
+    {
+      "decision_id": "HG-RCL-20261004-004",
+      "decision_type": "GOVERNANCE_RUNTIME_INFRASTRUCTURE",
+      "status": "APPROVED",
+      "approved_at": "2026-10-04T00:00:00Z",
+      "authority": "Human Gate",
+      "authorized_scope": ["rcl", "rcl_verification_action", "rcl_scope", "authority_registry", "consequence_observation", "governance_sot"],
+      "prohibited_scope": ["production", "delegation", "bypass", "phase1_ledger_write", "event_store_schema_change", "trace_id_hashchain_change", "s10_change", "scope_expansion", "commit", "push"],
+      "source_record": "docs/governance/HG_RCL_20261004_004_GOVERNANCE_RUNTIME_INFRASTRUCTURE_20261004.md",
+      "source_role": "AUTHORITY",
+      "contract_reference": "docs/contracts/RUNTIME_CLOSED_LOOP_CONTRACT_V1.md",
+      "effective_from": "2026-10-04T00:00:00Z",
+      "effective_until": "2099-01-01T00:00:00Z",
+      "registration_state": "REGISTERED"
+    }
+  ]
+}

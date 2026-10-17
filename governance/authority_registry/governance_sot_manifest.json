@@ -1,0 +1,31 @@
+{
+  "manifest_schema_version": "GOVERNANCE_SOT_V1",
+  "decision_authority": "HG-RCL-20261004-004",
+  "principle": "An artifact may not establish its own authority. SOURCE, DERIVED, EVIDENCE, RUNTIME_STATE and MEMORY are distinct roles and must stay independently auditable.",
+  "roles": {
+    "SOURCE": "Human Gate Decision Records. The only origin of authority.",
+    "DERIVED": "Registry/contracts that reflect a SOURCE but never create authority.",
+    "RUNTIME_STATE": "Live runtime evidence written during execution (Event Store rows).",
+    "EVIDENCE": "Read-only readback / audit reports derived from RUNTIME_STATE.",
+    "MEMORY": "Experience Memory. Never creates or expands authority."
+  },
+  "artifacts": [
+    {"path": "docs/governance/HG_RCL_20261004_003_AUTHORITY_PROVENANCE_RECORD_20261004.md", "role": "SOURCE", "kind": "AUTHORITY", "note": "Human Gate Decision Record (recognizes 001/002)."},
+    {"path": "docs/governance/HG_RCL_20261004_004_GOVERNANCE_RUNTIME_INFRASTRUCTURE_20261004.md", "role": "SOURCE", "kind": "AUTHORITY", "note": "Human Gate Decision Record (004)."},
+    {"path": "governance/authority_registry/authority_registry.json", "role": "DERIVED", "kind": "REGISTRY", "note": "Registry; reflects SOURCE records; generates no authority."},
+    {"path": "governance/authority_registry/registry.py", "role": "DERIVED", "kind": "REGISTRY_CODE", "note": "Read-only runtime check; guarded write path."},
+    {"path": "docs/contracts/RUNTIME_CLOSED_LOOP_CONTRACT_V1.md", "role": "DERIVED", "kind": "CONTRACT", "note": "Runtime/Governance contract."},
+    {"path": "data/mocka_events.db", "role": "RUNTIME_STATE", "kind": "EVENT_STORE", "note": "Live runtime evidence (append-only for RCL)."},
+    {"path": "docs/governance/PHASE_B_RCL_REAL_VERIFICATION_RESULTS.json", "role": "EVIDENCE", "kind": "AUDIT_REPORT", "note": "Readback-derived verification result."},
+    {"path": "docs/governance/HG_RCL_20261004_004_VERIFICATION_RESULTS.json", "role": "EVIDENCE", "kind": "AUDIT_REPORT", "note": "HG-RCL-004 negative-test + controlled-run readback result."},
+    {"path": "memory/data/memory_store.json", "role": "MEMORY", "kind": "EXPERIENCE_MEMORY", "note": "Experience Memory; no authority generation."},
+    {"path": "data/decisions/decision_ledger.jsonl", "role": "EVIDENCE", "kind": "FROZEN_PHASE1_LEDGER", "note": "Frozen historical evidence. NOT an authority source for runtime. No fallback from the registry."}
+  ],
+  "prohibited_structures": [
+    "artifact_cites_itself_as_authority",
+    "evidence_record_used_as_authority_source",
+    "memory_expands_authority",
+    "registry_self_update_by_AI_JARVIS_HAB_Memory",
+    "phase1_ledger_used_as_runtime_authority_fallback"
+  ]
+}
