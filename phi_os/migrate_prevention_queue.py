@@ -1,13 +1,11 @@
 # phi_os/migrate_prevention_queue.py
 # Phase3移行スクリプト: data/prevention_queue.json -> phi_os.human_gate event
 #
-# 方針(確定): 状態復元ではなくイベント再生成。
-#   status="NEW"   -> submit(PENDING)として正規化(全1769件相当)
-#   status="approved" -> submit + approve(疑似遷移として補完。元のPENDING履行
-#                          は記録されていないため、移行時刻でsubmitしてから
-#                          即approveする2イベントとして再構成する)
-#   status="PENDING"(GL7仕様通りの大文字) -> 0件想定だが将来発生時はsubmitのみ
-#   status="rejected" -> submit + reject(同様に疑似遷移)
+# 方針(A案・確定): 移行は全て PENDING での起票(submit)のみ。
+#   approve / reject は一切呼ばない。人間の判断(Human Gate)を迂回する裏口を作らない。
+#   元の status(NEW / approved / rejected 等)は payload の original_status に記録するだけで、
+#   状態としては採用しない。approved / rejected の項目は legacy_decision として記録し、
+#   MIGRATION_UNVERIFIED(根拠未検証)のフラグを付け、正式な承認フローで再審査する。
 # 冪等性: request_id(=元のid)で既存eventがあればスキップする(hg.get_state()で判定)。
 # prevention_queue.json自体は読み取りのみで、本スクリプトは変更しない(廃止はPhase3の別ステップ)。
 import sys
@@ -59,6 +57,8 @@ def migrate(dry_run: bool = True) -> dict:
             summary["migrated"] += 1
             continue
 
+        # 移行は PENDING で起票するだけ。approve / reject は呼ばない（A案）。
+        legacy = target in ("APPROVED", "REJECTED")
         payload = {
             "request_id": request_id,
             "source": "prevention_queue_migration",
@@ -67,16 +67,37 @@ def migrate(dry_run: bool = True) -> dict:
             "component": item.get("component", ""),
             "what_type": item.get("what_type", ""),
             "severity": item.get("severity", ""),
+            "migration_flag": "MIGRATION_UNVERIFIED" if legacy else None,
+            "legacy_decision": target if legacy else None,
         }
         hg.submit(payload)
-        if target == "APPROVED":
-            hg.approve(request_id, {"note": "pseudo-transition from migration, no original PENDING history"})
-        elif target == "REJECTED":
-            hg.reject(request_id, {"note": "pseudo-transition from migration, no original PENDING history"})
+        if legacy:
+            summary["legacy_decisions_quarantined"] = summary.get("legacy_decisions_quarantined", 0) + 1
         summary["migrated"] += 1
 
     return summary
 
+
+PSEUDO_NOTE = "pseudo-transition from migration"
+
+
+def find_legacy_pseudo_transitions(conn=None) -> list:
+    """既に移行で書かれた擬似遷移（approve/reject）を一覧する。読み取りのみ・状態は変えない。
+    戻り値は隔離（MIGRATION_UNVERIFIED）の対象。再審査は正式な承認フローで行う。"""
+    owns = conn is None
+    if owns:
+        conn = hg._get_conn()
+    try:
+        hg._ensure_table(conn)
+        rows = conn.execute(
+            "SELECT event_id, timestamp, action, request_id, payload FROM human_gate_events "
+            "WHERE payload LIKE ? ORDER BY timestamp ASC",
+            ("%" + PSEUDO_NOTE + "%",),
+        ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        if owns:
+            conn.close()
 
 if __name__ == "__main__":
     import argparse
