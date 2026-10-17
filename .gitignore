@@ -70,3 +70,9 @@ docs/reference/semantic_dictionary/raw/all_terms.md
 PlanningCaliber/workshop/
 
 audit_output/
+
+# 生成物・実行時の成果物（R1-1 承認 2026-10-17）
+search_index/data/
+/test_*.db
+/component_d_test_results.log
+governance/recall_queue.jsonl
