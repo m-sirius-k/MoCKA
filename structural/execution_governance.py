@@ -152,8 +152,12 @@ class ExecutionGovernanceEngine:
             aborts.append("grounding_not_completed")
 
         scope = action.get("scope", [])
+        # HG approved 2026-10-17: judge only within scope. Unscoped actions keep the whole-tree check (fail closed).
+        in_scope = dry_run.changed_files if not scope else [
+            p for p in dry_run.changed_files if any(p.startswith(s) for s in scope)
+        ]
         if scope:
-            for path in dry_run.changed_files:
+            for path in dry_run.deletions:
                 if not any(path.startswith(s) for s in scope):
                     aborts.append("deletion_outside_scope")
                     break
@@ -167,7 +171,7 @@ class ExecutionGovernanceEngine:
                 break
 
         max_changes = action.get("expected_max_changes")
-        if max_changes is not None and dry_run.change_count > max_changes:
+        if max_changes is not None and len(in_scope) > max_changes:
             # batch index-only removal (git rm --cached) bypass: all changes are deletions, no additions
             all_deletions = (
                 len(dry_run.additions) == 0
